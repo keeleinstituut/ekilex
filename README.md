@@ -1,0 +1,2 @@
+# ekilex
+Sõnastiku- ja terminibaasisüsteem
