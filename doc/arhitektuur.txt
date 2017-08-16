@@ -1,0 +1,16 @@
+EKILEX/EVE
+
+Olulisemad tehnoloogiad:
+
+Java JDK 8 (x64 u144) 
+Apache Maven 3.5.0
+Spring Framework 4.3.10
+Spring Security 4.2.3
+Thymeleaf 3.0.7
+Hibernate 5.2.10
+
+Rakenduslikud moodulid:
+
+ekilex/ekilex-app
+ekilex/eve-app
+

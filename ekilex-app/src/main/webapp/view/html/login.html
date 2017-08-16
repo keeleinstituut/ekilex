@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Ekilex Login</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" type="text/css" th:href="@{/view/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/view/css/login-styles.css}" />
+<link rel="icon" type="image/png" th:href="@{/view/img/favicon-32x32.png}" sizes="32x32" />
+<link rel="icon" type="image/png" th:href="@{/view/img/favicon-16x16.png}" sizes="16x16" />
+</head>
+<body>
+  <div class="alert alert-info context-message" th:if="${loginMessage != null}">
+    <span th:text="${loginMessage}">Tere</span>
+  </div>
+  <div class="container-fluid">
+    <div class="login-form-wrap">
+      <div class="form-header clearfix">
+        <a th:href="@{/}" class="logo">Ekilex</a>
+      </div>
+      <div class="login-form-content">
+        <div class="alert alert-danger" th:if="${loginFailed}">
+          <span>Kasutaja tuvastamine ebaõnnestus</span>
+        </div>
+        <form th:action="@{/dologin}" th:object="${userLoginBean}" method="post">
+          <div class="form-group">
+            <label for="name">Nimi</label>
+            <input th:field="*{name}" name="name" class="form-control" type="text" placeholder="Nimi" />
+          </div>
+          <div class="form-group">
+            <label for="password">Salasõna</label>
+            <input th:field="*{password}" name="password" class="form-control" type="password" placeholder="Parool" />
+          </div>
+          <button class="btn btn-success btn-block login-btn" type="submit">Sisene</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <script th:src="@{/view/js/jquery.min.js}"></script>
+</body>
+</html>

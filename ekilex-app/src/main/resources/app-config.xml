@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:security="http://www.springframework.org/schema/security"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:cache="http://www.springframework.org/schema/cache"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+	http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.2.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.3.xsd
+	http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache-4.3.xsd
+	">
+
+	<mvc:annotation-driven ignore-default-model-on-redirect="true" validator="validator" />
+
+	<context:component-scan annotation-config="true" base-package="eki.ekilex.web" />
+
+	<mvc:view-controller path="/main" view-name="redirect:/" />
+
+	<mvc:resources location="/view/js/" mapping="/view/js/**" />
+	<mvc:resources location="/view/img/" mapping="/view/img/**" />
+	<mvc:resources location="/view/css/" mapping="/view/css/**" />
+	<mvc:resources location="/view/fonts/" mapping="/view/fonts/**" />
+	<mvc:resources location="/view/robots.txt" mapping="/robots.txt" />
+	<mvc:resources location="/view/img/favicon.ico" mapping="/favicon.ico" order="0" />
+
+	<security:http security="none" pattern="/view/js/**" />
+	<security:http security="none" pattern="/view/img/**" />
+	<security:http security="none" pattern="/view/css/**" />
+	<security:http security="none" pattern="/view/fonts/**" />
+	<security:http security="none" pattern="/robots.txt" />
+	<security:http security="none" pattern="/favicon.ico" />
+
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="eki.ekilex.web.interceptor.PageRequestPostHandler"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<bean id="webTemplateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver">
+		<property name="prefix" value="/view/html/" />
+		<property name="suffix" value=".html" />
+		<property name="cacheable" value="false" />
+		<property name="characterEncoding" value="UTF-8" />
+	</bean>
+
+	<bean id="webTemplateEngine" class="org.thymeleaf.spring4.SpringTemplateEngine">
+		<property name="templateResolver" ref="webTemplateResolver" />
+		<property name="additionalDialects">
+			<set>
+				<bean class="org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect" />
+			</set>
+		</property>
+	</bean>
+
+	<bean class="org.thymeleaf.spring4.view.ThymeleafViewResolver">
+		<property name="templateEngine" ref="webTemplateEngine" />
+		<property name="characterEncoding" value="UTF-8" />
+	</bean>
+
+	<bean name="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+		<property name="validationMessageSource">
+			<ref bean="messageSource" />
+		</property>
+	</bean>
+
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="defaultEncoding" value="UTF-8" />
+		<property name="basenames">
+			<list>
+				<value>/messages/public-messages</value>
+			</list>
+		</property>
+		<property name="cacheSeconds" value="10" />
+	</bean>
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="100000000" />
+	</bean>
+
+</beans>
