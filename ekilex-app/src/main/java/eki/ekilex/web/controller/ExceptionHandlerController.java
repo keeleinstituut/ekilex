@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
+import eki.ekilex.constant.WebConstant;
+
 @ControllerAdvice
 public class ExceptionHandlerController {
 
@@ -27,7 +29,7 @@ public class ExceptionHandlerController {
 		}
 		modelAndView.addObject("errorName", exception.getMessage());
 		modelAndView.addObject("errorDescription", exception.toString());
-		modelAndView.setViewName("error");
+		modelAndView.setViewName(WebConstant.ERROR_PAGE);
 
 		logger.error("Manufact system exception. Sorry about that!", exception);
 

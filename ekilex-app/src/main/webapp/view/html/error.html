@@ -1,13 +1,22 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title>Viga</title>
+<title>Viga</title>
+<link rel="stylesheet" type="text/css" th:href="@{/view/css/bootstrap.min.css}" />
+<link rel="stylesheet" type="text/css" th:href="@{/view/css/common-styles.css}" />
 </head>
 <body>
-  <div>
-    <h3>Ohh õnnetust...</h3>
-    <h4 th:text="${errorName}"></h4>
-    <p th:text="${errorDescription}"></p>
+  <br />
+  <div class="container-fluid">
+    <div>
+      <div class="form-header clearfix">
+        <a th:href="@{/}" class="logo">Ekilex</a>
+      </div>
+      <div class="context-message">
+        <h2 th:text="${errorName}"></h2>
+        <p th:text="${errorDescription}"></p>
+      </div>
+    </div>
   </div>
 </body>
 </html>

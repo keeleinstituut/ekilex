@@ -13,4 +13,8 @@ public interface WebConstant {
 	public static final String MAIN_PAGE = "main";
 
 	public static final String MAIN_URI = "/main";
+
+	public static final String AUTH_ERROR_URI = "/autherror";
+
+	public static final String ERROR_PAGE = "error";
 }

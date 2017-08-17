@@ -18,7 +18,7 @@
         		username-parameter="name" 
         		password-parameter="password" 
         		login-page="/" 
-        		authentication-failure-url="/error" 
+        		authentication-failure-url="/autherror" 
         		default-target-url="/main" />
         <security:logout logout-url="/logout" />
         <security:session-management>

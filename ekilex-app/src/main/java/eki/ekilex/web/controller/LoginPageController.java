@@ -13,11 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.UserLoginBean;
 
 @Controller
-public class LoginPageController implements WebConstant {
+public class LoginPageController extends AbstractPageController {
 
 	private static Logger logger = LoggerFactory.getLogger(LoginPageController.class);
 
@@ -51,8 +50,8 @@ public class LoginPageController implements WebConstant {
 		return "redirect:/";
 	}
 
-	@RequestMapping(value = "/error")
-	public String loginError(UserLoginBean userLoginBean, Authentication authentication, Model model, HttpServletRequest request) throws Exception {
+	@RequestMapping(value = AUTH_ERROR_URI)
+	public String authError(UserLoginBean userLoginBean, Authentication authentication, Model model, HttpServletRequest request) throws Exception {
 
 		model.addAttribute("loginFailed", Boolean.TRUE);
 

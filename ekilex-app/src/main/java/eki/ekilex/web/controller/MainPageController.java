@@ -7,14 +7,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import eki.ekilex.constant.WebConstant;
-
 @Controller
-public class MainPageController implements WebConstant {
+public class MainPageController extends AbstractPageController {
 
 	@RequestMapping(value = MAIN_URI)
-	public String login(Authentication authentication, Model model, HttpServletRequest request) {
+	public String main(Authentication authentication, Model model, HttpServletRequest request) {
 
 		return MAIN_PAGE;
 	}
+
 }
