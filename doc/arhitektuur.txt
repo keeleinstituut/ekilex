@@ -14,3 +14,22 @@ Rakenduslikud moodulid:
 ekilex/ekilex-app
 ekilex/eve-app
 
+Tugimoodulid:
+
+ekilex/eki-common
+
+Ehitamine:
+
+ekilex>mvn clean install
+
+Rakendamine ajutiselt Maven Tomcat pistaku abil:
+
+ekilex/ekilex-app>mvn tomcat7:run -P devsrvrun
+
+http://localhost:5555/ (html)
+http://localhost:5555/data/app (json)
+
+ekilex/eve-app>mvn tomcat7:run -P devsrvrun
+
+http://localhost:5566/ (html)
+http://localhost:5566/data/app (json)
