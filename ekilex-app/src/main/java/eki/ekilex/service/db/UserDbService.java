@@ -5,11 +5,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import eki.common.service.db.AbstractDbService;
+import eki.ekilex.constant.TableName;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.mapper.EkiUserRowMapper;
 
 @Component
-public class UserDbService extends AbstractDbService {
+public class UserDbService extends AbstractDbService implements TableName {
 
 	public EkiUser getUserByName(String name) throws Exception {
 

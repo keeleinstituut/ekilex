@@ -8,12 +8,12 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<groupId>eki.ekilex</groupId>
-	<artifactId>ekilex-app</artifactId>
+	<groupId>eki.common</groupId>
+	<artifactId>eki-common</artifactId>
 	<version>1.0-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
-	<name>Ekilex App</name>
+	<name>Ekilex/Eve Commons</name>
 
 	<developers>
 		<developer>
@@ -25,7 +25,7 @@
 	</developers>
 
 	<build>
-		<finalName>ekilex-app</finalName>
+		<finalName>eki-common</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -58,8 +58,8 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-war-plugin</artifactId>
-				<version>3.1.0</version>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.2</version>
 				<configuration>
 					<archiveClasses>true</archiveClasses>
 				</configuration>
@@ -80,66 +80,7 @@
 		</plugins>
 	</build>
 
-	<profiles>
-
-		<!-- default dev -->
-		<profile>
-			<id>dev</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<build>
-				<resources>
-					<resource>
-						<directory>${project.basedir}/src/main/resources</directory>
-					</resource>
-					<resource>
-						<directory>${project.basedir}/envresources/dev</directory>
-					</resource>
-				</resources>
-			</build>
-			<properties>
-				<maven.test.skip>false</maven.test.skip>
-			</properties>
-		</profile>
-
-		<!-- tomcat -->
-		<profile>
-			<id>devsrvrun</id>
-			<build>
-				<resources>
-					<resource>
-						<directory>${project.basedir}/src/main/resources</directory>
-					</resource>
-					<resource>
-						<directory>${project.basedir}/envresources/dev</directory>
-					</resource>
-				</resources>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.tomcat.maven</groupId>
-						<artifactId>tomcat7-maven-plugin</artifactId>
-						<configuration>
-							<port>5555</port>
-							<charset>UTF-8</charset>
-							<uriEncoding>UTF-8</uriEncoding>
-							<path>/</path>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-			<properties>
-				<maven.test.skip>true</maven.test.skip>
-			</properties>
-		</profile>
-	</profiles>
-
 	<dependencies>
-		<!-- eki -->
-		<dependency>
-			<groupId>eki.common</groupId>
-			<artifactId>eki-common</artifactId>
-		</dependency>
 		<!-- commons -->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
@@ -219,31 +160,6 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.thymeleaf</groupId>
-			<artifactId>thymeleaf</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.thymeleaf</groupId>
-			<artifactId>thymeleaf-spring4</artifactId>
-		</dependency>
-		<!-- security -->
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-config</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
-		</dependency>
 		<!-- Jackson JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
@@ -273,11 +189,6 @@
 		<dependency>
 			<groupId>org.glassfish</groupId>
 			<artifactId>javax.el</artifactId>
-		</dependency>
-		<!-- mail -->
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
 		</dependency>
 		<!-- db -->
 		<dependency>

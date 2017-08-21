@@ -1,22 +1,18 @@
-package eki.ekilex.web.interceptor;
+package eki.eve.web.interceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
-import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.EkiUser;
+import eki.eve.constant.SystemConstant;
+import eki.eve.constant.WebConstant;
 
 public class PageRequestPostHandler extends HandlerInterceptorAdapter implements WebConstant, SystemConstant {
 
@@ -49,13 +45,6 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData(request, POM_PATH);
 			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
-		}
-		if (!modelMap.containsKey(USER_MODEL_KEY)) {
-			SecurityContext securityContext = SecurityContextHolder.getContext();
-			Authentication authentication = securityContext.getAuthentication();
-			if ((authentication != null) && (authentication instanceof EkiUser)) {
-				modelMap.addAttribute(USER_MODEL_KEY, authentication);
-			}
 		}
 
 		// add model attributes here...

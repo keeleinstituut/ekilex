@@ -18,13 +18,12 @@
 	<cache:annotation-driven />
 
 	<context:component-scan annotation-config="true" base-package="eki.common.service" />
-	<context:component-scan annotation-config="true" base-package="eki.ekilex.service" />
-	<context:component-scan annotation-config="true" base-package="eki.ekilex.test" />
+	<context:component-scan annotation-config="true" base-package="eki.eve.service" />
 
 	<bean class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer">
 		<property name="locations">
 			<list>
-				<value>classpath:test-ekilex-app.properties</value>
+				<value>classpath:eve-app.properties</value>
 			</list>
 		</property>
 	</bean>
@@ -43,7 +42,7 @@
 		<property name="caches">
 			<set>
 				<bean class="org.springframework.cache.concurrent.ConcurrentMapCacheFactoryBean">
-					<property name="name" value="ekilex_cache"/>
+					<property name="name" value="eve_cache"/>
 				</bean>
 			</set>
 		</property>

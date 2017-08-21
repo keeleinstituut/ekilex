@@ -1,4 +1,4 @@
-package eki.ekilex.exception;
+package eki.common.exception;
 
 public class NotSingleResultQueryException extends Exception {
 

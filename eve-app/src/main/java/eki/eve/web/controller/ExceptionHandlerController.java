@@ -1,4 +1,4 @@
-package eki.ekilex.web.controller;
+package eki.eve.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
-import eki.ekilex.constant.WebConstant;
+import eki.eve.constant.WebConstant;
 
 @ControllerAdvice
 public class ExceptionHandlerController {
@@ -31,7 +31,7 @@ public class ExceptionHandlerController {
 		modelAndView.addObject("errorDescription", exception.toString());
 		modelAndView.setViewName(WebConstant.ERROR_PAGE);
 
-		logger.error("Ekilex app system exception. Sorry about that!", exception);
+		logger.error("Eve app system exception. Sorry about that!", exception);
 
 		return modelAndView;
 	}

@@ -34,6 +34,10 @@
           <button class="btn btn-success btn-block login-btn" type="submit">Sisene</button>
         </form>
       </div>
+      <br />
+      <div>
+        <span th:text="${appData.appName + ' ' + appData.appVersion}"></span>
+      </div>
     </div>
   </div>
   <script th:src="@{/view/js/jquery.min.js}"></script>

@@ -1,4 +1,4 @@
-package eki.ekilex.service.db;
+package eki.common.service.db;
 
 import java.util.HashMap;
 import java.util.Map;

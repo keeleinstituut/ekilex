@@ -1,4 +1,4 @@
-package eki.ekilex.web.controller;
+package eki.eve.web.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
-import eki.ekilex.constant.SystemConstant;
+import eki.eve.constant.SystemConstant;
 
 //this is just a sample, not actual service
 @RestController

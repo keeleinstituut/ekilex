@@ -1,4 +1,4 @@
-package eki.ekilex.data;
+package eki.common.data;
 
 import java.io.Serializable;
 

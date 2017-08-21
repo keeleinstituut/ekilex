@@ -2,8 +2,6 @@ package eki.ekilex.constant;
 
 public interface WebConstant {
 
-	public static final String USER_KEY = "user";
-
 	public static final String LOGIN_URI = "/dologin";
 
 	public static final String LOGOUT_URI = "/dologout";
@@ -17,4 +15,8 @@ public interface WebConstant {
 	public static final String AUTH_ERROR_URI = "/autherror";
 
 	public static final String ERROR_PAGE = "error";
+
+	public static final String APP_DATA_MODEL_KEY = "appData";
+
+	public static final String USER_MODEL_KEY = "user";
 }

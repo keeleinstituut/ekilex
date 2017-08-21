@@ -8,8 +8,8 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
-import eki.ekilex.service.db.BasicDbService;
 
 @Component
 public class TestEnvInitialiser {
