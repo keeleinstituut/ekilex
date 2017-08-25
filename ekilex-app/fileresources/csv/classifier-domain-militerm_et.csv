@@ -1,0 +1,220 @@
+A	-	üldsõjaline
+B	-	maavägi
+C	-	õhuvägi
+D	-	merevägi
+E	-	relvad ja relvasüsteemid
+F	-	sõjaväestatud organisatsioonid
+G	-	kaitsepoliitika ja planeerimine
+H	-	käsutamine ja juhtimine
+I	-	sõjategevus
+J	-	logistika
+K	-	sõjaväevarustus
+L	-	mitmeriigiväed
+M	-	ühendväed
+O	-	struktuur ja koosseis
+Q	-	standardimine
+S	-	turve
+T	-	tuleohutus
+U	-	riigisisene ja rahvusvaheline julgeolek
+V	-	sõjaline väljaõpe ja haridus
+AA	A	üldsõjaline -> üldine
+AB	A	üldsõjaline -> sõjaväe haldamine
+AG	A	üldsõjaline -> sõjaväeline õigusemõistmine
+AH	A	üldsõjaline -> kaplaniteenistus
+AK	A	üldsõjaline -> sõjaväepolitsei
+AP	A	üldsõjaline -> tseremooniad ja traditsioonid
+AR	A	üldsõjaline -> massihävitusrelvad
+AS	A	üldsõjaline -> sõjateadus
+AX	A	üldsõjaline -> ajutine liigitus
+AZ	A	üldsõjaline -> liigitamata terminid
+BA	B	maavägi -> üldine
+BB	B	maavägi -> soomusvägi
+BC	B	maavägi -> välisuurtükivägi
+BD	B	maavägi -> jalavägi
+BE	B	maavägi -> topograafia
+BF	B	maavägi -> pioneerid
+BG	B	maavägi -> lõhketööd
+BH	B	maavägi -> sidevägi
+BI	B	maavägi -> maaoperatsioonid
+BJ	B	maavägi -> maaväe lahingutegevus
+BK	B	maavägi -> insenerivägi
+BL	B	maavägi -> maaväe õhukaitse
+BM	B	maavägi -> õhudessantvägi
+BX	B	maavägi -> ajutine liigitus
+BZ	B	maavägi -> liigitamata terminid
+CA	C	õhuvägi -> üldine
+CB	C	õhuvägi -> õhuoperatsioonid
+CD	C	õhuvägi -> õhuväe lahingutegevus
+CE	C	õhuvägi -> õhuväe õhukaitse
+CE1	CE	õhuvägi -> õhuväe õhukaitse -> õhutõrje õhus
+CF	C	õhuvägi -> õhuväerajatised
+CG	C	õhuvägi -> õhuväe side
+CH	C	õhuvägi -> kopterid
+CI	C	õhuvägi -> õhuruumi juhtimine
+CX	C	õhuvägi -> ajutine liigitus
+CZ	C	õhuvägi -> liigitamata terminid
+DA	D	merevägi -> üldine
+DB	D	merevägi -> mereoperatsioonid
+DC	D	merevägi -> laevapere struktuur ja koosseis
+DD	D	merevägi -> laeva side
+DE	D	merevägi -> laevaehitus
+DF	D	merevägi -> tekimeeskond
+DG	D	merevägi -> mereväe lennuvahendid
+DH	D	merevägi -> lahingusüsteemid
+DI	D	merevägi -> merejalavägi
+DJ	D	merevägi -> hüdroakustiline ja veealune tuvastamine
+DK	D	merevägi -> varustamine merel
+DL	D	merevägi -> laevatehased
+DM	D	merevägi -> mereväe lahingutegevus
+DN	D	merevägi -> abilaevastik
+DO	D	merevägi -> allveelaevad
+DP	D	merevägi -> miinitõrje
+DR	D	merevägi -> mereväe õhukaitse
+DQ	D	merevägi -> tuukritööd
+DR	D	merevägi -> mereväe õhukaitse
+DZ	D	merevägi -> liigitamata terminid
+DX	D	merevägi -> ajutine liigitus
+EA	E	relvad ja relvasüsteemid -> üldine
+EB	E	relvad ja relvasüsteemid -> tuumarelvad
+EC	E	relvad ja relvasüsteemid -> biorelvad
+ED	E	relvad ja relvasüsteemid -> keemiarelvad
+EE	E	relvad ja relvasüsteemid -> laskemoon ja lõhkeained
+EF	E	relvad ja relvasüsteemid -> käsitulirelvad
+EG	E	relvad ja relvasüsteemid -> raketid ja reaktiivmürsud
+EH	E	relvad ja relvasüsteemid -> maaväe suurtükid
+EI	E	relvad ja relvasüsteemid -> lennuvahendi pardakahurid
+EJ	E	relvad ja relvasüsteemid -> mereväekahurid
+EK	E	relvad ja relvasüsteemid -> torpeedod
+EL	E	relvad ja relvasüsteemid -> pommid ja granaadid
+EM	E	relvad ja relvasüsteemid -> maamiinid
+EN	E	relvad ja relvasüsteemid -> meremiinid
+EO	E	relvad ja relvasüsteemid -> kosmoserelvad
+EP	E	relvad ja relvasüsteemid -> kõrgtehnoloogilised relvad
+EQ	E	relvad ja relvasüsteemid -> mittesurmavad relvad
+ER	E	relvad ja relvasüsteemid -> vanaaegsed ja vananenud relvad
+ES	E	relvad ja relvasüsteemid -> süüterelvad
+ET	E	relvad ja relvasüsteemid -> külmrelvad
+EU	E	relvad ja relvasüsteemid -> maaväe relvad ja relvasüsteemid
+EV	E	relvad ja relvasüsteemid -> õhuväe relvad ja relvasüsteemid
+EW	E	relvad ja relvasüsteemid -> mereväe relvad ja relvasüsteemid
+EX	E	relvad ja relvasüsteemid -> sihtmärgi sidumine
+EY	E	relvad ja relvasüsteemid -> ballistika
+EZ	E	relvad ja relvasüsteemid -> liigitamata terminid
+FA	F	sõjaväestatud organisatsioonid -> üldine
+FB	F	sõjaväestatud organisatsioonid -> otsingu- ja päästetööd
+FC	F	sõjaväestatud organisatsioonid -> piirivalve
+FD	F	sõjaväestatud organisatsioonid -> hädaolukorraks valmisolek
+FE	F	sõjaväestatud organisatsioonid -> muud sõjaväestatud üksused ja organisatsioonid
+FX	F	sõjaväestatud organisatsioonid -> ajutine liigitus
+FZ	F	sõjaväestatud organisatsioonid -> liigitamata terminid
+GA	G	kaitsepoliitika ja planeerimine -> rahvusvaheline julgeolek
+HA	H	käsutamine ja juhtimine -> üldine
+HB	H	käsutamine ja juhtimine -> käsutamine
+HC	H	käsutamine ja juhtimine -> juhtimine
+HD	H	käsutamine ja juhtimine -> valmidus
+HE	H	käsutamine ja juhtimine -> juhtimissüsteemid
+HG	H	käsutamine ja juhtimine -> planeerimine
+HH	H	käsutamine ja juhtimine -> juhtimisprotseduurid
+HI	H	käsutamine ja juhtimine -> juhtimismeetmed
+HI1	HI	käsutamine ja juhtimine -> juhtimismeetmed -> signaalid
+HI2	HI	käsutamine ja juhtimine -> juhtimismeetmed -> käsud
+HI3	HI	käsutamine ja juhtimine -> juhtimismeetmed -> juhtimisvahendid
+HI4	HI	käsutamine ja juhtimine -> juhtimismeetmed -> tingmärgid
+IA	I	sõjategevus -> üldine
+IB	I	sõjategevus -> sõjaline strateegia
+IC	I	sõjategevus -> sõjaline operatiivkunst
+ID	I	sõjategevus -> sõjaline taktika
+IE	I	sõjategevus -> elektrooniline sõda
+IF	I	sõjategevus -> infosõda
+IG	I	sõjategevus -> tuumasõda
+IH	I	sõjategevus -> biosõda
+II	I	sõjategevus -> keemiasõda
+IJ	I	sõjategevus -> miinisõda
+IK	I	sõjategevus -> psühhosõda
+IL	I	sõjategevus -> lahingutoetus
+IN	I	sõjategevus -> relvastuskontroll
+IO	I	sõjategevus -> luure
+IP	I	sõjategevus -> sõjaväe struktuur ja koosseis
+IQ	I	sõjategevus -> rahuoperatsioonid
+IR	I	sõjategevus -> kosmosesõda
+IS	I	sõjategevus -> seire, avastamine ja kohaluure
+IT	I	sõjategevus -> vastumeetmed
+IU	I	sõjategevus -> šifreerimine ja dešifreerimine
+IV	I	sõjategevus -> sissisõda
+IX	I	sõjategevus -> ajutine liigitus
+IZ	I	sõjategevus -> liigitamata terminid
+JA	J	logistika -> üldine
+JB	J	logistika -> sõjaväe rahastus
+JC	J	logistika -> sõjaväe materjali haldamine
+JD	J	logistika -> varustamine
+JE	J	logistika -> lahingu teenindustoetus
+JF	J	logistika -> rõivastus
+JG	J	logistika -> toitlustamine
+JH	J	logistika -> sõjaväetransport
+JI	J	logistika -> sõjaväerajatised
+JJ	J	logistika -> sõjaväevarustuse hooldus
+JK	J	logistika -> maaväe varustuse hooldus
+JL	J	logistika -> mereväe varustuse hooldus
+JM	J	logistika -> õhuväe varustuse hooldus
+JN	J	logistika -> majutus
+JO	J	logistika -> meditsiiniteenistus
+JO1	JO	logistika -> meditsiiniteenistus -> hambaravi
+JX	J	logistika -> ajutine liigitus
+JZ	J	logistika -> liigitamata terminid
+KA	K	sõjaväevarustus -> üldine
+KB	K	sõjaväevarustus -> sõjaväevarustuse ajakohastamine
+KC	K	sõjaväevarustus -> maaväe varustus
+KD	K	sõjaväevarustus -> ratassõidukid
+KE	K	sõjaväevarustus -> roomiksõidukid
+KF	K	sõjaväevarustus -> mereväe varustus
+KG	K	sõjaväevarustus -> õhuväe varustus
+KX	K	sõjaväevarustus -> ajutine liigitus
+KZ	K	sõjaväevarustus -> liigitamata terminid
+LA	L	mitmeriigiväed -> üldine
+LB	L	mitmeriigiväed -> sõjaline väljaõpe
+LC	L	mitmeriigiväed -> sõjaväeside
+LD	L	mitmeriigiväed -> õhukaitse
+LG	L	mitmeriigiväed -> erivägi
+LH	L	mitmeriigiväed -> eriotstarbeline vägi
+LX	L	mitmeriigiväed -> ajutine liigitus
+LZ	L	mitmeriigiväed -> liigitamata terminid
+SA	S	turve -> General - turve - üldine
+SB	S	turve -> varaturve
+SC	S	turve -> eluturve
+SD	S	turve -> turvavahendid
+SD1	SD	turve -> turvavahendid -> turvasüsteemid
+SD2	SD	turve -> turvavahendid -> eraldusmärgid ja tuvastusvahendid
+SD3	SD	turve -> turvavahendid -> turvasildid ja –märgid
+SG	S	turve -> avalik turve
+SH	S	turve -> kaitseriietus
+SJ	S	turve -> politsei
+SK	S	turve -> kodanikuturve
+SL	S	turve -> sisejulgeolek
+SX	S	turve -> ajutine liigitus
+SZ	S	turve -> liigitamata terminid
+TA	T	tuleohutus -> üldine
+TB	T	tuleohutus -> tuleohutusvahendid
+TC	T	tuleohutus -> tulekahju avastamine
+TD	T	tuleohutus -> metsatulekahjud
+TE	T	tuleohutus -> statsionaarsed päästerajatised
+TF	T	tuleohutus -> tuletõrjevõtted
+TG	T	tuleohutus -> tuletõrje- ja päästevarustus
+TH	T	tuleohutus -> tulekahjude ärahoidmine
+TI	T	tuleohutus -> tulekahjueelne planeerimine
+TJ	T	tuleohutus -> tuleohutuseeskirjad
+TK	T	tuleohutus -> tuletõrjeteenistused
+TL	T	tuleohutus -> tulekahjud ja plahvatused
+TM	T	tuleohutus -> tuletõrjerõivastus
+TN	T	tuleohutus -> tulekindlaks muutmine
+TO	T	tuleohutus -> kustutusvahendid
+TX	T	tuleohutus -> ajutine liigitus
+TZ	T	tuleohutus -> liigitamata terminid
+VA	V	sõjaline väljaõpe ja haridus -> üldine
+VB	V	sõjaline väljaõpe ja haridus -> õppused
+VC	V	sõjaline väljaõpe ja haridus -> väljaõppe juhtimine
+VC1	VC	sõjaline väljaõpe ja haridus -> väljaõppe juhtimine -> planeerimine
+VC2	VC	sõjaline väljaõpe ja haridus -> väljaõppe juhtimine -> väljaõpetamine
+VC3	VC	sõjaline väljaõpe ja haridus -> väljaõppe juhtimine -> hinnangu andmine
+VD	V	sõjaline väljaõpe ja haridus -> väljaõppevarustus
+VE	V	sõjaline väljaõpe ja haridus -> väljaõppealad
+VF	V	sõjaline väljaõpe ja haridus -> e-väljaõpe

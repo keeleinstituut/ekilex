@@ -1,0 +1,2624 @@
+AD	-	Public Administration - Private Administration - Offices
+AD1	AD	general aspects of the subject field
+AD2	AD	organisations in the subject field
+AD3	AD	publications in the subject field
+AD31	AD3	documentation systems and information systems in the subject field
+AD4	AD	administrative staff
+AD5	AD	public procurement
+AD51	AD5	expropriation in the public interest (sn: procedural aspects)
+AD52	AD5	system of regional preferences
+AD53	AD5	public works
+AD54	AD5	provision of services
+AD6	AD	public order & identification
+AD61	AD6	forces of order
+AD62	AD6	identification
+AD7	AD	public safety services
+AD8	AD	public utilities
+AD81	AD8	electricity - gas - water
+AD82	AD8	public transport
+AD9	AD	public health administration
+AD91	AD9	industrial hygiene & urban hygiene (sn: administrative aspects; us: for pollution control techniques, see: EN)
+AD92	AD9	urban hygiene (sn: services and measures)
+AD93	AD9	public morality
+ADA	AD	offices - organisation & equipment (sn: functional aspects)
+ADA1	ADA	offices - office organisation
+ADA2	ADA	offices -office equipment (sn: use of office equipment)
+ADB	AD	internal organisation
+ADC	AD	administrative procedures
+ADD	AD	municipal registrar
+ADE	AD	immigration matters
+ADF	AD	civil service
+ADG	AD	public finance
+ADG1	ADG	inland revenue
+ADH	AD	management in private enterprises
+ADJ	AD	legal aspects of administration
+ADK	AD	rendering of services; supply of services; provision of services
+ADL	AD	administrative area
+ADV	AD	automation of administration; administrative data processing; business data processing
+ADW	AD	man & society
+ADY	AD	training & education
+ADZ	AD	professions & careers
+AG	-	Agriculture - Food Industry - Livestock Industry - Fisheries
+AG1	AG	general aspects of the subject field
+AG2	AG	organisations in the subject field
+AG21	AG2	undertakings
+AG3	AG	publications in the subject field
+AG31	AG3	documentation systems and information systems in the subject field
+AG4	AG	agricultural science
+AG5	AG	crops (sn: cultivation and products)
+AG51	AG5	grasses
+AG52	AG5	roots & tuberous crops
+AG53	AG5	grain crops
+AG54	AG5	fibre plants & textile plants
+AG55	AG5	sugar crops & starch crops
+AG56	AG5	vegetable oil crops
+AG57	AG5	medicinal herbs & stimulants
+AG58	AG5	industrial crops
+AG59	AG5	condiments & spices
+AG6	AG	horticulture - aquatic plants - crop protection
+AG61	AG6	vegetables
+AG62	AG6	herbs
+AG63	AG6	decorative plants
+AG64	AG6	fruit
+AG65	AG6	edible fungi
+AG66	AG6	marine products of plant origin
+AG67	AG6	crop protection
+AG7	AG	viticulture
+AG8	AG	forestry management
+AG81	AG8	forestry products
+AG9	AG	stockbreeding (sn: land animals; rf: anamal diseases, see: BZA)
+AG91	AG9	animal husbandry
+AG92	AG9	animals for meat production & animal products
+AG93	AG9	meat inspection (rf: veterinary medicine, see: MEG)
+AG94	AG9	domestic animals
+AGA	AG	hunting & trapping
+AGB	AG	fishing - fish breeding & aquaculture
+AGB1	AGB	freshwater fishing - coastal-water fishing - deep-sea fishing
+AGB2	AGB	aquaculture
+AGB3	AGB	ornamental fish
+AGC	AG	animal products
+AGD	AG	nature conservation
+AGE	AG	Common Agricultural Policy
+AGE1	AGE	food policy
+AGE2	AGE	butter
+AGE3	AGE	milk
+AGE4	AGE	meat & meat products
+AGE5	AGE	fish & fish products
+AGE6	AGE	vegetables
+AGE7	AGE	cereals
+AGE8	AGE	rice
+AGE9	AGE	oil seeds & oil seed products
+AGEA	AGE	fruit
+AGEB	AGE	sugar
+AGEC	AGE	coffee
+AGED	AGE	tea
+AGEE	AGE	cocoa
+AGEF	AGE	tobacco
+AGEG	AGE	wine
+AGEX	AGE	other agricultural products
+AGF	AG	equipment - machinery - buildings
+AGF1	AGF	agricultural machinery
+AGF2	AGF	farm buildings
+AGG	AG	foodstuffs - production - products - trade
+AGG1	AGG	food processing, food preservation & chemical treatment (rf: E-additives, see: ICE)
+AGG2	AGG	food products
+AGG2A	AGG2	natural additives
+AGG2B	AGG2	bakery products
+AGG2D	AGG2	dairy products
+AGG2F	AGG2	processed fruits
+AGG2M	AGG2	meat products
+AGG2O	AGG2	oils - fats
+AGG2S	AGG2	sugar products
+AGG2V	AGG2	processed vegetables
+AGG3	AGG	synthetic food products
+AGG4	AGG	foodstuffs - trade & distribution
+AGG5	AGG	food quality
+AGH	AG	alcoholic beverages & non-alcoholic beverages
+AGH1	AGH	alcoholic beverages & non-alcoholic beverages - production & bottling
+AGH2	AGH	alcoholic beverages & non-alcoholic beverages - products
+AGH3	AGH	alcoholic beverages & non-alcoholic beverages - trade & distribution
+AGI	AG	stimulants & narcotics - production - products - trade
+AGI1	AGI	stimulants & narcotics - production - products
+AGI2	AGI	trade in stimulants - trade in narcotics
+AGJ	AG	legal aspects
+AGK	AG	animal food - production - products - trade
+AGK1	AGK	animal food - production & products
+AGK2	AGK	animal food - trade & distribution
+AGL	AG	raw materials of animal origin - raw materials of vegetable origin (sn: non-food products)
+AGL1	AGL	non-food materials
+AGL2	AGL	trade in raw materials of animal origin - trade in raw materials of vegetable origin (rf: illegal trade, see: AGJ)
+AGM	AG	trade & distribution of agricultural products - distribution of agricultural products (sn: trade in livestock, crops, plants, vegetables, etc.; rf: illegal trade, see: AGJ)
+AGW	AG	man & society
+AGW1	AGW	farming structure; agrarian structure; agricultural structure; land tenure; rural structure
+AGW2	AGW	food supply
+AGW3	AGW	man & society
+AGY	AG	training & education
+AGZ	AG	professions & careers
+AR	-	Fine Arts - Performing Arts - Crafts - Audio-Visual Arts - Cultural Life
+AR1	AR	general aspects of the subject field
+AR11	AR1	theory of art
+AR2	AR	organisations in the subject field
+AR21	AR2	museums (sn: collections and exhibits; us: for Museology, see DID)
+AR3	AR	publications in the subject field
+AR31	AR3	documentation systems and information systems in the subject field
+AR4	AR	folk arts & crafts
+AR5	AR	drawing & painting - graphic arts - mosaic - glass painting
+AR51	AR5	history & criticism of graphic arts - drawing - painting
+AR52	AR5	painting & drawing
+AR53	AR5	graphic arts
+AR54	AR5	mosaic
+AR55	AR5	glass painting & enamel work
+AR6	AR	plastic arts
+AR61	AR6	history & criticism of plastic arts
+AR7	AR	music
+AR71	AR7	history of music & music criticism
+AR72	AR7	commercial aspects of music
+AR8	AR	dance
+AR81	AR8	history & criticism of dance
+AR9	AR	theatre and performing arts
+AR91	AR9	history of the theatre & theatre criticism
+AR92	AR9	stage techniques
+AR93	AR9	theatres & stages
+AR94	AR9	amateur theatre (sn: all performing styles and techniques)
+ARA	AR	cinema (us: for documentary & educational film, see: PGF)
+ARA1	ARA	history of film & film criticism
+ARA2	ARA	film making
+ARA3	ARA	film industry
+ARB	AR	circus & music hall entertainment
+ARC	AR	artistic photography
+ARD	AR	industrial design
+ARE	AR	radio programmes
+ARF	AR	television programmes
+ARG	AR	computer art
+ARH	AR	architecture (sn: artistic aspects; us: for technical aspects, see: BA)
+ARJ	AR	legal aspects
+ARK	AR	commercial art
+ARL	AR	art & communication
+ARM	AR	art business
+ARW	AR	man & society
+ARY	AR	training & education
+ARZ	AR	professions & careers
+AS	-	Insurance
+AS1	AS	general aspects of the subject field
+AS11	AS1	actuarial mathematics (sn: applied mathematics)
+AS12	AS1	insurance procedures
+AS2	AS	organisations in the subject field
+AS21	AS2	undertakings
+AS3	AS	publications in the subject field
+AS31	AS3	documentation systems and information systems in the subject field
+AS4	AS	risk financing
+AS5	AS	accident insurance
+AS6	AS	sickness insurance
+AS7	AS	land vehicle insurance (sn: other than railway rolling stock)
+AS8	AS	railway rolling stock insurance
+AS9	AS	aircraft insurance
+ASA	AS	insurance of sea, lake and river and canal vessels
+ASB	AS	insurance of goods in transit
+ASC	AS	fire and natural forces
+ASD	AS	other damage to property
+ASE	AS	motor vehicle liability
+ASF	AS	aircraft liability
+ASG	AS	liability for sea, lake and river and canal vessels
+ASH	AS	general liability
+ASI	AS	credit insurance (sn: technical aspects of credit insurance)
+ASJ	AS	legal aspects of insurance
+ASK	AS	suretyship
+ASL	AS	miscellaneous financial loss
+ASM	AS	legal expenses
+ASN	AS	agricultural insurance
+ASO	AS	social security
+ASY	AS	training & education
+ASZ	AS	professions & careers
+AT	-	Nuclear Technology & Nuclear Industry(sn: applied nuclear physics; us: for pure nuclear physics, see: PHD)
+AT1	AT	general aspects of the subject field
+AT2	AT	organisations in the subject field
+AT3	AT	publications in the subject field
+AT31	AT3	documentation systems and information systems in the subject field
+AT4	AT	nuclear fission
+AT5	AT	nuclear fusion
+AT6	AT	applied nuclear science
+AT7	AT	nuclear propulsion - nuclear powering
+AT71	AT7	nuclear propulsion
+AT72	AT7	nuclear powering
+AT8	AT	nuclear safeguards system (nt: IAEA Vienne) - safeguards (nt: EURATOM)
+AT9	AT	nuclear research
+ATA	AT	radioactive materials
+ATB	AT	nuclear waste
+ATC	AT	liability
+ATW	AT	man & society
+ATY	AT	training & education
+ATZ	AT	professions & careers
+AU	-	Automation - Computer Science - Information Technology(sn: data processing)
+AU1	AU	general aspects of the subject field
+AU2	AU	organisations in the subject field
+AU3	AU	publications in the subject field
+AU31	AU3	documentation systems and information systems in the subject field
+AU4	AU	methodological principles of information technology
+AU41	AU4	general
+AU42	AU4	system aspects
+AU43	AU4	project management
+AU44	AU4	computing policy - information policy
+AU45	AU4	design methods for information systems
+AU46	AU4	software engineering
+AU47	AU4	management of computer resources and data processing
+AU5	AU	information technology theory
+AU51	AU5	automation theory
+AU52	AU5	algorithms & complexity
+AU52A	AU52	algorithms & analysis
+AU52L	AU52	logics & mathematics
+AU52M	AU52	mathematical applications in programming
+AU52S	AU52	statistics & probability
+AU6	AU	hardware
+AU61	AU6	logical building blocks (sn: this section only deals with logical functions of elements and devices; for electronic properties, manufacturing & packaging, see: EL6)
+AU62	AU6	EDP-equipment & input/output media (nt: functional organisation)
+AU62G	AU62	general aspects
+AU62M	AU62	memories - storages - stores
+AU62P	AU62	peripherals
+AU62U	AU62	central processing unit; CPU - input unit & output unit
+AU63	AU6	computer system architecture (nt: relation between logical and physical structures)
+AU64	AU6	computer system organisation
+AU65	AU6	mode of appearance (nt: physical presentation of a computer system in relation to its performance and application)
+AU66	AU6	performance evaluation
+AU7	AU	programs & programming (nt: software)
+AU71	AU7	general
+AU72	AU7	structured programming
+AU73	AU7	technical aspects of programming languages
+AU74	AU7	types of programming languages
+AU75	AU7	control systems
+AU76	AU7	mathematical software
+AU8	AU	information management systems - database & databank - data
+AU81	AU8	data (sn: data processing aspects only; us: for Information & Documentation, see: DI)
+AU82	AU8	files
+AU83	AU8	database - databank
+AU84	AU8	data analysis & data management
+AU85	AU8	information retrieval systems (sn: data processing aspects; us: for Information & Documentation, see: DIA)
+AU86	AU8	managerial aspects (sn: application and operation)
+AU9	AU	teleinformatics (sn: data processing aspects only; rf: telecommunications networks, see: OOH)
+AU91	AU9	data links & networks
+AU92	AU9	videotex - teletext (sn: data processing aspects only; for service aspects, see: OOC)
+AUA	AU	special computer assisted applications (us: for automation aspects in other subject fields, see under Sub-Heading XXV of the subject fields)
+AUA1	AUA	artificial intelligence
+AUA2	AUA	expert systems
+AUA3	AUA	natural language processing
+AUA4	AUA	office automation
+AUA5	AUA	operations research
+AUA6	AUA	simulation
+AUA7	AUA	cryptology
+AUA8	AUA	computer graphics
+AUA9	AUA	pattern recognition
+AUAA	AUA	manufacturing automation
+AUAB	AUA	computer graphics
+AUAC	AUA	house automation
+AUAD	AUA	special applications - general aspects
+AUB	AU	security
+AUJ	AU	legal aspects of automation
+AUW	AU	man & society
+AUW1	AUW	occupational health & ergonomics
+AUY	AU	training & education
+AUZ	AU	professions & careers
+BA	-	Civil Engineering - Building
+BA1	BA	general aspects of the subject field
+BA2	BA	organisations in the subject field
+BA3	BA	publications in the subject field
+BA31	BA3	documentation systems and information systems in the subject field
+BA4	BA	country planning - town planning (sn: building aspects; for living conditions, see: TSB)
+BA5	BA	natural and planned landscapes
+BA6	BA	architecture & building
+BA7	BA	building construction
+BA71	BA7	static design
+BA72	BA7	building
+BA73	BA7	interior rehabilitation
+BA74	BA7	building services
+BA75	BA7	special features
+BA8	BA	soil mechanics & underground structures
+BA9	BA	bridge building
+BAA	BA	road building
+BAB	BA	railways
+BAC	BA	waterways
+BAD	BA	structures on the land
+BAE	BA	building aids
+BAE1	BAE	temporary buildings
+BAE2	BAE	temporary structures
+BAF	BA	building trades
+BAG	BA	protection of structures (rf: industrial archeology, see: HIF; (nt: protection against fire, water, earthquakes, avalanches, wind, biological hazard, air attacks, radiation, etc)
+BAH	BA	building machinery and equipment (sn: use of equipment only; us: for manufacturing,see: INS1)
+BAI	BA	administrative procedures
+BAJ	BA	legal aspects
+BAK	BA	finishings
+BAL	BA	temporary shelters
+BAM	BA	building methods
+BAM1	BAM	steel construction
+BAM2	BAM	concrete technology
+BAM3	BAM	industrialised building
+BAN	BA	types of buildings - form & function
+BAO	BA	quality aspects & maintenance
+BAP	BA	building stages
+BAW	BA	man & society
+BAY	BA	training & education
+BAZ	BA	professions & careers
+BZ	-	Biology - Biotechnology
+BZ1	BZ	general aspects of the subject field
+BZ11	BZ1	taxonomy
+BZ2	BZ	organisations in the subject field
+BZ22	BZ2	botanical gardens - zoological gardens
+BZ3	BZ	publications in the subject field
+BZ31	BZ3	documentation systems and information systems in the subject field
+BZ311	BZ31	International Species Inventory System
+BZ4	BZ	general botany
+BZ5	BZ	classified botany
+BZ6	BZ	plant diseases
+BZ7	BZ	applied botany
+BZ8	BZ	general zoology
+BZ9	BZ	classified zoology
+BZA	BZ	animal diseases (rf: stockbreeding, see: AG9)
+BZB	BZ	applied zoology
+BZC	BZ	biochemistry
+BZD	BZ	biophysics
+BZE	BZ	bionics
+BZF	BZ	biosphere
+BZG	BZ	chorology (sn: the study of migrations and of their areas of distribution; a combination of phytogeography and zoo-geography; us: for the new sense, i.e. the ecological study of regions and areas, see: EN )
+BZH	BZ	general biology
+BZHI	BZH	histology
+BZJ	BZ	legal aspects of applied zoology
+BZK	BZ	cell biology
+BZK1	BZK	genetics & eugenics
+BZK2	BZK	gene technology & genetic engineering
+BZL	BZ	biological techniques
+BZM	BZ	microbiology
+BZM1	BZM	bacteriology
+BZM2	BZM	virology
+BZM3	BZM	parasitology
+BZN	BZ	biotechnology
+BZO	BZ	limnology
+BZP	BZ	palaeontology
+BZQ	BZ	wildlife - natural habitat
+BZW	BZ	man & society
+BZY	BZ	training & education
+BZZ	BZ	professions & careers
+CE	-	European Union - European Communities
+CE1	CE	general aspects
+CE11	CE1	publications (sn: publications produced by the EU)
+CE111	CE11	Combined Nomenclature; Tariff and Statistical Nomenclature
+CE112	CE11	European patents
+CE113	CE11	European Standards; EN
+CE12	CE1	documentation & information systems (sn: documentation & information systems of the EU)
+CE2	CE	action plans & programmes - information (sn: action plans & programmes - information dealing with "European Integration" and the "European Union " as topics)
+CE21	CE2	Citizens first (nt: DG X action programme)
+CE3	CE	publications (sn: publications dealing with "European Integration" and the "European Union " as topics)
+CE4	CE	European Union; EU - European Community; European Communities; EC
+CE41	CE4	European Coal and Steel Community; ECSC
+CE42	CE4	European Economic Community; EEC
+CE43	CE4	European Atomic Energy Community; EURATOM; EAEC
+CE44	CE4	administration - organisation - working methods - procedures
+CE45	CE4	European civil service - staff
+CE46	CE4	EU financing - EU budget
+CE47	CE4	protocol - security
+CE48	CE4	public relations - press - spokesman - information
+CE49	CE4	European Ombudsman
+CE4A	CE4	EU internal affairs
+CE4B	CE4	infrastructure
+CE4C	CE4	language matters
+CE4CL	CE4C	eurolect
+CE4CT	CE4C	EU terminology
+CE5	CE	regulations - decisions - resolutions - reports - opinions
+CE51	CE5	regulation
+CE52	CE5	decision
+CE53	CE5	resolution
+CE54	CE5	reports
+CE55	CE5	expert opinions
+CE6	CE	missions - delegations & representations - external relations - Intergovernmental Conference
+CE61	CE6	missions
+CE62	CE6	delegations & representations
+CE63	CE6	external relations
+CE63A	CE63	relations with EFTA countries
+CE63B	CE63	multilateral relations
+CE64	CE6	Intergovernmental Conference; IGC
+CE6X	CE6	non-Community
+CE7	CE	Eurostat; Statistical Office of the European Communities; SOEC (sn: operational aspects; rf: Eurostat 'statistical themes', see: STE)
+CE8	CE	Office for Official Publications of the European Communities;
+CE9	CE	Council of Europe; CE
+CEA	CE	European Parliament; EP
+CEA1	CEA	Parliamentary Bodies of the European Parliament
+CEA2	CEA	General Secretariat of the European Parliament
+CEA3	CEA	Political Groups of the European Parliament
+CEA4	CEA	Delegations & mixed commissions of the European Parliament
+CEA5	CEA	Committees & Subcommittees of the European Parliament
+CEB	CE	Council of the European Union; Council of Ministers; CM
+CEB1	CEB	Representatives of the Gouvernments of the Member States
+CEB2	CEB	Permanent Representatives Committee
+CEB3	CEB	Permanent Representations
+CEB4	CEB	General Secretariat of the Council of the European Union
+CEB5	CEB	Association Councils
+CEB6	CEB	Cooperation Councils
+CEB7	CEB	ACP States - European Community Council of Ministers
+CEB8	CEB	Committee of Senior Officials on Scientific and Technical Research (COST)
+CEB9	CEB	Committees & Working Parties of the Council of the European Union
+CEC	CE	European Commission; EC
+CEC1	CEC	Commission; European Commission
+CEC2	CEC	High Authority of the ECSC; HA
+CEC3	CEC	Secretariat-General of the Commission; SG
+CEC4	CEC	Forward Studies
+CEC5	CEC	Inspectorate-General
+CEC6	CEC	Legal Service of the European Communities; LSEC)
+CEC7	CEC	Eurostat; Statistical Office of the European Communities; SOEC (sn: organisation and structure)
+CEC8	CEC	Office for Official Publications of the European Communities (sn: organisation and structure)
+CEC9	CEC	Spokesman's Service
+CECA	CEC	Euratom Supply Agency
+CECB	CEC	Offices of the European Commission in the European Union
+CECC	CEC	Joint Research Centre
+CECD	CEC	External Delegations, Representations and Offices of the European Commission
+CECE	CEC	Directorates-General & Directorates
+CECF	CEC	Translation Service
+CECG	CEC	Security Office
+CECH	CEC	European Community Humanitarian Office
+CECI	CEC	Joint Interpreting and Conference Service
+CECO	CEC	European Commission's Information Market Observatory
+CECP	CEC	Commission proposal
+CED	CE	Court of Justice of the European Communities; CJEC
+CED1	CED	Court of First Instance
+CEE	CE	European Court of Auditors; ECA
+CEF	CE	Economic and Social Committee of the European Communities; ESC
+CEF1	CEF	ESC Members
+CEF2	CEF	ESC - Groups
+CEF3	CEF	ESC Sections
+CEF4	CEF	Common Organizational Structure of the Economic and Social Committee and the Committee of the Regions (nt: Treaty on European Union, Maastricht 1992)
+CEG	CE	Committee of the Regions of the European Union
+CEH	CE	European Investment Bank; EIB
+CEJ	CE	intra-Community legislation (sn: applied legistion; us: for theoretical apsects, see: JUJ):
+CEJ1	CEJ	Community Law - legal questions
+CEJ2	CEJ	justice and internal affairs
+CEJ3	CEJ	harmonization of legislation
+CEJ4	CEJ	approximation of laws of the Member States (sn: aspects of European Integration; rf: Community Constitutional Law, see: JU42)
+CEK	CE	European funds
+CEK1	CEK	European Regional Development Fund; ERDF
+CEK2	CEK	European Agricultural Guidance and Guarantee Fund; EAGGF
+CEK3	CEK	European Social Fund; ESF
+CEK4	CEK	European Development Fund; EDF
+CEK5	CEK	European Investment Fund; EIF (nt: 1994; financial agency bringing together the European Investment Bank, the European Community, represented by the European Commission, and a group of 76 financial institutions from all the European Union Member States)
+CEL	CE	action - joint undertaking
+CEM	CE	financial cooperation
+CEN	CE	working parties - committees - groups
+CEN1	CEN	committees
+CEN2	CEN	working parties
+CEN3	CEN	group
+CEN31	CEN3	CE7
+CEO	CE	Decentralized Community Agencies; Bodies of the European Union
+CEO1	CEO	European Centre for the Development of Vocational Training; CEDEFOP
+CEO2	CEO	European Foundation for the Improvement of Living and Working Conditions
+CEO3	CEO	European Environment Agency; EEA
+CEO4	CEO	European Agency for the Evaluation of Medicinal Products; EMEA
+CEO5	CEO	Office for Harmonization in the Internal Market (sn: trade mark and design)
+CEO6	CEO	EuropeanTraining Foundation
+CEO7	CEO	European Monitoring Centre for Drugs and Drug Addiction
+CEO8	CEO	Translation Centre for Bodies of the European Union
+CEO9	CEO	European Agency for Safety and Health at Work
+CEOA	CEO	Community Plant Variety Office
+CEOB	CEO	associated organisations
+CEOBA	CEOB	European Monetary Institute; EMI (nt: Frankfurt; second phase of the EMU)
+CEOBB	CEOB	Common Appeal Court for Community Patents
+CEOBC	CEOB	Europol
+CEOBD	CEOB	European Organisation for the Safety of Air Navigation; Eurocontrol
+CEP	CE	Treaties - Agreements - Conventions - Cooperation - Commonity Policy - Commercial Policy
+CEP1	CEP	general aspects
+CEP2	CEP	founding treaties
+CEP3	CEP	treaties of association
+CEP4	CEP	treaties of accession
+CEP5	CEP	Single European Act
+CEP6	CEP	Treaty on European Union; Treaty of Maastricht
+CEP7	CEP	Agreements
+CEP8	CEP	conventions
+CEP81	CEP8	Community Patent Convention
+CEP9	CEP	Schengen Agreement
+CEPA	CEP	Internal Market
+CEPA1	CEPA	free movement; freedom of movement
+CEPA2	CEPA	system of regional preferences
+CEPB	CEP	European Labour Market
+CEPC	CEP	customs union & customs rules
+CEPCR	CEPC	customs rules; customs legislation
+CEPCT	CEPC	Common Customs Tariff
+CEPCU	CEPC	customs union
+CEPD	CEP	competition - anti-dumping (sn: EU policy and measures; rf: competition, see: CO63)
+CEPE	CEP	common agricultural policy (sn: EU measures, procedures and administration; rf: AGE)
+CEPF	CEP	European Economic Area; AEA (sn: EU policy; rf: ECE2 and OR5)
+CEPF1	CEPF	right of establishment
+CEPG	CEP	common foreign and security policy (nt: Treaty on European Union)
+CEPH	CEP	cooperation in the fields of justice and home affairs (nt: Treaty on European Union)
+CEPJ	CEP	Convention on Jurisdiction and the Enforcement of Judgements in Civil and Commercial Matters (nt: Brussels 1968)
+CEPK	CEP	Community Regime for the Control of Exports of Dual-use Goods (rf: foreign trade, see: CO8)
+CEPL	CEP	European political cooperation; common foreign policy; European foreign policy; EPC
+CEPM	CEP	common organization of the market
+CEPM1	CEPM	commercial policy
+CEPM2	CEPM	specific commercial policy measures (nt: non-tariff measures established as part of the common commercial policy in the form of Community rules governing arrangements for the import or export of goods, such as surveillance or safeguard measures, quantitative limits or restrictions and import or export bans)
+CEPN	CEP	European Cooperation in the field of Scientific and Technical Research; COST
+CEPO	CEP	commercial policy measures
+CEPP	CEP	commodity agreement
+CEPR	CEP	regional policy
+CEQ	CE	action plans & programmes - framework programmes - information systems & networks (us: For "Social Europe"- Programme. see: SOE)
+CEQ1	CEQ	action plans & programmes
+CEQ2	CEQ	framework programmes
+CEQ3	CEQ	information systems & networks
+CEQ31	CEQ3	Information Systems and Networks on Epidemics and Diseases; Eurosentinel
+CEQ32	CEQ3	European Network for Environmental Enforcement; IMPEL
+CER	CE	education & training institutions (us: for curricular aspects, see: EDA)
+CES	CE	European Patent Office; EPO
+CET	CE	European Defence Community; EDC
+CEU	CE	European Political Union; UPU
+CEV	CE	Economic and Monetary Union; EMU
+CEW	CE	Associated African and Malagasy States; AAMS
+CEX	CE	overseas countries and territories; OCT & other associated states
+CEY	CE	African, Caribbean and Pacific countries; ACP countries
+CEY1	CEY	treaties with ACP countries
+CEZ	CE	third countries
+CEZ1	CEZ	eastern european countries
+CEZ2	CEZ	Latin America
+CEZX	CEZ	other third countries
+CH	-	Chemistry
+CH1	CH	general aspects of the subject field
+CH11	CH1	chemical nomenclature
+CH2	CH	organisations in the subject field
+CH3	CH	publications in the subject field
+CH31	CH3	documentation systems and information systems in the subject field
+CH4	CH	theoretical principles
+CH41	CH4	ancient theories and methods
+CH42	CH4	breakdown of the discipline - notation systems - modelling
+CH43	CH4	chemical bindings
+CH44	CH4	molecular architecture
+CH5	CH	chemical methods
+CH51	CH5	purification
+CH52	CH5	separation
+CH6	CH	analytical chemistry
+CH61	CH6	qualitative analysis
+CH62	CH6	quantitative analysis
+CH7	CH	inorganic chemistry
+CH8	CH	organic chemistry
+CH81	CH8	coal chemistry (us: for products from the coal-chemical industry, see: ICA13)
+CH82	CH8	biochemistry
+CH83	CH8	organometallic chemistry
+CH9	CH	geochemistry
+CH91	CH9	mineralogy
+CH92	CH9	crystallography (sn: structural aspects)
+CHA	CH	astrochemistry
+CHB	CH	synthetic chemistry
+CHC	CH	physical chemistry
+CHC1	CHC	colloid chemistry
+CHC2	CHC	doctrine of phases
+CHC3	CHC	electrochemistry
+CHC4	CHC	surface chemistry
+CHC5	CHC	boundary layer chemistry
+CHC6	CHC	chemical thermodynamics
+CHC7	CHC	acid/base theory
+CHC8	CHC	catalysis & inhibition
+CHC9	CHC	diffusion & osmosis
+CHD	CH	chemical technology (rf: process engineering, see: TEE)
+CHD1	CHD	physical aspects of chemical engineering
+CHD2	CHD	inorganic chemical engineering
+CHD3	CHD	organic chemical engineering
+CHD4	CHD	chiral technology
+CHE	CH	laboratory engineering
+CHF	CH	clinical chemistry
+CHG	CH	pharmacy (sn: chemical aspects & composition; us: for pharmaceutical products, see: IC; for use, see: MED)
+CHH	CH	photochemistry
+CHJ	CH	legal aspects
+CHW	CH	man & society
+CHY	CH	training & education
+CHZ	CH	professions & careers
+CO	-	Commerce - Movement of Goods(sn: microeconomics 1; nt: further breakdown of subject field ECC)
+CO1	CO	general aspects of the subject field
+CO2	CO	organisations in the subject field
+CO21	CO2	chamber of commerce
+CO3	CO	publications in the subject field
+CO31	CO3	documentation systems and information systems in the subject field
+CO4	CO	commercial theory
+CO5	CO	market - marketing (sn: application of marketing; us: for marketing theory, see: EC)
+CO6	CO	trading & trading practices
+CO61	CO6	trade practices
+CO62	CO6	business practices - business abuses
+CO63	CO6	competition
+CO64	CO6	lines of business (nt: e.g.: textiles, hardware, food, etc.)
+CO65	CO6	subcontracting
+CO7	CO	trade
+CO71	CO7	commercial transactions
+CO72	CO7	trade - buying & selling
+CO73	CO7	shops
+CO74	CO7	electronic market
+CO8	CO	foreign trade
+CO9	CO	buying & selling
+COA	CO	accountancy & commercial arithmetics (sn: applied accountancy; us: for accouncy theory, see: ECB1)
+COB	CO	publicity
+COC	CO	trade information
+COD	CO	trade fairs & exhibitions
+COE	CO	commodity economics
+COF	CO	trade data processing & exchange; TDX
+COG	CO	business logistics (rf: management, see: ECG; business administration, etc. see: EC8)
+COH	CO	European projects in external trade communication
+COJ	CO	legal aspects
+COK	CO	consumers
+COV	CO	business data processing
+COY	CO	training & education
+COZ	CO	professions & careers
+DE	-	Defence
+DE1	DE	general aspects of the subject field
+DE2	DE	organisations in the subject field
+DE3	DE	publications in the subject field
+DE31	DE3	documentation systems and information systems in the subject field
+DE4	DE	warfare
+DE5	DE	military life & heraldry
+DE6	DE	military service
+DE7	DE	defence policy - pre-military training - non-proliferation
+DE71	DE7	Conference on Security and Co-operation in Europe
+DE72	DE7	Organization on Security and Co-operation in Europe
+DE8	DE	organisation of the forces - units
+DE9	DE	army administration
+DE91	DE9	service pay
+DE92	DE9	military law (sn: application; us: for theoretical aspetcs see: JU)
+DE93	DE9	military police
+DE94	DE9	army chaplaincy
+DE95	DE9	army logistics
+DEA	DE	infantry
+DEB	DE	artillery
+DEC	DE	pioneers
+DED	DE	signalling corps
+DEE	DE	espionage - counter-espionage
+DEF	DE	technical services
+DEG	DE	cavalry - tank corps
+DEH	DE	navy
+DEI	DE	air force
+DEJ	DE	legal aspects
+DEK	DE	missiles & space units
+DEL	DE	special units
+DEM	DE	army medical service
+DEN	DE	arms & equipment (sn: types and use)
+DEO	DE	military works
+DEP	DE	consequences of war
+DEQ	DE	military geography
+DER	DE	civil protection
+DES	DE	military supplies
+DEW	DE	man & society
+DEY	DE	training & education
+DEZ	DE	professions & careers
+DI	-	Documentation & Information - Dissemination of Information
+DI1	DI	general aspects of the subject field
+DI2	DI	organisations in the subject field
+DI21	DI2	Research Library Group; RLG
+DI3	DI	publications in the subject field
+DI31	DI3	documentation systems and information systems in the subject field
+DI4	DI	fundamental elements in D & I
+DI5	DI	acquisition - identification - analysis - indexing (us: can be applied to all types of, documentation centres, multimedia, libraries, etc.)
+DI51	DI5	acquisition
+DI52	DI5	identification
+DI53	DI5	analysis
+DI54	DI5	indexing
+DI55	DI5	index - index entries
+DI56	DI5	indexes - typology & characteristics of indexes
+DI57	DI5	taxonomies
+DI6	DI	document description
+DI7	DI	documentary languages - knowledge representation
+DI71	DI7	relations
+DI72	DI7	ordering; arrangement (rf: classification systems & theory of classification, see: DI9)
+DI73	DI7	documentary languages; DL
+DI8	DI	Thesaurus
+DI81	DI8	thesaurus elements
+DI82	DI8	parts of thesaurus
+DI83	DI8	coverage of thesaurus
+DI84	DI8	relational structure of thesaurus
+DI85	DI8	principles of arrangement of a thesaurus
+DI86	DI8	presentation of thesaurus
+DI9	DI	classification
+DI91	DI9	theory of classification - classification systems
+DI92	DI9	classification systems - functional aspects - classes
+DI93	DI9	characteristics of classification systems
+DI94	DI9	notation systems & notation
+DI95	DI9	parts of classification systems (nt: types of representation of the classification system)
+DI96	DI9	field of application of a classification systems
+DIA	DI	storage & retrieval - dissemination of information (sn: technical aspects)
+DIA1	DIA	information systems
+DIA2	DIA	information - information services - abstracting services
+DIA3	DIA	retrieval - search
+DIA4	DIA	documentation - documentation centres
+DIA5	DIA	information and documentation centres
+DIA6	DIA	information mall
+DIB	DI	libraries & librarianship
+DIB1	DIB	bibliography
+DIB2	DIB	library services; bibliographic services
+DIB3	DIB	library administration
+DIB4	DIB	conservation - restoration
+DIB5	DIB	library equipment
+DIB6	DIB	types of libraries
+DIC	DI	archivistics - archives
+DIC1	DIC	archive administration; archive management
+DIC2	DIC	archive arrangement
+DIC3	DIC	types of archives
+DIC4	DIC	archival documents
+DIC5	DIC	archive repository; archival depository - shelving
+DIC6	DIC	preservation
+DIC7	DIC	records safety
+DIC8	DIC	archive museum
+DID	DI	museums & museology
+DID1	DID	collection building & collection management
+DID2	DID	display techniques - types of museums - types of exhibits - visitor routing
+DID3	DID	museum administration
+DID4	DID	conservation & restoration techniques - safety measures
+DID5	DID	museums by theme
+DID6	DID	theoretical museology
+DIE	DI	on-line retrieval systems - information networks
+DIE1	DIE	on-line retrieval systems
+DIE2	DIE	information networks (sn: application and object of systems)
+DIE3	DIE	Internet
+DIE4	DIE	hypermedia
+DIF	DI	performance evaluation of documentation and information systems
+DIF1	DIF	cost-benefit analysis of information and documentation systems
+DIF2	DIF	performance of information and documentation systems
+DIG	DI	global information systems (us: for global information infrastructure: see: OOV)
+DIH	DI	information supports
+DIJ	DI	legal aspects
+DIK	DI	information market
+DIV	DI	automation projects in documentation and information
+DIW	DI	man & society
+DIY	DI	training & education
+DIZ	DI	professions & careers
+DO	-	Home Economics - Personal Care - Hotel & Catering - Clothing
+DO1	DO	general aspects of the subject field
+DO2	DO	organisations in the subject field
+DO3	DO	publications in the subject field
+DO31	DO3	documentation systems and information systems in the subject field
+DO4	DO	the home
+DO5	DO	hotel industry & catering - cuisine
+DO51	DO5	horeca & catering
+DO52	DO5	haute cuisine
+DO53	DO5	industrial kitchens - hotel equipment
+DO6	DO	services to the home
+DO7	DO	food & drink - kitchen utensils & tableware
+DO71	DO7	food & drink
+DO72	DO7	kitchen utensils & tableware
+DO8	DO	the dwelling
+DO9	DO	interior decoration; fitting out the home
+DOA	DO	fixed installations & equipment
+DOB	DO	clothing & adornment - haute couture
+DOB1	DOB	clothing & adornment
+DOB2	DOB	haute couture
+DOC	DO	hygiene - body care - toilet articles
+DOC1	DOC	personal care
+DOC2	DOC	manicure - pedicure - face lifting
+DOC3	DOC	articles for personal care
+DOD	DO	industrial cleaning
+DOE	DO	refuse collection & disposal
+DOF	DO	infrastructure (sn: energy, telecom, water, sewage)
+DOY	DO	training & education
+DOZ	DO	professions & careers
+EC	-	Economics(sn: macroeconomics;nt: generic field; rf: Commerce and Movement of Goods, see: CO; Financial Affairs - Taxation - Customs, see: FI)
+EC1	EC	general aspects of the subject field
+EC2	EC	organisations in the subject field
+EC3	EC	publications in the subject field
+EC31	EC3	documentation systems and information systems in the subject field
+EC4	EC	economic principles & theories
+EC41	EC4	basic concepts of economics
+EC42	EC4	market research
+EC43	EC4	market organisation
+EC5	EC	national economy
+EC6	EC	productive activity - products
+EC61	EC6	productive activity
+EC62	EC6	product development
+EC63	EC6	products
+EC64	EC6	up-stream products
+EC65	EC6	by-products
+EC66	EC6	primary products
+EC67	EC6	trade mark; brand; trade name (sn: economic and commercial aspects; us: for legal aspects, see: JUG)
+EC7	EC	undertakings - establishing, liquidation & take-over - types & structure
+EC71	EC7	establishment - liquidation - takeover
+EC72	EC7	companies
+EC73	EC7	entrepreneur (nt: entrepreneurs on the Internet)
+EC8	EC	business administration - production - financing - personnel management (rf: business logistics, see: COG)
+EC81	EC8	business administration
+EC82	EC8	financing
+EC83	EC8	product development
+EC84	EC8	production
+EC85	EC8	maintenance
+EC86	EC8	personnel management
+EC87	EC8	Integrated Resource Planning; IRP
+EC88	EC8	subcontracting
+EC89	EC8	company representation
+EC9	EC	client systems & consumers - distribution logistics - quality (sn: theoretical aspects; us: for practical applications, see: CO5)
+EC91	EC9	client systems & consumers (sn: theoretical aspects; for practical application, see: CO5)
+EC92	EC9	distribution of goods & services
+ECA	EC	economic policy - local development - job creation
+ECB	EC	prices & costs - accountancy & debiting - cost-benefit analysis
+ECB1	ECB	prices & costs
+ECB2	ECB	accountancy & debiting (sn: accountancy theory; us: for applied accountancy, see: COA)
+ECB3	ECB	cost-benefit analysis
+ECC	EC	Commerce & Movement of Goods (sn: microeconomics 1; us: for detailed breakdown, see: CO)
+ECD	EC	econometry
+ECE	EC	international economy
+ECE1	ECE	european economic cooperation (sn: economic aspects; rf: EU-aspects, see: CEPB)
+ECE2	ECE	international economy
+ECF	EC	Financial Affairs - Taxation - Customs (sn: micro-economics 2; us: for detailed breakdown, see FI)
+ECG	EC	management & organisation - production management - efficiency & productivity - corporate culture
+ECH	EC	economic geography
+ECJ	EC	legal aspects
+ECK	EC	economics & government
+ECK1	ECK	deregulation (nt: reduction or elimination of government involvement in establishing market entry and exit, pricing, service, etc.)
+ECK2	ECK	nationalisation & denationalisation
+ECM	EC	monetary policy
+ECQ	EC	quality management
+ECW	EC	man & society
+ECY	EC	training & education
+ECZ	EC	professions & careers
+ED	-	Education - Training
+ED1	ED	general aspects of the subject field
+ED11	ED1	educational policy
+ED12	ED1	school inspection
+ED2	ED	organisations in the subject field
+ED21	ED2	private educational institutions
+ED22	ED2	public educational institutions
+ED3	ED	publications in the subject field
+ED31	ED3	documentation systems and information systems in the subject field
+ED4	ED	methods of instruction - pedagogy
+ED41	ED4	teaching techniques
+ED42	ED4	teaching aids & learning aids
+ED43	ED4	conventional pedagogical systems
+ED44	ED4	courses and programmes of instruction
+ED45	ED4	examinations - certificates
+ED46	ED4	disciplines & subjects
+ED47	ED4	scholarly publications (sn: publications produced as spinoff from education)
+ED48	ED4	special pedagogical systems
+ED49	ED4	pedagogy of labour
+ED4A	ED4	learning - pedagogic interaction
+ED5	ED	primary education
+ED6	ED	secondary education
+ED7	ED	higher education
+ED8	ED	student life
+ED9	ED	special education schemes
+ED91	ED9	study tours
+ED92	ED9	out-of-school education
+ED93	ED9	private tuition
+EDA	ED	European educational institutions (sn: curricular aspects)
+EDB	ED	vocational training - career education
+EDB1	EDB	training centres
+EDB2	EDB	vocational training & re-training
+EDB3	EDB	career education
+EDC	ED	continuing education
+EDC1	EDC	andragology (nt: science and theory of adult education)
+EDC2	EDC	adult education
+EDC3	EDC	adult basic education
+EDC4	EDC	parent education
+EDC5	EDC	education for the elderly
+EDC6	EDC	community education
+EDC7	EDC	adult education organisations
+EDC8	EDC	programmes - counselling - strategy
+EDC9	EDC	managerial aspects of adult education
+EDD	ED	managerial aspects of education
+EDD1	EDD	school fees & scholarships
+EDD2	EDD	organisational aspects
+EDE	ED	special schools & special education schemes
+EDE1	EDE	Open University - open school
+EDE2	EDE	special schools
+EDF	ED	professions & skills
+EDF1	EDF	general aspects of profession and skills
+EDF2	EDF	vocational guidance
+EDF3	EDF	skills and craftmanship
+EDF4	EDF	application
+EDJ	ED	legal aspects
+EDV	ED	computer assisted instruction
+EDW	ED	man & society - impact of education
+EDY	ED	training & education (sn: subjects in relation to training and education only)
+EDZ	ED	professions & careers
+EL	-	Electrical Engineering
+EL1	EL	general aspects of the subject field
+EL11	EL1	organisational aspects & scientific organisation
+EL12	EL1	units & symbols
+EL13	EL1	technological aspects
+EL13C	EL13	conductors (sn: matter)
+EL13D	EL13	dielectrics & insulators (sn: matter)
+EL13M	EL13	electric materiels
+EL13O	EL13	optical materials
+EL13P	EL13	properties of matter
+EL13S	EL13	semi-conducting materials
+EL2	EL	organisations in the subject field
+EL3	EL	publications in the subject field
+EL31	EL3	documentation systems and information systems in the subject field
+EL4	EL	electricity & magnetism (us: practical applications only; for pure science see: PHB)
+EL5	EL	networks - basic circuits - basic systems
+EL51	EL5	networks
+EL52	EL5	basic circuits
+EL52A	EL52	amplifiers
+EL52G	EL52	generators
+EL52L	EL52	logical circuits
+EL52M	EL52	modulators
+EL52P	EL52	power supplies
+EL52R	EL52	rectifiers
+EL53	EL5	basic systems
+EL6	EL	components
+EL61	EL6	passive components
+EL61C	EL61	capacitors
+EL61L	EL61	coils
+EL61R	EL61	resistors
+EL61T	EL61	transformers (sn: power transformers and signal transformers)
+EL62	EL6	active componants
+EL62I	EL62	integrated circuits
+EL62O	EL62	opto-electric components
+EL62S	EL62	semiconductors
+EL63	EL6	electron tubes
+EL64	EL6	permanent magnets and magnet systems
+EL65	EL6	switches & relays
+EL66	EL6	mounting devices - wiring and connectors
+EL67	EL6	insulating materials
+EL7	EL	measuring equipment - control equipment
+EL71	EL7	analog measurement instruments
+EL72	EL7	digital measurement instruments
+EL73	EL7	analog signal generators
+EL74	EL7	digital signal generators
+EL75	EL7	control systems
+EL76	EL7	sensors & actuators
+EL8	EL	electroacoustics (sn: audio systems; (rf: music theory: AR7; perception: ME5; sound & acoustics: PH8; acoustics in building: BA6)
+EL81	EL8	sound recording
+EL82	EL8	sound reproduction
+EL9	EL	video systems & television (rf: optics: PH9; perception: ME5; electro-optics: PHB)
+EL91	EL9	video recording & televising
+EL92	EL9	video reproduction
+ELA	EL	telecommunications technology (sn: transmitters and receivers; rf: telecommunications - signalling - postal services, see: OO)
+ELA1	ELA	modulation & demodulation
+ELA2	ELA	audio transmitters & transmission systems - receivers & tuners
+ELA3	ELA	video transmitters & transmission systems - video receivers & tuners
+ELA4	ELA	telephone & telegraph technique
+ELB	EL	transmission (sn: transmission of analog and digital signals) - commutation
+ELB1	ELB	transmission - general (us: for theoretical aspects, see: electricity, PHB and magnetism, PHC)
+ELB1A	ELB1	analog commutation
+ELB1D	ELB1	digital commutaition
+ELB1P	ELB1	parameters of commutation & properties of commutation
+ELB1S	ELB1	signals (sn: commutation)
+ELB2	ELB	microwave transmission (sn: engineering aspects)
+ELB3	ELB	light wave transmission (sn: engineering aspects; nt: strictly speaking not related to electricity, but commonly used in connection with electrical transmission systems)
+ELB4	ELB	transmission media (sn: infrastructure aspects)
+ELB4A	ELB4	analog transmission medium
+ELB4C	ELB4	copper cable (sn: transmission medium)
+ELB4D	ELB4	digital transmission medium
+ELB4F	ELB4	optical fibre cable (sn: transmission medium)
+ELB4P	ELB4	parameters of transmission media & properties of transmission media
+ELB4T	ELB4	transmission media
+ELB5	ELB	aerials
+ELB6	ELB	telecommunication satellites
+ELC	EL	electrical energy - generation & distribution
+ELC1	ELC	generators
+ELC2	ELC	transport - transformation - switching stations - protective relays
+ELD	EL	electric motors
+ELD1	ELD	electric traction
+ELD2	ELD	electrical driving of machines & parts (sn: fixed machines)
+ELE	EL	electric lighting
+ELE1	ELE	lighting of premises
+ELE2	ELE	street lighting
+ELE3	ELE	light sources & light fixtures
+ELE4	ELE	advertisement illumination
+ELE5	ELE	stage lighting
+ELF	EL	electro-heating
+ELF1	ELF	induction heating
+ELF2	ELF	resistance heating
+ELF3	ELF	arc furnaces (rf: electrometallurgy, see: SID)
+ELG	EL	electrochemical power sources (rf: electrochemistry see: CHC)
+ELG1	ELG	dry cells
+ELG2	ELG	wet cells - storage batteries
+ELG3	ELG	fuel cells; FC
+ELH	EL	applications
+ELH1	ELH	general aspects
+ELH2	ELH	avionics
+ELH3	ELH	applications in vehicle transport
+ELH4	ELH	applications in rail transport
+ELH5	ELH	maritime applications
+ELH6	ELH	industriel applications
+ELH7	ELH	military applications
+ELH8	ELH	astronomical & spatial applications
+ELW	EL	man & society
+ELY	EL	training & education
+ELZ	EL	professions & careers
+EN	-	Environment - Environmental Protection
+EN1	EN	general aspects of the subject field
+EN2	EN	organisations in the subject field
+EN21	EN2	environmental protection authorities
+EN3	EN	publications in the subject field
+EN31	EN3	documentation systems and information systems in the subject field
+EN4	EN	environmental protection policy
+EN5	EN	environment affected
+EN51	EN5	polluted biosphere
+EN52	EN5	polluted soil
+EN53	EN5	polluted atmosphere
+EN54	EN5	polluted space
+EN6	EN	environmental impact & environmental reactions
+EN61	EN6	biotic environment (sn: impact and reactions on the biosphere)
+EN62	EN6	abiotic environment (sn: impact and reactions)
+EN7	EN	solid waste & liquid waste
+EN71	EN7	solid & liquid waste
+EN72	EN7	disposal of liquid waste & disposal of solid waste
+EN73	EN7	recycling of liquid waste & recycling of solid waste
+EN8	EN	water pollution - waste water
+EN81	EN8	 waste water
+EN82	EN8	waste water & polluted water - remedies & disposal
+EN9	EN	air pollution & toxic gases
+EN91	EN9	air pollution & toxic gases
+EN92	EN9	polluted air - remedies - protective measures
+ENA	EN	soil pollution & polluted land
+ENA1	ENA	soil pollution
+ENA2	ENA	polluted land - remedies - disposal
+ENB	EN	environmental management & environmental statistics - exposure measurement
+ENB1	ENB	measurement of environmental pollution & measurement of environmental nuisances
+ENB2	ENB	environmental management & environmental statistics
+ENC	EN	physical nuisances
+ENC1	ENC	types of physical nuisances
+ENC2	ENC	protective measures against physical nuisances
+ENC3	ENC	noise & vibration
+ENC4	ENC	temperature & humidity
+ENC5	ENC	ambient light
+ENC6	ENC	radiation
+ENC7	ENC	obnoxious odours
+END	EN	dangerous substances (sn: the use of dangerous substances and their impact on environment)
+END1	END	xenobiotic substances
+ENE	EN	hazardous raw materials (sn: impact on the environment)
+ENF	EN	pollution control technology
+ENG	EN	chorology (sn: the study of the reciprocal relations between man and environment)
+ENH	EN	natural heritage
+ENJ	EN	legal aspects
+ENW	EN	man & society
+ENY	EN	training & education
+ENZ	EN	professions & careers
+ER	-	Earth Resources - Energy
+ER1	ER	general aspects of the subject field
+ER11	ER1	organisational aspects & scientific organisation
+ER12	ER1	energy principles
+ER13	ER1	availability-concept
+ER2	ER	organisations in the subject field
+ER3	ER	publications in the subject field
+ER31	ER3	documentation systems and information systems in the subject field
+ER4	ER	energy sources
+ER41	ER4	conventional sources of energy (nt: primary sources of energy; us: for nuclear energy, see: AT; for extraction, tapping and mining techniques, see: MI)
+ER42	ER4	alternative sources of energy (nt: primary sources of energy)
+ER43	ER4	nuclear energy
+ER5	ER	electricity (sn: secondary energy)
+ER51	ER5	electricity - production
+ER52	ER5	electricity - transport & transformation
+ER53	ER5	electricity - distribution
+ER54	ER5	electricity - managerial aspects of distribution
+ER55	ER5	electricity companies
+ER6	ER	energy policy - energy market
+ER61	ER6	managerial aspects
+ER62	ER6	energy market & raw materials market
+ER63	ER6	energy saving
+ER64	ER6	energy crisis mechanism
+ER65	ER6	energy resources management
+ER66	ER6	energy research policy
+ER67	ER6	liberalisation of the energy market
+ER7	ER	fossil raw materials
+ER71	ER7	coal (sn: energy source; us: for winning and preparation, see: MI)
+ER72	ER7	crude oil (sn: energy source; us: for drilling, see: MIF; us: for oil products (plastics, etc.), see: IC7)
+ER73	ER7	Liquefied Petroleum Gas; LPG (sn: energy source; us: for production and liquefaction, see: IC)
+ER74	ER7	natural gas (sn: energy source; us: for tapping of natural gas, see: MIG; for products from natural gas, see: IC7)
+ER8	ER	useful soils & stone - minerals (us: for winning, see: MIK)
+ER9	ER	precious stones & semiprecious stones (us: for extraction, see: MIL)
+ERA	ER	ores (us: for extraction, see: MI)
+ERB	ER	water (us: for tapping, see: MIH)
+ERB1	ERB	drinking water (us: for collecting and tapping, see: MIH)
+ERB2	ERB	mineral water (us: for tapping, see: MIH)
+ERB3	ERB	water for industry
+ERC	ER	living space
+ERJ	ER	legal aspects
+ERY	ER	training & education
+ERZ	ER	professions & careers
+FI	-	Financial Affairs - Taxation & Customs(sn: microeconomics 2; nt: further breakdown of ECF)
+FI1	FI	general aspects of the subject field
+FI2	FI	organisations in the subject field
+FI3	FI	publications in the subject field
+FI31	FI3	documentation systems and information systems in the subject field
+FI4	FI	theories of finance and taxation
+FI5	FI	public finances
+FI51	FI5	international finance
+FI6	FI	taxation
+FI7	FI	customs
+FI8	FI	money & currency
+FI9	FI	stock exchange & capital market
+FIA	FI	financial transactions - payment systems - cash
+FIA1	FIA	financial structure; financial situation
+FIA2	FIA	accounts - credit - funds
+FIA3	FIA	payment systems & payment
+FIA4	FIA	international payments
+FIA5	FIA	invoicing
+FIB	FI	property funds - management, investment & interest
+FIC	FI	banking systems & trust companies
+FID	FI	savings institutions - savings schemes
+FID1	FID	savings institutions
+FID2	FID	saving schemes
+FIE	FI	loan institutions & loans
+FIF	FI	lotteries & betting
+FIG	FI	communications networks & services
+FIH	FI	electronic money
+FIJ	FI	legal aspects
+FIP	FI	post office banks
+FIP1	FIP	giro system
+FIP2	FIP	postal savings bank
+FIY	FI	training & education
+FIZ	FI	professions & careers
+GE	-	Generic Concepts - Civilisation - Science & Culture - Heritage
+GE1	GE	general aspects of the subject field
+GE11	GE1	organisational aspects & scientific organisation
+GE12	GE1	generic subjects
+GE2	GE	organisations in the subject field
+GE3	GE	publications in the subject field
+GE31	GE3	documentation systems and information systems in the subject field
+GE4	GE	science - knowledge & skill
+GE41	GE4	general aspects of science
+GE42	GE4	knowledge & skills
+GE43	GE4	theory of science
+GE44	GE4	methodology & research methods - analysis
+GE45	GE4	value analysis
+GE46	GE4	education & debate
+GE5	GE	museum (sn: the museum as a display of civilisation and life; us: for museology (museum science), see: DID)
+GE6	GE	exhibitions & fairs (sn: exhibitions and fairs as displays of human knowledge and skills; us: for commercial aspects, see: CO; for artistic aspects, see: AR)
+GE7	GE	communication & exchange of knowledge
+GE8	GE	culture & civilisation
+GE9	GE	general knowledge - creativity & vision
+GEA	GE	scientific policy
+GEB	GE	futurology
+GEC	GE	trends
+GED	GE	science - research & development
+GED1	GED	science parks
+GEJ	GE	legal aspects
+GEW	GE	man & society
+GEY	GE	training & education
+GEZ	GE	professions & careers
+GO	-	Earth Sciences - Geography - Universe(sn: astronomy - geology - physical geography - social geography)
+GO1	GO	general aspects of the subject field
+GO11	GO1	geological nomenclature
+GO2	GO	organisations in the subject field
+GO21	GO2	observatories
+GO3	GO	publications in the subject field
+GO31	GO3	documentation systems and information systems in the subject field
+GO4	GO	astronomy
+GO41	GO4	theoretical astronomy
+GO42	GO4	practical astronomy
+GO43	GO4	descriptive astronomy
+GO5	GO	subject fields related to astronomy
+GO51	GO5	astrophysics
+GO52	GO5	astrochemistry & cosmochemistry
+GO53	GO5	astrobiology
+GO6	GO	geomorphology (nt: structure of the earth)
+GO61	GO6	weathering
+GO62	GO6	wind action
+GO63	GO6	groundwater hydrology
+GO64	GO6	hydrogeology (nt: do not confuse with hydrography; us: for hydrography, see: GOP)
+GO65	GO6	glaciology
+GO66	GO6	oceanography
+GO67	GO6	coasts & islands
+GO68	GO6	reefs
+GO69	GO6	speleology
+GO7	GO	genetic physiography
+GO71	GO7	erosion & denudation
+GO72	GO7	landscape formation & coastal formation
+GO8	GO	sedimentology
+GO81	GO8	clastic sediments
+GO82	GO8	carboniferous sediments
+GO83	GO8	siliceous sediments
+GO84	GO8	evaporites; hydatogenic rock
+GO85	GO8	organic sediments
+GO86	GO8	petroleum geology
+GO87	GO8	pedology; soil science
+GO88	GO8	cryopedology (nt: science dealing with frozen ground)
+GO9	GO	stratigraphy
+GO91	GO9	lithostratigraphic rock units
+GO92	GO9	facies & geological chronology
+GO93	GO9	paleontology
+GO94	GO9	paleobiology
+GO95	GO9	phylogeny
+GO96	GO9	palynology
+GOA	GO	tectonic geology
+GOB	GO	geophysics
+GOC	GO	vulcanology
+GOD	GO	mineral deposits
+GOE	GO	petrology & petrography
+GOE1	GOE	general
+GOE2	GOE	igneous rocks & metamorphic rocks
+GOE3	GOE	structural petrology(nt: textural & structural features of rocks dealing with spatial physical data rather than the interpretation of chemical and mineralogical facts)
+GOF	GO	geological & mineral nomenclature - docimacy
+GOF1	GOF	sampling & essaying
+GOF2	GOF	geochemistry
+GOG	GO	epirogeny & orogeny
+GOH	GO	chronometry - time & calendars - geological time scale
+GOH1	GOH	chronometry
+GOH2	GOH	time and calendars
+GOH3	GOH	geological time scale
+GOJ	GO	legal aspects
+GOK	GO	human geography; anthropogeography (nt: distribution and spatial organisation of human characteristics, such as urban centres and agriculture)
+GOL	GO	administrative geography
+GOM	GO	atmosphere - climatology - meteorology - magnetosphere
+GOM1	GOM	atmosphere
+GOM2	GOM	climatology
+GOM3	GOM	meteorology
+GOM4	GOM	magnetosphere
+GON	GO	voyages & expeditions
+GOO	GO	geodesy
+GOP	GO	hydrography & oceanography
+GOQ	GO	underwater activities
+GOY	GO	training & education
+GOZ	GO	professions & careers
+HI	-	History - Ethnology - Folklore
+HI1	HI	general aspects of the subject field
+HI2	HI	organisations in the subject field
+HI3	HI	publications in the subject field
+HI31	HI3	documentation & information systems in the subject field
+HI4	HI	science of history
+HI41	HI4	historical research & communication
+HI5	HI	auxiliary sciences
+HI51	HI5	paleontology
+HI52	HI5	archaeology
+HI6	HI	prehistory - antiquity
+HI61	HI6	prehistory
+HI62	HI6	antiquity
+HI7	HI	iron age - middle ages
+HI71	HI7	iron age
+HI72	HI7	middle ages
+HI8	HI	modern history
+HI9	HI	history of civilisation - history of manners & customs
+HI91	HI9	history of civilisation
+HI92	HI9	history of manners & customs
+HIA	HI	local history
+HIB	HI	ethnology - ethnography (nt: history and culture of peoples without written records)
+HIC	HI	folklore
+HID	HI	biography - genealogy
+HIE	HI	political history - military history
+HIE1	HIE	political history
+HIE2	HIE	military history
+HIE3	HIE	heraldry - political honours & military honours
+HIF	HI	industrial archaeology
+HIG	HI	numismatics - philately
+HIG1	HIG	numismatics
+HIG2	HIG	philately
+HIJ	HI	legal aspects
+HIY	HI	training & education
+HIZ	HI	profesions & careers
+IC	-	Chemical Industry - Chemical Engineering - Chemical Products
+IC1	IC	general aspects of the subject field
+IC2	IC	organisations in the subject field
+IC3	IC	publications in the subject field
+IC31	IC3	documentation systems and information systems in the subject field
+IC4	IC	chemical engineering
+IC5	IC	chemical products - general aspects
+IC6	IC	explosives & ignition material
+IC7	IC	petro-chemistry - natural gas (sn: crude oil derivatives; rf: energy market & raw materials market, see: ER6)
+IC71	IC7	crude oil - processing
+IC72	IC7	natural gas
+IC73	IC7	oil products from crude oil (us: for plastics, etc., see: ICA)
+IC8	IC	glass - enamel
+IC81	IC8	glass (sn: glass as raw material; us: for finished products, see: INK1)
+IC82	IC8	enamel (us: for metal finishing, see: SID; for artistic use, see: AR)
+IC9	IC	pigments & dyestuffs - paints & varnish
+IC91	IC9	pigments & dyestuffs (nt: colouring matter for dyestuffs; sn: use in non-edible products; us: for E-additives, see: ICE)
+IC92	IC9	paints & varnish
+ICA	IC	plastics - resins - fibres - composite materials - synthetic rubbers - tar coal derivatives
+ICA11	-	thermoplastic materials
+ICA12	-	thermosetting materials
+ICA13	-	tar coal derivatives
+ICA14	-	synthetic precious stones
+ICA2	ICA	synthetic rubbers (nt: elastomers)
+ICA3	ICA	synthetic fibres - synthetic fabrics
+ICA4	ICA	composite materials
+ICA5	ICA	synthetic oils & synthetic lubricants
+ICA6	ICA	synthetic coolants
+ICB	IC	detergents - soaps - cosmetics
+ICB1	ICB	detergents - soaps
+ICB2	ICB	cosmetics
+ICC	IC	cement - ceramics - refractory materials
+ICC1	ICC	cement - concrete - refractory materials - rockwool (rf: building, see: BA; us: for products, see: INC)
+ICC2	ICC	ceramics & china (sn: raw materials for ceramic products; us: for finished products, see: INK2)
+ICD	IC	pharmaceutical products (rf: pharmacology, see: MED)
+ICE	IC	food chemicals
+ICF	IC	chemicals for processing (sn: semi-finished products)
+ICG	IC	agrochemicals
+ICH	IC	adhesives & anti-adhesives - anti-set-off
+ICH1	ICH	adhesives
+ICH2	ICH	anti-set-off & anti-adhesives
+ICJ	IC	legal aspects
+ICK	IC	chemicals for manufacturing, processing & conditioning (nt: e.g. for:)
+ICL	IC	sales & distribution of chemical products (rf: energy market & raw materials market, see: ER6)
+ICM	IC	products from the mining industry (sn: processing & application; rf: the mining industry & preparation of products, see: MI)
+ICM1	ICM	ores
+ICM2	ICM	coal
+ICM3	ICM	coal - chemical treatment & processing
+ICM4	ICM	coal derivatives (sn: other than plastics & resins; us: for plastics & resins, see: ICA1)
+ICM5	ICM	crude oil (us: for crude oil products, see: IC7)
+ICM6	ICM	organic minerals
+ICM7	ICM	stone - rockwool
+ICM8	ICM	precious stones and semi-precious stones
+ICM9	ICM	minerals and useful soils
+ICMA	ICM	marine deposits
+ICN	IC	products of radio-chemistry
+ICS	IC	metals & non-ferrous metals - metal products (us: for further breakdown of the subject field, see: SI (metallurgy))
+ICW	IC	man & society
+ICY	IC	training & education
+ICZ	IC	professions & careers
+IN	-	Industries & Crafts - Finished Products(sn: manufacture / manufacturing processes & types of products only; us: for use, refer to respective subject fields)
+IN1	IN	general aspects of the subject field
+IN2	IN	organisations in the subject field
+IN3	IN	publications in the subject field
+IN31	IN3	documentation systems and information systems in the subject field
+IN4	IN	precious metals and gemstones
+IN5	IN	ironworking industry
+IN6	IN	the working of non-ferrous metals
+IN7	IN	timber- & woodworking industry (sn: wood, cork, bast, bark)
+IN71	IN7	plaiting; wicker-work
+IN8	IN	leather industry
+IN9	IN	papermaking industry
+INA	IN	textile industry
+INA1	INA	textile industry - manufacturing processes - fabrics
+INA2	INA	fabric & fibres
+INA3	INA	clothing - wigs - fashion
+INB	IN	plastic products & rubber products
+INC	IN	stone & rockwool - earthenware - concrete products & lime
+INC1	INC	stone
+INC2	INC	earthenware
+INC3	INC	concrete finished products - lime & lime products
+INC4	INC	rockwool
+IND	IN	items for domestic use; fancy goods (rf: domestic economy, see: DO)
+IND1	IND	household utensils
+IND2	IND	products from natural materials (sn: ambergris, amber, meerschaum, mussels, mother-of-pearl, corals, corozo, ivory, horn, etc.)
+INE	IN	precision mechanics & electronic apparatus
+INE1	INE	measuring instruments - gauges - actuators
+INE2	INE	clocks & watches
+INE3	INE	automatic machines (sn: mechanical systems)
+INE4	INE	printing machines - duplicating machines
+INE5	INE	optical instruments
+INE6	INE	video equipment & television equipment
+INE7	INE	audio equipment
+INE8	INE	telephone & telegraph equipment
+INE9	INE	personal computers
+INEA	INE	musical instruments
+INEB	INE	lighting appliances
+INF	IN	sanitary equipment & kitchens
+INF1	INF	household appliances & kitchens (sn: domestic use)
+INF2	INF	stove fitting
+INF3	INF	sanitary equipment & plumbing
+INF4	INF	equipment for restaurants & canteens
+ING	IN	furniture & cabinet making - upholstery
+INH	IN	saddlery - strap-making - footwear - gloves
+INI	IN	travel outfits - sports equipment - toys
+INI1	INI	travel outfit
+INI2	INI	sports equipment & games equipment
+INI3	INI	toys
+INJ	IN	legal aspects
+INK	IN	glazing - china & pottery
+INK1	INK	glazing & mirror making - hollow glass (rf: glass as raw material, see: IC81)
+INK2	INK	china - pottery & tiles
+INL	IN	furniture industry (nt: furniture in metal, plastic & wood)
+INM	IN	miscellaneous articles
+INM1	INM	decorative items - theatre items
+INM2	INM	promotional gifts & presents - souvenirs
+INM3	INM	distinguishing items
+INN	IN	office equipment - writing materials
+INO	IN	packaging products & packaging materials (rf: packaging technology, see: TE7)
+INP	IN	production machines (sn: machines used for manufacturing all products mentioned under IC)
+INQ	IN	mechanical products & plants
+INQ1	INQ	basic equipment & spare parts
+INQ2	INQ	stand-alone equipment
+INQ3	INQ	defence industry
+INR	IN	scientific apparatus
+INS	IN	power plants (sn: design & building; us: for use, see: ER)
+INT	IN	motor vehicles - carriages - aircraft - ships - transport systems (us: for subject field 'transport facilities', see: TR)
+INT1	INT	motor vehicle industry
+INT2	INT	rolling stock industry
+INT3	INT	aircraft industry (nt: civil & military aircraft)
+INT4	INT	shipyards
+INT5	INT	internal transport systems (sn: cranes, lifts, escalators, conveyor belts, etc.)
+INT6	INT	cycles & motor cycles
+INT7	INT	spacecraft & rockets
+INT8	INT	special transport
+INT9	INT	mobile dwellings
+INU	IN	machines for the mining industry (sn: design & construction; for use, see: MI)
+INV	IN	automation of production & manufacturing
+INW	IN	man & society - craftmanship
+INX	IN	machines for steel works (sn: design & building; us: for use, see: SI)
+INY	IN	training & education
+INZ	IN	professions & careers
+JU	-	Law - Legislation - Jurisprudence
+JU1	JU	general aspects of the subject field
+JU11	JU1	general aspects & scientific organisation
+JU12	JU1	legal systems
+JU13	JU1	philosophy of law - theory of jurisprudence
+JU14	JU1	concepts of law
+JU141	JU14	Equity and Trusts
+JU15	JU1	legal classifications
+JU16	JU1	history of law
+JU17	JU1	sources of law
+JU18	JU1	law schools
+JU19	JU1	terms and phraseological elements particular to legal language
+JU2	JU	organisations in the subject field
+JU21	JU2	law society
+JU3	JU	publications in the subject field
+JU31	JU3	documentation systems and information systems in the subject field
+JU4	JU	constitutional law
+JU41	JU4	national constitutional law
+JU42	JU4	community constitutional law (sn: generic aspects; nt: see further: JUJ)
+JU43	JU4	fundamental rights
+JU44	JU4	law of administrative areas
+JU5	JU	administrative law
+JU51	JU5	organisation of national administrations & organisation of European Community administrations
+JU52	JU5	national public service - European Community public service
+JU53	JU5	non-contentious administrative procedures
+JU54	JU5	contentious jurisdiction & administrative procedures
+JU55	JU5	public domain
+JU551	JU55	administrative environmental law (sn: tasks and duties of the administration)
+JU552	JU55	transport law (sn: public transport)
+JU56	JU5	public finance (rf: fiscal law, see: JU8)
+JU6	JU	criminal law
+JU61	JU6	general theory of criminal law
+JU62	JU6	general criminal law
+JU63	JU6	special criminal law
+JU64	JU6	criminal procedures
+JU65	JU6	Law of Criminal Procedure (nt: Common Law)
+JU66	JU6	penalties
+JU67	JU6	criminology
+JU7	JU	international public law - law of nations
+JU71	JU7	sources of international public law
+JU72	JU7	international relations & international organisations (sn: legal aspects; us: for international Organsations, see: OR)
+JU73	JU7	conflicts between States
+JU74	JU7	territorial sovereignty
+JU75	JU7	position of the individual
+JU8	JU	tax law; fiscal law
+JU81	JU8	general theory of taxation
+JU82	JU8	tax administration
+JU83	JU8	taxes & charges
+JU84	JU8	customs law
+JU9	JU	civil law
+JU91	JU9	Law of Civil Procedure (nt: Common Law)
+JU92	JU9	rights of the individual
+JU93	JU9	property law
+JU931	JU93	Law of Personal Property (nt: Common Law)
+JU932	JU93	Law of Real Property (nt: Common Law)
+JU94	JU9	family law
+JU941	JU94	Matrimonial Law (nt: Common Law)
+JU942	JU94	Law of Succession (nt: Common Law)
+JU95	JU9	civil liability
+JU951	JU95	Law of Contract (nt: Common Law)
+JU952	JU95	Law of Torts (nt: Common Law)
+JUA	JU	administration of justice
+JUA1	JUA	general aspects of administration of justice
+JUA2	JUA	judicial organisations - types of jurisdiction - instances
+JUA3	JUA	legal professions & judicial professions
+JUA4	JUA	legal assitance & legal aid
+JUA5	JUA	procedural law
+JUA6	JUA	arbitration
+JUB	JU	public finances
+JUB1	JUB	budgetery law
+JUB2	JUB	monetary law
+JUB3	JUB	banking law (nt: emission banks)
+JUC	JU	commercial law
+JUC1	JUC	general aspects of commercial law
+JUC2	JUC	company law
+JUC3	JUC	financial law
+JUC4	JUC	competition law
+JUC5	JUC	accountancy law
+JUC6	JUC	insurance law
+JUC7	JUC	bankruptcy law & insolvancy law
+JUC8	JUC	consumer protection law
+JUD	JU	transport law (sn: private transport)
+JUD1	JUD	maritime law
+JUD2	JUD	aviation law
+JUD3	JUD	space law
+JUD4	JUD	highway law
+JUD5	JUD	railway law
+JUD6	JUD	postal law
+JUE	JU	social legislation
+JUE1	JUE	social security law (nt: social security law in restricted sense)
+JUE2	JUE	social security schemes
+JUE3	JUE	public health
+JUE4	JUE	welfare state (nt: concept of the Welfare State; rf: constitutionnel law, see: JU4)
+JUE5	JUE	social jurisdiction
+JUE6	JUE	employment law; labour law
+JUE7	JUE	professional law
+JUF	JU	private international law
+JUF1	JUF	choice of applicable law
+JUF2	JUF	dispute regulations
+JUF3	JUF	Convention de Bruxelles (sn: application of the1968 Convention)
+JUF4	JUF	harmonisation of legislations & unification of legislations
+JUF5	JUF	specific points of laws governed by agreements
+JUG	JU	intellectual property - copyright law - patent law
+JUG1	JUG	author's rights
+JUG2	JUG	patent law
+JUG3	JUG	trademarks
+JUG4	JUG	registered designs - registered trade names
+JUG5	JUG	data protection
+JUH	JU	canon law
+JUH1	JUH	secular canon law
+JUH2	JUH	internal canon law
+JUH3	JUH	external canon law
+JUH4	JUH	catholic canon law
+JUH5	JUH	canon law in non-catholic denominations
+JUJ	JU	Community Law (sn: specific aspects of Community Law; rf: Community Constitutional Law, see: JU42; us: for practical applications, see: CE)
+JUJ1	JUJ	Agricultural Law
+JUJ2	JUJ	1968 Convention; Convention de Bruxelles (sn: legal principles)
+JUJ3	JUJ	ECSC Law
+JUJ4	JUJ	EAEC Law
+JUJ5	JUJ	Competition Law
+JUJ6	JUJ	Constitional Law
+JUJ7	JUJ	Customs Law
+JUJ8	JUJ	Environmental Law
+JUJ9	JUJ	Tax Law
+JUJA	JUJ	European Civil Service Law
+JUJB	JUJ	Fundamental Rights
+JUJC	JUJ	General Aspects of Law
+JUJD	JUJ	General Legal Language
+JUJE	JUJ	Free Movement
+JUJF	JUJ	Consumer Protection Law
+JUJG	JUJ	Copyright Law
+JUJH	JUJ	Community Legal Procedures
+JUJI	JUJ	Social Security Law
+JUJK	JUJ	Transport Law
+JUJL	JUJ	Labour Law; Employment Law
+JUK	JU	environment law
+JUL	JU	economic law (sn: legal aspects of economic phenomena; rf: economics and government, voir ECK)
+JUM	JU	communications law (sn: theoretical aspects of communications law; rf: legal aspects of press and publishing, see: PGJ)
+JUN	JU	energy law
+JUV	JU	legal information systems
+JUY	JU	training & education
+JUZ	JU	professions & careers
+LA	-	Linguistics - Language & Literature
+LA1	LA	general aspects of the subject field
+LA11	LA1	organisational aspects & scientific organisation
+LA12	LA1	language & idioms
+LA2	LA	organisations in the subject field
+LA3	LA	publications in the subject field
+LA31	LA3	documentation systems and information systems in the subject field
+LA4	LA	language groups & sub-groups
+LA5	LA	languages - dialects
+LA6	LA	grammar
+LA61	LA6	grammar - morphology
+LA62	LA6	grammar - syntax
+LA63	LA6	grammar - semantics
+LA64	LA6	grammar - transformational grammar
+LA7	LA	orthography
+LA8	LA	phonetics
+LA9	LA	versification
+LAA	LA	etymology
+LAB	LA	terminology
+LAC	LA	lexicology
+LAD	LA	translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as "translator's findings", "useful tricks", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)
+LAE	LA	literature - history of literature
+LAF	LA	philology
+LAG	LA	linguistic philosophy
+LAH	LA	computational linguistics
+LAI	LA	mathematical linguistics
+LAJ	LA	legal aspects
+LAK	LA	terminology databases
+LAV	LA	computer applications
+LAW	LA	man & society - communication
+LAW1	LAW	semiology (rf: ARL: Art & Communication)
+LAW2	LAW	linguistic psychology
+LAW3	LAW	sociolinguistics
+LAY	LA	education & training
+LAZ	LA	professions & careers
+MA	-	Mathematics
+MA1	MA	general aspects of the subject field
+MA11	MA1	organisational aspects & scientific organisation
+MA12	MA1	mathematical theories
+MA2	MA	organisations in the subject field
+MA3	MA	publications in the subject field
+MA31	MA3	documentation systems and information systems in the subject field
+MA4	MA	arithmetic - theory of numbers
+MA5	MA	algebra
+MA6	MA	geometry
+MA7	MA	descriptive geometry
+MA8	MA	analytical geometry
+MA9	MA	applied algebra
+MAA	MA	combinatorial analysis & calculation of probabilities
+MAB	MA	applied mathematics
+MAB1	MAB	mathematical statistics
+MAB2	MAB	commercial arithmetic
+MAC	MA	special methods of calculation
+MAD	MA	mathematical logic
+MAE	MA	logarithm tables & nomography
+MAF	MA	relations & structures
+MAG	MA	theory of graphs
+MAH	MA	topology
+MAK	MA	mathematical games
+MAY	MA	education & training
+MAZ	MA	professions & careers
+ME	-	Medicine - Pathology - Surgery
+ME1	ME	general aspects of the subject field
+ME11	ME1	organisational aspects & scientific organisation
+ME12	ME1	medical research
+ME13	ME1	preventive medicine
+ME14	ME1	curative medicine
+ME2	ME	organisations in the subject field
+ME21	ME2	medical association
+ME22	ME2	medical institutions
+ME3	ME	publications in the subject field
+ME31	ME3	documentation systems and information systems in the subject field
+ME311	ME31	international classification of diseases; ICD
+ME4	ME	anatomy
+ME41	ME4	terminology of anatomy
+ME42	ME4	somatology
+ME43	ME4	comparative anatomy
+ME44	ME4	embryology
+ME45	ME4	histology
+ME46	ME4	teratology
+ME47	ME4	systematic anatomy
+ME48	ME4	membranes
+ME49	ME4	skeleton
+ME4A	ME4	articulations
+ME4B	ME4	muscles
+ME4C	ME4	vascular system
+ME4D	ME4	nervous system
+ME4E	ME4	sense organs
+ME4F	ME4	skin
+ME4G	ME4	viscera
+ME5	ME	physiology
+ME51	ME5	physiology
+ME52	ME5	cellular physiology
+ME53	ME5	lung physiology
+ME54	ME5	cardiology
+ME55	ME5	immunology
+ME56	ME5	reproduction
+ME57	ME5	supportive and locomotor system
+ME58	ME5	nervous system - skin - sense organs - speech organ
+ME6	ME	pathology
+ME61	ME6	types of illness
+ME62	ME6	epidemiology
+ME63	ME6	aetiology
+ME64	ME6	pathological anatomy
+ME65	ME6	diagnosis (rf: diagnostic techniques; medical examination, see: MEP)
+ME66	ME6	histopathology; pathologic histology
+ME67	ME6	infectious particles
+ME68	ME6	infectious diseases - bacteriology - virology
+ME68B	ME68	bacteriology
+ME68V	ME68	virology
+ME69	ME6	sclerosis
+ME6A	ME6	allergology
+ME6B	ME6	diseases of the supportive and locomotor system
+ME6C	ME6	osteopathology
+ME6D	ME6	dermatology
+ME6E	ME6	haemopathology
+ME6F	ME6	urology
+ME6G	ME6	geriatrics
+ME6H	ME6	childhood diseases
+ME6I	ME6	internal diseases
+ME6IB	ME6I	diseases of the blood circulation
+ME6ID	ME6I	intestinal diseases
+ME6IG	ME6I	glandular diseases
+ME6IH	ME6I	heart diseases
+ME6IL	ME6I	lung diseases
+ME6K	ME6	abnormalities of the central sensory-neural apparatus - dysfunctioning of the central sensory-neural apparatus
+ME6L	ME6	cytopathology
+ME6M	ME6	meteoropathology
+ME6N	ME6	neuropathology
+ME7	ME	hygiene & health care
+ME71	ME7	health & hygiene
+ME72	ME7	food hygiene
+ME73	ME7	health of the nervous system
+ME74	ME7	sexology
+ME75	ME7	racial hygiene
+ME76	ME7	epidemics control
+ME8	ME	public health
+ME81	ME8	population
+ME82	ME8	public health services
+ME83	ME8	social medicine
+ME84	ME8	school medicine
+ME85	ME8	disaster medicine
+ME9	ME	occupational diseases
+ME91	ME9	occupational medicine
+ME92	ME9	occupational psychology
+ME93	ME9	sport medicine
+ME94	ME9	agricultural medicine
+MEA	ME	traffic medicine
+MEA1	MEA	traffic medicine
+MEA2	MEA	diving medicine
+MEB	ME	military medicine
+MEC	ME	surgery - therapy
+MEC1	MEC	surgery - anaesthesia
+MEC2	MEC	therapy - cures
+MEC3	MEC	allopathy
+MEC4	MEC	balneology
+MEC5	MEC	homeopathie
+MEC6	MEC	speech therapy
+MEC7	MEC	rehabilitation
+MED	ME	pharmacology - toxicology
+MED1	MED	general
+MED2	MED	mode of appearance & administration
+MED3	MED	organic remedies
+MED4	MED	medicinal herbs & stimulants
+MED5	MED	antiallergics
+MED6	MED	antibiotics
+MED7	MED	moulds
+MED8	MED	vermifuge
+MED9	MED	psychotropics
+MEDA	MED	anti-AIDS drugs
+MEDB	MED	cardiovascular drugs
+MEDC	MED	anti-cancer drugs
+MEDD	MED	gastrointestinal drugs
+MEDE	MED	central nervous system drugs
+MEDF	MED	musculo-skeletal system drugs
+MEDG	MED	contraceptives
+MEDH	MED	veterinary drugs
+MEDI	MED	toxicology
+MEE	ME	gynaecology - paediatrics
+MEE1	MEE	paediatrics
+MEE2	MEE	obstetrics - mother & child
+MEE3	MEE	sexology
+MEF	ME	dental medicine
+MEF1	MEF	orthodontics
+MEG	ME	veterinary medicine
+MEG1	MEG	animal health certificate
+MEH	ME	psychology - psychiatry
+MEH1	MEH	psychology
+MEH2	MEH	applied psychology
+MEH3	MEH	differential psychology & development psychology
+MEH4	MEH	psychoanalysis
+MEH5	MEH	psychiatry
+MEH6	MEH	psychotechnology
+MEH7	MEH	psycho-physiology
+MEH8	MEH	ethology (nt: behaviour research)
+MEH9	MEH	parapsychology
+MEI	ME	nursing - treatment
+MEJ	ME	legal aspects
+MEJ1	MEJ	forensic medicine
+MEJ2	MEJ	medical science & war crimes
+MEK	ME	medical equipment - infrastructure
+MEK1	MEK	medical instruments & medical equipment
+MEK2	MEK	medical appliances
+MEK3	MEK	medical equipment
+MEK4	MEK	animals for experiments and treatment
+MEK5	MEK	premises (sn: infrastructure)
+MEK6	MEK	hospital information systems; HIS
+MEL	ME	anthropology
+MEM	ME	environmental medicine
+MEN	ME	nuclear medicine
+MEO	ME	ophtalmology
+MEO1	MEO	optometry
+MEP	ME	diagnostic techniques - medical examination
+MEQ	ME	tropical medicine
+MER	ME	blood transfusion
+MES	ME	oncology
+MEV	ME	telemedicine
+MEY	ME	training & education
+MEZ	ME	professions & careers
+MG	-	Mechanical Engineering(sn: construction & machine parts)
+MG1	MG	general aspects of the subject field
+MG2	MG	organisations in the subject field
+MG3	MG	publications in the subject field
+MG31	MG3	documentation systems and information systems in the subject field
+MG4	MG	characteristics of machines
+MG5	MG	fixed parts & moving parts
+MG6	MG	control gears - control valves
+MG7	MG	operation, maintenance & servicing of machines and equipment
+MG8	MG	steam engines - boilers
+MG9	MG	hydraulics
+MG91	MG9	hydraulic machines (sn: water power)
+MG92	MG9	hydraulic drive - hydraulic command (sn: oil systems)
+MG93	MG9	pumps - valves - piping
+MGA	MG	internal combustion engines
+MGB	MG	pneumatics - vacuum technology
+MGB1	MGB	pneumatics
+MGB2	MGB	vacuum technology
+MGC	MG	refrigerating machinery (rf: cryotechnology, see: TEF)
+MGD	MG	machine tools (rf: working, see: TEK; processing, see: TEA)
+MGE	MG	electromechanical parts & electromechanical devices
+MGF	MG	industrial installations
+MGF1	MGF	production lines
+MGF2	MGF	process plants
+MGG	MG	heat technology
+MGH	MG	storage equipment
+MGJ	MG	legal aspects
+MGK	MG	handling equipment
+MGK1	MGK	non-powered handling equipment
+MGK2	MGK	powered transport systems
+MGL	MG	packing & filling machines
+MGM	MG	machines for the mining industry (rf: Mining & Offshore Industry, see: MI)
+MGS	MG	machines for the iron and steel industry (rf: Metallurgy - Iron & Steel - Non-ferrous Metals, see: SI)
+MGY	MG	education & training
+MGZ	MG	professions & careers
+MI	-	Mining & Offshore Industry(sn: extraction and winning only; us: for further processing and products, see: ICM and ICS)
+MI1	MI	general aspects of the subject field
+MI2	MI	organisations in the subject field
+MI3	MI	publications in the subject field
+MI31	MI3	documentation systems and information systems in the subject field
+MI4	MI	mine surveying - geophysical prospecting - sampling
+MI41	MI4	mine surveying
+MI42	MI4	geophysical prospecting
+MI43	MI4	sampling
+MI5	MI	opening up & preparatory work - winning - blasting & breaking out - deep drilling - support & lining & stowing
+MI51	MI5	opening up & preparatory work
+MI52	MI5	breaking out & drilling - blasting
+MI53	MI5	working & winning
+MI54	MI5	lining & supporting & stowing
+MI55	MI5	underground gasification of coal
+MI6	MI	transport & haulage - communications
+MI61	MI6	transport & haulage
+MI62	MI6	communications in mining
+MI7	MI	pit ventilation & heating - mine lighting
+MI71	MI7	pit ventilation & heating
+MI72	MI7	mine lighting
+MI8	MI	mine drainage
+MI9	MI	preparation of raw materials from mines (sn: processes and plants; rf: processing & application, see: IC)
+MI91	MI9	ore dressing; ore preparation
+MI92	MI9	coal dressing; coal preparation
+MIA	MI	health & safety in mining
+MIA1	MIA	personal safety in mining
+MIA2	MIA	safety measures in mines
+MIA3	MIA	mine accidents - oilwell accidents
+MIA4	MIA	mineworker's health hazards
+MIB	MI	mining tools & mining machinery (sn: use of equipment used for operations under MI5)
+MIC	MI	coalmining
+MID	MI	ore mining
+MIE	MI	mining of organic minerals
+MIF	MI	deep drilling
+MIG	MI	tapping of natural gas; extraction of natural gas - oil winning
+MIG1	MIG	extraction of natural gas
+MIH	MI	tapping of water
+MII	MI	stone quarries
+MIJ	MI	legal aspects
+MIK	MI	mining of minerals and useful soils (rf: minerals & useful soils, see: ER8)
+MIL	MI	mining of precious & semi-precious stones
+MIM	MI	management & administration - sales & distribution of mining products
+MIM1	MIM	management & administration
+MIM2	MIM	sales & distribution of mined products
+MIN	MI	ocean mining (nt: exploitation of minerals and marine deposits)
+MIO	MI	rock mechanics
+MIP	MI	mining products
+MIP1	MIP	ore
+MIP2	MIP	coal
+MIY	MI	training & education
+MIZ	MI	professions & careers
+MIZ1	MIZ	miner's trade
+NO	-	Standardisation - Metrology
+NO1	NO	general aspects of the subject field
+NO2	NO	organisations in the subject field
+NO3	NO	publications in the subject field
+NO31	NO3	documentation systems and information systems in the subject field
+NO4	NO	standardisation
+NO41	NO4	principles & guidelines of standardisation
+NO42	NO4	coverage & authority
+NO43	NO4	types of standards
+NO44	NO4	standard status
+NO5	NO	metrology
+NO6	NO	units of measurement
+NO7	NO	measuring instruments (sn: mechanical, electrical, electronic, chemical measuring instruments)
+NO8	NO	measuring procedures
+NO9	NO	test technology
+NOA	NO	control technique - automatic control - dosage (sn: functional aspects; us: for mecanical aspects, see: MG)
+NOQ	NO	quality control
+NOY	NO	training & education
+NOZ	NO	professions & careers
+OO	-	Telecommunications - Signalling - Postal Services
+OO1	OO	general
+OO2	OO	organisations in the subject field
+OO3	OO	publications in the subject field
+OO31	OO3	documentation systems and information systems in the subject field
+OO4	OO	postal services
+OO41	OO4	conveyance of letters and parcels
+OO42	OO4	special services for letter post & parcel post
+OO43	OO4	electronic mail; e-mail
+OO44	OO4	newspaper delivery
+OO45	OO4	philately
+OO46	OO4	Post Office Savings Bank (us: for financial aspects, see: FIP)
+OO47	OO4	postal engineering
+OO48	OO4	means of conveying mail
+OO49	OO4	types of mail
+OO4A	OO4	information processing in the postal service
+OO4B	OO4	postal administration
+OO5	OO	parcel service (sn: not related to post office)
+OO6	OO	telephone network (rf: telephone technique, see: ELA4)
+OO61	OO6	structural aspects
+OO62	OO6	telephone traffic
+OO63	OO6	telephone
+OO64	OO6	audiotex
+OO65	OO6	Enhanced Voice Mail; EVM
+OO7	OO	radio communications
+OO71	OO7	general
+OO72	OO7	frequency allocation
+OO73	OO7	satellite communications
+OO74	OO7	Hertzian beam link
+OO75	OO7	mobile radio
+OO76	OO7	Mobile Communications Systems (nt; mobile informatics)
+OO77	OO7	radio navigation systems (sn: sea & air navigation; radar not included)
+OO78	OO7	amateur radio
+OO79	OO7	standards & regulations - recommendations
+OO8	OO	remote control & telemetry
+OO9	OO	remote sensing (nt: the collection of information about an object without being in physical contact with the object)
+OOA	OO	Radar systems - Lidar systems (sn: use of Radar and Lidar as transmission and detection systems; us: for Radar technique, see: ELB2; for Lidar technique, see: ELB3)
+OOB	OO	signalling & warning systems
+OOC	OO	data transmission & text transmission & image transmission
+OOC1	OOC	telegraphy service & telegram service
+OOC2	OOC	public data networks & public data services
+OOC3	OOC	telex - teletext
+OOC4	OOC	messaging systems
+OOC5	OOC	facsimile service; fax service
+OOC6	OOC	videotex service
+OOC7	OOC	teleconference system
+OOD	OO	telecommunications networks - telecommunications services
+OOD1	OOD	general
+OOD2	OOD	digital networks
+OOD3	OOD	Universal Broadband Network; UBN
+OOD4	OOD	Broadcast Networks
+OOD5	OOD	direct response television
+OOD6	OOD	electronic highway
+OOD7	OOD	Q BIC; Query By Image Content
+OOD8	OOD	data networks (sn: telecommunications engineering aspects; us: for information aspects, see: DIE2)
+OOD9	OOD	private networks
+OOF	OO	telecommunications policy
+OOG	OO	management & organisation in telecommunications services
+OOG1	OOG	management & price policy
+OOG2	OOG	licences & standards
+OOG3	OOG	customer service
+OOH	OO	computer networks
+OOH1	OOH	computer network design & computer network control
+OOH2	OOH	network management
+OOH3	OOH	network topology
+OOH4	OOH	network architecture & network protocol
+OOH5	OOH	network infrastructure
+OOJ	OO	legal aspects
+OOK	OO	broadcasting systems
+OOK1	OOK	radio broadcasting systems
+OOK2	OOK	television broadcasting
+OOV	OO	global information infrastructure
+OOY	OO	training & education
+OOZ	OO	professions & careers
+OR	-	International Organisations
+OR1	OR	general aspects of the subject field
+OR11	OR1	organisational aspects & scientific organisation
+OR12	OR1	organisations in the subject field (nt: organisations dealing with international organisations)
+OR13	OR1	publications in the subject field
+OR131	OR13	documentation systems and information systems in the subject field
+OR14	OR1	documentation & information systems
+OR2	OR	European Organisation for Nuclear Research; CERN
+OR3	OR	Council for Mutual Economic Assistance; CMEA
+OR4	OR	Council of Europe
+OR5	OR	free trade associations
+OR51	OR5	European Free Trade Association; EFTA
+OR52	OR5	North American Free Trade Agreement; NAFTA
+OR53	OR5	Latin-American Free Trade Association; LAFTA
+OR6	OR	European Space Agency, ESA
+OR61	OR6	European Space Research Organisation; ESRO
+OR62	OR6	European Space Vehicle Launcher Development Organisation; ELDO
+OR7	OR	European Organisation For the Safety of Air Navigation; EUROCONTROL
+OR8	OR	Food and Agriculture Organisation of the UN; FAO
+OR9	OR	General Agreement on Tariffs and Trade; GATT
+OR91	OR9	World Trade Organisation; WTO
+ORA	OR	International Atomic Energy Agency; IAEA
+ORB	OR	International Bank for Reconstruction and Development; IBRD; WORLD BANK
+ORC	OR	International Court of Justice; ICJ
+ORD	OR	International Labour Organisation; ILO
+ORE	OR	International Monetary Fund; IMF
+ORF	OR	Organisation for the Prohibition of Chemical Weapons; OPCW
+ORG	OR	Nordic Council
+ORH	OR	North Atlantic Treaty Organisation; NATO
+ORH1	ORH	NATO Maintenance and Supply Agency; NAMSA
+ORI	OR	Organisation of American States; OAS
+ORJ	OR	legal aspects
+ORJ1	ORJ	World Intellecrual Property Organisation; WIPO
+ORJ2	ORJ	International Trademark Association
+ORK	OR	Organisation of African Unity; OAU
+ORL	OR	Organisation for Economic Cooperation and Development; OECD
+ORM	OR	Organisation of the Petroleum Exporting Countries; OPEC
+ORM1	ORM	Organisation of Arab Petroleum Exporting Countries; OAPEC
+ORN	OR	United Nations; UN
+ORN1	ORN	UN Economic Commission for Africa; ECA
+ORN2	ORN	UN Economic Commission for Asia and the Far East; ECAFE
+ORN3	ORN	UN Economic Commission for Europe; ECE
+ORN4	ORN	UN Economic Commission for Latin America; ECLA
+ORN5	ORN	UN Economic and Social Council; ECOSOC
+ORN6	ORN	UN General Assembly
+ORN7	ORN	UN Security Council
+ORN8	ORN	UN Trusteeship Council
+ORN9	ORN	UN Development Programme; UNDP
+ORNA	ORN	UN Environment Programme; UNEP
+ORNB	ORN	UN Industrial Development Organisation; UNIDO
+ORNC	ORN	UN Children's Fund; UNICEF
+ORND	ORN	UN Research Institute for Social Development; UNRIST
+ORNE	ORN	UN Institute for Training and Research; UNITAR
+ORNF	ORN	UN Conference on Trade and Development:; UNCTAD
+ORNG	ORN	UN Educational, Scientific and Cultural Organisation; UNESCO
+ORO	OR	Association of South-East Asian Nations; ASEAN
+ORP	OR	 MERCOSUR; Mercado Com?n del Sur
+ORQ	OR	Universal Postal Union; UPU
+ORR	OR	Warsaw Treaty Organisation
+ORS	OR	Western European Union; WEU
+ORT	OR	World Health Organisation; WHO
+ORU	OR	World Meteorological Organisation; WMO
+ORV	OR	BENELUX Economic Union; BENELUX
+ORW	OR	International Organization for Standardization; International Standardisation Organisation; ISO
+ORX	OR	European Committee for Strandardisation; CEN
+ORX1	ORX	European Committee for Electrotechnical Standardisation; CENELEC
+ORX2	ORX	European Telecommunications Standards Institute; ETSI
+ORX3	ORX	International Telecommunications Union; ITU
+ORY	OR	training & education
+ORZ	OR	professions & careers
+PG	-	Publishing - Printing & Photography - Press
+PG1	PG	general aspects of the subject field
+PG2	PG	organisations in the subject field
+PG3	PG	publications in the subject field
+PG31	PG3	documentation systems and information systems in the subject field
+PG4	PG	printing - reprography
+PG41	PG4	type; letter
+PG42	PG4	composition
+PG43	PG4	type forme; type form
+PG44	PG4	printing processes
+PG45	PG4	book making & book binding
+PG46	PG4	stamp making
+PG47	PG4	proofreading
+PG48	PG4	Standard Generalised Mark-up Language; SGML
+PG5	PG	publishing - audiovisual industry
+PG51	PG5	publications
+PG52	PG5	paper publishing
+PG53	PG5	electronic publishing
+PG54	PG5	audiovisual industry
+PG6	PG	books & periodicals - selling - lending & circulation
+PG7	PG	books - pamphlets - manuscripts
+PG8	PG	periodicals
+PG9	PG	press
+PG91	PG9	journalism
+PG92	PG9	freedom of the press
+PG93	PG9	newspapers
+PG94	PG9	weekly press
+PG95	PG9	press photography & film - press photographers
+PGA	PG	authors & writing
+PGB	PG	editing & editors
+PGC	PG	posters & advertisements
+PGD	PG	non-book material
+PGD1	PGD	printed matter
+PGD2	PGD	maps
+PGE	PG	new media
+PGF	PG	photography & film
+PGF1	PGF	photographic reproduction & printing techniques
+PGG	PG	micrographics - micropublication
+PGH	PG	reprography
+PGJ	PG	legal aspects
+PGK	PG	radio porgrammes - television programmes
+PGK1	PGK	radio porgrammes
+PGK2	PGK	television programmes
+PGY	PG	education & training
+PGZ	PG	professions & careers
+PH	-	Physics
+PH1	PH	general aspects of the subject field
+PH2	PH	organisations in the subject field
+PH3	PH	publications in the subject field
+PH31	PH3	documentation systems and information systems in the subject field
+PH4	PH	general principles of physics
+PH5	PH	general mechanics - behaviour of solid bodies
+PH6	PH	fluid mechanics
+PH7	PH	gas mechanics - vacuum physics
+PH71	PH7	gas mechanics
+PH72	PH7	vacuum physics
+PH8	PH	acoustics
+PH9	PH	optics
+PHA	PH	thermodynamics
+PHB	PH	electricity
+PHC	PH	magnetism
+PHD	PH	nuclear physics; atomic physics
+PHE	PH	energetics
+PHF	PH	particle physics
+PHH	PH	quantum mechanics
+PHJ	PH	legal aspects
+PHY	PH	training & education
+PHZ	PH	professions & careers
+PO	-	Politics - Foreign Relations - Development Aid
+PO1	PO	general aspects of the subject field
+PO2	PO	organisations in the subject field
+PO3	PO	publications in the subject field
+PO31	PO3	documentation systems and information systems in the subject field
+PO4	PO	political theory - society & State
+PO41	PO4	political theory
+PO42	PO4	society & State
+PO43	PO4	names of States
+PO5	PO	internal politics - social problems
+PO6	PO	migration - colonisation - citizenship
+PO61	PO6	migration (sn: political aspects; rf: demography, see: TS)
+PO62	PO6	colonisation & colonial policy
+PO63	PO6	citizenship & citizens
+PO7	PO	slavery
+PO8	PO	foreign policy & international relations
+PO9	PO	legislative assemblies
+POA	PO	political parties
+POA1	POA	names of political parties
+POB	PO	political geography
+POC	PO	cultural policy
+POD	PO	state representation
+POE	PO	political cooperation
+POF	PO	financial cooperation (sn: political aspects; us: for financial apsects, see: FI)
+POG	PO	government
+POG1	POG	national institutions
+POGX	POG	ex-government
+POH	PO	development policy
+POH1	POH	development cooperation
+POH2	POH	regional policy
+POJ	PO	legal aspects
+POJ1	POJ	political crime
+POK	PO	developing countries
+POK1	POK	aid to developing countries
+POY	PO	training & education
+POZ	PO	professions & careers
+RP	-	Religion - Philosophy
+RP1	RP	general aspects of the subject field
+RP2	RP	organisations in the subject field
+RP21	RP2	Christian orders & local church
+RP22	RP2	local church
+RP23	RP2	parish administration; parish government
+RP24	RP2	religious congregations & religious orders
+RP25	RP2	sects
+RP26	RP2	associations for religious work
+RP3	RP	publications in the subject field
+RP31	RP3	documentation systems and information systems in the subject field
+RP4	RP	natural theology
+RP5	RP	Christian theology
+RP6	RP	Bible
+RP7	RP	Christian moral & devotional theology
+RP71	RP7	church furnishings & articles
+RP8	RP	Christian social theology
+RP9	RP	Christian denominations & sects
+RP91	RP9	early church
+RP92	RP9	Eastern churches
+RP93	RP9	Roman Catholic Church
+RP94	RP9	Anglican Church
+RP95	RP9	Protestants of Continental origin
+RP96	RP9	Presbyterian - Reformed - Congregational
+RP97	RP9	Baptists - Disciples of Christ - Adventists
+RP98	RP9	Methodist & related churches
+RPA	RP	non-Christian religions
+RPA1	RPA	classical religion
+RPA2	RPA	Germanic religion
+RPA3	RPA	religions of Indic origin
+RPA4	RPA	Zoroastrianism
+RPA5	RPA	Judaism
+RPA6	RPA	Islam & religions originating in it
+RPB	RP	churches and religious policy
+RPC	RP	religious customs
+RPD	RP	history of religion
+RPE	RP	religious science
+RPF	RP	atheism - freethinking
+RPG	RP	metaphysics
+RPH	RP	epistemology - causation - mankind
+RPI	RP	paranormal phenomena
+RPJ	RP	legal aspects (rf: church law, see: JUH)
+RPK	RP	philosophical schools
+RPL	RP	analytical philosophy - logic
+RPL1	RPL	analytical philosophy
+RPL2	RPL	logic
+RPM	RP	ethics (nt: moral philosophy)
+RPN	RP	philosophy of nature
+RPO	RP	ancient philosophy - medieval philosophy - oriental philosophy
+RPO1	RPO	pre-Socratic Greek philosophies
+RPO2	RPO	Greek philosophies
+RPO3	RPO	medieval Western philosophy
+RPO4	RPO	Oriental philosophy
+RPP	RP	modern Western philosophy
+RPQ	RP	intellectual philosophy
+RPR	RP	aesthetics
+RPS	RP	philosophical systems
+RPT	RP	history of philosophy
+RPY	RP	education & initiation
+RPZ	RP	professions & careers
+RS	-	Risk Management - Security - Salvage(sn: Factors that threaten human life, measures taken to prevent these factors and measures mitigating their effects)
+RS1	RS	general aspects of the subject field
+RS2	RS	organisations in the subject field
+RS3	RS	publications in the subject field
+RS31	RS3	documentation systems and information systems in the subject field
+RS4	RS	pure risk
+RS41	RS4	general
+RS42	RS4	risk analysis & risk control
+RS43	RS4	risk limiting organisations
+RS5	RS	risk management
+RS51	RS5	general aspects
+RS52	RS5	risk management techniques
+RS53	RS5	risk policy
+RS6	RS	security techniques and safety procedures
+RS61	RS6	protection systems - failure analysis
+RS62	RS6	organisational and procedural aspects of security
+RS63	RS6	physical protective measures
+RS64	RS6	electric and electronic security systems
+RS7	RS	espionage and counter-espionage
+RS71	RS7	organisational aspects and espionage techniques
+RS72	RS7	spying equipment
+RS73	RS7	counter-espionage
+RS8	RS	police investigation
+RS81	RS8	general
+RS82	RS8	investigation tactics
+RS83	RS8	investigation
+RS9	RS	disasters of human origin (sn: acts of man, either intentional or unintentional; rf: environment, see: EN)
+RS91	RS9	fire - explosions - implosions (sn: intentional acts)
+RS92	RS9	industrial disasters - industrial accidents
+RS93	RS9	accidents in transport operations
+RS94	RS9	disasters affecting health
+RS95	RS9	terrorist actions - criminal actions - political crime
+RS96	RS9	war
+RSA	RS	disasters of natural origin (sn: acts of nature; rf: environmental aspects, see: EN)
+RSA1	RSA	telluric disasters
+RSA2	RSA	aeolic disasters
+RSA3	RSA	atmospheric disasters
+RSB	RS	contingency plans - emergency actions - aid
+RSB1	RSB	aid to refugees
+RSB2	RSB	fire fighting (rf: fire brigade, see: AD7)
+RSB3	RSB	salvage operations
+RSJ	RS	legal aspects
+RSY	RS	education & training
+RSZ	RS	professions & careers
+SC	-	Cooperatives - Corporations
+SC1	SC	general aspects of the subject field
+SC2	SC	organisations in the subject field
+SC3	SC	publications in the subject field
+SC31	SC3	documentation systems and information systems in the subject field
+SC4	SC	cooperative society
+SC5	SC	credit cooperative
+SC6	SC	economic cooperative
+SC7	SC	producers' cooperative
+SC8	SC	building cooperative; cooperative building society
+SC9	SC	purchasing cooperative - selling cooperative
+SCA	SC	mutual benefit society
+SCB	SC	industrial boards
+SCJ	SC	legal aspects
+SCY	SC	training & initiation
+SCZ	SC	professions & careers
+SI	-	Metallurgy - Iron & Steel - Non-ferrous Metals
+SI1	SI	general aspects of the subject field
+SI2	SI	organisations in the subject field
+SI3	SI	publications in the subject field
+SI31	SI3	documentation systems and information systems in the subject field
+SI4	SI	principles of metallurgy
+SI5	SI	pig iron production
+SI6	SI	iron foundry & steel foundry - metals & alloys
+SI7	SI	steel production - casting
+SI71	SI7	steel production
+SI72	SI7	steel casting
+SI8	SI	powder metallurgy
+SI9	SI	hot rolling - die forging
+SI91	SI9	hot rolling
+SI92	SI9	forging & die forging
+SIA	SI	cold working
+SIB	SI	stress-relieving deformation
+SIC	SI	welding - jointing & separating - bonding
+SIC1	SIC	welding - design - equipment - testing
+SIC2	SIC	gas welding
+SIC3	SIC	arc welding
+SIC4	SIC	resistance welding
+SIC5	SIC	thermal cutting
+SIC6	SIC	hot spraying
+SIC7	SIC	braze welding
+SIC8	SIC	bonding of metals
+SIC9	SIC	spark erosion; electrical discharge machining
+SID	SI	surface treatment - corrosion protection
+SIE	SI	heat treatment
+SIF	SI	properties & faults
+SIG	SI	product quality & testing of products (us: for testing methods, see: TE)
+SIH	SI	metallography
+SII	SI	metal products
+SIJ	SI	legal aspects
+SIK	SI	machines for manufacturing and processing of metal products
+SIL	SI	metal processing plants
+SIM	SI	sales & distribution of metal products
+SIN	SI	non-ferrous metals
+SIV	SI	process automation
+SIY	SI	education & training
+SIZ	SI	professions & careers
+SO	-	Social Sciences - Society(rf: Ethnology & Folklore, see: HI; Religion, see: RP)
+SO1	SO	general aspects of the subject field
+SO11	SO1	sociological theories
+SO2	SO	organisations in the subject field (sn: organisations dealing with sociological topics; us: not to be used for organisations as sociological concepts)
+SO3	SO	publications in the subject field
+SO31	SO3	documentation systems and information systems in the subject field
+SO4	SO	social sciences
+SO41	SO4	research techniques
+SO42	SO4	social structures
+SO43	SO4	social geography
+SO5	SO	social life & public life
+SO51	SO5	ceremonies
+SO52	SO5	popular festivals
+SO53	SO5	societies & society rules
+SO54	SO5	social behaviour & social relations
+SO55	SO5	rituals
+SO6	SO	societies - movements
+SO61	SO6	social movements & political movements
+SO62	SO6	humanitarian movements
+SO63	SO6	esoteric movements & esoteric societies
+SO64	SO6	criminal secret societies
+SO65	SO6	clubs & club life
+SO7	SO	family life
+SO71	SO7	families - clans - tribes
+SO72	SO7	manners & customs
+SO73	SO7	names
+SO8	SO	welfare - public assistance
+SO81	SO8	social services; welfare services; social facilities
+SO82	SO8	family welfare
+SO9	SO	social policy
+SO91	SO9	ethnic minorities
+SO92	SO9	migrant workers
+SO93	SO9	feminism
+SO94	SO9	children's rights
+SOA	SO	Industrial sociology; sociology of labour
+SOB	SO	migration (sn: social aspects of migration)
+SOC	SO	society
+SOC1	SOC	age-related matters - youth & elderly persons
+SOC11	SOC1	youth
+SOC12	SOC1	elderly persons
+SOC2	SOC	sexuality
+SOC3	SOC	drug abuse
+SOC4	SOC	alcoholism
+SOC5	SOC	large towns
+SOC6	SOC	violence & hooliganism
+SOD	SO	sociology of science
+SOE	SO	Social Europe
+SOE1	SOE	general
+SOE2	SOE	European Social Fund; ESF
+SOE3	SOE	fundamental social rights
+SOE4	SOE	Social Security and Employment
+SOE5	SOE	Equal Opportunities
+SOE6	SOE	Health and Safety at Work
+SOE7	SOE	Social Dimension of the Internal Market
+SOE8	SOE	Vocational Training and New Technologies
+SOE9	SOE	Older People and Solidarity between Generations
+SOF	SO	target groups of welfare work
+SOF1	SOF	mentally ill & physically handicapped
+SOF2	SOF	homeless
+SOF3	SOF	jobless; unemployed
+SOF4	SOF	war victims & refugees
+SOF5	SOF	minorities
+SOG	SO	community facilities; collective facilities; community equipment; municipal facilities; public facilities
+SOJ	SO	legal aspects
+SOY	SO	training & education
+SOZ	SO	professions & careers
+SP	-	Sports - Games - Leisure
+SP1	SP	general aspects of the subject field
+SP11	SP1	organisational aspects & scientific organisation
+SP12	SP1	sport
+SP13	SP1	sports events - games
+SP2	SP	organisations in the subject field
+SP3	SP	publications in the subject field
+SP31	SP3	documentation systems and information systems in the subject field
+SP4	SP	associations - clubs
+SP5	SP	children's games
+SP6	SP	games involving movement & games of skill using apparatus
+SP7	SP	ball games - throwing games
+SP8	SP	gymnastics - acrobatics - weight lifting
+SP9	SP	light athletics - running - skating
+SPA	SP	cycling
+SPB	SP	motor sports
+SPC	SP	touring - holidays & leisure
+SPD	SP	combative sports - martial arts
+SPE	SP	winter sports
+SPF	SP	aquatic sports
+SPG	SP	flying
+SPH	SP	horse-riding & team racing - animal racing
+SPI	SP	fishing - hunting - shooting
+SPJ	SP	legal aspects
+SPK	SP	hobbies
+SPL	SP	social entertainment
+SPM	SP	society games
+SPN	SP	gambling; games of chance
+SPY	SP	training & education
+SPZ	SP	professions & careers
+ST	-	Statistics
+ST1	ST	general aspects of the subject field
+ST2	ST	organisations in the subject field
+ST3	ST	publications in the subject field
+ST31	ST3	documentation systems and information systems in the subject field
+ST4	ST	theory & method
+ST41	ST4	general aspects
+ST42	ST4	inductive statistics
+ST43	ST4	deductive statistics
+ST44	ST4	probability
+ST45	ST4	distribution - variables - inequality
+ST46	ST4	inference
+ST47	ST4	sampling surveys
+ST48	ST4	constraints - fitting - forecasts
+ST49	ST4	diagrams
+ST5	ST	economic statistics
+ST51	ST5	input-output tables
+ST52	ST5	price statistics
+ST53	ST5	wage statistics
+ST54	ST5	financial statistics
+ST55	ST5	statistics on professions
+ST6	ST	operational statistics
+ST7	ST	population statistics - social statistics
+ST71	ST7	employment statistics & unemployment statistics
+ST72	ST7	family budget statistics
+ST73	ST7	population statistics (sn: methodological aspects; us: for statistics applied to demography, see: TS4)
+ST8	ST	transport statistics
+ST81	ST8	goods transport statistics
+ST82	ST8	tourism statistics
+ST83	ST8	traffic statistics
+ST9	ST	medical statistics
+STA	ST	agricultural statistics - forestry statistics - fishery statistics
+STB	ST	educational statistics - cultural statistics - sports statistics
+STB1	STB	education statistics
+STB2	STB	sports statistics
+STB3	STB	cultural statistics
+STC	ST	industrial statistics - building statistics
+STC1	STC	industrial statistics
+STC2	STC	building statistics
+STD	ST	political statistics
+STE	ST	Eurostat programme
+STE1	STE	general statistics
+STE2	STE	economy & finance
+STE3	STE	population & social conditions
+STE4	STE	energy & industry
+STE5	STE	Agriculture & Forestry - Fishery
+STE6	STE	Foreign trade
+STE7	STE	services & transport
+STE8	STE	environment
+STE9	STE	miscellaneous
+STF	ST	research statistics & development statistics
+STG	ST	geographical statistics - geological statistics - meteorological statistics
+STH	ST	environmental statistics
+STJ	ST	legal aspects
+STK	ST	puudub
+STY	ST	education & training
+STZ	ST	professions & careers
+TE	-	Technology - Engineering
+TE1	TE	general aspects of the subject field
+TE2	TE	organisations in the subject field
+TE3	TE	publications in the subject field
+TE31	TE3	documentation systems and information systems in the subject field
+TE4	TE	research & development (rf: theoretical aspects of research, see: GE4; inventions & discoveries. see: GE9)
+TE41	TE4	engineering techniques
+TE5	TE	design - prototyping
+TE51	TE5	design
+TE52	TE5	prototyping
+TE6	TE	materials science
+TE61	TE6	mechanics
+TE62	TE6	strength of materials
+TE63	TE6	nanomaterials
+TE7	TE	packaging techniques
+TE71	TE7	packaging (rf: packaging materials, see: INO)
+TE72	TE7	labelling
+TE73	TE7	health aspects of packaging and wrapping
+TE8	TE	transport & handling - warehousing
+TE81	TE8	internal transport & handling
+TE82	TE8	warehousing
+TE9	TE	maintenance - preservation
+TE91	TE9	maintenance
+TE92	TE9	preservation
+TEA	TE	processing & preparation
+TEA1	TEA	increase in the surface area of solid matter
+TEA2	TEA	filtering
+TEA3	TEA	separation
+TEA4	TEA	gas cleaning
+TEA5	TEA	mechanical processing of solid matter
+TEA6	TEA	fluidised bed reactors & fluidised bed processing
+TEA7	TEA	thermal separation of solid matter
+TEA8	TEA	thermal separation
+TEA9	TEA	diffusion separation
+TEAA	TEA	chemical treatment (sn: production techniques; research aspects; rf: chemical processes, see: CH)
+TEB	TE	heating technology
+TEC	TE	technology - construction methods - assembling
+TED	TE	industrial design (sn: engineering aspects; rf: artistic design, see: ARD)
+TEE	TE	production technology - process engineering
+TEE1	TEE	production technology
+TEE2	TEE	process engineering (sn: design of process plants)
+TEE3	TEE	process control systems
+TEE4	TEE	process control
+TEF	TE	cryogenic engineering; low temperature engineering
+TEG	TE	techno-geography
+TEH	TE	testing methods
+TEH1	TEH	laboratory engineering
+TEI	TE	working of synthetic materials - shaping of synthetic materials - treating of synthetic materials
+TEI1	TEI	surface treatment - impregnation
+TEI2	TEI	moulding
+TEI3	TEI	welding - bonding (rf: adhesives, see: IC92)
+TEJ	TE	legal aspects
+TEK	TE	metal machining technology (rf: MG & SI)
+TEK1	TEK	forming
+TEK2	TEK	casting
+TEK3	TEK	ceramic technology (us: powder metallurgy, see: SI8)
+TEK4	TEK	cutting
+TEK5	TEK	cutting techniques
+TEK6	TEK	surface treatment
+TEK7	TEK	external shapes of finished or semi-finished products
+TEL	TE	vacuum technology - high pressure technology
+TEL1	TEL	vacuum technology
+TEL2	TEL	high pressure technology
+TEM	TE	pyrotechnics
+TEM1	TEM	pyrolysis
+TEM2	TEM	implosions - explosions
+TEQ	TE	puudub
+TEY	TE	education & training
+TEZ	TE	professions & careers
+TR	-	Transport
+TR1	TR	general aspects of the subject field
+TR2	TR	organisations in the subject field
+TR3	TR	publications in the subject field
+TR31	TR3	documentation systems and information systems in the subject field
+TR4	TR	railways - rolling stock
+TR41	TR4	rolling stock
+TR42	TR4	line equipment
+TR43	TR4	infrastructure (rf: building of infrastructure, see: BAB)
+TR44	TR4	types of railway
+TR45	TR4	railway maintenance
+TR46	TR4	railway management
+TR5	TR	land transport (sn: other than railways)
+TR51	TR5	road transport & road vehicles
+TR52	TR5	land transport infrastructure
+TR53	TR5	traffic control
+TR54	TR5	special land transport
+TR55	TR5	pedestrians & cyclists
+TR56	TR5	motor vehicle maintenance (rf: motor vehicle industry, see: INT1)
+TR6	TR	inland waterway traffic
+TR61	TR6	inland waterway infrastructure
+TR62	TR6	inland waterway services
+TR63	TR6	ship maintenance (rf: ship building, see: INT3)
+TR7	TR	maritime traffic; seaborne traffic
+TR71	TR7	maritime traffic infrastructure
+TR72	TR7	maritime traffic services
+TR73	TR7	ship maintenance (rf: ship building, see: INT3)
+TR8	TR	air traffic
+TR81	TR8	air traffic infrastructure
+TR82	TR8	air traffic control
+TR83	TR8	airline operation
+TR84	TR8	aircraft maintenance (rf: aircraft industry, see: INT4)
+TR9	TR	space travel
+TR91	TR9	space travel infrastructure
+TR92	TR9	space travel infrastructure
+TRA	TR	vehicle disposal - ship disposal - aircraft disposal (rf: vehicle industry, see: INT)
+TRB	TR	traffic routes (nt: other than railways)
+TRC	TR	navigation (sn: orientation; rf: navigation technique & equipment, see: OO)
+TRD	TR	freight; goods traffic
+TRE	TR	transport safety
+TRF	TR	transport services
+TRG	TR	registration
+TRH	TR	transport of dangerous substances
+TRH1	TRH	nuclear cargo transport
+TRJ	TR	legal aspects
+TRK	TR	transport business
+TRK1	TRK	transport company representation
+TRK2	TRK	transport company management
+TRK3	TRK	transport company financing
+TRK4	TRK	transport company operation
+TRK5	TRK	transport company marketing
+TRK6	TRK	transport company service
+TRL	TR	tourism
+TRM	TR	transport systems
+TRN	TR	transport policy
+TRY	TR	training & education
+TRZ	TR	professions & careers
+TS	-	Land Ownership & Property Ownership - Demography - Housing(rf: living space, see: ERC)
+TS1	TS	general aspects of the subject field
+TS2	TS	organisations in the subject field
+TS3	TS	publications in the subject field
+TS31	TS3	documentation systems and information systems in the subject field
+TS4	TS	land reform (sn: spatial arrangement; rf: architectural aspects, see: BA4)
+TS5	TS	land ownership & property ownership (rf: expropriation, see: AD5)
+TS51	TS5	state property
+TS52	TS5	private property
+TS6	TS	real estate transactions
+TS7	TS	mortgages
+TS8	TS	housing
+TS9	TS	demography
+TS91	TS9	population
+TS92	TS9	age distribution
+TS93	TS9	morbidity
+TS94	TS9	population statistics (sn: applied statistics; us: statistical methods, see: ST73)
+TSA	TS	housing conditions (sn: health aspects of housing)
+TSB	TS	settlement (sn: living conditions; us: for building & architecture, see: BA4)
+TSJ	TS	legal aspects
+TSW	TS	man & society
+TSY	TS	training & education
+TSZ	TS	profession & careers
+TV	-	Labour - Employment - Working Conditions & Ergonomics
+TV1	TV	general aspects of the subject field
+TV11	TV1	organisational aspects & scientific organisation
+TV12	TV1	labour & skills
+TV2	TV	organisations in the subject field
+TV21	TV2	professional organisations & professional associations
+TV3	TV	publications in the subject field
+TV31	TV3	documentation systems and information systems in the subject field
+TV4	TV	employment - conditions of employment - participation
+TV41	TV4	worker participation; codetermination
+TV42	TV4	personnel policy - conditions of employment
+TV43	TV4	workers & labour
+TV44	TV4	unemployment
+TV5	TV	remuneration
+TV6	TV	working conditions (sn: factors affecting productivity; rf: occupational hygiene, see: ME9)
+TV7	TV	safety at work
+TV71	TV7	labour inspection
+TV72	TV7	occupational hazards; industrial hazards
+TV8	TV	labour market; job market; employment market
+TV9	TV	ergonomics & work analysis
+TVA	TV	working hours - leisure time
+TVB	TV	labour disputes
+TVC	TV	professional life - career
+TVD	TV	training (sn: occupational aspects; us: for Vocational Training - Career Education,see: EDB)
+TVJ	TV	legal aspects
+TVY	TV	education & training (sn: only in relation to Employment - Working Conditions & Ergonomics)
+TVZ	TV	professions & careers (sn: only in relation to Employment - Working Conditions & Ergonomics)
+XC	-	puudub
+SF	-	puudub
+XM	-	puudub
+XS	-	puudub
+XU	-	puudub
