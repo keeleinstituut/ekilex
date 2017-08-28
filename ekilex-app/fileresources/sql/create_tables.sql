@@ -174,7 +174,7 @@ create table lex_rel_type_label
 -- sõnakogu
 create table dataset
 (
-  code char(10) not null,
+  code char(10) primary key,
   name text not null
 );
 
