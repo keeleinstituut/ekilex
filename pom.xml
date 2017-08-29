@@ -10,9 +10,10 @@
 	<name>Eki apps root project</name>
 
 	<modules>
-		<module>ekilex-app</module>
-		<module>eve-app</module>
 		<module>eki-common</module>
+		<module>ekilex-app</module>
+		<module>ekilex-etl</module>
+		<module>eve-app</module>
 	</modules>
 
 	<developers>
@@ -94,6 +95,12 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
+				<groupId>eki.common</groupId>
+				<artifactId>eki-common</artifactId>
+				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
+				<version>1.0-SNAPSHOT</version>
+			</dependency>
+			<dependency>
 				<groupId>eki.ekilex</groupId>
 				<artifactId>ekilex-app</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
@@ -101,13 +108,13 @@
 			</dependency>
 			<dependency>
 				<groupId>eki.ekilex</groupId>
-				<artifactId>eve-app</artifactId>
+				<artifactId>ekilex-etl</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
 				<version>1.0-SNAPSHOT</version>
 			</dependency>
 			<dependency>
-				<groupId>eki.common</groupId>
-				<artifactId>eki-common</artifactId>
+				<groupId>eki.ekilex</groupId>
+				<artifactId>eve-app</artifactId>
 				<!-- DON'T FORGET TO UPDATE THE VERSION!! -->
 				<version>1.0-SNAPSHOT</version>
 			</dependency>

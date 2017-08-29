@@ -1,4 +1,4 @@
-package eki.ekilex.manual.transform;
+package eki.ekilex.manual;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,13 +13,12 @@ import org.apache.commons.lang3.StringUtils;
 
 import eki.ekilex.constant.SystemConstant;
 
-public class MilitermToClassifier implements SystemConstant {
+public class LenochToClassifier implements SystemConstant {
 
 	public static void main(String[] args) throws Exception {
 
-		final String origDataFilePath = "/projects/eki/data/valdkond-militerm.csv";
-		final String classifierEnFilePath = "./fileresources/csv/classifier-domain-militerm_en.csv";
-		final String classifierEtFilePath = "./fileresources/csv/classifier-domain-militerm_et.csv";
+		final String origDataFilePath = "/projects/eki/data/valdkond-lenoch.csv";
+		final String classifierFilePath = "./fileresources/csv/classifier-domain-lenoch_en.csv";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -28,18 +27,6 @@ public class MilitermToClassifier implements SystemConstant {
 		FileInputStream origDataFileInputStream = new FileInputStream(origDataFile);
 		List<String> origDataLines = IOUtils.readLines(origDataFileInputStream, UTF_8);
 		origDataFileInputStream.close();
-		origDataLines.remove(0);
-
-		composeClassifierFile(origDataLines, 1, classifierEnFilePath);
-		composeClassifierFile(origDataLines, 2, classifierEtFilePath);
-
-		t2 = System.currentTimeMillis();
-
-		System.out.println("Done transforming classifiers at " + (t2 - t1) + " ms");
-	}
-
-	private static void composeClassifierFile(
-			List<String> origDataLines, final int classifierNameColumnIndex, final String classifierFilePath) throws Exception {
 
 		List<String> classifierOrderList = new ArrayList<>();
 		Map<String, String> classifierNameMap = new HashMap<>();
@@ -48,7 +35,7 @@ public class MilitermToClassifier implements SystemConstant {
 		for (String csvLine : origDataLines) {
 			csvCells = StringUtils.split(csvLine, CSV_SEPARATOR);
 			String code = csvCells[0];
-			String name = csvCells[classifierNameColumnIndex];
+			String name = csvCells[1];
 			classifierOrderList.add(code);
 			classifierNameMap.put(code, name);
 		}
@@ -75,6 +62,9 @@ public class MilitermToClassifier implements SystemConstant {
 		}
 		classifierFileOutputStream.flush();
 		classifierFileOutputStream.close();
-	}
 
+		t2 = System.currentTimeMillis();
+
+		System.out.println("Done transforming classifiers at " + (t2 - t1) + " ms");
+	}
 }
