@@ -130,11 +130,11 @@ public class XsdToClassifier implements SystemConstant {
 						classifName = classifNameNode.getTextTrim();
 						classifierMap = classifierLangMap.get(classifLang);
 						existingClassifName = classifierMap.get(classifCode);
-						if (StringUtils.isNotBlank(existingClassifName) && !StringUtils.equals(classifName, existingClassifName)) {
-							if (StringUtils.length(existingClassifName) > StringUtils.length(classifName)) {
-								logger.warn("Duplicate value found for classifier \"{}\" = \"{}\" -> \"{}\"", classifCode, classifName, existingClassifName);
-								classifName = existingClassifName;
-							}
+						if (StringUtils.isNotBlank(existingClassifName) &&
+						   !StringUtils.equals(classifName, existingClassifName) &&
+						    StringUtils.length(existingClassifName) > StringUtils.length(classifName)) {
+							logger.warn("Duplicate value found for classifier \"{}\" = \"{}\" -> \"{}\"", classifCode, classifName, existingClassifName);
+							classifName = existingClassifName;
 						}
 						classifierMap.put(classifCode, classifName);
 					}
