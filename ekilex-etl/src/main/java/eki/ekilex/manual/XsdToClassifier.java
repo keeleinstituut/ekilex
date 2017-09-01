@@ -30,22 +30,23 @@ public class XsdToClassifier implements SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(XsdToClassifier.class);
 
+	private static final String ORIGIN = "bolan";
 	private static final String CLASSIF_KEY_PLACEHOLDER = "{classifKey}";
 	private static final String CLASSIF_LANG_PLACEHOLDER = "{lang}";
 	private static final String CLASSIF_XPATH = "//xs:simpleType[@name='" + CLASSIF_KEY_PLACEHOLDER + "']/xs:restriction/xs:enumeration";
 	private static final String CLASSIF_LANG_XPATH = "//xs:simpleType/xs:restriction/xs:enumeration/xs:annotation/xs:documentation[boolean(@xml:lang) and text()]";
 	private static final String CLASSIF_DOMAIN_KEY = "v_tyyp";
-	private static final String CLASSIF_POS_TYPE_KEY = "sl_tyyp";
-	private static final String CLASSIF_POS_CAT_KEY = "vk_tyyp";
+	private static final String CLASSIF_POS_KEY = "sl_tyyp";
+	private static final String CLASSIF_MORPH_KEY = "vk_tyyp";
 	private static final String CLASSIF_REGISTER_KEY = "s_tyyp";
 
 	public static void main(String[] args) throws Exception {
 
 		final String origDataFilesRootPath = "/projects/eki/data/bolan";
-		final String classifDomainFilePath = "./fileresources/csv/classifier-domain-bolan_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
-		final String classifPosTypeFilePath = "./fileresources/csv/classifier-postype-bolan_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
-		final String classifPosCatFilePath = "./fileresources/csv/classifier-poscat-bolan_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
-		final String classifRegisterFilePath = "./fileresources/csv/classifier-register-bolan_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
+		final String classifDomainFilePath = "./fileresources/csv/classifier-domain-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
+		final String classifPosFilePath = "./fileresources/csv/classifier-pos-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
+		final String classifMorphFilePath = "./fileresources/csv/classifier-morph-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
+		final String classifRegisterFilePath = "./fileresources/csv/classifier-register-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -66,8 +67,8 @@ public class XsdToClassifier implements SystemConstant {
 		List<String> classifLangs = collectClassifierLanguages(origDataDocs);
 
 		composeClassifierFile(origDataDocs, CLASSIF_DOMAIN_KEY, classifLangs, classifDomainFilePath);
-		composeClassifierFile(origDataDocs, CLASSIF_POS_TYPE_KEY, classifLangs, classifPosTypeFilePath);
-		composeClassifierFile(origDataDocs, CLASSIF_POS_CAT_KEY, classifLangs, classifPosCatFilePath);
+		composeClassifierFile(origDataDocs, CLASSIF_POS_KEY, classifLangs, classifPosFilePath);
+		composeClassifierFile(origDataDocs, CLASSIF_MORPH_KEY, classifLangs, classifMorphFilePath);
 		composeClassifierFile(origDataDocs, CLASSIF_REGISTER_KEY, classifLangs, classifRegisterFilePath);
 
 		t2 = System.currentTimeMillis();
@@ -99,10 +100,10 @@ public class XsdToClassifier implements SystemConstant {
 
 		List<Element> classifNodes;
 		Attribute classifCodeAttr, classifLangAttr;
-		List<Element> classifNameNodes;
+		List<Element> classifValueNodes;
 		int classifNodeCount;
 		Map<String, String> classifierMap;
-		String classifLang, classifCode, classifName, existingClassifName;
+		String classifLang, classifCode, classifValue, existingClassifValue;
 		String classifXpath = StringUtils.replace(CLASSIF_XPATH, CLASSIF_KEY_PLACEHOLDER, classifKey);
 
 		List<String> classifierOrderList = new ArrayList<>();
@@ -123,20 +124,21 @@ public class XsdToClassifier implements SystemConstant {
 					if (!classifierOrderList.contains(classifCode)) {
 						classifierOrderList.add(classifCode);
 					}
-					classifNameNodes = classifNode.selectNodes("xs:annotation/xs:documentation[text()]");
-					for (Element classifNameNode : classifNameNodes) {
-						classifLangAttr = classifNameNode.attribute("lang");
+					classifValueNodes = classifNode.selectNodes("xs:annotation/xs:documentation[text()]");
+					for (Element classifValueNode : classifValueNodes) {
+						classifLangAttr = classifValueNode.attribute("lang");
 						classifLang = classifLangAttr.getValue();
-						classifName = classifNameNode.getTextTrim();
+						classifValue = classifValueNode.getTextTrim();
 						classifierMap = classifierLangMap.get(classifLang);
-						existingClassifName = classifierMap.get(classifCode);
-						if (StringUtils.isNotBlank(existingClassifName) && !StringUtils.equals(classifName, existingClassifName)) {
-							if (StringUtils.length(existingClassifName) > StringUtils.length(classifName)) {
-								logger.warn("Duplicate value found for classifier \"{}\" = \"{}\" -> \"{}\"", classifCode, classifName, existingClassifName);
-								classifName = existingClassifName;
+						existingClassifValue = classifierMap.get(classifCode);
+						if (StringUtils.isNotBlank(existingClassifValue) && !StringUtils.equals(classifValue, existingClassifValue)) {
+							//TODO choose longer value?
+							if (StringUtils.length(existingClassifValue) > StringUtils.length(classifValue)) {
+								logger.warn("Duplicate value found for classifier \"{}\" = \"{}\" -> \"{}\"", classifCode, classifValue, existingClassifValue);
+								classifValue = existingClassifValue;
 							}
 						}
-						classifierMap.put(classifCode, classifName);
+						classifierMap.put(classifCode, classifValue);
 					}
 				}
 			}
@@ -156,10 +158,20 @@ public class XsdToClassifier implements SystemConstant {
 		File classifierFile = new File(classifierLangFilePath);
 		FileOutputStream classifierFileOutputStream = new FileOutputStream(classifierFile);
 		String classifierFileLine;
+		StringBuffer classifierLineBuf;
 		for (String classifierCode : classifierOrderList) {
-			String classifierName = classifierMap.get(classifierCode);
-			if (StringUtils.isNotBlank(classifierName)) {
-				classifierFileLine = classifierCode + CSV_SEPARATOR + CSV_EMPTY_CELL + CSV_SEPARATOR + classifierName + '\n';
+			String classifierValue = classifierMap.get(classifierCode);
+			if (StringUtils.isNotBlank(classifierValue)) {
+				classifierLineBuf = new StringBuffer();
+				classifierLineBuf.append(classifierCode);
+				classifierLineBuf.append(CSV_SEPARATOR);
+				classifierLineBuf.append(ORIGIN);
+				classifierLineBuf.append(CSV_SEPARATOR);
+				classifierLineBuf.append(CSV_EMPTY_CELL);
+				classifierLineBuf.append(CSV_SEPARATOR);
+				classifierLineBuf.append(classifierValue);
+				classifierLineBuf.append('\n');
+				classifierFileLine = classifierLineBuf.toString();
 				IOUtils.write(classifierFileLine, classifierFileOutputStream, UTF_8);
 			}
 		}

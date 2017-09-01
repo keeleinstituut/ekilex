@@ -15,10 +15,12 @@ import eki.ekilex.constant.SystemConstant;
 
 public class LenochToClassifier implements SystemConstant {
 
+	private static final String ORIGIN = "lenoch";
+
 	public static void main(String[] args) throws Exception {
 
 		final String origDataFilePath = "/projects/eki/data/valdkond-lenoch.csv";
-		final String classifierFilePath = "./fileresources/csv/classifier-domain-lenoch_en.csv";
+		final String classifierFilePath = "./fileresources/csv/classifier-domain-" + ORIGIN + "_en.csv";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -29,35 +31,45 @@ public class LenochToClassifier implements SystemConstant {
 		origDataFileInputStream.close();
 
 		List<String> classifierOrderList = new ArrayList<>();
-		Map<String, String> classifierNameMap = new HashMap<>();
+		Map<String, String> classifierValueMap = new HashMap<>();
 		Map<String, String> classifierHierarchyMap = new HashMap<>();
 		String[] csvCells;
 		for (String csvLine : origDataLines) {
 			csvCells = StringUtils.split(csvLine, CSV_SEPARATOR);
 			String code = csvCells[0];
-			String name = csvCells[1];
+			String value = csvCells[1];
 			classifierOrderList.add(code);
-			classifierNameMap.put(code, name);
+			classifierValueMap.put(code, value);
 		}
 		String suggestedParentClassifierCode;
 		int subClassifierCodeLength;
 		for (String subClassifierCode : classifierOrderList) {
 			subClassifierCodeLength = subClassifierCode.length();
 			suggestedParentClassifierCode = StringUtils.left(subClassifierCode, subClassifierCodeLength - 1);
-			if (classifierNameMap.containsKey(suggestedParentClassifierCode)) {
+			if (classifierValueMap.containsKey(suggestedParentClassifierCode)) {
 				classifierHierarchyMap.put(subClassifierCode, suggestedParentClassifierCode);
 			}
 		}
 		File classifierFile = new File(classifierFilePath);
 		FileOutputStream classifierFileOutputStream = new FileOutputStream(classifierFile);
 		String classifierFileLine;
+		StringBuffer classifierLineBuf;
 		for (String classifierCode : classifierOrderList) {
 			String parentClassifierCode = classifierHierarchyMap.get(classifierCode);
 			if (StringUtils.isBlank(parentClassifierCode)) {
 				parentClassifierCode = String.valueOf(CSV_EMPTY_CELL);
 			}
-			String classifierName = classifierNameMap.get(classifierCode);
-			classifierFileLine = classifierCode + CSV_SEPARATOR + parentClassifierCode + CSV_SEPARATOR + classifierName + '\n';
+			String classifierValue = classifierValueMap.get(classifierCode);
+			classifierLineBuf = new StringBuffer();
+			classifierLineBuf.append(classifierCode);
+			classifierLineBuf.append(CSV_SEPARATOR);
+			classifierLineBuf.append(ORIGIN);
+			classifierLineBuf.append(CSV_SEPARATOR);
+			classifierLineBuf.append(parentClassifierCode);
+			classifierLineBuf.append(CSV_SEPARATOR);
+			classifierLineBuf.append(classifierValue);
+			classifierLineBuf.append('\n');
+			classifierFileLine = classifierLineBuf.toString();
 			IOUtils.write(classifierFileLine, classifierFileOutputStream, UTF_8);
 		}
 		classifierFileOutputStream.flush();

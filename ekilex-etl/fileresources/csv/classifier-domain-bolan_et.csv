@@ -1,78 +1,78 @@
-aiand	-	aiandus
-aj	-	ajalugu
-anat	-	anatoomia
-antr	-	antropoloogia
-arheol	-	arheoloogia
-astr	-	astronoomia
-bibl	-	bibliograafia
-biol	-	bioloogia
-bot	-	botaanika
-ehit	-	ehitusala
-el	-	elekter ja elektrotehnika
-etn	-	etnograafia
-farm	-	farmaatsia
-filos	-	filosoofia
-folkl	-	folkloor
-fot	-	fotograafia
-füsiol	-	füsioloogia
-füüs	-	füüsika
-geogr	-	geograafia
-geol	-	geoloogia
-info	-	infotöötlus ja küberneetika
-jur	-	jurisprudents
-kal	-	kalandus
-keel	-	keeleteadus
-keem	-	keemia
-kirikl	-	kiriklik (luteri usuga seotud)
-kirj	-	kirjandusteadus
-kok	-	kokandus, kulinaaria
-kunst	-	kujutav kunst
-loog	-	loogika
-maj	-	majandusteadus ja majandus
-mat	-	matemaatika
-med	-	meditsiin
-mer	-	merendus
-meteor	-	meteoroloogia ja klimatoloogia
-mets	-	metsandus
-muus	-	muusika
-mäend	-	mäendus
-müt	-	mütoloogia
-nõuk	-	nõukogude, nõukogulik
-paleont	-	paleontoloogia
-ped	-	pedagoogika
-pol	-	poliitika
-psühh	-	psühholooogia
-põll	-	põllumajandus
-relig	-	religioon (uskumise, usundiga seotud)
-sport	-	sport ja kehakultuur
-sõj	-	sõjandus, riigikaitse
-zool	-	zooloogia
-teater	-	teater, teatriasjandus
-tehn	-	tehnika
-tekst	-	tekstiilindus
-trük	-	trükindus
-vet	-	veterinaaria
-arhit	-	arhitektuur
-aut	-	autondus
-film	-	filmikunst
-geod	-	geodeesia
-hüdr	-	hüdraulika ja hüdrotehnika
-jah	-	jahindus
-ker	-	keraamika
-kul	-	kulinaaria
-lenn	-	lennundus
-lgv	-	lingvistika
-meh	-	mehaanika
-mes	-	mesindus
-min	-	mineraloogia ja kristallograafia
-mull	-	mullandus
-nahat	-	nahatööstus
-paberit	-	tselluloosi- ja paberitööstus
-pat	-	patendindus
-puidut	-	puidutööstus
-raad	-	raadiotehnika
-raudt	-	raudtee
-side	-	sidendus
-sotsiol	-	sotsioloogia
-stat	-	statistika
-teed	-	teedeehitus ja teemajandus
+aiand	bolan	-	aiandus
+aj	bolan	-	ajalugu
+anat	bolan	-	anatoomia
+antr	bolan	-	antropoloogia
+arheol	bolan	-	arheoloogia
+astr	bolan	-	astronoomia
+bibl	bolan	-	bibliograafia
+biol	bolan	-	bioloogia
+bot	bolan	-	botaanika
+ehit	bolan	-	ehitusala
+el	bolan	-	elekter ja elektrotehnika
+etn	bolan	-	etnograafia
+farm	bolan	-	farmaatsia
+filos	bolan	-	filosoofia
+folkl	bolan	-	folkloor
+fot	bolan	-	fotograafia
+füsiol	bolan	-	füsioloogia
+füüs	bolan	-	füüsika
+geogr	bolan	-	geograafia
+geol	bolan	-	geoloogia
+info	bolan	-	infotöötlus ja küberneetika
+jur	bolan	-	jurisprudents
+kal	bolan	-	kalandus
+keel	bolan	-	keeleteadus
+keem	bolan	-	keemia
+kirikl	bolan	-	kiriklik (luteri usuga seotud)
+kirj	bolan	-	kirjandusteadus
+kok	bolan	-	kokandus, kulinaaria
+kunst	bolan	-	kujutav kunst
+loog	bolan	-	loogika
+maj	bolan	-	majandusteadus ja majandus
+mat	bolan	-	matemaatika
+med	bolan	-	meditsiin
+mer	bolan	-	merendus
+meteor	bolan	-	meteoroloogia ja klimatoloogia
+mets	bolan	-	metsandus
+muus	bolan	-	muusika
+mäend	bolan	-	mäendus
+müt	bolan	-	mütoloogia
+nõuk	bolan	-	nõukogude, nõukogulik
+paleont	bolan	-	paleontoloogia
+ped	bolan	-	pedagoogika
+pol	bolan	-	poliitika
+psühh	bolan	-	psühholooogia
+põll	bolan	-	põllumajandus
+relig	bolan	-	religioon (uskumise, usundiga seotud)
+sport	bolan	-	sport ja kehakultuur
+sõj	bolan	-	sõjandus, riigikaitse
+zool	bolan	-	zooloogia
+teater	bolan	-	teater, teatriasjandus
+tehn	bolan	-	tehnika
+tekst	bolan	-	tekstiilindus
+trük	bolan	-	trükindus
+vet	bolan	-	veterinaaria
+arhit	bolan	-	arhitektuur
+aut	bolan	-	autondus
+film	bolan	-	filmikunst
+geod	bolan	-	geodeesia
+hüdr	bolan	-	hüdraulika ja hüdrotehnika
+jah	bolan	-	jahindus
+ker	bolan	-	keraamika
+kul	bolan	-	kulinaaria
+lenn	bolan	-	lennundus
+lgv	bolan	-	lingvistika
+meh	bolan	-	mehaanika
+mes	bolan	-	mesindus
+min	bolan	-	mineraloogia ja kristallograafia
+mull	bolan	-	mullandus
+nahat	bolan	-	nahatööstus
+paberit	bolan	-	tselluloosi- ja paberitööstus
+pat	bolan	-	patendindus
+puidut	bolan	-	puidutööstus
+raad	bolan	-	raadiotehnika
+raudt	bolan	-	raudtee
+side	bolan	-	sidendus
+sotsiol	bolan	-	sotsioloogia
+stat	bolan	-	statistika
+teed	bolan	-	teedeehitus ja teemajandus
