@@ -1,0 +1,20 @@
+nom	-	nimetav, nominatiiv
+gen	-	genitiiv, omastav
+illat	-	illatiiv, sisseütlev
+imperf	-	imperfekt, lihtminevik
+impers	-	impersonaal, umbisikuline tegumood
+indekl	-	käändumatu
+iness	-	inessiiv, seesütlev
+adess	-	adessiiv, alalütlev
+part	-	partitiiv, osastav
+pl	-	pluural, mitmus
+pl elat	-	pluurali elatiiv, mitmuse seestütlev
+pl gen	-	pluurali genitiiv, mitmuse omastav
+pl illat	-	pluurali illatiiv, mitmuse sisseütlev
+pl iness	-	pluurali inessiiv, mitmuse seesütlev
+pl nom	-	pluurali nominatiiv, mitmuse nimetav
+pl part	-	pluurali partitiiv, mitmuse osastav
+pl term	-	pluurali terminatiiv, mitmuse rajav
+sg	-	singular, ainsus
+sg gen	-	sg genitiiv, ainsuse omastav
+sg part	-	singular partitiiv, ainsuse osastav
