@@ -5,12 +5,14 @@ drop table if exists rection;
 drop table if exists lexeme_domain;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
+drop table if exists lexeme_morph;
+drop table if exists lexeme_deriv;
 drop table if exists lexeme;
 drop table if exists definition;
 drop table if exists meaning;
 drop table if exists form;
 drop table if exists paradigm;
-drop table if exists declination;
+drop table if exists morph_homonym;
 drop table if exists word;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
@@ -206,12 +208,11 @@ create table word
   display_form varchar(255) null,
   components varchar(100) array null,
   lang char(3) references lang(code) null,
-  morph_code varchar(100) references morph(code) null,
-  dataset char(10) array not null
+  morph_code varchar(100) references morph(code) null
 );
 
--- muutmisviis
-create table declination
+-- morfoloogiline homonüüm
+create table morph_homonym
 (
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null
@@ -221,7 +222,7 @@ create table declination
 create table paradigm
 (
   id bigserial primary key,
-  declination_id bigint references declination(id) on delete cascade not null,
+  morph_homonym_id bigint references morph_homonym(id) on delete cascade not null,
   example text not null
 );
 
@@ -231,8 +232,7 @@ create table form
   id bigserial primary key,
   paradigm_id bigint references paradigm(id) on delete cascade not null,
   morph_code varchar(100) references morph(code) not null,
-  value text not null,
-  dataset char(10) array not null
+  value text not null
 );
 
 -- mõiste/tähendus
@@ -255,11 +255,11 @@ create table definition
 create table lexeme
 (
   id bigserial primary key,
-  declination_id bigint references declination(id) not null,
+  morph_homonym_id bigint references morph_homonym(id) not null,
   meaning_id bigint references meaning(id) not null,
   order_by varchar(100) not null default '',
   dataset char(10) array not null,
-  unique(declination_id, meaning_id)
+  unique(morph_homonym_id, meaning_id)
 );
 
 create table lexeme_domain
@@ -301,8 +301,7 @@ create table rection
 (
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
-  value text not null,
-  dataset char(10) array not null
+  value text not null
 );
 
 -- kasutusnäide/kontekst
@@ -310,8 +309,7 @@ create table usage
 (
   id bigserial primary key,
   rection_id bigint references rection(id) on delete cascade not null,
-  value text not null,
-  dataset char(10) array not null
+  value text not null
 );
 
 -- gramm.kasutusinfo
