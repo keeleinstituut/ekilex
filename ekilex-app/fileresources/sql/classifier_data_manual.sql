@@ -1,5 +1,6 @@
 insert into lang (code, value) values ('est', 'Estonian');
 insert into lang (code, value) values ('eng', 'English');
+insert into lang (code, value) values ('rus', 'Russian');
 insert into lang (code, value) values ('lat', 'Latin');
 
 insert into label_type (code, value) values ('capital', 'capital');
