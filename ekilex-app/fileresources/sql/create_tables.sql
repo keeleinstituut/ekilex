@@ -176,17 +176,17 @@ create table deriv_label
 -- seose liik
 create table lex_rel_type
 (
-  id bigserial primary key,
+  code varchar(100) primary key,
   dataset char(10) array not null
 );
 
 create table lex_rel_type_label
 (
-  lex_rel_type_id bigint references lex_rel_type(id) on delete cascade not null,
+  code varchar(100) references lex_rel_type(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
   type char(10) references label_type(code) not null,
-  unique(lex_rel_type_id, lang, type)
+  unique(code, lang, type)
 );
 
 ---------------------------
@@ -205,7 +205,6 @@ create table word
 (
   id bigserial primary key,
   value varchar(255) null,
-  display_form varchar(255) null,
   components varchar(100) array null,
   lang char(3) references lang(code) null,
   morph_code varchar(100) references morph(code) null
@@ -223,6 +222,7 @@ create table paradigm
 (
   id bigserial primary key,
   morph_homonym_id bigint references morph_homonym(id) on delete cascade not null,
+  display_form varchar(255) null,
   example text not null
 );
 
@@ -327,8 +327,8 @@ create table lex_relation
   id bigserial primary key,
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
-  lex_rel_type_id bigint references lex_rel_type(id) on delete cascade not null,
+  lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null,
   dataset char(10) array not null,
-  unique(lexeme1_id, lexeme2_id, lex_rel_type_id)
+  unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 

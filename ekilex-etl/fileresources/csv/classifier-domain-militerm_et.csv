@@ -69,9 +69,9 @@ DM	militerm	D	merevägi -> mereväe lahingutegevus
 DN	militerm	D	merevägi -> abilaevastik
 DO	militerm	D	merevägi -> allveelaevad
 DP	militerm	D	merevägi -> miinitõrje
-DR	militerm	D	merevägi -> mereväe õhukaitse
+DR	militerm	D	merevägi -> amfiibvägi
 DQ	militerm	D	merevägi -> tuukritööd
-DR	militerm	D	merevägi -> mereväe õhukaitse
+DS	militerm	D	merevägi -> mereväe õhukaitse
 DZ	militerm	D	merevägi -> liigitamata terminid
 DX	militerm	D	merevägi -> ajutine liigitus
 EA	militerm	E	relvad ja relvasüsteemid -> üldine

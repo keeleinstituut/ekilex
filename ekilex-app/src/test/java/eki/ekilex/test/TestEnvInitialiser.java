@@ -19,11 +19,15 @@ public class TestEnvInitialiser {
 
 	public void initDatabase() throws Exception {
 
-		final String createTablesScriptFilePath = "./fileresources/sql/create_tables.sql";
-		final String testDataScriptFilePath = "./fileresources/sql/test_data.sql";
+		final String scriptFilePath1 = "./fileresources/sql/create_tables.sql";
+		final String scriptFilePath2 = "./fileresources/sql/classifier_data_manual.sql";
+		final String scriptFilePath3 = "./fileresources/sql/classifier_data_autom.sql";
+		final String scriptFilePath4 = "./fileresources/sql/test_data.sql";
 
-		executeScriptFile(createTablesScriptFilePath);
-		executeScriptFile(testDataScriptFilePath);
+		executeScriptFile(scriptFilePath1);
+		executeScriptFile(scriptFilePath2);
+		executeScriptFile(scriptFilePath3);
+		executeScriptFile(scriptFilePath4);
 	}
 
 	public void executeScriptFile(String scriptFilePath) throws Exception {

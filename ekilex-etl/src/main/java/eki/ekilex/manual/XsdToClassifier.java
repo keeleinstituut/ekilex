@@ -22,8 +22,8 @@ import eki.ekilex.constant.SystemConstant;
 
 /*
  * valdkond: v_tyyp
- * sõnaliik: sl_tyyp
- * vormi märgend: vk_tyyp
+ * sõnaliik: sl_tyyp - ei kõlba!
+ * vormi märgend: vk_tyyp - ei kõlba!
  * register=stiil: s_tyyp
  */
 public class XsdToClassifier implements SystemConstant {
@@ -36,16 +36,16 @@ public class XsdToClassifier implements SystemConstant {
 	private static final String CLASSIF_XPATH = "//xs:simpleType[@name='" + CLASSIF_KEY_PLACEHOLDER + "']/xs:restriction/xs:enumeration";
 	private static final String CLASSIF_LANG_XPATH = "//xs:simpleType/xs:restriction/xs:enumeration/xs:annotation/xs:documentation[boolean(@xml:lang) and text()]";
 	private static final String CLASSIF_DOMAIN_KEY = "v_tyyp";
-	private static final String CLASSIF_POS_KEY = "sl_tyyp";
-	private static final String CLASSIF_MORPH_KEY = "vk_tyyp";
+	//private static final String CLASSIF_POS_KEY = "sl_tyyp";
+	//private static final String CLASSIF_MORPH_KEY = "vk_tyyp";
 	private static final String CLASSIF_REGISTER_KEY = "s_tyyp";
 
 	public static void main(String[] args) throws Exception {
 
 		final String origDataFilesRootPath = "/projects/eki/data/bolan";
 		final String classifDomainFilePath = "./fileresources/csv/classifier-domain-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
-		final String classifPosFilePath = "./fileresources/csv/classifier-pos-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
-		final String classifMorphFilePath = "./fileresources/csv/classifier-morph-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
+		//final String classifPosFilePath = "./fileresources/csv/classifier-pos-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
+		//final String classifMorphFilePath = "./fileresources/csv/classifier-morph-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
 		final String classifRegisterFilePath = "./fileresources/csv/classifier-register-" + ORIGIN + "_" + CLASSIF_LANG_PLACEHOLDER + ".csv";
 
 		long t1, t2;
@@ -67,8 +67,8 @@ public class XsdToClassifier implements SystemConstant {
 		List<String> classifLangs = collectClassifierLanguages(origDataDocs);
 
 		composeClassifierFile(origDataDocs, CLASSIF_DOMAIN_KEY, classifLangs, classifDomainFilePath);
-		composeClassifierFile(origDataDocs, CLASSIF_POS_KEY, classifLangs, classifPosFilePath);
-		composeClassifierFile(origDataDocs, CLASSIF_MORPH_KEY, classifLangs, classifMorphFilePath);
+		//composeClassifierFile(origDataDocs, CLASSIF_POS_KEY, classifLangs, classifPosFilePath);
+		//composeClassifierFile(origDataDocs, CLASSIF_MORPH_KEY, classifLangs, classifMorphFilePath);
 		composeClassifierFile(origDataDocs, CLASSIF_REGISTER_KEY, classifLangs, classifRegisterFilePath);
 
 		t2 = System.currentTimeMillis();
