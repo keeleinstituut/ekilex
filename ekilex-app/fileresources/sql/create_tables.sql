@@ -223,7 +223,7 @@ create table paradigm
   id bigserial primary key,
   morph_homonym_id bigint references morph_homonym(id) on delete cascade not null,
   display_form varchar(255) null,
-  example text not null
+  example text null
 );
 
 -- vorm

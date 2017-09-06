@@ -24,21 +24,28 @@ public class TestEnvInitialiser {
 		final String scriptFilePath3 = "./fileresources/sql/classifier_data_autom.sql";
 		final String scriptFilePath4 = "./fileresources/sql/test_data.sql";
 
-		executeScriptFile(scriptFilePath1);
-		executeScriptFile(scriptFilePath2);
-		executeScriptFile(scriptFilePath3);
-		executeScriptFile(scriptFilePath4);
+		executeSqlScriptFile(scriptFilePath1);
+		executeSqlScriptFile(scriptFilePath2);
+		executeSqlScriptFile(scriptFilePath3);
+		executeSqlScriptFile(scriptFilePath4);
 	}
 
-	public void executeScriptFile(String scriptFilePath) throws Exception {
+	public String getSqlScript(String sqlScriptFilePath) throws Exception {
 
-		File scriptFile = new File(scriptFilePath);
-		if (!scriptFile.exists()) {
-			throw new FileNotFoundException("Could not find specified database script: " + scriptFilePath);
+		File sqlScriptFile = new File(sqlScriptFilePath);
+		if (!sqlScriptFile.exists()) {
+			throw new FileNotFoundException("Could not find specified database script: " + sqlScriptFilePath);
 		}
-		FileInputStream scriptFileInputStream = new FileInputStream(scriptFile);
-		String scriptFileContent = IOUtils.toString(scriptFileInputStream, SystemConstant.UTF_8);
-		scriptFileInputStream.close();
+		FileInputStream sqlScriptFileInputStream = new FileInputStream(sqlScriptFile);
+		String sqlScriptFileContent = IOUtils.toString(sqlScriptFileInputStream, SystemConstant.UTF_8);
+		sqlScriptFileInputStream.close();
+		return sqlScriptFileContent;
+	}
+
+	public void executeSqlScriptFile(String sqlScriptFilePath) throws Exception {
+
+		String scriptFileContent = getSqlScript(sqlScriptFilePath);
 		basicDbService.executeScript(scriptFileContent);
 	}
+
 }
