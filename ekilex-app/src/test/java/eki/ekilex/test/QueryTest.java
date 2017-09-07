@@ -1,5 +1,8 @@
 package eki.ekilex.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
@@ -9,6 +12,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,4 +63,116 @@ public class QueryTest {
 		assertTrue("Incorrect query result", resultWords.contains("linnahall"));
 		assertTrue("Incorrect query result", resultWords.contains("tumehall"));
 	}
+
+	@Test
+	public void testQueryWordDefinitions() throws Exception {
+
+		final String sqlScriptFilePath = "./fileresources/sql/test_query_word_definitions.sql";
+		final String wordPrefix = "hall%";
+		final String labelLang = "est";
+		final String labelType = "descrip";
+
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("wordPrefix", wordPrefix);
+		paramMap.put("labelLang", labelLang);
+		paramMap.put("labelType", labelType);
+
+		String sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath);
+		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
+		int resultCount = results.size();
+
+		assertEquals("Incorrect result count", 21, resultCount);
+
+		String word;
+		Object definition;
+		int existingDefinitionCount = 0;
+
+		for (Map<String, Object> result : results) {
+			word = result.get("word").toString();
+			definition = result.get("definition");
+			if (definition != null) {
+				existingDefinitionCount++;
+			}
+			if (StringUtils.equals(word, "hallasääsk")) {
+				assertNull("Incorrect result", definition);
+			}
+		}
+
+		assertEquals("Incorrect result count", 12, existingDefinitionCount);
+	}
+
+	@Test
+	public void testQueryCompareDatasetsWords() throws Exception {
+
+		final String sqlScriptFilePath1 = "./fileresources/sql/test_query_datasets_common_words.sql";
+		final String sqlScriptFilePath2 = "./fileresources/sql/test_query_datasets_incommon_words.sql";
+		final String dataset1 = "eos";
+		final String dataset2 = "ss_";
+
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("dataset1", dataset1);
+		paramMap.put("dataset2", dataset2);
+
+		String sqlScript;
+		List<Map<String, Object>> results;
+		int resultCount;
+
+		sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath1);
+		results = basicDbService.queryList(sqlScript, paramMap);
+		resultCount = results.size();
+
+		assertEquals("Incorrect result count", 1, resultCount);
+
+		sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath2);
+		results = basicDbService.queryList(sqlScript, paramMap);
+		resultCount = results.size();
+
+		assertEquals("Incorrect result count", 12, resultCount);
+	}
+
+	@Test
+	public void testQueryDefinitionWords() throws Exception {
+
+		final String sqlScriptFilePath = "./fileresources/sql/test_query_definition_words.sql";
+
+		Map<String, String> paramMap = new HashMap<>();
+
+		String sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath);
+		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
+		int resultCount = results.size();
+
+		assertEquals("Incorrect result count", 6, resultCount);
+
+		Map<String, Integer> definitionWordsCountMap = new HashMap<>();
+		Map<String, List<String>> definitionWordsMap = new HashMap<>();
+		List<String> definitionWords;
+
+		for (Map<String, Object> result : results) {
+			String definition = result.get("definition").toString();
+			String word = result.get("word").toString();
+			definitionWords = definitionWordsMap.get(definition);
+			if (definitionWords == null) {
+				definitionWords = new ArrayList<>();
+				definitionWordsMap.put(definition, definitionWords);
+			}
+			assertFalse("Incorrect query result", definitionWords.contains(word));
+			definitionWords.add(word);
+			Integer wordCount = definitionWordsCountMap.get(definition);
+			if (wordCount == null) {
+				wordCount = 1;
+			} else {
+				wordCount++;
+			}
+			definitionWordsCountMap.put(definition, wordCount);
+		}
+
+		for (Integer wordCount : definitionWordsCountMap.values()) {
+			assertTrue("Incorrect result count", wordCount > 1);
+		}
+	}
+
+	// TODO test
+	//test_query_diff_lang_word_match.sql
+	//test_query_word_forms.sql
+	//test_query_words_relations.sql
 }
