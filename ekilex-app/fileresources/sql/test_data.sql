@@ -47,7 +47,7 @@ insert into meaning (id, dataset) values (2026, '{eos}');
 insert into meaning (id, dataset) values (2027, '{eos}');
 
 insert into definition (meaning_id, value, dataset) values (2001, 'külmunud kaste maas', '{eos}');
-insert into definition (meaning_id, value, dataset) values (2002, 'avar üldkasutatav hoone v ruum; suur esinduslik ruum elamus, kodasaal', '{eos}');
+insert into definition (meaning_id, value, dataset) values (2002, 'avar üldkasutatav hoone v ruum', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2004, 'temperatuuri langemisel alla 0 °C õhus olevast veeaurust tekkinud ebaühtlane jääkristallide kiht maapinnal, taimedel ja esemetel (hrl. kevadel ja sügisel)', '{ss_}');
 insert into definition (meaning_id, value, dataset) values (2005, 'värvuselt musta ja valge vahepealne', '{ss_}');
 insert into definition (meaning_id, value, dataset) values (2006, 'valge ja pimeda vahepealne, hämar; sombune', '{ss_}');
@@ -60,6 +60,7 @@ insert into definition (meaning_id, value, dataset) values (2016, 'suur esik; sa
 insert into definition (meaning_id, value, dataset) values (2021, 'suur selvekauplus, kus peale toiduainete müüakse ka muid igapäevakaupu', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2025, 'hiirekarva hall', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2026, 'rõdu, eriti kirikus', '{eos}');
+insert into definition (meaning_id, value, dataset) values (2002, 'suur esinduslik ruum elamus, kodasaal', '{eos}');
 
 insert into morph_homonym (id, word_id) values (10001, 1002);
 insert into morph_homonym (id, word_id) values (10002, 1002);
