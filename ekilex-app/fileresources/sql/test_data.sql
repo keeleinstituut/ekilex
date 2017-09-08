@@ -17,7 +17,6 @@ insert into word (id, value, components, lang, morph_code) values (1015, 'зам
 insert into word (id, value, components, lang, morph_code) values (1016, 'серый', '{серый}', 'rus', 'SgN');
 insert into word (id, value, components, lang, morph_code) values (1017, 'холл', '{холл}', 'rus', 'SgN');
 
-
 insert into meaning (id, dataset) values (2001, '{eos}');
 insert into meaning (id, dataset) values (2002, '{eos}');
 insert into meaning (id, dataset) values (2003, '{eos}');
@@ -48,6 +47,7 @@ insert into meaning (id, dataset) values (2027, '{eos}');
 
 insert into definition (meaning_id, value, dataset) values (2001, 'külmunud kaste maas', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2002, 'avar üldkasutatav hoone v ruum', '{eos}');
+insert into definition (meaning_id, value, dataset) values (2002, 'suur esinduslik ruum elamus, kodasaal', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2004, 'temperatuuri langemisel alla 0 °C õhus olevast veeaurust tekkinud ebaühtlane jääkristallide kiht maapinnal, taimedel ja esemetel (hrl. kevadel ja sügisel)', '{ss_}');
 insert into definition (meaning_id, value, dataset) values (2005, 'värvuselt musta ja valge vahepealne', '{ss_}');
 insert into definition (meaning_id, value, dataset) values (2006, 'valge ja pimeda vahepealne, hämar; sombune', '{ss_}');
@@ -60,7 +60,6 @@ insert into definition (meaning_id, value, dataset) values (2016, 'suur esik; sa
 insert into definition (meaning_id, value, dataset) values (2021, 'suur selvekauplus, kus peale toiduainete müüakse ka muid igapäevakaupu', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2025, 'hiirekarva hall', '{eos}');
 insert into definition (meaning_id, value, dataset) values (2026, 'rõdu, eriti kirikus', '{eos}');
-insert into definition (meaning_id, value, dataset) values (2002, 'suur esinduslik ruum elamus, kodasaal', '{eos}');
 
 insert into morph_homonym (id, word_id) values (10001, 1002);
 insert into morph_homonym (id, word_id) values (10002, 1002);
@@ -80,8 +79,6 @@ insert into morph_homonym (id, word_id) values (10015, 1014);
 insert into morph_homonym (id, word_id) values (10016, 1015);
 insert into morph_homonym (id, word_id) values (10017, 1016);
 insert into morph_homonym (id, word_id) values (10018, 1017);
-
-
 
 insert into paradigm (id, morph_homonym_id, display_form, example) values (11001, 10001, 'h`all', 'tark');
 insert into paradigm (id, morph_homonym_id, display_form, example) values (11002, 10002, 'h`al''l', 'kurt');
@@ -148,6 +145,7 @@ insert into lexeme (id, morph_homonym_id, meaning_id, dataset) values (4029, 100
 insert into lexeme (id, morph_homonym_id, meaning_id, dataset) values (4030, 10015, 2014, '{evs}');
 insert into lexeme (id, morph_homonym_id, meaning_id, dataset) values (4031, 10016, 2015, '{evs}');
 insert into lexeme (id, morph_homonym_id, meaning_id, dataset) values (4032, 10017, 2016, '{evs}');
+insert into lexeme (id, morph_homonym_id, meaning_id, dataset) values (4033, 10018, 2016, '{evs}');
 
 insert into lex_relation (lexeme1_id, lexeme2_id, lex_rel_type_code, dataset) values (4001, 4017, 'comp', '{eos}');
 insert into lex_relation (lexeme1_id, lexeme2_id, lex_rel_type_code, dataset) values (4001, 4018, 'comp', '{eos}');
