@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.AppData;
@@ -18,6 +19,12 @@ public class AppDataHolder {
 	@Autowired
 	private ServletContext servletContext;
 
+	@Value("${app.name:n/a}")
+	private String appName;
+
+	@Value("${app.version:n/a}")
+	private String appVersion;
+
 	private AppData appData = null;
 
 	public AppData getAppData(HttpServletRequest request, String pomPath) {
@@ -26,8 +33,6 @@ public class AppDataHolder {
 			return appData;
 		}
 
-		String appName = "n/a";
-		String appVersion = "n/a";
 		int sessionTimeout = 0;
 		InputStream pomStream = null;
 		try {
