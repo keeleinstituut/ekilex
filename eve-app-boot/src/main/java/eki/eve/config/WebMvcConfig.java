@@ -26,56 +26,56 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 
-    @Autowired
-    private PageRequestPostHandler pageRequestPostHandler;
+	@Autowired
+	private PageRequestPostHandler pageRequestPostHandler;
 
-    @Value("${spring.thymeleaf.cache}")
-    private Boolean cacheTemplates;
+	@Value("${spring.thymeleaf.cache}")
+	private Boolean cacheTemplates;
 
-    private ApplicationContext applicationContext;
+	private ApplicationContext applicationContext;
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
-    }
+	@Override
+	public void setApplicationContext(ApplicationContext applicationContext) {
+		this.applicationContext = applicationContext;
+	}
 
-    @Bean
-    public ITemplateResolver templateResolver() {
-        SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
-        resolver.setApplicationContext(applicationContext);
-        resolver.setPrefix("classpath:/view/html/");
-        resolver.setSuffix(".html");
-        resolver.setCacheable(cacheTemplates);
-        return resolver;
-    }
+	@Bean
+	public ITemplateResolver templateResolver() {
+		SpringResourceTemplateResolver resolver = new SpringResourceTemplateResolver();
+		resolver.setApplicationContext(applicationContext);
+		resolver.setPrefix("classpath:/view/html/");
+		resolver.setSuffix(".html");
+		resolver.setCacheable(cacheTemplates);
+		return resolver;
+	}
 
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine engine = new SpringTemplateEngine();
-        engine.setTemplateResolver(templateResolver());
-        engine.setEnableSpringELCompiler(true);
-        engine.addDialect(new SpringSecurityDialect());
-        engine.addDialect(new Java8TimeDialect());
-        return engine;
-    }
+	@Bean
+	public SpringTemplateEngine templateEngine() {
+		SpringTemplateEngine engine = new SpringTemplateEngine();
+		engine.setTemplateResolver(templateResolver());
+		engine.setEnableSpringELCompiler(true);
+		engine.addDialect(new SpringSecurityDialect());
+		engine.addDialect(new Java8TimeDialect());
+		return engine;
+	}
 
-    @Bean
-    public ViewResolver viewResolver() {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine());
-        resolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
-        return resolver;
-    }
+	@Bean
+	public ViewResolver viewResolver() {
+		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+		resolver.setTemplateEngine(templateEngine());
+		resolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
+		return resolver;
+	}
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry){
-        registry.addInterceptor(pageRequestPostHandler).addPathPatterns("/**");
-    }
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		registry.addInterceptor(pageRequestPostHandler).addPathPatterns("/**");
+	}
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/view/css/**").addResourceLocations("classpath:/view/css/");
-        registry.addResourceHandler("/view/js/**").addResourceLocations("classpath:/view/js/");
-        registry.addResourceHandler("/view/img/**").addResourceLocations("classpath:/view/img/");
-    }
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/view/css/**").addResourceLocations("classpath:/view/css/");
+		registry.addResourceHandler("/view/js/**").addResourceLocations("classpath:/view/js/");
+		registry.addResourceHandler("/view/img/**").addResourceLocations("classpath:/view/img/");
+	}
 }

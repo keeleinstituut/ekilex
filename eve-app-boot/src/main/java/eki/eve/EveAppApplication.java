@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"eki.common","eki.eve"})
+@ComponentScan(basePackages = {"eki.common", "eki.eve"})
 public class EveAppApplication {
 
 	public static void main(String[] args) {
