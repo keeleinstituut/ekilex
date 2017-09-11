@@ -1,4 +1,3 @@
--- TODO test
 -- query words relations
 select w_r.word,
        case
@@ -27,7 +26,7 @@ from (select w1.word word,
                               lexeme l
                          where mh.word_id = w.id
                          and   l.morph_homonym_id = mh.id) w2 on lr.lexeme2_id = w2.lexeme2_id
-        left outer join lex_rel_type_label lrtl on lrtl.code = lr.lex_rel_type_code and lrtl.lang = 'est' and lrtl.type = 'full'
+        left outer join lex_rel_type_label lrtl on lrtl.code = lr.lex_rel_type_code and lrtl.lang = :defaultLabelLang and lrtl.type = :defaultLabelType
       order by w1.word) w_r
 group by w_r.word,
          w_r.rel_exists

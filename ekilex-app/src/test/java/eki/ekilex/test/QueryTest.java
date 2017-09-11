@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -171,8 +172,99 @@ public class QueryTest {
 		}
 	}
 
-	// TODO test
-	//test_query_diff_lang_word_match.sql
-	//test_query_word_forms.sql
-	//test_query_words_relations.sql
+	@Test
+	public void testQueryDifferentLangMatchingMeaningWords() throws Exception {
+
+		final String sqlScriptFilePath = "./fileresources/sql/test_query_diff_lang_word_match.sql";
+		final String lang1 = "est";
+
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("lang1", lang1);
+
+		String sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath);
+		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
+		int resultCount = results.size();
+
+		String word1, word2;
+		for (Map<String, Object> result : results) {
+			word1 = result.get("word1").toString();
+			word2 = result.get("word2").toString();
+			assertEquals("Incorrect result", "hall", word1);
+			assertFalse("Incorrect result", StringUtils.equals(word1, word2));
+		}
+
+		assertEquals("Incorrect result count", 3, resultCount);
+	}
+
+	@Test
+	public void testQueryWordForms() throws Exception {
+
+		final String sqlScriptFilePath = "./fileresources/sql/test_query_word_forms.sql";
+		final String word = "väär";
+		final String defaultLabelLang = "est";
+		final String defaultLabelType = "descrip";
+
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("word", word);
+		paramMap.put("defaultLabelLang", defaultLabelLang);
+		paramMap.put("defaultLabelType", defaultLabelType);
+
+		String sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath);
+		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
+		int resultCount = results.size();
+
+		List<Long> morphHomonymIds = new ArrayList<>();
+		List<Long> paradigmIds = new ArrayList<>();
+		Long morphHomonymId;
+		Long paradigmId;
+
+		for (Map<String, Object> result : results) {
+			morphHomonymId = Long.valueOf(result.get("morph_homonym_id").toString());
+			paradigmId = Long.valueOf(result.get("paradigm_id").toString());
+			if (!morphHomonymIds.contains(morphHomonymId)) {
+				morphHomonymIds.add(morphHomonymId);
+			}
+			if (!paradigmIds.contains(paradigmId)) {
+				paradigmIds.add(paradigmId);
+			}
+		}
+
+		assertEquals("Incorrect result count", 2, morphHomonymIds.size());
+		assertEquals("Incorrect result count", 3, paradigmIds.size());
+		assertEquals("Incorrect result count", 9, resultCount);
+	}
+
+	@Test
+	public void testQueryWordsRelations() throws Exception {
+		
+		final String sqlScriptFilePath = "./fileresources/sql/test_query_words_relations.sql";
+		final String defaultLabelLang = "est";
+		final String defaultLabelType = "full";
+
+		Map<String, String> paramMap = new HashMap<>();
+		paramMap.put("defaultLabelLang", defaultLabelLang);
+		paramMap.put("defaultLabelType", defaultLabelType);
+
+		String sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath);
+		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
+
+		Array relationsObj;
+		String[] relations;
+		List<String> relationsControlList;
+
+		for (Map<String, Object> result : results) {
+			relationsObj = (Array) result.get("relations");
+			if (relationsObj == null) {
+				continue;
+			}
+			relations = (String[]) relationsObj.getArray();
+			relationsControlList = new ArrayList<>();
+			for (String relation : relations) {
+				if (!relationsControlList.contains(relation)) {
+					relationsControlList.add(relation);
+				}
+			}
+			assertTrue("Incorrect results", relationsControlList.size() == relations.length);
+		}
+	}
 }
