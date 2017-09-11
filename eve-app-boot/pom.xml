@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eki.eve</groupId>
-	<artifactId>eve-app</artifactId>
+	<artifactId>eve-app-boot</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>eve-app</name>
+	<name>eve-app-boot</name>
 	<description>Eve App Spring Boot version</description>
 
 	<parent>
