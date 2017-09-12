@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Eest-Vene-Eesti</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" type="text/css" th:href="@{/view/css/bootstrap.css}"/>
+</head>
+
+<body>
+
+<div class="container-fluid">
+  <div class="card mt-4" style="width: 40rem;">
+    <div class="card-body">
+      <h1 class="card-title">Tere</h1>
+      <p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

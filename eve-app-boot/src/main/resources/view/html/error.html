@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Viga</title>
+  <link rel="stylesheet" type="text/css" th:href="@{/view/css/bootstrap.css}"/>
+</head>
+<body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
+
+<div class="container-fluid">
+  <div class="card mt-4">
+    <div class="card-body">
+      <h4 class="card-title" th:text="${errorName}"></h4>
+      <p class="card-text" th:text="${errorDescription}"></p>
+      <p th:unless="${httpStatus.value() == 200}" th:text="|${httpStatus} - ${httpStatus.reasonPhrase}|"></p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
