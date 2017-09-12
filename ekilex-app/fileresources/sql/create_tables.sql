@@ -200,29 +200,19 @@ create table dataset
   name text not null
 );
 
--- keelend
+-- keelend (morfoloogiline homonüüm)
 create table word
 (
   id bigserial primary key,
-  value varchar(255) null,
-  components varchar(100) array null,
   lang char(3) references lang(code) null,
   morph_code varchar(100) references morph(code) null
-);
-
--- morfoloogiline homonüüm
-create table morph_homonym
-(
-  id bigserial primary key,
-  word_id bigint references word(id) on delete cascade not null
 );
 
 -- paradigma
 create table paradigm
 (
   id bigserial primary key,
-  morph_homonym_id bigint references morph_homonym(id) on delete cascade not null,
-  display_form varchar(255) null,
+  word_id bigint references word(id) on delete cascade not null,
   example text null
 );
 
@@ -232,7 +222,10 @@ create table form
   id bigserial primary key,
   paradigm_id bigint references paradigm(id) on delete cascade not null,
   morph_code varchar(100) references morph(code) not null,
-  value text not null
+  value text not null,
+  components varchar(100) array null,
+  display_form varchar(255) null,
+  is_word boolean default false
 );
 
 -- mõiste/tähendus
@@ -255,11 +248,11 @@ create table definition
 create table lexeme
 (
   id bigserial primary key,
-  morph_homonym_id bigint references morph_homonym(id) not null,
+  word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
   order_by varchar(100) not null default '',
   dataset char(10) array not null,
-  unique(morph_homonym_id, meaning_id)
+  unique(word_id, meaning_id)
 );
 
 create table lexeme_domain

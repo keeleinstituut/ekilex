@@ -1,4 +1,3 @@
--- TODO test
 -- query words in different langs with matching meaning
 select
 w_1.word word1,
@@ -27,4 +26,4 @@ and   l.meaning_id = m.id) w_2
 where
 w_1.meaning_id = w_2.meaning_id
 and w_1.lang != w_2.lang
-and w_1.lang = 'est';
+and w_1.lang = :lang1;

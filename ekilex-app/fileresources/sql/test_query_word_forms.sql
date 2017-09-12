@@ -1,4 +1,3 @@
--- TODO test
 -- query word morph homonyms, paradigms and forms
 select w.value word,
        wm.code word_morph_code,
@@ -14,6 +13,6 @@ from word w
      inner join form f on f.paradigm_id = p.id
      inner join morph wm on w.morph_code = wm.code
      inner join morph fm on f.morph_code = fm.code
-     left outer join morph_label wml on wml.code = wm.code and wml.lang = 'est' and wml.type = 'descrip'
-     left outer join morph_label fml on fml.code = fm.code and fml.lang = 'est' and fml.type = 'descrip'
-where w.value = 'väär';
+     left outer join morph_label wml on wml.code = wm.code and wml.lang = :defaultLabelLang and wml.type = :defaultLabelType
+     left outer join morph_label fml on fml.code = fm.code and fml.lang = :defaultLabelLang and fml.type = :defaultLabelType
+where w.value = :word;
