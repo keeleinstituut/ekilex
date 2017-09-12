@@ -1,6 +1,6 @@
 -- search words and definitions by word prefix
-select w.id word_id,
-       w.value word,
+select w.word_id,
+       w.word,
        w.components,
        w.morph_code word_morph_code,
        wml.value word_morph_value,
@@ -8,13 +8,21 @@ select w.id word_id,
        m.id meaning_id,
        d.value definition,
        l.dataset lexeme_dataset
-from word w
+from (select w.id word_id,
+             f.value word,
+             f.components,
+             f.morph_code
+      from word w,
+           paradigm p,
+           form f
+      where f.paradigm_id = p.id
+      and   p.word_id = w.id
+      and   f.is_word = true) w
   inner join morph wm on w.morph_code = wm.code
   inner join morph_label wml on wml.code = wm.code and wml.lang = :labelLang and wml.type = :labelType
-  inner join morph_homonym mh on mh.word_id = w.id
-  inner join lexeme l on l.morph_homonym_id = mh.id
+  inner join lexeme l on l.word_id = w.word_id
   inner join meaning m on m.id = l.meaning_id
   left outer join definition d on d.meaning_id = m.id
-where w.value like :wordPrefix
-order by w.value,
+where w.word like :wordPrefix
+order by w.word,
          l.id;
