@@ -78,7 +78,11 @@ insert into paradigm (id, word_id, example) values (11012, 1012, '');
 insert into paradigm (id, word_id, example) values (11013, 1013, '');
 insert into paradigm (id, word_id, example) values (11014, 1014, 'riik');
 insert into paradigm (id, word_id, example) values (11015, 1015, 'külm');
-insert into paradigm (id, word_id, example) values (11016, 1016, 'õpik');
+insert into paradigm (id, word_id, example) values (11016, 1015, 'õpik');
+insert into paradigm (id, word_id, example) values (11017, 1016, '');
+insert into paradigm (id, word_id, example) values (11018, 1017, '');
+insert into paradigm (id, word_id, example) values (11019, 1018, '');
+
 
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11001, 'SgN', 'hall', '{hall}', 'hall', true);
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11001, 'SgG', 'halla', '{hall}', 'halla', false);
@@ -106,6 +110,10 @@ insert into form (paradigm_id, morph_code, value, components, display_form, is_w
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11016, 'SgN', 'väär', '{väär}', 'v`äär', true);
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11016, 'SgG', 'väära', '{väär}', 'v`äära', false);
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11016, 'SgP', 'väärat', '{väär}', 'v`äärat', false);
+insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11017, 'PlN', 'заморозки', '{заморозки}', 'заморозки', true);
+insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11018, 'SgN', 'серый', '{серый}', 'серый', true);
+insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11019, 'SgN', 'холл', '{холл}', 'холл', true);
+
 
 insert into lexeme (id, word_id, meaning_id, dataset) values (4001, 1002, 2001, '{eos}');
 insert into lexeme (id, word_id, meaning_id, dataset) values (4002, 1002, 2002, '{eos}');
