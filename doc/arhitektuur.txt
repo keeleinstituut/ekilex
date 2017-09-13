@@ -29,13 +29,7 @@ ekilex/ekilex-app>mvn tomcat7:run -P devsrvrun
 http://localhost:5555/ (html)
 http://localhost:5555/data/app (json)
 
-ekilex/eve-app>mvn tomcat7:run -P devsrvrun
+ekilex/eve-app>mvn spring-boot:run
 
 http://localhost:5566/ (html)
 http://localhost:5566/data/app (json)
-
-eve-app Spring boot versiooni käivitamiseks
-
-ekilex/eve-app-boot>mvn spring-boot:run
-
-http://localhost:5566/ (html)
