@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(~{::title},_)">
+<head th:replace="common :: common_header(~{::title},~{::links})">
   <title th:text="#{search.title}">EVE otsing</title>
+  <th:block th:fragment="links">
+    <script type="text/javascript" th:src="@{/view/js/eve-search.js}"></script>
+  </th:block>
 </head>
 
 <body>
@@ -31,7 +34,7 @@
     </div>
   </div>
   <div class="mt-4 ml-4" th:if="${searchResults != null}">
-    <table name="results">
+    <table id="results">
       <tr th:each="item : ${searchResults}">
         <td>
           <span th:text="${item}">vorm 1</span>
@@ -44,17 +47,7 @@
 </div>
 
 <script th:inline="javascript">
-    $(function () {
-        $('[name="results"]').find('[name="details"]').on('click', function (e) {
-            var id = $(e.target).data('id');
-            $.get('/details?id=' + id).done(function (data) {
-                $('[name="' + id + '_details"]').replaceWith(data);
-            }).fail(function (data) {
-                console.log(data);
-                alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
-            });
-        });
-    });
+  initialize();
 </script>
 
 </body>
