@@ -30,14 +30,32 @@
       </form>
     </div>
   </div>
-  <div class="mt-4" th:if="${searchResults != null}">
-    <table>
+  <div class="mt-4 ml-4" th:if="${searchResults != null}">
+    <table name="results">
       <tr th:each="item : ${searchResults}">
-        <td th:text="${item}">vorm 1</td>
+        <td>
+          <span th:text="${item}">vorm 1</span>
+          <button type="button" class="btn btn-link" th:data-id="${item}" name="details">Detailid</button>
+          <div th:name="${item}+'_details'"></div>
+        </td>
       </tr>
     </table>
   </div>
 </div>
+
+<script th:inline="javascript">
+    $(function () {
+        $('[name="results"]').find('[name="details"]').on('click', function (e) {
+            var id = $(e.target).data('id');
+            $.get('/details?id=' + id).done(function (data) {
+                $('[name="' + id + '_details"]').replaceWith(data);
+            }).fail(function (data) {
+                console.log(data);
+                alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+            });
+        });
+    });
+</script>
 
 </body>
 </html>
