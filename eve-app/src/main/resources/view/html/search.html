@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+  <title th:text="#{search.title}">EVE otsing</title>
+  <th:block th:fragment="links">
+    <script type="text/javascript" th:src="@{/view/js/eve-search.js}"></script>
+  </th:block>
+</head>
+
+<body>
+
+<div class="container-fluid">
+  <div class="d-flex flex-row"><p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p></div>
+  <div class="card mt-4">
+    <div class="card-header">
+      <h5 class="card-title" th:text="#{search.title}">Vormi otsing</h5>
+    </div>
+    <div class="card-body">
+      <form th:action="@{/search}">
+        <div class="form-row">
+          <div class="col-4">
+            <div class="form-group row">
+              <label class="col-2 col-form-label">Otsing</label>
+              <div class="col-10">
+                <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <button type="submit" class="btn btn-primary">Otsi</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <div class="mt-4 ml-4" th:if="${searchResults != null}">
+    <table id="results">
+      <tr th:each="item : ${searchResults}">
+        <td>
+          <span th:text="${item}">vorm 1</span>
+          <button type="button" class="btn btn-link" th:data-id="${item}" name="details">Detailid</button>
+          <div th:name="${item}+'_details'"></div>
+        </td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  initialize();
+</script>
+
+</body>
+</html>
