@@ -9,6 +9,7 @@
   <div class="card mt-4">
     <div class="card-body">
       <h4 class="card-title" th:text="${errorName}"></h4>
+      <p class="card-text" th:text="${errorId}" th:if="${errorId != null}"></p>
       <p class="card-text" th:text="${errorDescription}"></p>
       <p th:unless="${httpStatus.value() == 200}" th:text="|${httpStatus} - ${httpStatus.reasonPhrase}|"></p>
     </div>
