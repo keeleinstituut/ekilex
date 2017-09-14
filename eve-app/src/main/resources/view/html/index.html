@@ -1,16 +1,12 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head>
-  <title>Eest-Vene-Eesti</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <link rel="stylesheet" type="text/css" th:href="@{/view/css/bootstrap.css}"/>
+<head th:replace="common :: common_header(~{::title},_)">
+  <title th:text="#{index.title}">EVE otsing</title>
 </head>
 
 <body>
 
 <div class="container-fluid">
-  <a th:href="@{/?lang=et}">Eesti</a>
-  <a th:href="@{/?lang=en}" class="ml-2">English</a>
   <div class="card mt-4" style="width: 40rem;">
     <div class="card-body">
       <h1 class="card-title" th:text="#{index.title}">Tere</h1>

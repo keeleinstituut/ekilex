@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:replace="common :: common_header(~{::title},_)">
   <title>Viga</title>
-  <link rel="stylesheet" type="text/css" th:href="@{/view/css/bootstrap.css}"/>
 </head>
-<body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
 
+<body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
 <div class="container-fluid">
   <div class="card mt-4">
     <div class="card-body">
