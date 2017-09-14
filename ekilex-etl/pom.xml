@@ -77,6 +77,30 @@
 		</plugins>
 	</build>
 
+	<profiles>
+
+		<!-- default dev -->
+		<profile>
+			<id>dev</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${project.basedir}/envresources/dev</directory>
+					</resource>
+				</resources>
+			</build>
+			<properties>
+				<maven.test.skip>false</maven.test.skip>
+			</properties>
+		</profile>
+	</profiles>
+
 	<dependencies>
 		<!-- eki -->
 		<dependency>

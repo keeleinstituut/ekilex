@@ -12,7 +12,6 @@ drop table if exists definition;
 drop table if exists meaning;
 drop table if exists form;
 drop table if exists paradigm;
-drop table if exists morph_homonym;
 drop table if exists word;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
