@@ -9,23 +9,29 @@ from (select w1.word word,
              w2.word || ' (' || lrtl.value || ')' relation,
              (select w2.word is not null) rel_exists
       from (select w.id word_id,
-                   w.value word,
+                   f.value word,
                    l.id lexeme1_id
-            from morph_homonym mh,
-                 word w,
+            from word w,
+                 paradigm p,
+                 form f,
                  lexeme l
-            where mh.word_id = w.id
-            and   l.morph_homonym_id = mh.id
+            where p.word_id = w.id
+            and   f.paradigm_id = p.id
+            and   f.is_word = true
+            and   l.word_id = w.id
             order by w.id) w1
         left outer join lex_relation lr on lr.lexeme1_id = w1.lexeme1_id
         left outer join (select w.id word_id,
-                                w.value word,
+                                f.value word,
                                 l.id lexeme2_id
-                         from morph_homonym mh,
-                              word w,
+                         from word w,
+                              paradigm p,
+                              form f,
                               lexeme l
-                         where mh.word_id = w.id
-                         and   l.morph_homonym_id = mh.id) w2 on lr.lexeme2_id = w2.lexeme2_id
+                         where p.word_id = w.id
+                         and   f.paradigm_id = p.id
+                         and   f.is_word = true
+                         and   l.word_id = w.id) w2 on lr.lexeme2_id = w2.lexeme2_id
         left outer join lex_rel_type_label lrtl on lrtl.code = lr.lex_rel_type_code and lrtl.lang = :defaultLabelLang and lrtl.type = :defaultLabelType
       order by w1.word) w_r
 group by w_r.word,
