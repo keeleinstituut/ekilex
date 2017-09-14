@@ -18,13 +18,13 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
 
 	@GetMapping("/search")
-	public String search(@RequestParam String searchFilter, Model model) {
+	public String search(@RequestParam(required = false) String searchFilter, Model model) {
 		logger.debug("doing search");
 		if (isNotBlank(searchFilter)) {
 			model.addAttribute("searchResults", Arrays.asList(searchFilter, "ooo vorm", "aaaa vorm"));
 			model.addAttribute("searchFilter", searchFilter);
 		}
-		return "index";
+		return "search";
 	}
 
 	@GetMapping("/details")
