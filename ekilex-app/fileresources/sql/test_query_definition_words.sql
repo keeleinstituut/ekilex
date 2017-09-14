@@ -1,29 +1,28 @@
 -- query words of definitions if there are many
 select d_w.word,
        d_w.definition
-from (select count(w.id) word_count,
+from (select count(l.word_id) word_count,
              d.id definition_id
-      from definition d,
+      from lexeme l,
            meaning m,
-           morph_homonym mh,
-           word w,
-           lexeme l
+           definition d
       where d.meaning_id = m.id
-      and   mh.word_id = w.id
-      and   l.morph_homonym_id = mh.id
       and   l.meaning_id = m.id
       group by d.id) d_w_cnt,
-     (select w.value word,
+     (select f.value word,
              d.id definition_id,
              d.value definition
-      from definition d,
+      from word w,
+           paradigm p,
+           form f,
            meaning m,
-           morph_homonym mh,
-           word w,
+           definition d,
            lexeme l
-      where d.meaning_id = m.id
-      and   mh.word_id = w.id
-      and   l.morph_homonym_id = mh.id
-      and   l.meaning_id = m.id) d_w
+      where f.paradigm_id = p.id
+      and   p.word_id = w.id
+      and   f.is_word = true
+      and   l.word_id = w.id
+      and   l.meaning_id = m.id
+      and   d.meaning_id = m.id) d_w
 where d_w.definition_id = d_w_cnt.definition_id
 and   d_w_cnt.word_count > 1;

@@ -102,8 +102,7 @@ public class QueryTest {
 		assertEquals("Incorrect result count", 12, existingDefinitionCount);
 	}
 
-	//TODO upgrade query to model
-	//@Test
+	@Test
 	public void testQueryCompareDatasetsWords() throws Exception {
 
 		final String sqlScriptFilePath1 = "./fileresources/sql/test_query_datasets_common_words.sql";
@@ -129,11 +128,10 @@ public class QueryTest {
 		results = basicDbService.queryList(sqlScript, paramMap);
 		resultCount = results.size();
 
-		assertEquals("Incorrect result count", 12, resultCount);
+		assertEquals("Incorrect result count", 13, resultCount);
 	}
 
-	//TODO upgrade query to model
-	//@Test
+	@Test
 	public void testQueryDefinitionWords() throws Exception {
 
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_definition_words.sql";
@@ -174,8 +172,7 @@ public class QueryTest {
 		}
 	}
 
-	//TODO upgrade query to model
-	//@Test
+	@Test
 	public void testQueryDifferentLangMatchingMeaningWords() throws Exception {
 
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_diff_lang_word_match.sql";
@@ -199,8 +196,7 @@ public class QueryTest {
 		assertEquals("Incorrect result count", 3, resultCount);
 	}
 
-	//TODO upgrade query to model
-	//@Test
+	@Test
 	public void testQueryWordForms() throws Exception {
 
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_word_forms.sql";
@@ -217,29 +213,28 @@ public class QueryTest {
 		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
 		int resultCount = results.size();
 
-		List<Long> morphHomonymIds = new ArrayList<>();
+		List<Long> wordIds = new ArrayList<>();
 		List<Long> paradigmIds = new ArrayList<>();
-		Long morphHomonymId;
+		Long wordId;
 		Long paradigmId;
 
 		for (Map<String, Object> result : results) {
-			morphHomonymId = Long.valueOf(result.get("morph_homonym_id").toString());
+			wordId = Long.valueOf(result.get("word_id").toString());
 			paradigmId = Long.valueOf(result.get("paradigm_id").toString());
-			if (!morphHomonymIds.contains(morphHomonymId)) {
-				morphHomonymIds.add(morphHomonymId);
+			if (!wordIds.contains(wordId)) {
+				wordIds.add(wordId);
 			}
 			if (!paradigmIds.contains(paradigmId)) {
 				paradigmIds.add(paradigmId);
 			}
 		}
 
-		assertEquals("Incorrect result count", 2, morphHomonymIds.size());
+		assertEquals("Incorrect result count", 2, wordIds.size());
 		assertEquals("Incorrect result count", 3, paradigmIds.size());
 		assertEquals("Incorrect result count", 9, resultCount);
 	}
 
-	//TODO upgrade query to model
-	//@Test
+	@Test
 	public void testQueryWordsRelations() throws Exception {
 		
 		final String sqlScriptFilePath = "./fileresources/sql/test_query_words_relations.sql";
