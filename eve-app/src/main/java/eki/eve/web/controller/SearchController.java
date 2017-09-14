@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -27,9 +28,9 @@ public class SearchController {
 		return "search";
 	}
 
-	@GetMapping("/details")
+	@GetMapping("/details/{id}")
 	@ResponseBody
-	public String details(@RequestParam String id) {
+	public String details(@PathVariable("id") String id) {
 		logger.debug("doing details");
 		return "<div name=\"" + id + "_details\">Hunnikutes põnevaid detaile vormi <span style='font-weight: bold;'>" + id + "</span> kohta</div>";
 	}
