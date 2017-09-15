@@ -22,8 +22,9 @@ public class Qq2Loader {
 			applicationContext.registerShutdownHook();
 
 			final String dataXmlFilePath = "/projects/eki/data/dictionaries/qq2/qq21.xml";
+			final String dataLang = "est";
 
-			runner.execute(dataXmlFilePath);
+			runner.execute(dataXmlFilePath, dataLang);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

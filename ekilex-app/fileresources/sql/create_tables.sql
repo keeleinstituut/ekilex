@@ -204,7 +204,8 @@ create table word
 (
   id bigserial primary key,
   lang char(3) references lang(code) null,
-  morph_code varchar(100) references morph(code) null
+  morph_code varchar(100) references morph(code) null,
+  homonym_nr integer default 1
 );
 
 -- paradigma
@@ -224,6 +225,7 @@ create table form
   value text not null,
   components varchar(100) array null,
   display_form varchar(255) null,
+  vocal_form varchar(255) null,
   is_word boolean default false
 );
 
@@ -249,7 +251,8 @@ create table lexeme
   id bigserial primary key,
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
-  order_by varchar(100) not null default '',
+  level1 integer default 0,
+  level2 integer default 0,
   dataset char(10) array not null,
   unique(word_id, meaning_id)
 );
@@ -310,6 +313,7 @@ create table grammar
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   value text not null,
+  lang char(3) references lang(code) not null,
   dataset char(10) array not null
 );
 
