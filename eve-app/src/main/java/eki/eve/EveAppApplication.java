@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.nio.charset.StandardCharsets;
 
@@ -12,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 		scanBasePackages = {"eki.common", "eki.eve"},
 		exclude={org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration.class}
 		)
+@EnableTransactionManagement
 public class EveAppApplication {
 
 	public static void main(String[] args) {
