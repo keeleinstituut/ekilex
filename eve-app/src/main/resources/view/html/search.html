@@ -34,9 +34,9 @@
     </div>
   </div>
   <div class="mt-4 ml-4" th:if="${searchResults != null}">
-    <table id="results">
+    <table id="results" class="w-100">
       <tr th:each="item : ${searchResults}">
-        <td>
+        <td class="w-100">
           <span th:text="${item.getValue('value')}">vorm 1</span>
           <button type="button" class="btn btn-link" th:data-id="${item.getValue('id')}" name="details">Detailid</button>
           <div th:name="${item.getValue('id')}+'_details'"></div>

@@ -1,6 +1,7 @@
 package eki.eve.web.controller;
 
 import eki.eve.service.SearchService;
+import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,9 +34,19 @@ public class SearchController {
 
 	@GetMapping("/details/{id}")
 	@ResponseBody
-	public String details(@PathVariable("id") String id) {
+	public String details(@PathVariable("id") Long id) {
 		logger.debug("doing details");
-		return "<div name=\"" + id + "_details\">Hunnikutes põnevaid detaile vormi <span style='font-weight: bold;'>" + id + "</span> kohta</div>";
+		StringBuilder html = new StringBuilder("<div name=\"" + id + "_details\" class=\"pl-4\">");
+		html.append("<div class=\"float-left pr-2\">");
+		for (Record rec : search.findConnectedForms(id)) {
+			html.append(rec.getValue("value")).append("<br/>");
+		}
+		html.append("</div>").append("<div class=\"float-left w-75\">").append("<ul>");
+  		for (Record rec : search.findFormDefinitions(id)) {
+			html.append("<li>").append(rec.getValue("value")).append("</li>");
+		}
+		html.append("</ul>").append("</div>").append("</div>");
+		return html.toString();
 	}
 
 }
