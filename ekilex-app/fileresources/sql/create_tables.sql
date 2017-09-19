@@ -41,6 +41,7 @@ create table eki_user
   created timestamp not null default statement_timestamp(),
   unique(name)
 );
+alter sequence eki_user_id_seq restart with 10000;
 
 ---------------------------------
 -- klassifitseeritud andmestik --
@@ -207,6 +208,7 @@ create table word
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1
 );
+alter sequence word_id_seq restart with 10000;
 
 -- paradigma
 create table paradigm
@@ -215,6 +217,7 @@ create table paradigm
   word_id bigint references word(id) on delete cascade not null,
   example text null
 );
+alter sequence paradigm_id_seq restart with 10000;
 
 -- vorm
 create table form
@@ -228,6 +231,7 @@ create table form
   vocal_form varchar(255) null,
   is_word boolean default false
 );
+alter sequence form_id_seq restart with 10000;
 
 -- mõiste/tähendus
 create table meaning
@@ -235,6 +239,7 @@ create table meaning
   id bigserial primary key,
   dataset char(10) array not null
 );
+alter sequence meaning_id_seq restart with 10000;
 
 -- sõnastus/seletus/definitsioon
 create table definition
@@ -244,6 +249,7 @@ create table definition
   value text not null,
   dataset char(10) array not null
 );
+alter sequence definition_id_seq restart with 10000;
 
 -- ilmik
 create table lexeme
@@ -256,6 +262,7 @@ create table lexeme
   dataset char(10) array not null,
   unique(word_id, meaning_id)
 );
+alter sequence lexeme_id_seq restart with 10000;
 
 create table lexeme_domain
 (
@@ -266,6 +273,7 @@ create table lexeme_domain
   foreign key (domain_code, domain_origin) references domain (code, origin),
   unique(lexeme_id, domain_code, domain_origin)
 );
+alter sequence lexeme_domain_id_seq restart with 10000;
 
 create table lexeme_register
 (
@@ -274,6 +282,7 @@ create table lexeme_register
   register_code varchar(100) references register(code) not null,
   unique(lexeme_id, register_code)
 );
+alter sequence lexeme_register_id_seq restart with 10000;
 
 create table lexeme_pos
 (
@@ -282,6 +291,7 @@ create table lexeme_pos
   pos_code varchar(100) references pos(code) not null,
   unique(lexeme_id, pos_code)
 );
+alter sequence lexeme_pos_id_seq restart with 10000;
 
 create table lexeme_deriv
 (
@@ -290,6 +300,7 @@ create table lexeme_deriv
   deriv_code varchar(100) references deriv(code) not null,
   unique(lexeme_id, deriv_code)
 );
+alter sequence lexeme_deriv_id_seq restart with 10000;
 
 -- rektsioon
 create table rection
@@ -298,6 +309,7 @@ create table rection
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   value text not null
 );
+alter sequence rection_id_seq restart with 10000;
 
 -- kasutusnäide/kontekst
 create table usage
@@ -306,6 +318,7 @@ create table usage
   rection_id bigint references rection(id) on delete cascade not null,
   value text not null
 );
+alter sequence usage_id_seq restart with 10000;
 
 -- gramm.kasutusinfo
 create table grammar
@@ -316,6 +329,7 @@ create table grammar
   lang char(3) references lang(code) not null,
   dataset char(10) array not null
 );
+alter sequence grammar_id_seq restart with 10000;
 
 -- seos
 create table lex_relation
@@ -327,4 +341,4 @@ create table lex_relation
   dataset char(10) array not null,
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
-
+alter sequence lex_relation_id_seq restart with 10000;
