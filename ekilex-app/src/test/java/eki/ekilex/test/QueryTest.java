@@ -122,7 +122,7 @@ public class QueryTest {
 		results = basicDbService.queryList(sqlScript, paramMap);
 		resultCount = results.size();
 
-		assertEquals("Incorrect result count", 1, resultCount);
+		assertEquals("Incorrect result count", 2, resultCount);
 
 		sqlScript = testEnvInitialiser.getSqlScript(sqlScriptFilePath2);
 		results = basicDbService.queryList(sqlScript, paramMap);
