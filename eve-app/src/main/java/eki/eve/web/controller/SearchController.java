@@ -1,7 +1,6 @@
 package eki.eve.web.controller;
 
 import eki.eve.service.SearchService;
-import org.jooq.Record;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,14 +37,13 @@ public class SearchController {
 	@GetMapping("/details/{id}")
 	public String details(@PathVariable("id") Long id, Model model) {
 		logger.debug("doing details");
-		List<String> forms = (List<String>) search.findConnectedForms(id).stream().map(r -> {
-			Record rec = (Record) r;
-			return String.format("%s (%s-%s; %s; %s)",
-					asString(rec.get("value")),
-					asString(rec.get("morph_code")),
-					asString(rec.get("morph_value")),
-					asString(rec.get("display_form")),
-					asString(rec.get("vocal_form"))); }
+		List<String> forms = search.findConnectedForms(id).stream().map(rec ->
+			String.format("%s (%s-%s; %s; %s)",
+					rec.get("value"),
+					rec.get("morph_code"),
+					rec.get("morph_value"),
+					rec.get("display_form"),
+					asString(rec.getValue("vocal_form")))
 		).collect(toList());
 		model.addAttribute("detailsName", id + "_details");
 		model.addAttribute("forms", forms);

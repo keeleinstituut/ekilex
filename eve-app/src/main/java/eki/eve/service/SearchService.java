@@ -29,7 +29,7 @@ public class SearchService {
 				.fetch();
 	}
 
-	public Result findConnectedForms(Long formId) {
+	public Result<Record6<Long,String,String,String,String,String>> findConnectedForms(Long formId) {
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
 		Paradigm p = PARADIGM.as("p");
