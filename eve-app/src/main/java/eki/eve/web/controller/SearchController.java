@@ -2,7 +2,6 @@ package eki.eve.web.controller;
 
 import eki.eve.service.SearchService;
 import org.jooq.Record;
-import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +10,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Controller
@@ -34,26 +36,24 @@ public class SearchController {
 	}
 
 	@GetMapping("/details/{id}")
-	@ResponseBody
-	public String details(@PathVariable("id") Long id) {
+	public String details(@PathVariable("id") Long id, Model model) {
 		logger.debug("doing details");
-		StringBuilder html = new StringBuilder("<div name=\"" + id + "_details\" class=\"pl-4\">");
-		html.append("<div class=\"float-left pr-2\">");
-		for (Record rec : (Result<Record>)search.findConnectedForms(id)) {
-			html.append(rec.getValue("value"))
-					.append(" (")
-					.append(rec.get("morph_code")).append("-").append(rec.get("morph_value"))
-					.append("; ").append(rec.get("display_form"))
-					.append("; ").append(rec.get("vocal_form"))
-					.append(")")
-					.append("<br/>");
-		}
-		html.append("</div>").append("<div class=\"float-left w-75\">").append("<ul>");
-  		for (Record rec : search.findFormDefinitions(id)) {
-			html.append("<li>").append(rec.getValue("value")).append("</li>");
-		}
-		html.append("</ul>").append("</div>").append("</div>");
-		return html.toString();
+		List<String> forms = (List<String>) search.findConnectedForms(id).stream().map(r -> {
+			Record rec = (Record) r;
+			return String.format("%s (%s-%s; %s; %s)",
+					asString(rec.get("value")),
+					asString(rec.get("morph_code")),
+					asString(rec.get("morph_value")),
+					asString(rec.get("display_form")),
+					asString(rec.get("vocal_form"))); }
+		).collect(toList());
+		model.addAttribute("detailsName", id + "_details");
+		model.addAttribute("forms", forms);
+		model.addAttribute("descriptions", search.findFormDefinitions(id));
+		return "search :: details";
 	}
 
+	private String asString(Object value) {
+		return Objects.isNull(value) ? "" : String.valueOf(value);
+	}
 }
