@@ -2,6 +2,7 @@ package eki.eve.web.controller;
 
 import eki.eve.service.SearchService;
 import org.jooq.Record;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,8 +39,14 @@ public class SearchController {
 		logger.debug("doing details");
 		StringBuilder html = new StringBuilder("<div name=\"" + id + "_details\" class=\"pl-4\">");
 		html.append("<div class=\"float-left pr-2\">");
-		for (Record rec : search.findConnectedForms(id)) {
-			html.append(rec.getValue("value")).append("<br/>");
+		for (Record rec : (Result<Record>)search.findConnectedForms(id)) {
+			html.append(rec.getValue("value"))
+					.append(" (")
+					.append(rec.get("morph_code")).append("-").append(rec.get("morph_value"))
+					.append("; ").append(rec.get("display_form"))
+					.append("; ").append(rec.get("vocal_form"))
+					.append(")")
+					.append("<br/>");
 		}
 		html.append("</div>").append("<div class=\"float-left w-75\">").append("<ul>");
   		for (Record rec : search.findFormDefinitions(id)) {

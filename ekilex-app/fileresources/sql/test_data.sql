@@ -115,7 +115,7 @@ insert into form (paradigm_id, morph_code, value, components, display_form, is_w
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (11019, 'SgN', 'холл', '{холл}', 'холл', true);
 
 
-insert into lexeme (id, word_id, meaning_id, dataset) values (4001, 1002, 2001, '{eos}');
+insert into lexeme (id, word_id, meaning_id, dataset) values (4001, 1001, 2001, '{eos}');
 insert into lexeme (id, word_id, meaning_id, dataset) values (4002, 1002, 2002, '{eos}');
 insert into lexeme (id, word_id, meaning_id, dataset) values (4003, 1002, 2003, '{eos}');
 insert into lexeme (id, word_id, meaning_id, dataset) values (4004, 1001, 2004, '{ss_}');
