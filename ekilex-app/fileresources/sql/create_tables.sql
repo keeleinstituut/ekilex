@@ -76,7 +76,7 @@ create table domain
   origin varchar(100) not null,
   parent_code varchar(100) null,
   parent_origin varchar(100) null,
-  dataset char(10) array not null,
+  dataset varchar(10) array not null,
   primary key (code, origin),
   foreign key (parent_code, parent_origin) references domain (code, origin)
 );
@@ -96,7 +96,7 @@ create table domain_label
 create table register
 (
   code varchar(100) primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 create table register_label
@@ -112,7 +112,7 @@ create table register_label
 create table gender
 (
   code varchar(100) primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 create table gender_label
@@ -128,7 +128,7 @@ create table gender_label
 create table pos
 (
   code varchar(100) primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 create table pos_label
@@ -144,7 +144,7 @@ create table pos_label
 create table morph
 (
   code varchar(100) primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 create table morph_label
@@ -160,7 +160,7 @@ create table morph_label
 create table deriv
 (
   code varchar(100) primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 create table deriv_label
@@ -176,7 +176,7 @@ create table deriv_label
 create table lex_rel_type
 (
   code varchar(100) primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 create table lex_rel_type_label
@@ -233,7 +233,7 @@ create table form
 create table meaning
 (
   id bigserial primary key,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 -- sõnastus/seletus/definitsioon
@@ -242,7 +242,8 @@ create table definition
   id bigserial primary key,
   meaning_id bigint references meaning(id) not null,
   value text not null,
-  dataset char(10) array not null
+  lang char(3) references lang(code) not null,
+  dataset varchar(10) array not null
 );
 
 -- ilmik
@@ -253,7 +254,7 @@ create table lexeme
   meaning_id bigint references meaning(id) not null,
   level1 integer default 0,
   level2 integer default 0,
-  dataset char(10) array not null,
+  dataset varchar(10) array not null,
   unique(word_id, meaning_id)
 );
 
@@ -314,7 +315,7 @@ create table grammar
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  dataset char(10) array not null
+  dataset varchar(10) array not null
 );
 
 -- seos
@@ -324,7 +325,7 @@ create table lex_relation
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null,
-  dataset char(10) array not null,
+  dataset varchar(10) array not null,
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 

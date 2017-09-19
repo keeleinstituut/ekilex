@@ -23,8 +23,9 @@ public class Qq2Loader {
 
 			final String dataXmlFilePath = "/projects/eki/data/dictionaries/qq2/qq21.xml";
 			final String dataLang = "est";
+			final String[] dataset = new String[] {"qq2"};
 
-			runner.execute(dataXmlFilePath, dataLang);
+			runner.execute(dataXmlFilePath, dataLang, dataset);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
