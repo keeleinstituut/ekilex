@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TableName;
+import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
 
@@ -33,7 +34,9 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 	private static Logger logger = LoggerFactory.getLogger(Qq2LoaderRunner.class);
 
-	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "./fileresources/csv/transform-morph-deriv.csv";
+	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
+
+	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
 
 	@Autowired
 	private BasicDbService basicDbService;
@@ -42,10 +45,16 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 	private Map<String, String> morphToDerivMap;
 
+	private String sqlSelectWordByFormAndHomonym;
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
-		List<String> morphDerivMapLines = getContentLines(TRANSFORM_MORPH_DERIV_FILE_PATH);
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		InputStream resourceFileInputStream;
+
+		resourceFileInputStream = classLoader.getResourceAsStream(TRANSFORM_MORPH_DERIV_FILE_PATH);
+		List<String> morphDerivMapLines = getContentLines(resourceFileInputStream);
 		morphToMorphMap = new HashMap<>();
 		morphToDerivMap = new HashMap<>();
 		for (String morphDerivMapLine : morphDerivMapLines) {
@@ -61,60 +70,64 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				morphToDerivMap.put(sourceMorphCode, destinDerivCode);
 			}
 		}
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
+		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
 	public void execute(String dataXmlFilePath, String dataLang, String[] dataset) throws Exception {
 
-		dataLang = unifyLang(dataLang);
-		final String articleExp = "/x:sr/x:A";
-		final String defaultWordMorphCode = "SgN";
-		final int defaultHomonymNr = 1;
-		final String wordDisplayFormStripChars = ".+'()¤:";
-
 		logger.debug("Starting loading QQ2...");
+
+		final String articleExp = "/x:sr/x:A";
+		final String articleHeaderExp = "x:P";
+		final String wordGroupExp = "x:mg";
+		final String wordExp = "x:m";
+		final String wordVocalFormExp = "x:hld";
+		final String wordMorphExp = "x:vk";
+		final String wordRectionExp = "x:r";
+		final String wordGrammarExp = "x:grg/x:gki";
+		final String articleBodyExp = "x:S";
+		final String meaningGroupExp = "x:tp";
+		final String meaningExp = "x:tg";
+		final String wordMatchExpr = "x:xp/x:xg";
+		final String wordMatchValueExp = "x:x";
+		final String definitionValueExp = "x:xd";
+		final String wordMatchRectionExp = "x:xr";
+
+		final String homonymAttr = "i";
+		final String lexemeLevel1Attr = "tnr";
+
+		final String defaultWordMorphCode = "SgN";
+		final int defaultHomonymNr = 0;//not sure about this...
+		final String wordDisplayFormStripChars = ".+'()¤:";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		SAXReader dataDocParser = new SAXReader();
-
-		File dataDocFile = new File(dataXmlFilePath);
-		FileInputStream dataDocFileInputStream = new FileInputStream(dataDocFile);
-		InputStreamReader dataDocInputReader = new InputStreamReader(dataDocFileInputStream, UTF_8);
-		Document dataDoc = dataDocParser.read(dataDocInputReader);
-		dataDocInputReader.close();
-		dataDocFileInputStream.close();
-
-		/*
-		 * String simplifiedPath = "//x:xr";
-		 * logFullPaths(dataDoc, simplifiedPath);
-		 */
+		dataLang = unifyLang(dataLang);
+		Document dataDoc = readDocument(dataXmlFilePath);
 
 		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
 		int articleCount = articleNodes.size();
 		logger.debug("Extracted {} articles", articleNodes.size());
 
-		Map<String, Map<Integer, Long>> wordHomonymWordIdMap = new HashMap<>();
-		Map<Integer, Long> wordIdMap;
 		Map<Long, List<Map<String, Object>>> wordIdRectionMap = new HashMap<>();
-		List<Map<String, Object>> rectionObjs;
-		Map<String, Object> rectionObj;
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
-		List<Map<String, Object>> grammarObjs;
-		Map<String, Object> grammarObj;
 
-		Map<String, Object> tableRowParamMap;
+		Map<String, Object> tableRowValueMap;
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, grammarNodes, meaningGroupNodes, meaningNodes, wordMatchNodes;
 		Element wordNode, wordVocalFormNode, morphNode, rectionNode, definitionValueNode, wordMatchValueNode;
 
 		List<Long> newWordIds;
-		String word, wordMatch, homonymNrStr, wordDisplayForm, wordVocalForm, rection, grammarLang, grammar, lexemeLevel1Str, wordMatchLang, definition;
+		String word, wordMatch, homonymNrStr, wordDisplayForm, wordVocalForm, rection, lexemeLevel1Str, wordMatchLang, definition;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2;
-		Long wordId, paradigmId, formId, meaningId, lexemeId;
+		Long wordId, paradigmId, meaningId, lexemeId;
 		int wordDuplicateCount = 0;
+		int lexemeDuplicateCount = 0;
 
 		int articleCounter = 0;
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -123,29 +136,30 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 			// header...
 			newWordIds = new ArrayList<>();
-			headerNode = (Element) articleNode.selectSingleNode("x:P");
-			wordGroupNodes = headerNode.selectNodes("x:mg");
+
+			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
+			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
 				// word, from...
-				wordNode = (Element) wordGroupNode.selectSingleNode("x:m");
+				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordDisplayForm = wordNode.getTextTrim();
 				word = StringUtils.replaceChars(word, wordDisplayFormStripChars, "");
-				homonymNrStr = wordNode.attributeValue("i");
+				homonymNrStr = wordNode.attributeValue(homonymAttr);
 				if (StringUtils.isBlank(homonymNrStr)) {
-					homonymNr = 1;
+					homonymNr = defaultHomonymNr;
 				} else {
 					homonymNr = Integer.parseInt(homonymNrStr);
 					word = StringUtils.substringBefore(word, homonymNrStr);
 				}
-				wordVocalFormNode = (Element) wordGroupNode.selectSingleNode("x:hld");
+				wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
 				if (wordVocalFormNode == null) {
 					wordVocalForm = null;
 				} else {
 					wordVocalForm = wordVocalFormNode.getTextTrim();
 				}
-				morphNode = (Element) wordGroupNode.selectSingleNode("x:vk");
+				morphNode = (Element) wordGroupNode.selectSingleNode(wordMorphExp);
 				if (morphNode == null) {
 					destinMorphCode = defaultWordMorphCode;
 					destinDerivCode = null;
@@ -156,39 +170,25 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				}
 
 				// save word+paradigm+form
-				wordIdMap = wordHomonymWordIdMap.get(word);
-				if (wordIdMap == null) {
-					wordIdMap = new HashMap<>();
-					wordHomonymWordIdMap.put(word, wordIdMap);
-				}
-				wordId = wordIdMap.get(homonymNr);
-				if (wordId == null) {
+
+				tableRowValueMap = getWord(word, homonymNr);
+
+				if (tableRowValueMap == null) {
 
 					// word
-					tableRowParamMap = new HashMap<>();
-					tableRowParamMap.put("lang", dataLang);
-					tableRowParamMap.put("morph_code", destinMorphCode);
-					tableRowParamMap.put("homonym_nr", homonymNr);
-					wordId = basicDbService.create(WORD, tableRowParamMap);
-					wordIdMap.put(homonymNr, wordId);
+					wordId = createWord(destinMorphCode, homonymNr, dataLang);
 
 					// paradigm
-					tableRowParamMap = new HashMap<>();
-					tableRowParamMap.put("word_id", wordId);
-					paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
+					paradigmId = createParadigm(wordId);
 
 					// form
-					tableRowParamMap = new HashMap<>();
-					tableRowParamMap.put("paradigm_id", paradigmId);
-					tableRowParamMap.put("morph_code", destinMorphCode);
-					tableRowParamMap.put("value", word);
-					tableRowParamMap.put("display_form", wordDisplayForm);
-					tableRowParamMap.put("vocal_form", wordVocalForm);
-					tableRowParamMap.put("is_word", Boolean.TRUE);
-					basicDbService.create(FORM, tableRowParamMap);
+					createForm(word, wordDisplayForm, wordVocalForm, destinMorphCode, paradigmId);
 
 				} else {
-					logger.warn("Word duplicate: \"{}\"", word);
+					wordId = (Long) tableRowValueMap.get("id");
+
+					//logger.warn("Word duplicate: \"{}\"", word);
+					// TODO add many display forms per word instead
 					wordDuplicateCount++;
 				}
 				newWordIds.add(wordId);
@@ -196,105 +196,63 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				// further references...
 
 				// rections...
-				rectionNode = (Element) wordGroupNode.selectSingleNode("x:r");
-				if (rectionNode == null) {
-					rection = null;
-				} else {
-					rection = rectionNode.getTextTrim();
-
-					rectionObjs = wordIdRectionMap.get(wordId);
-					if (rectionObjs == null) {
-						rectionObjs = new ArrayList<>();
-						wordIdRectionMap.put(wordId, rectionObjs);
-					}
-					rectionObj = new HashMap<>();
-					rectionObj.put("value", rection);
-					rectionObjs.add(rectionObj);
-				}
+				rectionNode = (Element) wordGroupNode.selectSingleNode(wordRectionExp);
+				extractRection(rectionNode, wordId, wordIdRectionMap);
 
 				// grammar...
-				grammarNodes = wordGroupNode.selectNodes("x:grg/x:gki");
-				for (Element grammarNode : grammarNodes) {
-
-					grammarLang = grammarNode.attributeValue("lang");
-					grammarLang = unifyLang(grammarLang);
-					grammar = grammarNode.getTextTrim();
-
-					grammarObjs = wordIdGrammarMap.get(wordId);
-					if (grammarObjs == null) {
-						grammarObjs = new ArrayList<>();
-						wordIdGrammarMap.put(wordId, grammarObjs);
-					}
-					grammarObj = new HashMap<>();
-					grammarObj.put("lang", grammarLang);
-					grammarObj.put("value", grammar);
-					grammarObj.put("dataset", dataset);
-					grammarObjs.add(grammarObj);
-				}
+				grammarNodes = wordGroupNode.selectNodes(wordGrammarExp);
+				extractGrammar(grammarNodes, wordId, dataset, wordIdGrammarMap);
 			}
 
 			// body...
-			contentNode = (Element) articleNode.selectSingleNode("x:S");
+			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 
 			if (contentNode == null) {
 				logger.warn("No body element in article!");
+				logger.warn(articleNode.asXML());
 			} else {
 
-				meaningGroupNodes = contentNode.selectNodes("x:tp");
+				meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);
 
 				for (Element meaningGroupNode : meaningGroupNodes) {
 
-					lexemeLevel1Str = meaningGroupNode.attributeValue("tnr");
+					lexemeLevel1Str = meaningGroupNode.attributeValue(lexemeLevel1Attr);
 					lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
-					meaningNodes = meaningGroupNode.selectNodes("x:tg");
+					meaningNodes = meaningGroupNode.selectNodes(meaningExp);
 					lexemeLevel2 = 0;
 
 					for (Element meaningNode : meaningNodes) {
 
+						lexemeLevel2++;
+
 						// meaning
-						tableRowParamMap = new HashMap<>();
-						tableRowParamMap.put("dataset", dataset);
-						meaningId = basicDbService.create(MEANING, tableRowParamMap);
+						meaningId = createMeaning(dataset);
 
 						// new words lexemes+rections+grammar
 						for (Long newWordId : newWordIds) {
 
-							tableRowParamMap = new HashMap<>();
-							tableRowParamMap.put("word_id", newWordId);
-							tableRowParamMap.put("meaning_id", meaningId);
-							tableRowParamMap.put("level1", lexemeLevel1);
-							tableRowParamMap.put("level2", lexemeLevel2);
-							tableRowParamMap.put("dataset", dataset);
-							lexemeId = basicDbService.create(LEXEME, tableRowParamMap);
+							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, dataset);
+							if (lexemeId == null) {
+								//logger.warn("Lexeme already exists for word {} and meaning {}", newWordId, meaningId);
+								lexemeDuplicateCount++;
+							} else {
 
-							// word match lexeme rections
-							rectionObjs = wordIdRectionMap.get(newWordId);
-							if (CollectionUtils.isNotEmpty(rectionObjs)) {
-								for (Map<String, Object> newWordRectionObj : rectionObjs) {
-									newWordRectionObj.put("lexeme_id", lexemeId);
-									basicDbService.create(RECTION, newWordRectionObj);
-								}
-							}
+								// word match lexeme rections
+								createRections(wordIdRectionMap, lexemeId, newWordId);
 
-							// word match lexeme grammars
-							grammarObjs = wordIdGrammarMap.get(newWordId);
-							if (CollectionUtils.isNotEmpty(grammarObjs)) {
-								for (Map<String, Object> newWordGrammarObj : grammarObjs) {
-									newWordGrammarObj.put("lexeme_id", lexemeId);
-									basicDbService.create(GRAMMAR, newWordGrammarObj);
-								}
+								// word match lexeme grammars
+								createGrammars(wordIdGrammarMap, lexemeId, newWordId);
 							}
 						}
 
-						wordMatchNodes = meaningNode.selectNodes("x:xp/x:xg");
-						lexemeLevel2++;
+						wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);
 
 						for (Element wordMatchNode : wordMatchNodes) {
 
 							wordMatchLang = wordMatchNode.attributeValue("lang");
 							wordMatchLang = unifyLang(wordMatchLang);
-							wordMatchValueNode = (Element) wordMatchNode.selectSingleNode("x:x");
+							wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 							wordMatch = wordMatchValueNode.getTextTrim();
 							wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormStripChars, "");
 
@@ -302,69 +260,46 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 								continue;
 							}
 
-							definitionValueNode = (Element) wordMatchNode.selectSingleNode("x:xd");
+							definitionValueNode = (Element) wordMatchNode.selectSingleNode(definitionValueExp);
+							definition = null;
 							if (definitionValueNode != null) {
 								definition = definitionValueNode.getTextTrim();
 
 								// definition
-								tableRowParamMap = new HashMap<>();
-								tableRowParamMap.put("meaning_id", meaningId);
-								tableRowParamMap.put("value", definition);
-								tableRowParamMap.put("lang", wordMatchLang);
-								tableRowParamMap.put("dataset", dataset);
-								basicDbService.create(DEFINITION, tableRowParamMap);
+								createDefinition(meaningId, definition, wordMatchLang, dataset);
 							}
 
-							// save word match word+paradigm+form
-							wordIdMap = wordHomonymWordIdMap.get(wordMatch);
-							if (wordIdMap == null) {
-								wordIdMap = new HashMap<>();
-								wordHomonymWordIdMap.put(wordMatch, wordIdMap);
-							}
-							wordId = wordIdMap.get(defaultHomonymNr);
-							if (wordId == null) {
+							tableRowValueMap = getWord(wordMatch, defaultHomonymNr);
+
+							if (tableRowValueMap == null) {
 
 								// word
-								tableRowParamMap = new HashMap<>();
-								tableRowParamMap.put("lang", wordMatchLang);
-								tableRowParamMap.put("morph_code", defaultWordMorphCode);
-								tableRowParamMap.put("homonym_nr", defaultHomonymNr);
-								wordId = basicDbService.create(WORD, tableRowParamMap);
-								wordIdMap.put(defaultHomonymNr, wordId);
+								wordId = createWord(defaultWordMorphCode, defaultHomonymNr, wordMatchLang);
 
 								// paradigm
-								tableRowParamMap = new HashMap<>();
-								tableRowParamMap.put("word_id", wordId);
-								paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
+								paradigmId = createParadigm(wordId);
 
 								// form
-								tableRowParamMap = new HashMap<>();
-								tableRowParamMap.put("paradigm_id", paradigmId);
-								tableRowParamMap.put("morph_code", defaultWordMorphCode);
-								tableRowParamMap.put("value", wordMatch);
-								tableRowParamMap.put("is_word", Boolean.TRUE);
-								basicDbService.create(FORM, tableRowParamMap);
+								createForm(wordMatch, null, null, defaultWordMorphCode, paradigmId);
 
 							} else {
-								logger.warn("Word match duplicate: \"{}\"", wordMatch);
+								wordId = (Long) tableRowValueMap.get("id");
 								wordDuplicateCount++;
 							}
 
 							// word match lexeme
-							tableRowParamMap = new HashMap<>();
-							tableRowParamMap.put("word_id", wordId);
-							tableRowParamMap.put("meaning_id", meaningId);
-							tableRowParamMap.put("dataset", dataset);
-							lexemeId = basicDbService.create(LEXEME, tableRowParamMap);
+							lexemeId = createLexeme(wordId, meaningId, null, null, dataset);
+							if (lexemeId == null) {
+								//logger.warn("Lexeme already exists for word {} and meaning {}", wordId, meaningId);
+								lexemeDuplicateCount++;
+							} else {
 
-							// word match lexeme rection
-							rectionNode = (Element) wordMatchValueNode.selectSingleNode("x:xr");
-							if (rectionNode != null) {
-								rection = rectionNode.getTextTrim();
-								tableRowParamMap = new HashMap<>();
-								tableRowParamMap.put("lexeme_id", lexemeId);
-								tableRowParamMap.put("value", rection);
-								basicDbService.create(RECTION, tableRowParamMap);
+								// word match lexeme rection
+								rectionNode = (Element) wordMatchValueNode.selectSingleNode(wordMatchRectionExp);
+								if (rectionNode != null) {
+									rection = rectionNode.getTextTrim();
+									createRection(lexemeId, rection);
+								}
 							}
 						}
 					}
@@ -378,9 +313,174 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		}
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
+		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	private void extractGrammar(List<Element> grammarNodes, Long wordId, String[] dataset, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
+
+		List<Map<String, Object>> grammarObjs;
+		Map<String, Object> grammarObj;
+		String grammarLang;
+		String grammar;
+
+		for (Element grammarNode : grammarNodes) {
+
+			grammarLang = grammarNode.attributeValue("lang");
+			grammarLang = unifyLang(grammarLang);
+			grammar = grammarNode.getTextTrim();
+
+			grammarObjs = wordIdGrammarMap.get(wordId);
+			if (grammarObjs == null) {
+				grammarObjs = new ArrayList<>();
+				wordIdGrammarMap.put(wordId, grammarObjs);
+			}
+			grammarObj = new HashMap<>();
+			grammarObj.put("lang", grammarLang);
+			grammarObj.put("value", grammar);
+			grammarObj.put("dataset", new PgVarcharArray(dataset));
+			grammarObjs.add(grammarObj);
+		}
+	}
+
+	private void extractRection(Element rectionNode, Long wordId, Map<Long, List<Map<String, Object>>> wordIdRectionMap) {
+
+		String rection;
+		if (rectionNode == null) {
+			rection = null;
+		} else {
+			rection = rectionNode.getTextTrim();
+
+			List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
+			if (rectionObjs == null) {
+				rectionObjs = new ArrayList<>();
+				wordIdRectionMap.put(wordId, rectionObjs);
+			}
+			Map<String, Object> rectionObj = new HashMap<>();
+			rectionObj.put("value", rection);
+			rectionObjs.add(rectionObj);
+		}
+	}
+
+	private Map<String, Object> getWord(String word, int homonymNr) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("homonymNr", homonymNr);
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByFormAndHomonym, tableRowParamMap);
+		return tableRowValueMap;
+	}
+
+	private Long createMeaning(String[] dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
+		Long meaningId = basicDbService.create(MEANING, tableRowParamMap);
+		return meaningId;
+	}
+
+	private Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, String[] dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		tableRowParamMap.put("meaning_id", meaningId);
+		if (lexemeLevel1 != null) {
+			tableRowParamMap.put("level1", lexemeLevel1);
+		}
+		if (lexemeLevel2 != null) {
+			tableRowParamMap.put("level2", lexemeLevel2);
+		}
+		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
+		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
+		return lexemeId;
+	}
+
+	private void createDefinition(Long meaningId, String definition, String lang, String[] dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("value", definition);
+		tableRowParamMap.put("lang", lang);
+		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
+		basicDbService.create(DEFINITION, tableRowParamMap);
+	}
+
+	private void createForm(String word, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("paradigm_id", paradigmId);
+		tableRowParamMap.put("morph_code", morphCode);
+		tableRowParamMap.put("value", word);
+		if (StringUtils.isNotBlank(wordDisplayForm)) {
+			tableRowParamMap.put("display_form", wordDisplayForm);
+		}
+		if (StringUtils.isNotBlank(wordVocalForm)) {
+			tableRowParamMap.put("vocal_form", wordVocalForm);
+		}
+		tableRowParamMap.put("is_word", Boolean.TRUE);
+		basicDbService.create(FORM, tableRowParamMap);
+	}
+
+	private Long createParadigm(Long wordId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
+		return paradigmId;
+	}
+
+	private Long createWord(final String morphCode, final int homonymNr, String lang) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lang", lang);
+		tableRowParamMap.put("morph_code", morphCode);
+		tableRowParamMap.put("homonym_nr", homonymNr);
+		Long wordId = basicDbService.create(WORD, tableRowParamMap);
+		return wordId;
+	}
+
+	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId) throws Exception {
+
+		List<Map<String, Object>> grammarObjs = wordIdGrammarMap.get(wordId);
+		if (CollectionUtils.isNotEmpty(grammarObjs)) {
+			for (Map<String, Object> grammarObj : grammarObjs) {
+				grammarObj.put("lexeme_id", lexemeId);
+				basicDbService.createIfNotExists(GRAMMAR, grammarObj);
+			}
+		}
+	}
+
+	private void createRections(Map<Long, List<Map<String, Object>>> wordIdRectionMap, Long lexemeId, Long wordId) throws Exception {
+
+		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
+		if (CollectionUtils.isNotEmpty(rectionObjs)) {
+			for (Map<String, Object> rectionObj : rectionObjs) {
+				rectionObj.put("lexeme_id", lexemeId);
+				basicDbService.createIfNotExists(RECTION, rectionObj);
+			}
+		}
+	}
+
+	private void createRection(Long lexemeId, String rection) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("value", rection);
+		basicDbService.createIfNotExists(RECTION, tableRowParamMap);
+	}
+
+	private Document readDocument(String dataXmlFilePath) throws Exception {
+
+		SAXReader dataDocParser = new SAXReader();
+		File dataDocFile = new File(dataXmlFilePath);
+		FileInputStream dataDocFileInputStream = new FileInputStream(dataDocFile);
+		InputStreamReader dataDocInputReader = new InputStreamReader(dataDocFileInputStream, UTF_8);
+		Document dataDoc = dataDocParser.read(dataDocInputReader);
+		dataDocInputReader.close();
+		dataDocFileInputStream.close();
+		return dataDoc;
 	}
 
 	private String unifyLang(String lang) {
@@ -389,23 +489,15 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		return lang;
 	}
 
-	private void logFullPaths(Document dataDoc, String simplifiedPath) {
-		List<Element> synNodes = dataDoc.selectNodes(simplifiedPath);
-		List<String> synPaths = new ArrayList<>();
-		for (Element synNode : synNodes) {
-			if (!synPaths.contains(synNode.getPath())) {
-				synPaths.add(synNode.getPath());
-			}
-		}
-		for (String synPath : synPaths) {
-			System.out.println(synPath);
-		}
-	}
-
-	private List<String> getContentLines(String resourceFilePath) throws Exception {
-		InputStream resourceInputStream = new FileInputStream(resourceFilePath);
+	private List<String> getContentLines(InputStream resourceInputStream) throws Exception {
 		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
 		resourceInputStream.close();
 		return contentLines;
+	}
+
+	private String getContent(InputStream resourceInputStream) throws Exception {
+		String content = IOUtils.toString(resourceInputStream, UTF_8);
+		resourceInputStream.close();
+		return content;
 	}
 }

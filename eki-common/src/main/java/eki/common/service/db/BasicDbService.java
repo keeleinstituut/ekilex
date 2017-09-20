@@ -1,16 +1,13 @@
 package eki.common.service.db;
 
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
-
-import eki.common.data.PgTextArray;
 
 @Component
 public class BasicDbService extends AbstractDbService {
@@ -21,20 +18,18 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlScript, paramMap);
 	}
 
-	public Long create(String tableName, Map<String, Object> paramMap) throws Exception {
+	public Map<String, Object> queryForMap(String sqlQueryStr, Map<String, Object> paramMap) throws Exception {
 
-		//System.out.println(tableName + ": " + paramMap);
-
-		for (Entry<String, Object> paramMapEntry : paramMap.entrySet()) {
-			Object paramValue = paramMapEntry.getValue();
-			if (paramValue instanceof String[]) {
-				String[] paramValueArr = (String[]) paramValue;
-				Array paramDbValue = new PgTextArray(paramValueArr);
-				paramMapEntry.setValue(paramDbValue);
-			} else {
-				//other type of arrays here...
-			}
+		Map<String, Object> result;
+		try {
+			result = jdbcTemplate.queryForMap(sqlQueryStr, paramMap);
+		} catch (EmptyResultDataAccessException e) {
+			result = null;
 		}
+		return result;
+	}
+
+	public Map<String, Object> select(String tableName, Map<String, Object> paramMap) throws Exception {
 
 		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
 		List<String> paramNames = new ArrayList<>();
@@ -43,18 +38,89 @@ public class BasicDbService extends AbstractDbService {
 		}
 
 		StringBuffer sqlScriptBuf = new StringBuffer();
-		sqlScriptBuf.append("insert into ");
+		sqlScriptBuf.append("select * from ");
 		sqlScriptBuf.append(tableName);
-		sqlScriptBuf.append(" (");
-		sqlScriptBuf.append(StringUtils.join(fieldNames, ", "));
-		sqlScriptBuf.append(") values (");
-		sqlScriptBuf.append(StringUtils.join(paramNames, ", "));
-		sqlScriptBuf.append(") returning id");
+		sqlScriptBuf.append(" where ");
+		for (int fieldIndex = 0; fieldIndex < fieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlScriptBuf.append(" and ");
+			}
+			sqlScriptBuf.append(fieldNames.get(fieldIndex));
+			sqlScriptBuf.append(" = ");
+			sqlScriptBuf.append(paramNames.get(fieldIndex));
+		}
 
-		String sqlScript = sqlScriptBuf.toString();
+		String sqlQueryStr = sqlScriptBuf.toString();
 
-		Long id = jdbcTemplate.queryForObject(sqlScript, paramMap, Long.class);
+		Map<String, Object> result;
+		try {
+			result = jdbcTemplate.queryForMap(sqlQueryStr, paramMap);
+		} catch (EmptyResultDataAccessException e) {
+			result = null;
+		}
+		return result;
+	}
 
+	public Long create(String tableName, Map<String, Object> paramMap) throws Exception {
+
+		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
+		List<String> paramNames = new ArrayList<>();
+		for (String fieldName : fieldNames) {
+			paramNames.add(":" + fieldName);
+		}
+
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("insert into ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" (");
+		sqlQueryBuf.append(StringUtils.join(fieldNames, ", "));
+		sqlQueryBuf.append(") values (");
+		sqlQueryBuf.append(StringUtils.join(paramNames, ", "));
+		sqlQueryBuf.append(") returning id");
+
+		String sqlQueryStr = sqlQueryBuf.toString();
+
+		Long id = jdbcTemplate.queryForObject(sqlQueryStr, paramMap, Long.class);
+
+		return id;
+	}
+
+	public Long createIfNotExists(String tableName, Map<String, Object> paramMap) throws Exception {
+
+		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
+		List<String> paramNames = new ArrayList<>();
+		for (String fieldName : fieldNames) {
+			paramNames.add(":" + fieldName);
+		}
+
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("insert into ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" (");
+		sqlQueryBuf.append(StringUtils.join(fieldNames, ", "));
+		sqlQueryBuf.append(") select ");
+		sqlQueryBuf.append(StringUtils.join(paramNames, ", "));
+		sqlQueryBuf.append(" where not exists (select id from ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" where ");
+		for (int fieldIndex = 0; fieldIndex < fieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(" and ");
+			}
+			sqlQueryBuf.append(fieldNames.get(fieldIndex));
+			sqlQueryBuf.append(" = ");
+			sqlQueryBuf.append(paramNames.get(fieldIndex));
+		}
+		sqlQueryBuf.append(") returning id");
+		
+		String sqlScript = sqlQueryBuf.toString();
+
+		Long id;
+		try {
+			id = jdbcTemplate.queryForObject(sqlScript, paramMap, Long.class);
+		} catch (EmptyResultDataAccessException e) {
+			id = null;
+		}
 		return id;
 	}
 

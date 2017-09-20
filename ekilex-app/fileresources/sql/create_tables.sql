@@ -343,3 +343,16 @@ create table lex_relation
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;
+
+--- indexes
+
+create index form_value_idx on form(value);
+create index form_paradigm_id_idx on form(paradigm_id);
+create index paradigm_word_id_idx on paradigm(word_id);
+create index lexeme_word_id_idx on lexeme(word_id);
+create index lexeme_meaning_id_idx on lexeme(meaning_id);
+create index definition_meaning_id_idx on definition(meaning_id);
+create index rection_lexeme_id_idx on rection(lexeme_id);
+create index grammar_lexeme_id_idx on grammar(lexeme_id);
+create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
+create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);

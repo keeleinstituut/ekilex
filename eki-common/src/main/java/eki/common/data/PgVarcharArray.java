@@ -8,12 +8,12 @@ import java.util.Map;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public class PgTextArray implements java.sql.Array {
+public class PgVarcharArray implements java.sql.Array {
 
 	private final String[] stringArray;
 	private final String stringValue;
 
-	public PgTextArray(String[] stringArray) {
+	public PgVarcharArray(String[] stringArray) {
 		this.stringArray = stringArray;
 		this.stringValue = convertToPgFormat(stringArray);
 	}
@@ -60,7 +60,7 @@ public class PgTextArray implements java.sql.Array {
 
 	@Override
 	public String getBaseTypeName() throws SQLException {
-		return "text";
+		return "varchar";
 	}
 
 	@Override
