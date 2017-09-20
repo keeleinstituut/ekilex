@@ -33,3 +33,7 @@ ekilex/eve-app>mvn spring-boot:run
 
 http://localhost:5566/ (html)
 http://localhost:5566/data/app (json)
+
+Ehitamine koos andmebaasi klasside genereerimisega (kasutatakse ainult arenduses, pärast andmebaasi struktuuri muudatusi):
+
+ekilex>mvn clean install -Dskip.jooq.generation=false
