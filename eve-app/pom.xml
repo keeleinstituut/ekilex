@@ -24,6 +24,7 @@
 		<java.version>1.8</java.version>
 		<thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
 		<ekilex.version>1.0-SNAPSHOT</ekilex.version>
+		<skip.jooq.generation>true</skip.jooq.generation>
 	</properties>
 
 	<dependencies>
@@ -120,11 +121,12 @@
 				<artifactId>jooq-codegen-maven</artifactId>
 				<executions>
 					<execution>
-						<phase>none</phase>
+						<phase>generate-sources</phase>
 						<goals>
 							<goal>generate</goal>
 						</goals>
 						<configuration>
+							<skip>${skip.jooq.generation}</skip>
 							<jdbc>
 								<driver>org.postgresql.Driver</driver>
 								<url>${spring.datasource.url}</url>
@@ -139,7 +141,6 @@
 									<inputSchema>public</inputSchema>
 								</database>
 								<generate>
-									<!--<pojos>true</pojos>-->
 								</generate>
 								<target>
 									<packageName>eki.eve.db</packageName>
