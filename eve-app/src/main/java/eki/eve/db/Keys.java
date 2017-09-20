@@ -163,6 +163,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
+    public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = ForeignKeys0.DEFINITION__DEFINITION_LANG_FKEY;
     public static final ForeignKey<DerivLabelRecord, DerivRecord> DERIV_LABEL__DERIV_LABEL_CODE_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_CODE_FKEY;
     public static final ForeignKey<DerivLabelRecord, LangRecord> DERIV_LABEL__DERIV_LABEL_LANG_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_LANG_FKEY;
     public static final ForeignKey<DerivLabelRecord, LabelTypeRecord> DERIV_LABEL__DERIV_LABEL_TYPE_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_TYPE_FKEY;
@@ -278,6 +279,7 @@ public class Keys {
 
     private static class ForeignKeys0 extends AbstractKeys {
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = createForeignKey(eki.eve.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
+        public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = createForeignKey(eki.eve.db.Keys.LANG_PKEY, Definition.DEFINITION, "definition__definition_lang_fkey", Definition.DEFINITION.LANG);
         public static final ForeignKey<DerivLabelRecord, DerivRecord> DERIV_LABEL__DERIV_LABEL_CODE_FKEY = createForeignKey(eki.eve.db.Keys.DERIV_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_code_fkey", DerivLabel.DERIV_LABEL.CODE);
         public static final ForeignKey<DerivLabelRecord, LangRecord> DERIV_LABEL__DERIV_LABEL_LANG_FKEY = createForeignKey(eki.eve.db.Keys.LANG_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_lang_fkey", DerivLabel.DERIV_LABEL.LANG);
         public static final ForeignKey<DerivLabelRecord, LabelTypeRecord> DERIV_LABEL__DERIV_LABEL_TYPE_FKEY = createForeignKey(eki.eve.db.Keys.LABEL_TYPE_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_type_fkey", DerivLabel.DERIV_LABEL.TYPE);

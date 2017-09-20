@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelation extends TableImpl<LexRelationRecord> {
 
-    private static final long serialVersionUID = 1754404656;
+    private static final long serialVersionUID = -201494725;
 
     /**
      * The reference instance of <code>public.lex_relation</code>
@@ -74,7 +74,7 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
     /**
      * The column <code>public.lex_relation.dataset</code>.
      */
-    public final TableField<LexRelationRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<LexRelationRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.lex_relation</code> table reference

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Deriv extends TableImpl<DerivRecord> {
 
-    private static final long serialVersionUID = -279994421;
+    private static final long serialVersionUID = -1054942856;
 
     /**
      * The reference instance of <code>public.deriv</code>
@@ -57,7 +57,7 @@ public class Deriv extends TableImpl<DerivRecord> {
     /**
      * The column <code>public.deriv.dataset</code>.
      */
-    public final TableField<DerivRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<DerivRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.deriv</code> table reference

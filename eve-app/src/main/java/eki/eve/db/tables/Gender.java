@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gender extends TableImpl<GenderRecord> {
 
-    private static final long serialVersionUID = 1628606343;
+    private static final long serialVersionUID = 793511636;
 
     /**
      * The reference instance of <code>public.gender</code>
@@ -57,7 +57,7 @@ public class Gender extends TableImpl<GenderRecord> {
     /**
      * The column <code>public.gender.dataset</code>.
      */
-    public final TableField<GenderRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<GenderRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.gender</code> table reference

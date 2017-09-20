@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domain extends TableImpl<DomainRecord> {
 
-    private static final long serialVersionUID = 334470958;
+    private static final long serialVersionUID = 79671467;
 
     /**
      * The reference instance of <code>public.domain</code>
@@ -73,7 +73,7 @@ public class Domain extends TableImpl<DomainRecord> {
     /**
      * The column <code>public.domain.dataset</code>.
      */
-    public final TableField<DomainRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<DomainRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.domain</code> table reference

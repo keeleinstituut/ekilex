@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Register extends TableImpl<RegisterRecord> {
 
-    private static final long serialVersionUID = 101355331;
+    private static final long serialVersionUID = -1894864924;
 
     /**
      * The reference instance of <code>public.register</code>
@@ -57,7 +57,7 @@ public class Register extends TableImpl<RegisterRecord> {
     /**
      * The column <code>public.register.dataset</code>.
      */
-    public final TableField<RegisterRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<RegisterRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.register</code> table reference

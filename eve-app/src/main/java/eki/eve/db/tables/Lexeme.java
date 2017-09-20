@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -1466247789;
+    private static final long serialVersionUID = 1479127088;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -79,7 +79,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     /**
      * The column <code>public.lexeme.dataset</code>.
      */
-    public final TableField<LexemeRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<LexemeRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.lexeme</code> table reference

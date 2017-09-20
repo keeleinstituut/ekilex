@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = -1594632262;
+    private static final long serialVersionUID = 433691373;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -67,9 +67,14 @@ public class Definition extends TableImpl<DefinitionRecord> {
     public final TableField<DefinitionRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
+     * The column <code>public.definition.lang</code>.
+     */
+    public final TableField<DefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR.length(3).nullable(false), this, "");
+
+    /**
      * The column <code>public.definition.dataset</code>.
      */
-    public final TableField<DefinitionRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.CHAR.getArrayDataType(), this, "");
+    public final TableField<DefinitionRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.definition</code> table reference
@@ -130,7 +135,7 @@ public class Definition extends TableImpl<DefinitionRecord> {
      */
     @Override
     public List<ForeignKey<DefinitionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY);
+        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY);
     }
 
     /**
