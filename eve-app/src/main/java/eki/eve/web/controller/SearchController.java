@@ -48,6 +48,7 @@ public class SearchController {
 		model.addAttribute("detailsName", id + "_details");
 		model.addAttribute("forms", forms);
 		model.addAttribute("descriptions", search.findFormDefinitions(id));
+		model.addAttribute("datasets", search.allDatasetsAsMap());
 		return "search :: details";
 	}
 

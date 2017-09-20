@@ -6,7 +6,10 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
 import static eki.eve.db.Tables.*;
+import static org.jooq.impl.DSL.max;
 
 @Service
 public class SearchService {
@@ -41,7 +44,7 @@ public class SearchService {
 				.fetch();
 	}
 
-	public Result<Record3<String[], Long, String[]>> findFormDefinitions(Long formId) {
+	public Result<Record4<String[], Long, String[], String[]>> findFormDefinitions(Long formId) {
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
 		Paradigm p1 = PARADIGM.as("p1");
@@ -52,7 +55,7 @@ public class SearchService {
 		Lexeme l2 = LEXEME.as("l2");
 		Meaning m = MEANING.as("m");
 		Definition d = DEFINITION.as("d");
-		return create.select(arrayAggDistinct(f2.VALUE).as("words"), m.ID.as("meaning_id"), arrayAggDistinct(d.VALUE).as("definitions"))
+		return create.select(arrayAggDistinct(f2.VALUE).as("words"), m.ID.as("meaning_id"), max(m.DATASET).as("datasets"), arrayAggDistinct(d.VALUE).as("definitions"))
 				.from(f1, f2, p1, p2, w1, w2, l1, l2, m, d)
 				.where(
 						f1.ID.eq(formId)
@@ -67,6 +70,10 @@ public class SearchService {
 						.and(d.MEANING_ID.eq(m.ID))
 						.and(f2.IS_WORD.isTrue())
 				).groupBy(m.ID).fetch();
+	}
+
+	public Map<String, String> allDatasetsAsMap() {
+		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
 	private static <T> Field<T[]> arrayAggDistinct(Field<T> f) {
