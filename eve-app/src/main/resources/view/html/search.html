@@ -54,9 +54,12 @@
       </th:block>
     </div>
     <div class="float-left w-75">
-      <ul>
-        <li th:each="item : ${descriptions}" th:text="${item.get('value')}"></li>
-      </ul>
+      <th:block th:each="item : ${descriptions}">
+        <span th:each="word : ${item.get('words')}" th:text="${word}" class="pr-2" style="color: #1e7e34"></span>
+        <ul>
+          <li th:each="definition : ${item.get('definitions')}" th:text="${definition}"></li>
+        </ul>
+      </th:block>
     </div>
   </div>
 </th:block>

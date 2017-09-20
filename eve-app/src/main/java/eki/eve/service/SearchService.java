@@ -1,13 +1,12 @@
 package eki.eve.service;
 
-import eki.eve.db.tables.Form;
-import eki.eve.db.tables.MorphLabel;
-import eki.eve.db.tables.Paradigm;
+import eki.eve.db.tables.*;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import static eki.eve.db.Tables.*;
+import static org.jooq.impl.DSL.arrayAgg;
 
 @Service
 public class SearchService {
@@ -42,15 +41,31 @@ public class SearchService {
 				.fetch();
 	}
 
-	public Result<Record1<String>> findFormDefinitions(Long formId) {
-		return create.select(DEFINITION.VALUE)
-				.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DEFINITION)
-				.where(FORM.ID.eq(formId)
-				.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-				.and(PARADIGM.WORD_ID.eq(WORD.ID))
-				.and(LEXEME.WORD_ID.eq(WORD.ID))
-				.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-				.and(DEFINITION.MEANING_ID.eq(MEANING.ID)))
-				.fetch();
+	public Result<Record3<String[], Long, String[]>> findFormDefinitions(Long formId) {
+		Form f1 = FORM.as("f1");
+		Form f2 = FORM.as("f2");
+		Paradigm p1 = PARADIGM.as("p1");
+		Paradigm p2 = PARADIGM.as("p2");
+		Word w1 = WORD.as("w1");
+		Word w2 = WORD.as("w2");
+		Lexeme l1 = LEXEME.as("l1");
+		Lexeme l2 = LEXEME.as("l2");
+		Meaning m = MEANING.as("m");
+		Definition d = DEFINITION.as("d");
+		return create.select(arrayAgg(f2.VALUE).as("words"), m.ID.as("meaning_id"), arrayAgg(d.VALUE).as("definitions"))
+				.from(f1, f2, p1, p2, w1, w2, l1, l2, m, d)
+				.where(
+						f1.ID.eq(formId)
+						.and(f1.PARADIGM_ID.eq(p1.ID))
+						.and(p1.WORD_ID.eq(w1.ID))
+						.and(l1.WORD_ID.eq(w1.ID))
+						.and(l1.MEANING_ID.eq(m.ID))
+						.and(l2.MEANING_ID.eq(m.ID))
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(p2.WORD_ID.eq(w2.ID))
+						.and(f2.PARADIGM_ID.eq(p2.ID))
+						.and(d.MEANING_ID.eq(m.ID))
+						.and(f2.IS_WORD.isTrue())
+				).groupBy(m.ID).fetch();
 	}
 }
