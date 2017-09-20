@@ -19,7 +19,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Controller
 public class SearchController {
 
-	private static final Logger logger = LoggerFactory.getLogger(IndexController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
 	@Autowired
 	SearchService search;
