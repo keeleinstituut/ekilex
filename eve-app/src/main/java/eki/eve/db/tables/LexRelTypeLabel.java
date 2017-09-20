@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelTypeLabel extends TableImpl<LexRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = -1741382753;
+    private static final long serialVersionUID = 476641814;
 
     /**
      * The reference instance of <code>public.lex_rel_type_label</code>
@@ -68,7 +68,7 @@ public class LexRelTypeLabel extends TableImpl<LexRelTypeLabelRecord> {
     /**
      * The column <code>public.lex_rel_type_label.type</code>.
      */
-    public final TableField<LexRelTypeLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<LexRelTypeLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.lex_rel_type_label</code> table reference

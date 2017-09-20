@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LabelType extends TableImpl<LabelTypeRecord> {
 
-    private static final long serialVersionUID = -1746240026;
+    private static final long serialVersionUID = -703718155;
 
     /**
      * The reference instance of <code>public.label_type</code>
@@ -52,7 +52,7 @@ public class LabelType extends TableImpl<LabelTypeRecord> {
     /**
      * The column <code>public.label_type.code</code>.
      */
-    public final TableField<LabelTypeRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<LabelTypeRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * The column <code>public.label_type.value</code>.

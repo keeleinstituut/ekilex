@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphLabel extends TableImpl<MorphLabelRecord> {
 
-    private static final long serialVersionUID = 1618277039;
+    private static final long serialVersionUID = -1527267424;
 
     /**
      * The reference instance of <code>public.morph_label</code>
@@ -68,7 +68,7 @@ public class MorphLabel extends TableImpl<MorphLabelRecord> {
     /**
      * The column <code>public.morph_label.type</code>.
      */
-    public final TableField<MorphLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<MorphLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.morph_label</code> table reference

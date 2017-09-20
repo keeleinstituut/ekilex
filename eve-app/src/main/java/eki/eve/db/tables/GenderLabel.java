@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderLabel extends TableImpl<GenderLabelRecord> {
 
-    private static final long serialVersionUID = 493013459;
+    private static final long serialVersionUID = -303793988;
 
     /**
      * The reference instance of <code>public.gender_label</code>
@@ -68,7 +68,7 @@ public class GenderLabel extends TableImpl<GenderLabelRecord> {
     /**
      * The column <code>public.gender_label.type</code>.
      */
-    public final TableField<GenderLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<GenderLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.gender_label</code> table reference

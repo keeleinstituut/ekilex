@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DerivLabel extends TableImpl<DerivLabelRecord> {
 
-    private static final long serialVersionUID = 1390208323;
+    private static final long serialVersionUID = 784602840;
 
     /**
      * The reference instance of <code>public.deriv_label</code>
@@ -68,7 +68,7 @@ public class DerivLabel extends TableImpl<DerivLabelRecord> {
     /**
      * The column <code>public.deriv_label.type</code>.
      */
-    public final TableField<DerivLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<DerivLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.deriv_label</code> table reference

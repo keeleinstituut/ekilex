@@ -50,7 +50,7 @@ alter sequence eki_user_id_seq restart with 10000;
 -- klassif. nime liik
 create table label_type
 (
-  code char(10) primary key,
+  code varchar(10) primary key,
   value text not null
 );
 
@@ -66,7 +66,7 @@ create table lang_label
   code char(3) references lang(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -88,7 +88,7 @@ create table domain_label
   origin varchar(100) not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   foreign key (code, origin) references domain (code, origin),
   unique(code, origin, lang, type)
 );
@@ -105,7 +105,7 @@ create table register_label
   code varchar(100) references register(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -121,7 +121,7 @@ create table gender_label
   code varchar(100) references gender(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -137,7 +137,7 @@ create table pos_label
   code varchar(100) references pos(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -153,7 +153,7 @@ create table morph_label
   code varchar(100) references morph(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -169,7 +169,7 @@ create table deriv_label
   code varchar(100) references deriv(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -185,7 +185,7 @@ create table lex_rel_type_label
   code varchar(100) references lex_rel_type(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
-  type char(10) references label_type(code) not null,
+  type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
 
@@ -196,7 +196,7 @@ create table lex_rel_type_label
 -- sõnakogu
 create table dataset
 (
-  code char(10) primary key,
+  code varchar(10) primary key,
   name text not null
 );
 

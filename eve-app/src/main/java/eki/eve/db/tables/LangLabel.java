@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LangLabel extends TableImpl<LangLabelRecord> {
 
-    private static final long serialVersionUID = -131826838;
+    private static final long serialVersionUID = -1079242985;
 
     /**
      * The reference instance of <code>public.lang_label</code>
@@ -68,7 +68,7 @@ public class LangLabel extends TableImpl<LangLabelRecord> {
     /**
      * The column <code>public.lang_label.type</code>.
      */
-    public final TableField<LangLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<LangLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.lang_label</code> table reference

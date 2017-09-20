@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainLabel extends TableImpl<DomainLabelRecord> {
 
-    private static final long serialVersionUID = -610040225;
+    private static final long serialVersionUID = 482556514;
 
     /**
      * The reference instance of <code>public.domain_label</code>
@@ -73,7 +73,7 @@ public class DomainLabel extends TableImpl<DomainLabelRecord> {
     /**
      * The column <code>public.domain_label.type</code>.
      */
-    public final TableField<DomainLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<DomainLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.domain_label</code> table reference

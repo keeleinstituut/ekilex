@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosLabel extends TableImpl<PosLabelRecord> {
 
-    private static final long serialVersionUID = 1847432855;
+    private static final long serialVersionUID = 711622224;
 
     /**
      * The reference instance of <code>public.pos_label</code>
@@ -68,7 +68,7 @@ public class PosLabel extends TableImpl<PosLabelRecord> {
     /**
      * The column <code>public.pos_label.type</code>.
      */
-    public final TableField<PosLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<PosLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.pos_label</code> table reference

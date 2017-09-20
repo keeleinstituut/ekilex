@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
 
-    private static final long serialVersionUID = -1513422253;
+    private static final long serialVersionUID = 1146574960;
 
     /**
      * The reference instance of <code>public.register_label</code>
@@ -68,7 +68,7 @@ public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
     /**
      * The column <code>public.register_label.type</code>.
      */
-    public final TableField<RegisterLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.CHAR.length(10).nullable(false), this, "");
+    public final TableField<RegisterLabelRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR.length(10).nullable(false), this, "");
 
     /**
      * Create a <code>public.register_label</code> table reference
