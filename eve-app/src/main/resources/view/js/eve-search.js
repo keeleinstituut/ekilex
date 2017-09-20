@@ -2,11 +2,16 @@
 function initialize() {
     $('#results').find('[name="details"]').on('click', function (e) {
         var id = $(e.target).data('id');
-        $.get('/details/' + id).done(function (data) {
-            $('[name="' + id + '_details"]').replaceWith(data);
-        }).fail(function (data) {
-            console.log(data);
-            alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
-        });
+        var detailsDiv = $('[name="' + id + '_details"]');
+        if (detailsDiv.html() === '') {
+            $.get('/details/' + id).done(function (data) {
+                detailsDiv.replaceWith(data);
+            }).fail(function (data) {
+                console.log(data);
+                alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+            });
+        } else {
+            detailsDiv.toggle();
+        }
     })
 }
