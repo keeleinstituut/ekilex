@@ -2,6 +2,7 @@ package eki.eve.service;
 
 import eki.eve.db.tables.*;
 import org.jooq.*;
+import org.jooq.conf.RenderNameStyle;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,8 @@ public class SearchService {
 	public SearchService(DSLContext context) {
 		create = context;
 		create.settings().setRenderSchema(false);
+		create.settings().setRenderFormatted(true);
+		create.settings().setRenderNameStyle(RenderNameStyle.AS_IS);
 	}
 
 	public Result<Record2<Long, String>> findForms(String searchFilter) {
