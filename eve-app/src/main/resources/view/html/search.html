@@ -50,7 +50,11 @@
   <div th:name="${detailsName}" class="pl-4">
     <div class="float-left pr-2">
       <th:block th:each="form : ${forms}">
-        <span th:text="${form}"></span><br>
+        <span th:text="
+          ${form.get('value') + ' (' + form.get('morph_code') + '-' + form.get('morph_value')
+            + (#strings.isEmpty(form.get('display_form')) ? '' :  '; ' + form.get('display_form'))
+            + (#strings.isEmpty(form.get('vocal_form')) ? '' :  '; ' + form.get('vocal_form')) + ')'}">
+        </span><br>
       </th:block>
     </div>
     <div class="float-left w-75">

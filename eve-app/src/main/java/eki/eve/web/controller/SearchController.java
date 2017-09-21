@@ -10,10 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
 import java.util.Objects;
 
-import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Controller
@@ -37,16 +35,8 @@ public class SearchController {
 	@GetMapping("/details/{id}")
 	public String details(@PathVariable("id") Long id, Model model) {
 		logger.debug("doing details");
-		List<String> forms = search.findConnectedForms(id).stream().map(rec ->
-			String.format("%s (%s-%s; %s; %s)",
-					rec.get("value"),
-					rec.get("morph_code"),
-					rec.get("morph_value"),
-					rec.get("display_form"),
-					asString(rec.getValue("vocal_form")))
-		).collect(toList());
 		model.addAttribute("detailsName", id + "_details");
-		model.addAttribute("forms", forms);
+		model.addAttribute("forms", search.findConnectedForms(id));
 		model.addAttribute("descriptions", search.findFormDefinitions(id));
 		model.addAttribute("datasets", search.allDatasetsAsMap());
 		return "search :: details";
