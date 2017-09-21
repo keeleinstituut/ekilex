@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.TableName;
+import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
@@ -95,6 +96,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		final String wordMatchValueExp = "x:x";
 		final String definitionValueExp = "x:xd";
 		final String wordMatchRectionExp = "x:xr";
+		final String synonymExp = "x:syn";
 
 		final String homonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
@@ -118,16 +120,17 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 		Map<String, Object> tableRowValueMap;
 		Element headerNode, contentNode;
-		List<Element> wordGroupNodes, grammarNodes, meaningGroupNodes, meaningNodes, wordMatchNodes;
+		List<Element> wordGroupNodes, grammarNodes, meaningGroupNodes, meaningNodes, wordMatchNodes, synonymNodes;
 		Element wordNode, wordVocalFormNode, morphNode, rectionNode, definitionValueNode, wordMatchValueNode;
 
-		List<Long> newWordIds;
-		String word, wordMatch, homonymNrStr, wordDisplayForm, wordVocalForm, rection, lexemeLevel1Str, wordMatchLang, definition;
+		List<Long> newWordIds, synonymLevel1WordIds, synonymLevel2WordIds, synonymLevel3WordIds;
+		String word, wordMatch, synonym, homonymNrStr, wordDisplayForm, wordVocalForm, rection, lexemeLevel1Str, wordMatchLang, definition;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2;
 		Long wordId, paradigmId, meaningId, lexemeId;
-		int wordDuplicateCount = 0;
-		int lexemeDuplicateCount = 0;
+
+		Count wordDuplicateCount = new Count();
+		Count lexemeDuplicateCount = new Count();
 
 		int articleCounter = 0;
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -170,27 +173,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				}
 
 				// save word+paradigm+form
-
-				tableRowValueMap = getWord(word, homonymNr);
-
-				if (tableRowValueMap == null) {
-
-					// word
-					wordId = createWord(destinMorphCode, homonymNr, dataLang);
-
-					// paradigm
-					paradigmId = createParadigm(wordId);
-
-					// form
-					createForm(word, wordDisplayForm, wordVocalForm, destinMorphCode, paradigmId);
-
-				} else {
-					wordId = (Long) tableRowValueMap.get("id");
-
-					//logger.warn("Word duplicate: \"{}\"", word);
-					// TODO add many display forms per word instead
-					wordDuplicateCount++;
-				}
+				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
 				newWordIds.add(wordId);
 
 				// further references...
@@ -211,6 +194,9 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				logger.warn("No body element in article!");
 				logger.warn(articleNode.asXML());
 			} else {
+
+				synonymNodes = contentNode.selectNodes(synonymExp);
+				synonymLevel1WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
 
 				meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);
 
@@ -234,8 +220,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, dataset);
 							if (lexemeId == null) {
-								//logger.warn("Lexeme already exists for word {} and meaning {}", newWordId, meaningId);
-								lexemeDuplicateCount++;
+								lexemeDuplicateCount.increment();
 							} else {
 
 								// word match lexeme rections
@@ -243,6 +228,23 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 								// word match lexeme grammars
 								createGrammars(wordIdGrammarMap, lexemeId, newWordId);
+							}
+						}
+
+						for (Long synonymWordId : synonymLevel1WordIds) {
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, dataset);
+							if (lexemeId == null) {
+								lexemeDuplicateCount.increment();
+							}
+						}
+
+						synonymNodes = meaningNode.selectNodes(synonymExp);
+						synonymLevel2WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
+
+						for (Long synonymWordId : synonymLevel2WordIds) {
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, dataset);
+							if (lexemeId == null) {
+								lexemeDuplicateCount.increment();
 							}
 						}
 
@@ -260,6 +262,8 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 								continue;
 							}
 
+							wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, wordDuplicateCount);
+
 							definitionValueNode = (Element) wordMatchNode.selectSingleNode(definitionValueExp);
 							definition = null;
 							if (definitionValueNode != null) {
@@ -269,29 +273,10 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 								createDefinition(meaningId, definition, wordMatchLang, dataset);
 							}
 
-							tableRowValueMap = getWord(wordMatch, defaultHomonymNr);
-
-							if (tableRowValueMap == null) {
-
-								// word
-								wordId = createWord(defaultWordMorphCode, defaultHomonymNr, wordMatchLang);
-
-								// paradigm
-								paradigmId = createParadigm(wordId);
-
-								// form
-								createForm(wordMatch, null, null, defaultWordMorphCode, paradigmId);
-
-							} else {
-								wordId = (Long) tableRowValueMap.get("id");
-								wordDuplicateCount++;
-							}
-
 							// word match lexeme
 							lexemeId = createLexeme(wordId, meaningId, null, null, dataset);
 							if (lexemeId == null) {
-								//logger.warn("Lexeme already exists for word {} and meaning {}", wordId, meaningId);
-								lexemeDuplicateCount++;
+								lexemeDuplicateCount.increment();
 							} else {
 
 								// word match lexeme rection
@@ -317,6 +302,44 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	private List<Long> saveWords(List<Element> synonymNodes, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
+
+		List<Long> synonymWordIds = new ArrayList<>();
+		String synonym;
+		Long wordId;
+
+		for (Element synonymNode : synonymNodes) {
+
+			synonym = synonymNode.getTextTrim();
+			wordId = saveWord(synonym, null, null, homonymNr, wordMorphCode, lang, wordDuplicateCount);
+			synonymWordIds.add(wordId);
+		}
+		return synonymWordIds;
+	}
+
+	private Long saveWord(String word, String wordDisplayForm, String wordVocalForm, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
+
+		Map<String, Object> tableRowValueMap = getWord(word, homonymNr);
+		Long wordId;
+
+		if (tableRowValueMap == null) {
+
+			// word
+			wordId = createWord(wordMorphCode, homonymNr, lang);
+
+			// paradigm
+			Long paradigmId = createParadigm(wordId);
+
+			// form
+			createForm(word, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId);
+
+		} else {
+			wordId = (Long) tableRowValueMap.get("id");
+			wordDuplicateCount.increment();
+		}
+		return wordId;
 	}
 
 	private void extractGrammar(List<Element> grammarNodes, Long wordId, String[] dataset, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {

@@ -1,6 +1,9 @@
 package eki.eve.web.controller;
 
 import eki.eve.service.SearchService;
+
+import org.jooq.Record2;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +29,8 @@ public class SearchController {
 	public String search(@RequestParam(required = false) String searchFilter, Model model) {
 		logger.debug("doing search");
 		if (isNotBlank(searchFilter)) {
-			model.addAttribute("searchResults", search.findForms(searchFilter));
+			Result<Record2<Long, String>> forms = search.findForms(searchFilter);
+			model.addAttribute("searchResults", forms);
 			model.addAttribute("searchFilter", searchFilter);
 		}
 		return "search";

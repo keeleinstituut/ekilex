@@ -99,6 +99,40 @@
 				<maven.test.skip>false</maven.test.skip>
 			</properties>
 		</profile>
+		<profile>
+			<id>testsrvqq2</id>
+			<build>
+				<resources>
+					<resource>
+						<directory>${project.basedir}/src/main/resources</directory>
+					</resource>
+					<resource>
+						<directory>${project.basedir}/../../apprecources</directory>
+					</resource>
+				</resources>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>exec-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<goals>
+									<goal>java</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<killAfter>-1</killAfter>
+							<mainClass>eki.ekilex.manual.Qq2Loader</mainClass>
+							<argLine>-Xmx4096m</argLine>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+			<properties>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+		</profile>
 	</profiles>
 
 	<dependencies>

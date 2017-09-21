@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.runner.Qq2LoaderRunner;
 
 public class Qq2Loader {
@@ -21,9 +22,10 @@ public class Qq2Loader {
 		try {
 			applicationContext.registerShutdownHook();
 
-			final String dataXmlFilePath = "/projects/eki/data/dictionaries/qq2/qq21.xml";
-			final String dataLang = "est";
-			final String[] dataset = new String[] {"qq2"};
+			//  /projects/eki/data/dictionaries/qq2/qq21.xml
+			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
+			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
+			String[] dataset = new String[] {"qq2"};
 
 			runner.execute(dataXmlFilePath, dataLang, dataset);
 
@@ -33,5 +35,4 @@ public class Qq2Loader {
 			applicationContext.close();
 		}
 	}
-
 }
