@@ -144,9 +144,9 @@ insert into lexeme (id, word_id, meaning_id, dataset) values (4026, 1012, 2025, 
 insert into lexeme (id, word_id, meaning_id, dataset) values (4027, 1013, 2025, '{eos}');
 insert into lexeme (id, word_id, meaning_id, dataset) values (4028, 1014, 2026, '{eos}');
 insert into lexeme (id, word_id, meaning_id, dataset) values (4029, 1015, 2027, '{eos}');
-insert into lexeme (id, word_id, meaning_id, dataset) values (4031, 1016, 2015, '{evs}');
-insert into lexeme (id, word_id, meaning_id, dataset) values (4032, 1017, 2016, '{evs}');
-insert into lexeme (id, word_id, meaning_id, dataset) values (4033, 1018, 2017, '{evs}');
+insert into lexeme (id, word_id, meaning_id, dataset) values (4031, 1016, 2014, '{evs}');
+insert into lexeme (id, word_id, meaning_id, dataset) values (4032, 1017, 2015, '{evs}');
+insert into lexeme (id, word_id, meaning_id, dataset) values (4033, 1018, 2016, '{evs}');
 
 insert into lex_relation (lexeme1_id, lexeme2_id, lex_rel_type_code, dataset) values (4001, 4017, 'comp', '{eos}');
 insert into lex_relation (lexeme1_id, lexeme2_id, lex_rel_type_code, dataset) values (4001, 4018, 'comp', '{eos}');
