@@ -55,7 +55,7 @@
     </div>
     <div class="float-left w-75">
       <th:block th:each="item : ${descriptions}">
-        <span th:each="word : ${item.get('words')}" th:text="${word}" class="pr-2" style="color: #1e7e34" th:if="${word != form}"></span>
+        <a th:each="word : ${item.get('words')}" th:href="@{/search?searchFilter=__${word}__}"><span th:text="${word}" class="pr-2" style="color: #1e7e34"></span></a>
         <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
         <ul>
           <li th:each="definition : ${item.get('definitions')}" th:text="${definition}"></li>
