@@ -59,7 +59,7 @@ public class SearchService {
 		Meaning m = MEANING.as("m");
 		Definition d = DEFINITION.as("d");
 		return create.select(arrayAggDistinct(f2.VALUE).as("words"), m.ID.as("meaning_id"), max(m.DATASET).as("datasets"), arrayAggDistinct(d.VALUE).as("definitions"))
-				.from(f1, f2, p1, p2, w1, w2, l1, l2, m, d)
+				.from(f1, f2, p1, p2, w1, w2, l1, l2, m.leftOuterJoin(d).on(d.MEANING_ID.eq(m.ID)))
 				.where(
 						f1.ID.eq(formId)
 						.and(f1.PARADIGM_ID.eq(p1.ID))
@@ -70,9 +70,9 @@ public class SearchService {
 						.and(l2.WORD_ID.eq(w2.ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(d.MEANING_ID.eq(m.ID))
 						.and(f2.IS_WORD.isTrue())
-				).groupBy(m.ID).fetch();
+				)
+				.groupBy(m.ID).fetch();
 	}
 
 	public Map<String, String> allDatasetsAsMap() {
