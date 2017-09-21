@@ -18,16 +18,14 @@
     <div class="card-body">
       <form th:action="@{/search}">
         <div class="form-row">
-          <div class="col-4">
+          <div class="col-6">
             <div class="form-group row">
-              <label class="col-2 col-form-label">Otsing</label>
-              <div class="col-10">
+              <label class="col-auto col-form-label">Otsing</label>
+              <div class="col-8">
                 <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
               </div>
+              <button type="submit" class="btn btn-primary">Otsi</button>
             </div>
-          </div>
-          <div class="col">
-            <button type="submit" class="btn btn-primary">Otsi</button>
           </div>
         </div>
       </form>
@@ -70,7 +68,8 @@
 </th:block>
 
 <script th:inline="javascript">
-  initialize();
+  var urlPrefix = /*[[@{/}]]*/ '/';
+  initialize(urlPrefix);
 </script>
 
 </body>
