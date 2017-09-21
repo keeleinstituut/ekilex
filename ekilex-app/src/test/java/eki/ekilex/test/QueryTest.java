@@ -142,7 +142,7 @@ public class QueryTest {
 		List<Map<String, Object>> results = basicDbService.queryList(sqlScript, paramMap);
 		int resultCount = results.size();
 
-		assertEquals("Incorrect result count", 6, resultCount);
+		assertEquals("Incorrect result count", 5, resultCount);
 
 		Map<String, Integer> definitionWordsCountMap = new HashMap<>();
 		Map<String, List<String>> definitionWordsMap = new HashMap<>();
