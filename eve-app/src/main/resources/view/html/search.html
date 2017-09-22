@@ -62,7 +62,7 @@
           <a th:each="word : ${item.get('words')}" th:href="@{/search?searchFilter=__${word}__}">
             <span th:text="${word}" class="pr-2" style="color: #1e7e34"></span>
           </a>
-          <span th:text="${item.get('level1') + '.' + item.get('level2')}" th:if="${item.get('level1') > 0}"></span>
+          <span th:text="${item.get('level2') + '.' + item.get('level1')}" th:if="${item.get('level1') > 0}"></span>
           <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
           <ul>
             <li th:each="definition : ${item.get('definitions')}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
