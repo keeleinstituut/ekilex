@@ -35,7 +35,7 @@
     <table id="results" class="w-100">
       <tr th:each="item : ${searchResults}">
         <td class="w-100">
-          <span th:text="${item.get('value')}">vorm 1</span>
+          <span th:text="${item.get('value') + ' (' + item.get('homonym_nr')+ ')'}">vorm 1</span>
           <button type="button" class="btn btn-link" th:data-id="${item.get('id')}" name="details">Detailid</button>
           <div th:name="${item.get('id')}+'_details'"></div>
         </td>
@@ -46,7 +46,7 @@
 
 <th:block th:fragment="details">
   <div th:name="${detailsName}" class="pl-4">
-    <div class="float-left pr-2">
+    <div class="float-left w-25">
       <th:block th:each="form : ${forms}">
         <span th:text="
           ${form.get('value') + ' (' + form.get('morph_code') + '-' + form.get('morph_value')
@@ -60,7 +60,7 @@
         <a th:each="word : ${item.get('words')}" th:href="@{/search?searchFilter=__${word}__}"><span th:text="${word}" class="pr-2" style="color: #1e7e34"></span></a>
         <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
         <ul>
-          <li th:each="definition : ${item.get('definitions')}" th:text="${definition}"></li>
+          <li th:each="definition : ${item.get('definitions')}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
         </ul>
       </th:block>
     </div>
