@@ -1,13 +1,13 @@
 package eki.eve.service;
 
-import static eki.eve.db.Tables.DATASET;
-import static eki.eve.db.Tables.DEFINITION;
-import static eki.eve.db.Tables.FORM;
-import static eki.eve.db.Tables.LEXEME;
-import static eki.eve.db.Tables.MEANING;
-import static eki.eve.db.Tables.MORPH_LABEL;
-import static eki.eve.db.Tables.PARADIGM;
-import static eki.eve.db.Tables.WORD;
+import static eki.eve.data.db.Tables.DATASET;
+import static eki.eve.data.db.Tables.DEFINITION;
+import static eki.eve.data.db.Tables.FORM;
+import static eki.eve.data.db.Tables.LEXEME;
+import static eki.eve.data.db.Tables.MEANING;
+import static eki.eve.data.db.Tables.MORPH_LABEL;
+import static eki.eve.data.db.Tables.PARADIGM;
+import static eki.eve.data.db.Tables.WORD;
 
 import java.util.Map;
 
@@ -21,13 +21,13 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eki.eve.db.tables.Definition;
-import eki.eve.db.tables.Form;
-import eki.eve.db.tables.Lexeme;
-import eki.eve.db.tables.Meaning;
-import eki.eve.db.tables.MorphLabel;
-import eki.eve.db.tables.Paradigm;
-import eki.eve.db.tables.Word;
+import eki.eve.data.db.tables.Definition;
+import eki.eve.data.db.tables.Form;
+import eki.eve.data.db.tables.Lexeme;
+import eki.eve.data.db.tables.Meaning;
+import eki.eve.data.db.tables.MorphLabel;
+import eki.eve.data.db.tables.Paradigm;
+import eki.eve.data.db.tables.Word;
 
 @Service
 public class SearchService {

@@ -79,7 +79,7 @@
 								<generate>
 								</generate>
 								<target>
-									<packageName>eki.eve.db</packageName>
+									<packageName>eki.eve.data.db</packageName>
 									<directory>src/main/java</directory>
 								</target>
 							</generator>
