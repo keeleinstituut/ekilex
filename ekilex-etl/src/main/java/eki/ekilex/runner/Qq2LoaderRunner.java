@@ -118,16 +118,15 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		Map<Long, List<Map<String, Object>>> wordIdRectionMap = new HashMap<>();
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
 
-		Map<String, Object> tableRowValueMap;
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, grammarNodes, meaningGroupNodes, meaningNodes, wordMatchNodes, synonymNodes;
 		Element wordNode, wordVocalFormNode, morphNode, rectionNode, definitionValueNode, wordMatchValueNode;
 
-		List<Long> newWordIds, synonymLevel1WordIds, synonymLevel2WordIds, synonymLevel3WordIds;
-		String word, wordMatch, synonym, homonymNrStr, wordDisplayForm, wordVocalForm, rection, lexemeLevel1Str, wordMatchLang, definition;
+		List<Long> newWordIds, synonymLevel1WordIds, synonymLevel2WordIds;
+		String word, wordMatch, homonymNrStr, wordDisplayForm, wordVocalForm, rection, lexemeLevel1Str, wordMatchLang, definition;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2;
-		Long wordId, paradigmId, meaningId, lexemeId;
+		Long wordId, meaningId, lexemeId;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -169,11 +168,11 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				} else {
 					sourceMorphCode = morphNode.getTextTrim();
 					destinMorphCode = morphToMorphMap.get(sourceMorphCode);
-					destinDerivCode = morphToDerivMap.get(sourceMorphCode);
+					destinDerivCode = morphToDerivMap.get(sourceMorphCode);//currently not used
 				}
 
 				// save word+paradigm+form
-				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
+				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, wordDuplicateCount);
 				newWordIds.add(wordId);
 
 				// further references...
