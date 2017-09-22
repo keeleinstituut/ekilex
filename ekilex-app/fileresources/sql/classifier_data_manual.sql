@@ -13,6 +13,7 @@ insert into dataset (code, name) values ('eos', 'Õigekeelsussõnaraamat ÕS 201
 insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat');
 insert into dataset (code, name) values ('sys', 'Sünonüümisõnastik');
 insert into dataset (code, name) values ('evs', 'Eesti-vene sõnaraamat');
+insert into dataset (code, name) values ('qq2', 'Eesti-vene sõnaraamat');
 
 insert into lex_rel_type (code, dataset) values ('comp', '{eos, ss_, sys, evs}');
 

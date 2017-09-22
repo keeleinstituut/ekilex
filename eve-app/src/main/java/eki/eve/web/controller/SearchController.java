@@ -41,7 +41,7 @@ public class SearchController {
 		logger.debug("doing details");
 		model.addAttribute("detailsName", id + "_details");
 		model.addAttribute("forms", search.findConnectedForms(id));
-		model.addAttribute("descriptions", search.findFormDefinitions(id));
+		model.addAttribute("meanings", search.findFormMeanings(id));
 		model.addAttribute("datasets", search.allDatasetsAsMap());
 		return "search :: details";
 	}

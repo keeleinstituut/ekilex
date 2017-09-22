@@ -1,76 +1,79 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-  <title th:text="#{search.title}">EVE otsing</title>
-  <th:block th:fragment="links">
-    <script type="text/javascript" th:src="@{/view/js/eve-search.js}"></script>
-  </th:block>
+<title th:text="#{search.title}">EVE otsing</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/eve-search.js}"></script>
+</th:block>
 </head>
-
 <body>
-
-<div class="container-fluid">
-  <div class="d-flex flex-row"><p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p></div>
-  <div class="card mt-4">
-    <div class="card-header">
-      <h5 class="card-title" th:text="#{search.title}">Vormi otsing</h5>
+  <div class="container-fluid">
+    <div class="d-flex flex-row">
+      <p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p>
     </div>
-    <div class="card-body">
-      <form th:action="@{/search}">
-        <div class="form-row">
-          <div class="col-6">
-            <div class="form-group row">
-              <label class="col-auto col-form-label">Otsing</label>
-              <div class="col-8">
-                <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="card-title" th:text="#{search.title}">Vormi otsing</h5>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/search}">
+          <div class="form-row">
+            <div class="col-6">
+              <div class="form-group row">
+                <label class="col-auto col-form-label">Otsing</label>
+                <div class="col-8">
+                  <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+                </div>
+                <button type="submit" class="btn btn-primary">Otsi</button>
               </div>
-              <button type="submit" class="btn btn-primary">Otsi</button>
             </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
+    </div>
+    <div class="mt-4 ml-4" th:if="${searchResults != null}">
+      <table id="results" class="w-100">
+        <tr th:each="item : ${searchResults}">
+          <td class="w-100">
+            <span th:text="${item.get('value')}">vorm 1</span>
+            <span th:text="${'(' + item.get('homonym_nr') + ')'}" th:if="${item.get('homonym_nr') > 0}"></span>
+            <button type="button" class="btn btn-link" th:data-id="${item.get('id')}" name="details">Detailid</button>
+            <div th:name="${item.get('id')}+'_details'"></div>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
-  <div class="mt-4 ml-4" th:if="${searchResults != null}">
-    <table id="results" class="w-100">
-      <tr th:each="item : ${searchResults}">
-        <td class="w-100">
-          <span th:text="${item.get('value') + ' (' + item.get('homonym_nr')+ ')'}">vorm 1</span>
-          <button type="button" class="btn btn-link" th:data-id="${item.get('id')}" name="details">Detailid</button>
-          <div th:name="${item.get('id')}+'_details'"></div>
-        </td>
-      </tr>
-    </table>
-  </div>
-</div>
-
-<th:block th:fragment="details">
-  <div th:name="${detailsName}" class="pl-4">
-    <div class="float-left w-25">
-      <th:block th:each="form : ${forms}">
-        <span th:text="
-          ${form.get('value') + ' (' + form.get('morph_code') + '-' + form.get('morph_value')
+  <th:block th:fragment="details">
+    <div th:name="${detailsName}" class="pl-4">
+      <div class="float-left w-25">
+        <th:block th:each="form : ${forms}">
+          <span
+            th:text="
+            ${form.get('value') + ' (' + form.get('morph_code') + '-' + form.get('morph_value')
             + (#strings.isEmpty(form.get('display_form')) ? '' :  '; ' + form.get('display_form'))
             + (#strings.isEmpty(form.get('vocal_form')) ? '' :  '; ' + form.get('vocal_form')) + ')'}">
-        </span><br>
-      </th:block>
+          </span>
+          <br>
+        </th:block>
+      </div>
+      <div class="float-left w-75">
+        <th:block th:each="item : ${meanings}">
+          <a th:each="word : ${item.get('words')}" th:href="@{/search?searchFilter=__${word}__}">
+            <span th:text="${word}" class="pr-2" style="color: #1e7e34"></span>
+          </a>
+          <span th:text="${item.get('level1') + '.' + item.get('level2')}" th:if="${item.get('level1') > 0}"></span>
+          <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
+          <ul>
+            <li th:each="definition : ${item.get('definitions')}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+          </ul>
+        </th:block>
+      </div>
     </div>
-    <div class="float-left w-75">
-      <th:block th:each="item : ${descriptions}">
-        <a th:each="word : ${item.get('words')}" th:href="@{/search?searchFilter=__${word}__}"><span th:text="${word}" class="pr-2" style="color: #1e7e34"></span></a>
-        <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
-        <ul>
-          <li th:each="definition : ${item.get('definitions')}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
-        </ul>
-      </th:block>
-    </div>
-  </div>
-</th:block>
-
-<script th:inline="javascript">
-  var urlPrefix = /*[[@{/}]]*/ '/';
-  initialize(urlPrefix);
-</script>
-
+  </th:block>
+  <script th:inline="javascript">
+  	var urlPrefix = /*[[@{/}]]*/'/';
+  	initialize(urlPrefix);
+  </script>
 </body>
 </html>

@@ -1,16 +1,33 @@
 package eki.eve.service;
 
-import eki.eve.db.tables.*;
-import org.jooq.*;
+import static eki.eve.db.Tables.DATASET;
+import static eki.eve.db.Tables.DEFINITION;
+import static eki.eve.db.Tables.FORM;
+import static eki.eve.db.Tables.LEXEME;
+import static eki.eve.db.Tables.MEANING;
+import static eki.eve.db.Tables.MORPH_LABEL;
+import static eki.eve.db.Tables.PARADIGM;
+import static eki.eve.db.Tables.WORD;
+
+import java.util.Map;
+
+import org.jooq.DSLContext;
+import org.jooq.Field;
+import org.jooq.Record3;
+import org.jooq.Record6;
+import org.jooq.Result;
 import org.jooq.conf.RenderNameStyle;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
-import static eki.eve.db.Tables.*;
-import static org.jooq.impl.DSL.max;
+import eki.eve.db.tables.Definition;
+import eki.eve.db.tables.Form;
+import eki.eve.db.tables.Lexeme;
+import eki.eve.db.tables.Meaning;
+import eki.eve.db.tables.MorphLabel;
+import eki.eve.db.tables.Paradigm;
+import eki.eve.db.tables.Word;
 
 @Service
 public class SearchService {
@@ -35,6 +52,7 @@ public class SearchService {
 						.and(FORM.IS_WORD.isTrue())
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
 				.fetch();
 	}
 
@@ -55,7 +73,7 @@ public class SearchService {
 				.fetch();
 	}
 
-	public Result<Record4<String[], Long, String[], String[]>> findFormDefinitions(Long formId) {
+	public Result<Record6<String[], Integer, Integer, Long, String[], String[]>> findFormMeanings(Long formId) {
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
 		Paradigm p1 = PARADIGM.as("p1");
@@ -66,7 +84,13 @@ public class SearchService {
 		Lexeme l2 = LEXEME.as("l2");
 		Meaning m = MEANING.as("m");
 		Definition d = DEFINITION.as("d");
-		return create.select(arrayAggDistinct(f2.VALUE).as("words"), m.ID.as("meaning_id"), max(m.DATASET).as("datasets"), arrayAggDistinct(d.VALUE).as("definitions"))
+		return create.select(
+					arrayAggDistinct(f2.VALUE).as("words"),
+					l1.LEVEL1.as("level1"),
+					l1.LEVEL2.as("level2"),
+					m.ID.as("meaning_id"),
+					m.DATASET.as("datasets"),
+					arrayAggDistinct(d.VALUE).as("definitions"))
 				.from(f1, f2, p1, p2, w1, w2, l1, l2, m.leftOuterJoin(d).on(d.MEANING_ID.eq(m.ID)))
 				.where(
 						f1.ID.eq(formId)
@@ -79,7 +103,7 @@ public class SearchService {
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue()))
-				.groupBy(m.ID)
+				.groupBy(l1.ID, m.ID)
 				.fetch();
 	}
 

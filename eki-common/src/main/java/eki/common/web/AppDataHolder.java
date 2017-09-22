@@ -7,8 +7,8 @@ import java.util.Properties;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.AppData;
@@ -19,10 +19,8 @@ public class AppDataHolder {
 	@Autowired
 	private ServletContext servletContext;
 
-	@Value("${app.name:n/a}")
 	private String appName;
 
-	@Value("${app.version:n/a}")
 	private String appVersion;
 
 	private AppData appData = null;
@@ -59,6 +57,10 @@ public class AppDataHolder {
 		try {
 			sessionTimeout = request.getSession().getMaxInactiveInterval() / 60;
 		} catch (Exception e) {
+		}
+		if (StringUtils.isAllBlank(appName, appVersion)) {
+			appName = "n/a";
+			appVersion = "n/a";
 		}
 
 		appData = new AppData();
