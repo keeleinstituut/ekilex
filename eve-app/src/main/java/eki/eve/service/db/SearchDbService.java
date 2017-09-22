@@ -1,4 +1,4 @@
-package eki.eve.service;
+package eki.eve.service.db;
 
 import static eki.eve.data.db.Tables.DATASET;
 import static eki.eve.data.db.Tables.DEFINITION;
@@ -30,12 +30,12 @@ import eki.eve.data.db.tables.Paradigm;
 import eki.eve.data.db.tables.Word;
 
 @Service
-public class SearchService {
+public class SearchDbService {
 
 	private DSLContext create;
 
 	@Autowired
-	public SearchService(DSLContext context) {
+	public SearchDbService(DSLContext context) {
 		create = context;
 		create.settings().setRenderSchema(false);
 		create.settings().setRenderFormatted(true);

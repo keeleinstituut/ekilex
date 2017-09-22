@@ -1,6 +1,6 @@
 package eki.eve.web.controller;
 
-import eki.eve.service.SearchService;
+import eki.eve.service.db.SearchDbService;
 
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -23,7 +23,7 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
 	@Autowired
-	SearchService search;
+	SearchDbService search;
 
 	@GetMapping("/search")
 	public String search(@RequestParam(required = false) String searchFilter, Model model) {
@@ -46,7 +46,4 @@ public class SearchController {
 		return "search :: details";
 	}
 
-	private String asString(Object value) {
-		return Objects.isNull(value) ? "" : String.valueOf(value);
-	}
 }
