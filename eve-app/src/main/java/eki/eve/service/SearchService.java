@@ -25,12 +25,16 @@ public class SearchService {
 		create.settings().setRenderNameStyle(RenderNameStyle.AS_IS);
 	}
 
-	public Result<Record2<Long, String>> findForms(String searchFilter) {
+	public Result<Record3<Long, String, Integer>> findWords(String searchFilter) {
 		String theFilter = searchFilter.replace("*", "%").replace("?", "_");
 		return create
-				.select(FORM.ID, FORM.VALUE)
-				.from(FORM)
-				.where(FORM.VALUE.like(theFilter).and(FORM.IS_WORD.isTrue()))
+				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR)
+				.from(FORM, PARADIGM, WORD)
+				.where(
+						FORM.VALUE.like(theFilter)
+						.and(FORM.IS_WORD.isTrue())
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
 				.fetch();
 	}
 
@@ -42,8 +46,12 @@ public class SearchService {
 		return create
 				.select(f2.ID, f2.VALUE, f2.DISPLAY_FORM, f2.VOCAL_FORM, f2.MORPH_CODE, m.VALUE.as("morph_value"))
 				.from(f1 , f2, p, m)
-				.where(f1.ID.eq(formId).and(f1.PARADIGM_ID.eq(p.ID)).and(f2.PARADIGM_ID.eq(p.ID))
-						.and(m.CODE.eq(f2.MORPH_CODE)).and(m.LANG.eq("est")).and(m.TYPE.eq("descrip")))
+				.where(f1.ID.eq(formId)
+						.and(f1.PARADIGM_ID.eq(p.ID))
+						.and(f2.PARADIGM_ID.eq(p.ID))
+						.and(m.CODE.eq(f2.MORPH_CODE))
+						.and(m.LANG.eq("est"))
+						.and(m.TYPE.eq("descrip")))
 				.fetch();
 	}
 
@@ -70,9 +78,9 @@ public class SearchService {
 						.and(l2.WORD_ID.eq(w2.ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
-				)
-				.groupBy(m.ID).fetch();
+						.and(f2.IS_WORD.isTrue()))
+				.groupBy(m.ID)
+				.fetch();
 	}
 
 	public Map<String, String> allDatasetsAsMap() {
