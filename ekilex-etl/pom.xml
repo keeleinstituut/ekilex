@@ -107,7 +107,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/apprecources</directory>
+						<directory>/var/apps/cli/appresources</directory>
 					</resource>
 				</resources>
 				<plugins>
