@@ -1,6 +1,6 @@
 package eki.eve.web.controller;
 
-import eki.eve.service.db.SearchDbService;
+import eki.eve.service.SearchService;
 
 import org.jooq.Record3;
 import org.jooq.Result;
@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.Objects;
-
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Controller
@@ -23,7 +21,7 @@ public class SearchController {
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 
 	@Autowired
-	SearchDbService search;
+	SearchService search;
 
 	@GetMapping("/search")
 	public String search(@RequestParam(required = false) String searchFilter, Model model) {
