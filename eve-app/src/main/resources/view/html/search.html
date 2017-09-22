@@ -59,8 +59,10 @@
       </div>
       <div class="float-left w-75">
         <th:block th:each="item : ${meanings}">
-          <a th:each="word : ${item.get('words')}" th:href="@{/search?searchFilter=__${word}__}">
-            <span th:text="${word}" class="pr-2" style="color: #1e7e34"></span>
+          <a style="color: #1e7e34" class="mr-2"
+             th:each="word : ${item.get('words')}"
+             th:href="@{/search?searchFilter=__${word}__}"
+             th:text="${word}">
           </a>
           <span th:text="${item.get('level2') + '.' + item.get('level1')}" th:if="${item.get('level1') > 0}"></span>
           <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
