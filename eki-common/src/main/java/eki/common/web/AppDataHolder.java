@@ -33,10 +33,16 @@ public class AppDataHolder {
 
 		int sessionTimeout = 0;
 		InputStream pomStream = null;
+		String fullPomPath = "/META-INF/maven/" + pomPath + "/pom.properties";
 		try {
-			String fullPomPath = "META-INF/maven/" + pomPath + "/pom.properties";
 			pomStream = servletContext.getResourceAsStream(fullPomPath);
 		} catch (Exception e) {
+		}
+		if (pomStream == null) {
+			try {
+				pomStream = this.getClass().getResourceAsStream(fullPomPath);
+			} catch (Exception e) {
+			}
 		}
 		if (pomStream == null) {
 			try {
