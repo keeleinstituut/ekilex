@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LangLabelRecord extends TableRecordImpl<LangLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -516799553;
+    private static final long serialVersionUID = 1840761711;
 
     /**
      * Setter for <code>public.lang_label.code</code>.

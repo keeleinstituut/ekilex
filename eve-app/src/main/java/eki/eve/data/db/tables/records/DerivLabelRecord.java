@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DerivLabelRecord extends TableRecordImpl<DerivLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = -2031614961;
+    private static final long serialVersionUID = 132303807;
 
     /**
      * Setter for <code>public.deriv_label.code</code>.

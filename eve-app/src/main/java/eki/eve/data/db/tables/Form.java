@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = -1085816154;
+    private static final long serialVersionUID = -1859258434;
 
     /**
      * The reference instance of <code>public.form</code>

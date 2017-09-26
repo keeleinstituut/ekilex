@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormRecord extends UpdatableRecordImpl<FormRecord> implements Record8<Long, Long, String, String, String[], String, String, Boolean> {
 
-    private static final long serialVersionUID = 74760678;
+    private static final long serialVersionUID = 411666486;
 
     /**
      * Setter for <code>public.form.id</code>.

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LangRecord extends UpdatableRecordImpl<LangRecord> implements Record2<String, String> {
 
-    private static final long serialVersionUID = -729756144;
+    private static final long serialVersionUID = 1398010304;
 
     /**
      * Setter for <code>public.lang.code</code>.

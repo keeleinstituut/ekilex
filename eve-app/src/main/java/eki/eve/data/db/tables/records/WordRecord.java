@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Record4<Long, String, String, Integer> {
 
-    private static final long serialVersionUID = -1614699063;
+    private static final long serialVersionUID = -1344893575;
 
     /**
      * Setter for <code>public.word.id</code>.

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetRecord extends UpdatableRecordImpl<DatasetRecord> implements Record2<String, String> {
 
-    private static final long serialVersionUID = 1402322700;
+    private static final long serialVersionUID = -246685348;
 
     /**
      * Setter for <code>public.dataset.code</code>.

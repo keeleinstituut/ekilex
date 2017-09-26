@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Rection extends TableImpl<RectionRecord> {
 
-    private static final long serialVersionUID = 914310177;
+    private static final long serialVersionUID = 1431884089;
 
     /**
      * The reference instance of <code>public.rection</code>

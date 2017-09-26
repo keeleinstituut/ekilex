@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Grammar extends TableImpl<GrammarRecord> {
 
-    private static final long serialVersionUID = 1418323771;
+    private static final long serialVersionUID = 643984467;
 
     /**
      * The reference instance of <code>public.grammar</code>

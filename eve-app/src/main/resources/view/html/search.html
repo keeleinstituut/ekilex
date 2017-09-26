@@ -65,7 +65,7 @@
              th:href="@{/search?searchFilter=__${word}__}"
              th:text="${word}">
           </a>
-          <span th:text="${meaning.level2 + '.' + meaning.level1}" th:if="${meaning.level1 > 0}"></span>
+          <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
           <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
             <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>

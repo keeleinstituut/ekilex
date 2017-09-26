@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meaning extends TableImpl<MeaningRecord> {
 
-    private static final long serialVersionUID = -2110027546;
+    private static final long serialVersionUID = 1217578702;
 
     /**
      * The reference instance of <code>public.meaning</code>

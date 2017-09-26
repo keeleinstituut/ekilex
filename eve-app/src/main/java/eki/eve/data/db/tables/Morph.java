@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Morph extends TableImpl<MorphRecord> {
 
-    private static final long serialVersionUID = 1574848032;
+    private static final long serialVersionUID = -566735048;
 
     /**
      * The reference instance of <code>public.morph</code>

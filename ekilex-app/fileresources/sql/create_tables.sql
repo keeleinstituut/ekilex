@@ -5,7 +5,6 @@ drop table if exists rection;
 drop table if exists lexeme_domain;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
-drop table if exists lexeme_morph;
 drop table if exists lexeme_deriv;
 drop table if exists lexeme;
 drop table if exists definition;
@@ -260,6 +259,7 @@ create table lexeme
   meaning_id bigint references meaning(id) not null,
   level1 integer default 0,
   level2 integer default 0,
+  level3 integer default 0,
   dataset varchar(10) array not null,
   unique(word_id, meaning_id)
 );
@@ -349,6 +349,7 @@ alter sequence lex_relation_id_seq restart with 10000;
 create index form_value_idx on form(value);
 create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
+create index word_homonym_nr_idx on word(homonym_nr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);

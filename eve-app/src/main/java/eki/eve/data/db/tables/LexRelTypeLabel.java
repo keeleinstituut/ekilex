@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelTypeLabel extends TableImpl<LexRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = 476641814;
+    private static final long serialVersionUID = 589780270;
 
     /**
      * The reference instance of <code>public.lex_rel_type_label</code>

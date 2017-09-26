@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserRecord extends UpdatableRecordImpl<EkiUserRecord> implements Record4<Long, String, String, Timestamp> {
 
-    private static final long serialVersionUID = -181516741;
+    private static final long serialVersionUID = 328247435;
 
     /**
      * Setter for <code>public.eki_user.id</code>.

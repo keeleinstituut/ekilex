@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements Record2<Long, String[]> {
 
-    private static final long serialVersionUID = -1576805739;
+    private static final long serialVersionUID = 688345669;
 
     /**
      * Setter for <code>public.meaning.id</code>.

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> implements Record5<Long, Long, Long, String, String[]> {
 
-    private static final long serialVersionUID = 655508352;
+    private static final long serialVersionUID = 1085510448;
 
     /**
      * Setter for <code>public.lex_relation.id</code>.

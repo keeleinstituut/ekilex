@@ -37,6 +37,8 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
+	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
+
 	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
 
 	@Autowired
@@ -47,6 +49,8 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 	private Map<String, String> morphToDerivMap;
 
 	private String sqlSelectWordByFormAndHomonym;
+
+	private String sqlSelectWordMaxHomonym;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -74,6 +78,9 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
 		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
+		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -98,12 +105,12 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		final String wordMatchRectionExp = "x:xr";
 		final String synonymExp = "x:syn";
 
-		final String homonymAttr = "i";
+		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
 
 		final String defaultWordMorphCode = "SgN";
-		final int defaultHomonymNr = 0;//not sure about this...
-		final String wordDisplayFormStripChars = ".+'()¤:";
+		final String wordDisplayFormStripChars = ".+'()¤:_";
+		final int defaultHomonymNr = 1;
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -119,13 +126,13 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
 
 		Element headerNode, contentNode;
-		List<Element> wordGroupNodes, grammarNodes, meaningGroupNodes, meaningNodes, wordMatchNodes, synonymNodes;
-		Element wordNode, wordVocalFormNode, morphNode, rectionNode, definitionValueNode, wordMatchValueNode;
+		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes, definitionValueNodes, wordMatchNodes, synonymNodes;
+		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode;
 
 		List<Long> newWordIds, synonymLevel1WordIds, synonymLevel2WordIds;
-		String word, wordMatch, homonymNrStr, wordDisplayForm, wordVocalForm, rection, lexemeLevel1Str, wordMatchLang, definition;
+		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
-		int homonymNr, lexemeLevel1, lexemeLevel2;
+		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
 		Long wordId, meaningId, lexemeId;
 
 		Count wordDuplicateCount = new Count();
@@ -136,25 +143,30 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 		for (Element articleNode : articleNodes) {
 
+			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+			if (contentNode == null) {
+				continue;
+			}
+
 			// header...
 			newWordIds = new ArrayList<>();
-
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
+			word = null;
+			List<String> tmpWords = new ArrayList<>();
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
-				// word, from...
+				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordDisplayForm = wordNode.getTextTrim();
 				word = StringUtils.replaceChars(word, wordDisplayFormStripChars, "");
-				homonymNrStr = wordNode.attributeValue(homonymAttr);
-				if (StringUtils.isBlank(homonymNrStr)) {
-					homonymNr = defaultHomonymNr;
-				} else {
-					homonymNr = Integer.parseInt(homonymNrStr);
-					word = StringUtils.substringBefore(word, homonymNrStr);
+				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
+				if (StringUtils.isNotBlank(pseudoHomonymNr)) {
+					word = StringUtils.substringBefore(word, pseudoHomonymNr);
 				}
+				homonymNr = getWordMaxHomonymNr(word, dataLang);
+				homonymNr++;
 				wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
 				if (wordVocalFormNode == null) {
 					wordVocalForm = null;
@@ -174,12 +186,13 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				// save word+paradigm+form
 				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, wordDuplicateCount);
 				newWordIds.add(wordId);
+				tmpWords.add(word);
 
 				// further references...
 
 				// rections...
-				rectionNode = (Element) wordGroupNode.selectSingleNode(wordRectionExp);
-				extractRection(rectionNode, wordId, wordIdRectionMap);
+				rectionNodes = wordGroupNode.selectNodes(wordRectionExp);
+				extractRections(rectionNodes, wordId, wordIdRectionMap);
 
 				// grammar...
 				grammarNodes = wordGroupNode.selectNodes(wordGrammarExp);
@@ -187,37 +200,80 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 			}
 
 			// body...
-			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 
-			if (contentNode == null) {
-				logger.warn("No body element in article!");
-				logger.warn(articleNode.asXML());
-			} else {
+			synonymNodes = contentNode.selectNodes(synonymExp);
+			synonymLevel1WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
 
-				synonymNodes = contentNode.selectNodes(synonymExp);
-				synonymLevel1WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
+			meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);//x:tp
+			boolean isLog = false;
 
-				meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);
+			for (Element meaningGroupNode : meaningGroupNodes) {
 
-				for (Element meaningGroupNode : meaningGroupNodes) {
+				lexemeLevel1Str = meaningGroupNode.attributeValue(lexemeLevel1Attr);
+				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
-					lexemeLevel1Str = meaningGroupNode.attributeValue(lexemeLevel1Attr);
-					lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
+				meaningNodes = meaningGroupNode.selectNodes(meaningExp);//x:tg
+				lexemeLevel2 = 0;
 
-					meaningNodes = meaningGroupNode.selectNodes(meaningExp);
-					lexemeLevel2 = 0;
+				for (Element meaningNode : meaningNodes) {
 
-					for (Element meaningNode : meaningNodes) {
+					lexemeLevel2++;
+					lexemeLevel3 = 0;
 
-						lexemeLevel2++;
+					synonymNodes = meaningNode.selectNodes(synonymExp);
+					synonymLevel2WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
+
+					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
+
+					for (Element wordMatchNode : wordMatchNodes) {
+
+						lexemeLevel3++;
+
+						wordMatchLang = wordMatchNode.attributeValue("lang");
+						wordMatchLang = unifyLang(wordMatchLang);
+						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
+						wordMatch = wordMatchValueNode.getTextTrim();
+						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormStripChars, "");
+
+						//FIXME remove later!
+						if (tmpWords.contains("alles")) {
+							System.out.println("---> " + word + "; " + wordMatch + "; level: " + lexemeLevel1 + "." + lexemeLevel2 + "." + lexemeLevel3);
+							isLog = true;
+						}
+						//...
+
+						if (StringUtils.isBlank(wordMatch)) {
+							continue;
+						}
+
+						wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, wordDuplicateCount);
 
 						// meaning
 						meaningId = createMeaning(dataset);
 
+						// definitions
+						definitionValueNodes = wordMatchNode.selectNodes(definitionValueExp);
+						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, dataset);
+
+						// word match lexeme
+						lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
+						if (lexemeId == null) {
+							lexemeDuplicateCount.increment();
+						} else {
+
+							// word match lexeme rection
+							rectionNodes = wordMatchValueNode.selectNodes(wordMatchRectionExp);
+							saveRections(rectionNodes, lexemeId);
+						}
+
 						// new words lexemes+rections+grammar
 						for (Long newWordId : newWordIds) {
 
-							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, dataset);
+							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, dataset);
+							//FIXME remove later!
+							if (isLog) {
+								System.out.println("... creating lexeme for " + tmpWords + "; " + wordMatch + "; level: " + lexemeLevel1 + "." + lexemeLevel2 + "." + lexemeLevel3 + " -> " + lexemeId);
+							}
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							} else {
@@ -231,59 +287,16 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 						}
 
 						for (Long synonymWordId : synonymLevel1WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, dataset);
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
 						}
-
-						synonymNodes = meaningNode.selectNodes(synonymExp);
-						synonymLevel2WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
 
 						for (Long synonymWordId : synonymLevel2WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, dataset);
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
-							}
-						}
-
-						wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);
-
-						for (Element wordMatchNode : wordMatchNodes) {
-
-							wordMatchLang = wordMatchNode.attributeValue("lang");
-							wordMatchLang = unifyLang(wordMatchLang);
-							wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
-							wordMatch = wordMatchValueNode.getTextTrim();
-							wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormStripChars, "");
-
-							if (StringUtils.isBlank(wordMatch)) {
-								continue;
-							}
-
-							wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, wordDuplicateCount);
-
-							definitionValueNode = (Element) wordMatchNode.selectSingleNode(definitionValueExp);
-							definition = null;
-							if (definitionValueNode != null) {
-								definition = definitionValueNode.getTextTrim();
-
-								// definition
-								createDefinition(meaningId, definition, wordMatchLang, dataset);
-							}
-
-							// word match lexeme
-							lexemeId = createLexeme(wordId, meaningId, null, null, dataset);
-							if (lexemeId == null) {
-								lexemeDuplicateCount.increment();
-							} else {
-
-								// word match lexeme rection
-								rectionNode = (Element) wordMatchValueNode.selectSingleNode(wordMatchRectionExp);
-								if (rectionNode != null) {
-									rection = rectionNode.getTextTrim();
-									createRection(lexemeId, rection);
-								}
 							}
 						}
 					}
@@ -320,7 +333,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 	private Long saveWord(String word, String wordDisplayForm, String wordVocalForm, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
 
-		Map<String, Object> tableRowValueMap = getWord(word, homonymNr);
+		Map<String, Object> tableRowValueMap = getWord(word, homonymNr, lang);
 		Long wordId;
 
 		if (tableRowValueMap == null) {
@@ -339,6 +352,28 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 			wordDuplicateCount.increment();
 		}
 		return wordId;
+	}
+
+	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] dataset) throws Exception {
+
+		if (definitionValueNodes == null) {
+			return;
+		}
+		for (Element definitionValueNode : definitionValueNodes) {
+			String definition = definitionValueNode.getTextTrim();
+			createDefinition(meaningId, definition, wordMatchLang, dataset);
+		}
+	}
+
+	private void saveRections(List<Element> rectionNodes, Long lexemeId) throws Exception {
+
+		if (rectionNodes == null) {
+			return;
+		}
+		for (Element rectionNode : rectionNodes) {
+			String rection = rectionNode.getTextTrim();
+			createRection(lexemeId, rection);
+		}
 	}
 
 	private void extractGrammar(List<Element> grammarNodes, Long wordId, String[] dataset, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
@@ -367,30 +402,40 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		}
 	}
 
-	private void extractRection(Element rectionNode, Long wordId, Map<Long, List<Map<String, Object>>> wordIdRectionMap) {
+	private void extractRections(List<Element> rectionNodes, Long wordId, Map<Long, List<Map<String, Object>>> wordIdRectionMap) {
 
-		String rection;
-		if (rectionNode == null) {
-			rection = null;
-		} else {
-			rection = rectionNode.getTextTrim();
-
-			List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
-			if (rectionObjs == null) {
-				rectionObjs = new ArrayList<>();
-				wordIdRectionMap.put(wordId, rectionObjs);
-			}
+		if (rectionNodes == null) {
+			return;
+		}
+		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
+		if (rectionObjs == null) {
+			rectionObjs = new ArrayList<>();
+			wordIdRectionMap.put(wordId, rectionObjs);
+		}
+		for (Element rectionNode : rectionNodes) {
+			String rection = rectionNode.getTextTrim();
 			Map<String, Object> rectionObj = new HashMap<>();
 			rectionObj.put("value", rection);
 			rectionObjs.add(rectionObj);
 		}
 	}
 
-	private Map<String, Object> getWord(String word, int homonymNr) throws Exception {
+	private int getWordMaxHomonymNr(String word, String lang) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("lang", lang);
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordMaxHomonym, tableRowParamMap);
+		int homonymNr = (int) tableRowValueMap.get("max_homonym_nr");
+		return homonymNr;
+	}
+
+	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("homonymNr", homonymNr);
+		tableRowParamMap.put("lang", lang);
 		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByFormAndHomonym, tableRowParamMap);
 		return tableRowValueMap;
 	}
@@ -403,7 +448,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		return meaningId;
 	}
 
-	private Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, String[] dataset) throws Exception {
+	private Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String[] dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
@@ -413,6 +458,9 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		}
 		if (lexemeLevel2 != null) {
 			tableRowParamMap.put("level2", lexemeLevel2);
+		}
+		if (lexemeLevel3 != null) {
+			tableRowParamMap.put("level3", lexemeLevel3);
 		}
 		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphLabel extends TableImpl<MorphLabelRecord> {
 
-    private static final long serialVersionUID = -1527267424;
+    private static final long serialVersionUID = 1063335608;
 
     /**
      * The reference instance of <code>public.morph_label</code>

@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = 433691373;
+    private static final long serialVersionUID = 1315072213;
 
     /**
      * The reference instance of <code>public.definition</code>

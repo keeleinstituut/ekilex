@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphLabelRecord extends TableRecordImpl<MorphLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = 1851551675;
+    private static final long serialVersionUID = -279496853;
 
     /**
      * Setter for <code>public.morph_label.code</code>.

@@ -15,6 +15,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record3;
 import org.jooq.Record6;
+import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.conf.RenderNameStyle;
 import org.jooq.impl.DSL;
@@ -73,7 +74,7 @@ public class SearchDbService {
 				.fetch();
 	}
 
-	public Result<Record6<String[], Integer, Integer, Long, String[], String[]>> findFormMeanings(Long formId) {
+	public Result<Record7<String[], Integer, Integer, Integer, Long, String[], String[]>> findFormMeanings(Long formId) {
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
 		Paradigm p1 = PARADIGM.as("p1");
@@ -88,6 +89,7 @@ public class SearchDbService {
 					arrayAggDistinct(f2.VALUE).as("words"),
 					l1.LEVEL1.as("level1"),
 					l1.LEVEL2.as("level2"),
+					l1.LEVEL2.as("level3"),
 					m.ID.as("meaning_id"),
 					m.DATASET.as("datasets"),
 					arrayAggDistinct(d.VALUE).as("definitions"))

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = -415393335;
+    private static final long serialVersionUID = -1844946567;
 
     /**
      * Setter for <code>public.gender.code</code>.

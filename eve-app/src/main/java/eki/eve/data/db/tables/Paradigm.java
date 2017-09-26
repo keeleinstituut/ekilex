@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Paradigm extends TableImpl<ParadigmRecord> {
 
-    private static final long serialVersionUID = -1892182492;
+    private static final long serialVersionUID = 1209323020;
 
     /**
      * The reference instance of <code>public.paradigm</code>

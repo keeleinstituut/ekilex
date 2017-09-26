@@ -1,9 +1,14 @@
 package eki.eve.data;
 
 import javax.persistence.Column;
+
+import eki.common.data.AbstractDataObject;
+
 import java.util.function.Consumer;
 
-public class Word extends DomainData {
+public class Word extends AbstractDataObject {
+
+	private static final long serialVersionUID = 1L;
 
 	@Column(name = "id")
 	private Long id;

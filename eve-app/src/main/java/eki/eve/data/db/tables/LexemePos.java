@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemePos extends TableImpl<LexemePosRecord> {
 
-    private static final long serialVersionUID = 1183400306;
+    private static final long serialVersionUID = -2126402934;
 
     /**
      * The reference instance of <code>public.lexeme_pos</code>

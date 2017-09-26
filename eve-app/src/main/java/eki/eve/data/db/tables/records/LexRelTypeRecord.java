@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = 815017375;
+    private static final long serialVersionUID = 423361871;
 
     /**
      * Setter for <code>public.lex_rel_type.code</code>.

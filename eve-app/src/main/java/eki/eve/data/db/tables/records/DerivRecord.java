@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = 1583065429;
+    private static final long serialVersionUID = 1715031301;
 
     /**
      * Setter for <code>public.deriv.code</code>.

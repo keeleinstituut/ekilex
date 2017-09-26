@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = 608346393;
+    private static final long serialVersionUID = -592707023;
 
     /**
      * The reference instance of <code>public.eki_user</code>
