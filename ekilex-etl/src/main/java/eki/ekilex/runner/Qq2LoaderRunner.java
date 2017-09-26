@@ -205,7 +205,6 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 			synonymLevel1WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
 
 			meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);//x:tp
-			boolean isLog = false;
 
 			for (Element meaningGroupNode : meaningGroupNodes) {
 
@@ -235,13 +234,6 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 						wordMatch = wordMatchValueNode.getTextTrim();
 						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormStripChars, "");
 
-						//FIXME remove later!
-						if (tmpWords.contains("alles")) {
-							System.out.println("---> " + word + "; " + wordMatch + "; level: " + lexemeLevel1 + "." + lexemeLevel2 + "." + lexemeLevel3);
-							isLog = true;
-						}
-						//...
-
 						if (StringUtils.isBlank(wordMatch)) {
 							continue;
 						}
@@ -270,10 +262,6 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 						for (Long newWordId : newWordIds) {
 
 							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, dataset);
-							//FIXME remove later!
-							if (isLog) {
-								System.out.println("... creating lexeme for " + tmpWords + "; " + wordMatch + "; level: " + lexemeLevel1 + "." + lexemeLevel2 + "." + lexemeLevel3 + " -> " + lexemeId);
-							}
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							} else {
