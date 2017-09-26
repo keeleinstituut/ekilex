@@ -43,12 +43,12 @@ public class SearchDbService {
 	}
 
 	public Result<Record3<Long, String, Integer>> findWords(String searchFilter) {
-		String theFilter = searchFilter.replace("*", "%").replace("?", "_");
+		String theFilter = searchFilter.toLowerCase().replace("*", "%").replace("?", "_");
 		return create
 				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR)
 				.from(FORM, PARADIGM, WORD)
 				.where(
-						FORM.VALUE.like(theFilter)
+						FORM.VALUE.lower().like(theFilter)
 						.and(FORM.IS_WORD.isTrue())
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
