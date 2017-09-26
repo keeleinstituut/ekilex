@@ -1,12 +1,9 @@
 package eki.eve.data;
 
-import org.apache.commons.lang3.builder.ToStringBuilder;
-
 import javax.persistence.Column;
-import java.io.Serializable;
 import java.util.function.Consumer;
 
-public class Word implements Serializable {
+public class Word extends DomainData {
 
 	@Column(name = "id")
 	private Long id;
@@ -46,11 +43,6 @@ public class Word implements Serializable {
 
 	public void setHomonymNumber(Integer homonymNumber) {
 		this.homonymNumber = homonymNumber;
-	}
-
-	@Override
-	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

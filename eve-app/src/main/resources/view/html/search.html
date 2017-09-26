@@ -44,38 +44,41 @@
       </table>
     </div>
   </div>
-  <th:block th:fragment="details">
+
+  <th:block th:fragment="details" th:if="${details != null}">
     <div th:name="${detailsName}" class="pl-4">
       <div class="float-left w-25">
-        <th:block th:each="form : ${forms}">
+        <th:block th:each="form : ${details.forms}">
           <span
             th:text="
-            ${form.get('value') + ' (' + form.get('morph_code') + '-' + form.get('morph_value')
-            + (#strings.isEmpty(form.get('display_form')) ? '' :  '; ' + form.get('display_form'))
-            + (#strings.isEmpty(form.get('vocal_form')) ? '' :  '; ' + form.get('vocal_form')) + ')'}">
+            ${form.value + ' (' + form.morphCode + '-' + form.morphValue
+            + (#strings.isEmpty(form.displayForm) ? '' :  '; ' + form.displayForm)
+            + (#strings.isEmpty(form.vocalForm) ? '' :  '; ' + form.vocalForm) + ')'}">
           </span>
           <br>
         </th:block>
       </div>
       <div class="float-left w-75">
-        <th:block th:each="item : ${meanings}">
+        <th:block th:each="meaning : ${details.meanings}">
           <a style="color: #1e7e34" class="mr-2"
-             th:each="word : ${item.get('words')}"
+             th:each="word : ${meaning.words}"
              th:href="@{/search?searchFilter=__${word}__}"
              th:text="${word}">
           </a>
-          <span th:text="${item.get('level2') + '.' + item.get('level1')}" th:if="${item.get('level1') > 0}"></span>
-          <span th:each="dataset : ${item.get('datasets')}" th:text="${datasets['__${dataset}__']}" class="pr-2"></span>
+          <span th:text="${meaning.level2 + '.' + meaning.level1}" th:if="${meaning.level1 > 0}"></span>
+          <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
-            <li th:each="definition : ${item.get('definitions')}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+            <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
           </ul>
         </th:block>
       </div>
     </div>
   </th:block>
+
   <script th:inline="javascript">
   	var urlPrefix = /*[[@{/}]]*/'/';
   	initialize(urlPrefix);
   </script>
+
 </body>
 </html>

@@ -39,9 +39,7 @@ public class SearchController {
 	public String details(@PathVariable("id") Long id, Model model) {
 		logger.debug("doing details");
 		model.addAttribute("detailsName", id + "_details");
-		model.addAttribute("forms", search.findConnectedForms(id));
-		model.addAttribute("meanings", search.findFormMeanings(id));
-		model.addAttribute("datasets", search.allDatasetsAsMap());
+		model.addAttribute("details", search.findWordDetails(id));
 		return "search :: details";
 	}
 
