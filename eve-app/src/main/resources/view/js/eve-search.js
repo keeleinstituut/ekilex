@@ -15,3 +15,8 @@ function initialize(urlPrefix) {
         }
     })
 }
+
+function playSound(soundSource) {
+    var music = new Audio(soundSource);
+    music.play();
+}
