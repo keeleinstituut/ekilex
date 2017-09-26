@@ -14,6 +14,9 @@ public class Word extends DomainData {
 	@Column(name = "homonym_nr")
 	private Integer homonymNumber;
 
+	@Column(name = "lang")
+	private String language;
+
 	public Word() {
 	}
 
@@ -45,4 +48,11 @@ public class Word extends DomainData {
 		this.homonymNumber = homonymNumber;
 	}
 
+	public String getLanguage() {
+		return language;
+	}
+
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 }

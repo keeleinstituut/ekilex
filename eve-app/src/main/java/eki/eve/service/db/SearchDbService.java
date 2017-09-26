@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Result;
 import org.jooq.conf.RenderNameStyle;
@@ -42,10 +42,10 @@ public class SearchDbService {
 		create.settings().setRenderNameStyle(RenderNameStyle.AS_IS);
 	}
 
-	public Result<Record3<Long, String, Integer>> findWords(String searchFilter) {
+	public Result<Record4<Long, String, Integer, String>> findWords(String searchFilter) {
 		String theFilter = searchFilter.toLowerCase().replace("*", "%").replace("?", "_");
 		return create
-				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR)
+				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR, WORD.LANG)
 				.from(FORM, PARADIGM, WORD)
 				.where(
 						FORM.VALUE.lower().like(theFilter)
@@ -54,6 +54,17 @@ public class SearchDbService {
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
 				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
 				.fetch();
+	}
+
+	public Record4<Long, String, Integer, String> findWord(Long id) {
+		return create
+				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR, WORD.LANG)
+				.from(FORM, PARADIGM, WORD)
+				.where(
+						FORM.ID.eq(id)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+				.fetchOne();
 	}
 
 	public Result<Record6<Long,String,String,String,String,String>> findConnectedForms(Long formId) {

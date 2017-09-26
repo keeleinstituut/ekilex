@@ -36,4 +36,8 @@ public class SearchService {
 		});
 	}
 
+	public Word findWord(Long wordId) {
+		return searchDbService.findWord(wordId).into(Word.class);
+	}
+
 }
