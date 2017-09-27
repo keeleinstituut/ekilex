@@ -37,3 +37,16 @@ http://localhost:5566/data/app (json)
 Andmebaasi teenuse klasside genereerimine (kasutatakse ainult arenduses, pärast andmebaasi struktuuri muudatusi):
 
 ekilex>mvn validate -Dskip.jooq.generation=false
+
+Kõnesüntesaatori lisamine/aktiveerimine eve-app:
+
+eve-app toetab integreeritud, s.o. oma serverile installeeritud süntesaatorit ning EKI avaliku veebi teenust.
+Konfigureerimine toimub läbi application.properties faili. Parameetrid on
+speech.synthesizer.path <- siia lisada serverile installitud süntesaatori absoluutne path
+speech.synthesizer.service.url <- teenuse url (http://heliraamat.eki.ee/syntees/koduleht.php)
+Juhul, kui kumbagi parameetrit pole või on nad tühjad, on süntesaatori loogika koodis välja lülitatud. Kui olemas on mõlemad
+valitakse esimesena integreeritud varjant.
+
+ekitest.tripledev.ee serveri Jenkins-isse on konfigureeritud süntesaatori ehitamise task, mis laeb github-ist alla EKI poolt loodud
+süntesaatori koodi ning ehitab selle serveris valmis.
+Süntesaatori käivitus parameetrid on hetkel Java koodi otse sisse kirjutatud (SpeechSynthesisService klass).
