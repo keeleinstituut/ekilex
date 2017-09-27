@@ -60,8 +60,8 @@ public class SpeechSynthesisService {
 
 	private String urlFromIntegratedSpeechSynthesizer(Word word) {
 		String fileId = CodeGenerator.generateUniqueId();
-		String sourceFile = System.getProperty("java.io.tmpdir") + fileId + ".txt";
-		String wavFile = System.getProperty("java.io.tmpdir") + fileId + ".wav";
+		String sourceFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".txt";
+		String wavFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".wav";
 		try {
 			Files.write(Paths.get(sourceFile), word.getValue().getBytes());
 			String command = String.format("bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.5", wavFile, sourceFile);

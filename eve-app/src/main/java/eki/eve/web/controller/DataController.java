@@ -38,7 +38,7 @@ public class DataController implements SystemConstant {
 	@GetMapping("/files/{fileId}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String fileId) {
-		String wavFile = System.getProperty("java.io.tmpdir") + fileId + ".wav";
+		String wavFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".wav";
 		Resource resource = null;
 		try {
 			resource = new ByteArrayResource(Files.readAllBytes(Paths.get(wavFile)));
