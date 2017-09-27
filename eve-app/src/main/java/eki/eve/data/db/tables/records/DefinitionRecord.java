@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> implements Record5<Long, Long, String, String, String[]> {
 
-    private static final long serialVersionUID = -306653635;
+    private static final long serialVersionUID = 1809312460;
 
     /**
      * Setter for <code>public.definition.id</code>.
@@ -87,16 +87,16 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
     }
 
     /**
-     * Setter for <code>public.definition.dataset</code>.
+     * Setter for <code>public.definition.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.definition.dataset</code>.
+     * Getter for <code>public.definition.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(4);
     }
 
@@ -169,7 +169,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public Field<String[]> field5() {
-        return Definition.DEFINITION.DATASET;
+        return Definition.DEFINITION.DATASETS;
     }
 
     /**
@@ -209,7 +209,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public String[] value5() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -253,7 +253,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public DefinitionRecord value5(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -284,13 +284,13 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
     /**
      * Create a detached, initialised DefinitionRecord
      */
-    public DefinitionRecord(Long id, Long meaningId, String value, String lang, String[] dataset) {
+    public DefinitionRecord(Long id, Long meaningId, String value, String lang, String[] datasets) {
         super(Definition.DEFINITION);
 
         set(0, id);
         set(1, meaningId);
         set(2, value);
         set(3, lang);
-        set(4, dataset);
+        set(4, datasets);
     }
 }

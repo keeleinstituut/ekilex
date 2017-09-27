@@ -1,39 +1,49 @@
 package eki.eve.service.db;
 
 import static eki.eve.data.db.Tables.DATASET;
-import static eki.eve.data.db.Tables.DEFINITION;
 import static eki.eve.data.db.Tables.FORM;
-import static eki.eve.data.db.Tables.LEXEME;
-import static eki.eve.data.db.Tables.MEANING;
 import static eki.eve.data.db.Tables.MORPH_LABEL;
 import static eki.eve.data.db.Tables.PARADIGM;
 import static eki.eve.data.db.Tables.WORD;
 
+import java.io.InputStream;
 import java.util.Map;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
-import org.jooq.Field;
+import org.jooq.Record;
 import org.jooq.Record3;
 import org.jooq.Record6;
-import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.conf.RenderNameStyle;
-import org.jooq.impl.DSL;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import eki.eve.data.db.tables.Definition;
+import eki.eve.constant.SystemConstant;
 import eki.eve.data.db.tables.Form;
-import eki.eve.data.db.tables.Lexeme;
-import eki.eve.data.db.tables.Meaning;
 import eki.eve.data.db.tables.MorphLabel;
 import eki.eve.data.db.tables.Paradigm;
-import eki.eve.data.db.tables.Word;
 
 @Service
-public class SearchDbService {
+public class SearchDbService implements InitializingBean, SystemConstant {
+
+	private static final String SELECT_WORDS_OF_MEANING = "sql/select_words_of_meaning.sql";
 
 	private DSLContext create;
+
+	private String selectWordsOfMeaning;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		InputStream resourceFileInputStream;
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SELECT_WORDS_OF_MEANING);
+		selectWordsOfMeaning = getContent(resourceFileInputStream);
+	}
 
 	@Autowired
 	public SearchDbService(DSLContext context) {
@@ -74,46 +84,21 @@ public class SearchDbService {
 				.fetch();
 	}
 
-	public Result<Record7<String[], Integer, Integer, Integer, Long, String[], String[]>> findFormMeanings(Long formId) {
-		Form f1 = FORM.as("f1");
-		Form f2 = FORM.as("f2");
-		Paradigm p1 = PARADIGM.as("p1");
-		Paradigm p2 = PARADIGM.as("p2");
-		Word w1 = WORD.as("w1");
-		Word w2 = WORD.as("w2");
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
-		Meaning m = MEANING.as("m");
-		Definition d = DEFINITION.as("d");
-		return create.select(
-					arrayAggDistinct(f2.VALUE).as("words"),
-					l1.LEVEL1.as("level1"),
-					l1.LEVEL2.as("level2"),
-					l1.LEVEL2.as("level3"),
-					m.ID.as("meaning_id"),
-					m.DATASET.as("datasets"),
-					arrayAggDistinct(d.VALUE).as("definitions"))
-				.from(f1, f2, p1, p2, w1, w2, l1, l2, m.leftOuterJoin(d).on(d.MEANING_ID.eq(m.ID)))
-				.where(
-						f1.ID.eq(formId)
-						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(p1.WORD_ID.eq(w1.ID))
-						.and(l1.WORD_ID.eq(w1.ID))
-						.and(l1.MEANING_ID.eq(m.ID))
-						.and(l2.MEANING_ID.eq(m.ID))
-						.and(l2.WORD_ID.eq(w2.ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue()))
-				.groupBy(l1.ID, m.ID)
-				.fetch();
+	public Result<Record> findFormMeanings(Long formId) {
+
+		String sql = new String(selectWordsOfMeaning);
+		sql = StringUtils.replace(sql, ":formId", formId.toString());
+
+		return create.fetch(sql);
 	}
 
-	public Map<String, String> allDatasetsAsMap() {
+	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
-	private static <T> Field<T[]> arrayAggDistinct(Field<T> f) {
-		return DSL.field("array_agg(distinct {0})", f.getDataType().getArrayDataType(), f);
+	private String getContent(InputStream resourceInputStream) throws Exception {
+		String content = IOUtils.toString(resourceInputStream, UTF_8);
+		resourceInputStream.close();
+		return content;
 	}
 }

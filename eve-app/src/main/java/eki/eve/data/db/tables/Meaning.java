@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meaning extends TableImpl<MeaningRecord> {
 
-    private static final long serialVersionUID = 1217578702;
+    private static final long serialVersionUID = -927769139;
 
     /**
      * The reference instance of <code>public.meaning</code>
@@ -56,9 +56,9 @@ public class Meaning extends TableImpl<MeaningRecord> {
     public final TableField<MeaningRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.meaning.dataset</code>.
+     * The column <code>public.meaning.datasets</code>.
      */
-    public final TableField<MeaningRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MeaningRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.meaning</code> table reference

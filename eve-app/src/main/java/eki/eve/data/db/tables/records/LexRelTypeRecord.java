@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = 423361871;
+    private static final long serialVersionUID = -1854627014;
 
     /**
      * Setter for <code>public.lex_rel_type.code</code>.
@@ -45,16 +45,16 @@ public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> impl
     }
 
     /**
-     * Setter for <code>public.lex_rel_type.dataset</code>.
+     * Setter for <code>public.lex_rel_type.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.lex_rel_type.dataset</code>.
+     * Getter for <code>public.lex_rel_type.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> impl
      */
     @Override
     public Field<String[]> field2() {
-        return LexRelType.LEX_REL_TYPE.DATASET;
+        return LexRelType.LEX_REL_TYPE.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> impl
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> impl
      */
     @Override
     public LexRelTypeRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class LexRelTypeRecord extends UpdatableRecordImpl<LexRelTypeRecord> impl
     /**
      * Create a detached, initialised LexRelTypeRecord
      */
-    public LexRelTypeRecord(String code, String[] dataset) {
+    public LexRelTypeRecord(String code, String[] datasets) {
         super(LexRelType.LEX_REL_TYPE);
 
         set(0, code);
-        set(1, dataset);
+        set(1, datasets);
     }
 }

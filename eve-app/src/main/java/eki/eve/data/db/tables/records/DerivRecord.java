@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = 1715031301;
+    private static final long serialVersionUID = -109647150;
 
     /**
      * Setter for <code>public.deriv.code</code>.
@@ -45,16 +45,16 @@ public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Rec
     }
 
     /**
-     * Setter for <code>public.deriv.dataset</code>.
+     * Setter for <code>public.deriv.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.deriv.dataset</code>.
+     * Getter for <code>public.deriv.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Rec
      */
     @Override
     public Field<String[]> field2() {
-        return Deriv.DERIV.DATASET;
+        return Deriv.DERIV.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Rec
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Rec
      */
     @Override
     public DerivRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class DerivRecord extends UpdatableRecordImpl<DerivRecord> implements Rec
     /**
      * Create a detached, initialised DerivRecord
      */
-    public DerivRecord(String code, String[] dataset) {
+    public DerivRecord(String code, String[] datasets) {
         super(Deriv.DERIV);
 
         set(0, code);
-        set(1, dataset);
+        set(1, datasets);
     }
 }

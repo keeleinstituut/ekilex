@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements Record5<Long, Long, String, String, String[]> {
 
-    private static final long serialVersionUID = -458266880;
+    private static final long serialVersionUID = 1105374479;
 
     /**
      * Setter for <code>public.grammar.id</code>.
@@ -87,16 +87,16 @@ public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements
     }
 
     /**
-     * Setter for <code>public.grammar.dataset</code>.
+     * Setter for <code>public.grammar.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.grammar.dataset</code>.
+     * Getter for <code>public.grammar.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(4);
     }
 
@@ -169,7 +169,7 @@ public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements
      */
     @Override
     public Field<String[]> field5() {
-        return Grammar.GRAMMAR.DATASET;
+        return Grammar.GRAMMAR.DATASETS;
     }
 
     /**
@@ -209,7 +209,7 @@ public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements
      */
     @Override
     public String[] value5() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -253,7 +253,7 @@ public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements
      */
     @Override
     public GrammarRecord value5(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -284,13 +284,13 @@ public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements
     /**
      * Create a detached, initialised GrammarRecord
      */
-    public GrammarRecord(Long id, Long lexemeId, String value, String lang, String[] dataset) {
+    public GrammarRecord(Long id, Long lexemeId, String value, String lang, String[] datasets) {
         super(Grammar.GRAMMAR);
 
         set(0, id);
         set(1, lexemeId);
         set(2, value);
         set(3, lang);
-        set(4, dataset);
+        set(4, datasets);
     }
 }

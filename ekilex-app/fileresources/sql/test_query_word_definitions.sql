@@ -7,7 +7,7 @@ select w.word_id,
        l.id lexeme_id,
        m.id meaning_id,
        d.value definition,
-       l.dataset lexeme_dataset
+       l.datasets lexeme_datasets
 from (select w.id word_id,
              f.value word,
              f.components,

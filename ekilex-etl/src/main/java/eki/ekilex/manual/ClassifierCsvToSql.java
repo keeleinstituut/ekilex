@@ -22,8 +22,8 @@ public class ClassifierCsvToSql implements SystemConstant, TableName {
 		final String classifierFilesFolderPath = "./fileresources/csv/";
 		final String dataSqlFilePath = "./fileresources/sql/classifier_data_autom.sql";
 		final String labelType = "descrip";
-		final String[] dataset = new String[] {"eos", "ss_", "sys", "evs"};
-		final String datasetArrayValue = asArrayField(dataset);
+		final String[] datasets = new String[] {"eos", "ss_", "sys", "evs"};
+		final String datasetArrayValue = asArrayField(datasets);
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -75,7 +75,7 @@ public class ClassifierCsvToSql implements SystemConstant, TableName {
 			dataLineBuf.append(" ");
 
 			if (StringUtils.equals(name, DOMAIN)) {
-				dataLineBuf.append("(code, origin, parent_code, parent_origin, dataset) values (");
+				dataLineBuf.append("(code, origin, parent_code, parent_origin, datasets) values (");
 				dataLineBuf.append(asStringField(code));
 				dataLineBuf.append(", ");
 				dataLineBuf.append(asStringField(origin));
@@ -91,7 +91,7 @@ public class ClassifierCsvToSql implements SystemConstant, TableName {
 				dataLineBuf.append(datasetArrayValue);
 				dataLineBuf.append(");");
 			} else {
-				dataLineBuf.append("(code, dataset) values (");
+				dataLineBuf.append("(code, datasets) values (");
 				dataLineBuf.append(asStringField(code));
 				dataLineBuf.append(", ");
 				dataLineBuf.append(datasetArrayValue);

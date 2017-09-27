@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Morph extends TableImpl<MorphRecord> {
 
-    private static final long serialVersionUID = -566735048;
+    private static final long serialVersionUID = 225293549;
 
     /**
      * The reference instance of <code>public.morph</code>
@@ -55,9 +55,9 @@ public class Morph extends TableImpl<MorphRecord> {
     public final TableField<MorphRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.morph.dataset</code>.
+     * The column <code>public.morph.datasets</code>.
      */
-    public final TableField<MorphRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MorphRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.morph</code> table reference

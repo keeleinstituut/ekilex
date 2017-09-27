@@ -84,7 +84,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, String[] dataset) throws Exception {
+	public void execute(String dataXmlFilePath, String dataLang, String[] datasets) throws Exception {
 
 		logger.debug("Starting loading QQ2...");
 
@@ -196,7 +196,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 				// grammar...
 				grammarNodes = wordGroupNode.selectNodes(wordGrammarExp);
-				extractGrammar(grammarNodes, wordId, dataset, wordIdGrammarMap);
+				extractGrammar(grammarNodes, wordId, datasets, wordIdGrammarMap);
 			}
 
 			// body...
@@ -241,14 +241,14 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 						wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, wordDuplicateCount);
 
 						// meaning
-						meaningId = createMeaning(dataset);
+						meaningId = createMeaning(datasets);
 
 						// definitions
 						definitionValueNodes = wordMatchNode.selectNodes(definitionValueExp);
-						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, dataset);
+						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, datasets);
 
 						// word match lexeme
-						lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
+						lexemeId = createLexeme(wordId, meaningId, null, null, null, datasets);
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
 						} else {
@@ -261,7 +261,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 						// new words lexemes+rections+grammar
 						for (Long newWordId : newWordIds) {
 
-							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, dataset);
+							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, datasets);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							} else {
@@ -275,14 +275,14 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 						}
 
 						for (Long synonymWordId : synonymLevel1WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, datasets);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
 						}
 
 						for (Long synonymWordId : synonymLevel2WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, datasets);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
@@ -342,14 +342,14 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		return wordId;
 	}
 
-	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] dataset) throws Exception {
+	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] datasets) throws Exception {
 
 		if (definitionValueNodes == null) {
 			return;
 		}
 		for (Element definitionValueNode : definitionValueNodes) {
 			String definition = definitionValueNode.getTextTrim();
-			createDefinition(meaningId, definition, wordMatchLang, dataset);
+			createDefinition(meaningId, definition, wordMatchLang, datasets);
 		}
 	}
 
@@ -364,7 +364,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		}
 	}
 
-	private void extractGrammar(List<Element> grammarNodes, Long wordId, String[] dataset, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
+	private void extractGrammar(List<Element> grammarNodes, Long wordId, String[] datasets, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
 
 		List<Map<String, Object>> grammarObjs;
 		Map<String, Object> grammarObj;
@@ -385,7 +385,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 			grammarObj = new HashMap<>();
 			grammarObj.put("lang", grammarLang);
 			grammarObj.put("value", grammar);
-			grammarObj.put("dataset", new PgVarcharArray(dataset));
+			grammarObj.put("datasets", new PgVarcharArray(datasets));
 			grammarObjs.add(grammarObj);
 		}
 	}
@@ -428,15 +428,15 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		return tableRowValueMap;
 	}
 
-	private Long createMeaning(String[] dataset) throws Exception {
+	private Long createMeaning(String[] datasets) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
+		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
 		Long meaningId = basicDbService.create(MEANING, tableRowParamMap);
 		return meaningId;
 	}
 
-	private Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String[] dataset) throws Exception {
+	private Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String[] datasets) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
@@ -450,18 +450,18 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		if (lexemeLevel3 != null) {
 			tableRowParamMap.put("level3", lexemeLevel3);
 		}
-		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
+		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
 		return lexemeId;
 	}
 
-	private void createDefinition(Long meaningId, String definition, String lang, String[] dataset) throws Exception {
+	private void createDefinition(Long meaningId, String definition, String lang, String[] datasets) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("value", definition);
 		tableRowParamMap.put("lang", lang);
-		tableRowParamMap.put("dataset", new PgVarcharArray(dataset));
+		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
 		basicDbService.create(DEFINITION, tableRowParamMap);
 	}
 

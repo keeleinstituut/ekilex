@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements Record5<String, String, String, String, String[]> {
 
-    private static final long serialVersionUID = 2097725100;
+    private static final long serialVersionUID = -171262393;
 
     /**
      * Setter for <code>public.domain.code</code>.
@@ -87,16 +87,16 @@ public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements R
     }
 
     /**
-     * Setter for <code>public.domain.dataset</code>.
+     * Setter for <code>public.domain.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.domain.dataset</code>.
+     * Getter for <code>public.domain.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(4);
     }
 
@@ -169,7 +169,7 @@ public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements R
      */
     @Override
     public Field<String[]> field5() {
-        return Domain.DOMAIN.DATASET;
+        return Domain.DOMAIN.DATASETS;
     }
 
     /**
@@ -209,7 +209,7 @@ public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements R
      */
     @Override
     public String[] value5() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -253,7 +253,7 @@ public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements R
      */
     @Override
     public DomainRecord value5(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -284,13 +284,13 @@ public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements R
     /**
      * Create a detached, initialised DomainRecord
      */
-    public DomainRecord(String code, String origin, String parentCode, String parentOrigin, String[] dataset) {
+    public DomainRecord(String code, String origin, String parentCode, String parentOrigin, String[] datasets) {
         super(Domain.DOMAIN);
 
         set(0, code);
         set(1, origin);
         set(2, parentCode);
         set(3, parentOrigin);
-        set(4, dataset);
+        set(4, datasets);
     }
 }

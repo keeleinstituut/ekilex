@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = -1750398675;
+    private static final long serialVersionUID = -1807142354;
 
     /**
      * Setter for <code>public.pos.code</code>.
@@ -45,16 +45,16 @@ public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2
     }
 
     /**
-     * Setter for <code>public.pos.dataset</code>.
+     * Setter for <code>public.pos.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.pos.dataset</code>.
+     * Getter for <code>public.pos.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2
      */
     @Override
     public Field<String[]> field2() {
-        return Pos.POS.DATASET;
+        return Pos.POS.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2
      */
     @Override
     public PosRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2
     /**
      * Create a detached, initialised PosRecord
      */
-    public PosRecord(String code, String[] dataset) {
+    public PosRecord(String code, String[] datasets) {
         super(Pos.POS);
 
         set(0, code);
-        set(1, dataset);
+        set(1, datasets);
     }
 }

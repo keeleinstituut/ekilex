@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> implements Record5<Long, Long, Long, String, String[]> {
 
-    private static final long serialVersionUID = 1085510448;
+    private static final long serialVersionUID = 1951713509;
 
     /**
      * Setter for <code>public.lex_relation.id</code>.
@@ -87,16 +87,16 @@ public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> im
     }
 
     /**
-     * Setter for <code>public.lex_relation.dataset</code>.
+     * Setter for <code>public.lex_relation.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.lex_relation.dataset</code>.
+     * Getter for <code>public.lex_relation.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(4);
     }
 
@@ -169,7 +169,7 @@ public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> im
      */
     @Override
     public Field<String[]> field5() {
-        return LexRelation.LEX_RELATION.DATASET;
+        return LexRelation.LEX_RELATION.DATASETS;
     }
 
     /**
@@ -209,7 +209,7 @@ public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> im
      */
     @Override
     public String[] value5() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -253,7 +253,7 @@ public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> im
      */
     @Override
     public LexRelationRecord value5(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -284,13 +284,13 @@ public class LexRelationRecord extends UpdatableRecordImpl<LexRelationRecord> im
     /**
      * Create a detached, initialised LexRelationRecord
      */
-    public LexRelationRecord(Long id, Long lexeme1Id, Long lexeme2Id, String lexRelTypeCode, String[] dataset) {
+    public LexRelationRecord(Long id, Long lexeme1Id, Long lexeme2Id, String lexRelTypeCode, String[] datasets) {
         super(LexRelation.LEX_RELATION);
 
         set(0, id);
         set(1, lexeme1Id);
         set(2, lexeme2Id);
         set(3, lexRelTypeCode);
-        set(4, dataset);
+        set(4, datasets);
     }
 }

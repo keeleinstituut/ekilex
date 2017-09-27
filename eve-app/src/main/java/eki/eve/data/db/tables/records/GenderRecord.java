@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = -1844946567;
+    private static final long serialVersionUID = 1662770842;
 
     /**
      * Setter for <code>public.gender.code</code>.
@@ -45,16 +45,16 @@ public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements R
     }
 
     /**
-     * Setter for <code>public.gender.dataset</code>.
+     * Setter for <code>public.gender.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.gender.dataset</code>.
+     * Getter for <code>public.gender.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements R
      */
     @Override
     public Field<String[]> field2() {
-        return Gender.GENDER.DATASET;
+        return Gender.GENDER.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements R
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements R
      */
     @Override
     public GenderRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class GenderRecord extends UpdatableRecordImpl<GenderRecord> implements R
     /**
      * Create a detached, initialised GenderRecord
      */
-    public GenderRecord(String code, String[] dataset) {
+    public GenderRecord(String code, String[] datasets) {
         super(Gender.GENDER);
 
         set(0, code);
-        set(1, dataset);
+        set(1, datasets);
     }
 }

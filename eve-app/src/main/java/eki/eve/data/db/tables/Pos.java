@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pos extends TableImpl<PosRecord> {
 
-    private static final long serialVersionUID = -1832361368;
+    private static final long serialVersionUID = -1518293251;
 
     /**
      * The reference instance of <code>public.pos</code>
@@ -55,9 +55,9 @@ public class Pos extends TableImpl<PosRecord> {
     public final TableField<PosRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR.length(100).nullable(false), this, "");
 
     /**
-     * The column <code>public.pos.dataset</code>.
+     * The column <code>public.pos.datasets</code>.
      */
-    public final TableField<PosRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<PosRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.pos</code> table reference

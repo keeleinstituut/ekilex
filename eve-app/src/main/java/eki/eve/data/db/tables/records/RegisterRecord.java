@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = -192004403;
+    private static final long serialVersionUID = 1232874522;
 
     /**
      * Setter for <code>public.register.code</code>.
@@ -45,16 +45,16 @@ public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implemen
     }
 
     /**
-     * Setter for <code>public.register.dataset</code>.
+     * Setter for <code>public.register.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.register.dataset</code>.
+     * Getter for <code>public.register.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implemen
      */
     @Override
     public Field<String[]> field2() {
-        return Register.REGISTER.DATASET;
+        return Register.REGISTER.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implemen
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implemen
      */
     @Override
     public RegisterRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class RegisterRecord extends UpdatableRecordImpl<RegisterRecord> implemen
     /**
      * Create a detached, initialised RegisterRecord
      */
-    public RegisterRecord(String code, String[] dataset) {
+    public RegisterRecord(String code, String[] datasets) {
         super(Register.REGISTER);
 
         set(0, code);
-        set(1, dataset);
+        set(1, datasets);
     }
 }

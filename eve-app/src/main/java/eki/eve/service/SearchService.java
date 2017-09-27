@@ -2,7 +2,6 @@ package eki.eve.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,18 +22,28 @@ public class SearchService {
 		return searchDbService.findWords(searchFilter).into(Word.class);
 	}
 
-	public WordDetails findWordDetails(Long wordId) {
-		List<Form> connectedForms = searchDbService.findConnectedForms(wordId).into(Form.class);
-		List<Meaning> meanings = searchDbService.findFormMeanings(wordId).into(Meaning.class);
-		Map<String, String> dataSets = searchDbService.allDatasetsAsMap();
+	public WordDetails findWordDetails(Long formId) {
+		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
+		List<Meaning> meanings = searchDbService.findFormMeanings(formId).into(Meaning.class);
+		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
 		meanings.forEach(meaning -> {
-			List<String> dataSetNames = meaning.getDatasets().stream().map(dataSets::get).collect(Collectors.toList());
-			meaning.setDatasets(dataSetNames);
+			String[] datasets = meaning.getDatasets();
+			datasets = convertToNames(datasets, datasetNameMap);
+			meaning.setDatasets(datasets);
 		});
-		return new WordDetails( d -> {
+		return new WordDetails(d -> {
 			d.setForms(connectedForms);
 			d.setMeanings(meanings);
 		});
 	}
 
+	private String[] convertToNames(String[] datasets, Map<String, String> datasetMap) {
+		if (datasets == null) {
+			return new String[0];
+		}
+		for (int datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
+			datasets[datasetIndex] = datasetMap.get(datasets[datasetIndex]);
+		}
+		return datasets;
+	}
 }

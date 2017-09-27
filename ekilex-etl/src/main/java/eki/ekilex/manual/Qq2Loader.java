@@ -25,9 +25,9 @@ public class Qq2Loader {
 			//  /projects/eki/data/dictionaries/qq2/qq21.xml
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
-			String[] dataset = new String[] {"qq2"};
+			String[] datasets = new String[] {"qq2"};
 
-			runner.execute(dataXmlFilePath, dataLang, dataset);
+			runner.execute(dataXmlFilePath, dataLang, datasets);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

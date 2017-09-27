@@ -1,19 +1,26 @@
 package eki.eve.data;
 
+import java.util.function.Consumer;
+
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Consumer;
 
 public class Meaning extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "word")
+	private String word;
+
+	@Column(name = "word_id")
+	private Long wordId;
+
+	@Column(name = "lexeme_id")
+	private Long lexemeId;
+
 	@Column(name = "meaning_id")
-	private Long id;
+	private Long meaningId;
 
 	@Column(name = "level1")
 	private Integer level1;
@@ -24,11 +31,14 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "level3")
 	private Integer level3;
 
-	private List<String> words;
+	@Column(name = "words")
+	private String[] words;
 
-	private List<String> datasets;
+	@Column(name = "datasets")
+	private String[] datasets;
 
-	private List<String> definitions;
+	@Column(name = "definitions")
+	private String[] definitions;
 
 	public Meaning() {
 	}
@@ -37,12 +47,36 @@ public class Meaning extends AbstractDataObject {
 		builder.accept(this);
 	}
 
-	public Long getId() {
-		return id;
+	public String getWord() {
+		return word;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setWord(String word) {
+		this.word = word;
+	}
+
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
+
+	public Long getLexemeId() {
+		return lexemeId;
+	}
+
+	public void setLexemeId(Long lexemeId) {
+		this.lexemeId = lexemeId;
+	}
+
+	public Long getMeaningId() {
+		return meaningId;
+	}
+
+	public void setMeaningId(Long meaningId) {
+		this.meaningId = meaningId;
 	}
 
 	public Integer getLevel1() {
@@ -69,42 +103,28 @@ public class Meaning extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public List<String> getWords() {
+	public String[] getWords() {
 		return words;
 	}
 
-	public void setWords(List<String> words) {
+	public void setWords(String[] words) {
 		this.words = words;
 	}
 
-	@Column(name = "words")
-	public void setWords(String[] words) {
-		this.words = Arrays.asList(words);
-	}
-
-	public List<String> getDatasets() {
+	public String[] getDatasets() {
 		return datasets;
 	}
 
-	public void setDatasets(List<String> datasets) {
+	public void setDatasets(String[] datasets) {
 		this.datasets = datasets;
 	}
 
-	@Column(name = "datasets")
-	public void setDatasets(String[] datasets) {
-		this.datasets = Arrays.asList(datasets);
-	}
-
-	public List<String> getDefinitions() {
+	public String[] getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<String> definitions) {
+	public void setDefinitions(String[] definitions) {
 		this.definitions = definitions;
 	}
 
-	@Column(name = "definitions")
-	public void setDefinitions(String[] definitions) {
-		this.definitions = Arrays.asList(definitions);
-	}
 }

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements Record7<Long, Long, Long, Integer, Integer, Integer, String[]> {
 
-    private static final long serialVersionUID = -1017120750;
+    private static final long serialVersionUID = 510135667;
 
     /**
      * Setter for <code>public.lexeme.id</code>.
@@ -115,16 +115,16 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     }
 
     /**
-     * Setter for <code>public.lexeme.dataset</code>.
+     * Setter for <code>public.lexeme.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.lexeme.dataset</code>.
+     * Getter for <code>public.lexeme.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(6);
     }
 
@@ -213,7 +213,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public Field<String[]> field7() {
-        return Lexeme.LEXEME.DATASET;
+        return Lexeme.LEXEME.DATASETS;
     }
 
     /**
@@ -269,7 +269,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public String[] value7() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -331,7 +331,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public LexemeRecord value7(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -364,7 +364,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     /**
      * Create a detached, initialised LexemeRecord
      */
-    public LexemeRecord(Long id, Long wordId, Long meaningId, Integer level1, Integer level2, Integer level3, String[] dataset) {
+    public LexemeRecord(Long id, Long wordId, Long meaningId, Integer level1, Integer level2, Integer level3, String[] datasets) {
         super(Lexeme.LEXEME);
 
         set(0, id);
@@ -373,6 +373,6 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
         set(3, level1);
         set(4, level2);
         set(5, level3);
-        set(6, dataset);
+        set(6, datasets);
     }
 }

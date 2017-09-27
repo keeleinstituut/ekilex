@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = -1786380515;
+    private static final long serialVersionUID = -1365245130;
 
     /**
      * Setter for <code>public.morph.code</code>.
@@ -45,16 +45,16 @@ public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Rec
     }
 
     /**
-     * Setter for <code>public.morph.dataset</code>.
+     * Setter for <code>public.morph.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.morph.dataset</code>.
+     * Getter for <code>public.morph.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Rec
      */
     @Override
     public Field<String[]> field2() {
-        return Morph.MORPH.DATASET;
+        return Morph.MORPH.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Rec
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Rec
      */
     @Override
     public MorphRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Rec
     /**
      * Create a detached, initialised MorphRecord
      */
-    public MorphRecord(String code, String[] dataset) {
+    public MorphRecord(String code, String[] datasets) {
         super(Morph.MORPH);
 
         set(0, code);
-        set(1, dataset);
+        set(1, datasets);
     }
 }

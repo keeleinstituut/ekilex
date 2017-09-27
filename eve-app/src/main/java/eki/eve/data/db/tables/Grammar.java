@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Grammar extends TableImpl<GrammarRecord> {
 
-    private static final long serialVersionUID = 643984467;
+    private static final long serialVersionUID = -1148539316;
 
     /**
      * The reference instance of <code>public.grammar</code>
@@ -72,9 +72,9 @@ public class Grammar extends TableImpl<GrammarRecord> {
     public final TableField<GrammarRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR.length(3).nullable(false), this, "");
 
     /**
-     * The column <code>public.grammar.dataset</code>.
+     * The column <code>public.grammar.datasets</code>.
      */
-    public final TableField<GrammarRecord, String[]> DATASET = createField("dataset", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<GrammarRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.grammar</code> table reference

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements Record2<Long, String[]> {
 
-    private static final long serialVersionUID = 688345669;
+    private static final long serialVersionUID = 65404058;
 
     /**
      * Setter for <code>public.meaning.id</code>.
@@ -45,16 +45,16 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
     }
 
     /**
-     * Setter for <code>public.meaning.dataset</code>.
+     * Setter for <code>public.meaning.datasets</code>.
      */
-    public void setDataset(String... value) {
+    public void setDatasets(String... value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.meaning.dataset</code>.
+     * Getter for <code>public.meaning.datasets</code>.
      */
-    public String[] getDataset() {
+    public String[] getDatasets() {
         return (String[]) get(1);
     }
 
@@ -103,7 +103,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public Field<String[]> field2() {
-        return Meaning.MEANING.DATASET;
+        return Meaning.MEANING.DATASETS;
     }
 
     /**
@@ -119,7 +119,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public String[] value2() {
-        return getDataset();
+        return getDatasets();
     }
 
     /**
@@ -136,7 +136,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public MeaningRecord value2(String... value) {
-        setDataset(value);
+        setDatasets(value);
         return this;
     }
 
@@ -164,10 +164,10 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
     /**
      * Create a detached, initialised MeaningRecord
      */
-    public MeaningRecord(Long id, String[] dataset) {
+    public MeaningRecord(Long id, String[] datasets) {
         super(Meaning.MEANING);
 
         set(0, id);
-        set(1, dataset);
+        set(1, datasets);
     }
 }
