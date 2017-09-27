@@ -15,6 +15,10 @@
 
   <!--/* Per-page placeholder for additional links */-->
   <th:block th:replace="${links}"/>
+
+  <script th:inline="javascript">
+      var applicationUrl = /*[[@{/}]]*/'/';
+  </script>
 </head>
 
 <body>
