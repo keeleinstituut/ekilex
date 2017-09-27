@@ -35,7 +35,7 @@ public class SpeechSynthesisService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesisService.class);
 
-	@Value("${server.contextPath:/}")
+	@Value("${server.contextPath:}")
 	private String contextPath;
 
 	@Value("${speech.synthesizer.path:}")
@@ -73,7 +73,7 @@ public class SpeechSynthesisService {
 			logger.error(e.getMessage());
 			fileId = null;
 		}
-		return fileId == null ? null : contextPath + "files/" + fileId;
+		return fileId == null ? null : contextPath + "/files/" + fileId;
 	}
 
 	private String urlFromEkiPublicService(Word word) {
