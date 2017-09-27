@@ -16,7 +16,7 @@ import eki.eve.service.db.SearchDbService;
 public class SearchService {
 
 	@Autowired
-	SearchDbService searchDbService;
+	private SearchDbService searchDbService;
 
 	public List<Word> findWords(String searchFilter) {
 		return searchDbService.findWords(searchFilter).into(Word.class);
@@ -46,4 +46,9 @@ public class SearchService {
 		}
 		return datasets;
 	}
+
+	public Word getWord(Long wordId) {
+		return searchDbService.getWord(wordId).into(Word.class);
+	}
+
 }

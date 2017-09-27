@@ -1,8 +1,10 @@
 package eki.eve.web.controller;
 
 import eki.eve.data.Word;
+import eki.eve.data.WordDetails;
 import eki.eve.service.SearchService;
 
+import eki.eve.service.SpeechSynthesisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,9 @@ public class SearchController {
 	@Autowired
 	SearchService search;
 
+	@Autowired
+	SpeechSynthesisService speechSynthesisService;
+
 	@GetMapping("/search")
 	public String search(@RequestParam(required = false) String searchFilter, Model model) {
 		logger.debug("doing search");
@@ -38,8 +43,12 @@ public class SearchController {
 	@GetMapping("/details/{id}")
 	public String details(@PathVariable("id") Long id, Model model) {
 		logger.debug("doing details");
+		Word word = search.getWord(id);
+		WordDetails details = search.findWordDetails(id);
+		String urlToSoundSource = speechSynthesisService.urlToSoundSource(word);
 		model.addAttribute("detailsName", id + "_details");
-		model.addAttribute("details", search.findWordDetails(id));
+		model.addAttribute("details", details);
+		model.addAttribute("soundSource", urlToSoundSource);
 		return "search :: details";
 	}
 

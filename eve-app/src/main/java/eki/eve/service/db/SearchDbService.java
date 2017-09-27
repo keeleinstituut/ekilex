@@ -13,7 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.Record3;
+import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Result;
 import org.jooq.conf.RenderNameStyle;
@@ -53,13 +53,14 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 		create.settings().setRenderNameStyle(RenderNameStyle.AS_IS);
 	}
 
-	public Result<Record3<Long, String, Integer>> findWords(String searchFilter) {
-		String theFilter = searchFilter.toLowerCase().replace("*", "%").replace("?", "_");
+	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters) {
+
+		String theFilter = wordWithMetaCharacters.toLowerCase().replace("*", "%").replace("?", "_");
 		return create
-				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR)
+				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR, WORD.LANG)
 				.from(FORM, PARADIGM, WORD)
 				.where(
-						FORM.VALUE.lower().like(theFilter)
+						FORM.VALUE.lower().likeIgnoreCase(theFilter)
 						.and(FORM.IS_WORD.isTrue())
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
@@ -67,7 +68,20 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
+	public Record4<Long, String, Integer, String> getWord(Long id) {
+
+		return create
+				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR, WORD.LANG)
+				.from(FORM, PARADIGM, WORD)
+				.where(
+						FORM.ID.eq(id)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+				.fetchOne();
+	}
+
 	public Result<Record6<Long,String,String,String,String,String>> findConnectedForms(Long formId) {
+
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
 		Paradigm p = PARADIGM.as("p");
