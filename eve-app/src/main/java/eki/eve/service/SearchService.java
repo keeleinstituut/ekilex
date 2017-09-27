@@ -1,16 +1,17 @@
 package eki.eve.service;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import eki.eve.data.Form;
 import eki.eve.data.Meaning;
 import eki.eve.data.Word;
 import eki.eve.data.WordDetails;
 import eki.eve.service.db.SearchDbService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class SearchService {

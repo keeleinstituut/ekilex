@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GrammarRecord extends UpdatableRecordImpl<GrammarRecord> implements Record5<Long, Long, String, String, String[]> {
 
-    private static final long serialVersionUID = 846015312;
+    private static final long serialVersionUID = -458266880;
 
     /**
      * Setter for <code>public.grammar.id</code>.

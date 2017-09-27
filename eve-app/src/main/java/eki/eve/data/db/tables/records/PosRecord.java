@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosRecord extends UpdatableRecordImpl<PosRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = 765369725;
+    private static final long serialVersionUID = -1750398675;
 
     /**
      * Setter for <code>public.pos.code</code>.

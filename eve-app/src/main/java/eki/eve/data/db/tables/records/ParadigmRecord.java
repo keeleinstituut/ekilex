@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ParadigmRecord extends UpdatableRecordImpl<ParadigmRecord> implements Record3<Long, Long, String> {
 
-    private static final long serialVersionUID = 15563780;
+    private static final long serialVersionUID = -1167079500;
 
     /**
      * Setter for <code>public.paradigm.id</code>.

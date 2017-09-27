@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelation extends TableImpl<LexRelationRecord> {
 
-    private static final long serialVersionUID = -201494725;
+    private static final long serialVersionUID = 1271122723;
 
     /**
      * The reference instance of <code>public.lex_relation</code>

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Deriv extends TableImpl<DerivRecord> {
 
-    private static final long serialVersionUID = -1054942856;
+    private static final long serialVersionUID = 1098441360;
 
     /**
      * The reference instance of <code>public.deriv</code>

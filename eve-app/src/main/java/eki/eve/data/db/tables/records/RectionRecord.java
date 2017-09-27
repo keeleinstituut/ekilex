@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RectionRecord extends UpdatableRecordImpl<RectionRecord> implements Record3<Long, Long, String> {
 
-    private static final long serialVersionUID = 1812876808;
+    private static final long serialVersionUID = -1011543976;
 
     /**
      * Setter for <code>public.rection.id</code>.

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domain extends TableImpl<DomainRecord> {
 
-    private static final long serialVersionUID = 79671467;
+    private static final long serialVersionUID = -721469805;
 
     /**
      * The reference instance of <code>public.domain</code>

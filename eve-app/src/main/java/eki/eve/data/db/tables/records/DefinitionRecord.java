@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> implements Record5<Long, Long, String, String, String[]> {
 
-    private static final long serialVersionUID = -757929331;
+    private static final long serialVersionUID = -306653635;
 
     /**
      * Setter for <code>public.definition.id</code>.

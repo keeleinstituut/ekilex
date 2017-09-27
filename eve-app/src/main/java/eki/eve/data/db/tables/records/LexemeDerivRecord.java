@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeDerivRecord extends UpdatableRecordImpl<LexemeDerivRecord> implements Record3<Long, Long, String> {
 
-    private static final long serialVersionUID = -277137032;
+    private static final long serialVersionUID = 1231818696;
 
     /**
      * Setter for <code>public.lexeme_deriv.id</code>.

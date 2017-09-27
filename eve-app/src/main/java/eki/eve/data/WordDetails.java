@@ -3,7 +3,11 @@ package eki.eve.data;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class WordDetails extends DomainData {
+import eki.common.data.AbstractDataObject;
+
+public class WordDetails extends AbstractDataObject {
+
+	private static final long serialVersionUID = 1L;
 
 	private List<Form> forms;
 

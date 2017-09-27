@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LabelType extends TableImpl<LabelTypeRecord> {
 
-    private static final long serialVersionUID = -703718155;
+    private static final long serialVersionUID = 1321354461;
 
     /**
      * The reference instance of <code>public.label_type</code>

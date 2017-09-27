@@ -1,9 +1,14 @@
 package eki.eve.data;
 
 import javax.persistence.Column;
+
+import eki.common.data.AbstractDataObject;
+
 import java.util.function.Consumer;
 
-public class Form extends DomainData {
+public class Form extends AbstractDataObject {
+
+	private static final long serialVersionUID = 1L;
 
 	@Column(name = "id")
 	private Long id;

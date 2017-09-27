@@ -7,3 +7,4 @@ and   f.is_word = true
 and   f.paradigm_id = p.id
 and   p.word_id = w.id
 and   w.homonym_nr = :homonymNr
+and   w.lang = :lang

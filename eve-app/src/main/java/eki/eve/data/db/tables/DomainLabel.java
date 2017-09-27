@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainLabel extends TableImpl<DomainLabelRecord> {
 
-    private static final long serialVersionUID = 482556514;
+    private static final long serialVersionUID = -282838454;
 
     /**
      * The reference instance of <code>public.domain_label</code>

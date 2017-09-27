@@ -1,17 +1,28 @@
 package eki.eve.data;
 
 import javax.persistence.Column;
+
+import eki.common.data.AbstractDataObject;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class Meaning extends DomainData {
+public class Meaning extends AbstractDataObject {
 
+	private static final long serialVersionUID = 1L;
+
+	@Column(name = "meaning_id")
 	private Long id;
 
+	@Column(name = "level1")
 	private Integer level1;
 
+	@Column(name = "level2")
 	private Integer level2;
+
+	@Column(name = "level3")
+	private Integer level3;
 
 	private List<String> words;
 
@@ -30,7 +41,6 @@ public class Meaning extends DomainData {
 		return id;
 	}
 
-	@Column(name = "meaning_id")
 	public void setId(Long id) {
 		this.id = id;
 	}
@@ -39,7 +49,6 @@ public class Meaning extends DomainData {
 		return level1;
 	}
 
-	@Column(name = "level1")
 	public void setLevel1(Integer level1) {
 		this.level1 = level1;
 	}
@@ -48,9 +57,16 @@ public class Meaning extends DomainData {
 		return level2;
 	}
 
-	@Column(name = "level2")
 	public void setLevel2(Integer level2) {
 		this.level2 = level2;
+	}
+
+	public Integer getLevel3() {
+		return level3;
+	}
+
+	public void setLevel3(Integer level3) {
+		this.level3 = level3;
 	}
 
 	public List<String> getWords() {

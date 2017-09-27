@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LangLabel extends TableImpl<LangLabelRecord> {
 
-    private static final long serialVersionUID = -1079242985;
+    private static final long serialVersionUID = 956295935;
 
     /**
      * The reference instance of <code>public.lang_label</code>

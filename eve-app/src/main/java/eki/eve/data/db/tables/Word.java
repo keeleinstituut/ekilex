@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = -18026785;
+    private static final long serialVersionUID = -1508296201;
 
     /**
      * The reference instance of <code>public.word</code>

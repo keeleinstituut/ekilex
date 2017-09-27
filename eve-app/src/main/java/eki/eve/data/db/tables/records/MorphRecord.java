@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphRecord extends UpdatableRecordImpl<MorphRecord> implements Record2<String, String[]> {
 
-    private static final long serialVersionUID = -1918346387;
+    private static final long serialVersionUID = -1786380515;
 
     /**
      * Setter for <code>public.morph.code</code>.

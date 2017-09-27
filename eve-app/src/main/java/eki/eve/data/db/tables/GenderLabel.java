@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderLabel extends TableImpl<GenderLabelRecord> {
 
-    private static final long serialVersionUID = -303793988;
+    private static final long serialVersionUID = 1571525076;
 
     /**
      * The reference instance of <code>public.gender_label</code>

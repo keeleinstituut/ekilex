@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainRecord extends UpdatableRecordImpl<DomainRecord> implements Record5<String, String, String, String, String[]> {
 
-    private static final long serialVersionUID = 40883292;
+    private static final long serialVersionUID = 2097725100;
 
     /**
      * Setter for <code>public.domain.code</code>.

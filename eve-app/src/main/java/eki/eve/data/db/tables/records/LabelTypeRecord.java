@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LabelTypeRecord extends UpdatableRecordImpl<LabelTypeRecord> implements Record2<String, String> {
 
-    private static final long serialVersionUID = -374164388;
+    private static final long serialVersionUID = 1712501772;
 
     /**
      * Setter for <code>public.label_type.code</code>.

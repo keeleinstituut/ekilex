@@ -27,7 +27,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosLabelRecord extends TableRecordImpl<PosLabelRecord> implements Record4<String, String, String, String> {
 
-    private static final long serialVersionUID = 228121251;
+    private static final long serialVersionUID = -2136399277;
 
     /**
      * Setter for <code>public.pos_label.code</code>.
