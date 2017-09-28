@@ -173,5 +173,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.truth</groupId>
+			<artifactId>truth</artifactId>
+			<version>0.36</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
