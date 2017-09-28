@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 @RestController
 public class DataController implements SystemConstant {
@@ -38,16 +40,23 @@ public class DataController implements SystemConstant {
 	@GetMapping("/files/{fileId}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String fileId) {
-		String wavFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".wav";
+		String fileName = "";
 		Resource resource = null;
 		try {
-			resource = new ByteArrayResource(Files.readAllBytes(Paths.get(wavFile)));
+			Optional<Path> fileToServe = Files.find(
+					Paths.get(System.getProperty("java.io.tmpdir")),
+					1,
+					(p,a) -> p.getFileName().toString().startsWith(fileId)).findFirst();
+			if (fileToServe.isPresent()) {
+				resource = new ByteArrayResource(Files.readAllBytes(fileToServe.get()));
+				fileName = fileToServe.get().getFileName().toString();
+			}
 		} catch (IOException e) {
 			logger.error(e.getMessage());
 		}
 		return ResponseEntity
 				.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileId + ".wav" + "\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
 				.body(resource);
 	}
 
