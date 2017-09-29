@@ -3,7 +3,10 @@
     <property name="FILE_LOG_PATTERN" value="${FILE_LOG_PATTERN:-%d{yyyy-MM-dd HH:mm:ss.SSS} - %5p - [%15.15t] %-40(%logger{0}.%M) : %m%n}"/>
     <include resource="org/springframework/boot/logging/logback/defaults.xml" />
     <property name="LOG_FILE" value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}}/eve.log}"/>
-    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <springProfile name="dev, local">
+        <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    </springProfile>
 
     <appender name="eveFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_FILE}</file>
@@ -20,7 +23,9 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="CONSOLE" />
+        <springProfile name="dev, local">
+            <appender-ref ref="CONSOLE" />
+        </springProfile>
         <appender-ref ref="eveFileAppender" />
     </root>
 </configuration>
