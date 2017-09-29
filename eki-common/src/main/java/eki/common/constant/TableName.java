@@ -24,4 +24,7 @@ public interface TableName {
 	public static final String GRAMMAR = "grammar";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";
+
+	// classifier binds
+	public static final String MEANING_DOMAIN = "meaning_domain";
 }

@@ -1,13 +1,9 @@
 package eki.ekilex.runner;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.transaction.Transactional;
@@ -17,25 +13,19 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
-import org.dom4j.io.SAXReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
 
 @Component
-public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableName {
+public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(Qq2LoaderRunner.class);
-
-	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
 	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
 
@@ -48,12 +38,10 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 	private Map<String, String> morphToDerivMap;
 
-	private String sqlSelectWordByFormAndHomonym;
-
 	private String sqlSelectWordMaxHomonym;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	void initialise() throws Exception {
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
@@ -75,9 +63,6 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 				morphToDerivMap.put(sourceMorphCode, destinDerivCode);
 			}
 		}
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
-		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
 		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
@@ -120,7 +105,7 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 
 		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
 		int articleCount = articleNodes.size();
-		logger.debug("Extracted {} articles", articleNodes.size());
+		logger.debug("Extracted {} articles", articleCount);
 
 		Map<Long, List<Map<String, Object>>> wordIdRectionMap = new HashMap<>();
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
@@ -319,29 +304,6 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		return synonymWordIds;
 	}
 
-	private Long saveWord(String word, String wordDisplayForm, String wordVocalForm, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
-
-		Map<String, Object> tableRowValueMap = getWord(word, homonymNr, lang);
-		Long wordId;
-
-		if (tableRowValueMap == null) {
-
-			// word
-			wordId = createWord(wordMorphCode, homonymNr, lang);
-
-			// paradigm
-			Long paradigmId = createParadigm(wordId);
-
-			// form
-			createForm(word, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId);
-
-		} else {
-			wordId = (Long) tableRowValueMap.get("id");
-			wordDuplicateCount.increment();
-		}
-		return wordId;
-	}
-
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] datasets) throws Exception {
 
 		if (definitionValueNodes == null) {
@@ -418,87 +380,6 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		return homonymNr;
 	}
 
-	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word", word);
-		tableRowParamMap.put("homonymNr", homonymNr);
-		tableRowParamMap.put("lang", lang);
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByFormAndHomonym, tableRowParamMap);
-		return tableRowValueMap;
-	}
-
-	private Long createMeaning(String[] datasets) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
-		Long meaningId = basicDbService.create(MEANING, tableRowParamMap);
-		return meaningId;
-	}
-
-	private Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String[] datasets) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("meaning_id", meaningId);
-		if (lexemeLevel1 != null) {
-			tableRowParamMap.put("level1", lexemeLevel1);
-		}
-		if (lexemeLevel2 != null) {
-			tableRowParamMap.put("level2", lexemeLevel2);
-		}
-		if (lexemeLevel3 != null) {
-			tableRowParamMap.put("level3", lexemeLevel3);
-		}
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
-		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
-		return lexemeId;
-	}
-
-	private void createDefinition(Long meaningId, String definition, String lang, String[] datasets) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("value", definition);
-		tableRowParamMap.put("lang", lang);
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
-		basicDbService.create(DEFINITION, tableRowParamMap);
-	}
-
-	private void createForm(String word, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("paradigm_id", paradigmId);
-		tableRowParamMap.put("morph_code", morphCode);
-		tableRowParamMap.put("value", word);
-		if (StringUtils.isNotBlank(wordDisplayForm)) {
-			tableRowParamMap.put("display_form", wordDisplayForm);
-		}
-		if (StringUtils.isNotBlank(wordVocalForm)) {
-			tableRowParamMap.put("vocal_form", wordVocalForm);
-		}
-		tableRowParamMap.put("is_word", Boolean.TRUE);
-		basicDbService.create(FORM, tableRowParamMap);
-	}
-
-	private Long createParadigm(Long wordId) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
-		return paradigmId;
-	}
-
-	private Long createWord(final String morphCode, final int homonymNr, String lang) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lang", lang);
-		tableRowParamMap.put("morph_code", morphCode);
-		tableRowParamMap.put("homonym_nr", homonymNr);
-		Long wordId = basicDbService.create(WORD, tableRowParamMap);
-		return wordId;
-	}
-
 	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId) throws Exception {
 
 		List<Map<String, Object>> grammarObjs = wordIdGrammarMap.get(wordId);
@@ -521,41 +402,10 @@ public class Qq2LoaderRunner implements InitializingBean, SystemConstant, TableN
 		}
 	}
 
-	private void createRection(Long lexemeId, String rection) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("value", rection);
-		basicDbService.createIfNotExists(RECTION, tableRowParamMap);
-	}
-
-	private Document readDocument(String dataXmlFilePath) throws Exception {
-
-		SAXReader dataDocParser = new SAXReader();
-		File dataDocFile = new File(dataXmlFilePath);
-		FileInputStream dataDocFileInputStream = new FileInputStream(dataDocFile);
-		InputStreamReader dataDocInputReader = new InputStreamReader(dataDocFileInputStream, UTF_8);
-		Document dataDoc = dataDocParser.read(dataDocInputReader);
-		dataDocInputReader.close();
-		dataDocFileInputStream.close();
-		return dataDoc;
-	}
-
-	private String unifyLang(String lang) {
-		Locale locale = new Locale(lang);
-		lang = locale.getISO3Language();
-		return lang;
-	}
-
 	private List<String> getContentLines(InputStream resourceInputStream) throws Exception {
 		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
 		resourceInputStream.close();
 		return contentLines;
 	}
 
-	private String getContent(InputStream resourceInputStream) throws Exception {
-		String content = IOUtils.toString(resourceInputStream, UTF_8);
-		resourceInputStream.close();
-		return content;
-	}
 }

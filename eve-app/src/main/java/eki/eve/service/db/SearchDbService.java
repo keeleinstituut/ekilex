@@ -31,6 +31,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 
 	private static final String SELECT_WORDS_OF_MEANING = "sql/select_words_of_meaning.sql";
 
+	private static final int MAX_RESULTS_LIMIT = 50;
+
 	private DSLContext create;
 
 	private String selectWordsOfMeaning;
@@ -65,6 +67,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
 				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
+				.limit(MAX_RESULTS_LIMIT)
 				.fetch();
 	}
 

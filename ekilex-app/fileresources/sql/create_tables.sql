@@ -2,12 +2,13 @@ drop table if exists lex_relation;
 drop table if exists grammar;
 drop table if exists usage;
 drop table if exists rection;
-drop table if exists lexeme_domain;
+drop table if exists lexeme_domain;--remove later
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
 drop table if exists lexeme;
 drop table if exists definition;
+drop table if exists meaning_domain;
 drop table if exists meaning;
 drop table if exists form;
 drop table if exists paradigm;
@@ -240,6 +241,17 @@ create table meaning
 );
 alter sequence meaning_id_seq restart with 10000;
 
+create table meaning_domain
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  domain_code varchar(100) not null,
+  domain_origin varchar(100) not null,
+  foreign key (domain_code, domain_origin) references domain (code, origin),
+  unique(meaning_id, domain_code, domain_origin)
+);
+alter sequence meaning_domain_id_seq restart with 10000;
+
 -- sõnastus/seletus/definitsioon
 create table definition
 (
@@ -264,17 +276,6 @@ create table lexeme
   unique(word_id, meaning_id)
 );
 alter sequence lexeme_id_seq restart with 10000;
-
-create table lexeme_domain
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  domain_code varchar(100) not null,
-  domain_origin varchar(100) not null,
-  foreign key (domain_code, domain_origin) references domain (code, origin),
-  unique(lexeme_id, domain_code, domain_origin)
-);
-alter sequence lexeme_domain_id_seq restart with 10000;
 
 create table lexeme_register
 (

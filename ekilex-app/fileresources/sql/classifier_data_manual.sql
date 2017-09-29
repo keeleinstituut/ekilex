@@ -1,6 +1,9 @@
 insert into lang (code, value) values ('est', 'Estonian');
 insert into lang (code, value) values ('eng', 'English');
 insert into lang (code, value) values ('rus', 'Russian');
+insert into lang (code, value) values ('fra', 'French');
+insert into lang (code, value) values ('deu', 'German');
+insert into lang (code, value) values ('fin', 'Finnish');
 insert into lang (code, value) values ('lat', 'Latin');
 
 insert into label_type (code, value) values ('capital', 'capital');
@@ -14,6 +17,7 @@ insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat
 insert into dataset (code, name) values ('sys', 'Sünonüümisõnastik');
 insert into dataset (code, name) values ('evs', 'Eesti-vene sõnaraamat');
 insert into dataset (code, name) values ('qq2', 'Eesti-vene sõnaraamat');
+insert into dataset (code, name) values ('est', 'Esterm sõnaraamat');
 
 insert into lex_rel_type (code, datasets) values ('comp', '{eos, ss_, sys, evs}');
 
