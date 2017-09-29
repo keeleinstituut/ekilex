@@ -20,7 +20,7 @@ import java.nio.charset.StandardCharsets;
 @EnableTransactionManagement
 public class EveAppApplication {
 
-	@Value("${tomcat.ajp.port:0000}")
+	@Value("${tomcat.ajp.port:0}")
 	int ajpPort;
 
 	@Value("${tomcat.ajp.enabled:false}")
