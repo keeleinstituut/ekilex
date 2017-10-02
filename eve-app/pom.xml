@@ -22,6 +22,7 @@
 		<java.version>1.8</java.version>
 		<thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
 		<skip.jooq.generation>true</skip.jooq.generation>
+		<jooq.version>3.10.0</jooq.version>
 	</properties>
 
 	<build>
