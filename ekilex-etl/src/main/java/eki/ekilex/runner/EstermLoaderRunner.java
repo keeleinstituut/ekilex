@@ -1,6 +1,5 @@
 package eki.ekilex.runner;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,18 +20,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermLoaderRunner.class);
 
-	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "sql/select_count_domain_by_code_and_origin.sql";
+	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
-	private String sqlSelectCountDomainByCodeAndOrigin;
+	private static final String SQL_SELECT_COUNT_LEXEME_TYPE_BY_CODE = "select count(code) cnt from " + LEXEME_TYPE + " where code = :code";
+
+	private static final String SQL_UPDATE_LEXEME_TYPE = "update " + LEXEME + " set type = :lexemeType where id = :lexemeId";
 
 	@Override
 	void initialise() throws Exception {
-
-		ClassLoader classLoader = this.getClass().getClassLoader();
-		InputStream resourceFileInputStream;
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN);
-		sqlSelectCountDomainByCodeAndOrigin = getContent(resourceFileInputStream);
+		//Nothing...
 	}
 
 	@Transactional
@@ -41,11 +37,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Starting loading Esterm...");
 
 		final String conceptGroupExp = "/mtf/conceptGrp";
-		final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref";
 		final String langGroupExp = "languageGrp";
 		final String langExp = "language";
 		final String termGroupExp = "termGrp";
 		final String termExp = "term";
+		final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref";
 		final String usageExp = "descripGrp/descrip[@type='Kontekst']";
 		final String definitionExp = "descripGrp/descrip[@type='Definitsioon']";
 		final String lexemeTypeExp = "descripGrp/descrip[@type='Keelenditüüp']";
@@ -59,7 +55,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
-		
+
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = readDocument(dataXmlFilePath);
 
@@ -180,7 +176,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			}
 			domainCodes.add(domainCode);
 			tableRowParamMap.put("code", domainCode);
-			tableRowValueMap = basicDbService.queryForMap(sqlSelectCountDomainByCodeAndOrigin, tableRowParamMap);
+			tableRowValueMap = basicDbService.queryForMap(SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN, tableRowParamMap);
 			domainExists = ((Long) tableRowValueMap.get("cnt")) > 0;
 			if (domainExists) {
 				createMeaningDomain(meaningId, domainCode, domainOrigin);
@@ -190,12 +186,23 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void updateLexemeType(Long lexemeId, String lexemeType) {
+	private void updateLexemeType(Long lexemeId, String lexemeType) throws Exception {
 
-		String sql = "update " + LEXEME + " set type = :lexemeType where id = :lexemeId";
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexemeId", lexemeId);
-		tableRowParamMap.put("lexemeType", lexemeType);
-		basicDbService.update(sql, tableRowParamMap);
+		Map<String, Object> tableRowParamMap;
+		Map<String, Object> tableRowValueMap;
+		boolean lexemeTypeExists;
+
+		tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("code", lexemeType);
+		tableRowValueMap = basicDbService.queryForMap(SQL_SELECT_COUNT_LEXEME_TYPE_BY_CODE, tableRowParamMap);
+		lexemeTypeExists = ((Long) tableRowValueMap.get("cnt")) > 0;
+		if (lexemeTypeExists) {
+			tableRowParamMap = new HashMap<>();
+			tableRowParamMap.put("lexemeId", lexemeId);
+			tableRowParamMap.put("lexemeType", lexemeType);
+			basicDbService.update(SQL_UPDATE_LEXEME_TYPE, tableRowParamMap);
+		} else {
+			logger.warn("Unable to bind lexeme type code \"{}\"", lexemeType);
+		}
 	}
 }

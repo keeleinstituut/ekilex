@@ -11,6 +11,7 @@ public interface TableName {
 	public static final String POS = "pos";
 	public static final String DERIV = "deriv";
 	public static final String MORPH = "morph";
+	public static final String LEXEME_TYPE = "lexeme_type";
 	public static final String LABEL_TYPE = "label_type";
 
 	// dynamic
