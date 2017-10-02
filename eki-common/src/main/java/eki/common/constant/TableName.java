@@ -2,6 +2,8 @@ package eki.common.constant;
 
 public interface TableName {
 
+	public static final String EKI_USER = "eki_user";
+
 	// classifiers
 	public static final String LANG = "lang";
 	public static final String DOMAIN = "domain";

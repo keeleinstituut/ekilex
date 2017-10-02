@@ -18,6 +18,11 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlScript, paramMap);
 	}
 
+	public void update(String sqlScript, Map<String, Object> paramMap) {
+
+		jdbcTemplate.update(sqlScript, paramMap);
+	}
+
 	public Map<String, Object> queryForMap(String sqlQueryStr, Map<String, Object> paramMap) throws Exception {
 
 		Map<String, Object> result;

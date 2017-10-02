@@ -1,5 +1,6 @@
 package eki.ekilex.runner;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,10 +21,18 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermLoaderRunner.class);
 
+	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "sql/select_count_domain_by_code_and_origin.sql";
+
+	private String sqlSelectCountDomainByCodeAndOrigin;
+
 	@Override
 	void initialise() throws Exception {
 
-		//nothing yet...
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		InputStream resourceFileInputStream;
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN);
+		sqlSelectCountDomainByCodeAndOrigin = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -32,6 +41,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Starting loading Esterm...");
 
 		final String conceptGroupExp = "/mtf/conceptGrp";
+		final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref";
+		final String langGroupExp = "languageGrp";
+		final String langExp = "language";
+		final String termGroupExp = "termGrp";
+		final String termExp = "term";
+		final String usageExp = "descripGrp/descrip[@type='Kontekst']";
+		final String definitionExp = "descripGrp/descrip[@type='Definitsioon']";
+		final String lexemeTypeExp = "descripGrp/descrip[@type='Keelenditüüp']";
+
+		final String langTypeAttr = "type";
 
 		final String domainOrigin = "lenoch";
 		final String defaultRection = "-";
@@ -40,24 +59,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
-
-		/*
-		FileInputStream fis = new FileInputStream(dataXmlFilePath);
-		LineIterator lineIterator = IOUtils.lineIterator(fis, UTF_8);
-		String line;
-
-		int lineCount = 0;
-		while (lineIterator.hasNext()) {
-			line = lineIterator.nextLine();
-			System.out.println(line);
-			lineCount++;
-			if (lineCount > 100) {
-				break;
-			}
-		}
-		lineIterator.close();
-		fis.close();
-		*/
 		
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = readDocument(dataXmlFilePath);
@@ -67,8 +68,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Extracted {} concept groups", conceptGroupCount);
 
 		List<Element> langGroupNodes, termGroupNodes, domainNodes;
-		Element languageNode, termNode, usageNode, definitionNode;
-		String languageType, lang, word, usage, definition;
+		Element languageNode, termNode, usageNode, definitionNode, lexemeTypeNode;
+		String languageType, lang, word, usage, definition, lexemeType;
 		Long wordId, meaningId, lexemeId, rectionId;
 
 		Count wordDuplicateCount = new Count();
@@ -81,29 +82,29 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 			meaningId = createMeaning(datasets);
 
-			domainNodes = conceptGroupNode.selectNodes("descripGrp/descrip[@type='Valdkonnaviide']/xref");
+			domainNodes = conceptGroupNode.selectNodes(domainExp);
 			saveDomains(conceptGroupNode, domainNodes, meaningId, domainOrigin);
 
-			langGroupNodes = conceptGroupNode.selectNodes("languageGrp");
+			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 
 			for (Element langGroupNode : langGroupNodes) {
 
-				languageNode = (Element) langGroupNode.selectSingleNode("language");
-				languageType = languageNode.attributeValue("type");
+				languageNode = (Element) langGroupNode.selectSingleNode(langExp);
+				languageType = languageNode.attributeValue(langTypeAttr);
 				boolean isLang = isLang(languageType);
 
 				if (!isLang) {
-					logger.debug("Not a term entry \"{}\"", languageType);
+					//logger.debug("Not a term entry \"{}\"", languageType);
 					continue;
 				}
 
 				lang = unifyLang(languageType);
 
-				termGroupNodes = langGroupNode.selectNodes("termGrp");
+				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
 				for (Element termGroupNode : termGroupNodes) {
 
-					termNode = (Element) termGroupNode.selectSingleNode("term");
+					termNode = (Element) termGroupNode.selectSingleNode(termExp);
 					word = termNode.getTextTrim();
 
 					wordId = saveWord(word, null, null, defaultHomonymNr, defaultWordMorphCode, lang, wordDuplicateCount);
@@ -111,7 +112,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
-						usageNode = (Element) termGroupNode.selectSingleNode("descripGrp/descrip[@type='Kontekst']");
+						usageNode = (Element) termGroupNode.selectSingleNode(usageExp);
 						if (usageNode == null) {
 							usage = null;
 						} else {
@@ -119,11 +120,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 								//TODO get source
 							}
 							usage = usageNode.getTextTrim();
-
 							rectionId = createRection(lexemeId, defaultRection);
 							createUsage(rectionId, usage);
 						}
-						definitionNode = (Element) termGroupNode.selectSingleNode("descripGrp/descrip[@type='Definitsioon']");
+						definitionNode = (Element) termGroupNode.selectSingleNode(definitionExp);
 						if (definitionNode == null) {
 							definition = null;
 						} else {
@@ -131,8 +131,14 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 								//TODO get source
 							}
 							definition = definitionNode.getTextTrim();
-
 							createDefinition(meaningId, definition, lang, datasets);
+						}
+						lexemeTypeNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
+						if (lexemeTypeNode == null) {
+							lexemeType = null;
+						} else {
+							lexemeType = lexemeTypeNode.getTextTrim();
+							updateLexemeType(lexemeId, lexemeType);
 						}
 					}
 				}
@@ -156,13 +162,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (domainNodes == null) {
 			return;
 		}
-		String domainExistsSql = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("origin", domainOrigin);
 
 		String domainCode;
 		Map<String, Object> tableRowValueMap;
-		Long count;
+		boolean domainExists;
 
 		List<String> domainCodes = new ArrayList<>();
 
@@ -175,13 +180,22 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			}
 			domainCodes.add(domainCode);
 			tableRowParamMap.put("code", domainCode);
-			tableRowValueMap = basicDbService.queryForMap(domainExistsSql, tableRowParamMap);
-			count = (Long) tableRowValueMap.get("cnt");
-			if (count > 0) {
+			tableRowValueMap = basicDbService.queryForMap(sqlSelectCountDomainByCodeAndOrigin, tableRowParamMap);
+			domainExists = ((Long) tableRowValueMap.get("cnt")) > 0;
+			if (domainExists) {
 				createMeaningDomain(meaningId, domainCode, domainOrigin);
 			} else {
 				logger.warn("Unable to bind domain code \"{}\"", domainCode);
 			}
 		}
+	}
+
+	private void updateLexemeType(Long lexemeId, String lexemeType) {
+
+		String sql = "update " + LEXEME + " set type = :lexemeType where id = :lexemeId";
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexemeId", lexemeId);
+		tableRowParamMap.put("lexemeType", lexemeType);
+		basicDbService.update(sql, tableRowParamMap);
 	}
 }

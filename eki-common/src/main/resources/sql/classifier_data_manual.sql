@@ -23,6 +23,20 @@ insert into lex_rel_type (code, datasets) values ('comp', '{eos, ss_, sys, evs}'
 
 insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liitsõna', 'est', 'full');
 
+insert into lexeme_type (code, datasets) values ('eelistermin', '{est}');
+insert into lexeme_type (code, datasets) values ('lühend', '{est}');
+insert into lexeme_type (code, datasets) values ('sünonüüm', '{est}');
+insert into lexeme_type (code, datasets) values ('variant', '{est}');
+insert into lexeme_type (code, datasets) values ('väldi', '{est}');
+insert into lexeme_type (code, datasets) values ('endine', '{est}');
+
+insert into lexeme_type_label (code, value, lang, type) values ('eelistermin', 'eelistermin', 'est', 'descrip');
+insert into lexeme_type_label (code, value, lang, type) values ('lühend', 'lühend', 'est', 'descrip');
+insert into lexeme_type_label (code, value, lang, type) values ('sünonüüm', 'sünonüüm', 'est', 'descrip');
+insert into lexeme_type_label (code, value, lang, type) values ('variant', 'variant', 'est', 'descrip');
+insert into lexeme_type_label (code, value, lang, type) values ('väldi', 'väldi', 'est', 'descrip');
+insert into lexeme_type_label (code, value, lang, type) values ('endine', 'endine', 'est', 'descrip');
+
 insert into pos (code, datasets) values ('adj', '{eos, ss_, sys, evs}');
 insert into pos (code, datasets) values ('adj + ID', '{eos, ss_, sys, evs}');
 insert into pos (code, datasets) values ('adv', '{eos, ss_, sys, evs}');

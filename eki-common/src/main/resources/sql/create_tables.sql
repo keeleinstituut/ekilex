@@ -25,6 +25,8 @@ drop table if exists gender_label;
 drop table if exists gender;
 drop table if exists register_label;
 drop table if exists register;
+drop table if exists lexeme_type_label;
+drop table if exists lexeme_type;
 drop table if exists domain_label;
 drop table if exists domain;
 drop table if exists lang_label;
@@ -103,6 +105,22 @@ create table register
 create table register_label
 (
   code varchar(100) references register(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
+-- keelendi tüüp
+create table lexeme_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table lexeme_type_label
+(
+  code varchar(100) references lexeme_type(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
   type varchar(10) references label_type(code) not null,
@@ -269,6 +287,7 @@ create table lexeme
   id bigserial primary key,
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
+  type varchar(100) references lexeme_type(code) null,
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,

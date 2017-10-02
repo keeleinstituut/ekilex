@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.TableName;
 import eki.common.service.db.AbstractDbService;
-import eki.ekilex.constant.TableName;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.mapper.EkiUserRowMapper;
 
@@ -15,7 +15,7 @@ public class UserDbService extends AbstractDbService implements TableName {
 
 	public EkiUser getUserByName(String name) throws Exception {
 
-		String sqlQueryStr = "select id, name, password from " + EKI_USER_TBL + " where name = :name";
+		String sqlQueryStr = "select id, name, password from " + EKI_USER + " where name = :name";
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("name", name);
 		EkiUserRowMapper rowMapper = new EkiUserRowMapper();
