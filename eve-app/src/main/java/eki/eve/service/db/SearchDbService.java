@@ -10,7 +10,6 @@ import java.io.InputStream;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record4;
@@ -102,11 +101,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 	}
 
 	public Result<Record> findFormMeanings(Long formId) {
-
-		String sql = new String(selectWordsOfMeaning);
-		sql = StringUtils.replace(sql, ":formId", formId.toString());
-
-		return create.fetch(sql);
+		return create.fetch(selectWordsOfMeaning, formId);
 	}
 
 	public Map<String, String> getDatasetNameMap() {

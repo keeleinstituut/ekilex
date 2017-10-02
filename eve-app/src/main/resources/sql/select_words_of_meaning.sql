@@ -24,7 +24,7 @@ from (select w1.word,
                  word w,
                  lexeme l,
                  meaning m
-            where f.id = :formId
+            where f.id = {0}
             and   f.is_word = true
             and   f.paradigm_id = p.id
             and   p.word_id = w.id
@@ -39,7 +39,7 @@ from (select w1.word,
                               paradigm p,
                               word w,
                               lexeme l
-                         where f.id != :formId
+                         where f.id != {0}
                          and   f.is_word = true
                          and   f.paradigm_id = p.id
                          and   p.word_id = w.id
