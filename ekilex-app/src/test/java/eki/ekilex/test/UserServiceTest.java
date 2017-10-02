@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 
 import javax.transaction.Transactional;
 
+import eki.common.test.TestEnvInitialiser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -18,6 +18,7 @@
 	<cache:annotation-driven />
 
 	<context:component-scan annotation-config="true" base-package="eki.common.service" />
+	<context:component-scan annotation-config="true" base-package="eki.common.test" />
 	<context:component-scan annotation-config="true" base-package="eki.ekilex.service" />
 	<context:component-scan annotation-config="true" base-package="eki.ekilex.test" />
 

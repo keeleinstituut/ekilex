@@ -13,6 +13,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import eki.common.test.TestEnvInitialiser;
 import org.apache.commons.lang3.StringUtils;
 import org.junit.Before;
 import org.junit.Test;
