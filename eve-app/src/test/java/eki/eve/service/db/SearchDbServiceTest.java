@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class SearchDbServiceTest {
 

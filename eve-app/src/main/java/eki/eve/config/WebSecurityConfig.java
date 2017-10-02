@@ -1,9 +1,11 @@
 package eki.eve.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+@ConditionalOnWebApplication
 @Configuration
 //@Profile({"default", "local"})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {

@@ -3,6 +3,7 @@ package eki.eve.config;
 import eki.eve.web.interceptor.PageRequestPostHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
@@ -27,6 +28,7 @@ import java.util.Locale;
 /**
  * Thymeleaf and Spring MVC configuration.
  */
+@ConditionalOnWebApplication
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurerAdapter implements ApplicationContextAware {
 

@@ -5,6 +5,7 @@ import eki.common.web.AppDataHolder;
 import eki.eve.constant.SystemConstant;
 import eki.eve.constant.WebConstant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,6 +14,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+@ConditionalOnWebApplication
 @Component
 public class PageRequestPostHandler extends HandlerInterceptorAdapter implements WebConstant, SystemConstant {
 

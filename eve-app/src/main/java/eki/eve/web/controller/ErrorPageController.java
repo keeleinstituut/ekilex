@@ -2,6 +2,7 @@ package eki.eve.web.controller;
 
 import eki.eve.constant.WebConstant;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+@ConditionalOnWebApplication
 @Controller
 public class ErrorPageController implements WebConstant {
 

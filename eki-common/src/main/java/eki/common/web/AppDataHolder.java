@@ -9,10 +9,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 
 import eki.common.data.AppData;
 
+@ConditionalOnWebApplication
 @Component
 public class AppDataHolder {
 
