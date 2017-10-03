@@ -15,8 +15,6 @@ import org.jooq.Record;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Result;
-import org.jooq.conf.RenderNameStyle;
-import org.jooq.tools.StopWatchListener;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -50,15 +48,11 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 	@Autowired
 	public SearchDbService(DSLContext context) {
 		create = context;
-		create.settings().setRenderSchema(false);
-		create.settings().setRenderFormatted(true);
-		create.settings().setRenderNameStyle(RenderNameStyle.AS_IS);
-		create.configuration().set(new StopWatchListener());
 	}
 
 	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters) {
 
-		String theFilter = wordWithMetaCharacters.toLowerCase().replace("*", "%").replace("?", "_");
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
 		return create
 				.select(FORM.ID, FORM.VALUE, WORD.HOMONYM_NR, WORD.LANG)
 				.from(FORM, PARADIGM, WORD)
