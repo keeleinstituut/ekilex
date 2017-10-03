@@ -16,15 +16,6 @@
 		<version>1.0-SNAPSHOT</version>
 	</parent>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<java.version>1.8</java.version>
-		<thymeleaf.version>3.0.7.RELEASE</thymeleaf.version>
-		<skip.jooq.generation>true</skip.jooq.generation>
-		<jooq.version>3.10.0</jooq.version>
-	</properties>
-
 	<build>
 		<finalName>eve-app</finalName>
 		<plugins>
@@ -102,11 +93,6 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>3.0.2</version>
-			</plugin>
 		</plugins>
 	</build>
 
@@ -170,8 +156,14 @@
 		<dependency>
 			<groupId>com.google.truth</groupId>
 			<artifactId>truth</artifactId>
-			<version>0.36</version>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<java.version>1.8</java.version>
+		<skip.jooq.generation>true</skip.jooq.generation>
+	</properties>
+
 </project>
