@@ -1,5 +1,6 @@
 package eki.eve.data;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.persistence.Column;
@@ -32,13 +33,13 @@ public class Meaning extends AbstractDataObject {
 	private Integer level3;
 
 	@Column(name = "words")
-	private String[] words;
+	private List<String> words;
 
 	@Column(name = "datasets")
-	private String[] datasets;
+	private List<String> datasets;
 
 	@Column(name = "definitions")
-	private String[] definitions;
+	private List<String> definitions;
 
 	public Meaning() {
 	}
@@ -103,28 +104,27 @@ public class Meaning extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public String[] getWords() {
+	public List<String> getWords() {
 		return words;
 	}
 
-	public void setWords(String[] words) {
+	public void setWords(List<String> words) {
 		this.words = words;
 	}
 
-	public String[] getDatasets() {
+	public List<String> getDatasets() {
 		return datasets;
 	}
 
-	public void setDatasets(String[] datasets) {
+	public void setDatasets(List<String> datasets) {
 		this.datasets = datasets;
 	}
 
-	public String[] getDefinitions() {
+	public List<String> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(String[] definitions) {
+	public void setDefinitions(List<String> definitions) {
 		this.definitions = definitions;
 	}
-
 }
