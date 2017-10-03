@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,7 +51,9 @@ public class SearchService {
 	}
 
 	public Word getWord(Long wordId) {
-		return searchDbService.getWord(wordId).into(Word.class);
+
+		Record4<Long, String, Integer, String> word = searchDbService.getWord(wordId);
+		return word == null ? null : word.into(Word.class);
 	}
 
 }

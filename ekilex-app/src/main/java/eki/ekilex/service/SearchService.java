@@ -5,6 +5,7 @@ import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.service.db.SearchDbService;
+import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,9 @@ public class SearchService {
 	}
 
 	public Word getWord(Long wordId) {
-		return searchDbService.getWord(wordId).into(Word.class);
+
+		Record4<Long, String, Integer, String> word = searchDbService.getWord(wordId);
+		return word == null ? null : word.into(Word.class);
 	}
 
 }
