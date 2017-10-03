@@ -12,12 +12,8 @@ insert into label_type (code, value) values ('ekimorfo', 'ekimorfo');
 insert into label_type (code, value) values ('descrip', 'descrip');
 insert into label_type (code, value) values ('full', 'full');
 
-insert into dataset (code, name) values ('eos', 'Õigekeelsussõnaraamat ÕS 2013');
-insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat');
-insert into dataset (code, name) values ('sys', 'Sünonüümisõnastik');
-insert into dataset (code, name) values ('evs', 'Eesti-vene sõnaraamat');
-insert into dataset (code, name) values ('qq2', 'Eesti-vene sõnaraamat');
-insert into dataset (code, name) values ('est', 'Esterm sõnaraamat');
+insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
+insert into dataset (code, name) values ('est', 'Esterm');
 
 insert into lex_rel_type (code, datasets) values ('comp', '{eos, ss_, sys, evs}');
 
