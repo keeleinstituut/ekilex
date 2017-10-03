@@ -8,7 +8,7 @@
         <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
     </springProfile>
 
-    <appender name="eveFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <appender name="ekilexFileAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_PATH}/ekilex.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_PATH}/ekilex_%d{yyyy-MM-dd}.%i.log</fileNamePattern>
@@ -26,6 +26,6 @@
         <springProfile name="dev, local">
             <appender-ref ref="CONSOLE" />
         </springProfile>
-        <appender-ref ref="eveFileAppender" />
+        <appender-ref ref="ekilexFileAppender" />
     </root>
 </configuration>
