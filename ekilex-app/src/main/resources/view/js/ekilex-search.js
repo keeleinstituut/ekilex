@@ -1,6 +1,7 @@
 // add on click handlers to details buttons in search result table
 function initialize(urlPrefix) {
-    $('#results').find('[name="details"]').on('click', function (e) {
+    var detailsDivs = $('#results').find('[name="details"]');
+    detailsDivs.on('click', function (e) {
         var id = $(e.target).data('id');
         var detailsDiv = $('[name="' + id + '_details"]');
         if (detailsDiv.html() === '') {
@@ -13,5 +14,8 @@ function initialize(urlPrefix) {
         } else {
             detailsDiv.toggle();
         }
-    })
+    });
+    if (detailsDivs.length === 1) {
+        detailsDivs.trigger('click');
+    }
 }
