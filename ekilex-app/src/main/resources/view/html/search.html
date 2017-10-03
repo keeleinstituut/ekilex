@@ -57,7 +57,6 @@
           </span>
           <br>
         </th:block>
-        <a th:if="${soundSource != null}" href="javascript:void(0)" class="badge badge-info" th:onclick="|playSound('${soundSource}')|">Kuula</a>
       </div>
       <div class="float-left w-75">
         <th:block th:each="meaning : ${details.meanings}">
