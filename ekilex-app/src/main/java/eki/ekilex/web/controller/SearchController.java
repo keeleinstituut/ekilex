@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @ConditionalOnWebApplication
@@ -27,21 +28,27 @@ public class SearchController {
 	private SearchService search;
 
 	@GetMapping("/search")
-	public String search(@RequestParam(required = false) String searchFilter, Model model) {
+	public String search(
+			@RequestParam(required = false) String searchFilter,
+			@RequestParam(name = "dicts", required = false) List<String> selectedDatasets,
+			Model model) {
 
-		logger.debug("doing search");
+		logger.debug("doing search : {}, {}", searchFilter, selectedDatasets);
 		if (isNotBlank(searchFilter)) {
 			List<Word> words = search.findWords(searchFilter);
 			model.addAttribute("wordsFoundBySearch", words);
 			model.addAttribute("searchFilter", searchFilter);
 		}
+		model.addAttribute("selectedDatasets", selectedDatasets == null ? emptyList() : selectedDatasets);
+		// TODO: remove comments when datasets are going to be used in searches
+//		model.addAttribute("datasets", search.getDatasets().entrySet());
 		return "search";
 	}
 
 	@GetMapping("/details/{id}")
 	public String details(@PathVariable("id") Long id, Model model) {
 
-		logger.debug("doing details");
+		logger.debug("doing details : {}", id);
 		WordDetails details = search.findWordDetails(id);
 		model.addAttribute("detailsName", id + "_details");
 		model.addAttribute("details", details);

@@ -5,6 +5,7 @@ import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.service.db.SearchDbService;
+import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class SearchService {
 	}
 
 	public WordDetails findWordDetails(Long formId) {
+
 		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
 		List<Meaning> meanings = searchDbService.findFormMeanings(formId).into(Meaning.class);
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
@@ -37,6 +39,7 @@ public class SearchService {
 	}
 
 	private String[] convertToNames(String[] datasets, Map<String, String> datasetMap) {
+
 		if (datasets == null) {
 			return new String[0];
 		}
@@ -47,7 +50,13 @@ public class SearchService {
 	}
 
 	public Word getWord(Long wordId) {
-		return searchDbService.getWord(wordId).into(Word.class);
+
+		Record4<Long, String, Integer, String> word = searchDbService.getWord(wordId);
+		return word == null ? null : word.into(Word.class);
+	}
+
+	public Map<String, String> getDatasets() {
+		return searchDbService.getDatasetNameMap();
 	}
 
 }

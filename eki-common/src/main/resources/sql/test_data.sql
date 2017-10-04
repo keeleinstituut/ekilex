@@ -1,5 +1,10 @@
 insert into eki_user (name, password) values ('Malle Paju', 'cdd78520affcda625a66a9c428327b81');
 
+insert into dataset (code, name) values ('eos', 'Õigekeelsussõnaraamat ÕS 2013');
+insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat');
+insert into dataset (code, name) values ('sys', 'Sünonüümisõnastik');
+insert into dataset (code, name) values ('evs', 'Eesti-vene sõnaraamat');
+
 insert into word (id, lang, morph_code) values (1001, 'est', 'SgN');
 insert into word (id, lang, morph_code) values (1002, 'est', 'SgN');
 insert into word (id, lang, morph_code) values (1003, 'est', 'SgN');
