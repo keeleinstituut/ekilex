@@ -94,7 +94,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 
 		final String defaultWordMorphCode = "SgN";
-		final String wordDisplayFormStripChars = ".+'()¤:_";
+		final String wordDisplayFormStripChars = ".+'`()¤:_";
 		final int defaultHomonymNr = 1;
 
 		long t1, t2;

@@ -32,8 +32,9 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "level3")
 	private Integer level3;
 
-	@Column(name = "words")
-	private List<String> words;
+	private List<Form> words;
+
+	private List<Rection> rections;
 
 	@Column(name = "datasets")
 	private List<String> datasets;
@@ -104,12 +105,20 @@ public class Meaning extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public List<String> getWords() {
+	public List<Form> getWords() {
 		return words;
 	}
 
-	public void setWords(List<String> words) {
+	public void setWords(List<Form> words) {
 		this.words = words;
+	}
+
+	public List<Rection> getRections() {
+		return rections;
+	}
+
+	public void setRections(List<Rection> rections) {
+		this.rections = rections;
 	}
 
 	public List<String> getDatasets() {

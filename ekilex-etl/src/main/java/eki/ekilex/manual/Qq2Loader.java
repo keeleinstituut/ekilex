@@ -22,7 +22,7 @@ public class Qq2Loader {
 		try {
 			applicationContext.registerShutdownHook();
 
-			//  /projects/eki/data/dictionaries/qq2/qq21.xml
+			//  /projects/eki/data/dictionaries/qq2/qq22.xml
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
 			String[] datasets = new String[] {"qq2"};

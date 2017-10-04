@@ -70,6 +70,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
+		Count dataErrorCount = new Count();
 
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
@@ -79,7 +80,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			meaningId = createMeaning(datasets);
 
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
-			saveDomains(conceptGroupNode, domainNodes, meaningId, domainOrigin);
+			saveDomains(conceptGroupNode, domainNodes, meaningId, domainOrigin, dataErrorCount);
 
 			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 
@@ -134,7 +135,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 							lexemeType = null;
 						} else {
 							lexemeType = lexemeTypeNode.getTextTrim();
-							updateLexemeType(lexemeId, lexemeType);
+							updateLexemeType(lexemeId, lexemeType, dataErrorCount);
 						}
 					}
 				}
@@ -148,12 +149,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
+		logger.debug("Found {} data errors", dataErrorCount);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private void saveDomains(Element parentNode, List<Element> domainNodes, Long meaningId, String domainOrigin) throws Exception {
+	private void saveDomains(Element parentNode, List<Element> domainNodes, Long meaningId, String domainOrigin, Count dataErrorCount) throws Exception {
 
 		if (domainNodes == null) {
 			return;
@@ -171,7 +173,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			domainCode = domainNode.getTextTrim();
 			if (domainCodes.contains(domainCode)) {
 				logger.warn("Duplicate bind entry for domain code \"{}\"", domainCode);
-				logger.warn(parentNode.asXML());
+				//logger.warn(parentNode.asXML());
+				dataErrorCount.increment();
 				continue;
 			}
 			domainCodes.add(domainCode);
@@ -181,12 +184,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (domainExists) {
 				createMeaningDomain(meaningId, domainCode, domainOrigin);
 			} else {
+				dataErrorCount.increment();
 				logger.warn("Unable to bind domain code \"{}\"", domainCode);
 			}
 		}
 	}
 
-	private void updateLexemeType(Long lexemeId, String lexemeType) throws Exception {
+	private void updateLexemeType(Long lexemeId, String lexemeType, Count dataErrorCount) throws Exception {
 
 		Map<String, Object> tableRowParamMap;
 		Map<String, Object> tableRowValueMap;
@@ -202,6 +206,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			tableRowParamMap.put("lexemeType", lexemeType);
 			basicDbService.update(SQL_UPDATE_LEXEME_TYPE, tableRowParamMap);
 		} else {
+			dataErrorCount.increment();
 			logger.warn("Unable to bind lexeme type code \"{}\"", lexemeType);
 		}
 	}
