@@ -23,6 +23,7 @@ public class SearchService {
 	}
 
 	public WordDetails findWordDetails(Long formId) {
+
 		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
 		List<Meaning> meanings = searchDbService.findFormMeanings(formId).into(Meaning.class);
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
@@ -38,6 +39,7 @@ public class SearchService {
 	}
 
 	private String[] convertToNames(String[] datasets, Map<String, String> datasetMap) {
+
 		if (datasets == null) {
 			return new String[0];
 		}
@@ -51,6 +53,10 @@ public class SearchService {
 
 		Record4<Long, String, Integer, String> word = searchDbService.getWord(wordId);
 		return word == null ? null : word.into(Word.class);
+	}
+
+	public Map<String, String> getDatasets() {
+		return searchDbService.getDatasetNameMap();
 	}
 
 }
