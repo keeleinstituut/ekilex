@@ -49,10 +49,6 @@ public class SearchDbService implements InitializingBean {
 	@Autowired
 	public SearchDbService(DSLContext context) {
 		create = context;
-		create.settings().setRenderSchema(false);
-		create.settings().setRenderFormatted(true);
-		create.settings().setRenderNameStyle(RenderNameStyle.AS_IS);
-		create.configuration().set(new StopWatchListener());
 	}
 
 	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters) {
