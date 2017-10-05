@@ -72,11 +72,21 @@
       </div>
       <div class="float-left w-75">
         <th:block th:each="meaning : ${details.meanings}">
-          <a style="color: #1e7e34" class="mr-2"
-             th:each="word : ${meaning.words}"
-             th:href="@{/search?searchFilter=__${word}__}"
-             th:text="${word}">
-          </a>
+          <span th:each="rection,rectionIter : ${meaning.rections}">
+            <span th:text="${rection.value}"></span>
+            <span th:unless="${rectionIter.last}">,</span>
+            (
+            <span th:each="usage,usageIter : ${rection.usages}">
+              <span th:text="${usage}"></span>
+              <span th:unless="${usageIter.last}">,</span>
+            </span>
+            )
+          </span>
+          <br th:if="${not #lists.isEmpty(meaning.rections)}"/>
+          <span th:each="word,wordIter : ${meaning.words}">
+            <a style="color: #1e7e34" class="mr-2" th:href="@{/search?searchFilter=__${word.value}__}" th:text="${word.value}"></a>
+            <span th:unless="${wordIter.last}">|&nbsp;</span>
+          </span>
           <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
           <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>

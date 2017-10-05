@@ -6,11 +6,11 @@ import eki.ekilex.data.db.tables.Paradigm;
 import org.apache.commons.io.IOUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
+import org.jooq.Record2;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Result;
-import org.jooq.conf.RenderNameStyle;
-import org.jooq.tools.StopWatchListener;
+import org.jooq.impl.DSL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,20 +21,23 @@ import java.util.Map;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.RECTION;
+import static eki.ekilex.data.db.Tables.USAGE;
 import static eki.ekilex.data.db.Tables.WORD;
 
 @Service
 public class SearchDbService implements InitializingBean {
 
-	private static final String SELECT_WORDS_OF_MEANING = "sql/select_words_of_meaning.sql";
+	private static final String SELECT_FORM_MEANINGS = "sql/select_form_meanings.sql";
 
 	private static final int MAX_RESULTS_LIMIT = 50;
 
 	private DSLContext create;
 
-	private String selectWordsOfMeaning;
+	private String selectFormMeanings;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -42,8 +45,8 @@ public class SearchDbService implements InitializingBean {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SELECT_WORDS_OF_MEANING);
-		selectWordsOfMeaning = getContent(resourceFileInputStream);
+		resourceFileInputStream = classLoader.getResourceAsStream(SELECT_FORM_MEANINGS);
+		selectFormMeanings = getContent(resourceFileInputStream);
 	}
 
 	@Autowired
@@ -86,7 +89,7 @@ public class SearchDbService implements InitializingBean {
 		Paradigm p = PARADIGM.as("p");
 		MorphLabel m = MORPH_LABEL.as("m");
 		return create
-				.select(f2.ID, f2.VALUE, f2.DISPLAY_FORM, f2.VOCAL_FORM, f2.MORPH_CODE, m.VALUE.as("morph_value"))
+				.select(f2.ID.as("form_id"), f2.VALUE.as("word"), f2.DISPLAY_FORM, f2.VOCAL_FORM, f2.MORPH_CODE, m.VALUE.as("morph_value"))
 				.from(f1 , f2, p, m)
 				.where(f1.ID.eq(formId)
 						.and(f1.PARADIGM_ID.eq(p.ID))
@@ -97,8 +100,33 @@ public class SearchDbService implements InitializingBean {
 				.fetch();
 	}
 
+	public Result<Record2<Long,String>> findConnectedWords(Long meaningId) {
+
+		return create
+				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"))
+				.from(FORM, PARADIGM, WORD, LEXEME)
+				.where(
+						FORM.PARADIGM_ID.eq(PARADIGM.ID)
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.MEANING_ID.eq(meaningId)))
+				.fetch();
+	}
+
+	public Result<Record2<String,String[]>> findConnectedRections(Long lexemeId) {
+
+		return create
+				.select(RECTION.VALUE.as("rection"), DSL.arrayAgg(USAGE.VALUE).orderBy(USAGE.ID).as("usages"))
+				.from(RECTION, USAGE)
+				.where(
+						RECTION.LEXEME_ID.eq(lexemeId)
+								.and(USAGE.RECTION_ID.eq(RECTION.ID)))
+				.groupBy(RECTION.ID)
+				.fetch();
+	}
+
 	public Result<Record> findFormMeanings(Long formId) {
-		return create.fetch(selectWordsOfMeaning, formId);
+		return create.fetch(selectFormMeanings, formId);
 	}
 
 	public Map<String, String> getDatasetNameMap() {

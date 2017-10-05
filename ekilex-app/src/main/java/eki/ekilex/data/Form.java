@@ -9,10 +9,10 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
+	@Column(name = "form_id")
 	private Long id;
 
-	@Column(name = "value")
+	@Column(name = "word")
 	private String value;
 
 	@Column(name = "display_form")

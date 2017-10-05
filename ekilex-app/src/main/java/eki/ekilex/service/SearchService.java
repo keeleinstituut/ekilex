@@ -2,15 +2,18 @@ package eki.ekilex.service;
 
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.Rection;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.service.db.SearchDbService;
-import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+
+import static java.util.Collections.emptyList;
 
 @Service
 public class SearchService {
@@ -24,13 +27,24 @@ public class SearchService {
 
 	public WordDetails findWordDetails(Long formId) {
 
-		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
-		List<Meaning> meanings = searchDbService.findFormMeanings(formId).into(Meaning.class);
+
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
+		List<Meaning> meanings = searchDbService.findFormMeanings(formId).into(Meaning.class);
+		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
+
 		meanings.forEach(meaning -> {
-			String[] datasets = meaning.getDatasets();
+
+			List<String> datasets = meaning.getDatasets();
 			datasets = convertToNames(datasets, datasetNameMap);
 			meaning.setDatasets(datasets);
+
+			Long meaningId = meaning.getMeaningId();
+			List<Form> words = searchDbService.findConnectedWords(meaningId).into(Form.class);
+			meaning.setWords(words);
+
+			Long lexemeId = meaning.getLexemeId();
+			List<Rection> rections = searchDbService.findConnectedRections(lexemeId).into(Rection.class);
+			meaning.setRections(rections);
 		});
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
@@ -38,21 +52,12 @@ public class SearchService {
 		});
 	}
 
-	private String[] convertToNames(String[] datasets, Map<String, String> datasetMap) {
+	private List<String> convertToNames(List<String> datasets, Map<String, String> datasetMap) {
 
 		if (datasets == null) {
-			return new String[0];
+			return emptyList();
 		}
-		for (int datasetIndex = 0; datasetIndex < datasets.length; datasetIndex++) {
-			datasets[datasetIndex] = datasetMap.get(datasets[datasetIndex]);
-		}
-		return datasets;
-	}
-
-	public Word getWord(Long wordId) {
-
-		Record4<Long, String, Integer, String> word = searchDbService.getWord(wordId);
-		return word == null ? null : word.into(Word.class);
+		return datasets.stream().map(datasetMap::get).collect(Collectors.toList());
 	}
 
 	public Map<String, String> getDatasets() {

@@ -1,9 +1,10 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
-import javax.persistence.Column;
+import java.util.List;
 import java.util.function.Consumer;
+import javax.persistence.Column;
+
+import eki.common.data.AbstractDataObject;
 
 public class Meaning extends AbstractDataObject {
 
@@ -30,14 +31,15 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "level3")
 	private Integer level3;
 
-	@Column(name = "words")
-	private String[] words;
+	private List<Form> words;
+
+	private List<Rection> rections;
 
 	@Column(name = "datasets")
-	private String[] datasets;
+	private List<String> datasets;
 
 	@Column(name = "definitions")
-	private String[] definitions;
+	private List<String> definitions;
 
 	public Meaning() {
 	}
@@ -102,28 +104,35 @@ public class Meaning extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public String[] getWords() {
+	public List<Form> getWords() {
 		return words;
 	}
 
-	public void setWords(String[] words) {
+	public void setWords(List<Form> words) {
 		this.words = words;
 	}
 
-	public String[] getDatasets() {
+	public List<Rection> getRections() {
+		return rections;
+	}
+
+	public void setRections(List<Rection> rections) {
+		this.rections = rections;
+	}
+
+	public List<String> getDatasets() {
 		return datasets;
 	}
 
-	public void setDatasets(String[] datasets) {
+	public void setDatasets(List<String> datasets) {
 		this.datasets = datasets;
 	}
 
-	public String[] getDefinitions() {
+	public List<String> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(String[] definitions) {
+	public void setDefinitions(List<String> definitions) {
 		this.definitions = definitions;
 	}
-
 }
