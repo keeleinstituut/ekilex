@@ -3,6 +3,7 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{search.title}">EVE otsing</title>
 <th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/eve-search.js}"></script>
 </th:block>
 </head>
@@ -24,7 +25,9 @@
                 <div class="col-8">
                   <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
                 </div>
-                <button type="submit" class="btn btn-primary">Otsi</button>
+                <button type="submit" id="serch-btn" class="btn btn-primary">Otsi</button>
+                <button type="button" id="start-rec-btn" class="ml-2 btn btn-info">Dikteeri</button>
+                <button type="button" id="stop-rec-btn" class="ml-2 btn btn-info" hidden>Lõpeta</button>
               </div>
             </div>
           </div>
@@ -85,6 +88,7 @@
     </div>
   </th:block>
   <script th:inline="javascript">
+    initializeRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');
   	initialize(applicationUrl);
   </script>
 </body>

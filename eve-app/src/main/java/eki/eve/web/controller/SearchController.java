@@ -8,6 +8,7 @@ import eki.eve.service.SpeechSynthesisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,6 +32,9 @@ public class SearchController {
 	@Autowired
 	SpeechSynthesisService speechSynthesisService;
 
+	@Value("${speech.recognition.service.url:}")
+	private String speechRecognitionServiceUrl;
+
 	@GetMapping("/search")
 	public String search(@RequestParam(required = false) String searchFilter, Model model) {
 		logger.debug("doing search");
@@ -39,6 +43,7 @@ public class SearchController {
 			model.addAttribute("wordsFoundBySearch", words);
 			model.addAttribute("searchFilter", searchFilter);
 		}
+		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		return "search";
 	}
 
