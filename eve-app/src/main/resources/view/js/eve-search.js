@@ -45,13 +45,14 @@ var audio_context;
 var recorder;
 var audio_stream;
 var ws;
-
+var speechRecognitionServiceUrl;
 /**
  * Patch the APIs for every browser that supports them and check
  * if getUserMedia is supported on the browser.
  */
-function initializeRecording() {
+function initializeRecording(serviceUrl) {
     try {
+        speechRecognitionServiceUrl = serviceUrl;
         // Monkeypatch for AudioContext, getUserMedia and URL
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
         navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -109,7 +110,7 @@ function sendToWebSocket(audioBlob) {
         }
         // Let us open a web socket
         // ws = new WebSocket("ws://localhost:9090/client/ws/speech");
-        ws = new WebSocket("ws://bark.phon.ioc.ee:82/dev/duplex-speech-api/ws/speech");
+        ws = new WebSocket(speechRecognitionServiceUrl);
         ws.onopen = function() {
             // Web Socket is connected, send data using send()
             ws.send(audioBlob);
