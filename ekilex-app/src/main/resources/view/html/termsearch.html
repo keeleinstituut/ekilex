@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{search.title}">EKILEX otsing</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-termsearch.js}"></script>
+</th:block>
+</head>
+<body>
+  <div class="container-fluid">
+    <div class="d-flex flex-row">
+      <p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p>
+    </div>
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="card-title" th:text="#{search.title}">Vormi otsing</h5>
+      </div>
+      <div class="card-body">
+        <form th:action="@{/termsearch}">
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group row">
+                <label class="col-auto col-form-label">Otsing</label>
+                <div class="col-5">
+                  <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+                </div>
+                <div class="col-2">
+                  <button type="submit" class="btn btn-primary">Otsi</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="mt-4 ml-4" th:if="${wordsFoundBySearch != null}">
+      <table id="results" class="w-100">
+        <tr th:each="word : ${wordsFoundBySearch}">
+          <td class="w-100">
+            <span th:text="${word.value}">vorm 1</span>
+            <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
+            <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">Detailid</button>
+            <div th:name="${word.formId}+'_details'"></div>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <th:block th:fragment="details" th:if="${details != null}">
+    <div th:name="${detailsName}" class="pl-4">
+      <div class="float-left w-25">
+        <th:block>
+          <span>&nbsp;</span>
+        </th:block>
+      </div>
+      <div class="float-left w-75">
+        <th:block th:each="meaning : ${details.meanings}">
+          <div style="border: 1px solid #CCC; padding: 5px; width: 60%">
+            <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
+            <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
+            <div th:if="${meaning.lexemeTypeCode != null}">
+              <b>Keelendi t&#252;&#252;p</b>
+              <span th:text="${meaning.lexemeTypeCode}"></span>
+            </div>
+            <p th:if="${not #lists.isEmpty(meaning.domains)}">
+              <b>Valdkonnad</b>
+              <span th:each="domain,domainIter : ${meaning.domains}">
+                <span th:text="${domain.code}"></span>
+                -
+                <span th:text="${domain.value}"></span>
+                <span th:unless="${domainIter.last}">,</span>
+              </span>
+            </p>
+            <hr />
+            <div th:if="${not #lists.isEmpty(meaning.rections)}">
+              <b>Rektsioonid</b><br />
+              <span th:each="rection,rectionIter : ${meaning.rections}">
+                <span th:text="${rection.value}"></span>
+                <span th:unless="${rectionIter.last}">,</span>
+                (
+                <span th:each="usage,usageIter : ${rection.usages}">
+                  <span th:text="${usage}"></span>
+                  <span th:unless="${usageIter.last}">,</span>
+                </span>
+                )
+              </span>
+              <hr />
+            </div>
+            <div th:if="${not #lists.isEmpty(meaning.definitions)}">
+              <b>Seletused</b><br />
+              <ul>
+                <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+              </ul>
+              <hr />
+            </div>
+            <ul>
+              <li th:each="word,wordIter : ${meaning.words}">
+                <a style="color: #1e7e34" class="mr-2" th:href="@{/termsearch?searchFilter=__${word.value}__}">
+                  <span th:text="${word.value}"></span>
+                  (
+                  <span th:text="${word.lang}"></span>
+                  )
+                </a>
+                <span th:if="${word.displayForm != null}">
+                  [
+                  <span th:text="${word.displayForm}"></span>
+                  ]
+                </span>
+                <span th:text="${word.vocalForm}"></span>
+                <span th:text="${word.morphCode}"></span>
+                <span th:text="${word.morphValue}"></span>
+              </li>
+            </ul>
+          </div>
+          <div style="padding: 5px"></div>
+        </th:block>
+      </div>
+    </div>
+  </th:block>
+
+  <script th:inline="javascript">
+  	initialize(applicationUrl);
+  </script>
+
+</body>
+</html>

@@ -9,10 +9,10 @@ public class Word extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
-	private Long id;
+	@Column(name = "form_id")
+	private Long formId;
 
-	@Column(name = "value")
+	@Column(name = "word")
 	private String value;
 
 	@Column(name = "homonym_nr")
@@ -28,12 +28,12 @@ public class Word extends AbstractDataObject {
 		builder.accept(this);
 	}
 
-	public Long getId() {
-		return id;
+	public Long getFormId() {
+		return formId;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setFormId(Long formId) {
+		this.formId = formId;
 	}
 
 	public String getValue() {

@@ -23,12 +23,16 @@ import eki.ekilex.constant.SystemConstant;
 
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
+	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
+
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
 	@Autowired
 	protected BasicDbService basicDbService;
 
 	private String sqlSelectWordByFormAndHomonym;
+
+	private String sqlSelectWordMaxHomonym;
 
 	abstract void initialise() throws Exception;
 
@@ -39,6 +43,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
+		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
 		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
@@ -140,6 +147,16 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("homonym_nr", homonymNr);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 		return wordId;
+	}
+
+	protected int getWordMaxHomonymNr(String word, String lang) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("lang", lang);
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordMaxHomonym, tableRowParamMap);
+		int homonymNr = (int) tableRowValueMap.get("max_homonym_nr");
+		return homonymNr;
 	}
 
 	protected Long createMeaning(String[] datasets) throws Exception {

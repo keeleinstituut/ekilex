@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Rection;
@@ -27,7 +28,6 @@ public class SearchService {
 
 	public WordDetails findWordDetails(Long formId) {
 
-
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
 		List<Meaning> meanings = searchDbService.findFormMeanings(formId).into(Meaning.class);
 		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
@@ -38,11 +38,15 @@ public class SearchService {
 			datasets = convertToNames(datasets, datasetNameMap);
 			meaning.setDatasets(datasets);
 
+			Long lexemeId = meaning.getLexemeId();
 			Long meaningId = meaning.getMeaningId();
+
 			List<Form> words = searchDbService.findConnectedWords(meaningId).into(Form.class);
 			meaning.setWords(words);
 
-			Long lexemeId = meaning.getLexemeId();
+			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
+			meaning.setDomains(domains);
+
 			List<Rection> rections = searchDbService.findConnectedRections(lexemeId).into(Rection.class);
 			meaning.setRections(rections);
 		});

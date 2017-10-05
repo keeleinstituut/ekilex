@@ -1,8 +1,9 @@
 package eki.ekilex.web.controller;
 
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
-import eki.ekilex.service.SearchService;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,46 +14,43 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
-import static java.util.Collections.emptyList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
+import eki.ekilex.service.SearchService;
 
 @ConditionalOnWebApplication
 @Controller
-public class SearchController {
+public class TermSearchController {
 
-	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
 
 	@Autowired
 	private SearchService search;
 
-	@GetMapping("/search")
-	public String search(
+	@GetMapping("/termsearch")
+	public String termSearch(
 			@RequestParam(required = false) String searchFilter,
-			@RequestParam(name = "dicts", required = false) List<String> selectedDatasets,
 			Model model) {
 
-		logger.debug("doing search : {}, {}", searchFilter, selectedDatasets);
+		logger.debug("Searching by : \"{}\"", searchFilter);
+
 		if (isNotBlank(searchFilter)) {
 			List<Word> words = search.findWords(searchFilter);
 			model.addAttribute("wordsFoundBySearch", words);
 			model.addAttribute("searchFilter", searchFilter);
 		}
-		model.addAttribute("selectedDatasets", selectedDatasets == null ? emptyList() : selectedDatasets);
-		// TODO: remove comments when datasets are going to be used in searches
-		// model.addAttribute("datasets", search.getDatasets().entrySet());
-		return "search";
+
+		return "termsearch";
 	}
 
-	@GetMapping("/details/{formId}")
+	@GetMapping("/termdetails/{formId}")
 	public String details(@PathVariable("formId") Long formId, Model model) {
 
-		logger.debug("doing details : {}", formId);
+		logger.debug("Retrieving details by form : {}", formId);
 		WordDetails details = search.findWordDetails(formId);
 		model.addAttribute("detailsName", formId + "_details");
 		model.addAttribute("details", details);
-		return "search :: details";
+		return "termsearch :: details";
 	}
 
 }

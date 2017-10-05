@@ -51,7 +51,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		final String domainOrigin = "lenoch";
 		final String defaultRection = "-";
 		final String defaultWordMorphCode = "SgN";
-		final int defaultHomonymNr = 1;
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -67,6 +66,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		Element languageNode, termNode, usageNode, definitionNode, lexemeTypeNode;
 		String languageType, lang, word, usage, definition, lexemeType;
 		Long wordId, meaningId, lexemeId, rectionId;
+		int homonymNr;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -104,7 +104,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					termNode = (Element) termGroupNode.selectSingleNode(termExp);
 					word = termNode.getTextTrim();
 
-					wordId = saveWord(word, null, null, defaultHomonymNr, defaultWordMorphCode, lang, wordDuplicateCount);
+					homonymNr = getWordMaxHomonymNr(word, dataLang);
+					homonymNr++;
+					wordId = saveWord(word, null, null, homonymNr, defaultWordMorphCode, lang, wordDuplicateCount);
 					lexemeId = createLexeme(wordId, meaningId, null, null, null, datasets);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();

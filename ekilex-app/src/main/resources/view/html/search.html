@@ -49,8 +49,8 @@
           <td class="w-100">
             <span th:text="${word.value}">vorm 1</span>
             <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
-            <button type="button" class="btn btn-link" th:data-id="${word.id}" name="details">Detailid</button>
-            <div th:name="${word.id}+'_details'"></div>
+            <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">Detailid</button>
+            <div th:name="${word.formId}+'_details'"></div>
           </td>
         </tr>
       </table>

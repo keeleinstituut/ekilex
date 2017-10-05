@@ -31,6 +31,14 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "level3")
 	private Integer level3;
 
+	@Column(name = "lexeme_type_code")
+	private String lexemeTypeCode;
+
+	@Column(name = "lexeme_type_value")
+	private String lexemeTypeValue;
+
+	private List<Classifier> domains;
+
 	private List<Form> words;
 
 	private List<Rection> rections;
@@ -102,6 +110,30 @@ public class Meaning extends AbstractDataObject {
 
 	public void setLevel3(Integer level3) {
 		this.level3 = level3;
+	}
+
+	public String getLexemeTypeCode() {
+		return lexemeTypeCode;
+	}
+
+	public void setLexemeTypeCode(String lexemeTypeCode) {
+		this.lexemeTypeCode = lexemeTypeCode;
+	}
+
+	public String getLexemeTypeValue() {
+		return lexemeTypeValue;
+	}
+
+	public void setLexemeTypeValue(String lexemeTypeValue) {
+		this.lexemeTypeValue = lexemeTypeValue;
+	}
+
+	public List<Classifier> getDomains() {
+		return domains;
+	}
+
+	public void setDomains(List<Classifier> domains) {
+		this.domains = domains;
 	}
 
 	public List<Form> getWords() {

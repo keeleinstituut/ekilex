@@ -23,7 +23,7 @@ public class EstermLoader {
 			applicationContext.registerShutdownHook();
 
 			//  /projects/eki/data/dictionaries/esterm_reformat.xml
-			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
+			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
 			String[] datasets = new String[] {"est"};
 

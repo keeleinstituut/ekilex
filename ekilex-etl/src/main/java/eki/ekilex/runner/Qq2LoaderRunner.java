@@ -27,8 +27,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(Qq2LoaderRunner.class);
 
-	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
-
 	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
 
 	@Autowired
@@ -37,8 +35,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> morphToMorphMap;
 
 	private Map<String, String> morphToDerivMap;
-
-	private String sqlSelectWordMaxHomonym;
 
 	@Override
 	void initialise() throws Exception {
@@ -63,9 +59,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				morphToDerivMap.put(sourceMorphCode, destinDerivCode);
 			}
 		}
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
-		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -368,16 +361,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			rectionObj.put("value", rection);
 			rectionObjs.add(rectionObj);
 		}
-	}
-
-	private int getWordMaxHomonymNr(String word, String lang) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word", word);
-		tableRowParamMap.put("lang", lang);
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordMaxHomonym, tableRowParamMap);
-		int homonymNr = (int) tableRowValueMap.get("max_homonym_nr");
-		return homonymNr;
 	}
 
 	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId) throws Exception {
