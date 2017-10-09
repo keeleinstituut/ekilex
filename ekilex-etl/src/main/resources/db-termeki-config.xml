@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
+	">
+
+    <bean id="dataSourceTermeki" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="${db.termeki.url}" />
+        <property name="username" value="${db.termeki.usr}" />
+        <property name="password" value="${db.termeki.psw}" />
+    </bean>
+
+    <bean id="jdbcTemplateTermeki" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
+        <constructor-arg ref="dataSourceTermeki" />
+    </bean>
+
+    <bean id="sessionFactoryTermeki" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceTermeki" />
+        <property name="hibernateProperties">
+            <value>
+                hibernate.dialect=org.hibernate.dialect.MySQLDialect
+                hibernate.show_sql=false
+                hibernate.format_sql=true
+                hibernate.use_sql_comments=false
+                hibernate.generate_statistics=false
+                hibernate.jdbc.batch_size=200000
+                hibernate.connection.autocommit=false
+                hibernate.connection.pool_size=10
+                query.substitutions=true 1, false 0, yes 'Y', no 'N'
+            </value>
+        </property>
+    </bean>
+
+    <bean id="transactionManagerTermeki" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactoryTermeki" />
+        <qualifier value="Termeki"/>
+    </bean>
+
+    <tx:annotation-driven transaction-manager="transactionManagerTermeki"/>
+
+</beans>
