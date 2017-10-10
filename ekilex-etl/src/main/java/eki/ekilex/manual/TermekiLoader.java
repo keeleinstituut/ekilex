@@ -19,7 +19,7 @@ public class TermekiLoader {
 
 		try {
 			applicationContext.registerShutdownHook();
-			runner.execute();
+			runner.execute(2633923, "vlk");  // <- Veterinaarmeditsiin ja loomakasvatus
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
