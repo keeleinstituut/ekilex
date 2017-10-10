@@ -1,6 +1,5 @@
 package eki.ekilex.runner;
 
-import eki.common.service.db.BasicDbService;
 import eki.ekilex.service.TermekiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,25 +7,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import static eki.common.constant.TableName.DATASET;
-
 @Component
-public class TermekiRunner {
+public class TermekiRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiRunner.class);
 
 	@Autowired
 	private TermekiService termekiService;
 
-	@Autowired
-	private BasicDbService basicDbService;
-
 	public void execute(Integer baseId, String dataset) throws Exception {
 
-		logger.debug("Connecting to Termeki...");
-		hasTermDatabaseAndIsKnownDataset(baseId, dataset);
+		if (!hasTermDatabaseAndIsKnownDataset(baseId, dataset)) {
+			return;
+		}
+		logger.debug("Start import from Termeki...");
+		List<Map<String, Object>> terms = termekiService.getTerms(baseId);
+		logger.info("Found {} terms.", terms.size());
+		List<Map<String, Object>> definitions = termekiService.getDefinitions(baseId);
+		logger.info("Found {} definitions.", definitions.size());
 		logger.debug("Done.");
 	}
 
@@ -44,4 +45,9 @@ public class TermekiRunner {
 		}
 		return selectedDataset != null;
 	}
+
+	@Override
+	void initialise() throws Exception {
+	}
+
 }
