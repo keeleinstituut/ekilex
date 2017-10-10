@@ -2,7 +2,6 @@ SELECT
   t.concept_id, t.term, t.lang
 FROM
   termeki_concepts c,
-  termeki_termbases b,
   termeki_terms t
 WHERE
   c.termbase_id = :baseId
