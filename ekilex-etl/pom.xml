@@ -174,7 +174,6 @@
 		<dependency>
 			<groupId>eki.ekilex</groupId>
 			<artifactId>ekilex-rus-morph</artifactId>
-			<version>1.0.0</version>
 		</dependency>
 		<!-- commons -->
 		<dependency>
