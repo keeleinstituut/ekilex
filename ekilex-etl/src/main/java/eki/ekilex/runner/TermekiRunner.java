@@ -5,6 +5,7 @@ import eki.ekilex.service.TermekiService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
@@ -13,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Component
+@ConditionalOnBean(name = "dataSourceTermeki")
 public class TermekiRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiRunner.class);

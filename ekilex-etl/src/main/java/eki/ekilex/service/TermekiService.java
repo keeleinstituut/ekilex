@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Service
+@ConditionalOnBean(name = "dataSourceTermeki")
 public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_TERMS = "sql/select_termeki_terms.sql";
