@@ -122,9 +122,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<killAfter>-1</killAfter>
 							<mainClass>eki.ekilex.manual.Qq2Loader</mainClass>
-							<argLine>-Xmx4096m</argLine>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -156,9 +154,7 @@
 							</execution>
 						</executions>
 						<configuration>
-							<killAfter>-1</killAfter>
 							<mainClass>eki.ekilex.manual.EstermLoader</mainClass>
-							<argLine>-Xmx4096m</argLine>
 						</configuration>
 					</plugin>
 				</plugins>
@@ -198,14 +194,6 @@
 			<artifactId>commons-math3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-pool2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-dbcp2</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
@@ -216,6 +204,10 @@
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.zaxxer</groupId>
+			<artifactId>HikariCP</artifactId>
 		</dependency>
 		<!-- web -->
 		<dependency>
@@ -310,6 +302,10 @@
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
 		</dependency>
 		<!-- logging -->
 		<dependency>
