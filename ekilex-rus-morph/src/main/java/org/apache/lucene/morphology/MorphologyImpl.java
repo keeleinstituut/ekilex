@@ -92,7 +92,8 @@ public class MorphologyImpl implements Morphology {
 		int[] ints = decoderEncoder.encodeToArray(revertWord(s));
 		int ruleId = findRuleId(ints);
 		for (Heuristic h : rules[rulesId[ruleId]]) {
-			result.add(h.transformWord(s).append("|").append(grammarInfo[h.getFormMorphInfo()]).toString());
+			String morphInfo = h.transformWord(s).append("|").append(grammarInfo[h.getFormMorphInfo()]).toString();
+			result.add(morphInfo);
 		}
 		return result;
 	}
@@ -103,7 +104,8 @@ public class MorphologyImpl implements Morphology {
 		int[] ints = decoderEncoder.encodeToArray(revertWord(s));
 		int ruleId = findRuleId(ints);
 		for (Heuristic h : rules[rulesId[ruleId]]) {
-			result.add(h.transformWord(s).toString());
+			String lemma = h.transformWord(s).toString().toLowerCase();
+			result.add(lemma);
 		}
 		return result;
 	}
