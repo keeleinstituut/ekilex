@@ -205,12 +205,23 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return rectionId;
 	}
 
-	protected void createUsage(Long rectionId, String usage) throws Exception {
+	protected Long createUsage(Long rectionId, String usage) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("rection_id", rectionId);
 		tableRowParamMap.put("value", usage);
-		basicDbService.create(USAGE, tableRowParamMap);
+		Long usageId = basicDbService.create(USAGE, tableRowParamMap);
+		return usageId;
+	}
+
+	protected Long createUsageTranslation(Long usageId, String translation, String lang) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("usage_id", usageId);
+		tableRowParamMap.put("value", translation);
+		tableRowParamMap.put("lang", lang);
+		Long usageTranslationId = basicDbService.create(USAGE_TRANSLATION, tableRowParamMap);
+		return usageTranslationId;
 	}
 
 	protected void createMeaningDomain(Long meaningId, String domainCode, String domainOrigin) throws Exception {

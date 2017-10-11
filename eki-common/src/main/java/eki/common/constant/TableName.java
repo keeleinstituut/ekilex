@@ -24,6 +24,7 @@ public interface TableName {
 	public static final String RECTION = "rection";
 	public static final String FORM = "form";
 	public static final String USAGE = "usage";
+	public static final String USAGE_TRANSLATION = "usage_translation";
 	public static final String GRAMMAR = "grammar";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";

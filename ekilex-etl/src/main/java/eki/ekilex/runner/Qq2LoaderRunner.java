@@ -11,6 +11,8 @@ import javax.transaction.Transactional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.lucene.morphology.LuceneMorphology;
+import org.apache.lucene.morphology.russian.RussianWordProcessing;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -21,6 +23,8 @@ import org.springframework.stereotype.Component;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageTranslation;
 
 @Component
 public class Qq2LoaderRunner extends AbstractLoaderRunner {
@@ -31,6 +35,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	@Autowired
 	private BasicDbService basicDbService;
+
+	@Autowired
+	private LuceneMorphology russianMorphology;
 
 	private Map<String, String> morphToMorphMap;
 
@@ -82,6 +89,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		final String definitionValueExp = "x:xd";
 		final String wordMatchRectionExp = "x:xr";
 		final String synonymExp = "x:syn";
+		final String usageGroupExp = "x:np/x:ng";
 
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
@@ -102,9 +110,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		Map<Long, List<Map<String, Object>>> wordIdRectionMap = new HashMap<>();
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
+		List<Usage> usages;
 
 		Element headerNode, contentNode;
-		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes, definitionValueNodes, wordMatchNodes, synonymNodes;
+		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
+		List<Element> definitionValueNodes, wordMatchNodes, synonymNodes, usageGroupNodes;
 		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode;
 
 		List<Long> newWordIds, synonymLevel1WordIds, synonymLevel2WordIds;
@@ -115,6 +125,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
+		Count ambiguousUsageTranslationMatchCount = new Count();
+		Count missingUsageTranslationMatchCount = new Count();
+		Count successfulUsageTranslationMatchCount = new Count();
+		Count singleUsageTranslationMatchCount = new Count();
 
 		int articleCounter = 0;
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -189,7 +203,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel1Str = meaningGroupNode.attributeValue(lexemeLevel1Attr);
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
+				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
+				usages = extractUsagesAndTranslations(usageGroupNodes);
+
 				meaningNodes = meaningGroupNode.selectNodes(meaningExp);//x:tg
+				boolean isSingleMeaning = meaningNodes.size() == 1;
+
 				lexemeLevel2 = 0;
 
 				for (Element meaningNode : meaningNodes) {
@@ -201,6 +220,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					synonymLevel2WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
 
 					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
+					boolean isSingleWordMatch = wordMatchNodes.size() == 1;
+					boolean isAbsoluteSingleMeaning = isSingleMeaning && isSingleWordMatch;
 
 					for (Element wordMatchNode : wordMatchNodes) {
 
@@ -244,10 +265,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 								lexemeDuplicateCount.increment();
 							} else {
 
-								// word match lexeme rections
-								createRections(wordIdRectionMap, lexemeId, newWordId);
+								// new word lexeme rections, usages, usage translations
+								createRectionsAndUsagesAndTranslations(
+										wordIdRectionMap, lexemeId, newWordId, wordMatch, usages, isAbsoluteSingleMeaning,
+										ambiguousUsageTranslationMatchCount, missingUsageTranslationMatchCount,
+										successfulUsageTranslationMatchCount, singleUsageTranslationMatchCount);
 
-								// word match lexeme grammars
+								// new word lexeme grammars
 								createGrammars(wordIdGrammarMap, lexemeId, newWordId);
 							}
 						}
@@ -271,12 +295,17 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
-				logger.debug("{} articles iterated", articleCounter);
+				int progressPercent = articleCounter / progressIndicator;
+				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
 		}
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
+		logger.debug("Found {} ambiguous usage translation matches", ambiguousUsageTranslationMatchCount);
+		logger.debug("Found {} missing usage translation matches", missingUsageTranslationMatchCount);
+		logger.debug("Found {} successful usage translation matches", successfulUsageTranslationMatchCount);
+		logger.debug("Found {} single usage translation matches", singleUsageTranslationMatchCount);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
@@ -363,6 +392,77 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private List<Usage> extractUsagesAndTranslations(List<Element> usageGroupNodes) {
+
+		final String usageExp = "x:n";
+		final String usageTranslationExp = "x:qnp/x:qng";
+		final String usageTranslationValueExp = "x:qn";
+
+		List<Usage> usages = new ArrayList<>();
+
+		Usage newUsage;
+		UsageTranslation usageTranslation;
+		List<UsageTranslation> usageTranslations;
+		List<String> lemmatisedTokens;
+		String usageValue;
+		String usageTranslationLang;
+		Element usageTranslationValueNode;
+		String usageTranslationValue;
+		String[] usageTranslationParts;
+
+		for (Element usageGroupNode : usageGroupNodes) {
+
+			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
+			List<Element> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);
+
+			for (Element usageNode : usageNodes) {
+				usageValue = usageNode.getTextTrim();
+				newUsage = new Usage();
+				newUsage.setValue(usageValue);
+				usages.add(newUsage);
+			}
+
+			usageTranslations = new ArrayList<>();
+			for (Element usageTranslationNode : usageTranslationNodes) {
+				usageTranslationLang = usageTranslationNode.attributeValue("lang");
+				usageTranslationLang = unifyLang(usageTranslationLang);
+				if (StringUtils.equalsIgnoreCase(usageTranslationLang, "rus")) {
+					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
+					usageTranslationValue = usageTranslationValueNode.getTextTrim();
+					lemmatisedTokens = new ArrayList<>();
+					usageTranslationParts = StringUtils.split(usageTranslationValue, ' ');
+					for (String usageTranslationPart : usageTranslationParts) {
+						usageTranslationPart = RussianWordProcessing.stripIllegalLetters(usageTranslationPart);
+						usageTranslationPart = StringUtils.lowerCase(usageTranslationPart);
+						if (StringUtils.isBlank(usageTranslationPart)) {
+							continue;
+						}
+						List<String> usageTranslationPartWords = russianMorphology.getLemmas(usageTranslationPart);
+						lemmatisedTokens.addAll(usageTranslationPartWords);
+						/*
+						if (usageTranslationPartWords.size() > 1) {
+							logger.debug("There are more than one lemmas for word \"{}\" in \"{}\" : \"{}\"", usageTranslationPart, usageTranslationValue, usageTranslationPartWords);
+						}
+						*/
+					}
+					usageTranslation = new UsageTranslation();
+					usageTranslation.setLang(usageTranslationLang);
+					usageTranslation.setValue(usageTranslationValue);
+					usageTranslation.setLemmatisedTokens(lemmatisedTokens);
+					usageTranslations.add(usageTranslation);
+				} else {
+					//now what?!
+					logger.warn("Unsupported usage translation language \"{}\"", usageTranslationLang);
+				}
+			}
+
+			for (Usage usage : usages) {
+				usage.setUsageTranslations(usageTranslations);
+			}
+		}
+		return usages;
+	}
+
 	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId) throws Exception {
 
 		List<Map<String, Object>> grammarObjs = wordIdGrammarMap.get(wordId);
@@ -374,13 +474,69 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void createRections(Map<Long, List<Map<String, Object>>> wordIdRectionMap, Long lexemeId, Long wordId) throws Exception {
+	private void createRectionsAndUsagesAndTranslations(
+			Map<Long, List<Map<String, Object>>> wordIdRectionMap,
+			Long lexemeId, Long wordId, String wordMatch,
+			List<Usage> usages, boolean isAbsoluteSingleMeaning,
+			Count ambiguousUsageTranslationMatchCount,
+			Count missingUsageTranslationMatchCount,
+			Count successfulUsageTranslationMatchCount,
+			Count singleUsageTranslationMatchCount) throws Exception {
 
 		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
+
 		if (CollectionUtils.isNotEmpty(rectionObjs)) {
+
+			List<UsageTranslation> usageTranslations;
+			List<Long> rectionIds = new ArrayList<>();
+
 			for (Map<String, Object> rectionObj : rectionObjs) {
 				rectionObj.put("lexeme_id", lexemeId);
-				basicDbService.createIfNotExists(RECTION, rectionObj);
+				Long rectionId = basicDbService.createIfNotExists(RECTION, rectionObj);
+				if (rectionId != null) {
+					rectionIds.add(rectionId);
+				}
+			}
+
+			if (isAbsoluteSingleMeaning) {
+				for (Usage usage : usages) {
+					usageTranslations = usage.getUsageTranslations();
+					for (Long rectionId : rectionIds) {
+						Long usageId = createUsage(rectionId, usage.getValue());
+						for (UsageTranslation usageTranslation : usageTranslations) {
+							createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
+						}
+					}
+				}
+				singleUsageTranslationMatchCount.increment();
+			} else {
+				int usageTranslationMatchCount = 0;
+				for (Usage usage : usages) {
+					usageTranslations = usage.getUsageTranslations();
+					boolean isUsageTranslationMatch = false;
+					for (UsageTranslation usageTranslation : usageTranslations) {
+						if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
+							isUsageTranslationMatch = true;
+							break;
+						}
+					}
+					if (isUsageTranslationMatch) {
+						usageTranslationMatchCount++;
+						for (Long rectionId : rectionIds) {
+							Long usageId = createUsage(rectionId, usage.getValue());
+							for (UsageTranslation usageTranslation : usageTranslations) {
+								createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
+							}
+						}
+					}
+				}
+				if (usageTranslationMatchCount == 0) {
+					missingUsageTranslationMatchCount.increment();
+				} else if (usageTranslationMatchCount == 1) {
+					successfulUsageTranslationMatchCount.increment();
+				} else if (usageTranslationMatchCount > 1) {
+					ambiguousUsageTranslationMatchCount.increment();
+				}
 			}
 		}
 	}

@@ -23,7 +23,7 @@ public class XmlAnalyser {
 		try {
 			applicationContext.registerShutdownHook();
 
-			//  /projects/eki/data/dictionaries/qq2/qq21.xml
+			//  /projects/eki/data/dictionaries/qq2/qq22.xml
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
 			String xPathExpressionsStr = ConsolePromptUtil.promptStringValue("X-Path expressions? (/first/path,/second/path,...)");
 			String[] xPathExpressions = StringUtils.split(xPathExpressionsStr, ',');

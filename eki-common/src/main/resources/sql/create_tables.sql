@@ -1,8 +1,8 @@
 drop table if exists lex_relation;
 drop table if exists grammar;
+drop table if exists usage_translation;
 drop table if exists usage;
 drop table if exists rection;
-drop table if exists lexeme_domain;--remove later
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
@@ -340,6 +340,16 @@ create table usage
   value text not null
 );
 alter sequence usage_id_seq restart with 10000;
+
+-- kasutusnäite tõlge
+create table usage_translation
+(
+  id bigserial primary key,
+  usage_id bigint references usage(id) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null
+);
+alter sequence usage_translation_id_seq restart with 10000;
 
 -- gramm.kasutusinfo
 create table grammar
