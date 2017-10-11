@@ -7,11 +7,15 @@
 	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
 	">
 
-    <bean id="dataSourceTermeki" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+    <bean id="hikariConfigTermeki" class="com.zaxxer.hikari.HikariConfig">
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <property name="url" value="${db.termeki.url}" />
+        <property name="jdbcUrl" value="${db.termeki.url}" />
         <property name="username" value="${db.termeki.usr}" />
         <property name="password" value="${db.termeki.psw}" />
+    </bean>
+
+    <bean id="dataSourceTermeki" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+        <constructor-arg ref="hikariConfigTermeki" />
     </bean>
 
     <bean id="jdbcTemplateTermeki" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
@@ -28,7 +32,6 @@
                 hibernate.use_sql_comments=false
                 hibernate.generate_statistics=false
                 hibernate.jdbc.batch_size=200000
-                hibernate.connection.autocommit=false
                 hibernate.connection.pool_size=10
                 query.substitutions=true 1, false 0, yes 'Y', no 'N'
             </value>

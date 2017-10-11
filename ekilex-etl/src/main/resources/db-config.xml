@@ -4,14 +4,17 @@
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xsi:schemaLocation="
 	http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.3.xsd 
-	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd
-	">
+	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
 
-	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 		<property name="driverClassName" value="org.postgresql.Driver" />
-		<property name="url" value="${db.ekilex.url}" />
+		<property name="jdbcUrl" value="${db.ekilex.url}" />
 		<property name="username" value="${db.ekilex.usr}" />
 		<property name="password" value="${db.ekilex.psw}" />
+	</bean>
+
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
 	</bean>
 
 	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate">
@@ -28,7 +31,6 @@
 				hibernate.use_sql_comments=false
 				hibernate.generate_statistics=false
 				hibernate.jdbc.batch_size=200000
-				hibernate.connection.autocommit=false
 				hibernate.connection.pool_size=10
 				query.substitutions=true 1, false 0, yes 'Y', no 'N'
 			</value>

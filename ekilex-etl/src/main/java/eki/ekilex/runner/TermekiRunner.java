@@ -28,12 +28,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			return;
 		}
 		logger.debug("Start import from Termeki...");
+		long t1, t2;
+		t1 = System.currentTimeMillis();
+
 		List<Map<String, Object>> terms = termekiService.getTerms(baseId);
 		logger.info("Found {} terms.", terms.size());
 		List<Map<String, Object>> definitions = termekiService.getDefinitions(baseId);
 		logger.info("Found {} definitions.", definitions.size());
 		doImport(terms, definitions, dataset);
-		logger.debug("Done.");
+
+		t2 = System.currentTimeMillis();
+		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
 	@Transactional

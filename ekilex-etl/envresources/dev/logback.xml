@@ -31,6 +31,9 @@
 	<logger name="com.sun.common.util.logging" additivity="false">
 		<level value="warn" />
 	</logger>
+	<logger name="com.zaxxer">
+		<level value="warn" />
+	</logger>
 
 	<root>
 		<level value="debug" />
