@@ -1,5 +1,6 @@
 package eki.ekilex.manual;
 
+import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.runner.TermekiRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,11 @@ public class TermekiLoader {
 
 		try {
 			applicationContext.registerShutdownHook();
-			runner.execute(2633923, "vlk");  // <- Veterinaarmeditsiin ja loomakasvatus
+
+			Integer termbaseId = ConsolePromptUtil.promptIntValue("Numeric ID of the termbase in TERMEKI ?");
+			String ekilexCode = ConsolePromptUtil.promptStringValue("Dataset code in EKILEX ? (for example pol/lon/ett/...)");
+
+			runner.execute(termbaseId, ekilexCode);  // 2633923, "vlk"<- Veterinaarmeditsiin ja loomakasvatus
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {

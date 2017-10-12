@@ -73,6 +73,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			saveDomainAndLabel(code, name, parentCode, "termeki", language, dataset);
 		}
 
+		long count = 0;
 		for (Map<String, Object> term : terms) {
 			String language = unifyLang((String)term.get("lang"));
 			String word = (String)term.get("term");
@@ -91,7 +92,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 			Long meaningId = conceptMeanings.get(conceptId);
 			createLexeme(wordId, meaningId, 0, 0, 0, datasets);
+			if (++count % 100 == 0) {
+				System.out.print(".");
+			}
 		}
+		System.out.println();
 		logger.info("{} words imported", terms.size());
 		logger.info("{} duplicate words found", wordDuplicateCount.getValue());
 		logger.info("{} meanings created", conceptMeanings.size());
@@ -110,6 +115,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	}
 
 	private void sortSubjects(List<Map<String, Object>> subjects, int pos) {
+		if (subjects.isEmpty()) return;
 		if (subjects.get(pos).get("parent_id") != null) {
 			swapWithParent(subjects, pos);
 		}
