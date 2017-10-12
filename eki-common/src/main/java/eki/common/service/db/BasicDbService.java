@@ -134,4 +134,27 @@ public class BasicDbService extends AbstractDbService {
 		List<Map<String, Object>> results = jdbcTemplate.queryForList(sqlScript, paramMap);
 		return results;
 	}
+
+	public void createWithoutId(String tableName, Map<String, Object> paramMap) throws Exception {
+
+		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
+		List<String> paramNames = new ArrayList<>();
+		for (String fieldName : fieldNames) {
+			paramNames.add(":" + fieldName);
+		}
+
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("insert into ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" (");
+		sqlQueryBuf.append(StringUtils.join(fieldNames, ", "));
+		sqlQueryBuf.append(") values (");
+		sqlQueryBuf.append(StringUtils.join(paramNames, ", "));
+		sqlQueryBuf.append(")");
+
+		String sqlQueryStr = sqlQueryBuf.toString();
+
+		jdbcTemplate.update(sqlQueryStr, paramMap);
+	}
+
 }

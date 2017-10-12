@@ -7,6 +7,7 @@ public interface TableName {
 	// classifiers
 	public static final String LANG = "lang";
 	public static final String DOMAIN = "domain";
+	public static final String DOMAIN_LABEL = "domain_label";
 	public static final String REGISTER = "register";
 	public static final String POS = "pos";
 	public static final String DERIV = "deriv";

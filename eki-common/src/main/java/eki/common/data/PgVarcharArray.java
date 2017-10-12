@@ -3,6 +3,7 @@ package eki.common.data;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -12,6 +13,10 @@ public class PgVarcharArray implements java.sql.Array {
 
 	private final String[] stringArray;
 	private final String stringValue;
+
+	public PgVarcharArray(List<String> stringList) {
+		this(stringList == null ? null : (String[])stringList.toArray());
+	}
 
 	public PgVarcharArray(String[] stringArray) {
 		this.stringArray = stringArray;

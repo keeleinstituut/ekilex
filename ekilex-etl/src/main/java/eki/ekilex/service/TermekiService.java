@@ -26,11 +26,15 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_DEFINITIONS = "sql/select_termeki_definitions.sql";
 
+	private static final String SQL_SELECT_SUBJECTS = "sql/select_termeki_subjects.sql";
+
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
 	private String sqlSelectTerms;
 
 	private String sqlSelectDefinitions;
+
+	private String sqlSelectSubjects;
 
 	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
@@ -40,6 +44,7 @@ public class TermekiService implements InitializingBean {
 
 		sqlSelectTerms = getContent(SQL_SELECT_TERMS);
 		sqlSelectDefinitions = getContent(SQL_SELECT_DEFINITIONS);
+		sqlSelectSubjects = getContent(SQL_SELECT_SUBJECTS);
 	}
 
 	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
@@ -70,6 +75,12 @@ public class TermekiService implements InitializingBean {
 
 		Map<String, Object> params = constructParameters(baseId);
 		return queryList(sqlSelectDefinitions, params);
+	}
+
+	public List<Map<String, Object>> getSubjects(Integer baseId) {
+
+		Map<String, Object> params = constructParameters(baseId);
+		return queryList(sqlSelectSubjects, params);
 	}
 
 	private Map<String, Object> constructParameters(Integer baseId) {
