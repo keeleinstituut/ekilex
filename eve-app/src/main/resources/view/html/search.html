@@ -75,7 +75,7 @@
           </span>
           <br th:if="${not #lists.isEmpty(meaning.rections)}"/>
           <span th:each="word,wordIter : ${meaning.words}">
-            <a style="color: #1e7e34" class="mr-2" th:href="@{/search?searchFilter=__${word.value}__}" th:text="${word.value}"></a>
+            <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
             <span th:if="${wordIter.index < wordIter.size - 1}">|&nbsp;</span>
           </span>
           <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>

@@ -96,7 +96,7 @@
             </div>
             <ul>
               <li th:each="word,wordIter : ${meaning.words}">
-                <a style="color: #1e7e34" class="mr-2" th:href="@{/termsearch?searchFilter=__${word.value}__}">
+                <a style="color: #1e7e34" class="mr-2" th:href="@{'/termsearch?searchFilter=' + ${word.value}}">
                   <span th:text="${word.value}"></span>
                   (
                   <span th:text="${word.lang}"></span>
