@@ -1,11 +1,11 @@
 // add on click handlers to details buttons in search result table
-function initialize(urlPrefix) {
+function initialize() {
     var detailsDivs = $('#results').find('[name="details"]');
     detailsDivs.on('click', function (e) {
         var id = $(e.target).data('id');
         var detailsDiv = $('[name="' + id + '_details"]');
         if (detailsDiv.html() === '') {
-            $.get(urlPrefix + 'details/' + id).done(function (data) {
+            $.get(applicationUrl + 'details/' + id).done(function (data) {
                 detailsDiv.replaceWith(data);
             }).fail(function (data) {
                 console.log(data);
@@ -39,6 +39,21 @@ function initialize(urlPrefix) {
 function playSound(soundSource) {
     var music = new Audio(soundSource);
     music.play();
+}
+
+function generateVoiceAndPlay(e) {
+    var elem = $(e);
+    if (elem.data('urlToSound') != undefined) {
+        playSound(elem.data('urlToSound'));
+        return;
+    }
+    $.post(applicationUrl + 'generate_voice', {'words': elem.data('words')}).done(function(urlToSound) {
+        elem.data('urlToSound', urlToSound);
+        playSound(urlToSound);
+    }).fail(function() {
+        console.log(data);
+        alert("Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.");
+    })
 }
 
 var audio_context;

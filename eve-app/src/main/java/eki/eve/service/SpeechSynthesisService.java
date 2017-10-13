@@ -44,27 +44,35 @@ public class SpeechSynthesisService {
 	@Value("${speech.synthesizer.service.url:}")
 	private String synthesizerUrl;
 
-	public String urlToSoundSource(Word word) {
-		if (!isEnabled() || !"est".equals(word.getLanguage())) {
+	public String urlToSoundSource(String words) {
+		if (!isEnabled()) {
 			return null;
 		}
 		if (isNotBlank(synthesizerPath)) {
-			return urlFromIntegratedSpeechSynthesizer(word);
+			return urlFromIntegratedSpeechSynthesizer(words);
 		}
-		return urlFromEkiPublicService(word);
+		return urlFromEkiPublicService(words);
+	}
+
+	public String urlToSoundSource(Word word) {
+		if (!"est".equals(word.getLanguage())) {
+			return null;
+		}
+		return urlToSoundSource(word.getValue());
 	}
 
 	public boolean isEnabled() {
 		return isNotBlank(synthesizerPath) || isNotBlank(synthesizerUrl);
 	}
 
-	private String urlFromIntegratedSpeechSynthesizer(Word word) {
+	private String urlFromIntegratedSpeechSynthesizer(String words) {
+
 		String fileId = CodeGenerator.generateUniqueId();
 		String sourceFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".txt";
 		String wavFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".wav";
 		String mp3File = System.getProperty("java.io.tmpdir") + "/" + fileId + ".mp3";
 		try {
-			Files.write(Paths.get(sourceFile), word.getValue().getBytes());
+			Files.write(Paths.get(sourceFile), words.getBytes());
 			String command = String.format("bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.5", wavFile, sourceFile);
 			if (!execute(command)) {
 				fileId = null;
@@ -82,10 +90,11 @@ public class SpeechSynthesisService {
 		return fileId == null ? null : contextPath + "/files/" + fileId;
 	}
 
-	private String urlFromEkiPublicService(Word word) {
+	private String urlFromEkiPublicService(String words) {
+
 		URI url= UriComponentsBuilder.fromUriString(synthesizerUrl)
 				.queryParam("haal", 15)  // 14 <- female voice
-				.queryParam("tekst", word.getValue())
+				.queryParam("tekst", words)
 				.build()
 				.toUri();
 		String responseAsString = doGetRequest(url);
@@ -98,6 +107,7 @@ public class SpeechSynthesisService {
 	}
 
 	private String doGetRequest(URI url) {
+
 		HttpHeaders headers = new HttpHeaders();
 
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
@@ -108,6 +118,7 @@ public class SpeechSynthesisService {
 	}
 
 	private boolean execute(String command) throws IOException, InterruptedException {
+
 		ProcessBuilder builder = new ProcessBuilder();
 		builder.command("sh", "-c", command)
 				.directory(new File(synthesizerPath))
@@ -120,6 +131,7 @@ public class SpeechSynthesisService {
 	}
 
 	private static class StreamConsumer implements Runnable {
+
 		private InputStream inputStream;
 		private Consumer<String> consumer;
 
