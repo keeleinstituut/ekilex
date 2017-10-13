@@ -73,7 +73,7 @@ public class SpeechSynthesisService {
 		String mp3File = System.getProperty("java.io.tmpdir") + "/" + fileId + ".mp3";
 		try {
 			Files.write(Paths.get(sourceFile), words.getBytes());
-			String command = String.format("bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.5", wavFile, sourceFile);
+			String command = String.format("bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.1", wavFile, sourceFile);
 			if (!execute(command)) {
 				fileId = null;
 			} else {
