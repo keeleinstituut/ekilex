@@ -47,10 +47,14 @@ function generateVoiceAndPlay(e) {
         playSound(elem.data('urlToSound'));
         return;
     }
+    var content = elem.html();
+    elem.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
     $.post(applicationUrl + 'generate_voice', {'words': elem.data('words')}).done(function(urlToSound) {
         elem.data('urlToSound', urlToSound);
+        elem.html(content);
         playSound(urlToSound);
     }).fail(function() {
+        elem.html(content);
         console.log(data);
         alert("Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.");
     })
