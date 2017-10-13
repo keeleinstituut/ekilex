@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eki.eve.data.Definition;
 import org.jooq.Record4;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,6 +43,9 @@ public class SearchService {
 			Long meaningId = meaning.getMeaningId();
 			List<Form> words = searchDbService.findConnectedWords(meaningId).into(Form.class);
 			meaning.setWords(words);
+
+			List<Definition> definitions = searchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+			meaning.setDefinitions(definitions);
 
 			Long lexemeId = meaning.getLexemeId();
 			List<Rection> rections = searchDbService.findConnectedRections(lexemeId).into(Rection.class);

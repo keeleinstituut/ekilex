@@ -145,4 +145,13 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
+	public Result<Record2<String, String>> findMeaningDefinitions(Long meaningId) {
+		return create
+				.select(DEFINITION.LANG, DEFINITION.VALUE)
+				.from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.orderBy(DEFINITION.ID)
+				.fetch();
+	}
+
 }

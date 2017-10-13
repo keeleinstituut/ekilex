@@ -68,7 +68,8 @@
             (
             <span th:each="usage,usageIter : ${rection.usages}">
               <span th:text="${usage}"></span>
-              <a href="javascript:void(0)" class="badge badge-info" th:data-words="${usage}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
+              <a href="javascript:void(0)" class="badge badge-info"
+                 th:data-words="${usage}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
               <span th:unless="${usageIter.last}">,</span>
             </span>
             )
@@ -82,10 +83,11 @@
           <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
             <th:block th:each="definition : ${meaning.definitions}">
-              <th:block th:unless="${#strings.isEmpty(definition)}">
-                <li th:text="${definition}"></li>
-                <a href="javascript:void(0)" class="badge badge-info" th:data-words="${definition}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
-              </th:block>
+              <li>
+                <span th:text="${definition.value}"></span>
+                <a href="javascript:void(0)" class="badge badge-info"
+                   th:if="${definition.language == 'est'}" th:data-words="${definition.value}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
+              </li>
             </th:block>
           </ul>
         </th:block>

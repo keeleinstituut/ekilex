@@ -39,8 +39,7 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "datasets")
 	private List<String> datasets;
 
-	@Column(name = "definitions")
-	private List<String> definitions;
+	private List<Definition> definitions;
 
 	public Meaning() {
 	}
@@ -129,11 +128,11 @@ public class Meaning extends AbstractDataObject {
 		this.datasets = datasets;
 	}
 
-	public List<String> getDefinitions() {
+	public List<Definition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<String> definitions) {
+	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
 	}
 }
