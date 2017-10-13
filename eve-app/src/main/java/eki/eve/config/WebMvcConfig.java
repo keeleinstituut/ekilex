@@ -84,6 +84,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
 		registry.addResourceHandler("/view/css/**").addResourceLocations("classpath:/view/css/");
 		registry.addResourceHandler("/view/js/**").addResourceLocations("classpath:/view/js/");
 		registry.addResourceHandler("/view/img/**").addResourceLocations("classpath:/view/img/");
+		registry.addResourceHandler("/view/fonts/**").addResourceLocations("classpath:/view/fonts/");
 	}
 
 	@Bean
