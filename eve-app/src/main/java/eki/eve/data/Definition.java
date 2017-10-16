@@ -9,18 +9,18 @@ public class Definition extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "value")
+	private String value;
+
+	@Column(name = "lang")
+	private String language;
+
 	public Definition() {
 	}
 
 	public Definition(Consumer<Definition> builder) {
 		builder.accept(this);
 	}
-
-	@Column(name = "value")
-	private String value;
-
-	@Column(name = "lang")
-	private String language;
 
 	public String getValue() {
 		return value;
