@@ -18,6 +18,10 @@ public class Count extends AbstractDataObject {
 		this.value++;
 	}
 
+	public void increment(int byMuch) {
+		this.value += byMuch;
+	}
+
 	public int getValue() {
 		return value;
 	}

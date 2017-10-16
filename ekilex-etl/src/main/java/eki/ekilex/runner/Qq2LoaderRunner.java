@@ -25,6 +25,8 @@ import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
 
 @Component
 public class Qq2LoaderRunner extends AbstractLoaderRunner {
@@ -33,11 +35,17 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
 
+	private static final String REPORT_MISSING_USAGE_MEANING_MATCH = "missing_usage_meaning_match";
+
+	private static final String REPORT_AMBIGUOUS_USAGE_MEANING_MATCH = "ambiguous_usage_meaning_match";
+
 	@Autowired
 	private BasicDbService basicDbService;
 
 	@Autowired
 	private LuceneMorphology russianMorphology;
+
+	private ReportComposer reportComposer;
 
 	private Map<String, String> morphToMorphMap;
 
@@ -45,6 +53,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
+
+		reportComposer = new ReportComposer("qq2 load report", REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH);
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
@@ -69,7 +79,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, String[] datasets) throws Exception {
+	public void execute(String dataXmlFilePath, String dataLang, String[] datasets, boolean doReports) throws Exception {
 
 		logger.debug("Starting loading QQ2...");
 
@@ -117,14 +127,17 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<Element> definitionValueNodes, wordMatchNodes, synonymNodes, usageGroupNodes;
 		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode;
 
-		List<Long> newWordIds, synonymLevel1WordIds, synonymLevel2WordIds;
+		List<Word> newWords, wordMatches;
+		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
 		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
-		Long wordId, meaningId, lexemeId;
+		Long wordId, newWordId, meaningId, lexemeId;
+		Word wordObj;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
+		Count missingUsageGroupCount = new Count();
 		Count ambiguousUsageTranslationMatchCount = new Count();
 		Count missingUsageTranslationMatchCount = new Count();
 		Count successfulUsageTranslationMatchCount = new Count();
@@ -141,11 +154,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 
 			// header...
-			newWordIds = new ArrayList<>();
+			newWords = new ArrayList<>();
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 			word = null;
-			List<String> tmpWords = new ArrayList<>();
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
@@ -177,8 +189,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// save word+paradigm+form
 				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, wordDuplicateCount);
-				newWordIds.add(wordId);
-				tmpWords.add(word);
+				wordObj = new Word(wordId, word);
+				newWords.add(wordObj);
 
 				// further references...
 
@@ -205,6 +217,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
 				usages = extractUsagesAndTranslations(usageGroupNodes);
+				if (CollectionUtils.isEmpty(usageGroupNodes)) {
+					missingUsageGroupCount.increment();
+				}
+				wordMatches = new ArrayList<>();
 
 				meaningNodes = meaningGroupNode.selectNodes(meaningExp);//x:tg
 				boolean isSingleMeaning = meaningNodes.size() == 1;
@@ -238,6 +254,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 
 						wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, wordDuplicateCount);
+						wordObj = new Word(wordId, wordMatch);
+						wordMatches.add(wordObj);
 
 						// meaning
 						meaningId = createMeaning(datasets);
@@ -258,18 +276,18 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 
 						// new words lexemes+rections+grammar
-						for (Long newWordId : newWordIds) {
+						for (Word newWord : newWords) {
 
+							newWordId = newWord.getId();
 							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, datasets);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							} else {
 
+								//TODO
 								// new word lexeme rections, usages, usage translations
 								createRectionsAndUsagesAndTranslations(
-										wordIdRectionMap, lexemeId, newWordId, wordMatch, usages, isAbsoluteSingleMeaning,
-										ambiguousUsageTranslationMatchCount, missingUsageTranslationMatchCount,
-										successfulUsageTranslationMatchCount, singleUsageTranslationMatchCount);
+										wordIdRectionMap, lexemeId, newWordId, wordMatch, usages, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
 
 								// new word lexeme grammars
 								createGrammars(wordIdGrammarMap, lexemeId, newWordId);
@@ -291,6 +309,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 					}
 				}
+
+				if (doReports) {
+					detectAndReport(
+							usages, newWords, wordMatches,
+							ambiguousUsageTranslationMatchCount,
+							missingUsageTranslationMatchCount,
+							successfulUsageTranslationMatchCount);
+				}
 			}
 
 			articleCounter++;
@@ -300,8 +326,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
+		reportComposer.end();
+
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
+		logger.debug("Found {} missing usage groups", missingUsageGroupCount);
 		logger.debug("Found {} ambiguous usage translation matches", ambiguousUsageTranslationMatchCount);
 		logger.debug("Found {} missing usage translation matches", missingUsageTranslationMatchCount);
 		logger.debug("Found {} successful usage translation matches", successfulUsageTranslationMatchCount);
@@ -309,6 +338,56 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	private void detectAndReport(
+			List<Usage> usages, List<Word> newWords, List<Word> wordMatches,
+			Count ambiguousUsageTranslationMatchCount,
+			Count missingUsageTranslationMatchCount,
+			Count successfulUsageTranslationMatchCount) throws Exception {
+
+		List<UsageTranslation> usageTranslations;
+		List<String> lemmatisedTokens;
+		String wordMatch;
+		StringBuffer logBuf;
+
+		for (Usage usage : usages) {
+			int usageWordMatchCount = 0;
+			usageTranslations = usage.getUsageTranslations();
+			for (UsageTranslation usageTranslation : usageTranslations) {
+				lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+				for (Word wordMatchObj : wordMatches) {
+					wordMatch = wordMatchObj.getValue();
+					wordMatch = StringUtils.lowerCase(wordMatch);
+					if (lemmatisedTokens.contains(wordMatch)) {
+						usageWordMatchCount++;
+					}
+				}
+			}
+			if (usageWordMatchCount == 0) {
+				missingUsageTranslationMatchCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(newWords);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(usage);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(wordMatches);
+				String logRow = logBuf.toString(); 
+				reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
+			} else if (usageWordMatchCount == 1) {
+				successfulUsageTranslationMatchCount.increment();
+			} else if (usageWordMatchCount > 1) {
+				ambiguousUsageTranslationMatchCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(newWords);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(usage);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(wordMatches);
+				String logRow = logBuf.toString(); 
+				reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
+			}
+		}
 	}
 
 	private List<Long> saveWords(List<Element> synonymNodes, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
@@ -474,22 +553,34 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	//TODO
 	private void createRectionsAndUsagesAndTranslations(
 			Map<Long, List<Map<String, Object>>> wordIdRectionMap,
 			Long lexemeId, Long wordId, String wordMatch,
 			List<Usage> usages, boolean isAbsoluteSingleMeaning,
-			Count ambiguousUsageTranslationMatchCount,
-			Count missingUsageTranslationMatchCount,
-			Count successfulUsageTranslationMatchCount,
 			Count singleUsageTranslationMatchCount) throws Exception {
 
+		if (CollectionUtils.isEmpty(usages)) {
+			return;
+		}
+
+		final String defaultRectionValue = "-";
+
+		wordMatch = StringUtils.lowerCase(wordMatch);
 		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
 
-		if (CollectionUtils.isNotEmpty(rectionObjs)) {
+		List<Long> rectionIds = new ArrayList<>();
 
-			List<UsageTranslation> usageTranslations;
-			List<Long> rectionIds = new ArrayList<>();
+		if (CollectionUtils.isEmpty(rectionObjs)) {
 
+			Map<String, Object> rectionObj = new HashMap<>();
+			rectionObj.put("lexeme_id", lexemeId);
+			rectionObj.put("value", defaultRectionValue);
+			Long rectionId = basicDbService.createIfNotExists(RECTION, rectionObj);
+			if (rectionId != null) {
+				rectionIds.add(rectionId);
+			}
+		} else {
 			for (Map<String, Object> rectionObj : rectionObjs) {
 				rectionObj.put("lexeme_id", lexemeId);
 				Long rectionId = basicDbService.createIfNotExists(RECTION, rectionObj);
@@ -497,45 +588,38 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					rectionIds.add(rectionId);
 				}
 			}
+		}
 
-			if (isAbsoluteSingleMeaning) {
-				for (Usage usage : usages) {
-					usageTranslations = usage.getUsageTranslations();
+		List<UsageTranslation> usageTranslations;
+
+		if (isAbsoluteSingleMeaning) {
+			for (Usage usage : usages) {
+				usageTranslations = usage.getUsageTranslations();
+				for (Long rectionId : rectionIds) {
+					Long usageId = createUsage(rectionId, usage.getValue());
+					for (UsageTranslation usageTranslation : usageTranslations) {
+						createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
+					}
+				}
+			}
+			singleUsageTranslationMatchCount.increment();
+		} else {
+			for (Usage usage : usages) {
+				usageTranslations = usage.getUsageTranslations();
+				boolean isUsageTranslationMatch = false;
+				for (UsageTranslation usageTranslation : usageTranslations) {
+					if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
+						isUsageTranslationMatch = true;
+						break;
+					}
+				}
+				if (isUsageTranslationMatch) {
 					for (Long rectionId : rectionIds) {
 						Long usageId = createUsage(rectionId, usage.getValue());
 						for (UsageTranslation usageTranslation : usageTranslations) {
 							createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
 						}
 					}
-				}
-				singleUsageTranslationMatchCount.increment();
-			} else {
-				int usageTranslationMatchCount = 0;
-				for (Usage usage : usages) {
-					usageTranslations = usage.getUsageTranslations();
-					boolean isUsageTranslationMatch = false;
-					for (UsageTranslation usageTranslation : usageTranslations) {
-						if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
-							isUsageTranslationMatch = true;
-							break;
-						}
-					}
-					if (isUsageTranslationMatch) {
-						usageTranslationMatchCount++;
-						for (Long rectionId : rectionIds) {
-							Long usageId = createUsage(rectionId, usage.getValue());
-							for (UsageTranslation usageTranslation : usageTranslations) {
-								createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
-							}
-						}
-					}
-				}
-				if (usageTranslationMatchCount == 0) {
-					missingUsageTranslationMatchCount.increment();
-				} else if (usageTranslationMatchCount == 1) {
-					successfulUsageTranslationMatchCount.increment();
-				} else if (usageTranslationMatchCount > 1) {
-					ambiguousUsageTranslationMatchCount.increment();
 				}
 			}
 		}
