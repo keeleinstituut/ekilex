@@ -22,7 +22,7 @@ public class PsvLoader {
 			applicationContext.registerShutdownHook();
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
-			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
+			String dataLang = "est";
 			String[] datasets = new String[] {"psv"};
 
 			runner.execute(dataXmlFilePath, dataLang, datasets);

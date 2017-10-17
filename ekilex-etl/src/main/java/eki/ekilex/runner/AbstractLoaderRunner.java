@@ -202,6 +202,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("value", rection);
 		Long rectionId = basicDbService.createIfNotExists(RECTION, tableRowParamMap);
+		if (rectionId == null ) {
+			rectionId = (Long) basicDbService.select(RECTION, tableRowParamMap).get("id");
+		}
 		return rectionId;
 	}
 
