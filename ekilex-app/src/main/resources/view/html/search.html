@@ -74,13 +74,12 @@
         <th:block th:each="meaning : ${details.meanings}">
           <span th:each="rection,rectionIter : ${meaning.rections}">
             <span th:text="${rection.value}"></span>
-            <span th:unless="${rectionIter.last}">,</span>
             (
             <span th:each="usage,usageIter : ${rection.usages}">
               <span th:text="${usage}"></span>
-              <span th:unless="${usageIter.last}">,</span>
             </span>
             )
+            <span th:unless="${rectionIter.last}">,</span>
           </span>
           <br th:if="${not #lists.isEmpty(meaning.rections)}"/>
           <span th:each="word,wordIter : ${meaning.words}">
