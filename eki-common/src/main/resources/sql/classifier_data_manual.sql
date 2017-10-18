@@ -15,6 +15,7 @@ insert into label_type (code, value) values ('full', 'full');
 insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
 insert into dataset (code, name) values ('est', 'Esterm');
 insert into dataset (code, name) values ('vlk', 'Veterinaarmeditsiin ja loomakasvatus');
+insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 
 insert into lex_rel_type (code, datasets) values ('comp', '{eos, ss_, sys, evs}');
 
