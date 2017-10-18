@@ -216,14 +216,14 @@ insert into morph (code, datasets) values ('KvtPrPsN', '{eos, ss_, sys, evs}');
 insert into morph (code, datasets) values ('KvtPtPsN', '{eos, ss_, sys, evs}');
 insert into morph (code, datasets) values ('KndPrPsN', '{eos, ss_, sys, evs}');
 insert into morph (code, datasets) values ('KndPtPsN', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('IndPrPsN','-00002--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('IndPrIpsN','-100-2--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('IndIpfPsN','-02002--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('IndIpfIpsN','-120-2--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('KvtPrPsN','-00102--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('KvtPtPsN','-01102--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('KndPrPsN','-00202--', '{eos, ss_, sys, evs}');
-insert into morph (code, datasets) values ('KndPtPsN','-01202--', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('IndPrPsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('IndPrIpsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('IndIpfPsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('IndIpfIpsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('KvtPrPsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('KvtPtPsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('KndPrPsN', '{eos, ss_, sys, evs}');
+insert into morph (code, datasets) values ('KndPtPsN', '{eos, ss_, sys, evs}');
 
 
 insert into morph_label (code, value, lang, type) values ('ID','--------','est','ekimorfo');
