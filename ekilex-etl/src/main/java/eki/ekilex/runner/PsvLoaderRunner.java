@@ -23,6 +23,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String defaultWordMorphCode = "SgN";
 	private final int defaultHomonymNr = 1;
 	private final String dataLang = "est";
+	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]/";
 
 	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
 
@@ -85,15 +86,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 
-			List<Long> newWordIds = new ArrayList<>();
+			List<WordData> newWords = new ArrayList<>();
 
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			saveWords(headerNode, newWordIds, wordDuplicateCount);
+			saveWords(headerNode, newWords, wordDuplicateCount);
 
 			// new word lexeme grammars
 			// createGrammars(wordIdGrammarMap, lexemeId, newWordId);
 
-			processContent(contentNode, newWordIds, dataset, wordDuplicateCount, lexemeDuplicateCount);
+			processContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount);
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
@@ -109,7 +110,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processContent(Element contentNode, List<Long> newWordIds, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
+	private void processContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -143,9 +144,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				int lexemeLevel2 = 0;
 
 				// new words lexemes+rections+grammar
-				for (Long newWordId : newWordIds) {
+				for (WordData newWordData : newWords) {
 					lexemeLevel2++;
-					Long lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, 0, datasets);
+					Long lexemeId = createLexeme(newWordData.id, meaningId, lexemeLevel1, lexemeLevel2, 0, datasets);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
@@ -205,17 +206,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return usages;
 	}
 
-	private void saveWords(Element headerNode, List<Long> newWordIds, Count wordDuplicateCount) throws Exception {
+	private void saveWords(Element headerNode, List<WordData> newWords, Count wordDuplicateCount) throws Exception {
 
 		final String wordGroupExp = "x:mg";
 		final String wordExp = "x:m";
 		final String wordVocalFormExp = "x:hld";
-		final String wordDisplayFormStripChars = ".+'`()¤:_";
+		final String wordPosCodeExp = "x:sl";
+		final String wordDerivCodeExp = "x:dk";
 		final String defaultWordMorphCode = "SgN";
 
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
-			// word, form...
+			WordData wordData = new WordData();
+
 			Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 			String word = wordNode.getTextTrim();
 			String wordDisplayForm = word;
@@ -223,25 +226,34 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			int homonymNr = getWordMaxHomonymNr(word, dataLang) + 1;
 			Element wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
 			String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
-			String wordMorphCode = getWordMorphCode(defaultWordMorphCode, wordGroupNode);
+			String wordMorphCode = getWordMorphCode(word, wordGroupNode, defaultWordMorphCode);
+			wordData.id = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, null, wordDuplicateCount);
 
-			Long wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, null, wordDuplicateCount);
-			newWordIds.add(wordId);
+			Element posCodeNode = (Element) wordGroupNode.selectSingleNode(wordPosCodeExp);
+			wordData.posCode = posCodeNode == null ? null : posCodeNode.getTextTrim();
+
+			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
+			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
+
+			newWords.add(wordData);
 		}
 	}
 
-	private String getWordMorphCode(String defaultWordMorphCode, Element wordGroupNode) {
+	private String getWordMorphCode(String word, Element wordGroupNode, String defaultWordMorphCode) {
 
-		final String wordMorphExp = "x:vk";
-		Element morphNode = (Element) wordGroupNode.selectSingleNode(wordMorphExp);
-		String destinMorphCode;
-		if (morphNode == null) {
-			destinMorphCode = defaultWordMorphCode;
-		} else {
-			String sourceMorphCode = morphNode.getTextTrim();
-			destinMorphCode = morphToMorphMap.get(sourceMorphCode);
+		final String formGroupExp = "x:mfp/x:gkg/x:mvg";
+		final String formExp = "x:mvgp/x:mvf";
+		final String morphCodeAttributeExp = "vn";
+
+		List<Element> formGroupNodes = wordGroupNode.selectNodes(formGroupExp);
+		for (Element formGroup : formGroupNodes) {
+			Element formElement = (Element) formGroup.selectSingleNode(formExp);
+			String formValue = StringUtils.replaceChars(formElement.getTextTrim(), wordDisplayFormStripChars, "");
+			if (word.equals(formValue)) {
+				return formGroup.attributeValue(morphCodeAttributeExp);
+			}
 		}
-		return destinMorphCode;
+		return defaultWordMorphCode;
 	}
 
 	private List<Long> saveSynonyms(Element node, String lang, Count wordDuplicateCount) throws Exception {
@@ -281,4 +293,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private class WordData {
+		public Long id;
+		public String posCode;
+		public String derivCode;
+	}
 }
