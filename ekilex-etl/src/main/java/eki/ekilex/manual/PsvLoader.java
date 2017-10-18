@@ -22,10 +22,9 @@ public class PsvLoader {
 			applicationContext.registerShutdownHook();
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
-			String dataLang = "est";
-			String[] datasets = new String[] {"psv"};
+			String dataset = "psv";
 
-			runner.execute(dataXmlFilePath, dataLang, datasets);
+			runner.execute(dataXmlFilePath, dataset);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

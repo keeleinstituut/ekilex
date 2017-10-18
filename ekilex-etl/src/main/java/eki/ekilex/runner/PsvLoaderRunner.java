@@ -22,6 +22,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final String defaultWordMorphCode = "SgN";
 	private final int defaultHomonymNr = 1;
+	private final String dataLang = "est";
 
 	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
 
@@ -57,7 +58,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, String[] datasets) throws Exception {
+	public void execute(String dataXmlFilePath, String dataset) throws Exception {
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
@@ -67,7 +68,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		dataLang = unifyLang(dataLang);
 		Document dataDoc = readDocument(dataXmlFilePath);
 
 		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
@@ -88,12 +88,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Long> newWordIds = new ArrayList<>();
 
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			saveWords(headerNode, dataLang, newWordIds, wordDuplicateCount);
+			saveWords(headerNode, newWordIds, wordDuplicateCount);
 
 			// new word lexeme grammars
 			// createGrammars(wordIdGrammarMap, lexemeId, newWordId);
 
-			processContent(contentNode, dataLang, newWordIds, datasets, wordDuplicateCount, lexemeDuplicateCount);
+			processContent(contentNode, newWordIds, dataset, wordDuplicateCount, lexemeDuplicateCount);
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
@@ -109,13 +109,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processContent(Element contentNode, String dataLang, List<Long> newWordIds, String[] datasets, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
+	private void processContent(Element contentNode, List<Long> newWordIds, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "x:tg";
 		final String usageGroupExp = "x:ng";
 		final String definitionValueExp = "x:dg/x:d";
+
+		String[] datasets = new String[] {dataset};
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 
@@ -203,7 +205,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return usages;
 	}
 
-	private void saveWords(Element headerNode, String dataLang, List<Long> newWordIds, Count wordDuplicateCount) throws Exception {
+	private void saveWords(Element headerNode, List<Long> newWordIds, Count wordDuplicateCount) throws Exception {
 
 		final String wordGroupExp = "x:mg";
 		final String wordExp = "x:m";
