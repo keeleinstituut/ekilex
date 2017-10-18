@@ -2,6 +2,8 @@ package eki.ekilex.runner;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Component;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
+import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
@@ -54,8 +57,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	@Override
 	void initialise() throws Exception {
 
-		reportComposer = new ReportComposer("qq2 load report", REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH);
-
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
 
@@ -79,9 +80,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, String[] datasets, boolean doReports) throws Exception {
+	public void execute(
+			String dataXmlFilePath, String dataLang, String[] datasets,
+			Map<String, List<Paradigm>> wordParadigmsMap, boolean doReports) throws Exception {
 
-		logger.debug("Starting loading QQ2...");
+		logger.debug("Loading QQ2...");
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
@@ -105,12 +108,18 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 
 		final String defaultWordMorphCode = "SgN";
-		final String wordDisplayFormStripChars = ".+'`()¤:_";
+		final String wordDisplayFormCleanupChars = "̄̆̇’'´.:_–+!°()¤";
+		final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=";
 		final int defaultHomonymNr = 1;
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
+		if (doReports) {
+			reportComposer = new ReportComposer("qq2 load report", REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH);
+		}
+
+		boolean isAddForms = wordParadigmsMap != null;
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = readDocument(dataXmlFilePath);
 
@@ -125,15 +134,17 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
 		List<Element> definitionValueNodes, wordMatchNodes, synonymNodes, usageGroupNodes;
-		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode;
+		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
 		List<Word> newWords, wordMatches;
+		List<Paradigm> paradigms;
 		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
-		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
+		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang, formsStr;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
 		Long wordId, newWordId, meaningId, lexemeId;
 		Word wordObj;
+		Paradigm paradigm;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -158,13 +169,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 			word = null;
+			paradigm = null;
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
 				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordDisplayForm = wordNode.getTextTrim();
-				word = StringUtils.replaceChars(word, wordDisplayFormStripChars, "");
+				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				if (StringUtils.isNotBlank(pseudoHomonymNr)) {
 					word = StringUtils.substringBefore(word, pseudoHomonymNr);
@@ -186,9 +198,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					destinMorphCode = morphToMorphMap.get(sourceMorphCode);
 					destinDerivCode = morphToDerivMap.get(sourceMorphCode);//currently not used
 				}
+				if (isAddForms) {
+					formsNode = (Element) wordGroupNode.selectSingleNode("x:grg/x:vormid");
+					paradigm = extractParadigm(word, formsNode, wordParadigmsMap, formStrCleanupChars);
+				}
+				//TODO forms! convert mab morph codes!!
 
 				// save word+paradigm+form
-				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, wordDuplicateCount);
+				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, paradigm, wordDuplicateCount);
 				wordObj = new Word(wordId, word);
 				newWords.add(wordObj);
 
@@ -247,13 +264,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
-						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormStripChars, "");
+						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormCleanupChars, "");
 
 						if (StringUtils.isBlank(wordMatch)) {
 							continue;
 						}
 
-						wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, wordDuplicateCount);
+						wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, null, wordDuplicateCount);
 						wordObj = new Word(wordId, wordMatch);
 						wordMatches.add(wordObj);
 
@@ -284,7 +301,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 								lexemeDuplicateCount.increment();
 							} else {
 
-								//TODO
 								// new word lexeme rections, usages, usage translations
 								createRectionsAndUsagesAndTranslations(
 										wordIdRectionMap, lexemeId, newWordId, wordMatch, usages, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
@@ -319,6 +335,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
+			// progress
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				int progressPercent = articleCounter / progressIndicator;
@@ -326,7 +343,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		reportComposer.end();
+		//if (reportComposer != null) {
+			reportComposer.end();
+		//}
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -338,6 +357,35 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	//TODO
+	private Paradigm extractParadigm(String word, Element formsNode, Map<String, List<Paradigm>> wordParadigmsMap, final String formStrCleanupChars) {
+
+		List<Paradigm> paradigms = wordParadigmsMap.get(word);
+		if (CollectionUtils.isEmpty(paradigms)) {
+			return null;
+		}
+		if (formsNode == null) {
+			return null;
+		}
+		String formsStr = formsNode.getTextTrim();
+		formsStr = StringUtils.replaceChars(formsStr, formStrCleanupChars, "");
+		String[] formValuesArr = StringUtils.split(formsStr, ' ');
+		List<String> qq2FormValues = Arrays.asList(formValuesArr);
+		List<String> mabFormValues;
+		Collection<String> formValuesIntersection;
+		int bestFormValuesMatchCount = 0;
+		Paradigm matchingParadigm = null;
+		for (Paradigm paradigm : paradigms) {
+			mabFormValues = paradigm.getFormValues();
+			formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
+			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
+				bestFormValuesMatchCount = formValuesIntersection.size();
+				matchingParadigm = paradigm;
+			}
+		}
+		return matchingParadigm;
 	}
 
 	private void detectAndReport(
@@ -399,7 +447,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		for (Element synonymNode : synonymNodes) {
 
 			synonym = synonymNode.getTextTrim();
-			wordId = saveWord(synonym, null, null, homonymNr, wordMorphCode, lang, wordDuplicateCount);
+			wordId = saveWord(synonym, null, null, homonymNr, wordMorphCode, lang, null, wordDuplicateCount);
 			synonymWordIds.add(wordId);
 		}
 		return synonymWordIds;
@@ -553,7 +601,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	//TODO
 	private void createRectionsAndUsagesAndTranslations(
 			Map<Long, List<Map<String, Object>>> wordIdRectionMap,
 			Long lexemeId, Long wordId, String wordMatch,

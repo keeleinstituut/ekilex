@@ -106,7 +106,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					homonymNr = getWordMaxHomonymNr(word, dataLang);
 					homonymNr++;
-					wordId = saveWord(word, null, null, homonymNr, defaultWordMorphCode, lang, wordDuplicateCount);
+					wordId = saveWord(word, null, null, homonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
 					lexemeId = createLexeme(wordId, meaningId, null, null, null, datasets);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();

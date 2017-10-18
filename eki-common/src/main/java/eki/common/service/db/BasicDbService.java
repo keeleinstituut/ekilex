@@ -41,7 +41,6 @@ public class BasicDbService extends AbstractDbService {
 		for (String fieldName : fieldNames) {
 			paramNames.add(":" + fieldName);
 		}
-
 		StringBuffer sqlScriptBuf = new StringBuffer();
 		sqlScriptBuf.append("select * from ");
 		sqlScriptBuf.append(tableName);
@@ -73,7 +72,6 @@ public class BasicDbService extends AbstractDbService {
 		for (String fieldName : fieldNames) {
 			paramNames.add(":" + fieldName);
 		}
-
 		StringBuffer sqlQueryBuf = new StringBuffer();
 		sqlQueryBuf.append("insert into ");
 		sqlQueryBuf.append(tableName);
@@ -97,7 +95,6 @@ public class BasicDbService extends AbstractDbService {
 		for (String fieldName : fieldNames) {
 			paramNames.add(":" + fieldName);
 		}
-
 		StringBuffer sqlQueryBuf = new StringBuffer();
 		sqlQueryBuf.append("insert into ");
 		sqlQueryBuf.append(tableName);
@@ -126,6 +123,38 @@ public class BasicDbService extends AbstractDbService {
 		} catch (EmptyResultDataAccessException e) {
 			id = null;
 		}
+		return id;
+	}
+
+	public Long createOrSelect(String tableName, Map<String, Object> paramMap) throws Exception {
+
+		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
+		List<String> paramNames = new ArrayList<>();
+		for (String fieldName : fieldNames) {
+			paramNames.add(":" + fieldName);
+		}
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("with sel as (select id from ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" where ");
+		for (int fieldIndex = 0; fieldIndex < fieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(" and ");
+			}
+			sqlQueryBuf.append(fieldNames.get(fieldIndex));
+			sqlQueryBuf.append(" = ");
+			sqlQueryBuf.append(paramNames.get(fieldIndex));
+		}
+		sqlQueryBuf.append("), ins as (insert into ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append("(");
+		sqlQueryBuf.append(StringUtils.join(fieldNames, ", "));
+		sqlQueryBuf.append(") select ");
+		sqlQueryBuf.append(StringUtils.join(paramNames, ", "));
+		sqlQueryBuf.append(" where not exists (select id from sel) returning id) ");
+		sqlQueryBuf.append("select id from ins union all select id from sel");
+		String sqlScript = sqlQueryBuf.toString();
+		Long id = jdbcTemplate.queryForObject(sqlScript, paramMap, Long.class);
 		return id;
 	}
 
