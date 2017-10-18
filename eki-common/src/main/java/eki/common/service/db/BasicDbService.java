@@ -34,6 +34,25 @@ public class BasicDbService extends AbstractDbService {
 		return result;
 	}
 
+	// query string must project rows with names "key" and "value"
+	public Map<String, String> queryListAsMap(String sqlQueryStr, Map<String, Object> paramMap) throws Exception {
+
+		Map<String, String> resultMap = new HashMap<>();
+		List<Map<String, Object>> results;
+		try {
+			results = jdbcTemplate.queryForList(sqlQueryStr, paramMap);
+			String key, value;
+			for (Map<String, Object> result : results) {
+				key = result.get("key").toString();
+				value = result.get("value").toString();
+				resultMap.put(key, value);
+			}
+			return resultMap;
+		} catch (EmptyResultDataAccessException e) {
+			return resultMap;
+		}
+	}
+
 	public Map<String, Object> select(String tableName, Map<String, Object> paramMap) throws Exception {
 
 		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
