@@ -223,15 +223,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lexemeId;
 	}
 
-	protected Long createRection(Long lexemeId, String rection) throws Exception {
+	protected Long createOrSelectRection(Long lexemeId, String rection) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("value", rection);
-		Long rectionId = basicDbService.createIfNotExists(RECTION, tableRowParamMap);
-		if (rectionId == null ) {
-			rectionId = (Long) basicDbService.select(RECTION, tableRowParamMap).get("id");
-		}
+		Long rectionId = basicDbService.createOrSelect(RECTION, tableRowParamMap);
 		return rectionId;
 	}
 

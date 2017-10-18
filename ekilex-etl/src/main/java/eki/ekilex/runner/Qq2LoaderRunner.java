@@ -471,7 +471,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Element rectionNode : rectionNodes) {
 			String rection = rectionNode.getTextTrim();
-			createRection(lexemeId, rection);
+			createOrSelectRection(lexemeId, rection);
 		}
 	}
 

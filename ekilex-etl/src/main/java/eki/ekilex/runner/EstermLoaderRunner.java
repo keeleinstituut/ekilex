@@ -119,7 +119,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 								//TODO get source
 							}
 							usage = usageNode.getTextTrim();
-							rectionId = createRection(lexemeId, defaultRection);
+							rectionId = createOrSelectRection(lexemeId, defaultRection);
 							createUsage(rectionId, usage);
 						}
 						definitionNode = (Element) termGroupNode.selectSingleNode(definitionExp);

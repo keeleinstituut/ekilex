@@ -169,7 +169,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String rectionExp = "x:rek";
 		final String defaultRection = "-";
 
-		Long rectionId = createRection(lexemeId, defaultRection);
+		Long rectionId = createOrSelectRection(lexemeId, defaultRection);
 		for (Usage usage : usages) {
 				createUsage(rectionId, usage.getValue());
 		}
@@ -179,7 +179,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
 			List<Element> rections = rectionGroup.selectNodes(rectionExp);
 			for (Element rection : rections) {
-				rectionId = createRection(lexemeId, rection.getTextTrim());
+				rectionId = createOrSelectRection(lexemeId, rection.getTextTrim());
 				for (Usage usage : rectionUsages) {
 					createUsage(rectionId, usage.getValue());
 				}
@@ -223,7 +223,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
 			String wordMorphCode = getWordMorphCode(defaultWordMorphCode, wordGroupNode);
 
-			Long wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, wordDuplicateCount);
+			Long wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, null, wordDuplicateCount);
 			newWordIds.add(wordId);
 		}
 	}
@@ -254,7 +254,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element synonymNode : synonymNodes) {
 
 			synonym = synonymNode.getTextTrim();
-			wordId = saveWord(synonym, null, null, defaultHomonymNr, defaultWordMorphCode, lang, wordDuplicateCount);
+			wordId = saveWord(synonym, null, null, defaultHomonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
 			synonymWordIds.add(wordId);
 		}
 		return synonymWordIds;
