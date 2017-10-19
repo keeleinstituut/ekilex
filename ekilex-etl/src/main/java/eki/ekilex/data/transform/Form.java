@@ -10,6 +10,8 @@ public class Form extends AbstractDataObject {
 
 	private String morphCode;
 
+	private boolean isWord;
+
 	public String getValue() {
 		return value;
 	}
@@ -24,6 +26,14 @@ public class Form extends AbstractDataObject {
 
 	public void setMorphCode(String morphCode) {
 		this.morphCode = morphCode;
+	}
+
+	public boolean isWord() {
+		return isWord;
+	}
+
+	public void setWord(boolean isWord) {
+		this.isWord = isWord;
 	}
 
 }

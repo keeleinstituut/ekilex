@@ -108,7 +108,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 
 		final String defaultWordMorphCode = "SgN";
-		final String wordDisplayFormCleanupChars = "̄̆̇’'´.:_–+!°()¤";
+		final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–+!°()¤";
 		final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=";
 		final int defaultHomonymNr = 1;
 
@@ -137,7 +137,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
 		List<Word> newWords, wordMatches;
-		List<Paradigm> paradigms;
 		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
 		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang, formsStr;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
@@ -176,6 +175,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordDisplayForm = wordNode.getTextTrim();
+				//TODO components
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				if (StringUtils.isNotBlank(pseudoHomonymNr)) {
@@ -202,7 +202,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					formsNode = (Element) wordGroupNode.selectSingleNode("x:grg/x:vormid");
 					paradigm = extractParadigm(word, formsNode, wordParadigmsMap, formStrCleanupChars);
 				}
-				//TODO forms! convert mab morph codes!!
 
 				// save word+paradigm+form
 				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, paradigm, wordDuplicateCount);
@@ -343,23 +342,24 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		//if (reportComposer != null) {
+		if (reportComposer != null) {
 			reportComposer.end();
-		//}
+		}
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
 		logger.debug("Found {} missing usage groups", missingUsageGroupCount);
-		logger.debug("Found {} ambiguous usage translation matches", ambiguousUsageTranslationMatchCount);
-		logger.debug("Found {} missing usage translation matches", missingUsageTranslationMatchCount);
-		logger.debug("Found {} successful usage translation matches", successfulUsageTranslationMatchCount);
 		logger.debug("Found {} single usage translation matches", singleUsageTranslationMatchCount);
+		if (doReports) {
+			logger.debug("Found {} ambiguous usage translation matches", ambiguousUsageTranslationMatchCount);
+			logger.debug("Found {} missing usage translation matches", missingUsageTranslationMatchCount);
+			logger.debug("Found {} successful usage translation matches", successfulUsageTranslationMatchCount);
+		}
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	//TODO
 	private Paradigm extractParadigm(String word, Element formsNode, Map<String, List<Paradigm>> wordParadigmsMap, final String formStrCleanupChars) {
 
 		List<Paradigm> paradigms = wordParadigmsMap.get(word);

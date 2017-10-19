@@ -117,16 +117,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 			// mab forms
 			List<Form> forms = paradigm.getForms();
-			boolean isWordExist = false;
-			boolean isWord;
 			for (Form form : forms) {
-				isWord = false;
-				//TODO should deduct from morph code or smth
-				if (StringUtils.equals(word, form.getValue()) && !isWordExist) {
-					isWord = true;
-					isWordExist = true;
+				if (form.isWord()) {
+					createForm(form.getValue(), wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());					
+				} else {
+					createForm(form.getValue(), null, null, form.getMorphCode(), paradigmId, form.isWord());
 				}
-				createForm(word, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, isWord);
 			}
 		}
 		return wordId;

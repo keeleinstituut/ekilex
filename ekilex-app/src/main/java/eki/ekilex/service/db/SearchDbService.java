@@ -83,6 +83,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						.and(m.CODE.eq(f2.MORPH_CODE))
 						.and(m.LANG.eq("est"))
 						.and(m.TYPE.eq("descrip")))
+				.orderBy(f2.ID)
 				.fetch();
 	}
 
@@ -94,6 +95,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						FORM.leftOuterJoin(MORPH_LABEL).on(FORM.MORPH_CODE.eq(MORPH_LABEL.CODE).and(MORPH_LABEL.LANG.eq("est").and(MORPH_LABEL.TYPE.eq("descrip")))))
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
+						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.MEANING_ID.eq(meaningId)))
