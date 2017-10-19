@@ -33,4 +33,5 @@ public interface TableName {
 
 	// classifier binds
 	public static final String MEANING_DOMAIN = "meaning_domain";
+	public static final String LEXEME_POS = "lexeme_pos";
 }

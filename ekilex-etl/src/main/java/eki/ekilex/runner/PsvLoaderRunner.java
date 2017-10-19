@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Usage;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -11,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,42 +18,17 @@ import java.util.Map;
 @Component
 public class PsvLoaderRunner extends AbstractLoaderRunner {
 
-	private final String defaultWordMorphCode = "SgN";
-	private final int defaultHomonymNr = 1;
 	private final String dataLang = "est";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]/";
 
-	private static final String TRANSFORM_MORPH_DERIV_FILE_PATH = "csv/transform-morph-deriv.csv";
-
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
-	private Map<String, String> morphToMorphMap;
-
-	private Map<String, String> morphToDerivMap;
+	private Map<String, String> posCodes;
 
 	@Override
 	void initialise() throws Exception {
-
-		ClassLoader classLoader = this.getClass().getClassLoader();
-		InputStream resourceFileInputStream;
-
-		resourceFileInputStream = classLoader.getResourceAsStream(TRANSFORM_MORPH_DERIV_FILE_PATH);
-		List<String> morphDerivMapLines = getContentLines(resourceFileInputStream);
-		morphToMorphMap = new HashMap<>();
-		morphToDerivMap = new HashMap<>();
-		for (String morphDerivMapLine : morphDerivMapLines) {
-			if (StringUtils.isBlank(morphDerivMapLine)) {
-				continue;
-			}
-			String[] morphDerivMapLineParts = StringUtils.split(morphDerivMapLine, CSV_SEPARATOR);
-			String sourceMorphCode = morphDerivMapLineParts[0];
-			String destinMorphCode = morphDerivMapLineParts[1];
-			String destinDerivCode = morphDerivMapLineParts[2];
-			morphToMorphMap.put(sourceMorphCode, destinMorphCode);
-			if (!StringUtils.equals(destinDerivCode, String.valueOf(CSV_EMPTY_CELL))) {
-				morphToDerivMap.put(sourceMorphCode, destinDerivCode);
-			}
-		}
+		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
+		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
 	}
 
 	@Transactional
@@ -91,10 +64,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			saveWords(headerNode, newWords, wordDuplicateCount);
 
-			// new word lexeme grammars
-			// createGrammars(wordIdGrammarMap, lexemeId, newWordId);
-
-			processContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount);
+			processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount);
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
@@ -110,7 +80,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
+	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -135,7 +105,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				Long meaningId = createMeaning(datasets);
 
-				// definitions
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, datasets);
 
@@ -143,15 +112,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				int lexemeLevel2 = 0;
 
-				// new words lexemes+rections+grammar
 				for (WordData newWordData : newWords) {
 					lexemeLevel2++;
 					Long lexemeId = createLexeme(newWordData.id, meaningId, lexemeLevel1, lexemeLevel2, 0, datasets);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
-						// new word lexeme rection, usages
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
+						savePosAndDeriv(lexemeId, newWordData);
 					}
 
 					for (Long synonymWordId : synonymWordIds) {
@@ -163,6 +131,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData) throws Exception {
+		//POS - part of speech
+		if (posCodes.containsKey(newWordData.posCode)) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("lexeme_id", lexemeId);
+			params.put("pos_code", posCodes.get(newWordData.posCode));
+			basicDbService.create(LEXEME_POS, params);
+		}
+		// TODO: add deriv code when we get the mappings between EKILEX and EKI data
 	}
 
 	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
@@ -259,6 +238,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private List<Long> saveSynonyms(Element node, String lang, Count wordDuplicateCount) throws Exception {
 
 		final String synonymExp = "x:syn";
+		final String defaultWordMorphCode = "SgN";
+		final int defaultHomonymNr = 1;
 
 		List<Long> synonymWordIds = new ArrayList<>();
 		String synonym;
@@ -274,14 +255,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return synonymWordIds;
 	}
 
-	private List<String> getContentLines(InputStream resourceInputStream) throws Exception {
-
-		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
-		resourceInputStream.close();
-		return contentLines;
-	}
-
-
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] datasets) throws Exception {
 
 		if (definitionValueNodes == null) {
@@ -294,8 +267,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private class WordData {
-		public Long id;
-		public String posCode;
-		public String derivCode;
+		Long id;
+		String posCode;
+		String derivCode;
 	}
 }
