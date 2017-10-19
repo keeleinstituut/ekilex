@@ -18,6 +18,9 @@ public class Form extends AbstractDataObject {
 	@Column(name = "lang")
 	private String lang;
 
+	@Column(name = "components")
+	private String[] components;
+
 	@Column(name = "display_form")
 	private String displayForm;
 
@@ -59,6 +62,14 @@ public class Form extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String[] getComponents() {
+		return components;
+	}
+
+	public void setComponents(String[] components) {
+		this.components = components;
 	}
 
 	public String getDisplayForm() {

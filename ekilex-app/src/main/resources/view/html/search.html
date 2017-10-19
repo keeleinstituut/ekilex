@@ -61,12 +61,12 @@
     <div th:name="${detailsName}" class="pl-4">
       <div class="float-left w-25">
         <th:block th:each="form : ${details.forms}">
-          <span
-            th:text="
-            ${form.value + ' (' + form.morphCode + '-' + form.morphValue
-            + (#strings.isEmpty(form.displayForm) ? '' :  '; ' + form.displayForm)
-            + (#strings.isEmpty(form.vocalForm) ? '' :  '; ' + form.vocalForm) + ')'}">
-          </span>
+          <span th:text="${form.value}"></span>
+          (
+          <span th:text="${form.morphCode + '-' + form.morphValue}"></span>
+          <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+          <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+          )
           <br>
         </th:block>
       </div>

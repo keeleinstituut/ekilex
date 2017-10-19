@@ -67,14 +67,22 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record6<Long, String, String, String, String, String>> findConnectedForms(Long formId) {
+	public Result<Record7<Long, String, String[], String, String, String, String>> findConnectedForms(Long formId) {
 
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
 		Paradigm p = PARADIGM.as("p");
 		MorphLabel m = MORPH_LABEL.as("m");
 		return create
-				.select(f2.ID.as("form_id"), f2.VALUE.as("word"), f2.DISPLAY_FORM, f2.VOCAL_FORM, f2.MORPH_CODE, m.VALUE.as("morph_value"))
+				.select(
+						f2.ID.as("form_id"),
+						f2.VALUE.as("word"),
+						f2.COMPONENTS,
+						f2.DISPLAY_FORM,
+						f2.VOCAL_FORM,
+						f2.MORPH_CODE,
+						m.VALUE.as("morph_value")
+						)
 				.from(f1, f2, p, m)
 				.where(
 						f1.ID.eq(formId)
