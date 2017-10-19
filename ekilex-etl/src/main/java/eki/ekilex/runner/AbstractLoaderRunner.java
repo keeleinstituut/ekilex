@@ -105,7 +105,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		String wordDisplayForm = word.getDisplayForm();
 		String wordVocalForm = word.getVocalForm();
 		int homonymNr = word.getHomonymNr();
-		String wordMorphCode = word.getMorphCode();	
+		String wordMorphCode = word.getMorphCode();
 
 		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
@@ -119,7 +119,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 				// empty paradigm
 				Long paradigmId = createParadigm(wordId);
-	
+
 				// form
 				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
 			}
@@ -138,7 +138,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			List<Form> forms = paradigm.getForms();
 			for (Form form : forms) {
 				if (form.isWord()) {
-					createForm(form.getValue(), null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());					
+					createForm(form.getValue(), null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
 				} else {
 					createForm(form.getValue(), null, null, null, form.getMorphCode(), paradigmId, form.isWord());
 				}
@@ -147,7 +147,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return wordId;
 	}
 
-	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
+	protected Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);
