@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import eki.common.data.Count;
+import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Usage;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
 public class PsvLoaderRunner extends AbstractLoaderRunner {
@@ -60,9 +63,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			List<WordData> newWords = new ArrayList<>();
-
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			saveWords(headerNode, newWords, wordDuplicateCount);
+			processArticleHeader(headerNode, newWords, wordDuplicateCount);
 
 			processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount);
 
@@ -89,14 +91,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String definitionValueExp = "x:dg/x:d";
 
 		String[] datasets = new String[] {dataset};
-
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
-
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
@@ -128,13 +128,36 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							lexemeDuplicateCount.increment();
 						}
 					}
+					saveGrammars(meaningNumberGroupNode, lexemeId, datasets, newWordData);
 				}
 			}
 		}
 	}
 
+	private void saveGrammars(Element node, Long lexemeId, String[] datasets, WordData wordData) throws Exception {
+		final String grammarValueExp = "x:grg/x:gki";
+
+		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
+		for (Element grammarNode : grammarNodes) {
+			createGrammar(lexemeId, datasets, grammarNode.getTextTrim());
+		}
+		if (isNotEmpty(wordData.grammar)) {
+			createGrammar(lexemeId, datasets, wordData.grammar);
+		}
+	}
+
+	private void createGrammar(Long lexemeId, String[] datasets, String value) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("lexeme_id", lexemeId);
+		params.put("value", value);
+		params.put("lang", dataLang);
+		params.put("datasets", new PgVarcharArray(datasets));
+		basicDbService.createIfNotExists(GRAMMAR, params);
+	}
+
+	//POS - part of speech
 	private void savePosAndDeriv(Long lexemeId, WordData newWordData) throws Exception {
-		//POS - part of speech
+
 		if (posCodes.containsKey(newWordData.posCode)) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("lexeme_id", lexemeId);
@@ -185,13 +208,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return usages;
 	}
 
-	private void saveWords(Element headerNode, List<WordData> newWords, Count wordDuplicateCount) throws Exception {
+	private void processArticleHeader(Element headerNode, List<WordData> newWords, Count wordDuplicateCount) throws Exception {
 
 		final String wordGroupExp = "x:mg";
 		final String wordExp = "x:m";
 		final String wordVocalFormExp = "x:hld";
 		final String wordPosCodeExp = "x:sl";
 		final String wordDerivCodeExp = "x:dk";
+		final String wordGrammarExp = "x:mfp/x:gki";
 		final String defaultWordMorphCode = "SgN";
 
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
@@ -213,6 +237,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
 			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
+
+			Element grammarNode = (Element) wordGroupNode.selectSingleNode(wordGrammarExp);
+			wordData.grammar = grammarNode == null ? null : grammarNode.getTextTrim();
 
 			newWords.add(wordData);
 		}
@@ -270,5 +297,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Long id;
 		String posCode;
 		String derivCode;
+		String grammar;
 	}
 }
