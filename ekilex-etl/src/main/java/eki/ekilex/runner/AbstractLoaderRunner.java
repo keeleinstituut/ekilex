@@ -128,7 +128,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return wordId;
 	}
 
-	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
+	protected Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);

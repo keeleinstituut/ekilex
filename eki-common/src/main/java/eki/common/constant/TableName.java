@@ -30,6 +30,7 @@ public interface TableName {
 	public static final String GRAMMAR = "grammar";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";
+	public static final String LEXEME_RELATION = "lex_relation";
 
 	// classifier binds
 	public static final String MEANING_DOMAIN = "meaning_domain";

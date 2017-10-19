@@ -40,6 +40,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
+		String[] datasets = new String[] {dataset};
 
 		logger.info("Starting import");
 		long t1, t2;
@@ -56,6 +57,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int articleCounter = 0;
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
 		List<SynonymData> synonyms = new ArrayList<>();
+		List<AntonymData> antonyms = new ArrayList<>();
 
 		for (Element articleNode : articleNodes) {
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
@@ -67,7 +69,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			processArticleHeader(headerNode, newWords, wordDuplicateCount);
 
-			processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount, synonyms);
+			processArticleContent(contentNode, newWords, datasets, wordDuplicateCount, lexemeDuplicateCount, synonyms, antonyms);
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
@@ -76,7 +78,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		processSynonyms(synonyms, dataset);
+		processSynonyms(synonyms, datasets);
+		processAntonyms(antonyms, datasets);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -85,11 +88,36 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processSynonyms(List<SynonymData> synonyms, String dataset) throws Exception {
+	private void processAntonyms(List<AntonymData> antonyms, String[] datasets) throws Exception {
+		logger.debug("Found {} antonyms.", antonyms.size());
+		for (AntonymData antonymData: antonyms) {
+			logger.debug("Looking for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
+			Map<String, Object> wordObject = getWord(antonymData.word, 1, dataLang);
+			if (wordObject != null) {
+				Map<String, Object> params = new HashMap<>();
+				params.put("word_id", wordObject.get("id"));
+				params.put("level1", antonymData.lexemeLevel1);
+				Map<String, Object> lexemeObject = basicDbService.select(LEXEME, params);
+				if (lexemeObject != null) {
+					Map<String, Object> relationParams = new HashMap<>();
+					relationParams.put("lexeme1_id", lexemeObject.get("id"));
+					relationParams.put("lexeme2_id", antonymData.lexemeId);
+					relationParams.put("lex_rel_type_code", "ant");
+					relationParams.put("datasets", new PgVarcharArray(datasets));
+					basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+				} else {
+					logger.debug("Lexeme not found.");
+				}
+			} else {
+				logger.debug("Word not found.");
+			}
+		}
+	}
+
+	private void processSynonyms(List<SynonymData> synonyms, String[] datasets) throws Exception {
 
 		final String defaultWordMorphCode = "SgN";
 		final int defaultHomonymNr = 1;
-		String[] datasets = new String[] {dataset};
 
 		logger.debug("Found {} synonyms", synonyms.size());
 
@@ -101,8 +129,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Synonym words created {}", synonyms.size() - existingWordCount.getValue());
 	}
 
-	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount,
-			List<SynonymData> synonyms) throws Exception {
+	private void processArticleContent(Element contentNode, List<WordData> newWords, String[] datasets, Count wordDuplicateCount, Count lexemeDuplicateCount,
+			List<SynonymData> synonyms, List<AntonymData> antonyms) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -110,7 +138,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String usageGroupExp = "x:ng";
 		final String definitionValueExp = "x:dg/x:d";
 
-		String[] datasets = new String[] {dataset};
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
@@ -131,6 +158,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<SynonymData> meaningSynonyms = extractSynonyms(meaningGroupNode, meaningId);
 				synonyms.addAll(meaningSynonyms);
 
+				List<AntonymData> meaningAntonyms = extractAntonyms(meaningGroupNode);
+
 				int lexemeLevel2 = 0;
 				for (WordData newWordData : newWords) {
 					lexemeLevel2++;
@@ -140,11 +169,34 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData);
+						saveGrammars(meaningNumberGroupNode, lexemeId, datasets, newWordData);
+						for (AntonymData meaningAntonym : meaningAntonyms) {
+							AntonymData antonymData = new AntonymData();
+							antonymData.word = meaningAntonym.word;
+							antonymData.lexemeLevel1 = meaningAntonym.lexemeLevel1;
+							antonymData.lexemeId = lexemeId;
+							antonyms.add(antonymData);
+						}
 					}
-					saveGrammars(meaningNumberGroupNode, lexemeId, datasets, newWordData);
 				}
 			}
 		}
+	}
+
+	private List<AntonymData> extractAntonyms(Element node) {
+
+		final String antonymExp = "x:ant";
+		final String lexemeLevel1Attr = "t";
+
+		List<AntonymData> antonyms = new ArrayList<>();
+		List<Element> antonymNodes = node.selectNodes(antonymExp);
+		for (Element antonymNode : antonymNodes) {
+			AntonymData antonymData = new AntonymData();
+			antonymData.word = antonymNode.getTextTrim();
+			antonymData.lexemeLevel1 = antonymNode.attributeValue(lexemeLevel1Attr) == null ? 1 : Integer.parseInt(antonymNode.attributeValue(lexemeLevel1Attr));
+			antonyms.add(antonymData);
+		}
+		return antonyms;
 	}
 
 	private List<SynonymData> extractSynonyms(Element node, Long meaningId) {
@@ -331,6 +383,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private class SynonymData {
 		String word;
 		Long meaningId;
-		Integer homonymNr;
+	}
+
+	private class AntonymData {
+		String word;
+		Long lexemeId;
+		int lexemeLevel1 = 1;
 	}
 }
