@@ -108,7 +108,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 
 		final String defaultWordMorphCode = "SgN";
-		final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–+!°()¤";
+		final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
+		final char wordComponentSeparator = '+';
 		final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=";
 		final int defaultHomonymNr = 1;
 
@@ -142,6 +143,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
 		Long wordId, newWordId, meaningId, lexemeId;
+		String[] wordComponents;
 		Word wordObj;
 		Paradigm paradigm;
 
@@ -175,8 +177,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordDisplayForm = wordNode.getTextTrim();
-				//TODO components
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
+				wordComponents = StringUtils.split(word, wordComponentSeparator);
+				word = StringUtils.remove(word, wordComponentSeparator);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				if (StringUtils.isNotBlank(pseudoHomonymNr)) {
 					word = StringUtils.substringBefore(word, pseudoHomonymNr);
@@ -204,8 +207,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 
 				// save word+paradigm+form
-				wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, dataLang, paradigm, wordDuplicateCount);
-				wordObj = new Word(wordId, word);
+				wordObj = new Word(word, dataLang, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
+				wordId = saveWord(wordObj, paradigm, wordDuplicateCount);
 				newWords.add(wordObj);
 
 				// further references...
@@ -269,8 +272,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							continue;
 						}
 
-						wordId = saveWord(wordMatch, null, null, defaultHomonymNr, defaultWordMorphCode, wordMatchLang, null, wordDuplicateCount);
-						wordObj = new Word(wordId, wordMatch);
+						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, defaultHomonymNr, defaultWordMorphCode);
+						wordId = saveWord(wordObj, null, wordDuplicateCount);
 						wordMatches.add(wordObj);
 
 						// meaning
@@ -447,7 +450,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		for (Element synonymNode : synonymNodes) {
 
 			synonym = synonymNode.getTextTrim();
-			wordId = saveWord(synonym, null, null, homonymNr, wordMorphCode, lang, null, wordDuplicateCount);
+			wordId = saveWord(synonym, null, null, null, homonymNr, wordMorphCode, lang, null, wordDuplicateCount);
 			synonymWordIds.add(wordId);
 		}
 		return synonymWordIds;

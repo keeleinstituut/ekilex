@@ -223,7 +223,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
 			String wordMorphCode = getWordMorphCode(defaultWordMorphCode, wordGroupNode);
 
-			Long wordId = saveWord(word, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, null, wordDuplicateCount);
+			Long wordId = saveWord(word, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, null, wordDuplicateCount);
 			newWordIds.add(wordId);
 		}
 	}
@@ -254,7 +254,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element synonymNode : synonymNodes) {
 
 			synonym = synonymNode.getTextTrim();
-			wordId = saveWord(synonym, null, null, defaultHomonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
+			wordId = saveWord(synonym, null, null, null, defaultHomonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
 			synonymWordIds.add(wordId);
 		}
 		return synonymWordIds;

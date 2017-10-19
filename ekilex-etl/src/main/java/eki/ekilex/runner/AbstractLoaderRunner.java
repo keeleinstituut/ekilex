@@ -23,6 +23,7 @@ import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Word;
 
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
@@ -85,17 +86,34 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return dataDoc;
 	}
 
+	//@see saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount)
+	@Deprecated
 	protected Long saveWord(
-			String word, String wordDisplayForm, String wordVocalForm, int homonymNr, String wordMorphCode, String lang,
-			Paradigm paradigm, Count wordDuplicateCount) throws Exception {
+			String wordValue, String[] wordComponents, String wordDisplayForm, String wordVocalForm, int homonymNr,
+			String wordMorphCode, String wordLang, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
 
-		Map<String, Object> tableRowValueMap = getWord(word, homonymNr, lang);
+		Word word = new Word(wordValue, wordLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
+		Long wordId = saveWord(word, paradigm, wordDuplicateCount);
+		return wordId;
+	}
+
+	protected Long saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
+
+		String wordValue = word.getValue();
+		String wordLang = word.getLang();
+		String[] wordComponents = word.getComponents();
+		String wordDisplayForm = word.getDisplayForm();
+		String wordVocalForm = word.getVocalForm();
+		int homonymNr = word.getHomonymNr();
+		String wordMorphCode = word.getMorphCode();	
+
+		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
 
 		if (tableRowValueMap == null) {
 
 			// word
-			wordId = createWord(wordMorphCode, homonymNr, lang);
+			wordId = createWord(wordMorphCode, homonymNr, wordLang);
 
 			if (paradigm == null) {
 
@@ -103,13 +121,14 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				Long paradigmId = createParadigm(wordId);
 	
 				// form
-				createForm(word, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
+				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
 			}
 
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
 			wordDuplicateCount.increment();
 		}
+		word.setId(wordId);
 		if (paradigm != null) {
 
 			// mab paradigm
@@ -119,9 +138,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			List<Form> forms = paradigm.getForms();
 			for (Form form : forms) {
 				if (form.isWord()) {
-					createForm(form.getValue(), wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());					
+					createForm(form.getValue(), null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());					
 				} else {
-					createForm(form.getValue(), null, null, form.getMorphCode(), paradigmId, form.isWord());
+					createForm(form.getValue(), null, null, null, form.getMorphCode(), paradigmId, form.isWord());
 				}
 			}
 		}
@@ -138,12 +157,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMap;
 	}
 
-	private void createForm(String form, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, boolean isWord) throws Exception {
+	private void createForm(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, boolean isWord) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("paradigm_id", paradigmId);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("value", form);
+		if (wordComponents != null) {
+			tableRowParamMap.put("components", new PgVarcharArray(wordComponents));
+		}
 		if (StringUtils.isNotBlank(wordDisplayForm)) {
 			tableRowParamMap.put("display_form", wordDisplayForm);
 		}
