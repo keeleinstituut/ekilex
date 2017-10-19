@@ -155,7 +155,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} unclean words", uncleanWordCount);
-		logger.debug("Found {} word", morphValueCodeMap.size());
+		logger.debug("Found {} words", wordParadigmsMap.size());
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));

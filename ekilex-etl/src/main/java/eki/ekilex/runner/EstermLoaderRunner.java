@@ -145,7 +145,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 			conceptGroupCounter++;
 			if (conceptGroupCounter % progressIndicator == 0) {
-				logger.debug("{} concept groups iterated", conceptGroupCounter);
+				int progressPercent = conceptGroupCounter / progressIndicator;
+				logger.debug("{}% - {} concept groups iterated", progressPercent, conceptGroupCounter);
 			}
 		}
 
