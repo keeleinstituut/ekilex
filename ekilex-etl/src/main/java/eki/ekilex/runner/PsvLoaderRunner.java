@@ -55,6 +55,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Count lexemeDuplicateCount = new Count();
 		int articleCounter = 0;
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
+		List<SynonymData> synonyms = new ArrayList<>();
 
 		for (Element articleNode : articleNodes) {
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
@@ -66,7 +67,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			processArticleHeader(headerNode, newWords, wordDuplicateCount);
 
-			processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount);
+			processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount, synonyms);
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
@@ -75,6 +76,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
+		processSynonyms(synonyms, dataset);
+
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
 
@@ -82,7 +85,24 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount) throws Exception {
+	private void processSynonyms(List<SynonymData> synonyms, String dataset) throws Exception {
+
+		final String defaultWordMorphCode = "SgN";
+		final int defaultHomonymNr = 1;
+		String[] datasets = new String[] {dataset};
+
+		logger.debug("Found {} synonyms", synonyms.size());
+
+		Count existingWordCount = new Count();
+		for (SynonymData synonymData : synonyms) {
+			Long wordId = saveWord(synonymData.word, null, null, defaultHomonymNr, defaultWordMorphCode, dataLang, null, existingWordCount);
+			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, datasets);
+		}
+		logger.debug("Synonym words created {}", synonyms.size() - existingWordCount.getValue());
+	}
+
+	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount,
+			List<SynonymData> synonyms) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -108,10 +128,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, datasets);
 
-				List<Long> synonymWordIds = saveSynonyms(meaningGroupNode, dataLang, wordDuplicateCount);
+				List<SynonymData> meaningSynonyms = extractSynonyms(meaningGroupNode, meaningId);
+				synonyms.addAll(meaningSynonyms);
 
 				int lexemeLevel2 = 0;
-
 				for (WordData newWordData : newWords) {
 					lexemeLevel2++;
 					Long lexemeId = createLexeme(newWordData.id, meaningId, lexemeLevel1, lexemeLevel2, 0, datasets);
@@ -121,17 +141,25 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData);
 					}
-
-					for (Long synonymWordId : synonymWordIds) {
-						lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, datasets);
-						if (lexemeId == null) {
-							lexemeDuplicateCount.increment();
-						}
-					}
 					saveGrammars(meaningNumberGroupNode, lexemeId, datasets, newWordData);
 				}
 			}
 		}
+	}
+
+	private List<SynonymData> extractSynonyms(Element node, Long meaningId) {
+
+		final String synonymExp = "x:syn";
+
+		List<SynonymData> synonyms = new ArrayList<>();
+		List<Element> synonymNodes = node.selectNodes(synonymExp);
+		for (Element synonymNode : synonymNodes) {
+			SynonymData data = new SynonymData();
+			data.word = synonymNode.getTextTrim();
+			data.meaningId = meaningId;
+			synonyms.add(data);
+		}
+		return synonyms;
 	}
 
 	private void saveGrammars(Element node, Long lexemeId, String[] datasets, WordData wordData) throws Exception {
@@ -298,5 +326,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String posCode;
 		String derivCode;
 		String grammar;
+	}
+
+	private class SynonymData {
+		String word;
+		Long meaningId;
+		Integer homonymNr;
 	}
 }
