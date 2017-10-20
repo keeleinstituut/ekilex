@@ -77,7 +77,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		processSynonyms(synonyms, datasets);
-		processAntonyms(antonyms, datasets);
+// TODO: cant use it before we have dataset based detection of words
+//		processAntonyms(antonyms, datasets);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
