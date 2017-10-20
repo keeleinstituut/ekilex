@@ -94,6 +94,11 @@ public class Sequences {
     public static final Sequence<Long> USAGE_ID_SEQ = new SequenceImpl<Long>("usage_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.usage_translation_id_seq</code>
+     */
+    public static final Sequence<Long> USAGE_TRANSLATION_ID_SEQ = new SequenceImpl<Long>("usage_translation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.word_id_seq</code>
      */
     public static final Sequence<Long> WORD_ID_SEQ = new SequenceImpl<Long>("word_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

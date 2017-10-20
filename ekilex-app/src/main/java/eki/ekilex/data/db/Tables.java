@@ -38,6 +38,7 @@ import eki.ekilex.data.db.tables.Rection;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 
 import javax.annotation.Generated;
@@ -225,6 +226,11 @@ public class Tables {
      * The table <code>public.usage</code>.
      */
     public static final Usage USAGE = eki.ekilex.data.db.tables.Usage.USAGE;
+
+    /**
+     * The table <code>public.usage_translation</code>.
+     */
+    public static final UsageTranslation USAGE_TRANSLATION = eki.ekilex.data.db.tables.UsageTranslation.USAGE_TRANSLATION;
 
     /**
      * The table <code>public.word</code>.

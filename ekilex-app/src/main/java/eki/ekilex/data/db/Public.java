@@ -38,6 +38,7 @@ import eki.ekilex.data.db.tables.Rection;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1094327288;
+    private static final long serialVersionUID = 1896691333;
 
     /**
      * The reference instance of <code>public</code>
@@ -243,6 +244,11 @@ public class Public extends SchemaImpl {
     public final Usage USAGE = eki.ekilex.data.db.tables.Usage.USAGE;
 
     /**
+     * The table <code>public.usage_translation</code>.
+     */
+    public final UsageTranslation USAGE_TRANSLATION = eki.ekilex.data.db.tables.UsageTranslation.USAGE_TRANSLATION;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
@@ -286,6 +292,7 @@ public class Public extends SchemaImpl {
             Sequences.PARADIGM_ID_SEQ,
             Sequences.RECTION_ID_SEQ,
             Sequences.USAGE_ID_SEQ,
+            Sequences.USAGE_TRANSLATION_ID_SEQ,
             Sequences.WORD_ID_SEQ);
     }
 
@@ -332,6 +339,7 @@ public class Public extends SchemaImpl {
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Usage.USAGE,
+            UsageTranslation.USAGE_TRANSLATION,
             Word.WORD);
     }
 }
