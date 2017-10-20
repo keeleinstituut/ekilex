@@ -60,16 +60,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<AntonymData> antonyms = new ArrayList<>();
 
 		for (Element articleNode : articleNodes) {
-			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
-			if (contentNode == null) {
-				continue;
-			}
-
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			processArticleHeader(headerNode, newWords, wordDuplicateCount);
 
-			processArticleContent(contentNode, newWords, datasets, wordDuplicateCount, lexemeDuplicateCount, synonyms, antonyms);
+			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+			if (contentNode != null) {
+				processArticleContent(contentNode, newWords, datasets, wordDuplicateCount, lexemeDuplicateCount, synonyms, antonyms);
+			}
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
