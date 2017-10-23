@@ -49,7 +49,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		final String langTypeAttr = "type";
 
 		final String domainOrigin = "lenoch";
-		final String defaultRection = "-";
+		final String defaultRectionValue = "-";
 		final String defaultWordMorphCode = "SgN";
 
 		long t1, t2;
@@ -119,7 +119,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 								//TODO get source
 							}
 							usage = usageNode.getTextTrim();
-							rectionId = createOrSelectRection(lexemeId, defaultRection);
+							rectionId = createOrSelectRection(lexemeId, defaultRectionValue);
 							createUsage(rectionId, usage);
 						}
 						definitionNode = (Element) termGroupNode.selectSingleNode(definitionExp);
