@@ -38,6 +38,7 @@ import eki.ekilex.data.db.tables.Rection;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 
 import javax.annotation.Generated;
@@ -115,6 +116,7 @@ public class Indexes {
     public static final Index REGISTER_PKEY = Indexes0.REGISTER_PKEY;
     public static final Index REGISTER_LABEL_CODE_LANG_TYPE_KEY = Indexes0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index USAGE_PKEY = Indexes0.USAGE_PKEY;
+    public static final Index USAGE_TRANSLATION_PKEY = Indexes0.USAGE_TRANSLATION_PKEY;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_PKEY = Indexes0.WORD_PKEY;
 
@@ -174,6 +176,7 @@ public class Indexes {
         public static Index REGISTER_PKEY = createIndex("register_pkey", Register.REGISTER, new OrderField[] { Register.REGISTER.CODE }, true);
         public static Index REGISTER_LABEL_CODE_LANG_TYPE_KEY = createIndex("register_label_code_lang_type_key", RegisterLabel.REGISTER_LABEL, new OrderField[] { RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE }, true);
         public static Index USAGE_PKEY = createIndex("usage_pkey", Usage.USAGE, new OrderField[] { Usage.USAGE.ID }, true);
+        public static Index USAGE_TRANSLATION_PKEY = createIndex("usage_translation_pkey", UsageTranslation.USAGE_TRANSLATION, new OrderField[] { UsageTranslation.USAGE_TRANSLATION.ID }, true);
         public static Index WORD_HOMONYM_NR_IDX = createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_PKEY = createIndex("word_pkey", Word.WORD, new OrderField[] { Word.WORD.ID }, true);
     }

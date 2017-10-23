@@ -38,6 +38,7 @@ import eki.ekilex.data.db.tables.Rection;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Usage;
+import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -73,6 +74,7 @@ import eki.ekilex.data.db.tables.records.RectionRecord;
 import eki.ekilex.data.db.tables.records.RegisterLabelRecord;
 import eki.ekilex.data.db.tables.records.RegisterRecord;
 import eki.ekilex.data.db.tables.records.UsageRecord;
+import eki.ekilex.data.db.tables.records.UsageTranslationRecord;
 import eki.ekilex.data.db.tables.records.WordRecord;
 
 import javax.annotation.Generated;
@@ -115,6 +117,7 @@ public class Keys {
     public static final Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Identities0.IDENTITY_PARADIGM;
     public static final Identity<RectionRecord, Long> IDENTITY_RECTION = Identities0.IDENTITY_RECTION;
     public static final Identity<UsageRecord, Long> IDENTITY_USAGE = Identities0.IDENTITY_USAGE;
+    public static final Identity<UsageTranslationRecord, Long> IDENTITY_USAGE_TRANSLATION = Identities0.IDENTITY_USAGE_TRANSLATION;
     public static final Identity<WordRecord, Long> IDENTITY_WORD = Identities0.IDENTITY_WORD;
 
     // -------------------------------------------------------------------------
@@ -162,6 +165,7 @@ public class Keys {
     public static final UniqueKey<RegisterRecord> REGISTER_PKEY = UniqueKeys0.REGISTER_PKEY;
     public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<UsageRecord> USAGE_PKEY = UniqueKeys0.USAGE_PKEY;
+    public static final UniqueKey<UsageTranslationRecord> USAGE_TRANSLATION_PKEY = UniqueKeys0.USAGE_TRANSLATION_PKEY;
     public static final UniqueKey<WordRecord> WORD_PKEY = UniqueKeys0.WORD_PKEY;
 
     // -------------------------------------------------------------------------
@@ -219,6 +223,8 @@ public class Keys {
     public static final ForeignKey<RegisterLabelRecord, LangRecord> REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY;
     public static final ForeignKey<RegisterLabelRecord, LabelTypeRecord> REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY;
     public static final ForeignKey<UsageRecord, RectionRecord> USAGE__USAGE_RECTION_ID_FKEY = ForeignKeys0.USAGE__USAGE_RECTION_ID_FKEY;
+    public static final ForeignKey<UsageTranslationRecord, UsageRecord> USAGE_TRANSLATION__USAGE_TRANSLATION_USAGE_ID_FKEY = ForeignKeys0.USAGE_TRANSLATION__USAGE_TRANSLATION_USAGE_ID_FKEY;
+    public static final ForeignKey<UsageTranslationRecord, LangRecord> USAGE_TRANSLATION__USAGE_TRANSLATION_LANG_FKEY = ForeignKeys0.USAGE_TRANSLATION__USAGE_TRANSLATION_LANG_FKEY;
     public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = ForeignKeys0.WORD__WORD_LANG_FKEY;
     public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_MORPH_CODE_FKEY;
 
@@ -241,6 +247,7 @@ public class Keys {
         public static Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = createIdentity(Paradigm.PARADIGM, Paradigm.PARADIGM.ID);
         public static Identity<RectionRecord, Long> IDENTITY_RECTION = createIdentity(Rection.RECTION, Rection.RECTION.ID);
         public static Identity<UsageRecord, Long> IDENTITY_USAGE = createIdentity(Usage.USAGE, Usage.USAGE.ID);
+        public static Identity<UsageTranslationRecord, Long> IDENTITY_USAGE_TRANSLATION = createIdentity(UsageTranslation.USAGE_TRANSLATION, UsageTranslation.USAGE_TRANSLATION.ID);
         public static Identity<WordRecord, Long> IDENTITY_WORD = createIdentity(Word.WORD, Word.WORD.ID);
     }
 
@@ -286,6 +293,7 @@ public class Keys {
         public static final UniqueKey<RegisterRecord> REGISTER_PKEY = createUniqueKey(Register.REGISTER, "register_pkey", Register.REGISTER.CODE);
         public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(RegisterLabel.REGISTER_LABEL, "register_label_code_lang_type_key", RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE);
         public static final UniqueKey<UsageRecord> USAGE_PKEY = createUniqueKey(Usage.USAGE, "usage_pkey", Usage.USAGE.ID);
+        public static final UniqueKey<UsageTranslationRecord> USAGE_TRANSLATION_PKEY = createUniqueKey(UsageTranslation.USAGE_TRANSLATION, "usage_translation_pkey", UsageTranslation.USAGE_TRANSLATION.ID);
         public static final UniqueKey<WordRecord> WORD_PKEY = createUniqueKey(Word.WORD, "word_pkey", Word.WORD.ID);
     }
 
@@ -341,6 +349,8 @@ public class Keys {
         public static final ForeignKey<RegisterLabelRecord, LangRecord> REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, RegisterLabel.REGISTER_LABEL, "register_label__register_label_lang_fkey", RegisterLabel.REGISTER_LABEL.LANG);
         public static final ForeignKey<RegisterLabelRecord, LabelTypeRecord> REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, RegisterLabel.REGISTER_LABEL, "register_label__register_label_type_fkey", RegisterLabel.REGISTER_LABEL.TYPE);
         public static final ForeignKey<UsageRecord, RectionRecord> USAGE__USAGE_RECTION_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.RECTION_PKEY, Usage.USAGE, "usage__usage_rection_id_fkey", Usage.USAGE.RECTION_ID);
+        public static final ForeignKey<UsageTranslationRecord, UsageRecord> USAGE_TRANSLATION__USAGE_TRANSLATION_USAGE_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.USAGE_PKEY, UsageTranslation.USAGE_TRANSLATION, "usage_translation__usage_translation_usage_id_fkey", UsageTranslation.USAGE_TRANSLATION.USAGE_ID);
+        public static final ForeignKey<UsageTranslationRecord, LangRecord> USAGE_TRANSLATION__USAGE_TRANSLATION_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, UsageTranslation.USAGE_TRANSLATION, "usage_translation__usage_translation_lang_fkey", UsageTranslation.USAGE_TRANSLATION.LANG);
         public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, Word.WORD, "word__word_lang_fkey", Word.WORD.LANG);
         public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Word.WORD, "word__word_morph_code_fkey", Word.WORD.MORPH_CODE);
     }

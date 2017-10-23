@@ -12,6 +12,7 @@ import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.RECTION;
 import static eki.ekilex.data.db.Tables.USAGE;
+import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.Map;
@@ -21,7 +22,6 @@ import org.jooq.Record11;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
-import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -110,14 +110,13 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String[]>> findConnectedRections(Long lexemeId) {
+	public Result<Record2<String, String[][]>> findConnectedRections(Long lexemeId) {
 
 		return create
-				.select(RECTION.VALUE.as("rection"), DSL.arrayAgg(USAGE.VALUE).orderBy(USAGE.ID).as("usages"))
-				.from(RECTION, USAGE)
+				.select(RECTION.VALUE.as("rection"), DSL.arrayAgg(DSL.array(USAGE.VALUE, USAGE_TRANSLATION.VALUE)).orderBy(USAGE.ID).as("usages"))
+				.from(RECTION.leftOuterJoin(USAGE).on(USAGE.RECTION_ID.eq(RECTION.ID)).leftOuterJoin(USAGE_TRANSLATION).on(USAGE_TRANSLATION.USAGE_ID.eq(USAGE.ID)))
 				.where(
-						RECTION.LEXEME_ID.eq(lexemeId)
-						.and(USAGE.RECTION_ID.eq(RECTION.ID)))
+						RECTION.LEXEME_ID.eq(lexemeId))
 				.groupBy(RECTION.ID)
 				.fetch();
 	}

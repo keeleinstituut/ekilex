@@ -13,7 +13,7 @@ public class Rection extends AbstractDataObject {
 	private String value;
 
 	@Column(name = "usages")
-	private String[] usages;
+	private String[][] usages;
 
 	public Rection() {
 	}
@@ -30,11 +30,11 @@ public class Rection extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public String[] getUsages() {
+	public String[][] getUsages() {
 		return usages;
 	}
 
-	public void setUsages(String[] usages) {
+	public void setUsages(String[][] usages) {
 		this.usages = usages;
 	}
 
