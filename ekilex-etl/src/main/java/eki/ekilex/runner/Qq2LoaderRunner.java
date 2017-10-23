@@ -524,6 +524,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private List<Usage> extractUsagesAndTranslations(List<Element> usageGroupNodes) {
 
+		//x:np/x:ng
 		final String usageExp = "x:n";
 		final String usageTranslationExp = "x:qnp/x:qng";
 		final String usageTranslationValueExp = "x:qn";
@@ -654,12 +655,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 			singleUsageTranslationMatchCount.increment();
 		} else {
+			boolean isAnyUsageTranslationMatch = false;
 			for (Usage usage : usages) {
 				usageTranslations = usage.getUsageTranslations();
 				boolean isUsageTranslationMatch = false;
 				for (UsageTranslation usageTranslation : usageTranslations) {
 					if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
-						isUsageTranslationMatch = true;
+						isAnyUsageTranslationMatch = isUsageTranslationMatch = true;
 						break;
 					}
 				}
@@ -671,6 +673,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 					}
 				}
+			}
+			if (!isAnyUsageTranslationMatch) {
+				basicDbService.delete(RECTION, rectionIds);
 			}
 		}
 	}
