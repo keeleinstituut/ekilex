@@ -10,8 +10,10 @@ import eki.ekilex.service.db.SearchDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
@@ -47,12 +49,26 @@ public class SearchService {
 			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
 			meaning.setDomains(domains);
 
-			List<Rection> rections = searchDbService.findConnectedRections(lexemeId).into(Rection.class);
+			List<Rection> rections = getRections(lexemeId);
 			meaning.setRections(rections);
 		});
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
 			d.setMeanings(meanings);
+		});
+	}
+
+	private List<Rection> getRections(Long lexemeId) {
+		List<Rection> rections = searchDbService.findConnectedRections(lexemeId).into(Rection.class);
+		removeNullUsages(rections);
+		return rections;
+	}
+
+	private void removeNullUsages(List<Rection> rections) {
+		rections.forEach(rection -> {
+			if (rection.getUsages().length == 1 && Arrays.stream(rection.getUsages()[0]).allMatch(Objects::isNull)) {
+				rection.setUsages(null);
+			}
 		});
 	}
 
