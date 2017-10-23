@@ -75,9 +75,15 @@
           <span th:each="rection,rectionIter : ${meaning.rections}">
             <span th:text="${rection.value}"></span>
             (
-            <span th:each="usage,usageIter : ${rection.usages}">
-              <span th:text="${usage}"></span>
-            </span>
+              <span th:each="usage,usageIter : ${rection.usages}">
+                <th:block th:each="usageValue, usageValueIter : ${usage}">
+                  <th:block th:if="${usageValue != null}">
+                    <span th:unless="${usageValueIter.first}">|</span>
+                    <span th:text="${usageValue}"></span>
+                  </th:block>
+                </th:block>
+                <span th:unless="${usageIter.last}">|</span>
+              </span>
             )
             <span th:unless="${rectionIter.last}">,</span>
           </span>
