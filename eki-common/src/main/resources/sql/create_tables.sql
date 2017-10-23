@@ -1,4 +1,6 @@
+drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
+drop table if exists grammar_dataset;
 drop table if exists grammar;
 drop table if exists usage_translation;
 drop table if exists usage;
@@ -6,9 +8,12 @@ drop table if exists rection;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
+drop table if exists lexeme_dataset;
 drop table if exists lexeme;
+drop table if exists definition_dataset;
 drop table if exists definition;
 drop table if exists meaning_domain;
+drop table if exists meaning_dataset;
 drop table if exists meaning;
 drop table if exists form;
 drop table if exists paradigm;
@@ -254,10 +259,16 @@ alter sequence form_id_seq restart with 10000;
 -- mõiste/tähendus
 create table meaning
 (
-  id bigserial primary key,
-  datasets varchar(10) array not null
+  id bigserial primary key
 );
 alter sequence meaning_id_seq restart with 10000;
+
+create table meaning_dataset
+(
+  meaning_id bigint REFERENCES meaning(id) on delete CASCADE not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  primary key (meaning_id, dataset_code)
+);
 
 create table meaning_domain
 (
@@ -276,10 +287,16 @@ create table definition
   id bigserial primary key,
   meaning_id bigint references meaning(id) not null,
   value text not null,
-  lang char(3) references lang(code) not null,
-  datasets varchar(10) array not null
+  lang char(3) references lang(code) not null
 );
 alter sequence definition_id_seq restart with 10000;
+
+create table definition_dataset
+(
+  definition_id bigint REFERENCES definition(id) on delete CASCADE not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  primary key (definition_id, dataset_code)
+);
 
 -- ilmik
 create table lexeme
@@ -291,10 +308,16 @@ create table lexeme
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,
-  datasets varchar(10) array not null,
   unique(word_id, meaning_id)
 );
 alter sequence lexeme_id_seq restart with 10000;
+
+create table lexeme_dataset
+(
+  lexeme_id bigint REFERENCES lexeme(id) on delete CASCADE not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  primary key (lexeme_id, dataset_code)
+);
 
 create table lexeme_register
 (
@@ -357,10 +380,16 @@ create table grammar
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
-  datasets varchar(10) array not null
+  lang char(3) references lang(code) not null
 );
 alter sequence grammar_id_seq restart with 10000;
+
+create table grammar_dataset
+(
+  grammar_id bigint REFERENCES grammar(id) on delete CASCADE not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  primary key (grammar_id, dataset_code)
+);
 
 -- seos
 create table lex_relation
@@ -369,10 +398,16 @@ create table lex_relation
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null,
-  datasets varchar(10) array not null,
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;
+
+create table lex_relation_dataset
+(
+  lex_relation_id bigint REFERENCES lex_relation(id) on delete CASCADE not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  primary key (lex_relation_id, dataset_code)
+);
 
 --- indexes
 
