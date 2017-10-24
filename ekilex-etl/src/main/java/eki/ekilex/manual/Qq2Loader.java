@@ -37,14 +37,14 @@ public class Qq2Loader {
 			if (isAddForms) {
 				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
 			}
-			String[] datasets = new String[] {"qq2"};
+			String dataset = "qq2";
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 
 			Map<String, List<Paradigm>> wordParadigmsMap = null;
 			if (isAddForms) {
 				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang);
 			}
-			qq2Runner.execute(qq2FilePath, dataLang, datasets, wordParadigmsMap, doReports);
+			qq2Runner.execute(qq2FilePath, dataLang, dataset, wordParadigmsMap, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

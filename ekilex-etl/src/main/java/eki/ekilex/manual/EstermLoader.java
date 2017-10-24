@@ -25,9 +25,9 @@ public class EstermLoader {
 			//  /projects/eki/data/dictionaries/esterm_reformat.xml
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
-			String[] datasets = new String[] {"est"};
+			String dataset = "est";
 
-			runner.execute(dataXmlFilePath, dataLang, datasets);
+			runner.execute(dataXmlFilePath, dataLang, dataset);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

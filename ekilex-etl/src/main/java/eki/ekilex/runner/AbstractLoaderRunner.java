@@ -204,25 +204,34 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return homonymNr;
 	}
 
-	protected Long createMeaning(String[] datasets) throws Exception {
+	protected Long createMeaning(String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
 		Long meaningId = basicDbService.create(MEANING, tableRowParamMap);
+		if (meaningId != null) {
+			tableRowParamMap.put("meaning_id", meaningId);
+			tableRowParamMap.put("dataset_code", dataset);
+			basicDbService.create(MEANING_DATASET, tableRowParamMap);
+		}
 		return meaningId;
 	}
 
-	protected void createDefinition(Long meaningId, String definition, String lang, String[] datasets) throws Exception {
+	protected void createDefinition(Long meaningId, String definition, String lang, String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("value", definition);
 		tableRowParamMap.put("lang", lang);
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
-		basicDbService.create(DEFINITION, tableRowParamMap);
+		Long definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
+		if (definitionId != null) {
+			tableRowParamMap.clear();
+			tableRowParamMap.put("definition_id", definitionId);
+			tableRowParamMap.put("dataset_code", dataset);
+			basicDbService.create(DEFINITION_DATASET, tableRowParamMap);
+		}
 	}
 
-	protected Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String[] datasets) throws Exception {
+	protected Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
@@ -236,8 +245,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (lexemeLevel3 != null) {
 			tableRowParamMap.put("level3", lexemeLevel3);
 		}
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
+		if (lexemeId != null) {
+			tableRowParamMap.clear();
+			tableRowParamMap.put("lexeme_id", lexemeId);
+			tableRowParamMap.put("dataset_code", dataset);
+			basicDbService.createIfNotExists(LEXEME_DATASET, tableRowParamMap);
+		}
 		return lexemeId;
 	}
 

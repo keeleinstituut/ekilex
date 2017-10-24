@@ -61,7 +61,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		final String defaultWordMorphCode = "SgN";
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> conceptMeanings = new HashMap<>();
-		String[] datasets = new String[] {dataset};
 
 		sortSubjects(subjects, 0);
 
@@ -82,7 +81,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 			Integer conceptId = (Integer) term.get("concept_id");
 			if (!conceptMeanings.containsKey(conceptId)) {
-				Long meaningId = createMeaning(datasets);
+				Long meaningId = createMeaning(dataset);
 				conceptMeanings.put(conceptId, meaningId);
 				Integer domainId = (Integer) term.get("subject_id");
 				if (domainId != null) {
@@ -91,7 +90,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			}
 
 			Long meaningId = conceptMeanings.get(conceptId);
-			createLexeme(wordId, meaningId, 0, 0, 0, datasets);
+			createLexeme(wordId, meaningId, 0, 0, 0, dataset);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
@@ -107,7 +106,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer conceptId = (Integer) definition.get("concept_id");
 			if (conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = conceptMeanings.get(conceptId);
-				createDefinition(meaningId, (String)definition.get("definition"), language, datasets);
+				createDefinition(meaningId, (String)definition.get("definition"), language, dataset);
 				definitionsCount++;
 			}
 		}

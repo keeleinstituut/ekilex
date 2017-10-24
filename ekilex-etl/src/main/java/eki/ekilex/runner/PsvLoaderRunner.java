@@ -40,7 +40,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
-		String[] datasets = new String[] {dataset};
 
 		logger.info("Starting import");
 		long t1, t2;
@@ -66,7 +65,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(contentNode, newWords, datasets, wordDuplicateCount, lexemeDuplicateCount, synonyms, antonyms);
+				processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount, synonyms, antonyms);
 			}
 
 			articleCounter++;
@@ -76,7 +75,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		processSynonyms(synonyms, datasets);
+		processSynonyms(synonyms, dataset);
 // TODO: cant use it before we have dataset based detection of words
 //		processAntonyms(antonyms, datasets);
 
@@ -113,7 +112,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void processSynonyms(List<SynonymData> synonyms, String[] datasets) throws Exception {
+	private void processSynonyms(List<SynonymData> synonyms, String dataset) throws Exception {
 
 		final String defaultWordMorphCode = "SgN";
 		final int defaultHomonymNr = 1;
@@ -123,12 +122,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Count existingWordCount = new Count();
 		for (SynonymData synonymData : synonyms) {
 			Long wordId = saveWord(synonymData.word, null, null, null, defaultHomonymNr, defaultWordMorphCode, dataLang, null, existingWordCount);
-			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, datasets);
+			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, dataset);
 		}
 		logger.debug("Synonym words created {}", synonyms.size() - existingWordCount.getValue());
 	}
 
-	private void processArticleContent(Element contentNode, List<WordData> newWords, String[] datasets, Count wordDuplicateCount, Count lexemeDuplicateCount,
+	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount,
 			List<SynonymData> synonyms, List<AntonymData> antonyms) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
@@ -149,10 +148,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
 				List<Usage> usages = extractUsages(usageGroupNodes);
 
-				Long meaningId = createMeaning(datasets);
+				Long meaningId = createMeaning(dataset);
 
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
-				saveDefinitions(definitionValueNodes, meaningId, dataLang, datasets);
+				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(meaningGroupNode, meaningId);
 				synonyms.addAll(meaningSynonyms);
@@ -162,13 +161,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				int lexemeLevel2 = 0;
 				for (WordData newWordData : newWords) {
 					lexemeLevel2++;
-					Long lexemeId = createLexeme(newWordData.id, meaningId, lexemeLevel1, lexemeLevel2, 0, datasets);
+					Long lexemeId = createLexeme(newWordData.id, meaningId, lexemeLevel1, lexemeLevel2, 0, dataset);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData);
-						saveGrammars(meaningNumberGroupNode, lexemeId, datasets, newWordData);
+						saveGrammars(meaningNumberGroupNode, lexemeId, dataset, newWordData);
 						for (AntonymData meaningAntonym : meaningAntonyms) {
 							AntonymData antonymData = new AntonymData();
 							antonymData.word = meaningAntonym.word;
@@ -219,25 +218,30 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return synonyms;
 	}
 
-	private void saveGrammars(Element node, Long lexemeId, String[] datasets, WordData wordData) throws Exception {
+	private void saveGrammars(Element node, Long lexemeId, String dataset, WordData wordData) throws Exception {
 		final String grammarValueExp = "x:grg/x:gki";
 
 		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
 		for (Element grammarNode : grammarNodes) {
-			createGrammar(lexemeId, datasets, grammarNode.getTextTrim());
+			createGrammar(lexemeId, dataset, grammarNode.getTextTrim());
 		}
 		if (isNotEmpty(wordData.grammar)) {
-			createGrammar(lexemeId, datasets, wordData.grammar);
+			createGrammar(lexemeId, dataset, wordData.grammar);
 		}
 	}
 
-	private void createGrammar(Long lexemeId, String[] datasets, String value) throws Exception {
+	private void createGrammar(Long lexemeId, String dataset, String value) throws Exception {
 		Map<String, Object> params = new HashMap<>();
 		params.put("lexeme_id", lexemeId);
 		params.put("value", value);
 		params.put("lang", dataLang);
-		params.put("datasets", new PgVarcharArray(datasets));
-		basicDbService.createIfNotExists(GRAMMAR, params);
+		Long grammarId = basicDbService.createIfNotExists(GRAMMAR, params);
+		if (grammarId != null) {
+			params.clear();
+			params.put("grammar_id", grammarId);
+			params.put("dataset_code", dataset);
+			basicDbService.createIfNotExists(GRAMMAR_DATASET, params);
+		}
 	}
 
 	//POS - part of speech
@@ -367,14 +371,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return synonymWordIds;
 	}
 
-	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] datasets) throws Exception {
+	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {
 
 		if (definitionValueNodes == null) {
 			return;
 		}
 		for (Element definitionValueNode : definitionValueNodes) {
 			String definition = definitionValueNode.getTextTrim();
-			createDefinition(meaningId, definition, wordMatchLang, datasets);
+			createDefinition(meaningId, definition, wordMatchLang, dataset);
 		}
 	}
 

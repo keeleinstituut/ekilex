@@ -81,7 +81,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	@Transactional
 	public void execute(
-			String dataXmlFilePath, String dataLang, String[] datasets,
+			String dataXmlFilePath, String dataLang, String dataset,
 			Map<String, List<Paradigm>> wordParadigmsMap, boolean doReports) throws Exception {
 
 		logger.debug("Loading QQ2...");
@@ -219,7 +219,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// grammar...
 				grammarNodes = wordGroupNode.selectNodes(wordGrammarExp);
-				extractGrammar(grammarNodes, wordId, datasets, wordIdGrammarMap);
+				extractGrammar(grammarNodes, wordId, wordIdGrammarMap);
 			}
 
 			// body...
@@ -277,14 +277,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						wordMatches.add(wordObj);
 
 						// meaning
-						meaningId = createMeaning(datasets);
+						meaningId = createMeaning(dataset);
 
 						// definitions
 						definitionValueNodes = wordMatchNode.selectNodes(definitionValueExp);
-						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, datasets);
+						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, dataset);
 
 						// word match lexeme
-						lexemeId = createLexeme(wordId, meaningId, null, null, null, datasets);
+						lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
 						} else {
@@ -298,7 +298,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						for (Word newWord : newWords) {
 
 							newWordId = newWord.getId();
-							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, datasets);
+							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							} else {
@@ -308,19 +308,19 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 										wordIdRectionMap, lexemeId, newWordId, wordMatch, usages, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
 
 								// new word lexeme grammars
-								createGrammars(wordIdGrammarMap, lexemeId, newWordId);
+								createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
 							}
 						}
 
 						for (Long synonymWordId : synonymLevel1WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, datasets);
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
 						}
 
 						for (Long synonymWordId : synonymLevel2WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, datasets);
+							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
@@ -456,14 +456,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return synonymWordIds;
 	}
 
-	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String[] datasets) throws Exception {
+	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {
 
 		if (definitionValueNodes == null) {
 			return;
 		}
 		for (Element definitionValueNode : definitionValueNodes) {
 			String definition = definitionValueNode.getTextTrim();
-			createDefinition(meaningId, definition, wordMatchLang, datasets);
+			createDefinition(meaningId, definition, wordMatchLang, dataset);
 		}
 	}
 
@@ -478,7 +478,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void extractGrammar(List<Element> grammarNodes, Long wordId, String[] datasets, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
+	private void extractGrammar(List<Element> grammarNodes, Long wordId, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
 
 		List<Map<String, Object>> grammarObjs;
 		Map<String, Object> grammarObj;
@@ -499,7 +499,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			grammarObj = new HashMap<>();
 			grammarObj.put("lang", grammarLang);
 			grammarObj.put("value", grammar);
-			grammarObj.put("datasets", new PgVarcharArray(datasets));
 			grammarObjs.add(grammarObj);
 		}
 	}
@@ -594,13 +593,19 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return usages;
 	}
 
-	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId) throws Exception {
+	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId, String dataset) throws Exception {
 
 		List<Map<String, Object>> grammarObjs = wordIdGrammarMap.get(wordId);
 		if (CollectionUtils.isNotEmpty(grammarObjs)) {
 			for (Map<String, Object> grammarObj : grammarObjs) {
 				grammarObj.put("lexeme_id", lexemeId);
-				basicDbService.createIfNotExists(GRAMMAR, grammarObj);
+				Long grammarId = basicDbService.createIfNotExists(GRAMMAR, grammarObj);
+				if (grammarId != null) {
+					Map<String, Object> params = new HashMap<>();
+					params.put("grammar_id", grammarId);
+					params.put("dataset_code", dataset);
+					basicDbService.createIfNotExists(GRAMMAR_DATASET, params);
+				}
 			}
 		}
 	}

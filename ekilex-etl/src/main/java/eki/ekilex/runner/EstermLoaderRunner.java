@@ -32,7 +32,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, String[] datasets) throws Exception {
+	public void execute(String dataXmlFilePath, String dataLang, String dataset) throws Exception {
 
 		logger.debug("Starting loading Esterm...");
 
@@ -77,7 +77,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		for (Element conceptGroupNode : conceptGroupNodes) {
 
-			meaningId = createMeaning(datasets);
+			meaningId = createMeaning(dataset);
 
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
 			saveDomains(conceptGroupNode, domainNodes, meaningId, domainOrigin, dataErrorCount);
@@ -107,7 +107,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					homonymNr = getWordMaxHomonymNr(word, dataLang);
 					homonymNr++;
 					wordId = saveWord(word, null, null, null, homonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
-					lexemeId = createLexeme(wordId, meaningId, null, null, null, datasets);
+					lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
@@ -130,7 +130,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 								//TODO get source
 							}
 							definition = definitionNode.getTextTrim();
-							createDefinition(meaningId, definition, lang, datasets);
+							createDefinition(meaningId, definition, lang, dataset);
 						}
 						lexemeTypeNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
 						if (lexemeTypeNode == null) {

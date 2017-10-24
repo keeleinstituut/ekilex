@@ -35,4 +35,9 @@ public interface TableName {
 	// classifier binds
 	public static final String MEANING_DOMAIN = "meaning_domain";
 	public static final String LEXEME_POS = "lexeme_pos";
+
+	public static final String MEANING_DATASET = "meaning_dataset";
+	public static final String LEXEME_DATASET = "lexeme_dataset";
+	public static final String DEFINITION_DATASET = "definition_dataset";
+	public static final String GRAMMAR_DATASET = "grammar_dataset";
 }
