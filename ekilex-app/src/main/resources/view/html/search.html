@@ -9,7 +9,11 @@
 <body>
   <div class="container-fluid">
     <div class="d-flex flex-row">
-      <p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p>
+      <p class="card-text">
+        <a th:href="@{/}">
+          <span th:text="${appData.appName + ' ' + appData.appVersion}"></span>
+        </a>
+      </p>
     </div>
     <div class="card mt-4">
       <div class="card-header">
@@ -26,10 +30,7 @@
                 </div>
                 <div class="col-4 custom-controls-stacked" th:if="${datasets}">
                   <label class="custom-control custom-checkbox" th:each="dict : ${datasets}">
-                    <input type="checkbox" class="custom-control-input"
-                           th:value="${dict.key}"
-                           th:name="dicts"
-                           th:checked="${#lists.contains(selectedDatasets, dict.key)}">
+                    <input type="checkbox" class="custom-control-input" th:value="${dict.key}" th:name="dicts" th:checked="${#lists.contains(selectedDatasets, dict.key)}">
                     <span class="custom-control-indicator"></span>
                     <span class="custom-control-description" th:text="${dict.value}">answer</span>
                   </label>
@@ -56,7 +57,6 @@
       </table>
     </div>
   </div>
-
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:name="${detailsName}" class="pl-4">
       <div class="float-left w-25">
@@ -73,21 +73,19 @@
       <div class="float-left w-75">
         <th:block th:each="meaning : ${details.meanings}">
           <span th:each="rection,rectionIter : ${meaning.rections}">
-            <span th:text="${rection.value}"></span>
-            (
-              <span th:each="usage,usageIter : ${rection.usages}">
-                <th:block th:each="usageValue, usageValueIter : ${usage}">
-                  <th:block th:if="${usageValue != null}">
-                    <span th:unless="${usageValueIter.first}">|</span>
-                    <span th:text="${usageValue}"></span>
-                  </th:block>
+            <span th:text="${rection.value}" style="display: block;"></span>
+            <span th:each="usage,usageIter : ${rection.usages}">
+              <th:block th:each="usageValue, usageValueIter : ${usage}">
+                <th:block th:if="${usageValue != null}">
+                  <span th:unless="${usageValueIter.first}">-</span>
+                  <span th:text="${usageValue}"></span>
                 </th:block>
-                <span th:unless="${usageIter.last}">|</span>
-              </span>
-            )
+              </th:block>
+              <br th:unless="${usageIter.last}" />
+            </span>
             <span th:unless="${rectionIter.last}">,</span>
           </span>
-          <br th:if="${not #lists.isEmpty(meaning.rections)}"/>
+          <br th:if="${not #lists.isEmpty(meaning.rections)}" />
           <span th:each="word,wordIter : ${meaning.words}">
             <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
             <span th:unless="${wordIter.last}">|&nbsp;</span>
@@ -101,10 +99,8 @@
       </div>
     </div>
   </th:block>
-
   <script th:inline="javascript">
   	initialize(applicationUrl);
   </script>
-
 </body>
 </html>
