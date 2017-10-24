@@ -234,7 +234,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel1Str = meaningGroupNode.attributeValue(lexemeLevel1Attr);
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
-				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
+				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);//x:np/x:ng
 				usages = extractUsagesAndTranslations(usageGroupNodes);
 				if (CollectionUtils.isEmpty(usageGroupNodes)) {
 					missingUsageGroupCount.increment();
@@ -530,6 +530,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		List<Usage> usages = new ArrayList<>();
 
+		List<Usage> newUsages;
 		Usage newUsage;
 		UsageTranslation usageTranslation;
 		List<UsageTranslation> usageTranslations;
@@ -545,11 +546,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
 			List<Element> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);
 
+			newUsages = new ArrayList<>();
 			for (Element usageNode : usageNodes) {
 				usageValue = usageNode.getTextTrim();
 				newUsage = new Usage();
 				newUsage.setValue(usageValue);
-				usages.add(newUsage);
+				newUsages.add(newUsage);
 			}
 
 			usageTranslations = new ArrayList<>();
@@ -569,11 +571,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 						List<String> usageTranslationPartWords = russianMorphology.getLemmas(usageTranslationPart);
 						lemmatisedTokens.addAll(usageTranslationPartWords);
-						/*
-						if (usageTranslationPartWords.size() > 1) {
-							logger.debug("There are more than one lemmas for word \"{}\" in \"{}\" : \"{}\"", usageTranslationPart, usageTranslationValue, usageTranslationPartWords);
-						}
-						*/
 					}
 					usageTranslation = new UsageTranslation();
 					usageTranslation.setLang(usageTranslationLang);
@@ -586,9 +583,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			for (Usage usage : usages) {
+			for (Usage usage : newUsages) {
 				usage.setUsageTranslations(usageTranslations);
 			}
+			usages.addAll(newUsages);
 		}
 		return usages;
 	}
