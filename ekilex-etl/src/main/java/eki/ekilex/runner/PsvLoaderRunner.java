@@ -30,8 +30,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
-		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
-		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
+
 	}
 
 	@Transactional
@@ -45,6 +44,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.info("Starting import");
 		long t1, t2;
 		t1 = System.currentTimeMillis();
+
+		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
+		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
 
 		Document dataDoc = readDocument(dataXmlFilePath);
 
