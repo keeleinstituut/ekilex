@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = 868071289;
+    private static final long serialVersionUID = 465406125;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -74,11 +74,6 @@ public class Definition extends TableImpl<DefinitionRecord> {
      * The column <code>public.definition.lang</code>.
      */
     public final TableField<DefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
-
-    /**
-     * The column <code>public.definition.datasets</code>.
-     */
-    public final TableField<DefinitionRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.definition</code> table reference

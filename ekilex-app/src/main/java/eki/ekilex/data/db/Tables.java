@@ -6,6 +6,7 @@ package eki.ekilex.data.db;
 
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.Domain;
@@ -15,19 +16,23 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.Grammar;
+import eki.ekilex.data.db.tables.GrammarDataset;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
 import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
+import eki.ekilex.data.db.tables.LexRelationDataset;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
 import eki.ekilex.data.db.tables.LexemeTypeLabel;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningDataset;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
@@ -66,6 +71,11 @@ public class Tables {
      * The table <code>public.definition</code>.
      */
     public static final Definition DEFINITION = eki.ekilex.data.db.tables.Definition.DEFINITION;
+
+    /**
+     * The table <code>public.definition_dataset</code>.
+     */
+    public static final DefinitionDataset DEFINITION_DATASET = eki.ekilex.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
 
     /**
      * The table <code>public.deriv</code>.
@@ -113,6 +123,11 @@ public class Tables {
     public static final Grammar GRAMMAR = eki.ekilex.data.db.tables.Grammar.GRAMMAR;
 
     /**
+     * The table <code>public.grammar_dataset</code>.
+     */
+    public static final GrammarDataset GRAMMAR_DATASET = eki.ekilex.data.db.tables.GrammarDataset.GRAMMAR_DATASET;
+
+    /**
      * The table <code>public.label_type</code>.
      */
     public static final LabelType LABEL_TYPE = eki.ekilex.data.db.tables.LabelType.LABEL_TYPE;
@@ -143,9 +158,19 @@ public class Tables {
     public static final LexRelation LEX_RELATION = eki.ekilex.data.db.tables.LexRelation.LEX_RELATION;
 
     /**
+     * The table <code>public.lex_relation_dataset</code>.
+     */
+    public static final LexRelationDataset LEX_RELATION_DATASET = eki.ekilex.data.db.tables.LexRelationDataset.LEX_RELATION_DATASET;
+
+    /**
      * The table <code>public.lexeme</code>.
      */
     public static final Lexeme LEXEME = eki.ekilex.data.db.tables.Lexeme.LEXEME;
+
+    /**
+     * The table <code>public.lexeme_dataset</code>.
+     */
+    public static final LexemeDataset LEXEME_DATASET = eki.ekilex.data.db.tables.LexemeDataset.LEXEME_DATASET;
 
     /**
      * The table <code>public.lexeme_deriv</code>.
@@ -176,6 +201,11 @@ public class Tables {
      * The table <code>public.meaning</code>.
      */
     public static final Meaning MEANING = eki.ekilex.data.db.tables.Meaning.MEANING;
+
+    /**
+     * The table <code>public.meaning_dataset</code>.
+     */
+    public static final MeaningDataset MEANING_DATASET = eki.ekilex.data.db.tables.MeaningDataset.MEANING_DATASET;
 
     /**
      * The table <code>public.meaning_domain</code>.
