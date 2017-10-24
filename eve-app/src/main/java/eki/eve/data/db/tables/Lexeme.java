@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -729627820;
+    private static final long serialVersionUID = 1701481398;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -89,11 +89,6 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.level3</code>.
      */
     public final TableField<LexemeRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.INTEGER)), this, "");
-
-    /**
-     * The column <code>public.lexeme.datasets</code>.
-     */
-    public final TableField<LexemeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.lexeme</code> table reference

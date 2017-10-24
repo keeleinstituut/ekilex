@@ -6,6 +6,7 @@ package eki.eve.data.db;
 
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
+import eki.eve.data.db.tables.DefinitionDataset;
 import eki.eve.data.db.tables.Deriv;
 import eki.eve.data.db.tables.DerivLabel;
 import eki.eve.data.db.tables.Domain;
@@ -15,19 +16,23 @@ import eki.eve.data.db.tables.Form;
 import eki.eve.data.db.tables.Gender;
 import eki.eve.data.db.tables.GenderLabel;
 import eki.eve.data.db.tables.Grammar;
+import eki.eve.data.db.tables.GrammarDataset;
 import eki.eve.data.db.tables.LabelType;
 import eki.eve.data.db.tables.Lang;
 import eki.eve.data.db.tables.LangLabel;
 import eki.eve.data.db.tables.LexRelType;
 import eki.eve.data.db.tables.LexRelTypeLabel;
 import eki.eve.data.db.tables.LexRelation;
+import eki.eve.data.db.tables.LexRelationDataset;
 import eki.eve.data.db.tables.Lexeme;
+import eki.eve.data.db.tables.LexemeDataset;
 import eki.eve.data.db.tables.LexemeDeriv;
 import eki.eve.data.db.tables.LexemePos;
 import eki.eve.data.db.tables.LexemeRegister;
 import eki.eve.data.db.tables.LexemeType;
 import eki.eve.data.db.tables.LexemeTypeLabel;
 import eki.eve.data.db.tables.Meaning;
+import eki.eve.data.db.tables.MeaningDataset;
 import eki.eve.data.db.tables.MeaningDomain;
 import eki.eve.data.db.tables.Morph;
 import eki.eve.data.db.tables.MorphLabel;
@@ -38,6 +43,7 @@ import eki.eve.data.db.tables.Rection;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Usage;
+import eki.eve.data.db.tables.UsageTranslation;
 import eki.eve.data.db.tables.Word;
 
 import java.util.ArrayList;
@@ -65,7 +71,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -756648010;
+    private static final long serialVersionUID = -1902689753;
 
     /**
      * The reference instance of <code>public</code>
@@ -81,6 +87,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.definition</code>.
      */
     public final Definition DEFINITION = eki.eve.data.db.tables.Definition.DEFINITION;
+
+    /**
+     * The table <code>public.definition_dataset</code>.
+     */
+    public final DefinitionDataset DEFINITION_DATASET = eki.eve.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
 
     /**
      * The table <code>public.deriv</code>.
@@ -128,6 +139,11 @@ public class Public extends SchemaImpl {
     public final Grammar GRAMMAR = eki.eve.data.db.tables.Grammar.GRAMMAR;
 
     /**
+     * The table <code>public.grammar_dataset</code>.
+     */
+    public final GrammarDataset GRAMMAR_DATASET = eki.eve.data.db.tables.GrammarDataset.GRAMMAR_DATASET;
+
+    /**
      * The table <code>public.label_type</code>.
      */
     public final LabelType LABEL_TYPE = eki.eve.data.db.tables.LabelType.LABEL_TYPE;
@@ -158,9 +174,19 @@ public class Public extends SchemaImpl {
     public final LexRelation LEX_RELATION = eki.eve.data.db.tables.LexRelation.LEX_RELATION;
 
     /**
+     * The table <code>public.lex_relation_dataset</code>.
+     */
+    public final LexRelationDataset LEX_RELATION_DATASET = eki.eve.data.db.tables.LexRelationDataset.LEX_RELATION_DATASET;
+
+    /**
      * The table <code>public.lexeme</code>.
      */
     public final Lexeme LEXEME = eki.eve.data.db.tables.Lexeme.LEXEME;
+
+    /**
+     * The table <code>public.lexeme_dataset</code>.
+     */
+    public final LexemeDataset LEXEME_DATASET = eki.eve.data.db.tables.LexemeDataset.LEXEME_DATASET;
 
     /**
      * The table <code>public.lexeme_deriv</code>.
@@ -191,6 +217,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning</code>.
      */
     public final Meaning MEANING = eki.eve.data.db.tables.Meaning.MEANING;
+
+    /**
+     * The table <code>public.meaning_dataset</code>.
+     */
+    public final MeaningDataset MEANING_DATASET = eki.eve.data.db.tables.MeaningDataset.MEANING_DATASET;
 
     /**
      * The table <code>public.meaning_domain</code>.
@@ -243,6 +274,11 @@ public class Public extends SchemaImpl {
     public final Usage USAGE = eki.eve.data.db.tables.Usage.USAGE;
 
     /**
+     * The table <code>public.usage_translation</code>.
+     */
+    public final UsageTranslation USAGE_TRANSLATION = eki.eve.data.db.tables.UsageTranslation.USAGE_TRANSLATION;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = eki.eve.data.db.tables.Word.WORD;
@@ -286,6 +322,7 @@ public class Public extends SchemaImpl {
             Sequences.PARADIGM_ID_SEQ,
             Sequences.RECTION_ID_SEQ,
             Sequences.USAGE_ID_SEQ,
+            Sequences.USAGE_TRANSLATION_ID_SEQ,
             Sequences.WORD_ID_SEQ);
     }
 
@@ -300,6 +337,7 @@ public class Public extends SchemaImpl {
         return Arrays.<Table<?>>asList(
             Dataset.DATASET,
             Definition.DEFINITION,
+            DefinitionDataset.DEFINITION_DATASET,
             Deriv.DERIV,
             DerivLabel.DERIV_LABEL,
             Domain.DOMAIN,
@@ -309,19 +347,23 @@ public class Public extends SchemaImpl {
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
             Grammar.GRAMMAR,
+            GrammarDataset.GRAMMAR_DATASET,
             LabelType.LABEL_TYPE,
             Lang.LANG,
             LangLabel.LANG_LABEL,
             LexRelType.LEX_REL_TYPE,
             LexRelTypeLabel.LEX_REL_TYPE_LABEL,
             LexRelation.LEX_RELATION,
+            LexRelationDataset.LEX_RELATION_DATASET,
             Lexeme.LEXEME,
+            LexemeDataset.LEXEME_DATASET,
             LexemeDeriv.LEXEME_DERIV,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,
             LexemeType.LEXEME_TYPE,
             LexemeTypeLabel.LEXEME_TYPE_LABEL,
             Meaning.MEANING,
+            MeaningDataset.MEANING_DATASET,
             MeaningDomain.MEANING_DOMAIN,
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
@@ -332,6 +374,7 @@ public class Public extends SchemaImpl {
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Usage.USAGE,
+            UsageTranslation.USAGE_TRANSLATION,
             Word.WORD);
     }
 }

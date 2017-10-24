@@ -6,6 +6,7 @@ package eki.eve.data.db;
 
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
+import eki.eve.data.db.tables.DefinitionDataset;
 import eki.eve.data.db.tables.Deriv;
 import eki.eve.data.db.tables.DerivLabel;
 import eki.eve.data.db.tables.Domain;
@@ -15,19 +16,23 @@ import eki.eve.data.db.tables.Form;
 import eki.eve.data.db.tables.Gender;
 import eki.eve.data.db.tables.GenderLabel;
 import eki.eve.data.db.tables.Grammar;
+import eki.eve.data.db.tables.GrammarDataset;
 import eki.eve.data.db.tables.LabelType;
 import eki.eve.data.db.tables.Lang;
 import eki.eve.data.db.tables.LangLabel;
 import eki.eve.data.db.tables.LexRelType;
 import eki.eve.data.db.tables.LexRelTypeLabel;
 import eki.eve.data.db.tables.LexRelation;
+import eki.eve.data.db.tables.LexRelationDataset;
 import eki.eve.data.db.tables.Lexeme;
+import eki.eve.data.db.tables.LexemeDataset;
 import eki.eve.data.db.tables.LexemeDeriv;
 import eki.eve.data.db.tables.LexemePos;
 import eki.eve.data.db.tables.LexemeRegister;
 import eki.eve.data.db.tables.LexemeType;
 import eki.eve.data.db.tables.LexemeTypeLabel;
 import eki.eve.data.db.tables.Meaning;
+import eki.eve.data.db.tables.MeaningDataset;
 import eki.eve.data.db.tables.MeaningDomain;
 import eki.eve.data.db.tables.Morph;
 import eki.eve.data.db.tables.MorphLabel;
@@ -38,6 +43,7 @@ import eki.eve.data.db.tables.Rection;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Usage;
+import eki.eve.data.db.tables.UsageTranslation;
 import eki.eve.data.db.tables.Word;
 
 import javax.annotation.Generated;
@@ -65,6 +71,11 @@ public class Tables {
      * The table <code>public.definition</code>.
      */
     public static final Definition DEFINITION = eki.eve.data.db.tables.Definition.DEFINITION;
+
+    /**
+     * The table <code>public.definition_dataset</code>.
+     */
+    public static final DefinitionDataset DEFINITION_DATASET = eki.eve.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
 
     /**
      * The table <code>public.deriv</code>.
@@ -112,6 +123,11 @@ public class Tables {
     public static final Grammar GRAMMAR = eki.eve.data.db.tables.Grammar.GRAMMAR;
 
     /**
+     * The table <code>public.grammar_dataset</code>.
+     */
+    public static final GrammarDataset GRAMMAR_DATASET = eki.eve.data.db.tables.GrammarDataset.GRAMMAR_DATASET;
+
+    /**
      * The table <code>public.label_type</code>.
      */
     public static final LabelType LABEL_TYPE = eki.eve.data.db.tables.LabelType.LABEL_TYPE;
@@ -142,9 +158,19 @@ public class Tables {
     public static final LexRelation LEX_RELATION = eki.eve.data.db.tables.LexRelation.LEX_RELATION;
 
     /**
+     * The table <code>public.lex_relation_dataset</code>.
+     */
+    public static final LexRelationDataset LEX_RELATION_DATASET = eki.eve.data.db.tables.LexRelationDataset.LEX_RELATION_DATASET;
+
+    /**
      * The table <code>public.lexeme</code>.
      */
     public static final Lexeme LEXEME = eki.eve.data.db.tables.Lexeme.LEXEME;
+
+    /**
+     * The table <code>public.lexeme_dataset</code>.
+     */
+    public static final LexemeDataset LEXEME_DATASET = eki.eve.data.db.tables.LexemeDataset.LEXEME_DATASET;
 
     /**
      * The table <code>public.lexeme_deriv</code>.
@@ -175,6 +201,11 @@ public class Tables {
      * The table <code>public.meaning</code>.
      */
     public static final Meaning MEANING = eki.eve.data.db.tables.Meaning.MEANING;
+
+    /**
+     * The table <code>public.meaning_dataset</code>.
+     */
+    public static final MeaningDataset MEANING_DATASET = eki.eve.data.db.tables.MeaningDataset.MEANING_DATASET;
 
     /**
      * The table <code>public.meaning_domain</code>.
@@ -225,6 +256,11 @@ public class Tables {
      * The table <code>public.usage</code>.
      */
     public static final Usage USAGE = eki.eve.data.db.tables.Usage.USAGE;
+
+    /**
+     * The table <code>public.usage_translation</code>.
+     */
+    public static final UsageTranslation USAGE_TRANSLATION = eki.eve.data.db.tables.UsageTranslation.USAGE_TRANSLATION;
 
     /**
      * The table <code>public.word</code>.
