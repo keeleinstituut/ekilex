@@ -6,6 +6,7 @@ import static eki.eve.data.db.Tables.FORM;
 import static eki.eve.data.db.Tables.LEXEME;
 import static eki.eve.data.db.Tables.LEXEME_TYPE_LABEL;
 import static eki.eve.data.db.Tables.MEANING;
+import static eki.eve.data.db.Tables.MEANING_DATASET;
 import static eki.eve.data.db.Tables.MORPH_LABEL;
 import static eki.eve.data.db.Tables.PARADIGM;
 import static eki.eve.data.db.Tables.RECTION;
@@ -127,11 +128,11 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(
 						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
 						LEXEME_TYPE_LABEL.CODE.as("lexeme_type_code"), LEXEME_TYPE_LABEL.VALUE.as("lexeme_type_value"),
-						LEXEME.MEANING_ID, MEANING.DATASETS,
+						LEXEME.MEANING_ID, DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
 				.from(FORM, PARADIGM, WORD,
 						LEXEME.leftOuterJoin(LEXEME_TYPE_LABEL).on(LEXEME_TYPE_LABEL.CODE.eq(LEXEME.TYPE).and(LEXEME_TYPE_LABEL.LANG.eq("est")).and(LEXEME_TYPE_LABEL.TYPE.eq("descrip"))),
-						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)))
+						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID)))
 				.where(
 						FORM.ID.eq(formId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
