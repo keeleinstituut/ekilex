@@ -1,6 +1,7 @@
 package eki.common.service.db;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,13 @@ public class BasicDbService extends AbstractDbService {
 			result = null;
 		}
 		return result;
+	}
+
+	public Long create(String tableName) throws Exception {
+
+		String sql = String.format("insert into %s (id) values (default) returning id", tableName);
+		Long id = jdbcTemplate.queryForObject(sql, Collections.emptyMap(), Long.class);
+		return id;
 	}
 
 	public Long create(String tableName, Map<String, Object> paramMap) throws Exception {

@@ -206,12 +206,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected Long createMeaning(String dataset) throws Exception {
 
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		Long meaningId = basicDbService.create(MEANING, tableRowParamMap);
+		Long meaningId = basicDbService.create(MEANING);
 		if (meaningId != null) {
+			Map<String, Object> tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("meaning_id", meaningId);
 			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.create(MEANING_DATASET, tableRowParamMap);
+			basicDbService.createWithoutId(MEANING_DATASET, tableRowParamMap);
 		}
 		return meaningId;
 	}
@@ -227,7 +227,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			tableRowParamMap.clear();
 			tableRowParamMap.put("definition_id", definitionId);
 			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.create(DEFINITION_DATASET, tableRowParamMap);
+			basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
 		}
 	}
 
@@ -250,7 +250,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			tableRowParamMap.clear();
 			tableRowParamMap.put("lexeme_id", lexemeId);
 			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.createIfNotExists(LEXEME_DATASET, tableRowParamMap);
+			basicDbService.createWithoutId(LEXEME_DATASET, tableRowParamMap);
 		}
 		return lexemeId;
 	}

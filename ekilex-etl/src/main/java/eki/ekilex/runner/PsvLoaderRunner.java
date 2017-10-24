@@ -240,7 +240,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			params.clear();
 			params.put("grammar_id", grammarId);
 			params.put("dataset_code", dataset);
-			basicDbService.createIfNotExists(GRAMMAR_DATASET, params);
+			basicDbService.createWithoutId(GRAMMAR_DATASET, params);
 		}
 	}
 
