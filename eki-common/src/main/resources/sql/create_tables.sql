@@ -1,10 +1,11 @@
 drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
 drop table if exists grammar_dataset;
-drop table if exists grammar;
-drop table if exists usage_translation;
-drop table if exists usage;
-drop table if exists rection;
+drop table if exists grammar;--will be removed?
+drop table if exists usage_translation;--will be removed
+drop table if exists usage;--will be removed
+drop table if exists rection;--will be removed
+drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
@@ -12,14 +13,21 @@ drop table if exists lexeme_dataset;
 drop table if exists lexeme;
 drop table if exists definition_dataset;
 drop table if exists definition;
+drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_dataset;
 drop table if exists meaning;
+drop table if exists freeform;
+drop table if exists ff_group;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
+--drop table if exists meaning_state_label;
+drop table if exists meaning_state;
+--drop table if exists entry_class_label;
+drop table if exists entry_class;
 drop table if exists deriv_label;
 drop table if exists deriv;
 drop table if exists morph_label;
@@ -116,7 +124,7 @@ create table register_label
   unique(code, lang, type)
 );
 
--- keelendi tüüp
+-- ilmiku tüüp
 create table lexeme_type
 (
   code varchar(100) primary key,
@@ -196,6 +204,22 @@ create table deriv_label
   unique(code, lang, type)
 );
 
+-- entry class?
+create table entry_class
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+-- missing entry_class_label
+
+-- tähenduse staatus
+create table meaning_state
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+-- missing meaning_status_label
+
 -- seose liik
 create table lex_rel_type
 (
@@ -256,10 +280,36 @@ create table form
 );
 alter sequence form_id_seq restart with 10000;
 
--- mõiste/tähendus
-create table meaning
+-- vabavormide grupp
+create table ff_group
 (
   id bigserial primary key
+);
+
+-- vabavorm
+create table freeform
+(
+  id bigserial primary key,
+  ff_group_id bigint references ff_group(id) on delete cascade null,
+  type varchar(100) not null,
+  value_text text null,
+  value_date timestamp null,
+  value_number numeric(14, 4) null,
+  value_array text array null,
+  classif_name text null,
+  classif_code varchar(100) null
+);
+
+-- tähendus
+create table meaning
+(
+  id bigserial primary key,
+  created_on timestamp null,
+  created_by varchar(100) null,
+  modified_on timestamp null,
+  modified_by varchar(100) null,
+  entry_class_code varchar(100) references entry_class(code) null,
+  state_code varchar(100) references meaning_state(code) null
 );
 alter sequence meaning_id_seq restart with 10000;
 
@@ -281,7 +331,16 @@ create table meaning_domain
 );
 alter sequence meaning_domain_id_seq restart with 10000;
 
--- sõnastus/seletus/definitsioon
+-- tähenduse vabavorm
+create table meaning_freeform
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  unique(meaning_id, freeform_id)
+);
+
+-- seletus
 create table definition
 (
   id bigserial primary key,
@@ -345,6 +404,15 @@ create table lexeme_deriv
   unique(lexeme_id, deriv_code)
 );
 alter sequence lexeme_deriv_id_seq restart with 10000;
+
+-- ilmiku vabavorm
+create table lexeme_freeform
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  unique(lexeme_id, freeform_id)
+);
 
 -- rektsioon
 create table rection

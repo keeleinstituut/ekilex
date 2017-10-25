@@ -1,5 +1,8 @@
 package eki.ekilex.runner;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,12 +16,18 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FreeformType;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Meaning;
 
 @Component
 public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermLoaderRunner.class);
+
+	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
+
+	private static final String LTB_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
 	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
@@ -55,6 +64,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
+		DateFormat defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
+		DateFormat ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = readDocument(dataXmlFilePath);
 
@@ -62,11 +73,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		int conceptGroupCount = conceptGroupNodes.size();
 		logger.debug("Extracted {} concept groups", conceptGroupCount);
 
+		Element valueNode;
 		List<Element> langGroupNodes, termGroupNodes, domainNodes;
-		Element languageNode, termNode, usageNode, definitionNode, lexemeTypeNode;
-		String languageType, lang, word, usage, definition, lexemeType;
 		Long wordId, meaningId, lexemeId, rectionId;
+		String valueStr;
+		String lang;
+		long valueLong;
+		Timestamp valueTs;
 		int homonymNr;
+		Meaning meaningObj;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -77,7 +92,98 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		for (Element conceptGroupNode : conceptGroupNodes) {
 
-			meaningId = createMeaning(dataset);
+			meaningObj = new Meaning();
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("system[@type='entryClass']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				meaningObj.setEntryClassCode(valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Staatus']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				meaningObj.setMeaningStateCode(valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp/transac[@type='origination']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				meaningObj.setCreatedBy(valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp[transac/@type='origination']/date");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				valueLong = defaultDateFormat.parse(valueStr).getTime();
+				valueTs = new Timestamp(valueLong);
+				meaningObj.setCreatedOn(valueTs);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp/transac[@type='modification']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				meaningObj.setModifiedBy(valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp[transac/@type='modification']/date");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				valueLong = defaultDateFormat.parse(valueStr).getTime();
+				valueTs = new Timestamp(valueLong);
+				meaningObj.setModifiedOn(valueTs);
+			}
+
+			// meaning
+			meaningId = createMeaning(meaningObj, dataset);
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("concept");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='ID-number']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				createMeaningFreeform(meaningId, FreeformType.LTB_ID, valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestaja']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				createMeaningFreeform(meaningId, FreeformType.LTB_CREATED_BY, valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestusaeg']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				valueLong = ltbDateFormat.parse(valueStr).getTime();
+				valueTs = new Timestamp(valueLong);
+				createMeaningFreeform(meaningId, FreeformType.LTB_CREATED_ON, valueTs);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutja']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				createMeaningFreeform(meaningId, FreeformType.LTB_MODIFIED_BY, valueStr);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutmisaeg']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				valueLong = ltbDateFormat.parse(valueStr).getTime();
+				valueTs = new Timestamp(valueLong);
+				createMeaningFreeform(meaningId, FreeformType.LTB_MODIFIED_ON, valueTs);
+			}
+
+			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Päritolu']");
+			if (valueNode != null) {
+				valueStr = valueNode.getTextTrim();
+				createMeaningFreeform(meaningId, FreeformType.LTB_SOURCE, valueStr);
+			}
+
+			//...
 
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
 			saveDomains(conceptGroupNode, domainNodes, meaningId, domainOrigin, dataErrorCount);
@@ -86,58 +192,51 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 			for (Element langGroupNode : langGroupNodes) {
 
-				languageNode = (Element) langGroupNode.selectSingleNode(langExp);
-				languageType = languageNode.attributeValue(langTypeAttr);
-				boolean isLang = isLang(languageType);
+				valueNode = (Element) langGroupNode.selectSingleNode(langExp);
+				valueStr = valueNode.attributeValue(langTypeAttr);
+				boolean isLang = isLang(valueStr);
 
 				if (!isLang) {
-					//logger.debug("Not a term entry \"{}\"", languageType);
 					continue;
 				}
 
-				lang = unifyLang(languageType);
+				lang = unifyLang(valueStr);
 
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
 				for (Element termGroupNode : termGroupNodes) {
 
-					termNode = (Element) termGroupNode.selectSingleNode(termExp);
-					word = termNode.getTextTrim();
+					valueNode = (Element) termGroupNode.selectSingleNode(termExp);
+					valueStr = valueNode.getTextTrim();
 
-					homonymNr = getWordMaxHomonymNr(word, dataLang);
+					homonymNr = getWordMaxHomonymNr(valueStr, dataLang);
 					homonymNr++;
-					wordId = saveWord(word, null, null, null, homonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
+					wordId = saveWord(valueStr, null, null, null, homonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
 					lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
-						usageNode = (Element) termGroupNode.selectSingleNode(usageExp);
-						if (usageNode == null) {
-							usage = null;
-						} else {
-							if (usageNode.hasMixedContent()) {
+						valueNode = (Element) termGroupNode.selectSingleNode(usageExp);
+						if (valueNode != null) {
+							if (valueNode.hasMixedContent()) {
 								//TODO get source
 							}
-							usage = usageNode.getTextTrim();
+							valueStr = valueNode.getTextTrim();
 							rectionId = createOrSelectRection(lexemeId, defaultRectionValue);
-							createUsage(rectionId, usage);
+							createUsage(rectionId, valueStr);
 						}
-						definitionNode = (Element) termGroupNode.selectSingleNode(definitionExp);
-						if (definitionNode == null) {
-							definition = null;
-						} else {
-							if (definitionNode.hasMixedContent()) {
+						valueNode = (Element) termGroupNode.selectSingleNode(definitionExp);
+						if (valueNode != null) {
+							if (valueNode.hasMixedContent()) {
 								//TODO get source
 							}
-							definition = definitionNode.getTextTrim();
-							createDefinition(meaningId, definition, lang, dataset);
+							valueStr = valueNode.getTextTrim();
+							createDefinition(meaningId, valueStr, lang, dataset);
 						}
-						lexemeTypeNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
-						if (lexemeTypeNode == null) {
-							lexemeType = null;
-						} else {
-							lexemeType = lexemeTypeNode.getTextTrim();
-							updateLexemeType(lexemeId, lexemeType, dataErrorCount);
+						valueNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
+						if (valueNode != null) {
+							valueStr = valueNode.getTextTrim();
+							updateLexemeType(lexemeId, valueStr, dataErrorCount);
 						}
 					}
 				}

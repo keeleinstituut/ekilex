@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -15,13 +16,16 @@ import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 
+import eki.common.constant.FreeformType;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Word;
 
@@ -204,15 +208,57 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return homonymNr;
 	}
 
+	protected Long createMeaning(Meaning meaning, String dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap;
+
+		tableRowParamMap = new HashMap<>();
+		Timestamp createdOn = meaning.getCreatedOn();
+		if (createdOn != null) {
+			tableRowParamMap.put("created_on", createdOn);
+		}
+		String createdBy = meaning.getCreatedBy();
+		if (StringUtils.isNotBlank(createdBy)) {
+			tableRowParamMap.put("created_by", createdBy);
+		}
+		Timestamp modifiedOn = meaning.getModifiedOn();
+		if (modifiedOn != null) {
+			tableRowParamMap.put("modified_on", modifiedOn);
+		}
+		String modifiedBy = meaning.getModifiedBy();
+		if (StringUtils.isNotBlank(modifiedBy)) {
+			tableRowParamMap.put("modified_by", modifiedBy);
+		}
+		String entryClassCode = meaning.getEntryClassCode();
+		if (StringUtils.isNotBlank(entryClassCode)) {
+			tableRowParamMap.put("entry_class_code", entryClassCode);
+		}
+		String meaningStateCode = meaning.getMeaningStateCode();
+		if (StringUtils.isNotBlank(meaningStateCode)) {
+			tableRowParamMap.put("meaning_state_code", meaningStateCode);
+		}
+		Long meaningId;
+		if (CollectionUtils.isEmpty(tableRowParamMap)) {
+			meaningId = basicDbService.create(MEANING);
+		} else {
+			tableRowParamMap = new HashMap<>();
+			meaningId = basicDbService.create(MEANING, tableRowParamMap);
+		}
+		meaning.setMeaningId(meaningId);
+		tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("dataset_code", dataset);
+		basicDbService.createWithoutId(MEANING_DATASET, tableRowParamMap);
+		return meaningId;
+	}
+
 	protected Long createMeaning(String dataset) throws Exception {
 
 		Long meaningId = basicDbService.create(MEANING);
-		if (meaningId != null) {
-			Map<String, Object> tableRowParamMap = new HashMap<>();
-			tableRowParamMap.put("meaning_id", meaningId);
-			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.createWithoutId(MEANING_DATASET, tableRowParamMap);
-		}
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("dataset_code", dataset);
+		basicDbService.createWithoutId(MEANING_DATASET, tableRowParamMap);
 		return meaningId;
 	}
 
@@ -255,6 +301,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lexemeId;
 	}
 
+	@Deprecated
 	protected Long createOrSelectRection(Long lexemeId, String rection) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -264,6 +311,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return rectionId;
 	}
 
+	@Deprecated
 	protected Long createUsage(Long rectionId, String usage) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -273,6 +321,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return usageId;
 	}
 
+	@Deprecated
 	protected Long createUsageTranslation(Long usageId, String translation, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -291,4 +340,26 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("domain_origin", domainOrigin);
 		basicDbService.create(MEANING_DOMAIN, tableRowParamMap);
 	}
+
+	protected void createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
+
+		Map<String, Object> tableRowParamMap;
+
+		tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("type", freeformType.name());
+		if (value instanceof String) {
+			tableRowParamMap.put("value_text", value);
+		} else if (value instanceof Timestamp) {
+			tableRowParamMap.put("value_date", value);
+		} else {
+			throw new Exception("Not yet supported freeform data type " + value);
+		}
+		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
+
+		tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("freeform_id", freeformId);
+		basicDbService.create(MEANING_FREEFORM, tableRowParamMap);
+	}
+
 }

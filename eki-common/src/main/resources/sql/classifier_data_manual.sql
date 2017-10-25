@@ -478,3 +478,12 @@ insert into deriv_label (code, value, lang, type) values ('komp','comparative (d
 insert into deriv_label (code, value, lang, type) values ('superl','superlative (degree)','eng','descrip');
 insert into deriv_label (code, value, lang, type) values ('tgn','ja-derivative = actor','eng','descrip');
 insert into deriv_label (code, value, lang, type) values ('tn','mine-derivative = act, process','eng','descrip');
+
+insert into entry_class (code, datasets) values ('määramata', '{est}');
+insert into entry_class (code, datasets) values ('töös', '{est}');
+insert into entry_class (code, datasets) values ('avalik', '{est}');
+
+insert into meaning_state (code, datasets) values ('komisjoni kinnitatud', '{est}');
+insert into meaning_state (code, datasets) values ('komisjonis arutlusel', '{est}');
+insert into meaning_state (code, datasets) values ('terminiprobleem', '{est}');
+

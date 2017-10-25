@@ -145,7 +145,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Long wordId, newWordId, meaningId, lexemeId;
 		String[] wordComponents;
 		Word wordObj;
-		Paradigm paradigm;
+		Paradigm paradigmObj;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -170,7 +170,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 			word = null;
-			paradigm = null;
+			paradigmObj = null;
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
@@ -203,12 +203,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 				if (isAddForms) {
 					formsNode = (Element) wordGroupNode.selectSingleNode("x:grg/x:vormid");
-					paradigm = extractParadigm(word, formsNode, wordParadigmsMap, formStrCleanupChars);
+					paradigmObj = extractParadigm(word, formsNode, wordParadigmsMap, formStrCleanupChars);
 				}
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
-				wordId = saveWord(wordObj, paradigm, wordDuplicateCount);
+				wordId = saveWord(wordObj, paradigmObj, wordDuplicateCount);
 				newWords.add(wordObj);
 
 				// further references...

@@ -23,10 +23,17 @@ public interface TableName {
 	public static final String MEANING = "meaning";
 	public static final String DEFINITION = "definition";
 	public static final String PARADIGM = "paradigm";
+	@Deprecated
 	public static final String RECTION = "rection";
 	public static final String FORM = "form";
+	@Deprecated
 	public static final String USAGE = "usage";
+	@Deprecated
 	public static final String USAGE_TRANSLATION = "usage_translation";
+	public static final String LEXEME_FREEFORM = "lexeme_freeform";
+	public static final String MEANING_FREEFORM = "meaning_freeform";
+	public static final String FREEFORM = "freeform";
+	public static final String FF_GROUP = "ff_group";
 	public static final String GRAMMAR = "grammar";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";
@@ -36,6 +43,7 @@ public interface TableName {
 	public static final String MEANING_DOMAIN = "meaning_domain";
 	public static final String LEXEME_POS = "lexeme_pos";
 
+	// dataset binds
 	public static final String MEANING_DATASET = "meaning_dataset";
 	public static final String LEXEME_DATASET = "lexeme_dataset";
 	public static final String DEFINITION_DATASET = "definition_dataset";
