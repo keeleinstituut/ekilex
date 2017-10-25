@@ -64,6 +64,47 @@ public class SearchService {
 		return rections;
 	}
 
+	public Map<String, String> getDatasets() {
+		return searchDbService.getDatasetNameMap();
+	}
+
+	public List<Word> findWordsInDatasets(String searchFilter, List<String> datasets) {
+		return searchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
+	}
+
+	public WordDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
+		if (selectedDatasets == null) {
+			return findWordDetails(formId);
+		}
+
+		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
+		List<Meaning> meanings = searchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(Meaning.class);
+		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
+
+		meanings.forEach(meaning -> {
+
+			List<String> datasets = meaning.getDatasets();
+			datasets = convertToNames(datasets, datasetNameMap);
+			meaning.setDatasets(datasets);
+
+			Long lexemeId = meaning.getLexemeId();
+			Long meaningId = meaning.getMeaningId();
+
+			List<Form> words = searchDbService.findConnectedWordsInDatasets(meaningId, selectedDatasets).into(Form.class);
+			meaning.setWords(words);
+
+			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
+			meaning.setDomains(domains);
+
+			List<Rection> rections = getRections(lexemeId);
+			meaning.setRections(rections);
+		});
+		return new WordDetails(d -> {
+			d.setForms(connectedForms);
+			d.setMeanings(meanings);
+		});
+	}
+
 	private void removeNullUsages(List<Rection> rections) {
 		rections.forEach(rection -> {
 			if (rection.getUsages().length == 1 && Arrays.stream(rection.getUsages()[0]).allMatch(Objects::isNull)) {
@@ -80,11 +121,4 @@ public class SearchService {
 		return datasets.stream().map(datasetMap::get).collect(Collectors.toList());
 	}
 
-	public Map<String, String> getDatasets() {
-		return searchDbService.getDatasetNameMap();
-	}
-
-	public List<Word> findWordsInDatasets(String searchFilter, List<String> datasets) {
-		return searchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
-	}
 }

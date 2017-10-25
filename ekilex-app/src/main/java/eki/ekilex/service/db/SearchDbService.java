@@ -189,4 +189,47 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
+	public Result<Record11<String, Long, Long, Integer, Integer, Integer, String, String, Long, String[], String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+
+		return create
+				.select(
+						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME_TYPE_LABEL.CODE.as("lexeme_type_code"), LEXEME_TYPE_LABEL.VALUE.as("lexeme_type_value"),
+						LEXEME.MEANING_ID, DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
+						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
+				.from(FORM, PARADIGM, WORD,
+						LEXEME.leftOuterJoin(LEXEME_TYPE_LABEL).on(LEXEME_TYPE_LABEL.CODE.eq(LEXEME.TYPE).and(LEXEME_TYPE_LABEL.LANG.eq("est")).and(LEXEME_TYPE_LABEL.TYPE.eq("descrip"))),
+						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
+				)
+				.where(
+						FORM.ID.eq(formId)
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(MEANING_DATASET.DATASET_CODE.in(selectedDatasets)))
+				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID, LEXEME_TYPE_LABEL.CODE, LEXEME_TYPE_LABEL.VALUE)
+				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.fetch();
+	}
+
+	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(Long meaningId, List<String> datasets) {
+
+		return create
+				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.LANG, FORM.DISPLAY_FORM, FORM.VOCAL_FORM, FORM.MORPH_CODE, MORPH_LABEL.VALUE.as("morph_value"))
+				.from(LEXEME, WORD, PARADIGM,
+						FORM.leftOuterJoin(MORPH_LABEL).on(FORM.MORPH_CODE.eq(MORPH_LABEL.CODE).and(MORPH_LABEL.LANG.eq("est").and(MORPH_LABEL.TYPE.eq("descrip")))))
+				.where(
+						FORM.PARADIGM_ID.eq(PARADIGM.ID)
+								.and(FORM.IS_WORD.eq(Boolean.TRUE))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.andExists(DSL.select(LEXEME_DATASET.LEXEME_ID).from(LEXEME_DATASET)
+										.where((LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
+												.and(LEXEME_DATASET.DATASET_CODE.in(datasets))))
+				)
+				.fetch();
+	}
+
 }

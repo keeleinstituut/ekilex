@@ -60,10 +60,11 @@ public class TermSearchController {
 	}
 
 	@GetMapping("/termdetails/{formId}")
-	public String details(@PathVariable("formId") Long formId, Model model) {
+	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
 
 		logger.debug("Retrieving details by form : {}", formId);
-		WordDetails details = search.findWordDetails(formId);
+		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
+		WordDetails details = search.findWordDetailsInDatasets(formId, selectedDatasets);
 		model.addAttribute("detailsName", formId + "_details");
 		model.addAttribute("details", details);
 		return "termsearch :: details";
