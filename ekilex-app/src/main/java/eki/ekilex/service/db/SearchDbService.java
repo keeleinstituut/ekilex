@@ -5,6 +5,7 @@ import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DATASET;
 import static eki.ekilex.data.db.Tables.LEXEME_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DATASET;
@@ -16,6 +17,7 @@ import static eki.ekilex.data.db.Tables.USAGE;
 import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.WORD;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
@@ -59,7 +61,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG)
 				.from(FORM, PARADIGM, WORD)
 				.where(
-						FORM.VALUE.lower().likeIgnoreCase(theFilter)
+						FORM.VALUE.likeIgnoreCase(theFilter)
 						.and(FORM.IS_WORD.isTrue())
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
@@ -163,6 +165,28 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 
 	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
+	}
+
+	public Result<Record4<Long, String, Integer, String>> findWordsInDatasets(String wordWithMetaCharacters, List<String> datasets) {
+
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
+		return create
+				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG)
+				.from(FORM, PARADIGM, WORD)
+				.where(
+						FORM.VALUE.likeIgnoreCase(theFilter)
+						.and(FORM.IS_WORD.isTrue())
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.andExists(DSL.select(LEXEME.WORD_ID).from(LEXEME, LEXEME_DATASET)
+								.where((LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
+								.and(LEXEME_DATASET.DATASET_CODE.in(datasets)))
+						)
+				)
+				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
+				.limit(MAX_RESULTS_LIMIT)
+				.fetch();
 	}
 
 }

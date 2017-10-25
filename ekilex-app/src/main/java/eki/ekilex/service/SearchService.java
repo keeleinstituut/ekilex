@@ -84,4 +84,7 @@ public class SearchService {
 		return searchDbService.getDatasetNameMap();
 	}
 
+	public List<Word> findWordsInDatasets(String searchFilter, List<String> datasets) {
+		return searchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
+	}
 }

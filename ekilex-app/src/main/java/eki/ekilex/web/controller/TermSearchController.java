@@ -2,7 +2,9 @@ package eki.ekilex.web.controller;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,6 +20,8 @@ import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.service.SearchService;
 
+import javax.servlet.http.HttpSession;
+
 @ConditionalOnWebApplication
 @Controller
 public class TermSearchController {
@@ -30,12 +34,24 @@ public class TermSearchController {
 	@GetMapping("/termsearch")
 	public String termSearch(
 			@RequestParam(required = false) String searchFilter,
-			Model model) {
+			@RequestParam(name = "dicts", required = false) List<String> selectedDatasets,
+			Model model, HttpSession session) {
 
-		logger.debug("Searching by : \"{}\"", searchFilter);
+		logger.debug("Searching by : \"{}\", {}", searchFilter, selectedDatasets);
 
+		Map<String, String> datasets = search.getDatasets();
+		if (selectedDatasets == null) {
+			if (session.getAttribute("datasets") == null) {
+				selectedDatasets = new ArrayList<>(datasets.keySet());
+			} else {
+				selectedDatasets = (List<String>) session.getAttribute("datasets");
+			}
+		}
+		model.addAttribute("datasets", datasets.entrySet());
+		model.addAttribute("selectedDatasets", selectedDatasets);
+		session.setAttribute("datasets",selectedDatasets);
 		if (isNotBlank(searchFilter)) {
-			List<Word> words = search.findWords(searchFilter);
+			List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
 			model.addAttribute("wordsFoundBySearch", words);
 			model.addAttribute("searchFilter", searchFilter);
 		}
