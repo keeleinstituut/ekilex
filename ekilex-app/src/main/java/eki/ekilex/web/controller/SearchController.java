@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import static java.util.Collections.emptyList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @ConditionalOnWebApplication
@@ -31,25 +33,34 @@ public class SearchController {
 	public String search(
 			@RequestParam(required = false) String searchFilter,
 			@RequestParam(name = "dicts", required = false) List<String> selectedDatasets,
-			Model model) {
+			Model model, HttpSession session) {
 
 		logger.debug("doing search : {}, {}", searchFilter, selectedDatasets);
+		Map<String, String> datasets = search.getDatasets();
+		if (selectedDatasets == null) {
+			if (session.getAttribute("datasets") == null) {
+				selectedDatasets = new ArrayList<>(datasets.keySet());
+			} else {
+				selectedDatasets = (List<String>) session.getAttribute("datasets");
+			}
+		}
+		model.addAttribute("datasets", datasets.entrySet());
+		model.addAttribute("selectedDatasets", selectedDatasets);
+		session.setAttribute("datasets",selectedDatasets);
 		if (isNotBlank(searchFilter)) {
-			List<Word> words = search.findWords(searchFilter);
+			List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
 			model.addAttribute("wordsFoundBySearch", words);
 			model.addAttribute("searchFilter", searchFilter);
 		}
-		model.addAttribute("selectedDatasets", selectedDatasets == null ? emptyList() : selectedDatasets);
-		// TODO: remove comments when datasets are going to be used in searches
-		// model.addAttribute("datasets", search.getDatasets().entrySet());
 		return "search";
 	}
 
 	@GetMapping("/details/{formId}")
-	public String details(@PathVariable("formId") Long formId, Model model) {
+	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
 
 		logger.debug("doing details : {}", formId);
-		WordDetails details = search.findWordDetails(formId);
+		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
+		WordDetails details = search.findWordDetailsInDatasets(formId, selectedDatasets);
 		model.addAttribute("detailsName", formId + "_details");
 		model.addAttribute("details", details);
 		return "search :: details";
