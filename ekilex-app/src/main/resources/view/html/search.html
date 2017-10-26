@@ -71,8 +71,17 @@
         </th:block>
       </div>
       <div class="float-left w-75">
-        <th:block th:each="meaning : ${details.meanings}">
-          <span th:each="rection,rectionIter : ${meaning.rections}">
+        <th:block th:each="meaning,meaningIter : ${details.meanings}">
+          <span th:each="word,wordIter : ${meaning.words}">
+            <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
+            <span th:unless="${wordIter.last}">|&nbsp;</span>
+          </span>
+          <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
+          <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
+          <ul>
+            <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+          </ul>
+          <div th:each="rection,rectionIter : ${meaning.rections}" th:if="${not #lists.isEmpty(meaning.rections)}" style="margin-top: -1em;">
             <span th:text="${rection.value}" style="display: block;"></span>
             <span th:each="usage,usageIter : ${rection.usages}">
               <th:block th:each="usageValue, usageValueIter : ${usage}">
@@ -84,17 +93,8 @@
               <br th:unless="${usageIter.last}" />
             </span>
             <span th:unless="${rectionIter.last}">,</span>
-          </span>
-          <br th:if="${not #lists.isEmpty(meaning.rections)}" />
-          <span th:each="word,wordIter : ${meaning.words}">
-            <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
-            <span th:unless="${wordIter.last}">|&nbsp;</span>
-          </span>
-          <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
-          <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
-          <ul>
-            <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
-          </ul>
+          </div>
+          <hr th:unless="${meaningIter.last}">
         </th:block>
       </div>
     </div>
