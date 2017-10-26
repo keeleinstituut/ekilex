@@ -48,4 +48,5 @@ public interface TableName {
 	public static final String LEXEME_DATASET = "lexeme_dataset";
 	public static final String DEFINITION_DATASET = "definition_dataset";
 	public static final String GRAMMAR_DATASET = "grammar_dataset";
+	public static final String LEX_RELATION_DATASET = "lex_relation_dataset";
 }

@@ -1,8 +1,8 @@
 package eki.ekilex.runner;
 
 import eki.common.data.Count;
-import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.Word;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -59,6 +60,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
 		List<SynonymData> synonyms = new ArrayList<>();
 		List<AntonymData> antonyms = new ArrayList<>();
+		List<WordData> importedWords = new ArrayList<>();
 
 		for (Element articleNode : articleNodes) {
 			List<WordData> newWords = new ArrayList<>();
@@ -67,7 +69,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(contentNode, newWords, dataset, wordDuplicateCount, lexemeDuplicateCount, synonyms, antonyms);
+				processArticleContent(contentNode, newWords, dataset, lexemeDuplicateCount, synonyms, antonyms);
 			}
 
 			articleCounter++;
@@ -75,11 +77,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				int progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
+			importedWords.addAll(newWords);
 		}
 
-		processSynonyms(synonyms, dataset);
-// TODO: cant use it before we have dataset based detection of words
-//		processAntonyms(antonyms, datasets);
+		processSynonyms(synonyms, dataset, importedWords);
+		processAntonyms(antonyms, dataset, importedWords);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -88,14 +90,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processAntonyms(List<AntonymData> antonyms, String[] datasets) throws Exception {
+	private void processAntonyms(List<AntonymData> antonyms, String dataset, List<WordData> importedWords) throws Exception {
+
 		logger.debug("Found {} antonyms.", antonyms.size());
 		for (AntonymData antonymData: antonyms) {
-			logger.debug("Looking for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-			Map<String, Object> wordObject = getWord(antonymData.word, 1, dataLang);
-			if (wordObject != null) {
+			Optional<WordData> existingWord = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).findFirst();
+			if (existingWord.isPresent()) {
 				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", wordObject.get("id"));
+				params.put("word_id", existingWord.get().id);
 				params.put("level1", antonymData.lexemeLevel1);
 				Map<String, Object> lexemeObject = basicDbService.select(LEXEME, params);
 				if (lexemeObject != null) {
@@ -103,33 +105,50 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					relationParams.put("lexeme1_id", lexemeObject.get("id"));
 					relationParams.put("lexeme2_id", antonymData.lexemeId);
 					relationParams.put("lex_rel_type_code", "ant");
-					relationParams.put("datasets", new PgVarcharArray(datasets));
-					basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+					Long relationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+					if (relationId != null) {
+						relationParams.clear();
+						relationParams.put("lex_relation_id", relationId);
+						relationParams.put("dataset_code", dataset);
+						basicDbService.createWithoutId(LEX_RELATION_DATASET, relationParams);
+					}
 				} else {
-					logger.debug("Lexeme not found.");
+					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 				}
 			} else {
-				logger.debug("Word not found.");
+				logger.debug("Word not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 			}
 		}
 	}
 
-	private void processSynonyms(List<SynonymData> synonyms, String dataset) throws Exception {
+	private void processSynonyms(List<SynonymData> synonyms, String dataset, List<WordData> importedWords) throws Exception {
 
 		final String defaultWordMorphCode = "SgN";
-		final int defaultHomonymNr = 1;
 
 		logger.debug("Found {} synonyms", synonyms.size());
 
-		Count existingWordCount = new Count();
+		Count newSynonymWordCount = new Count();
 		for (SynonymData synonymData : synonyms) {
-			Long wordId = saveWord(synonymData.word, null, null, null, defaultHomonymNr, defaultWordMorphCode, dataLang, null, existingWordCount);
+			Long wordId;
+			Optional<WordData> existingWord = importedWords.stream().filter(w -> synonymData.word.equals(w.value)).findFirst();
+			if (!existingWord.isPresent()) {
+				int homonymNr = getWordMaxHomonymNr(synonymData.word, dataLang) + 1;
+				Word word = new Word(synonymData.word, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+				wordId = saveWord(word, null, null);
+				WordData newWord = new WordData();
+				newWord.id = wordId;
+				newWord.value = synonymData.word;
+				importedWords.add(newWord);
+				newSynonymWordCount.increment();
+			} else {
+				wordId = existingWord.get().id;
+			}
 			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, dataset);
 		}
-		logger.debug("Synonym words created {}", synonyms.size() - existingWordCount.getValue());
+		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
 	}
 
-	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count wordDuplicateCount, Count lexemeDuplicateCount,
+	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
 			List<SynonymData> synonyms, List<AntonymData> antonyms) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
@@ -314,14 +333,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			WordData wordData = new WordData();
 
 			Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			String word = wordNode.getTextTrim();
-			String wordDisplayForm = word;
-			word = StringUtils.replaceChars(word, wordDisplayFormStripChars, "");
-			int homonymNr = getWordMaxHomonymNr(word, dataLang) + 1;
+			String wordValue = wordNode.getTextTrim();
+			String wordDisplayForm = wordValue;
+			wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
+			int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 			Element wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
 			String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
-			String wordMorphCode = getWordMorphCode(word, wordGroupNode, defaultWordMorphCode);
-			wordData.id = saveWord(word, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode, dataLang, null, wordDuplicateCount);
+			String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode, defaultWordMorphCode);
+			Word word = new Word(wordValue, dataLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
+			wordData.id = saveWord(word, null, wordDuplicateCount);
 
 			Element posCodeNode = (Element) wordGroupNode.selectSingleNode(wordPosCodeExp);
 			wordData.posCode = posCodeNode == null ? null : posCodeNode.getTextTrim();
@@ -332,6 +352,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element grammarNode = (Element) wordGroupNode.selectSingleNode(wordGrammarExp);
 			wordData.grammar = grammarNode == null ? null : grammarNode.getTextTrim();
 
+			wordData.value = wordValue;
 			newWords.add(wordData);
 		}
 	}
@@ -353,26 +374,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return defaultWordMorphCode;
 	}
 
-	private List<Long> saveSynonyms(Element node, String lang, Count wordDuplicateCount) throws Exception {
-
-		final String synonymExp = "x:syn";
-		final String defaultWordMorphCode = "SgN";
-		final int defaultHomonymNr = 1;
-
-		List<Long> synonymWordIds = new ArrayList<>();
-		String synonym;
-		Long wordId;
-		List<Element> synonymNodes = node.selectNodes(synonymExp);
-
-		for (Element synonymNode : synonymNodes) {
-
-			synonym = synonymNode.getTextTrim();
-			wordId = saveWord(synonym, null, null, null, defaultHomonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
-			synonymWordIds.add(wordId);
-		}
-		return synonymWordIds;
-	}
-
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {
 
 		if (definitionValueNodes == null) {
@@ -389,6 +390,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String posCode;
 		String derivCode;
 		String grammar;
+		String value;
 	}
 
 	private class SynonymData {
