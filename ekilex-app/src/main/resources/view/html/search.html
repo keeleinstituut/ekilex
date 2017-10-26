@@ -81,18 +81,23 @@
           <ul>
             <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
           </ul>
-          <div th:each="rection,rectionIter : ${meaning.rections}" th:if="${not #lists.isEmpty(meaning.rections)}" style="margin-top: -1em;">
-            <span th:text="${rection.value}" style="display: block;"></span>
-            <span th:each="usage,usageIter : ${rection.usages}">
-              <th:block th:each="usageValue, usageValueIter : ${usage}">
-                <th:block th:if="${usageValue != null}">
-                  <span th:unless="${usageValueIter.first}">-</span>
-                  <span th:text="${usageValue}"></span>
-                </th:block>
-              </th:block>
-              <br th:unless="${usageIter.last}" />
-            </span>
-            <span th:unless="${rectionIter.last}">,</span>
+          <div th:if="${not #lists.isEmpty(meaning.rections)}" style="margin-top: -0.5em;">
+            <table>
+              <tr th:each="rection,rectionIter : ${meaning.rections}">
+                <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${rection.value}"></span></td>
+                <td>
+                  <span th:each="usage,usageIter : ${rection.usages}">
+                    <th:block th:each="usageValue, usageValueIter : ${usage}">
+                      <th:block th:if="${usageValue != null}">
+                        <span th:unless="${usageValueIter.first}">-</span>
+                        <span th:text="${usageValue}"></span>
+                      </th:block>
+                    </th:block>
+                    <br th:unless="${usageIter.last}" />
+                  </span>
+                </td>
+              </tr>
+            </table>
           </div>
           <hr th:unless="${meaningIter.last}">
         </th:block>
