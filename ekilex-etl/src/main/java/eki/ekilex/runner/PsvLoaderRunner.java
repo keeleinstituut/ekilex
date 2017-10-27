@@ -99,9 +99,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} antonyms.", antonyms.size());
 		for (AntonymData antonymData: antonyms) {
 			List<WordData> existingWords = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
-			if (!existingWords.isEmpty()) {
+			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords);
+			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", existingWords.get(0).id);
+				params.put("word_id", wordId);
 				params.put("level1", antonymData.lexemeLevel1);
 				Map<String, Object> lexemeObject = basicDbService.select(LEXEME, params);
 				if (lexemeObject != null) {
@@ -118,9 +119,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					}
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-				}
-				if (existingWords.size() > 1) {
-					logger.debug("More than one word found: {}", antonymData.word);
 				}
 			} else {
 				logger.debug("Word not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
@@ -149,15 +147,29 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				importedWords.add(newWord);
 				newSynonymWordCount.increment();
 			} else {
-				wordId = existingWords.get(0).id;
-				if (existingWords.size() > 1) {
-					logger.debug("More than one word found: {}", synonymData.word);
-				}
+				wordId = getWordIdFor(synonymData.word, synonymData.homonymNr, existingWords);
+				if (wordId == null) continue;
 			}
 			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, dataset);
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
 		logger.debug("Synonyms import done.");
+	}
+
+	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words) {
+		Long wordId = null;
+		if (words.size() > 1) {
+			logger.debug("More than one word found: {}", wordValue);
+			Optional<WordData> matchingWord = words.stream().filter(w -> w.homonymNr == homonymNr).findFirst();
+			if (matchingWord.isPresent()) {
+				wordId = matchingWord.get().id;
+			} else {
+				logger.debug("No matching word was found for: {}", wordValue);
+			}
+		} else {
+			wordId = words.get(0).id;
+		}
+		return wordId;
 	}
 
 	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
@@ -206,6 +218,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							antonymData.word = meaningAntonym.word;
 							antonymData.lexemeLevel1 = meaningAntonym.lexemeLevel1;
 							antonymData.lexemeId = lexemeId;
+							antonymData.homonymNr = meaningAntonym.homonymNr;
 							antonyms.add(antonymData);
 						}
 					}
@@ -218,6 +231,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String antonymExp = "x:ant";
 		final String lexemeLevel1Attr = "t";
+		final String homonymNrAttr = "i";
 		final int defaultLexemeLevel1 = 1;
 
 		List<AntonymData> antonyms = new ArrayList<>();
@@ -231,6 +245,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			} else {
 				antonymData.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
 			}
+			String homonymNrAtrValue = antonymNode.attributeValue(homonymNrAttr);
+			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
+				antonymData.homonymNr = Integer.parseInt(homonymNrAtrValue);
+			}
 			antonyms.add(antonymData);
 		}
 		return antonyms;
@@ -239,6 +257,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private List<SynonymData> extractSynonyms(Element node, Long meaningId) {
 
 		final String synonymExp = "x:syn";
+		final String homonymNrAttr = "i";
 
 		List<SynonymData> synonyms = new ArrayList<>();
 		List<Element> synonymNodes = node.selectNodes(synonymExp);
@@ -246,6 +265,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			SynonymData data = new SynonymData();
 			data.word = synonymNode.getTextTrim();
 			data.meaningId = meaningId;
+			String homonymNrAtrValue = synonymNode.attributeValue(homonymNrAttr);
+			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
+				data.homonymNr = Integer.parseInt(homonymNrAtrValue);
+			}
 			synonyms.add(data);
 		}
 		return synonyms;
@@ -344,7 +367,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element wordGroupNode : wordGroupNodes) {
 			WordData wordData = new WordData();
 
-			Word word = extractWord(wordGroupNode);
+			Word word = extractWord(wordGroupNode, wordData);
 			if (isAddForms) {
 				paradigmObj = extractParadigm(word.getValue(), wordGroupNode, wordParadigmsMap);
 			}
@@ -393,13 +416,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return matchingParadigm;
 	}
 
-	private Word extractWord(Element wordGroupNode) throws Exception {
+	private Word extractWord(Element wordGroupNode, WordData wordData) throws Exception {
 
 		final String wordExp = "x:m";
 		final String wordVocalFormExp = "x:hld";
+		final String homonymNrAttr = "i";
 		final String defaultWordMorphCode = "SgN";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
+		if (wordNode.attributeValue(homonymNrAttr) != null) {
+			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
+		}
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
@@ -445,16 +472,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String derivCode;
 		String grammar;
 		String value;
+		int homonymNr = 0;
 	}
 
 	private class SynonymData {
 		String word;
 		Long meaningId;
+		int homonymNr = 0;
 	}
 
 	private class AntonymData {
 		String word;
 		Long lexemeId;
 		int lexemeLevel1 = 1;
+		int homonymNr = 0;
 	}
 }
