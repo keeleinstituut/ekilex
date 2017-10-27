@@ -1,8 +1,10 @@
 package eki.ekilex.runner;
 
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -12,10 +14,12 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -35,7 +39,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataset) throws Exception {
+	public void execute(String dataXmlFilePath, String dataset, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
@@ -65,7 +69,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element articleNode : articleNodes) {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			processArticleHeader(headerNode, newWords, wordDuplicateCount);
+			processArticleHeader(headerNode, newWords, wordParadigmsMap, wordDuplicateCount);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
@@ -318,30 +322,25 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return usages;
 	}
 
-	private void processArticleHeader(Element headerNode, List<WordData> newWords, Count wordDuplicateCount) throws Exception {
+	private void processArticleHeader(
+			Element headerNode, List<WordData> newWords, Map<String, List<Paradigm>> wordParadigmsMap, Count wordDuplicateCount) throws Exception {
 
 		final String wordGroupExp = "x:mg";
-		final String wordExp = "x:m";
-		final String wordVocalFormExp = "x:hld";
 		final String wordPosCodeExp = "x:sl";
 		final String wordDerivCodeExp = "x:dk";
 		final String wordGrammarExp = "x:mfp/x:gki";
-		final String defaultWordMorphCode = "SgN";
 
+		boolean isAddForms = !wordParadigmsMap.isEmpty();
+		Paradigm paradigmObj = null;
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
 			WordData wordData = new WordData();
 
-			Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			String wordValue = wordNode.getTextTrim();
-			String wordDisplayForm = wordValue;
-			wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
-			int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-			Element wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
-			String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
-			String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode, defaultWordMorphCode);
-			Word word = new Word(wordValue, dataLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
-			wordData.id = saveWord(word, null, wordDuplicateCount);
+			Word word = extractWord(wordGroupNode);
+			if (isAddForms) {
+				paradigmObj = extractParadigm(word.getValue(), wordGroupNode, wordParadigmsMap);
+			}
+			wordData.id = saveWord(word, paradigmObj, wordDuplicateCount);
 
 			Element posCodeNode = (Element) wordGroupNode.selectSingleNode(wordPosCodeExp);
 			wordData.posCode = posCodeNode == null ? null : posCodeNode.getTextTrim();
@@ -352,9 +351,56 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element grammarNode = (Element) wordGroupNode.selectSingleNode(wordGrammarExp);
 			wordData.grammar = grammarNode == null ? null : grammarNode.getTextTrim();
 
-			wordData.value = wordValue;
+			wordData.value = word.getValue();
 			newWords.add(wordData);
 		}
+	}
+
+	private Paradigm extractParadigm(String word, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+
+		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
+		final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
+
+		List<Paradigm> paradigms = wordParadigmsMap.get(word);
+		if (CollectionUtils.isEmpty(paradigms)) {
+			return null;
+		}
+		List<Element> formsNodes = node.selectNodes(formsNodesExp);
+		if (formsNodes.isEmpty()) {
+			return null;
+		}
+		List<String> formValues = formsNodes.stream().map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, "")).collect(Collectors.toList());
+		List<String> mabFormValues;
+		Collection<String> formValuesIntersection;
+		int bestFormValuesMatchCount = 0;
+		Paradigm matchingParadigm = null;
+		for (Paradigm paradigm : paradigms) {
+			mabFormValues = paradigm.getFormValues();
+			formValuesIntersection = CollectionUtils.intersection(formValues, mabFormValues);
+			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
+				bestFormValuesMatchCount = formValuesIntersection.size();
+				matchingParadigm = paradigm;
+			}
+		}
+		return matchingParadigm;
+	}
+
+	private Word extractWord(Element wordGroupNode) throws Exception {
+
+		final String wordExp = "x:m";
+		final String wordVocalFormExp = "x:hld";
+		final String defaultWordMorphCode = "SgN";
+
+		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
+		String wordValue = wordNode.getTextTrim();
+		String wordDisplayForm = wordValue;
+		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
+		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+		Element wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
+		String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
+		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode, defaultWordMorphCode);
+
+		return new Word(wordValue, dataLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
 	}
 
 	private String getWordMorphCode(String word, Element wordGroupNode, String defaultWordMorphCode) {
