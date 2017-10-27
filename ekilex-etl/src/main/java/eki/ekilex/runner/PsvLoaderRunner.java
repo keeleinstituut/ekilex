@@ -98,10 +98,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Found {} antonyms.", antonyms.size());
 		for (AntonymData antonymData: antonyms) {
-			Optional<WordData> existingWord = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).findFirst();
-			if (existingWord.isPresent()) {
+			List<WordData> existingWords = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
+			if (!existingWords.isEmpty()) {
 				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", existingWord.get().id);
+				params.put("word_id", existingWords.get(0).id);
 				params.put("level1", antonymData.lexemeLevel1);
 				Map<String, Object> lexemeObject = basicDbService.select(LEXEME, params);
 				if (lexemeObject != null) {
@@ -119,10 +119,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 				}
+				if (existingWords.size() > 1) {
+					logger.debug("More than one word found: {}", antonymData.word);
+				}
 			} else {
 				logger.debug("Word not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 			}
 		}
+		logger.debug("Antonyms import done.");
 	}
 
 	private void processSynonyms(List<SynonymData> synonyms, String dataset, List<WordData> importedWords) throws Exception {
@@ -134,8 +138,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Count newSynonymWordCount = new Count();
 		for (SynonymData synonymData : synonyms) {
 			Long wordId;
-			Optional<WordData> existingWord = importedWords.stream().filter(w -> synonymData.word.equals(w.value)).findFirst();
-			if (!existingWord.isPresent()) {
+			List<WordData> existingWords = importedWords.stream().filter(w -> synonymData.word.equals(w.value)).collect(Collectors.toList());
+			if (existingWords.isEmpty()) {
 				int homonymNr = getWordMaxHomonymNr(synonymData.word, dataLang) + 1;
 				Word word = new Word(synonymData.word, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
 				wordId = saveWord(word, null, null);
@@ -145,11 +149,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				importedWords.add(newWord);
 				newSynonymWordCount.increment();
 			} else {
-				wordId = existingWord.get().id;
+				wordId = existingWords.get(0).id;
+				if (existingWords.size() > 1) {
+					logger.debug("More than one word found: {}", synonymData.word);
+				}
 			}
 			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, dataset);
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
+		logger.debug("Synonyms import done.");
 	}
 
 	private void processArticleContent(Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
