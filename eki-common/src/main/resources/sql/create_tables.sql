@@ -24,6 +24,8 @@ drop table if exists paradigm;
 drop table if exists word;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
+--drop table if exists meaning_type_label;
+drop table if exists meaning_type;
 --drop table if exists meaning_state_label;
 drop table if exists meaning_state;
 --drop table if exists entry_class_label;
@@ -212,6 +214,14 @@ create table entry_class
 );
 -- missing entry_class_label
 
+-- tähenduse liik
+create table meaning_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+-- missing meaning_type_label
+
 -- tähenduse staatus
 create table meaning_state
 (
@@ -309,7 +319,8 @@ create table meaning
   modified_on timestamp null,
   modified_by varchar(100) null,
   entry_class_code varchar(100) references entry_class(code) null,
-  state_code varchar(100) references meaning_state(code) null
+  state_code varchar(100) references meaning_state(code) null,
+  type_code varchar(100) references meaning_type(code) null
 );
 alter sequence meaning_id_seq restart with 10000;
 
@@ -363,6 +374,10 @@ create table lexeme
   id bigserial primary key,
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
+  created_on timestamp null,
+  created_by varchar(100) null,
+  modified_on timestamp null,
+  modified_by varchar(100) null,
   type varchar(100) references lexeme_type(code) null,
   level1 integer default 0,
   level2 integer default 0,

@@ -487,3 +487,9 @@ insert into meaning_state (code, datasets) values ('komisjoni kinnitatud', '{est
 insert into meaning_state (code, datasets) values ('komisjonis arutlusel', '{est}');
 insert into meaning_state (code, datasets) values ('terminiprobleem', '{est}');
 
+insert into meaning_type (code, datasets) values ('termin', '{est}');
+insert into meaning_type (code, datasets) values ('tõlkeprobleem', '{est}');
+insert into meaning_type (code, datasets) values ('ametinimetus', '{est}');
+insert into meaning_type (code, datasets) values ('organisatsioon, asutus', '{est}');
+insert into meaning_type (code, datasets) values ('õigusakti pealkiri', '{est}');
+insert into meaning_type (code, datasets) values ('dokumendi pealkiri', '{est}');

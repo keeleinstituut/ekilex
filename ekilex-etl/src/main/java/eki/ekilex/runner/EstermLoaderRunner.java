@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 
 @Component
@@ -29,15 +31,37 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String LTB_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
+	private static final String REVIEW_TIMESTAMP_PATTERN = "yy/MM/dd";
+
+	private static final String SQL_SELECT_MEANING_STATES = "select code \"key\", code \"value\" from " + MEANING_STATE;
+
+	private static final String SQL_SELECT_MEANING_TYPES = "select code \"key\", code \"value\" from " + MEANING_TYPE;
+
+	private static final String SQL_SELECT_LEXEME_TYPES = "select code \"key\", code \"value\" from " + LEXEME_TYPE;
+
 	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
-	private static final String SQL_SELECT_COUNT_LEXEME_TYPE_BY_CODE = "select count(code) cnt from " + LEXEME_TYPE + " where code = :code";
-
+	//FIXME mitu?
 	private static final String SQL_UPDATE_LEXEME_TYPE = "update " + LEXEME + " set type = :lexemeType where id = :lexemeId";
+
+	private DateFormat defaultDateFormat;
+
+	private DateFormat ltbDateFormat;
+
+	private DateFormat reviewDateFormat;
+
+	private List<String> meaningStateCodes;
+
+	private List<String> meaningTypeCodes;
+
+	private List<String> lexemeTypeCodes;
 
 	@Override
 	void initialise() throws Exception {
-		//Nothing...
+
+		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
+		ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
+		reviewDateFormat = new SimpleDateFormat(REVIEW_TIMESTAMP_PATTERN);
 	}
 
 	@Transactional
@@ -64,8 +88,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		DateFormat defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
-		DateFormat ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
+		meaningStateCodes = getClassifierCodes(SQL_SELECT_MEANING_STATES);
+		meaningTypeCodes = getClassifierCodes(SQL_SELECT_MEANING_TYPES);
+		lexemeTypeCodes = getClassifierCodes(SQL_SELECT_LEXEME_TYPES);
+
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = readDocument(dataXmlFilePath);
 
@@ -78,10 +104,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		Long wordId, meaningId, lexemeId, rectionId;
 		String valueStr;
 		String lang;
-		long valueLong;
-		Timestamp valueTs;
 		int homonymNr;
 		Meaning meaningObj;
+		Lexeme lexemeObj;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -92,98 +117,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		for (Element conceptGroupNode : conceptGroupNodes) {
 
-			meaningObj = new Meaning();
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("system[@type='entryClass']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				meaningObj.setEntryClassCode(valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Staatus']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				meaningObj.setMeaningStateCode(valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp/transac[@type='origination']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				meaningObj.setCreatedBy(valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp[transac/@type='origination']/date");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				valueLong = defaultDateFormat.parse(valueStr).getTime();
-				valueTs = new Timestamp(valueLong);
-				meaningObj.setCreatedOn(valueTs);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp/transac[@type='modification']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				meaningObj.setModifiedBy(valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp[transac/@type='modification']/date");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				valueLong = defaultDateFormat.parse(valueStr).getTime();
-				valueTs = new Timestamp(valueLong);
-				meaningObj.setModifiedOn(valueTs);
-			}
-
 			// meaning
+			meaningObj = new Meaning();
+			extractAndApplyMeaningProperties(conceptGroupNode, meaningObj, dataErrorCount);
 			meaningId = createMeaning(meaningObj, dataset);
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("concept");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='ID-number']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				createMeaningFreeform(meaningId, FreeformType.LTB_ID, valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestaja']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				createMeaningFreeform(meaningId, FreeformType.LTB_CREATED_BY, valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestusaeg']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				valueLong = ltbDateFormat.parse(valueStr).getTime();
-				valueTs = new Timestamp(valueLong);
-				createMeaningFreeform(meaningId, FreeformType.LTB_CREATED_ON, valueTs);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutja']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				createMeaningFreeform(meaningId, FreeformType.LTB_MODIFIED_BY, valueStr);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutmisaeg']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				valueLong = ltbDateFormat.parse(valueStr).getTime();
-				valueTs = new Timestamp(valueLong);
-				createMeaningFreeform(meaningId, FreeformType.LTB_MODIFIED_ON, valueTs);
-			}
-
-			valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Päritolu']");
-			if (valueNode != null) {
-				valueStr = valueNode.getTextTrim();
-				createMeaningFreeform(meaningId, FreeformType.LTB_SOURCE, valueStr);
-			}
-
-			//...
+			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode);
 
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
 			saveDomains(conceptGroupNode, domainNodes, meaningId, domainOrigin, dataErrorCount);
@@ -202,6 +140,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 				lang = unifyLang(valueStr);
 
+				//TODO
+				langGroupNode.selectNodes(definitionExp);
+
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
 				for (Element termGroupNode : termGroupNodes) {
@@ -212,10 +153,18 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					homonymNr = getWordMaxHomonymNr(valueStr, dataLang);
 					homonymNr++;
 					wordId = saveWord(valueStr, null, null, null, homonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
-					lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
+
+					//lexeme
+					lexemeObj = new Lexeme();
+					extractAndApplyLexemeProperties(termGroupNode, lexemeObj, dataErrorCount);
+					lexemeId = createLexeme(lexemeObj, dataset);
+
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
+						extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
+
+						//FIXME multiple
 						valueNode = (Element) termGroupNode.selectSingleNode(usageExp);
 						if (valueNode != null) {
 							if (valueNode.hasMixedContent()) {
@@ -225,6 +174,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 							rectionId = createOrSelectRection(lexemeId, defaultRectionValue);
 							createUsage(rectionId, valueStr);
 						}
+						//FIXME multiple
 						valueNode = (Element) termGroupNode.selectSingleNode(definitionExp);
 						if (valueNode != null) {
 							if (valueNode.hasMixedContent()) {
@@ -233,10 +183,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 							valueStr = valueNode.getTextTrim();
 							createDefinition(meaningId, valueStr, lang, dataset);
 						}
+						//FIXME multiple
 						valueNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
 						if (valueNode != null) {
 							valueStr = valueNode.getTextTrim();
-							updateLexemeType(lexemeId, valueStr, dataErrorCount);
+							if (lexemeTypeCodes.contains(valueStr)) {
+								updateLexemeType(lexemeId, valueStr);
+							} else {
+								dataErrorCount.increment();
+								logger.warn("Incorrect lexeme type reference: \"{}\"", valueStr);
+							}
 						}
 					}
 				}
@@ -255,6 +211,264 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	private List<String> getClassifierCodes(String queryStr) throws Exception {
+
+		Map<String, String> resultMap = basicDbService.queryListAsMap(queryStr, new HashMap<>());
+		List<String> codes = new ArrayList<>(resultMap.keySet());
+		return codes;
+	}
+
+	private void extractAndApplyMeaningProperties(Element conceptGroupNode, Meaning meaningObj, Count dataErrorCount) throws Exception {
+
+		Element valueNode;
+		String valueStr;
+		long valueLong;
+		Timestamp valueTs;
+	
+		valueNode = (Element) conceptGroupNode.selectSingleNode("system[@type='entryClass']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			meaningObj.setEntryClassCode(valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Staatus']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			if (meaningStateCodes.contains(valueStr)) {
+				meaningObj.setMeaningStateCode(valueStr);
+			} else {
+				dataErrorCount.increment();
+				logger.warn("Incorrect meaning state reference: \"{}\"", valueStr);
+				//TODO should fix at source!!
+				String replaceableMeaningStateCode = "komisjonis arutusel";
+				String meaningStateCodeReplacement = "komisjonis arutlusel";
+				if (StringUtils.equals(replaceableMeaningStateCode, valueStr)) {
+					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, meaningStateCodeReplacement);
+					meaningObj.setMeaningStateCode(meaningStateCodeReplacement);
+				}
+			}
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Mõistetüüp']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			if (meaningTypeCodes.contains(valueStr)) {
+				meaningObj.setMeaningTypeCode(valueStr);
+			} else {
+				dataErrorCount.increment();
+				logger.warn("Incorrect meaning type reference: \"{}\"", valueStr);
+			}
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp/transac[@type='origination']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			meaningObj.setCreatedBy(valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp[transac/@type='origination']/date");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			meaningObj.setCreatedOn(valueTs);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp/transac[@type='modification']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			meaningObj.setModifiedBy(valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("transacGrp[transac/@type='modification']/date");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			meaningObj.setModifiedOn(valueTs);
+		}
+	}
+
+	private void extractAndSaveMeaningFreeforms(Long meaningId, Element conceptGroupNode) throws Exception {
+
+		Element valueNode;
+		String valueStr;
+		long valueLong;
+		Timestamp valueTs;
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("concept");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='ID-number']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.LTB_ID, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestaja']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.LTB_CREATED_BY, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestusaeg']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = ltbDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			createMeaningFreeform(meaningId, FreeformType.LTB_CREATED_ON, valueTs);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutja']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.LTB_MODIFIED_BY, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutmisaeg']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = ltbDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			createMeaningFreeform(meaningId, FreeformType.LTB_MODIFIED_ON, valueTs);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Päritolu']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.LTB_SOURCE, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Märkus']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisemärkus']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Tunnus']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.IDENTIFIER, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='et-en kontrollija']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.ET_EN_REVIEWED_BY, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='et-en kontrollitud']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = reviewDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			createMeaningFreeform(meaningId, FreeformType.ET_EN_REVIEWED_ON, valueTs);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='en-et kontrollija']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.EN_ET_REVIEWED_BY, valueStr);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='en-et kontrollitud']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = reviewDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			createMeaningFreeform(meaningId, FreeformType.EN_ET_REVIEWED_ON, valueTs);
+		}
+
+		valueNode = (Element) conceptGroupNode.selectSingleNode("descripGrp/descrip[@type='Tööleht']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.WORKSHEET, valueStr);
+		}
+	}
+
+	//TODO impl
+	private void extractAndApplyLexemeProperties(Element termGroupNode, Lexeme lexemeObj, Count dataErrorCount) throws Exception {
+
+		Element valueNode;
+		String valueStr;
+		long valueLong;
+		Timestamp valueTs;
+
+		valueNode = (Element) termGroupNode.selectSingleNode("transacGrp/transac[@type='origination']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			lexemeObj.setCreatedBy(valueStr);
+		}
+
+		valueNode = (Element) termGroupNode.selectSingleNode("transacGrp[transac/@type='origination']/date");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			lexemeObj.setCreatedOn(valueTs);
+		}
+
+		valueNode = (Element) termGroupNode.selectSingleNode("transacGrp/transac[@type='modification']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			lexemeObj.setModifiedBy(valueStr);
+		}
+
+		valueNode = (Element) termGroupNode.selectSingleNode("transacGrp[transac/@type='modification']/date");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = defaultDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			lexemeObj.setModifiedOn(valueTs);
+		}
+	}
+
+	//TODO impl
+	private void extractAndSaveLexemeFreeforms(Long lexemeId, Element termGroupNode) throws Exception {
+
+		Element valueNode;
+		String valueStr;
+		long valueLong;
+		Timestamp valueTs;
+
+		valueNode = (Element) termGroupNode.selectSingleNode("descripGrp/descrip[@type='Autor']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createLexemeFreeform(lexemeId, FreeformType.EÕKK_CREATED_BY, valueStr);
+		}
+
+		valueNode = (Element) termGroupNode.selectSingleNode("descripGrp/descrip[@type='Sisestusaeg']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = ltbDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			createLexemeFreeform(lexemeId, FreeformType.EÕKK_CREATED_ON, valueTs);
+		}
+
+		valueNode = (Element) termGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutja']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			createLexemeFreeform(lexemeId, FreeformType.EÕKK_MODIFIED_BY, valueStr);
+		}
+
+		valueNode = (Element) termGroupNode.selectSingleNode("descripGrp/descrip[@type='Muutmisaeg']");
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			valueLong = ltbDateFormat.parse(valueStr).getTime();
+			valueTs = new Timestamp(valueLong);
+			createLexemeFreeform(lexemeId, FreeformType.EÕKK_MODIFIED_ON, valueTs);
+		}
 	}
 
 	private void saveDomains(Element parentNode, List<Element> domainNodes, Long meaningId, String domainOrigin, Count dataErrorCount) throws Exception {
@@ -287,29 +501,17 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				createMeaningDomain(meaningId, domainCode, domainOrigin);
 			} else {
 				dataErrorCount.increment();
-				logger.warn("Unable to bind domain code \"{}\"", domainCode);
+				logger.warn("Incorrect domain reference: \"{}\"", domainCode);
 			}
 		}
 	}
 
-	private void updateLexemeType(Long lexemeId, String lexemeType, Count dataErrorCount) throws Exception {
+	private void updateLexemeType(Long lexemeId, String lexemeType) throws Exception {
 
-		Map<String, Object> tableRowParamMap;
-		Map<String, Object> tableRowValueMap;
-		boolean lexemeTypeExists;
-
-		tableRowParamMap = new HashMap<>();
+		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("code", lexemeType);
-		tableRowValueMap = basicDbService.queryForMap(SQL_SELECT_COUNT_LEXEME_TYPE_BY_CODE, tableRowParamMap);
-		lexemeTypeExists = ((Long) tableRowValueMap.get("cnt")) > 0;
-		if (lexemeTypeExists) {
-			tableRowParamMap = new HashMap<>();
-			tableRowParamMap.put("lexemeId", lexemeId);
-			tableRowParamMap.put("lexemeType", lexemeType);
-			basicDbService.update(SQL_UPDATE_LEXEME_TYPE, tableRowParamMap);
-		} else {
-			dataErrorCount.increment();
-			logger.warn("Unable to bind lexeme type code \"{}\"", lexemeType);
-		}
+		tableRowParamMap.put("lexemeId", lexemeId);
+		tableRowParamMap.put("lexemeType", lexemeType);
+		basicDbService.update(SQL_UPDATE_LEXEME_TYPE, tableRowParamMap);
 	}
 }

@@ -14,6 +14,8 @@ public interface TableName {
 	public static final String MORPH = "morph";
 	public static final String MORPH_LABEL = "morph_label";
 	public static final String LEXEME_TYPE = "lexeme_type";
+	public static final String MEANING_STATE = "meaning_state";
+	public static final String MEANING_TYPE = "meaning_type";
 	public static final String LABEL_TYPE = "label_type";
 
 	// dynamic
