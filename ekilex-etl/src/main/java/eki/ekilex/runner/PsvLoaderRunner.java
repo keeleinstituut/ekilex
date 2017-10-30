@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
@@ -150,7 +151,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordId = getWordIdFor(synonymData.word, synonymData.homonymNr, existingWords);
 				if (wordId == null) continue;
 			}
-			createLexeme(wordId, synonymData.meaningId, 0, 0, 0, dataset);
+			Lexeme lexeme = new Lexeme();
+			lexeme.setWordId(wordId);
+			lexeme.setMeaningId(synonymData.meaningId);
+			lexeme.setLevel1(0);
+			lexeme.setLevel2(0);
+			lexeme.setLevel3(0);
+			createLexeme(lexeme, dataset);
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
 		logger.debug("Synonyms import done.");
@@ -206,7 +213,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				int lexemeLevel2 = 0;
 				for (WordData newWordData : newWords) {
 					lexemeLevel2++;
-					Long lexemeId = createLexeme(newWordData.id, meaningId, lexemeLevel1, lexemeLevel2, 0, dataset);
+					Lexeme lexeme = new Lexeme();
+					lexeme.setWordId(newWordData.id);
+					lexeme.setMeaningId(meaningId);
+					lexeme.setLevel1(lexemeLevel1);
+					lexeme.setLevel2(lexemeLevel2);
+					lexeme.setLevel3(0);
+					Long lexemeId = createLexeme(lexeme, dataset);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
