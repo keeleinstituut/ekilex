@@ -36,7 +36,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
-
 	}
 
 	@Transactional
@@ -67,13 +66,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<SynonymData> synonyms = new ArrayList<>();
 		List<AntonymData> antonyms = new ArrayList<>();
 		List<WordData> importedWords = new ArrayList<>();
+		List<WordData> basicWords = new ArrayList<>();
 
 		for (Element articleNode : articleNodes) {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element guidNode = (Element) articleNode.selectSingleNode(articleGuidExp);
 			String guid = guidNode.getTextTrim();
-			processArticleHeader(headerNode, newWords, wordParadigmsMap, wordDuplicateCount);
+			processArticleHeader(guid, headerNode, newWords, basicWords, wordParadigmsMap, wordDuplicateCount);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
@@ -90,12 +90,34 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		processSynonyms(synonyms, dataset, importedWords);
 		processAntonyms(antonyms, dataset, importedWords);
+		processBasicWords(basicWords, dataset, importedWords);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private void processBasicWords(List<WordData> basicWords, String dataset, List<WordData> importedWords) throws Exception {
+		logger.debug("Found {} basic words.", basicWords.size());
+		for (WordData basicWord: basicWords) {
+			List<WordData> existingWords = importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
+			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.guid);
+			if (!existingWords.isEmpty() && wordId != null) {
+				Map<String, Object> params = new HashMap<>();
+				params.put("word_id", basicWord.id);
+				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList("select * from lexeme where word_id=:word_id", params);
+				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
+					params.put("word_id", wordId);
+					List<Map<String, Object>> lexemes = basicDbService.queryList("select * from lexeme where word_id=:word_id", params);
+					for (Map<String, Object> lexeme : lexemes) {
+						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long)lexeme.get("id"), "head", dataset);
+					}
+				}
+			}
+		}
+		logger.debug("Basic words processing done.");
 	}
 
 	private void processAntonyms(List<AntonymData> antonyms, String dataset, List<WordData> importedWords) throws Exception {
@@ -110,17 +132,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				params.put("level1", antonymData.lexemeLevel1);
 				Map<String, Object> lexemeObject = basicDbService.select(LEXEME, params);
 				if (lexemeObject != null) {
-					Map<String, Object> relationParams = new HashMap<>();
-					relationParams.put("lexeme1_id", lexemeObject.get("id"));
-					relationParams.put("lexeme2_id", antonymData.lexemeId);
-					relationParams.put("lex_rel_type_code", "ant");
-					Long relationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
-					if (relationId != null) {
-						relationParams.clear();
-						relationParams.put("lex_relation_id", relationId);
-						relationParams.put("dataset_code", dataset);
-						basicDbService.createWithoutId(LEX_RELATION_DATASET, relationParams);
-					}
+					createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get("id"), "ant", dataset);
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 				}
@@ -129,6 +141,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 		logger.debug("Antonyms import done.");
+	}
+
+	private void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String dataset) throws Exception {
+		Map<String, Object> relationParams = new HashMap<>();
+		relationParams.put("lexeme1_id", lexemeId1);
+		relationParams.put("lexeme2_id", lexemeId2);
+		relationParams.put("lex_rel_type_code", relationType);
+		Long relationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+		if (relationId != null) {
+			relationParams.clear();
+			relationParams.put("lex_relation_id", relationId);
+			relationParams.put("dataset_code", dataset);
+			basicDbService.createWithoutId(LEX_RELATION_DATASET, relationParams);
+		}
 	}
 
 	private void processSynonyms(List<SynonymData> synonyms, String dataset, List<WordData> importedWords) throws Exception {
@@ -374,7 +400,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processArticleHeader(
-			Element headerNode, List<WordData> newWords, Map<String, List<Paradigm>> wordParadigmsMap, Count wordDuplicateCount) throws Exception {
+			String guid,
+			Element headerNode,
+			List<WordData> newWords,
+			List<WordData> basicWords,
+			Map<String, List<Paradigm>> wordParadigmsMap,
+			Count wordDuplicateCount) throws Exception {
 
 		final String wordGroupExp = "x:mg";
 		final String wordPosCodeExp = "x:sl";
@@ -393,6 +424,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			wordData.id = saveWord(word, paradigmObj, wordDuplicateCount);
 
+			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
+			basicWords.addAll(basicWordsOfTheWord);
+
 			Element posCodeNode = (Element) wordGroupNode.selectSingleNode(wordPosCodeExp);
 			wordData.posCode = posCodeNode == null ? null : posCodeNode.getTextTrim();
 
@@ -405,6 +439,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			wordData.value = word.getValue();
 			newWords.add(wordData);
 		}
+	}
+
+	private List<WordData> extractBasicWords(Element node, Long wordId, String guid) {
+
+		final String basicWordExp = "x:ps";
+		final String homonymNrAttr = "i";
+
+		List<WordData> basicWords = new ArrayList<>();
+		List<Element> basicWordNodes = node.selectNodes(basicWordExp);
+		for (Element basicWordNode : basicWordNodes) {
+			WordData basicWord = new WordData();
+			basicWord.id = wordId;
+			basicWord.value = basicWordNode.getTextTrim();
+			basicWord.guid = guid;
+			if (basicWordNode.attributeValue(homonymNrAttr) != null) {
+				basicWord.homonymNr = Integer.parseInt(basicWordNode.attributeValue(homonymNrAttr));
+			}
+			basicWords.add(basicWord);
+		}
+		return basicWords;
 	}
 
 	private Paradigm extractParadigm(String word, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
@@ -493,6 +547,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String grammar;
 		String value;
 		int homonymNr = 0;
+		String guid;
 	}
 
 	private class SynonymData {
