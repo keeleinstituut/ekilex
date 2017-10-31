@@ -13,7 +13,7 @@ public class TermekiLoader {
 
 	public static void main(String[] args) {
 
-		ConfigurableApplicationContext applicationContext = null;
+		ConfigurableApplicationContext applicationContext;
 
 		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml", "db-termeki-config.xml");
 		TermekiRunner runner = applicationContext.getBean(TermekiRunner.class);

@@ -19,11 +19,9 @@ public class PsvLoader {
 
 	public static void main(String[] args) {
 
-		ConfigurableApplicationContext applicationContext = null;
-
+		ConfigurableApplicationContext applicationContext;
 		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
 		PsvLoaderRunner runner = applicationContext.getBean(PsvLoaderRunner.class);
-		MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
 
 		try {
 			applicationContext.registerShutdownHook();
@@ -34,14 +32,12 @@ public class PsvLoader {
 			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 			if (isAddForms) {
 				String mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
-				if (isAddForms) {
-					wordParadigmsMap = mabRunner.execute(mabFilePath, "est");
-				}
+				MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
+				wordParadigmsMap = mabRunner.execute(mabFilePath, "est");
 			}
 
 			String dataset = "psv";
 			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap);
-
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
