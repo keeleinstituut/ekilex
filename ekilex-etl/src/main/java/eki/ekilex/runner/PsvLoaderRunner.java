@@ -5,6 +5,7 @@ import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
@@ -30,10 +32,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String dataLang = "est";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]/";
 	private final String defaultWordMorphCode = "SgN";
+	private final static String REPORT_NAME = "report";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private Map<String, String> posCodes;
+	private ReportComposer reportComposer;
 
 	@Override
 	void initialise() throws Exception {
@@ -50,6 +54,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.info("Starting import");
 		long t1, t2;
 		t1 = System.currentTimeMillis();
+
+		reportComposer = new ReportComposer("PSV import", REPORT_NAME);
 
 		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
@@ -70,6 +76,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<WordData> basicWords = new ArrayList<>();
 		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
 
+		writeToLogFile("Processing articles", "", "");
 		for (Element articleNode : articleNodes) {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
@@ -98,12 +105,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
 
+		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
 	private void processReferenceForms(List<ReferenceFormData> referenceForms, List<WordData> importedWords) throws Exception {
+
 		logger.debug("Found {} reference forms.", referenceForms.size());
+		writeToLogFile("Processing reference forms", "", "");
 		for (ReferenceFormData referenceForm : referenceForms) {
 			Optional<WordData> word = importedWords.stream()
 					.filter(w -> referenceForm.wordValue.equals(w.value) && referenceForm.wordHomonymNr == w.homonymNr).findFirst();
@@ -120,7 +130,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Map<String, Object> wordForm = wordForms.get(0);
 				Optional<Map<String, Object>> form = forms.stream().filter(f -> referenceForm.formValue.equals(f.get("value"))).findFirst();
 				if (!form.isPresent()) {
-					logger.debug("Form not foud for {}, {} -> {}", referenceForm.guid, referenceForm.formValue, referenceForm.wordValue);
+					logger.debug("Form not found for {}, {} -> {}", referenceForm.guid, referenceForm.formValue, referenceForm.wordValue);
+					writeToLogFile("Form not found", referenceForm.guid, referenceForm.formValue + " -> " + referenceForm.wordValue);
 					continue;
 				}
 				params.clear();
@@ -130,13 +141,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				basicDbService.create(FORM_RELATION, params);
 			} else {
 				logger.debug("Word not found {}, {}, {}", referenceForm.guid, referenceForm.wordValue, referenceForm.wordHomonymNr);
+				writeToLogFile("Word not found", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
 			}
 		}
 		logger.debug("Reference forms processing done.");
 	}
 
 	private void processBasicWords(List<WordData> basicWords, String dataset, List<WordData> importedWords) throws Exception {
+
 		logger.debug("Found {} basic words.", basicWords.size());
+		writeToLogFile("Processing basic words", "", "");
 		for (WordData basicWord: basicWords) {
 			List<WordData> existingWords = importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.guid);
@@ -159,6 +173,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processAntonyms(List<AntonymData> antonyms, String dataset, List<WordData> importedWords) throws Exception {
 
 		logger.debug("Found {} antonyms.", antonyms.size());
+		writeToLogFile("Processing antonyms", "", "");
 		for (AntonymData antonymData: antonyms) {
 			List<WordData> existingWords = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.guid);
@@ -171,15 +186,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get("id"), "ant", dataset);
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
+					writeToLogFile("Lexeme not found for antonym", antonymData.guid, antonymData.word + ", leve1 " + antonymData.lexemeLevel1);
 				}
-			} else {
-				logger.debug("Word not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 			}
 		}
 		logger.debug("Antonyms import done.");
 	}
 
 	private void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String dataset) throws Exception {
+
 		Map<String, Object> relationParams = new HashMap<>();
 		relationParams.put("lexeme1_id", lexemeId1);
 		relationParams.put("lexeme2_id", lexemeId2);
@@ -196,6 +211,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processSynonyms(List<SynonymData> synonyms, String dataset, List<WordData> importedWords) throws Exception {
 
 		logger.debug("Found {} synonyms", synonyms.size());
+		writeToLogFile("Processings synonyms", "", "");
 
 		Count newSynonymWordCount = new Count();
 		for (SynonymData synonymData : synonyms) {
@@ -226,7 +242,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Synonyms import done.");
 	}
 
-	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String guid) {
+	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String guid) throws Exception {
+
 		Long wordId = null;
 		if (words.size() > 1) {
 			Optional<WordData> matchingWord = words.stream().filter(w -> w.homonymNr == homonymNr).findFirst();
@@ -234,6 +251,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordId = matchingWord.get().id;
 			} else {
 				logger.debug("No matching word was found for {} word {}, {}", guid, wordValue, homonymNr);
+				writeToLogFile("No matching word was found", guid, wordValue + " : " + homonymNr);
 			}
 		} else {
 			wordId = words.get(0).id;
@@ -268,6 +286,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
 				if (definitionValueNodes.size() > 1) {
 					logger.debug("More than one definition found for {} word {}", guid, newWords.get(0).value);
+					writeToLogFile("More than one definition found", guid, newWords.get(0).value);
 				}
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(guid, meaningGroupNode, meaningId);
@@ -355,6 +374,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void saveGrammars(Element node, Long lexemeId, String dataset, WordData wordData) throws Exception {
+
 		final String grammarValueExp = "x:grg/x:gki";
 
 		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
@@ -367,6 +387,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void createGrammar(Long lexemeId, String dataset, String value) throws Exception {
+
 		Map<String, Object> params = new HashMap<>();
 		params.put("lexeme_id", lexemeId);
 		params.put("value", value);
@@ -616,6 +637,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String definition = definitionValueNode.getTextTrim();
 			createDefinition(meaningId, definition, wordMatchLang, dataset);
 		}
+	}
+
+	private void writeToLogFile(String message, String guid, String values) throws Exception {
+
+		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(message, guid, values));
+		reportComposer.append(REPORT_NAME, logMessage);
 	}
 
 	private class WordData {
