@@ -19,9 +19,12 @@ drop table if exists meaning_domain;
 drop table if exists meaning_dataset;
 drop table if exists meaning;
 drop table if exists freeform;
+drop table if exists form_relation;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word;
+drop table if exists form_rel_type_label;
+drop table if exists form_rel_type;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
 --drop table if exists meaning_type_label;
@@ -247,6 +250,22 @@ create table lex_rel_type_label
   unique(code, lang, type)
 );
 
+-- vormi seose liik
+create table form_rel_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table form_rel_type_label
+(
+  code varchar(100) references form_rel_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -260,6 +279,7 @@ create table lifecycle_log
   event_by varchar(100) null,
   event_on timestamp null
 );
+alter sequence lifecycle_log_id_seq restart with 10000;
 
 -- sõnakogu
 create table dataset
@@ -301,6 +321,17 @@ create table form
 );
 alter sequence form_id_seq restart with 10000;
 
+-- vormi seos
+create table form_relation
+(
+  id bigserial primary key,
+  form1_id bigint references form(id) on delete cascade not null,
+  form2_id bigint references form(id) on delete cascade not null,
+  form_rel_type_code varchar(100) references form_rel_type(code),
+  unique(form1_id, form2_id, form_rel_type_code)
+);
+alter sequence form_relation_id_seq restart with 10000;
+
 -- vabavorm
 create table freeform
 (
@@ -314,6 +345,7 @@ create table freeform
   classif_name text null,
   classif_code varchar(100) null
 );
+alter sequence freeform_id_seq restart with 10000;
 
 -- tähendus
 create table meaning
@@ -355,6 +387,7 @@ create table meaning_freeform
   freeform_id bigint references freeform(id) on delete cascade not null,
   unique(meaning_id, freeform_id)
 );
+alter sequence meaning_freeform_id_seq restart with 10000;
 
 -- seletus
 create table definition
@@ -381,6 +414,7 @@ create table definition_freeform
   freeform_id bigint references freeform(id) on delete cascade not null,
   unique(definition_id, freeform_id)
 );
+alter sequence definition_freeform_id_seq restart with 10000;
 
 -- ilmik
 create table lexeme
@@ -442,6 +476,7 @@ create table lexeme_freeform
   freeform_id bigint references freeform(id) on delete cascade not null,
   unique(lexeme_id, freeform_id)
 );
+alter sequence lexeme_freeform_id_seq restart with 10000;
 
 -- rektsioon
 create table rection

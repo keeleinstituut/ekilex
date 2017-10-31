@@ -18,10 +18,16 @@ insert into dataset (code, name) values ('vlk', 'Veterinaarmeditsiin ja loomakas
 insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 
 insert into lex_rel_type (code, datasets) values ('comp', '{eos, ss_, sys, evs}');
-insert into lex_rel_type (code, datasets) values ('ant', '{eos, ss_, sys, evs}');
+insert into lex_rel_type (code, datasets) values ('ant', '{psv}');
+insert into lex_rel_type (code, datasets) values ('head', '{psv}');
 
 insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liitsõna', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('head', 'põhisõna', 'est', 'full');
+
+insert into form_rel_type (code, datasets) values ('ref', '{psv}');
+
+insert into form_rel_type_label (code, value, lang, type) values ('ref', 'viitemärksõna', 'est', 'full');
 
 insert into lexeme_type (code, datasets) values ('eelistermin', '{est}');
 insert into lexeme_type (code, datasets) values ('lühend', '{est}');
@@ -510,11 +516,11 @@ insert into domain (code, origin, parent_code, parent_origin, datasets) values (
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Lennureeglid', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Lennutegevus', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Lennuväljad ja kopteriväljakud', 'ltb', null, null, '{est}');
-insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Lennuõnnetused ja –intsidendid', 'ltb', null, null, '{est}');
+insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Lennuõnnetused ja -intsidendid', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Ohtlike ainete/kaupade õhuvedu', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Otsing ja päästmine', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Protseduuride lihtsustamine lennunduses', 'ltb', null, null, '{est}');
-insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Reisijatevedu ja –teenindamine', 'ltb', null, null, '{est}');
+insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Reisijatevedu ja -teenindamine', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Õhusõidukid', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Õhusõidukite keskkonnakõlblikkus (müra, emissioonid)', 'ltb', null, null, '{est}');
 insert into domain (code, origin, parent_code, parent_origin, datasets) values ('Õhusõidukite riikkondsus ja registreerimistunnused', 'ltb', null, null, '{est}');

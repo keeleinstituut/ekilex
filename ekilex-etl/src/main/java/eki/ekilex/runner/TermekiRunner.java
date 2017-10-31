@@ -2,6 +2,8 @@ package eki.ekilex.runner;
 
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.TermekiService;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
@@ -75,9 +77,10 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		long count = 0;
 		for (Map<String, Object> term : terms) {
 			String language = unifyLang((String)term.get("lang"));
-			String word = (String)term.get("term");
-			int homonymNr = getWordMaxHomonymNr(word, language) + 1;
-			Long wordId = saveWord(word, null, null, null, homonymNr, defaultWordMorphCode, language, null, wordDuplicateCount);
+			String wordValue = (String)term.get("term");
+			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
+			Word word = new Word(wordValue,language, null, null, null, homonymNr, defaultWordMorphCode);
+			Long wordId = saveWord(word, null, wordDuplicateCount);
 
 			Integer conceptId = (Integer) term.get("concept_id");
 			if (!conceptMeanings.containsKey(conceptId)) {
@@ -90,7 +93,13 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			}
 
 			Long meaningId = conceptMeanings.get(conceptId);
-			createLexeme(wordId, meaningId, 0, 0, 0, dataset);
+			Lexeme lexeme = new Lexeme();
+			lexeme.setWordId(wordId);
+			lexeme.setMeaningId(meaningId);
+			lexeme.setLevel1(0);
+			lexeme.setLevel2(0);
+			lexeme.setLevel3(0);
+			createLexeme(lexeme, dataset);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
