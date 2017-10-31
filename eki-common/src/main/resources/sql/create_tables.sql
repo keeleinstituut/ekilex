@@ -11,6 +11,7 @@ drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
 drop table if exists lexeme_dataset;
 drop table if exists lexeme;
+drop table if exists definition_freeform;
 drop table if exists definition_dataset;
 drop table if exists definition;
 drop table if exists meaning_freeform;
@@ -18,7 +19,6 @@ drop table if exists meaning_domain;
 drop table if exists meaning_dataset;
 drop table if exists meaning;
 drop table if exists freeform;
-drop table if exists ff_group;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word;
@@ -48,6 +48,7 @@ drop table if exists lang_label;
 drop table if exists lang;
 drop table if exists label_type;
 drop table if exists dataset;
+drop table if exists lifecycle_log;
 drop table if exists eki_user;
 
 create table eki_user
@@ -250,6 +251,16 @@ create table lex_rel_type_label
 -- dünaamiline andmestik --
 ---------------------------
 
+create table lifecycle_log
+(
+  id bigserial primary key,
+  owner_id bigint not null,
+  owner_name varchar(100) not null,
+  type varchar(100) not null,
+  event_by varchar(100) null,
+  event_on timestamp null
+);
+
 -- sõnakogu
 create table dataset
 (
@@ -290,17 +301,11 @@ create table form
 );
 alter sequence form_id_seq restart with 10000;
 
--- vabavormide grupp
-create table ff_group
-(
-  id bigserial primary key
-);
-
 -- vabavorm
 create table freeform
 (
   id bigserial primary key,
-  ff_group_id bigint references ff_group(id) on delete cascade null,
+  parent_id bigint references freeform(id) on delete cascade null,
   type varchar(100) not null,
   value_text text null,
   value_date timestamp null,
@@ -366,6 +371,15 @@ create table definition_dataset
   definition_id bigint REFERENCES definition(id) on delete CASCADE not null,
   dataset_code varchar(10) references dataset(code) not null,
   primary key (definition_id, dataset_code)
+);
+
+-- seletuse vabavorm
+create table definition_freeform
+(
+  id bigserial primary key,
+  definition_id bigint references definition(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  unique(definition_id, freeform_id)
 );
 
 -- ilmik

@@ -10,15 +10,16 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleLogType;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
@@ -243,7 +244,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			tableRowParamMap.put("type_code", meaningTypeCode);
 		}
 		Long meaningId;
-		if (CollectionUtils.isEmpty(tableRowParamMap)) {
+		if (MapUtils.isEmpty(tableRowParamMap)) {
 			meaningId = basicDbService.create(MEANING);
 		} else {
 			meaningId = basicDbService.create(MEANING, tableRowParamMap);
@@ -266,7 +267,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return meaningId;
 	}
 
-	protected void createDefinition(Long meaningId, String definition, String lang, String dataset) throws Exception {
+	protected Long createDefinition(Long meaningId, String definition, String lang, String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
@@ -279,6 +280,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			tableRowParamMap.put("dataset_code", dataset);
 			basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
 		}
+		return definitionId;
 	}
 
 	protected Long createLexeme(Lexeme lexeme, String dataset) throws Exception {
@@ -293,37 +295,41 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Integer lexemeLevel2 = lexeme.getLevel2();
 		Integer lexemeLevel3 = lexeme.getLevel3();
 
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("meaning_id", meaningId);
-		if (StringUtils.isNotBlank(createdBy)) {
-			tableRowParamMap.put("created_by", createdBy);
-		}
-		if (createdOn != null) {
-			tableRowParamMap.put("created_on", createdOn);
-		}
-		if (StringUtils.isNotBlank(modifiedBy)) {
-			tableRowParamMap.put("modified_by", modifiedBy);
-		}
-		if (modifiedOn != null) {
-			tableRowParamMap.put("modified_on", modifiedOn);
-		}
-		if (lexemeLevel1 != null) {
-			tableRowParamMap.put("level1", lexemeLevel1);
-		}
-		if (lexemeLevel2 != null) {
-			tableRowParamMap.put("level2", lexemeLevel2);
-		}
-		if (lexemeLevel3 != null) {
-			tableRowParamMap.put("level3", lexemeLevel3);
-		}
-		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("word_id", wordId);
+		criteriaParamMap.put("meaning_id", meaningId);
+		Long lexemeId = basicDbService.createIfNotExists(LEXEME, criteriaParamMap);
 		lexeme.setLexemeId(lexemeId);
 		if (lexemeId != null) {
-			tableRowParamMap.clear();
-			tableRowParamMap.put("lexeme_id", lexemeId);
-			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.createWithoutId(LEXEME_DATASET, tableRowParamMap);
+			Map<String, Object> valueParamMap = new HashMap<>();
+			if (StringUtils.isNotBlank(createdBy)) {
+				valueParamMap.put("created_by", createdBy);
+			}
+			if (createdOn != null) {
+				valueParamMap.put("created_on", createdOn);
+			}
+			if (StringUtils.isNotBlank(modifiedBy)) {
+				valueParamMap.put("modified_by", modifiedBy);
+			}
+			if (modifiedOn != null) {
+				valueParamMap.put("modified_on", modifiedOn);
+			}
+			if (lexemeLevel1 != null) {
+				valueParamMap.put("level1", lexemeLevel1);
+			}
+			if (lexemeLevel2 != null) {
+				valueParamMap.put("level2", lexemeLevel2);
+			}
+			if (lexemeLevel3 != null) {
+				valueParamMap.put("level3", lexemeLevel3);
+			}
+			if (MapUtils.isNotEmpty(valueParamMap)) {
+				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
+			}
+			criteriaParamMap.clear();
+			criteriaParamMap.put("lexeme_id", lexemeId);
+			criteriaParamMap.put("dataset_code", dataset);
+			basicDbService.createWithoutId(LEXEME_DATASET, criteriaParamMap);
 		}
 		return lexemeId;
 	}
@@ -397,9 +403,19 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(MEANING_DOMAIN, tableRowParamMap);
 	}
 
+	protected void createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
+
+		Long freeformId = createFreeform(freeformType, null, value);
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("definition_id", definitionId);
+		tableRowParamMap.put("freeform_id", freeformId);
+		basicDbService.create(DEFINITION_FREEFORM, tableRowParamMap);
+	}
+
 	protected void createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, value);
+		Long freeformId = createFreeform(freeformType, null, value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
@@ -409,7 +425,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected void createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, value);
+		Long freeformId = createFreeform(freeformType, null, value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -417,10 +433,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
 	}
 
-	private Long createFreeform(FreeformType freeformType, Object value) throws Exception {
+	protected Long createFreeform(FreeformType freeformType, Long parentId, Object value) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
+		if (parentId != null) {
+			tableRowParamMap.put("parent_id", parentId);
+		}
 		if (value instanceof String) {
 			tableRowParamMap.put("value_text", value);
 		} else if (value instanceof Timestamp) {
@@ -432,4 +451,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
+	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleLogType type, String eventBy, Timestamp eventOn) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("owner_id", ownerId);
+		tableRowParamMap.put("owner_name", ownerName);
+		tableRowParamMap.put("type", type.name());
+		tableRowParamMap.put("event_by", eventBy);
+		tableRowParamMap.put("event_on", eventOn);
+
+		basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
+	}
 }
