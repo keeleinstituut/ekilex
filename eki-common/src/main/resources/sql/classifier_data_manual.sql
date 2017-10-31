@@ -25,6 +25,10 @@ insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liits�
 insert into lex_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('head', 'põhisõna', 'est', 'full');
 
+insert into form_rel_type (code, datasets) values ('ref', '{psv}');
+
+insert into form_rel_type_label (code, value, lang, type) values ('ref', 'viitemärksõna', 'est', 'full');
+
 insert into lexeme_type (code, datasets) values ('eelistermin', '{est}');
 insert into lexeme_type (code, datasets) values ('lühend', '{est}');
 insert into lexeme_type (code, datasets) values ('sünonüüm', '{est}');
