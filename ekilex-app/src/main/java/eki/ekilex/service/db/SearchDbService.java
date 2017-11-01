@@ -4,8 +4,10 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DATASET;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DATASET;
@@ -229,6 +231,22 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 										.where((LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
 												.and(LEXEME_DATASET.DATASET_CODE.in(datasets))))
 				)
+				.fetch();
+	}
+
+	public Result<Record3<Long, String, String>> findLexemeFreeforms(Long lexemeId) {
+		return create
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID)))
+				.fetch();
+	}
+
+	public Result<Record3<Long, String, String>> findFreeformChilds(Long freeformId) {
+		return create
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.from(FREEFORM)
+				.where(FREEFORM.PARENT_ID.eq(freeformId))
 				.fetch();
 	}
 
