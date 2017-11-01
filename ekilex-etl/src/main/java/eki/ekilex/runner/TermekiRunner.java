@@ -173,7 +173,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			tableRowParamMap.put("code", code);
 			tableRowParamMap.put("origin", origin);
 			tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
-			basicDbService.update(SQL_UPDATE_DOMAIN_DATSETS, tableRowParamMap);
+			basicDbService.executeScript(SQL_UPDATE_DOMAIN_DATSETS, tableRowParamMap);
 		}
 	}
 

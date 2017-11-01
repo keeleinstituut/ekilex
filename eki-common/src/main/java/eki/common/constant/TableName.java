@@ -34,6 +34,7 @@ public interface TableName {
 	public static final String USAGE_TRANSLATION = "usage_translation";
 	public static final String LEXEME_FREEFORM = "lexeme_freeform";
 	public static final String MEANING_FREEFORM = "meaning_freeform";
+	public static final String DEFINITION_FREEFORM = "definition_freeform";
 	public static final String FREEFORM = "freeform";
 	public static final String FF_GROUP = "ff_group";
 	public static final String GRAMMAR = "grammar";
@@ -41,6 +42,7 @@ public interface TableName {
 	public static final String VIEW = "vievv";
 	public static final String LEXEME_RELATION = "lex_relation";
 	public static final String FORM_RELATION = "form_relation";
+	public static final String LIFECYCLE_LOG = "lifecycle_log";
 
 	// classifier binds
 	public static final String MEANING_DOMAIN = "meaning_domain";

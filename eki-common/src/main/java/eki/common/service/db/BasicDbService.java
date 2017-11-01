@@ -19,9 +19,15 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlScript, paramMap);
 	}
 
-	public void update(String sqlScript, Map<String, Object> paramMap) {
+	public void executeScript(String sqlScript, Map<String, Object> paramMap) {
 
 		jdbcTemplate.update(sqlScript, paramMap);
+	}
+
+	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
+
+		List<Map<String, Object>> results = jdbcTemplate.queryForList(sqlScript, paramMap);
+		return results;
 	}
 
 	public Map<String, Object> queryForMap(String sqlQueryStr, Map<String, Object> paramMap) throws Exception {
@@ -57,10 +63,6 @@ public class BasicDbService extends AbstractDbService {
 	public Map<String, Object> select(String tableName, Map<String, Object> paramMap) throws Exception {
 
 		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
-		List<String> paramNames = new ArrayList<>();
-		for (String fieldName : fieldNames) {
-			paramNames.add(":" + fieldName);
-		}
 		StringBuffer sqlScriptBuf = new StringBuffer();
 		sqlScriptBuf.append("select * from ");
 		sqlScriptBuf.append(tableName);
@@ -69,9 +71,10 @@ public class BasicDbService extends AbstractDbService {
 			if (fieldIndex > 0) {
 				sqlScriptBuf.append(" and ");
 			}
-			sqlScriptBuf.append(fieldNames.get(fieldIndex));
-			sqlScriptBuf.append(" = ");
-			sqlScriptBuf.append(paramNames.get(fieldIndex));
+			String fieldName = fieldNames.get(fieldIndex);
+			sqlScriptBuf.append(fieldName);
+			sqlScriptBuf.append(" = :");
+			sqlScriptBuf.append(fieldName);
 		}
 
 		String sqlQueryStr = sqlScriptBuf.toString();
@@ -136,12 +139,13 @@ public class BasicDbService extends AbstractDbService {
 			if (fieldIndex > 0) {
 				sqlQueryBuf.append(" and ");
 			}
-			sqlQueryBuf.append(fieldNames.get(fieldIndex));
-			sqlQueryBuf.append(" = ");
-			sqlQueryBuf.append(paramNames.get(fieldIndex));
+			String fieldName = fieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(fieldName);
 		}
 		sqlQueryBuf.append(") returning id");
-		
+
 		String sqlScript = sqlQueryBuf.toString();
 
 		Long id;
@@ -185,12 +189,6 @@ public class BasicDbService extends AbstractDbService {
 		return id;
 	}
 
-	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
-
-		List<Map<String, Object>> results = jdbcTemplate.queryForList(sqlScript, paramMap);
-		return results;
-	}
-
 	public void createWithoutId(String tableName, Map<String, Object> paramMap) throws Exception {
 
 		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
@@ -207,6 +205,42 @@ public class BasicDbService extends AbstractDbService {
 		sqlQueryBuf.append(") values (");
 		sqlQueryBuf.append(StringUtils.join(paramNames, ", "));
 		sqlQueryBuf.append(")");
+
+		String sqlQueryStr = sqlQueryBuf.toString();
+
+		jdbcTemplate.update(sqlQueryStr, paramMap);
+	}
+
+	public void update(String tableName, Map<String, Object> criteriaParamMap, Map<String, Object> valueParamMap) throws Exception {
+
+		List<String> criteriaFieldNames = new ArrayList<>(criteriaParamMap.keySet());
+		List<String> valueFieldNames = new ArrayList<>(valueParamMap.keySet());
+		StringBuffer sqlQueryBuf = new StringBuffer();
+		sqlQueryBuf.append("update ");
+		sqlQueryBuf.append(tableName);
+		sqlQueryBuf.append(" set ");
+		for (int fieldIndex = 0; fieldIndex < valueFieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(", ");
+			}
+			String fieldName = valueFieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(fieldName);
+		}
+		sqlQueryBuf.append(" where ");
+		for (int fieldIndex = 0; fieldIndex < criteriaFieldNames.size(); fieldIndex++) {
+			if (fieldIndex > 0) {
+				sqlQueryBuf.append(" and ");
+			}
+			String fieldName = criteriaFieldNames.get(fieldIndex);
+			sqlQueryBuf.append(fieldName);
+			sqlQueryBuf.append(" = :");
+			sqlQueryBuf.append(fieldName);
+		}
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.putAll(criteriaParamMap);
+		paramMap.putAll(valueParamMap);
 
 		String sqlQueryStr = sqlQueryBuf.toString();
 
