@@ -37,6 +37,10 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
+	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE =
+			"select ff.* from " + LEXEME_FREEFORM + " lf, " + FREEFORM + " ff where " +
+			"lf.id = :lexeme_id and lf.freeform_id = ff.id and ff.type = :type and ff.value_text = :value";
+
 	@Autowired
 	protected BasicDbService basicDbService;
 
@@ -360,7 +364,19 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lexemeId;
 	}
 
-	//TODO to be moved to freeform
+	protected Long createOrSelectRectionFreeform(Long lexemeId, String rection) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("value", rection);
+		tableRowParamMap.put("type", FreeformType.RECTION.toString());
+		Map<String, Object> freeform = basicDbService.queryForMap(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE, tableRowParamMap);
+		if (freeform != null) {
+			return (Long)freeform.get("id");
+		}
+		return createLexemeFreeform(lexemeId, FreeformType.RECTION, rection);
+	}
+
 	@Deprecated
 	protected Long createOrSelectRection(Long lexemeId, String rection) throws Exception {
 
@@ -423,7 +439,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(MEANING_FREEFORM, tableRowParamMap);
 	}
 
-	protected void createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value) throws Exception {
+	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value) throws Exception {
 
 		Long freeformId = createFreeform(freeformType, null, value);
 
@@ -431,6 +447,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
+		return freeformId;
 	}
 
 	protected Long createFreeform(FreeformType freeformType, Long parentId, Object value) throws Exception {

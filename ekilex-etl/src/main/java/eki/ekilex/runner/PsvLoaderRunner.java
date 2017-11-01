@@ -1,5 +1,6 @@
 package eki.ekilex.runner;
 
+import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
@@ -76,7 +77,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<WordData> basicWords = new ArrayList<>();
 		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
 
-		writeToLogFile("Processing articles", "", "");
+		writeToLogFile("Artiklite töötlus", "", "");
 		for (Element articleNode : articleNodes) {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
@@ -113,7 +114,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processReferenceForms(List<ReferenceFormData> referenceForms, List<WordData> importedWords) throws Exception {
 
 		logger.debug("Found {} reference forms.", referenceForms.size());
-		writeToLogFile("Processing reference forms", "", "");
+		writeToLogFile("Vormid mis viitavad põhisõnale töötlus <x:mvt>", "", "");
 		for (ReferenceFormData referenceForm : referenceForms) {
 			Optional<WordData> word = importedWords.stream()
 					.filter(w -> referenceForm.wordValue.equals(w.value) && referenceForm.wordHomonymNr == w.homonymNr).findFirst();
@@ -131,17 +132,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Optional<Map<String, Object>> form = forms.stream().filter(f -> referenceForm.formValue.equals(f.get("value"))).findFirst();
 				if (!form.isPresent()) {
 					logger.debug("Form not found for {}, {} -> {}", referenceForm.guid, referenceForm.formValue, referenceForm.wordValue);
-					writeToLogFile("Form not found", referenceForm.guid, referenceForm.formValue + " -> " + referenceForm.wordValue);
+					writeToLogFile("Vormi ei leitud", referenceForm.guid, referenceForm.formValue + " -> " + referenceForm.wordValue);
 					continue;
 				}
 				params.clear();
 				params.put("form1_id", form.get().get("id"));
 				params.put("form2_id", wordForm.get("id"));
-				params.put("form_rel_type_code", "ref");
+				params.put("form_rel_type_code", "mvt");
 				basicDbService.create(FORM_RELATION, params);
 			} else {
 				logger.debug("Word not found {}, {}, {}", referenceForm.guid, referenceForm.wordValue, referenceForm.wordHomonymNr);
-				writeToLogFile("Word not found", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
+				writeToLogFile("Põhisõna ei leitud", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
 			}
 		}
 		logger.debug("Reference forms processing done.");
@@ -150,7 +151,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processBasicWords(List<WordData> basicWords, String dataset, List<WordData> importedWords) throws Exception {
 
 		logger.debug("Found {} basic words.", basicWords.size());
-		writeToLogFile("Processing basic words", "", "");
+		writeToLogFile("Märksõna põhisõna seoste töötlus <x:ps>", "", "");
 		for (WordData basicWord: basicWords) {
 			List<WordData> existingWords = importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.guid);
@@ -173,7 +174,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processAntonyms(List<AntonymData> antonyms, String dataset, List<WordData> importedWords) throws Exception {
 
 		logger.debug("Found {} antonyms.", antonyms.size());
-		writeToLogFile("Processing antonyms", "", "");
+		writeToLogFile("Antonüümide töötlus <x:ant>", "", "");
 		for (AntonymData antonymData: antonyms) {
 			List<WordData> existingWords = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.guid);
@@ -186,7 +187,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get("id"), "ant", dataset);
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-					writeToLogFile("Lexeme not found for antonym", antonymData.guid, antonymData.word + ", leve1 " + antonymData.lexemeLevel1);
+					writeToLogFile("Ei leitud ilmikut antaonüümile", antonymData.guid, antonymData.word + ", level1 " + antonymData.lexemeLevel1);
 				}
 			}
 		}
@@ -211,7 +212,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processSynonyms(List<SynonymData> synonyms, String dataset, List<WordData> importedWords) throws Exception {
 
 		logger.debug("Found {} synonyms", synonyms.size());
-		writeToLogFile("Processings synonyms", "", "");
+		writeToLogFile("Sünonüümide töötlus <x:syn>", "", "");
 
 		Count newSynonymWordCount = new Count();
 		for (SynonymData synonymData : synonyms) {
@@ -251,7 +252,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordId = matchingWord.get().id;
 			} else {
 				logger.debug("No matching word was found for {} word {}, {}", guid, wordValue, homonymNr);
-				writeToLogFile("No matching word was found", guid, wordValue + " : " + homonymNr);
+				writeToLogFile("Ei leitud põhisõna", guid, wordValue + " : " + homonymNr);
 			}
 		} else {
 			wordId = words.get(0).id;
@@ -285,8 +286,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
 				if (definitionValueNodes.size() > 1) {
-					logger.debug("More than one definition found for {} word {}", guid, newWords.get(0).value);
-					writeToLogFile("More than one definition found", guid, newWords.get(0).value);
+					writeToLogFile("Leitud rohkem kui üks seletus <x:d>", guid, newWords.get(0).value);
 				}
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(guid, meaningGroupNode, meaningId);
@@ -420,9 +420,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String rectionExp = "x:rek";
 		final String defaultRection = "-";
 
-		Long rectionId = createOrSelectRection(lexemeId, defaultRection);
+		Long rectionFreeformId = createOrSelectRectionFreeform(lexemeId, defaultRection);
 		for (Usage usage : usages) {
-			createUsage(rectionId, usage.getValue());
+			createFreeform(FreeformType.USAGE, rectionFreeformId, usage.getValue());
 		}
 		List<Element> rectionGroups = node.selectNodes(rectionGroupExp);
 		for (Element rectionGroup : rectionGroups) {
@@ -430,9 +430,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
 			List<Element> rections = rectionGroup.selectNodes(rectionExp);
 			for (Element rection : rections) {
-				rectionId = createOrSelectRection(lexemeId, rection.getTextTrim());
+				rectionFreeformId = createOrSelectRectionFreeform(lexemeId, rection.getTextTrim());
 				for (Usage usage : rectionUsages) {
-					createUsage(rectionId, usage.getValue());
+					createFreeform(FreeformType.USAGE, rectionFreeformId, usage.getValue());
 				}
 			}
 		}
