@@ -34,6 +34,9 @@ public class ReportComposer {
 
 	public void append(String reportName, String logRow) throws Exception {
 
+		if (StringUtils.isBlank(logRow)) {
+			return;
+		}
 		FileOutputStream reportStream = reportStreamsMap.get(reportName);
 		IOUtils.write(logRow + '\n', reportStream, StandardCharsets.UTF_8);
 	}

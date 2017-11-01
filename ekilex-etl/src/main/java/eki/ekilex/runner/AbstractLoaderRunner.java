@@ -301,6 +301,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, criteriaParamMap);
 		lexeme.setLexemeId(lexemeId);
 		if (lexemeId != null) {
+			criteriaParamMap.clear();
+			criteriaParamMap.put("id", lexemeId);
 			Map<String, Object> valueParamMap = new HashMap<>();
 			if (StringUtils.isNotBlank(createdBy)) {
 				valueParamMap.put("created_by", createdBy);
