@@ -7,12 +7,18 @@ package eki.ekilex.data.db;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EntryClass;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormRelType;
+import eki.ekilex.data.db.tables.FormRelTypeLabel;
+import eki.ekilex.data.db.tables.FormRelation;
+import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.Grammar;
@@ -27,13 +33,18 @@ import eki.ekilex.data.db.tables.LexRelationDataset;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
+import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
 import eki.ekilex.data.db.tables.LexemeTypeLabel;
+import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDataset;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningState;
+import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -78,6 +89,11 @@ public class Tables {
     public static final DefinitionDataset DEFINITION_DATASET = eki.ekilex.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
 
     /**
+     * The table <code>public.definition_freeform</code>.
+     */
+    public static final DefinitionFreeform DEFINITION_FREEFORM = eki.ekilex.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
+
+    /**
      * The table <code>public.deriv</code>.
      */
     public static final Deriv DERIV = eki.ekilex.data.db.tables.Deriv.DERIV;
@@ -103,9 +119,34 @@ public class Tables {
     public static final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
 
     /**
+     * The table <code>public.entry_class</code>.
+     */
+    public static final EntryClass ENTRY_CLASS = eki.ekilex.data.db.tables.EntryClass.ENTRY_CLASS;
+
+    /**
      * The table <code>public.form</code>.
      */
     public static final Form FORM = eki.ekilex.data.db.tables.Form.FORM;
+
+    /**
+     * The table <code>public.form_rel_type</code>.
+     */
+    public static final FormRelType FORM_REL_TYPE = eki.ekilex.data.db.tables.FormRelType.FORM_REL_TYPE;
+
+    /**
+     * The table <code>public.form_rel_type_label</code>.
+     */
+    public static final FormRelTypeLabel FORM_REL_TYPE_LABEL = eki.ekilex.data.db.tables.FormRelTypeLabel.FORM_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.form_relation</code>.
+     */
+    public static final FormRelation FORM_RELATION = eki.ekilex.data.db.tables.FormRelation.FORM_RELATION;
+
+    /**
+     * The table <code>public.freeform</code>.
+     */
+    public static final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
     /**
      * The table <code>public.gender</code>.
@@ -178,6 +219,11 @@ public class Tables {
     public static final LexemeDeriv LEXEME_DERIV = eki.ekilex.data.db.tables.LexemeDeriv.LEXEME_DERIV;
 
     /**
+     * The table <code>public.lexeme_freeform</code>.
+     */
+    public static final LexemeFreeform LEXEME_FREEFORM = eki.ekilex.data.db.tables.LexemeFreeform.LEXEME_FREEFORM;
+
+    /**
      * The table <code>public.lexeme_pos</code>.
      */
     public static final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
@@ -198,6 +244,11 @@ public class Tables {
     public static final LexemeTypeLabel LEXEME_TYPE_LABEL = eki.ekilex.data.db.tables.LexemeTypeLabel.LEXEME_TYPE_LABEL;
 
     /**
+     * The table <code>public.lifecycle_log</code>.
+     */
+    public static final LifecycleLog LIFECYCLE_LOG = eki.ekilex.data.db.tables.LifecycleLog.LIFECYCLE_LOG;
+
+    /**
      * The table <code>public.meaning</code>.
      */
     public static final Meaning MEANING = eki.ekilex.data.db.tables.Meaning.MEANING;
@@ -211,6 +262,21 @@ public class Tables {
      * The table <code>public.meaning_domain</code>.
      */
     public static final MeaningDomain MEANING_DOMAIN = eki.ekilex.data.db.tables.MeaningDomain.MEANING_DOMAIN;
+
+    /**
+     * The table <code>public.meaning_freeform</code>.
+     */
+    public static final MeaningFreeform MEANING_FREEFORM = eki.ekilex.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
+
+    /**
+     * The table <code>public.meaning_state</code>.
+     */
+    public static final MeaningState MEANING_STATE = eki.ekilex.data.db.tables.MeaningState.MEANING_STATE;
+
+    /**
+     * The table <code>public.meaning_type</code>.
+     */
+    public static final MeaningType MEANING_TYPE = eki.ekilex.data.db.tables.MeaningType.MEANING_TYPE;
 
     /**
      * The table <code>public.morph</code>.

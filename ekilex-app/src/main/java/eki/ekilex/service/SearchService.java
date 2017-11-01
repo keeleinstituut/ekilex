@@ -1,7 +1,9 @@
 package eki.ekilex.service;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Form;
+import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.Word;
@@ -10,12 +12,15 @@ import eki.ekilex.service.db.SearchDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 
 @Service
@@ -61,6 +66,22 @@ public class SearchService {
 	private List<Rection> getRections(Long lexemeId) {
 		List<Rection> rections = searchDbService.findConnectedRections(lexemeId).into(Rection.class);
 		removeNullUsages(rections);
+		List<FreeForm> lexemeFreeforms = searchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
+		List<FreeForm> lexemeRections = lexemeFreeforms.stream().filter(f -> f.getType().equals(FreeformType.RECTION)).collect(Collectors.toList());
+		for (FreeForm freeForm : lexemeRections) {
+			Rection rection = new Rection();
+			rection.setValue(freeForm.getValueText());
+			List<FreeForm> usages = searchDbService.findFreeformChilds(freeForm.getId()).into(FreeForm.class);
+			if (!usages.isEmpty()) {
+				String[][] arrayOfUsages = new String[usages.size()][];
+				int index = 0;
+				for (FreeForm usage : usages) {
+					arrayOfUsages[index++] = new String[]{usage.getValueText()};
+				}
+				rection.setUsages(arrayOfUsages);
+			}
+			rections.add(rection);
+		}
 		return rections;
 	}
 

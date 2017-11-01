@@ -25,9 +25,9 @@ insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liits�
 insert into lex_rel_type_label (code, value, lang, type) values ('ant', 'anton체체m', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('head', 'p천his천na', 'est', 'full');
 
-insert into form_rel_type (code, datasets) values ('ref', '{psv}');
+insert into form_rel_type (code, datasets) values ('mvt', '{psv}');
 
-insert into form_rel_type_label (code, value, lang, type) values ('ref', 'viitem채rks천na', 'est', 'full');
+insert into form_rel_type_label (code, value, lang, type) values ('mvt', 'viitem채rks천na', 'est', 'full');
 
 insert into lexeme_type (code, datasets) values ('eelistermin', '{est}');
 insert into lexeme_type (code, datasets) values ('l체hend', '{est}');

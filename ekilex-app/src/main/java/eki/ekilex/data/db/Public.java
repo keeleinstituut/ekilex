@@ -7,12 +7,18 @@ package eki.ekilex.data.db;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EntryClass;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormRelType;
+import eki.ekilex.data.db.tables.FormRelTypeLabel;
+import eki.ekilex.data.db.tables.FormRelation;
+import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.Grammar;
@@ -27,13 +33,18 @@ import eki.ekilex.data.db.tables.LexRelationDataset;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
+import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
 import eki.ekilex.data.db.tables.LexemeTypeLabel;
+import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDataset;
 import eki.ekilex.data.db.tables.MeaningDomain;
+import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningState;
+import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -71,7 +82,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 162899937;
+    private static final long serialVersionUID = -2457334;
 
     /**
      * The reference instance of <code>public</code>
@@ -92,6 +103,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.definition_dataset</code>.
      */
     public final DefinitionDataset DEFINITION_DATASET = eki.ekilex.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
+
+    /**
+     * The table <code>public.definition_freeform</code>.
+     */
+    public final DefinitionFreeform DEFINITION_FREEFORM = eki.ekilex.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
 
     /**
      * The table <code>public.deriv</code>.
@@ -119,9 +135,34 @@ public class Public extends SchemaImpl {
     public final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
 
     /**
+     * The table <code>public.entry_class</code>.
+     */
+    public final EntryClass ENTRY_CLASS = eki.ekilex.data.db.tables.EntryClass.ENTRY_CLASS;
+
+    /**
      * The table <code>public.form</code>.
      */
     public final Form FORM = eki.ekilex.data.db.tables.Form.FORM;
+
+    /**
+     * The table <code>public.form_rel_type</code>.
+     */
+    public final FormRelType FORM_REL_TYPE = eki.ekilex.data.db.tables.FormRelType.FORM_REL_TYPE;
+
+    /**
+     * The table <code>public.form_rel_type_label</code>.
+     */
+    public final FormRelTypeLabel FORM_REL_TYPE_LABEL = eki.ekilex.data.db.tables.FormRelTypeLabel.FORM_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.form_relation</code>.
+     */
+    public final FormRelation FORM_RELATION = eki.ekilex.data.db.tables.FormRelation.FORM_RELATION;
+
+    /**
+     * The table <code>public.freeform</code>.
+     */
+    public final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
     /**
      * The table <code>public.gender</code>.
@@ -194,6 +235,11 @@ public class Public extends SchemaImpl {
     public final LexemeDeriv LEXEME_DERIV = eki.ekilex.data.db.tables.LexemeDeriv.LEXEME_DERIV;
 
     /**
+     * The table <code>public.lexeme_freeform</code>.
+     */
+    public final LexemeFreeform LEXEME_FREEFORM = eki.ekilex.data.db.tables.LexemeFreeform.LEXEME_FREEFORM;
+
+    /**
      * The table <code>public.lexeme_pos</code>.
      */
     public final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
@@ -214,6 +260,11 @@ public class Public extends SchemaImpl {
     public final LexemeTypeLabel LEXEME_TYPE_LABEL = eki.ekilex.data.db.tables.LexemeTypeLabel.LEXEME_TYPE_LABEL;
 
     /**
+     * The table <code>public.lifecycle_log</code>.
+     */
+    public final LifecycleLog LIFECYCLE_LOG = eki.ekilex.data.db.tables.LifecycleLog.LIFECYCLE_LOG;
+
+    /**
      * The table <code>public.meaning</code>.
      */
     public final Meaning MEANING = eki.ekilex.data.db.tables.Meaning.MEANING;
@@ -227,6 +278,21 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_domain</code>.
      */
     public final MeaningDomain MEANING_DOMAIN = eki.ekilex.data.db.tables.MeaningDomain.MEANING_DOMAIN;
+
+    /**
+     * The table <code>public.meaning_freeform</code>.
+     */
+    public final MeaningFreeform MEANING_FREEFORM = eki.ekilex.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
+
+    /**
+     * The table <code>public.meaning_state</code>.
+     */
+    public final MeaningState MEANING_STATE = eki.ekilex.data.db.tables.MeaningState.MEANING_STATE;
+
+    /**
+     * The table <code>public.meaning_type</code>.
+     */
+    public final MeaningType MEANING_TYPE = eki.ekilex.data.db.tables.MeaningType.MEANING_TYPE;
 
     /**
      * The table <code>public.morph</code>.
@@ -308,16 +374,22 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.FORM_ID_SEQ,
+            Sequences.FORM_RELATION_ID_SEQ,
+            Sequences.FREEFORM_ID_SEQ,
             Sequences.GRAMMAR_ID_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
+            Sequences.LEXEME_FREEFORM_ID_SEQ,
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
+            Sequences.LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
+            Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.PARADIGM_ID_SEQ,
             Sequences.RECTION_ID_SEQ,
@@ -338,12 +410,18 @@ public class Public extends SchemaImpl {
             Dataset.DATASET,
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
+            DefinitionFreeform.DEFINITION_FREEFORM,
             Deriv.DERIV,
             DerivLabel.DERIV_LABEL,
             Domain.DOMAIN,
             DomainLabel.DOMAIN_LABEL,
             EkiUser.EKI_USER,
+            EntryClass.ENTRY_CLASS,
             Form.FORM,
+            FormRelType.FORM_REL_TYPE,
+            FormRelTypeLabel.FORM_REL_TYPE_LABEL,
+            FormRelation.FORM_RELATION,
+            Freeform.FREEFORM,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
             Grammar.GRAMMAR,
@@ -358,13 +436,18 @@ public class Public extends SchemaImpl {
             Lexeme.LEXEME,
             LexemeDataset.LEXEME_DATASET,
             LexemeDeriv.LEXEME_DERIV,
+            LexemeFreeform.LEXEME_FREEFORM,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,
             LexemeType.LEXEME_TYPE,
             LexemeTypeLabel.LEXEME_TYPE_LABEL,
+            LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
             MeaningDataset.MEANING_DATASET,
             MeaningDomain.MEANING_DOMAIN,
+            MeaningFreeform.MEANING_FREEFORM,
+            MeaningState.MEANING_STATE,
+            MeaningType.MEANING_TYPE,
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,
