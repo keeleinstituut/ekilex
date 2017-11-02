@@ -37,9 +37,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
-	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE =
-			"select ff.* from " + LEXEME_FREEFORM + " lf, " + FREEFORM + " ff where " +
-			"lf.id = :lexeme_id and lf.freeform_id = ff.id and ff.type = :type and ff.value_text = :value";
+	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
 
 	@Autowired
 	protected BasicDbService basicDbService;
@@ -47,6 +45,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	private String sqlSelectWordByFormAndHomonym;
 
 	private String sqlSelectWordMaxHomonym;
+
+	private String sqlSelectLexemeFreeform;
 
 	abstract void initialise() throws Exception;
 
@@ -63,6 +63,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
 		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE);
+		sqlSelectLexemeFreeform = getContent(resourceFileInputStream);
 	}
 
 	protected String getContent(InputStream resourceInputStream) throws Exception {
@@ -372,7 +375,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("value", rection);
 		tableRowParamMap.put("type", FreeformType.RECTION.toString());
-		Map<String, Object> freeform = basicDbService.queryForMap(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE, tableRowParamMap);
+		Map<String, Object> freeform = basicDbService.queryForMap(sqlSelectLexemeFreeform, tableRowParamMap);
 		if (freeform != null) {
 			return (Long)freeform.get("id");
 		}
