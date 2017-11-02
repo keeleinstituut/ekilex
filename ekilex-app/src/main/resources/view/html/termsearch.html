@@ -110,6 +110,24 @@
               </ul>
               <hr />
             </div>
+            <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
+              <b>Vabavormid</b>
+              <table th:if="${not #lists.isEmpty(meaning.lexemeFreeforms)}">
+                <thead><th colspan="2"><small>ilmiku vabavormid</small></th></thead>
+                <tr th:each="freeform : ${meaning.lexemeFreeforms}">
+                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${freeform.type}"></span></td>
+                  <td><span th:text="${freeform.displayString}"></span></td>
+                </tr>
+              </table>
+              <table th:if="${not #lists.isEmpty(meaning.meaningFreeforms)}">
+                <thead><th colspan="2"><small>tähenduse vabavormid</small></th></thead>
+                <tr th:each="freeform : ${meaning.meaningFreeforms}">
+                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${freeform.type}"></span></td>
+                  <td><span th:text="${freeform.displayString}"></span></td>
+                </tr>
+              </table>
+              <hr />
+            </div>
             <ul>
               <li th:each="word,wordIter : ${meaning.words}">
                 <a style="color: #1e7e34" class="mr-2" th:href="@{'/termsearch?searchFilter=' + ${word.value}}">

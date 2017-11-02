@@ -11,7 +11,7 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<Form> forms;
 
-	private List<Meaning> meanings;
+	private List<WordLexeme> meanings;
 
 	public WordDetails() {
 	}
@@ -28,11 +28,11 @@ public class WordDetails extends AbstractDataObject {
 		this.forms = forms;
 	}
 
-	public List<Meaning> getMeanings() {
+	public List<WordLexeme> getMeanings() {
 		return meanings;
 	}
 
-	public void setMeanings(List<Meaning> meanings) {
+	public void setMeanings(List<WordLexeme> meanings) {
 		this.meanings = meanings;
 	}
 }

@@ -1,12 +1,15 @@
 package eki.ekilex.data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 import javax.persistence.Column;
 
+import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
-public class Meaning extends AbstractDataObject {
+public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -49,10 +52,14 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "definitions")
 	private List<String> definitions;
 
-	public Meaning() {
+	private List<FreeForm> meaningFreeforms;
+
+	private List<FreeForm> lexemeFreeforms;
+
+	public WordLexeme() {
 	}
 
-	public Meaning(Consumer<Meaning> builder) {
+	public WordLexeme(Consumer<WordLexeme> builder) {
 		builder.accept(this);
 	}
 
@@ -166,5 +173,28 @@ public class Meaning extends AbstractDataObject {
 
 	public void setDefinitions(List<String> definitions) {
 		this.definitions = definitions;
+	}
+
+	public List<FreeForm> getMeaningFreeforms() {
+		return meaningFreeforms;
+	}
+
+	public void setMeaningFreeforms(List<FreeForm> meaningFreeforms) {
+		this.meaningFreeforms = meaningFreeforms;
+	}
+
+	public List<FreeForm> getLexemeFreeforms() {
+		return lexemeFreeforms;
+	}
+
+	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
+		this.lexemeFreeforms = lexemeFreeforms;
+	}
+
+	public List<FreeForm> getFreeforms() {
+		List<FreeForm> freeforms = new ArrayList<>();
+		if (getLexemeFreeforms() != null) freeforms.addAll(getLexemeFreeforms());
+		if (getMeaningFreeforms() != null) freeforms.addAll(getMeaningFreeforms());
+		return freeforms.stream().filter(f -> !f.getType().equals(FreeformType.RECTION)).collect(Collectors.toList());
 	}
 }
