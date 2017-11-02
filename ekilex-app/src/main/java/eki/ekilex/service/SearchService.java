@@ -4,7 +4,7 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Meaning;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
@@ -37,42 +37,42 @@ public class SearchService {
 	public WordDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
 
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
-		List<Meaning> meanings = searchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(Meaning.class);
+		List<WordLexeme> lexemes = searchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(WordLexeme.class);
 		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
 
-		meanings.forEach(meaning -> {
+		lexemes.forEach(lexeme -> {
 
-			List<String> datasets = meaning.getDatasets();
+			List<String> datasets = lexeme.getDatasets();
 			datasets = convertToNames(datasets, datasetNameMap);
-			meaning.setDatasets(datasets);
+			lexeme.setDatasets(datasets);
 
-			Long lexemeId = meaning.getLexemeId();
-			Long meaningId = meaning.getMeaningId();
+			Long lexemeId = lexeme.getLexemeId();
+			Long meaningId = lexeme.getMeaningId();
 
 			List<Form> words = searchDbService.findConnectedWordsInDatasets(meaningId, selectedDatasets).into(Form.class);
-			meaning.setWords(words);
+			lexeme.setWords(words);
 
 			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			meaning.setDomains(domains);
+			lexeme.setDomains(domains);
 
 			List<FreeForm> meaningFreeforms = searchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
-			meaning.setMeaningFreeforms(meaningFreeforms);
+			lexeme.setMeaningFreeforms(meaningFreeforms);
 
 			List<FreeForm> lexemeFreeforms = searchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			meaning.setLexemeFreeforms(lexemeFreeforms);
+			lexeme.setLexemeFreeforms(lexemeFreeforms);
 
-			populateRections(meaning);
+			populateRections(lexeme);
 		});
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
-			d.setMeanings(meanings);
+			d.setMeanings(lexemes);
 		});
 	}
 
-	private void populateRections(Meaning meaning) {
-		List<Rection> rections = searchDbService.findConnectedRections(meaning.getLexemeId()).into(Rection.class);
+	private void populateRections(WordLexeme lexeme) {
+		List<Rection> rections = searchDbService.findConnectedRections(lexeme.getLexemeId()).into(Rection.class);
 		removeNullUsages(rections);
-		List<FreeForm> lexemeRections = meaning.getLexemeFreeforms().stream().filter(f -> f.getType().equals(FreeformType.RECTION)).collect(Collectors.toList());
+		List<FreeForm> lexemeRections = lexeme.getLexemeFreeforms().stream().filter(f -> f.getType().equals(FreeformType.RECTION)).collect(Collectors.toList());
 		for (FreeForm freeForm : lexemeRections) {
 			Rection rection = new Rection();
 			rection.setValue(freeForm.getValueText());
@@ -87,7 +87,7 @@ public class SearchService {
 			}
 			rections.add(rection);
 		}
-		meaning.setRections(rections);
+		lexeme.setRections(rections);
 	}
 
 	private void removeNullUsages(List<Rection> rections) {

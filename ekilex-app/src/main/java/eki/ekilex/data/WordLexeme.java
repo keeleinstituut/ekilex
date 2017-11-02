@@ -9,7 +9,7 @@ import javax.persistence.Column;
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
-public class Meaning extends AbstractDataObject {
+public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -56,10 +56,10 @@ public class Meaning extends AbstractDataObject {
 
 	private List<FreeForm> lexemeFreeforms;
 
-	public Meaning() {
+	public WordLexeme() {
 	}
 
-	public Meaning(Consumer<Meaning> builder) {
+	public WordLexeme(Consumer<WordLexeme> builder) {
 		builder.accept(this);
 	}
 
