@@ -301,6 +301,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Integer lexemeLevel1 = lexeme.getLevel1();
 		Integer lexemeLevel2 = lexeme.getLevel2();
 		Integer lexemeLevel3 = lexeme.getLevel3();
+		String frequencyGroup = lexeme.getFrequencyGroup();
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
@@ -331,6 +332,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 			if (lexemeLevel3 != null) {
 				valueParamMap.put("level3", lexemeLevel3);
+			}
+			if (StringUtils.isNotBlank(frequencyGroup)) {
+				valueParamMap.put("frequency_group", frequencyGroup);
 			}
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);

@@ -44,6 +44,22 @@ insert into lexeme_type_label (code, value, lang, type) values ('variant', 'vari
 insert into lexeme_type_label (code, value, lang, type) values ('väldi', 'väldi', 'est', 'descrip');
 insert into lexeme_type_label (code, value, lang, type) values ('endine', 'endine', 'est', 'descrip');
 
+insert into lexeme_frequency (code, datasets) values ('1', '{psv}');
+insert into lexeme_frequency (code, datasets) values ('2', '{psv}');
+insert into lexeme_frequency (code, datasets) values ('3', '{psv}');
+insert into lexeme_frequency (code, datasets) values ('4', '{psv}');
+insert into lexeme_frequency (code, datasets) values ('L2', '{psv}');
+insert into lexeme_frequency (code, datasets) values ('L3', '{psv}');
+insert into lexeme_frequency (code, datasets) values ('L4', '{psv}');
+
+insert into lexeme_frequency_label (code, value, lang, type) values ('1', '1', 'est', 'full');
+insert into lexeme_frequency_label (code, value, lang, type) values ('2', '2', 'est', 'full');
+insert into lexeme_frequency_label (code, value, lang, type) values ('3', '3', 'est', 'full');
+insert into lexeme_frequency_label (code, value, lang, type) values ('4', '4', 'est', 'full');
+insert into lexeme_frequency_label (code, value, lang, type) values ('L2', 'L2', 'est', 'full');
+insert into lexeme_frequency_label (code, value, lang, type) values ('L3', 'L3', 'est', 'full');
+insert into lexeme_frequency_label (code, value, lang, type) values ('L4', 'L4', 'est', 'full');
+
 insert into pos (code, datasets) values ('adj', '{eos, ss_, sys, evs}');
 insert into pos (code, datasets) values ('adj + ID', '{eos, ss_, sys, evs}');
 insert into pos (code, datasets) values ('adv', '{eos, ss_, sys, evs}');

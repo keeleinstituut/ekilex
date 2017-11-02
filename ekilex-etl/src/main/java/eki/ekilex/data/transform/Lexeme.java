@@ -28,6 +28,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private Integer level3;
 
+	private String frequencyGroup;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -108,4 +110,11 @@ public class Lexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
+	public String getFrequencyGroup() {
+		return frequencyGroup;
+	}
+
+	public void setFrequencyGroup(String frequencyGroup) {
+		this.frequencyGroup = frequencyGroup;
+	}
 }

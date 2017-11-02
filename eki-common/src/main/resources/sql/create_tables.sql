@@ -45,6 +45,8 @@ drop table if exists register_label;
 drop table if exists register;
 drop table if exists lexeme_type_label;
 drop table if exists lexeme_type;
+drop table if exists lexeme_frequency_label;
+drop table if exists lexeme_frequency;
 drop table if exists domain_label;
 drop table if exists domain;
 drop table if exists lang_label;
@@ -140,6 +142,22 @@ create table lexeme_type
 create table lexeme_type_label
 (
   code varchar(100) references lexeme_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
+-- ilmiku sagedusrühm
+create table lexeme_frequency
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table lexeme_frequency_label
+(
+  code varchar(100) references lexeme_frequency(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
   type varchar(10) references label_type(code) not null,
@@ -427,6 +445,7 @@ create table lexeme
   modified_on timestamp null,
   modified_by varchar(100) null,
   type varchar(100) references lexeme_type(code) null,
+  frequency_group varchar(100) references lexeme_frequency(code) null,
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,

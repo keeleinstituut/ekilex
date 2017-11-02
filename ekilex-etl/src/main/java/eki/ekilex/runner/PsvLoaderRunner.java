@@ -303,6 +303,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(0);
+					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, dataset);
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
@@ -511,6 +512,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordPosCodeExp = "x:sl";
 		final String wordDerivCodeExp = "x:dk";
 		final String wordGrammarExp = "x:mfp/x:gki";
+		final String wordFrequencyGroupExp = "x:sag";
 
 		boolean isAddForms = !wordParadigmsMap.isEmpty();
 		Paradigm paradigmObj = null;
@@ -535,6 +537,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element grammarNode = (Element) wordGroupNode.selectSingleNode(wordGrammarExp);
 			wordData.grammar = grammarNode == null ? null : grammarNode.getTextTrim();
+
+			Element frequencyNode = (Element) wordGroupNode.selectSingleNode(wordFrequencyGroupExp);
+			wordData.frequencyGroup = frequencyNode == null ? null : frequencyNode.getTextTrim();
 
 			wordData.value = word.getValue();
 			newWords.add(wordData);
@@ -653,6 +658,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String value;
 		int homonymNr = 0;
 		String guid;
+		String frequencyGroup;
 	}
 
 	private class SynonymData {
