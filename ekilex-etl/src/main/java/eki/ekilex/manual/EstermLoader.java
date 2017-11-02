@@ -23,14 +23,10 @@ public class EstermLoader {
 			applicationContext.registerShutdownHook();
 
 			//  /projects/eki/data/dictionaries/esterm.xml
-			//String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
-			//String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
-			//boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
-
-			String dataXmlFilePath = "/projects/eki/data/dictionaries/esterm.xml";
-			String dataLang = "est";
+			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
+			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
+			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 			String dataset = "est";
-			boolean doReports = true;
 
 			runner.execute(dataXmlFilePath, dataLang, dataset, doReports);
 

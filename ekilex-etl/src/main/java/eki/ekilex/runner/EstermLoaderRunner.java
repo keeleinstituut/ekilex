@@ -31,11 +31,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermLoaderRunner.class);
 
-	private static final String REPORT_GENERIC_DATA_MESS = "generic_data_mess";
+	private static final String REPORT_DEFINITIONS_NOTES_MESS = "definitions_notes_mess";
 
 	private static final String REPORT_CREATED_MODIFIED_MESS = "created_modified_mess";
 
+	private static final String REPORT_DUPLICATE_WORDS = "duplicate_words";
+
 	private static final String REPORT_ILLEGAL_CLASSIFIERS = "illegal_classifiers";
+
+	private static final String REPORT_DEFINITIONS_AT_TERMS = "definitions_at_terms";
 
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -130,7 +134,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 
 		if (doReports) {
-			reportComposer = new ReportComposer("esterm load report", REPORT_GENERIC_DATA_MESS, REPORT_CREATED_MODIFIED_MESS, REPORT_ILLEGAL_CLASSIFIERS);
+			reportComposer = new ReportComposer("esterm load report",
+					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS, REPORT_DUPLICATE_WORDS,
+					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS);
 		}
 
 		meaningStateCodes = getClassifierCodes(SQL_SELECT_MEANING_STATES);
@@ -201,7 +207,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					homonymNr = getWordMaxHomonymNr(term, dataLang);
 					homonymNr++;
+					int tempWordDuplicateCount = wordDuplicateCount.getValue();
 					wordId = saveWord(term, null, null, null, homonymNr, defaultWordMorphCode, lang, null, wordDuplicateCount);
+					boolean isDuplicateWord = tempWordDuplicateCount != wordDuplicateCount.getValue();
 
 					//lexeme
 					lexemeObj = new Lexeme();
@@ -237,7 +245,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					}
 
 					if (doReports) {
-						detectAndReportTermGrp(concept, term, homonymNr, lang, termGroupNode, dataErrorCount);
+						detectAndReportTermGrp(concept, term, homonymNr, lang, isDuplicateWord, termGroupNode, dataErrorCount);
 					}
 				}
 
@@ -288,7 +296,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (!meaningStateCodes.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("tundmatu staatus: ");
@@ -304,7 +311,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (!meaningTypeCodes.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("tundmatu mõistetüüp: ");
@@ -321,7 +327,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("korduv valdkonnaviide: ");
@@ -339,7 +344,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (!exists) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("tundmatu valdkonnaviide: ");
@@ -356,7 +360,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("korduv alamvaldkonnaviide: ");
@@ -374,7 +377,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (!exists) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("tundmatu alamvaldkonnaviide: ");
@@ -403,7 +405,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (isTooManyCreates) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("sisestajaid ja sisestusaegu on liiga palju: ");
@@ -414,7 +415,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (isIncompleteCreate) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("puudulik sisestaja ja sisestusaja komplekt: ");
@@ -436,7 +436,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (definitionCount > 1 && definitionNoteCount > 0) {
 			dataErrorCount.increment();
 			logBuf = new StringBuffer();
-			logBuf.append("entry number: ");
 			logBuf.append(concept);
 			logBuf.append(CSV_SEPARATOR);
 			logBuf.append("definitsioonid (");
@@ -445,11 +444,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			logBuf.append(definitionNoteCount);
 			logBuf.append(") ei kohaldu");
 			String logRow = logBuf.toString();
-			reportComposer.append(REPORT_GENERIC_DATA_MESS, logRow);
+			reportComposer.append(REPORT_DEFINITIONS_NOTES_MESS, logRow);
 		}
 	}
 
-	private void detectAndReportTermGrp(String concept, String term, int homonymNr, String lang, Element termGroupNode, Count dataErrorCount) throws Exception {
+	private void detectAndReportTermGrp(String concept, String term, int homonymNr, String lang, boolean isDuplicateWord, Element termGroupNode, Count dataErrorCount) throws Exception {
 
 		StringBuffer logBuf = new StringBuffer();
 
@@ -464,9 +463,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
-				logBuf.append(", term: ");
+				logBuf.append(CSV_SEPARATOR);
 				logBuf.append(term);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("korduv keelenditüüp: ");
@@ -479,9 +477,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			if (!lexemeTypeCodes.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
-				logBuf.append("entry number: ");
 				logBuf.append(concept);
-				logBuf.append(", term: ");
+				logBuf.append(CSV_SEPARATOR);
 				logBuf.append(term);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append("tundmatu keelenditüüp: ");
@@ -493,9 +490,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (valueNodes.size() > 1) {
 			dataErrorCount.increment();
 			logBuf = new StringBuffer();
-			logBuf.append("entry number: ");
 			logBuf.append(concept);
-			logBuf.append(", term: ");
+			logBuf.append(CSV_SEPARATOR);
 			logBuf.append(term);
 			logBuf.append(CSV_SEPARATOR);
 			logBuf.append("mitu keelenditüüpi");
@@ -508,31 +504,27 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			dataErrorCount.increment();
 			valueStr = valueNodes.get(0).getTextTrim();
 			logBuf = new StringBuffer();
-			logBuf.append("entry number: ");
 			logBuf.append(concept);
-			logBuf.append(", term: ");
+			logBuf.append(CSV_SEPARATOR);
 			logBuf.append(term);
 			logBuf.append(CSV_SEPARATOR);
 			logBuf.append("definitsioonid on seotud termini juurde (");
 			logBuf.append(valueStr);
 			logBuf.append("...)");
 			String logRow = logBuf.toString();
-			reportComposer.append(REPORT_GENERIC_DATA_MESS, logRow);
+			reportComposer.append(REPORT_DEFINITIONS_AT_TERMS, logRow);
 		}
 
-		Object word = getWord(term, homonymNr, lang);
-		if (word != null) {
+		if (isDuplicateWord) {
 			dataErrorCount.increment();
 			logBuf = new StringBuffer();
-			logBuf.append("entry number: ");
 			logBuf.append(concept);
-			logBuf.append(", term: ");
+			logBuf.append(CSV_SEPARATOR);
 			logBuf.append(term);
 			logBuf.append(CSV_SEPARATOR);
-			logBuf.append("korduv termin: ");
-			logBuf.append(term);
+			logBuf.append("korduv termin");
 			String logRow = logBuf.toString();
-			reportComposer.append(REPORT_GENERIC_DATA_MESS, logRow);
+			reportComposer.append(REPORT_DUPLICATE_WORDS, logRow);
 		}
 	}
 
