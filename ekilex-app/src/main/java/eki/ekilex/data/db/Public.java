@@ -34,6 +34,8 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemeFrequencyLabel;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
@@ -82,7 +84,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -2457334;
+    private static final long serialVersionUID = 1067443870;
 
     /**
      * The reference instance of <code>public</code>
@@ -238,6 +240,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexeme_freeform</code>.
      */
     public final LexemeFreeform LEXEME_FREEFORM = eki.ekilex.data.db.tables.LexemeFreeform.LEXEME_FREEFORM;
+
+    /**
+     * The table <code>public.lexeme_frequency</code>.
+     */
+    public final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
+
+    /**
+     * The table <code>public.lexeme_frequency_label</code>.
+     */
+    public final LexemeFrequencyLabel LEXEME_FREQUENCY_LABEL = eki.ekilex.data.db.tables.LexemeFrequencyLabel.LEXEME_FREQUENCY_LABEL;
 
     /**
      * The table <code>public.lexeme_pos</code>.
@@ -437,6 +449,8 @@ public class Public extends SchemaImpl {
             LexemeDataset.LEXEME_DATASET,
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
+            LexemeFrequency.LEXEME_FREQUENCY,
+            LexemeFrequencyLabel.LEXEME_FREQUENCY_LABEL,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,
             LexemeType.LEXEME_TYPE,

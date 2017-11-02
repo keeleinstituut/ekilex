@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -1116693732;
+    private static final long serialVersionUID = -1774243330;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -95,6 +95,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.type</code>.
      */
     public final TableField<LexemeRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.lexeme.frequency_group</code>.
+     */
+    public final TableField<LexemeRecord, String> FREQUENCY_GROUP = createField("frequency_group", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme.level1</code>.
@@ -185,7 +190,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_TYPE_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_TYPE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY);
     }
 
     /**

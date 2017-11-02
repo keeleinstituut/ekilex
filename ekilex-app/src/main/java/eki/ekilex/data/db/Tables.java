@@ -34,6 +34,8 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemeFrequencyLabel;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
@@ -222,6 +224,16 @@ public class Tables {
      * The table <code>public.lexeme_freeform</code>.
      */
     public static final LexemeFreeform LEXEME_FREEFORM = eki.ekilex.data.db.tables.LexemeFreeform.LEXEME_FREEFORM;
+
+    /**
+     * The table <code>public.lexeme_frequency</code>.
+     */
+    public static final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
+
+    /**
+     * The table <code>public.lexeme_frequency_label</code>.
+     */
+    public static final LexemeFrequencyLabel LEXEME_FREQUENCY_LABEL = eki.ekilex.data.db.tables.LexemeFrequencyLabel.LEXEME_FREQUENCY_LABEL;
 
     /**
      * The table <code>public.lexeme_pos</code>.
