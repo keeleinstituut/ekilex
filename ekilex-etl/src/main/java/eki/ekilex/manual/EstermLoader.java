@@ -24,11 +24,10 @@ public class EstermLoader {
 
 			//  /projects/eki/data/dictionaries/esterm.xml
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
-			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 			String dataset = "est";
 
-			runner.execute(dataXmlFilePath, dataLang, dataset, doReports);
+			runner.execute(dataXmlFilePath, dataset, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

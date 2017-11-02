@@ -202,7 +202,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(
 						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
 						LEXEME_TYPE_LABEL.CODE.as("lexeme_type_code"), LEXEME_TYPE_LABEL.VALUE.as("lexeme_type_value"),
-						LEXEME.MEANING_ID, LEXEME_FREQUENCY_LABEL.CODE.as("frequency_code"), LEXEME_FREQUENCY_LABEL.CODE.as("frequency_code_value"),
+						LEXEME.MEANING_ID, LEXEME_FREQUENCY_LABEL.CODE.as("frequency_group_code"), LEXEME_FREQUENCY_LABEL.CODE.as("frequency_group_value"),
 						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
 				.from(FORM, PARADIGM, WORD,

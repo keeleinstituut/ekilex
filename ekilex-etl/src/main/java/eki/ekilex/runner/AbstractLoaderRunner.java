@@ -139,7 +139,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
-			wordDuplicateCount.increment();
+			if (wordDuplicateCount != null) {
+				wordDuplicateCount.increment();
+			}
 		}
 		word.setId(wordId);
 		if (paradigm != null) {

@@ -40,10 +40,10 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_type_value")
 	private String lexemeTypeValue;
 
-	@Column(name = "frequency_code")
+	@Column(name = "frequency_group_code")
 	private String frequencyGroupCode;
 
-	@Column(name = "frequency_code_value")
+	@Column(name = "frequency_group_value")
 	private String frequencyGroupValue;
 
 	private List<Classifier> domains;

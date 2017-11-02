@@ -57,7 +57,6 @@
       </table>
     </div>
   </div>
-
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:name="${detailsName}" class="pl-4">
       <div class="float-left w-25">
@@ -91,24 +90,27 @@
             <div th:if="${not #lists.isEmpty(meaning.rections)}" style="margin-top: -0.5em;">
               <table>
                 <tr th:each="rection,rectionIter : ${meaning.rections}">
-                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${rection.value}"></span></td>
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <span th:text="${rection.value}"></span>
+                  </td>
                   <td>
-                  <span th:each="usage,usageIter : ${rection.usages}">
-                    <th:block th:each="usageValue, usageValueIter : ${usage}">
-                      <th:block th:if="${usageValue != null}">
-                        <span th:unless="${usageValueIter.first}">-</span>
-                        <span th:text="${usageValue}"></span>
+                    <span th:each="usage,usageIter : ${rection.usages}">
+                      <th:block th:each="usageValue, usageValueIter : ${usage}">
+                        <th:block th:if="${usageValue != null}">
+                          <span th:unless="${usageValueIter.first}">-</span>
+                          <span th:text="${usageValue}"></span>
+                        </th:block>
                       </th:block>
-                    </th:block>
-                    <br th:unless="${usageIter.last}" />
-                  </span>
+                      <br th:unless="${usageIter.last}" />
+                    </span>
                   </td>
                 </tr>
               </table>
               <hr />
             </div>
             <div th:if="${not #lists.isEmpty(meaning.definitions)}">
-              <b>Seletused</b><br />
+              <b>Seletused</b>
+              <br />
               <ul>
                 <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
               </ul>
@@ -117,17 +119,33 @@
             <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
               <b>Vabavormid</b>
               <table th:if="${not #lists.isEmpty(meaning.lexemeFreeforms)}">
-                <thead><th colspan="2"><small>ilmiku vabavormid</small></th></thead>
+                <thead>
+                  <th colspan="2">
+                    <small>ilmiku vabavormid</small>
+                  </th>
+                </thead>
                 <tr th:each="freeform : ${meaning.lexemeFreeforms}">
-                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${freeform.type}"></span></td>
-                  <td><span th:text="${freeform.displayString}"></span></td>
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <span th:text="${freeform.type}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${freeform.displayString}"></span>
+                  </td>
                 </tr>
               </table>
               <table th:if="${not #lists.isEmpty(meaning.meaningFreeforms)}">
-                <thead><th colspan="2"><small>tähenduse vabavormid</small></th></thead>
+                <thead>
+                  <th colspan="2">
+                    <small>tähenduse vabavormid</small>
+                  </th>
+                </thead>
                 <tr th:each="freeform : ${meaning.meaningFreeforms}">
-                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${freeform.type}"></span></td>
-                  <td><span th:text="${freeform.displayString}"></span></td>
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <span th:text="${freeform.type}"></span>
+                  </td>
+                  <td>
+                    <span th:text="${freeform.displayString}"></span>
+                  </td>
                 </tr>
               </table>
               <hr />
@@ -156,10 +174,8 @@
       </div>
     </div>
   </th:block>
-
   <script th:inline="javascript">
   	initialize(applicationUrl);
   </script>
-
 </body>
 </html>
