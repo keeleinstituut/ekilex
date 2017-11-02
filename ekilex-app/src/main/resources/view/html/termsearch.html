@@ -74,6 +74,10 @@
               <b>Keelendi t&#252;&#252;p</b>
               <span th:text="${meaning.lexemeTypeCode}"></span>
             </div>
+            <div th:if="${meaning.frequencyGroupCode != null}">
+              <b>Sagedusrühm</b>
+              <span th:text="${meaning.frequencyGroupCode}"></span>
+            </div>
             <p th:if="${not #lists.isEmpty(meaning.domains)}">
               <b>Valdkonnad</b>
               <span th:each="domain,domainIter : ${meaning.domains}">

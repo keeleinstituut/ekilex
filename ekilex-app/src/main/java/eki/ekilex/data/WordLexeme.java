@@ -40,6 +40,12 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_type_value")
 	private String lexemeTypeValue;
 
+	@Column(name = "frequency_code")
+	private String frequencyGroupCode;
+
+	@Column(name = "frequency_code_value")
+	private String frequencyGroupValue;
+
 	private List<Classifier> domains;
 
 	private List<Form> words;
@@ -189,6 +195,22 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
 		this.lexemeFreeforms = lexemeFreeforms;
+	}
+
+	public String getFrequencyGroupCode() {
+		return frequencyGroupCode;
+	}
+
+	public void setFrequencyGroupCode(String frequencyGroupCode) {
+		this.frequencyGroupCode = frequencyGroupCode;
+	}
+
+	public String getFrequencyGroupValue() {
+		return frequencyGroupValue;
+	}
+
+	public void setFrequencyGroupValue(String frequencyGroupValue) {
+		this.frequencyGroupValue = frequencyGroupValue;
 	}
 
 	public List<FreeForm> getFreeforms() {
