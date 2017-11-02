@@ -112,9 +112,17 @@
             </div>
             <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
               <b>Vabavormid</b>
-              <table>
-                <tr th:each="freeform : ${meaning.freeforms}">
-                  <td><span th:text="${freeform.type}"></span></td>
+              <table th:if="${not #lists.isEmpty(meaning.lexemeFreeforms)}">
+                <thead><th colspan="2"><small>ilmiku vabavormid</small></th></thead>
+                <tr th:each="freeform : ${meaning.lexemeFreeforms}">
+                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${freeform.type}"></span></td>
+                  <td><span th:text="${freeform.displayString}"></span></td>
+                </tr>
+              </table>
+              <table th:if="${not #lists.isEmpty(meaning.meaningFreeforms)}">
+                <thead><th colspan="2"><small>tähenduse vabavormid</small></th></thead>
+                <tr th:each="freeform : ${meaning.meaningFreeforms}">
+                  <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${freeform.type}"></span></td>
                   <td><span th:text="${freeform.displayString}"></span></td>
                 </tr>
               </table>
