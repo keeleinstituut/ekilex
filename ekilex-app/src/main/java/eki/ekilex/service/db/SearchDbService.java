@@ -12,6 +12,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DATASET;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.RECTION;
@@ -19,6 +20,7 @@ import static eki.ekilex.data.db.Tables.USAGE;
 import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.WORD;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
@@ -234,19 +236,27 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record3<Long, String, String>> findLexemeFreeforms(Long lexemeId) {
+	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID)))
 				.fetch();
 	}
 
-	public Result<Record3<Long, String, String>> findFreeformChilds(Long freeformId) {
+	public Result<Record4<Long, String, String, Timestamp>> findFreeformChilds(Long freeformId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM)
 				.where(FREEFORM.PARENT_ID.eq(freeformId))
+				.fetch();
+	}
+
+	public Result<Record4<Long, String, String, Timestamp>> findMeaningFreeforms(Long meaningId) {
+		return create
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
+				.from(FREEFORM, MEANING_FREEFORM)
+				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId).and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
 				.fetch();
 	}
 

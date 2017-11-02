@@ -110,6 +110,16 @@
               </ul>
               <hr />
             </div>
+            <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
+              <b>Vabavormid</b>
+              <table>
+                <tr th:each="freeform : ${meaning.freeforms}">
+                  <td><span th:text="${freeform.type}"></span></td>
+                  <td><span th:text="${freeform.displayString}"></span></td>
+                </tr>
+              </table>
+              <hr />
+            </div>
             <ul>
               <li th:each="word,wordIter : ${meaning.words}">
                 <a style="color: #1e7e34" class="mr-2" th:href="@{'/termsearch?searchFilter=' + ${word.value}}">

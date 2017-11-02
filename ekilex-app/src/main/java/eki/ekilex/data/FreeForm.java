@@ -4,7 +4,8 @@ import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
 import javax.persistence.Column;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,9 @@ public class FreeForm extends AbstractDataObject {
 
 	@Column(name = "value_text")
 	private String valueText;
+
+	@Column(name = "value_date")
+	private LocalDateTime valueDate;
 
 	private List<FreeForm> childs = new ArrayList<>();
 
@@ -47,11 +51,25 @@ public class FreeForm extends AbstractDataObject {
 		this.valueText = valueText;
 	}
 
+	public LocalDateTime getValueDate() {
+		return valueDate;
+	}
+
+	public void setValueDate(LocalDateTime valueDate) {
+		this.valueDate = valueDate;
+	}
+
 	public List<FreeForm> getChilds() {
 		return childs;
 	}
 
 	public void setChilds(List<FreeForm> childs) {
 		this.childs = childs;
+	}
+
+	public String getDisplayString() {
+		String textStr = getValueText() != null ? getValueText() : "";
+		String dateStr = getValueDate() != null ? getValueDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : "";
+		return textStr + dateStr;
 	}
 }
