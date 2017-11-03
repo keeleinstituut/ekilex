@@ -22,14 +22,16 @@ Ehitamine:
 
 ekilex>mvn clean install
 
-Rakendamine ajutiselt Maven Tomcat pistaku abil:
+Rakendamine Spring Boot Tomcat pistaku abil:
 
-ekilex/ekilex-app>mvn tomcat7:run -P devsrvrun
+ekilex/ekilex-app>mvn spring-boot:run
+ekilex/ekilex-app>mvn spring-boot:run -Drun.profiles=dev
 
 http://localhost:5555/ (html)
 http://localhost:5555/data/app (json)
 
 ekilex/eve-app>mvn spring-boot:run
+ekilex/ekilex-app>mvn spring-boot:run -Drun.profiles=dev
 
 http://localhost:5566/ (html)
 http://localhost:5566/data/app (json)

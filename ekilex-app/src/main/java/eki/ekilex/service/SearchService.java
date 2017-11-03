@@ -65,7 +65,7 @@ public class SearchService {
 		});
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
-			d.setMeanings(lexemes);
+			d.setLexemes(lexemes);
 		});
 	}
 

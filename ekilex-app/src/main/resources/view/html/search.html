@@ -71,19 +71,19 @@
         </th:block>
       </div>
       <div class="float-left w-75">
-        <th:block th:each="meaning,meaningIter : ${details.meanings}">
-          <span th:each="word,wordIter : ${meaning.words}">
+        <th:block th:each="lexeme,meaningIter : ${details.lexemes}">
+          <span th:each="word,wordIter : ${lexeme.words}">
             <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
             <span th:unless="${wordIter.last}">|&nbsp;</span>
           </span>
-          <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
-          <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
+          <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
+          <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
-            <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+            <li th:each="definition : ${lexeme.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
           </ul>
-          <div th:if="${not #lists.isEmpty(meaning.rections)}" style="margin-top: -0.5em;">
+          <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
             <table>
-              <tr th:each="rection,rectionIter : ${meaning.rections}">
+              <tr th:each="rection,rectionIter : ${lexeme.rections}">
                 <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${rection.value}"></span></td>
                 <td>
                   <span th:each="usage,usageIter : ${rection.usages}">

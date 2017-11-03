@@ -8,8 +8,6 @@ import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DATASET;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY_LABEL;
-import static eki.ekilex.data.db.Tables.LEXEME_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DATASET;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -26,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Record13;
+import org.jooq.Record14;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -129,18 +127,20 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record13<String, Long, Long, Integer, Integer, Integer, String, String, Long, String, String, String[], String[]>> findFormMeanings(Long formId) {
+	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeanings(Long formId) {
 
 		return create
 				.select(
-						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME_TYPE_LABEL.CODE.as("lexeme_type_code"), LEXEME_TYPE_LABEL.VALUE.as("lexeme_type_value"),
-						LEXEME.MEANING_ID, LEXEME_FREQUENCY_LABEL.CODE.as("frequency_code"), LEXEME_FREQUENCY_LABEL.CODE.as("frequency_code_value"),
+						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME.TYPE.as("lexeme_type_code"),
+						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
+						MEANING.TYPE_CODE.as("meaning_type_code"),
+						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),
+						MEANING.STATE_CODE.as("meaning_state_code"),
 						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
-				.from(FORM, PARADIGM, WORD,
-						LEXEME.leftOuterJoin(LEXEME_TYPE_LABEL).on(LEXEME_TYPE_LABEL.CODE.eq(LEXEME.TYPE).and(LEXEME_TYPE_LABEL.LANG.eq("est")).and(LEXEME_TYPE_LABEL.TYPE.eq("descrip")))
-						.leftOuterJoin(LEXEME_FREQUENCY_LABEL).on(LEXEME_FREQUENCY_LABEL.CODE.eq(LEXEME.FREQUENCY_GROUP).and(LEXEME_FREQUENCY_LABEL.LANG.eq("est")).and(LEXEME_FREQUENCY_LABEL.TYPE.eq("descrip"))),
+				.from(FORM, PARADIGM, WORD, LEXEME,
 						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
 						)
 				.where(
@@ -149,7 +149,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
-				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID, LEXEME_TYPE_LABEL.CODE, LEXEME_TYPE_LABEL.VALUE, LEXEME_FREQUENCY_LABEL.CODE, LEXEME_FREQUENCY_LABEL.VALUE)
+				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
@@ -196,18 +196,20 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record13<String, Long, Long, Integer, Integer, Integer, String, String, Long, String, String, String[], String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
 
 		return create
 				.select(
-						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME_TYPE_LABEL.CODE.as("lexeme_type_code"), LEXEME_TYPE_LABEL.VALUE.as("lexeme_type_value"),
-						LEXEME.MEANING_ID, LEXEME_FREQUENCY_LABEL.CODE.as("frequency_group_code"), LEXEME_FREQUENCY_LABEL.CODE.as("frequency_group_value"),
+						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
+						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME.TYPE.as("lexeme_type_code"),
+						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
+						MEANING.TYPE_CODE.as("meaning_type_code"),
+						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),
+						MEANING.STATE_CODE.as("meaning_state_code"),
 						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
-				.from(FORM, PARADIGM, WORD,
-						LEXEME.leftOuterJoin(LEXEME_TYPE_LABEL).on(LEXEME_TYPE_LABEL.CODE.eq(LEXEME.TYPE).and(LEXEME_TYPE_LABEL.LANG.eq("est")).and(LEXEME_TYPE_LABEL.TYPE.eq("descrip")))
-						.leftOuterJoin(LEXEME_FREQUENCY_LABEL).on(LEXEME_FREQUENCY_LABEL.CODE.eq(LEXEME.FREQUENCY_GROUP).and(LEXEME_FREQUENCY_LABEL.LANG.eq("est")).and(LEXEME_FREQUENCY_LABEL.TYPE.eq("descrip"))),
+				.from(FORM, PARADIGM, WORD, LEXEME,
 						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
 				)
 				.where(
@@ -217,7 +219,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(MEANING_DATASET.DATASET_CODE.in(selectedDatasets)))
-				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID, LEXEME_TYPE_LABEL.CODE, LEXEME_TYPE_LABEL.VALUE, LEXEME_FREQUENCY_LABEL.CODE, LEXEME_FREQUENCY_LABEL.VALUE)
+				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}

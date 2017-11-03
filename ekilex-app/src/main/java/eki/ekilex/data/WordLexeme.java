@@ -37,14 +37,17 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_type_code")
 	private String lexemeTypeCode;
 
-	@Column(name = "lexeme_type_value")
-	private String lexemeTypeValue;
+	@Column(name = "lexeme_frequency_group_code")
+	private String lexemeFrequencyGroupCode;
 
-	@Column(name = "frequency_group_code")
-	private String frequencyGroupCode;
+	@Column(name = "meaning_type_code")
+	private String meaningTypeCode;
 
-	@Column(name = "frequency_group_value")
-	private String frequencyGroupValue;
+	@Column(name = "meaning_entry_class_code")
+	private String meaningEntryClassCode;
+
+	@Column(name = "meaning_state_code")
+	private String meaningStateCode;
 
 	private List<Classifier> domains;
 
@@ -133,12 +136,36 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeTypeCode = lexemeTypeCode;
 	}
 
-	public String getLexemeTypeValue() {
-		return lexemeTypeValue;
+	public String getLexemeFrequencyGroupCode() {
+		return lexemeFrequencyGroupCode;
 	}
 
-	public void setLexemeTypeValue(String lexemeTypeValue) {
-		this.lexemeTypeValue = lexemeTypeValue;
+	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
+		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
+	}
+
+	public String getMeaningTypeCode() {
+		return meaningTypeCode;
+	}
+
+	public void setMeaningTypeCode(String meaningTypeCode) {
+		this.meaningTypeCode = meaningTypeCode;
+	}
+
+	public String getMeaningEntryClassCode() {
+		return meaningEntryClassCode;
+	}
+
+	public void setMeaningEntryClassCode(String meaningEntryClassCode) {
+		this.meaningEntryClassCode = meaningEntryClassCode;
+	}
+
+	public String getMeaningStateCode() {
+		return meaningStateCode;
+	}
+
+	public void setMeaningStateCode(String meaningStateCode) {
+		this.meaningStateCode = meaningStateCode;
 	}
 
 	public List<Classifier> getDomains() {
@@ -197,26 +224,7 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeFreeforms = lexemeFreeforms;
 	}
 
-	public String getFrequencyGroupCode() {
-		return frequencyGroupCode;
-	}
-
-	public void setFrequencyGroupCode(String frequencyGroupCode) {
-		this.frequencyGroupCode = frequencyGroupCode;
-	}
-
-	public String getFrequencyGroupValue() {
-		return frequencyGroupValue;
-	}
-
-	public void setFrequencyGroupValue(String frequencyGroupValue) {
-		this.frequencyGroupValue = frequencyGroupValue;
-	}
-
-	public List<FreeForm> getFreeforms() {
-		List<FreeForm> freeforms = new ArrayList<>();
-		if (getLexemeFreeforms() != null) freeforms.addAll(getLexemeFreeforms());
-		if (getMeaningFreeforms() != null) freeforms.addAll(getMeaningFreeforms());
-		return freeforms.stream().filter(f -> !f.getType().equals(FreeformType.RECTION)).collect(Collectors.toList());
+	public boolean isFreeformsExist() {
+		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
 	}
 }

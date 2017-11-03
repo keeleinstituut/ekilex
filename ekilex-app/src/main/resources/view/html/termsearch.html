@@ -65,21 +65,33 @@
         </th:block>
       </div>
       <div class="float-left w-75">
-        <th:block th:each="meaning : ${details.meanings}">
+        <th:block th:each="lexeme : ${details.lexemes}">
           <div style="border: 1px solid #CCC; padding: 5px; width: 60%">
-            <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
-            <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
-            <div th:if="${meaning.lexemeTypeCode != null}">
+            <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
+            <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
+            <div th:if="${lexeme.lexemeTypeCode != null}">
               <b>Keelendi t&#252;&#252;p</b>
-              <span th:text="${meaning.lexemeTypeCode}"></span>
+              <span th:text="${lexeme.lexemeTypeCode}"></span>
             </div>
-            <div th:if="${meaning.frequencyGroupCode != null}">
-              <b>Sagedusrühm</b>
-              <span th:text="${meaning.frequencyGroupCode}"></span>
+            <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
+              <b>Sagedusr&uuml;hm</b>
+              <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
             </div>
-            <p th:if="${not #lists.isEmpty(meaning.domains)}">
+            <div th:if="${lexeme.meaningTypeCode != null}">
+              <b>M&otilde;istet&uuml;&uuml;p</b>
+              <span th:text="${lexeme.meaningTypeCode}"></span>
+            </div>
+            <div th:if="${lexeme.meaningEntryClassCode != null}">
+              <b>Entry class</b>
+              <span th:text="${lexeme.meaningEntryClassCode}"></span>
+            </div>
+            <div th:if="${lexeme.meaningStateCode != null}">
+              <b>Staatus</b>
+              <span th:text="${lexeme.meaningStateCode}"></span>
+            </div>
+            <p th:if="${not #lists.isEmpty(lexeme.domains)}">
               <b>Valdkonnad</b>
-              <span th:each="domain,domainIter : ${meaning.domains}">
+              <span th:each="domain,domainIter : ${lexeme.domains}">
                 <span th:text="${domain.code}"></span>
                 -
                 <span th:text="${domain.value}"></span>
@@ -87,9 +99,9 @@
               </span>
             </p>
             <hr />
-            <div th:if="${not #lists.isEmpty(meaning.rections)}" style="margin-top: -0.5em;">
+            <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
               <table>
-                <tr th:each="rection,rectionIter : ${meaning.rections}">
+                <tr th:each="rection,rectionIter : ${lexeme.rections}">
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <span th:text="${rection.value}"></span>
                   </td>
@@ -108,23 +120,23 @@
               </table>
               <hr />
             </div>
-            <div th:if="${not #lists.isEmpty(meaning.definitions)}">
+            <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
               <b>Seletused</b>
               <br />
               <ul>
-                <li th:each="definition : ${meaning.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+                <li th:each="definition : ${lexeme.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
               </ul>
               <hr />
             </div>
-            <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
+            <div th:if="${lexeme.freeformsExist}">
               <b>Vabavormid</b>
-              <table th:if="${not #lists.isEmpty(meaning.lexemeFreeforms)}">
+              <table th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}">
                 <thead>
                   <th colspan="2">
                     <small>ilmiku vabavormid</small>
                   </th>
                 </thead>
-                <tr th:each="freeform : ${meaning.lexemeFreeforms}">
+                <tr th:each="freeform : ${lexeme.lexemeFreeforms}">
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <span th:text="${freeform.type}"></span>
                   </td>
@@ -133,13 +145,13 @@
                   </td>
                 </tr>
               </table>
-              <table th:if="${not #lists.isEmpty(meaning.meaningFreeforms)}">
+              <table th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
                 <thead>
                   <th colspan="2">
                     <small>tähenduse vabavormid</small>
                   </th>
                 </thead>
-                <tr th:each="freeform : ${meaning.meaningFreeforms}">
+                <tr th:each="freeform : ${lexeme.meaningFreeforms}">
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <span th:text="${freeform.type}"></span>
                   </td>
@@ -151,7 +163,7 @@
               <hr />
             </div>
             <ul>
-              <li th:each="word,wordIter : ${meaning.words}">
+              <li th:each="word,wordIter : ${lexeme.words}">
                 <a style="color: #1e7e34" class="mr-2" th:href="@{'/termsearch?searchFilter=' + ${word.value}}">
                   <span th:text="${word.value}"></span>
                   (
