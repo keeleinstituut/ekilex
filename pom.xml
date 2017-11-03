@@ -335,7 +335,7 @@
 		<jackson.version>2.9.0</jackson.version>
 		<postgresql.version>42.1.4</postgresql.version>
 		<mockito.version>2.8.47</mockito.version>
-		<jooq.version>3.10.0</jooq.version>
+		<jooq.version>3.10.1</jooq.version>
 		<hikaricp.version>2.7.1</hikaricp.version>
 	</properties>
 </project>
