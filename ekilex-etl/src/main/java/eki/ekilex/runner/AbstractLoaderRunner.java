@@ -99,17 +99,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return dataDoc;
 	}
 
-	//@see saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount)
-	@Deprecated
-	protected Long saveWord(
-			String wordValue, String[] wordComponents, String wordDisplayForm, String wordVocalForm, int homonymNr,
-			String wordMorphCode, String wordLang, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
-
-		Word word = new Word(wordValue, wordLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
-		Long wordId = saveWord(word, paradigm, wordDuplicateCount);
-		return wordId;
-	}
-
 	protected Long saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
 
 		String wordValue = word.getValue();
@@ -345,32 +334,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			criteriaParamMap.put("lexeme_id", lexemeId);
 			criteriaParamMap.put("dataset_code", dataset);
 			basicDbService.createWithoutId(LEXEME_DATASET, criteriaParamMap);
-		}
-		return lexemeId;
-	}
-
-	//TODO @see createLexeme(Lexeme lexeme, String dataset)
-	@Deprecated
-	protected Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String dataset) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("meaning_id", meaningId);
-		if (lexemeLevel1 != null) {
-			tableRowParamMap.put("level1", lexemeLevel1);
-		}
-		if (lexemeLevel2 != null) {
-			tableRowParamMap.put("level2", lexemeLevel2);
-		}
-		if (lexemeLevel3 != null) {
-			tableRowParamMap.put("level3", lexemeLevel3);
-		}
-		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
-		if (lexemeId != null) {
-			tableRowParamMap.clear();
-			tableRowParamMap.put("lexeme_id", lexemeId);
-			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.createWithoutId(LEXEME_DATASET, tableRowParamMap);
 		}
 		return lexemeId;
 	}

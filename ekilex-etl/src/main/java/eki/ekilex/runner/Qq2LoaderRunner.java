@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import eki.common.data.Count;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -151,6 +152,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Long wordId, newWordId, meaningId, lexemeId;
 		String[] wordComponents;
 		Word wordObj;
+		Lexeme lexemeObj;
 		Paradigm paradigmObj;
 
 		Count wordDuplicateCount = new Count();
@@ -290,7 +292,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, dataset);
 
 						// word match lexeme
-						lexemeId = createLexeme(wordId, meaningId, null, null, null, dataset);
+						lexemeObj = new Lexeme();
+						lexemeObj.setWordId(wordId);
+						lexemeObj.setMeaningId(meaningId);
+						lexemeId = createLexeme(lexemeObj, dataset);
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
 						} else {
@@ -304,7 +309,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						for (Word newWord : newWords) {
 
 							newWordId = newWord.getId();
-							lexemeId = createLexeme(newWordId, meaningId, lexemeLevel1, lexemeLevel2, lexemeLevel3, dataset);
+							lexemeObj = new Lexeme();
+							lexemeObj.setWordId(newWordId);
+							lexemeObj.setMeaningId(meaningId);
+							lexemeObj.setLevel1(lexemeLevel1);
+							lexemeObj.setLevel2(lexemeLevel2);
+							lexemeObj.setLevel3(lexemeLevel3);
+							lexemeId = createLexeme(lexemeObj, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							} else {
@@ -319,14 +330,20 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 
 						for (Long synonymWordId : synonymLevel1WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
+							lexemeObj = new Lexeme();
+							lexemeObj.setWordId(synonymWordId);
+							lexemeObj.setMeaningId(meaningId);
+							lexemeId = createLexeme(lexemeObj, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
 						}
 
 						for (Long synonymWordId : synonymLevel2WordIds) {
-							lexemeId = createLexeme(synonymWordId, meaningId, null, null, null, dataset);
+							lexemeObj = new Lexeme();
+							lexemeObj.setWordId(synonymWordId);
+							lexemeObj.setMeaningId(meaningId);
+							lexemeId = createLexeme(lexemeObj, dataset);
 							if (lexemeId == null) {
 								lexemeDuplicateCount.increment();
 							}
@@ -382,6 +399,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return null;
 		}
 		String formsStr = formsNode.getTextTrim();
+		//FIXME remove later
+		if (StringUtils.countMatches(formsStr, '+') > 1) {
+			System.out.println("---> " + word + " ---> " + formsStr);
+		}
 		formsStr = StringUtils.replaceChars(formsStr, formStrCleanupChars, "");
 		String[] formValuesArr = StringUtils.split(formsStr, ' ');
 		List<String> qq2FormValues = Arrays.asList(formValuesArr);
@@ -473,13 +494,18 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private List<Long> saveWords(List<Element> synonymNodes, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
 
 		List<Long> synonymWordIds = new ArrayList<>();
+		Word wordObj;
 		String synonym;
 		Long wordId;
 
 		for (Element synonymNode : synonymNodes) {
-
 			synonym = synonymNode.getTextTrim();
-			wordId = saveWord(synonym, null, null, null, homonymNr, wordMorphCode, lang, null, wordDuplicateCount);
+			wordObj = new Word();
+			wordObj.setValue(synonym);
+			wordObj.setHomonymNr(homonymNr);
+			wordObj.setMorphCode(wordMorphCode);
+			wordObj.setLang(lang);
+			wordId = saveWord(wordObj, null, wordDuplicateCount);
 			synonymWordIds.add(wordId);
 		}
 		return synonymWordIds;
