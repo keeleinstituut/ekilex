@@ -24,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.data.Count;
 import eki.common.service.db.BasicDbService;
+import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -52,6 +53,33 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> morphToMorphMap;
 
 	private Map<String, String> morphToDerivMap;
+
+	private final String articleExp = "/x:sr/x:A";
+	private final String articleHeaderExp = "x:P";
+	private final String wordGroupExp = "x:mg";
+	private final String wordExp = "x:m";
+	private final String wordVocalFormExp = "x:hld";
+	private final String wordMorphExp = "x:vk";
+	private final String wordRectionExp = "x:r";
+	private final String wordGrammarExp = "x:grg/x:gki";
+	private final String articleBodyExp = "x:S";
+	private final String meaningGroupExp = "x:tp";
+	private final String meaningExp = "x:tg";
+	private final String wordMatchExpr = "x:xp/x:xg";
+	private final String wordMatchValueExp = "x:x";
+	private final String definitionValueExp = "x:xd";
+	private final String wordMatchRectionExp = "x:xr";
+	private final String synonymExp = "x:syn";
+	private final String usageGroupExp = "x:np/x:ng";
+	private final String usageExp = "x:n";
+	private final String usageTranslationExp = "x:qnp/x:qng";
+	private final String usageTranslationValueExp = "x:qn";
+	private final String formsExp = "x:grg/x:vormid";
+
+	private final String defaultRectionValue = "-";
+	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
+	private final char wordComponentSeparator = '+';
+	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=";
 
 	@Override
 	void initialise() throws Exception {
@@ -85,31 +113,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Loading QQ2...");
 
-		final String articleExp = "/x:sr/x:A";
-		final String articleHeaderExp = "x:P";
-		final String wordGroupExp = "x:mg";
-		final String wordExp = "x:m";
-		final String wordVocalFormExp = "x:hld";
-		final String wordMorphExp = "x:vk";
-		final String wordRectionExp = "x:r";
-		final String wordGrammarExp = "x:grg/x:gki";
-		final String articleBodyExp = "x:S";
-		final String meaningGroupExp = "x:tp";
-		final String meaningExp = "x:tg";
-		final String wordMatchExpr = "x:xp/x:xg";
-		final String wordMatchValueExp = "x:x";
-		final String definitionValueExp = "x:xd";
-		final String wordMatchRectionExp = "x:xr";
-		final String synonymExp = "x:syn";
-		final String usageGroupExp = "x:np/x:ng";
-
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
 
 		final String defaultWordMorphCode = "SgN";
-		final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
-		final char wordComponentSeparator = '+';
-		final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=";
 		final int defaultHomonymNr = 1;
 
 		long t1, t2;
@@ -201,8 +208,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					destinDerivCode = morphToDerivMap.get(sourceMorphCode);//currently not used
 				}
 				if (isAddForms) {
-					formsNode = (Element) wordGroupNode.selectSingleNode("x:grg/x:vormid");
-					paradigmObj = extractParadigm(word, formsNode, wordParadigmsMap, formStrCleanupChars);
+					formsNode = (Element) wordGroupNode.selectSingleNode(formsExp);
+					paradigmObj = extractParadigm(word, wordComponents, formsNode, wordParadigmsMap);
 				}
 
 				// save word+paradigm+form
@@ -362,9 +369,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private Paradigm extractParadigm(String word, Element formsNode, Map<String, List<Paradigm>> wordParadigmsMap, final String formStrCleanupChars) {
+	private Paradigm extractParadigm(String word, String[] wordComponents, Element formsNode, Map<String, List<Paradigm>> wordParadigmsMap) {
 
-		List<Paradigm> paradigms = wordParadigmsMap.get(word);
+		int wordComponentCount = wordComponents.length;
+		boolean isCompoundWord = wordComponentCount > 1;
+		String wordLastComp = wordComponents[wordComponentCount - 1];
+		List<Paradigm> paradigms = wordParadigmsMap.get(wordLastComp);
 		if (CollectionUtils.isEmpty(paradigms)) {
 			return null;
 		}
@@ -386,6 +396,26 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				bestFormValuesMatchCount = formValuesIntersection.size();
 				matchingParadigm = paradigm;
 			}
+		}
+		if (isCompoundWord && (matchingParadigm != null)) {
+			List<String> compoundFormValues = new ArrayList<>();
+			List<Form> mabForms = matchingParadigm.getForms();
+			List<Form> compoundForms = new ArrayList<>();
+			for (Form mabForm : mabForms) {
+				String mabFormValue = mabForm.getValue();
+				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
+				compoundFormValues.add(compoundFormValue);
+				Form compoundForm = new Form();
+				compoundForm.setWord(mabForm.isWord());
+				compoundForm.setMorphCode(mabForm.getMorphCode());
+				compoundForm.setValue(compoundFormValue);
+				compoundForms.add(compoundForm);
+			}
+			Paradigm compoundWordParadigm = new Paradigm();
+			compoundWordParadigm.setWord(word);
+			compoundWordParadigm.setFormValues(compoundFormValues);
+			compoundWordParadigm.setForms(compoundForms);
+			return compoundWordParadigm;
 		}
 		return matchingParadigm;
 	}
@@ -523,9 +553,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private List<Usage> extractUsagesAndTranslations(List<Element> usageGroupNodes) {
 
 		//x:np/x:ng
-		final String usageExp = "x:n";
-		final String usageTranslationExp = "x:qnp/x:qng";
-		final String usageTranslationValueExp = "x:qn";
 
 		List<Usage> usages = new ArrayList<>();
 
@@ -616,8 +643,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		if (CollectionUtils.isEmpty(usages)) {
 			return;
 		}
-
-		final String defaultRectionValue = "-";
 
 		wordMatch = StringUtils.lowerCase(wordMatch);
 		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
