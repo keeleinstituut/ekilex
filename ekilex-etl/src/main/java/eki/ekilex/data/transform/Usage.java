@@ -10,6 +10,8 @@ public class Usage extends AbstractDataObject {
 
 	private String value;
 
+	private String definition;
+
 	private List<UsageTranslation> usageTranslations;
 
 	public String getValue() {
@@ -28,4 +30,11 @@ public class Usage extends AbstractDataObject {
 		this.usageTranslations = usageTranslations;
 	}
 
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
+	}
 }
