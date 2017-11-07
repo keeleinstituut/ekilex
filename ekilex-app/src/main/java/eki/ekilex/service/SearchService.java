@@ -12,6 +12,7 @@ import eki.ekilex.service.db.SearchDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,12 @@ public class SearchService {
 		for (FreeForm freeForm : lexemeRections) {
 			Rection rection = new Rection();
 			rection.setValue(freeForm.getValueText());
-			List<FreeForm> usages = searchDbService.findFreeformChilds(freeForm.getId()).into(FreeForm.class);
+			List<FreeForm> usages = new ArrayList<>();
+			List<FreeForm> usageGroups = searchDbService.findFreeformChilds(freeForm.getId()).into(FreeForm.class);
+			for (FreeForm usageGroup : usageGroups) {
+				List<FreeForm> groupChilds = searchDbService.findFreeformChilds(usageGroup.getId()).into(FreeForm.class);
+				usages.addAll(groupChilds.stream().filter(g -> FreeformType.USAGE.equals(g.getType())).collect(Collectors.toList()));
+			}
 			if (!usages.isEmpty()) {
 				String[][] arrayOfUsages = new String[usages.size()][];
 				int index = 0;
