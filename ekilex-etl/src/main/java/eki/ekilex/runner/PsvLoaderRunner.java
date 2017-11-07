@@ -442,10 +442,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void createUsage(Long rectionId, Usage usage) throws Exception {
-		Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, "");
-		createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue());
+		Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, "", null);
+		createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
 		if (isNotEmpty(usage.getDefinition())) {
-			createFreeform(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition());
+			createFreeform(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), null);
 		}
 	}
 

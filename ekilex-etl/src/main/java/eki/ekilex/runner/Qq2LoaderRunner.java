@@ -139,16 +139,16 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		Map<Long, List<Rection>> wordIdRectionMap = new HashMap<>();
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
-		List<UsageMeaning> usageMeanings;
 
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
 		List<Element> definitionValueNodes, wordMatchNodes, synonymNodes, usageGroupNodes;
 		Element wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
+		List<UsageMeaning> usageMeanings;
 		List<Word> newWords, wordMatches;
 		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
-		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang, formsStr;
+		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
 		Long wordId, newWordId, meaningId, lexemeId;
@@ -245,8 +245,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
 				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);//x:np/x:ng
-				//usages = extractUsagesAndTranslations(usageGroupNodes);
-				usageMeanings = extractUsagesAndTranslations2(usageGroupNodes);
+				usageMeanings = extractUsagesAndTranslations(usageGroupNodes);
 				if (CollectionUtils.isEmpty(usageGroupNodes)) {
 					missingUsageGroupCount.increment();
 				}
@@ -577,7 +576,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<UsageMeaning> extractUsagesAndTranslations2(List<Element> usageGroupNodes) {
+	private List<UsageMeaning> extractUsagesAndTranslations(List<Element> usageGroupNodes) {
 
 		//x:np/x:ng
 
@@ -597,8 +596,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		for (Element usageGroupNode : usageGroupNodes) {
 
-			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
-			List<Element> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);
+			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);//x:n
+			List<Element> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);//x:qnp/x:qng
 
 			usages = new ArrayList<>();
 			for (Element usageNode : usageNodes) {
@@ -665,7 +664,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	//TODO refactor
 	private void createRectionsAndUsagesAndTranslations(
 			Map<Long, List<Rection>> wordIdRectionMap,
 			Long lexemeId, Long wordId, String wordMatch,
@@ -679,19 +677,18 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		wordMatch = StringUtils.lowerCase(wordMatch);
 		List<Rection> rectionObjs = wordIdRectionMap.get(wordId);
 
-		List<Long> rectionFreeformIds = new ArrayList<>();
+		List<Long> rectionIds = new ArrayList<>();
 
 		if (CollectionUtils.isEmpty(rectionObjs)) {
-
-			Long rectionFreeformId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
-			if (rectionFreeformId != null) {
-				rectionFreeformIds.add(rectionFreeformId);
+			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
+			if (rectionId != null) {
+				rectionIds.add(rectionId);
 			}
 		} else {
 			for (Rection rectionObj : rectionObjs) {
-				Long rectionFreeformId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
-				if (rectionFreeformId != null) {
-					rectionFreeformIds.add(rectionFreeformId);
+				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
+				if (rectionId != null) {
+					rectionIds.add(rectionId);
 				}
 			}
 		}
@@ -699,44 +696,38 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<UsageTranslation> usageTranslations;
 
 		if (isAbsoluteSingleMeaning) {
-			for (Long rectionFreeformId : rectionFreeformIds) {
+			for (Long rectionId : rectionIds) {
 				for (UsageMeaning usageMeaning : usageMeanings) {
-					//TODO create meaning freeform
+					Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
 					for (Usage usage : usageMeaning.getUsages()) {
-						usageTranslations = usage.getUsageTranslations();
-						Long usageId = createUsage(rectionFreeformId, usage.getValue());
-						for (UsageTranslation usageTranslation : usageTranslations) {
-							createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
+						createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
+						for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
+							createFreeform(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
 						}
 					}
 				}
 			}
 			singleUsageTranslationMatchCount.increment();
 		} else {
-			boolean isAnyUsageTranslationMatch = false;
-			for (UsageMeaning usageMeaning : usageMeanings) {
-				//TODO create meaning freeform
-				for (Usage usage : usageMeaning.getUsages()) {
-					usageTranslations = usage.getUsageTranslations();
-					boolean isUsageTranslationMatch = false;
-					for (UsageTranslation usageTranslation : usageTranslations) {
-						if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
-							isAnyUsageTranslationMatch = isUsageTranslationMatch = true;
-							break;
+			for (Long rectionId : rectionIds) {
+				for (UsageMeaning usageMeaning : usageMeanings) {
+					Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
+					for (Usage usage : usageMeaning.getUsages()) {
+						usageTranslations = usage.getUsageTranslations();
+						boolean isUsageTranslationMatch = false;
+						for (UsageTranslation usageTranslation : usageTranslations) {
+							if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
+								break;
+							}
 						}
-					}
-					if (isUsageTranslationMatch) {
-						for (Long rectionId : rectionFreeformIds) {
-							Long usageId = createUsage(rectionId, usage.getValue());
+						if (isUsageTranslationMatch) {
+							createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
 							for (UsageTranslation usageTranslation : usageTranslations) {
-								createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
+								createFreeform(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
 							}
 						}
 					}
 				}
-			}
-			if (!isAnyUsageTranslationMatch) {
-				basicDbService.delete(RECTION, rectionFreeformIds);
 			}
 		}
 	}

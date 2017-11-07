@@ -352,7 +352,8 @@ create table freeform
   value_number numeric(14, 4) null,
   value_array text array null,
   classif_name text null,
-  classif_code varchar(100) null
+  classif_code varchar(100) null,
+  lang char(3) references lang(code) null
 );
 alter sequence freeform_id_seq restart with 10000;
 
