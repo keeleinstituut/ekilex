@@ -338,17 +338,17 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lexemeId;
 	}
 
-	protected Long createOrSelectRectionFreeform(Long lexemeId, String rection) throws Exception {
+	protected Long createOrSelectLexemeFreeform(Long lexemeId, FreeformType freeformType, String freeformValue) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("value", rection);
-		tableRowParamMap.put("type", FreeformType.RECTION.toString());
+		tableRowParamMap.put("value", freeformValue);
+		tableRowParamMap.put("type", freeformType);
 		Map<String, Object> freeform = basicDbService.queryForMap(sqlSelectLexemeFreeform, tableRowParamMap);
 		if (freeform != null) {
 			return (Long)freeform.get("id");
 		}
-		return createLexemeFreeform(lexemeId, FreeformType.RECTION, rection);
+		return createLexemeFreeform(lexemeId, freeformType, freeformValue);
 	}
 
 	@Deprecated

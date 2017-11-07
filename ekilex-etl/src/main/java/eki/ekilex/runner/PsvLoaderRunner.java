@@ -421,7 +421,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String rectionExp = "x:rek";
 		final String defaultRection = "-";
 
-		Long rectionFreeformId = createOrSelectRectionFreeform(lexemeId, defaultRection);
+		Long rectionFreeformId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRection);
 		for (Usage usage : usages) {
 			createFreeform(FreeformType.USAGE, rectionFreeformId, usage.getValue());
 		}
@@ -431,7 +431,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
 			List<Element> rections = rectionGroup.selectNodes(rectionExp);
 			for (Element rection : rections) {
-				rectionFreeformId = createOrSelectRectionFreeform(lexemeId, rection.getTextTrim());
+				rectionFreeformId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getTextTrim());
 				for (Usage usage : rectionUsages) {
 					createFreeform(FreeformType.USAGE, rectionFreeformId, usage.getValue());
 				}

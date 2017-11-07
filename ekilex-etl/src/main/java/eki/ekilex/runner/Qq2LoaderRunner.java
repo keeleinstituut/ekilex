@@ -22,12 +22,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Rection;
 import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
@@ -77,6 +80,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String usageTranslationValueExp = "x:qn";
 	private final String formsExp = "x:grg/x:vormid";
 
+	private final String defaultWordMorphCode = "SgN";
+	private final int defaultHomonymNr = 1;
 	private final String defaultRectionValue = "-";
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
@@ -117,9 +122,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
 
-		final String defaultWordMorphCode = "SgN";
-		final int defaultHomonymNr = 1;
-
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
@@ -135,9 +137,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		int articleCount = articleNodes.size();
 		logger.debug("Extracted {} articles", articleCount);
 
-		Map<Long, List<Map<String, Object>>> wordIdRectionMap = new HashMap<>();
+		Map<Long, List<Rection>> wordIdRectionMap = new HashMap<>();
 		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
-		List<Usage> usages;
+		List<UsageMeaning> usageMeanings;
 
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
@@ -233,7 +235,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			// body...
 
 			synonymNodes = contentNode.selectNodes(synonymExp);
-			synonymLevel1WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
+			synonymLevel1WordIds = saveWords(synonymNodes, dataLang, wordDuplicateCount);
 
 			meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);//x:tp
 
@@ -243,7 +245,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
 				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);//x:np/x:ng
-				usages = extractUsagesAndTranslations(usageGroupNodes);
+				//usages = extractUsagesAndTranslations(usageGroupNodes);
+				usageMeanings = extractUsagesAndTranslations2(usageGroupNodes);
 				if (CollectionUtils.isEmpty(usageGroupNodes)) {
 					missingUsageGroupCount.increment();
 				}
@@ -260,7 +263,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel3 = 0;
 
 					synonymNodes = meaningNode.selectNodes(synonymExp);
-					synonymLevel2WordIds = saveWords(synonymNodes, defaultHomonymNr, defaultWordMorphCode, dataLang, wordDuplicateCount);
+					synonymLevel2WordIds = saveWords(synonymNodes, dataLang, wordDuplicateCount);
 
 					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
 					boolean isSingleWordMatch = wordMatchNodes.size() == 1;
@@ -322,7 +325,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 								// new word lexeme rections, usages, usage translations
 								createRectionsAndUsagesAndTranslations(
-										wordIdRectionMap, lexemeId, newWordId, wordMatch, usages, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
+										wordIdRectionMap, lexemeId, newWordId, wordMatch, usageMeanings, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
 
 								// new word lexeme grammars
 								createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
@@ -353,7 +356,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				if (doReports) {
 					detectAndReport(
-							usages, newWords, wordMatches,
+							usageMeanings, newWords, wordMatches,
 							ambiguousUsageTranslationMatchCount,
 							missingUsageTranslationMatchCount,
 							successfulUsageTranslationMatchCount);
@@ -399,10 +402,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return null;
 		}
 		String formsStr = formsNode.getTextTrim();
-		//FIXME remove later
-		if (StringUtils.countMatches(formsStr, '+') > 1) {
-			System.out.println("---> " + word + " ---> " + formsStr);
-		}
 		formsStr = StringUtils.replaceChars(formsStr, formStrCleanupChars, "");
 		String[] formValuesArr = StringUtils.split(formsStr, ' ');
 		List<String> qq2FormValues = Arrays.asList(formValuesArr);
@@ -442,7 +441,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void detectAndReport(
-			List<Usage> usages, List<Word> newWords, List<Word> wordMatches,
+			List<UsageMeaning> usageMeanings, List<Word> newWords, List<Word> wordMatches,
 			Count ambiguousUsageTranslationMatchCount,
 			Count missingUsageTranslationMatchCount,
 			Count successfulUsageTranslationMatchCount) throws Exception {
@@ -452,46 +451,48 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String wordMatch;
 		StringBuffer logBuf;
 
-		for (Usage usage : usages) {
-			int usageWordMatchCount = 0;
-			usageTranslations = usage.getUsageTranslations();
-			for (UsageTranslation usageTranslation : usageTranslations) {
-				lemmatisedTokens = usageTranslation.getLemmatisedTokens();
-				for (Word wordMatchObj : wordMatches) {
-					wordMatch = wordMatchObj.getValue();
-					wordMatch = StringUtils.lowerCase(wordMatch);
-					if (lemmatisedTokens.contains(wordMatch)) {
-						usageWordMatchCount++;
+		for (UsageMeaning usageMeaning : usageMeanings) {
+			for (Usage usage : usageMeaning.getUsages()) {
+				int usageWordMatchCount = 0;
+				usageTranslations = usage.getUsageTranslations();
+				for (UsageTranslation usageTranslation : usageTranslations) {
+					lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+					for (Word wordMatchObj : wordMatches) {
+						wordMatch = wordMatchObj.getValue();
+						wordMatch = StringUtils.lowerCase(wordMatch);
+						if (lemmatisedTokens.contains(wordMatch)) {
+							usageWordMatchCount++;
+						}
 					}
 				}
-			}
-			if (usageWordMatchCount == 0) {
-				missingUsageTranslationMatchCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(newWords);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(usage);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(wordMatches);
-				String logRow = logBuf.toString(); 
-				reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
-			} else if (usageWordMatchCount == 1) {
-				successfulUsageTranslationMatchCount.increment();
-			} else if (usageWordMatchCount > 1) {
-				ambiguousUsageTranslationMatchCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(newWords);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(usage);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(wordMatches);
-				String logRow = logBuf.toString(); 
-				reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
+				if (usageWordMatchCount == 0) {
+					missingUsageTranslationMatchCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(newWords);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usage);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordMatches);
+					String logRow = logBuf.toString(); 
+					reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
+				} else if (usageWordMatchCount == 1) {
+					successfulUsageTranslationMatchCount.increment();
+				} else if (usageWordMatchCount > 1) {
+					ambiguousUsageTranslationMatchCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(newWords);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usage);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordMatches);
+					String logRow = logBuf.toString(); 
+					reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
+				}
 			}
 		}
 	}
 
-	private List<Long> saveWords(List<Element> synonymNodes, int homonymNr, String wordMorphCode, String lang, Count wordDuplicateCount) throws Exception {
+	private List<Long> saveWords(List<Element> synonymNodes, String lang, Count wordDuplicateCount) throws Exception {
 
 		List<Long> synonymWordIds = new ArrayList<>();
 		Word wordObj;
@@ -502,8 +503,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			synonym = synonymNode.getTextTrim();
 			wordObj = new Word();
 			wordObj.setValue(synonym);
-			wordObj.setHomonymNr(homonymNr);
-			wordObj.setMorphCode(wordMorphCode);
+			wordObj.setHomonymNr(defaultHomonymNr);
+			wordObj.setMorphCode(defaultWordMorphCode);
 			wordObj.setLang(lang);
 			wordId = saveWord(wordObj, null, wordDuplicateCount);
 			synonymWordIds.add(wordId);
@@ -529,7 +530,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Element rectionNode : rectionNodes) {
 			String rection = rectionNode.getTextTrim();
-			createOrSelectRection(lexemeId, rection);
+			createLexemeFreeform(lexemeId, FreeformType.RECTION, rection);
 		}
 	}
 
@@ -558,31 +559,32 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void extractRections(List<Element> rectionNodes, Long wordId, Map<Long, List<Map<String, Object>>> wordIdRectionMap) {
+	private void extractRections(List<Element> rectionNodes, Long wordId, Map<Long, List<Rection>> wordIdRectionMap) {
 
 		if (rectionNodes == null) {
 			return;
 		}
-		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
+		List<Rection> rectionObjs = wordIdRectionMap.get(wordId);
 		if (rectionObjs == null) {
 			rectionObjs = new ArrayList<>();
 			wordIdRectionMap.put(wordId, rectionObjs);
 		}
 		for (Element rectionNode : rectionNodes) {
 			String rection = rectionNode.getTextTrim();
-			Map<String, Object> rectionObj = new HashMap<>();
-			rectionObj.put("value", rection);
+			Rection rectionObj = new Rection();
+			rectionObj.setValue(rection);
 			rectionObjs.add(rectionObj);
 		}
 	}
 
-	private List<Usage> extractUsagesAndTranslations(List<Element> usageGroupNodes) {
+	private List<UsageMeaning> extractUsagesAndTranslations2(List<Element> usageGroupNodes) {
 
 		//x:np/x:ng
 
-		List<Usage> usages = new ArrayList<>();
+		List<UsageMeaning> usageMeanings = new ArrayList<>();
 
-		List<Usage> newUsages;
+		UsageMeaning usageMeaning;
+		List<Usage> usages;
 		Usage newUsage;
 		UsageTranslation usageTranslation;
 		List<UsageTranslation> usageTranslations;
@@ -598,12 +600,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
 			List<Element> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);
 
-			newUsages = new ArrayList<>();
+			usages = new ArrayList<>();
 			for (Element usageNode : usageNodes) {
 				usageValue = usageNode.getTextTrim();
 				newUsage = new Usage();
 				newUsage.setValue(usageValue);
-				newUsages.add(newUsage);
+				usages.add(newUsage);
 			}
 
 			usageTranslations = new ArrayList<>();
@@ -635,12 +637,15 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			for (Usage usage : newUsages) {
+			for (Usage usage : usages) {
 				usage.setUsageTranslations(usageTranslations);
 			}
-			usages.addAll(newUsages);
+
+			usageMeaning = new UsageMeaning();
+			usageMeaning.setUsages(usages);
+			usageMeanings.add(usageMeaning);
 		}
-		return usages;
+		return usageMeanings;
 	}
 
 	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId, String dataset) throws Exception {
@@ -660,36 +665,33 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	//TODO refactor
 	private void createRectionsAndUsagesAndTranslations(
-			Map<Long, List<Map<String, Object>>> wordIdRectionMap,
+			Map<Long, List<Rection>> wordIdRectionMap,
 			Long lexemeId, Long wordId, String wordMatch,
-			List<Usage> usages, boolean isAbsoluteSingleMeaning,
+			List<UsageMeaning> usageMeanings, boolean isAbsoluteSingleMeaning,
 			Count singleUsageTranslationMatchCount) throws Exception {
 
-		if (CollectionUtils.isEmpty(usages)) {
+		if (CollectionUtils.isEmpty(usageMeanings)) {
 			return;
 		}
 
 		wordMatch = StringUtils.lowerCase(wordMatch);
-		List<Map<String, Object>> rectionObjs = wordIdRectionMap.get(wordId);
+		List<Rection> rectionObjs = wordIdRectionMap.get(wordId);
 
-		List<Long> rectionIds = new ArrayList<>();
+		List<Long> rectionFreeformIds = new ArrayList<>();
 
 		if (CollectionUtils.isEmpty(rectionObjs)) {
 
-			Map<String, Object> rectionObj = new HashMap<>();
-			rectionObj.put("lexeme_id", lexemeId);
-			rectionObj.put("value", defaultRectionValue);
-			Long rectionId = basicDbService.createIfNotExists(RECTION, rectionObj);
-			if (rectionId != null) {
-				rectionIds.add(rectionId);
+			Long rectionFreeformId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
+			if (rectionFreeformId != null) {
+				rectionFreeformIds.add(rectionFreeformId);
 			}
 		} else {
-			for (Map<String, Object> rectionObj : rectionObjs) {
-				rectionObj.put("lexeme_id", lexemeId);
-				Long rectionId = basicDbService.createIfNotExists(RECTION, rectionObj);
-				if (rectionId != null) {
-					rectionIds.add(rectionId);
+			for (Rection rectionObj : rectionObjs) {
+				Long rectionFreeformId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
+				if (rectionFreeformId != null) {
+					rectionFreeformIds.add(rectionFreeformId);
 				}
 			}
 		}
@@ -697,38 +699,44 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<UsageTranslation> usageTranslations;
 
 		if (isAbsoluteSingleMeaning) {
-			for (Usage usage : usages) {
-				usageTranslations = usage.getUsageTranslations();
-				for (Long rectionId : rectionIds) {
-					Long usageId = createUsage(rectionId, usage.getValue());
-					for (UsageTranslation usageTranslation : usageTranslations) {
-						createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
-					}
-				}
-			}
-			singleUsageTranslationMatchCount.increment();
-		} else {
-			boolean isAnyUsageTranslationMatch = false;
-			for (Usage usage : usages) {
-				usageTranslations = usage.getUsageTranslations();
-				boolean isUsageTranslationMatch = false;
-				for (UsageTranslation usageTranslation : usageTranslations) {
-					if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
-						isAnyUsageTranslationMatch = isUsageTranslationMatch = true;
-						break;
-					}
-				}
-				if (isUsageTranslationMatch) {
-					for (Long rectionId : rectionIds) {
-						Long usageId = createUsage(rectionId, usage.getValue());
+			for (Long rectionFreeformId : rectionFreeformIds) {
+				for (UsageMeaning usageMeaning : usageMeanings) {
+					//TODO create meaning freeform
+					for (Usage usage : usageMeaning.getUsages()) {
+						usageTranslations = usage.getUsageTranslations();
+						Long usageId = createUsage(rectionFreeformId, usage.getValue());
 						for (UsageTranslation usageTranslation : usageTranslations) {
 							createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
 						}
 					}
 				}
 			}
+			singleUsageTranslationMatchCount.increment();
+		} else {
+			boolean isAnyUsageTranslationMatch = false;
+			for (UsageMeaning usageMeaning : usageMeanings) {
+				//TODO create meaning freeform
+				for (Usage usage : usageMeaning.getUsages()) {
+					usageTranslations = usage.getUsageTranslations();
+					boolean isUsageTranslationMatch = false;
+					for (UsageTranslation usageTranslation : usageTranslations) {
+						if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
+							isAnyUsageTranslationMatch = isUsageTranslationMatch = true;
+							break;
+						}
+					}
+					if (isUsageTranslationMatch) {
+						for (Long rectionId : rectionFreeformIds) {
+							Long usageId = createUsage(rectionId, usage.getValue());
+							for (UsageTranslation usageTranslation : usageTranslations) {
+								createUsageTranslation(usageId, usageTranslation.getValue(), usageTranslation.getLang());
+							}
+						}
+					}
+				}
+			}
 			if (!isAnyUsageTranslationMatch) {
-				basicDbService.delete(RECTION, rectionIds);
+				basicDbService.delete(RECTION, rectionFreeformIds);
 			}
 		}
 	}
