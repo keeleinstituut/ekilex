@@ -421,9 +421,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String rectionExp = "x:rek";
 		final String defaultRection = "-";
 
-		Long rectionFreeformId = createOrSelectRectionFreeform(lexemeId, defaultRection);
-		for (Usage usage : usages) {
-			createFreeform(FreeformType.USAGE, rectionFreeformId, usage.getValue());
+		if ( !usages.isEmpty()) {
+			Long rectionId = createOrSelectRectionFreeform(lexemeId, defaultRection);
+			for (Usage usage : usages) {
+				createUsage(rectionId, usage);
+			}
 		}
 		List<Element> rectionGroups = node.selectNodes(rectionGroupExp);
 		for (Element rectionGroup : rectionGroups) {
@@ -431,11 +433,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
 			List<Element> rections = rectionGroup.selectNodes(rectionExp);
 			for (Element rection : rections) {
-				rectionFreeformId = createOrSelectRectionFreeform(lexemeId, rection.getTextTrim());
+				Long rectionId = createOrSelectRectionFreeform(lexemeId, rection.getTextTrim());
 				for (Usage usage : rectionUsages) {
-					createFreeform(FreeformType.USAGE, rectionFreeformId, usage.getValue());
+					createUsage(rectionId, usage);
 				}
 			}
+		}
+	}
+
+	private void createUsage(Long rectionId, Usage usage) throws Exception {
+		Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, "");
+		createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue());
+		if (isNotEmpty(usage.getDefinition())) {
+			createFreeform(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition());
 		}
 	}
 
@@ -449,6 +459,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			for (Element usageNode : usageNodes) {
 				Usage newUsage = new Usage();
 				newUsage.setValue(usageNode.getTextTrim());
+				if (usageNode.hasMixedContent()) {
+					newUsage.setDefinition(usageNode.selectSingleNode("x:nd").getText());
+				}
 				usages.add(newUsage);
 			}
 		}
