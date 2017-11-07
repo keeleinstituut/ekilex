@@ -45,7 +45,7 @@ drop table if exists register_label;
 drop table if exists register;
 drop table if exists lexeme_type_label;
 drop table if exists lexeme_type;
-drop table if exists lexeme_frequency_label;
+drop table if exists lexeme_frequency_label; -- removed for now
 drop table if exists lexeme_frequency;
 drop table if exists domain_label;
 drop table if exists domain;
@@ -153,15 +153,6 @@ create table lexeme_frequency
 (
   code varchar(100) primary key,
   datasets varchar(10) array not null
-);
-
-create table lexeme_frequency_label
-(
-  code varchar(100) references lexeme_frequency(code) on delete cascade not null,
-  value text not null,
-  lang char(3) references lang(code) not null,
-  type varchar(10) references label_type(code) not null,
-  unique(code, lang, type)
 );
 
 -- sugu
