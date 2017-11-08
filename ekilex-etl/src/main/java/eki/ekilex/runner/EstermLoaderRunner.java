@@ -906,7 +906,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				//TODO get link
 			}
 			valueStr = valueNode.getTextTrim();
-			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr);
+			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
 		}
 	}
 

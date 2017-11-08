@@ -348,7 +348,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (freeform != null) {
 			return (Long)freeform.get("id");
 		}
-		return createLexemeFreeform(lexemeId, freeformType, freeformValue);
+		return createLexemeFreeform(lexemeId, freeformType, freeformValue, null);
 	}
 
 	//TODO to be moved to freeform
@@ -402,9 +402,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(MEANING_FREEFORM, tableRowParamMap);
 	}
 
-	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value) throws Exception {
+	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value, null);
+		Long freeformId = createFreeform(freeformType, null, value, lang);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);

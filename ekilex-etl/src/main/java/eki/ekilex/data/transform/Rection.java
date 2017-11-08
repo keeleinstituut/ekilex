@@ -8,19 +8,9 @@ public class Rection extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long lexemeId;
-
 	private String value;
 
 	private List<UsageMeaning> usageMeanings;
-
-	public Long getLexemeId() {
-		return lexemeId;
-	}
-
-	public void setLexemeId(Long lexemeId) {
-		this.lexemeId = lexemeId;
-	}
 
 	public String getValue() {
 		return value;
