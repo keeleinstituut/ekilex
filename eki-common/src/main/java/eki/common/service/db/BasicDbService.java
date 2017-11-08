@@ -62,6 +62,31 @@ public class BasicDbService extends AbstractDbService {
 
 	public Map<String, Object> select(String tableName, Map<String, Object> paramMap) throws Exception {
 
+		String sqlQueryStr = parseSelectSql(tableName, paramMap);
+
+		Map<String, Object> result;
+		try {
+			result = jdbcTemplate.queryForMap(sqlQueryStr, paramMap);
+		} catch (EmptyResultDataAccessException e) {
+			result = null;
+		}
+		return result;
+	}
+
+	public List<Map<String, Object>> selectAll(String tableName, Map<String, Object> paramMap) throws Exception {
+
+		String sqlQueryStr = parseSelectSql(tableName, paramMap);
+
+		List<Map<String, Object>> result;
+		try {
+			result = jdbcTemplate.queryForList(sqlQueryStr, paramMap);
+		} catch (EmptyResultDataAccessException e) {
+			result = Collections.emptyList();
+		}
+		return result;
+	}
+
+	private String parseSelectSql(String tableName, Map<String, Object> paramMap) {
 		List<String> fieldNames = new ArrayList<>(paramMap.keySet());
 		StringBuffer sqlScriptBuf = new StringBuffer();
 		sqlScriptBuf.append("select * from ");
@@ -77,15 +102,7 @@ public class BasicDbService extends AbstractDbService {
 			sqlScriptBuf.append(fieldName);
 		}
 
-		String sqlQueryStr = sqlScriptBuf.toString();
-
-		Map<String, Object> result;
-		try {
-			result = jdbcTemplate.queryForMap(sqlQueryStr, paramMap);
-		} catch (EmptyResultDataAccessException e) {
-			result = null;
-		}
-		return result;
+		return sqlScriptBuf.toString();
 	}
 
 	public Long create(String tableName) throws Exception {

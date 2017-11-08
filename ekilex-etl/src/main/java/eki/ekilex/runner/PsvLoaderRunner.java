@@ -71,11 +71,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Count lexemeDuplicateCount = new Count();
 		int articleCounter = 0;
 		int progressIndicator = articleCount / Math.min(articleCount, 100);
-		List<SynonymData> synonyms = new ArrayList<>();
-		List<AntonymData> antonyms = new ArrayList<>();
-		List<WordData> importedWords = new ArrayList<>();
-		List<WordData> basicWords = new ArrayList<>();
-		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
+		Context context = new Context();
 
 		writeToLogFile("Artiklite töötlus", "", "");
 		for (Element articleNode : articleNodes) {
@@ -83,11 +79,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element guidNode = (Element) articleNode.selectSingleNode(articleGuidExp);
 			String guid = guidNode.getTextTrim();
-			processArticleHeader(guid, headerNode, newWords, basicWords, referenceForms, wordParadigmsMap, wordDuplicateCount);
+			processArticleHeader(guid, headerNode, newWords, context, wordParadigmsMap, wordDuplicateCount);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, synonyms, antonyms);
+				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context);
 			}
 
 			articleCounter++;
@@ -95,13 +91,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				int progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
-			importedWords.addAll(newWords);
+			context.importedWords.addAll(newWords);
 		}
 
-		processSynonyms(synonyms, dataset, importedWords);
-		processAntonyms(antonyms, dataset, importedWords);
-		processBasicWords(basicWords, dataset, importedWords);
-		processReferenceForms(referenceForms, importedWords);
+		processSynonyms(context, dataset);
+		processAntonyms(context, dataset);
+		processBasicWords(context, dataset);
+		processReferenceForms(context);
+		processCompoundWords(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -111,12 +108,75 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processReferenceForms(List<ReferenceFormData> referenceForms, List<WordData> importedWords) throws Exception {
+	private void processCompoundWords(Context context, String dataset) throws Exception {
 
-		logger.debug("Found {} reference forms.", referenceForms.size());
+		logger.debug("Found {} compound words.", context.compoundWords.size());
+		writeToLogFile("Liitsõnade töötlus <x:ls>", "", "");
+		for (CompData compData: context.compoundWords) {
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
+			if (existingWords.size() > 1) {
+				logger.debug("Found more than one word : {}.", compData.word);
+				writeToLogFile("Leiti rohkem kui üks vaste sõnale", compData.guid, compData.word);
+			}
+			Long lexemeId;
+			if (existingWords.isEmpty()) {
+				logger.debug("No word found, adding word : {}.", compData.word);
+				lexemeId = createLexemeAndRelatedObjects(compData.word, context, dataset);
+			} else {
+				lexemeId = findLexemeIdForWord(existingWords.get(0).id, compData);
+				if (lexemeId == null) {
+					continue;
+				}
+			}
+			createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
+		}
+		logger.debug("Compound words processing done.");
+	}
+
+	private Long createLexemeAndRelatedObjects(String wordValue, Context context, String dataset) throws Exception {
+
+		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+		Word word = new Word(wordValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+		Long wordId = saveWord(word, null, null);
+		WordData newWord = new WordData();
+		newWord.id = wordId;
+		newWord.value = wordValue;
+		context.importedWords.add(newWord);
+		Long meaningId = createMeaning(dataset);
+		Lexeme lexeme = new Lexeme();
+		lexeme.setMeaningId(meaningId);
+		lexeme.setWordId(wordId);
+		lexeme.setLevel1(0);
+		lexeme.setLevel2(0);
+		lexeme.setLevel3(0);
+		return createLexeme(lexeme, dataset);
+	}
+
+	private Long findLexemeIdForWord(Long wordId, CompData compData) throws Exception {
+
+		Long lexemeId = null;
+		Map<String, Object> params = new HashMap<>();
+		params.put("word_id", wordId);
+		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
+		if (lexemes.isEmpty()) {
+			logger.debug("Lexeme not found for compound word : {}.", compData.word);
+			writeToLogFile("Ei leitud ilmikut liitsõnale", compData.guid, compData.word);
+		} else {
+			if (lexemes.size() > 1) {
+				logger.debug("Found more than one lexeme for : {}.", compData.word);
+				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", compData.guid, compData.word);
+			}
+			lexemeId = (Long)lexemes.get(0).get("id");
+		}
+		return lexemeId;
+	}
+
+	private void processReferenceForms(Context context) throws Exception {
+
+		logger.debug("Found {} reference forms.", context.referenceForms.size());
 		writeToLogFile("Vormid mis viitavad põhisõnale töötlus <x:mvt>", "", "");
-		for (ReferenceFormData referenceForm : referenceForms) {
-			Optional<WordData> word = importedWords.stream()
+		for (ReferenceFormData referenceForm : context.referenceForms) {
+			Optional<WordData> word = context.importedWords.stream()
 					.filter(w -> referenceForm.wordValue.equals(w.value) && referenceForm.wordHomonymNr == w.homonymNr).findFirst();
 			if (word.isPresent()) {
 				Map<String, Object> params = new HashMap<>();
@@ -142,26 +202,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				basicDbService.create(FORM_RELATION, params);
 			} else {
 				logger.debug("Word not found {}, {}, {}", referenceForm.guid, referenceForm.wordValue, referenceForm.wordHomonymNr);
-				writeToLogFile("Põhisõna ei leitud", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
+				writeToLogFile("Sihtsõna ei leitud", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
 			}
 		}
 		logger.debug("Reference forms processing done.");
 	}
 
-	private void processBasicWords(List<WordData> basicWords, String dataset, List<WordData> importedWords) throws Exception {
+	private void processBasicWords(Context context, String dataset) throws Exception {
 
-		logger.debug("Found {} basic words.", basicWords.size());
+		logger.debug("Found {} basic words.", context.basicWords.size());
 		writeToLogFile("Märksõna põhisõna seoste töötlus <x:ps>", "", "");
-		for (WordData basicWord: basicWords) {
-			List<WordData> existingWords = importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
+		for (WordData basicWord: context.basicWords) {
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.guid);
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("word_id", basicWord.id);
-				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList("select * from lexeme where word_id=:word_id", params);
+				List<Map<String, Object>> secondaryWordLexemes = basicDbService.selectAll(LEXEME, params);
 				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
 					params.put("word_id", wordId);
-					List<Map<String, Object>> lexemes = basicDbService.queryList("select * from lexeme where word_id=:word_id", params);
+					List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
 					for (Map<String, Object> lexeme : lexemes) {
 						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long)lexeme.get("id"), "head", dataset);
 					}
@@ -171,12 +231,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Basic words processing done.");
 	}
 
-	private void processAntonyms(List<AntonymData> antonyms, String dataset, List<WordData> importedWords) throws Exception {
+	private void processAntonyms(Context context, String dataset) throws Exception {
 
-		logger.debug("Found {} antonyms.", antonyms.size());
+		logger.debug("Found {} antonyms.", context.antonyms.size());
 		writeToLogFile("Antonüümide töötlus <x:ant>", "", "");
-		for (AntonymData antonymData: antonyms) {
-			List<WordData> existingWords = importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
+		for (AntonymData antonymData: context.antonyms) {
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.guid);
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
@@ -209,15 +269,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void processSynonyms(List<SynonymData> synonyms, String dataset, List<WordData> importedWords) throws Exception {
+	private void processSynonyms(Context context, String dataset) throws Exception {
 
-		logger.debug("Found {} synonyms", synonyms.size());
+		logger.debug("Found {} synonyms", context.synonyms.size());
 		writeToLogFile("Sünonüümide töötlus <x:syn>", "", "");
 
 		Count newSynonymWordCount = new Count();
-		for (SynonymData synonymData : synonyms) {
+		for (SynonymData synonymData : context.synonyms) {
 			Long wordId;
-			List<WordData> existingWords = importedWords.stream().filter(w -> synonymData.word.equals(w.value)).collect(Collectors.toList());
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> synonymData.word.equals(w.value)).collect(Collectors.toList());
 			if (existingWords.isEmpty()) {
 				int homonymNr = getWordMaxHomonymNr(synonymData.word, dataLang) + 1;
 				Word word = new Word(synonymData.word, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
@@ -225,7 +285,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				WordData newWord = new WordData();
 				newWord.id = wordId;
 				newWord.value = synonymData.word;
-				importedWords.add(newWord);
+				context.importedWords.add(newWord);
 				newSynonymWordCount.increment();
 			} else {
 				wordId = getWordIdFor(synonymData.word, synonymData.homonymNr, existingWords, synonymData.guid);
@@ -252,7 +312,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordId = matchingWord.get().id;
 			} else {
 				logger.debug("No matching word was found for {} word {}, {}", guid, wordValue, homonymNr);
-				writeToLogFile("Ei leitud põhisõna", guid, wordValue + " : " + homonymNr);
+				writeToLogFile("Ei leitud sihtsõna", guid, wordValue + " : " + homonymNr);
 			}
 		} else {
 			wordId = words.get(0).id;
@@ -261,7 +321,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processArticleContent(String guid, Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
-			List<SynonymData> synonyms, List<AntonymData> antonyms) throws Exception {
+			Context context) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -276,6 +336,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
@@ -290,7 +351,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(guid, meaningGroupNode, meaningId);
-				synonyms.addAll(meaningSynonyms);
+				context.synonyms.addAll(meaningSynonyms);
 
 				List<AntonymData> meaningAntonyms = extractAntonyms(meaningGroupNode);
 
@@ -318,12 +379,31 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							antonymData.lexemeId = lexemeId;
 							antonymData.homonymNr = meaningAntonym.homonymNr;
 							antonymData.guid = guid;
-							antonyms.add(antonymData);
+							context.antonyms.add(antonymData);
+						}
+						for (String compoundWord: compoundWords) {
+							CompData compData = new CompData();
+							compData.word = compoundWord;
+							compData.lexemeId = lexemeId;
+							compData.guid = guid;
+							context.compoundWords.add(compData);
 						}
 					}
 				}
 			}
 		}
+	}
+
+	private List<String> extractCompoundWords(Element node) {
+
+		final String compoundWordExp = "x:smp/x:lsg/x:ls";
+
+		List<String> compoundWords = new ArrayList<>();
+		List<Element> compoundWordNodes = node.selectNodes(compoundWordExp);
+		for (Element compoundWordNode: compoundWordNodes) {
+			compoundWords.add(compoundWordNode.getTextTrim());
+		}
+		return compoundWords;
 	}
 
 	private List<AntonymData> extractAntonyms(Element node) {
@@ -437,9 +517,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private void createUsage(Long rectionId, Usage usage) throws Exception {
 		Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, "", null);
-		createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
+		createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 		if (isNotEmpty(usage.getDefinition())) {
-			createFreeform(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), null);
+			createFreeform(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
 		}
 	}
 
@@ -466,8 +546,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String guid,
 			Element headerNode,
 			List<WordData> newWords,
-			List<WordData> basicWords,
-			List<ReferenceFormData> referenceForms,
+			Context context,
 			Map<String, List<Paradigm>> wordParadigmsMap,
 			Count wordDuplicateCount) throws Exception {
 
@@ -477,9 +556,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		boolean isReferenceForm = !referenceFormNodes.isEmpty();
 
 		if (isReferenceForm) {
-			processAsForm(guid, headerNode, referenceFormNodes, referenceForms);
+			processAsForm(guid, headerNode, referenceFormNodes, context.referenceForms);
 		} else {
-			processAsWord(guid, headerNode, newWords, basicWords, wordParadigmsMap, wordDuplicateCount);
+			processAsWord(guid, headerNode, newWords, context.basicWords, wordParadigmsMap, wordDuplicateCount);
 		}
 	}
 
@@ -688,6 +767,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordValue;
 		int wordHomonymNr = 0;
 		String guid;
+	}
+
+	private class CompData {
+		String word;
+		Long lexemeId;
+		String guid;
+	}
+
+	private class Context {
+		List<SynonymData> synonyms = new ArrayList<>();
+		List<AntonymData> antonyms = new ArrayList<>();
+		List<WordData> importedWords = new ArrayList<>();
+		List<WordData> basicWords = new ArrayList<>();
+		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
+		List<CompData> compoundWords = new ArrayList<>(); // liitsõnad
 	}
 
 }
