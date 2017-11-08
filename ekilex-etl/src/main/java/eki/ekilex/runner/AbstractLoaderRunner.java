@@ -99,17 +99,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return dataDoc;
 	}
 
-	//@see saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount)
-	@Deprecated
-	protected Long saveWord(
-			String wordValue, String[] wordComponents, String wordDisplayForm, String wordVocalForm, int homonymNr,
-			String wordMorphCode, String wordLang, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
-
-		Word word = new Word(wordValue, wordLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
-		Long wordId = saveWord(word, paradigm, wordDuplicateCount);
-		return wordId;
-	}
-
 	protected Long saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
 
 		String wordValue = word.getValue();
@@ -349,45 +338,20 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lexemeId;
 	}
 
-	//TODO @see createLexeme(Lexeme lexeme, String dataset)
-	@Deprecated
-	protected Long createLexeme(Long wordId, Long meaningId, Integer lexemeLevel1, Integer lexemeLevel2, Integer lexemeLevel3, String dataset) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("meaning_id", meaningId);
-		if (lexemeLevel1 != null) {
-			tableRowParamMap.put("level1", lexemeLevel1);
-		}
-		if (lexemeLevel2 != null) {
-			tableRowParamMap.put("level2", lexemeLevel2);
-		}
-		if (lexemeLevel3 != null) {
-			tableRowParamMap.put("level3", lexemeLevel3);
-		}
-		Long lexemeId = basicDbService.createIfNotExists(LEXEME, tableRowParamMap);
-		if (lexemeId != null) {
-			tableRowParamMap.clear();
-			tableRowParamMap.put("lexeme_id", lexemeId);
-			tableRowParamMap.put("dataset_code", dataset);
-			basicDbService.createWithoutId(LEXEME_DATASET, tableRowParamMap);
-		}
-		return lexemeId;
-	}
-
-	protected Long createOrSelectRectionFreeform(Long lexemeId, String rection) throws Exception {
+	protected Long createOrSelectLexemeFreeform(Long lexemeId, FreeformType freeformType, String freeformValue) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("value", rection);
-		tableRowParamMap.put("type", FreeformType.RECTION.toString());
+		tableRowParamMap.put("value", freeformValue);
+		tableRowParamMap.put("type", freeformType.name());
 		Map<String, Object> freeform = basicDbService.queryForMap(sqlSelectLexemeFreeform, tableRowParamMap);
 		if (freeform != null) {
 			return (Long)freeform.get("id");
 		}
-		return createLexemeFreeform(lexemeId, FreeformType.RECTION, rection);
+		return createLexemeFreeform(lexemeId, freeformType, freeformValue);
 	}
 
+	//TODO to be moved to freeform
 	@Deprecated
 	protected Long createOrSelectRection(Long lexemeId, String rection) throws Exception {
 
@@ -409,18 +373,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return usageId;
 	}
 
-	//TODO to be moved to freeform
-	@Deprecated
-	protected Long createUsageTranslation(Long usageId, String translation, String lang) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("usage_id", usageId);
-		tableRowParamMap.put("value", translation);
-		tableRowParamMap.put("lang", lang);
-		Long usageTranslationId = basicDbService.create(USAGE_TRANSLATION, tableRowParamMap);
-		return usageTranslationId;
-	}
-
 	protected void createMeaningDomain(Long meaningId, String domainCode, String domainOrigin) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -432,7 +384,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected void createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value);
+		Long freeformId = createFreeform(freeformType, null, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
@@ -442,7 +394,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected void createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value);
+		Long freeformId = createFreeform(freeformType, null, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
@@ -452,7 +404,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value);
+		Long freeformId = createFreeform(freeformType, null, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -461,19 +413,24 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
-	protected Long createFreeform(FreeformType freeformType, Long parentId, Object value) throws Exception {
+	protected Long createFreeform(FreeformType freeformType, Long parentId, Object value, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
 		if (parentId != null) {
 			tableRowParamMap.put("parent_id", parentId);
 		}
-		if (value instanceof String) {
-			tableRowParamMap.put("value_text", value);
-		} else if (value instanceof Timestamp) {
-			tableRowParamMap.put("value_date", value);
-		} else {
-			throw new Exception("Not yet supported freeform data type " + value);
+		if (value != null) {
+			if (value instanceof String) {
+				tableRowParamMap.put("value_text", value);
+			} else if (value instanceof Timestamp) {
+				tableRowParamMap.put("value_date", value);
+			} else {
+				throw new Exception("Not yet supported freeform data type " + value);
+			}
+		}
+		if (StringUtils.isNotBlank(lang)) {
+			tableRowParamMap.put("lang", lang);
 		}
 		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
 		return freeformId;
