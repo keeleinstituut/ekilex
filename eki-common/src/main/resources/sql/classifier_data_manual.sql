@@ -17,7 +17,7 @@ insert into dataset (code, name) values ('est', 'Esterm');
 insert into dataset (code, name) values ('vlk', 'Veterinaarmeditsiin ja loomakasvatus');
 insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 
-insert into lex_rel_type (code, datasets) values ('comp', '{eos, ss_, sys, evs}');
+insert into lex_rel_type (code, datasets) values ('comp', '{psv}');
 insert into lex_rel_type (code, datasets) values ('ant', '{psv}');
 insert into lex_rel_type (code, datasets) values ('head', '{psv}');
 
