@@ -118,27 +118,57 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				logger.debug("Found more than one word : {}.", compData.word);
 				writeToLogFile("Leiti rohkem kui üks vaste sõnale", compData.guid, compData.word);
 			}
+			Long lexemeId;
 			if (existingWords.isEmpty()) {
-				logger.debug("No word found, skipping : {}.", compData.word);
+				logger.debug("No word found, adding word : {}.", compData.word);
+				lexemeId = createLexemeAndRelatedObjects(compData.word, context, dataset);
 			} else {
-				Long wordId = existingWords.get(0).id;
-				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", wordId);
-				List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
-				if (lexemes.isEmpty()) {
-					logger.debug("Lexeme not found for compound word : {}.", compData.word);
-					writeToLogFile("Ei leitud ilmikut liitsõnale", compData.guid, compData.word);
-				} else {
-					if (lexemes.size() > 1) {
-						logger.debug("Found more than one lexeme for : {}.", compData.word);
-						writeToLogFile("Leiti rohkem kui üks ilmik sõnale", compData.guid, compData.word);
-					}
-					Map<String, Object> lexemeObject = lexemes.get(0);
-					createLexemeRelation(compData.lexemeId, (Long) lexemeObject.get("id"), "comp", dataset);
+				lexemeId = findLexemeIdForWord(existingWords.get(0).id, compData);
+				if (lexemeId == null) {
+					continue;
 				}
 			}
+			createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
 		}
 		logger.debug("Compound words processing done.");
+	}
+
+	private Long createLexemeAndRelatedObjects(String wordValue, Context context, String dataset) throws Exception {
+
+		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+		Word word = new Word(wordValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+		Long wordId = saveWord(word, null, null);
+		WordData newWord = new WordData();
+		newWord.id = wordId;
+		newWord.value = wordValue;
+		context.importedWords.add(newWord);
+		Long meaningId = createMeaning(dataset);
+		Lexeme lexeme = new Lexeme();
+		lexeme.setMeaningId(meaningId);
+		lexeme.setWordId(wordId);
+		lexeme.setLevel1(0);
+		lexeme.setLevel2(0);
+		lexeme.setLevel3(0);
+		return createLexeme(lexeme, dataset);
+	}
+
+	private Long findLexemeIdForWord(Long wordId, CompData compData) throws Exception {
+
+		Long lexemeId = null;
+		Map<String, Object> params = new HashMap<>();
+		params.put("word_id", wordId);
+		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
+		if (lexemes.isEmpty()) {
+			logger.debug("Lexeme not found for compound word : {}.", compData.word);
+			writeToLogFile("Ei leitud ilmikut liitsõnale", compData.guid, compData.word);
+		} else {
+			if (lexemes.size() > 1) {
+				logger.debug("Found more than one lexeme for : {}.", compData.word);
+				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", compData.guid, compData.word);
+			}
+			lexemeId = (Long)lexemes.get(0).get("id");
+		}
+		return lexemeId;
 	}
 
 	private void processReferenceForms(Context context) throws Exception {
