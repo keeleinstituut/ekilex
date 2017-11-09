@@ -150,7 +150,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		Element valueNode;
 		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
-		Long wordId, meaningId, lexemeId, rectionId;
+		Long wordId, meaningId, lexemeId, rectionId, usageMeaningId;
 		String valueStr, concept, term;
 		String lang;
 		int homonymNr;
@@ -225,13 +225,14 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
-						rectionId = createOrSelectRection(lexemeId, defaultRectionValue);
+						rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
+						usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
 						for (Element usageNode : valueNodes) {
 							if (usageNode.hasMixedContent()) {
 								//TODO get source
 							}
 							valueStr = usageNode.getTextTrim();
-							createUsage(rectionId, valueStr);
+							createFreeform(FreeformType.USAGE, usageMeaningId, valueStr, lang);
 						}
 					}
 
@@ -906,7 +907,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				//TODO get link
 			}
 			valueStr = valueNode.getTextTrim();
-			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr);
+			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
 		}
 	}
 

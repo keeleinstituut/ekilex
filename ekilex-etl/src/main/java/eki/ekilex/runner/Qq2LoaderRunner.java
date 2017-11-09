@@ -24,8 +24,8 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
-import eki.common.service.db.BasicDbService;
 import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Grammar;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Rection;
@@ -45,9 +45,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private static final String REPORT_MISSING_USAGE_MEANING_MATCH = "missing_usage_meaning_match";
 
 	private static final String REPORT_AMBIGUOUS_USAGE_MEANING_MATCH = "ambiguous_usage_meaning_match";
-
-	@Autowired
-	private BasicDbService basicDbService;
 
 	@Autowired
 	private LuceneMorphology russianMorphology;
@@ -138,7 +135,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Extracted {} articles", articleCount);
 
 		Map<Long, List<Rection>> wordIdRectionMap = new HashMap<>();
-		Map<Long, List<Map<String, Object>>> wordIdGrammarMap = new HashMap<>();
+		Map<Long, List<Grammar>> wordIdGrammarMap = new HashMap<>();
 
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
@@ -158,7 +155,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Paradigm paradigmObj;
 
 		Count wordDuplicateCount = new Count();
-		Count lexemeDuplicateCount = new Count();
 		Count missingUsageGroupCount = new Count();
 		Count ambiguousUsageTranslationMatchCount = new Count();
 		Count missingUsageTranslationMatchCount = new Count();
@@ -298,14 +294,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj.setWordId(wordId);
 						lexemeObj.setMeaningId(meaningId);
 						lexemeId = createLexeme(lexemeObj, dataset);
-						if (lexemeId == null) {
-							lexemeDuplicateCount.increment();
-						} else {
 
-							// word match lexeme rection
-							rectionNodes = wordMatchValueNode.selectNodes(wordMatchRectionExp);
-							saveRections(rectionNodes, lexemeId);
-						}
+						// word match lexeme rection
+						rectionNodes = wordMatchValueNode.selectNodes(wordMatchRectionExp);
+						saveRections(rectionNodes, lexemeId);
 
 						// new words lexemes+rections+grammar
 						for (Word newWord : newWords) {
@@ -318,17 +310,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							lexemeObj.setLevel2(lexemeLevel2);
 							lexemeObj.setLevel3(lexemeLevel3);
 							lexemeId = createLexeme(lexemeObj, dataset);
-							if (lexemeId == null) {
-								lexemeDuplicateCount.increment();
-							} else {
 
-								// new word lexeme rections, usages, usage translations
-								createRectionsAndUsagesAndTranslations(
-										wordIdRectionMap, lexemeId, newWordId, wordMatch, usageMeanings, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
+							// new word lexeme rections, usages, usage translations
+							createRectionsAndUsagesAndTranslations(
+									wordIdRectionMap, lexemeId, newWordId, wordMatch, usageMeanings, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
 
-								// new word lexeme grammars
-								createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
-							}
+							// new word lexeme grammars
+							createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
 						}
 
 						for (Long synonymWordId : synonymLevel1WordIds) {
@@ -336,9 +324,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							lexemeObj.setWordId(synonymWordId);
 							lexemeObj.setMeaningId(meaningId);
 							lexemeId = createLexeme(lexemeObj, dataset);
-							if (lexemeId == null) {
-								lexemeDuplicateCount.increment();
-							}
 						}
 
 						for (Long synonymWordId : synonymLevel2WordIds) {
@@ -346,9 +331,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							lexemeObj.setWordId(synonymWordId);
 							lexemeObj.setMeaningId(meaningId);
 							lexemeId = createLexeme(lexemeObj, dataset);
-							if (lexemeId == null) {
-								lexemeDuplicateCount.increment();
-							}
 						}
 					}
 				}
@@ -375,7 +357,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
-		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
 		logger.debug("Found {} missing usage groups", missingUsageGroupCount);
 		logger.debug("Found {} single usage translation matches", singleUsageTranslationMatchCount);
 		if (doReports) {
@@ -529,14 +510,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Element rectionNode : rectionNodes) {
 			String rection = rectionNode.getTextTrim();
-			createLexemeFreeform(lexemeId, FreeformType.RECTION, rection);
+			createLexemeFreeform(lexemeId, FreeformType.RECTION, rection, null);
 		}
 	}
 
-	private void extractGrammar(List<Element> grammarNodes, Long wordId, Map<Long, List<Map<String, Object>>> wordIdGrammarMap) {
+	private void extractGrammar(List<Element> grammarNodes, Long wordId, Map<Long, List<Grammar>> wordIdGrammarMap) {
 
-		List<Map<String, Object>> grammarObjs;
-		Map<String, Object> grammarObj;
+		List<Grammar> grammarObjs;
+		Grammar grammarObj;
 		String grammarLang;
 		String grammar;
 
@@ -551,9 +532,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				grammarObjs = new ArrayList<>();
 				wordIdGrammarMap.put(wordId, grammarObjs);
 			}
-			grammarObj = new HashMap<>();
-			grammarObj.put("lang", grammarLang);
-			grammarObj.put("value", grammar);
+			grammarObj = new Grammar();
+			grammarObj.setLang(grammarLang);
+			grammarObj.setValue(grammar);
 			grammarObjs.add(grammarObj);
 		}
 	}
@@ -647,84 +628,93 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return usageMeanings;
 	}
 
-	private void createGrammars(Map<Long, List<Map<String, Object>>> wordIdGrammarMap, Long lexemeId, Long wordId, String dataset) throws Exception {
+	private void createGrammars(Map<Long, List<Grammar>> wordIdGrammarMap, Long lexemeId, Long wordId, String dataset) throws Exception {
 
-		List<Map<String, Object>> grammarObjs = wordIdGrammarMap.get(wordId);
-		if (CollectionUtils.isNotEmpty(grammarObjs)) {
-			for (Map<String, Object> grammarObj : grammarObjs) {
-				grammarObj.put("lexeme_id", lexemeId);
-				Long grammarId = basicDbService.createIfNotExists(GRAMMAR, grammarObj);
-				if (grammarId != null) {
-					Map<String, Object> params = new HashMap<>();
-					params.put("grammar_id", grammarId);
-					params.put("dataset_code", dataset);
-					basicDbService.createWithoutId(GRAMMAR_DATASET, params);
-				}
-			}
+		List<Grammar> grammarObjs = wordIdGrammarMap.get(wordId);
+		if (CollectionUtils.isEmpty(grammarObjs)) {
+			return;
+		}
+		for (Grammar grammarObj : grammarObjs) {
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammarObj.getValue(), grammarObj.getLang());
 		}
 	}
 
 	private void createRectionsAndUsagesAndTranslations(
 			Map<Long, List<Rection>> wordIdRectionMap,
 			Long lexemeId, Long wordId, String wordMatch,
-			List<UsageMeaning> usageMeanings, boolean isAbsoluteSingleMeaning,
+			List<UsageMeaning> allUsageMeanings, boolean isAbsoluteSingleMeaning,
 			Count singleUsageTranslationMatchCount) throws Exception {
 
-		if (CollectionUtils.isEmpty(usageMeanings)) {
+		if (CollectionUtils.isEmpty(allUsageMeanings)) {
 			return;
 		}
 
 		wordMatch = StringUtils.lowerCase(wordMatch);
 		List<Rection> rectionObjs = wordIdRectionMap.get(wordId);
 
-		List<Long> rectionIds = new ArrayList<>();
-
 		if (CollectionUtils.isEmpty(rectionObjs)) {
-			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
-			if (rectionId != null) {
-				rectionIds.add(rectionId);
-			}
-		} else {
-			for (Rection rectionObj : rectionObjs) {
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
-				if (rectionId != null) {
-					rectionIds.add(rectionId);
-				}
-			}
+			Rection rectionObj = new Rection();
+			rectionObj.setValue(defaultRectionValue);
+			rectionObjs = new ArrayList<>();
+			rectionObjs.add(rectionObj);
 		}
 
 		List<UsageTranslation> usageTranslations;
 
+		// collect usage meanings, usages, translations
 		if (isAbsoluteSingleMeaning) {
-			for (Long rectionId : rectionIds) {
+			for (Rection rectionObj : rectionObjs) {
+				rectionObj.setUsageMeanings(allUsageMeanings);
+			}
+			singleUsageTranslationMatchCount.increment();
+		} else {
+			List<UsageMeaning> matchingUsageMeanings;
+			List<Usage> matchingUsages;
+			UsageMeaning matchingUsageMeaning;
+			for (Rection rectionObj : rectionObjs) {
+				matchingUsageMeanings = new ArrayList<>();
+				for (UsageMeaning usageMeaning : allUsageMeanings) {
+					matchingUsages = new ArrayList<>();
+					for (Usage usage : usageMeaning.getUsages()) {
+						usageTranslations = usage.getUsageTranslations();
+						boolean isUsageTranslationMatch = false;
+						for (UsageTranslation usageTranslation : usageTranslations) {
+							if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
+								isUsageTranslationMatch = true;
+								break;
+							}
+						}
+						if (isUsageTranslationMatch) {
+							matchingUsages.add(usage);
+						}
+					}
+					if (CollectionUtils.isNotEmpty(matchingUsages)) {
+						matchingUsageMeaning = new UsageMeaning();
+						matchingUsageMeaning.setUsages(matchingUsages);
+						matchingUsageMeanings.add(matchingUsageMeaning);
+					}
+				}
+				if (CollectionUtils.isNotEmpty(matchingUsageMeanings)) {
+					rectionObj.setUsageMeanings(matchingUsageMeanings);
+				}
+			}
+		}
+
+		// save rections, usage meanings, usages, usage translations
+		for (Rection rectionObj : rectionObjs) {
+			List<UsageMeaning> usageMeanings = rectionObj.getUsageMeanings();
+			if (CollectionUtils.isEmpty(usageMeanings)) {
+				if (!StringUtils.equals(rectionObj.getValue(), defaultRectionValue)) {
+					createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue(), null);
+				}
+			} else {
+				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
 				for (UsageMeaning usageMeaning : usageMeanings) {
 					Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
 					for (Usage usage : usageMeaning.getUsages()) {
 						createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
 						for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 							createFreeform(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
-						}
-					}
-				}
-			}
-			singleUsageTranslationMatchCount.increment();
-		} else {
-			for (Long rectionId : rectionIds) {
-				for (UsageMeaning usageMeaning : usageMeanings) {
-					Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
-					for (Usage usage : usageMeaning.getUsages()) {
-						usageTranslations = usage.getUsageTranslations();
-						boolean isUsageTranslationMatch = false;
-						for (UsageTranslation usageTranslation : usageTranslations) {
-							if (usageTranslation.getLemmatisedTokens().contains(wordMatch)) {
-								break;
-							}
-						}
-						if (isUsageTranslationMatch) {
-							createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
-							for (UsageTranslation usageTranslation : usageTranslations) {
-								createFreeform(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
-							}
 						}
 					}
 				}

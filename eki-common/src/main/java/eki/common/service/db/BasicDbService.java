@@ -264,6 +264,14 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlQueryStr, paramMap);
 	}
 
+	public void delete(String tableName, Long id) {
+
+		String sqlQueryStr = "delete from " + tableName + " where id = :id";
+		Map<String, Object> paramMap = new HashMap<>();
+		paramMap.put("id", id);
+		jdbcTemplate.update(sqlQueryStr, paramMap);
+	}
+
 	public void delete(String tableName, List<Long> ids) {
 
 		String sqlQueryStr = "delete from " + tableName + " where id in (:ids)";

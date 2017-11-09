@@ -460,26 +460,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
 		for (Element grammarNode : grammarNodes) {
-			createGrammar(lexemeId, dataset, grammarNode.getTextTrim());
+			createGrammar(lexemeId, grammarNode.getTextTrim());
 		}
 		if (isNotEmpty(wordData.grammar)) {
-			createGrammar(lexemeId, dataset, wordData.grammar);
+			createGrammar(lexemeId, wordData.grammar);
 		}
 	}
 
-	private void createGrammar(Long lexemeId, String dataset, String value) throws Exception {
+	private void createGrammar(Long lexemeId, String value) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("lexeme_id", lexemeId);
 		params.put("value", value);
 		params.put("lang", dataLang);
-		Long grammarId = basicDbService.createIfNotExists(GRAMMAR, params);
-		if (grammarId != null) {
-			params.clear();
-			params.put("grammar_id", grammarId);
-			params.put("dataset_code", dataset);
-			basicDbService.createWithoutId(GRAMMAR_DATASET, params);
-		}
+		basicDbService.createIfNotExists(GRAMMAR, params);
 	}
 
 	//POS - part of speech

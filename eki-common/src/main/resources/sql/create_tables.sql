@@ -1,7 +1,7 @@
 drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
-drop table if exists grammar_dataset;
-drop table if exists grammar;--will be removed?
+drop table if exists grammar_dataset;--will be removed
+drop table if exists grammar;--will be removed
 drop table if exists usage_translation;--will be removed
 drop table if exists usage;--will be removed
 drop table if exists rection;--will be removed
@@ -526,13 +526,6 @@ create table grammar
   lang char(3) references lang(code) not null
 );
 alter sequence grammar_id_seq restart with 10000;
-
-create table grammar_dataset
-(
-  grammar_id bigint REFERENCES grammar(id) on delete CASCADE not null,
-  dataset_code varchar(10) references dataset(code) not null,
-  primary key (grammar_id, dataset_code)
-);
 
 -- seos
 create table lex_relation

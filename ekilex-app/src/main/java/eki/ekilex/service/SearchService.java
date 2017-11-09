@@ -87,7 +87,7 @@ public class SearchService {
 				String[][] arrayOfUsages = new String[usages.size()][];
 				int index = 0;
 				for (FreeForm usage : usages) {
-					arrayOfUsages[index++] = new String[]{usage.getValueText()};
+					arrayOfUsages[index++] = new String[] {usage.getValueText()};
 				}
 				rection.setUsages(arrayOfUsages);
 			}
