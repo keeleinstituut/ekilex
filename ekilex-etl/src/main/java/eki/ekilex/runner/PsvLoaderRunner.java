@@ -86,7 +86,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context);
+				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context, wordDuplicateCount);
 			}
 
 			articleCounter++;
@@ -441,7 +441,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processArticleContent(String guid, Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
-			Context context) throws Exception {
+			Context context, Count wordDuplicateCount) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -454,7 +454,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
-
+			saveSymbol(meaningNumberGroupNode, wordDuplicateCount, context, guid);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
@@ -547,6 +547,24 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					context.compoundReferences.add(referenceData);
 				}
 			}
+		}
+	}
+
+	private void saveSymbol(Element node, Count wordDuplicateCount, Context context, String guid) throws Exception {
+
+		final String symbolExp = "x:symb";
+
+		Element symbolNode = (Element) node.selectSingleNode(symbolExp);
+		if (symbolNode != null) {
+			String symbolValue = symbolNode.getTextTrim();
+			int homonymNr = getWordMaxHomonymNr(symbolValue, dataLang) + 1;
+			Word word = new Word(symbolValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+			Long wordId = saveWord(word, null, wordDuplicateCount);
+			WordData data = new WordData();
+			data.value = symbolValue;
+			data.id = wordId;
+			data.guid = guid;
+			context.importedWords.add(data);
 		}
 	}
 
