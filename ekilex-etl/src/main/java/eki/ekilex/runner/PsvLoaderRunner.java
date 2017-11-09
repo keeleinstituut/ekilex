@@ -100,6 +100,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processReferenceForms(context);
 		processCompoundWords(context, dataset);
 		processMeaningReferences(context, dataset);
+		processJointReferences(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -107,6 +108,23 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private void processJointReferences(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} joint references.", context.jointReferences.size());
+		writeToLogFile("Ühisviidete töötlus <x:yvt>", "", "");
+		for (LexemeToWordData jointRefData: context.jointReferences) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> jointRefData.word.equals(w.value))
+					.filter(w -> jointRefData.homonymNr == 0 || jointRefData.homonymNr == w.homonymNr)
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, jointRefData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(jointRefData.lexemeId, lexemeId, jointRefData.relationType, dataset);
+			}
+		}
+		logger.debug("Joint references processing done.");
 	}
 
 	private void processMeaningReferences(Context context, String dataset) throws Exception {
@@ -356,6 +374,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String definitionValueExp = "x:dg/x:d";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 
@@ -364,6 +383,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
 			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode);
+			List<Long> newLexemes = new ArrayList<>();
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
@@ -418,10 +438,27 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							referenceData.guid = guid;
 							context.meaningReferences.add(referenceData);
 						}
+						newLexemes.add(lexemeId);
 					}
 				}
 			}
+			for (Long lexemeId: newLexemes) {
+				for (LexemeToWordData jointReference : jointReferences) {
+					LexemeToWordData referenceData = jointReference.copy();
+					referenceData.lexemeId = lexemeId;
+					referenceData.guid = guid;
+					context.jointReferences.add(referenceData);
+				}
+			}
 		}
+	}
+
+	private List<LexemeToWordData> extractJointReferences(Element node) {
+
+		final String jointReferenceExp = "x:tyg2/x:yvt";
+		final String relationTypeAttr = "yvtl";
+
+		return extractLexemeMetadata(node, jointReferenceExp, relationTypeAttr);
 	}
 
 	private List<String> extractCompoundWords(Element node) {
@@ -826,6 +863,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
 		List<LexemeToWordData> compoundWords = new ArrayList<>(); // liitsõnad
 		List<LexemeToWordData> meaningReferences = new ArrayList<>(); // tähendusviide
+		List<LexemeToWordData> jointReferences = new ArrayList<>(); // ühisviide
 	}
 
 }
