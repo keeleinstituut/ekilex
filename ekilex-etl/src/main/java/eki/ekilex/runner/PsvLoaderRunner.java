@@ -1,6 +1,8 @@
 package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String dataLang = "est";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]/";
 	private final String defaultWordMorphCode = "SgN";
+	private final String defaultRectionValue = "-";
 	private final static String REPORT_NAME = "report";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
@@ -85,7 +88,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context);
+				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context, wordDuplicateCount);
 			}
 
 			articleCounter++;
@@ -101,6 +104,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processBasicWords(context, dataset);
 		processReferenceForms(context);
 		processCompoundWords(context, dataset);
+		processMeaningReferences(context, dataset);
+		processJointReferences(context, dataset);
+// FIXME: disabled till we get relation types
+//		processCompoundReferences(context, dataset);
+		processVormels(context, dataset);
+		processSingleForms(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -110,39 +119,142 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
+	private void processSingleForms(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} single forms.", context.singleForms.size());
+		writeToLogFile("Üksikvormide töötlus <x:yvr>", "", "");
+		for (LexemeToWordData singleFormData: context.singleForms) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> singleFormData.word.equals(w.value))
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, singleFormData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(singleFormData.lexemeId, lexemeId, "yvr", dataset);
+			}
+		}
+		logger.debug("Single form processing done.");
+	}
+
+	private void processVormels(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} vormels.", context.vormels.size());
+		writeToLogFile("Vormelite töötlus <x:vor>", "", "");
+		for (LexemeToWordData vormelData: context.vormels) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> vormelData.word.equals(w.value))
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, vormelData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(vormelData.lexemeId, lexemeId, "vor", dataset);
+			}
+		}
+		logger.debug("Vormel processing done.");
+	}
+
+	private void processCompoundReferences(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} compound references.", context.compoundReferences.size());
+		writeToLogFile("Ühendiviidete töötlus <x:yhvt>", "", "");
+		for (LexemeToWordData compoundRefData: context.compoundReferences) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> compoundRefData.word.equals(w.value))
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(compoundRefData.lexemeId, lexemeId, compoundRefData.relationType, dataset);
+			}
+		}
+		logger.debug("Compound references processing done.");
+	}
+
+	private void processJointReferences(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} joint references.", context.jointReferences.size());
+		writeToLogFile("Ühisviidete töötlus <x:yvt>", "", "");
+		for (LexemeToWordData jointRefData: context.jointReferences) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> jointRefData.word.equals(w.value))
+					.filter(w -> jointRefData.homonymNr == 0 || jointRefData.homonymNr == w.homonymNr)
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, jointRefData, context, dataset);
+			if (lexemeId != null) {
+				String relationType = "yvt:" + jointRefData.relationType;
+				createLexemeRelation(jointRefData.lexemeId, lexemeId, relationType, dataset);
+			}
+		}
+		logger.debug("Joint references processing done.");
+	}
+
+	private void processMeaningReferences(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} meaning references.", context.meaningReferences.size());
+		writeToLogFile("Tähendusviidete töötlus <x:tvt>", "", "");
+		for (LexemeToWordData meaningRefData: context.meaningReferences) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> meaningRefData.word.equals(w.value))
+					.filter(w -> meaningRefData.homonymNr == 0 || meaningRefData.homonymNr == w.homonymNr)
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, meaningRefData, context, dataset);
+			if (lexemeId != null) {
+				String relationType = "tvt:" + meaningRefData.relationType;
+				createLexemeRelation(meaningRefData.lexemeId, lexemeId, relationType, dataset);
+			}
+		}
+		logger.debug("Meaning references processing done.");
+	}
+
 	private void processCompoundWords(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound words.", context.compoundWords.size());
 		writeToLogFile("Liitsõnade töötlus <x:ls>", "", "");
-		for (CompData compData: context.compoundWords) {
+		for (LexemeToWordData compData: context.compoundWords) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
-			if (existingWords.size() > 1) {
-				logger.debug("Found more than one word : {}.", compData.word);
-				writeToLogFile("Leiti rohkem kui üks vaste sõnale", compData.guid, compData.word);
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
 			}
-			Long lexemeId;
-			if (existingWords.isEmpty()) {
-				logger.debug("No word found, adding word : {}.", compData.word);
-				lexemeId = createLexemeAndRelatedObjects(compData.word, context, dataset);
-			} else {
-				lexemeId = findLexemeIdForWord(existingWords.get(0).id, compData);
-				if (lexemeId == null) {
-					continue;
-				}
-			}
-			createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
 		}
 		logger.debug("Compound words processing done.");
 	}
 
-	private Long createLexemeAndRelatedObjects(String wordValue, Context context, String dataset) throws Exception {
+	private Long findOrCreateLexemeForWord(List<WordData> existingWords, LexemeToWordData data, Context context, String dataset) throws Exception {
 
-		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+		if (existingWords.size() > 1) {
+			logger.debug("Found more than one word : {}.", data.word);
+			writeToLogFile("Leiti rohkem kui üks vaste sõnale", data.guid, data.word);
+		}
+		Long lexemeId;
+		if (existingWords.isEmpty()) {
+			logger.debug("No word found, adding word with objects : {}.", data.word);
+			lexemeId = createLexemeAndRelatedObjects(data, context, dataset);
+			if (!data.usages.isEmpty()) {
+				logger.debug("Usages found, adding them");
+				String rectionValue = isBlank(data.rection) ? defaultRectionValue : data.rection;
+				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
+				for (String usageValue: data.usages) {
+					Usage usage = new Usage();
+					usage.setValue(usageValue);
+					createUsage(rectionId, usage);
+				}
+			}
+		} else {
+			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data);
+			if (!data.usages.isEmpty()) {
+				logger.debug("Usages found for word, skipping them : {}.", data.word);
+				writeToLogFile("Leiti kasutusnäited olemasolevale ilmikule", data.guid, data.word);
+			}
+		}
+		return lexemeId;
+	}
+
+	private Long createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context, String dataset) throws Exception {
+
+		int homonymNr = getWordMaxHomonymNr(wordData.word, dataLang) + 1;
+		Word word = new Word(wordData.word, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
 		Long wordId = saveWord(word, null, null);
 		WordData newWord = new WordData();
 		newWord.id = wordId;
-		newWord.value = wordValue;
+		newWord.value = wordData.word;
 		context.importedWords.add(newWord);
 		Long meaningId = createMeaning(dataset);
 		Lexeme lexeme = new Lexeme();
@@ -151,22 +263,29 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
+		if (isNotBlank(wordData.definition)) {
+			lexeme.setLevel1(1);
+			createDefinition(meaningId, wordData.definition, dataLang, dataset);
+		}
 		return createLexeme(lexeme, dataset);
 	}
 
-	private Long findLexemeIdForWord(Long wordId, CompData compData) throws Exception {
+	private Long findLexemeIdForWord(Long wordId, LexemeToWordData data) throws Exception {
 
 		Long lexemeId = null;
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_id", wordId);
+		if (data.lexemeLevel1 != 0 ) {
+			params.put("level1", data.lexemeLevel1);
+		}
 		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
 		if (lexemes.isEmpty()) {
-			logger.debug("Lexeme not found for compound word : {}.", compData.word);
-			writeToLogFile("Ei leitud ilmikut liitsõnale", compData.guid, compData.word);
+			logger.debug("Lexeme not found for word : {}.", data.word);
+			writeToLogFile("Ei leitud ilmikut sõnale", data.guid, data.word);
 		} else {
 			if (lexemes.size() > 1) {
-				logger.debug("Found more than one lexeme for : {}.", compData.word);
-				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", compData.guid, compData.word);
+				logger.debug("Found more than one lexeme for : {}.", data.word);
+				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", data.guid, data.word);
 			}
 			lexemeId = (Long)lexemes.get(0).get("id");
 		}
@@ -237,7 +356,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Found {} antonyms.", context.antonyms.size());
 		writeToLogFile("Antonüümide töötlus <x:ant>", "", "");
-		for (AntonymData antonymData: context.antonyms) {
+		for (LexemeToWordData antonymData: context.antonyms) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.guid);
 			if (!existingWords.isEmpty() && wordId != null) {
@@ -323,7 +442,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processArticleContent(String guid, Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
-			Context context) throws Exception {
+			Context context, Count wordDuplicateCount) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -332,13 +451,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String definitionValueExp = "x:dg/x:d";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
+		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
-
+			saveSymbol(meaningNumberGroupNode, wordDuplicateCount, context, guid);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
+			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode);
+			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
+			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
+			List<Long> newLexemes = new ArrayList<>();
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
@@ -355,7 +480,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<SynonymData> meaningSynonyms = extractSynonyms(guid, meaningGroupNode, meaningId);
 				context.synonyms.addAll(meaningSynonyms);
 
-				List<AntonymData> meaningAntonyms = extractAntonyms(meaningGroupNode);
+				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode);
 
 				int lexemeLevel2 = 0;
 				for (WordData newWordData : newWords) {
@@ -373,27 +498,154 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData);
-						saveGrammars(meaningNumberGroupNode, lexemeId, dataset, newWordData);
-						for (AntonymData meaningAntonym : meaningAntonyms) {
-							AntonymData antonymData = new AntonymData();
-							antonymData.word = meaningAntonym.word;
-							antonymData.lexemeLevel1 = meaningAntonym.lexemeLevel1;
+						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
+						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
+							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
-							antonymData.homonymNr = meaningAntonym.homonymNr;
 							antonymData.guid = guid;
 							context.antonyms.add(antonymData);
 						}
 						for (String compoundWord: compoundWords) {
-							CompData compData = new CompData();
+							LexemeToWordData compData = new LexemeToWordData();
 							compData.word = compoundWord;
 							compData.lexemeId = lexemeId;
 							compData.guid = guid;
 							context.compoundWords.add(compData);
 						}
+						for (LexemeToWordData meaningReference : meaningReferences) {
+							LexemeToWordData referenceData = meaningReference.copy();
+							referenceData.lexemeId = lexemeId;
+							referenceData.guid = guid;
+							context.meaningReferences.add(referenceData);
+						}
+						for (LexemeToWordData vormel : vormels) {
+							LexemeToWordData vormelData = vormel.copy();
+							vormelData.lexemeId = lexemeId;
+							vormelData.guid = guid;
+							context.vormels.add(vormelData);
+						}
+						for (LexemeToWordData singleForm : singleForms) {
+							LexemeToWordData singleFormData = singleForm.copy();
+							singleFormData.lexemeId = lexemeId;
+							singleFormData.guid = guid;
+							context.singleForms.add(singleFormData);
+						}
+						newLexemes.add(lexemeId);
 					}
 				}
 			}
+			for (Long lexemeId: newLexemes) {
+				for (LexemeToWordData jointReference : jointReferences) {
+					LexemeToWordData referenceData = jointReference.copy();
+					referenceData.lexemeId = lexemeId;
+					referenceData.guid = guid;
+					context.jointReferences.add(referenceData);
+				}
+				for (LexemeToWordData compoundReference : compoundReferences) {
+					LexemeToWordData referenceData = compoundReference.copy();
+					referenceData.lexemeId = lexemeId;
+					referenceData.guid = guid;
+					context.compoundReferences.add(referenceData);
+				}
+			}
 		}
+	}
+
+	private void saveSymbol(Element node, Count wordDuplicateCount, Context context, String guid) throws Exception {
+
+		final String symbolExp = "x:symb";
+
+		Element symbolNode = (Element) node.selectSingleNode(symbolExp);
+		if (symbolNode != null) {
+			String symbolValue = symbolNode.getTextTrim();
+			int homonymNr = getWordMaxHomonymNr(symbolValue, dataLang) + 1;
+			Word word = new Word(symbolValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+			Long wordId = saveWord(word, null, wordDuplicateCount);
+			WordData data = new WordData();
+			data.value = symbolValue;
+			data.id = wordId;
+			data.guid = guid;
+			context.importedWords.add(data);
+		}
+	}
+
+	private List<LexemeToWordData> extractSingleForms(Element node) {
+
+		final String singleFormGroupNodeExp = "x:yvp/x:yvg";
+		final String singleFormNodeExp = "x:yvrg";
+		final String formValueExp = "x:yvr";
+		final String formDefinitionExp = "x:yvd";
+		final String usageExp = "x:ng/x:n";
+		final String rectionExp = "x:rek";
+
+		List<LexemeToWordData> singleForms = new ArrayList<>();
+		List<Element> singleFormGroupNodes = node.selectNodes(singleFormGroupNodeExp);
+		for (Element singleFormGroupNode : singleFormGroupNodes) {
+			List<String> usages = new ArrayList<>();
+			List<Element> formUsageNodes = singleFormGroupNode.selectNodes(usageExp);
+			for (Element usageNode: formUsageNodes) {
+				usages.add(usageNode.getTextTrim());
+			}
+			List<Element> singleFormNodes = singleFormGroupNode.selectNodes(singleFormNodeExp);
+			for (Element singleFormNode : singleFormNodes) {
+				LexemeToWordData data = new LexemeToWordData();
+				Element formValueNode = (Element) singleFormNode.selectSingleNode(formValueExp);
+				Element formDefinitionNode = (Element) singleFormNode.selectSingleNode(formDefinitionExp);
+				data.word = formValueNode.getTextTrim();
+				if (formValueNode.hasMixedContent()) {
+					data.rection = formValueNode.selectSingleNode(rectionExp).getText();
+				}
+				if (formDefinitionNode != null) {
+					data.definition = formDefinitionNode.getTextTrim();
+				}
+				data.usages.addAll(usages);
+				singleForms.add(data);
+			}
+		}
+
+		return singleForms;
+	}
+
+	private List<LexemeToWordData> extractVormels(Element node) {
+
+		final String vormelNodeExp = "x:vop/x:vog";
+		final String vormelExp = "x:vor";
+		final String vormelDefinitionExp = "x:vod";
+		final String vormelUsageExp = "x:ng/x:n";
+
+		List<LexemeToWordData> vormels = new ArrayList<>();
+		List<Element> vormelNodes = node.selectNodes(vormelNodeExp);
+		for (Element vormelNode : vormelNodes) {
+			LexemeToWordData data = new LexemeToWordData();
+			Element vormelValueNode = (Element) vormelNode.selectSingleNode(vormelExp);
+			Element vormelDefinitionNode = (Element) vormelNode.selectSingleNode(vormelDefinitionExp);
+			List<Element> vormelUsages = vormelNode.selectNodes(vormelUsageExp);
+			data.word = vormelValueNode.getTextTrim();
+			if (vormelDefinitionNode != null) {
+				data.definition = vormelDefinitionNode.getTextTrim();
+			}
+			for (Element usageNode: vormelUsages) {
+				data.usages.add(usageNode.getTextTrim());
+			}
+			vormels.add(data);
+		}
+		return vormels;
+	}
+
+	private List<LexemeToWordData> extractCompoundReferences(Element node) {
+
+		final String cmpoundReferenceExp = "x:tyg2/x:yhvt";
+		final String relationTypeAttr = "liik";
+
+		return extractLexemeMetadata(node, cmpoundReferenceExp, relationTypeAttr);
+	}
+
+	private List<LexemeToWordData> extractJointReferences(Element node) {
+
+		final String jointReferenceExp = "x:tyg2/x:yvt";
+		final String relationTypeAttr = "yvtl";
+
+		return extractLexemeMetadata(node, jointReferenceExp, relationTypeAttr);
 	}
 
 	private List<String> extractCompoundWords(Element node) {
@@ -408,31 +660,47 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return compoundWords;
 	}
 
-	private List<AntonymData> extractAntonyms(Element node) {
+	private List<LexemeToWordData> extractMeaningReferences(Element node) {
+
+		final String meaningReferenceExp = "x:tvt";
+		final String relationTypeAttr = "tvtl";
+
+		return extractLexemeMetadata(node, meaningReferenceExp, relationTypeAttr);
+	}
+
+	private List<LexemeToWordData> extractAntonyms(Element node) {
 
 		final String antonymExp = "x:ant";
+		return extractLexemeMetadata(node, antonymExp, null);
+	}
+
+	private List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr) {
+
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
 		final int defaultLexemeLevel1 = 1;
 
-		List<AntonymData> antonyms = new ArrayList<>();
-		List<Element> antonymNodes = node.selectNodes(antonymExp);
-		for (Element antonymNode : antonymNodes) {
-			AntonymData antonymData = new AntonymData();
-			antonymData.word = antonymNode.getTextTrim();
-			String lexemeLevel1AttrValue = antonymNode.attributeValue(lexemeLevel1Attr);
+		List<LexemeToWordData> metadataList = new ArrayList<>();
+		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
+		for (Element metadataNode : metadataNodes) {
+			LexemeToWordData lexemeMetadata = new LexemeToWordData();
+			lexemeMetadata.word = metadataNode.getTextTrim();
+			String lexemeLevel1AttrValue = metadataNode.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
-				antonymData.lexemeLevel1 = defaultLexemeLevel1;
+				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
 			} else {
-				antonymData.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
+				lexemeMetadata.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
 			}
-			String homonymNrAtrValue = antonymNode.attributeValue(homonymNrAttr);
-			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
-				antonymData.homonymNr = Integer.parseInt(homonymNrAtrValue);
+			String homonymNrAttrValue = metadataNode.attributeValue(homonymNrAttr);
+			if (StringUtils.isNotBlank(homonymNrAttrValue)) {
+				lexemeMetadata.homonymNr = Integer.parseInt(homonymNrAttrValue);
 			}
-			antonyms.add(antonymData);
+			if (relationTypeAttr != null) {
+				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
+			}
+			metadataList.add(lexemeMetadata);
 		}
-		return antonyms;
+		return metadataList;
 	}
 
 	private List<SynonymData> extractSynonyms(String guid, Element node, Long meaningId) {
@@ -456,26 +724,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return synonyms;
 	}
 
-	private void saveGrammars(Element node, Long lexemeId, String dataset, WordData wordData) throws Exception {
+	private void saveGrammars(Element node, Long lexemeId, WordData wordData) throws Exception {
 
 		final String grammarValueExp = "x:grg/x:gki";
 
 		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
 		for (Element grammarNode : grammarNodes) {
-			createGrammar(lexemeId, grammarNode.getTextTrim());
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammarNode.getTextTrim(), dataLang);
 		}
 		if (isNotEmpty(wordData.grammar)) {
-			createGrammar(lexemeId, wordData.grammar);
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, wordData.grammar, dataLang);
 		}
-	}
-
-	private void createGrammar(Long lexemeId, String value) throws Exception {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("lexeme_id", lexemeId);
-		params.put("value", value);
-		params.put("lang", dataLang);
-		createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, value, dataLang);
 	}
 
 	//POS - part of speech
@@ -495,10 +754,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String rectionGroupExp = "x:rep/x:reg";
 		final String usageGroupExp = "x:ng";
 		final String rectionExp = "x:rek";
-		final String defaultRection = "-";
 
 		if (!usages.isEmpty()) {
-			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRection);
+			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
 			for (Usage usage : usages) {
 				createUsage(rectionId, usage);
 			}
@@ -686,7 +944,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Word extractWord(Element wordGroupNode, WordData wordData) throws Exception {
 
 		final String wordExp = "x:m";
-		final String wordVocalFormExp = "x:hld";
 		final String homonymNrAttr = "i";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
@@ -697,11 +954,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordDisplayForm = wordValue;
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Element wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
-		String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
 
-		return new Word(wordValue, dataLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
+		return new Word(wordValue, dataLang, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 	}
 
 	private String getWordMorphCode(String word, Element wordGroupNode) {
@@ -756,12 +1011,30 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String guid;
 	}
 
-	private class AntonymData {
-		String word;
+	private class LexemeToWordData {
 		Long lexemeId;
+		String word;
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
+		String relationType;
+		String rection;
+		String definition;
+		List<String> usages = new ArrayList<>();
 		String guid;
+
+		LexemeToWordData copy() {
+			LexemeToWordData newData = new LexemeToWordData();
+			newData.lexemeId = this.lexemeId;
+			newData.word = this.word;
+			newData.lexemeLevel1 = this.lexemeLevel1;
+			newData.homonymNr = this.homonymNr;
+			newData.relationType = this.relationType;
+			newData.rection = this.rection;
+			newData.definition = this.definition;
+			newData.guid = this.guid;
+			newData.usages.addAll(this.usages);
+			return newData;
+		}
 	}
 
 	private class ReferenceFormData {
@@ -771,19 +1044,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String guid;
 	}
 
-	private class CompData {
-		String word;
-		Long lexemeId;
-		String guid;
-	}
-
 	private class Context {
 		List<SynonymData> synonyms = new ArrayList<>();
-		List<AntonymData> antonyms = new ArrayList<>();
+		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
-		List<CompData> compoundWords = new ArrayList<>(); // liitsõnad
+		List<LexemeToWordData> compoundWords = new ArrayList<>(); // liitsõnad
+		List<LexemeToWordData> meaningReferences = new ArrayList<>(); // tähendusviide
+		List<LexemeToWordData> jointReferences = new ArrayList<>(); // ühisviide
+		List<LexemeToWordData> compoundReferences = new ArrayList<>(); // ühendiviide
+		List<LexemeToWordData> vormels = new ArrayList<>(); // vormel
+		List<LexemeToWordData> singleForms = new ArrayList<>(); // üksikvorm
 	}
 
 }
