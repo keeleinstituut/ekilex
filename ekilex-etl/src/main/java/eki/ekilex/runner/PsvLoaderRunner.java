@@ -263,7 +263,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel3(0);
 		if (isNotBlank(wordData.definition)) {
 			lexeme.setLevel1(1);
-			lexeme.setLevel2(1);
 			createDefinition(meaningId, wordData.definition, dataLang, dataset);
 		}
 		return createLexeme(lexeme, dataset);
@@ -943,7 +942,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Word extractWord(Element wordGroupNode, WordData wordData) throws Exception {
 
 		final String wordExp = "x:m";
-		final String wordVocalFormExp = "x:hld";
 		final String homonymNrAttr = "i";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
@@ -954,11 +952,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordDisplayForm = wordValue;
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Element wordVocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
-		String wordVocalForm = wordVocalFormNode == null ? null : wordVocalFormNode.getTextTrim();
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
 
-		return new Word(wordValue, dataLang, null, wordDisplayForm, wordVocalForm, homonymNr, wordMorphCode);
+		return new Word(wordValue, dataLang, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 	}
 
 	private String getWordMorphCode(String word, Element wordGroupNode) {
