@@ -101,7 +101,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processCompoundWords(context, dataset);
 		processMeaningReferences(context, dataset);
 		processJointReferences(context, dataset);
-		processCompoundReferences(context, dataset);
+// FIXME: disabled till we get relation types
+//		processCompoundReferences(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -138,7 +139,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, jointRefData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(jointRefData.lexemeId, lexemeId, jointRefData.relationType, dataset);
+				String relationType = "yvt:" + jointRefData.relationType;
+				createLexemeRelation(jointRefData.lexemeId, lexemeId, relationType, dataset);
 			}
 		}
 		logger.debug("Joint references processing done.");
@@ -155,7 +157,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, meaningRefData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(meaningRefData.lexemeId, lexemeId, meaningRefData.relationType, dataset);
+				String relationType = "tvt:" + meaningRefData.relationType;
+				createLexemeRelation(meaningRefData.lexemeId, lexemeId, relationType, dataset);
 			}
 		}
 		logger.debug("Meaning references processing done.");

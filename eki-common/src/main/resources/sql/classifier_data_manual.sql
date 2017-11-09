@@ -20,16 +20,20 @@ insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti kee
 insert into lex_rel_type (code, datasets) values ('comp', '{psv}');
 insert into lex_rel_type (code, datasets) values ('ant', '{psv}');
 insert into lex_rel_type (code, datasets) values ('head', '{psv}');
-insert into lex_rel_type (code, datasets) values ('vrd', '{psv}');
-insert into lex_rel_type (code, datasets) values ('vt ka', '{psv}');
-insert into lex_rel_type (code, datasets) values ('NB', '{psv}');
+insert into lex_rel_type (code, datasets) values ('tvt:vrd', '{psv}');
+insert into lex_rel_type (code, datasets) values ('tvt:vt ka', '{psv}');
+insert into lex_rel_type (code, datasets) values ('yvt:vrd', '{psv}');
+insert into lex_rel_type (code, datasets) values ('yvt:vt ka', '{psv}');
+insert into lex_rel_type (code, datasets) values ('yvt:NB', '{psv}');
 
 insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liitsõna', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('head', 'põhisõna', 'est', 'full');
-insert into lex_rel_type_label (code, value, lang, type) values ('vrd', 'tähendusviide vrd', 'est', 'full');
-insert into lex_rel_type_label (code, value, lang, type) values ('vt ka', 'tähendusviide vt ka', 'est', 'full');
-insert into lex_rel_type_label (code, value, lang, type) values ('NB', 'ühisviide', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vrd', 'tähendusviide võrdle', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vt ka', 'tähendusviide vaata ka', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vrd', 'ühisviide võrdle', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vt ka', 'ühisviide vaata ka', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('yvt:NB', 'ühisviide NB', 'est', 'full');
 
 insert into form_rel_type (code, datasets) values ('mvt', '{psv}');
 
