@@ -1,25 +1,25 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
+import java.util.List;
 
-import javax.persistence.Column;
-import java.util.function.Consumer;
+import eki.common.data.AbstractDataObject;
 
 public class Rection extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "rection")
+	private Long id;
+
 	private String value;
 
-	@Column(name = "usages")
-	private String[][] usages;
+	private List<UsageMeaning> usageMeanings;
 
-	public Rection() {
+	public Long getId() {
+		return id;
 	}
 
-	public Rection(Consumer<Rection> builder) {
-		builder.accept(this);
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getValue() {
@@ -30,12 +30,15 @@ public class Rection extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public String[][] getUsages() {
-		return usages;
+	public List<UsageMeaning> getUsageMeanings() {
+		return usageMeanings;
 	}
 
-	public void setUsages(String[][] usages) {
-		this.usages = usages;
+	public void setUsageMeanings(List<UsageMeaning> usageMeanings) {
+		this.usageMeanings = usageMeanings;
 	}
 
+	public boolean isMeaningful() {
+		return (usageMeanings != null) && (usageMeanings.size() > 0);
+	}
 }

@@ -1,21 +1,8 @@
 package eki.ekilex.runner;
 
-import eki.common.constant.FreeformType;
-import eki.common.data.Count;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.ReportComposer;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,8 +11,23 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import eki.common.constant.FreeformType;
+import eki.common.data.Count;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
 
 @Component
 public class PsvLoaderRunner extends AbstractLoaderRunner {
@@ -473,7 +475,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		params.put("lexeme_id", lexemeId);
 		params.put("value", value);
 		params.put("lang", dataLang);
-		basicDbService.createIfNotExists(GRAMMAR, params);
+		createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, value, dataLang);
 	}
 
 	//POS - part of speech

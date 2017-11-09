@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Freeform extends TableImpl<FreeformRecord> {
 
-    private static final long serialVersionUID = 2084961454;
+    private static final long serialVersionUID = -1817520387;
 
     /**
      * The reference instance of <code>public.freeform</code>
@@ -101,6 +101,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
      * The column <code>public.freeform.classif_code</code>.
      */
     public final TableField<FreeformRecord, String> CLASSIF_CODE = createField("classif_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.freeform.lang</code>.
+     */
+    public final TableField<FreeformRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
      * Create a <code>public.freeform</code> table reference
@@ -176,7 +181,7 @@ public class Freeform extends TableImpl<FreeformRecord> {
      */
     @Override
     public List<ForeignKey<FreeformRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FreeformRecord, ?>>asList(Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY);
+        return Arrays.<ForeignKey<FreeformRecord, ?>>asList(Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY, Keys.FREEFORM__FREEFORM_LANG_FKEY);
     }
 
     /**

@@ -163,6 +163,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
 
+		//FIXME ignore non-lang concepts!
+
 		for (Element conceptGroupNode : conceptGroupNodes) {
 
 			valueNode = (Element) conceptGroupNode.selectSingleNode(conceptExp);

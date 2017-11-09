@@ -21,8 +21,6 @@ import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
-import eki.ekilex.data.db.tables.Grammar;
-import eki.ekilex.data.db.tables.GrammarDataset;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
@@ -35,7 +33,6 @@ import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
-import eki.ekilex.data.db.tables.LexemeFrequencyLabel;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
@@ -52,11 +49,8 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.Rection;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 
 import javax.annotation.Generated;
@@ -161,16 +155,6 @@ public class Tables {
     public static final GenderLabel GENDER_LABEL = eki.ekilex.data.db.tables.GenderLabel.GENDER_LABEL;
 
     /**
-     * The table <code>public.grammar</code>.
-     */
-    public static final Grammar GRAMMAR = eki.ekilex.data.db.tables.Grammar.GRAMMAR;
-
-    /**
-     * The table <code>public.grammar_dataset</code>.
-     */
-    public static final GrammarDataset GRAMMAR_DATASET = eki.ekilex.data.db.tables.GrammarDataset.GRAMMAR_DATASET;
-
-    /**
      * The table <code>public.label_type</code>.
      */
     public static final LabelType LABEL_TYPE = eki.ekilex.data.db.tables.LabelType.LABEL_TYPE;
@@ -229,11 +213,6 @@ public class Tables {
      * The table <code>public.lexeme_frequency</code>.
      */
     public static final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
-
-    /**
-     * The table <code>public.lexeme_frequency_label</code>.
-     */
-    public static final LexemeFrequencyLabel LEXEME_FREQUENCY_LABEL = eki.ekilex.data.db.tables.LexemeFrequencyLabel.LEXEME_FREQUENCY_LABEL;
 
     /**
      * The table <code>public.lexeme_pos</code>.
@@ -316,11 +295,6 @@ public class Tables {
     public static final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
 
     /**
-     * The table <code>public.rection</code>.
-     */
-    public static final Rection RECTION = eki.ekilex.data.db.tables.Rection.RECTION;
-
-    /**
      * The table <code>public.register</code>.
      */
     public static final Register REGISTER = eki.ekilex.data.db.tables.Register.REGISTER;
@@ -329,16 +303,6 @@ public class Tables {
      * The table <code>public.register_label</code>.
      */
     public static final RegisterLabel REGISTER_LABEL = eki.ekilex.data.db.tables.RegisterLabel.REGISTER_LABEL;
-
-    /**
-     * The table <code>public.usage</code>.
-     */
-    public static final Usage USAGE = eki.ekilex.data.db.tables.Usage.USAGE;
-
-    /**
-     * The table <code>public.usage_translation</code>.
-     */
-    public static final UsageTranslation USAGE_TRANSLATION = eki.ekilex.data.db.tables.UsageTranslation.USAGE_TRANSLATION;
 
     /**
      * The table <code>public.word</code>.

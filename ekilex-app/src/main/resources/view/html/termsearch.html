@@ -102,19 +102,58 @@
             <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
               <table>
                 <tr th:each="rection,rectionIter : ${lexeme.rections}">
-                  <td style="vertical-align: text-top; padding-right: 1em">
-                    <span th:text="${rection.value}"></span>
-                  </td>
                   <td>
-                    <span th:each="usage,usageIter : ${rection.usages}">
-                      <th:block th:each="usageValue, usageValueIter : ${usage}">
-                        <th:block th:if="${usageValue != null}">
-                          <span th:unless="${usageValueIter.first}">-</span>
-                          <span th:text="${usageValue}"></span>
-                        </th:block>
-                      </th:block>
-                      <br th:unless="${usageIter.last}" />
-                    </span>
+                    <table>
+                      <tr>
+                        <th>Rektsioon</th>
+                      </tr>
+                      <tr>
+                        <td th:text="${rection.value}"></td>
+                      </tr>
+                      <tr th:if="${rection.meaningful}">
+                        <td>
+                          <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                            <tr>
+                              <td>
+                                <i style="text-decoration: underline;">
+                                  <span>Kasutusn&auml;ite t&auml;hendus #</span>
+                                  <span th:text="${usageMeaningIter.count}"></span>
+                                </i>
+                              </td>
+                            </tr>
+                            <tr th:if="${not #lists.isEmpty(usageMeaning.usages)}">
+                              <td>
+                                <b>Kasutusn&auml;ited</b>
+                              </td>
+                            </tr>
+                            <tr th:each="usage : ${usageMeaning.usages}">
+                              <td th:text="${usage.value}"></td>
+                            </tr>
+                            <tr th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
+                              <td>
+                                <b>Kasutusn&auml;ite t&otilde;lked</b>
+                              </td>
+                            </tr>
+                            <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                              <td th:text="${usageTranslation.value}"></td>
+                            </tr>
+                            <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
+                              <td>
+                                <b>Kasutusn&auml;ite seletused</b>
+                              </td>
+                            </tr>
+                            <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                              <td th:text="${usageDefinition.value}"></td>
+                            </tr>
+                            <tr th:unless="${usageMeaningIter.last}">
+                              <td>
+                                <hr />
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
                   </td>
                 </tr>
               </table>
@@ -148,7 +187,7 @@
               <table th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
                 <thead>
                   <th colspan="2">
-                    <small>tähenduse vabavormid</small>
+                    <small>t&auml;henduse vabavormid</small>
                   </th>
                 </thead>
                 <tr th:each="freeform : ${lexeme.meaningFreeforms}">

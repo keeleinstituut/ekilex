@@ -1,12 +1,10 @@
 package eki.ekilex.data;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 
-import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
 public class WordLexeme extends AbstractDataObject {

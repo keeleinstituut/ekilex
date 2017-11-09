@@ -1,25 +1,27 @@
 package eki.ekilex.service;
 
-import eki.common.constant.FreeformType;
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Form;
-import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.Rection;
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
-import eki.ekilex.service.db.SearchDbService;
+import static java.util.Collections.emptyList;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.emptyList;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Form;
+import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Rection;
+import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
+import eki.ekilex.data.UsageMeaning;
+import eki.ekilex.data.UsageMember;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.db.SearchDbService;
 
 @Service
 public class SearchService {
@@ -62,7 +64,12 @@ public class SearchService {
 			List<FreeForm> lexemeFreeforms = searchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
 
-			populateRections(lexeme);
+			List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
+					searchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
+
+			List<Rection> rections = composeRections(rectionUsageTranslationDefinitionTuples);
+			lexeme.setRections(rections);
+
 		});
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
@@ -70,38 +77,81 @@ public class SearchService {
 		});
 	}
 
-	private void populateRections(WordLexeme lexeme) {
-		List<Rection> rections = searchDbService.findConnectedRections(lexeme.getLexemeId()).into(Rection.class);
-		removeNullUsages(rections);
-		List<FreeForm> lexemeRections = lexeme.getLexemeFreeforms().stream().filter(f -> f.getType().equals(FreeformType.RECTION)).collect(Collectors.toList());
-		for (FreeForm freeForm : lexemeRections) {
-			Rection rection = new Rection();
-			rection.setValue(freeForm.getValueText());
-			List<FreeForm> usages = new ArrayList<>();
-			List<FreeForm> usageGroups = searchDbService.findFreeformChilds(freeForm.getId()).into(FreeForm.class);
-			for (FreeForm usageGroup : usageGroups) {
-				List<FreeForm> groupChilds = searchDbService.findFreeformChilds(usageGroup.getId()).into(FreeForm.class);
-				usages.addAll(groupChilds.stream().filter(g -> FreeformType.USAGE.equals(g.getType())).collect(Collectors.toList()));
-			}
-			if (!usages.isEmpty()) {
-				String[][] arrayOfUsages = new String[usages.size()][];
-				int index = 0;
-				for (FreeForm usage : usages) {
-					arrayOfUsages[index++] = new String[] {usage.getValueText()};
-				}
-				rection.setUsages(arrayOfUsages);
-			}
-			rections.add(rection);
-		}
-		lexeme.setRections(rections);
-	}
+	private List<Rection> composeRections(List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples) {
 
-	private void removeNullUsages(List<Rection> rections) {
-		rections.forEach(rection -> {
-			if (rection.getUsages().length == 1 && Arrays.stream(rection.getUsages()[0]).allMatch(Objects::isNull)) {
-				rection.setUsages(null);
+		List<Rection> rections = new ArrayList<>();
+
+		Map<Long, Rection> rectionMap = new HashMap<>();
+		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
+		Map<Long, UsageMember> usageMap = new HashMap<>();
+		Map<Long, UsageMember> usageTranslationMap = new HashMap<>();
+		Map<Long, UsageMember> usageDefinitionMap = new HashMap<>();
+
+		for (RectionUsageTranslationDefinitionTuple tuple : rectionUsageTranslationDefinitionTuples) {
+
+			Long rectionId = tuple.getRectionId();
+			Long usageMeaningId = tuple.getUsageMeaningId();
+			Long usageId = tuple.getUsageId();
+			Long usageTranslationId = tuple.getUsageTranslationId();
+			Long usageDefinitionId = tuple.getUsageDefinitionId();
+
+			Rection rection = rectionMap.get(rectionId);
+			if (rection == null) {
+				rection = new Rection();
+				rection.setId(rectionId);
+				rection.setValue(tuple.getRectionValue());
+				rection.setUsageMeanings(new ArrayList<>());
+				rectionMap.put(rectionId, rection);
+				rections.add(rection);
 			}
-		});
+			if (usageMeaningId == null) {
+				continue;
+			}
+			UsageMeaning usageMeaning = usageMeaningMap.get(usageMeaningId);
+			if (usageMeaning == null) {
+				usageMeaning = new UsageMeaning();
+				usageMeaning.setId(usageMeaningId);
+				usageMeaning.setUsages(new ArrayList<>());
+				usageMeaning.setUsageTranslations(new ArrayList<>());
+				usageMeaning.setUsageDefinitions(new ArrayList<>());
+				usageMeaningMap.put(usageMeaningId, usageMeaning);
+				rection.getUsageMeanings().add(usageMeaning);
+			}
+			if (usageId != null) {
+				UsageMember usage = usageMap.get(usageId);
+				if (usage == null) {
+					usage = new UsageMember();
+					usage.setId(usageId);
+					usage.setValue(tuple.getUsageValue());
+					usage.setLang(tuple.getUsageLang());
+					usageMap.put(usageId, usage);
+					usageMeaning.getUsages().add(usage);
+				}
+			}
+			if (usageTranslationId != null) {
+				UsageMember usageTranslation = usageTranslationMap.get(usageTranslationId);
+				if (usageTranslation == null) {
+					usageTranslation = new UsageMember();
+					usageTranslation.setId(usageTranslationId);
+					usageTranslation.setValue(tuple.getUsageTranslationValue());
+					usageTranslation.setLang(tuple.getUsageTranslationLang());
+					usageTranslationMap.put(usageTranslationId, usageTranslation);
+					usageMeaning.getUsageTranslations().add(usageTranslation);
+				}
+			}
+			if (usageDefinitionId != null) {
+				UsageMember usageDefinition = usageDefinitionMap.get(usageDefinitionId);
+				if (usageDefinition == null) {
+					usageDefinition = new UsageMember();
+					usageDefinition.setId(usageDefinitionId);
+					usageDefinition.setValue(tuple.getUsageDefinitionValue());
+					usageDefinition.setLang(tuple.getUsageDefinitionLang());
+					usageDefinitionMap.put(usageDefinitionId, usageDefinition);
+					usageMeaning.getUsageDefinitions().add(usageDefinition);
+				}
+			}
+		}
+		return rections;
 	}
 
 	private List<String> convertToNames(List<String> datasets, Map<String, String> datasetMap) {

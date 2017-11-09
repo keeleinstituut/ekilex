@@ -21,8 +21,6 @@ import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
-import eki.ekilex.data.db.tables.Grammar;
-import eki.ekilex.data.db.tables.GrammarDataset;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
@@ -35,7 +33,6 @@ import eki.ekilex.data.db.tables.LexemeDataset;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
-import eki.ekilex.data.db.tables.LexemeFrequencyLabel;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeType;
@@ -52,11 +49,8 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
-import eki.ekilex.data.db.tables.Rection;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
-import eki.ekilex.data.db.tables.Usage;
-import eki.ekilex.data.db.tables.UsageTranslation;
 import eki.ekilex.data.db.tables.Word;
 
 import java.util.ArrayList;
@@ -84,7 +78,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1884433313;
+    private static final long serialVersionUID = -1683732904;
 
     /**
      * The reference instance of <code>public</code>
@@ -177,16 +171,6 @@ public class Public extends SchemaImpl {
     public final GenderLabel GENDER_LABEL = eki.ekilex.data.db.tables.GenderLabel.GENDER_LABEL;
 
     /**
-     * The table <code>public.grammar</code>.
-     */
-    public final Grammar GRAMMAR = eki.ekilex.data.db.tables.Grammar.GRAMMAR;
-
-    /**
-     * The table <code>public.grammar_dataset</code>.
-     */
-    public final GrammarDataset GRAMMAR_DATASET = eki.ekilex.data.db.tables.GrammarDataset.GRAMMAR_DATASET;
-
-    /**
      * The table <code>public.label_type</code>.
      */
     public final LabelType LABEL_TYPE = eki.ekilex.data.db.tables.LabelType.LABEL_TYPE;
@@ -245,11 +229,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexeme_frequency</code>.
      */
     public final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
-
-    /**
-     * The table <code>public.lexeme_frequency_label</code>.
-     */
-    public final LexemeFrequencyLabel LEXEME_FREQUENCY_LABEL = eki.ekilex.data.db.tables.LexemeFrequencyLabel.LEXEME_FREQUENCY_LABEL;
 
     /**
      * The table <code>public.lexeme_pos</code>.
@@ -332,11 +311,6 @@ public class Public extends SchemaImpl {
     public final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
 
     /**
-     * The table <code>public.rection</code>.
-     */
-    public final Rection RECTION = eki.ekilex.data.db.tables.Rection.RECTION;
-
-    /**
      * The table <code>public.register</code>.
      */
     public final Register REGISTER = eki.ekilex.data.db.tables.Register.REGISTER;
@@ -345,16 +319,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.register_label</code>.
      */
     public final RegisterLabel REGISTER_LABEL = eki.ekilex.data.db.tables.RegisterLabel.REGISTER_LABEL;
-
-    /**
-     * The table <code>public.usage</code>.
-     */
-    public final Usage USAGE = eki.ekilex.data.db.tables.Usage.USAGE;
-
-    /**
-     * The table <code>public.usage_translation</code>.
-     */
-    public final UsageTranslation USAGE_TRANSLATION = eki.ekilex.data.db.tables.UsageTranslation.USAGE_TRANSLATION;
 
     /**
      * The table <code>public.word</code>.
@@ -392,7 +356,6 @@ public class Public extends SchemaImpl {
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
             Sequences.FREEFORM_ID_SEQ,
-            Sequences.GRAMMAR_ID_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
@@ -404,9 +367,6 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.PARADIGM_ID_SEQ,
-            Sequences.RECTION_ID_SEQ,
-            Sequences.USAGE_ID_SEQ,
-            Sequences.USAGE_TRANSLATION_ID_SEQ,
             Sequences.WORD_ID_SEQ);
     }
 
@@ -436,8 +396,6 @@ public class Public extends SchemaImpl {
             Freeform.FREEFORM,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
-            Grammar.GRAMMAR,
-            GrammarDataset.GRAMMAR_DATASET,
             LabelType.LABEL_TYPE,
             Lang.LANG,
             LangLabel.LANG_LABEL,
@@ -450,7 +408,6 @@ public class Public extends SchemaImpl {
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
             LexemeFrequency.LEXEME_FREQUENCY,
-            LexemeFrequencyLabel.LEXEME_FREQUENCY_LABEL,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,
             LexemeType.LEXEME_TYPE,
@@ -467,11 +424,8 @@ public class Public extends SchemaImpl {
             Paradigm.PARADIGM,
             Pos.POS,
             PosLabel.POS_LABEL,
-            Rection.RECTION,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
-            Usage.USAGE,
-            UsageTranslation.USAGE_TRANSLATION,
             Word.WORD);
     }
 }

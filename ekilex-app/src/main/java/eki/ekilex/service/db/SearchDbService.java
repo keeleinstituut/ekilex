@@ -14,9 +14,6 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.RECTION;
-import static eki.ekilex.data.db.Tables.USAGE;
-import static eki.ekilex.data.db.Tables.USAGE_TRANSLATION;
 import static eki.ekilex.data.db.Tables.WORD;
 
 import java.sql.Timestamp;
@@ -24,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Record12;
 import org.jooq.Record14;
-import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record7;
@@ -35,8 +32,11 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 
@@ -116,17 +116,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String[][]>> findConnectedRections(Long lexemeId) {
-
-		return create
-				.select(RECTION.VALUE.as("rection"), DSL.arrayAgg(DSL.array(USAGE.VALUE, USAGE_TRANSLATION.VALUE)).orderBy(USAGE.ID).as("usages"))
-				.from(RECTION.leftOuterJoin(USAGE).on(USAGE.RECTION_ID.eq(RECTION.ID)).leftOuterJoin(USAGE_TRANSLATION).on(USAGE_TRANSLATION.USAGE_ID.eq(USAGE.ID)))
-				.where(
-						RECTION.LEXEME_ID.eq(lexemeId))
-				.groupBy(RECTION.ID)
-				.fetch();
-	}
-
 	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeanings(Long formId) {
 
 		return create
@@ -167,6 +156,43 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								)
 						)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
+				.fetch();
+	}
+
+	public Result<Record12<Long,String,Long,Long,String,String,Long,String,String,Long,String,String>> findRectionUsageTranslationDefinitionTuples(Long lexemeId) {
+
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		Freeform r = FREEFORM.as("r");
+		Freeform um = FREEFORM.as("um");
+		Freeform u = FREEFORM.as("u");
+		Freeform ut = FREEFORM.as("ut");
+		Freeform ud = FREEFORM.as("ud");
+
+		return create
+				.select(
+						r.ID.as("rection_id"),
+						r.VALUE_TEXT.as("rection_value"),
+						um.ID.as("usage_meaning_id"),
+						u.ID.as("usage_id"),
+						u.VALUE_TEXT.as("usage_value"),
+						u.LANG.as("usage_lang"),
+						ut.ID.as("usage_translation_id"),
+						ut.VALUE_TEXT.as("usage_translation_value"),
+						ut.LANG.as("usage_translation_lang"),
+						ud.ID.as("usage_definition_id"),
+						ud.VALUE_TEXT.as("usage_definition_value"),
+						ud.LANG.as("usage_definition_lang")
+						)
+				.from(
+						lff.innerJoin(r
+								.leftOuterJoin(um).on(um.PARENT_ID.eq(r.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
+								.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
+								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
+								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
+								).on(lff.FREEFORM_ID.eq(r.ID).and(r.TYPE.eq(FreeformType.RECTION.name())))
+						)
+				.where(lff.LEXEME_ID.eq(lexemeId))
+				.orderBy(r.ID, um.ID, u.ID, ut.ID, ud.ID)
 				.fetch();
 	}
 
@@ -247,15 +273,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 		return create
 				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, LEXEME_FREEFORM)
-				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID)))
-				.fetch();
-	}
-
-	public Result<Record4<Long, String, String, Timestamp>> findFreeformChilds(Long freeformId) {
-		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
-				.from(FREEFORM)
-				.where(FREEFORM.PARENT_ID.eq(freeformId))
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.notIn(FreeformType.RECTION.name(), FreeformType.GRAMMAR.name())))
 				.fetch();
 	}
 
