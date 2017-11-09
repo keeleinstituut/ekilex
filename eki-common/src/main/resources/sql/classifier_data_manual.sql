@@ -25,6 +25,8 @@ insert into lex_rel_type (code, datasets) values ('tvt:vt ka', '{psv}');
 insert into lex_rel_type (code, datasets) values ('yvt:vrd', '{psv}');
 insert into lex_rel_type (code, datasets) values ('yvt:vt ka', '{psv}');
 insert into lex_rel_type (code, datasets) values ('yvt:NB', '{psv}');
+insert into lex_rel_type (code, datasets) values ('vor', '{psv}');
+insert into lex_rel_type (code, datasets) values ('yvr', '{psv}');
 
 insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liitsõna', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'full');
@@ -34,6 +36,8 @@ insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vt ka', 't
 insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vrd', 'ühisviide võrdle', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vt ka', 'ühisviide vaata ka', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('yvt:NB', 'ühisviide NB', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('vor', 'vormel', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('yvr', 'üksikvorm', 'est', 'full');
 
 insert into form_rel_type (code, datasets) values ('mvt', '{psv}');
 
