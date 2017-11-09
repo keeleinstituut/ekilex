@@ -82,19 +82,30 @@
             <li th:each="definition : ${lexeme.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
           </ul>
           <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
-            <table>
-              <tr th:each="rection,rectionIter : ${lexeme.rections}">
-                <td style="vertical-align: text-top; padding-right: 1em"><span th:text="${rection.value}"></span></td>
+            <table th:each="rection,rectionIter : ${lexeme.rections}">
+              <tr>
+                <td style="vertical-align: text-top; padding-right: 1em">
+                  <span th:text="${rection.value}"></span>
+                </td>
+              </tr>
+              <tr>
                 <td>
-                  <span th:each="usage,usageIter : ${rection.usages}">
-                    <th:block th:each="usageValue, usageValueIter : ${usage}">
-                      <th:block th:if="${usageValue != null}">
-                        <span th:unless="${usageValueIter.first}">-</span>
-                        <span th:text="${usageValue}"></span>
-                      </th:block>
-                    </th:block>
-                    <br th:unless="${usageIter.last}" />
-                  </span>
+                  <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                    <tr th:each="usage : ${usageMeaning.usages}">
+                      <td th:text="${usage.value}"></td>
+                    </tr>
+                    <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                      <td th:text="${usageTranslation.value}"></td>
+                    </tr>
+                    <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                      <td th:text="${usageDefinition.value}"></td>
+                    </tr>
+                    <tr th:unless="${usageMeaningIter.last}">
+                      <td>
+                        <hr />
+                      </td>
+                    </tr>
+                  </table>
                 </td>
               </tr>
             </table>
