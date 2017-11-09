@@ -25,6 +25,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -106,6 +107,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 // FIXME: disabled till we get relation types
 //		processCompoundReferences(context, dataset);
 		processVormels(context, dataset);
+		processSingleForms(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -113,6 +115,22 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private void processSingleForms(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} single forms.", context.singleForms.size());
+		writeToLogFile("Üksikvormide töötlus <x:yvr>", "", "");
+		for (LexemeToWordData singleFormData: context.singleForms) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> singleFormData.word.equals(w.value))
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, singleFormData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(singleFormData.lexemeId, lexemeId, "yvr", dataset);
+			}
+		}
+		logger.debug("Single form processing done.");
 	}
 
 	private void processVormels(Context context, String dataset) throws Exception {
@@ -209,7 +227,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = createLexemeAndRelatedObjects(data, context, dataset);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found, adding them");
-				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue, dataLang);
+				String rectionValue = isBlank(data.rection) ? defaultRectionValue : data.rection;
+				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
 				for (String usageValue: data.usages) {
 					Usage usage = new Usage();
 					usage.setValue(usageValue);
@@ -442,6 +461,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
 			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode);
 			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
+			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
 			List<Long> newLexemes = new ArrayList<>();
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
@@ -503,6 +523,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							vormelData.guid = guid;
 							context.vormels.add(vormelData);
 						}
+						for (LexemeToWordData singleForm : singleForms) {
+							LexemeToWordData singleFormData = singleForm.copy();
+							singleFormData.lexemeId = lexemeId;
+							singleFormData.guid = guid;
+							context.singleForms.add(singleFormData);
+						}
 						newLexemes.add(lexemeId);
 					}
 				}
@@ -524,6 +550,43 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private List<LexemeToWordData> extractSingleForms(Element node) {
+
+		final String singleFormGroupNodeExp = "x:yvp/x:yvg";
+		final String singleFormNodeExp = "x:yvrg";
+		final String formValueExp = "x:yvr";
+		final String formDefinitionExp = "x:yvd";
+		final String usageExp = "x:ng/x:n";
+		final String rectionExp = "x:rek";
+
+		List<LexemeToWordData> singleForms = new ArrayList<>();
+		List<Element> singleFormGroupNodes = node.selectNodes(singleFormGroupNodeExp);
+		for (Element singleFormGroupNode : singleFormGroupNodes) {
+			List<String> usages = new ArrayList<>();
+			List<Element> formUsageNodes = singleFormGroupNode.selectNodes(usageExp);
+			for (Element usageNode: formUsageNodes) {
+				usages.add(usageNode.getTextTrim());
+			}
+			List<Element> singleFormNodes = singleFormGroupNode.selectNodes(singleFormNodeExp);
+			for (Element singleFormNode : singleFormNodes) {
+				LexemeToWordData data = new LexemeToWordData();
+				Element formValueNode = (Element) singleFormNode.selectSingleNode(formValueExp);
+				Element formDefinitionNode = (Element) singleFormNode.selectSingleNode(formDefinitionExp);
+				data.word = formValueNode.getTextTrim();
+				if (formValueNode.hasMixedContent()) {
+					data.rection = formValueNode.selectSingleNode(rectionExp).getText();
+				}
+				if (formDefinitionNode != null) {
+					data.definition = formDefinitionNode.getTextTrim();
+				}
+				data.usages.addAll(usages);
+				singleForms.add(data);
+			}
+		}
+
+		return singleForms;
+	}
+
 	private List<LexemeToWordData> extractVormels(Element node) {
 
 		final String vormelNodeExp = "x:vop/x:vog";
@@ -533,7 +596,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		List<LexemeToWordData> vormels = new ArrayList<>();
 		List<Element> vormelNodes = node.selectNodes(vormelNodeExp);
-		for (Element vormelNode: vormelNodes) {
+		for (Element vormelNode : vormelNodes) {
 			LexemeToWordData data = new LexemeToWordData();
 			Element vormelValueNode = (Element) vormelNode.selectSingleNode(vormelExp);
 			Element vormelDefinitionNode = (Element) vormelNode.selectSingleNode(vormelDefinitionExp);
@@ -938,6 +1001,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
+		String rection;
 		String definition;
 		List<String> usages = new ArrayList<>();
 		String guid;
@@ -949,6 +1013,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.lexemeLevel1 = this.lexemeLevel1;
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
+			newData.rection = this.rection;
 			newData.definition = this.definition;
 			newData.guid = this.guid;
 			newData.usages.addAll(this.usages);
@@ -974,6 +1039,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> jointReferences = new ArrayList<>(); // ühisviide
 		List<LexemeToWordData> compoundReferences = new ArrayList<>(); // ühendiviide
 		List<LexemeToWordData> vormels = new ArrayList<>(); // vormel
+		List<LexemeToWordData> singleForms = new ArrayList<>(); // üksikvorm
 	}
 
 }
