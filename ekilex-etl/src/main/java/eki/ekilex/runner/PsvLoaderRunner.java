@@ -99,6 +99,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processBasicWords(context, dataset);
 		processReferenceForms(context);
 		processCompoundWords(context, dataset);
+		processMeaningReferences(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -108,29 +109,51 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
+	private void processMeaningReferences(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} meaning references.", context.meaningReferences.size());
+		writeToLogFile("Tähendusviidete töötlus <x:tvt>", "", "");
+		for (LexemeToWordData meaningRefData: context.meaningReferences) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> meaningRefData.word.equals(w.value))
+					.filter(w -> meaningRefData.homonymNr == 0 || meaningRefData.homonymNr == w.homonymNr)
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, meaningRefData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(meaningRefData.lexemeId, lexemeId, meaningRefData.relationType, dataset);
+			}
+		}
+		logger.debug("Meaning references processing done.");
+	}
+
 	private void processCompoundWords(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound words.", context.compoundWords.size());
 		writeToLogFile("Liitsõnade töötlus <x:ls>", "", "");
 		for (LexemeToWordData compData: context.compoundWords) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
-			if (existingWords.size() > 1) {
-				logger.debug("Found more than one word : {}.", compData.word);
-				writeToLogFile("Leiti rohkem kui üks vaste sõnale", compData.guid, compData.word);
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
 			}
-			Long lexemeId;
-			if (existingWords.isEmpty()) {
-				logger.debug("No word found, adding word : {}.", compData.word);
-				lexemeId = createLexemeAndRelatedObjects(compData.word, context, dataset);
-			} else {
-				lexemeId = findLexemeIdForWord(existingWords.get(0).id, compData);
-				if (lexemeId == null) {
-					continue;
-				}
-			}
-			createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
 		}
 		logger.debug("Compound words processing done.");
+	}
+
+	private Long findOrCreateLexemeForWord(List<WordData> existingWords, LexemeToWordData data, Context context, String dataset) throws Exception {
+
+		if (existingWords.size() > 1) {
+			logger.debug("Found more than one word : {}.", data.word);
+			writeToLogFile("Leiti rohkem kui üks vaste sõnale", data.guid, data.word);
+		}
+		Long lexemeId;
+		if (existingWords.isEmpty()) {
+			logger.debug("No word found, adding word : {}.", data.word);
+			lexemeId = createLexemeAndRelatedObjects(data.word, context, dataset);
+		} else {
+			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data);
+		}
+		return lexemeId;
 	}
 
 	private Long createLexemeAndRelatedObjects(String wordValue, Context context, String dataset) throws Exception {
@@ -157,6 +180,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Long lexemeId = null;
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_id", wordId);
+		if (data.lexemeLevel1 != 0 ) {
+			params.put("level1", data.lexemeLevel1);
+		}
 		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
 		if (lexemes.isEmpty()) {
 			logger.debug("Lexeme not found for word : {}.", data.word);
@@ -337,6 +363,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
+			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode);
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
@@ -371,13 +398,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData);
-						saveGrammars(meaningNumberGroupNode, lexemeId, dataset, newWordData);
+						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
-							LexemeToWordData antonymData = new LexemeToWordData();
-							antonymData.word = meaningAntonym.word;
-							antonymData.lexemeLevel1 = meaningAntonym.lexemeLevel1;
+							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
-							antonymData.homonymNr = meaningAntonym.homonymNr;
 							antonymData.guid = guid;
 							context.antonyms.add(antonymData);
 						}
@@ -387,6 +411,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							compData.lexemeId = lexemeId;
 							compData.guid = guid;
 							context.compoundWords.add(compData);
+						}
+						for (LexemeToWordData meaningReference : meaningReferences) {
+							LexemeToWordData referenceData = meaningReference.copy();
+							referenceData.lexemeId = lexemeId;
+							referenceData.guid = guid;
+							context.meaningReferences.add(referenceData);
 						}
 					}
 				}
@@ -406,31 +436,47 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return compoundWords;
 	}
 
+	private List<LexemeToWordData> extractMeaningReferences(Element node) {
+
+		final String meaningReferenceExp = "x:tvt";
+		final String relationTypeAttr = "tvtl";
+
+		return extractLexemeMetadata(node, meaningReferenceExp, relationTypeAttr);
+	}
+
 	private List<LexemeToWordData> extractAntonyms(Element node) {
 
 		final String antonymExp = "x:ant";
+		return extractLexemeMetadata(node, antonymExp, null);
+	}
+
+	private List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr) {
+
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
 		final int defaultLexemeLevel1 = 1;
 
-		List<LexemeToWordData> antonyms = new ArrayList<>();
-		List<Element> antonymNodes = node.selectNodes(antonymExp);
-		for (Element antonymNode : antonymNodes) {
-			LexemeToWordData antonymData = new LexemeToWordData();
-			antonymData.word = antonymNode.getTextTrim();
-			String lexemeLevel1AttrValue = antonymNode.attributeValue(lexemeLevel1Attr);
+		List<LexemeToWordData> metadataList = new ArrayList<>();
+		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
+		for (Element metadataNode : metadataNodes) {
+			LexemeToWordData lexemeMetadata = new LexemeToWordData();
+			lexemeMetadata.word = metadataNode.getTextTrim();
+			String lexemeLevel1AttrValue = metadataNode.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
-				antonymData.lexemeLevel1 = defaultLexemeLevel1;
+				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
 			} else {
-				antonymData.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
+				lexemeMetadata.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
 			}
-			String homonymNrAtrValue = antonymNode.attributeValue(homonymNrAttr);
-			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
-				antonymData.homonymNr = Integer.parseInt(homonymNrAtrValue);
+			String homonymNrAttrValue = metadataNode.attributeValue(homonymNrAttr);
+			if (StringUtils.isNotBlank(homonymNrAttrValue)) {
+				lexemeMetadata.homonymNr = Integer.parseInt(homonymNrAttrValue);
 			}
-			antonyms.add(antonymData);
+			if (relationTypeAttr != null) {
+				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
+			}
+			metadataList.add(lexemeMetadata);
 		}
-		return antonyms;
+		return metadataList;
 	}
 
 	private List<SynonymData> extractSynonyms(String guid, Element node, Long meaningId) {
@@ -454,26 +500,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return synonyms;
 	}
 
-	private void saveGrammars(Element node, Long lexemeId, String dataset, WordData wordData) throws Exception {
+	private void saveGrammars(Element node, Long lexemeId, WordData wordData) throws Exception {
 
 		final String grammarValueExp = "x:grg/x:gki";
 
 		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
 		for (Element grammarNode : grammarNodes) {
-			createGrammar(lexemeId, grammarNode.getTextTrim());
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammarNode.getTextTrim(), dataLang);
 		}
 		if (isNotEmpty(wordData.grammar)) {
-			createGrammar(lexemeId, wordData.grammar);
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, wordData.grammar, dataLang);
 		}
-	}
-
-	private void createGrammar(Long lexemeId, String value) throws Exception {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("lexeme_id", lexemeId);
-		params.put("value", value);
-		params.put("lang", dataLang);
-		basicDbService.createIfNotExists(GRAMMAR, params);
 	}
 
 	//POS - part of speech
@@ -759,7 +796,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String word;
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
+		String relationType;
 		String guid;
+
+		LexemeToWordData copy() {
+			LexemeToWordData newData = new LexemeToWordData();
+			newData.lexemeId = this.lexemeId;
+			newData.word = this.word;
+			newData.lexemeLevel1 = this.lexemeLevel1;
+			newData.homonymNr = this.homonymNr;
+			newData.relationType = this.relationType;
+			newData.guid = this.guid;
+			return newData;
+		}
 	}
 
 	private class ReferenceFormData {
@@ -776,6 +825,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<WordData> basicWords = new ArrayList<>();
 		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
 		List<LexemeToWordData> compoundWords = new ArrayList<>(); // liitsõnad
+		List<LexemeToWordData> meaningReferences = new ArrayList<>(); // tähendusviide
 	}
 
 }
