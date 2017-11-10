@@ -43,6 +43,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private Map<String, String> posCodes;
+	private Map<String, String> derivCodes;
 	private ReportComposer reportComposer;
 
 	@Override
@@ -65,6 +66,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
+
+		String sqlDerivCodeMappings = "select code as key, code as value from deriv where '" + dataset + "' = ANY(datasets)";
+		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappings, null);
 
 		Document dataDoc = readDocument(dataXmlFilePath);
 
@@ -825,13 +829,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	//POS - part of speech
 	private void savePosAndDeriv(Long lexemeId, WordData newWordData) throws Exception {
 
-		if (posCodes.containsKey(newWordData.posCode)) {
+		for (String posCode : newWordData.posCodes) {
+			if (posCodes.containsKey(posCode)) {
+				Map<String, Object> params = new HashMap<>();
+				params.put("lexeme_id", lexemeId);
+				params.put("pos_code", posCodes.get(posCode));
+				basicDbService.create(LEXEME_POS, params);
+			}
+		}
+		if (derivCodes.containsKey(newWordData.derivCode)) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("lexeme_id", lexemeId);
-			params.put("pos_code", posCodes.get(newWordData.posCode));
-			basicDbService.create(LEXEME_POS, params);
+			params.put("deriv_code", derivCodes.get(newWordData.derivCode));
+			basicDbService.create(LEXEME_DERIV, params);
 		}
-		// TODO: add deriv code when we get the mappings between EKILEX and EKI data
 	}
 
 	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
@@ -960,8 +971,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
 			basicWords.addAll(basicWordsOfTheWord);
 
-			Element posCodeNode = (Element) wordGroupNode.selectSingleNode(wordPosCodeExp);
-			wordData.posCode = posCodeNode == null ? null : posCodeNode.getTextTrim();
+			List<Element> posCodeNodes = wordGroupNode.selectNodes(wordPosCodeExp);
+			for (Element posCodeNode : posCodeNodes ) {
+				wordData.posCodes.add(posCodeNode.getTextTrim());
+			}
 
 			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
 			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
@@ -1080,7 +1093,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class WordData {
 		Long id;
-		String posCode;
+		List<String> posCodes = new ArrayList<>();
 		String derivCode;
 		String grammar;
 		String value;

@@ -39,6 +39,7 @@ public interface TableName {
 	// classifier binds
 	public static final String MEANING_DOMAIN = "meaning_domain";
 	public static final String LEXEME_POS = "lexeme_pos";
+	public static final String LEXEME_DERIV = "lexeme_deriv";
 
 	// dataset binds
 	public static final String MEANING_DATASET = "meaning_dataset";
