@@ -114,8 +114,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processCompoundWords(context, dataset);
 		processMeaningReferences(context, dataset);
 		processJointReferences(context, dataset);
-// FIXME: disabled till we get relation types
-//		processCompoundReferences(context, dataset);
+		processCompoundReferences(context, dataset);
 		processVormels(context, dataset);
 		processSingleForms(context, dataset);
 		processCompoundForms(context, dataset);
@@ -246,7 +245,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(compoundRefData.lexemeId, lexemeId, compoundRefData.relationType, dataset);
+				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt", dataset);
 			}
 		}
 		logger.debug("Compound references processing done.");
