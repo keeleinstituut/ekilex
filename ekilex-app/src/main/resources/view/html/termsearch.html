@@ -70,15 +70,15 @@
             <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
             <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
             <div th:if="${lexeme.lexemeTypeCode != null}">
-              <b>Keelendi t&#252;&#252;p</b>
+              <b>Keelendi tüüp</b>
               <span th:text="${lexeme.lexemeTypeCode}"></span>
             </div>
             <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
-              <b>Sagedusr&uuml;hm</b>
+              <b>Sagedusrühm</b>
               <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
             </div>
             <div th:if="${lexeme.meaningTypeCode != null}">
-              <b>M&otilde;istet&uuml;&uuml;p</b>
+              <b>Mõistetüüp</b>
               <span th:text="${lexeme.meaningTypeCode}"></span>
             </div>
             <div th:if="${lexeme.meaningEntryClassCode != null}">
@@ -116,14 +116,14 @@
                             <tr>
                               <td>
                                 <i style="text-decoration: underline;">
-                                  <span>Kasutusn&auml;ite t&auml;hendus #</span>
+                                  <span>Kasutusnäite tähendus #</span>
                                   <span th:text="${usageMeaningIter.count}"></span>
                                 </i>
                               </td>
                             </tr>
                             <tr th:if="${not #lists.isEmpty(usageMeaning.usages)}">
                               <td>
-                                <b>Kasutusn&auml;ited</b>
+                                <b>Kasutusnäited</b>
                               </td>
                             </tr>
                             <tr th:each="usage : ${usageMeaning.usages}">
@@ -131,7 +131,7 @@
                             </tr>
                             <tr th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
                               <td>
-                                <b>Kasutusn&auml;ite t&otilde;lked</b>
+                                <b>Kasutusnäite tõlked</b>
                               </td>
                             </tr>
                             <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
@@ -139,7 +139,7 @@
                             </tr>
                             <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
                               <td>
-                                <b>Kasutusn&auml;ite seletused</b>
+                                <b>Kasutusnäite seletused</b>
                               </td>
                             </tr>
                             <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
@@ -187,7 +187,7 @@
               <table th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
                 <thead>
                   <th colspan="2">
-                    <small>t&auml;henduse vabavormid</small>
+                    <small>tähenduse vabavormid</small>
                   </th>
                 </thead>
                 <tr th:each="freeform : ${lexeme.meaningFreeforms}">

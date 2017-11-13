@@ -51,6 +51,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 import javax.annotation.Generated;
@@ -303,6 +305,16 @@ public class Tables {
      * The table <code>public.register_label</code>.
      */
     public static final RegisterLabel REGISTER_LABEL = eki.ekilex.data.db.tables.RegisterLabel.REGISTER_LABEL;
+
+    /**
+     * The table <code>public.source</code>.
+     */
+    public static final Source SOURCE = eki.ekilex.data.db.tables.Source.SOURCE;
+
+    /**
+     * The table <code>public.source_freeform</code>.
+     */
+    public static final SourceFreeform SOURCE_FREEFORM = eki.ekilex.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
 
     /**
      * The table <code>public.word</code>.

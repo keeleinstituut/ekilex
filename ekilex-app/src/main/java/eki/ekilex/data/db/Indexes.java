@@ -51,6 +51,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 import javax.annotation.Generated;
@@ -143,6 +145,9 @@ public class Indexes {
     public static final Index POS_LABEL_CODE_LANG_TYPE_KEY = Indexes0.POS_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index REGISTER_PKEY = Indexes0.REGISTER_PKEY;
     public static final Index REGISTER_LABEL_CODE_LANG_TYPE_KEY = Indexes0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index SOURCE_PKEY = Indexes0.SOURCE_PKEY;
+    public static final Index SOURCE_FREEFORM_PKEY = Indexes0.SOURCE_FREEFORM_PKEY;
+    public static final Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = Indexes0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_PKEY = Indexes0.WORD_PKEY;
 
@@ -217,6 +222,9 @@ public class Indexes {
         public static Index POS_LABEL_CODE_LANG_TYPE_KEY = createIndex("pos_label_code_lang_type_key", PosLabel.POS_LABEL, new OrderField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
         public static Index REGISTER_PKEY = createIndex("register_pkey", Register.REGISTER, new OrderField[] { Register.REGISTER.CODE }, true);
         public static Index REGISTER_LABEL_CODE_LANG_TYPE_KEY = createIndex("register_label_code_lang_type_key", RegisterLabel.REGISTER_LABEL, new OrderField[] { RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE }, true);
+        public static Index SOURCE_PKEY = createIndex("source_pkey", Source.SOURCE, new OrderField[] { Source.SOURCE.ID }, true);
+        public static Index SOURCE_FREEFORM_PKEY = createIndex("source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.ID }, true);
+        public static Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createIndex("source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, true);
         public static Index WORD_HOMONYM_NR_IDX = createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_PKEY = createIndex("word_pkey", Word.WORD, new OrderField[] { Word.WORD.ID }, true);
     }

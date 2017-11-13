@@ -51,6 +51,7 @@ public class WebMvcConfig extends WebMvcConfigurerAdapter implements Application
 		resolver.setApplicationContext(applicationContext);
 		resolver.setPrefix("classpath:/view/html/");
 		resolver.setSuffix(".html");
+		resolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		resolver.setCacheable(cacheTemplates);
 		return resolver;
 	}
