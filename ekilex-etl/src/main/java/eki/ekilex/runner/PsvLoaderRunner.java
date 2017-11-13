@@ -38,6 +38,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final String dataLang = "est";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]/";
+	private final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
 	private final String defaultWordMorphCode = "SgN";
 	private final String defaultRectionValue = "-";
 	private final static String REPORT_NAME = "report";
@@ -95,7 +96,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context, wordDuplicateCount);
+				processArticleContent(guid, contentNode, newWords, dataset, lexemeDuplicateCount, context);
 			}
 
 			articleCounter++;
@@ -118,6 +119,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processVormels(context, dataset);
 		processSingleForms(context, dataset);
 		processCompoundForms(context, dataset);
+		processWordComparatives(context);
+		processWordSuperlatives(context);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -125,6 +128,64 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private void processWordSuperlatives(Context context) throws Exception {
+
+		logger.debug("Starting word superlatives processing.");
+		writeToLogFile("Ülivõrrete töötlus <x:kmp>", "", "");
+		long count = 0;
+		List<WordData> words = new ArrayList<>();
+		words.addAll(context.importedWords.stream().filter(wd -> !wd.superlatives.isEmpty()).collect(Collectors.toList()));
+
+		for (WordData wordData: words) {
+			for (String superlative : wordData.superlatives) {
+				count++;
+				Long superlativeId;
+				List<WordData> existingWords = context.importedWords.stream()
+						.filter(w -> superlative.equals(w.value))
+						.collect(Collectors.toList());
+				if (existingWords.isEmpty()) {
+					logger.debug("Creating word {}", superlative);
+					WordData createdWord = createDefaultWordFrom(superlative);
+					context.importedWords.add(createdWord);
+					superlativeId = createdWord.id;
+				} else {
+					superlativeId = existingWords.get(0).id;
+				}
+				createWordRelation(wordData.id, superlativeId, "superl");
+			}
+		}
+		logger.debug("Word superlatives processing done, {}.", count);
+	}
+
+	private void processWordComparatives(Context context) throws Exception {
+
+		logger.debug("Starting word comparatives processing.");
+		writeToLogFile("Keskvõrrete töötlus <x:kmp>", "", "");
+		long count = 0;
+		List<WordData> words = new ArrayList<>();
+		words.addAll(context.importedWords.stream().filter(wd -> !wd.comparatives.isEmpty()).collect(Collectors.toList()));
+
+		for (WordData wordData: words) {
+			for (String comparative : wordData.comparatives) {
+				count++;
+				Long comparativeId;
+				List<WordData> existingWords = context.importedWords.stream()
+						.filter(w -> comparative.equals(w.value))
+						.collect(Collectors.toList());
+				if (existingWords.isEmpty()) {
+					logger.debug("Creating word {}", comparative);
+					WordData createdWord = createDefaultWordFrom(comparative);
+					context.importedWords.add(createdWord);
+					comparativeId = createdWord.id;
+				} else {
+					comparativeId = existingWords.get(0).id;
+				}
+				createWordRelation(wordData.id, comparativeId, "komp");
+			}
+		}
+		logger.debug("Word comparatives processing done, {}.", count);
 	}
 
 	private void processCompoundForms(Context context, String dataset) throws Exception {
@@ -271,17 +332,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private Long createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context, String dataset) throws Exception {
 
-		int homonymNr = getWordMaxHomonymNr(wordData.word, dataLang) + 1;
-		Word word = new Word(wordData.word, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
-		Long wordId = saveWord(word, null, null);
-		WordData newWord = new WordData();
-		newWord.id = wordId;
-		newWord.value = wordData.word;
+		WordData newWord = createDefaultWordFrom(wordData.word);
 		context.importedWords.add(newWord);
 		Long meaningId = createMeaning(dataset);
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
-		lexeme.setWordId(wordId);
+		lexeme.setWordId(newWord.id);
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
@@ -289,6 +345,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			createDefinition(meaningId, wordData.definition, dataLang, dataset);
 		}
 		return createLexeme(lexeme, dataset);
+	}
+
+	private WordData createDefaultWordFrom(String wordValue) throws Exception {
+
+		WordData createdWord = new WordData();
+		createdWord.value = wordValue;
+		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+		Word word = new Word(wordValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+		createdWord.id = saveWord(word, null, null);
+		return createdWord;
 	}
 
 	private Long findLexemeIdForWord(Long wordId, LexemeToWordData data) throws Exception {
@@ -396,21 +462,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Antonyms import done.");
 	}
 
-	private void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String dataset) throws Exception {
-
-		Map<String, Object> relationParams = new HashMap<>();
-		relationParams.put("lexeme1_id", lexemeId1);
-		relationParams.put("lexeme2_id", lexemeId2);
-		relationParams.put("lex_rel_type_code", relationType);
-		Long relationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
-		if (relationId != null) {
-			relationParams.clear();
-			relationParams.put("lex_relation_id", relationId);
-			relationParams.put("dataset_code", dataset);
-			basicDbService.createWithoutId(LEX_RELATION_DATASET, relationParams);
-		}
-	}
-
 	private void processSynonyms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} synonyms", context.synonyms.size());
@@ -421,14 +472,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Long wordId;
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> synonymData.word.equals(w.value)).collect(Collectors.toList());
 			if (existingWords.isEmpty()) {
-				int homonymNr = getWordMaxHomonymNr(synonymData.word, dataLang) + 1;
-				Word word = new Word(synonymData.word, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
-				wordId = saveWord(word, null, null);
-				WordData newWord = new WordData();
-				newWord.id = wordId;
-				newWord.value = synonymData.word;
+				WordData newWord = createDefaultWordFrom(synonymData.word);
 				context.importedWords.add(newWord);
 				newSynonymWordCount.increment();
+				wordId = newWord.id;
 			} else {
 				wordId = getWordIdFor(synonymData.word, synonymData.homonymNr, existingWords, synonymData.guid);
 				if (wordId == null) continue;
@@ -463,7 +510,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processArticleContent(String guid, Element contentNode, List<WordData> newWords, String dataset, Count lexemeDuplicateCount,
-			Context context, Count wordDuplicateCount) throws Exception {
+			Context context) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -481,7 +528,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> articleVormels = extractVormels(commonInfoNode);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
-			saveSymbol(meaningNumberGroupNode, wordDuplicateCount, context, guid);
+			saveSymbol(meaningNumberGroupNode, context, guid);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
@@ -644,19 +691,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return compoundForms;
 	}
 
-	private void saveSymbol(Element node, Count wordDuplicateCount, Context context, String guid) throws Exception {
+	private void saveSymbol(Element node, Context context, String guid) throws Exception {
 
 		final String symbolExp = "x:symb";
 
 		Element symbolNode = (Element) node.selectSingleNode(symbolExp);
 		if (symbolNode != null) {
 			String symbolValue = symbolNode.getTextTrim();
-			int homonymNr = getWordMaxHomonymNr(symbolValue, dataLang) + 1;
-			Word word = new Word(symbolValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
-			Long wordId = saveWord(word, null, wordDuplicateCount);
-			WordData data = new WordData();
-			data.value = symbolValue;
-			data.id = wordId;
+			WordData data = createDefaultWordFrom(symbolValue);
 			data.guid = guid;
 			context.importedWords.add(data);
 		}
@@ -979,6 +1021,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordDerivCodeExp = "x:dk";
 		final String wordGrammarExp = "x:mfp/x:gki";
 		final String wordFrequencyGroupExp = "x:sag";
+		final String wordComparativeExp = "x:mfp/x:kmpg/x:kmp";
+		final String wordSuperlativeExp = "x:mfp/x:kmpg/x:suprl";
 
 		boolean isAddForms = !wordParadigmsMap.isEmpty();
 		Paradigm paradigmObj = null;
@@ -1009,6 +1053,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element frequencyNode = (Element) wordGroupNode.selectSingleNode(wordFrequencyGroupExp);
 			wordData.frequencyGroup = frequencyNode == null ? null : frequencyNode.getTextTrim();
 
+			List<Element> wordComparativeNodes = wordGroupNode.selectNodes(wordComparativeExp);
+			wordData.comparatives = wordComparativeNodes.stream()
+					.map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, ""))
+					.collect(Collectors.toList());
+
+			List<Element> wordSuperlativeNodes = wordGroupNode.selectNodes(wordSuperlativeExp);
+			wordData.superlatives = wordSuperlativeNodes.stream()
+					.map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, ""))
+					.collect(Collectors.toList());
+
 			wordData.value = word.getValue();
 			newWords.add(wordData);
 		}
@@ -1037,7 +1091,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Paradigm extractParadigm(String word, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
-		final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
 
 		List<Paradigm> paradigms = wordParadigmsMap.get(word);
 		if (CollectionUtils.isEmpty(paradigms)) {
@@ -1124,6 +1177,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		String guid;
 		String frequencyGroup;
+		List<String> comparatives = new ArrayList<>();
+		List <String> superlatives = new ArrayList<>();
 	}
 
 	private class SynonymData {
