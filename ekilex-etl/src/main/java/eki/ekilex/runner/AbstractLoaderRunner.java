@@ -365,10 +365,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("value", freeformValue);
 		tableRowParamMap.put("type", freeformType.name());
 		Map<String, Object> freeform = basicDbService.queryForMap(sqlSelectLexemeFreeform, tableRowParamMap);
-		if (freeform != null) {
-			return (Long)freeform.get("id");
+		Long freeformId;
+		if (freeform == null) {
+			freeformId = createLexemeFreeform(lexemeId, freeformType, freeformValue, null);
+		} else {
+			freeformId = (Long) freeform.get("id");
 		}
-		return createLexemeFreeform(lexemeId, freeformType, freeformValue, null);
+		return freeformId;
 	}
 
 	protected void createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
