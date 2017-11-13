@@ -471,7 +471,7 @@ insert into deriv (code, datasets) values ('as', '{eos, ss_, sys, evs}');
 insert into deriv (code, datasets) values ('dem', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('posit', '{eos, ss_, sys, evs}');
 insert into deriv (code, datasets) values ('komp', '{eos, ss_, sys, evs, psv}');
-insert into deriv (code, datasets) values ('superl', '{eos, ss_, sys, evs}');
+insert into deriv (code, datasets) values ('superl', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('tgn', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('tn', '{eos, ss_, sys, evs, psv}');
 
@@ -495,6 +495,7 @@ insert into deriv_label (code, value, lang, type) values ('superl','üliv','est'
 insert into deriv_label (code, value, lang, type) values ('tgn','tgn','est','abbrev');
 insert into deriv_label (code, value, lang, type) values ('tn','tn','est','abbrev');
 
+insert into deriv_label (code, value, lang, type) values ('adv','adverb (-lt)','est','descrip');
 insert into deriv_label (code, value, lang, type) values ('as','abstraktne substantiiv','est','descrip');
 insert into deriv_label (code, value, lang, type) values ('dem','deminutiiv, vähendussõna','est','descrip');
 insert into deriv_label (code, value, lang, type) values ('posit','positiiv, algvõrre','est','descrip');
@@ -574,4 +575,8 @@ insert into domain_label (code, origin, value, lang, type) values ('Õhusõiduki
 insert into domain_label (code, origin, value, lang, type) values ('Õhusõidukite keskkonnakõlblikkus (müra, emissioonid)', 'ltb', 'Õhusõidukite keskkonnakõlblikkus (müra, emissioonid)', 'est', 'descrip');
 insert into domain_label (code, origin, value, lang, type) values ('Õhusõidukite riikkondsus ja registreerimistunnused', 'ltb', 'Õhusõidukite riikkondsus ja registreerimistunnused', 'est', 'descrip');
 
+insert into word_rel_type (code, datasets) values ('komp', '{psv}');
+insert into word_rel_type (code, datasets) values ('superl', '{psv}');
 
+insert into word_rel_type_label (code, value, lang, type) values ('komp','keskvõrre','est','full');
+insert into word_rel_type_label (code, value, lang, type) values ('superl','ülivõrre','est','full');

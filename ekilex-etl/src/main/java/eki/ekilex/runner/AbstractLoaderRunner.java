@@ -428,4 +428,29 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
 	}
+
+	protected void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String dataset) throws Exception {
+
+		Map<String, Object> relationParams = new HashMap<>();
+		relationParams.put("lexeme1_id", lexemeId1);
+		relationParams.put("lexeme2_id", lexemeId2);
+		relationParams.put("lex_rel_type_code", relationType);
+		Long relationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+		if (relationId != null) {
+			relationParams.clear();
+			relationParams.put("lex_relation_id", relationId);
+			relationParams.put("dataset_code", dataset);
+			basicDbService.createWithoutId(LEX_RELATION_DATASET, relationParams);
+		}
+	}
+
+	protected void createWordRelation(Long wordId1, Long wordId2, String relationType) throws Exception {
+
+		Map<String, Object> relationParams = new HashMap<>();
+		relationParams.put("word1_id", wordId1);
+		relationParams.put("word2_id", wordId2);
+		relationParams.put("word_rel_type_code", relationType);
+		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
+	}
+
 }

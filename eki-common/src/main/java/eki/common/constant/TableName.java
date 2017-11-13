@@ -37,6 +37,7 @@ public interface TableName {
 	public static final String LEXEME_RELATION = "lex_relation";
 	public static final String FORM_RELATION = "form_relation";
 	public static final String LIFECYCLE_LOG = "lifecycle_log";
+	public static final String WORD_RELATION = "word_relation";
 
 	// classifier binds
 	public static final String MEANING_DOMAIN = "meaning_domain";
