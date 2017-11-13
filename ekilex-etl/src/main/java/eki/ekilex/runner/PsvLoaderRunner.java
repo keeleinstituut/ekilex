@@ -8,9 +8,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -43,6 +45,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private Map<String, String> posCodes;
+	private Map<String, String> derivCodes;
 	private ReportComposer reportComposer;
 
 	@Override
@@ -65,6 +68,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
+
+		String sqlDerivCodeMappings = "select code as key, code as value from deriv where '" + dataset + "' = ANY(datasets)";
+		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappings, null);
 
 		Document dataDoc = readDocument(dataXmlFilePath);
 
@@ -110,6 +116,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 //		processCompoundReferences(context, dataset);
 		processVormels(context, dataset);
 		processSingleForms(context, dataset);
+		processCompoundForms(context, dataset);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -117,6 +124,22 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private void processCompoundForms(Context context, String dataset) throws Exception {
+
+		logger.debug("Found {} compound forms.", context.compoundForms.size());
+		writeToLogFile("Ühendite töötlus <x:pyh>", "", "");
+		for (LexemeToWordData compoundFormData: context.compoundForms) {
+			List<WordData> existingWords = context.importedWords.stream()
+					.filter(w -> compoundFormData.word.equals(w.value))
+					.collect(Collectors.toList());
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundFormData, context, dataset);
+			if (lexemeId != null) {
+				createLexemeRelation(compoundFormData.lexemeId, lexemeId, "pyh", dataset);
+			}
+		}
+		logger.debug("Compound form processing done.");
 	}
 
 	private void processSingleForms(Context context, String dataset) throws Exception {
@@ -231,9 +254,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				logger.debug("Usages found, adding them");
 				String rectionValue = isBlank(data.rection) ? defaultRectionValue : data.rection;
 				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
-				for (String usageValue: data.usages) {
-					Usage usage = new Usage();
-					usage.setValue(usageValue);
+				for (Usage usage: data.usages) {
 					createUsage(rectionId, usage);
 				}
 			}
@@ -264,7 +285,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
 		if (isNotBlank(wordData.definition)) {
-			lexeme.setLevel1(1);
 			createDefinition(meaningId, wordData.definition, dataLang, dataset);
 		}
 		return createLexeme(lexeme, dataset);
@@ -449,10 +469,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String meaningGroupExp = "x:tg";
 		final String usageGroupExp = "x:ng";
 		final String definitionValueExp = "x:dg/x:d";
+		final String commonInfoNodeExp = "x:tyg2";
+		final String lexemePosCodeExp = "x:grg/x:sl";
+		final String meaningExternalIdExp = "x:tpid";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
 		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode);
+		Element commonInfoNode = (Element) contentNode.selectSingleNode(commonInfoNodeExp);
+		List<LexemeToWordData> articleVormels = extractVormels(commonInfoNode);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 			saveSymbol(meaningNumberGroupNode, wordDuplicateCount, context, guid);
@@ -463,13 +488,24 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode);
 			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
 			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
+			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode);
 			List<Long> newLexemes = new ArrayList<>();
+			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
+			List<String> meaningPosCodes = new ArrayList<>();
+			for (Element posCodeNode : posCodeNodes ) {
+				meaningPosCodes.add(posCodeNode.getTextTrim());
+			}
+			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
+			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
 				List<Usage> usages = extractUsages(usageGroupNodes);
 
 				Long meaningId = createMeaning(dataset);
+				if (isNotEmpty(meaningExternalId)) {
+					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
+				}
 
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
@@ -497,7 +533,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						lexemeDuplicateCount.increment();
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
-						savePosAndDeriv(lexemeId, newWordData);
+						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes);
 						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
@@ -530,6 +566,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 							singleFormData.guid = guid;
 							context.singleForms.add(singleFormData);
 						}
+						for (LexemeToWordData compoundForm : compoundForms) {
+							LexemeToWordData compoundFormData = compoundForm.copy();
+							compoundFormData.lexemeId = lexemeId;
+							compoundFormData.guid = guid;
+							context.compoundForms.add(compoundFormData);
+						}
 						newLexemes.add(lexemeId);
 					}
 				}
@@ -547,8 +589,58 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					referenceData.guid = guid;
 					context.compoundReferences.add(referenceData);
 				}
+				for (LexemeToWordData vormel : articleVormels) {
+					LexemeToWordData vormelData = vormel.copy();
+					vormelData.lexemeId = lexemeId;
+					vormelData.guid = guid;
+					context.vormels.add(vormelData);
+				}
 			}
 		}
+	}
+
+	private List<LexemeToWordData> extractCompoundForms(Element node) {
+
+		final String compoundFormGroupNodeExp = "x:pyp/x:pyg";
+		final String compoundFormNodeExp = "x:pyh";
+		final String definitionGroupNodeExp = "x:pyt";
+		final String definitionExp = "x:pyd";
+		final String usageExp = "x:ng/x:n";
+		final String rectionExp = "x:rek";
+		final String usageDefinitionExp = "x:nd";
+
+		List<LexemeToWordData> compoundForms = new ArrayList<>();
+		List<Element> compoundFormGroupNodes = node.selectNodes(compoundFormGroupNodeExp);
+		for (Element compoundFormGroupNode : compoundFormGroupNodes) {
+			List<LexemeToWordData> forms = new ArrayList<>();
+			List<Element> compoundFormNodes = compoundFormGroupNode.selectNodes(compoundFormNodeExp);
+			for (Element compondFormNode : compoundFormNodes) {
+				LexemeToWordData data = new LexemeToWordData();
+				data.word = compondFormNode.getTextTrim();
+				if (compondFormNode.hasMixedContent()) {
+					data.rection = compondFormNode.selectSingleNode(rectionExp).getText();
+				}
+				forms.add(data);
+			}
+			for (LexemeToWordData data : forms) {
+				Element definitionGroupNodeNode = (Element) compoundFormGroupNode.selectSingleNode(definitionGroupNodeExp);
+				Element definitionNode = (Element) definitionGroupNodeNode.selectSingleNode(definitionExp);
+				if (definitionNode != null) {
+					data.definition = definitionNode.getTextTrim();
+				}
+				List<Element> usageNodes = definitionGroupNodeNode.selectNodes(usageExp);
+				for (Element usageNode : usageNodes) {
+					Usage usage = new Usage();
+					usage.setValue(usageNode.getTextTrim());
+					if (usageNode.hasMixedContent()) {
+						usage.setDefinition(usageNode.selectSingleNode(usageDefinitionExp).getText());
+					}
+					data.usages.add(usage);
+				}
+			}
+			compoundForms.addAll(forms);
+		}
+		return compoundForms;
 	}
 
 	private void saveSymbol(Element node, Count wordDuplicateCount, Context context, String guid) throws Exception {
@@ -577,14 +669,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String formDefinitionExp = "x:yvd";
 		final String usageExp = "x:ng/x:n";
 		final String rectionExp = "x:rek";
+		final String usageDefinitionExp = "x:nd";
 
 		List<LexemeToWordData> singleForms = new ArrayList<>();
 		List<Element> singleFormGroupNodes = node.selectNodes(singleFormGroupNodeExp);
 		for (Element singleFormGroupNode : singleFormGroupNodes) {
-			List<String> usages = new ArrayList<>();
+			List<Usage> usages = new ArrayList<>();
 			List<Element> formUsageNodes = singleFormGroupNode.selectNodes(usageExp);
 			for (Element usageNode: formUsageNodes) {
-				usages.add(usageNode.getTextTrim());
+				Usage usage = new Usage();
+				usage.setValue(usageNode.getTextTrim());
+				if (usageNode.hasMixedContent()) {
+					usage.setDefinition(usageNode.selectSingleNode(usageDefinitionExp).getText());
+				}
+				usages.add(usage);
 			}
 			List<Element> singleFormNodes = singleFormGroupNode.selectNodes(singleFormNodeExp);
 			for (Element singleFormNode : singleFormNodes) {
@@ -614,6 +712,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String vormelUsageExp = "x:ng/x:n";
 
 		List<LexemeToWordData> vormels = new ArrayList<>();
+		if (node == null) {
+			return vormels;
+		}
 		List<Element> vormelNodes = node.selectNodes(vormelNodeExp);
 		for (Element vormelNode : vormelNodes) {
 			LexemeToWordData data = new LexemeToWordData();
@@ -625,7 +726,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				data.definition = vormelDefinitionNode.getTextTrim();
 			}
 			for (Element usageNode: vormelUsages) {
-				data.usages.add(usageNode.getTextTrim());
+				Usage usage = new Usage();
+				usage.setValue(usageNode.getTextTrim());
+				data.usages.add(usage);
 			}
 			vormels.add(data);
 		}
@@ -738,15 +841,25 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData) throws Exception {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes) throws Exception {
 
-		if (posCodes.containsKey(newWordData.posCode)) {
+		Set<String> lexemePosCodes = new HashSet<>();
+		lexemePosCodes.addAll(newWordData.posCodes);
+		lexemePosCodes.addAll(meaningPosCodes);
+		for (String posCode : lexemePosCodes) {
+			if (posCodes.containsKey(posCode)) {
+				Map<String, Object> params = new HashMap<>();
+				params.put("lexeme_id", lexemeId);
+				params.put("pos_code", posCodes.get(posCode));
+				basicDbService.create(LEXEME_POS, params);
+			}
+		}
+		if (derivCodes.containsKey(newWordData.derivCode)) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("lexeme_id", lexemeId);
-			params.put("pos_code", posCodes.get(newWordData.posCode));
-			basicDbService.create(LEXEME_POS, params);
+			params.put("deriv_code", derivCodes.get(newWordData.derivCode));
+			basicDbService.create(LEXEME_DERIV, params);
 		}
-		// TODO: add deriv code when we get the mappings between EKILEX and EKI data
 	}
 
 	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
@@ -875,8 +988,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
 			basicWords.addAll(basicWordsOfTheWord);
 
-			Element posCodeNode = (Element) wordGroupNode.selectSingleNode(wordPosCodeExp);
-			wordData.posCode = posCodeNode == null ? null : posCodeNode.getTextTrim();
+			List<Element> posCodeNodes = wordGroupNode.selectNodes(wordPosCodeExp);
+			for (Element posCodeNode : posCodeNodes ) {
+				wordData.posCodes.add(posCodeNode.getTextTrim());
+			}
 
 			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
 			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
@@ -995,7 +1110,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class WordData {
 		Long id;
-		String posCode;
+		List<String> posCodes = new ArrayList<>();
 		String derivCode;
 		String grammar;
 		String value;
@@ -1019,7 +1134,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String relationType;
 		String rection;
 		String definition;
-		List<String> usages = new ArrayList<>();
+		List<Usage> usages = new ArrayList<>();
 		String guid;
 
 		LexemeToWordData copy() {
@@ -1056,6 +1171,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> compoundReferences = new ArrayList<>(); // ühendiviide
 		List<LexemeToWordData> vormels = new ArrayList<>(); // vormel
 		List<LexemeToWordData> singleForms = new ArrayList<>(); // üksikvorm
+		List<LexemeToWordData> compoundForms = new ArrayList<>(); // ühend
 	}
 
 }

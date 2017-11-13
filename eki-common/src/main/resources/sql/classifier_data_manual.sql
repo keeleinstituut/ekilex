@@ -27,6 +27,7 @@ insert into lex_rel_type (code, datasets) values ('yvt:vt ka', '{psv}');
 insert into lex_rel_type (code, datasets) values ('yvt:NB', '{psv}');
 insert into lex_rel_type (code, datasets) values ('vor', '{psv}');
 insert into lex_rel_type (code, datasets) values ('yvr', '{psv}');
+insert into lex_rel_type (code, datasets) values ('pyh', '{psv}');
 
 insert into lex_rel_type_label (code, value, lang, type) values ('comp', 'liits천na', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('ant', 'anton체체m', 'est', 'full');
@@ -38,6 +39,7 @@ insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vt ka', '�
 insert into lex_rel_type_label (code, value, lang, type) values ('yvt:NB', '체hisviide NB', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('vor', 'vormel', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('yvr', '체ksikvorm', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('pyh', '체hend', 'est', 'full');
 
 insert into form_rel_type (code, datasets) values ('mvt', '{psv}');
 
@@ -464,13 +466,14 @@ insert into morph_label (code, value, lang, type) values ('KvtPtPsN','polnuvat',
 insert into morph_label (code, value, lang, type) values ('KndPrPsN','poleks','est','descrip');
 insert into morph_label (code, value, lang, type) values ('KndPtPsN','polnuks','est','descrip');
 
+insert into deriv (code, datasets) values ('adv', '{psv}');
 insert into deriv (code, datasets) values ('as', '{eos, ss_, sys, evs}');
-insert into deriv (code, datasets) values ('dem', '{eos, ss_, sys, evs}');
+insert into deriv (code, datasets) values ('dem', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('posit', '{eos, ss_, sys, evs}');
-insert into deriv (code, datasets) values ('komp', '{eos, ss_, sys, evs}');
+insert into deriv (code, datasets) values ('komp', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('superl', '{eos, ss_, sys, evs}');
-insert into deriv (code, datasets) values ('tgn', '{eos, ss_, sys, evs}');
-insert into deriv (code, datasets) values ('tn', '{eos, ss_, sys, evs}');
+insert into deriv (code, datasets) values ('tgn', '{eos, ss_, sys, evs, psv}');
+insert into deriv (code, datasets) values ('tn', '{eos, ss_, sys, evs, psv}');
 
 insert into deriv_label (code, value, lang, type) values ('as','US','est','ekimorfo');
 insert into deriv_label (code, value, lang, type) values ('dem','KE/KENE','est','ekimorfo');
