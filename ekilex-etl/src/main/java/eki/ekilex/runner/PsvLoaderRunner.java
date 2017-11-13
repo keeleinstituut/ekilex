@@ -471,6 +471,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String definitionValueExp = "x:dg/x:d";
 		final String commonInfoNodeExp = "x:tyg2";
 		final String lexemePosCodeExp = "x:grg/x:sl";
+		final String meaningExternalIdExp = "x:tpid";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
@@ -494,12 +495,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			for (Element posCodeNode : posCodeNodes ) {
 				meaningPosCodes.add(posCodeNode.getTextTrim());
 			}
+			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
+			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
 				List<Usage> usages = extractUsages(usageGroupNodes);
 
 				Long meaningId = createMeaning(dataset);
+				if (isNotEmpty(meaningExternalId)) {
+					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
+				}
 
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
