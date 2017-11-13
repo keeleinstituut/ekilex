@@ -533,7 +533,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						lexemeDuplicateCount.increment();
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
-						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes);
+						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, guid);
 						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
@@ -841,11 +841,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes) throws Exception {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String guid) throws Exception {
 
 		Set<String> lexemePosCodes = new HashSet<>();
-		lexemePosCodes.addAll(newWordData.posCodes);
-		lexemePosCodes.addAll(meaningPosCodes);
+		if (meaningPosCodes.isEmpty()) {
+			lexemePosCodes.addAll(newWordData.posCodes);
+		} else {
+			lexemePosCodes.addAll(meaningPosCodes);
+			if (lexemePosCodes.size() > 1) {
+				writeToLogFile("Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", guid, "");
+			}
+		}
 		for (String posCode : lexemePosCodes) {
 			if (posCodes.containsKey(posCode)) {
 				Map<String, Object> params = new HashMap<>();
