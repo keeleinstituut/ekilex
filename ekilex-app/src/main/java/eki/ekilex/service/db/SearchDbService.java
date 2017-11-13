@@ -122,7 +122,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(
 						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.TYPE.as("lexeme_type_code"),
+						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),
@@ -228,7 +228,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(
 						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.TYPE.as("lexeme_type_code"),
+						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),

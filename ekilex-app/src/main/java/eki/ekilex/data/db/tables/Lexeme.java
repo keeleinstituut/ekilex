@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = -309440001;
+    private static final long serialVersionUID = -522584307;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -92,9 +92,9 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.lexeme.type</code>.
+     * The column <code>public.lexeme.type_code</code>.
      */
-    public final TableField<LexemeRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<LexemeRecord, String> TYPE_CODE = createField("type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme.frequency_group</code>.
@@ -190,7 +190,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_TYPE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_TYPE_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY);
     }
 
     /**

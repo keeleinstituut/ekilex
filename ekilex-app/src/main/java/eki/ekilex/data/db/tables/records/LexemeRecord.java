@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements Record12<Long, Long, Long, Timestamp, String, Timestamp, String, String, String, Integer, Integer, Integer> {
 
-    private static final long serialVersionUID = -1127052478;
+    private static final long serialVersionUID = 714949417;
 
     /**
      * Setter for <code>public.lexeme.id</code>.
@@ -131,16 +131,16 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     }
 
     /**
-     * Setter for <code>public.lexeme.type</code>.
+     * Setter for <code>public.lexeme.type_code</code>.
      */
-    public void setType(String value) {
+    public void setTypeCode(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>public.lexeme.type</code>.
+     * Getter for <code>public.lexeme.type_code</code>.
      */
-    public String getType() {
+    public String getTypeCode() {
         return (String) get(7);
     }
 
@@ -293,7 +293,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public Field<String> field8() {
-        return Lexeme.LEXEME.TYPE;
+        return Lexeme.LEXEME.TYPE_CODE;
     }
 
     /**
@@ -389,7 +389,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public String component8() {
-        return getType();
+        return getTypeCode();
     }
 
     /**
@@ -485,7 +485,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public String value8() {
-        return getType();
+        return getTypeCode();
     }
 
     /**
@@ -588,7 +588,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public LexemeRecord value8(String value) {
-        setType(value);
+        setTypeCode(value);
         return this;
     }
 
@@ -662,7 +662,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     /**
      * Create a detached, initialised LexemeRecord
      */
-    public LexemeRecord(Long id, Long wordId, Long meaningId, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String type, String frequencyGroup, Integer level1, Integer level2, Integer level3) {
+    public LexemeRecord(Long id, Long wordId, Long meaningId, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String typeCode, String frequencyGroup, Integer level1, Integer level2, Integer level3) {
         super(Lexeme.LEXEME);
 
         set(0, id);
@@ -672,7 +672,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
         set(4, createdBy);
         set(5, modifiedOn);
         set(6, modifiedBy);
-        set(7, type);
+        set(7, typeCode);
         set(8, frequencyGroup);
         set(9, level1);
         set(10, level2);

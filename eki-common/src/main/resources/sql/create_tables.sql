@@ -18,11 +18,13 @@ drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_dataset;
 drop table if exists meaning;
-drop table if exists freeform;
 drop table if exists form_relation;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word;
+drop table if exists source_freeform;
+drop table if exists source;
+drop table if exists freeform;
 drop table if exists form_rel_type_label;
 drop table if exists form_rel_type;
 drop table if exists lex_rel_type_label;
@@ -241,7 +243,7 @@ create table meaning_state
   code varchar(100) primary key,
   datasets varchar(10) array not null
 );
--- missing meaning_status_label
+-- missing meaning_state_label
 
 -- seose liik
 create table lex_rel_type
@@ -297,6 +299,46 @@ create table dataset
   name text not null
 );
 
+-- vabavorm
+create table freeform
+(
+  id bigserial primary key,
+  parent_id bigint references freeform(id) on delete cascade null,
+  type varchar(100) not null,
+  value_text text null,
+  value_date timestamp null,
+  value_number numeric(14, 4) null,
+  value_array text array null,
+  classif_name text null,
+  classif_code varchar(100) null,
+  lang char(3) references lang(code) null
+);
+alter sequence freeform_id_seq restart with 10000;
+
+-- allikas
+create table source
+(
+  id bigserial primary key,
+  concept varchar(100) not null,
+  created_on timestamp null,
+  created_by varchar(100) null,
+  modified_on timestamp null,
+  modified_by varchar(100) null,
+  entry_class_code varchar(100) references entry_class(code) null,
+  type varchar(100) null
+);
+alter sequence source_id_seq restart with 10000;
+
+-- allika vabavorm
+create table source_freeform
+(
+  id bigserial primary key,
+  source_id bigint references source(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  unique(source_id, freeform_id)
+);
+alter sequence source_freeform_id_seq restart with 10000;
+
 -- keelend (morfoloogiline homonüüm)
 create table word
 (
@@ -340,22 +382,6 @@ create table form_relation
   unique(form1_id, form2_id, form_rel_type_code)
 );
 alter sequence form_relation_id_seq restart with 10000;
-
--- vabavorm
-create table freeform
-(
-  id bigserial primary key,
-  parent_id bigint references freeform(id) on delete cascade null,
-  type varchar(100) not null,
-  value_text text null,
-  value_date timestamp null,
-  value_number numeric(14, 4) null,
-  value_array text array null,
-  classif_name text null,
-  classif_code varchar(100) null,
-  lang char(3) references lang(code) null
-);
-alter sequence freeform_id_seq restart with 10000;
 
 -- tähendus
 create table meaning
@@ -436,7 +462,7 @@ create table lexeme
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  type varchar(100) references lexeme_type(code) null,
+  type_code varchar(100) references lexeme_type(code) null,
   frequency_group varchar(100) references lexeme_frequency(code) null,
   level1 integer default 0,
   level2 integer default 0,
@@ -489,44 +515,6 @@ create table lexeme_freeform
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
 
--- rektsioon
-create table rection
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  value text not null
-);
-alter sequence rection_id_seq restart with 10000;
-
--- kasutusnäide/kontekst
-create table usage
-(
-  id bigserial primary key,
-  rection_id bigint references rection(id) on delete cascade not null,
-  value text not null
-);
-alter sequence usage_id_seq restart with 10000;
-
--- kasutusnäite tõlge
-create table usage_translation
-(
-  id bigserial primary key,
-  usage_id bigint references usage(id) on delete cascade not null,
-  value text not null,
-  lang char(3) references lang(code) not null
-);
-alter sequence usage_translation_id_seq restart with 10000;
-
--- gramm.kasutusinfo
-create table grammar
-(
-  id bigserial primary key,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  value text not null,
-  lang char(3) references lang(code) not null
-);
-alter sequence grammar_id_seq restart with 10000;
-
 -- seos
 create table lex_relation
 (
@@ -554,7 +542,5 @@ create index word_homonym_nr_idx on word(homonym_nr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);
-create index rection_lexeme_id_idx on rection(lexeme_id);
-create index grammar_lexeme_id_idx on grammar(lexeme_id);
 create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);

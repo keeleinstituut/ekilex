@@ -51,6 +51,8 @@ import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 import java.util.ArrayList;
@@ -78,7 +80,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1683732904;
+    private static final long serialVersionUID = 1245823135;
 
     /**
      * The reference instance of <code>public</code>
@@ -321,6 +323,16 @@ public class Public extends SchemaImpl {
     public final RegisterLabel REGISTER_LABEL = eki.ekilex.data.db.tables.RegisterLabel.REGISTER_LABEL;
 
     /**
+     * The table <code>public.source</code>.
+     */
+    public final Source SOURCE = eki.ekilex.data.db.tables.Source.SOURCE;
+
+    /**
+     * The table <code>public.source_freeform</code>.
+     */
+    public final SourceFreeform SOURCE_FREEFORM = eki.ekilex.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
@@ -367,6 +379,8 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.PARADIGM_ID_SEQ,
+            Sequences.SOURCE_FREEFORM_ID_SEQ,
+            Sequences.SOURCE_ID_SEQ,
             Sequences.WORD_ID_SEQ);
     }
 
@@ -426,6 +440,8 @@ public class Public extends SchemaImpl {
             PosLabel.POS_LABEL,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
+            Source.SOURCE,
+            SourceFreeform.SOURCE_FREEFORM,
             Word.WORD);
     }
 }

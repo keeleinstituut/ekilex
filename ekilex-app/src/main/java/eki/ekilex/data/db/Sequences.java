@@ -109,6 +109,16 @@ public class Sequences {
     public static final Sequence<Long> PARADIGM_ID_SEQ = new SequenceImpl<Long>("paradigm_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.source_freeform_id_seq</code>
+     */
+    public static final Sequence<Long> SOURCE_FREEFORM_ID_SEQ = new SequenceImpl<Long>("source_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.source_id_seq</code>
+     */
+    public static final Sequence<Long> SOURCE_ID_SEQ = new SequenceImpl<Long>("source_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.word_id_seq</code>
      */
     public static final Sequence<Long> WORD_ID_SEQ = new SequenceImpl<Long>("word_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

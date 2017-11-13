@@ -19,6 +19,7 @@ public interface TableName {
 	public static final String LABEL_TYPE = "label_type";
 
 	// dynamic
+	public static final String SOURCE = "source";
 	public static final String WORD = "word";
 	public static final String DECLINATION = "declination";
 	public static final String LEXEME = "lexeme";
@@ -30,6 +31,7 @@ public interface TableName {
 	public static final String LEXEME_FREEFORM = "lexeme_freeform";
 	public static final String MEANING_FREEFORM = "meaning_freeform";
 	public static final String DEFINITION_FREEFORM = "definition_freeform";
+	public static final String SOURCE_FREEFORM = "source_freeform";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";
 	public static final String LEXEME_RELATION = "lex_relation";
