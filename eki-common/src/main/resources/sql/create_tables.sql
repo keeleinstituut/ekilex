@@ -22,7 +22,10 @@ drop table if exists freeform;
 drop table if exists form_relation;
 drop table if exists form;
 drop table if exists paradigm;
+drop table if exists word_relation;
 drop table if exists word;
+drop table if exists word_rel_type_label;
+drop table if exists word_rel_type;
 drop table if exists form_rel_type_label;
 drop table if exists form_rel_type;
 drop table if exists lex_rel_type_label;
@@ -275,6 +278,22 @@ create table form_rel_type_label
   unique(code, lang, type)
 );
 
+-- ilmiku seose liik
+create table word_rel_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table word_rel_type_label
+(
+  code varchar(100) references word_rel_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -306,6 +325,17 @@ create table word
   homonym_nr integer default 1
 );
 alter sequence word_id_seq restart with 10000;
+
+-- keelendi seos
+create table word_relation
+(
+  id bigserial primary key,
+  word1_id bigint references word(id) on delete cascade not null,
+  word2_id bigint references word(id) on delete cascade not null,
+  word_rel_type_code varchar(100) references word_rel_type(code),
+  unique(word1_id, word2_id, word_rel_type_code)
+);
+alter sequence word_relation_id_seq restart with 10000;
 
 -- paradigma
 create table paradigm
@@ -558,3 +588,5 @@ create index rection_lexeme_id_idx on rection(lexeme_id);
 create index grammar_lexeme_id_idx on grammar(lexeme_id);
 create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
+create index word_relation_word1_id_idx on word_relation(word1_id);
+create index word_relation_word2_id_idx on word_relation(word2_id);

@@ -574,4 +574,8 @@ insert into domain_label (code, origin, value, lang, type) values ('Õhusõiduki
 insert into domain_label (code, origin, value, lang, type) values ('Õhusõidukite keskkonnakõlblikkus (müra, emissioonid)', 'ltb', 'Õhusõidukite keskkonnakõlblikkus (müra, emissioonid)', 'est', 'descrip');
 insert into domain_label (code, origin, value, lang, type) values ('Õhusõidukite riikkondsus ja registreerimistunnused', 'ltb', 'Õhusõidukite riikkondsus ja registreerimistunnused', 'est', 'descrip');
 
+insert into word_rel_type (code, datasets) values ('komp', '{psv}');
+insert into word_rel_type (code, datasets) values ('superl', '{psv}');
 
+insert into word_rel_type_label (code, value, lang, type) values ('komp','keskvõrre','est','full');
+insert into word_rel_type_label (code, value, lang, type) values ('superl','ülivõrre','est','full');
