@@ -8,9 +8,11 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -468,6 +470,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String usageGroupExp = "x:ng";
 		final String definitionValueExp = "x:dg/x:d";
 		final String commonInfoNodeExp = "x:tyg2";
+		final String lexemePosCodeExp = "x:grg/x:sl";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
@@ -486,6 +489,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
 			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode);
 			List<Long> newLexemes = new ArrayList<>();
+			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
+			List<String> meaningPosCodes = new ArrayList<>();
+			for (Element posCodeNode : posCodeNodes ) {
+				meaningPosCodes.add(posCodeNode.getTextTrim());
+			}
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
@@ -519,7 +527,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						lexemeDuplicateCount.increment();
 					} else {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
-						savePosAndDeriv(lexemeId, newWordData);
+						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes);
 						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
@@ -827,9 +835,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData) throws Exception {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes) throws Exception {
 
-		for (String posCode : newWordData.posCodes) {
+		Set<String> lexemePosCodes = new HashSet<>();
+		lexemePosCodes.addAll(newWordData.posCodes);
+		lexemePosCodes.addAll(meaningPosCodes);
+		for (String posCode : lexemePosCodes) {
 			if (posCodes.containsKey(posCode)) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("lexeme_id", lexemeId);
