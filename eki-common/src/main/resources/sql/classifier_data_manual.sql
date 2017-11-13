@@ -471,7 +471,7 @@ insert into deriv (code, datasets) values ('as', '{eos, ss_, sys, evs}');
 insert into deriv (code, datasets) values ('dem', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('posit', '{eos, ss_, sys, evs}');
 insert into deriv (code, datasets) values ('komp', '{eos, ss_, sys, evs, psv}');
-insert into deriv (code, datasets) values ('superl', '{eos, ss_, sys, evs}');
+insert into deriv (code, datasets) values ('superl', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('tgn', '{eos, ss_, sys, evs, psv}');
 insert into deriv (code, datasets) values ('tn', '{eos, ss_, sys, evs, psv}');
 
@@ -495,6 +495,7 @@ insert into deriv_label (code, value, lang, type) values ('superl','üliv','est'
 insert into deriv_label (code, value, lang, type) values ('tgn','tgn','est','abbrev');
 insert into deriv_label (code, value, lang, type) values ('tn','tn','est','abbrev');
 
+insert into deriv_label (code, value, lang, type) values ('adv','adverb (-lt)','est','descrip');
 insert into deriv_label (code, value, lang, type) values ('as','abstraktne substantiiv','est','descrip');
 insert into deriv_label (code, value, lang, type) values ('dem','deminutiiv, vähendussõna','est','descrip');
 insert into deriv_label (code, value, lang, type) values ('posit','positiiv, algvõrre','est','descrip');

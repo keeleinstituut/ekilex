@@ -71,6 +71,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		String sqlDerivCodeMappings = "select code as key, code as value from deriv where '" + dataset + "' = ANY(datasets)";
 		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappings, null);
+		derivCodes.put("sup","superl");
 
 		Document dataDoc = readDocument(dataXmlFilePath);
 
