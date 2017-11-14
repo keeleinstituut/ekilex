@@ -47,10 +47,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> posCodes;
 	private Map<String, String> derivCodes;
+	private Map<String, String> lexemeTypes;
 	private ReportComposer reportComposer;
 
 	@Override
 	void initialise() throws Exception {
+		lexemeTypes = new HashMap<>();
+		lexemeTypes.put("l", "lühend");
+		lexemeTypes.put("mvv", "viiteartikli märksõna");
+		lexemeTypes.put("yv", "ühendverb");
+		lexemeTypes.put("vv", "väljendverb");
+		lexemeTypes.put("av", "ahelverb");
+		lexemeTypes.put("tv", "tugiverb");
+		lexemeTypes.put("vlj", "väljend");
+		lexemeTypes.put("ys", "ühendsidesõna");
+		lexemeTypes.put("rs", "rühmsidesõna");
 	}
 
 	@Transactional
@@ -571,6 +582,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel2++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
+					lexeme.setType(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
@@ -1120,10 +1132,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String wordExp = "x:m";
 		final String homonymNrAttr = "i";
+		final String lexemeTypeAttr = "liik";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
+		}
+		if (wordNode.attributeValue(lexemeTypeAttr) != null) {
+			wordData.lexemeType = lexemeTypes.get(wordNode.attributeValue(lexemeTypeAttr));
 		}
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;
@@ -1177,6 +1193,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		String guid;
 		String frequencyGroup;
+		String lexemeType;
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
 	}

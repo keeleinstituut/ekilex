@@ -30,6 +30,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private String frequencyGroup;
 
+	private String type;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -116,5 +118,13 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setFrequencyGroup(String frequencyGroup) {
 		this.frequencyGroup = frequencyGroup;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }
