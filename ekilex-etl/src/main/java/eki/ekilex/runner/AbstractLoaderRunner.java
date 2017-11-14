@@ -113,19 +113,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Long wordId;
 
 		if (tableRowValueMap == null) {
-
-			// word
 			wordId = createWord(wordMorphCode, homonymNr, wordLang);
-
 			if (paradigm == null) {
-
-				// empty paradigm
-				Long paradigmId = createParadigm(wordId);
-
-				// form
+				Long paradigmId = createParadigm(wordId, word.getInflectionTypeNr());
 				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
 			}
-
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
 			if (wordDuplicateCount != null) {
@@ -134,10 +126,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		}
 		word.setId(wordId);
 		if (paradigm != null) {
-
 			// mab paradigm
-			Long paradigmId = createParadigm(wordId);
-
+			Long paradigmId = createParadigm(wordId, paradigm.getInflectionTypeNr());
 			// mab forms
 			List<Form> forms = paradigm.getForms();
 			for (Form form : forms) {
@@ -180,10 +170,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(FORM, tableRowParamMap);
 	}
 
-	private Long createParadigm(Long wordId) throws Exception {
+	private Long createParadigm(Long wordId, Integer inflectionTypeNr) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
+		if (inflectionTypeNr != null) {
+			tableRowParamMap.put("inflection_type_nr", inflectionTypeNr);
+		}
 		Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
 		return paradigmId;
 	}

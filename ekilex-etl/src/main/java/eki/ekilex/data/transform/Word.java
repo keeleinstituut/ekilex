@@ -22,6 +22,8 @@ public class Word extends AbstractDataObject {
 
 	private String morphCode;
 
+	private Integer inflectionTypeNr;
+
 	public Word() {
 	}
 
@@ -99,4 +101,11 @@ public class Word extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
+	public Integer getInflectionTypeNr() {
+		return inflectionTypeNr;
+	}
+
+	public void setInflectionTypeNr(Integer inflectionTypeNr) {
+		this.inflectionTypeNr = inflectionTypeNr;
+	}
 }

@@ -1058,6 +1058,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
 			WordData wordData = new WordData();
+			wordData.guid = guid;
 
 			Word word = extractWord(wordGroupNode, wordData);
 			if (isAddForms) {
@@ -1150,6 +1151,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordExp = "x:m";
 		final String homonymNrAttr = "i";
 		final String lexemeTypeAttr = "liik";
+		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
@@ -1163,8 +1165,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
+		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);
+		if (inflectionTypeNrNode != null) {
+			String inflectionTypeNrStr = inflectionTypeNrNode.getTextTrim();
+			try {
+				wordData.inflectionTypeNr = Integer.valueOf(inflectionTypeNrStr);
+			} catch (NumberFormatException e) {
+				logger.debug("Inflection type number is not a number for {} value {}", wordData.guid, inflectionTypeNrStr);
+				writeToLogFile("Muuttüübi numberi viga, väärtus pole number", wordData.guid, inflectionTypeNrStr);
+			}
+		}
 
-		return new Word(wordValue, dataLang, null, wordDisplayForm, null, homonymNr, wordMorphCode);
+		Word word = new Word(wordValue, dataLang, null, wordDisplayForm, null, homonymNr, wordMorphCode);
+		word.setInflectionTypeNr(wordData.inflectionTypeNr);
+		return word;
 	}
 
 	private String getWordMorphCode(String word, Element wordGroupNode) {
@@ -1211,6 +1225,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String guid;
 		String frequencyGroup;
 		String lexemeType;
+		Integer inflectionTypeNr;
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
 	}
