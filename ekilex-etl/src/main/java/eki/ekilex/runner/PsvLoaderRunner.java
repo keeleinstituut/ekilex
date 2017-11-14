@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -254,7 +255,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> compoundRefData.word.equals(w.value))
 					.collect(Collectors.toList());
-			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset);
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.relationType);
 			if (lexemeId != null) {
 				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt", dataset);
 			}
@@ -313,6 +314,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long findOrCreateLexemeForWord(List<WordData> existingWords, LexemeToWordData data, Context context, String dataset) throws Exception {
+		return findOrCreateLexemeForWord(existingWords, data, context, dataset, null);
+	}
+
+	private Long findOrCreateLexemeForWord(
+			List<WordData> existingWords, LexemeToWordData data, Context context, String dataset, String lexemeType) throws Exception {
 
 		if (existingWords.size() > 1) {
 			logger.debug("Found more than one word : {}.", data.word);
@@ -321,7 +327,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Long lexemeId;
 		if (existingWords.isEmpty()) {
 			logger.debug("No word found, adding word with objects : {}.", data.word);
-			lexemeId = createLexemeAndRelatedObjects(data, context, dataset);
+			lexemeId = createLexemeAndRelatedObjects(data, context, dataset, lexemeType);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found, adding them");
 				String rectionValue = isBlank(data.rection) ? defaultRectionValue : data.rection;
@@ -331,7 +337,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		} else {
-			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data);
+			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data, lexemeType);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found for word, skipping them : {}.", data.word);
 				writeToLogFile("Leiti kasutusnäited olemasolevale ilmikule", data.guid, data.word);
@@ -340,7 +346,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return lexemeId;
 	}
 
-	private Long createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context, String dataset) throws Exception {
+	private Long createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context, String dataset, String lexemeType) throws Exception {
 
 		WordData newWord = createDefaultWordFrom(wordData.word);
 		context.importedWords.add(newWord);
@@ -351,6 +357,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
+		if (lexemeType != null) {
+			lexeme.setType(lexemeTypes.get(lexemeType));
+		}
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, dataset);
 		}
@@ -367,7 +376,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private Long findLexemeIdForWord(Long wordId, LexemeToWordData data) throws Exception {
+	private Long findLexemeIdForWord(Long wordId, LexemeToWordData data, String lexemeType) throws Exception {
 
 		Long lexemeId = null;
 		Map<String, Object> params = new HashMap<>();
@@ -385,6 +394,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", data.guid, data.word);
 			}
 			lexemeId = (Long) lexemes.get(0).get("id");
+			if (isNotEmpty(lexemeType)) {
+				String existingLexemeType = (String) lexemes.get(0).get("type_code");
+				String expectedLexemeType = lexemeTypes.get(lexemeType);
+				if (!Objects.equals(existingLexemeType, expectedLexemeType)) {
+					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, expectedLexemeType, existingLexemeType);
+					writeToLogFile("Ilmikute tüübid on erinevad", data.guid, data.word + ", " + expectedLexemeType + " != " + existingLexemeType);
+				}
+			}
 		}
 		return lexemeId;
 	}
