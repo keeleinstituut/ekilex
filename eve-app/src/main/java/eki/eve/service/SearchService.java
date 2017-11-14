@@ -8,20 +8,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import eki.common.data.Classifier;
-import eki.eve.data.Definition;
-import eki.eve.data.FreeForm;
-import eki.eve.data.RectionUsageTranslationDefinitionTuple;
-import eki.eve.data.UsageMeaning;
-import eki.eve.data.UsageMember;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eki.common.data.Classifier;
+import eki.eve.data.Definition;
 import eki.eve.data.Form;
-import eki.eve.data.WordLexeme;
+import eki.eve.data.FreeForm;
 import eki.eve.data.Rection;
+import eki.eve.data.RectionUsageTranslationDefinitionTuple;
+import eki.eve.data.UsageMeaning;
+import eki.eve.data.UsageMember;
 import eki.eve.data.Word;
 import eki.eve.data.WordDetails;
+import eki.eve.data.WordLexeme;
 import eki.eve.service.db.SearchDbService;
 
 @Service
@@ -35,6 +36,9 @@ public class SearchService {
 	}
 
 	public List<Word> findWords(String searchFilter) {
+		if (StringUtils.isBlank(searchFilter)) {
+			return new ArrayList<>();
+		}
 		return searchDbService.findWords(searchFilter).into(Word.class);
 	}
 

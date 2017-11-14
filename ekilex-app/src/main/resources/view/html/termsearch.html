@@ -180,7 +180,8 @@
                     <span th:text="${freeform.type}"></span>
                   </td>
                   <td>
-                    <span th:text="${freeform.displayString}"></span>
+                    <span th:text="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+                    <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                   </td>
                 </tr>
               </table>
@@ -195,7 +196,8 @@
                     <span th:text="${freeform.type}"></span>
                   </td>
                   <td>
-                    <span th:text="${freeform.displayString}"></span>
+                    <span th:text="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+                    <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                   </td>
                 </tr>
               </table>

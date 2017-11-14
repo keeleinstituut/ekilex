@@ -1,13 +1,13 @@
 package eki.ekilex.data;
 
-import eki.common.constant.FreeformType;
-import eki.common.data.AbstractDataObject;
-
-import javax.persistence.Column;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.persistence.Column;
+
+import eki.common.constant.FreeformType;
+import eki.common.data.AbstractDataObject;
 
 public class FreeForm extends AbstractDataObject {
 
@@ -23,9 +23,9 @@ public class FreeForm extends AbstractDataObject {
 	private String valueText;
 
 	@Column(name = "value_date")
-	private LocalDateTime valueDate;
+	private Timestamp valueDate;
 
-	private List<FreeForm> childs = new ArrayList<>();
+	private List<FreeForm> children = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -51,25 +51,19 @@ public class FreeForm extends AbstractDataObject {
 		this.valueText = valueText;
 	}
 
-	public LocalDateTime getValueDate() {
+	public Timestamp getValueDate() {
 		return valueDate;
 	}
 
-	public void setValueDate(LocalDateTime valueDate) {
+	public void setValueDate(Timestamp valueDate) {
 		this.valueDate = valueDate;
 	}
 
-	public List<FreeForm> getChilds() {
-		return childs;
+	public List<FreeForm> getChildren() {
+		return children;
 	}
 
-	public void setChilds(List<FreeForm> childs) {
-		this.childs = childs;
-	}
-
-	public String getDisplayString() {
-		String textStr = getValueText() != null ? getValueText() : "";
-		String dateStr = getValueDate() != null ? getValueDate().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME) : "";
-		return textStr + dateStr;
+	public void setChildren(List<FreeForm> children) {
+		this.children = children;
 	}
 }
