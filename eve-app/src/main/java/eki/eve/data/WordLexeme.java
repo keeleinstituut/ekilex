@@ -1,4 +1,4 @@
-package eki.ekilex.data;
+package eki.eve.data;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -6,11 +6,11 @@ import java.util.function.Consumer;
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.data.Classifier;
 
 public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
 
 	private List<Classifier> domains;
 
@@ -21,8 +21,7 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "datasets")
 	private List<String> datasets;
 
-	@Column(name = "definitions")
-	private List<String> definitions;
+	private List<Definition> definitions;
 
 	private List<FreeForm> meaningFreeforms;
 
@@ -199,11 +198,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.datasets = datasets;
 	}
 
-	public List<String> getDefinitions() {
+	public List<Definition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<String> definitions) {
+	public void setDefinitions(List<Definition> definitions) {
 		this.definitions = definitions;
 	}
 
@@ -226,4 +225,5 @@ public class WordLexeme extends AbstractDataObject {
 	public boolean isFreeformsExist() {
 		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
 	}
+
 }

@@ -10,7 +10,11 @@
 <body>
   <div class="container-fluid">
     <div class="d-flex flex-row">
-      <p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p>
+      <p class="card-text">
+        <a th:href="@{/}">
+          <span th:text="${appData.appName + ' ' + appData.appVersion}"></span>
+        </a>
+      </p>
     </div>
     <div class="card mt-4">
       <div class="card-header">
@@ -40,60 +44,87 @@
           <td class="w-100">
             <span th:text="${word.value}">vorm 1</span>
             <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
-            <button type="button" class="btn btn-link" th:data-id="${word.id}" name="details">Detailid</button>
-            <div th:name="${word.id}+'_details'"></div>
+            <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">Detailid</button>
+            <div th:name="${word.formId}+'_details'"></div>
           </td>
         </tr>
       </table>
     </div>
   </div>
+
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:name="${detailsName}" class="pl-4">
       <div class="float-left w-25">
         <th:block th:each="form : ${details.forms}">
-          <span
-            th:text="
-            ${form.value + ' (' + form.morphCode + '-' + form.morphValue
-            + (#strings.isEmpty(form.displayForm) ? '' :  '; ' + form.displayForm)
-            + (#strings.isEmpty(form.vocalForm) ? '' :  '; ' + form.vocalForm) + ')'}">
-          </span>
+          <span th:text="${form.value}"></span>
+          (
+          <span th:text="${form.morphCode + '-' + form.morphValue}"></span>
+          <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+          <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+          )
           <br>
         </th:block>
       </div>
       <div class="float-left w-75">
-        <th:block th:each="meaning : ${details.meanings}">
-          <span th:each="rection,rectionIter : ${meaning.rections}">
-            <span th:text="${rection.value}"></span>
-            <span th:unless="${rectionIter.last}">,</span>
-            (
-            <span th:each="usage,usageIter : ${rection.usages}">
-              <span th:text="${usage}"></span>
-              <a href="javascript:void(0)" class="badge badge-info"
-                 th:data-words="${usage}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
-              <span th:unless="${usageIter.last}">,</span>
-            </span>
-            )
-          </span>
-          <br th:if="${not #lists.isEmpty(meaning.rections)}"/>
-          <span th:each="word,wordIter : ${meaning.words}">
+        <th:block th:each="lexeme,meaningIter : ${details.lexemes}">
+          <span th:each="word,wordIter : ${lexeme.words}">
             <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
             <span th:unless="${wordIter.last}">|&nbsp;</span>
           </span>
-          <span th:text="${meaning.level1 + '.' + meaning.level2 + '.' + meaning.level3}" th:if="${meaning.level1 > 0}"></span>
-          <span th:each="dataset : ${meaning.datasets}" th:text="${dataset}" class="pr-2"></span>
+          <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
+          <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
-            <th:block th:each="definition : ${meaning.definitions}">
+            <th:block th:each="definition : ${lexeme.definitions}">
               <li>
                 <span th:text="${definition.value}"></span>
                 <a href="javascript:void(0)" class="badge badge-info"
-                   th:if="${definition.language == 'est'}" th:data-words="${definition.value}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
+                    th:if="${definition.lang == 'est'}" th:data-words="${definition.value}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
               </li>
             </th:block>
           </ul>
+          <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
+            <table th:each="rection,rectionIter : ${lexeme.rections}">
+              <tr>
+                <td style="vertical-align: text-top; padding-right: 1em">
+                  <span th:text="${rection.value}"></span>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                    <tr th:each="usage : ${usageMeaning.usages}">
+                      <td>
+                        <span th:text="${usage.value}"></span>
+                        <a href="javascript:void(0)" class="badge badge-info"
+                            th:if="${usage.lang == 'est'}" th:data-words="${usage.value}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
+                      </td>
+                    </tr>
+                    <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                      <td> th:text="${usageTranslation.value}"></td>
+                    </tr>
+                    <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                      <td>
+                        <span th:text="${usageDefinition.value}"></span>
+                        <a href="javascript:void(0)" class="badge badge-info"
+                           th:if="${usageDefinition.lang == 'est'}" th:data-words="${usageDefinition.value}" th:onclick="'generateVoiceAndPlay(this)'">Kuula</a>
+                      </td>
+                    </tr>
+                    <tr th:unless="${usageMeaningIter.last}">
+                      <td>
+                        <hr />
+                      </td>
+                    </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <hr th:unless="${meaningIter.last}">
         </th:block>
       </div>
     </div>
   </th:block>
+
   <script th:inline="javascript">
     initializeRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');
   	initialize();

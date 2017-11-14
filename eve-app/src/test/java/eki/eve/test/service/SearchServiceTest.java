@@ -3,9 +3,6 @@ package eki.eve.test.service;
 import eki.common.test.TestEnvInitialiser;
 import eki.eve.data.Word;
 import eki.eve.service.SearchService;
-import eki.eve.service.db.SearchDbService;
-import org.jooq.Record4;
-import org.jooq.Result;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,19 +44,4 @@ public class SearchServiceTest {
 		assertThat(words.get(1).getValue()).isEqualTo("hall");
 	}
 
-	@Test
-	public void getWord_finds_existing_word() throws Exception {
-
-		Word word = service.getWord(10007L);
-
-		assertThat(word.getValue()).isEqualTo("hallaudu");
-	}
-
-	@Test
-	public void getWord_returns_null_if_word_is_not_found() throws Exception {
-
-		Word word = service.getWord(30003L);
-
-		assertThat(word).isNull();
-	}
 }

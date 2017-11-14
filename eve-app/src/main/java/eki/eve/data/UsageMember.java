@@ -2,24 +2,22 @@ package eki.eve.data;
 
 import eki.common.data.AbstractDataObject;
 
-import javax.persistence.Column;
-import java.util.function.Consumer;
-
-public class Definition extends AbstractDataObject {
+public class UsageMember extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "value")
+	private Long id;
+
 	private String value;
 
-	@Column(name = "lang")
 	private String lang;
 
-	public Definition() {
+	public Long getId() {
+		return id;
 	}
 
-	public Definition(Consumer<Definition> builder) {
-		builder.accept(this);
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getValue() {
@@ -37,4 +35,5 @@ public class Definition extends AbstractDataObject {
 	public void setLang(String lang) {
 		this.lang = lang;
 	}
+
 }
