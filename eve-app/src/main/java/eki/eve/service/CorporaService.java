@@ -1,5 +1,6 @@
 package eki.eve.service;
 
+import eki.eve.data.CorporaSentence;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +15,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -27,7 +30,13 @@ public class CorporaService {
 	@Value("${corpora.service.url:}")
 	private String serviceUrl;
 
-	public Map<String, Object> fetch(String sentence) {
+	public List<CorporaSentence> fetchSentences(String sentence) {
+
+		Map<String, Object> response = fetch(sentence);
+		return parseResponse(response);
+	}
+
+	private Map<String, Object> fetch(String sentence) {
 
 		Map<String, Object> response = Collections.emptyMap();
 		if (isNotEnabled()) {
@@ -40,6 +49,8 @@ public class CorporaService {
 				.queryParam("start", 0)
 				.queryParam("end", 50)
 				.queryParam("cqp", "[word=\"" + sentence + "\"]")
+				.queryParam("defaultcontext", "1+sentence")
+				.queryParam("show", "pos")
 				.build()
 				.toUri();
 		String responseAsString = doGetRequest(url);
@@ -51,6 +62,45 @@ public class CorporaService {
 		return response;
 	}
 
+	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
+
+		List<CorporaSentence> sentences = new ArrayList<>();
+		if (response.isEmpty() || (response.containsKey("hits") && (int) response.get("hits") == 0)) {
+			return sentences;
+		}
+		for (Map<String, Object> kwic : (List<Map<String, Object>>) response.get("kwic")) {
+			Map<String, Object> match = (Map<String, Object>) kwic.get("match");
+			int startPos = (int) match.get("start");
+			int endPos = (int) match.get("end");
+			int index = 0;
+			CorporaSentence sentence = new CorporaSentence();
+			for (Map<String, Object> token : (List<Map<String, Object>>) kwic.get("tokens")) {
+				String word = parseWord(token);
+				if (index < startPos) {
+					sentence.setLeftPart(sentence.getLeftPart() + word);
+				} else if (index >= endPos) {
+					sentence.setRightPart(sentence.getRightPart() + word);
+				} else {
+					sentence.setMiddlePart(sentence.getMiddlePart() + word);
+				}
+				index++;
+			}
+			sentences.add(sentence);
+		}
+		return sentences;
+	}
+
+	private String parseWord(Map<String, Object> token) {
+		String word = (String) token.get("word");
+		String pos = (String) token.get("pos");
+		word = isPunctuation(pos) ? word : " " + word;
+		return word;
+	}
+
+	private boolean isPunctuation(String word) {
+		return "Z".equals(word);
+	}
+
 	private String doGetRequest(URI url) {
 
 		HttpHeaders headers = new HttpHeaders();
@@ -58,6 +108,7 @@ public class CorporaService {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		RestTemplate restTemplate = new RestTemplate();
 
+		logger.debug("Sending request to > {}", url.toString());
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 		return response == null ? null : response.getBody();
 	}

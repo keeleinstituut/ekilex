@@ -39,15 +39,28 @@ function initialize() {
 
     $('#serch-korp-btn').on('click', function (e) {
         var sentence = $('[name="searchFilter"]').val();
+        var korpSection = $('[name="korp-section"]');
         $.get(applicationUrl + 'korp/' + sentence).done(function (data) {
-            console.log(data);
-            alert('Päkapikkud töötavad usinalt, ehk pole veel valmis.');
+            korpSection.replaceWith(data);
+            // scroll table to middle, as it can be lot bigger than screen width.
+            var myDiv = $('[name="korp-body"]');
+            var myChild = myDiv.find("table");
+            myDiv.animate({
+                scrollLeft: (myChild.width() - myDiv.width()) / 2
+            }, {
+                duration: 0
+            });
         }).fail(function (data) {
             console.log(data);
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
         });
     });
 
+}
+
+function closeKorpSection() {
+    var korpSection = $('[name="korp-section"]');
+    korpSection.prop('hidden', 'hidden');
 }
 
 function playSound(soundSource) {

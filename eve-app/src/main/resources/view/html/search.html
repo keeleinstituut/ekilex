@@ -39,6 +39,27 @@
         </form>
       </div>
     </div>
+
+    <div name="korp-section"></div>
+
+    <th:block th:fragment="korp" th:if="${sentences != null}">
+      <div class="card mt-4" name="korp-section">
+        <div class="card-header">
+          <button type="button" class="btn btn-primary" onclick="closeKorpSection()">Sulge</button>
+        </div>
+        <div name="korp-body" class="card-body" style="overflow-x: scroll">
+          <span th:if="${#lists.isEmpty(sentences)}">Korp päring tagastas tühja vastuse.</span>
+          <table th:if="${not #lists.isEmpty(sentences)}">
+            <tr th:each="sentence, iter : ${sentences}" th:style="${iter.even} ? 'background-color: rgba(0, 0, 0, 0.03)'">
+              <td style="text-align: right; white-space:nowrap;" th:text="${sentence.leftPart}"></td>
+              <td style="text-align: center; vertical-align: top; color:blueviolet" th:text="${sentence.middlePart}"></td>
+              <td style="text-align: left; white-space:nowrap;" th:text="${sentence.rightPart}"></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </th:block>
+
     <div class="mt-4 ml-4" th:if="${wordsFoundBySearch != null}">
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
