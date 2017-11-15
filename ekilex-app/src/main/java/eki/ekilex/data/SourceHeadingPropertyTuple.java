@@ -45,6 +45,9 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 	@Column(name = "source_heading_value")
 	private String sourceHeadingValue;
 
+	@Column(name = "is_source_heading_match")
+	private boolean sourceHeadingMatch;
+
 	@Column(name = "source_property_id")
 	private Long sourcePropertyId;
 
@@ -56,6 +59,9 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 
 	@Column(name = "source_property_value_date")
 	private Timestamp sourcePropertyValueDate;
+
+	@Column(name = "is_source_property_match")
+	private boolean sourcePropertyMatch;
 
 	public SourceHeadingPropertyTuple() {
 	}
@@ -152,6 +158,14 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 		this.sourceHeadingValue = sourceHeadingValue;
 	}
 
+	public boolean isSourceHeadingMatch() {
+		return sourceHeadingMatch;
+	}
+
+	public void setSourceHeadingMatch(boolean sourceHeadingMatch) {
+		this.sourceHeadingMatch = sourceHeadingMatch;
+	}
+
 	public Long getSourcePropertyId() {
 		return sourcePropertyId;
 	}
@@ -182,6 +196,14 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 
 	public void setSourcePropertyValueDate(Timestamp sourcePropertyValueDate) {
 		this.sourcePropertyValueDate = sourcePropertyValueDate;
+	}
+
+	public boolean isSourcePropertyMatch() {
+		return sourcePropertyMatch;
+	}
+
+	public void setSourcePropertyMatch(boolean sourcePropertyMatch) {
+		this.sourcePropertyMatch = sourcePropertyMatch;
 	}
 
 }

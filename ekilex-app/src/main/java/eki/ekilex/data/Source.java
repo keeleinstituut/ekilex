@@ -25,7 +25,7 @@ public class Source extends AbstractDataObject {
 
 	private String type;
 
-	private List<FreeForm> sourceHeadings;
+	private List<SourceMember> sourceHeadings;
 
 	public Long getSourceId() {
 		return sourceId;
@@ -91,11 +91,11 @@ public class Source extends AbstractDataObject {
 		this.type = type;
 	}
 
-	public List<FreeForm> getSourceHeadings() {
+	public List<SourceMember> getSourceHeadings() {
 		return sourceHeadings;
 	}
 
-	public void setSourceHeadings(List<FreeForm> sourceHeadings) {
+	public void setSourceHeadings(List<SourceMember> sourceHeadings) {
 		this.sourceHeadings = sourceHeadings;
 	}
 

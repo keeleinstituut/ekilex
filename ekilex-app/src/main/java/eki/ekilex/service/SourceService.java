@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Source;
 import eki.ekilex.data.SourceHeadingPropertyTuple;
+import eki.ekilex.data.SourceMember;
 import eki.ekilex.service.db.SourceDbService;
 
 @Component
@@ -37,7 +37,7 @@ public class SourceService {
 
 		List<Source> sources = new ArrayList<>();
 		Map<Long, Source> sourceMap = new HashMap<>();
-		Map<Long, FreeForm> sourceHeadingMap = new HashMap<>();
+		Map<Long, SourceMember> sourceHeadingMap = new HashMap<>();
 
 		for (SourceHeadingPropertyTuple tuple : sourceHeadingPropertyTuples) {
 
@@ -45,13 +45,15 @@ public class SourceService {
 			Long sourceHeadingId = tuple.getSourceHeadingId();
 			FreeformType sourceHeadingType = tuple.getSourceHeadingType();
 			String sourceHeadingValue = tuple.getSourceHeadingValue();
+			boolean sourceHeadingMatch = tuple.isSourceHeadingMatch();
 			Long sourcePropertyId = tuple.getSourcePropertyId();
 			FreeformType sourcePropertyType = tuple.getSourcePropertyType();
 			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
 			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
+			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
 
-			List<FreeForm> sourceHeadings;
-			List<FreeForm> sourceProperties;
+			List<SourceMember> sourceHeadings;
+			List<SourceMember> sourceProperties;
 
 			Source source = sourceMap.get(sourceId);
 			if (source == null) {
@@ -79,13 +81,14 @@ public class SourceService {
 				sourceHeadings = source.getSourceHeadings();
 			}
 
-			FreeForm sourceHeading = sourceHeadingMap.get(sourceHeadingId);
+			SourceMember sourceHeading = sourceHeadingMap.get(sourceHeadingId);
 			if (sourceHeading == null) {
 				sourceProperties = new ArrayList<>();
-				sourceHeading = new FreeForm();
+				sourceHeading = new SourceMember();
 				sourceHeading.setId(sourceHeadingId);
 				sourceHeading.setType(sourceHeadingType);
 				sourceHeading.setValueText(sourceHeadingValue);
+				sourceHeading.setValueMatch(sourceHeadingMatch);
 				sourceHeading.setChildren(sourceProperties);
 				sourceHeadingMap.put(sourceHeadingId, sourceHeading);
 				sourceHeadings.add(sourceHeading);
@@ -93,11 +96,16 @@ public class SourceService {
 				sourceProperties = sourceHeading.getChildren();
 			}
 
-			FreeForm sourceProperty = new FreeForm();
+			if (sourcePropertyId == null) {
+				continue;
+			}
+
+			SourceMember sourceProperty = new SourceMember();
 			sourceProperty.setId(sourcePropertyId);
 			sourceProperty.setType(sourcePropertyType);
 			sourceProperty.setValueText(sourcePropertyValueText);
 			sourceProperty.setValueDate(sourcePropertyValueDate);
+			sourceProperty.setValueMatch(sourcePropertyMatch);
 			sourceProperties.add(sourceProperty);
 		}
 		return sources;
