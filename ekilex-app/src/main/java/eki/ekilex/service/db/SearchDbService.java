@@ -57,22 +57,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 		create = context;
 	}
 
-	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters) {
-
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
-		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG)
-				.from(FORM, PARADIGM, WORD)
-				.where(
-						FORM.VALUE.likeIgnoreCase(theFilter)
-						.and(FORM.IS_WORD.isTrue())
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID)))
-				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
-				.limit(MAX_RESULTS_LIMIT)
-				.fetch();
-	}
-
 	public Result<Record7<Long, String, String[], String, String, String, String>> findConnectedForms(Long formId) {
 
 		Form f1 = FORM.as("f1");
@@ -98,21 +82,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						.and(m.LANG.eq("est"))
 						.and(m.TYPE.eq("descrip")))
 				.orderBy(f2.ID)
-				.fetch();
-	}
-
-	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWords(Long meaningId) {
-
-		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.LANG, FORM.DISPLAY_FORM, FORM.VOCAL_FORM, FORM.MORPH_CODE, MORPH_LABEL.VALUE.as("morph_value"))
-				.from(LEXEME, WORD, PARADIGM,
-						FORM.leftOuterJoin(MORPH_LABEL).on(FORM.MORPH_CODE.eq(MORPH_LABEL.CODE).and(MORPH_LABEL.LANG.eq("est").and(MORPH_LABEL.TYPE.eq("descrip")))))
-				.where(
-						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-						.and(FORM.IS_WORD.eq(Boolean.TRUE))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.MEANING_ID.eq(meaningId)))
 				.fetch();
 	}
 
@@ -159,7 +128,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record12<Long,String,Long,Long,String,String,Long,String,String,Long,String,String>> findRectionUsageTranslationDefinitionTuples(Long lexemeId) {
+	public Result<Record12<Long, String, Long, Long, String, String, Long, String, String, Long, String, String>> findRectionUsageTranslationDefinitionTuples(Long lexemeId) {
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform r = FREEFORM.as("r");

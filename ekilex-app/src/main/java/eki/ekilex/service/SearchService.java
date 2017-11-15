@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,9 @@ public class SearchService {
 	}
 
 	public List<Word> findWordsInDatasets(String searchFilter, List<String> datasets) {
+		if (StringUtils.isBlank(searchFilter)) {
+			return new ArrayList<>();
+		}
 		return searchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
 	}
 

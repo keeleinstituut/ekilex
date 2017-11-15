@@ -1,8 +1,6 @@
 package eki.eve.web.controller;
 
-import eki.eve.data.Word;
-import eki.eve.data.WordDetails;
-import eki.eve.service.SearchService;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,9 +13,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import eki.eve.data.Word;
+import eki.eve.data.WordDetails;
+import eki.eve.service.SearchService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -35,11 +33,10 @@ public class SearchController {
 	public String search(@RequestParam(required = false) String searchFilter, Model model) {
 
 		logger.debug("doing search");
-		if (isNotBlank(searchFilter)) {
-			List<Word> words = search.findWords(searchFilter);
-			model.addAttribute("wordsFoundBySearch", words);
-			model.addAttribute("searchFilter", searchFilter);
-		}
+
+		List<Word> words = search.findWords(searchFilter);
+		model.addAttribute("wordsFoundBySearch", words);
+		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		return "search";
 	}

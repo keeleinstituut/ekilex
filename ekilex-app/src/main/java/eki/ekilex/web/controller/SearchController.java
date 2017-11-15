@@ -1,8 +1,11 @@
 package eki.ekilex.web.controller;
 
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
-import eki.ekilex.service.SearchService;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,12 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
+import eki.ekilex.service.SearchService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -47,11 +47,10 @@ public class SearchController {
 		model.addAttribute("datasets", datasets.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
 		session.setAttribute("datasets",selectedDatasets);
-		if (isNotBlank(searchFilter)) {
-			List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
-			model.addAttribute("wordsFoundBySearch", words);
-			model.addAttribute("searchFilter", searchFilter);
-		}
+		List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
+		model.addAttribute("wordsFoundBySearch", words);
+		model.addAttribute("searchFilter", searchFilter);
+
 		return "search";
 	}
 

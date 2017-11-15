@@ -1,10 +1,10 @@
 package eki.ekilex.web.controller;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.service.SearchService;
-
-import javax.servlet.http.HttpSession;
 
 @ConditionalOnWebApplication
 @Controller
@@ -50,11 +48,9 @@ public class TermSearchController {
 		model.addAttribute("datasets", datasets.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
 		session.setAttribute("datasets",selectedDatasets);
-		if (isNotBlank(searchFilter)) {
-			List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
-			model.addAttribute("wordsFoundBySearch", words);
-			model.addAttribute("searchFilter", searchFilter);
-		}
+		List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
+		model.addAttribute("wordsFoundBySearch", words);
+		model.addAttribute("searchFilter", searchFilter);
 
 		return "termsearch";
 	}
