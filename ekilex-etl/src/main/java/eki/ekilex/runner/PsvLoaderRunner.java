@@ -1167,12 +1167,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
 		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);
 		if (inflectionTypeNrNode != null) {
-			String inflectionTypeNrStr = inflectionTypeNrNode.getTextTrim();
+			String inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
 			try {
-				wordData.inflectionTypeNr = Integer.valueOf(inflectionTypeNrStr);
+				Integer.valueOf(inflectionTypeNr);
+				wordData.inflectionTypeNr = inflectionTypeNr;
 			} catch (NumberFormatException e) {
-				logger.debug("Inflection type number is not a number for {} value {}", wordData.guid, inflectionTypeNrStr);
-				writeToLogFile("Muuttüübi numberi viga, väärtus pole number", wordData.guid, inflectionTypeNrStr);
+				logger.debug("Inflection type number is not a number for {} value {}", wordData.guid, inflectionTypeNr);
+				writeToLogFile("Muuttüübi numberi viga, väärtus pole number", wordData.guid, inflectionTypeNr);
 			}
 		}
 
@@ -1225,7 +1226,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String guid;
 		String frequencyGroup;
 		String lexemeType;
-		Integer inflectionTypeNr;
+		String inflectionTypeNr;
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
 	}

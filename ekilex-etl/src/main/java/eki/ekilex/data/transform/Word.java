@@ -22,7 +22,7 @@ public class Word extends AbstractDataObject {
 
 	private String morphCode;
 
-	private Integer inflectionTypeNr;
+	private String inflectionTypeNr;
 
 	public Word() {
 	}
@@ -101,11 +101,11 @@ public class Word extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
-	public Integer getInflectionTypeNr() {
+	public String getInflectionTypeNr() {
 		return inflectionTypeNr;
 	}
 
-	public void setInflectionTypeNr(Integer inflectionTypeNr) {
+	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
 	}
 }

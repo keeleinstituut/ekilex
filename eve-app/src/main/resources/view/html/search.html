@@ -23,13 +23,14 @@
       <div class="card-body">
         <form th:action="@{/search}">
           <div class="form-row">
-            <div class="col-6">
+            <div class="col-8">
               <div class="form-group row">
                 <label class="col-auto col-form-label">Otsing</label>
-                <div class="col-8">
+                <div class="col-6">
                   <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
                 </div>
                 <button type="submit" id="serch-btn" class="btn btn-primary">Otsi</button>
+                <button type="button" id="serch-korp-btn" class="ml-2 btn btn-primary">Korp</button>
                 <button type="button" id="start-rec-btn" class="ml-2 btn btn-info">Dikteeri</button>
                 <button type="button" id="stop-rec-btn" class="ml-2 btn btn-info" hidden>Lõpeta</button>
               </div>

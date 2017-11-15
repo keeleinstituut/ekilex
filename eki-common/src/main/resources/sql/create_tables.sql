@@ -385,7 +385,7 @@ create table paradigm
   id bigserial primary key,
   word_id bigint references word(id) on delete cascade not null,
   example text null,
-  inflection_type_nr integer
+  inflection_type_nr varchar(100)
 );
 alter sequence paradigm_id_seq restart with 10000;
 

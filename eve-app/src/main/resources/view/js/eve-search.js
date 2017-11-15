@@ -23,6 +23,7 @@ function initialize() {
         $('#start-rec-btn').prop('hidden','hidden');
         $('#stop-rec-btn').prop('hidden', null);
         $('#serch-btn').prop('disabled', true);
+        $('#serch-korp-btn').prop('disabled', true);
         startRecording();
     });
 
@@ -30,10 +31,23 @@ function initialize() {
         $('#stop-rec-btn').prop('hidden','hidden');
         $('#start-rec-btn').prop('hidden', null);
         $('#serch-btn').prop('disabled', false);
+        $('#serch-korp-btn').prop('disabled', false);
         stopRecording(function(audioBlob) {
             sendToWebSocket(audioBlob);
         });
-    })
+    });
+
+    $('#serch-korp-btn').on('click', function (e) {
+        var sentence = $('[name="searchFilter"]').val();
+        $.get(applicationUrl + 'korp/' + sentence).done(function (data) {
+            console.log(data);
+            alert('Päkapikkud töötavad usinalt, ehk pole veel valmis.');
+        }).fail(function (data) {
+            console.log(data);
+            alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+        });
+    });
+
 }
 
 function playSound(soundSource) {
