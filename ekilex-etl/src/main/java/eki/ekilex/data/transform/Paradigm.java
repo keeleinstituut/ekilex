@@ -10,7 +10,7 @@ public class Paradigm extends AbstractDataObject {
 
 	private String word;
 
-	private Integer inflectionTypeNr;
+	private String inflectionTypeNr;
 
 	private List<String> formValues;
 
@@ -40,11 +40,11 @@ public class Paradigm extends AbstractDataObject {
 		this.forms = forms;
 	}
 
-	public Integer getInflectionTypeNr() {
+	public String getInflectionTypeNr() {
 		return inflectionTypeNr;
 	}
 
-	public void setInflectionTypeNr(Integer inflectionTypeNr) {
+	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
 	}
 }

@@ -170,7 +170,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(FORM, tableRowParamMap);
 	}
 
-	private Long createParadigm(Long wordId, Integer inflectionTypeNr) throws Exception {
+	private Long createParadigm(Long wordId, String inflectionTypeNr) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
