@@ -557,6 +557,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 			saveSymbol(meaningNumberGroupNode, context, guid);
+			WordData abbreviation = processAbbreviation(meaningNumberGroupNode, context);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
@@ -581,6 +582,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Long meaningId = createMeaning(dataset);
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
+				}
+				if (abbreviation != null) {
+					addAbbreviationLexeme(abbreviation, meaningId, dataset);
 				}
 
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
@@ -673,6 +677,35 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					context.vormels.add(vormelData);
 				}
 			}
+		}
+	}
+
+	private void addAbbreviationLexeme(WordData abbreviation, Long meaningId, String dataset) throws Exception {
+		Lexeme lexeme = new Lexeme();
+		lexeme.setMeaningId(meaningId);
+		lexeme.setWordId(abbreviation.id);
+		lexeme.setLevel1(0);
+		lexeme.setLevel2(0);
+		lexeme.setLevel3(0);
+		lexeme.setType(lexemeTypes.get("l"));
+		createLexeme(lexeme, dataset);
+	}
+
+	private WordData processAbbreviation(Element node, Context context) throws Exception {
+
+		final String abbreviationExp = "x:lyh";
+		Element abbreviationNode = (Element) node.selectSingleNode(abbreviationExp);
+		if (abbreviationNode == null) {
+			return null;
+		}
+		String abbreviationValue = abbreviationNode.getTextTrim();
+		Optional<WordData> abbreviation = context.importedWords.stream().filter(w -> w.value.equals(abbreviationValue)).findFirst();
+		if (abbreviation.isPresent()) {
+			return abbreviation.get();
+		} else {
+			WordData abbrData =  createDefaultWordFrom(abbreviationValue);
+			context.importedWords.add(abbrData);
+			return abbrData;
 		}
 	}
 
