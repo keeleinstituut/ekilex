@@ -150,6 +150,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<UsageMeaning> usageMeanings;
 		List<Word> newWords, wordMatches;
 		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
+		List<Paradigm> paradigms;
 		String word, wordFormsStr, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
@@ -194,6 +195,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				word = StringUtils.remove(word, wordComponentSeparator);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				wordFormsStr = null;
+				paradigms = null;
 				if (StringUtils.isNotBlank(pseudoHomonymNr)) {
 					word = StringUtils.substringBefore(word, pseudoHomonymNr);
 				}
@@ -219,12 +221,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					if (formsNode != null) {
 						wordFormsStr = formsNode.getTextTrim();
 						paradigmObj = extractParadigm(word, wordFormsStr, wordComponents, wordParadigmsMap);
+						paradigms = asList(paradigmObj);
 					}
 				}
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
-				wordId = saveWord(wordObj, asList(paradigmObj), wordDuplicateCount);
+				wordId = saveWord(wordObj, paradigms, wordDuplicateCount);
 				newWords.add(wordObj);
 
 				// further references...
