@@ -1053,18 +1053,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordComparativeExp = "x:mfp/x:kmpg/x:kmp";
 		final String wordSuperlativeExp = "x:mfp/x:kmpg/x:suprl";
 
-		boolean isAddForms = !wordParadigmsMap.isEmpty();
-		Paradigm paradigmObj = null;
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
 			WordData wordData = new WordData();
 			wordData.guid = guid;
 
 			Word word = extractWord(wordGroupNode, wordData);
-			if (isAddForms) {
-				paradigmObj = extractParadigm(word.getValue(), wordGroupNode, wordParadigmsMap);
-			}
-			wordData.id = saveWord(word, paradigmObj, wordDuplicateCount);
+			List<Paradigm> paradigms = extractParadigms(wordGroupNode, word.getValue(), wordParadigmsMap);
+			wordData.id = saveWord(word, paradigms, wordDuplicateCount);
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
 			basicWords.addAll(basicWordsOfTheWord);
@@ -1118,7 +1114,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return basicWords;
 	}
 
-	private Paradigm extractParadigm(String word, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private Paradigm fetchParadigmFromMab(String word, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
 
@@ -1151,7 +1147,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordExp = "x:m";
 		final String homonymNrAttr = "i";
 		final String lexemeTypeAttr = "liik";
-		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
@@ -1165,21 +1160,49 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
-		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);
-		if (inflectionTypeNrNode != null) {
-			String inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
-			try {
-				Integer.valueOf(inflectionTypeNr);
-				wordData.inflectionTypeNr = inflectionTypeNr;
-			} catch (NumberFormatException e) {
-				logger.debug("Inflection type number is not a number for {} value {}", wordData.guid, inflectionTypeNr);
-				writeToLogFile("Muuttüübi numberi viga, väärtus pole number", wordData.guid, inflectionTypeNr);
-			}
-		}
 
 		Word word = new Word(wordValue, dataLang, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 		word.setInflectionTypeNr(wordData.inflectionTypeNr);
 		return word;
+	}
+
+	private List<Paradigm> extractParadigms(Element wordGroupNode, String wordValue, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
+
+		final String inflectionTypeNrExp = "x:mfp/x:mt";
+
+		List<Paradigm> paradigms = new ArrayList<>();
+		boolean isAddForms = !wordParadigmsMap.isEmpty();
+		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);
+		if (inflectionTypeNrNode != null) {
+			String inflectionTypeNrStr = inflectionTypeNrNode.getTextTrim();
+			String[] numberStrs = inflectionTypeNrStr.split("~");
+			for (String numberStr : numberStrs) {
+				Paradigm paradigm = new Paradigm();
+				if (numberStr.endsWith("?")) {
+					paradigm.setInflectionTypeNr(numberStr.replace("?", ""));
+					paradigm.setSecondary(true);
+				} else {
+					paradigm.setInflectionTypeNr(numberStr);
+				}
+				paradigms.add(paradigm);
+			}
+		}
+
+		Paradigm paradigmFromMab = null;
+		if (isAddForms) {
+			paradigmFromMab = fetchParadigmFromMab(wordValue, wordGroupNode, wordParadigmsMap);
+		}
+		if (paradigmFromMab != null) {
+			if (paradigms.isEmpty()) {
+				paradigms.add(paradigmFromMab);
+			} else {
+				for (Paradigm paradigm : paradigms) {
+					paradigm.setForms(paradigmFromMab.getForms());
+				}
+			}
+		}
+
+		return paradigms;
 	}
 
 	private String getWordMorphCode(String word, Element wordGroupNode) {

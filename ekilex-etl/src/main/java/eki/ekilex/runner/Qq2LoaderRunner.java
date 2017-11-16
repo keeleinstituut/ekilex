@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +33,8 @@ import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
+
+import static java.util.Arrays.asList;
 
 @Component
 public class Qq2LoaderRunner extends AbstractLoaderRunner {
@@ -214,7 +215,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
-				wordId = saveWord(wordObj, paradigmObj, wordDuplicateCount);
+				wordId = saveWord(wordObj, asList(paradigmObj), wordDuplicateCount);
 				newWords.add(wordObj);
 
 				// further references...
@@ -384,7 +385,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String formsStr = formsNode.getTextTrim();
 		formsStr = StringUtils.replaceChars(formsStr, formStrCleanupChars, "");
 		String[] formValuesArr = StringUtils.split(formsStr, ' ');
-		List<String> qq2FormValues = Arrays.asList(formValuesArr);
+		List<String> qq2FormValues = asList(formValuesArr);
 		List<String> mabFormValues;
 		Collection<String> formValuesIntersection;
 		int bestFormValuesMatchCount = 0;
