@@ -12,6 +12,10 @@ public class Paradigm extends AbstractDataObject {
 
 	private String inflectionTypeNr;
 
+	private Integer homonymNr;
+
+	private boolean isSecondary;
+
 	private List<String> formValues;
 
 	private List<Form> forms;
@@ -46,5 +50,21 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setInflectionTypeNr(String inflectionTypeNr) {
 		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
+	public boolean isSecondary() {
+		return isSecondary;
+	}
+
+	public void setSecondary(boolean secondary) {
+		isSecondary = secondary;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
 	}
 }

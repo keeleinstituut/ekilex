@@ -1,8 +1,9 @@
 package eki.ekilex.runner;
 
+import static java.util.Arrays.asList;
+
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -223,7 +224,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
-				wordId = saveWord(wordObj, paradigmObj, wordDuplicateCount);
+				wordId = saveWord(wordObj, asList(paradigmObj), wordDuplicateCount);
 				newWords.add(wordObj);
 
 				// further references...
@@ -501,7 +502,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 			String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
 			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
-			List<String> qq2FormValues = Arrays.asList(formValuesArr);
+			List<String> qq2FormValues = asList(formValuesArr);
 			List<String> mabFormValues;
 			Collection<String> formValuesIntersection;
 			int bestFormValuesMatchCount = 0;
@@ -546,7 +547,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
 		String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
-		List<String> qq2FormValues = Arrays.asList(formValuesArr);
+		List<String> qq2FormValues = asList(formValuesArr);
 		List<String> mabFormValues;
 		Collection<String> formValuesIntersection;
 		int bestFormValuesMatchCount = 0;

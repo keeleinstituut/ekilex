@@ -19,6 +19,8 @@ import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Paradigm;
 
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 @Component
 public class MabLoaderRunner extends AbstractLoaderRunner {
 
@@ -39,10 +41,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		final String wordGroupExp = "x:mg";
 		final String wordExp = "x:m";
 		final String articleBodyExp = "x:S";
-		final String paradigmBlockExp = "x:lemp/x:mtg/x:pdgp";
-		final String formGroupExp = "x:mvg";
+		final String rootBaseExp = "x:lemp/x:mtg";
+		final String formGroupExp = "x:pdgp/x:mvg";
 		final String morphValueExp = "x:vk";
 		final String formExp = "x:parg/x:mv";
+		final String inflectionTypeNrExp = "x:mt";
+		final String homonymNrAttr = "i";
 
 		final String wordCleanupChars = ".+'`()¤:_";//probably () only
 		final String formCleanupChars = "`´[]#";
@@ -62,14 +66,14 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 
-		Element headerNode, contentNode, wordGroupNode, wordNode, morphValueNode;
-		List<Element> paradigmBlockNodes, formGroupNodes, formNodes;
+		Element headerNode, contentNode, wordGroupNode, wordNode, morphValueNode, inflectionTypeNrNode;
+		List<Element> rootBaseNodes, formGroupNodes, formNodes;
 		List<Paradigm> paradigms, newParadigms;
 		List<Form> forms;
 		List<String> formValues;
 		Paradigm paradigmObj;
 		Form formObj;
-		String word, sourceMorphCode, destinMorphCode, form;
+		String word, sourceMorphCode, destinMorphCode, form, inflectionTypeNr;
 
 		Count uncleanWordCount = new Count();
 
@@ -88,17 +92,25 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 			word = wordNode.getTextTrim();
 
+			Integer homonymNr = null;
+			String homonymNrAsString = wordNode.attributeValue(homonymNrAttr);
+			if (isNotEmpty(homonymNrAsString)) {
+				homonymNr = Integer.parseInt(homonymNrAsString);
+			}
+
 			if (StringUtils.containsAny(word, wordCleanupChars)) {
 				uncleanWordCount.increment();
 			}
 
-			paradigmBlockNodes = contentNode.selectNodes(paradigmBlockExp);
+			rootBaseNodes = contentNode.selectNodes(rootBaseExp);
 
 			newParadigms = new ArrayList<>();
 
-			for (Element paradigmBlockNode : paradigmBlockNodes) {
+			for (Element rootBaseNode : rootBaseNodes) {
 
-				formGroupNodes = paradigmBlockNode.selectNodes(formGroupExp);
+				formGroupNodes = rootBaseNode.selectNodes(formGroupExp);
+				inflectionTypeNrNode = (Element) rootBaseNode.selectSingleNode(inflectionTypeNrExp);
+				inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
 
 				forms = new ArrayList<>();
 				formValues = new ArrayList<>();
@@ -139,6 +151,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				paradigmObj.setWord(word);
 				paradigmObj.setForms(forms);
 				paradigmObj.setFormValues(formValues);
+				paradigmObj.setInflectionTypeNr(inflectionTypeNr);
+				paradigmObj.setHomonymNr(homonymNr);
 
 				newParadigms.add(paradigmObj);
 			}

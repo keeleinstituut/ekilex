@@ -1053,18 +1053,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordComparativeExp = "x:mfp/x:kmpg/x:kmp";
 		final String wordSuperlativeExp = "x:mfp/x:kmpg/x:suprl";
 
-		boolean isAddForms = !wordParadigmsMap.isEmpty();
-		Paradigm paradigmObj = null;
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
 			WordData wordData = new WordData();
 			wordData.guid = guid;
 
 			Word word = extractWord(wordGroupNode, wordData);
-			if (isAddForms) {
-				paradigmObj = extractParadigm(word.getValue(), wordGroupNode, wordParadigmsMap);
-			}
-			wordData.id = saveWord(word, paradigmObj, wordDuplicateCount);
+			List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
+			wordData.id = saveWord(word, paradigms, wordDuplicateCount);
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
 			basicWords.addAll(basicWordsOfTheWord);
@@ -1093,7 +1089,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, ""))
 					.collect(Collectors.toList());
 
-			wordData.value = word.getValue();
 			newWords.add(wordData);
 		}
 	}
@@ -1118,14 +1113,22 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return basicWords;
 	}
 
-	private Paradigm extractParadigm(String word, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private Paradigm fetchParadigmFromMab(String wordValue, String inflectionTypeNr, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
 
-		List<Paradigm> paradigms = wordParadigmsMap.get(word);
+		List<Paradigm> paradigms = wordParadigmsMap.get(wordValue);
 		if (CollectionUtils.isEmpty(paradigms)) {
 			return null;
 		}
+
+		if (isNotEmpty(inflectionTypeNr)) {
+			long nrOfParadigmsMatchingInflectionType = paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).count();
+			if (nrOfParadigmsMatchingInflectionType == 1) {
+				return paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).findFirst().get();
+			}
+		}
+
 		List<Element> formsNodes = node.selectNodes(formsNodesExp);
 		if (formsNodes.isEmpty()) {
 			return null;
@@ -1151,7 +1154,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordExp = "x:m";
 		final String homonymNrAttr = "i";
 		final String lexemeTypeAttr = "liik";
-		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
@@ -1165,21 +1167,47 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
-		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);
-		if (inflectionTypeNrNode != null) {
-			String inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
-			try {
-				Integer.valueOf(inflectionTypeNr);
-				wordData.inflectionTypeNr = inflectionTypeNr;
-			} catch (NumberFormatException e) {
-				logger.debug("Inflection type number is not a number for {} value {}", wordData.guid, inflectionTypeNr);
-				writeToLogFile("Muuttüübi numberi viga, väärtus pole number", wordData.guid, inflectionTypeNr);
-			}
-		}
 
 		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
-		word.setInflectionTypeNr(wordData.inflectionTypeNr);
+		wordData.value = wordValue;
 		return word;
+	}
+
+	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
+
+		final String inflectionTypeNrExp = "x:mfp/x:mt";
+
+		List<Paradigm> paradigms = new ArrayList<>();
+		boolean isAddForms = !wordParadigmsMap.isEmpty();
+		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);
+		if (inflectionTypeNrNode != null) {
+			String inflectionTypeNrStr = inflectionTypeNrNode.getTextTrim();
+			String[] numberStrs = inflectionTypeNrStr.split("~");
+			for (String numberStr : numberStrs) {
+				Paradigm paradigm = new Paradigm();
+				if (numberStr.endsWith("?")) {
+					paradigm.setInflectionTypeNr(numberStr.replace("?", ""));
+					paradigm.setSecondary(true);
+				} else {
+					paradigm.setInflectionTypeNr(numberStr);
+				}
+				if (isAddForms) {
+					Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, paradigm.getInflectionTypeNr(), wordGroupNode, wordParadigmsMap);
+					if (paradigmFromMab != null) {
+						paradigm.setForms(paradigmFromMab.getForms());
+					}
+				}
+				paradigms.add(paradigm);
+			}
+		} else {
+			if (isAddForms) {
+				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, wordGroupNode, wordParadigmsMap);
+				if (paradigmFromMab != null) {
+					paradigms.add(paradigmFromMab);
+				}
+			}
+		}
+		return paradigms;
 	}
 
 	private String getWordMorphCode(String word, Element wordGroupNode) {
@@ -1226,7 +1254,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String guid;
 		String frequencyGroup;
 		String lexemeType;
-		String inflectionTypeNr;
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
 	}

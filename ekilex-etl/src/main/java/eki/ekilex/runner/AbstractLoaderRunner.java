@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +100,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return dataDoc;
 	}
 
-	protected Long saveWord(Word word, Paradigm paradigm, Count wordDuplicateCount) throws Exception {
+	protected Long saveWord(Word word, List<Paradigm> paradigms, Count wordDuplicateCount) throws Exception {
 
 		String wordValue = word.getValue();
 		String wordLang = word.getLang();
@@ -114,8 +115,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		if (tableRowValueMap == null) {
 			wordId = createWord(wordMorphCode, homonymNr, wordLang);
-			if (paradigm == null) {
-				Long paradigmId = createParadigm(wordId, word.getInflectionTypeNr());
+			if (CollectionUtils.isEmpty(paradigms)) {
+				Long paradigmId = createParadigm(wordId, null, false);
 				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
 			}
 		} else {
@@ -125,16 +126,21 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 		}
 		word.setId(wordId);
-		if (paradigm != null) {
-			// mab paradigm
-			Long paradigmId = createParadigm(wordId, paradigm.getInflectionTypeNr());
-			// mab forms
-			List<Form> forms = paradigm.getForms();
-			for (Form form : forms) {
-				if (form.isWord()) {
-					createForm(form.getValue(), null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
+		if (CollectionUtils.isNotEmpty(paradigms)) {
+			for (Paradigm paradigm : paradigms) {
+				Long paradigmId = createParadigm(wordId, paradigm.getInflectionTypeNr(), paradigm.isSecondary());
+				// mab forms
+				List<Form> forms = paradigm.getForms();
+				if (CollectionUtils.isNotEmpty(forms)) {
+					for (Form form : forms) {
+						if (form.isWord()) {
+							createForm(form.getValue(), null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
+						} else {
+							createForm(form.getValue(), null, null, null, form.getMorphCode(), paradigmId, form.isWord());
+						}
+					}
 				} else {
-					createForm(form.getValue(), null, null, null, form.getMorphCode(), paradigmId, form.isWord());
+					createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
 				}
 			}
 		}
@@ -170,10 +176,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(FORM, tableRowParamMap);
 	}
 
-	private Long createParadigm(Long wordId, String inflectionTypeNr) throws Exception {
+	private Long createParadigm(Long wordId, String inflectionTypeNr, boolean isSecondary) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
+		tableRowParamMap.put("is_secondary", isSecondary);
 		if (inflectionTypeNr != null) {
 			tableRowParamMap.put("inflection_type_nr", inflectionTypeNr);
 		}
