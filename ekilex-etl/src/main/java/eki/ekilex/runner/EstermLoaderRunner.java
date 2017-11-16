@@ -104,6 +104,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private final String enEtReviewedByExp = "descripGrp/descrip[@type='en-et kontrollija']";
 	private final String enEtReviewedOnExp = "descripGrp/descrip[@type='en-et kontrollitud']";
 
+	private final String langTypeAttr = "type";
+
 	private final String originLenoch = "lenoch";
 	private final String originLtb = "ltb";
 
@@ -118,6 +120,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		classifierCorrectionMap.put("komisjonis arutusel", "komisjonis arutlusel");
 		classifierCorrectionMap.put("organisatsioon|asutus", "organisatsioon, asutus");
 		classifierCorrectionMap.put("lühend|sünonüüm", "lühend ja sünonüüm");
+		classifierCorrectionMap.put("Reisijatevedu ja –teenindamine", "Reisijatevedu ja -teenindamine");
 	}
 
 	@Transactional
@@ -125,7 +128,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Starting loading Esterm...");
 
-		final String langTypeAttr = "type";
 		final String defaultRectionValue = "-";
 		final String defaultWordMorphCode = "SgN";
 
@@ -163,9 +165,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
 
-		//FIXME ignore non-lang concepts!
-
 		for (Element conceptGroupNode : conceptGroupNodes) {
+
+			boolean isLanguageTypeConcept = isLanguageTypeConcept(conceptGroupNode);
+			if (!isLanguageTypeConcept) {
+				continue;
+			}
 
 			valueNode = (Element) conceptGroupNode.selectSingleNode(conceptExp);
 			concept = valueNode.getTextTrim();
@@ -206,7 +211,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
-					wordObj = new Word(term, lang, null, null, null, homonymNr, defaultWordMorphCode);
+					wordObj = new Word(term, lang, null, null, null, null, homonymNr, defaultWordMorphCode);
 					wordId = saveWord(wordObj, null, null);
 
 					//lexeme
@@ -269,6 +274,21 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	private boolean isLanguageTypeConcept(Element conceptGroupNode) {
+
+		String valueStr;
+		List<Element> valueNodes = conceptGroupNode.selectNodes(langGroupExp + "/" + langExp);
+		for (Element langNode : valueNodes) {
+			valueStr = langNode.attributeValue(langTypeAttr);
+			boolean isLang = isLang(valueStr);
+			if (isLang) {
+				continue;
+			}
+			return false;
+		}
+		return true;
 	}
 
 	private void detectAndReportConceptGrp(String concept, Element conceptGroupNode, Count dataErrorCount) throws Exception {

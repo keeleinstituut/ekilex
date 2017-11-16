@@ -371,7 +371,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, homonymNr, defaultWordMorphCode);
+		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode);
 		createdWord.id = saveWord(word, null, null);
 		return createdWord;
 	}
@@ -1177,7 +1177,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		Word word = new Word(wordValue, dataLang, null, wordDisplayForm, null, homonymNr, wordMorphCode);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 		word.setInflectionTypeNr(wordData.inflectionTypeNr);
 		return word;
 	}

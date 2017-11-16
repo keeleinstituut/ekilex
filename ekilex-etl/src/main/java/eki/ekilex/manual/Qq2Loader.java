@@ -14,7 +14,7 @@ import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 
 public class Qq2Loader {
-	
+
 	private static Logger logger = LoggerFactory.getLogger(Qq2Loader.class);
 
 	public static void main(String[] args) {
@@ -28,7 +28,8 @@ public class Qq2Loader {
 		try {
 			applicationContext.registerShutdownHook();
 
-			//  /projects/eki/data/dictionaries/qq2/qq23.xml, /projects/eki/data/dictionaries/mab/mab.xml
+			// /projects/eki/data/dictionaries/qq2/qq23.xml
+			// /projects/eki/data/dictionaries/mab/mab.xml
 
 			String qq2FilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
 			String mabFilePath = null;

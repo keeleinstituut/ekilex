@@ -12,6 +12,8 @@ public class Word extends AbstractDataObject {
 
 	private String lang;
 
+	private String formsString;
+
 	private String[] components;
 
 	private String displayForm;
@@ -27,9 +29,10 @@ public class Word extends AbstractDataObject {
 	public Word() {
 	}
 
-	public Word(String value, String lang, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode) {
+	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode) {
 		this.value = value;
 		this.lang = lang;
+		this.formsString = formsString;
 		this.components = components;
 		this.displayForm = displayForm;
 		this.vocalForm = vocalForm;
@@ -59,6 +62,14 @@ public class Word extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String getFormsString() {
+		return formsString;
+	}
+
+	public void setFormsString(String formsString) {
+		this.formsString = formsString;
 	}
 
 	public String[] getComponents() {

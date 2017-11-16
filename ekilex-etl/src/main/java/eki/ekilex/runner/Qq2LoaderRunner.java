@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -46,6 +47,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_AMBIGUOUS_USAGE_MEANING_MATCH = "ambiguous_usage_meaning_match";
 
+	private static final String REPORT_MISSING_MAB_INTEGRATION_CASE = "missing_mab_integration_case";
+
 	@Autowired
 	private LuceneMorphology russianMorphology;
 
@@ -82,7 +85,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String defaultRectionValue = "-";
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
-	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=";
+	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
 
 	@Override
 	void initialise() throws Exception {
@@ -123,7 +126,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 
 		if (doReports) {
-			reportComposer = new ReportComposer("qq2 load report", REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH);
+			reportComposer = new ReportComposer("qq2 load report",
+					REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, REPORT_MISSING_MAB_INTEGRATION_CASE);
 		}
 
 		boolean isAddForms = wordParadigmsMap != null;
@@ -145,7 +149,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<UsageMeaning> usageMeanings;
 		List<Word> newWords, wordMatches;
 		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
-		String word, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
+		String word, wordFormsStr, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
 		Long wordId, newWordId, meaningId, lexemeId;
@@ -156,6 +160,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		Count wordDuplicateCount = new Count();
 		Count missingUsageGroupCount = new Count();
+		Count missingMabIntegrationCaseCount = new Count();
 		Count ambiguousUsageTranslationMatchCount = new Count();
 		Count missingUsageTranslationMatchCount = new Count();
 		Count successfulUsageTranslationMatchCount = new Count();
@@ -187,6 +192,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				wordComponents = StringUtils.split(word, wordComponentSeparator);
 				word = StringUtils.remove(word, wordComponentSeparator);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
+				wordFormsStr = null;
 				if (StringUtils.isNotBlank(pseudoHomonymNr)) {
 					word = StringUtils.substringBefore(word, pseudoHomonymNr);
 				}
@@ -209,11 +215,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 				if (isAddForms) {
 					formsNode = (Element) wordGroupNode.selectSingleNode(formsExp);
-					paradigmObj = extractParadigm(word, wordComponents, formsNode, wordParadigmsMap);
+					if (formsNode != null) {
+						wordFormsStr = formsNode.getTextTrim();
+						paradigmObj = extractParadigm(word, wordFormsStr, wordComponents, wordParadigmsMap);
+					}
 				}
 
 				// save word+paradigm+form
-				wordObj = new Word(word, dataLang, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
+				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode);
 				wordId = saveWord(wordObj, paradigmObj, wordDuplicateCount);
 				newWords.add(wordObj);
 
@@ -278,7 +287,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							continue;
 						}
 
-						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, defaultHomonymNr, defaultWordMorphCode);
+						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, defaultWordMorphCode);
 						wordId = saveWord(wordObj, null, wordDuplicateCount);
 						wordMatches.add(wordObj);
 
@@ -336,12 +345,16 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 
 				if (doReports) {
-					detectAndReport(
-							usageMeanings, newWords, wordMatches,
+					detectAndReportAtMeaning(
+							usageMeanings, newWords, wordMatches, wordParadigmsMap,
 							ambiguousUsageTranslationMatchCount,
 							missingUsageTranslationMatchCount,
 							successfulUsageTranslationMatchCount);
 				}
+			}
+
+			if (doReports) {
+				detectAndReportAtArticle(newWords, wordParadigmsMap, missingMabIntegrationCaseCount);
 			}
 
 			// progress
@@ -369,7 +382,154 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private Paradigm extractParadigm(String word, String[] wordComponents, Element formsNode, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private void detectAndReportAtMeaning(
+			List<UsageMeaning> usageMeanings,
+			List<Word> newWords,
+			List<Word> wordMatches,
+			Map<String, List<Paradigm>> wordParadigmsMap,
+			Count ambiguousUsageTranslationMatchCount,
+			Count missingUsageTranslationMatchCount,
+			Count successfulUsageTranslationMatchCount) throws Exception {
+
+		List<UsageTranslation> usageTranslations;
+		List<String> lemmatisedTokens;
+		String wordMatch;
+		String usageValue;
+		StringBuffer logBuf;
+
+		List<String> newWordValues = newWords.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
+		List<String> wordMatchValues = wordMatches.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
+		List<String> usageTranslationValues;
+
+		for (UsageMeaning usageMeaning : usageMeanings) {
+			for (Usage usageObj : usageMeaning.getUsages()) {
+				int usageWordMatchCount = 0;
+				usageValue = usageObj.getValue();
+				usageTranslations = usageObj.getUsageTranslations();
+				usageTranslationValues = usageTranslations.stream().map(usageTranslation -> usageTranslation.getValue()).collect(Collectors.toList());
+				for (UsageTranslation usageTranslation : usageTranslations) {
+					lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+					for (Word wordMatchObj : wordMatches) {
+						wordMatch = wordMatchObj.getValue();
+						wordMatch = StringUtils.lowerCase(wordMatch);
+						if (lemmatisedTokens.contains(wordMatch)) {
+							usageWordMatchCount++;
+						}
+					}
+				}
+				if (usageWordMatchCount == 0) {
+					missingUsageTranslationMatchCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(newWordValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageValue);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordMatchValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageTranslationValues);
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
+				} else if (usageWordMatchCount == 1) {
+					successfulUsageTranslationMatchCount.increment();
+				} else if (usageWordMatchCount > 1) {
+					ambiguousUsageTranslationMatchCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(newWordValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageValue);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordMatchValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageTranslationValues);
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
+				}
+			}
+		}
+	}
+
+	private void detectAndReportAtArticle(
+			List<Word> newWords,
+			Map<String, List<Paradigm>> wordParadigmsMap,
+			Count missingMabIntegrationCaseCount) throws Exception {
+
+		StringBuffer logBuf;
+
+		for (Word wordObj : newWords) {
+
+			String word = wordObj.getValue();
+			String[] wordComponents = wordObj.getComponents();
+			String wordFormsString = wordObj.getFormsString();
+			if (StringUtils.isBlank(wordFormsString)) {
+				missingMabIntegrationCaseCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(word);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append("-");
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append("QQ vormid puuduvad");
+				String logRow = logBuf.toString();
+				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+				continue;
+			}
+			int wordComponentCount = wordComponents.length;
+			String wordLastComp = wordComponents[wordComponentCount - 1];
+			List<Paradigm> paradigms = wordParadigmsMap.get(wordLastComp);
+			if (CollectionUtils.isEmpty(paradigms)) {
+				missingMabIntegrationCaseCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(word);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(wordFormsString);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append("MAB-s sõna puudub");
+				String logRow = logBuf.toString();
+				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+				continue;
+			}
+			if (StringUtils.countMatches(wordFormsString, '+') > 1) {
+				missingMabIntegrationCaseCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(word);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(wordFormsString);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append("Mitmekordselt käänduv liitsõna?");
+				String logRow = logBuf.toString();
+				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+				continue;
+			}
+			String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
+			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
+			List<String> qq2FormValues = Arrays.asList(formValuesArr);
+			List<String> mabFormValues;
+			Collection<String> formValuesIntersection;
+			int bestFormValuesMatchCount = 0;
+			Paradigm matchingParadigm = null;
+			for (Paradigm paradigm : paradigms) {
+				mabFormValues = paradigm.getFormValues();
+				formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
+				if (formValuesIntersection.size() > bestFormValuesMatchCount) {
+					bestFormValuesMatchCount = formValuesIntersection.size();
+					matchingParadigm = paradigm;
+				}
+			}
+			if (matchingParadigm == null) {
+				missingMabIntegrationCaseCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(word);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(wordFormsString);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append("Vormid ei kattu MAB-ga");
+				String logRow = logBuf.toString();
+				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+				continue;
+			}
+		}
+	}
+
+	private Paradigm extractParadigm(String word, String wordFormsStr, String[] wordComponents, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
 
 		int wordComponentCount = wordComponents.length;
 		boolean isCompoundWord = wordComponentCount > 1;
@@ -378,12 +538,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		if (CollectionUtils.isEmpty(paradigms)) {
 			return null;
 		}
-		if (formsNode == null) {
+		if (StringUtils.isBlank(wordFormsStr)) {
 			return null;
 		}
-		String formsStr = formsNode.getTextTrim();
-		formsStr = StringUtils.replaceChars(formsStr, formStrCleanupChars, "");
-		String[] formValuesArr = StringUtils.split(formsStr, ' ');
+		if (StringUtils.countMatches(wordFormsStr, '+') > 1) {
+			return null;
+		}
+		String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
+		String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
 		List<String> qq2FormValues = Arrays.asList(formValuesArr);
 		List<String> mabFormValues;
 		Collection<String> formValuesIntersection;
@@ -418,58 +580,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return compoundWordParadigm;
 		}
 		return matchingParadigm;
-	}
-
-	private void detectAndReport(
-			List<UsageMeaning> usageMeanings, List<Word> newWords, List<Word> wordMatches,
-			Count ambiguousUsageTranslationMatchCount,
-			Count missingUsageTranslationMatchCount,
-			Count successfulUsageTranslationMatchCount) throws Exception {
-
-		List<UsageTranslation> usageTranslations;
-		List<String> lemmatisedTokens;
-		String wordMatch;
-		StringBuffer logBuf;
-
-		for (UsageMeaning usageMeaning : usageMeanings) {
-			for (Usage usage : usageMeaning.getUsages()) {
-				int usageWordMatchCount = 0;
-				usageTranslations = usage.getUsageTranslations();
-				for (UsageTranslation usageTranslation : usageTranslations) {
-					lemmatisedTokens = usageTranslation.getLemmatisedTokens();
-					for (Word wordMatchObj : wordMatches) {
-						wordMatch = wordMatchObj.getValue();
-						wordMatch = StringUtils.lowerCase(wordMatch);
-						if (lemmatisedTokens.contains(wordMatch)) {
-							usageWordMatchCount++;
-						}
-					}
-				}
-				if (usageWordMatchCount == 0) {
-					missingUsageTranslationMatchCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(newWords);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usage);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordMatches);
-					String logRow = logBuf.toString(); 
-					reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
-				} else if (usageWordMatchCount == 1) {
-					successfulUsageTranslationMatchCount.increment();
-				} else if (usageWordMatchCount > 1) {
-					ambiguousUsageTranslationMatchCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(newWords);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usage);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordMatches);
-					String logRow = logBuf.toString(); 
-					reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
-				}
-			}
-		}
 	}
 
 	private List<Long> saveWords(List<Element> synonymNodes, String lang, Count wordDuplicateCount) throws Exception {
