@@ -221,7 +221,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					if (formsNode != null) {
 						wordFormsStr = formsNode.getTextTrim();
 						paradigmObj = extractParadigm(word, wordFormsStr, wordComponents, wordParadigmsMap);
-						paradigms = asList(paradigmObj);
+						if (paradigmObj == null) {
+							paradigms = asList(paradigmObj);
+						}
 					}
 				}
 
