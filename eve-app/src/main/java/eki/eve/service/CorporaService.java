@@ -45,10 +45,10 @@ public class CorporaService {
 
 		URI url= UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("command", "query")
-				.queryParam("corpus", "COURSEBOOKALL")
+				.queryParam("corpus", "COURSEBOOKSENT")
 				.queryParam("start", 0)
 				.queryParam("end", 50)
-				.queryParam("cqp", "[word=\"" + sentence + "\"]")
+				.queryParam("cqp", "[lemma=\"" + sentence + "\"]")
 				.queryParam("defaultcontext", "1+sentence")
 				.queryParam("show", "pos")
 				.build()
