@@ -826,14 +826,14 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
 			if (lexemeTypeCodes.contains(valueStr)) {
-				valueParamMap.put("type", valueStr);
+				valueParamMap.put("type_code", valueStr);
 			} else {
 				logger.warn("Incorrect lexeme type reference: \"{}\"", valueStr);
 				//TODO should fix at source!!
 				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
 				if (StringUtils.isNotBlank(replacingClassifierCode)) {
 					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					valueParamMap.put("type", replacingClassifierCode);
+					valueParamMap.put("type_code", replacingClassifierCode);
 				}
 			}
 		}
