@@ -457,4 +457,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
 	}
 
+	protected Long createClassifierFreeform(FreeformType freeformType, Long parentId, String value) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("type", freeformType.name());
+		if (parentId != null) {
+			tableRowParamMap.put("parent_id", parentId);
+		}
+		tableRowParamMap.put("classif_code", value);
+		return basicDbService.create(FREEFORM, tableRowParamMap);
+	}
+
 }

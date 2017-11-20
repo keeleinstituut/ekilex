@@ -60,6 +60,7 @@ drop table if exists label_type;
 drop table if exists dataset;
 drop table if exists lifecycle_log;
 drop table if exists eki_user;
+drop table if exists rection_type;
 
 create table eki_user
 (
@@ -74,6 +75,13 @@ alter sequence eki_user_id_seq restart with 10000;
 ---------------------------------
 -- klassifitseeritud andmestik --
 ---------------------------------
+
+-- klassif. nime liik
+create table rection_type
+(
+  code varchar(10) primary key,
+  value text not null
+);
 
 -- klassif. nime liik
 create table label_type

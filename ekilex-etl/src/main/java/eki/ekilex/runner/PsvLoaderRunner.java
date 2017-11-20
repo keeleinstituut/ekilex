@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.transform.Rection;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -367,10 +368,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = createLexemeAndRelatedObjects(data, context, dataset, lexemeType);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found, adding them");
-				String rectionValue = isBlank(data.rection) ? defaultRectionValue : data.rection;
+				String rectionValue = data.rection == null ? defaultRectionValue : data.rection.getValue();
 				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
 				for (Usage usage : data.usages) {
 					createUsage(rectionId, usage);
+				}
+				if (data.rection != null && isNotEmpty(data.rection.getType())) {
+					createClassifierFreeform(FreeformType.RECTION_TYPE, rectionId, data.rection.getType());
 				}
 			}
 		} else {
@@ -770,7 +774,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				LexemeToWordData data = new LexemeToWordData();
 				data.word = compoundFormNode.getTextTrim();
 				if (compoundFormNode.hasMixedContent()) {
-					data.rection = compoundFormNode.selectSingleNode(rectionExp).getText();
+					data.rection = extractRection((Element) compoundFormNode.selectSingleNode(rectionExp));
 				}
 				if (compoundFormNode.attributeValue(lexemeTypeAttr) != null) {
 					data.lexemeType = lexemeTypes.get(compoundFormNode.attributeValue(lexemeTypeAttr));
@@ -796,6 +800,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			compoundForms.addAll(forms);
 		}
 		return compoundForms;
+	}
+
+	private Rection extractRection(Element rectionNode) {
+
+		final String rectionTypeAttr = "rliik";
+
+		Rection rection = new Rection();
+		rection.setValue(rectionNode.getTextTrim());
+		rection.setType(rectionNode.attributeValue(rectionTypeAttr));
+		return rection;
 	}
 
 	private void saveSymbol(Element node, Context context, String guid) throws Exception {
@@ -841,7 +855,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Element formDefinitionNode = (Element) singleFormNode.selectSingleNode(formDefinitionExp);
 				data.word = formValueNode.getTextTrim();
 				if (formValueNode.hasMixedContent()) {
-					data.rection = formValueNode.selectSingleNode(rectionExp).getText();
+					data.rection = extractRection((Element) formValueNode.selectSingleNode(rectionExp));
 				}
 				if (formDefinitionNode != null) {
 					data.definition = formDefinitionNode.getTextTrim();
@@ -1038,11 +1052,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element rectionGroup : rectionGroups) {
 			List<Element> usageGroupNodes = rectionGroup.selectNodes(usageGroupExp);
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
-			List<Element> rections = rectionGroup.selectNodes(rectionExp);
-			for (Element rection : rections) {
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getTextTrim());
+			List<Element> rectionNodes = rectionGroup.selectNodes(rectionExp);
+			for (Element rectionNode : rectionNodes) {
+				Rection rection = extractRection(rectionNode);
+				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getValue());
 				for (Usage usage : rectionUsages) {
 					createUsage(rectionId, usage);
+				}
+				if (isNotEmpty(rection.getType())) {
+					createClassifierFreeform(FreeformType.RECTION_TYPE, rectionId, rection.getType());
 				}
 			}
 		}
@@ -1356,7 +1374,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
-		String rection;
+		Rection rection;
 		String definition;
 		List<Usage> usages = new ArrayList<>();
 		String guid;
