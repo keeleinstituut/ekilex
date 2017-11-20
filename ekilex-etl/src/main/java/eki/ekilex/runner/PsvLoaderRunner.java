@@ -71,7 +71,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
-		final String articleGuidExp = "x:G";
+		final String articleGuidExp = "x:P/x:mg/x:m"; // use first word as guid
 
 		logger.info("Starting import");
 		long t1, t2;
@@ -103,7 +103,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element guidNode = (Element) articleNode.selectSingleNode(articleGuidExp);
-			String guid = guidNode.getTextTrim();
+			String guid = guidNode != null ? guidNode.getTextTrim() : "";
 			processArticleHeader(guid, headerNode, newWords, context, wordParadigmsMap, wordDuplicateCount);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
@@ -322,7 +322,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		if (existingWords.size() > 1) {
 			logger.debug("Found more than one word : {}.", data.word);
-			writeToLogFile("Leiti rohkem kui üks vaste sõnale", data.guid, data.word);
+			writeToLogFile(data.guid, "Leiti rohkem kui üks vaste sõnale", data.word);
 		}
 		Long lexemeId;
 		if (existingWords.isEmpty()) {
@@ -340,7 +340,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data, lexemeType);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found for word, skipping them : {}.", data.word);
-				writeToLogFile("Leiti kasutusnäited olemasolevale ilmikule", data.guid, data.word);
+				writeToLogFile(data.guid, "Leiti kasutusnäited olemasolevale ilmikule", data.word);
 			}
 		}
 		return lexemeId;
@@ -387,11 +387,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
 		if (lexemes.isEmpty()) {
 			logger.debug("Lexeme not found for word : {}.", data.word);
-			writeToLogFile("Ei leitud ilmikut sõnale", data.guid, data.word);
+			writeToLogFile(data.guid, "Ei leitud ilmikut sõnale", data.word);
 		} else {
 			if (lexemes.size() > 1) {
 				logger.debug("Found more than one lexeme for : {}.", data.word);
-				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", data.guid, data.word);
+				writeToLogFile(data.guid, "Leiti rohkem kui üks ilmik sõnale", data.word);
 			}
 			lexemeId = (Long) lexemes.get(0).get("id");
 			if (isNotEmpty(lexemeType)) {
@@ -399,7 +399,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				String expectedLexemeType = lexemeTypes.get(lexemeType);
 				if (!Objects.equals(existingLexemeType, expectedLexemeType)) {
 					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, expectedLexemeType, existingLexemeType);
-					writeToLogFile("Ilmikute tüübid on erinevad", data.guid, data.word + ", " + expectedLexemeType + " != " + existingLexemeType);
+					writeToLogFile(data.guid, "Ilmikute tüübid on erinevad", data.word + ", " + expectedLexemeType + " != " + existingLexemeType);
 				}
 			}
 		}
@@ -427,7 +427,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Optional<Map<String, Object>> form = forms.stream().filter(f -> referenceForm.formValue.equals(f.get("value"))).findFirst();
 				if (!form.isPresent()) {
 					logger.debug("Form not found for {}, {} -> {}", referenceForm.guid, referenceForm.formValue, referenceForm.wordValue);
-					writeToLogFile("Vormi ei leitud", referenceForm.guid, referenceForm.formValue + " -> " + referenceForm.wordValue);
+					writeToLogFile(referenceForm.guid, "Vormi ei leitud", referenceForm.formValue + " -> " + referenceForm.wordValue);
 					continue;
 				}
 				params.clear();
@@ -437,7 +437,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				basicDbService.create(FORM_RELATION, params);
 			} else {
 				logger.debug("Word not found {}, {}, {}", referenceForm.guid, referenceForm.wordValue, referenceForm.wordHomonymNr);
-				writeToLogFile("Sihtsõna ei leitud", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
+				writeToLogFile(referenceForm.guid, "Sihtsõna ei leitud", referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
 			}
 		}
 		logger.debug("Reference forms processing done.");
@@ -482,7 +482,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get("id"), "ant", dataset);
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-					writeToLogFile("Ei leitud ilmikut antaonüümile", antonymData.guid, antonymData.word + ", level1 " + antonymData.lexemeLevel1);
+					writeToLogFile(antonymData.guid, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
 				}
 			}
 		}
@@ -529,7 +529,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordId = matchingWord.get().id;
 			} else {
 				logger.debug("No matching word was found for {} word {}, {}", guid, wordValue, homonymNr);
-				writeToLogFile("Ei leitud sihtsõna", guid, wordValue + " : " + homonymNr);
+				writeToLogFile(guid, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 			}
 		} else {
 			wordId = words.get(0).id;
@@ -590,7 +590,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
 				if (definitionValueNodes.size() > 1) {
-					writeToLogFile("Leitud rohkem kui üks seletus <x:d>", guid, newWords.get(0).value);
+					writeToLogFile(guid, "Leitud rohkem kui üks seletus <x:d>", newWords.get(0).value);
 				}
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(guid, meaningGroupNode, meaningId);
@@ -954,7 +954,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		} else {
 			lexemePosCodes.addAll(meaningPosCodes);
 			if (lexemePosCodes.size() > 1) {
-				writeToLogFile("Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", guid, "");
+				writeToLogFile(guid, "Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", "");
 			}
 		}
 		for (String posCode : lexemePosCodes) {
@@ -1271,9 +1271,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void writeToLogFile(String message, String guid, String values) throws Exception {
+	private void writeToLogFile(String guid, String message, String values) throws Exception {
 
-		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(message, guid, values));
+		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(guid, message, values));
 		reportComposer.append(REPORT_NAME, logMessage);
 	}
 
