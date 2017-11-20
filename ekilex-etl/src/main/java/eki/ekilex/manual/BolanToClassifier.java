@@ -26,9 +26,9 @@ import eki.ekilex.constant.SystemConstant;
  * vormi märgend: vk_tyyp - ei kõlba!
  * register=stiil: s_tyyp
  */
-public class XsdToClassifier implements SystemConstant {
+public class BolanToClassifier implements SystemConstant {
 
-	private static Logger logger = LoggerFactory.getLogger(XsdToClassifier.class);
+	private static Logger logger = LoggerFactory.getLogger(BolanToClassifier.class);
 
 	private static final String ORIGIN = "bolan";
 	private static final String CLASSIF_KEY_PLACEHOLDER = "{classifKey}";

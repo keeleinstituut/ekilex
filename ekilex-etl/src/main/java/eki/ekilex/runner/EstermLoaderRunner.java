@@ -144,7 +144,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		meaningTypeCodes = getClassifierCodes(SQL_SELECT_MEANING_TYPES);
 		lexemeTypeCodes = getClassifierCodes(SQL_SELECT_LEXEME_TYPES);
 
-		Document dataDoc = readDocument(dataXmlFilePath);
+		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		List<Element> conceptGroupNodes = dataDoc.selectNodes(conceptGroupExp);
 		int conceptGroupCount = conceptGroupNodes.size();

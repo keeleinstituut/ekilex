@@ -133,7 +133,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		boolean isAddForms = wordParadigmsMap != null;
 		dataLang = unifyLang(dataLang);
-		Document dataDoc = readDocument(dataXmlFilePath);
+		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
 		int articleCount = articleNodes.size();

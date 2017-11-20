@@ -79,7 +79,7 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		Document dataDoc = readDocument(dataXmlFilePath);
+		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		List<String> sourceCodes = extractEstermSourceCodes(dataDoc);
 		logger.debug("Extracted {} source codes", sourceCodes.size());

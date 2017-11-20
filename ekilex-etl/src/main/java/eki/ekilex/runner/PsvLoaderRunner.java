@@ -86,7 +86,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappings, null);
 		derivCodes.put("sup", "superl");
 
-		Document dataDoc = readDocument(dataXmlFilePath);
+		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
 		int articleCount = articleNodes.size();

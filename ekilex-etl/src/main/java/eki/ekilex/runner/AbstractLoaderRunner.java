@@ -1,9 +1,6 @@
 package eki.ekilex.runner;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.List;
@@ -14,8 +11,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.io.SAXReader;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,6 +34,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
+
+	@Autowired
+	protected XmlReader xmlReader;
 
 	@Autowired
 	protected BasicDbService basicDbService;
@@ -86,18 +84,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Locale locale = new Locale(lang);
 		lang = locale.getISO3Language();
 		return lang;
-	}
-
-	protected Document readDocument(String dataXmlFilePath) throws Exception {
-
-		SAXReader dataDocParser = new SAXReader();
-		File dataDocFile = new File(dataXmlFilePath);
-		FileInputStream dataDocFileInputStream = new FileInputStream(dataDocFile);
-		InputStreamReader dataDocInputReader = new InputStreamReader(dataDocFileInputStream, UTF_8);
-		Document dataDoc = dataDocParser.read(dataDocInputReader);
-		dataDocInputReader.close();
-		dataDocFileInputStream.close();
-		return dataDoc;
 	}
 
 	protected Long saveWord(Word word, List<Paradigm> paradigms, Count wordDuplicateCount) throws Exception {

@@ -29,7 +29,7 @@ public class XmlAnalyserRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		Document dataDoc = readDocument(dataXmlFilePath);
+		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 		List<Element> elementNodes;
 		List<String> elementPaths;
 		int elementCount;
