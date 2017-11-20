@@ -42,7 +42,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
 	private final String defaultWordMorphCode = "SgN";
 	private final String defaultRectionValue = "-";
-	private final static String REPORT_NAME = "report";
+	private final static String ARTICLES_REPORT_NAME = "keywords";
+	private final static String SYNONYMS_REPORT_NAME = "synonyms";
+	private final static String ANTONYMS_REPORT_NAME = "antonyms";
+	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
+	private final static String COMPOUND_WORDS_REPORT_NAME = "compound_words";
+	private final static String REFERENCE_FORMS_REPORT_NAME = "reference_forms";
+	private final static String MEANING_REFERENCES_REPORT_NAME = "meaning_references";
+	private final static String JOINT_REFERENCES_REPORT_NAME = "joint_references";
+	private final static String COMPOUND_REFERENCES_REPORT_NAME = "compound_references";
+	private final static String VORMELS_REPORT_NAME = "vormels";
+	private final static String SINGLE_FORMS_REPORT_NAME = "single_forms";
+	private final static String COMPOUND_FORMS_REPORT_NAME = "compound_forms";
+	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
+	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -50,6 +63,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> derivCodes;
 	private Map<String, String> lexemeTypes;
 	private ReportComposer reportComposer;
+	private boolean reportingEnabled;
 
 	@Override
 	void initialise() throws Exception {
@@ -63,10 +77,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexemeTypes.put("vlj", "väljend");
 		lexemeTypes.put("ys", "ühendsidesõna");
 		lexemeTypes.put("rs", "rühmsidesõna");
+
+		reportComposer = new ReportComposer("PSV import",
+				ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME,
+				COMPOUND_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
+				COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
+				WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataset, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
+	public void execute(String dataXmlFilePath, String dataset, Map<String, List<Paradigm>> wordParadigmsMap, boolean isAddReporting) throws Exception {
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
@@ -76,8 +96,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.info("Starting import");
 		long t1, t2;
 		t1 = System.currentTimeMillis();
-
-		reportComposer = new ReportComposer("PSV import", REPORT_NAME);
+		reportingEnabled = isAddReporting;
 
 		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
@@ -144,7 +163,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processWordSuperlatives(Context context) throws Exception {
 
 		logger.debug("Starting word superlatives processing.");
+		reportComposer.setActiveStream(WORD_SUPERLATIVES_REPORT_NAME);
 		writeToLogFile("Ülivõrrete töötlus <x:kmp>", "", "");
+
 		long count = 0;
 		List<WordData> words = new ArrayList<>();
 		words.addAll(context.importedWords.stream().filter(wd -> !wd.superlatives.isEmpty()).collect(Collectors.toList()));
@@ -173,7 +194,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processWordComparatives(Context context) throws Exception {
 
 		logger.debug("Starting word comparatives processing.");
+		reportComposer.setActiveStream(WORD_COMPARATIVES_REPORT_NAME);
 		writeToLogFile("Keskvõrrete töötlus <x:kmp>", "", "");
+
 		long count = 0;
 		List<WordData> words = new ArrayList<>();
 		words.addAll(context.importedWords.stream().filter(wd -> !wd.comparatives.isEmpty()).collect(Collectors.toList()));
@@ -202,7 +225,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processCompoundForms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound forms.", context.compoundForms.size());
+		reportComposer.setActiveStream(COMPOUND_FORMS_REPORT_NAME);
 		writeToLogFile("Ühendite töötlus <x:pyh>", "", "");
+
 		for (LexemeToWordData compoundFormData : context.compoundForms) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> compoundFormData.word.equals(w.value))
@@ -218,7 +243,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processSingleForms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} single forms.", context.singleForms.size());
+		reportComposer.setActiveStream(SINGLE_FORMS_REPORT_NAME);
 		writeToLogFile("Üksikvormide töötlus <x:yvr>", "", "");
+
 		for (LexemeToWordData singleFormData : context.singleForms) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> singleFormData.word.equals(w.value))
@@ -234,7 +261,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processVormels(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} vormels.", context.vormels.size());
+		reportComposer.setActiveStream(VORMELS_REPORT_NAME);
 		writeToLogFile("Vormelite töötlus <x:vor>", "", "");
+
 		for (LexemeToWordData vormelData : context.vormels) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> vormelData.word.equals(w.value))
@@ -250,7 +279,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processCompoundReferences(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound references.", context.compoundReferences.size());
+		reportComposer.setActiveStream(COMPOUND_REFERENCES_REPORT_NAME);
 		writeToLogFile("Ühendiviidete töötlus <x:yhvt>", "", "");
+
 		for (LexemeToWordData compoundRefData : context.compoundReferences) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> compoundRefData.word.equals(w.value))
@@ -266,7 +297,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processJointReferences(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} joint references.", context.jointReferences.size());
+		reportComposer.setActiveStream(JOINT_REFERENCES_REPORT_NAME);
 		writeToLogFile("Ühisviidete töötlus <x:yvt>", "", "");
+
 		for (LexemeToWordData jointRefData : context.jointReferences) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> jointRefData.word.equals(w.value))
@@ -284,7 +317,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processMeaningReferences(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} meaning references.", context.meaningReferences.size());
+		reportComposer.setActiveStream(MEANING_REFERENCES_REPORT_NAME);
 		writeToLogFile("Tähendusviidete töötlus <x:tvt>", "", "");
+
 		for (LexemeToWordData meaningRefData : context.meaningReferences) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> meaningRefData.word.equals(w.value))
@@ -302,7 +337,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processCompoundWords(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound words.", context.compoundWords.size());
+		reportComposer.setActiveStream(COMPOUND_WORDS_REPORT_NAME);
 		writeToLogFile("Liitsõnade töötlus <x:ls>", "", "");
+
 		for (LexemeToWordData compData : context.compoundWords) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compData, context, dataset);
@@ -409,7 +446,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processReferenceForms(Context context) throws Exception {
 
 		logger.debug("Found {} reference forms.", context.referenceForms.size());
+		reportComposer.setActiveStream(REFERENCE_FORMS_REPORT_NAME);
 		writeToLogFile("Vormid mis viitavad põhisõnale töötlus <x:mvt>", "", "");
+
 		for (ReferenceFormData referenceForm : context.referenceForms) {
 			Optional<WordData> word = context.importedWords.stream()
 					.filter(w -> referenceForm.wordValue.equals(w.value) && referenceForm.wordHomonymNr == w.homonymNr).findFirst();
@@ -446,7 +485,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processBasicWords(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} basic words.", context.basicWords.size());
+		reportComposer.setActiveStream(BASIC_WORDS_REPORT_NAME);
 		writeToLogFile("Märksõna põhisõna seoste töötlus <x:ps>", "", "");
+
 		for (WordData basicWord : context.basicWords) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.guid);
@@ -469,7 +510,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processAntonyms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} antonyms.", context.antonyms.size());
+		reportComposer.setActiveStream(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <x:ant>", "", "");
+
 		for (LexemeToWordData antonymData : context.antonyms) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.guid);
@@ -492,6 +535,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processSynonyms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} synonyms", context.synonyms.size());
+		reportComposer.setActiveStream(SYNONYMS_REPORT_NAME);
 		writeToLogFile("Sünonüümide töötlus <x:syn>", "", "");
 
 		Count newSynonymWordCount = new Count();
@@ -1273,8 +1317,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private void writeToLogFile(String guid, String message, String values) throws Exception {
 
+		if (!reportingEnabled) {
+			return;
+		}
 		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(guid, message, values));
-		reportComposer.append(REPORT_NAME, logMessage);
+		reportComposer.append(logMessage);
 	}
 
 	private class WordData {
