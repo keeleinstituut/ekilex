@@ -374,7 +374,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createUsage(rectionId, usage);
 				}
 				if (data.rection != null && isNotEmpty(data.rection.getType())) {
-					createClassifierFreeform(FreeformType.RECTION_TYPE, rectionId, data.rection.getType());
+					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, data.rection.getType());
 				}
 			}
 		} else {
@@ -1060,17 +1060,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createUsage(rectionId, usage);
 				}
 				if (isNotEmpty(rection.getType())) {
-					createClassifierFreeform(FreeformType.RECTION_TYPE, rectionId, rection.getType());
+					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, rection.getType());
 				}
 			}
 		}
 	}
 
 	private void createUsage(Long rectionId, Usage usage) throws Exception {
-		Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, "", null);
-		createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
+		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, "", null);
+		createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 		if (isNotEmpty(usage.getDefinition())) {
-			createFreeform(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
+			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
 		}
 	}
 

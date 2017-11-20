@@ -35,6 +35,14 @@ public class ReportComposer {
 		return value;
 	}
 
+	public void setActiveStream(String activeStreamName) {
+		this.activeStream = fileNameCleanup(activeStreamName);
+	}
+
+	public void append(String logRow) throws Exception {
+		append(activeStream, logRow);
+	}
+
 	public void append(String reportName, String logRow) throws Exception {
 
 		if (StringUtils.isBlank(logRow)) {
@@ -42,14 +50,6 @@ public class ReportComposer {
 		}
 		FileOutputStream reportStream = reportStreamsMap.get(reportName);
 		IOUtils.write(logRow + '\n', reportStream, StandardCharsets.UTF_8);
-	}
-
-	public void append(String logRow) throws Exception {
-		append(activeStream, logRow);
-	}
-
-	public void setActiveStream(String activeStreamName) {
-		this.activeStream = fileNameCleanup(activeStreamName);
 	}
 
 	public void end() throws Exception {

@@ -233,13 +233,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
 						rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
-						usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
+						usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
 						for (Element usageNode : valueNodes) {
 							if (usageNode.hasMixedContent()) {
 								//TODO get source
 							}
 							valueStr = usageNode.getTextTrim();
-							createFreeform(FreeformType.USAGE, usageMeaningId, valueStr, lang);
+							createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
 						}
 					}
 

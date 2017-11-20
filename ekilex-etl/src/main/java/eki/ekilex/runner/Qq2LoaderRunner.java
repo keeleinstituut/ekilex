@@ -826,11 +826,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			} else {
 				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
 				for (UsageMeaning usageMeaning : usageMeanings) {
-					Long usageMeaningId = createFreeform(FreeformType.USAGE_MEANING, rectionId, null, null);
+					Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
 					for (Usage usage : usageMeaning.getUsages()) {
-						createFreeform(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
+						createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
 						for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
-							createFreeform(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
+							createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
 						}
 					}
 				}

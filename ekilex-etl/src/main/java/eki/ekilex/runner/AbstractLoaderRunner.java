@@ -339,7 +339,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value, lang);
+		Long freeformId = createFreeformTextOrDate(freeformType, null, value, lang);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -366,7 +366,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected void createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value, null);
+		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
@@ -376,7 +376,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected void createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value, null);
+		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
@@ -384,7 +384,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(DEFINITION_FREEFORM, tableRowParamMap);
 	}
 
-	protected Long createFreeform(FreeformType freeformType, Long parentId, Object value, String lang) throws Exception {
+	protected Long createFreeformTextOrDate(FreeformType freeformType, Long parentId, Object value, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("type", freeformType.name());
@@ -405,6 +405,17 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		}
 		Long freeformId = basicDbService.create(FREEFORM, tableRowParamMap);
 		return freeformId;
+	}
+
+	protected Long createFreeformClassifier(FreeformType freeformType, Long parentId, String classifierCode) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("type", freeformType.name());
+		if (parentId != null) {
+			tableRowParamMap.put("parent_id", parentId);
+		}
+		tableRowParamMap.put("classif_code", classifierCode);
+		return basicDbService.create(FREEFORM, tableRowParamMap);
 	}
 
 	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleLogType type, String eventBy, Timestamp eventOn) throws Exception {
@@ -441,17 +452,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		relationParams.put("word2_id", wordId2);
 		relationParams.put("word_rel_type_code", relationType);
 		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
-	}
-
-	protected Long createClassifierFreeform(FreeformType freeformType, Long parentId, String value) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("type", freeformType.name());
-		if (parentId != null) {
-			tableRowParamMap.put("parent_id", parentId);
-		}
-		tableRowParamMap.put("classif_code", value);
-		return basicDbService.create(FREEFORM, tableRowParamMap);
 	}
 
 }

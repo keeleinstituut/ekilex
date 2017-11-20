@@ -279,7 +279,7 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 
 	private Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
 
-		Long freeformId = createFreeform(freeformType, null, value, null);
+		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("source_id", sourceId);
@@ -302,9 +302,9 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 					|| FreeformType.MODIFIED_ON.equals(freeformType)) {
 				valueLong = defaultDateFormat.parse(valueStr).getTime();
 				valueTs = new Timestamp(valueLong);
-				createFreeform(freeformType, sourceTermId, valueTs, null);
+				createFreeformTextOrDate(freeformType, sourceTermId, valueTs, null);
 			} else {
-				createFreeform(freeformType, sourceTermId, valueStr, null);
+				createFreeformTextOrDate(freeformType, sourceTermId, valueStr, null);
 			}
 		}
 	}
