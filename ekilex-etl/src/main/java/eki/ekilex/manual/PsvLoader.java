@@ -27,6 +27,7 @@ public class PsvLoader {
 			applicationContext.registerShutdownHook();
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
+			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
 
 			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
 			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
@@ -37,7 +38,7 @@ public class PsvLoader {
 			}
 
 			String dataset = "psv";
-			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap);
+			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {

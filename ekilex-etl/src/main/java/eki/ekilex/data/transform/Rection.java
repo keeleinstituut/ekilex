@@ -10,6 +10,8 @@ public class Rection extends AbstractDataObject {
 
 	private String value;
 
+	private String type;
+
 	private List<UsageMeaning> usageMeanings;
 
 	public String getValue() {
@@ -28,4 +30,11 @@ public class Rection extends AbstractDataObject {
 		this.usageMeanings = usageMeanings;
 	}
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
 }

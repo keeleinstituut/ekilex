@@ -12,6 +12,8 @@ public class ReportComposer {
 
 	private Map<String, FileOutputStream> reportStreamsMap;
 
+	private String activeStream;
+
 	public ReportComposer(String reportGroupName, String... reportNames) throws Exception {
 
 		reportGroupName = fileNameCleanup(reportGroupName);
@@ -22,6 +24,7 @@ public class ReportComposer {
 			FileOutputStream reportStream = new FileOutputStream(reportFilePath);
 			reportStreamsMap.put(reportName, reportStream);
 		}
+		activeStream = reportNames[0];
 	}
 
 	private String fileNameCleanup(String value) {
@@ -39,6 +42,14 @@ public class ReportComposer {
 		}
 		FileOutputStream reportStream = reportStreamsMap.get(reportName);
 		IOUtils.write(logRow + '\n', reportStream, StandardCharsets.UTF_8);
+	}
+
+	public void append(String logRow) throws Exception {
+		append(activeStream, logRow);
+	}
+
+	public void setActiveStream(String activeStreamName) {
+		this.activeStream = fileNameCleanup(activeStreamName);
 	}
 
 	public void end() throws Exception {

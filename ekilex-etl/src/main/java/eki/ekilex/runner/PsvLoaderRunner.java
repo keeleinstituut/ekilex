@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.transform.Rection;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -42,7 +43,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
 	private final String defaultWordMorphCode = "SgN";
 	private final String defaultRectionValue = "-";
-	private final static String REPORT_NAME = "report";
+	private final static String ARTICLES_REPORT_NAME = "keywords";
+	private final static String SYNONYMS_REPORT_NAME = "synonyms";
+	private final static String ANTONYMS_REPORT_NAME = "antonyms";
+	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
+	private final static String COMPOUND_WORDS_REPORT_NAME = "compound_words";
+	private final static String REFERENCE_FORMS_REPORT_NAME = "reference_forms";
+	private final static String MEANING_REFERENCES_REPORT_NAME = "meaning_references";
+	private final static String JOINT_REFERENCES_REPORT_NAME = "joint_references";
+	private final static String COMPOUND_REFERENCES_REPORT_NAME = "compound_references";
+	private final static String VORMELS_REPORT_NAME = "vormels";
+	private final static String SINGLE_FORMS_REPORT_NAME = "single_forms";
+	private final static String COMPOUND_FORMS_REPORT_NAME = "compound_forms";
+	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
+	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -50,6 +64,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> derivCodes;
 	private Map<String, String> lexemeTypes;
 	private ReportComposer reportComposer;
+	private boolean reportingEnabled;
 
 	@Override
 	void initialise() throws Exception {
@@ -63,21 +78,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexemeTypes.put("vlj", "väljend");
 		lexemeTypes.put("ys", "ühendsidesõna");
 		lexemeTypes.put("rs", "rühmsidesõna");
+
+		reportComposer = new ReportComposer("PSV import",
+				ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME,
+				COMPOUND_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
+				COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
+				WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataset, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
+	public void execute(String dataXmlFilePath, String dataset, Map<String, List<Paradigm>> wordParadigmsMap, boolean isAddReporting) throws Exception {
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
-		final String articleGuidExp = "x:G";
+		final String articleGuidExp = "x:P/x:mg/x:m"; // use first word as guid
 
 		logger.info("Starting import");
 		long t1, t2;
 		t1 = System.currentTimeMillis();
-
-		reportComposer = new ReportComposer("PSV import", REPORT_NAME);
+		reportingEnabled = isAddReporting;
 
 		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
@@ -103,7 +123,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element guidNode = (Element) articleNode.selectSingleNode(articleGuidExp);
-			String guid = guidNode.getTextTrim();
+			String guid = guidNode != null ? guidNode.getTextTrim() : "";
 			processArticleHeader(guid, headerNode, newWords, context, wordParadigmsMap, wordDuplicateCount);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
@@ -144,7 +164,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processWordSuperlatives(Context context) throws Exception {
 
 		logger.debug("Starting word superlatives processing.");
+		reportComposer.setActiveStream(WORD_SUPERLATIVES_REPORT_NAME);
 		writeToLogFile("Ülivõrrete töötlus <x:kmp>", "", "");
+
 		long count = 0;
 		List<WordData> words = new ArrayList<>();
 		words.addAll(context.importedWords.stream().filter(wd -> !wd.superlatives.isEmpty()).collect(Collectors.toList()));
@@ -173,7 +195,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processWordComparatives(Context context) throws Exception {
 
 		logger.debug("Starting word comparatives processing.");
+		reportComposer.setActiveStream(WORD_COMPARATIVES_REPORT_NAME);
 		writeToLogFile("Keskvõrrete töötlus <x:kmp>", "", "");
+
 		long count = 0;
 		List<WordData> words = new ArrayList<>();
 		words.addAll(context.importedWords.stream().filter(wd -> !wd.comparatives.isEmpty()).collect(Collectors.toList()));
@@ -202,7 +226,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processCompoundForms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound forms.", context.compoundForms.size());
+		reportComposer.setActiveStream(COMPOUND_FORMS_REPORT_NAME);
 		writeToLogFile("Ühendite töötlus <x:pyh>", "", "");
+
 		for (LexemeToWordData compoundFormData : context.compoundForms) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> compoundFormData.word.equals(w.value))
@@ -218,7 +244,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processSingleForms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} single forms.", context.singleForms.size());
+		reportComposer.setActiveStream(SINGLE_FORMS_REPORT_NAME);
 		writeToLogFile("Üksikvormide töötlus <x:yvr>", "", "");
+
 		for (LexemeToWordData singleFormData : context.singleForms) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> singleFormData.word.equals(w.value))
@@ -234,7 +262,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processVormels(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} vormels.", context.vormels.size());
+		reportComposer.setActiveStream(VORMELS_REPORT_NAME);
 		writeToLogFile("Vormelite töötlus <x:vor>", "", "");
+
 		for (LexemeToWordData vormelData : context.vormels) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> vormelData.word.equals(w.value))
@@ -250,12 +280,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processCompoundReferences(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound references.", context.compoundReferences.size());
+		reportComposer.setActiveStream(COMPOUND_REFERENCES_REPORT_NAME);
 		writeToLogFile("Ühendiviidete töötlus <x:yhvt>", "", "");
+
 		for (LexemeToWordData compoundRefData : context.compoundReferences) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> compoundRefData.word.equals(w.value))
 					.collect(Collectors.toList());
-			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.relationType);
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.lexemeType);
 			if (lexemeId != null) {
 				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt", dataset);
 			}
@@ -266,7 +298,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processJointReferences(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} joint references.", context.jointReferences.size());
+		reportComposer.setActiveStream(JOINT_REFERENCES_REPORT_NAME);
 		writeToLogFile("Ühisviidete töötlus <x:yvt>", "", "");
+
 		for (LexemeToWordData jointRefData : context.jointReferences) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> jointRefData.word.equals(w.value))
@@ -284,7 +318,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processMeaningReferences(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} meaning references.", context.meaningReferences.size());
+		reportComposer.setActiveStream(MEANING_REFERENCES_REPORT_NAME);
 		writeToLogFile("Tähendusviidete töötlus <x:tvt>", "", "");
+
 		for (LexemeToWordData meaningRefData : context.meaningReferences) {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> meaningRefData.word.equals(w.value))
@@ -302,7 +338,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processCompoundWords(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} compound words.", context.compoundWords.size());
+		reportComposer.setActiveStream(COMPOUND_WORDS_REPORT_NAME);
 		writeToLogFile("Liitsõnade töötlus <x:ls>", "", "");
+
 		for (LexemeToWordData compData : context.compoundWords) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compData, context, dataset);
@@ -314,7 +352,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long findOrCreateLexemeForWord(List<WordData> existingWords, LexemeToWordData data, Context context, String dataset) throws Exception {
-		return findOrCreateLexemeForWord(existingWords, data, context, dataset, null);
+		return findOrCreateLexemeForWord(existingWords, data, context, dataset, data.lexemeType);
 	}
 
 	private Long findOrCreateLexemeForWord(
@@ -322,7 +360,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		if (existingWords.size() > 1) {
 			logger.debug("Found more than one word : {}.", data.word);
-			writeToLogFile("Leiti rohkem kui üks vaste sõnale", data.guid, data.word);
+			writeToLogFile(data.guid, "Leiti rohkem kui üks vaste sõnale", data.word);
 		}
 		Long lexemeId;
 		if (existingWords.isEmpty()) {
@@ -330,17 +368,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = createLexemeAndRelatedObjects(data, context, dataset, lexemeType);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found, adding them");
-				String rectionValue = isBlank(data.rection) ? defaultRectionValue : data.rection;
+				String rectionValue = data.rection == null ? defaultRectionValue : data.rection.getValue();
 				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
 				for (Usage usage : data.usages) {
 					createUsage(rectionId, usage);
+				}
+				if (data.rection != null && isNotEmpty(data.rection.getType())) {
+					createClassifierFreeform(FreeformType.RECTION_TYPE, rectionId, data.rection.getType());
 				}
 			}
 		} else {
 			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data, lexemeType);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found for word, skipping them : {}.", data.word);
-				writeToLogFile("Leiti kasutusnäited olemasolevale ilmikule", data.guid, data.word);
+				writeToLogFile(data.guid, "Leiti kasutusnäited olemasolevale ilmikule", data.word);
 			}
 		}
 		return lexemeId;
@@ -357,9 +398,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
-		if (lexemeType != null) {
-			lexeme.setType(lexemeTypes.get(lexemeType));
-		}
+		lexeme.setType(lexemeType);
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, dataset);
 		}
@@ -387,19 +426,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
 		if (lexemes.isEmpty()) {
 			logger.debug("Lexeme not found for word : {}.", data.word);
-			writeToLogFile("Ei leitud ilmikut sõnale", data.guid, data.word);
+			writeToLogFile(data.guid, "Ei leitud ilmikut sõnale", data.word);
 		} else {
 			if (lexemes.size() > 1) {
 				logger.debug("Found more than one lexeme for : {}.", data.word);
-				writeToLogFile("Leiti rohkem kui üks ilmik sõnale", data.guid, data.word);
+				writeToLogFile(data.guid, "Leiti rohkem kui üks ilmik sõnale", data.word);
 			}
 			lexemeId = (Long) lexemes.get(0).get("id");
 			if (isNotEmpty(lexemeType)) {
 				String existingLexemeType = (String) lexemes.get(0).get("type_code");
-				String expectedLexemeType = lexemeTypes.get(lexemeType);
-				if (!Objects.equals(existingLexemeType, expectedLexemeType)) {
-					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, expectedLexemeType, existingLexemeType);
-					writeToLogFile("Ilmikute tüübid on erinevad", data.guid, data.word + ", " + expectedLexemeType + " != " + existingLexemeType);
+				if (!Objects.equals(existingLexemeType, lexemeType)) {
+					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, lexemeType, existingLexemeType);
+					writeToLogFile(data.guid, "Ilmikute tüübid on erinevad", data.word + ", " + lexemeType + " != " + existingLexemeType);
 				}
 			}
 		}
@@ -409,7 +447,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processReferenceForms(Context context) throws Exception {
 
 		logger.debug("Found {} reference forms.", context.referenceForms.size());
+		reportComposer.setActiveStream(REFERENCE_FORMS_REPORT_NAME);
 		writeToLogFile("Vormid mis viitavad põhisõnale töötlus <x:mvt>", "", "");
+
 		for (ReferenceFormData referenceForm : context.referenceForms) {
 			Optional<WordData> word = context.importedWords.stream()
 					.filter(w -> referenceForm.wordValue.equals(w.value) && referenceForm.wordHomonymNr == w.homonymNr).findFirst();
@@ -427,7 +467,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Optional<Map<String, Object>> form = forms.stream().filter(f -> referenceForm.formValue.equals(f.get("value"))).findFirst();
 				if (!form.isPresent()) {
 					logger.debug("Form not found for {}, {} -> {}", referenceForm.guid, referenceForm.formValue, referenceForm.wordValue);
-					writeToLogFile("Vormi ei leitud", referenceForm.guid, referenceForm.formValue + " -> " + referenceForm.wordValue);
+					writeToLogFile(referenceForm.guid, "Vormi ei leitud", referenceForm.formValue + " -> " + referenceForm.wordValue);
 					continue;
 				}
 				params.clear();
@@ -437,7 +477,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				basicDbService.create(FORM_RELATION, params);
 			} else {
 				logger.debug("Word not found {}, {}, {}", referenceForm.guid, referenceForm.wordValue, referenceForm.wordHomonymNr);
-				writeToLogFile("Sihtsõna ei leitud", referenceForm.guid, referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
+				writeToLogFile(referenceForm.guid, "Sihtsõna ei leitud", referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
 			}
 		}
 		logger.debug("Reference forms processing done.");
@@ -446,7 +486,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processBasicWords(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} basic words.", context.basicWords.size());
+		reportComposer.setActiveStream(BASIC_WORDS_REPORT_NAME);
 		writeToLogFile("Märksõna põhisõna seoste töötlus <x:ps>", "", "");
+
 		for (WordData basicWord : context.basicWords) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.guid);
@@ -469,7 +511,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processAntonyms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} antonyms.", context.antonyms.size());
+		reportComposer.setActiveStream(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <x:ant>", "", "");
+
 		for (LexemeToWordData antonymData : context.antonyms) {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.guid);
@@ -482,7 +526,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get("id"), "ant", dataset);
 				} else {
 					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-					writeToLogFile("Ei leitud ilmikut antaonüümile", antonymData.guid, antonymData.word + ", level1 " + antonymData.lexemeLevel1);
+					writeToLogFile(antonymData.guid, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
 				}
 			}
 		}
@@ -492,6 +536,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void processSynonyms(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} synonyms", context.synonyms.size());
+		reportComposer.setActiveStream(SYNONYMS_REPORT_NAME);
 		writeToLogFile("Sünonüümide töötlus <x:syn>", "", "");
 
 		Count newSynonymWordCount = new Count();
@@ -529,7 +574,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordId = matchingWord.get().id;
 			} else {
 				logger.debug("No matching word was found for {} word {}, {}", guid, wordValue, homonymNr);
-				writeToLogFile("Ei leitud sihtsõna", guid, wordValue + " : " + homonymNr);
+				writeToLogFile(guid, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 			}
 		} else {
 			wordId = words.get(0).id;
@@ -590,7 +635,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
 				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
 				if (definitionValueNodes.size() > 1) {
-					writeToLogFile("Leitud rohkem kui üks seletus <x:d>", guid, newWords.get(0).value);
+					writeToLogFile(guid, "Leitud rohkem kui üks seletus <x:d>", newWords.get(0).value);
 				}
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(guid, meaningGroupNode, meaningId);
@@ -718,17 +763,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String usageExp = "x:ng/x:n";
 		final String rectionExp = "x:rek";
 		final String usageDefinitionExp = "x:nd";
+		final String lexemeTypeAttr = "liik";
 
 		List<LexemeToWordData> compoundForms = new ArrayList<>();
 		List<Element> compoundFormGroupNodes = node.selectNodes(compoundFormGroupNodeExp);
 		for (Element compoundFormGroupNode : compoundFormGroupNodes) {
 			List<LexemeToWordData> forms = new ArrayList<>();
 			List<Element> compoundFormNodes = compoundFormGroupNode.selectNodes(compoundFormNodeExp);
-			for (Element compondFormNode : compoundFormNodes) {
+			for (Element compoundFormNode : compoundFormNodes) {
 				LexemeToWordData data = new LexemeToWordData();
-				data.word = compondFormNode.getTextTrim();
-				if (compondFormNode.hasMixedContent()) {
-					data.rection = compondFormNode.selectSingleNode(rectionExp).getText();
+				data.word = compoundFormNode.getTextTrim();
+				if (compoundFormNode.hasMixedContent()) {
+					data.rection = extractRection((Element) compoundFormNode.selectSingleNode(rectionExp));
+				}
+				if (compoundFormNode.attributeValue(lexemeTypeAttr) != null) {
+					data.lexemeType = lexemeTypes.get(compoundFormNode.attributeValue(lexemeTypeAttr));
 				}
 				forms.add(data);
 			}
@@ -751,6 +800,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			compoundForms.addAll(forms);
 		}
 		return compoundForms;
+	}
+
+	private Rection extractRection(Element rectionNode) {
+
+		final String rectionTypeAttr = "rliik";
+
+		Rection rection = new Rection();
+		rection.setValue(rectionNode.getTextTrim());
+		rection.setType(rectionNode.attributeValue(rectionTypeAttr));
+		return rection;
 	}
 
 	private void saveSymbol(Element node, Context context, String guid) throws Exception {
@@ -796,7 +855,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Element formDefinitionNode = (Element) singleFormNode.selectSingleNode(formDefinitionExp);
 				data.word = formValueNode.getTextTrim();
 				if (formValueNode.hasMixedContent()) {
-					data.rection = formValueNode.selectSingleNode(rectionExp).getText();
+					data.rection = extractRection((Element) formValueNode.selectSingleNode(rectionExp));
 				}
 				if (formDefinitionNode != null) {
 					data.definition = formDefinitionNode.getTextTrim();
@@ -842,10 +901,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private List<LexemeToWordData> extractCompoundReferences(Element node) {
 
-		final String cmpoundReferenceExp = "x:tyg2/x:yhvt";
-		final String relationTypeAttr = "liik";
+		final String compoundReferenceExp = "x:tyg2/x:yhvt";
 
-		return extractLexemeMetadata(node, cmpoundReferenceExp, relationTypeAttr);
+		return extractLexemeMetadata(node, compoundReferenceExp, null);
 	}
 
 	private List<LexemeToWordData> extractJointReferences(Element node) {
@@ -886,6 +944,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
+		final String lexemeTypeAttr = "liik";
 		final int defaultLexemeLevel1 = 1;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
@@ -905,6 +964,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			if (relationTypeAttr != null) {
 				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
+			}
+			String lexemeTypeAttrValue = metadataNode.attributeValue(lexemeTypeAttr);
+			if (StringUtils.isNotBlank(lexemeTypeAttrValue)) {
+				lexemeMetadata.lexemeType = lexemeTypes.get(lexemeTypeAttrValue);
 			}
 			metadataList.add(lexemeMetadata);
 		}
@@ -954,7 +1017,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		} else {
 			lexemePosCodes.addAll(meaningPosCodes);
 			if (lexemePosCodes.size() > 1) {
-				writeToLogFile("Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", guid, "");
+				writeToLogFile(guid, "Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", "");
 			}
 		}
 		for (String posCode : lexemePosCodes) {
@@ -989,11 +1052,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element rectionGroup : rectionGroups) {
 			List<Element> usageGroupNodes = rectionGroup.selectNodes(usageGroupExp);
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
-			List<Element> rections = rectionGroup.selectNodes(rectionExp);
-			for (Element rection : rections) {
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getTextTrim());
+			List<Element> rectionNodes = rectionGroup.selectNodes(rectionExp);
+			for (Element rectionNode : rectionNodes) {
+				Rection rection = extractRection(rectionNode);
+				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getValue());
 				for (Usage usage : rectionUsages) {
 					createUsage(rectionId, usage);
+				}
+				if (isNotEmpty(rection.getType())) {
+					createClassifierFreeform(FreeformType.RECTION_TYPE, rectionId, rection.getType());
 				}
 			}
 		}
@@ -1271,10 +1338,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void writeToLogFile(String message, String guid, String values) throws Exception {
+	private void writeToLogFile(String guid, String message, String values) throws Exception {
 
-		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(message, guid, values));
-		reportComposer.append(REPORT_NAME, logMessage);
+		if (!reportingEnabled) {
+			return;
+		}
+		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(guid, message, values));
+		reportComposer.append(logMessage);
 	}
 
 	private class WordData {
@@ -1304,10 +1374,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
-		String rection;
+		Rection rection;
 		String definition;
 		List<Usage> usages = new ArrayList<>();
 		String guid;
+		String lexemeType;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -1320,6 +1391,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.definition = this.definition;
 			newData.guid = this.guid;
 			newData.usages.addAll(this.usages);
+			newData.lexemeType = this.lexemeType;
 			return newData;
 		}
 	}

@@ -17,6 +17,14 @@ insert into dataset (code, name) values ('est', 'Esterm');
 insert into dataset (code, name) values ('vlk', 'Veterinaarmeditsiin ja loomakasvatus');
 insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 
+insert into rection_type (code, value) values ('obj', 'objektirektsioon');
+insert into rection_type (code, value) values ('kn', 'käänderektsioon');
+insert into rection_type (code, value) values ('ks', 'kaassõnarektsioon');
+insert into rection_type (code, value) values ('yld', 'üldrektsioon');
+insert into rection_type (code, value) values ('inf', 'infinitiivirektsioon');
+insert into rection_type (code, value) values ('kla', 'lausungirektsioon');
+insert into rection_type (code, value) values ('subj', 'subjektirektsioon');
+
 insert into lex_rel_type (code, datasets) values ('comp', '{psv}');
 insert into lex_rel_type (code, datasets) values ('ant', '{psv}');
 insert into lex_rel_type (code, datasets) values ('head', '{psv}');

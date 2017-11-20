@@ -3,6 +3,7 @@ package eki.common.constant;
 public enum FreeformType {
 
 	RECTION,
+	RECTION_TYPE,
 	USAGE,
 	USAGE_MEANING,
 	USAGE_TRANSLATION,

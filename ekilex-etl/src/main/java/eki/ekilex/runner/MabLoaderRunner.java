@@ -111,6 +111,9 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				formGroupNodes = rootBaseNode.selectNodes(formGroupExp);
 				inflectionTypeNrNode = (Element) rootBaseNode.selectSingleNode(inflectionTypeNrExp);
 				inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
+				if (inflectionTypeNr.startsWith("0")) {
+					inflectionTypeNr = String.valueOf(Integer.parseInt(inflectionTypeNr));
+				}
 
 				forms = new ArrayList<>();
 				formValues = new ArrayList<>();
