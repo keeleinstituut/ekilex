@@ -286,7 +286,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> existingWords = context.importedWords.stream()
 					.filter(w -> compoundRefData.word.equals(w.value))
 					.collect(Collectors.toList());
-			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.relationType);
+			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.lexemeType);
 			if (lexemeId != null) {
 				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt", dataset);
 			}
@@ -351,7 +351,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long findOrCreateLexemeForWord(List<WordData> existingWords, LexemeToWordData data, Context context, String dataset) throws Exception {
-		return findOrCreateLexemeForWord(existingWords, data, context, dataset, null);
+		return findOrCreateLexemeForWord(existingWords, data, context, dataset, data.lexemeType);
 	}
 
 	private Long findOrCreateLexemeForWord(
@@ -394,9 +394,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
-		if (lexemeType != null) {
-			lexeme.setType(lexemeTypes.get(lexemeType));
-		}
+		lexeme.setType(lexemeType);
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, dataset);
 		}
@@ -433,10 +431,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = (Long) lexemes.get(0).get("id");
 			if (isNotEmpty(lexemeType)) {
 				String existingLexemeType = (String) lexemes.get(0).get("type_code");
-				String expectedLexemeType = lexemeTypes.get(lexemeType);
-				if (!Objects.equals(existingLexemeType, expectedLexemeType)) {
-					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, expectedLexemeType, existingLexemeType);
-					writeToLogFile(data.guid, "Ilmikute tüübid on erinevad", data.word + ", " + expectedLexemeType + " != " + existingLexemeType);
+				if (!Objects.equals(existingLexemeType, lexemeType)) {
+					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, lexemeType, existingLexemeType);
+					writeToLogFile(data.guid, "Ilmikute tüübid on erinevad", data.word + ", " + lexemeType + " != " + existingLexemeType);
 				}
 			}
 		}
@@ -762,17 +759,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String usageExp = "x:ng/x:n";
 		final String rectionExp = "x:rek";
 		final String usageDefinitionExp = "x:nd";
+		final String lexemeTypeAttr = "liik";
 
 		List<LexemeToWordData> compoundForms = new ArrayList<>();
 		List<Element> compoundFormGroupNodes = node.selectNodes(compoundFormGroupNodeExp);
 		for (Element compoundFormGroupNode : compoundFormGroupNodes) {
 			List<LexemeToWordData> forms = new ArrayList<>();
 			List<Element> compoundFormNodes = compoundFormGroupNode.selectNodes(compoundFormNodeExp);
-			for (Element compondFormNode : compoundFormNodes) {
+			for (Element compoundFormNode : compoundFormNodes) {
 				LexemeToWordData data = new LexemeToWordData();
-				data.word = compondFormNode.getTextTrim();
-				if (compondFormNode.hasMixedContent()) {
-					data.rection = compondFormNode.selectSingleNode(rectionExp).getText();
+				data.word = compoundFormNode.getTextTrim();
+				if (compoundFormNode.hasMixedContent()) {
+					data.rection = compoundFormNode.selectSingleNode(rectionExp).getText();
+				}
+				if (compoundFormNode.attributeValue(lexemeTypeAttr) != null) {
+					data.lexemeType = lexemeTypes.get(compoundFormNode.attributeValue(lexemeTypeAttr));
 				}
 				forms.add(data);
 			}
@@ -886,10 +887,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private List<LexemeToWordData> extractCompoundReferences(Element node) {
 
-		final String cmpoundReferenceExp = "x:tyg2/x:yhvt";
-		final String relationTypeAttr = "liik";
+		final String compoundReferenceExp = "x:tyg2/x:yhvt";
 
-		return extractLexemeMetadata(node, cmpoundReferenceExp, relationTypeAttr);
+		return extractLexemeMetadata(node, compoundReferenceExp, null);
 	}
 
 	private List<LexemeToWordData> extractJointReferences(Element node) {
@@ -930,6 +930,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
+		final String lexemeTypeAttr = "liik";
 		final int defaultLexemeLevel1 = 1;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
@@ -949,6 +950,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			if (relationTypeAttr != null) {
 				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
+			}
+			String lexemeTypeAttrValue = metadataNode.attributeValue(lexemeTypeAttr);
+			if (StringUtils.isNotBlank(lexemeTypeAttrValue)) {
+				lexemeMetadata.lexemeType = lexemeTypes.get(lexemeTypeAttrValue);
 			}
 			metadataList.add(lexemeMetadata);
 		}
@@ -1355,6 +1360,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String definition;
 		List<Usage> usages = new ArrayList<>();
 		String guid;
+		String lexemeType;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -1367,6 +1373,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.definition = this.definition;
 			newData.guid = this.guid;
 			newData.usages.addAll(this.usages);
+			newData.lexemeType = this.lexemeType;
 			return newData;
 		}
 	}
