@@ -57,6 +57,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
 	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
+	private final static String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
+	private final static String sqlDerivCodeMappings = "select code as key, code as value from deriv where '%s' = ANY(datasets)";
+	private final static String sqlFormsOfTheWord = "select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id";
+
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private Map<String, String> posCodes;
@@ -98,11 +102,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 		reportingEnabled = isAddReporting;
 
-		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
 
-		String sqlDerivCodeMappings = "select code as key, code as value from deriv where '" + dataset + "' = ANY(datasets)";
-		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappings, null);
+		String sqlDerivCodeMappingsStr = String.format(sqlDerivCodeMappings, dataset);
+		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappingsStr, null);
 		derivCodes.put("sup", "superl");
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -455,8 +458,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			if (word.isPresent()) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("word_id", word.get().id);
-				List<Map<String, Object>> forms = basicDbService
-						.queryList("select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id", params);
+				List<Map<String, Object>> forms = basicDbService.queryList(sqlFormsOfTheWord, params);
 				List<Map<String, Object>> wordForms = forms.stream().filter(f -> (boolean) f.get("is_word")).collect(Collectors.toList());
 				if (wordForms.size() > 1) {
 					logger.debug("More than one word form found for word : {}, id : {}", referenceForm.wordValue, word.get().id);
