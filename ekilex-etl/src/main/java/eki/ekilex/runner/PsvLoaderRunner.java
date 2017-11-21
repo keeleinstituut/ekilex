@@ -57,6 +57,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
 	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
+	private final static String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
+	private final static String sqlDerivCodeMappings = "select code as key, code as value from deriv where '%s' = ANY(datasets)";
+	private final static String sqlFormsOfTheWord = "select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id";
+	private final static String sqlUpdateSoundFiles = "update form set sound_file = :soundFile where id in "
+			+ "(select f.id from form f join paradigm p on f.paradigm_id = p.id where f.value = :formValue and p.inflection_type_nr = :inflectionTypeNr)";
+
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private Map<String, String> posCodes;
@@ -98,11 +104,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 		reportingEnabled = isAddReporting;
 
-		String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
 
-		String sqlDerivCodeMappings = "select code as key, code as value from deriv where '" + dataset + "' = ANY(datasets)";
-		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappings, null);
+		String sqlDerivCodeMappingsStr = String.format(sqlDerivCodeMappings, dataset);
+		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappingsStr, null);
 		derivCodes.put("sup", "superl");
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -151,6 +156,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processCompoundForms(context, dataset);
 		processWordComparatives(context);
 		processWordSuperlatives(context);
+		processSoundFileNames(articleNodes);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -158,6 +164,49 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private void processSoundFileNames(List<Element> articleNodes) throws Exception {
+
+		final String morphGroupExp = "x:P/x:mg/x:mfp";
+		final String inflectionTypeNrExp = "x:mt";
+		final String morphValueGroupExp = "x:gkg/x:mvg/x:mvgp";
+		final String soundFileExp = "x:hldf";
+		final String formValueExp = "x:mvf";
+
+		logger.debug("Starting sound file names processing.");
+		List<SoundFileData> soundFiles = new ArrayList<>();
+		for (Element articleNode : articleNodes) {
+			List<Element> morphGroupNodes = articleNode.selectNodes(morphGroupExp);
+			for (Element morphGroupNode : morphGroupNodes) {
+				Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
+				String inflectionTypeNr = inflectionTypeNrNode == null ? null : inflectionTypeNrNode.getTextTrim();
+				List<Element> morphValueGroupNodes = morphGroupNode.selectNodes(morphValueGroupExp);
+				for (Element morphValueGroupNode : morphValueGroupNodes) {
+					Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
+					if (soundFileNode != null) {
+						Element formValueNode = (Element) morphValueGroupNode.selectSingleNode(formValueExp);
+						String formValue = StringUtils.replaceChars(formValueNode.getTextTrim(), formStrCleanupChars, "");
+						SoundFileData data = new SoundFileData();
+						data.soundFile = soundFileNode.getTextTrim();
+						data.inflectionTypeNr = inflectionTypeNr;
+						data.formValue = formValue;
+						soundFiles.add(data);
+					}
+				}
+			}
+		}
+
+		logger.debug("Sound file names found : {}.", soundFiles.size());
+		for (SoundFileData soundFileData : soundFiles) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("formValue", soundFileData.formValue);
+			params.put("inflectionTypeNr", soundFileData.inflectionTypeNr);
+			params.put("soundFile", soundFileData.soundFile);
+			basicDbService.executeScript(sqlUpdateSoundFiles, params);
+		}
+
+		logger.debug("Sound file names processing done.", soundFiles.size());
 	}
 
 	private void processWordSuperlatives(Context context) throws Exception {
@@ -455,8 +504,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			if (word.isPresent()) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("word_id", word.get().id);
-				List<Map<String, Object>> forms = basicDbService
-						.queryList("select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id", params);
+				List<Map<String, Object>> forms = basicDbService.queryList(sqlFormsOfTheWord, params);
 				List<Map<String, Object>> wordForms = forms.stream().filter(f -> (boolean) f.get("is_word")).collect(Collectors.toList());
 				if (wordForms.size() > 1) {
 					logger.debug("More than one word form found for word : {}, id : {}", referenceForm.wordValue, word.get().id);
@@ -1434,6 +1482,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordValue;
 		int wordHomonymNr = 0;
 		String guid;
+	}
+
+	private class SoundFileData {
+		String soundFile;
+		String formValue;
+		String inflectionTypeNr;
 	}
 
 	private class Context {
