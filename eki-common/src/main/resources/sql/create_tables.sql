@@ -419,6 +419,7 @@ create table form
   components varchar(100) array null,
   display_form varchar(255) null,
   vocal_form varchar(255) null,
+  sound_file varchar(255) null,
   is_word boolean default false
 );
 alter sequence form_id_seq restart with 10000;
