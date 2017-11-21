@@ -816,10 +816,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Rection extractRection(Element rectionNode) {
 
 		final String rectionTypeAttr = "rliik";
+		final String rectionVariantAttr = "var";
+		final String rectionOptionalAttr = "fak";
 
 		Rection rection = new Rection();
 		rection.setValue(rectionNode.getTextTrim());
 		rection.setType(rectionNode.attributeValue(rectionTypeAttr));
+		rection.setVariant(rectionNode.attributeValue(rectionVariantAttr));
+		rection.setOptional(rectionNode.attributeValue(rectionOptionalAttr));
 		return rection;
 	}
 
@@ -1077,6 +1081,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				if (isNotEmpty(rectionPlacement)) {
 					createFreeformTextOrDate(FreeformType.RECTION_PLACEMENT, rectionId, rectionPlacement, null);
+				}
+				if (isNotEmpty(rection.getVariant())) {
+					createFreeformTextOrDate(FreeformType.RECTION_VARIANT, rectionId, rection.getVariant(), null);
+				}
+				if (isNotEmpty(rection.getOptional())) {
+					createFreeformTextOrDate(FreeformType.RECTION_OPTIONAL, rectionId, rection.getOptional(), null);
 				}
 			}
 		}

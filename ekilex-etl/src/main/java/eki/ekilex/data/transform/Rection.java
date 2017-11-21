@@ -12,6 +12,10 @@ public class Rection extends AbstractDataObject {
 
 	private String type;
 
+	private String variant;
+
+	private String optional;
+
 	private List<UsageMeaning> usageMeanings;
 
 	public String getValue() {
@@ -36,5 +40,21 @@ public class Rection extends AbstractDataObject {
 
 	public void setType(String type) {
 		this.type = type;
+	}
+
+	public String getVariant() {
+		return variant;
+	}
+
+	public void setVariant(String variant) {
+		this.variant = variant;
+	}
+
+	public String getOptional() {
+		return optional;
+	}
+
+	public void setOptional(String optional) {
+		this.optional = optional;
 	}
 }
