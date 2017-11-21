@@ -21,7 +21,9 @@ public class XsdToClassifierCsv implements SystemConstant {
 
 		try {
 			applicationContext.registerShutdownHook();
-			
+
+			//TODO source dialogue, target verification, etc..
+
 			String[] classifierXsdFilePaths = new String[] {
 					"/projects/eki/data/dictionaries/qq2/qq2_tyybid.xsd",
 					"/projects/eki/data/dictionaries/ps2/ps2_tyybid.xsd"
