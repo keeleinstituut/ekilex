@@ -54,13 +54,14 @@ drop table if exists lexeme_frequency_label; -- removed for now
 drop table if exists lexeme_frequency;
 drop table if exists domain_label;
 drop table if exists domain;
+drop table if exists rection_type_label;
+drop table if exists rection_type;
 drop table if exists lang_label;
 drop table if exists lang;
 drop table if exists label_type;
 drop table if exists dataset;
 drop table if exists lifecycle_log;
 drop table if exists eki_user;
-drop table if exists rection_type;
 
 create table eki_user
 (
@@ -75,13 +76,6 @@ alter sequence eki_user_id_seq restart with 10000;
 ---------------------------------
 -- klassifitseeritud andmestik --
 ---------------------------------
-
--- klassif. nime liik
-create table rection_type
-(
-  code varchar(10) primary key,
-  value text not null
-);
 
 -- klassif. nime liik
 create table label_type
@@ -127,6 +121,22 @@ create table domain_label
   type varchar(10) references label_type(code) not null,
   foreign key (code, origin) references domain (code, origin),
   unique(code, origin, lang, type)
+);
+
+-- klassif. rektsiooni tüüp
+create table rection_type
+(
+  code varchar(10) primary key,
+  datasets varchar(10) array not null
+);
+
+create table rection_type_label
+(
+  code varchar(100) references rection_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
 );
 
 -- register
