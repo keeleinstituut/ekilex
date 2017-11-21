@@ -1,202 +1,202 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-	-	-	-	
-as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-	-	-	-	
-as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-	-	-	-	
-as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-	-	-	-	
-as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-	-	-	-	
-dk_tyyp	dk_tyyp	adv	adverb (-lt)	et	-	-	-	-	-	
-dk_tyyp	dk_tyyp	dem	deminutiiv, vähendussõna (-ke, -kene)	et	-	-	-	-	-	
-dk_tyyp	dk_tyyp	komp	komparatiiv, keskvõrre (-m)	et	-	-	-	-	-	
-dk_tyyp	dk_tyyp	sup	superlatiiv, ülivõrre (-im)	et	-	-	-	-	-	
-dk_tyyp	dk_tyyp	tgn	tegijanimi (-ja)	et	-	-	-	-	-	
-dk_tyyp	dk_tyyp	tn	teonimi (-mine)	et	-	-	-	-	-	
-fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-	-	-	-	
-fak_tyyp	fakultatiivne	fak	nothing	en	-	-	-	-	-	
-gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-	-	-	-	
-gkn_tyyp	gkn_tyyp	pl	mitmus	et	-	-	-	-	-	
-gkn_tyyp	gkn_tyyp	lv	lisavorm	et	-	-	-	-	-	
-gkn_tyyp	gkn_tyyp	ev	erandvorm	et	-	-	-	-	-	
-kl_tyyp	kl_tyyp	ls	liitsõna	et	-	-	-	-	-	
-kl_tyyp	kl_tyyp	yh	ühendverb	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	S+S	S+S	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Sk+S	Sk+S	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	S+Sk	S+Sk	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adj+S	Adj+S	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adj+Sk	Adj+Sk	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Ss+V	Ss+V	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	So+V	So+V	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Sk+V	Sk+V	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adj+V	Adj+V	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	N+S	N+S	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adv+Sk	Adv+Sk	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adv+Adj	Adv+Adj	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adv+V	Adv+V	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adv+Adv	Adv+Adv	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	P+S	P+S	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	Adv+P	Adv+ P	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	S+Prep	S+Prep	et	-	-	-	-	-	
-kliik_tyyp	kliik_tyyp	P+Adv	asesõna+määrsõna	et	-	-	-	-	-	
-kmpl_tyyp	kmpl_tyyp	komp	võrdlus	et	-	-	-	-	-	
-kmpl_tyyp	kmpl_tyyp	Akomp	omadussõna võrdlus	et	-	-	-	-	-	
-kmpl_tyyp	kmpl_tyyp	Dkomp	määrsõna võrdlus	et	-	-	-	-	-	
-koht_tyyp	koht_tyyp	er	eelrektsioon	et	-	-	-	-	-	
-koht_tyyp	koht_tyyp	jr	järelrektsioon	et	-	-	-	-	-	
-liik_tyyp	liik_tyyp	k	kohanimi	et	-	-	-	-	-	
-liik_tyyp	liik_tyyp	k	place name	en	-	-	-	-	-	
-liik_tyyp	liik_tyyp	l	lühend	et	-	-	-	-	-	
-liik_tyyp	liik_tyyp	l	abbreviation	en	-	-	-	-	-	
-liik_tyyp	liik_tyyp	p	pärisnimi	et	-	-	-	-	-	
-liik_tyyp	liik_tyyp	p	proper name	en	-	-	-	-	-	
-liik_tyyp	liik_tyyp	z	tsitaatsõna	et	-	-	-	-	-	
-liik_tyyp	liik_tyyp	z	loanword (alien)	en	-	-	-	-	-	
-liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	yv	ühendverb	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	vv	väljendverb	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	av	ahelverb	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	tv	tugiverb	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	vlj	väljend	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	-	-	-	-	-	
-liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-	-	-	-	
-mt_tyyp	mt_tyyp	img	pilt	et	-	-	-	-	-	
-mt_tyyp	mt_tyyp	img	picture	en	-	-	-	-	-	
-mt_tyyp	mt_tyyp	imgA	link pildile	et	-	-	-	-	-	
-mt_tyyp	mt_tyyp	imgA	picture link	en	-	-	-	-	-	
-mt_tyyp	mt_tyyp	f?v	Flash video	et	-	-	-	-	-	
-mt_tyyp	mt_tyyp	f?v	Flash video	en	-	-	-	-	-	
-mt_tyyp	mt_tyyp	snd	heli	et	-	-	-	-	-	
-mt_tyyp	mt_tyyp	snd	sound	en	-	-	-	-	-	
-mvtl_tyyp	mvtl_tyyp	adv	adverbiviide	et	-	-	-	-	-	
-mvtl_tyyp	mvtl_tyyp	adv	cross-reference (from adverb)	en	-	-	-	-	-	
-mvtl_tyyp	mvtl_tyyp	gr	vormiviide	et	-	-	-	-	-	
-mvtl_tyyp	mvtl_tyyp	gr	cross-reference (from inflectional form)	en	-	-	-	-	-	
-mvtl_tyyp	märksõnaviide	cmp	võrdlusvormi viide	et	-	-	-	-	-	
-mvtl_tyyp	märksõnaviide	var	variandiviide	et	-	-	-	-	-	
-pvtl_tyyp	pvtl_tyyp	vp	vaata pilti	et	-	-	-	-	-	
-pvtl_tyyp	pvtl_tyyp	vpl	vaata piltide lehte	et	-	-	-	-	-	
-pvtl_tyyp	pvtl_tyyp	vqp	vaata kaarti lk	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	-	-	-	-	-	
-rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	1	1 - 3000	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	-	-	-	-	-	
-sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	A	adjective	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	D	adverb, määrsõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	D	adverb	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	G	attribute in genitive	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	H	pärisnimi	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	H	proper noun	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	I	interjection	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	J	conjunction	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	K	postposition, preposition	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	N	cardinal, numeral	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	O	järgarvsõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	O	ordinal	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	P	pronoun	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	S	substantive	en	-	-	-	-	-	
-sl_tyyp	sõnaliik	V	verb, tegusõna	et	-	-	-	-	-	
-sl_tyyp	sõnaliik	V	verb	en	-	-	-	-	-	
-tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	-	-	-	-	-	
-tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	-	-	-	-	-	
-u_tyyp	uus märksõna	uus	uus märksõna	et	-	-	-	-	-	
-u_tyyp	uus märksõna	uus	new headword	en	-	-	-	-	-	
-var_tyyp	var_tyyp	var	/ variant	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	mitm	plural	en	-	-	-	-	-	
-vk_tyyp	vk_tyyp	ains	singular, ainsus	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	ains	singular	en	-	-	-	-	-	
-vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	om	singular genitive	en	-	-	-	-	-	
-vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	os	singular partitive	en	-	-	-	-	-	
-vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	-	-	-	-	-	
-vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	-	-	-	-	-	
-vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	-	-	-	-	-	
-vk_tyyp	vk_tyyp	kesks	participle	en	-	-	-	-	-	
-vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	-	-	-	-	-	
-vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	-	-	-	-	-	
-vk_tyyp	vormikood	impers	impersonal	en	-	-	-	-	-	
-vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	-	-	-	-	-	
-vk_tyyp	vormikood	partits	participle	en	-	-	-	-	-	
-vk_tyyp	vormikood	pl	pluural, mitmus	et	-	-	-	-	-	
-vk_tyyp	vormikood	pl	plural	en	-	-	-	-	-	
-vk_tyyp	vormikood	sg	singular, ainsus	et	-	-	-	-	-	
-vk_tyyp	vormikood	sg	singular	en	-	-	-	-	-	
-vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	-	-	-	-	-	
-vk_tyyp	vormikood	sg gen	singular genitiv	en	-	-	-	-	-	
-vk_tyyp	vormikood	ssv	seisundivorm	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	ID	muutumatu	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgN	SgN	en	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgG	ainsuse omastav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgP	ainsuse osastav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgAdt	ainsuse suunduv	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgIll	ainsuse sisseütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgIn	ainsuse seesütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgEl	ainsuse seestütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgAll	ainsuse alaleütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgAd	ainsuse alalütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgAbl	ainsuse alaltütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgTr	ainsuse saav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgTer	ainsuse rajav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgEs	ainsuse olev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgAb	ainsuse ilmaütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	SgKom	ainsuse kaasaütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlN	mitmuse nimetav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlG	mitmuse omastav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlP	mitmuse osastav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlAdt	mitmuse aditiiv	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlIll	mitmuse sisseütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlIn	mitmuse seesütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlEl	mitmuse seestütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlAll	mitmuse alaleütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlAd	mitmuse alalütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlAbl	mitmuse alaltütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlTr	mitmuse saav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlTer	mitmuse rajav	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlEs	mitmuse olev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlAb	mitmuse ilmaütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PlKom	mitmuse kaasaütlev	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	Sup	MA = ma-tegevusnimi	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	Inf	DA = da-tegevusnimi	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	IndPrSg3	B = kindla kv oleviku ainsuse 3. p	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	IndPrPl1	ME = kindla kv oleviku mitmuse 1. p	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PtsPtIps	TUD = tud-kesksõna	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	IndIpfSg3	S = lihtmineviku ainsuse 3. p	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PtsPtPs	NUD = nud-kesksõna	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	ImpPrPl2	GE = käskiva kv mitmuse 2. p	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	IndPrIps	TAKSE = umbisikulise tm olevik	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	PtsPrIps	TAV = tav-kesksõna	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	IndPrPsN	POLE = kindla kv oleviku eitus	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	IndIpfPsN	POLNUD = kindla kv mineviku eitus	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	Neg	EI = eitus	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	et	-	-	-	-	-	
-vn_tyyp	muutevormi nimi	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	et	-	-	-	-	-	
-xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-	-	-	-	
-xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-	-	-	-	
-xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-	-	-	-	
-xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-	-	-	-	
-yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	-	-	-	-	-	
-yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	-	-	-	-	-	
-yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	-	-	-	-	-	
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-	-	-	-
+as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-	-	-	-
+as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-	-	-	-
+as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-	-	-	-
+as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	adv	adverb (-lt)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	dem	deminutiiv, vähendussõna (-ke, -kene)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	komp	komparatiiv, keskvõrre (-m)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	sup	superlatiiv, ülivõrre (-im)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	tgn	tegijanimi (-ja)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	tn	teonimi (-mine)	et	-	-	-	-	-
+fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-	-	-	-
+fak_tyyp	fakultatiivne	fak	nothing	en	-	-	-	-	-
+gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-	-	-	-
+gkn_tyyp	gkn_tyyp	pl	mitmus	et	-	-	-	-	-
+gkn_tyyp	gkn_tyyp	lv	lisavorm	et	-	-	-	-	-
+gkn_tyyp	gkn_tyyp	ev	erandvorm	et	-	-	-	-	-
+kl_tyyp	kl_tyyp	ls	liitsõna	et	-	-	-	-	-
+kl_tyyp	kl_tyyp	yh	ühendverb	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	S+S	S+S	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Sk+S	Sk+S	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	S+Sk	S+Sk	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adj+S	Adj+S	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adj+Sk	Adj+Sk	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Ss+V	Ss+V	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	So+V	So+V	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Sk+V	Sk+V	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adj+V	Adj+V	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	N+S	N+S	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adv+Sk	Adv+Sk	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adv+Adj	Adv+Adj	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adv+V	Adv+V	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adv+Adv	Adv+Adv	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	P+S	P+S	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	Adv+P	Adv+ P	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	S+Prep	S+Prep	et	-	-	-	-	-
+kliik_tyyp	kliik_tyyp	P+Adv	asesõna+määrsõna	et	-	-	-	-	-
+kmpl_tyyp	kmpl_tyyp	komp	võrdlus	et	-	-	-	-	-
+kmpl_tyyp	kmpl_tyyp	Akomp	omadussõna võrdlus	et	-	-	-	-	-
+kmpl_tyyp	kmpl_tyyp	Dkomp	määrsõna võrdlus	et	-	-	-	-	-
+koht_tyyp	koht_tyyp	er	eelrektsioon	et	-	-	-	-	-
+koht_tyyp	koht_tyyp	jr	järelrektsioon	et	-	-	-	-	-
+liik_tyyp	liik_tyyp	k	kohanimi	et	-	-	-	-	-
+liik_tyyp	liik_tyyp	k	place name	en	-	-	-	-	-
+liik_tyyp	liik_tyyp	l	lühend	et	-	-	-	-	-
+liik_tyyp	liik_tyyp	l	abbreviation	en	-	-	-	-	-
+liik_tyyp	liik_tyyp	p	pärisnimi	et	-	-	-	-	-
+liik_tyyp	liik_tyyp	p	proper name	en	-	-	-	-	-
+liik_tyyp	liik_tyyp	z	tsitaatsõna	et	-	-	-	-	-
+liik_tyyp	liik_tyyp	z	loanword (alien)	en	-	-	-	-	-
+liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	-	-	-	-	-
+liik_tyyp	märksõna liik	yv	ühendverb	et	-	-	-	-	-
+liik_tyyp	märksõna liik	vv	väljendverb	et	-	-	-	-	-
+liik_tyyp	märksõna liik	av	ahelverb	et	-	-	-	-	-
+liik_tyyp	märksõna liik	tv	tugiverb	et	-	-	-	-	-
+liik_tyyp	märksõna liik	vlj	väljend	et	-	-	-	-	-
+liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	-	-	-	-	-
+liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	-	-	-	-	-
+liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-	-	-	-
+mt_tyyp	mt_tyyp	img	pilt	et	-	-	-	-	-
+mt_tyyp	mt_tyyp	img	picture	en	-	-	-	-	-
+mt_tyyp	mt_tyyp	imgA	link pildile	et	-	-	-	-	-
+mt_tyyp	mt_tyyp	imgA	picture link	en	-	-	-	-	-
+mt_tyyp	mt_tyyp	f?v	Flash video	et	-	-	-	-	-
+mt_tyyp	mt_tyyp	f?v	Flash video	en	-	-	-	-	-
+mt_tyyp	mt_tyyp	snd	heli	et	-	-	-	-	-
+mt_tyyp	mt_tyyp	snd	sound	en	-	-	-	-	-
+mvtl_tyyp	mvtl_tyyp	adv	adverbiviide	et	-	-	-	-	-
+mvtl_tyyp	mvtl_tyyp	adv	cross-reference (from adverb)	en	-	-	-	-	-
+mvtl_tyyp	mvtl_tyyp	gr	vormiviide	et	-	-	-	-	-
+mvtl_tyyp	mvtl_tyyp	gr	cross-reference (from inflectional form)	en	-	-	-	-	-
+mvtl_tyyp	märksõnaviide	cmp	võrdlusvormi viide	et	-	-	-	-	-
+mvtl_tyyp	märksõnaviide	var	variandiviide	et	-	-	-	-	-
+pvtl_tyyp	pvtl_tyyp	vp	vaata pilti	et	-	-	-	-	-
+pvtl_tyyp	pvtl_tyyp	vpl	vaata piltide lehte	et	-	-	-	-	-
+pvtl_tyyp	pvtl_tyyp	vqp	vaata kaarti lk	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	1	1 - 3000	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	-	-	-	-	-
+sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	-	-	-	-	-
+sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	A	adjective	en	-	-	-	-	-
+sl_tyyp	sõnaliik	D	adverb, määrsõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	D	adverb	en	-	-	-	-	-
+sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	-	-	-	-	-
+sl_tyyp	sõnaliik	G	attribute in genitive	en	-	-	-	-	-
+sl_tyyp	sõnaliik	H	pärisnimi	et	-	-	-	-	-
+sl_tyyp	sõnaliik	H	proper noun	en	-	-	-	-	-
+sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	I	interjection	en	-	-	-	-	-
+sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	J	conjunction	en	-	-	-	-	-
+sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	K	postposition, preposition	en	-	-	-	-	-
+sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	N	cardinal, numeral	en	-	-	-	-	-
+sl_tyyp	sõnaliik	O	järgarvsõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	O	ordinal	en	-	-	-	-	-
+sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	P	pronoun	en	-	-	-	-	-
+sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	S	substantive	en	-	-	-	-	-
+sl_tyyp	sõnaliik	V	verb, tegusõna	et	-	-	-	-	-
+sl_tyyp	sõnaliik	V	verb	en	-	-	-	-	-
+tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	-	-	-	-	-
+tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	-	-	-	-	-
+u_tyyp	uus märksõna	uus	uus märksõna	et	-	-	-	-	-
+u_tyyp	uus märksõna	uus	new headword	en	-	-	-	-	-
+var_tyyp	var_tyyp	var	/ variant	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	mitm	plural	en	-	-	-	-	-
+vk_tyyp	vk_tyyp	ains	singular, ainsus	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	ains	singular	en	-	-	-	-	-
+vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	om	singular genitive	en	-	-	-	-	-
+vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	os	singular partitive	en	-	-	-	-	-
+vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	-	-	-	-	-
+vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	-	-	-	-	-
+vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	kesks	participle	en	-	-	-	-	-
+vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	-	-	-	-	-
+vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	-	-	-	-	-
+vk_tyyp	vormikood	impers	impersonal	en	-	-	-	-	-
+vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	-	-	-	-	-
+vk_tyyp	vormikood	partits	participle	en	-	-	-	-	-
+vk_tyyp	vormikood	pl	pluural, mitmus	et	-	-	-	-	-
+vk_tyyp	vormikood	pl	plural	en	-	-	-	-	-
+vk_tyyp	vormikood	sg	singular, ainsus	et	-	-	-	-	-
+vk_tyyp	vormikood	sg	singular	en	-	-	-	-	-
+vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	-	-	-	-	-
+vk_tyyp	vormikood	sg gen	singular genitiv	en	-	-	-	-	-
+vk_tyyp	vormikood	ssv	seisundivorm	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	ID	muutumatu	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgN	SgN	en	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgG	ainsuse omastav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgP	ainsuse osastav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgAdt	ainsuse suunduv	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgIll	ainsuse sisseütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgIn	ainsuse seesütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgEl	ainsuse seestütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgAll	ainsuse alaleütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgAd	ainsuse alalütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgAbl	ainsuse alaltütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgTr	ainsuse saav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgTer	ainsuse rajav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgEs	ainsuse olev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgAb	ainsuse ilmaütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	SgKom	ainsuse kaasaütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlN	mitmuse nimetav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlG	mitmuse omastav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlP	mitmuse osastav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlAdt	mitmuse aditiiv	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlIll	mitmuse sisseütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlIn	mitmuse seesütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlEl	mitmuse seestütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlAll	mitmuse alaleütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlAd	mitmuse alalütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlAbl	mitmuse alaltütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlTr	mitmuse saav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlTer	mitmuse rajav	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlEs	mitmuse olev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlAb	mitmuse ilmaütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PlKom	mitmuse kaasaütlev	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	Sup	MA = ma-tegevusnimi	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	Inf	DA = da-tegevusnimi	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	IndPrSg3	B = kindla kv oleviku ainsuse 3. p	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	IndPrPl1	ME = kindla kv oleviku mitmuse 1. p	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PtsPtIps	TUD = tud-kesksõna	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	IndIpfSg3	S = lihtmineviku ainsuse 3. p	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PtsPtPs	NUD = nud-kesksõna	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	ImpPrPl2	GE = käskiva kv mitmuse 2. p	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	IndPrIps	TAKSE = umbisikulise tm olevik	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	PtsPrIps	TAV = tav-kesksõna	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	IndPrPsN	POLE = kindla kv oleviku eitus	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	IndIpfPsN	POLNUD = kindla kv mineviku eitus	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	Neg	EI = eitus	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	et	-	-	-	-	-
+vn_tyyp	muutevormi nimi	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	et	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-	-	-	-
+yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	-	-	-	-	-
+yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	-	-	-	-	-
+yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	-	-	-	-	-

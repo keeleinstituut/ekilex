@@ -42,18 +42,15 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 		List<Classifier> targetClassifiers = new ArrayList<>();
 		List<Classifier> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths);
 
-		/*
 		File classifierCsvFile = new File(CLASSIFIER_ALL_CSV_PATH);
 
 		if (classifierCsvFile.exists()) {
 			List<Classifier> existingClassifiers = loadExistingClassifiers();
-			//TODO merge, etc...
+			//TODO merge source + existing
+			targetClassifiers.addAll(existingClassifiers);
 		} else {
 			targetClassifiers.addAll(sourceClassifiers);
 		}
-		*/
-		//FIXME temp solution
-		targetClassifiers.addAll(sourceClassifiers);
 
 		writeClassifierCsvFile(targetClassifiers);
 
@@ -64,7 +61,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 
 		FileOutputStream classifierCsvStream = new FileOutputStream(CLASSIFIER_ALL_CSV_PATH);
 
-		StringBuffer classifCsvlineBuf;
+		StringBuffer classifCsvLineBuf;
 		String classifCsvLine;
 
 		classifCsvLine = composeRow(CSV_SEPARATOR,
@@ -75,21 +72,20 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 
 		for (Classifier classifier : classifiers) {
 
-			classifCsvlineBuf = new StringBuffer();
+			classifCsvLineBuf = new StringBuffer();
 
-			appendCell(classifCsvlineBuf, classifier.getEkiType());
-			appendCell(classifCsvlineBuf, classifier.getEkiName());
-			appendCell(classifCsvlineBuf, classifier.getEkiCode());
-			appendCell(classifCsvlineBuf, classifier.getEkiValue());
-			appendCell(classifCsvlineBuf, classifier.getEkiValueLang());
-			appendCell(classifCsvlineBuf, classifier.getLexName());
-			appendCell(classifCsvlineBuf, classifier.getLexCode());
-			appendCell(classifCsvlineBuf, classifier.getLexValue());
-			appendCell(classifCsvlineBuf, classifier.getLexValueLang());
-			appendCell(classifCsvlineBuf, classifier.getLexValueType());
+			appendCell(classifCsvLineBuf, classifier.getEkiType(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiName(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiCode(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiValue(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiValueLang(), false);
+			appendCell(classifCsvLineBuf, classifier.getLexName(), false);
+			appendCell(classifCsvLineBuf, classifier.getLexCode(), false);
+			appendCell(classifCsvLineBuf, classifier.getLexValue(), false);
+			appendCell(classifCsvLineBuf, classifier.getLexValueLang(), false);
+			appendCell(classifCsvLineBuf, classifier.getLexValueType(), true);
 
-			classifCsvlineBuf.append('\n');
-			classifCsvLine = classifCsvlineBuf.toString();
+			classifCsvLine = classifCsvLineBuf.toString();
 			IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
 		}
 
@@ -97,13 +93,17 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 		classifierCsvStream.close();
 	}
 
-	private void appendCell(StringBuffer classifCsvlineBuf, String cellValue) {
+	private void appendCell(StringBuffer classifCsvLineBuf, String cellValue, boolean isLast) {
 		if (StringUtils.isBlank(cellValue)) {
-			classifCsvlineBuf.append(CSV_EMPTY_CELL);
+			classifCsvLineBuf.append(CSV_EMPTY_CELL);
 		} else {
-			classifCsvlineBuf.append(cellValue);
+			classifCsvLineBuf.append(cellValue);
 		}
-		classifCsvlineBuf.append(CSV_SEPARATOR);
+		if (isLast) {
+			classifCsvLineBuf.append('\n');
+		} else {
+			classifCsvLineBuf.append(CSV_SEPARATOR);
+		}
 	}
 
 	//TODO impl
@@ -112,8 +112,15 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 		FileInputStream classifierFileInputStream = new FileInputStream(CLASSIFIER_ALL_CSV_PATH);
 		List<String> classifierFileLines = IOUtils.readLines(classifierFileInputStream, UTF_8);
 		classifierFileInputStream.close();
+		classifierFileLines.remove(0);//remove header
 
 		final String emptyCellValue = String.valueOf(CSV_EMPTY_CELL);
+
+		List<Classifier> existingClassifiers = new ArrayList<>();
+		Classifier classifier;
+		int order = 0;
+
+		List<String> existingClassifierKeys = new ArrayList<>();
 
 		for (String classifierFileLine : classifierFileLines) {
 			if (StringUtils.isBlank(classifierFileLine)) {
@@ -139,22 +146,60 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 			if (StringUtils.equals(ekiType, emptyCellValue)) {
 
 				String lexKey = composeRow(CLASSIFIER_KEY_SEPARATOR, lexName, lexCode, lexValue, lexValueLang, lexValueType);
+				if (existingClassifierKeys.contains(lexKey)) {
+					logger.warn("Duplicate new classifier entry: \"{}\"", lexKey);
+					continue;
+				}
+				existingClassifierKeys.add(lexKey);
 
 			} else if (StringUtils.equals(lexName, emptyCellValue)) {
 
 				String ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
+				if (existingClassifierKeys.contains(ekiKey)) {
+					logger.warn("Duplicate EKI classifier entry: \"{}\"", ekiKey);
+					continue;
+				}
+				existingClassifierKeys.add(ekiKey);
 
+			} else {
+
+				String fullKey = composeRow(CLASSIFIER_KEY_SEPARATOR,
+						ekiType, ekiCode, ekiValue, ekiValueLang, lexName, lexCode, lexValue, lexValueLang, lexValueType);
+				if (existingClassifierKeys.contains(fullKey)) {
+					logger.warn("Duplicate classifier mapping entry: \"{}\"", fullKey);
+					continue;
+				}
+				existingClassifierKeys.add(fullKey);
 			}
+
+			order++;
+			classifier = new Classifier();
+			classifier.setEkiType(ekiType);
+			classifier.setEkiName(ekiName);
+			classifier.setEkiCode(ekiCode);
+			classifier.setEkiValue(ekiValue);
+			classifier.setEkiValueLang(ekiValueLang);
+			classifier.setLexName(lexName);
+			classifier.setLexCode(lexCode);
+			classifier.setLexValue(lexValue);
+			classifier.setLexValueLang(lexValueLang);
+			classifier.setLexValueType(lexValueType);
+			classifier.setOrder(order);
+			existingClassifiers.add(classifier);
 		}
 
-		return null;
+		existingClassifiers.sort(Comparator.comparing(Classifier::getEkiType).thenComparing(Classifier::getLexName).thenComparing(Classifier::getOrder));
+
+		logger.debug("Collected {} existing classifiers", existingClassifiers.size());
+
+		return existingClassifiers;
 	}
 
 	private List<Classifier> loadSourceClassifiers(String[] classifierXsdFilePaths) throws Exception {
 
 		List<Classifier> loadedClassifiers = new ArrayList<>();
 		Classifier classifier;
-		int ekiOrder = 0;
+		int order = 0;
 
 		List<String> loadedClassifierKeys = new ArrayList<>();
 
@@ -193,15 +238,14 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 								logger.info("Already loaded classifier: \"{}\"", ekiKey);
 								continue;
 							}
-							ekiOrder++;
+							order++;
 							classifier = new Classifier();
 							classifier.setEkiType(ekiType);
 							classifier.setEkiName(ekiName);
 							classifier.setEkiCode(ekiCode);
 							classifier.setEkiValue(ekiValue);
 							classifier.setEkiValueLang(ekiValueLang);
-							classifier.setEkiOrder(ekiOrder);
-							classifier.setEkiKey(ekiKey);
+							classifier.setOrder(order);
 							loadedClassifiers.add(classifier);
 							loadedClassifierKeys.add(ekiKey);
 						}
@@ -209,7 +253,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 				}
 			}
 		}
-		loadedClassifiers.sort(Comparator.comparing(Classifier::getEkiType).thenComparing(Classifier::getEkiOrder));
+		loadedClassifiers.sort(Comparator.comparing(Classifier::getEkiType).thenComparing(Classifier::getOrder));
 
 		logger.debug("Collected {} rows from source", loadedClassifiers.size());
 
@@ -217,7 +261,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 	}
 
 	private String composeRow(char separator, String... values) {
-		return StringUtils.join(values, CSV_SEPARATOR);
+		return StringUtils.join(values, separator);
 	}
 
 	private void verifyClassifierXsdFilePaths(String[] classifierXsdFilePaths) throws FileNotFoundException {

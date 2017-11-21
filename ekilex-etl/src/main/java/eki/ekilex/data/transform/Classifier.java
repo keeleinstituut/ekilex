@@ -26,11 +26,7 @@ public class Classifier extends AbstractDataObject {
 
 	private String lexValueType;
 
-	private int ekiOrder;
-
-	private String ekiKey;
-
-	private String lexKey;
+	private int order;
 
 	public String getEkiType() {
 		return ekiType;
@@ -112,28 +108,12 @@ public class Classifier extends AbstractDataObject {
 		this.lexValueType = lexValueType;
 	}
 
-	public int getEkiOrder() {
-		return ekiOrder;
+	public int getOrder() {
+		return order;
 	}
 
-	public void setEkiOrder(int ekiOrder) {
-		this.ekiOrder = ekiOrder;
-	}
-
-	public String getEkiKey() {
-		return ekiKey;
-	}
-
-	public void setEkiKey(String ekiKey) {
-		this.ekiKey = ekiKey;
-	}
-
-	public String getLexKey() {
-		return lexKey;
-	}
-
-	public void setLexKey(String lexKey) {
-		this.lexKey = lexKey;
+	public void setOrder(int order) {
+		this.order = order;
 	}
 
 }
