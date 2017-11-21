@@ -24,6 +24,8 @@ public class Word extends AbstractDataObject {
 
 	private String morphCode;
 
+	private String displayPos;
+
 	public Word() {
 	}
 
@@ -110,4 +112,11 @@ public class Word extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
+	public String getDisplayPos() {
+		return displayPos;
+	}
+
+	public void setDisplayPos(String displayPos) {
+		this.displayPos = displayPos;
+	}
 }

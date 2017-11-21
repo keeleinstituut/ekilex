@@ -1252,6 +1252,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Word extractWord(Element wordGroupNode, WordData wordData) throws Exception {
 
 		final String wordExp = "x:m";
+		final String wordDisplayPosExp = "x:vk";
 		final String homonymNrAttr = "i";
 		final String lexemeTypeAttr = "liik";
 
@@ -1270,6 +1271,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 		wordData.value = wordValue;
+
+		Element wordDisplayPosNode = (Element) wordGroupNode.selectSingleNode(wordDisplayPosExp);
+		if (wordDisplayPosNode != null) {
+			word.setDisplayPos(wordDisplayPosNode.getTextTrim());
+		}
+
 		return word;
 	}
 

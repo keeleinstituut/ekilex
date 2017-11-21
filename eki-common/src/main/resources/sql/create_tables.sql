@@ -372,7 +372,8 @@ create table word
   id bigserial primary key,
   lang char(3) references lang(code) null,
   morph_code varchar(100) references morph(code) null,
-  homonym_nr integer default 1
+  homonym_nr integer default 1,
+  display_pos varchar(100)
 );
 alter sequence word_id_seq restart with 10000;
 
