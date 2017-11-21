@@ -1,7 +1,6 @@
 package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -1053,6 +1052,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String rectionGroupExp = "x:rep/x:reg";
 		final String usageGroupExp = "x:ng";
 		final String rectionExp = "x:rek";
+		final String rectionPlacementAttr = "koht";
 
 		if (!usages.isEmpty()) {
 			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
@@ -1062,6 +1062,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 		List<Element> rectionGroups = node.selectNodes(rectionGroupExp);
 		for (Element rectionGroup : rectionGroups) {
+			String rectionPlacement = rectionGroup.attributeValue(rectionPlacementAttr);
 			List<Element> usageGroupNodes = rectionGroup.selectNodes(usageGroupExp);
 			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
 			List<Element> rectionNodes = rectionGroup.selectNodes(rectionExp);
@@ -1073,6 +1074,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				if (isNotEmpty(rection.getType())) {
 					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, rection.getType());
+				}
+				if (isNotEmpty(rectionPlacement)) {
+					createFreeformTextOrDate(FreeformType.RECTION_PLACEMENT, rectionId, rectionPlacement, null);
 				}
 			}
 		}
