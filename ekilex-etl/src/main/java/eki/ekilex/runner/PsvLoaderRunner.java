@@ -594,6 +594,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String lexemePosCodeExp = "x:grg/x:sl";
 		final String meaningExternalIdExp = "x:tpid";
 		final String learnerCommentExp = "x:qkom";
+		final String imageNameExp = "x:plp/x:plg/x:plf";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
@@ -622,6 +623,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 			Element learnerCommentNode = (Element) meaningNumberGroupNode.selectSingleNode(learnerCommentExp);
 			String learnerComment = learnerCommentNode == null ? null : learnerCommentNode.getTextTrim();
+			Element imageNameNode = (Element) meaningNumberGroupNode.selectSingleNode(imageNameExp);
+			String imageName = imageNameNode == null ? null : imageNameNode.getTextTrim();
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
@@ -633,6 +636,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				if (isNotEmpty(learnerComment)) {
 					createMeaningFreeform(meaningId, FreeformType.LEARNER_COMMENT, learnerComment);
+				}
+				if (isNotEmpty(imageName)) {
+					createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, imageName);
 				}
 				if (abbreviation != null) {
 					addAbbreviationLexeme(abbreviation, meaningId, dataset);
