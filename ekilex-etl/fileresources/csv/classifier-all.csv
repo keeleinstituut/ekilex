@@ -49,14 +49,14 @@ liik_tyyp	liik_tyyp	p	pärisnimi	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	p	proper name	en	-	-	-	-	-
 liik_tyyp	liik_tyyp	z	tsitaatsõna	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	z	loanword (alien)	en	-	-	-	-	-
-liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	-	-	-	-	-
-liik_tyyp	märksõna liik	yv	ühendverb	et	-	-	-	-	-
-liik_tyyp	märksõna liik	vv	väljendverb	et	-	-	-	-	-
-liik_tyyp	märksõna liik	av	ahelverb	et	-	-	-	-	-
-liik_tyyp	märksõna liik	tv	tugiverb	et	-	-	-	-	-
-liik_tyyp	märksõna liik	vlj	väljend	et	-	-	-	-	-
-liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	-	-	-	-	-
-liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	-	-	-	-	-
+liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	lexeme_type	viiteartikli märksõna	viiteartikli märksõna	est	descrip
+liik_tyyp	märksõna liik	yv	ühendverb	et	lexeme_type	ühendverb	ühendverb	est	descrip
+liik_tyyp	märksõna liik	vv	väljendverb	et	lexeme_type	väljendverb	väljendverb	est	descrip
+liik_tyyp	märksõna liik	av	ahelverb	et	lexeme_type	ahelverb	ahelverb	est	descrip
+liik_tyyp	märksõna liik	tv	tugiverb	et	lexeme_type	tugiverb	tugiverb	est	descrip
+liik_tyyp	märksõna liik	vlj	väljend	et	lexeme_type	väljend	väljend	est	descrip
+liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	lexeme_type	ühendsidesõna	ühendsidesõna (nii et)	est	descrip
+liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	lexeme_type	rühmsidesõna	rühmsidesõna (ei .. ega)	est	descrip
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-	-	-	-
 mt_tyyp	mt_tyyp	img	pilt	et	-	-	-	-	-
 mt_tyyp	mt_tyyp	img	picture	en	-	-	-	-	-
@@ -75,44 +75,56 @@ mvtl_tyyp	märksõnaviide	var	variandiviide	et	-	-	-	-	-
 pvtl_tyyp	pvtl_tyyp	vp	vaata pilti	et	-	-	-	-	-
 pvtl_tyyp	pvtl_tyyp	vpl	vaata piltide lehte	et	-	-	-	-	-
 pvtl_tyyp	pvtl_tyyp	vqp	vaata kaarti lk	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	-	-	-	-	-
-rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	1	1 - 3000	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	-	-	-	-	-
-sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	-	-	-	-	-
-sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	A	adjective	en	-	-	-	-	-
-sl_tyyp	sõnaliik	D	adverb, määrsõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	D	adverb	en	-	-	-	-	-
-sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	-	-	-	-	-
-sl_tyyp	sõnaliik	G	attribute in genitive	en	-	-	-	-	-
-sl_tyyp	sõnaliik	H	pärisnimi	et	-	-	-	-	-
-sl_tyyp	sõnaliik	H	proper noun	en	-	-	-	-	-
-sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	I	interjection	en	-	-	-	-	-
-sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	J	conjunction	en	-	-	-	-	-
-sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	-	-	-	-	-
+rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	rection_type	obj	objektirektsioon	est	full
+rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	rection_type	kn	käänderektsioon	est	full
+rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	rection_type	ks	kaassõnarektsioon	est	full
+rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	rection_type	yld	üldrektsioon	est	full
+rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	rection_type	inf	infinitiivirektsioon	est	full
+rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	rection_type	kla	lausungirektsioon	est	full
+rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	rection_type	subj	subjektirektsioon	est	full
+sag_tyyp	sagedusrühm	1	1 - 3000	et	lexeme_frequency	1	1 - 3000	est	descrip
+sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	lexeme_frequency	2	2 - 3000-6000	est	descrip
+sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	lexeme_frequency	3	3 - 6000-10000	est	descrip
+sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4	4 - pole sag_S-s	est	descrip
+sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
+sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
+sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	lexeme_frequency	L4	L4 - pole sag_S-s (lisatud)	est	descrip
+sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	A	est	capital
+sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	adjektiiv, omadussõna	est	descrip
+sl_tyyp	sõnaliik	A	adjective	en	pos	adj	adjective	eng	descrip
+sl_tyyp	sõnaliik	D	adverb, määrsõna	et	pos	adv	D	est	capital
+sl_tyyp	sõnaliik	D	adverb, määrsõna	et	pos	adv	adverb, määrsõna	est	descrip
+sl_tyyp	sõnaliik	D	adverb	en	pos	adv	adverb	eng	descrip
+sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	pos	adjg	G	est	capital
+sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	pos	adjg	genitiivatribuut, omastavaline täiend	est	descrip
+sl_tyyp	sõnaliik	G	attribute in genitive	en	pos	adjg	attribute in genitive	eng	descrip
+sl_tyyp	sõnaliik	H	pärisnimi	et	pos	prop	H	est	capital
+sl_tyyp	sõnaliik	H	pärisnimi	et	pos	prop	prooprium, pärisnimi	est	descrip
+sl_tyyp	sõnaliik	H	proper noun	en	pos	prop	proper noun	eng	descrip
+sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	pos	interj	I	est	capital
+sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	pos	interj	interjektsioon, hüüdsõna	est	descrip
+sl_tyyp	sõnaliik	I	interjection	en	pos	interj	interjection	eng	descrip
+sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	pos	konj	J	est	capital
+sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	pos	konj	konjunktsioon, sidesõna	est	descrip
+sl_tyyp	sõnaliik	J	conjunction	en	pos	konj	conjunction	eng	descrip
+sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	pos	adp	K	est	capital
+sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	pos	adp	adpositsioon, kaassõna	est	descrip
 sl_tyyp	sõnaliik	K	postposition, preposition	en	-	-	-	-	-
-sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	N	cardinal, numeral	en	-	-	-	-	-
-sl_tyyp	sõnaliik	O	järgarvsõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	O	ordinal	en	-	-	-	-	-
-sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	P	pronoun	en	-	-	-	-	-
-sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	S	substantive	en	-	-	-	-	-
-sl_tyyp	sõnaliik	V	verb, tegusõna	et	-	-	-	-	-
-sl_tyyp	sõnaliik	V	verb	en	-	-	-	-	-
+sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	pos	num	N	est	capital
+sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	pos	num	numeraal, arvsõna	est	descrip
+sl_tyyp	sõnaliik	N	cardinal, numeral	en	pos	num	cardinal, numeral	eng	descrip
+sl_tyyp	sõnaliik	O	järgarvsõna	et	pos	ord	O	est	capital
+sl_tyyp	sõnaliik	O	järgarvsõna	et	pos	ord	ordinaal, järgarvsõna	est	descrip
+sl_tyyp	sõnaliik	O	ordinal	en	pos	ord	ordinal	eng	descrip
+sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	pos	pron	P	est	capital
+sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	pos	pron	pronoomen, asesõna	est	descrip
+sl_tyyp	sõnaliik	P	pronoun	en	pos	pron	pronoun	eng	descrip
+sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	pos	s	S	est	capital
+sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	pos	s	substantiiv, nimisõna	est	descrip
+sl_tyyp	sõnaliik	S	substantive	en	pos	s	substantive	eng	descrip
+sl_tyyp	sõnaliik	V	verb, tegusõna	et	pos	v	V	est	capital
+sl_tyyp	sõnaliik	V	verb, tegusõna	et	pos	v	verb, tegusõna	est	descrip
+sl_tyyp	sõnaliik	V	verb	en	pos	v	verb	eng	descrip
 tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	-	-	-	-	-
 tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	-	-	-	-	-
 u_tyyp	uus märksõna	uus	uus märksõna	et	-	-	-	-	-
@@ -197,6 +209,6 @@ xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-	-	-	-
 xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-	-	-	-
 xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-	-	-	-
 xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-	-	-	-
-yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	-	-	-	-	-
-yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	-	-	-	-	-
-yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	-	-	-	-	-
+yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
+yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
+yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
