@@ -28,6 +28,8 @@ public class Classifier extends AbstractDataObject {
 
 	private int order;
 
+	private String ekiKey;
+
 	public String getEkiType() {
 		return ekiType;
 	}
@@ -114,6 +116,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public String getEkiKey() {
+		return ekiKey;
+	}
+
+	public void setEkiKey(String ekiKey) {
+		this.ekiKey = ekiKey;
 	}
 
 }

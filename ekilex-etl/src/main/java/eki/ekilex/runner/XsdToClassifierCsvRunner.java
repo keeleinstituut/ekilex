@@ -2,13 +2,13 @@ package eki.ekilex.runner;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -35,21 +35,18 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 	@Autowired
 	private XmlReader xmlReader;
 
-	public void execute(String[] classifierXsdFilePaths) throws Exception {
-
-		verifyClassifierXsdFilePaths(classifierXsdFilePaths);
+	public void execute(String classifierXsdFilePath) throws Exception {
 
 		List<Classifier> targetClassifiers = new ArrayList<>();
-		List<Classifier> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths);
+		List<Classifier> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePath);
 
 		File classifierCsvFile = new File(CLASSIFIER_ALL_CSV_PATH);
 
 		if (classifierCsvFile.exists()) {
 			List<Classifier> existingClassifiers = loadExistingClassifiers();
-			//TODO merge source + existing
-			targetClassifiers.addAll(existingClassifiers);
+			targetClassifiers = merge(sourceClassifiers, existingClassifiers);
 		} else {
-			targetClassifiers.addAll(sourceClassifiers);
+			targetClassifiers = sourceClassifiers;
 		}
 
 		writeClassifierCsvFile(targetClassifiers);
@@ -58,6 +55,11 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 	}
 
 	private void writeClassifierCsvFile(List<Classifier> classifiers) throws Exception {
+
+		if (CollectionUtils.isEmpty(classifiers)) {
+			logger.warn("No classifiers to save. Interrupting...");
+			return;
+		}
 
 		FileOutputStream classifierCsvStream = new FileOutputStream(CLASSIFIER_ALL_CSV_PATH);
 
@@ -106,7 +108,6 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 		}
 	}
 
-	//TODO impl
 	private List<Classifier> loadExistingClassifiers() throws Exception {
 
 		FileInputStream classifierFileInputStream = new FileInputStream(CLASSIFIER_ALL_CSV_PATH);
@@ -142,6 +143,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 			String lexValue = classifierLineCells[7];
 			String lexValueLang = classifierLineCells[8];
 			String lexValueType = classifierLineCells[9];
+			String ekiKey = null;
 
 			if (StringUtils.equals(ekiType, emptyCellValue)) {
 
@@ -154,7 +156,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 
 			} else if (StringUtils.equals(lexName, emptyCellValue)) {
 
-				String ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
+				ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
 				if (existingClassifierKeys.contains(ekiKey)) {
 					logger.warn("Duplicate EKI classifier entry: \"{}\"", ekiKey);
 					continue;
@@ -163,6 +165,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 
 			} else {
 
+				ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
 				String fullKey = composeRow(CLASSIFIER_KEY_SEPARATOR,
 						ekiType, ekiCode, ekiValue, ekiValueLang, lexName, lexCode, lexValue, lexValueLang, lexValueType);
 				if (existingClassifierKeys.contains(fullKey)) {
@@ -185,6 +188,7 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 			classifier.setLexValueLang(lexValueLang);
 			classifier.setLexValueType(lexValueType);
 			classifier.setOrder(order);
+			classifier.setEkiKey(ekiKey);
 			existingClassifiers.add(classifier);
 		}
 
@@ -195,60 +199,63 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 		return existingClassifiers;
 	}
 
-	private List<Classifier> loadSourceClassifiers(String[] classifierXsdFilePaths) throws Exception {
+	private List<Classifier> loadSourceClassifiers(String classifierXsdFilePath) throws Exception {
 
 		List<Classifier> loadedClassifiers = new ArrayList<>();
+
+		if (StringUtils.isBlank(classifierXsdFilePath)) {
+			return loadedClassifiers;
+		}
+
 		Classifier classifier;
 		int order = 0;
 
 		List<String> loadedClassifierKeys = new ArrayList<>();
 
-		for (String classifierXsdFilePath : classifierXsdFilePaths) {
+		logger.debug("Loading \"{}\"", classifierXsdFilePath);
 
-			logger.debug("Loading \"{}\"", classifierXsdFilePath);
+		Document dataDoc = xmlReader.readDocument(classifierXsdFilePath);
 
-			Document dataDoc = xmlReader.readDocument(classifierXsdFilePath);
+		List<Element> classifierGroupNodes = dataDoc.selectNodes("/xs:schema/xs:simpleType[@name]");
+		for (Element classifierGroupNode : classifierGroupNodes) {
 
-			List<Element> classifierGroupNodes = dataDoc.selectNodes("/xs:schema/xs:simpleType[@name]");
-			for (Element classifierGroupNode : classifierGroupNodes) {
+			String ekiType = classifierGroupNode.attributeValue("name");
+			String ekiName = null;
+			Element classifierNameNode = (Element) classifierGroupNode.selectSingleNode("xs:annotation/xs:documentation");
+			if (classifierNameNode == null) {
+				ekiName = ekiType;
+			} else {
+				ekiName = classifierNameNode.getTextTrim();
+			}
+			List<Element> classifierNodes = classifierGroupNode.selectNodes("xs:restriction/xs:enumeration");
+			for (Element classifierNode : classifierNodes) {
 
-				String ekiType = classifierGroupNode.attributeValue("name");
-				String ekiName = null;
-				Element classifierNameNode = (Element) classifierGroupNode.selectSingleNode("xs:annotation/xs:documentation");
-				if (classifierNameNode == null) {
-					ekiName = ekiType;
-				} else {
-					ekiName = classifierNameNode.getTextTrim();
-				}
-				List<Element> classifierNodes = classifierGroupNode.selectNodes("xs:restriction/xs:enumeration");
-				for (Element classifierNode : classifierNodes) {
+				String ekiCode = classifierNode.attributeValue("value");
 
-					String ekiCode = classifierNode.attributeValue("value");
+				List<Element> classifierValueNodes = classifierNode.selectNodes("xs:annotation/xs:documentation");
+				for (Element classifierValueNode : classifierValueNodes) {
 
-					List<Element> classifierValueNodes = classifierNode.selectNodes("xs:annotation/xs:documentation");
-					for (Element classifierValueNode : classifierValueNodes) {
+					String ekiValueLang = classifierValueNode.attributeValue("lang");
+					String ekiValue = classifierValueNode.getTextTrim();
 
-						String ekiValueLang = classifierValueNode.attributeValue("lang");
-						String ekiValue = classifierValueNode.getTextTrim();
+					if (StringUtils.isNotBlank(ekiValue)) {
 
-						if (StringUtils.isNotBlank(ekiValue)) {
-
-							String ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
-							if (loadedClassifierKeys.contains(ekiKey)) {
-								logger.info("Already loaded classifier: \"{}\"", ekiKey);
-								continue;
-							}
-							order++;
-							classifier = new Classifier();
-							classifier.setEkiType(ekiType);
-							classifier.setEkiName(ekiName);
-							classifier.setEkiCode(ekiCode);
-							classifier.setEkiValue(ekiValue);
-							classifier.setEkiValueLang(ekiValueLang);
-							classifier.setOrder(order);
-							loadedClassifiers.add(classifier);
-							loadedClassifierKeys.add(ekiKey);
+						String ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
+						if (loadedClassifierKeys.contains(ekiKey)) {
+							logger.info("Already loaded classifier: \"{}\"", ekiKey);
+							continue;
 						}
+						order++;
+						classifier = new Classifier();
+						classifier.setEkiType(ekiType);
+						classifier.setEkiName(ekiName);
+						classifier.setEkiCode(ekiCode);
+						classifier.setEkiValue(ekiValue);
+						classifier.setEkiValueLang(ekiValueLang);
+						classifier.setOrder(order);
+						classifier.setEkiKey(ekiKey);
+						loadedClassifiers.add(classifier);
+						loadedClassifierKeys.add(ekiKey);
 					}
 				}
 			}
@@ -260,16 +267,39 @@ public class XsdToClassifierCsvRunner implements SystemConstant {
 		return loadedClassifiers;
 	}
 
-	private String composeRow(char separator, String... values) {
-		return StringUtils.join(values, separator);
-	}
+	private List<Classifier> merge(List<Classifier> sourceClassifiers, List<Classifier> existingClassifiers) {
 
-	private void verifyClassifierXsdFilePaths(String[] classifierXsdFilePaths) throws FileNotFoundException {
-		for (String classifierXsdFilePath : classifierXsdFilePaths) {
-			File classifierXsdFile = new File(classifierXsdFilePath);
-			if (!classifierXsdFile.exists()) {
-				throw new FileNotFoundException("No such file exists: \"" + classifierXsdFilePath + "\"");
+		if (CollectionUtils.isEmpty(sourceClassifiers)) {
+			return existingClassifiers;
+		}
+		if (CollectionUtils.isEmpty(existingClassifiers)) {
+			return sourceClassifiers;
+		}
+
+		List<Classifier> mergedClassifiers = new ArrayList<>();
+		for (Classifier sourceClassifier : sourceClassifiers) {
+			Classifier existingClassifier = find(sourceClassifier, existingClassifiers);
+			if (existingClassifier == null) {
+				mergedClassifiers.add(sourceClassifier);
+			} else {
+				mergedClassifiers.add(existingClassifier);
 			}
 		}
+		mergedClassifiers.sort(Comparator.comparing(Classifier::getEkiType).thenComparing(Classifier::getLexName).thenComparing(Classifier::getOrder));
+
+		return mergedClassifiers;
+	}
+
+	private Classifier find(Classifier sourceClassifier, List<Classifier> existingClassifiers) {
+		for (Classifier existingClassifier : existingClassifiers) {
+			if (StringUtils.equals(sourceClassifier.getEkiKey(), existingClassifier.getEkiKey())) {
+				return existingClassifier;
+			}
+		}
+		return null;
+	}
+
+	private String composeRow(char separator, String... values) {
+		return StringUtils.join(values, separator);
 	}
 }
