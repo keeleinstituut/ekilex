@@ -97,13 +97,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		reportComposer = new ReportComposer("PSV import",
-				ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME,
-				COMPOUND_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
-				COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
-				WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
-
 		reportingEnabled = isAddReporting;
+
+		if (reportingEnabled) {
+			reportComposer = new ReportComposer("PSV import",
+					ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME,
+					COMPOUND_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
+					COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
+					WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
+		}
 
 		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
 
@@ -1422,11 +1424,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private void writeToLogFile(String guid, String message, String values) throws Exception {
 
-		if (!reportingEnabled) {
-			return;
+		if (reportingEnabled) {
+			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(guid, message, values));
+			reportComposer.append(logMessage);
 		}
-		String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(guid, message, values));
-		reportComposer.append(logMessage);
 	}
 
 	private class WordData {
