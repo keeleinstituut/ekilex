@@ -4,12 +4,34 @@ as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-	-	-	-
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-	-	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-	-	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-	-	-	-
-dk_tyyp	dk_tyyp	adv	adverb (-lt)	et	-	-	-	-	-
-dk_tyyp	dk_tyyp	dem	deminutiiv, vähendussõna (-ke, -kene)	et	-	-	-	-	-
-dk_tyyp	dk_tyyp	komp	komparatiiv, keskvõrre (-m)	et	-	-	-	-	-
-dk_tyyp	dk_tyyp	sup	superlatiiv, ülivõrre (-im)	et	-	-	-	-	-
-dk_tyyp	dk_tyyp	tgn	tegijanimi (-ja)	et	-	-	-	-	-
-dk_tyyp	dk_tyyp	tn	teonimi (-mine)	et	-	-	-	-	-
+dk_tyyp	dk_tyyp	adv	adverb (-lt)	et	deriv	adv	adverb (-lt)	est	descrip
+dk_tyyp	dk_tyyp	dem	KE/KENE	et	deriv	dem	KE/KENE	est	ekimorfo
+dk_tyyp	dk_tyyp	dem	diminutive	en	deriv	dem	diminutive	eng	descrip
+dk_tyyp	dk_tyyp	dem	deminutiiv, vähendussõna	et	deriv	dem	deminutiiv, vähendussõna	est	descrip
+dk_tyyp	dk_tyyp	dem	deminutiiv, vähendussõna (-ke, -kene)	et	deriv	dem	deminutiiv, vähendussõna (-ke, -kene)	est	descrip2
+dk_tyyp	dk_tyyp	dem	dem	la	deriv	dem	dem	lat	abbrev
+dk_tyyp	dk_tyyp	komp	M	et	deriv	komp	M	est	ekimorfo
+dk_tyyp	dk_tyyp	komp	comparative (degree)	en	deriv	komp	comparative (degree)	eng	descrip
+dk_tyyp	dk_tyyp	komp	komparatiiv, keskvõrre	et	deriv	komp	komparatiiv, keskvõrre	est	descrip
+dk_tyyp	dk_tyyp	komp	komparatiiv, keskvõrre (-m)	et	deriv	komp	komparatiiv, keskvõrre (-m)	est	descrip2
+dk_tyyp	dk_tyyp	komp	keskv	et	deriv	komp	keskv	est	abbrev
+dk_tyyp	dk_tyyp	komp	komp	la	deriv	komp	komp	lat	abbrev
+dk_tyyp	dk_tyyp	sup	IM	et	deriv	superl	IM	est	ekimorfo
+dk_tyyp	dk_tyyp	sup	superlative (degree)	en	deriv	superl	superlative (degree)	eng	descrip
+dk_tyyp	dk_tyyp	sup	superlatiiv, ülivõrre	et	deriv	superl	superlatiiv, ülivõrre	est	descrip
+dk_tyyp	dk_tyyp	sup	superlatiiv, ülivõrre (-im)	et	deriv	superl	superlatiiv, ülivõrre (-im)	est	descrip2
+dk_tyyp	dk_tyyp	sup	üliv	et	deriv	superl	üliv	est	abbrev
+dk_tyyp	dk_tyyp	sup	superl	la	deriv	superl	superl	lat	abbrev
+dk_tyyp	dk_tyyp	tgn	JA	et	deriv	tgn	JA	est	ekimorfo
+dk_tyyp	dk_tyyp	tgn	ja-derivative = actor	en	deriv	tgn	ja-derivative = actor	eng	descrip
+dk_tyyp	dk_tyyp	tgn	tegijanimi	et	deriv	tgn	tegijanimi	est	descrip
+dk_tyyp	dk_tyyp	tgn	tegijanimi (-ja)	et	deriv	tgn	tegijanimi (-ja)	est	descrip2
+dk_tyyp	dk_tyyp	tgn	tgn	et	deriv	tgn	tgn	est	abbrev
+dk_tyyp	dk_tyyp	tn	MINE	et	deriv	tn	MINE	est	ekimorfo
+dk_tyyp	dk_tyyp	tn	mine-derivative = act, process	en	deriv	tn	mine-derivative = act, process	eng	descrip
+dk_tyyp	dk_tyyp	tn	teonimi	et	deriv	tn	teonimi	est	descrip
+dk_tyyp	dk_tyyp	tn	teonimi (-mine)	et	deriv	tn	teonimi (-mine)	est	descrip2
+dk_tyyp	dk_tyyp	tn	tn	et	deriv	tn	tn	est	abbrev
 fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-	-	-	-
 fak_tyyp	fakultatiivne	fak	nothing	en	-	-	-	-	-
 gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-	-	-	-
@@ -41,6 +63,16 @@ kmpl_tyyp	kmpl_tyyp	Akomp	omadussõna võrdlus	et	-	-	-	-	-
 kmpl_tyyp	kmpl_tyyp	Dkomp	määrsõna võrdlus	et	-	-	-	-	-
 koht_tyyp	koht_tyyp	er	eelrektsioon	et	-	-	-	-	-
 koht_tyyp	koht_tyyp	jr	järelrektsioon	et	-	-	-	-	-
+<<<<<<< HEAD
+liik_tyyp	liik_tyyp	k	kohanimi	et	lexeme_type	k	kohanimi	est	descrip
+liik_tyyp	liik_tyyp	k	place name	en	lexeme_type	k	place name	eng	descrip
+liik_tyyp	liik_tyyp	l	lühend	et	lexeme_type	l	lühend	est	descrip
+liik_tyyp	liik_tyyp	l	abbreviation	en	lexeme_type	l	abbreviation	eng	descrip
+liik_tyyp	liik_tyyp	p	pärisnimi	et	lexeme_type	p	pärisnimi	est	descrip
+liik_tyyp	liik_tyyp	p	proper name	en	lexeme_type	p	proper name	eng	descrip
+liik_tyyp	liik_tyyp	z	tsitaatsõna	et	lexeme_type	z	tsitaatsõna	est	descrip
+liik_tyyp	liik_tyyp	z	loanword (alien)	en	lexeme_type	z	loanword (alien)	eng	descrip
+=======
 liik_tyyp	liik_tyyp	k	kohanimi	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	k	place name	en	-	-	-	-	-
 liik_tyyp	liik_tyyp	l	lühend	et	-	-	-	-	-
@@ -50,6 +82,7 @@ liik_tyyp	liik_tyyp	p	proper name	en	-	-	-	-	-
 liik_tyyp	liik_tyyp	z	tsitaatsõna	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	z	loanword (alien)	en	-	-	-	-	-
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-	-	-	-
+>>>>>>> 96c6a8976a0538b978338124e96745b5be546efc
 liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	lexeme_type	viiteartikli märksõna	viiteartikli märksõna	est	descrip
 liik_tyyp	märksõna liik	yv	ühendverb	et	lexeme_type	ühendverb	ühendverb	est	descrip
 liik_tyyp	märksõna liik	vv	väljendverb	et	lexeme_type	väljendverb	väljendverb	est	descrip
@@ -89,122 +122,131 @@ sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4	4 - pole sag_S-s	
 sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
 sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	lexeme_frequency	L4	L4 - pole sag_S-s (lisatud)	est	descrip
+<<<<<<< HEAD
+sl_tyyp	sõnaliik	A	A	et	pos	adj	A	est	capital
+=======
 sl_tyyp	sõnaliik	K	postposition, preposition	en	-	-	-	-	-
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	A	est	capital
+>>>>>>> 96c6a8976a0538b978338124e96745b5be546efc
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	adjektiiv, omadussõna	est	descrip
 sl_tyyp	sõnaliik	A	adjective	en	pos	adj	adjective	eng	descrip
-sl_tyyp	sõnaliik	D	adverb, määrsõna	et	pos	adv	D	est	capital
+sl_tyyp	sõnaliik	D	D	et	pos	adv	D	est	capital
 sl_tyyp	sõnaliik	D	adverb, määrsõna	et	pos	adv	adverb, määrsõna	est	descrip
 sl_tyyp	sõnaliik	D	adverb	en	pos	adv	adverb	eng	descrip
-sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	pos	adjg	G	est	capital
+sl_tyyp	sõnaliik	G	G	et	pos	adjg	G	est	capital
 sl_tyyp	sõnaliik	G	genitiivatribuut, omastavaline täiend	et	pos	adjg	genitiivatribuut, omastavaline täiend	est	descrip
 sl_tyyp	sõnaliik	G	attribute in genitive	en	pos	adjg	attribute in genitive	eng	descrip
-sl_tyyp	sõnaliik	H	pärisnimi	et	pos	prop	H	est	capital
-sl_tyyp	sõnaliik	H	pärisnimi	et	pos	prop	prooprium, pärisnimi	est	descrip
+sl_tyyp	sõnaliik	H	H	et	pos	prop	H	est	capital
+sl_tyyp	sõnaliik	H	prooprium, pärisnimi	et	pos	prop	prooprium, pärisnimi	est	descrip
 sl_tyyp	sõnaliik	H	proper noun	en	pos	prop	proper noun	eng	descrip
-sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	pos	interj	I	est	capital
+sl_tyyp	sõnaliik	I	I	et	pos	interj	I	est	capital
 sl_tyyp	sõnaliik	I	interjektsioon, hüüdsõna	et	pos	interj	interjektsioon, hüüdsõna	est	descrip
 sl_tyyp	sõnaliik	I	interjection	en	pos	interj	interjection	eng	descrip
-sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	pos	konj	J	est	capital
+sl_tyyp	sõnaliik	J	J	et	pos	konj	J	est	capital
 sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	pos	konj	konjunktsioon, sidesõna	est	descrip
 sl_tyyp	sõnaliik	J	conjunction	en	pos	konj	conjunction	eng	descrip
-sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	pos	adp	K	est	capital
+sl_tyyp	sõnaliik	K	K	et	pos	adp	K	est	capital
 sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	pos	adp	adpositsioon, kaassõna	est	descrip
+<<<<<<< HEAD
+sl_tyyp	sõnaliik	K	postposition, preposition	en	pos	adp	postposition, preposition	eng	descrip
+sl_tyyp	sõnaliik	N	N	et	pos	num	N	est	capital
+=======
 sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	pos	num	N	est	capital
+>>>>>>> 96c6a8976a0538b978338124e96745b5be546efc
 sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	pos	num	numeraal, arvsõna	est	descrip
 sl_tyyp	sõnaliik	N	cardinal, numeral	en	pos	num	cardinal, numeral	eng	descrip
-sl_tyyp	sõnaliik	O	järgarvsõna	et	pos	ord	O	est	capital
-sl_tyyp	sõnaliik	O	järgarvsõna	et	pos	ord	ordinaal, järgarvsõna	est	descrip
+sl_tyyp	sõnaliik	O	O	et	pos	ord	O	est	capital
+sl_tyyp	sõnaliik	O	ordinaal, järgarvsõna	et	pos	ord	ordinaal, järgarvsõna	est	descrip
 sl_tyyp	sõnaliik	O	ordinal	en	pos	ord	ordinal	eng	descrip
-sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	pos	pron	P	est	capital
+sl_tyyp	sõnaliik	P	P	et	pos	pron	P	est	capital
 sl_tyyp	sõnaliik	P	pronoomen, asesõna	et	pos	pron	pronoomen, asesõna	est	descrip
 sl_tyyp	sõnaliik	P	pronoun	en	pos	pron	pronoun	eng	descrip
-sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	pos	s	S	est	capital
+sl_tyyp	sõnaliik	S	S	et	pos	s	S	est	capital
 sl_tyyp	sõnaliik	S	substantiiv, nimisõna	et	pos	s	substantiiv, nimisõna	est	descrip
 sl_tyyp	sõnaliik	S	substantive	en	pos	s	substantive	eng	descrip
-sl_tyyp	sõnaliik	V	verb, tegusõna	et	pos	v	V	est	capital
+sl_tyyp	sõnaliik	V	V	et	pos	v	V	est	capital
 sl_tyyp	sõnaliik	V	verb, tegusõna	et	pos	v	verb, tegusõna	est	descrip
 sl_tyyp	sõnaliik	V	verb	en	pos	v	verb	eng	descrip
-tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	-	-	-	-	-
-tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	-	-	-	-	-
+tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	lex_rel_type	tvt:vrd	tähendusviide, võrdle	est	full
+tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	lex_rel_type	tvt:vt ka	tähendusviide, vaata ka	est	full
 u_tyyp	uus märksõna	uus	uus märksõna	et	-	-	-	-	-
 u_tyyp	uus märksõna	uus	new headword	en	-	-	-	-	-
 var_tyyp	var_tyyp	var	/ variant	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	mitm	plural	en	-	-	-	-	-
-vk_tyyp	vk_tyyp	ains	singular, ainsus	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	ains	singular	en	-	-	-	-	-
-vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	om	singular genitive	en	-	-	-	-	-
-vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	os	singular partitive	en	-	-	-	-	-
-vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	-	-	-	-	-
-vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	-	-	-	-	-
-vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	kesks	participle	en	-	-	-	-	-
-vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	-	-	-	-	-
-vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	-	-	-	-	-
-vk_tyyp	vormikood	impers	impersonal	en	-	-	-	-	-
-vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	-	-	-	-	-
-vk_tyyp	vormikood	partits	participle	en	-	-	-	-	-
-vk_tyyp	vormikood	pl	pluural, mitmus	et	-	-	-	-	-
-vk_tyyp	vormikood	pl	plural	en	-	-	-	-	-
-vk_tyyp	vormikood	sg	singular, ainsus	et	-	-	-	-	-
-vk_tyyp	vormikood	sg	singular	en	-	-	-	-	-
-vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	-	-	-	-	-
-vk_tyyp	vormikood	sg gen	singular genitiv	en	-	-	-	-	-
-vk_tyyp	vormikood	ssv	seisundivorm	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	ID	muutumatu	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgN	SgN	en	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgG	ainsuse omastav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgP	ainsuse osastav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgAdt	ainsuse suunduv	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgIll	ainsuse sisseütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgIn	ainsuse seesütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgEl	ainsuse seestütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgAll	ainsuse alaleütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgAd	ainsuse alalütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgAbl	ainsuse alaltütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgTr	ainsuse saav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgTer	ainsuse rajav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgEs	ainsuse olev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgAb	ainsuse ilmaütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	SgKom	ainsuse kaasaütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlN	mitmuse nimetav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlG	mitmuse omastav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlP	mitmuse osastav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlAdt	mitmuse aditiiv	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlIll	mitmuse sisseütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlIn	mitmuse seesütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlEl	mitmuse seestütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlAll	mitmuse alaleütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlAd	mitmuse alalütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlAbl	mitmuse alaltütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlTr	mitmuse saav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlTer	mitmuse rajav	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlEs	mitmuse olev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlAb	mitmuse ilmaütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PlKom	mitmuse kaasaütlev	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	Sup	MA = ma-tegevusnimi	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	Inf	DA = da-tegevusnimi	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	IndPrSg3	B = kindla kv oleviku ainsuse 3. p	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	IndPrPl1	ME = kindla kv oleviku mitmuse 1. p	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PtsPtIps	TUD = tud-kesksõna	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	IndIpfSg3	S = lihtmineviku ainsuse 3. p	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PtsPtPs	NUD = nud-kesksõna	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	ImpPrPl2	GE = käskiva kv mitmuse 2. p	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	IndPrIps	TAKSE = umbisikulise tm olevik	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	PtsPrIps	TAV = tav-kesksõna	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	IndPrPsN	POLE = kindla kv oleviku eitus	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	IndIpfPsN	POLNUD = kindla kv mineviku eitus	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	Neg	EI = eitus	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	et	-	-	-	-	-
-vn_tyyp	muutevormi nimi	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	et	-	-	-	-	-
+vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_pos	mitm	pluural, mitmus	est	descrip
+vk_tyyp	vk_tyyp	mitm	plural	en	display_pos	mitm	plural	eng	descrip
+vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_pos	ains	singular, ainsus	est	descrip
+vk_tyyp	vk_tyyp	ains	singular	en	display_pos	ains	singular	eng	descrip
+vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	display_pos	om	singular genitiiv, ainsuse omastav	est	descrip
+vk_tyyp	vk_tyyp	om	singular genitive	en	display_pos	om	singular genitive	eng	descrip
+vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	display_pos	os	singular partitiiv, ainsuse osastav	est	descrip
+vk_tyyp	vk_tyyp	os	singular partitive	en	display_pos	os	singular partitive	eng	descrip
+vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	display_pos	keskv	komparatiiv, keskvõrre	est	descrip
+vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	display_pos	keskv	comparative (degree)	eng	descrip
+vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	display_pos	üliv	superlatiiv, ülivõrre	est	descrip
+vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	display_pos	üliv	superlative (degree)	eng	descrip
+vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_pos	kesks	partitsiip, kesksõna	est	descrip
+vk_tyyp	vk_tyyp	kesks	participle	en	display_pos	kesks	participle	eng	descrip
+vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	display_pos	ger	gerundiiv, des-vorm	est	descrip
+vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_pos	impers	impersonaal, umbisikuline tegumood	est	descrip
+vk_tyyp	vormikood	impers	impersonal	en	display_pos	impers	impersonal	eng	descrip
+vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	display_pos	partits	partitsiip, kesksõna	est	descrip
+vk_tyyp	vormikood	partits	participle	en	display_pos	partits	participle	eng	descrip
+vk_tyyp	vormikood	pl	pluural, mitmus	et	display_pos	pl	pluural, mitmus	est	descrip
+vk_tyyp	vormikood	pl	plural	en	display_pos	pl	plural	eng	descrip
+vk_tyyp	vormikood	sg	singular, ainsus	et	display_pos	sg	singular, ainsus	est	descrip
+vk_tyyp	vormikood	sg	singular	en	display_pos	sg	singular	eng	descrip
+vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	display_pos	sg gen	singular genitiiv, ainsuse omastav	est	descrip
+vk_tyyp	vormikood	sg gen	singular genitiv	en	display_pos	sg gen	singular genitiv	eng	descrip
+vk_tyyp	vormikood	ssv	seisundivorm	et	display_pos	ssv	seisundivorm	est	descrip
+vn_tyyp	muutevormi nimi	ID	muutumatu	et	morph	ID	muutumatu	est	descrip2
+vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	morph	SgN	ainsuse nimetav	est	descrip2
+vn_tyyp	muutevormi nimi	SgN	SgN	en	morph	SgN	SgN	eng	descrip2
+vn_tyyp	muutevormi nimi	SgG	ainsuse omastav	et	morph	SgG	ainsuse omastav	est	descrip2
+vn_tyyp	muutevormi nimi	SgP	ainsuse osastav	et	morph	SgP	ainsuse osastav	est	descrip2
+vn_tyyp	muutevormi nimi	SgAdt	ainsuse suunduv	et	morph	SgAdt	ainsuse suunduv	est	descrip2
+vn_tyyp	muutevormi nimi	SgIll	ainsuse sisseütlev	et	morph	SgIll	ainsuse sisseütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgIn	ainsuse seesütlev	et	morph	SgIn	ainsuse seesütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgEl	ainsuse seestütlev	et	morph	SgEl	ainsuse seestütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgAll	ainsuse alaleütlev	et	morph	SgAll	ainsuse alaleütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgAd	ainsuse alalütlev	et	morph	SgAd	ainsuse alalütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgAbl	ainsuse alaltütlev	et	morph	SgAbl	ainsuse alaltütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgTr	ainsuse saav	et	morph	SgTr	ainsuse saav	est	descrip2
+vn_tyyp	muutevormi nimi	SgTer	ainsuse rajav	et	morph	SgTer	ainsuse rajav	est	descrip2
+vn_tyyp	muutevormi nimi	SgEs	ainsuse olev	et	morph	SgEs	ainsuse olev	est	descrip2
+vn_tyyp	muutevormi nimi	SgAb	ainsuse ilmaütlev	et	morph	SgAb	ainsuse ilmaütlev	est	descrip2
+vn_tyyp	muutevormi nimi	SgKom	ainsuse kaasaütlev	et	morph	SgKom	ainsuse kaasaütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlN	mitmuse nimetav	et	morph	PlN	mitmuse nimetav	est	descrip2
+vn_tyyp	muutevormi nimi	PlG	mitmuse omastav	et	morph	PlG	mitmuse omastav	est	descrip2
+vn_tyyp	muutevormi nimi	PlP	mitmuse osastav	et	morph	PlP	mitmuse osastav	est	descrip2
+vn_tyyp	muutevormi nimi	PlAdt	mitmuse aditiiv	et	morph	PlAdt	mitmuse aditiiv	est	descrip2
+vn_tyyp	muutevormi nimi	PlIll	mitmuse sisseütlev	et	morph	PlIll	mitmuse sisseütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlIn	mitmuse seesütlev	et	morph	PlIn	mitmuse seesütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlEl	mitmuse seestütlev	et	morph	PlEl	mitmuse seestütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlAll	mitmuse alaleütlev	et	morph	PlAll	mitmuse alaleütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlAd	mitmuse alalütlev	et	morph	PlAd	mitmuse alalütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlAbl	mitmuse alaltütlev	et	morph	PlAbl	mitmuse alaltütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlTr	mitmuse saav	et	morph	PlTr	mitmuse saav	est	descrip2
+vn_tyyp	muutevormi nimi	PlTer	mitmuse rajav	et	morph	PlTer	mitmuse rajav	est	descrip2
+vn_tyyp	muutevormi nimi	PlEs	mitmuse olev	et	morph	PlEs	mitmuse olev	est	descrip2
+vn_tyyp	muutevormi nimi	PlAb	mitmuse ilmaütlev	et	morph	PlAb	mitmuse ilmaütlev	est	descrip2
+vn_tyyp	muutevormi nimi	PlKom	mitmuse kaasaütlev	et	morph	PlKom	mitmuse kaasaütlev	est	descrip2
+vn_tyyp	muutevormi nimi	Sup	MA = ma-tegevusnimi	et	morph	Sup	MA = ma-tegevusnimi	est	descrip2
+vn_tyyp	muutevormi nimi	Inf	DA = da-tegevusnimi	et	morph	Inf	DA = da-tegevusnimi	est	descrip2
+vn_tyyp	muutevormi nimi	IndPrSg3	B = kindla kv oleviku ainsuse 3. p	et	morph	IndPrSg3	B = kindla kv oleviku ainsuse 3. p	est	descrip2
+vn_tyyp	muutevormi nimi	IndPrPl1	ME = kindla kv oleviku mitmuse 1. p	et	morph	IndPrPl1	ME = kindla kv oleviku mitmuse 1. p	est	descrip2
+vn_tyyp	muutevormi nimi	PtsPtIps	TUD = tud-kesksõna	et	morph	PtsPtIps	TUD = tud-kesksõna	est	descrip2
+vn_tyyp	muutevormi nimi	IndIpfSg3	S = lihtmineviku ainsuse 3. p	et	morph	IndIpfSg3	S = lihtmineviku ainsuse 3. p	est	descrip2
+vn_tyyp	muutevormi nimi	PtsPtPs	NUD = nud-kesksõna	et	morph	PtsPtPs	NUD = nud-kesksõna	est	descrip2
+vn_tyyp	muutevormi nimi	ImpPrPl2	GE = käskiva kv mitmuse 2. p	et	morph	ImpPrPl2	GE = käskiva kv mitmuse 2. p	est	descrip2
+vn_tyyp	muutevormi nimi	IndPrIps	TAKSE = umbisikulise tm olevik	et	morph	IndPrIps	TAKSE = umbisikulise tm olevik	est	descrip2
+vn_tyyp	muutevormi nimi	PtsPrIps	TAV = tav-kesksõna	et	morph	PtsPrIps	TAV = tav-kesksõna	est	descrip2
+vn_tyyp	muutevormi nimi	IndPrPsN	POLE = kindla kv oleviku eitus	et	morph	IndPrPsN	POLE = kindla kv oleviku eitus	est	descrip2
+vn_tyyp	muutevormi nimi	IndIpfPsN	POLNUD = kindla kv mineviku eitus	et	morph	IndIpfPsN	POLNUD = kindla kv mineviku eitus	est	descrip2
+vn_tyyp	muutevormi nimi	Neg	EI = eitus	et	morph	Neg	EI = eitus	est	descrip2
+vn_tyyp	muutevormi nimi	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	et	morph	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	est	descrip2
+vn_tyyp	muutevormi nimi	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	et	morph	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	est	descrip2
+vn_tyyp	muutevormi nimi	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	et	morph	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	est	descrip2
+vn_tyyp	muutevormi nimi	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	et	morph	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	est	descrip2
 xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-	-	-	-
 xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-	-	-	-
 xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-	-	-	-
@@ -212,3 +254,276 @@ xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-	-	-	-
 yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
 yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
+vn_tyyp	muutevormi nimi	ID	indekl	la	morph	ID	indekl	lat	abbrev
+vn_tyyp	muutevormi nimi	SgN	nom	la	morph	SgN	nom	lat	abbrev
+vn_tyyp	muutevormi nimi	SgG	sg gen, gen	la	morph	SgG	sg gen, gen	lat	abbrev
+vn_tyyp	muutevormi nimi	SgP	part	la	morph	SgP	part	lat	abbrev
+vn_tyyp	muutevormi nimi	SgIll	illat	la	morph	SgIll	illat	lat	abbrev
+vn_tyyp	muutevormi nimi	SgIn	iness	la	morph	SgIn	iness	lat	abbrev
+vn_tyyp	muutevormi nimi	SgEl	adess	la	morph	SgEl	adess	lat	abbrev
+vn_tyyp	muutevormi nimi	PlN	pl nom	la	morph	PlN	pl nom	lat	abbrev
+vn_tyyp	muutevormi nimi	PlG	pl gen	la	morph	PlG	pl gen	lat	abbrev
+vn_tyyp	muutevormi nimi	PlP	pl part	la	morph	PlP	pl part	lat	abbrev
+vn_tyyp	muutevormi nimi	PlIll	pl illat	la	morph	PlIll	pl illat	lat	abbrev
+vn_tyyp	muutevormi nimi	PlIn	pl iness	la	morph	PlIn	pl iness	lat	abbrev
+vn_tyyp	muutevormi nimi	PlEl	pl elat	la	morph	PlEl	pl elat	lat	abbrev
+vn_tyyp	muutevormi nimi	PlTer	pl term	la	morph	PlTer	pl term	lat	abbrev
+vn_tyyp	muutevormi nimi	SgN	SgN	en	morph	SgN	SgN	eng	abbrev
+vn_tyyp	muutevormi nimi	SgG	om	et	morph	SgG	om	est	abbrev
+vn_tyyp	muutevormi nimi	SgP	os	et	morph	SgP	os	est	abbrev
+vn_tyyp	muutevormi nimi	ID	--------	et	morph	ID	--------	est	ekimorfo
+vn_tyyp	muutevormi nimi	??	------xx	et	morph	??	------xx	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgN	------0N	et	morph	SgN	------0N	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgG	------0G	et	morph	SgG	------0G	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgP	------0P	et	morph	SgP	------0P	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgAdt	------0D	et	morph	SgAdt	------0D	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgIll	------01	et	morph	SgIll	------01	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgIn	------02	et	morph	SgIn	------02	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgEl	------03	et	morph	SgEl	------03	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgAll	------04	et	morph	SgAll	------04	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgAd	------05	et	morph	SgAd	------05	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgAbl	------06	et	morph	SgAbl	------06	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgTr	------0T	et	morph	SgTr	------0T	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgTer	------0R	et	morph	SgTer	------0R	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgEs	------0E	et	morph	SgEs	------0E	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgAb	------0A	et	morph	SgAb	------0A	est	ekimorfo
+vn_tyyp	muutevormi nimi	SgKom	------0K	et	morph	SgKom	------0K	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlN	------1N	et	morph	PlN	------1N	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlG	------1G	et	morph	PlG	------1G	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlP	------1P	et	morph	PlP	------1P	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlIll	------11	et	morph	PlIll	------11	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlIn	------12	et	morph	PlIn	------12	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlEl	------13	et	morph	PlEl	------13	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlAll	------14	et	morph	PlAll	------14	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlAd	------15	et	morph	PlAd	------15	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlAbl	------16	et	morph	PlAbl	------16	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlTr	------1T	et	morph	PlTr	------1T	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlTer	------1R	et	morph	PlTer	------1R	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlEs	------1E	et	morph	PlEs	------1E	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlAb	------1A	et	morph	PlAb	------1A	est	ekimorfo
+vn_tyyp	muutevormi nimi	PlKom	------1K	et	morph	PlKom	------1K	est	ekimorfo
+vn_tyyp	muutevormi nimi	Rpl	------1-	et	morph	Rpl	------1-	est	ekimorfo
+vn_tyyp	muutevormi nimi	Nlyhi	------RC	et	morph	Nlyhi	------RC	est	ekimorfo
+vn_tyyp	muutevormi nimi	Nvahe	------HC	et	morph	Nvahe	------HC	est	ekimorfo
+vn_tyyp	muutevormi nimi	Sup	30------	et	morph	Sup	30------	est	ekimorfo
+vn_tyyp	muutevormi nimi	SupAb	30-----A	et	morph	SupAb	30-----A	est	ekimorfo
+vn_tyyp	muutevormi nimi	SupIn	30-----2	et	morph	SupIn	30-----2	est	ekimorfo
+vn_tyyp	muutevormi nimi	SupEl	30-----3	et	morph	SupEl	30-----3	est	ekimorfo
+vn_tyyp	muutevormi nimi	SupTr	30-----T	et	morph	SupTr	30-----T	est	ekimorfo
+vn_tyyp	muutevormi nimi	SupIps	31------	et	morph	SupIps	31------	est	ekimorfo
+vn_tyyp	muutevormi nimi	Inf	1-------	et	morph	Inf	1-------	est	ekimorfo
+vn_tyyp	muutevormi nimi	Ger	2-------	et	morph	Ger	2-------	est	ekimorfo
+vn_tyyp	muutevormi nimi	PtsPrPs	400---0N	et	morph	PtsPrPs	400---0N	est	ekimorfo
+vn_tyyp	muutevormi nimi	PtsPrIps	410---0N	et	morph	PtsPrIps	410---0N	est	ekimorfo
+vn_tyyp	muutevormi nimi	PtsPtPs	401--0--	et	morph	PtsPtPs	401--0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	PtsPtIps	411--0--	et	morph	PtsPtIps	411--0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrSg1	-00011--	et	morph	IndPrSg1	-00011--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrSg2	-00021--	et	morph	IndPrSg2	-00021--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrSg3	-00031--	et	morph	IndPrSg3	-00031--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrPl1	-00041--	et	morph	IndPrPl1	-00041--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrPl2	-00051--	et	morph	IndPrPl2	-00051--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrPl3	-00061--	et	morph	IndPrPl3	-00061--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrPs_	-00000--	et	morph	IndPrPs_	-00000--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrIps	-100-1--	et	morph	IndPrIps	-100-1--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrIps_	-100-0--	et	morph	IndPrIps_	-100-0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfSg1	-02011--	et	morph	IndIpfSg1	-02011--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfSg2	-02021--	et	morph	IndIpfSg2	-02021--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfSg3	-02031--	et	morph	IndIpfSg3	-02031--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfPl1	-02041--	et	morph	IndIpfPl1	-02041--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfPl2	-02051--	et	morph	IndIpfPl2	-02051--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfPl3	-02061--	et	morph	IndIpfPl3	-02061--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfIps	-120-1--	et	morph	IndIpfIps	-120-1--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrSg1	-00211--	et	morph	KndPrSg1	-00211--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrSg2	-00221--	et	morph	KndPrSg2	-00221--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrPs	-00200--	et	morph	KndPrPs	-00200--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrPl1	-00241--	et	morph	KndPrPl1	-00241--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrPl2	-00251--	et	morph	KndPrPl2	-00251--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrPl3	-00261--	et	morph	KndPrPl3	-00261--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrIps	-102-0--	et	morph	KndPrIps	-102-0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtSg1	-01211--	et	morph	KndPtSg1	-01211--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtSg2	-01221--	et	morph	KndPtSg2	-01221--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtPs	-01200--	et	morph	KndPtPs	-01200--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtPl1	-01241--	et	morph	KndPtPl1	-01241--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtPl2	-01251--	et	morph	KndPtPl2	-01251--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtPl3	-01261--	et	morph	KndPtPl3	-01261--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtIps	-112-0--	et	morph	KndPtIps	-112-0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KvtPrPs	-00100--	et	morph	KvtPrPs	-00100--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KvtPrIps	-101-0--	et	morph	KvtPrIps	-101-0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KvtPtPs	-01100--	et	morph	KvtPtPs	-01100--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KvtPtIps	-111-0--	et	morph	KvtPtIps	-111-0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrSg2	-00320--	et	morph	ImpPrSg2	-00320--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrPl1	-00340--	et	morph	ImpPrPl1	-00340--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrPl2	-00350--	et	morph	ImpPrPl2	-00350--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrPs	-00300--	et	morph	ImpPrPs	-00300--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrIps	-103-0--	et	morph	ImpPrIps	-103-0--	est	ekimorfo
+vn_tyyp	muutevormi nimi	Vlyhi	RC------	et	morph	Vlyhi	RC------	est	ekimorfo
+vn_tyyp	muutevormi nimi	Vvahe	RC------	et	morph	Vvahe	RC------	est	ekimorfo
+vn_tyyp	muutevormi nimi	Neg	-----2--	et	morph	Neg	-----2--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrSg2N	-00322--	et	morph	ImpPrSg2N	-00322--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrPl1N	-00342--	et	morph	ImpPrPl1N	-00342--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrPl2N	-00352--	et	morph	ImpPrPl2N	-00352--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ImpPrN	--0302--	et	morph	ImpPrN	--0302--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrPsN	-00002--	et	morph	IndPrPsN	-00002--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndPrIpsN	-100-2--	et	morph	IndPrIpsN	-100-2--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfPsN	-02002--	et	morph	IndIpfPsN	-02002--	est	ekimorfo
+vn_tyyp	muutevormi nimi	IndIpfIpsN	-120-2--	et	morph	IndIpfIpsN	-120-2--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KvtPrPsN	-00102--	et	morph	KvtPrPsN	-00102--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KvtPtPsN	-01102--	et	morph	KvtPtPsN	-01102--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPrPsN	-00202--	et	morph	KndPrPsN	-00202--	est	ekimorfo
+vn_tyyp	muutevormi nimi	KndPtPsN	-01202--	et	morph	KndPtPsN	-01202--	est	ekimorfo
+vn_tyyp	muutevormi nimi	ID	muutumatu sõna (indekl)	et	morph	ID	muutumatu sõna (indekl)	est	descrip
+vn_tyyp	muutevormi nimi	??	määramatu vorm	et	morph	??	määramatu vorm	est	descrip
+vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	morph	SgN	ainsuse nimetav	est	descrip
+vn_tyyp	muutevormi nimi	SgG	ainsuse omastav	et	morph	SgG	ainsuse omastav	est	descrip
+vn_tyyp	muutevormi nimi	SgP	ainsuse osastav	et	morph	SgP	ainsuse osastav	est	descrip
+vn_tyyp	muutevormi nimi	SgAdt	ainsuse suunduv e lühike sisseütlev	et	morph	SgAdt	ainsuse suunduv e lühike sisseütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgIll	ainsuse sisseütlev	et	morph	SgIll	ainsuse sisseütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgIn	ainsuse seesütlev	et	morph	SgIn	ainsuse seesütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgEl	ainsuse seestütlev	et	morph	SgEl	ainsuse seestütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgAll	ainsuse alaleütlev	et	morph	SgAll	ainsuse alaleütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgAd	ainsuse alalütlev	et	morph	SgAd	ainsuse alalütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgAbl	ainsuse alaltütlev	et	morph	SgAbl	ainsuse alaltütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgTr	ainsuse saav	et	morph	SgTr	ainsuse saav	est	descrip
+vn_tyyp	muutevormi nimi	SgTer	ainsuse rajav	et	morph	SgTer	ainsuse rajav	est	descrip
+vn_tyyp	muutevormi nimi	SgEs	ainsuse olev	et	morph	SgEs	ainsuse olev	est	descrip
+vn_tyyp	muutevormi nimi	SgAb	ainsuse ilmaütlev	et	morph	SgAb	ainsuse ilmaütlev	est	descrip
+vn_tyyp	muutevormi nimi	SgKom	ainsuse kaasaütlev	et	morph	SgKom	ainsuse kaasaütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlN	mitmuse nimetav	et	morph	PlN	mitmuse nimetav	est	descrip
+vn_tyyp	muutevormi nimi	PlG	mitmuse omastav	et	morph	PlG	mitmuse omastav	est	descrip
+vn_tyyp	muutevormi nimi	PlP	mitmuse osastav	et	morph	PlP	mitmuse osastav	est	descrip
+vn_tyyp	muutevormi nimi	PlIll	mitmuse sisseütlev	et	morph	PlIll	mitmuse sisseütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlIn	mitmuse seesütlev	et	morph	PlIn	mitmuse seesütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlEl	mitmuse seestütlev	et	morph	PlEl	mitmuse seestütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlAll	mitmuse alaleütlev	et	morph	PlAll	mitmuse alaleütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlAd	mitmuse alalütlev	et	morph	PlAd	mitmuse alalütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlAbl	mitmuse alaltütlev	et	morph	PlAbl	mitmuse alaltütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlTr	mitmuse saav	et	morph	PlTr	mitmuse saav	est	descrip
+vn_tyyp	muutevormi nimi	PlTer	mitmuse rajav	et	morph	PlTer	mitmuse rajav	est	descrip
+vn_tyyp	muutevormi nimi	PlEs	mitmuse olev	et	morph	PlEs	mitmuse olev	est	descrip
+vn_tyyp	muutevormi nimi	PlAb	mitmuse ilmaütlev	et	morph	PlAb	mitmuse ilmaütlev	est	descrip
+vn_tyyp	muutevormi nimi	PlKom	mitmuse kaasaütlev	et	morph	PlKom	mitmuse kaasaütlev	est	descrip
+vn_tyyp	muutevormi nimi	Sup	ma-infinitiiv e ma-tegevusnimi	et	morph	Sup	ma-infinitiiv e ma-tegevusnimi	est	descrip
+vn_tyyp	muutevormi nimi	SupAb	mata-vorm	et	morph	SupAb	mata-vorm	est	descrip
+vn_tyyp	muutevormi nimi	SupIn	mas-vorm	et	morph	SupIn	mas-vorm	est	descrip
+vn_tyyp	muutevormi nimi	SupEl	mast-vorm	et	morph	SupEl	mast-vorm	est	descrip
+vn_tyyp	muutevormi nimi	SupTr	maks-vorm	et	morph	SupTr	maks-vorm	est	descrip
+vn_tyyp	muutevormi nimi	SupIps	ma-tegevusnime umbisikuline tegumood	et	morph	SupIps	ma-tegevusnime umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	Inf	da-infinitiiv e da-tegevusnimi	et	morph	Inf	da-infinitiiv e da-tegevusnimi	est	descrip
+vn_tyyp	muutevormi nimi	Ger	des-vorm	et	morph	Ger	des-vorm	est	descrip
+vn_tyyp	muutevormi nimi	PtsPrPs	oleviku isikuline kesksõna e v-kesksõna	et	morph	PtsPrPs	oleviku isikuline kesksõna e v-kesksõna	est	descrip
+vn_tyyp	muutevormi nimi	PtsPrIps	oleviku umbisikuline kesksõna e tav-kesksõna	et	morph	PtsPrIps	oleviku umbisikuline kesksõna e tav-kesksõna	est	descrip
+vn_tyyp	muutevormi nimi	PtsPtPs	mineviku isikuline kesksõna e nud-kesksõna	et	morph	PtsPtPs	mineviku isikuline kesksõna e nud-kesksõna	est	descrip
+vn_tyyp	muutevormi nimi	PtsPtIps	mineviku umbisikuline kesksõna e tud-kesksõna	et	morph	PtsPtIps	mineviku umbisikuline kesksõna e tud-kesksõna	est	descrip
+vn_tyyp	muutevormi nimi	IndPrSg1	kindla kõneviisi oleviku ainsuse 1.pööre	et	morph	IndPrSg1	kindla kõneviisi oleviku ainsuse 1.pööre	est	descrip
+vn_tyyp	muutevormi nimi	IndPrSg2	kindla kõneviisi oleviku ainsuse 2.p.	et	morph	IndPrSg2	kindla kõneviisi oleviku ainsuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndPrSg3	kindla kõneviisi oleviku ainsuse 3.p.	et	morph	IndPrSg3	kindla kõneviisi oleviku ainsuse 3.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndPrPl1	kindla kõneviisi oleviku mitmuse 1.p.	et	morph	IndPrPl1	kindla kõneviisi oleviku mitmuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndPrPl2	kindla kõneviisi oleviku mitmuse 2.p.	et	morph	IndPrPl2	kindla kõneviisi oleviku mitmuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndPrPl3	kindla kõneviisi oleviku mitmuse 3.p.	et	morph	IndPrPl3	kindla kõneviisi oleviku mitmuse 3.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndPrPs_	kindla kõneviisi oleviku isikuline tegumood (eitusega)	et	morph	IndPrPs_	kindla kõneviisi oleviku isikuline tegumood (eitusega)	est	descrip
+vn_tyyp	muutevormi nimi	IndPrIps	kindla kõneviisi oleviku umbisikuline tegumood	et	morph	IndPrIps	kindla kõneviisi oleviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	IndPrIps_	kindla kõneviisi oleviku umbisikuline tegumood (eitusega)	et	morph	IndPrIps_	kindla kõneviisi oleviku umbisikuline tegumood (eitusega)	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfSg1	kindla kõneviisi lihtmineviku ainsuse 1.p.	et	morph	IndIpfSg1	kindla kõneviisi lihtmineviku ainsuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfSg2	kindla kõneviisi lihtmineviku ainsuse 2.p.	et	morph	IndIpfSg2	kindla kõneviisi lihtmineviku ainsuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfSg3	kindla kõneviisi lihtmineviku ainsuse 3.p.	et	morph	IndIpfSg3	kindla kõneviisi lihtmineviku ainsuse 3.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfPl1	kindla kõneviisi lihtmineviku mitmuse 1.p.	et	morph	IndIpfPl1	kindla kõneviisi lihtmineviku mitmuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfPl2	kindla kõneviisi lihtmineviku mitmuse 2.p.	et	morph	IndIpfPl2	kindla kõneviisi lihtmineviku mitmuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfPl3	kindla kõneviisi lihtmineviku mitmuse 3.p.	et	morph	IndIpfPl3	kindla kõneviisi lihtmineviku mitmuse 3.p.	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfIps	kindla kõneviisi lihtmineviku umbisikuline tegumood	et	morph	IndIpfIps	kindla kõneviisi lihtmineviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KndPrSg1	tingiva kõneviisi oleviku ainsuse 1.p.	et	morph	KndPrSg1	tingiva kõneviisi oleviku ainsuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPrSg2	tingiva kõneviisi oleviku ainsuse 2.p.	et	morph	KndPrSg2	tingiva kõneviisi oleviku ainsuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPrPs	tingiva kõneviisi oleviku isikuline tegumood	et	morph	KndPrPs	tingiva kõneviisi oleviku isikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KndPrPl1	tingiva kõneviisi oleviku mitmuse 1.p.	et	morph	KndPrPl1	tingiva kõneviisi oleviku mitmuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPrPl2	tingiva kõneviisi oleviku mitmuse 2.p.	et	morph	KndPrPl2	tingiva kõneviisi oleviku mitmuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPrPl3	tingiva kõneviisi oleviku mitmuse 3.p.	et	morph	KndPrPl3	tingiva kõneviisi oleviku mitmuse 3.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPrIps	tingiva kõneviisi oleviku umbisikuline tegumood	et	morph	KndPrIps	tingiva kõneviisi oleviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KndPtSg1	tingiva kõneviisi mineviku ainsuse 1.p.	et	morph	KndPtSg1	tingiva kõneviisi mineviku ainsuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPtSg2	tingiva kõneviisi mineviku ainsuse 2.p.	et	morph	KndPtSg2	tingiva kõneviisi mineviku ainsuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPtPs	tingiva kõneviisi mineviku isikuline tegumood	et	morph	KndPtPs	tingiva kõneviisi mineviku isikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KndPtPl1	tingiva kõneviisi mineviku mitmuse 1.p.	et	morph	KndPtPl1	tingiva kõneviisi mineviku mitmuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPtPl2	tingiva kõneviisi mineviku mitmuse 2.p.	et	morph	KndPtPl2	tingiva kõneviisi mineviku mitmuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPtPl3	tingiva kõneviisi mineviku mitmuse 3.p.	et	morph	KndPtPl3	tingiva kõneviisi mineviku mitmuse 3.p.	est	descrip
+vn_tyyp	muutevormi nimi	KndPtIps	tingiva kõneviisi mineviku umbisikuline tegumood	et	morph	KndPtIps	tingiva kõneviisi mineviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KvtPrPs	kaudse kõneviisi oleviku isikuline tegumood	et	morph	KvtPrPs	kaudse kõneviisi oleviku isikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KvtPrIps	kaudse kõneviisi oleviku umbisikuline tegumood	et	morph	KvtPrIps	kaudse kõneviisi oleviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KvtPtPs	kaudse kõneviisi mineviku isikuline tegumood	et	morph	KvtPtPs	kaudse kõneviisi mineviku isikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	KvtPtIps	kaudse kõneviisi mineviku umbisikuline tegumood	et	morph	KvtPtIps	kaudse kõneviisi mineviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrSg2	käskiva kõneviisi oleviku ainsuse 2.p.	et	morph	ImpPrSg2	käskiva kõneviisi oleviku ainsuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrPl1	käskiva kõneviisi oleviku mitmuse 1.p.	et	morph	ImpPrPl1	käskiva kõneviisi oleviku mitmuse 1.p.	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrPl2	käskiva kõneviisi oleviku mitmuse 2.p.	et	morph	ImpPrPl2	käskiva kõneviisi oleviku mitmuse 2.p.	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrPs	käskiva kõneviisi oleviku isikuline tegumood	et	morph	ImpPrPs	käskiva kõneviisi oleviku isikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrIps	käskiva kõneviisi oleviku umbisikuline tegumood	et	morph	ImpPrIps	käskiva kõneviisi oleviku umbisikuline tegumood	est	descrip
+vn_tyyp	muutevormi nimi	Neg	eitus (ei)	et	morph	Neg	eitus (ei)	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrSg2N	käskiva kõneviisi oleviku ainsuse 2.p. eitus (ära)	et	morph	ImpPrSg2N	käskiva kõneviisi oleviku ainsuse 2.p. eitus (ära)	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrPl1N	käskiva kõneviisi oleviku mitmuse 1.p. eitus (ärgem)	et	morph	ImpPrPl1N	käskiva kõneviisi oleviku mitmuse 1.p. eitus (ärgem)	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrPl2N	käskiva kõneviisi oleviku mitmuse 2.p. eitus (ärge)	et	morph	ImpPrPl2N	käskiva kõneviisi oleviku mitmuse 2.p. eitus (ärge)	est	descrip
+vn_tyyp	muutevormi nimi	ImpPrN	käskiva kõneviisi oleviku isikulise tegumoe eitus (ärgu)	et	morph	ImpPrN	käskiva kõneviisi oleviku isikulise tegumoe eitus (ärgu)	est	descrip
+vn_tyyp	muutevormi nimi	IndPrPsN	pole	et	morph	IndPrPsN	pole	est	descrip
+vn_tyyp	muutevormi nimi	IndPrIpsN	polda	et	morph	IndPrIpsN	polda	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfPsN	polnud	et	morph	IndIpfPsN	polnud	est	descrip
+vn_tyyp	muutevormi nimi	IndIpfIpsN	poldud	et	morph	IndIpfIpsN	poldud	est	descrip
+vn_tyyp	muutevormi nimi	KvtPrPsN	polevat	et	morph	KvtPrPsN	polevat	est	descrip
+vn_tyyp	muutevormi nimi	KvtPtPsN	polnuvat	et	morph	KvtPtPsN	polnuvat	est	descrip
+vn_tyyp	muutevormi nimi	KndPrPsN	poleks	et	morph	KndPrPsN	poleks	est	descrip
+vn_tyyp	muutevormi nimi	KndPtPsN	polnuks	et	morph	KndPtPsN	polnuks	est	descrip
+sl_tyyp	sõnaliik	x	X	et	pos	x	X	est	capital
+sl_tyyp	sõnaliik	adj	adj	et	pos	adj	adj	lat	abbrev
+sl_tyyp	sõnaliik	adj + ID	indekl adj	et	pos	adj + ID	indekl adj	lat	abbrev
+sl_tyyp	sõnaliik	adv	adv	et	pos	adv	adv	lat	abbrev
+sl_tyyp	sõnaliik	adjg	adjg, ag	et	pos	adjg	adjg, ag	lat	abbrev
+sl_tyyp	sõnaliik	interj	interj	et	pos	interj	interj	lat	abbrev
+sl_tyyp	sõnaliik	konj	konj	et	pos	konj	konj	lat	abbrev
+sl_tyyp	sõnaliik	postp	postp	et	pos	postp	postp	lat	abbrev
+sl_tyyp	sõnaliik	prep	prep	et	pos	prep	prep	lat	abbrev
+sl_tyyp	sõnaliik	num	num	et	pos	num	num	lat	abbrev
+sl_tyyp	sõnaliik	pron	pron	et	pos	pron	pron	lat	abbrev
+sl_tyyp	sõnaliik	pron + ID	indekl pron	et	pos	pron + ID	indekl pron	lat	abbrev
+sl_tyyp	sõnaliik	s	s	et	pos	s	s	lat	abbrev
+sl_tyyp	sõnaliik	v	v	et	pos	v	v	lat	abbrev
+sl_tyyp	sõnaliik	adj + ID	käändumatu omadussõna	et	pos	adj + ID	käändumatu omadussõna	est	descrip
+sl_tyyp	sõnaliik	postp	postpositsioon, tagasõna	et	pos	postp	postpositsioon, tagasõna	est	descrip
+sl_tyyp	sõnaliik	prep	prepositsioon, eessõna	et	pos	prep	prepositsioon, eessõna	est	descrip
+sl_tyyp	sõnaliik	pron + ID	käändumatu asesõna	et	pos	pron + ID	käändumatu asesõna	est	descrip
+sl_tyyp	sõnaliik	x	erivormiline sõna	et	pos	x	erivormiline sõna	est	descrip
+sl_tyyp	sõnaliik	adj + ID	indeclinable adjective	en	pos	adj + ID	indeclinable adjective	eng	descrip
+sl_tyyp	sõnaliik	adp	postposition, preposition	en	pos	adp	postposition, preposition	eng	descrip
+sl_tyyp	sõnaliik	postp	postposition	en	pos	postp	postposition	eng	descrip
+sl_tyyp	sõnaliik	prep	preposition	en	pos	prep	preposition	eng	descrip
+sl_tyyp	sõnaliik	pron + ID	indeclinable pronoun	en	pos	pron + ID	indeclinable pronoun	eng	descrip
+dk_tyyp	dk_tyyp	as	US	et	deriv	as	US	est	ekimorfo
+dk_tyyp	dk_tyyp	posit	_	et	deriv	posit	_	est	ekimorfo
+dk_tyyp	dk_tyyp	as	as	la	deriv	as	as	lat	abbrev
+dk_tyyp	dk_tyyp	posit	algvõrre	et	deriv	posit	algvõrre	est	descrip
+dk_tyyp	dk_tyyp	as	abstraktne substantiiv	et	deriv	as	abstraktne substantiiv	est	descrip
+dk_tyyp	dk_tyyp	posit	positiiv, algvõrre	et	deriv	posit	positiiv, algvõrre	est	descrip2
+dk_tyyp	dk_tyyp	as	abstract substantive	en	deriv	as	abstract substantive	eng	descrip
+dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit	positive degree	eng	descrip
+keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	lexeme_type	eelistermin	eelistermin	est	descrip
+keelenditüüp	keelenditüüp	lühend	lühend	et	lexeme_type	lühend	lühend	est	descrip
+keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	lexeme_type	sünonüüm	sünonüüm	est	descrip
+keelenditüüp	keelenditüüp	variant	variant	et	lexeme_type	variant	variant	est	descrip
+keelenditüüp	keelenditüüp	väldi	väldi	et	lexeme_type	väldi	väldi	est	descrip
+keelenditüüp	keelenditüüp	endine	endine	et	lexeme_type	endine	endine	est	descrip
+keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	lexeme_type	lühend ja sünonüüm	lühend ja sünonüüm	est	descrip
+Entry Class	Entry Class	määramata	määramata	et	entry_class	määramata	-	-	-
+Entry Class	Entry Class	töös	töös	et	entry_class	töös	-	-	-
+Entry Class	Entry Class	avalik	avalik	et	entry_class	avalik	-	-	-
+Staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	meaning_state	komisjoni kinnitatud	-	-	-
+Staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	meaning_state	komisjonis arutlusel	-	-	-
+Staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem	-	-	-
+Mõistetüüp	Mõistetüüp	termin	termin	et	meaning_type	termin	-	-	-
+Mõistetüüp	Mõistetüüp	tõlkeprobleem	tõlkeprobleem	et	meaning_type	tõlkeprobleem	-	-	-
+Mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	meaning_type	ametinimetus	-	-	-
+Mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	meaning_type	organisatsioon, asutus	-	-	-
+Mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	meaning_type	õigusakti pealkiri	-	-	-
+Mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	meaning_type	dokumendi pealkiri	-	-	-
+-	-	-	-	-	lex_rel_type	comp	liitsõna	est	full
+-	-	-	-	-	lex_rel_type	ant	antonüüm	est	full
+-	-	-	-	-	lex_rel_type	head	põhisõna	est	full
+-	-	-	-	-	lex_rel_type	vor	vormel	est	full
+-	-	-	-	-	lex_rel_type	yvr	üksikvorm	est	full
+-	-	-	-	-	lex_rel_type	pyh	ühend	est	full
+-	-	-	-	-	lex_rel_type	yhvt	ühendviide	est	full
+-	-	-	-	-	form_rel_type	mvt	viitemärksõna	est	full
+-	-	-	-	-	word_rel_type	komp	keskvõrre	est	full
+-	-	-	-	-	word_rel_type	superl	ülivõrre	est	full
