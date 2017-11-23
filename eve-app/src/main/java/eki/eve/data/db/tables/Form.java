@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = -968997811;
+    private static final long serialVersionUID = 10524985;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -89,6 +89,11 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.vocal_form</code>.
      */
     public final TableField<FormRecord, String> VOCAL_FORM = createField("vocal_form", org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
+
+    /**
+     * The column <code>public.form.sound_file</code>.
+     */
+    public final TableField<FormRecord, String> SOUND_FILE = createField("sound_file", org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     /**
      * The column <code>public.form.is_word</code>.

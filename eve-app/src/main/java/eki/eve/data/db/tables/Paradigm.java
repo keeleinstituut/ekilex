@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Paradigm extends TableImpl<ParadigmRecord> {
 
-    private static final long serialVersionUID = 764843869;
+    private static final long serialVersionUID = -581520451;
 
     /**
      * The reference instance of <code>public.paradigm</code>
@@ -73,7 +73,12 @@ public class Paradigm extends TableImpl<ParadigmRecord> {
     /**
      * The column <code>public.paradigm.inflection_type_nr</code>.
      */
-    public final TableField<ParadigmRecord, Integer> INFLECTION_TYPE_NR = createField("inflection_type_nr", org.jooq.impl.SQLDataType.INTEGER, this, "");
+    public final TableField<ParadigmRecord, String> INFLECTION_TYPE_NR = createField("inflection_type_nr", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.paradigm.is_secondary</code>.
+     */
+    public final TableField<ParadigmRecord, Boolean> IS_SECONDARY = createField("is_secondary", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.paradigm</code> table reference

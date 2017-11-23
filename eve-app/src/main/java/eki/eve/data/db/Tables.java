@@ -49,6 +49,8 @@ import eki.eve.data.db.tables.MorphLabel;
 import eki.eve.data.db.tables.Paradigm;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
+import eki.eve.data.db.tables.RectionType;
+import eki.eve.data.db.tables.RectionTypeLabel;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
@@ -298,6 +300,16 @@ public class Tables {
      * The table <code>public.pos_label</code>.
      */
     public static final PosLabel POS_LABEL = eki.eve.data.db.tables.PosLabel.POS_LABEL;
+
+    /**
+     * The table <code>public.rection_type</code>.
+     */
+    public static final RectionType RECTION_TYPE = eki.eve.data.db.tables.RectionType.RECTION_TYPE;
+
+    /**
+     * The table <code>public.rection_type_label</code>.
+     */
+    public static final RectionTypeLabel RECTION_TYPE_LABEL = eki.eve.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
 
     /**
      * The table <code>public.register</code>.
