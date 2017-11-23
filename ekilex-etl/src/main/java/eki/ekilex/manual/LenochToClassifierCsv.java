@@ -13,7 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import eki.ekilex.constant.SystemConstant;
 
-public class LenochToClassifier implements SystemConstant {
+//TODO functionality will be moved to LenochToDomainCsvRunner
+@Deprecated
+public class LenochToClassifierCsv implements SystemConstant {
 
 	private static final String ORIGIN = "lenoch";
 

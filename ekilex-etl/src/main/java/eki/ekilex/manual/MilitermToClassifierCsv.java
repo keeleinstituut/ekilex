@@ -13,7 +13,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import eki.ekilex.constant.SystemConstant;
 
-public class MilitermToClassifier implements SystemConstant {
+//TODO functionality will be moved to MilitermToDomainCsvRunner
+@Deprecated
+public class MilitermToClassifierCsv implements SystemConstant {
 
 	private static final String ORIGIN = "militerm";
 

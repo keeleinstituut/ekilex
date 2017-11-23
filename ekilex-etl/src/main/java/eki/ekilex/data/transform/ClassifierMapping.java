@@ -2,13 +2,17 @@ package eki.ekilex.data.transform;
 
 import eki.common.data.AbstractDataObject;
 
-public class Classifier extends AbstractDataObject {
+public class ClassifierMapping extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private String ekiOrigin;
 
 	private String ekiType;
 
 	private String ekiName;
+
+	private String ekiParentCode;
 
 	private String ekiCode;
 
@@ -30,6 +34,14 @@ public class Classifier extends AbstractDataObject {
 
 	private String ekiKey;
 
+	public String getEkiOrigin() {
+		return ekiOrigin;
+	}
+
+	public void setEkiOrigin(String ekiOrigin) {
+		this.ekiOrigin = ekiOrigin;
+	}
+
 	public String getEkiType() {
 		return ekiType;
 	}
@@ -44,6 +56,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setEkiName(String ekiName) {
 		this.ekiName = ekiName;
+	}
+
+	public String getEkiParentCode() {
+		return ekiParentCode;
+	}
+
+	public void setEkiParentCode(String ekiParentCode) {
+		this.ekiParentCode = ekiParentCode;
 	}
 
 	public String getEkiCode() {
