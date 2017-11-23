@@ -19,9 +19,9 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
 @Service
-public class SoundFileService {
+public class FileService {
 
-	private static final Logger logger = LoggerFactory.getLogger(SoundFileService.class);
+	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
 	@Value("${file.repository.path:}")
 	private String fileRepositoryPath;
@@ -29,22 +29,38 @@ public class SoundFileService {
 	public Resource getSoundFileAsResource(String fileName) {
 
 		Resource resource = null;
-		try {
-			Optional<Path> fileToServe = Files.find(
-					Paths.get(fileRepositoryPath),
-					1,
-					(p,a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
-			if (fileToServe.isPresent()) {
-				Path path = doMp3Conversion(fileToServe.get());
-				resource = new PathResource(path);
-			}
-		} catch (IOException e) {
-			logger.error(e.getMessage());
+		Path pathToFile = findFilePath(fileName);
+		if (pathToFile != null) {
+			Path path = doMp3ConversionIfNeeded(pathToFile);
+			resource = new PathResource(path);
 		}
 		return resource;
 	}
 
-	private Path doMp3Conversion(Path soundFile) {
+	public Resource getFileAsResource(String fileName) {
+
+		Path pathToFile = findFilePath(fileName);
+		return pathToFile == null ? null : new PathResource(pathToFile);
+	}
+
+	private Path findFilePath(String fileName) {
+
+		Path filePath = null;
+		try {
+			Optional<Path> fileToServe = Files.find(
+					Paths.get(fileRepositoryPath),
+					2,
+					(p,a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
+			if (fileToServe.isPresent()) {
+				filePath = fileToServe.get();
+			}
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+		return filePath;
+	}
+
+	private Path doMp3ConversionIfNeeded(Path soundFile) {
 
 		if (soundFile.getFileName().toString().endsWith("wav")) {
 			String mp3File = soundFile.getFileName().toString().replace(".wav", ".mp3");

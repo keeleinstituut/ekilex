@@ -3,13 +3,13 @@ package eki.eve.web.controller;
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.eve.constant.SystemConstant;
-import eki.eve.service.SoundFileService;
+import eki.eve.service.FileService;
 import eki.eve.service.SpeechSynthesisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +42,7 @@ public class DataController implements SystemConstant {
 	SpeechSynthesisService speechSynthesisService;
 
 	@Autowired
-	SoundFileService soundFileService;
+	FileService fileService;
 
 	@RequestMapping(value="/data/app", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public AppData getAppData(HttpServletRequest request) {
@@ -61,7 +61,7 @@ public class DataController implements SystemConstant {
 					1,
 					(p,a) -> p.getFileName().toString().startsWith(fileId)).findFirst();
 			if (fileToServe.isPresent()) {
-				resource = new ByteArrayResource(Files.readAllBytes(fileToServe.get()));
+				resource = new PathResource(fileToServe.get());
 				fileName = fileToServe.get().getFileName().toString();
 			}
 		} catch (IOException e) {
@@ -78,14 +78,25 @@ public class DataController implements SystemConstant {
 		return speechSynthesisService.urlToSoundSource(words);
 	}
 
-	@GetMapping("/sounds/{fileName}")
+	@GetMapping("/files/sounds/{fileName:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveSoundFile(@PathVariable String fileName) {
 
-		Resource resource = soundFileService.getSoundFileAsResource(fileName);
+		Resource resource = fileService.getSoundFileAsResource(fileName);
 		return ResponseEntity
 				.ok()
-				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+				.body(resource);
+	}
+
+	@GetMapping("/files/images/{fileName:.+}")
+	@ResponseBody
+	public ResponseEntity<Resource> serveImage(@PathVariable String fileName) {
+
+		Resource resource = fileService.getFileAsResource(fileName);
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
 				.body(resource);
 	}
 
