@@ -39,10 +39,10 @@ public class DataController implements SystemConstant {
 	private AppDataHolder appDataHolder;
 
 	@Autowired
-	SpeechSynthesisService speechSynthesisService;
+	private SpeechSynthesisService speechSynthesisService;
 
 	@Autowired
-	FileService fileService;
+	private FileService fileService;
 
 	@RequestMapping(value="/data/app", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public AppData getAppData(HttpServletRequest request) {

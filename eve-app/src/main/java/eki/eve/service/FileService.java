@@ -50,7 +50,7 @@ public class FileService {
 			Optional<Path> fileToServe = Files.find(
 					Paths.get(fileRepositoryPath),
 					2,
-					(p,a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
+					(p, a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
 			if (fileToServe.isPresent()) {
 				filePath = fileToServe.get();
 			}
@@ -81,8 +81,7 @@ public class FileService {
 	private boolean execute(String command) {
 
 		ProcessBuilder builder = new ProcessBuilder();
-		builder.command("sh", "-c", command)
-				.redirectErrorStream(true);
+		builder.command("sh", "-c", command).redirectErrorStream(true);
 		int exitCode;
 		try {
 			Process process = builder.start();
@@ -92,7 +91,8 @@ public class FileService {
 		} catch (InterruptedException | IOException e) {
 			logger.error("Shell execute", e);
 			exitCode = 1;
-		} return exitCode == 0;
+		}
+		return exitCode == 0;
 	}
 
 	private static class StreamConsumer implements Runnable {
