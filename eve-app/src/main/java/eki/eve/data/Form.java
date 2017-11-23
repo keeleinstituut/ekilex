@@ -28,6 +28,9 @@ public class Form extends AbstractDataObject {
 	@Column(name = "morph_value")
 	private String morphValue;
 
+	@Column(name = "sound_file")
+	private String soundFile;
+
 	public Form() {
 	}
 
@@ -81,5 +84,13 @@ public class Form extends AbstractDataObject {
 
 	public void setMorphValue(String morphValue) {
 		this.morphValue = morphValue;
+	}
+
+	public String getSoundFile() {
+		return soundFile;
+	}
+
+	public void setSoundFile(String soundFile) {
+		this.soundFile = soundFile;
 	}
 }

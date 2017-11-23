@@ -70,14 +70,14 @@ function playSound(soundSource) {
 
 function generateVoiceAndPlay(e) {
     var elem = $(e);
-    if (elem.data('urlToSound') != undefined) {
+    if (elem.data('url-to-sound') != undefined) {
         playSound(elem.data('urlToSound'));
         return;
     }
     var content = elem.html();
     elem.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
     $.post(applicationUrl + 'generate_voice', {'words': elem.data('words')}).done(function(urlToSound) {
-        elem.data('urlToSound', urlToSound);
+        elem.data('url-to-sound', urlToSound);
         elem.html(content);
         playSound(urlToSound);
     }).fail(function() {

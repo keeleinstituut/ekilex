@@ -49,6 +49,8 @@ import eki.eve.data.db.tables.MorphLabel;
 import eki.eve.data.db.tables.Paradigm;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
+import eki.eve.data.db.tables.RectionType;
+import eki.eve.data.db.tables.RectionTypeLabel;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
@@ -83,7 +85,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 222102986;
+    private static final long serialVersionUID = -69270714;
 
     /**
      * The reference instance of <code>public</code>
@@ -316,6 +318,16 @@ public class Public extends SchemaImpl {
     public final PosLabel POS_LABEL = eki.eve.data.db.tables.PosLabel.POS_LABEL;
 
     /**
+     * The table <code>public.rection_type</code>.
+     */
+    public final RectionType RECTION_TYPE = eki.eve.data.db.tables.RectionType.RECTION_TYPE;
+
+    /**
+     * The table <code>public.rection_type_label</code>.
+     */
+    public final RectionTypeLabel RECTION_TYPE_LABEL = eki.eve.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
+
+    /**
      * The table <code>public.register</code>.
      */
     public final Register REGISTER = eki.eve.data.db.tables.Register.REGISTER;
@@ -457,6 +469,8 @@ public class Public extends SchemaImpl {
             Paradigm.PARADIGM,
             Pos.POS,
             PosLabel.POS_LABEL,
+            RectionType.RECTION_TYPE,
+            RectionTypeLabel.RECTION_TYPE_LABEL,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,
