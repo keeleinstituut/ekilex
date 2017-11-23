@@ -3,6 +3,7 @@ package eki.eve.web.controller;
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.eve.constant.SystemConstant;
+import eki.eve.service.SoundFileService;
 import eki.eve.service.SpeechSynthesisService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,9 @@ public class DataController implements SystemConstant {
 	@Autowired
 	SpeechSynthesisService speechSynthesisService;
 
+	@Autowired
+	SoundFileService soundFileService;
+
 	@RequestMapping(value="/data/app", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
 	public AppData getAppData(HttpServletRequest request) {
 		return appDataHolder.getAppData(request, POM_PATH);
@@ -72,6 +76,17 @@ public class DataController implements SystemConstant {
 	@PostMapping("/generate_voice")
 	public String generateSoundFileUrl(@RequestParam String words) {
 		return speechSynthesisService.urlToSoundSource(words);
+	}
+
+	@GetMapping("/sounds/{fileName}")
+	@ResponseBody
+	public ResponseEntity<Resource> serveSoundFile(@PathVariable String fileName) {
+
+		Resource resource = soundFileService.getSoundFileAsResource(fileName);
+		return ResponseEntity
+				.ok()
+				.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+				.body(resource);
 	}
 
 }

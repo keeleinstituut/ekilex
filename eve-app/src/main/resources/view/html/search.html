@@ -82,8 +82,11 @@
           (
           <span th:text="${form.morphCode + '-' + form.morphValue}"></span>
           <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-          <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-          )
+          <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>)
+          <a href="javascript:void(0)" class="badge badge-info" th:unless="${#strings.isEmpty(form.soundFile)}"
+             th:data-url-to-sound="@{'/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+            <i class="fa fa-volume-up" aria-hidden="true"></i>
+          </a>
           <br>
         </th:block>
       </div>
