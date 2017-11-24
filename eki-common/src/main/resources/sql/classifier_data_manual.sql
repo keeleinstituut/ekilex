@@ -607,3 +607,19 @@ insert into word_rel_type (code, datasets) values ('superl', '{psv}');
 
 insert into word_rel_type_label (code, value, lang, type) values ('komp','keskvõrre','est','full');
 insert into word_rel_type_label (code, value, lang, type) values ('superl','ülivõrre','est','full');
+
+insert into display_morph (code, datasets) values ('ger', '{pvs}');
+insert into display_morph (code, datasets) values ('impers', '{pvs}');
+insert into display_morph (code, datasets) values ('partits', '{pvs}');
+insert into display_morph (code, datasets) values ('pl', '{pvs}');
+insert into display_morph (code, datasets) values ('sg', '{pvs}');
+insert into display_morph (code, datasets) values ('sg gen', '{pvs}');
+insert into display_morph (code, datasets) values ('ssv', '{pvs}');
+
+insert into display_morph_label (code, value, lang, type) values ('ger','gerundiiv, des-vorm','est','full');
+insert into display_morph_label (code, value, lang, type) values ('impers','impersonaal, umbisikuline tegumood','est','full');
+insert into display_morph_label (code, value, lang, type) values ('partits','partitsiip, kesksõna','est','full');
+insert into display_morph_label (code, value, lang, type) values ('pl','pluural, mitmus','est','full');
+insert into display_morph_label (code, value, lang, type) values ('sg','singular, ainsus','est','full');
+insert into display_morph_label (code, value, lang, type) values ('sg gen','singular genitiiv, ainsuse omastav','est','full');
+insert into display_morph_label (code, value, lang, type) values ('ssv','seisundivorm','est','full');

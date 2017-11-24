@@ -40,6 +40,8 @@ drop table if exists meaning_state;
 drop table if exists entry_class;
 drop table if exists deriv_label;
 drop table if exists deriv;
+drop table if exists display_morph_label;
+drop table if exists display_morph;
 drop table if exists morph_label;
 drop table if exists morph;
 drop table if exists pos_label;
@@ -226,6 +228,22 @@ create table morph_label
   unique(code, lang, type)
 );
 
+-- kuvatav vormi märgend
+create table display_morph
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table display_morph_label
+(
+  code varchar(100) references display_morph(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 -- tuletuskood
 create table deriv
 (
@@ -383,7 +401,7 @@ create table word
   lang char(3) references lang(code) null,
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
-  display_pos varchar(100)
+  display_morph_code varchar(100) references display_morph(code) null
 );
 alter sequence word_id_seq restart with 10000;
 
