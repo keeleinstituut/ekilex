@@ -1,4 +1,14 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
+-	-	-	-	-	form_rel_type	mvt	viitemärksõna	est	full
+-	-	-	-	-	lex_rel_type	comp	liitsõna	est	full
+-	-	-	-	-	lex_rel_type	ant	antonüüm	est	full
+-	-	-	-	-	lex_rel_type	head	põhisõna	est	full
+-	-	-	-	-	lex_rel_type	vor	vormel	est	full
+-	-	-	-	-	lex_rel_type	yvr	üksikvorm	est	full
+-	-	-	-	-	lex_rel_type	pyh	ühend	est	full
+-	-	-	-	-	lex_rel_type	yhvt	ühendviide	est	full
+-	-	-	-	-	word_rel_type	komp	keskvõrre	est	full
+-	-	-	-	-	word_rel_type	superl	ülivõrre	est	full
 as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-	-	-	-
 as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-	-	-	-
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-	-	-	-
@@ -32,12 +42,30 @@ dk_tyyp	dk_tyyp	tn	mine-derivative = act, process	en	deriv	tn	mine-derivative = 
 dk_tyyp	dk_tyyp	tn	teonimi	et	deriv	tn	teonimi	est	descrip
 dk_tyyp	dk_tyyp	tn	teonimi (-mine)	et	deriv	tn	teonimi (-mine)	est	descrip2
 dk_tyyp	dk_tyyp	tn	tn	et	deriv	tn	tn	est	abbrev
+dk_tyyp	dk_tyyp	as	US	et	deriv	as	US	est	ekimorfo
+dk_tyyp	dk_tyyp	posit	_	et	deriv	posit	_	est	ekimorfo
+dk_tyyp	dk_tyyp	as	as	la	deriv	as	as	lat	abbrev
+dk_tyyp	dk_tyyp	posit	algvõrre	et	deriv	posit	algvõrre	est	descrip
+dk_tyyp	dk_tyyp	as	abstraktne substantiiv	et	deriv	as	abstraktne substantiiv	est	descrip
+dk_tyyp	dk_tyyp	posit	positiiv, algvõrre	et	deriv	posit	positiiv, algvõrre	est	descrip2
+dk_tyyp	dk_tyyp	as	abstract substantive	en	deriv	as	abstract substantive	eng	descrip
+dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit	positive degree	eng	descrip
+entry class	Entry Class	määramata	määramata	et	entry_class	määramata	-	-	-
+entry class	Entry Class	töös	töös	et	entry_class	töös	-	-	-
+entry class	Entry Class	avalik	avalik	et	entry_class	avalik	-	-	-
 fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-	-	-	-
 fak_tyyp	fakultatiivne	fak	nothing	en	-	-	-	-	-
 gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-	-	-	-
 gkn_tyyp	gkn_tyyp	pl	mitmus	et	-	-	-	-	-
 gkn_tyyp	gkn_tyyp	lv	lisavorm	et	-	-	-	-	-
 gkn_tyyp	gkn_tyyp	ev	erandvorm	et	-	-	-	-	-
+keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	lexeme_type	eelistermin	eelistermin	est	descrip
+keelenditüüp	keelenditüüp	lühend	lühend	et	lexeme_type	lühend	lühend	est	descrip
+keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	lexeme_type	sünonüüm	sünonüüm	est	descrip
+keelenditüüp	keelenditüüp	variant	variant	et	lexeme_type	variant	variant	est	descrip
+keelenditüüp	keelenditüüp	väldi	väldi	et	lexeme_type	väldi	väldi	est	descrip
+keelenditüüp	keelenditüüp	endine	endine	et	lexeme_type	endine	endine	est	descrip
+keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	lexeme_type	lühend ja sünonüüm	lühend ja sünonüüm	est	descrip
 kl_tyyp	kl_tyyp	ls	liitsõna	et	-	-	-	-	-
 kl_tyyp	kl_tyyp	yh	ühendverb	et	-	-	-	-	-
 kliik_tyyp	kliik_tyyp	S+S	S+S	et	-	-	-	-	-
@@ -63,16 +91,6 @@ kmpl_tyyp	kmpl_tyyp	Akomp	omadussõna võrdlus	et	-	-	-	-	-
 kmpl_tyyp	kmpl_tyyp	Dkomp	määrsõna võrdlus	et	-	-	-	-	-
 koht_tyyp	koht_tyyp	er	eelrektsioon	et	-	-	-	-	-
 koht_tyyp	koht_tyyp	jr	järelrektsioon	et	-	-	-	-	-
-<<<<<<< HEAD
-liik_tyyp	liik_tyyp	k	kohanimi	et	lexeme_type	k	kohanimi	est	descrip
-liik_tyyp	liik_tyyp	k	place name	en	lexeme_type	k	place name	eng	descrip
-liik_tyyp	liik_tyyp	l	lühend	et	lexeme_type	l	lühend	est	descrip
-liik_tyyp	liik_tyyp	l	abbreviation	en	lexeme_type	l	abbreviation	eng	descrip
-liik_tyyp	liik_tyyp	p	pärisnimi	et	lexeme_type	p	pärisnimi	est	descrip
-liik_tyyp	liik_tyyp	p	proper name	en	lexeme_type	p	proper name	eng	descrip
-liik_tyyp	liik_tyyp	z	tsitaatsõna	et	lexeme_type	z	tsitaatsõna	est	descrip
-liik_tyyp	liik_tyyp	z	loanword (alien)	en	lexeme_type	z	loanword (alien)	eng	descrip
-=======
 liik_tyyp	liik_tyyp	k	kohanimi	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	k	place name	en	-	-	-	-	-
 liik_tyyp	liik_tyyp	l	lühend	et	-	-	-	-	-
@@ -82,7 +100,14 @@ liik_tyyp	liik_tyyp	p	proper name	en	-	-	-	-	-
 liik_tyyp	liik_tyyp	z	tsitaatsõna	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	z	loanword (alien)	en	-	-	-	-	-
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-	-	-	-
->>>>>>> 96c6a8976a0538b978338124e96745b5be546efc
+liik_tyyp	liik_tyyp	k	kohanimi	et	lexeme_type	k	kohanimi	est	descrip
+liik_tyyp	liik_tyyp	k	place name	en	lexeme_type	k	place name	eng	descrip
+liik_tyyp	liik_tyyp	l	lühend	et	lexeme_type	l	lühend	est	descrip
+liik_tyyp	liik_tyyp	l	abbreviation	en	lexeme_type	l	abbreviation	eng	descrip
+liik_tyyp	liik_tyyp	p	pärisnimi	et	lexeme_type	p	pärisnimi	est	descrip
+liik_tyyp	liik_tyyp	p	proper name	en	lexeme_type	p	proper name	eng	descrip
+liik_tyyp	liik_tyyp	z	tsitaatsõna	et	lexeme_type	z	tsitaatsõna	est	descrip
+liik_tyyp	liik_tyyp	z	loanword (alien)	en	lexeme_type	z	loanword (alien)	eng	descrip
 liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	lexeme_type	viiteartikli märksõna	viiteartikli märksõna	est	descrip
 liik_tyyp	märksõna liik	yv	ühendverb	et	lexeme_type	ühendverb	ühendverb	est	descrip
 liik_tyyp	märksõna liik	vv	väljendverb	et	lexeme_type	väljendverb	väljendverb	est	descrip
@@ -105,6 +130,12 @@ mvtl_tyyp	mvtl_tyyp	gr	vormiviide	et	-	-	-	-	-
 mvtl_tyyp	mvtl_tyyp	gr	cross-reference (from inflectional form)	en	-	-	-	-	-
 mvtl_tyyp	märksõnaviide	cmp	võrdlusvormi viide	et	-	-	-	-	-
 mvtl_tyyp	märksõnaviide	var	variandiviide	et	-	-	-	-	-
+mõistetüüp	Mõistetüüp	termin	termin	et	meaning_type	termin	-	-	-
+mõistetüüp	Mõistetüüp	tõlkeprobleem	tõlkeprobleem	et	meaning_type	tõlkeprobleem	-	-	-
+mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	meaning_type	ametinimetus	-	-	-
+mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	meaning_type	organisatsioon, asutus	-	-	-
+mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	meaning_type	õigusakti pealkiri	-	-	-
+mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	meaning_type	dokumendi pealkiri	-	-	-
 pvtl_tyyp	pvtl_tyyp	vp	vaata pilti	et	-	-	-	-	-
 pvtl_tyyp	pvtl_tyyp	vpl	vaata piltide lehte	et	-	-	-	-	-
 pvtl_tyyp	pvtl_tyyp	vqp	vaata kaarti lk	et	-	-	-	-	-
@@ -122,12 +153,9 @@ sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4	4 - pole sag_S-s	
 sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
 sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	lexeme_frequency	L4	L4 - pole sag_S-s (lisatud)	est	descrip
-<<<<<<< HEAD
-sl_tyyp	sõnaliik	A	A	et	pos	adj	A	est	capital
-=======
 sl_tyyp	sõnaliik	K	postposition, preposition	en	-	-	-	-	-
+sl_tyyp	sõnaliik	A	A	et	pos	adj	A	est	capital
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	A	est	capital
->>>>>>> 96c6a8976a0538b978338124e96745b5be546efc
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	adjektiiv, omadussõna	est	descrip
 sl_tyyp	sõnaliik	A	adjective	en	pos	adj	adjective	eng	descrip
 sl_tyyp	sõnaliik	D	D	et	pos	adv	D	est	capital
@@ -147,12 +175,9 @@ sl_tyyp	sõnaliik	J	konjunktsioon, sidesõna	et	pos	konj	konjunktsioon, sidesõn
 sl_tyyp	sõnaliik	J	conjunction	en	pos	konj	conjunction	eng	descrip
 sl_tyyp	sõnaliik	K	K	et	pos	adp	K	est	capital
 sl_tyyp	sõnaliik	K	adpositsioon, kaassõna	et	pos	adp	adpositsioon, kaassõna	est	descrip
-<<<<<<< HEAD
 sl_tyyp	sõnaliik	K	postposition, preposition	en	pos	adp	postposition, preposition	eng	descrip
 sl_tyyp	sõnaliik	N	N	et	pos	num	N	est	capital
-=======
 sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	pos	num	N	est	capital
->>>>>>> 96c6a8976a0538b978338124e96745b5be546efc
 sl_tyyp	sõnaliik	N	numeraal, arvsõna	et	pos	num	numeraal, arvsõna	est	descrip
 sl_tyyp	sõnaliik	N	cardinal, numeral	en	pos	num	cardinal, numeral	eng	descrip
 sl_tyyp	sõnaliik	O	O	et	pos	ord	O	est	capital
@@ -167,6 +192,33 @@ sl_tyyp	sõnaliik	S	substantive	en	pos	s	substantive	eng	descrip
 sl_tyyp	sõnaliik	V	V	et	pos	v	V	est	capital
 sl_tyyp	sõnaliik	V	verb, tegusõna	et	pos	v	verb, tegusõna	est	descrip
 sl_tyyp	sõnaliik	V	verb	en	pos	v	verb	eng	descrip
+sl_tyyp	sõnaliik	x	X	et	pos	x	X	est	capital
+sl_tyyp	sõnaliik	adj	adj	et	pos	adj	adj	lat	abbrev
+sl_tyyp	sõnaliik	adj + ID	indekl adj	et	pos	adj + ID	indekl adj	lat	abbrev
+sl_tyyp	sõnaliik	adv	adv	et	pos	adv	adv	lat	abbrev
+sl_tyyp	sõnaliik	adjg	adjg, ag	et	pos	adjg	adjg, ag	lat	abbrev
+sl_tyyp	sõnaliik	interj	interj	et	pos	interj	interj	lat	abbrev
+sl_tyyp	sõnaliik	konj	konj	et	pos	konj	konj	lat	abbrev
+sl_tyyp	sõnaliik	postp	postp	et	pos	postp	postp	lat	abbrev
+sl_tyyp	sõnaliik	prep	prep	et	pos	prep	prep	lat	abbrev
+sl_tyyp	sõnaliik	num	num	et	pos	num	num	lat	abbrev
+sl_tyyp	sõnaliik	pron	pron	et	pos	pron	pron	lat	abbrev
+sl_tyyp	sõnaliik	pron + ID	indekl pron	et	pos	pron + ID	indekl pron	lat	abbrev
+sl_tyyp	sõnaliik	s	s	et	pos	s	s	lat	abbrev
+sl_tyyp	sõnaliik	v	v	et	pos	v	v	lat	abbrev
+sl_tyyp	sõnaliik	adj + ID	käändumatu omadussõna	et	pos	adj + ID	käändumatu omadussõna	est	descrip
+sl_tyyp	sõnaliik	postp	postpositsioon, tagasõna	et	pos	postp	postpositsioon, tagasõna	est	descrip
+sl_tyyp	sõnaliik	prep	prepositsioon, eessõna	et	pos	prep	prepositsioon, eessõna	est	descrip
+sl_tyyp	sõnaliik	pron + ID	käändumatu asesõna	et	pos	pron + ID	käändumatu asesõna	est	descrip
+sl_tyyp	sõnaliik	x	erivormiline sõna	et	pos	x	erivormiline sõna	est	descrip
+sl_tyyp	sõnaliik	adj + ID	indeclinable adjective	en	pos	adj + ID	indeclinable adjective	eng	descrip
+sl_tyyp	sõnaliik	adp	postposition, preposition	en	pos	adp	postposition, preposition	eng	descrip
+sl_tyyp	sõnaliik	postp	postposition	en	pos	postp	postposition	eng	descrip
+sl_tyyp	sõnaliik	prep	preposition	en	pos	prep	preposition	eng	descrip
+sl_tyyp	sõnaliik	pron + ID	indeclinable pronoun	en	pos	pron + ID	indeclinable pronoun	eng	descrip
+staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	meaning_state	komisjoni kinnitatud	-	-	-
+staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	meaning_state	komisjonis arutlusel	-	-	-
+staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem	-	-	-
 tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	lex_rel_type	tvt:vrd	tähendusviide, võrdle	est	full
 tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	lex_rel_type	tvt:vt ka	tähendusviide, vaata ka	est	full
 u_tyyp	uus märksõna	uus	uus märksõna	et	-	-	-	-	-
@@ -247,13 +299,6 @@ vn_tyyp	muutevormi nimi	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	et	mo
 vn_tyyp	muutevormi nimi	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	et	morph	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	est	descrip2
 vn_tyyp	muutevormi nimi	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	et	morph	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	est	descrip2
 vn_tyyp	muutevormi nimi	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	et	morph	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	est	descrip2
-xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-	-	-	-
-xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-	-	-	-
-xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-	-	-	-
-xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-	-	-	-
-yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
-yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
-yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 vn_tyyp	muutevormi nimi	ID	indekl	la	morph	ID	indekl	lat	abbrev
 vn_tyyp	muutevormi nimi	SgN	nom	la	morph	SgN	nom	lat	abbrev
 vn_tyyp	muutevormi nimi	SgG	sg gen, gen	la	morph	SgG	sg gen, gen	lat	abbrev
@@ -466,64 +511,10 @@ vn_tyyp	muutevormi nimi	KvtPrPsN	polevat	et	morph	KvtPrPsN	polevat	est	descrip
 vn_tyyp	muutevormi nimi	KvtPtPsN	polnuvat	et	morph	KvtPtPsN	polnuvat	est	descrip
 vn_tyyp	muutevormi nimi	KndPrPsN	poleks	et	morph	KndPrPsN	poleks	est	descrip
 vn_tyyp	muutevormi nimi	KndPtPsN	polnuks	et	morph	KndPtPsN	polnuks	est	descrip
-sl_tyyp	sõnaliik	x	X	et	pos	x	X	est	capital
-sl_tyyp	sõnaliik	adj	adj	et	pos	adj	adj	lat	abbrev
-sl_tyyp	sõnaliik	adj + ID	indekl adj	et	pos	adj + ID	indekl adj	lat	abbrev
-sl_tyyp	sõnaliik	adv	adv	et	pos	adv	adv	lat	abbrev
-sl_tyyp	sõnaliik	adjg	adjg, ag	et	pos	adjg	adjg, ag	lat	abbrev
-sl_tyyp	sõnaliik	interj	interj	et	pos	interj	interj	lat	abbrev
-sl_tyyp	sõnaliik	konj	konj	et	pos	konj	konj	lat	abbrev
-sl_tyyp	sõnaliik	postp	postp	et	pos	postp	postp	lat	abbrev
-sl_tyyp	sõnaliik	prep	prep	et	pos	prep	prep	lat	abbrev
-sl_tyyp	sõnaliik	num	num	et	pos	num	num	lat	abbrev
-sl_tyyp	sõnaliik	pron	pron	et	pos	pron	pron	lat	abbrev
-sl_tyyp	sõnaliik	pron + ID	indekl pron	et	pos	pron + ID	indekl pron	lat	abbrev
-sl_tyyp	sõnaliik	s	s	et	pos	s	s	lat	abbrev
-sl_tyyp	sõnaliik	v	v	et	pos	v	v	lat	abbrev
-sl_tyyp	sõnaliik	adj + ID	käändumatu omadussõna	et	pos	adj + ID	käändumatu omadussõna	est	descrip
-sl_tyyp	sõnaliik	postp	postpositsioon, tagasõna	et	pos	postp	postpositsioon, tagasõna	est	descrip
-sl_tyyp	sõnaliik	prep	prepositsioon, eessõna	et	pos	prep	prepositsioon, eessõna	est	descrip
-sl_tyyp	sõnaliik	pron + ID	käändumatu asesõna	et	pos	pron + ID	käändumatu asesõna	est	descrip
-sl_tyyp	sõnaliik	x	erivormiline sõna	et	pos	x	erivormiline sõna	est	descrip
-sl_tyyp	sõnaliik	adj + ID	indeclinable adjective	en	pos	adj + ID	indeclinable adjective	eng	descrip
-sl_tyyp	sõnaliik	adp	postposition, preposition	en	pos	adp	postposition, preposition	eng	descrip
-sl_tyyp	sõnaliik	postp	postposition	en	pos	postp	postposition	eng	descrip
-sl_tyyp	sõnaliik	prep	preposition	en	pos	prep	preposition	eng	descrip
-sl_tyyp	sõnaliik	pron + ID	indeclinable pronoun	en	pos	pron + ID	indeclinable pronoun	eng	descrip
-dk_tyyp	dk_tyyp	as	US	et	deriv	as	US	est	ekimorfo
-dk_tyyp	dk_tyyp	posit	_	et	deriv	posit	_	est	ekimorfo
-dk_tyyp	dk_tyyp	as	as	la	deriv	as	as	lat	abbrev
-dk_tyyp	dk_tyyp	posit	algvõrre	et	deriv	posit	algvõrre	est	descrip
-dk_tyyp	dk_tyyp	as	abstraktne substantiiv	et	deriv	as	abstraktne substantiiv	est	descrip
-dk_tyyp	dk_tyyp	posit	positiiv, algvõrre	et	deriv	posit	positiiv, algvõrre	est	descrip2
-dk_tyyp	dk_tyyp	as	abstract substantive	en	deriv	as	abstract substantive	eng	descrip
-dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit	positive degree	eng	descrip
-keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	lexeme_type	eelistermin	eelistermin	est	descrip
-keelenditüüp	keelenditüüp	lühend	lühend	et	lexeme_type	lühend	lühend	est	descrip
-keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	lexeme_type	sünonüüm	sünonüüm	est	descrip
-keelenditüüp	keelenditüüp	variant	variant	et	lexeme_type	variant	variant	est	descrip
-keelenditüüp	keelenditüüp	väldi	väldi	et	lexeme_type	väldi	väldi	est	descrip
-keelenditüüp	keelenditüüp	endine	endine	et	lexeme_type	endine	endine	est	descrip
-keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	lexeme_type	lühend ja sünonüüm	lühend ja sünonüüm	est	descrip
-Entry Class	Entry Class	määramata	määramata	et	entry_class	määramata	-	-	-
-Entry Class	Entry Class	töös	töös	et	entry_class	töös	-	-	-
-Entry Class	Entry Class	avalik	avalik	et	entry_class	avalik	-	-	-
-Staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	meaning_state	komisjoni kinnitatud	-	-	-
-Staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	meaning_state	komisjonis arutlusel	-	-	-
-Staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem	-	-	-
-Mõistetüüp	Mõistetüüp	termin	termin	et	meaning_type	termin	-	-	-
-Mõistetüüp	Mõistetüüp	tõlkeprobleem	tõlkeprobleem	et	meaning_type	tõlkeprobleem	-	-	-
-Mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	meaning_type	ametinimetus	-	-	-
-Mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	meaning_type	organisatsioon, asutus	-	-	-
-Mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	meaning_type	õigusakti pealkiri	-	-	-
-Mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	meaning_type	dokumendi pealkiri	-	-	-
--	-	-	-	-	lex_rel_type	comp	liitsõna	est	full
--	-	-	-	-	lex_rel_type	ant	antonüüm	est	full
--	-	-	-	-	lex_rel_type	head	põhisõna	est	full
--	-	-	-	-	lex_rel_type	vor	vormel	est	full
--	-	-	-	-	lex_rel_type	yvr	üksikvorm	est	full
--	-	-	-	-	lex_rel_type	pyh	ühend	est	full
--	-	-	-	-	lex_rel_type	yhvt	ühendviide	est	full
--	-	-	-	-	form_rel_type	mvt	viitemärksõna	est	full
--	-	-	-	-	word_rel_type	komp	keskvõrre	est	full
--	-	-	-	-	word_rel_type	superl	ülivõrre	est	full
+xmllang_tyyp	XML elementide keelevalik	et	eesti	et	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	et	estonian	en	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	ru	vene	et	-	-	-	-	-
+xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-	-	-	-
+yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
+yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
+yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full

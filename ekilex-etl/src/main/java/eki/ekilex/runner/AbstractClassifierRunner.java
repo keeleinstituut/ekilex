@@ -2,6 +2,8 @@ package eki.ekilex.runner;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,9 +18,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.ClassifierMapping;
+import eki.ekilex.service.XmlReader;
 
 public abstract class AbstractClassifierRunner implements InitializingBean, SystemConstant, TableName {
 
@@ -29,7 +33,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 	public final static int CLASSIFIER_MAIN_CSV_COL_COUNT = 10;
 	public final static int CLASSIFIER_DOMAIN_CSV_COL_COUNT = 5;
 
-	public final static String CLASSIFIER_MAIN_CSV_PATH = "./fileresources/csv/classifier-all.csv";
+	public final static String CLASSIFIER_MAIN_CSV_PATH = "./fileresources/csv/classifier-main.csv";
 	public final static String CLASSIFIER_MAIN_SQL_PATH = "./fileresources/sql/classifier-main.sql";
 
 	public final static String CLASSIFIER_DOMAIN_CSV_PATH = "./fileresources/csv/classifier-domain.csv";
@@ -140,9 +144,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 			throw new Exception("Classifiers CSV file could not be located!");
 		}
 
-		FileInputStream classifierFileInputStream = new FileInputStream(classifierCsvFile);
-		List<String> classifierFileLines = IOUtils.readLines(classifierFileInputStream, UTF_8);
-		classifierFileInputStream.close();
+		List<String> classifierFileLines = readFileLines(classifierCsvFile);
 		classifierFileLines.remove(0);//remove header
 
 		List<ClassifierMapping> existingClassifiers = new ArrayList<>();
@@ -175,6 +177,11 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 
 			if (StringUtils.equals(ekiType, emptyCellValue)) {
 
+				try {
+					ClassifierName.valueOf(lexName.toUpperCase());
+				} catch (Exception e) {
+					logger.warn("Unknown classifier name \"{}\"", lexName);
+				}
 				String lexKey = composeRow(CLASSIFIER_KEY_SEPARATOR, lexName, lexCode, lexValue, lexValueLang, lexValueType);
 				if (existingClassifierKeys.contains(lexKey)) {
 					logger.warn("Duplicate new classifier entry: \"{}\"", lexKey);
@@ -193,6 +200,11 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 
 			} else {
 
+				try {
+					ClassifierName.valueOf(lexName.toUpperCase());
+				} catch (Exception e) {
+					logger.warn("Unknown classifier name \"{}\"", lexName);
+				}
 				ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
 				String fullKey = composeRow(CLASSIFIER_KEY_SEPARATOR,
 						ekiType, ekiCode, ekiValue, ekiValueLang, lexName, lexCode, lexValue, lexValueLang, lexValueType);
@@ -237,9 +249,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 			throw new Exception("Classifiers CSV file could not be located!");
 		}
 
-		FileInputStream classifierFileInputStream = new FileInputStream(classifierCsvFile);
-		List<String> classifierFileLines = IOUtils.readLines(classifierFileInputStream, UTF_8);
-		classifierFileInputStream.close();
+		List<String> classifierFileLines = readFileLines(classifierCsvFile);
 		classifierFileLines.remove(0);//remove header
 
 		List<ClassifierMapping> existingClassifiers = new ArrayList<>();
@@ -301,12 +311,11 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		}
 
 		List<ClassifierMapping> mergedClassifiers = new ArrayList<>();
+		mergedClassifiers.addAll(existingClassifiers);
 		for (ClassifierMapping sourceClassifier : sourceClassifiers) {
 			ClassifierMapping existingClassifier = find(sourceClassifier, existingClassifiers);
 			if (existingClassifier == null) {
 				mergedClassifiers.add(sourceClassifier);
-			} else {
-				mergedClassifiers.add(existingClassifier);
 			}
 		}
 		return mergedClassifiers;
@@ -336,5 +345,47 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		} else {
 			classifCsvLineBuf.append(CSV_SEPARATOR);
 		}
+	}
+
+	public void writeDomainClassifierCsvFile(List<ClassifierMapping> classifiers) throws Exception {
+
+		if (CollectionUtils.isEmpty(classifiers)) {
+			logger.warn("No classifiers to save. Interrupting...");
+			return;
+		}
+
+		FileOutputStream classifierCsvStream = new FileOutputStream(CLASSIFIER_DOMAIN_CSV_PATH);
+
+		StringBuffer classifCsvLineBuf;
+		String classifCsvLine;
+
+		classifCsvLine = composeRow(CSV_SEPARATOR, "Päritolu", "Kood", "Alluvus", "Väärtus", "Keel");
+		classifCsvLine += "\n";
+
+		IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
+
+		for (ClassifierMapping classifier : classifiers) {
+
+			classifCsvLineBuf = new StringBuffer();
+
+			appendCell(classifCsvLineBuf, classifier.getEkiOrigin(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiCode(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiParentCode(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiValue(), false);
+			appendCell(classifCsvLineBuf, classifier.getEkiValueLang(), true);
+
+			classifCsvLine = classifCsvLineBuf.toString();
+			IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
+		}
+
+		classifierCsvStream.flush();
+		classifierCsvStream.close();
+	}
+
+	public List<String> readFileLines(File classifierCsvFile) throws Exception {
+		FileInputStream classifierFileInputStream = new FileInputStream(classifierCsvFile);
+		List<String> classifierFileLines = IOUtils.readLines(classifierFileInputStream, UTF_8);
+		classifierFileInputStream.close();
+		return classifierFileLines;
 	}
 }

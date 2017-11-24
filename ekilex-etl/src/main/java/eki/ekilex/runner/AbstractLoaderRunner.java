@@ -26,6 +26,7 @@ import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.XmlReader;
 
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
