@@ -61,7 +61,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String sqlDerivCodeMappings = "select code as key, code as value from deriv where '%s' = ANY(datasets)";
 	private final static String sqlFormsOfTheWord = "select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update form set sound_file = :soundFile where id in "
-			+ "(select f.id from form f join paradigm p on f.paradigm_id = p.id where f.value = :formValue and p.inflection_type_nr = :inflectionTypeNr)";
+			+ "(select f.id from form f join paradigm p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -157,7 +157,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processCompoundForms(context, dataset);
 		processWordComparatives(context);
 		processWordSuperlatives(context);
-		processSoundFileNames(articleNodes);
 
 		logger.debug("Found {} word duplicates", wordDuplicateCount);
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount);
@@ -165,49 +164,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
-	}
-
-	private void processSoundFileNames(List<Element> articleNodes) throws Exception {
-
-		final String morphGroupExp = "x:P/x:mg/x:mfp";
-		final String inflectionTypeNrExp = "x:mt";
-		final String morphValueGroupExp = "x:gkg/x:mvg/x:mvgp";
-		final String soundFileExp = "x:hldf";
-		final String formValueExp = "x:mvf";
-
-		logger.debug("Starting sound file names processing.");
-		List<SoundFileData> soundFiles = new ArrayList<>();
-		for (Element articleNode : articleNodes) {
-			List<Element> morphGroupNodes = articleNode.selectNodes(morphGroupExp);
-			for (Element morphGroupNode : morphGroupNodes) {
-				Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
-				String inflectionTypeNr = inflectionTypeNrNode == null ? null : inflectionTypeNrNode.getTextTrim();
-				List<Element> morphValueGroupNodes = morphGroupNode.selectNodes(morphValueGroupExp);
-				for (Element morphValueGroupNode : morphValueGroupNodes) {
-					Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
-					if (soundFileNode != null) {
-						Element formValueNode = (Element) morphValueGroupNode.selectSingleNode(formValueExp);
-						String formValue = StringUtils.replaceChars(formValueNode.getTextTrim(), formStrCleanupChars, "");
-						SoundFileData data = new SoundFileData();
-						data.soundFile = soundFileNode.getTextTrim();
-						data.inflectionTypeNr = inflectionTypeNr;
-						data.formValue = formValue;
-						soundFiles.add(data);
-					}
-				}
-			}
-		}
-
-		logger.debug("Sound file names found : {}.", soundFiles.size());
-		for (SoundFileData soundFileData : soundFiles) {
-			Map<String, Object> params = new HashMap<>();
-			params.put("formValue", soundFileData.formValue);
-			params.put("inflectionTypeNr", soundFileData.inflectionTypeNr);
-			params.put("soundFile", soundFileData.soundFile);
-			basicDbService.executeScript(sqlUpdateSoundFiles, params);
-		}
-
-		logger.debug("Sound file names processing done.", soundFiles.size());
 	}
 
 	private void processWordSuperlatives(Context context) throws Exception {
@@ -1236,6 +1192,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWord(wordGroupNode, wordData);
 			List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
 			wordData.id = saveWord(word, paradigms, wordDuplicateCount);
+			addSoundFileNamesToForms(wordData.id, wordGroupNode);
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
 			basicWords.addAll(basicWordsOfTheWord);
@@ -1265,6 +1222,34 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 
 			newWords.add(wordData);
+		}
+	}
+
+	private void addSoundFileNamesToForms(Long wordId, Element wordGroupNode) {
+
+		final String morphValueGroupExp = "x:mfp/x:gkg/x:mvg/x:mvgp";
+		final String soundFileExp = "x:hldf";
+		final String formValueExp = "x:mvf";
+
+		List<SoundFileData> soundFiles = new ArrayList<>();
+		List<Element> morphValueGroupNodes = wordGroupNode.selectNodes(morphValueGroupExp);
+		for (Element morphValueGroupNode : morphValueGroupNodes) {
+			Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
+			if (soundFileNode != null) {
+				Element formValueNode = (Element) morphValueGroupNode.selectSingleNode(formValueExp);
+				String formValue = StringUtils.replaceChars(formValueNode.getTextTrim(), formStrCleanupChars, "");
+				SoundFileData data = new SoundFileData();
+				data.soundFile = soundFileNode.getTextTrim();
+				data.formValue = formValue;
+				soundFiles.add(data);
+			}
+		}
+		for (SoundFileData soundFileData : soundFiles) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("formValue", soundFileData.formValue);
+			params.put("wordId", wordId);
+			params.put("soundFile", soundFileData.soundFile);
+			basicDbService.executeScript(sqlUpdateSoundFiles, params);
 		}
 	}
 
@@ -1487,7 +1472,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private class SoundFileData {
 		String soundFile;
 		String formValue;
-		String inflectionTypeNr;
 	}
 
 	private class Context {
