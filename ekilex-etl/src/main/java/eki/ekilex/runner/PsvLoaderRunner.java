@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -86,7 +87,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataset, Map<String, List<Paradigm>> wordParadigmsMap, boolean isAddReporting) throws Exception {
+	public void execute(
+			String dataXmlFilePath,
+			String dataset,
+			Map<String, List<Paradigm>> wordParadigmsMap,
+			boolean isAddReporting,
+			Map<String, String> guidsMap) throws Exception {
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
@@ -125,11 +131,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		writeToLogFile("Artiklite töötlus", "", "");
 		for (Element articleNode : articleNodes) {
+			String guid = extractGuid(articleNode, guidsMap);
+			if (isArticleImported(guid)) {
+				continue;
+			}
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element reportingIdNode = (Element) articleNode.selectSingleNode(reportingIdExp);
 			String reportingId = reportingIdNode != null ? reportingIdNode.getTextTrim() : "";
-			processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, wordDuplicateCount);
+			processArticleHeader(guid, reportingId, headerNode, newWords, context, wordParadigmsMap, wordDuplicateCount);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
@@ -164,6 +174,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private boolean isArticleImported(String guid) throws Exception {
+		return getWordIdForGuid(guid) != null;
+	}
+
+	private String extractGuid(Element node, Map<String, String> guidsMap) {
+
+		final String articleGuidExp = "x:G";
+
+		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
+		String guidInDataset = guidNode != null ? StringUtils.upperCase(guidNode.getTextTrim()) : "";
+		return guidInDataset == null ? null : guidsMap.get(guidInDataset);
 	}
 
 	private void processWordSuperlatives(Context context) throws Exception {
@@ -1125,6 +1148,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processArticleHeader(
+			String guid,
 			String reportingId,
 			Element headerNode,
 			List<WordData> newWords,
@@ -1140,7 +1164,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (isReferenceForm) {
 			processAsForm(reportingId, headerNode, referenceFormNodes, context.referenceForms);
 		} else {
-			processAsWord(reportingId, headerNode, newWords, context.basicWords, wordParadigmsMap, wordDuplicateCount);
+			processAsWord(guid, reportingId, headerNode, newWords, context, wordParadigmsMap, wordDuplicateCount);
 		}
 	}
 
@@ -1169,10 +1193,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void processAsWord(
+			String guid,
 			String reportingId,
 			Element headerNode,
 			List<WordData> newWords,
-			List<WordData> basicWords,
+			Context context,
 			Map<String, List<Paradigm>> wordParadigmsMap,
 			Count wordDuplicateCount) throws Exception {
 
@@ -1189,13 +1214,22 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			WordData wordData = new WordData();
 			wordData.reportingId = reportingId;
 
-			Word word = extractWord(wordGroupNode, wordData);
-			List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
-			wordData.id = saveWord(word, paradigms, wordDuplicateCount);
+			Long existingWordId = getWordIdForGuid(guid);
+			boolean isExistingWord = existingWordId != null;
+
+			Word word = extractWordData(wordGroupNode, wordData, isExistingWord);
+			if (isExistingWord) {
+				wordData.id = existingWordId;
+			} else {
+				word.setGuid(guid);
+				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
+				wordData.id = saveWord(word, paradigms, wordDuplicateCount);
+			}
+
 			addSoundFileNamesToForms(wordData.id, wordGroupNode);
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
-			basicWords.addAll(basicWordsOfTheWord);
+			context.basicWords.addAll(basicWordsOfTheWord);
 
 			List<Element> posCodeNodes = wordGroupNode.selectNodes(wordPosCodeExp);
 			for (Element posCodeNode : posCodeNodes) {
@@ -1223,6 +1257,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			newWords.add(wordData);
 		}
+	}
+
+	private Long getWordIdForGuid(String guid) throws Exception {
+
+		if (isBlank(guid)) {
+			return null;
+		}
+		Map<String, Object> params = new HashMap<>();
+		params.put("guid", guid);
+		Map<String, Object> wordObject = basicDbService.select(WORD, params);
+		return wordObject == null ? null : (Long) wordObject.get("id");
 	}
 
 	private void addSoundFileNamesToForms(Long wordId, Element wordGroupNode) {
@@ -1309,7 +1354,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return matchingParadigm;
 	}
 
-	private Word extractWord(Element wordGroupNode, WordData wordData) throws Exception {
+	private Word extractWordData(Element wordGroupNode, WordData wordData, boolean isExistingWord) throws Exception {
 
 		final String wordExp = "x:m";
 		final String wordDisplayMorphExp = "x:vk";
@@ -1326,15 +1371,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
-		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
-
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 		wordData.value = wordValue;
 
-		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
-		if (wordDisplayMorphNode != null) {
-			word.setDisplayMorph(wordDisplayMorphNode.getTextTrim());
+		Word word = null;
+		if (!isExistingWord) {
+			int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+			String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
+
+			word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
+
+			Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
+			if (wordDisplayMorphNode != null) {
+				word.setDisplayMorph(wordDisplayMorphNode.getTextTrim());
+			}
 		}
 
 		return word;

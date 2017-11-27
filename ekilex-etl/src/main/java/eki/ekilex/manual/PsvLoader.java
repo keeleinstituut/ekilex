@@ -29,6 +29,12 @@ public class PsvLoader {
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
 
+			boolean combineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with existing datsets? (y/n)");
+			Map<String, String> guidsMap = new HashMap<>();
+			if (combineDatasets) {
+				String guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
+			}
+
 			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
 			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 			if (isAddForms) {
@@ -38,7 +44,7 @@ public class PsvLoader {
 			}
 
 			String dataset = "psv";
-			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting);
+			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting, guidsMap);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
