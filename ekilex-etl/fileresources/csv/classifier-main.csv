@@ -91,14 +91,6 @@ kmpl_tyyp	kmpl_tyyp	Akomp	omadussõna võrdlus	et	-	-	-	-	-
 kmpl_tyyp	kmpl_tyyp	Dkomp	määrsõna võrdlus	et	-	-	-	-	-
 koht_tyyp	koht_tyyp	er	eelrektsioon	et	-	-	-	-	-
 koht_tyyp	koht_tyyp	jr	järelrektsioon	et	-	-	-	-	-
-liik_tyyp	liik_tyyp	k	kohanimi	et	-	-	-	-	-
-liik_tyyp	liik_tyyp	k	place name	en	-	-	-	-	-
-liik_tyyp	liik_tyyp	l	lühend	et	-	-	-	-	-
-liik_tyyp	liik_tyyp	l	abbreviation	en	-	-	-	-	-
-liik_tyyp	liik_tyyp	p	pärisnimi	et	-	-	-	-	-
-liik_tyyp	liik_tyyp	p	proper name	en	-	-	-	-	-
-liik_tyyp	liik_tyyp	z	tsitaatsõna	et	-	-	-	-	-
-liik_tyyp	liik_tyyp	z	loanword (alien)	en	-	-	-	-	-
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-	-	-	-
 liik_tyyp	liik_tyyp	k	kohanimi	et	lexeme_type	k	kohanimi	est	descrip
 liik_tyyp	liik_tyyp	k	place name	en	lexeme_type	k	place name	eng	descrip
@@ -153,7 +145,6 @@ sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4	4 - pole sag_S-s	
 sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
 sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	lexeme_frequency	L4	L4 - pole sag_S-s (lisatud)	est	descrip
-sl_tyyp	sõnaliik	K	postposition, preposition	en	-	-	-	-	-
 sl_tyyp	sõnaliik	A	A	et	pos	adj	A	est	capital
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	A	est	capital
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj	adjektiiv, omadussõna	est	descrip
