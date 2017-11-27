@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -136,6 +138,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		return loadedClassifiers;
 	}
 
+	//FIXME remove duplicates that are both with and without mappings
 	public List<ClassifierMapping> loadExistingMainClassifiers() throws Exception {
 
 		File classifierCsvFile = new File(CLASSIFIER_MAIN_CSV_PATH);
@@ -151,9 +154,11 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		ClassifierMapping classifier;
 		int order = 0;
 
+		Map<String, Boolean> mappingExistsMap = new HashMap<>();
 		List<String> existingClassifierKeys = new ArrayList<>();
 
 		for (String classifierFileLine : classifierFileLines) {
+
 			if (StringUtils.isBlank(classifierFileLine)) {
 				continue;
 			}
@@ -163,6 +168,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				logger.warn("Inconsistent row \"{}\"", lineLog);
 				continue;
 			}
+			classifier = new ClassifierMapping();
 			String ekiType = StringUtils.lowerCase(classifierLineCells[0]);
 			String ekiName = classifierLineCells[1];
 			String ekiCode = classifierLineCells[2];
@@ -174,6 +180,8 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 			String lexValueLang = classifierLineCells[8];
 			String lexValueType = StringUtils.lowerCase(classifierLineCells[9]);
 			String ekiKey = null;
+			Boolean mappingExists = Boolean.FALSE;
+			boolean isNew = true;
 
 			if (StringUtils.equals(ekiType, emptyCellValue)) {
 
@@ -198,6 +206,14 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				}
 				existingClassifierKeys.add(ekiKey);
 
+				mappingExists = mappingExistsMap.get(ekiKey);
+				if (mappingExists == null) {
+					mappingExistsMap.put(ekiKey, Boolean.FALSE);
+				} else if (mappingExists.equals(Boolean.TRUE)) {
+					logger.warn("Duplicate entry without mapping, even though mapping exists: \"{}\"", ekiKey);
+					continue;
+				}
+
 			} else {
 
 				try {
@@ -213,10 +229,18 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 					continue;
 				}
 				existingClassifierKeys.add(fullKey);
+
+				mappingExists = mappingExistsMap.get(ekiKey);
+				if (mappingExists == null) {
+					mappingExistsMap.put(ekiKey, Boolean.TRUE);
+				} else if (mappingExists.equals(Boolean.FALSE)) {
+					logger.warn("Duplicate entry with mapping, overwriting the one without mapping: \"{}\"", ekiKey);
+					classifier = find(ekiKey, existingClassifiers, true);
+					isNew = false;
+				}
 			}
 
 			order++;
-			classifier = new ClassifierMapping();
 			classifier.setEkiOrigin(null);
 			classifier.setEkiType(ekiType);
 			classifier.setEkiName(ekiName);
@@ -231,7 +255,9 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 			classifier.setLexValueType(lexValueType);
 			classifier.setOrder(order);
 			classifier.setEkiKey(ekiKey);
-			existingClassifiers.add(classifier);
+			if (isNew) {
+				existingClassifiers.add(classifier);
+			}
 		}
 
 		existingClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiType).thenComparing(ClassifierMapping::getLexName).thenComparing(ClassifierMapping::getOrder));
@@ -313,7 +339,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		List<ClassifierMapping> mergedClassifiers = new ArrayList<>();
 		mergedClassifiers.addAll(existingClassifiers);
 		for (ClassifierMapping sourceClassifier : sourceClassifiers) {
-			ClassifierMapping existingClassifier = find(sourceClassifier, existingClassifiers);
+			ClassifierMapping existingClassifier = find(sourceClassifier.getEkiKey(), existingClassifiers, false);
 			if (existingClassifier == null) {
 				mergedClassifiers.add(sourceClassifier);
 			}
@@ -321,10 +347,16 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		return mergedClassifiers;
 	}
 
-	public ClassifierMapping find(ClassifierMapping sourceClassifier, List<ClassifierMapping> existingClassifiers) {
+	public ClassifierMapping find(String ekiKey, List<ClassifierMapping> existingClassifiers, boolean isFindOnlyWithoutMapping) {
 		for (ClassifierMapping existingClassifier : existingClassifiers) {
-			if (StringUtils.equals(sourceClassifier.getEkiKey(), existingClassifier.getEkiKey())) {
-				return existingClassifier;
+			if (StringUtils.equals(ekiKey, existingClassifier.getEkiKey())) {
+				if (isFindOnlyWithoutMapping) {
+					if (StringUtils.equals(existingClassifier.getLexName(), emptyCellValue)) {
+						return existingClassifier;
+					}
+				} else {
+					return existingClassifier;
+				}
 			}
 		}
 		return null;
