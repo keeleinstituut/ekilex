@@ -8,4 +8,6 @@ public interface SystemConstant {
 
 	public static final char CSV_EMPTY_CELL = '-';
 
+	public static final char CSV_UNDEFINED_CELL = '?';
+
 }

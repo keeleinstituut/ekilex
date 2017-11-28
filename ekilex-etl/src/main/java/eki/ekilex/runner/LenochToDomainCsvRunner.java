@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.transform.ClassifierMapping;
 
 @Component
-public class LenochToDomainCsvRunner extends AbstractClassifierRunner {
+public class LenochToDomainCsvRunner extends AbstractDomainRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(LenochToDomainCsvRunner.class);
 
@@ -33,18 +33,10 @@ public class LenochToDomainCsvRunner extends AbstractClassifierRunner {
 		File sourceCsvFile = new File(sourceCsvFilePath);
 		List<String> sourceCsvLines = readFileLines(sourceCsvFile);
 
-		List<ClassifierMapping> targetClassifiers = new ArrayList<>();
 		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(sourceCsvLines);
-
-		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
-
-		if (classifierCsvFile.exists()) {
-			List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
-			targetClassifiers = merge(sourceClassifiers, existingClassifiers);
-			targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
-		} else {
-			targetClassifiers = sourceClassifiers;
-		}
+		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
+		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);
+		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 
 		writeDomainClassifierCsvFile(targetClassifiers);
 

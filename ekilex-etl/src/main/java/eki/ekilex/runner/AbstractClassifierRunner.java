@@ -2,8 +2,6 @@ package eki.ekilex.runner;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -23,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.TableName;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.transform.Classifier;
 import eki.ekilex.data.transform.ClassifierMapping;
 import eki.ekilex.service.XmlReader;
 
@@ -32,10 +31,12 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 
 	public final static char CLASSIFIER_KEY_SEPARATOR = '|';
 
-	public final static int CLASSIFIER_MAIN_CSV_COL_COUNT = 10;
+	public final static int CLASSIFIER_MAIN_MAP_CSV_COL_COUNT = 7;
+	public final static int CLASSIFIER_MAIN_VALUE_CSV_COL_COUNT = 5;
 	public final static int CLASSIFIER_DOMAIN_CSV_COL_COUNT = 5;
 
-	public final static String CLASSIFIER_MAIN_CSV_PATH = "./fileresources/csv/classifier-main.csv";
+	public final static String CLASSIFIER_MAIN_MAP_CSV_PATH = "./fileresources/csv/classifier-main-map.csv";
+	public final static String CLASSIFIER_MAIN_VALUE_CSV_PATH = "./fileresources/csv/classifier-main-value.csv";
 	public final static String CLASSIFIER_MAIN_SQL_PATH = "./fileresources/sql/classifier-main.sql";
 
 	public final static String CLASSIFIER_DOMAIN_CSV_PATH = "./fileresources/csv/classifier-domain.csv";
@@ -50,6 +51,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 	private final String classifValueLangAttr = "lang";
 
 	public final String emptyCellValue = String.valueOf(CSV_EMPTY_CELL);
+	public final String undefinedCellValue = String.valueOf(CSV_UNDEFINED_CELL);
 
 	@Autowired
 	private XmlReader xmlReader;
@@ -131,30 +133,143 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				}
 			}
 		}
-		loadedClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getEkiType).thenComparing(ClassifierMapping::getOrder));
+		loadedClassifiers.sort(
+				Comparator.comparing(ClassifierMapping::getEkiOrigin)
+				.thenComparing(ClassifierMapping::getEkiType)
+				.thenComparing(ClassifierMapping::getOrder));
 
 		logger.debug("Collected {} rows from source", loadedClassifiers.size());
 
 		return loadedClassifiers;
 	}
 
-	//FIXME remove duplicates that are both with and without mappings
-	public List<ClassifierMapping> loadExistingMainClassifiers() throws Exception {
+	public List<ClassifierMapping> loadExistingMainClassifierMappings() throws Exception {
 
-		File classifierCsvFile = new File(CLASSIFIER_MAIN_CSV_PATH);
+		List<ClassifierMapping> existingClassifierMappings = new ArrayList<>();
 
+		File classifierCsvFile = new File(CLASSIFIER_MAIN_MAP_CSV_PATH);
 		if (!classifierCsvFile.exists()) {
-			throw new Exception("Classifiers CSV file could not be located!");
+			return existingClassifierMappings;
 		}
 
 		List<String> classifierFileLines = readFileLines(classifierCsvFile);
 		classifierFileLines.remove(0);//remove header
 
-		List<ClassifierMapping> existingClassifiers = new ArrayList<>();
-		ClassifierMapping classifier;
+		Map<String, Boolean> mappingExistsMap = new HashMap<>();
+		List<String> existingClassifierKeys = new ArrayList<>();
+		ClassifierMapping classifierMapping;
 		int order = 0;
 
-		Map<String, Boolean> mappingExistsMap = new HashMap<>();
+		for (String classifierFileLine : classifierFileLines) {
+
+			if (StringUtils.isBlank(classifierFileLine)) {
+				continue;
+			}
+			String[] classifierLineCells = StringUtils.split(classifierFileLine, CSV_SEPARATOR);
+			if (classifierLineCells.length != CLASSIFIER_MAIN_MAP_CSV_COL_COUNT) {
+				String lineLog = StringUtils.join(classifierLineCells, CLASSIFIER_KEY_SEPARATOR);
+				logger.warn("Inconsistent row \"{}\"", lineLog);
+				continue;
+			}
+			classifierMapping = new ClassifierMapping();
+			String ekiType = StringUtils.lowerCase(classifierLineCells[0]);
+			String ekiName = classifierLineCells[1];
+			String ekiCode = classifierLineCells[2];
+			String ekiValue = classifierLineCells[3];
+			String ekiValueLang = classifierLineCells[4];
+			String lexName = StringUtils.lowerCase(classifierLineCells[5]);
+			String lexCode = classifierLineCells[6];
+			String ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
+			String fullKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang, lexName, lexCode);
+			Boolean mappingExists = Boolean.FALSE;
+			boolean isNew = true;
+
+			if (StringUtils.equalsAny(ekiType, emptyCellValue, undefinedCellValue)) {
+
+				logger.warn("Missing mapping source, ignoring \"{}\"", fullKey);
+				continue;
+
+			} else if (StringUtils.equalsAny(lexName, emptyCellValue, undefinedCellValue)) {
+
+				if (existingClassifierKeys.contains(ekiKey)) {
+					logger.warn("Duplicate EKI classifier entry: \"{}\"", fullKey);
+					continue;
+				}
+				existingClassifierKeys.add(ekiKey);
+
+				//logger.warn("Empty mapping row \"{}\"", fullKey);
+				mappingExists = mappingExistsMap.get(ekiKey);
+				if (mappingExists == null) {
+					mappingExistsMap.put(ekiKey, Boolean.FALSE);
+				} else if (mappingExists.equals(Boolean.TRUE)) {
+					logger.warn("Duplicate entry without mapping, even though mapping exists: \"{}\"", ekiKey);
+					continue;
+				}
+			} else {
+
+				if (existingClassifierKeys.contains(ekiKey)) {
+					logger.warn("Duplicate EKI classifier entry: \"{}\"", fullKey);
+					continue;
+				}
+				existingClassifierKeys.add(ekiKey);
+
+				try {
+					ClassifierName.valueOf(lexName.toUpperCase());
+				} catch (Exception e) {
+					logger.warn("Unknown classifier name \"{}\"", lexName);
+				}
+				mappingExists = mappingExistsMap.get(ekiKey);
+				if (mappingExists == null) {
+					mappingExistsMap.put(ekiKey, Boolean.TRUE);
+				} else if (mappingExists.equals(Boolean.FALSE)) {
+					logger.warn("Duplicate entry with mapping, replacing the one without mapping: \"{}\"", ekiKey);
+					classifierMapping = find(ekiKey, existingClassifierMappings, true);
+					isNew = false;
+				}
+			}
+
+			order++;
+			classifierMapping.setEkiOrigin(null);
+			classifierMapping.setEkiType(ekiType);
+			classifierMapping.setEkiName(ekiName);
+			classifierMapping.setEkiCode(ekiCode);
+			classifierMapping.setEkiParentCode(null);
+			classifierMapping.setEkiValue(ekiValue);
+			classifierMapping.setEkiValueLang(ekiValueLang);
+			classifierMapping.setLexName(lexName);
+			classifierMapping.setLexCode(lexCode);
+			classifierMapping.setOrder(order);
+			classifierMapping.setEkiKey(ekiKey);
+			if (isNew) {
+				existingClassifierMappings.add(classifierMapping);
+			}
+		}
+
+		existingClassifierMappings.sort(
+				Comparator.comparing(ClassifierMapping::getEkiType)
+				.thenComparing(ClassifierMapping::getLexName)
+				.thenComparing(ClassifierMapping::getOrder));
+
+		logger.debug("Collected {} existing mappings", existingClassifierMappings.size());
+
+		return existingClassifierMappings;
+	}
+
+	public List<Classifier> loadExistingMainClassifiers() throws Exception {
+
+		List<Classifier> existingClassifiers = new ArrayList<>();
+
+		File classifierCsvFile = new File(CLASSIFIER_MAIN_VALUE_CSV_PATH);
+		if (!classifierCsvFile.exists()) {
+			return existingClassifiers;
+		}
+
+		List<String> classifierFileLines = readFileLines(classifierCsvFile);
+		classifierFileLines.remove(0);//remove header
+
+		Classifier classifier;
+		int order = 0;
+
 		List<String> existingClassifierKeys = new ArrayList<>();
 
 		for (String classifierFileLine : classifierFileLines) {
@@ -163,104 +278,43 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				continue;
 			}
 			String[] classifierLineCells = StringUtils.split(classifierFileLine, CSV_SEPARATOR);
-			if (classifierLineCells.length != CLASSIFIER_MAIN_CSV_COL_COUNT) {
+			if (classifierLineCells.length != CLASSIFIER_MAIN_VALUE_CSV_COL_COUNT) {
 				String lineLog = StringUtils.join(classifierLineCells, CLASSIFIER_KEY_SEPARATOR);
 				logger.warn("Inconsistent row \"{}\"", lineLog);
 				continue;
 			}
-			classifier = new ClassifierMapping();
-			String ekiType = StringUtils.lowerCase(classifierLineCells[0]);
-			String ekiName = classifierLineCells[1];
-			String ekiCode = classifierLineCells[2];
-			String ekiValue = classifierLineCells[3];
-			String ekiValueLang = classifierLineCells[4];
-			String lexName = StringUtils.lowerCase(classifierLineCells[5]);
-			String lexCode = classifierLineCells[6];
-			String lexValue = classifierLineCells[7];
-			String lexValueLang = classifierLineCells[8];
-			String lexValueType = StringUtils.lowerCase(classifierLineCells[9]);
-			String ekiKey = null;
-			Boolean mappingExists = Boolean.FALSE;
-			boolean isNew = true;
+			String name = StringUtils.lowerCase(classifierLineCells[0]);
+			String code = classifierLineCells[1];
+			String value = classifierLineCells[2];
+			String valueLang = classifierLineCells[3];
+			String valueType = StringUtils.lowerCase(classifierLineCells[4]);
+			String key = composeRow(CLASSIFIER_KEY_SEPARATOR, name, code, value, valueLang, valueType);
 
-			if (StringUtils.equals(ekiType, emptyCellValue)) {
+			if (StringUtils.equalsAny(name, emptyCellValue, undefinedCellValue)) {
+				logger.warn("Incomplete classifier, ignoring \"{}\"", key);
+				continue;
 
-				try {
-					ClassifierName.valueOf(lexName.toUpperCase());
-				} catch (Exception e) {
-					logger.warn("Unknown classifier name \"{}\"", lexName);
-				}
-				String lexKey = composeRow(CLASSIFIER_KEY_SEPARATOR, lexName, lexCode, lexValue, lexValueLang, lexValueType);
-				if (existingClassifierKeys.contains(lexKey)) {
-					logger.warn("Duplicate new classifier entry: \"{}\"", lexKey);
-					continue;
-				}
-				existingClassifierKeys.add(lexKey);
-
-			} else if (StringUtils.equals(lexName, emptyCellValue)) {
-
-				ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
-				if (existingClassifierKeys.contains(ekiKey)) {
-					logger.warn("Duplicate EKI classifier entry: \"{}\"", ekiKey);
-					continue;
-				}
-				existingClassifierKeys.add(ekiKey);
-
-				mappingExists = mappingExistsMap.get(ekiKey);
-				if (mappingExists == null) {
-					mappingExistsMap.put(ekiKey, Boolean.FALSE);
-				} else if (mappingExists.equals(Boolean.TRUE)) {
-					logger.warn("Duplicate entry without mapping, even though mapping exists: \"{}\"", ekiKey);
-					continue;
-				}
-
-			} else {
-
-				try {
-					ClassifierName.valueOf(lexName.toUpperCase());
-				} catch (Exception e) {
-					logger.warn("Unknown classifier name \"{}\"", lexName);
-				}
-				ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiType, ekiCode, ekiValue, ekiValueLang);
-				String fullKey = composeRow(CLASSIFIER_KEY_SEPARATOR,
-						ekiType, ekiCode, ekiValue, ekiValueLang, lexName, lexCode, lexValue, lexValueLang, lexValueType);
-				if (existingClassifierKeys.contains(fullKey)) {
-					logger.warn("Duplicate classifier mapping entry: \"{}\"", fullKey);
-					continue;
-				}
-				existingClassifierKeys.add(fullKey);
-
-				mappingExists = mappingExistsMap.get(ekiKey);
-				if (mappingExists == null) {
-					mappingExistsMap.put(ekiKey, Boolean.TRUE);
-				} else if (mappingExists.equals(Boolean.FALSE)) {
-					logger.warn("Duplicate entry with mapping, overwriting the one without mapping: \"{}\"", ekiKey);
-					classifier = find(ekiKey, existingClassifiers, true);
-					isNew = false;
-				}
 			}
+			if (existingClassifierKeys.contains(key)) {
+				logger.warn("Duplicate classifier entry: \"{}\"", key);
+				continue;
+			}
+			existingClassifierKeys.add(key);
 
 			order++;
-			classifier.setEkiOrigin(null);
-			classifier.setEkiType(ekiType);
-			classifier.setEkiName(ekiName);
-			classifier.setEkiCode(ekiCode);
-			classifier.setEkiParentCode(null);
-			classifier.setEkiValue(ekiValue);
-			classifier.setEkiValueLang(ekiValueLang);
-			classifier.setLexName(lexName);
-			classifier.setLexCode(lexCode);
-			classifier.setLexValue(lexValue);
-			classifier.setLexValueLang(lexValueLang);
-			classifier.setLexValueType(lexValueType);
+			classifier = new Classifier();
+			classifier.setOrigin(null);
+			classifier.setName(name);
+			classifier.setCode(code);
+			classifier.setValue(value);
+			classifier.setValueType(valueType);
+			classifier.setValueLang(valueLang);
 			classifier.setOrder(order);
-			classifier.setEkiKey(ekiKey);
-			if (isNew) {
-				existingClassifiers.add(classifier);
-			}
+			classifier.setKey(key);
+			existingClassifiers.add(classifier);
 		}
 
-		existingClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiType).thenComparing(ClassifierMapping::getLexName).thenComparing(ClassifierMapping::getOrder));
+		existingClassifiers.sort(Comparator.comparing(Classifier::getName).thenComparing(Classifier::getOrder));
 
 		logger.debug("Collected {} existing classifiers", existingClassifiers.size());
 
@@ -269,16 +323,16 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 
 	public List<ClassifierMapping> loadExistingDomainClassifiers() throws Exception {
 
-		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
+		List<ClassifierMapping> existingClassifiers = new ArrayList<>();
 
+		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
 		if (!classifierCsvFile.exists()) {
-			throw new Exception("Classifiers CSV file could not be located!");
+			return existingClassifiers;
 		}
 
 		List<String> classifierFileLines = readFileLines(classifierCsvFile);
 		classifierFileLines.remove(0);//remove header
 
-		List<ClassifierMapping> existingClassifiers = new ArrayList<>();
 		ClassifierMapping classifier;
 		int order = 0;
 
@@ -295,28 +349,27 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				continue;
 			}
 
-			String ekiOrigin = StringUtils.lowerCase(classifierLineCells[0]);
-			String ekiCode = classifierLineCells[1];
-			String ekiParentCode = classifierLineCells[2];
-			String ekiValue = classifierLineCells[3];
-			String ekiValueLang = classifierLineCells[4];
-
-			String ekiKey = composeRow(CLASSIFIER_KEY_SEPARATOR, ekiOrigin, ekiCode, ekiParentCode, ekiValue, ekiValueLang);
-			if (existingClassifierKeys.contains(ekiKey)) {
-				logger.warn("Duplicate new classifier entry: \"{}\"", ekiKey);
+			String origin = StringUtils.lowerCase(classifierLineCells[0]);
+			String code = classifierLineCells[1];
+			String parentCode = classifierLineCells[2];
+			String value = classifierLineCells[3];
+			String valueLang = classifierLineCells[4];
+			String key = composeRow(CLASSIFIER_KEY_SEPARATOR, origin, code, value, valueLang);
+			if (existingClassifierKeys.contains(key)) {
+				logger.warn("Duplicate new classifier entry: \"{}\"", key);
 				continue;
 			}
-			existingClassifierKeys.add(ekiKey);
+			existingClassifierKeys.add(key);
 
 			order++;
 			classifier = new ClassifierMapping();
-			classifier.setEkiOrigin(ekiOrigin);
-			classifier.setEkiCode(ekiCode);
-			classifier.setEkiParentCode(ekiParentCode);
-			classifier.setEkiValue(ekiValue);
-			classifier.setEkiValueLang(ekiValueLang);
+			classifier.setEkiOrigin(origin);
+			classifier.setEkiCode(code);
+			classifier.setEkiParentCode(parentCode);
+			classifier.setEkiValue(value);
+			classifier.setEkiValueLang(valueLang);
 			classifier.setOrder(order);
-			classifier.setEkiKey(ekiKey);
+			classifier.setEkiKey(key);
 			existingClassifiers.add(classifier);
 		}
 
@@ -327,35 +380,35 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		return existingClassifiers;
 	}
 
-	public List<ClassifierMapping> merge(List<ClassifierMapping> sourceClassifiers, List<ClassifierMapping> existingClassifiers) {
+	public List<ClassifierMapping> merge(List<ClassifierMapping> sourceClassifiers, List<ClassifierMapping> existingClassifierMappings) {
 
 		if (CollectionUtils.isEmpty(sourceClassifiers)) {
-			return existingClassifiers;
+			return existingClassifierMappings;
 		}
-		if (CollectionUtils.isEmpty(existingClassifiers)) {
+		if (CollectionUtils.isEmpty(existingClassifierMappings)) {
 			return sourceClassifiers;
 		}
 
-		List<ClassifierMapping> mergedClassifiers = new ArrayList<>();
-		mergedClassifiers.addAll(existingClassifiers);
+		List<ClassifierMapping> mergedClassifierMappings = new ArrayList<>();
+		mergedClassifierMappings.addAll(existingClassifierMappings);
 		for (ClassifierMapping sourceClassifier : sourceClassifiers) {
-			ClassifierMapping existingClassifier = find(sourceClassifier.getEkiKey(), existingClassifiers, false);
-			if (existingClassifier == null) {
-				mergedClassifiers.add(sourceClassifier);
+			ClassifierMapping existingClassifierMapping = find(sourceClassifier.getEkiKey(), existingClassifierMappings, false);
+			if (existingClassifierMapping == null) {
+				mergedClassifierMappings.add(sourceClassifier);
 			}
 		}
-		return mergedClassifiers;
+		return mergedClassifierMappings;
 	}
 
-	public ClassifierMapping find(String ekiKey, List<ClassifierMapping> existingClassifiers, boolean isFindOnlyWithoutMapping) {
-		for (ClassifierMapping existingClassifier : existingClassifiers) {
-			if (StringUtils.equals(ekiKey, existingClassifier.getEkiKey())) {
+	private ClassifierMapping find(String ekiKey, List<ClassifierMapping> existingClassifierMappings, boolean isFindOnlyWithoutMapping) {
+		for (ClassifierMapping existingClassifierMapping : existingClassifierMappings) {
+			if (StringUtils.equals(ekiKey, existingClassifierMapping.getEkiKey())) {
 				if (isFindOnlyWithoutMapping) {
-					if (StringUtils.equals(existingClassifier.getLexName(), emptyCellValue)) {
-						return existingClassifier;
+					if (StringUtils.equalsAny(existingClassifierMapping.getLexName(), emptyCellValue, undefinedCellValue)) {
+						return existingClassifierMapping;
 					}
 				} else {
-					return existingClassifier;
+					return existingClassifierMapping;
 				}
 			}
 		}
@@ -366,52 +419,17 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		return StringUtils.join(values, separator);
 	}
 
-	public void appendCell(StringBuffer classifCsvLineBuf, String cellValue, boolean isLast) {
+	public void appendCell(StringBuffer csvFileLineBuf, String cellValue, boolean isLast) {
 		if (StringUtils.isBlank(cellValue)) {
-			classifCsvLineBuf.append(CSV_EMPTY_CELL);
+			csvFileLineBuf.append(CSV_EMPTY_CELL);
 		} else {
-			classifCsvLineBuf.append(cellValue);
+			csvFileLineBuf.append(cellValue);
 		}
 		if (isLast) {
-			classifCsvLineBuf.append('\n');
+			csvFileLineBuf.append('\n');
 		} else {
-			classifCsvLineBuf.append(CSV_SEPARATOR);
+			csvFileLineBuf.append(CSV_SEPARATOR);
 		}
-	}
-
-	public void writeDomainClassifierCsvFile(List<ClassifierMapping> classifiers) throws Exception {
-
-		if (CollectionUtils.isEmpty(classifiers)) {
-			logger.warn("No classifiers to save. Interrupting...");
-			return;
-		}
-
-		FileOutputStream classifierCsvStream = new FileOutputStream(CLASSIFIER_DOMAIN_CSV_PATH);
-
-		StringBuffer classifCsvLineBuf;
-		String classifCsvLine;
-
-		classifCsvLine = composeRow(CSV_SEPARATOR, "Päritolu", "Kood", "Alluvus", "Väärtus", "Keel");
-		classifCsvLine += "\n";
-
-		IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
-
-		for (ClassifierMapping classifier : classifiers) {
-
-			classifCsvLineBuf = new StringBuffer();
-
-			appendCell(classifCsvLineBuf, classifier.getEkiOrigin(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiCode(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiParentCode(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiValue(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiValueLang(), true);
-
-			classifCsvLine = classifCsvLineBuf.toString();
-			IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
-		}
-
-		classifierCsvStream.flush();
-		classifierCsvStream.close();
 	}
 
 	public List<String> readFileLines(File classifierCsvFile) throws Exception {

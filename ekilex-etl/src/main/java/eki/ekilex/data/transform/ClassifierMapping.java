@@ -24,12 +24,6 @@ public class ClassifierMapping extends AbstractDataObject {
 
 	private String lexCode;
 
-	private String lexValue;
-
-	private String lexValueLang;
-
-	private String lexValueType;
-
 	private int order;
 
 	private String ekiKey;
@@ -104,30 +98,6 @@ public class ClassifierMapping extends AbstractDataObject {
 
 	public void setLexCode(String lexCode) {
 		this.lexCode = lexCode;
-	}
-
-	public String getLexValue() {
-		return lexValue;
-	}
-
-	public void setLexValue(String lexValue) {
-		this.lexValue = lexValue;
-	}
-
-	public String getLexValueLang() {
-		return lexValueLang;
-	}
-
-	public void setLexValueLang(String lexValueLang) {
-		this.lexValueLang = lexValueLang;
-	}
-
-	public String getLexValueType() {
-		return lexValueType;
-	}
-
-	public void setLexValueType(String lexValueType) {
-		this.lexValueType = lexValueType;
 	}
 
 	public int getOrder() {

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.transform.ClassifierMapping;
 
 @Component
-public class BolanToDomainCsvRunner extends AbstractClassifierRunner {
+public class BolanToDomainCsvRunner extends AbstractDomainRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(BolanToDomainCsvRunner.class);
 
@@ -38,18 +38,10 @@ public class BolanToDomainCsvRunner extends AbstractClassifierRunner {
 			classifierXsdFilePaths.add(classifierXsdFilePath);
 		}
 
-		List<ClassifierMapping> targetClassifiers = new ArrayList<>();
-		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths, DOMAIN_EKI_TYPE, DOMAIN_EKI_ORIGIN);
-
-		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
-
-		if (classifierCsvFile.exists()) {
-			List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
-			targetClassifiers = merge(sourceClassifiers, existingClassifiers);
-			targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
-		} else {
-			targetClassifiers = sourceClassifiers;
-		}
+		List<ClassifierMapping> sourceClassifiersRaw = loadSourceClassifiers(classifierXsdFilePaths, DOMAIN_EKI_TYPE, DOMAIN_EKI_ORIGIN);
+		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
+		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiersRaw, existingClassifiers);
+		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 
 		writeDomainClassifierCsvFile(targetClassifiers);
 

@@ -215,32 +215,32 @@ tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	lex_rel_type	tvt:vt ka	tähendusviide, vaa
 u_tyyp	uus märksõna	uus	uus märksõna	et	-	-	-	-	-
 u_tyyp	uus märksõna	uus	new headword	en	-	-	-	-	-
 var_tyyp	var_tyyp	var	/ variant	et	-	-	-	-	-
-vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_pos	mitm	pluural, mitmus	est	descrip
-vk_tyyp	vk_tyyp	mitm	plural	en	display_pos	mitm	plural	eng	descrip
-vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_pos	ains	singular, ainsus	est	descrip
-vk_tyyp	vk_tyyp	ains	singular	en	display_pos	ains	singular	eng	descrip
-vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	display_pos	om	singular genitiiv, ainsuse omastav	est	descrip
-vk_tyyp	vk_tyyp	om	singular genitive	en	display_pos	om	singular genitive	eng	descrip
-vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	display_pos	os	singular partitiiv, ainsuse osastav	est	descrip
-vk_tyyp	vk_tyyp	os	singular partitive	en	display_pos	os	singular partitive	eng	descrip
-vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	display_pos	keskv	komparatiiv, keskvõrre	est	descrip
-vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	display_pos	keskv	comparative (degree)	eng	descrip
-vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	display_pos	üliv	superlatiiv, ülivõrre	est	descrip
-vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	display_pos	üliv	superlative (degree)	eng	descrip
-vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_pos	kesks	partitsiip, kesksõna	est	descrip
-vk_tyyp	vk_tyyp	kesks	participle	en	display_pos	kesks	participle	eng	descrip
-vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	display_pos	ger	gerundiiv, des-vorm	est	descrip
-vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_pos	impers	impersonaal, umbisikuline tegumood	est	descrip
-vk_tyyp	vormikood	impers	impersonal	en	display_pos	impers	impersonal	eng	descrip
-vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	display_pos	partits	partitsiip, kesksõna	est	descrip
-vk_tyyp	vormikood	partits	participle	en	display_pos	partits	participle	eng	descrip
-vk_tyyp	vormikood	pl	pluural, mitmus	et	display_pos	pl	pluural, mitmus	est	descrip
-vk_tyyp	vormikood	pl	plural	en	display_pos	pl	plural	eng	descrip
-vk_tyyp	vormikood	sg	singular, ainsus	et	display_pos	sg	singular, ainsus	est	descrip
-vk_tyyp	vormikood	sg	singular	en	display_pos	sg	singular	eng	descrip
-vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	display_pos	sg gen	singular genitiiv, ainsuse omastav	est	descrip
-vk_tyyp	vormikood	sg gen	singular genitiv	en	display_pos	sg gen	singular genitiv	eng	descrip
-vk_tyyp	vormikood	ssv	seisundivorm	et	display_pos	ssv	seisundivorm	est	descrip
+vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_morph	mitm	pluural, mitmus	est	descrip
+vk_tyyp	vk_tyyp	mitm	plural	en	display_morph	mitm	plural	eng	descrip
+vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_morph	ains	singular, ainsus	est	descrip
+vk_tyyp	vk_tyyp	ains	singular	en	display_morph	ains	singular	eng	descrip
+vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	display_morph	om	singular genitiiv, ainsuse omastav	est	descrip
+vk_tyyp	vk_tyyp	om	singular genitive	en	display_morph	om	singular genitive	eng	descrip
+vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	display_morph	os	singular partitiiv, ainsuse osastav	est	descrip
+vk_tyyp	vk_tyyp	os	singular partitive	en	display_morph	os	singular partitive	eng	descrip
+vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	display_morph	keskv	komparatiiv, keskvõrre	est	descrip
+vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	display_morph	keskv	comparative (degree)	eng	descrip
+vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	display_morph	üliv	superlatiiv, ülivõrre	est	descrip
+vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	display_morph	üliv	superlative (degree)	eng	descrip
+vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_morph	kesks	partitsiip, kesksõna	est	descrip
+vk_tyyp	vk_tyyp	kesks	participle	en	display_morph	kesks	participle	eng	descrip
+vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	display_morph	ger	gerundiiv, des-vorm	est	descrip
+vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_morph	impers	impersonaal, umbisikuline tegumood	est	descrip
+vk_tyyp	vormikood	impers	impersonal	en	display_morph	impers	impersonal	eng	descrip
+vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	display_morph	partits	partitsiip, kesksõna	est	descrip
+vk_tyyp	vormikood	partits	participle	en	display_morph	partits	participle	eng	descrip
+vk_tyyp	vormikood	pl	pluural, mitmus	et	display_morph	pl	pluural, mitmus	est	descrip
+vk_tyyp	vormikood	pl	plural	en	display_morph	pl	plural	eng	descrip
+vk_tyyp	vormikood	sg	singular, ainsus	et	display_morph	sg	singular, ainsus	est	descrip
+vk_tyyp	vormikood	sg	singular	en	display_morph	sg	singular	eng	descrip
+vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	display_morph	sg gen	singular genitiiv, ainsuse omastav	est	descrip
+vk_tyyp	vormikood	sg gen	singular genitiv	en	display_morph	sg gen	singular genitiv	eng	descrip
+vk_tyyp	vormikood	ssv	seisundivorm	et	display_morph	ssv	seisundivorm	est	descrip
 vn_tyyp	muutevormi nimi	ID	muutumatu	et	morph	ID	muutumatu	est	descrip2
 vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	morph	SgN	ainsuse nimetav	est	descrip2
 vn_tyyp	muutevormi nimi	SgN	SgN	en	morph	SgN	SgN	eng	descrip2
