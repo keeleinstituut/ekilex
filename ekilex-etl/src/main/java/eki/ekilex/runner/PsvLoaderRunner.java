@@ -1,7 +1,6 @@
 package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -19,12 +18,14 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import eki.ekilex.data.transform.Rection;
+import eki.ekilex.service.WordMatcherService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
@@ -63,6 +64,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String sqlFormsOfTheWord = "select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update form set sound_file = :soundFile where id in "
 			+ "(select f.id from form f join paradigm p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
+	private final static String sqlWordLexemesByDataset = "select l.* from lexeme l join lexeme_dataset ld on ld.lexeme_id = l.id "
+			+ "where l.word_id = :wordId and ld.dataset_code = :dataset";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -71,6 +74,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> lexemeTypes;
 	private ReportComposer reportComposer;
 	private boolean reportingEnabled;
+
+	@Autowired
+	private WordMatcherService wordMatcherService;
 
 	@Override
 	void initialise() throws Exception {
@@ -91,8 +97,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String dataXmlFilePath,
 			String dataset,
 			Map<String, List<Paradigm>> wordParadigmsMap,
-			boolean isAddReporting,
-			Map<String, String> guidsMap) throws Exception {
+			boolean isAddReporting) throws Exception {
 
 		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
@@ -131,10 +136,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		writeToLogFile("Artiklite töötlus", "", "");
 		for (Element articleNode : articleNodes) {
-			String guid = extractGuid(articleNode, guidsMap);
-			if (isArticleImported(guid)) {
-				continue;
-			}
+			String guid = extractGuid(articleNode);
 			List<WordData> newWords = new ArrayList<>();
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element reportingIdNode = (Element) articleNode.selectSingleNode(reportingIdExp);
@@ -176,17 +178,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private boolean isArticleImported(String guid) throws Exception {
-		return getWordIdForGuid(guid) != null;
-	}
-
-	private String extractGuid(Element node, Map<String, String> guidsMap) {
+	private String extractGuid(Element node) {
 
 		final String articleGuidExp = "x:G";
 
 		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
-		String guidInDataset = guidNode != null ? StringUtils.upperCase(guidNode.getTextTrim()) : "";
-		return guidInDataset == null ? null : guidsMap.get(guidInDataset);
+		return guidNode != null ? StringUtils.upperCase(guidNode.getTextTrim()) : null;
 	}
 
 	private void processWordSuperlatives(Context context) throws Exception {
@@ -406,7 +403,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		} else {
-			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data, lexemeType);
+			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data, lexemeType, dataset);
 			if (!data.usages.isEmpty()) {
 				logger.debug("Usages found for word, skipping them : {}.", data.word);
 				writeToLogFile(data.reportingId, "Leiti kasutusnäited olemasolevale ilmikule", data.word);
@@ -443,15 +440,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private Long findLexemeIdForWord(Long wordId, LexemeToWordData data, String lexemeType) throws Exception {
+	private Long findLexemeIdForWord(Long wordId, LexemeToWordData data, String lexemeType, String dataset) throws Exception {
 
 		Long lexemeId = null;
 		Map<String, Object> params = new HashMap<>();
-		params.put("word_id", wordId);
+		params.put("wordId", wordId);
+		params.put("dataset", dataset);
 		if (data.lexemeLevel1 != 0) {
 			params.put("level1", data.lexemeLevel1);
 		}
-		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
+		List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
+		if (data.lexemeLevel1 != 0) {
+			lexemes = lexemes.stream().filter(l -> (Integer)l.get("level1") == data.lexemeLevel1).collect(Collectors.toList());
+		}
 		if (lexemes.isEmpty()) {
 			logger.debug("Lexeme not found for word : {}.", data.word);
 			writeToLogFile(data.reportingId, "Ei leitud ilmikut sõnale", data.word);
@@ -521,11 +522,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.reportingId);
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", basicWord.id);
-				List<Map<String, Object>> secondaryWordLexemes = basicDbService.selectAll(LEXEME, params);
+				params.put("wordId", basicWord.id);
+				params.put("dataset", dataset);
+				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
-					params.put("word_id", wordId);
-					List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
+					params.put("wordId", wordId);
+					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					for (Map<String, Object> lexeme : lexemes) {
 						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), "head", dataset);
 					}
@@ -546,14 +548,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.reportingId);
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", wordId);
-				params.put("level1", antonymData.lexemeLevel1);
-				Map<String, Object> lexemeObject = basicDbService.select(LEXEME, params);
-				if (lexemeObject != null) {
-					createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get("id"), "ant", dataset);
-				} else {
-					logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-					writeToLogFile(antonymData.reportingId, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
+				params.put("wordId", wordId);
+				params.put("dataset", dataset);
+				try {
+					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
+					Optional<Map<String, Object>> lexemeObject =
+							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == antonymData.lexemeLevel1).findFirst();
+					if (lexemeObject.isPresent()) {
+						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), "ant", dataset);
+					} else {
+						logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
+						writeToLogFile(antonymData.reportingId, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
+					}
+				} catch (Exception e) {
+					logger.error("More than one lexeme {}, {}", antonymData.word, wordId);
 				}
 			}
 		}
@@ -1214,14 +1222,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			WordData wordData = new WordData();
 			wordData.reportingId = reportingId;
 
-			Long existingWordId = getWordIdForGuid(guid);
-			boolean isExistingWord = existingWordId != null;
-
-			Word word = extractWordData(wordGroupNode, wordData, isExistingWord);
-			if (isExistingWord) {
-				wordData.id = existingWordId;
-			} else {
-				word.setGuid(guid);
+			Word word = extractWordData(wordGroupNode, wordData, guid, context);
+			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
 				wordData.id = saveWord(word, paradigms, wordDuplicateCount);
 			}
@@ -1257,17 +1259,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			newWords.add(wordData);
 		}
-	}
-
-	private Long getWordIdForGuid(String guid) throws Exception {
-
-		if (isBlank(guid)) {
-			return null;
-		}
-		Map<String, Object> params = new HashMap<>();
-		params.put("guid", guid);
-		Map<String, Object> wordObject = basicDbService.select(WORD, params);
-		return wordObject == null ? null : (Long) wordObject.get("id");
 	}
 
 	private void addSoundFileNamesToForms(Long wordId, Element wordGroupNode) {
@@ -1354,7 +1345,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return matchingParadigm;
 	}
 
-	private Word extractWordData(Element wordGroupNode, WordData wordData, boolean isExistingWord) throws Exception {
+	private Word extractWordData(Element wordGroupNode, WordData wordData, String guid, Context context) throws Exception {
 
 		final String wordExp = "x:m";
 		final String wordDisplayMorphExp = "x:vk";
@@ -1374,9 +1365,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		wordData.value = wordValue;
 
 		Word word = null;
-		if (!isExistingWord) {
+		Long existingWordId = checkForAndGetExistingWordId(wordGroupNode, wordData, guid, context);
+		if (existingWordId == null) {
 			int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-			String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
+			String wordMorphCode = extractWordMorphCode(wordValue, wordGroupNode);
 
 			word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
 
@@ -1384,9 +1376,22 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			if (wordDisplayMorphNode != null) {
 				word.setDisplayMorph(wordDisplayMorphNode.getTextTrim());
 			}
+		} else {
+			wordData.id = existingWordId;
 		}
 
 		return word;
+	}
+
+	private Long checkForAndGetExistingWordId(Element wordGroupNode, WordData wordData, String guid, Context context) throws Exception {
+
+		List<String> forms = extractWordForms(wordGroupNode);
+		Long existingWordId = wordMatcherService.getMatchingWordId(guid, wordData.value, forms);
+		Optional<WordData> importedWord = context.importedWords.stream().filter(w -> w.id.equals(existingWordId)).findFirst();
+		if (importedWord.isPresent() && importedWord.get().homonymNr != wordData.homonymNr) {
+			return null;
+		}
+		return existingWordId;
 	}
 
 	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
@@ -1426,7 +1431,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return paradigms;
 	}
 
-	private String getWordMorphCode(String word, Element wordGroupNode) {
+	private String extractWordMorphCode(String word, Element wordGroupNode) {
 
 		final String formGroupExp = "x:mfp/x:gkg/x:mvg";
 		final String formExp = "x:mvgp/x:mvf";
@@ -1441,6 +1446,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 		return defaultWordMorphCode;
+	}
+
+	private List<String> extractWordForms(Element wordGroupNode) {
+
+		final String formValueExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
+
+		List<String> forms = new ArrayList<>();
+		List<Element> formNodes = wordGroupNode.selectNodes(formValueExp);
+		for (Element formNode : formNodes) {
+			String formValue = StringUtils.replaceChars(formNode.getTextTrim(), wordDisplayFormStripChars, "");
+			forms.add(formValue);
+		}
+		return forms;
 	}
 
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {

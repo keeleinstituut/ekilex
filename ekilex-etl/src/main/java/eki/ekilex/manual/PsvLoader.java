@@ -4,6 +4,7 @@ import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
+import eki.ekilex.service.WordMatcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -30,9 +31,11 @@ public class PsvLoader {
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
 
 			boolean combineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with existing datsets? (y/n)");
-			Map<String, String> guidsMap = new HashMap<>();
 			if (combineDatasets) {
 				String guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
+				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);
+				wordMatcherService.setEnabled(true);
+				wordMatcherService.load(guidMappingFilePath);
 			}
 
 			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
@@ -44,7 +47,7 @@ public class PsvLoader {
 			}
 
 			String dataset = "psv";
-			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting, guidsMap);
+			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
