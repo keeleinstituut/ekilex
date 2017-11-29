@@ -4,16 +4,17 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.transform.Classifier;
 import eki.ekilex.data.transform.ClassifierMapping;
 
 @Component
@@ -29,22 +30,49 @@ public class XsdToClassifierCsvRunner extends AbstractClassifierRunner {
 
 		validateFilePaths(classifierXsdFilePaths);
 
-		List<ClassifierMapping> targetClassifiers = new ArrayList<>();
 		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths, null, null);
+		List<ClassifierMapping> existingClassifierMappings = loadExistingMainClassifierMappings();
+		List<Classifier> existingClassifiers = loadExistingMainClassifiers();
+		List<ClassifierMapping> targetClassifierMappings = merge(sourceClassifiers, existingClassifierMappings);
+		targetClassifierMappings.sort(
+				Comparator.comparing(ClassifierMapping::getEkiType)
+				.thenComparing(ClassifierMapping::getLexName)
+				.thenComparing(ClassifierMapping::getOrder));
 
-		File classifierCsvFile = new File(CLASSIFIER_MAIN_CSV_PATH);
+		compare(existingClassifierMappings, existingClassifiers);
+		
+		writeMainClassifierMappingsCsvFile(targetClassifierMappings);
+		writeMainClassifiersCsvFile(existingClassifiers);
 
-		if (classifierCsvFile.exists()) {
-			List<ClassifierMapping> existingClassifiers = loadExistingMainClassifiers();
-			targetClassifiers = merge(sourceClassifiers, existingClassifiers);
-			targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiType).thenComparing(ClassifierMapping::getLexName).thenComparing(ClassifierMapping::getOrder));
-		} else {
-			targetClassifiers = sourceClassifiers;
+		logger.debug("Done. Recompiled {} mappings", targetClassifierMappings.size());
+		logger.debug("Done. Recompiled {} classifiers", existingClassifiers.size());
+	}
+
+	private void compare(List<ClassifierMapping> classifierMappings, List<Classifier> classifiers) {
+
+		for (ClassifierMapping classifierMapping : classifierMappings) {
+			if (StringUtils.equalsAny(classifierMapping.getLexName(), emptyCellValue, undefinedCellValue)) {
+				continue;
+			}
+			Classifier mappedClassifier = find(classifierMapping, classifiers);
+			if (mappedClassifier == null) {
+				logger.warn("Mapping file refers to missing classifier {}-{}", classifierMapping.getLexName(), classifierMapping.getLexCode());
+			}
 		}
+	}
 
-		writeMainClassifierCsvFile(targetClassifiers);
+	private Classifier find(ClassifierMapping classifierMapping, List<Classifier> classifiers) {
 
-		logger.debug("Done. Recompiled {} rows", targetClassifiers.size());
+		String mappingName = classifierMapping.getLexName();
+		String mappingCode = classifierMapping.getLexCode();
+		for (Classifier classifier : classifiers) {
+			String classifierName = classifier.getName();
+			String classifierCode = classifier.getCode();
+			if (StringUtils.equals(mappingName, classifierName) && StringUtils.equals(mappingCode, classifierCode)) {
+				return classifier;
+			}
+		}
+		return null;
 	}
 
 	private void validateFilePaths(List<String> filePaths) throws Exception {
@@ -61,45 +89,76 @@ public class XsdToClassifierCsvRunner extends AbstractClassifierRunner {
 		}
 	}
 
-	private void writeMainClassifierCsvFile(List<ClassifierMapping> classifiers) throws Exception {
+	private void writeMainClassifierMappingsCsvFile(List<ClassifierMapping> classifierMappings) throws Exception {
+
+		if (CollectionUtils.isEmpty(classifierMappings)) {
+			logger.warn("No classifier mappings to save. Interrupting...");
+			return;
+		}
+
+		FileOutputStream csvStream = new FileOutputStream(CLASSIFIER_MAIN_MAP_CSV_PATH);
+
+		StringBuffer csvFileLineBuf;
+		String classifCsvLine;
+
+		classifCsvLine = composeRow(CSV_SEPARATOR,
+				"EKI liik", "EKI nimi", "EKI kood", "EKI väärtus", "EKI keel", "LEX nimi", "LEX kood");
+		classifCsvLine += "\n";
+
+		IOUtils.write(classifCsvLine, csvStream, StandardCharsets.UTF_8);
+
+		for (ClassifierMapping classifierMapping : classifierMappings) {
+
+			csvFileLineBuf = new StringBuffer();
+
+			appendCell(csvFileLineBuf, classifierMapping.getEkiType(), false);
+			appendCell(csvFileLineBuf, classifierMapping.getEkiName(), false);
+			appendCell(csvFileLineBuf, classifierMapping.getEkiCode(), false);
+			appendCell(csvFileLineBuf, classifierMapping.getEkiValue(), false);
+			appendCell(csvFileLineBuf, classifierMapping.getEkiValueLang(), false);
+			appendCell(csvFileLineBuf, classifierMapping.getLexName(), false);
+			appendCell(csvFileLineBuf, classifierMapping.getLexCode(), true);
+
+			classifCsvLine = csvFileLineBuf.toString();
+			IOUtils.write(classifCsvLine, csvStream, StandardCharsets.UTF_8);
+		}
+
+		csvStream.flush();
+		csvStream.close();
+	}
+
+	private void writeMainClassifiersCsvFile(List<Classifier> classifiers) throws Exception {
 
 		if (CollectionUtils.isEmpty(classifiers)) {
 			logger.warn("No classifiers to save. Interrupting...");
 			return;
 		}
 
-		FileOutputStream classifierCsvStream = new FileOutputStream(CLASSIFIER_MAIN_CSV_PATH);
+		FileOutputStream csvStream = new FileOutputStream(CLASSIFIER_MAIN_VALUE_CSV_PATH);
 
-		StringBuffer classifCsvLineBuf;
+		StringBuffer csvFileLineBuf;
 		String classifCsvLine;
 
-		classifCsvLine = composeRow(CSV_SEPARATOR,
-				"EKI liik", "EKI nimi", "EKI kood", "EKI väärtus", "EKI keel", "LEX nimi", "LEX kood", "LEX väärtus", "LEX keel", "LEX väärtuse liik");
+		classifCsvLine = composeRow(CSV_SEPARATOR, "LEX nimi", "LEX kood", "LEX väärtus", "LEX keel", "LEX väärtuse liik");
 		classifCsvLine += "\n";
 
-		IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
+		IOUtils.write(classifCsvLine, csvStream, StandardCharsets.UTF_8);
 
-		for (ClassifierMapping classifier : classifiers) {
+		for (Classifier classifier : classifiers) {
 
-			classifCsvLineBuf = new StringBuffer();
+			csvFileLineBuf = new StringBuffer();
 
-			appendCell(classifCsvLineBuf, classifier.getEkiType(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiName(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiCode(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiValue(), false);
-			appendCell(classifCsvLineBuf, classifier.getEkiValueLang(), false);
-			appendCell(classifCsvLineBuf, classifier.getLexName(), false);
-			appendCell(classifCsvLineBuf, classifier.getLexCode(), false);
-			appendCell(classifCsvLineBuf, classifier.getLexValue(), false);
-			appendCell(classifCsvLineBuf, classifier.getLexValueLang(), false);
-			appendCell(classifCsvLineBuf, classifier.getLexValueType(), true);
+			appendCell(csvFileLineBuf, classifier.getName(), false);
+			appendCell(csvFileLineBuf, classifier.getCode(), false);
+			appendCell(csvFileLineBuf, classifier.getValue(), false);
+			appendCell(csvFileLineBuf, classifier.getValueLang(), false);
+			appendCell(csvFileLineBuf, classifier.getValueType(), true);
 
-			classifCsvLine = classifCsvLineBuf.toString();
-			IOUtils.write(classifCsvLine, classifierCsvStream, StandardCharsets.UTF_8);
+			classifCsvLine = csvFileLineBuf.toString();
+			IOUtils.write(classifCsvLine, csvStream, StandardCharsets.UTF_8);
 		}
 
-		classifierCsvStream.flush();
-		classifierCsvStream.close();
+		csvStream.flush();
+		csvStream.close();
 	}
-
 }

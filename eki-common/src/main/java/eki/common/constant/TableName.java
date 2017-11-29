@@ -34,6 +34,7 @@ public interface TableName {
 	public static final String SOURCE_FREEFORM = "source_freeform";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";
+	public static final String WORD_GUID = "word_guid";
 	public static final String LEXEME_RELATION = "lex_relation";
 	public static final String FORM_RELATION = "form_relation";
 	public static final String LIFECYCLE_LOG = "lifecycle_log";

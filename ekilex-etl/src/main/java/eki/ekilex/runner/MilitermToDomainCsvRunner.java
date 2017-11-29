@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 import eki.ekilex.data.transform.ClassifierMapping;
 
 @Component
-public class MilitermToDomainCsvRunner extends AbstractClassifierRunner {
+public class MilitermToDomainCsvRunner extends AbstractDomainRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(MilitermToDomainCsvRunner.class);
 
@@ -36,18 +36,10 @@ public class MilitermToDomainCsvRunner extends AbstractClassifierRunner {
 		List<String> sourceCsvLines = readFileLines(sourceCsvFile);
 		sourceCsvLines.remove(0);
 
-		List<ClassifierMapping> targetClassifiers = new ArrayList<>();
 		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(sourceCsvLines);
-
-		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
-
-		if (classifierCsvFile.exists()) {
-			List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
-			targetClassifiers = merge(sourceClassifiers, existingClassifiers);
-			targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
-		} else {
-			targetClassifiers = sourceClassifiers;
-		}
+		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifierMappings();
+		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);
+		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 
 		writeDomainClassifierCsvFile(targetClassifiers);
 

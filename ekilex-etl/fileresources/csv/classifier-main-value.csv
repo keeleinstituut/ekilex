@@ -1,0 +1,447 @@
+LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
+deriv	adv	adverb (-lt)	est	descrip
+deriv	dem	KE/KENE	est	ekimorfo
+deriv	dem	diminutive	eng	descrip
+deriv	dem	deminutiiv, vähendussõna	est	descrip
+deriv	dem	deminutiiv, vähendussõna (-ke, -kene)	est	descrip2
+deriv	dem	dem	lat	abbrev
+deriv	komp	M	est	ekimorfo
+deriv	komp	comparative (degree)	eng	descrip
+deriv	komp	komparatiiv, keskvõrre	est	descrip
+deriv	komp	komparatiiv, keskvõrre (-m)	est	descrip2
+deriv	komp	keskv	est	abbrev
+deriv	komp	komp	lat	abbrev
+deriv	superl	IM	est	ekimorfo
+deriv	superl	superlative (degree)	eng	descrip
+deriv	superl	superlatiiv, ülivõrre	est	descrip
+deriv	superl	superlatiiv, ülivõrre (-im)	est	descrip2
+deriv	superl	üliv	est	abbrev
+deriv	superl	superl	lat	abbrev
+deriv	tgn	JA	est	ekimorfo
+deriv	tgn	ja-derivative = actor	eng	descrip
+deriv	tgn	tegijanimi	est	descrip
+deriv	tgn	tegijanimi (-ja)	est	descrip2
+deriv	tgn	tgn	est	abbrev
+deriv	tn	MINE	est	ekimorfo
+deriv	tn	mine-derivative = act, process	eng	descrip
+deriv	tn	teonimi	est	descrip
+deriv	tn	teonimi (-mine)	est	descrip2
+deriv	tn	tn	est	abbrev
+deriv	as	US	est	ekimorfo
+deriv	posit	_	est	ekimorfo
+deriv	as	as	lat	abbrev
+deriv	posit	algvõrre	est	descrip
+deriv	as	abstraktne substantiiv	est	descrip
+deriv	posit	positiiv, algvõrre	est	descrip2
+deriv	as	abstract substantive	eng	descrip
+deriv	posit	positive degree	eng	descrip
+display_morph	mitm	pluural, mitmus	est	descrip
+display_morph	mitm	plural	eng	descrip
+display_morph	ains	singular, ainsus	est	descrip
+display_morph	ains	singular	eng	descrip
+display_morph	om	singular genitiiv, ainsuse omastav	est	descrip
+display_morph	om	singular genitive	eng	descrip
+display_morph	os	singular partitiiv, ainsuse osastav	est	descrip
+display_morph	os	singular partitive	eng	descrip
+display_morph	keskv	komparatiiv, keskvõrre	est	descrip
+display_morph	keskv	comparative (degree)	eng	descrip
+display_morph	üliv	superlatiiv, ülivõrre	est	descrip
+display_morph	üliv	superlative (degree)	eng	descrip
+display_morph	kesks	partitsiip, kesksõna	est	descrip
+display_morph	kesks	participle	eng	descrip
+display_morph	ger	gerundiiv, des-vorm	est	descrip
+display_morph	impers	impersonaal, umbisikuline tegumood	est	descrip
+display_morph	impers	impersonal	eng	descrip
+display_morph	partits	partitsiip, kesksõna	est	descrip
+display_morph	partits	participle	eng	descrip
+display_morph	pl	pluural, mitmus	est	descrip
+display_morph	pl	plural	eng	descrip
+display_morph	sg	singular, ainsus	est	descrip
+display_morph	sg	singular	eng	descrip
+display_morph	sg gen	singular genitiiv, ainsuse omastav	est	descrip
+display_morph	sg gen	singular genitiv	eng	descrip
+display_morph	ssv	seisundivorm	est	descrip
+entry_class	määramata	-	-	-
+entry_class	töös	-	-	-
+entry_class	avalik	-	-	-
+form_rel_type	mvt	viitemärksõna	est	full
+lex_rel_type	comp	liitsõna	est	full
+lex_rel_type	ant	antonüüm	est	full
+lex_rel_type	head	põhisõna	est	full
+lex_rel_type	vor	vormel	est	full
+lex_rel_type	yvr	üksikvorm	est	full
+lex_rel_type	pyh	ühend	est	full
+lex_rel_type	yhvt	ühendviide	est	full
+lex_rel_type	tvt:vrd	tähendusviide, võrdle	est	full
+lex_rel_type	tvt:vt ka	tähendusviide, vaata ka	est	full
+lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
+lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
+lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
+lexeme_frequency	1	1 - 3000	est	descrip
+lexeme_frequency	2	2 - 3000-6000	est	descrip
+lexeme_frequency	3	3 - 6000-10000	est	descrip
+lexeme_frequency	4	4 - pole sag_S-s	est	descrip
+lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
+lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
+lexeme_frequency	L4	L4 - pole sag_S-s (lisatud)	est	descrip
+lexeme_type	eelistermin	eelistermin	est	descrip
+lexeme_type	lühend	lühend	est	descrip
+lexeme_type	sünonüüm	sünonüüm	est	descrip
+lexeme_type	variant	variant	est	descrip
+lexeme_type	väldi	väldi	est	descrip
+lexeme_type	endine	endine	est	descrip
+lexeme_type	lühend ja sünonüüm	lühend ja sünonüüm	est	descrip
+lexeme_type	k	kohanimi	est	descrip
+lexeme_type	k	place name	eng	descrip
+lexeme_type	l	lühend	est	descrip
+lexeme_type	l	abbreviation	eng	descrip
+lexeme_type	p	pärisnimi	est	descrip
+lexeme_type	p	proper name	eng	descrip
+lexeme_type	z	tsitaatsõna	est	descrip
+lexeme_type	z	loanword (alien)	eng	descrip
+lexeme_type	viiteartikli märksõna	viiteartikli märksõna	est	descrip
+lexeme_type	ühendverb	ühendverb	est	descrip
+lexeme_type	väljendverb	väljendverb	est	descrip
+lexeme_type	ahelverb	ahelverb	est	descrip
+lexeme_type	tugiverb	tugiverb	est	descrip
+lexeme_type	väljend	väljend	est	descrip
+lexeme_type	ühendsidesõna	ühendsidesõna (nii et)	est	descrip
+lexeme_type	rühmsidesõna	rühmsidesõna (ei .. ega)	est	descrip
+meaning_state	komisjoni kinnitatud	-	-	-
+meaning_state	komisjonis arutlusel	-	-	-
+meaning_state	terminiprobleem	-	-	-
+meaning_type	termin	-	-	-
+meaning_type	tõlkeprobleem	-	-	-
+meaning_type	ametinimetus	-	-	-
+meaning_type	organisatsioon, asutus	-	-	-
+meaning_type	õigusakti pealkiri	-	-	-
+meaning_type	dokumendi pealkiri	-	-	-
+morph	ID	muutumatu	est	descrip2
+morph	SgN	ainsuse nimetav	est	descrip2
+morph	SgN	SgN	eng	descrip2
+morph	SgG	ainsuse omastav	est	descrip2
+morph	SgP	ainsuse osastav	est	descrip2
+morph	SgAdt	ainsuse suunduv	est	descrip2
+morph	SgIll	ainsuse sisseütlev	est	descrip2
+morph	SgIn	ainsuse seesütlev	est	descrip2
+morph	SgEl	ainsuse seestütlev	est	descrip2
+morph	SgAll	ainsuse alaleütlev	est	descrip2
+morph	SgAd	ainsuse alalütlev	est	descrip2
+morph	SgAbl	ainsuse alaltütlev	est	descrip2
+morph	SgTr	ainsuse saav	est	descrip2
+morph	SgTer	ainsuse rajav	est	descrip2
+morph	SgEs	ainsuse olev	est	descrip2
+morph	SgAb	ainsuse ilmaütlev	est	descrip2
+morph	SgKom	ainsuse kaasaütlev	est	descrip2
+morph	PlN	mitmuse nimetav	est	descrip2
+morph	PlG	mitmuse omastav	est	descrip2
+morph	PlP	mitmuse osastav	est	descrip2
+morph	PlAdt	mitmuse aditiiv	est	descrip2
+morph	PlIll	mitmuse sisseütlev	est	descrip2
+morph	PlIn	mitmuse seesütlev	est	descrip2
+morph	PlEl	mitmuse seestütlev	est	descrip2
+morph	PlAll	mitmuse alaleütlev	est	descrip2
+morph	PlAd	mitmuse alalütlev	est	descrip2
+morph	PlAbl	mitmuse alaltütlev	est	descrip2
+morph	PlTr	mitmuse saav	est	descrip2
+morph	PlTer	mitmuse rajav	est	descrip2
+morph	PlEs	mitmuse olev	est	descrip2
+morph	PlAb	mitmuse ilmaütlev	est	descrip2
+morph	PlKom	mitmuse kaasaütlev	est	descrip2
+morph	Sup	MA = ma-tegevusnimi	est	descrip2
+morph	Inf	DA = da-tegevusnimi	est	descrip2
+morph	IndPrSg3	B = kindla kv oleviku ainsuse 3. p	est	descrip2
+morph	IndPrPl1	ME = kindla kv oleviku mitmuse 1. p	est	descrip2
+morph	PtsPtIps	TUD = tud-kesksõna	est	descrip2
+morph	IndIpfSg3	S = lihtmineviku ainsuse 3. p	est	descrip2
+morph	PtsPtPs	NUD = nud-kesksõna	est	descrip2
+morph	ImpPrPl2	GE = käskiva kv mitmuse 2. p	est	descrip2
+morph	IndPrIps	TAKSE = umbisikulise tm olevik	est	descrip2
+morph	PtsPrIps	TAV = tav-kesksõna	est	descrip2
+morph	IndPrPsN	POLE = kindla kv oleviku eitus	est	descrip2
+morph	IndIpfPsN	POLNUD = kindla kv mineviku eitus	est	descrip2
+morph	Neg	EI = eitus	est	descrip2
+morph	ImpPrSg2N	ÄRA = käskiva kv oleviku sg 2.p. eitus	est	descrip2
+morph	ImpPrPl2N	ÄRGE = käskiva kv oleviku pl 2.p. eitus	est	descrip2
+morph	ImpPrPl1N	ÄRGEM = käskiva kv oleviku pl 1.p. eitus	est	descrip2
+morph	ImpPrN	ÄRGU = käskiva kv oleviku isikuline eitus	est	descrip2
+morph	ID	indekl	lat	abbrev
+morph	SgN	nom	lat	abbrev
+morph	SgG	sg gen, gen	lat	abbrev
+morph	SgP	part	lat	abbrev
+morph	SgIll	illat	lat	abbrev
+morph	SgIn	iness	lat	abbrev
+morph	SgEl	adess	lat	abbrev
+morph	PlN	pl nom	lat	abbrev
+morph	PlG	pl gen	lat	abbrev
+morph	PlP	pl part	lat	abbrev
+morph	PlIll	pl illat	lat	abbrev
+morph	PlIn	pl iness	lat	abbrev
+morph	PlEl	pl elat	lat	abbrev
+morph	PlTer	pl term	lat	abbrev
+morph	SgN	SgN	eng	abbrev
+morph	SgG	om	est	abbrev
+morph	SgP	os	est	abbrev
+morph	ID	--------	est	ekimorfo
+morph	??	------xx	est	ekimorfo
+morph	SgN	------0N	est	ekimorfo
+morph	SgG	------0G	est	ekimorfo
+morph	SgP	------0P	est	ekimorfo
+morph	SgAdt	------0D	est	ekimorfo
+morph	SgIll	------01	est	ekimorfo
+morph	SgIn	------02	est	ekimorfo
+morph	SgEl	------03	est	ekimorfo
+morph	SgAll	------04	est	ekimorfo
+morph	SgAd	------05	est	ekimorfo
+morph	SgAbl	------06	est	ekimorfo
+morph	SgTr	------0T	est	ekimorfo
+morph	SgTer	------0R	est	ekimorfo
+morph	SgEs	------0E	est	ekimorfo
+morph	SgAb	------0A	est	ekimorfo
+morph	SgKom	------0K	est	ekimorfo
+morph	PlN	------1N	est	ekimorfo
+morph	PlG	------1G	est	ekimorfo
+morph	PlP	------1P	est	ekimorfo
+morph	PlIll	------11	est	ekimorfo
+morph	PlIn	------12	est	ekimorfo
+morph	PlEl	------13	est	ekimorfo
+morph	PlAll	------14	est	ekimorfo
+morph	PlAd	------15	est	ekimorfo
+morph	PlAbl	------16	est	ekimorfo
+morph	PlTr	------1T	est	ekimorfo
+morph	PlTer	------1R	est	ekimorfo
+morph	PlEs	------1E	est	ekimorfo
+morph	PlAb	------1A	est	ekimorfo
+morph	PlKom	------1K	est	ekimorfo
+morph	Rpl	------1-	est	ekimorfo
+morph	Nlyhi	------RC	est	ekimorfo
+morph	Nvahe	------HC	est	ekimorfo
+morph	Sup	30------	est	ekimorfo
+morph	SupAb	30-----A	est	ekimorfo
+morph	SupIn	30-----2	est	ekimorfo
+morph	SupEl	30-----3	est	ekimorfo
+morph	SupTr	30-----T	est	ekimorfo
+morph	SupIps	31------	est	ekimorfo
+morph	Inf	1-------	est	ekimorfo
+morph	Ger	2-------	est	ekimorfo
+morph	PtsPrPs	400---0N	est	ekimorfo
+morph	PtsPrIps	410---0N	est	ekimorfo
+morph	PtsPtPs	401--0--	est	ekimorfo
+morph	PtsPtIps	411--0--	est	ekimorfo
+morph	IndPrSg1	-00011--	est	ekimorfo
+morph	IndPrSg2	-00021--	est	ekimorfo
+morph	IndPrSg3	-00031--	est	ekimorfo
+morph	IndPrPl1	-00041--	est	ekimorfo
+morph	IndPrPl2	-00051--	est	ekimorfo
+morph	IndPrPl3	-00061--	est	ekimorfo
+morph	IndPrPs_	-00000--	est	ekimorfo
+morph	IndPrIps	-100-1--	est	ekimorfo
+morph	IndPrIps_	-100-0--	est	ekimorfo
+morph	IndIpfSg1	-02011--	est	ekimorfo
+morph	IndIpfSg2	-02021--	est	ekimorfo
+morph	IndIpfSg3	-02031--	est	ekimorfo
+morph	IndIpfPl1	-02041--	est	ekimorfo
+morph	IndIpfPl2	-02051--	est	ekimorfo
+morph	IndIpfPl3	-02061--	est	ekimorfo
+morph	IndIpfIps	-120-1--	est	ekimorfo
+morph	KndPrSg1	-00211--	est	ekimorfo
+morph	KndPrSg2	-00221--	est	ekimorfo
+morph	KndPrPs	-00200--	est	ekimorfo
+morph	KndPrPl1	-00241--	est	ekimorfo
+morph	KndPrPl2	-00251--	est	ekimorfo
+morph	KndPrPl3	-00261--	est	ekimorfo
+morph	KndPrIps	-102-0--	est	ekimorfo
+morph	KndPtSg1	-01211--	est	ekimorfo
+morph	KndPtSg2	-01221--	est	ekimorfo
+morph	KndPtPs	-01200--	est	ekimorfo
+morph	KndPtPl1	-01241--	est	ekimorfo
+morph	KndPtPl2	-01251--	est	ekimorfo
+morph	KndPtPl3	-01261--	est	ekimorfo
+morph	KndPtIps	-112-0--	est	ekimorfo
+morph	KvtPrPs	-00100--	est	ekimorfo
+morph	KvtPrIps	-101-0--	est	ekimorfo
+morph	KvtPtPs	-01100--	est	ekimorfo
+morph	KvtPtIps	-111-0--	est	ekimorfo
+morph	ImpPrSg2	-00320--	est	ekimorfo
+morph	ImpPrPl1	-00340--	est	ekimorfo
+morph	ImpPrPl2	-00350--	est	ekimorfo
+morph	ImpPrPs	-00300--	est	ekimorfo
+morph	ImpPrIps	-103-0--	est	ekimorfo
+morph	Vlyhi	RC------	est	ekimorfo
+morph	Vvahe	RC------	est	ekimorfo
+morph	Neg	-----2--	est	ekimorfo
+morph	ImpPrSg2N	-00322--	est	ekimorfo
+morph	ImpPrPl1N	-00342--	est	ekimorfo
+morph	ImpPrPl2N	-00352--	est	ekimorfo
+morph	ImpPrN	--0302--	est	ekimorfo
+morph	IndPrPsN	-00002--	est	ekimorfo
+morph	IndPrIpsN	-100-2--	est	ekimorfo
+morph	IndIpfPsN	-02002--	est	ekimorfo
+morph	IndIpfIpsN	-120-2--	est	ekimorfo
+morph	KvtPrPsN	-00102--	est	ekimorfo
+morph	KvtPtPsN	-01102--	est	ekimorfo
+morph	KndPrPsN	-00202--	est	ekimorfo
+morph	KndPtPsN	-01202--	est	ekimorfo
+morph	ID	muutumatu sõna (indekl)	est	descrip
+morph	??	määramatu vorm	est	descrip
+morph	SgN	ainsuse nimetav	est	descrip
+morph	SgG	ainsuse omastav	est	descrip
+morph	SgP	ainsuse osastav	est	descrip
+morph	SgAdt	ainsuse suunduv e lühike sisseütlev	est	descrip
+morph	SgIll	ainsuse sisseütlev	est	descrip
+morph	SgIn	ainsuse seesütlev	est	descrip
+morph	SgEl	ainsuse seestütlev	est	descrip
+morph	SgAll	ainsuse alaleütlev	est	descrip
+morph	SgAd	ainsuse alalütlev	est	descrip
+morph	SgAbl	ainsuse alaltütlev	est	descrip
+morph	SgTr	ainsuse saav	est	descrip
+morph	SgTer	ainsuse rajav	est	descrip
+morph	SgEs	ainsuse olev	est	descrip
+morph	SgAb	ainsuse ilmaütlev	est	descrip
+morph	SgKom	ainsuse kaasaütlev	est	descrip
+morph	PlN	mitmuse nimetav	est	descrip
+morph	PlG	mitmuse omastav	est	descrip
+morph	PlP	mitmuse osastav	est	descrip
+morph	PlIll	mitmuse sisseütlev	est	descrip
+morph	PlIn	mitmuse seesütlev	est	descrip
+morph	PlEl	mitmuse seestütlev	est	descrip
+morph	PlAll	mitmuse alaleütlev	est	descrip
+morph	PlAd	mitmuse alalütlev	est	descrip
+morph	PlAbl	mitmuse alaltütlev	est	descrip
+morph	PlTr	mitmuse saav	est	descrip
+morph	PlTer	mitmuse rajav	est	descrip
+morph	PlEs	mitmuse olev	est	descrip
+morph	PlAb	mitmuse ilmaütlev	est	descrip
+morph	PlKom	mitmuse kaasaütlev	est	descrip
+morph	Sup	ma-infinitiiv e ma-tegevusnimi	est	descrip
+morph	SupAb	mata-vorm	est	descrip
+morph	SupIn	mas-vorm	est	descrip
+morph	SupEl	mast-vorm	est	descrip
+morph	SupTr	maks-vorm	est	descrip
+morph	SupIps	ma-tegevusnime umbisikuline tegumood	est	descrip
+morph	Inf	da-infinitiiv e da-tegevusnimi	est	descrip
+morph	Ger	des-vorm	est	descrip
+morph	PtsPrPs	oleviku isikuline kesksõna e v-kesksõna	est	descrip
+morph	PtsPrIps	oleviku umbisikuline kesksõna e tav-kesksõna	est	descrip
+morph	PtsPtPs	mineviku isikuline kesksõna e nud-kesksõna	est	descrip
+morph	PtsPtIps	mineviku umbisikuline kesksõna e tud-kesksõna	est	descrip
+morph	IndPrSg1	kindla kõneviisi oleviku ainsuse 1.pööre	est	descrip
+morph	IndPrSg2	kindla kõneviisi oleviku ainsuse 2.p.	est	descrip
+morph	IndPrSg3	kindla kõneviisi oleviku ainsuse 3.p.	est	descrip
+morph	IndPrPl1	kindla kõneviisi oleviku mitmuse 1.p.	est	descrip
+morph	IndPrPl2	kindla kõneviisi oleviku mitmuse 2.p.	est	descrip
+morph	IndPrPl3	kindla kõneviisi oleviku mitmuse 3.p.	est	descrip
+morph	IndPrPs_	kindla kõneviisi oleviku isikuline tegumood (eitusega)	est	descrip
+morph	IndPrIps	kindla kõneviisi oleviku umbisikuline tegumood	est	descrip
+morph	IndPrIps_	kindla kõneviisi oleviku umbisikuline tegumood (eitusega)	est	descrip
+morph	IndIpfSg1	kindla kõneviisi lihtmineviku ainsuse 1.p.	est	descrip
+morph	IndIpfSg2	kindla kõneviisi lihtmineviku ainsuse 2.p.	est	descrip
+morph	IndIpfSg3	kindla kõneviisi lihtmineviku ainsuse 3.p.	est	descrip
+morph	IndIpfPl1	kindla kõneviisi lihtmineviku mitmuse 1.p.	est	descrip
+morph	IndIpfPl2	kindla kõneviisi lihtmineviku mitmuse 2.p.	est	descrip
+morph	IndIpfPl3	kindla kõneviisi lihtmineviku mitmuse 3.p.	est	descrip
+morph	IndIpfIps	kindla kõneviisi lihtmineviku umbisikuline tegumood	est	descrip
+morph	KndPrSg1	tingiva kõneviisi oleviku ainsuse 1.p.	est	descrip
+morph	KndPrSg2	tingiva kõneviisi oleviku ainsuse 2.p.	est	descrip
+morph	KndPrPs	tingiva kõneviisi oleviku isikuline tegumood	est	descrip
+morph	KndPrPl1	tingiva kõneviisi oleviku mitmuse 1.p.	est	descrip
+morph	KndPrPl2	tingiva kõneviisi oleviku mitmuse 2.p.	est	descrip
+morph	KndPrPl3	tingiva kõneviisi oleviku mitmuse 3.p.	est	descrip
+morph	KndPrIps	tingiva kõneviisi oleviku umbisikuline tegumood	est	descrip
+morph	KndPtSg1	tingiva kõneviisi mineviku ainsuse 1.p.	est	descrip
+morph	KndPtSg2	tingiva kõneviisi mineviku ainsuse 2.p.	est	descrip
+morph	KndPtPs	tingiva kõneviisi mineviku isikuline tegumood	est	descrip
+morph	KndPtPl1	tingiva kõneviisi mineviku mitmuse 1.p.	est	descrip
+morph	KndPtPl2	tingiva kõneviisi mineviku mitmuse 2.p.	est	descrip
+morph	KndPtPl3	tingiva kõneviisi mineviku mitmuse 3.p.	est	descrip
+morph	KndPtIps	tingiva kõneviisi mineviku umbisikuline tegumood	est	descrip
+morph	KvtPrPs	kaudse kõneviisi oleviku isikuline tegumood	est	descrip
+morph	KvtPrIps	kaudse kõneviisi oleviku umbisikuline tegumood	est	descrip
+morph	KvtPtPs	kaudse kõneviisi mineviku isikuline tegumood	est	descrip
+morph	KvtPtIps	kaudse kõneviisi mineviku umbisikuline tegumood	est	descrip
+morph	ImpPrSg2	käskiva kõneviisi oleviku ainsuse 2.p.	est	descrip
+morph	ImpPrPl1	käskiva kõneviisi oleviku mitmuse 1.p.	est	descrip
+morph	ImpPrPl2	käskiva kõneviisi oleviku mitmuse 2.p.	est	descrip
+morph	ImpPrPs	käskiva kõneviisi oleviku isikuline tegumood	est	descrip
+morph	ImpPrIps	käskiva kõneviisi oleviku umbisikuline tegumood	est	descrip
+morph	Neg	eitus (ei)	est	descrip
+morph	ImpPrSg2N	käskiva kõneviisi oleviku ainsuse 2.p. eitus (ära)	est	descrip
+morph	ImpPrPl1N	käskiva kõneviisi oleviku mitmuse 1.p. eitus (ärgem)	est	descrip
+morph	ImpPrPl2N	käskiva kõneviisi oleviku mitmuse 2.p. eitus (ärge)	est	descrip
+morph	ImpPrN	käskiva kõneviisi oleviku isikulise tegumoe eitus (ärgu)	est	descrip
+morph	IndPrPsN	pole	est	descrip
+morph	IndPrIpsN	polda	est	descrip
+morph	IndIpfPsN	polnud	est	descrip
+morph	IndIpfIpsN	poldud	est	descrip
+morph	KvtPrPsN	polevat	est	descrip
+morph	KvtPtPsN	polnuvat	est	descrip
+morph	KndPrPsN	poleks	est	descrip
+morph	KndPtPsN	polnuks	est	descrip
+pos	adj	A	est	capital
+pos	adj	adjektiiv, omadussõna	est	descrip
+pos	adj	adjective	eng	descrip
+pos	adv	D	est	capital
+pos	adv	adverb, määrsõna	est	descrip
+pos	adv	adverb	eng	descrip
+pos	adjg	G	est	capital
+pos	adjg	genitiivatribuut, omastavaline täiend	est	descrip
+pos	adjg	attribute in genitive	eng	descrip
+pos	prop	H	est	capital
+pos	prop	prooprium, pärisnimi	est	descrip
+pos	prop	proper noun	eng	descrip
+pos	interj	I	est	capital
+pos	interj	interjektsioon, hüüdsõna	est	descrip
+pos	interj	interjection	eng	descrip
+pos	konj	J	est	capital
+pos	konj	konjunktsioon, sidesõna	est	descrip
+pos	konj	conjunction	eng	descrip
+pos	adp	K	est	capital
+pos	adp	adpositsioon, kaassõna	est	descrip
+pos	adp	postposition, preposition	eng	descrip
+pos	num	N	est	capital
+pos	num	numeraal, arvsõna	est	descrip
+pos	num	cardinal, numeral	eng	descrip
+pos	ord	O	est	capital
+pos	ord	ordinaal, järgarvsõna	est	descrip
+pos	ord	ordinal	eng	descrip
+pos	pron	P	est	capital
+pos	pron	pronoomen, asesõna	est	descrip
+pos	pron	pronoun	eng	descrip
+pos	s	S	est	capital
+pos	s	substantiiv, nimisõna	est	descrip
+pos	s	substantive	eng	descrip
+pos	v	V	est	capital
+pos	v	verb, tegusõna	est	descrip
+pos	v	verb	eng	descrip
+pos	x	X	est	capital
+pos	adj	adj	lat	abbrev
+pos	adj + ID	indekl adj	lat	abbrev
+pos	adv	adv	lat	abbrev
+pos	adjg	adjg, ag	lat	abbrev
+pos	interj	interj	lat	abbrev
+pos	konj	konj	lat	abbrev
+pos	postp	postp	lat	abbrev
+pos	prep	prep	lat	abbrev
+pos	num	num	lat	abbrev
+pos	pron	pron	lat	abbrev
+pos	pron + ID	indekl pron	lat	abbrev
+pos	s	s	lat	abbrev
+pos	v	v	lat	abbrev
+pos	adj + ID	käändumatu omadussõna	est	descrip
+pos	postp	postpositsioon, tagasõna	est	descrip
+pos	prep	prepositsioon, eessõna	est	descrip
+pos	pron + ID	käändumatu asesõna	est	descrip
+pos	x	erivormiline sõna	est	descrip
+pos	adj + ID	indeclinable adjective	eng	descrip
+pos	postp	postposition	eng	descrip
+pos	prep	preposition	eng	descrip
+pos	pron + ID	indeclinable pronoun	eng	descrip
+rection_type	obj	objektirektsioon	est	full
+rection_type	kn	käänderektsioon	est	full
+rection_type	ks	kaassõnarektsioon	est	full
+rection_type	yld	üldrektsioon	est	full
+rection_type	inf	infinitiivirektsioon	est	full
+rection_type	kla	lausungirektsioon	est	full
+rection_type	subj	subjektirektsioon	est	full
+word_rel_type	komp	keskvõrre	est	full
+word_rel_type	superl	ülivõrre	est	full

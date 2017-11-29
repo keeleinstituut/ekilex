@@ -435,8 +435,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode);
-		createdWord.id = saveWord(word, null, null);
+		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+		createdWord.id = saveWord(word, null, null, null);
 		return createdWord;
 	}
 
@@ -1225,7 +1225,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid, context);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
-				wordData.id = saveWord(word, paradigms, wordDuplicateCount);
+				wordData.id = saveWord(word, paradigms, null, wordDuplicateCount);
 			}
 
 			addSoundFileNamesToForms(wordData.id, wordGroupNode);
@@ -1362,6 +1362,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
+		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
+
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, null);
 		wordData.value = wordValue;
 
 		Word word = null;
@@ -1370,7 +1374,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 			String wordMorphCode = extractWordMorphCode(wordValue, wordGroupNode);
 
-			word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
+			word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, null);
 
 			Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 			if (wordDisplayMorphNode != null) {
