@@ -104,7 +104,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		if (tableRowValueMap == null) {
 			wordId = createWord(wordMorphCode, homonymNr, wordLang, wordDisplayMorph);
-			if (StringUtils.isNotBlank(dataset)) {
+			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
 				createWordGuid(wordId, dataset, guid);
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
