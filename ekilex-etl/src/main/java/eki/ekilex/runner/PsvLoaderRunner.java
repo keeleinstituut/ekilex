@@ -183,7 +183,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String articleGuidExp = "x:G";
 
 		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
-		return guidNode != null ? StringUtils.upperCase(guidNode.getTextTrim()) : null;
+		return guidNode != null ? StringUtils.lowerCase(guidNode.getTextTrim()) : null;
 	}
 
 	private void processWordSuperlatives(Context context) throws Exception {
@@ -1362,10 +1362,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
-		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
-
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, null);
 		wordData.value = wordValue;
 
 		Word word = null;

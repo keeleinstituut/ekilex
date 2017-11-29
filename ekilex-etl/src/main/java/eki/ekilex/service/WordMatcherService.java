@@ -51,7 +51,7 @@ public class WordMatcherService {
 		for (String line : lines) {
 			String[] columns = StringUtils.split(line, CSV_SEPARATOR);
 			if (columns != null && columns.length > 1) {
-				guidMappings.put(columns[0].toUpperCase(), columns[1].toUpperCase());
+				guidMappings.put(columns[0].toLowerCase(), columns[1].toLowerCase());
 			}
 		}
 		logger.info("GUID mappings loaded, {} rows", lines.size());
