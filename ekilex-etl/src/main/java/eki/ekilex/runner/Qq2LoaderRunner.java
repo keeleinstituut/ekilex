@@ -73,7 +73,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String meaningExp = "x:tg";
 	private final String wordMatchExpr = "x:xp/x:xg";
 	private final String wordMatchValueExp = "x:x";
-	private final String definitionValueExp = "x:xd";
+	private final String definitionExp = "x:xd";
 	private final String wordMatchRectionExp = "x:xr";
 	private final String synonymExp = "x:syn";
 	private final String usageGroupExp = "x:np/x:ng";
@@ -121,6 +121,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Loading QQ2...");
 
+		final String langAttr = "lang";
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
 
@@ -145,12 +146,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		Element headerNode, contentNode;
 		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
-		List<Element> definitionValueNodes, wordMatchNodes, synonymNodes, usageGroupNodes;
+		List<Element> definitionNodes, wordMatchNodes, synonymLevel1Nodes, synonymLevel2Nodes, usageGroupNodes;
 		Element guidNode, wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
 		List<UsageMeaning> usageMeanings;
 		List<Word> newWords, wordMatches;
-		List<Long> synonymLevel1WordIds, synonymLevel2WordIds;
 		List<Paradigm> paradigms;
 		String guid, word, wordFormsStr, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
@@ -250,9 +250,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 			// body...
 
-			synonymNodes = contentNode.selectNodes(synonymExp);
-			synonymLevel1WordIds = saveWords(synonymNodes, dataLang, wordDuplicateCount);
-
+			synonymLevel1Nodes = contentNode.selectNodes(synonymExp);
 			meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);//x:tp
 
 			for (Element meaningGroupNode : meaningGroupNodes) {
@@ -277,9 +275,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel2++;
 					lexemeLevel3 = 0;
 
-					synonymNodes = meaningNode.selectNodes(synonymExp);
-					synonymLevel2WordIds = saveWords(synonymNodes, dataLang, wordDuplicateCount);
-
+					synonymLevel2Nodes = meaningNode.selectNodes(synonymExp);
 					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
 					boolean isSingleWordMatch = wordMatchNodes.size() == 1;
 					boolean isAbsoluteSingleMeaning = isSingleMeaning && isSingleWordMatch;
@@ -288,7 +284,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 						lexemeLevel3++;
 
-						wordMatchLang = wordMatchNode.attributeValue("lang");
+						wordMatchLang = wordMatchNode.attributeValue(langAttr);
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
@@ -306,8 +302,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						meaningId = createMeaning(dataset);
 
 						// definitions
-						definitionValueNodes = wordMatchNode.selectNodes(definitionValueExp);
-						saveDefinitions(definitionValueNodes, meaningId, wordMatchLang, dataset);
+						definitionNodes = wordMatchNode.selectNodes(definitionExp);
+						saveDefinitions(definitionNodes, meaningId, wordMatchLang, dataset);
+						saveDefinitions(synonymLevel1Nodes, meaningId, dataLang, dataset);
+						saveDefinitions(synonymLevel2Nodes, meaningId, dataLang, dataset);
 
 						// word match lexeme
 						lexemeObj = new Lexeme();
@@ -337,20 +335,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 							// new word lexeme grammars
 							createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
-						}
-
-						for (Long synonymWordId : synonymLevel1WordIds) {
-							lexemeObj = new Lexeme();
-							lexemeObj.setWordId(synonymWordId);
-							lexemeObj.setMeaningId(meaningId);
-							lexemeId = createLexeme(lexemeObj, dataset);
-						}
-
-						for (Long synonymWordId : synonymLevel2WordIds) {
-							lexemeObj = new Lexeme();
-							lexemeObj.setWordId(synonymWordId);
-							lexemeObj.setMeaningId(meaningId);
-							lexemeId = createLexeme(lexemeObj, dataset);
 						}
 					}
 				}
@@ -591,26 +575,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return compoundWordParadigm;
 		}
 		return matchingParadigm;
-	}
-
-	private List<Long> saveWords(List<Element> synonymNodes, String lang, Count wordDuplicateCount) throws Exception {
-
-		List<Long> synonymWordIds = new ArrayList<>();
-		Word wordObj;
-		String synonym;
-		Long wordId;
-
-		for (Element synonymNode : synonymNodes) {
-			synonym = synonymNode.getTextTrim();
-			wordObj = new Word();
-			wordObj.setValue(synonym);
-			wordObj.setHomonymNr(defaultHomonymNr);
-			wordObj.setMorphCode(defaultWordMorphCode);
-			wordObj.setLang(lang);
-			wordId = saveWord(wordObj, null, null, wordDuplicateCount);
-			synonymWordIds.add(wordId);
-		}
-		return synonymWordIds;
 	}
 
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {
