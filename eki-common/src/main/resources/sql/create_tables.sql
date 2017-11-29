@@ -1,10 +1,5 @@
 drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
-drop table if exists grammar_dataset;--will be removed
-drop table if exists grammar;--will be removed
-drop table if exists usage_translation;--will be removed
-drop table if exists usage;--will be removed
-drop table if exists rection;--will be removed
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
@@ -21,6 +16,7 @@ drop table if exists meaning;
 drop table if exists form_relation;
 drop table if exists form;
 drop table if exists paradigm;
+drop table if exists word_guid;
 drop table if exists word_relation;
 drop table if exists word;
 drop table if exists source_freeform;
@@ -405,6 +401,16 @@ create table word
 );
 alter sequence word_id_seq restart with 10000;
 
+create table word_guid
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  guid varchar(100) not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  unique(word_id, guid, dataset_code)
+);
+alter sequence word_guid_id_seq restart with 10000;
+
 -- keelendi seos
 create table word_relation
 (
@@ -610,6 +616,7 @@ create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
+create index word_guid_word_id_idx on word_guid(word_id);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);

@@ -26,10 +26,12 @@ public class Word extends AbstractDataObject {
 
 	private String displayMorph;
 
+	private String guid;
+
 	public Word() {
 	}
 
-	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode) {
+	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode, String guid) {
 		this.value = value;
 		this.lang = lang;
 		this.formsString = formsString;
@@ -38,6 +40,7 @@ public class Word extends AbstractDataObject {
 		this.vocalForm = vocalForm;
 		this.homonymNr = homonymNr;
 		this.morphCode = morphCode;
+		this.guid = guid;
 	}
 
 	public Long getId() {
@@ -119,4 +122,13 @@ public class Word extends AbstractDataObject {
 	public void setDisplayMorph(String displayMorph) {
 		this.displayMorph = displayMorph;
 	}
+
+	public String getGuid() {
+		return guid;
+	}
+
+	public void setGuid(String guid) {
+		this.guid = guid;
+	}
+
 }

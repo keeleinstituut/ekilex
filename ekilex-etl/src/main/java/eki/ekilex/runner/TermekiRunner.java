@@ -79,8 +79,8 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String language = unifyLang((String)term.get("lang"));
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
-			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode);
-			Long wordId = saveWord(word, null, wordDuplicateCount);
+			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+			Long wordId = saveWord(word, null, null, wordDuplicateCount);
 
 			Integer conceptId = (Integer) term.get("concept_id");
 			if (!conceptMeanings.containsKey(conceptId)) {

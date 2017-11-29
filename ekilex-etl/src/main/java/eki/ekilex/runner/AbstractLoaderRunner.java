@@ -87,7 +87,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lang;
 	}
 
-	protected Long saveWord(Word word, List<Paradigm> paradigms, Count wordDuplicateCount) throws Exception {
+	protected Long saveWord(Word word, List<Paradigm> paradigms, String dataset, Count wordDuplicateCount) throws Exception {
 
 		String wordValue = word.getValue();
 		String wordLang = word.getLang();
@@ -97,12 +97,16 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		int homonymNr = word.getHomonymNr();
 		String wordMorphCode = word.getMorphCode();
 		String wordDisplayMorph = word.getDisplayMorph();
+		String guid = word.getGuid();
 
 		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
 
 		if (tableRowValueMap == null) {
 			wordId = createWord(wordMorphCode, homonymNr, wordLang, wordDisplayMorph);
+			if (StringUtils.isNotBlank(dataset)) {
+				createWordGuid(wordId, dataset, guid);
+			}
 			if (CollectionUtils.isEmpty(paradigms)) {
 				Long paradigmId = createParadigm(wordId, null, false);
 				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
@@ -185,6 +189,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("display_morph_code", displayMorph);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 		return wordId;
+	}
+
+	private void createWordGuid(Long wordId, String dataset, String guid) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		tableRowParamMap.put("dataset_code", dataset);
+		tableRowParamMap.put("guid", guid);
+		basicDbService.create(WORD_GUID, tableRowParamMap);
 	}
 
 	protected int getWordMaxHomonymNr(String word, String lang) throws Exception {

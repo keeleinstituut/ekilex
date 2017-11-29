@@ -415,8 +415,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode);
-		createdWord.id = saveWord(word, null, null);
+		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+		createdWord.id = saveWord(word, null, null, null);
 		return createdWord;
 	}
 
@@ -1191,7 +1191,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			Word word = extractWord(wordGroupNode, wordData);
 			List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
-			wordData.id = saveWord(word, paradigms, wordDuplicateCount);
+			wordData.id = saveWord(word, paradigms, null, wordDuplicateCount);
 			addSoundFileNamesToForms(wordData.id, wordGroupNode);
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, guid);
@@ -1329,7 +1329,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		String wordMorphCode = getWordMorphCode(wordValue, wordGroupNode);
 
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, null);
 		wordData.value = wordValue;
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
