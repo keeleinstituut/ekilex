@@ -26,8 +26,6 @@ public class Word extends AbstractDataObject {
 
 	private String displayMorph;
 
-	private String guid;
-
 	public Word() {
 	}
 
@@ -122,11 +120,4 @@ public class Word extends AbstractDataObject {
 		this.displayMorph = displayMorph;
 	}
 
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
 }
