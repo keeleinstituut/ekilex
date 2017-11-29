@@ -34,7 +34,7 @@ public class LenochToDomainCsvRunner extends AbstractDomainRunner {
 		List<String> sourceCsvLines = readFileLines(sourceCsvFile);
 
 		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(sourceCsvLines);
-		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
+		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifierMappings();
 		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);
 		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 

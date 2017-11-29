@@ -37,7 +37,7 @@ public class MilitermToDomainCsvRunner extends AbstractDomainRunner {
 		sourceCsvLines.remove(0);
 
 		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(sourceCsvLines);
-		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
+		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifierMappings();
 		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);
 		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 

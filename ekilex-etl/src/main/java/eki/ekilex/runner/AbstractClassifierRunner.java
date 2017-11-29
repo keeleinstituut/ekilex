@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -307,8 +308,8 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 			classifier.setName(name);
 			classifier.setCode(code);
 			classifier.setValue(value);
-			classifier.setValueType(valueType);
 			classifier.setValueLang(valueLang);
+			classifier.setValueType(valueType);
 			classifier.setOrder(order);
 			classifier.setKey(key);
 			existingClassifiers.add(classifier);
@@ -321,19 +322,19 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		return existingClassifiers;
 	}
 
-	public List<ClassifierMapping> loadExistingDomainClassifiers() throws Exception {
+	public List<ClassifierMapping> loadExistingDomainClassifierMappings() throws Exception {
 
-		List<ClassifierMapping> existingClassifiers = new ArrayList<>();
+		List<ClassifierMapping> existingClassifierMappings = new ArrayList<>();
 
 		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
 		if (!classifierCsvFile.exists()) {
-			return existingClassifiers;
+			return existingClassifierMappings;
 		}
 
 		List<String> classifierFileLines = readFileLines(classifierCsvFile);
 		classifierFileLines.remove(0);//remove header
 
-		ClassifierMapping classifier;
+		ClassifierMapping classifierMapping;
 		int order = 0;
 
 		List<String> existingClassifierKeys = new ArrayList<>();
@@ -362,18 +363,81 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 			existingClassifierKeys.add(key);
 
 			order++;
-			classifier = new ClassifierMapping();
-			classifier.setEkiOrigin(origin);
-			classifier.setEkiCode(code);
-			classifier.setEkiParentCode(parentCode);
-			classifier.setEkiValue(value);
-			classifier.setEkiValueLang(valueLang);
+			classifierMapping = new ClassifierMapping();
+			classifierMapping.setEkiOrigin(origin);
+			classifierMapping.setEkiCode(code);
+			classifierMapping.setEkiParentCode(parentCode);
+			classifierMapping.setEkiValue(value);
+			classifierMapping.setEkiValueLang(valueLang);
+			classifierMapping.setOrder(order);
+			classifierMapping.setEkiKey(key);
+			existingClassifierMappings.add(classifierMapping);
+		}
+
+		existingClassifierMappings.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
+
+		logger.debug("Collected {} existing classifier mappings", existingClassifierMappings.size());
+
+		return existingClassifierMappings;
+	}
+
+	public List<Classifier> loadExistingDomainClassifiers() throws Exception {
+
+		List<Classifier> existingClassifiers = new ArrayList<>();
+
+		File classifierCsvFile = new File(CLASSIFIER_DOMAIN_CSV_PATH);
+		if (!classifierCsvFile.exists()) {
+			return existingClassifiers;
+		}
+
+		List<String> classifierFileLines = readFileLines(classifierCsvFile);
+		classifierFileLines.remove(0);//remove header
+
+		Classifier classifier;
+		int order = 0;
+
+		List<String> existingClassifierKeys = new ArrayList<>();
+
+		for (String classifierFileLine : classifierFileLines) {
+			if (StringUtils.isBlank(classifierFileLine)) {
+				continue;
+			}
+			String[] classifierLineCells = StringUtils.split(classifierFileLine, CSV_SEPARATOR);
+			if (classifierLineCells.length != CLASSIFIER_DOMAIN_CSV_COL_COUNT) {
+				String lineLog = StringUtils.join(classifierLineCells, CLASSIFIER_KEY_SEPARATOR);
+				logger.warn("Inconsistent row \"{}\"", lineLog);
+				continue;
+			}
+
+			String origin = StringUtils.lowerCase(classifierLineCells[0]);
+			String name = ClassifierName.DOMAIN.name().toLowerCase();
+			String code = classifierLineCells[1];
+			String parentCode = classifierLineCells[2];
+			String value = classifierLineCells[3];
+			String valueLang = classifierLineCells[4];
+			String valueType = "descrip";
+			String key = composeRow(CLASSIFIER_KEY_SEPARATOR, origin, code, value, valueLang);
+			if (existingClassifierKeys.contains(key)) {
+				logger.warn("Duplicate new classifier entry: \"{}\"", key);
+				continue;
+			}
+			existingClassifierKeys.add(key);
+
+			order++;
+			classifier = new Classifier();
+			classifier.setOrigin(origin);
+			classifier.setName(name);
+			classifier.setCode(code);
+			classifier.setParent(parentCode);
+			classifier.setValue(value);
+			classifier.setValueLang(valueLang);
+			classifier.setValueType(valueType);
 			classifier.setOrder(order);
-			classifier.setEkiKey(key);
+			classifier.setKey(key);
 			existingClassifiers.add(classifier);
 		}
 
-		existingClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
+		existingClassifiers.sort(Comparator.comparing(Classifier::getOrigin).thenComparing(Classifier::getOrder));
 
 		logger.debug("Collected {} existing classifiers", existingClassifiers.size());
 
@@ -415,6 +479,10 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		return null;
 	}
 
+	public boolean isValued(String value) {
+		return StringUtils.isNotBlank(value) && !StringUtils.equalsAny(value, emptyCellValue, undefinedCellValue);
+	}
+
 	public String composeRow(char separator, String... values) {
 		return StringUtils.join(values, separator);
 	}
@@ -430,6 +498,15 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 		} else {
 			csvFileLineBuf.append(CSV_SEPARATOR);
 		}
+	}
+
+	public String unifyLang(String lang) {
+		if (!isValued(lang)) {
+			return lang;
+		}
+		Locale locale = new Locale(lang);
+		lang = locale.getISO3Language();
+		return lang;
 	}
 
 	public List<String> readFileLines(File classifierCsvFile) throws Exception {

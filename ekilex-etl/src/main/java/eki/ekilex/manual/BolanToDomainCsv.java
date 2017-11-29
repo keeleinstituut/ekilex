@@ -23,7 +23,7 @@ public class BolanToDomainCsv implements SystemConstant {
 		try {
 			applicationContext.registerShutdownHook();
 
-			// /projects/eki/data/bolan
+			// /projects/eki/data/bolan/
 			String classifierXsdRootFolderPath = ConsolePromptUtil.promptDataFolderPath("EKI classifiers XSD files root folder? (/absolute/path/to/folder/)");
 
 			runner.execute(classifierXsdRootFolderPath);

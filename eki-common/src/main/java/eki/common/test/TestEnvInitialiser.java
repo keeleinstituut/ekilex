@@ -28,12 +28,14 @@ public class TestEnvInitialiser {
 	public void initDatabaseWithoutTestData() throws Exception {
 
 		final String scriptFilePath1 = "sql/create_tables.sql";
-		final String scriptFilePath2 = "sql/classifier_data_manual.sql";
-		final String scriptFilePath3 = "sql/classifier_data_autom.sql";
+		final String scriptFilePath2 = "sql/classifier-manual.sql";
+		final String scriptFilePath3 = "sql/classifier-main.sql";
+		final String scriptFilePath4 = "sql/classifier-domain.sql";
 
 		executeSqlScriptFile(scriptFilePath1);
 		executeSqlScriptFile(scriptFilePath2);
 		executeSqlScriptFile(scriptFilePath3);
+		executeSqlScriptFile(scriptFilePath4);
 	}
 
 	public String getSqlScript(String sqlScriptFilePath) throws Exception {

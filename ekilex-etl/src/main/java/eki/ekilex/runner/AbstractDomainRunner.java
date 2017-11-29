@@ -29,32 +29,29 @@ public abstract class AbstractDomainRunner extends AbstractClassifierRunner {
 		List<ClassifierMapping> mergedClassifierMappings = new ArrayList<>();
 		mergedClassifierMappings.addAll(existingClassifierMappings);
 		for (ClassifierMapping sourceClassifier : sourceClassifiers) {
-			String origin = sourceClassifier.getEkiOrigin();
-			String code = sourceClassifier.getEkiCode();
-			String value = sourceClassifier.getEkiValue();
-			String valueLang = sourceClassifier.getEkiValueLang();
-			String key = composeRow(CLASSIFIER_KEY_SEPARATOR, origin, code, value, valueLang);
-			ClassifierMapping existingClassifierMapping = find(key, existingClassifierMappings, false);
-			if (existingClassifierMapping == null) {
+			if (!rowExists(sourceClassifier, existingClassifierMappings)) {
 				mergedClassifierMappings.add(sourceClassifier);
 			}
 		}
 		return mergedClassifierMappings;
 	}
 
-	private ClassifierMapping find(String ekiKey, List<ClassifierMapping> existingClassifierMappings, boolean isFindOnlyWithoutMapping) {
+	private boolean rowExists(ClassifierMapping sourceClassifier, List<ClassifierMapping> existingClassifierMappings) {
+
+		String srcOrigin = sourceClassifier.getEkiOrigin();
+		String srcCode = sourceClassifier.getEkiCode();
+		String srcValueLang = sourceClassifier.getEkiValueLang();
+		String srcKey = composeRow(CLASSIFIER_KEY_SEPARATOR, srcOrigin, srcCode, srcValueLang);
 		for (ClassifierMapping existingClassifierMapping : existingClassifierMappings) {
-			if (StringUtils.equals(ekiKey, existingClassifierMapping.getEkiKey())) {
-				if (isFindOnlyWithoutMapping) {
-					if (StringUtils.equalsAny(existingClassifierMapping.getLexName(), emptyCellValue, undefinedCellValue)) {
-						return existingClassifierMapping;
-					}
-				} else {
-					return existingClassifierMapping;
-				}
+			String exsOrigin = existingClassifierMapping.getEkiOrigin();
+			String exsCode = existingClassifierMapping.getEkiCode();
+			String exsValueLang = existingClassifierMapping.getEkiValueLang();
+			String exsKey = composeRow(CLASSIFIER_KEY_SEPARATOR, exsOrigin, exsCode, exsValueLang);
+			if (StringUtils.equals(srcKey, exsKey)) {
+				return true;
 			}
 		}
-		return null;
+		return false;
 	}
 
 	public void writeDomainClassifierCsvFile(List<ClassifierMapping> classifiers) throws Exception {

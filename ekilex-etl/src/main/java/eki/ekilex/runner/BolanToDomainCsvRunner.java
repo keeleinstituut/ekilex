@@ -38,9 +38,10 @@ public class BolanToDomainCsvRunner extends AbstractDomainRunner {
 			classifierXsdFilePaths.add(classifierXsdFilePath);
 		}
 
-		List<ClassifierMapping> sourceClassifiersRaw = loadSourceClassifiers(classifierXsdFilePaths, DOMAIN_EKI_TYPE, DOMAIN_EKI_ORIGIN);
-		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifiers();
-		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiersRaw, existingClassifiers);
+		List<ClassifierMapping> sourceClassifiers = loadSourceClassifiers(classifierXsdFilePaths, DOMAIN_EKI_TYPE, DOMAIN_EKI_ORIGIN);
+		sourceClassifiers = removeReusedCodes(sourceClassifiers);
+		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifierMappings();
+		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);
 		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 
 		writeDomainClassifierCsvFile(targetClassifiers);
@@ -72,4 +73,45 @@ public class BolanToDomainCsvRunner extends AbstractDomainRunner {
 		}
 	}
 
+	private List<ClassifierMapping> removeReusedCodes(List<ClassifierMapping> classifierMappings) {
+
+		List<String> usedKeys = new ArrayList<>();
+		List<ClassifierMapping> cleanClassifierMappings = new ArrayList<>();
+		for (int index1 = 0; index1 < classifierMappings.size() - 1; index1++) {
+			ClassifierMapping classifierMapping1 = classifierMappings.get(index1);
+			String origin1 = classifierMapping1.getEkiOrigin();
+			String code1 = classifierMapping1.getEkiCode();
+			String value1 = classifierMapping1.getEkiValue();
+			String valueLang1 = classifierMapping1.getEkiValueLang();
+			String key1 = composeRow(CLASSIFIER_KEY_SEPARATOR, origin1, code1, valueLang1);
+			if (usedKeys.contains(key1)) {
+				continue;
+			}
+			usedKeys.add(key1);
+			boolean isMatch = false;
+			for (int index2 = index1 + 1; index2 < classifierMappings.size(); index2++) {
+				ClassifierMapping classifierMapping2 = classifierMappings.get(index2);
+				String origin2 = classifierMapping2.getEkiOrigin();
+				String code2 = classifierMapping2.getEkiCode();
+				String value2 = classifierMapping2.getEkiValue();
+				String valueLang2 = classifierMapping2.getEkiValueLang();
+				String key2 = composeRow(CLASSIFIER_KEY_SEPARATOR, origin2, code2, valueLang2);
+				if (StringUtils.equals(key1, key2)) {
+					logger.warn("Found reused classifier code for \"{}\" and \"{}\"", value1, value2);
+					if (StringUtils.length(valueLang1) > StringUtils.length(valueLang2)) {
+						cleanClassifierMappings.add(classifierMapping1);
+						isMatch = true;
+					} else if (StringUtils.length(valueLang2) > StringUtils.length(valueLang1)) {
+						cleanClassifierMappings.add(classifierMapping2);
+						isMatch = true;
+					}
+					break;
+				}
+			}
+			if (!isMatch) {
+				cleanClassifierMappings.add(classifierMapping1);
+			}
+		}
+		return cleanClassifierMappings;
+	}
 }
