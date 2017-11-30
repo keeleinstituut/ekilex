@@ -28,26 +28,29 @@ public class PsvLoader {
 			applicationContext.registerShutdownHook();
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
-
 			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
-			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
+			String mabFilePath = null;
 			if (isAddForms) {
-				String mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
-				MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
-				wordParadigmsMap = mabRunner.execute(mabFilePath, "est");
+				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
 			}
-
-			boolean combineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with QQ2 datset? (y/n)");
-			if (combineDatasets) {
-				String guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
-				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);
-				wordMatcherService.setEnabled(true);
-				wordMatcherService.load(guidMappingFilePath);
+			boolean isCombineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with QQ2 datset? (y/n)");
+			String guidMappingFilePath = null;
+			if (isCombineDatasets) {
+				guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
 			}
-
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
 			String dataset = "psv";
+			String dataLang = "est";
 
+			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
+			if (isAddForms) {
+				MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
+				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang);
+			}
+			if (isCombineDatasets) {
+				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);
+				wordMatcherService.load(guidMappingFilePath);
+			}
 			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting);
 
 		} catch (Exception e) {

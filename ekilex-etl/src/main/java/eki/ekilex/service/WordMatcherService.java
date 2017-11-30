@@ -1,6 +1,16 @@
 package eki.ekilex.service;
 
-import eki.common.service.db.BasicDbService;
+import static eki.ekilex.constant.SystemConstant.CSV_SEPARATOR;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -9,28 +19,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static eki.common.constant.TableName.FORM;
-import static eki.ekilex.constant.SystemConstant.CSV_SEPARATOR;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import eki.common.constant.TableName;
+import eki.common.service.db.BasicDbService;
 
 @Service
-public class WordMatcherService {
+public class WordMatcherService implements TableName {
 
 	private static Logger logger = LoggerFactory.getLogger(WordMatcherService.class);
 
 	private final static String sqlWordByGuidAndValue =
-			"select w.* from word w join paradigm p on p.word_id = w.id join form f on f.paradigm_id = p.id join word_guid g on g.word_id = w.id "
+			"select w.* from " + WORD + " w join " + PARADIGM + " p on p.word_id = w.id join " + FORM + " f on f.paradigm_id = p.id join " + WORD_GUID + " g on g.word_id = w.id "
 					+ "where g.guid = :guid and f.value = :wordValue and f.is_word = true";
 	private final static String sqlSelectWordsByValue =
-			"select w.*, p.id as paradigm_id from word w join paradigm p on p.word_id = w.id join form f on f.paradigm_id = p.id "
+			"select w.*, p.id as paradigm_id from " + WORD + " w join " + PARADIGM + " p on p.word_id = w.id join " + FORM + " f on f.paradigm_id = p.id "
 					+ "where f.value = :wordValue and f.is_word = true";
 
 	@Autowired
@@ -42,6 +43,7 @@ public class WordMatcherService {
 
 	public Map<String, String> load(String pathToGuidCsvFile) throws Exception {
 
+		isEnabled = true;
 		guidMappings = new HashMap<>();
 		List<String> lines;
 		try (InputStream guidCsvFile = new FileInputStream(pathToGuidCsvFile)) {
@@ -51,7 +53,9 @@ public class WordMatcherService {
 		for (String line : lines) {
 			String[] columns = StringUtils.split(line, CSV_SEPARATOR);
 			if (columns != null && columns.length > 1) {
-				guidMappings.put(columns[0].toLowerCase(), columns[1].toLowerCase());
+				String guid = columns[0].toLowerCase();
+				String mappedGuid = columns[1].toLowerCase();
+				guidMappings.put(guid, mappedGuid);
 			}
 		}
 		logger.info("GUID mappings loaded, {} rows", lines.size());
@@ -73,7 +77,8 @@ public class WordMatcherService {
 			return null;
 		}
 		Map<String, Object> params = new HashMap<>();
-		params.put("guid", guidMappings.get(guid));
+		String mappedGuid = guidMappings.get(guid);
+		params.put("guid", mappedGuid);
 		params.put("wordValue", wordValue);
 		try {
 			Map<String, Object> wordObject = basicDbService.queryForMap(sqlWordByGuidAndValue, params);
@@ -97,7 +102,8 @@ public class WordMatcherService {
 			return null;
 		}
 		if (wordObjects.size() == 1) {
-			return (Long) wordObjects.get(0).get("id");
+			Long wordId = (Long) wordObjects.get(0).get("id");
+			return wordId;
 		}
 		if (CollectionUtils.isEmpty(forms)) {
 			return null;
@@ -106,7 +112,8 @@ public class WordMatcherService {
 		Long wordId = null;
 		for (Map<String, Object> wordObject : wordObjects) {
 			params.clear();
-			params.put("paradigm_id", wordObject.get("paradigm_id"));
+			Long paradigmId = (Long) wordObject.get("paradigm_id");
+			params.put("paradigm_id", paradigmId);
 			List<Map<String, Object>> formObjects = basicDbService.selectAll(FORM, params);
 			List<String> formValues = formObjects.stream().map(f -> (String)f.get("value")).collect(toList());
 			int nrOfMatches = CollectionUtils.intersection(formValues, forms).size();
@@ -120,10 +127,6 @@ public class WordMatcherService {
 
 	public boolean isEnabled() {
 		return isEnabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		isEnabled = enabled;
 	}
 
 	public Map<String, String> getGuidMappings() {

@@ -59,12 +59,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
 	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
-	private final static String sqlPosCodeMappings = "select value as key, code as value from pos_label where lang='est' and type='capital'";
-	private final static String sqlDerivCodeMappings = "select code as key, code as value from deriv where '%s' = ANY(datasets)";
-	private final static String sqlFormsOfTheWord = "select f.* from form f, paradigm p where p.word_id = :word_id and f.paradigm_id = p.id";
-	private final static String sqlUpdateSoundFiles = "update form set sound_file = :soundFile where id in "
-			+ "(select f.id from form f join paradigm p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
-	private final static String sqlWordLexemesByDataset = "select l.* from lexeme l join lexeme_dataset ld on ld.lexeme_id = l.id "
+	private final static String sqlPosCodeMappings = "select value as key, code as value from " + POS_LABEL + " where lang = :lang and type = :type";
+	private final static String sqlDerivCodeMappings = "select code as key, code as value from " + DERIV + " where :dataset = ANY(datasets)";
+	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
+	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
+			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
+	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l join " + LEXEME_DATASET + " ld on ld.lexeme_id = l.id "
 			+ "where l.word_id = :wordId and ld.dataset_code = :dataset";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
@@ -80,6 +80,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
+		//TODO read mappings from classifier-main-map.csv
 		lexemeTypes = new HashMap<>();
 		lexemeTypes.put("l", "lühend");
 		lexemeTypes.put("mvv", "viiteartikli märksõna");
@@ -116,10 +117,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
 				WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
 
-		posCodes = basicDbService.queryListAsMap(sqlPosCodeMappings, null);
+		posCodes = loadPosCodes();
 
-		String sqlDerivCodeMappingsStr = String.format(sqlDerivCodeMappings, dataset);
-		derivCodes = basicDbService.queryListAsMap(sqlDerivCodeMappingsStr, null);
+		derivCodes = loadDerivCodes(dataset);
+		//TODO is this mapping or missing code?
 		derivCodes.put("sup", "superl");
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -176,6 +177,23 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	private Map<String, String> loadPosCodes() throws Exception {
+
+		Map<String, Object> sqlQueryParamMap = new HashMap<>();
+		sqlQueryParamMap.put("lang", dataLang);
+		sqlQueryParamMap.put("type", "capital");
+		Map<String, String> classifiers = basicDbService.queryListAsMap(sqlPosCodeMappings, sqlQueryParamMap);
+		return classifiers;
+	}
+
+	private Map<String, String> loadDerivCodes(String dataset) throws Exception {
+
+		Map<String, Object> sqlQueryParamMap = new HashMap<>();
+		sqlQueryParamMap.put("dataset", dataset);
+		Map<String, String> classifiers = basicDbService.queryListAsMap(sqlDerivCodeMappings, sqlQueryParamMap);
+		return classifiers;
 	}
 
 	private String extractGuid(Element node) {

@@ -10,6 +10,7 @@ public interface TableName {
 	public static final String DOMAIN_LABEL = "domain_label";
 	public static final String REGISTER = "register";
 	public static final String POS = "pos";
+	public static final String POS_LABEL = "pos_label";
 	public static final String DERIV = "deriv";
 	public static final String MORPH = "morph";
 	public static final String MORPH_LABEL = "morph_label";
