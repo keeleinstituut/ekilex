@@ -82,12 +82,15 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String usageTranslationValueExp = "x:qn";
 	private final String formsExp = "x:grg/x:vormid";
 
+	private final String langAttr = "lang";
+
 	private final String defaultWordMorphCode = "SgN";
 	private final int defaultHomonymNr = 1;
 	private final String defaultRectionValue = "-";
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
+	private final String usageTranslationLangRus = "rus";
 
 	@Override
 	void initialise() throws Exception {
@@ -121,7 +124,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Loading QQ2...");
 
-		final String langAttr = "lang";
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
 
@@ -152,6 +154,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<UsageMeaning> usageMeanings;
 		List<Word> newWords, wordMatches;
 		List<Paradigm> paradigms;
+		List<Rection> rections;
 		String guid, word, wordFormsStr, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2, lexemeLevel3;
@@ -329,9 +332,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							lexemeObj.setLevel3(lexemeLevel3);
 							lexemeId = createLexeme(lexemeObj, dataset);
 
+							rections = wordIdRectionMap.get(newWordId);
+
 							// new word lexeme rections, usages, usage translations
 							createRectionsAndUsagesAndTranslations(
-									wordIdRectionMap, lexemeId, newWordId, wordMatch, usageMeanings, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
+									dataLang, lexemeId, wordMatch, rections, usageMeanings, isAbsoluteSingleMeaning, singleUsageTranslationMatchCount);
 
 							// new word lexeme grammars
 							createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
@@ -577,14 +582,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return matchingParadigm;
 	}
 
-	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {
+	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {
 
 		if (definitionValueNodes == null) {
 			return;
 		}
 		for (Element definitionValueNode : definitionValueNodes) {
 			String definition = definitionValueNode.getTextTrim();
-			createDefinition(meaningId, definition, wordMatchLang, dataset);
+			createDefinition(meaningId, definition, dataLang, dataset);
 		}
 	}
 
@@ -675,9 +680,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 			usageTranslations = new ArrayList<>();
 			for (Element usageTranslationNode : usageTranslationNodes) {
-				usageTranslationLang = usageTranslationNode.attributeValue("lang");
+				usageTranslationLang = usageTranslationNode.attributeValue(langAttr);
 				usageTranslationLang = unifyLang(usageTranslationLang);
-				if (StringUtils.equalsIgnoreCase(usageTranslationLang, "rus")) {
+				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
 					usageTranslationValue = usageTranslationValueNode.getTextTrim();
 					lemmatisedTokens = new ArrayList<>();
@@ -725,17 +730,16 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void createRectionsAndUsagesAndTranslations(
-			Map<Long, List<Rection>> wordIdRectionMap,
-			Long lexemeId, Long wordId, String wordMatch,
-			List<UsageMeaning> allUsageMeanings, boolean isAbsoluteSingleMeaning,
-			Count singleUsageTranslationMatchCount) throws Exception {
+			String dataLang, Long lexemeId, String wordMatch,
+			List<Rection> rectionObjs,
+			List<UsageMeaning> allUsageMeanings,
+			boolean isAbsoluteSingleMeaning, Count singleUsageTranslationMatchCount) throws Exception {
 
 		if (CollectionUtils.isEmpty(allUsageMeanings)) {
 			return;
 		}
 
 		wordMatch = StringUtils.lowerCase(wordMatch);
-		List<Rection> rectionObjs = wordIdRectionMap.get(wordId);
 
 		if (CollectionUtils.isEmpty(rectionObjs)) {
 			Rection rectionObj = new Rection();
@@ -797,7 +801,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				for (UsageMeaning usageMeaning : usageMeanings) {
 					Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
 					for (Usage usage : usageMeaning.getUsages()) {
-						createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), null);
+						createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 						for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 							createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
 						}
