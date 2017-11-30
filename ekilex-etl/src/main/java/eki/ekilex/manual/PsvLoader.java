@@ -30,7 +30,7 @@ public class PsvLoader {
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
 
-			boolean combineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with existing datsets? (y/n)");
+			boolean combineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with QQ2 datset? (y/n)");
 			if (combineDatasets) {
 				String guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
 				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);

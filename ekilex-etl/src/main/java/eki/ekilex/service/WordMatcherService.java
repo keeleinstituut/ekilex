@@ -27,7 +27,7 @@ public class WordMatcherService {
 	private static Logger logger = LoggerFactory.getLogger(WordMatcherService.class);
 
 	private final static String sqlWordByGuidAndValue =
-			"select w.* from word w join paradigm p on p.word_id = w.id join form f on f.paradigm_id = p.id join guid g on g.word_id = w.id"
+			"select w.* from word w join paradigm p on p.word_id = w.id join form f on f.paradigm_id = p.id join word_guid g on g.word_id = w.id "
 					+ "where g.guid = :guid and f.value = :wordValue and f.is_word = true";
 	private final static String sqlSelectWordsByValue =
 			"select w.*, p.id as paradigm_id from word w join paradigm p on p.word_id = w.id join form f on f.paradigm_id = p.id "
@@ -73,7 +73,7 @@ public class WordMatcherService {
 			return null;
 		}
 		Map<String, Object> params = new HashMap<>();
-		params.put("guid", guidMappings.get(guid.toUpperCase()));
+		params.put("guid", guidMappings.get(guid));
 		params.put("wordValue", wordValue);
 		try {
 			Map<String, Object> wordObject = basicDbService.queryForMap(sqlWordByGuidAndValue, params);
