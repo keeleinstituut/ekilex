@@ -21,10 +21,16 @@ public class TermekiLoader {
 		try {
 			applicationContext.registerShutdownHook();
 
-			Integer termbaseId = ConsolePromptUtil.promptIntValue("Numeric ID of the termbase in TERMEKI ?");
-			String ekilexCode = ConsolePromptUtil.promptStringValue("Dataset code in EKILEX ? (for example pol/lon/ett/...)");
+			boolean doBatchLoad = ConsolePromptUtil.promptBooleanValue("Load all termbases (y) or just single one (n) from TERMEKI ?");
 
-			runner.execute(termbaseId, ekilexCode);  // 2633923, "vlk"<- Veterinaarmeditsiin ja loomakasvatus
+			if (doBatchLoad) {
+				String termbasesCsvFilePath = ConsolePromptUtil.promptDataFilePath("Termbases codes CSV file location? (/absolute/path/to/file.csv)");
+				runner.batchLoad(termbasesCsvFilePath);
+			} else {
+				Integer termbaseId = ConsolePromptUtil.promptIntValue("Numeric ID of the termbase in TERMEKI ?");
+				String ekilexCode = ConsolePromptUtil.promptStringValue("Dataset code in EKILEX ? (for example pol/lon/ett/...)");
+				runner.execute(termbaseId, ekilexCode);  // 2633923, "vlk"<- Veterinaarmeditsiin ja loomakasvatus
+			}
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {

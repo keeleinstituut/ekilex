@@ -5,6 +5,8 @@ import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.TermekiService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -49,6 +53,26 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	@Transactional
+	public void batchLoad(String termbasesCsvFilePath) throws Exception {
+
+		List<String> lines = readFileLines(termbasesCsvFilePath);
+		for (String line : lines) {
+			String[] cells = StringUtils.split(line, CSV_SEPARATOR);
+			if (cells.length > 1) {
+				Integer termbaseId = Integer.parseInt(cells[0]);
+				String dataset =  cells[1];
+				execute(termbaseId, dataset);
+			}
+		}
+	}
+
+	private List<String> readFileLines(String resourcePath) throws Exception {
+		try (InputStream resourceInputStream = new FileInputStream(resourcePath)) {
+			return IOUtils.readLines(resourceInputStream, UTF_8);
+		}
 	}
 
 	@Transactional
@@ -149,7 +173,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		params.put("code", dataset);
 		Map<String, Object> selectedDataset = basicDbService.select(DATASET, params);
 		if (selectedDataset == null) {
-			logger.info("No datset with id {} defined in EKILEX", dataset);
+			logger.info("No dataset with id {} defined in EKILEX", dataset);
+		} else {
+			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
 	}

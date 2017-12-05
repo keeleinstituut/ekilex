@@ -63,7 +63,7 @@ public class TermekiService implements InitializingBean {
 		Map<String, Object> params = constructParameters(baseId);
 		List<Map<String, Object>> result = queryList("select * from termeki_termbases where termbase_id=:baseId", params);
 		if (!result.isEmpty()) {
-			logger.debug("Connection success, termeki base \"{}\".", result.get(0).get("termbase_name"));
+			logger.debug("Connection success, termeki base {} : \"{}\".", baseId, result.get(0).get("termbase_name"));
 		} else {
 			logger.info("No termeki base with id found", baseId);
 		}
