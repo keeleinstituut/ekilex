@@ -120,7 +120,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
 								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
 								.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-								.and(DOMAIN_LABEL.LANG.eq("eng"))
+								.and(DOMAIN_LABEL.LANG.eq("est"))
 								.and(DOMAIN_LABEL.TYPE.eq("descrip"))
 								)
 						)

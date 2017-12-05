@@ -93,8 +93,10 @@
               <b>Valdkonnad</b>
               <span th:each="domain,domainIter : ${lexeme.domains}">
                 <span th:text="${domain.code}"></span>
+                <th:block th:unless="${domain.code == domain.value}">
                 -
                 <span th:text="${domain.value}"></span>
+                </th:block>
                 <span th:unless="${domainIter.last}">,</span>
               </span>
             </p>
