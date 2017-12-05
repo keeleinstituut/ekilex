@@ -3242,3 +3242,281 @@ militerm	VE	V	Military Training and Education -> Training Fields	eng
 militerm	VE	V	sõjaline väljaõpe ja haridus -> väljaõppealad	est
 militerm	VF	V	Military Training and Education -> E-Training	eng
 militerm	VF	V	sõjaline väljaõpe ja haridus -> e-väljaõpe	est
+termeki	snomed ct	-	snomed ct	et
+termeki	snomed ct	-	snomed ct	en
+termeki	diagnostiline radioloogia	-	diagnostiline radioloogia	et
+termeki	diagnostiline radioloogia	-	diagnostic radiology	en
+termeki	üld- ja kollateraalmõisted	-	üld- ja kollateraalmõisted	et
+termeki	üld- ja kollateraalmõisted	-	general and collateral concepts	en
+termeki	füsioloogilised mõõtmised	üld- ja kollateraalmõisted	füsioloogilised mõõtmised	et
+termeki	röntgenkiirgusega diagnostika	diagnostiline radioloogia	röntgenkiirgusega diagnostika	et
+termeki	röntgenkiirgusega diagnostika	diagnostiline radioloogia	x-ray based diagnostics	en
+termeki	elektrimõõtmised, elektroonika	üld- ja kollateraalmõisted	elektrimõõtmised, elektroonika	et
+termeki	elektrimõõtmised, elektroonika	üld- ja kollateraalmõisted	electric measurements, electronics	en
+termeki	magnetresonantsdiagnostika	diagnostiline radioloogia	magnetresonantsdiagnostika	et
+termeki	magnetresonantsdiagnostika	diagnostiline radioloogia	magnetic resonance imaging	en
+termeki	optodiagnostika ja -teraapia	-	optodiagnostika ja -teraapia	et
+termeki	optodiagnostika ja -teraapia	-	optodiagnostics and therapy	en
+termeki	organisatsioonid	üld- ja kollateraalmõisted	organisatsioonid	et
+termeki	kompuutertomograafia	röntgenkiirgusega diagnostika	kompuutertomograafia	et
+termeki	kompuutertomograafia	röntgenkiirgusega diagnostika	computed tomography	en
+termeki	kiiritusravi	-	kiiritusravi	et
+termeki	kiiritusravi	-	radiotherapy	en
+termeki	meditsiiniinformaatika	üld- ja kollateraalmõisted	meditsiiniinformaatika	et
+termeki	meditsiiniinformaatika	üld- ja kollateraalmõisted	medical informatics	en
+termeki	ultrahelidiagnostika	diagnostiline radioloogia	ultrahelidiagnostika	et
+termeki	ultrahelidiagnostika	diagnostiline radioloogia	ultrasound imaging	en
+termeki	projektsioonradiograafia ja fluoroskoopia	röntgenkiirgusega diagnostika	projektsioonradiograafia ja fluoroskoopia	et
+termeki	projektsioonradiograafia ja fluoroskoopia	röntgenkiirgusega diagnostika	projection radiography and fluoroscopy	en
+termeki	arstiteadus, projektsiooniõpetus	üld- ja kollateraalmõisted	arstiteadus, projektsiooniõpetus	et
+termeki	arstiteadus, projektsiooniõpetus	üld- ja kollateraalmõisted	medicine, projection techniques	en
+termeki	nukleaarmeditsiin	-	nukleaarmeditsiin	et
+termeki	nukleaarmeditsiin	-	nuclear medicine	en
+termeki	kiirguskaitse, dosimeetria	-	kiirguskaitse, dosimeetria	et
+termeki	kiirguskaitse, dosimeetria	-	radiation protection, dosimetry	en
+termeki	juhtimine	-	juhtimine	et
+termeki	juhtimine	-	management	en
+termeki	konserveerimine ja säilitamine	-	konserveerimine ja säilitamine	et
+termeki	konserveerimine ja säilitamine	-	conservation and preservation	en
+termeki	museoloogia	-	museoloogia	et
+termeki	museoloogia	-	general	en
+termeki	publik	-	publik	et
+termeki	publik	-	public	en
+termeki	kogud	-	kogud	et
+termeki	kogud	-	collections	en
+termeki	muuseumiharidus	-	muuseumiharidus	et
+termeki	muuseumiharidus	-	museum pedagogics	en
+termeki	näitus	-	näitus	et
+termeki	näitus	-	exhibition	en
+termeki	teadus	-	teadus	et
+termeki	teadus	-	research	en
+termeki	sündmused	-	sündmused	et
+termeki	sündmused	-	events	en
+termeki	diagnostika terminid	-	diagnostika terminid	et
+termeki	morfoloogia ja arenemistsükli terminid	-	morfoloogia ja arenemistsükli terminid	et
+termeki	parasitoloogia põhimõisted	-	parasitoloogia põhimõisted	et
+termeki	konstruktsioonigrammatikad	-	konstruktsioonigrammatikad	et
+termeki	konstruktsioonigrammatikad	-	construction grammars	en
+termeki	suhtluslingvistika	-	suhtluslingvistika	et
+termeki	suhtluslingvistika	-	interactional linguistics	en
+termeki	kognitiivne grammatika	-	kognitiivne grammatika	et
+termeki	kognitiivne grammatika	-	cognitive grammar	en
+termeki	kognitiivne korpuslingvistika	-	kognitiivne korpuslingvistika	et
+termeki	kognitiivne korpuslingvistika	-	cognitive corpus linguistics	en
+termeki	prototüübiteooria	-	prototüübiteooria	et
+termeki	prototüübiteooria	-	prototype theory	en
+termeki	viiteseosed	suhtluslingvistika	viiteseosed	et
+termeki	viiteseosed	suhtluslingvistika	reference relations	en
+termeki	katseline keeleteadus	-	katseline keeleteadus	et
+termeki	katseline keeleteadus	-	experimental linguistics	en
+termeki	sulanditeooria	-	sulanditeooria	et
+termeki	sulanditeooria	-	blending theory	en
+termeki	len talmy	-	len talmy	et
+termeki	len talmy	-	len talmy	en
+termeki	metafooriteooria	-	metafooriteooria	et
+termeki	metafooriteooria	-	conceptual metaphor theory	en
+termeki	usund	-	usund	et
+termeki	majandus	-	majandus	et
+termeki	kiviajaga seotud mõisted	-	kiviajaga seotud mõisted	et
+termeki	üldmõisted	-	üldmõisted	et
+termeki	keraamika ja käsitöö	majandus	keraamika ja käsitöö	et
+termeki	sõjandus	-	sõjandus	et
+termeki	välitööd	-	välitööd	et
+termeki	leidude üldisemad nimetused	välitööd	leidude üldisemad nimetused	et
+termeki	kunst	-	kunst	et
+termeki	sõjamehevarustus	sõjandus	sõjamehevarustus	et
+termeki	labor	-	labor	et
+termeki	ehted	-	ehted	et
+termeki	perioodid	üldmõisted	perioodid	et
+termeki	mündid	-	mündid	et
+termeki	sõled	ehted	sõled	et
+termeki	kiviaeg	perioodid	kiviaeg	et
+termeki	muud välitöödega seotud mõisted	välitööd	muud välitöödega seotud mõisted	et
+termeki	pronksiaeg	perioodid	pronksiaeg	et
+termeki	varia	-	varia	et
+termeki	matused	-	matused	et
+termeki	majapidamisriistad ja tarbeesemed	-	majapidamisriistad ja tarbeesemed	et
+termeki	matusetüübid	matused	matusetüübid	et
+termeki	arheoloog ja arheoloogiad	üldmõisted	arheoloog ja arheoloogiad	et
+termeki	aarded	-	aarded	et
+termeki	keraamika stiilid ja tüübid	keraamika ja käsitöö	keraamika stiilid ja tüübid	et
+termeki	kaelaehted	ehted	kaelaehted	et
+termeki	piip ja selle osad	majapidamisriistad ja tarbeesemed	piip ja selle osad	et
+termeki	muud kiviajaga seotud mõisted	kiviajaga seotud mõisted	muud kiviajaga seotud mõisted	et
+termeki	kiviaja leiud	kiviajaga seotud mõisted	kiviaja leiud	et
+termeki	arheoloogilised meetodid2	välitööd	arheoloogilised meetodid2	et
+termeki	ehitised ja rajatised	-	ehitised ja rajatised	et
+termeki	rinnakee ja selle osad	kaelaehted	rinnakee ja selle osad	et
+termeki	hauatüübid	matused	hauatüübid	et
+termeki	metallitööga seotud mõisted	majandus	metallitööga seotud mõisted	et
+termeki	katusekivi	ehitised ja rajatised	katusekivi	et
+termeki	kaevamised	arheoloogilised meetodid2	kaevamised	et
+termeki	mänguvahendid ja -asjad	-	mänguvahendid ja -asjad	et
+termeki	ambsõled	sõled	ambsõled	et
+termeki	linnusetüübid	üldmõisted	linnusetüübid	et
+termeki	tekstiil ja rõivastus	-	tekstiil ja rõivastus	et
+termeki	tellised	ehitised ja rajatised	tellised	et
+termeki	ökofaktid	leidude üldisemad nimetused	ökofaktid	et
+termeki	nuga, selle osad ja tüübid	majapidamisriistad ja tarbeesemed	nuga, selle osad ja tüübid	et
+termeki	kaarsõled	sõled	kaarsõled	et
+termeki	helmed	ehted	helmed	et
+termeki	rinnalehed	ehted	rinnalehed	et
+termeki	relvad	sõjandus	relvad	et
+termeki	rauaaeg	perioodid	rauaaeg	et
+termeki	ambsõle osad	sõled	ambsõle osad	et
+termeki	juukseehted	ehted	juukseehted	et
+termeki	vananenud mõisted	-	vananenud mõisted	et
+termeki	stratigraafiline meetod	arheoloogilised meetodid2	stratigraafiline meetod	et
+termeki	kannused	sõjandus	kannused	et
+termeki	silmiksõled	sõled	silmiksõled	et
+termeki	sõrmused	ehted	sõrmused	et
+termeki	kõõvits ja selle tüübid	kiviaja leiud	kõõvits ja selle tüübid	et
+termeki	kihid	kaevamised	kihid	et
+termeki	käevõrud	ehted	käevõrud	et
+termeki	metallitöövahendid	metallitööga seotud mõisted	metallitöövahendid	et
+termeki	nõud	majapidamisriistad ja tarbeesemed	nõud	et
+termeki	savinõu osad	keraamika ja käsitöö	savinõu osad	et
+termeki	tööriistad	-	tööriistad	et
+termeki	oimuehted	ehted	oimuehted	et
+termeki	põllumajandus	majandus	põllumajandus	et
+termeki	kalme- ja kalmistutüübid	matused	kalme- ja kalmistutüübid	et
+termeki	eksperimentaalarheoloogia1	ehitised ja rajatised	eksperimentaalarheoloogia1	et
+termeki	kaelavõru ja selle tüübid	kaelaehted	kaelavõru ja selle tüübid	et
+termeki	ripatsid	ehted	ripatsid	et
+termeki	muud ehted või ehte osad	ehted	muud ehted või ehte osad	et
+termeki	metallid ja sulamid	metallitööga seotud mõisted	metallid ja sulamid	et
+termeki	tehnikad	kiviajaga seotud mõisted	tehnikad	et
+termeki	ühiskond	-	ühiskond	et
+termeki	amb ja selle osad	relvad	amb ja selle osad	et
+termeki	laevandus	majandus	laevandus	et
+termeki	ehtenõelad	ehted	ehtenõelad	et
+termeki	leiu-	välitööd	leiu-	et
+termeki	metallitöö tehnikad	metallitööga seotud mõisted	metallitöö tehnikad	et
+termeki	proovid	välitööd	proovid	et
+termeki	muud laboriga seotud mõisted	labor	muud laboriga seotud mõisted	et
+termeki	eksperimentaalarheoloogia2	varia	eksperimentaalarheoloogia2	et
+termeki	kalapüük	majandus	kalapüük	et
+termeki	materjalid	varia	materjalid	et
+termeki	arheoloogilised meetodid1	üldmõisted	arheoloogilised meetodid1	et
+termeki	tööriistad ja - vahendid	kaevamised	tööriistad ja - vahendid	et
+termeki	muud matuseteemalised mõisted	matused	muud matuseteemalised mõisted	et
+termeki	mõõk ja selle osad	relvad	mõõk ja selle osad	et
+termeki	hoburaudsõled	sõled	hoburaudsõled	et
+termeki	konserveerimine	labor	konserveerimine	et
+termeki	oda ja selle osad	relvad	oda ja selle osad	et
+termeki	vööehted	ehted	vööehted	et
+termeki	asustus ja asulad	-	asustus ja asulad	et
+termeki	kirves ja selle tüübid	tööriistad	kirves ja selle tüübid	et
+termeki	me8 - public health	-	me8 - public health	et
+termeki	ed - education - training	-	ed - education - training	et
+termeki	so81 - social services; welfare services; social facilities	-	so81 - social services; welfare services; social facilities	et
+termeki	bz - biology - biotechnology	-	bz - biology - biotechnology	et
+termeki	meg - veterinary medicine	-	meg - veterinary medicine	et
+termeki	meh1 - psychology	-	meh1 - psychology	et
+termeki	me - medicine - pathology - surgery	-	me - medicine - pathology - surgery	et
+termeki	meh8 – ethology	-	meh8 – ethology	et
+termeki	bz8 – general zoology	-	bz8 – general zoology	et
+termeki	muusikateraapia meetodid ja tehnikad	-	muusikateraapia meetodid ja tehnikad	et
+termeki	muusikateraapia meetodid ja tehnikad	-	music therapy methods and techniques	en
+termeki	neuroloogiline muusikateraapia	-	neuroloogiline muusikateraapia	et
+termeki	muusikateraapia üldmõisted	-	muusikateraapia üldmõisted	et
+termeki	muusikateraapia üldmõisted	-	music therapy general concepts	en
+termeki	taoism	-	taoism	et
+termeki	brahmanism	-	brahmanism	et
+termeki	hinduism	-	hinduism	et
+termeki	budism	-	budism	et
+termeki	konfutsianism	-	konfutsianism	et
+termeki	džainism	-	džainism	et
+termeki	puidukäsitöö	-	puidukäsitöö	et
+termeki	tekstiilikäsitöö	-	tekstiilikäsitöö	et
+termeki	käsitööteaduse üldmõisted	-	käsitööteaduse üldmõisted	et
+termeki	palkehitus	puidukäsitöö	palkehitus	et
+termeki	kõlatehnika	tekstiilikäsitöö	kõlatehnika	et
+termeki	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	et
+termeki	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	coastal landforms	en
+termeki	tuuletekkelised ehk eoolsed pinnavormid	-	tuuletekkelised ehk eoolsed pinnavormid	et
+termeki	tuuletekkelised ehk eoolsed pinnavormid	-	aeolian landforms	en
+termeki	liustike sulamisvee ehk glatsigeensed pinnavormid	-	liustike sulamisvee ehk glatsigeensed pinnavormid	et
+termeki	liustike sulamisvee ehk glatsigeensed pinnavormid	-	glacial meltwater induced landforms	en
+termeki	jäätekkelised ehk glatsiaalsed pinnavormid	-	jäätekkelised ehk glatsiaalsed pinnavormid	et
+termeki	jäätekkelised ehk glatsiaalsed pinnavormid	-	glacial landforms	en
+termeki	mandrijää kulutuslikud ehk jääkünde pinnavormid	jäätekkelised ehk glatsiaalsed pinnavormid	mandrijää kulutuslikud ehk jääkünde pinnavormid	et
+termeki	mandrijää kulutuslikud ehk jääkünde pinnavormid	jäätekkelised ehk glatsiaalsed pinnavormid	landforms of glacial erosion	en
+termeki	gravitatsioonilised pinnavormid	-	gravitatsioonilised pinnavormid	et
+termeki	gravitatsioonilised pinnavormid	-	mass wasting landforms	en
+termeki	kulutusrandlate pinnavormid	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	kulutusrandlate pinnavormid	et
+termeki	kulutusrandlate pinnavormid	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	erosional (wave-cut) coastal landforms	en
+termeki	vooluveetekkelised ehk fluviaalsed pinnavormid	-	vooluveetekkelised ehk fluviaalsed pinnavormid	et
+termeki	vooluveetekkelised ehk fluviaalsed pinnavormid	-	stream or fluvial landforms	en
+termeki	igikeltsa ehk krüogeensed pinnavormid	-	igikeltsa ehk krüogeensed pinnavormid	et
+termeki	igikeltsa ehk krüogeensed pinnavormid	-	periglacial landforms	en
+termeki	jääjõelised ehk glatsiofluviaalsed kuhjelised pinnavormid 	liustike sulamisvee ehk glatsigeensed pinnavormid	jääjõelised ehk glatsiofluviaalsed kuhjelised pinnavormid 	et
+termeki	jääjõelised ehk glatsiofluviaalsed kuhjelised pinnavormid 	liustike sulamisvee ehk glatsigeensed pinnavormid	meltr-water stream or glaciofluvial depositional landforms	en
+termeki	deflatsiooni ehk tuule ärakande pinnavormid	tuuletekkelised ehk eoolsed pinnavormid	deflatsiooni ehk tuule ärakande pinnavormid	et
+termeki	deflatsiooni ehk tuule ärakande pinnavormid	tuuletekkelised ehk eoolsed pinnavormid	aeolian or wind deflation landforms	en
+termeki	jääjärvelised ehk glatsiolakustrilised kuhjelised pinnavormid 	liustike sulamisvee ehk glatsigeensed pinnavormid	jääjärvelised ehk glatsiolakustrilised kuhjelised pinnavormid 	et
+termeki	jääjärvelised ehk glatsiolakustrilised kuhjelised pinnavormid 	liustike sulamisvee ehk glatsigeensed pinnavormid	glacial lake or glaciolacustrine depositional landforms	en
+termeki	kuhjerandlate pinnavormid	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	kuhjerandlate pinnavormid	et
+termeki	kuhjerandlate pinnavormid	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	accumulative coastal landforms	en
+termeki	jääjõelised ehk glatsiofluviaalsed kulutusvormid	liustike sulamisvee ehk glatsigeensed pinnavormid	jääjõelised ehk glatsiofluviaalsed kulutusvormid	et
+termeki	jääjõelised ehk glatsiofluviaalsed kulutusvormid	liustike sulamisvee ehk glatsigeensed pinnavormid	meltr-water stream or glaciofluvial erosional landforms	en
+termeki	tuuletekkelised ehk eoolsed akumulatiivsed pinnavormid	tuuletekkelised ehk eoolsed pinnavormid	tuuletekkelised ehk eoolsed akumulatiivsed pinnavormid	et
+termeki	tuuletekkelised ehk eoolsed akumulatiivsed pinnavormid	tuuletekkelised ehk eoolsed pinnavormid	aeolian or wind depositional landforms	en
+termeki	kosmogeensed pinnavormid	-	kosmogeensed pinnavormid	et
+termeki	kosmogeensed pinnavormid	-	cosmogenic landforms	en
+termeki	mandrijää kuhjelised pinnavormid	jäätekkelised ehk glatsiaalsed pinnavormid	mandrijää kuhjelised pinnavormid	et
+termeki	mandrijää kuhjelised pinnavormid	jäätekkelised ehk glatsiaalsed pinnavormid	glacial depositional landforms	en
+termeki	korrosioonilised (karsti) ja sufosioonilised (vee uuristaval toimel) pinnavormid	-	korrosioonilised (karsti) ja sufosioonilised (vee uuristaval toimel) pinnavormid	et
+termeki	korrosioonilised (karsti) ja sufosioonilised (vee uuristaval toimel) pinnavormid	-	karst and groundwater erosional landforms	en
+termeki	hüpsomeetria ehk kõrgussuhetega seotud pinnavormid	-	hüpsomeetria ehk kõrgussuhetega seotud pinnavormid	et
+termeki	hüpsomeetria ehk kõrgussuhetega seotud pinnavormid	-	hypsometry or elevation determined landforms	en
+termeki	evorsioonilised pinnavormid	liustike sulamisvee ehk glatsigeensed pinnavormid	evorsioonilised pinnavormid	et
+termeki	evorsioonilised pinnavormid	liustike sulamisvee ehk glatsigeensed pinnavormid	evorsional landforms	en
+termeki	tuuletekkelised ehk eoolsed kulutusvormid	tuuletekkelised ehk eoolsed pinnavormid	tuuletekkelised ehk eoolsed kulutusvormid	et
+termeki	tuuletekkelised ehk eoolsed kulutusvormid	tuuletekkelised ehk eoolsed pinnavormid	aeolian or wind erosional landforms	en
+termeki	mäestiku- ehk oruliustike kujundatud pinnavormid	-	mäestiku- ehk oruliustike kujundatud pinnavormid	et
+termeki	mäestiku- ehk oruliustike kujundatud pinnavormid	-	landforms made by valley (alpine) glaciers	en
+termeki	mandrijää kulutus-kuhjelised pinnavormid	jäätekkelised ehk glatsiaalsed pinnavormid	mandrijää kulutus-kuhjelised pinnavormid	et
+termeki	mandrijää kulutus-kuhjelised pinnavormid	jäätekkelised ehk glatsiaalsed pinnavormid	landforms formed by glacial scarving and shaping	en
+termeki	jääjärvelised ehk glatsiolakustrilised kulutusvormid 	liustike sulamisvee ehk glatsigeensed pinnavormid	jääjärvelised ehk glatsiolakustrilised kulutusvormid 	et
+termeki	jääjärvelised ehk glatsiolakustrilised kulutusvormid 	liustike sulamisvee ehk glatsigeensed pinnavormid	glacial lake or glaciolacustrine wave-cut landforms	en
+termeki	elutekkelised (füto-, zoo-, antropogeensed/tehnogeensed) pinnavormid	-	elutekkelised (füto-, zoo-, antropogeensed/tehnogeensed) pinnavormid	et
+termeki	elutekkelised (füto-, zoo-, antropogeensed/tehnogeensed) pinnavormid	-	biogenic (phyto-, zoo- and athropogenic) landforms	en
+termeki	klassitsism	-	klassitsism	et
+termeki	keskaeg	-	keskaeg	et
+termeki	avatäited	-	avatäited	et
+termeki	antiik	-	antiik	et
+termeki	katus	-	katus	et
+termeki	veski	-	veski	et
+termeki	sakraalarhitektuur	-	sakraalarhitektuur	et
+termeki	katusetüüp	-	katusetüüp	et
+termeki	ehitus- või kaunistusvõte	-	ehitus- või kaunistusvõte	et
+termeki	vesiveskid jm	-	vesiveskid jm	et
+termeki	profaan	-	profaan	et
+termeki	majavaimud	-	majavaimud	et
+termeki	popkultuur	-	popkultuur	et
+termeki	veevaimud	-	veevaimud	et
+termeki	haldjad	-	haldjad	et
+termeki	rõhujavaimud	-	rõhujavaimud	et
+termeki	tehisolendid	-	tehisolendid	et
+termeki	surmavalla olendid	-	surmavalla olendid	et
+termeki	müütilised loomad	-	müütilised loomad	et
+termeki	tänapäeva pärimus	-	tänapäeva pärimus	et
+termeki	tule- ja vulkaanijumalad	-	tule- ja vulkaanijumalad	et
+termeki	metsavaimud	-	metsavaimud	et
+termeki	tõlkekirjandus	-	tõlkekirjandus	et
+termeki	kurat ja kuradi derivaadid	-	kurat ja kuradi derivaadid	et
+termeki	kiletiivalised	-	kiletiivalised	et
+termeki	puiduvaablased	kiletiivalised	puiduvaablased	et
+termeki	kiililised	-	kiililised	et
+termeki	kiililised	-	dragonflies	en
+termeki	prussakalised	-	prussakalised	et
+termeki	tolmukavaablased	kiletiivalised	tolmukavaablased	et
+termeki	liblikalised	-	liblikalised	et
+termeki	mesilased	kiletiivalised	mesilased	et
+termeki	mardikalised	-	mardikalised	et
+termeki	võrgendivaablased	kiletiivalised	võrgendivaablased	et
+termeki	voltherilased	kiletiivalised	voltherilased	et
+termeki	sipelglased	kiletiivalised	sipelglased	et
+termeki	suurliblikad	liblikalised	suurliblikad	et
+termeki	pahkvaablased	kiletiivalised	pahkvaablased	et
