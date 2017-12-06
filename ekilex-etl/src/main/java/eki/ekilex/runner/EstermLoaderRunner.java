@@ -5,6 +5,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -15,13 +16,19 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
+import org.dom4j.tree.DefaultElement;
+import org.dom4j.tree.DefaultText;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogType;
+import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
+import eki.common.exception.DataLoadingException;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Word;
@@ -40,6 +47,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_DEFINITIONS_AT_TERMS = "definitions_at_terms";
 
+	private static final String REPORT_MISSING_SOURCE_REFS = "missing_source_refs";
+
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
 	private static final String LTB_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";
@@ -53,6 +62,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private static final String SQL_SELECT_LEXEME_TYPES = "select code \"key\", code \"value\" from " + LEXEME_TYPE;
 
 	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
+
+	private static final String SQL_SELECT_SOURCE_BY_CODE_OR_NAME =
+			"select s.id from " + SOURCE + " s, " + SOURCE_FREEFORM + " sf "
+			+ "where sf.source_id = s.id and exists (select sn.id from " + FREEFORM + " sn where sf.freeform_id = sn.id and sn.value_text = :sourceCodeOrName)";
 
 	private ReportComposer reportComposer;
 
@@ -76,8 +89,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private final String termGroupExp = "termGrp";
 	private final String termExp = "term";
 	private final String conceptExp = "concept";
-	private final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref";
+	private final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref[contains(@Tlink, 'Valdkond:')]";//should collect source too?
 	private final String subdomainExp = "descripGrp/descrip[@type='Alamvaldkond']";
+	private final String sourceExp = "descripGrp/descrip[@type='Allikaviide']";
 	private final String usageExp = "descripGrp/descrip[@type='Kontekst']";
 	private final String definitionExp = "descripGrp/descrip[@type='Definitsioon']";
 	private final String lexemeTypeExp = "descripGrp/descrip[@type='Keelenditüüp']";
@@ -103,8 +117,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private final String etEnReviewedOnExp = "descripGrp/descrip[@type='et-en kontrollitud']";
 	private final String enEtReviewedByExp = "descripGrp/descrip[@type='en-et kontrollija']";
 	private final String enEtReviewedOnExp = "descripGrp/descrip[@type='en-et kontrollitud']";
+	private final String xrefExp = "xref";
 
 	private final String langTypeAttr = "type";
+	private final String xrefTlinkAttr = "Tlink";
+
+	private final String xrefTlinkSourcePrefix = "Allikas:";
 
 	private final String originLenoch = "lenoch";
 	private final String originLtb = "ltb";
@@ -137,7 +155,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (doReports) {
 			reportComposer = new ReportComposer("esterm load report",
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
-					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS);
+					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS);
 		}
 
 		meaningStateCodes = getClassifierCodes(SQL_SELECT_MEANING_STATES);
@@ -181,6 +199,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			meaningId = createMeaning(meaningObj, dataset);
 			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode);
 
+			//TODO source ref?
+			// domains
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
 			saveDomains(domainNodes, meaningId, originLenoch);
 			domainNodes = conceptGroupNode.selectNodes(subdomainExp);
@@ -226,8 +246,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Element definitionNode : valueNodes) {
-						String definition = definitionNode.getTextTrim();
-						createDefinition(meaningId, definition, lang, dataset);
+						valueStr = definitionNode.getTextTrim();
+						Long definitionId = createDefinition(meaningId, valueStr, lang, dataset);
+						if (definitionNode.hasMixedContent()) {
+							valueStr = handleRefLinks(definitionNode, RefLinkOwner.DEFINITION, definitionId);
+							updateDefinitionValue(definitionId, valueStr);
+						}
 					}
 
 					valueNodes = termGroupNode.selectNodes(usageExp);
@@ -235,11 +259,22 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 						rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
 						usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
 						for (Element usageNode : valueNodes) {
-							if (usageNode.hasMixedContent()) {
-								//TODO get source
-							}
 							valueStr = usageNode.getTextTrim();
-							createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
+							Long freeformId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
+							if (usageNode.hasMixedContent()) {
+								valueStr = handleRefLinks(usageNode, RefLinkOwner.FREEFORM, freeformId);
+								updateFreeformText(freeformId, valueStr);
+							}
+						}
+					}
+
+					valueNodes = termGroupNode.selectNodes(sourceExp);
+					for (Element sourceNode : valueNodes) {
+						valueStr = sourceNode.getTextTrim();
+						Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, valueStr, null);
+						if (sourceNode.hasMixedContent()) {
+							valueStr = handleRefLinks(sourceNode, RefLinkOwner.FREEFORM, freeformId);
+							updateFreeformText(freeformId, valueStr);
 						}
 					}
 
@@ -433,6 +468,24 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				logBuf.append(values);
 				String logRow = logBuf.toString();
 				reportComposer.append(REPORT_CREATED_MODIFIED_MESS, logRow);
+			}
+		}
+
+		valueNodes = conceptGroupNode.selectNodes(".//descripGrp/descrip/xref[contains(@Tlink, 'Allikas:')]");
+		for (Element sourceNode : valueNodes) {
+			String tlinkAttrValue = sourceNode.attributeValue(xrefTlinkAttr);
+			String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+			tableRowParamMap = new HashMap<>();
+			tableRowParamMap.put("sourceCodeOrName", sourceCodeOrName);
+			List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_CODE_OR_NAME, tableRowParamMap);
+			if (CollectionUtils.isEmpty(results)) {
+				dataErrorCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(concept);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(sourceCodeOrName);
+				String logRow = logBuf.toString();
+				reportComposer.append(REPORT_MISSING_SOURCE_REFS, logRow);
 			}
 		}
 	}
@@ -638,13 +691,21 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNodes = conceptGroupNode.selectNodes(noteExp);
 		for (Element noteValueNode : valueNodes) {
 			valueStr = noteValueNode.getTextTrim();
-			createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
+			if (noteValueNode.hasMixedContent()) {
+				valueStr = handleRefLinks(noteValueNode, RefLinkOwner.FREEFORM, freeformId);
+				updateFreeformText(freeformId, valueStr);
+			}
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(privateNoteExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
+			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
+			if (valueNode.hasMixedContent()) {
+				valueStr = handleRefLinks(valueNode, RefLinkOwner.FREEFORM, freeformId);
+				updateFreeformText(freeformId, valueStr);
+			}
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(unclassifiedExp);
@@ -775,9 +836,17 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		for (Element definitionNode : definitionNodes) {
 			String definition = definitionNode.getTextTrim();
 			Long definitionId = createDefinition(meaningId, definition, lang, dataset);
+			if (definitionNode.hasMixedContent()) {
+				definition = handleRefLinks(definitionNode, RefLinkOwner.DEFINITION, definitionId);
+				updateDefinitionValue(definitionId, definition);
+			}
 			for (Element definitionNoteNode : definitionNoteNodes) {
 				String definitionNote = definitionNoteNode.getTextTrim();
-				createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
+				Long freeformId = createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
+				if (definitionNoteNode.hasMixedContent()) {
+					definitionNote = handleRefLinks(definitionNoteNode, RefLinkOwner.FREEFORM, freeformId);
+					updateFreeformText(freeformId, definitionNote);
+				}
 			}
 		}
 	}
@@ -925,14 +994,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		valueNodes = termGroupNode.selectNodes(noteExp);
 		for (Element valueNode : valueNodes) {
-			if (valueNode.hasMixedContent()) {
-				//TODO get link
-			}
 			valueStr = valueNode.getTextTrim();
-			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
+			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
+			if (valueNode.hasMixedContent()) {
+				valueStr = handleRefLinks(valueNode, RefLinkOwner.FREEFORM, freeformId);
+				updateFreeformText(freeformId, valueStr);
+			}
 		}
 	}
 
+	//TODO ref link?
 	private void saveDomains(List<Element> domainNodes, Long meaningId, String domainOrigin) throws Exception {
 
 		if (domainNodes == null) {
@@ -963,5 +1034,91 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				logger.warn("Incorrect domain reference: \"{}\"", domainCode);
 			}
 		}
+	}
+
+	private String handleRefLinks(Element mixedContentNode, RefLinkOwner owner, Long ownerId) throws Exception {
+
+		Iterator<Node> contentNodeIter = mixedContentNode.nodeIterator();
+		StringBuffer contentBuf = new StringBuffer();
+		DefaultText textContentNode;
+		DefaultElement elemContentNode;
+		String valueStr;
+
+		String refLinkKey = null;
+		if (RefLinkOwner.FREEFORM.equals(owner)) {
+			refLinkKey = ContentKey.FREEFORM_REF_LINK;
+		} else if (RefLinkOwner.DEFINITION.equals(owner)) {
+			refLinkKey = ContentKey.DEFINITION_REF_LINK;
+		}
+
+		while (contentNodeIter.hasNext()) {
+			Node contentNode = contentNodeIter.next();
+			if (contentNode instanceof DefaultText) {
+				textContentNode = (DefaultText) contentNode;
+				valueStr = textContentNode.getText();
+				contentBuf.append(valueStr);
+			} else if (contentNode instanceof DefaultElement) {
+				elemContentNode = (DefaultElement) contentNode;
+				valueStr = elemContentNode.getTextTrim();
+				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
+					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
+						String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+						Long sourceId = getSource(sourceCodeOrName);
+						if (sourceId == null) {
+							contentBuf.append(valueStr);
+						} else {
+							Long refLinkId = null;
+							if (RefLinkOwner.FREEFORM.equals(owner)) {
+								refLinkId = createFreeformRefLink(ownerId, ReferenceType.SOURCE, sourceId);
+							} else if (RefLinkOwner.DEFINITION.equals(owner)) {
+								refLinkId = createDefinitionRefLink(ownerId, ReferenceType.SOURCE, sourceId);
+							}
+							//simulating markdown link syntax
+							contentBuf.append("[");
+							contentBuf.append(valueStr);
+							contentBuf.append("]");
+							contentBuf.append("(");
+							contentBuf.append(refLinkKey);
+							contentBuf.append(":");
+							contentBuf.append(refLinkId);
+							contentBuf.append(")");
+						}
+					} else {
+						// TODO other types of links to be implemented
+						contentBuf.append(valueStr);
+					}
+				} else {
+					throw new DataLoadingException("Unsupported mixed content node name: " + contentNode.getName());
+				}
+			} else {
+				throw new DataLoadingException("Unsupported mixed content node type: " + contentNode.getClass());
+			}
+		}
+		valueStr = contentBuf.toString();
+		return valueStr;
+	}
+
+	private Long getSource(String sourceCodeOrName) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("sourceCodeOrName", sourceCodeOrName);
+		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_CODE_OR_NAME, tableRowParamMap);
+		if (CollectionUtils.isEmpty(results)) {
+			logger.warn("Could not find matching source \"{}\"", sourceCodeOrName);
+			return null;
+		}
+		if (results.size() > 1) {
+			logger.warn("Several sources match the \"{}\"", sourceCodeOrName);
+		}
+		Map<String, Object> result = results.get(0);
+		Long sourceId = Long.valueOf(result.get("id").toString());
+		return sourceId;
+	}
+
+	private enum RefLinkOwner {
+		FREEFORM,
+		DEFINITION
+		//MEANING_DOMAIN?
 	}
 }

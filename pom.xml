@@ -230,6 +230,12 @@
 				<artifactId>jaxen</artifactId>
 				<version>1.1.6</version>
 			</dependency>
+			<!-- markdown -->
+			<dependency>
+				<groupId>com.atlassian.commonmark</groupId>
+				<artifactId>commonmark</artifactId>
+				<version>0.10.0</version>
+			</dependency>
 			<!-- JSR 303 with Hibernate Validator -->
 			<dependency>
 				<groupId>javax.validation</groupId>

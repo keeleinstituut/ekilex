@@ -33,6 +33,8 @@ public interface TableName {
 	public static final String MEANING_FREEFORM = "meaning_freeform";
 	public static final String DEFINITION_FREEFORM = "definition_freeform";
 	public static final String SOURCE_FREEFORM = "source_freeform";
+	public static final String FREEFORM_REF_LINK = "freeform_ref_link";
+	public static final String DEFINITION_REF_LINK = "definition_ref_link";
 	public static final String DATASET = "dataset";
 	public static final String VIEW = "vievv";
 	public static final String WORD_GUID = "word_guid";

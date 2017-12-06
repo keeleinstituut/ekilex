@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogType;
+import eki.common.constant.ReferenceType;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
@@ -292,6 +293,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return definitionId;
 	}
 
+	protected void updateDefinitionValue(Long definitionId, String value) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", definitionId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("value", value);
+		basicDbService.update(DEFINITION, criteriaParamMap, valueParamMap);
+	}
+
 	protected Long createLexeme(Lexeme lexeme, String dataset) throws Exception {
 
 		Long wordId = lexeme.getWordId();
@@ -361,6 +371,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
+
 		return freeformId;
 	}
 
@@ -380,7 +391,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
-	protected void createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
+	protected Long createMeaningFreeform(Long meaningId, FreeformType freeformType, Object value) throws Exception {
 
 		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
 
@@ -388,9 +399,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(MEANING_FREEFORM, tableRowParamMap);
+
+		return freeformId;
 	}
 
-	protected void createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
+	protected Long createDefinitionFreeform(Long definitionId, FreeformType freeformType, Object value) throws Exception {
 
 		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
 
@@ -398,6 +411,19 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("definition_id", definitionId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(DEFINITION_FREEFORM, tableRowParamMap);
+
+		return freeformId;
+	}
+
+	protected Long createDefinitionRefLink(Long definitionId, ReferenceType refType, Long refId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("definition_id", definitionId);
+		tableRowParamMap.put("ref_type", refType.name());
+		tableRowParamMap.put("ref_id", refId);
+
+		Long refLinkId = basicDbService.create(DEFINITION_REF_LINK, tableRowParamMap);
+		return refLinkId;
 	}
 
 	protected Long createFreeformTextOrDate(FreeformType freeformType, Long parentId, Object value, String lang) throws Exception {
@@ -432,6 +458,26 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		}
 		tableRowParamMap.put("classif_code", classifierCode);
 		return basicDbService.create(FREEFORM, tableRowParamMap);
+	}
+
+	protected void updateFreeformText(Long freeformId, String value) throws Exception {
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", freeformId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("value_text", value);
+		basicDbService.update(FREEFORM, criteriaParamMap, valueParamMap);
+	}
+
+	protected Long createFreeformRefLink(Long freeformId, ReferenceType refType, Long refId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("freeform_id", freeformId);
+		tableRowParamMap.put("ref_type", refType.name());
+		tableRowParamMap.put("ref_id", refId);
+
+		Long refLinkId = basicDbService.create(FREEFORM_REF_LINK, tableRowParamMap);
+		return refLinkId;
 	}
 
 	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleLogType type, String eventBy, Timestamp eventOn) throws Exception {

@@ -1,3 +1,5 @@
+drop table if exists freeform_ref_link;
+drop table if exists definition_ref_link;
 drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
 drop table if exists lexeme_freeform;
@@ -475,7 +477,7 @@ alter sequence meaning_id_seq restart with 10000;
 
 create table meaning_dataset
 (
-  meaning_id bigint REFERENCES meaning(id) on delete CASCADE not null,
+  meaning_id bigint references meaning(id) on delete CASCADE not null,
   dataset_code varchar(10) references dataset(code) not null,
   primary key (meaning_id, dataset_code)
 );
@@ -513,7 +515,7 @@ alter sequence definition_id_seq restart with 10000;
 
 create table definition_dataset
 (
-  definition_id bigint REFERENCES definition(id) on delete CASCADE not null,
+  definition_id bigint references definition(id) on delete cascade not null,
   dataset_code varchar(10) references dataset(code) not null,
   primary key (definition_id, dataset_code)
 );
@@ -549,7 +551,7 @@ alter sequence lexeme_id_seq restart with 10000;
 
 create table lexeme_dataset
 (
-  lexeme_id bigint REFERENCES lexeme(id) on delete CASCADE not null,
+  lexeme_id bigint references lexeme(id) on delete CASCADE not null,
   dataset_code varchar(10) references dataset(code) not null,
   primary key (lexeme_id, dataset_code)
 );
@@ -604,10 +606,28 @@ alter sequence lex_relation_id_seq restart with 10000;
 
 create table lex_relation_dataset
 (
-  lex_relation_id bigint REFERENCES lex_relation(id) on delete CASCADE not null,
+  lex_relation_id bigint references lex_relation(id) on delete cascade not null,
   dataset_code varchar(10) references dataset(code) not null,
   primary key (lex_relation_id, dataset_code)
 );
+
+create table freeform_ref_link
+(
+  id bigserial primary key,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  ref_type varchar(100) not null,
+  ref_id bigint null
+);
+alter sequence freeform_ref_link_id_seq restart with 10000;
+
+create table definition_ref_link
+(
+  id bigserial primary key,
+  definition_id bigint references definition(id) on delete cascade not null,
+  ref_type varchar(100) not null,
+  ref_id bigint null
+);
+alter sequence definition_ref_link_id_seq restart with 10000;
 
 --- indexes
 
@@ -632,3 +652,5 @@ create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);
 create index meaning_freeform_freeform_id_idx on meaning_freeform(freeform_id);
 create index definition_freeform_definition_id_idx on definition_freeform(definition_id);
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
+create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
+create index definition_ref_link_freeform_id_idx on definition_ref_link(definition_id);
