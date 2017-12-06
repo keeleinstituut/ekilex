@@ -14,6 +14,10 @@ insert into lang (code, value) values ('pli', 'Pali');
 insert into lang (code, value) values ('zho', 'Chinese');
 insert into lang (code, value) values ('jpn', 'Japanese');
 insert into lang (code, value) values ('bod', 'Tibetan');
+insert into lang (code, value) values ('hin', 'Hindi');
+insert into lang (code, value) values ('pan', 'Panjabi');
+insert into lang (code, value) values ('ell', 'Greek');
+insert into lang (code, value) values ('spa', 'Spanish');
 
 insert into label_type (code, value) values ('capital', 'capital');
 insert into label_type (code, value) values ('abbrev', 'abbrev');
