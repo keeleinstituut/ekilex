@@ -1,9 +1,27 @@
 package eki.ekilex.runner;
 
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import eki.common.constant.FreeformType;
+import eki.common.data.Count;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Rection;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
+import eki.ekilex.service.WordMatcherService;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,26 +33,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
-
-import eki.ekilex.data.transform.Rection;
-import eki.ekilex.service.WordMatcherService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import eki.common.constant.FreeformType;
-import eki.common.data.Count;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.ReportComposer;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toMap;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
 public class PsvLoaderRunner extends AbstractLoaderRunner {
@@ -67,6 +69,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l join " + LEXEME_DATASET + " ld on ld.lexeme_id = l.id "
 			+ "where l.word_id = :wordId and ld.dataset_code = :dataset";
 
+	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
+
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private Map<String, String> posCodes;
@@ -80,17 +84,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
-		//TODO read mappings from classifier-main-map.csv
-		lexemeTypes = new HashMap<>();
-		lexemeTypes.put("l", "lühend");
-		lexemeTypes.put("mvv", "viiteartikli märksõna");
-		lexemeTypes.put("yv", "ühendverb");
-		lexemeTypes.put("vv", "väljendverb");
-		lexemeTypes.put("av", "ahelverb");
-		lexemeTypes.put("tv", "tugiverb");
-		lexemeTypes.put("vlj", "väljend");
-		lexemeTypes.put("ys", "ühendsidesõna");
-		lexemeTypes.put("rs", "rühmsidesõna");
+
+		lexemeTypes = readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
+				.filter(line -> line.startsWith("liik_tyyp"))
+				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
+				.filter(cells -> "et".equals(cells[4]))
+				.collect(toMap(cells -> cells[2], cells -> cells[6]));
+	}
+
+	private List<String> readFileLines(String sourcePath) throws Exception {
+		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
+			return IOUtils.readLines(resourceInputStream, UTF_8);
+		}
 	}
 
 	@Transactional
@@ -650,8 +655,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String imageNameExp = "x:plp/x:plg/x:plf";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
-		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode);
-		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode);
+		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
+		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode, reportingId);
 		Element commonInfoNode = (Element) contentNode.selectSingleNode(commonInfoNodeExp);
 		List<LexemeToWordData> articleVormels = extractVormels(commonInfoNode);
 
@@ -662,10 +667,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
-			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode);
+			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode, reportingId);
 			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
 			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
-			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode);
+			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode, reportingId);
 			List<Long> newLexemes = new ArrayList<>();
 			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
 			List<String> meaningPosCodes = new ArrayList<>();
@@ -706,7 +711,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId);
 				context.synonyms.addAll(meaningSynonyms);
 
-				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode);
+				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 
 				int lexemeLevel2 = 0;
 				for (WordData newWordData : newWords) {
@@ -819,7 +824,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<LexemeToWordData> extractCompoundForms(Element node) {
+	private List<LexemeToWordData> extractCompoundForms(Element node, String reportingId) throws Exception {
 
 		final String compoundFormGroupNodeExp = "x:pyp/x:pyg";
 		final String compoundFormNodeExp = "x:pyh";
@@ -842,7 +847,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					data.rection = extractRection((Element) compoundFormNode.selectSingleNode(rectionExp));
 				}
 				if (compoundFormNode.attributeValue(lexemeTypeAttr) != null) {
-					data.lexemeType = lexemeTypes.get(compoundFormNode.attributeValue(lexemeTypeAttr));
+					String lexemeType = compoundFormNode.attributeValue(lexemeTypeAttr);
+					data.lexemeType = lexemeTypes.get(lexemeType);
+					if (data.lexemeType == null) {
+						writeToLogFile(reportingId, "Tundmatu märksõnaliik", lexemeType);
+					}
 				}
 				forms.add(data);
 			}
@@ -968,19 +977,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return vormels;
 	}
 
-	private List<LexemeToWordData> extractCompoundReferences(Element node) {
+	private List<LexemeToWordData> extractCompoundReferences(Element node, String reportingId) throws Exception {
 
 		final String compoundReferenceExp = "x:tyg2/x:yhvt";
 
-		return extractLexemeMetadata(node, compoundReferenceExp, null);
+		return extractLexemeMetadata(node, compoundReferenceExp, null, reportingId);
 	}
 
-	private List<LexemeToWordData> extractJointReferences(Element node) {
+	private List<LexemeToWordData> extractJointReferences(Element node, String reportingId) throws Exception {
 
 		final String jointReferenceExp = "x:tyg2/x:yvt";
 		final String relationTypeAttr = "yvtl";
 
-		return extractLexemeMetadata(node, jointReferenceExp, relationTypeAttr);
+		return extractLexemeMetadata(node, jointReferenceExp, relationTypeAttr, reportingId);
 	}
 
 	private List<String> extractCompoundWords(Element node) {
@@ -995,21 +1004,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return compoundWords;
 	}
 
-	private List<LexemeToWordData> extractMeaningReferences(Element node) {
+	private List<LexemeToWordData> extractMeaningReferences(Element node, String reportingId) throws Exception {
 
 		final String meaningReferenceExp = "x:tvt";
 		final String relationTypeAttr = "tvtl";
 
-		return extractLexemeMetadata(node, meaningReferenceExp, relationTypeAttr);
+		return extractLexemeMetadata(node, meaningReferenceExp, relationTypeAttr, reportingId);
 	}
 
-	private List<LexemeToWordData> extractAntonyms(Element node) {
+	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
 
 		final String antonymExp = "x:ant";
-		return extractLexemeMetadata(node, antonymExp, null);
+		return extractLexemeMetadata(node, antonymExp, null, reportingId);
 	}
 
-	private List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr) {
+	private List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
 
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
@@ -1037,6 +1046,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String lexemeTypeAttrValue = metadataNode.attributeValue(lexemeTypeAttr);
 			if (StringUtils.isNotBlank(lexemeTypeAttrValue)) {
 				lexemeMetadata.lexemeType = lexemeTypes.get(lexemeTypeAttrValue);
+				if (lexemeMetadata.lexemeType == null) {
+					writeToLogFile(reportingId, "Tundmatu märksõnaliik", lexemeTypeAttrValue);
+				}
 			}
 			metadataList.add(lexemeMetadata);
 		}
