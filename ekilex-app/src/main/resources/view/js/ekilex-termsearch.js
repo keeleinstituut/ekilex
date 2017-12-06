@@ -19,3 +19,7 @@ function initialize(urlPrefix) {
         detailsDivs.trigger('click');
     }
 }
+
+function selectDatasets(selection) {
+    $('#dataset_select').find(':checkbox').prop('checked', selection)
+}

@@ -5,6 +5,8 @@ import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.TermekiService;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +15,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +31,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiRunner.class);
 
-	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datsets where code = :code and origin = :origin";
+	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
 	@Autowired
 	private TermekiService termekiService;
@@ -45,36 +49,43 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		logger.info("Found {} terms.", terms.size());
 		List<Map<String, Object>> definitions = termekiService.getDefinitions(baseId);
 		logger.info("Found {} definitions.", definitions.size());
-		List<Map<String, Object>> subjects = termekiService.getSubjects(baseId);
-		logger.info("Found {} subjects.", subjects.size());
-		doImport(terms, definitions, subjects, dataset);
+		doImport(terms, definitions, dataset);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
 	@Transactional
+	public void batchLoad(String termbasesCsvFilePath) throws Exception {
+
+		List<String> lines = readFileLines(termbasesCsvFilePath);
+		for (String line : lines) {
+			String[] cells = StringUtils.split(line, CSV_SEPARATOR);
+			if (cells.length > 1) {
+				Integer termbaseId = Integer.parseInt(cells[0]);
+				String dataset =  cells[1];
+				execute(termbaseId, dataset);
+			}
+		}
+	}
+
+	private List<String> readFileLines(String resourcePath) throws Exception {
+		try (InputStream resourceInputStream = new FileInputStream(resourcePath)) {
+			return IOUtils.readLines(resourceInputStream, UTF_8);
+		}
+	}
+
+	@Transactional
 	void doImport(
 			List<Map<String, Object>> terms,
 			List<Map<String, Object>> definitions,
-			List<Map<String, Object>> subjects,
 			String dataset) throws Exception {
 
 		final String defaultWordMorphCode = "SgN";
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> conceptMeanings = new HashMap<>();
-
-		sortSubjects(subjects, 0);
-
-		for (Map<String, Object> subject : subjects) {
-			String code = subject.get("subject_id").toString();
-			String language = unifyLang((String)subject.get("lang"));
-			String name = (String)subject.get("subject_name");
-			String parentCode = getParentCode(subject);
-			saveDomainAndLabel(code, name, parentCode, "termeki", language, dataset);
-		}
-
 		long count = 0;
+
 		for (Map<String, Object> term : terms) {
 			String language = unifyLang((String)term.get("lang"));
 			String wordValue = (String)term.get("term");
@@ -86,9 +97,15 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			if (!conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = createMeaning(dataset);
 				conceptMeanings.put(conceptId, meaningId);
-				Integer domainId = (Integer) term.get("subject_id");
-				if (domainId != null) {
-					createMeaningDomain(meaningId, domainId.toString(), "termeki");
+				String domainCode = (String) term.get("domain_code");
+				if (isNotBlank(domainCode)) {
+					Map<String, Object> domain = getDomain(domainCode, "termeki");
+					if (domain == null) {
+						logger.info("Invalid domain code : {}", domainCode);
+					} else {
+						createMeaningDomain(meaningId, domainCode, "termeki");
+						updateDomainDatsetsIfNeeded(domain, dataset);
+					}
 				}
 			}
 
@@ -122,78 +139,23 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		logger.info("{} definitions created", definitionsCount);
 	}
 
-	private void sortSubjects(List<Map<String, Object>> subjects, int pos) {
-		if (subjects.isEmpty()) return;
-		if (subjects.get(pos).get("parent_id") != null) {
-			swapWithParent(subjects, pos);
-		}
-		pos++;
-		if (pos < subjects.size()) {
-			sortSubjects(subjects, pos);
-		}
-	}
+	private void updateDomainDatsetsIfNeeded(Map<String, Object> domain, String dataset) throws Exception {
 
-	private void swapWithParent(List<Map<String, Object>> subjects, int pos) {
-		Object parentId = subjects.get(pos).get("parent_id");
-		int parentPos = pos;
-		while (parentPos < subjects.size() && !parentId.equals(subjects.get(parentPos).get("subject_id"))) {
-			parentPos++;
-		}
-		if (parentPos < subjects.size()) {
-			Collections.swap(subjects, pos, parentPos);
-			if (subjects.get(pos).get("parent_id") != null) {
-				swapWithParent(subjects, pos);
-			}
-		}
-	}
-
-	private String getParentCode(Map<String, Object> subject) {
-		return subject.get("parent_id") == null ? null : subject.get("parent_id").toString();
-	}
-
-	private void saveDomainAndLabel(String code, String name, String parentCode, String origin, String language, String dataset) throws Exception {
-		Map<String, Object> domain = getDomain(code, origin);
-		if (domain == null) {
-			String[] datasets = new String[] {dataset};
-			createDomain(code, origin, parentCode, origin, datasets);
-		} else {
-			updateDomainDatsetsIfNeeded(code, origin, dataset, domain);
-		}
-		Map<String, Object> domainLabel = getDomainLabel(code, origin, language);
-		if (domainLabel == null && isNotBlank(name)) {
-			createDomainLabel(code, origin, name, language, "descrip");
-		}
-	}
-
-	private void updateDomainDatsetsIfNeeded(String code, String origin, String dataset, Map<String, Object> domain) throws Exception {
 		List<String> datasets = Arrays.asList((String[])((PgArray)domain.get("datasets")).getArray());
 		if (!datasets.contains(dataset)) {
-			datasets.add(dataset);
+			List<String> updatedDataset = new ArrayList<>();
+			updatedDataset.addAll(datasets);
+			updatedDataset.add(dataset);
 			Map<String, Object> tableRowParamMap = new HashMap<>();
-			tableRowParamMap.put("code", code);
-			tableRowParamMap.put("origin", origin);
-			tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
+			tableRowParamMap.put("code", domain.get("code"));
+			tableRowParamMap.put("origin", domain.get("origin"));
+			tableRowParamMap.put("datasets", new PgVarcharArray(updatedDataset.toArray(new String[updatedDataset.size()])));
 			basicDbService.executeScript(SQL_UPDATE_DOMAIN_DATSETS, tableRowParamMap);
 		}
 	}
 
 	private boolean hasTermDatabaseAndIsKnownDataset(Integer baseId, String dataset) throws Exception {
 		return termekiService.hasTermDatabase(baseId) && isKnownDataset(dataset);
-	}
-
-	private void createDomain(String code, String origin, String parentCode, String parentOrigin, String[] datasets) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("code", code);
-		tableRowParamMap.put("origin", origin);
-		if (isNotBlank(parentCode)) {
-			tableRowParamMap.put("parent_code", parentCode);
-		}
-		if (isNotBlank(parentOrigin)) {
-			tableRowParamMap.put("parent_origin", parentOrigin);
-		}
-		tableRowParamMap.put("datasets", new PgVarcharArray(datasets));
-		basicDbService.createWithoutId(DOMAIN, tableRowParamMap);
 	}
 
 	private Map<String, Object> getDomain(String code, String origin) throws Exception {
@@ -205,40 +167,21 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		return tableRowValueMap;
 	}
 
-	private void createDomainLabel(String code, String origin, String value, String language, String type) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("code", code);
-		tableRowParamMap.put("origin", origin);
-		tableRowParamMap.put("value", value);
-		tableRowParamMap.put("lang", language);
-		tableRowParamMap.put("type", type);
-		basicDbService.createWithoutId(DOMAIN_LABEL, tableRowParamMap);
-	}
-
-	private Map<String, Object> getDomainLabel(String code, String origin, String language) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("code", code);
-		tableRowParamMap.put("origin", origin);
-		tableRowParamMap.put("lang", language);
-		Map<String, Object> tableRowValueMap = basicDbService.select(DOMAIN_LABEL, tableRowParamMap);
-		return tableRowValueMap;
-	}
-
 	private boolean isKnownDataset(String dataset) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("code", dataset);
 		Map<String, Object> selectedDataset = basicDbService.select(DATASET, params);
 		if (selectedDataset == null) {
-			logger.info("No datset with id {} defined in EKILEX", dataset);
+			logger.info("No dataset with id {} defined in EKILEX", dataset);
+		} else {
+			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
 	}
 
 	@Override
-	void initialise() throws Exception {
+	void initialise() {
 	}
 
 }
