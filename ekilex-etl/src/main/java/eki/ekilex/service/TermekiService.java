@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -16,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static eki.ekilex.constant.SystemConstant.CSV_SEPARATOR;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.stream.Collectors.toList;
 
 @Service
 @ConditionalOnBean(name = "dataSourceTermeki")
@@ -26,9 +29,9 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_DEFINITIONS = "sql/select_termeki_definitions.sql";
 
-	private static final String SQL_SELECT_SUBJECTS = "sql/select_termeki_subjects.sql";
-
 	private static final String SQL_SELECT_DOMAINS = "sql/select_termeki_domains.sql";
+
+	private static final String TERMBASE_IDS = "csv/termeki-databases.csv";
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
@@ -36,9 +39,9 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectDefinitions;
 
-	private String sqlSelectSubjects;
-
 	private String sqlSelectDomains;
+
+	private List<Integer> termbaseIds;
 
 	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
@@ -48,8 +51,10 @@ public class TermekiService implements InitializingBean {
 
 		sqlSelectTerms = getContent(SQL_SELECT_TERMS);
 		sqlSelectDefinitions = getContent(SQL_SELECT_DEFINITIONS);
-		sqlSelectSubjects = getContent(SQL_SELECT_SUBJECTS);
 		sqlSelectDomains = getContent(SQL_SELECT_DOMAINS);
+		termbaseIds = readFileLines(TERMBASE_IDS).stream()
+				.map(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]))
+				.collect(toList());
 	}
 
 	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
@@ -82,16 +87,11 @@ public class TermekiService implements InitializingBean {
 		return queryList(sqlSelectDefinitions, params);
 	}
 
-	public List<Map<String, Object>> getSubjects(Integer baseId) {
-
-		Map<String, Object> params = constructParameters(baseId);
-		return queryList(sqlSelectSubjects, params);
-	}
-
 	public List<Map<String, Object>> getDomainsForLanguage(String language) {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("lang", language);
+		params.put("termbaseIds", termbaseIds);
 		return queryList(sqlSelectDomains, params);
 	}
 
@@ -106,6 +106,13 @@ public class TermekiService implements InitializingBean {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		try (InputStream resourceInputStream = classLoader.getResourceAsStream(resourcePath)) {
 			return IOUtils.toString(resourceInputStream, UTF_8);
+		}
+	}
+	private List<String> readFileLines(String resourcePath) throws Exception {
+
+		ClassLoader classLoader = this.getClass().getClassLoader();
+		try (InputStream resourceInputStream = classLoader.getResourceAsStream(resourcePath)) {
+			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
 	}
 
