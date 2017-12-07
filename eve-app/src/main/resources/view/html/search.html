@@ -52,7 +52,7 @@
           <table th:if="${not #lists.isEmpty(sentences)}">
             <tr th:each="sentence, iter : ${sentences}" th:style="${iter.even} ? 'background-color: rgba(0, 0, 0, 0.03)'">
               <td style="text-align: right; white-space:nowrap;" th:text="${sentence.leftPart}"></td>
-              <td style="text-align: center; vertical-align: top; color:blueviolet" th:text="${sentence.middlePart}"></td>
+              <td style="text-align: center; white-space:nowrap; vertical-align: top; color:blueviolet" th:text="${sentence.middlePart}"></td>
               <td style="text-align: left; white-space:nowrap;" th:text="${sentence.rightPart}"></td>
             </tr>
           </table>

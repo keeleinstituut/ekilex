@@ -1,6 +1,7 @@
 package eki.eve.service;
 
 import eki.eve.data.CorporaSentence;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -48,7 +49,7 @@ public class CorporaService {
 				.queryParam("corpus", "COURSEBOOKSENT")
 				.queryParam("start", 0)
 				.queryParam("end", 50)
-				.queryParam("cqp", "[lemma=\"" + sentence + "\"]")
+				.queryParam("cqp", parseSentenceToQueryString(sentence))
 				.queryParam("defaultcontext", "1+sentence")
 				.queryParam("show", "pos")
 				.build()
@@ -60,6 +61,19 @@ public class CorporaService {
 			response = jsonParser.parseMap(responseAsString);
 		}
 		return response;
+	}
+
+	private String parseSentenceToQueryString(String sentence) {
+		String[] words = StringUtils.split(sentence, " ");
+		if (words.length > 1) {
+			List<String> items = new ArrayList<>();
+			for (String word : words) {
+				items.add("[word=\"" + word + "\"]");
+			}
+			return String.join(" ",items);
+		} else {
+			return "[lemma=\"" + sentence + "\"]";
+		}
 	}
 
 	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
