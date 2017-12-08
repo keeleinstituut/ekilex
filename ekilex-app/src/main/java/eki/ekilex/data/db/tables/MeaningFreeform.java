@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
 
-    private static final long serialVersionUID = -787329401;
+    private static final long serialVersionUID = 162912692;
 
     /**
      * The reference instance of <code>public.meaning_freeform</code>
@@ -112,7 +112,7 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MEANING_FREEFORM_MEANING_ID_FREEFORM_ID_KEY, Indexes.MEANING_FREEFORM_PKEY);
+        return Arrays.<Index>asList(Indexes.MEANING_FREEFORM_FREEFORM_ID_IDX, Indexes.MEANING_FREEFORM_MEANING_ID_FREEFORM_ID_KEY, Indexes.MEANING_FREEFORM_MEANING_ID_IDX, Indexes.MEANING_FREEFORM_PKEY);
     }
 
     /**

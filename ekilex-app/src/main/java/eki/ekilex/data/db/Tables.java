@@ -8,8 +8,11 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionRefLink;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
+import eki.ekilex.data.db.tables.DisplayMorph;
+import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
@@ -19,6 +22,7 @@ import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
 import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.LabelType;
@@ -49,11 +53,17 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.RectionType;
+import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordRelType;
+import eki.ekilex.data.db.tables.WordRelTypeLabel;
+import eki.ekilex.data.db.tables.WordRelation;
 
 import javax.annotation.Generated;
 
@@ -92,6 +102,11 @@ public class Tables {
     public static final DefinitionFreeform DEFINITION_FREEFORM = eki.ekilex.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
 
     /**
+     * The table <code>public.definition_ref_link</code>.
+     */
+    public static final DefinitionRefLink DEFINITION_REF_LINK = eki.ekilex.data.db.tables.DefinitionRefLink.DEFINITION_REF_LINK;
+
+    /**
      * The table <code>public.deriv</code>.
      */
     public static final Deriv DERIV = eki.ekilex.data.db.tables.Deriv.DERIV;
@@ -100,6 +115,16 @@ public class Tables {
      * The table <code>public.deriv_label</code>.
      */
     public static final DerivLabel DERIV_LABEL = eki.ekilex.data.db.tables.DerivLabel.DERIV_LABEL;
+
+    /**
+     * The table <code>public.display_morph</code>.
+     */
+    public static final DisplayMorph DISPLAY_MORPH = eki.ekilex.data.db.tables.DisplayMorph.DISPLAY_MORPH;
+
+    /**
+     * The table <code>public.display_morph_label</code>.
+     */
+    public static final DisplayMorphLabel DISPLAY_MORPH_LABEL = eki.ekilex.data.db.tables.DisplayMorphLabel.DISPLAY_MORPH_LABEL;
 
     /**
      * The table <code>public.domain</code>.
@@ -145,6 +170,11 @@ public class Tables {
      * The table <code>public.freeform</code>.
      */
     public static final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
+
+    /**
+     * The table <code>public.freeform_ref_link</code>.
+     */
+    public static final FreeformRefLink FREEFORM_REF_LINK = eki.ekilex.data.db.tables.FreeformRefLink.FREEFORM_REF_LINK;
 
     /**
      * The table <code>public.gender</code>.
@@ -297,6 +327,16 @@ public class Tables {
     public static final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
 
     /**
+     * The table <code>public.rection_type</code>.
+     */
+    public static final RectionType RECTION_TYPE = eki.ekilex.data.db.tables.RectionType.RECTION_TYPE;
+
+    /**
+     * The table <code>public.rection_type_label</code>.
+     */
+    public static final RectionTypeLabel RECTION_TYPE_LABEL = eki.ekilex.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
+
+    /**
      * The table <code>public.register</code>.
      */
     public static final Register REGISTER = eki.ekilex.data.db.tables.Register.REGISTER;
@@ -320,4 +360,24 @@ public class Tables {
      * The table <code>public.word</code>.
      */
     public static final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
+
+    /**
+     * The table <code>public.word_guid</code>.
+     */
+    public static final WordGuid WORD_GUID = eki.ekilex.data.db.tables.WordGuid.WORD_GUID;
+
+    /**
+     * The table <code>public.word_rel_type</code>.
+     */
+    public static final WordRelType WORD_REL_TYPE = eki.ekilex.data.db.tables.WordRelType.WORD_REL_TYPE;
+
+    /**
+     * The table <code>public.word_rel_type_label</code>.
+     */
+    public static final WordRelTypeLabel WORD_REL_TYPE_LABEL = eki.ekilex.data.db.tables.WordRelTypeLabel.WORD_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.word_relation</code>.
+     */
+    public static final WordRelation WORD_RELATION = eki.ekilex.data.db.tables.WordRelation.WORD_RELATION;
 }

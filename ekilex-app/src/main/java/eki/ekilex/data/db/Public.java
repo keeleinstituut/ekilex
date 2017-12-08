@@ -8,8 +8,11 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionRefLink;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
+import eki.ekilex.data.db.tables.DisplayMorph;
+import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
@@ -19,6 +22,7 @@ import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
 import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.LabelType;
@@ -49,11 +53,17 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.RectionType;
+import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordRelType;
+import eki.ekilex.data.db.tables.WordRelTypeLabel;
+import eki.ekilex.data.db.tables.WordRelation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,7 +90,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1245823135;
+    private static final long serialVersionUID = -1396822591;
 
     /**
      * The reference instance of <code>public</code>
@@ -108,6 +118,11 @@ public class Public extends SchemaImpl {
     public final DefinitionFreeform DEFINITION_FREEFORM = eki.ekilex.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
 
     /**
+     * The table <code>public.definition_ref_link</code>.
+     */
+    public final DefinitionRefLink DEFINITION_REF_LINK = eki.ekilex.data.db.tables.DefinitionRefLink.DEFINITION_REF_LINK;
+
+    /**
      * The table <code>public.deriv</code>.
      */
     public final Deriv DERIV = eki.ekilex.data.db.tables.Deriv.DERIV;
@@ -116,6 +131,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.deriv_label</code>.
      */
     public final DerivLabel DERIV_LABEL = eki.ekilex.data.db.tables.DerivLabel.DERIV_LABEL;
+
+    /**
+     * The table <code>public.display_morph</code>.
+     */
+    public final DisplayMorph DISPLAY_MORPH = eki.ekilex.data.db.tables.DisplayMorph.DISPLAY_MORPH;
+
+    /**
+     * The table <code>public.display_morph_label</code>.
+     */
+    public final DisplayMorphLabel DISPLAY_MORPH_LABEL = eki.ekilex.data.db.tables.DisplayMorphLabel.DISPLAY_MORPH_LABEL;
 
     /**
      * The table <code>public.domain</code>.
@@ -161,6 +186,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.freeform</code>.
      */
     public final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
+
+    /**
+     * The table <code>public.freeform_ref_link</code>.
+     */
+    public final FreeformRefLink FREEFORM_REF_LINK = eki.ekilex.data.db.tables.FreeformRefLink.FREEFORM_REF_LINK;
 
     /**
      * The table <code>public.gender</code>.
@@ -313,6 +343,16 @@ public class Public extends SchemaImpl {
     public final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
 
     /**
+     * The table <code>public.rection_type</code>.
+     */
+    public final RectionType RECTION_TYPE = eki.ekilex.data.db.tables.RectionType.RECTION_TYPE;
+
+    /**
+     * The table <code>public.rection_type_label</code>.
+     */
+    public final RectionTypeLabel RECTION_TYPE_LABEL = eki.ekilex.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
+
+    /**
      * The table <code>public.register</code>.
      */
     public final Register REGISTER = eki.ekilex.data.db.tables.Register.REGISTER;
@@ -336,6 +376,26 @@ public class Public extends SchemaImpl {
      * The table <code>public.word</code>.
      */
     public final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
+
+    /**
+     * The table <code>public.word_guid</code>.
+     */
+    public final WordGuid WORD_GUID = eki.ekilex.data.db.tables.WordGuid.WORD_GUID;
+
+    /**
+     * The table <code>public.word_rel_type</code>.
+     */
+    public final WordRelType WORD_REL_TYPE = eki.ekilex.data.db.tables.WordRelType.WORD_REL_TYPE;
+
+    /**
+     * The table <code>public.word_rel_type_label</code>.
+     */
+    public final WordRelTypeLabel WORD_REL_TYPE_LABEL = eki.ekilex.data.db.tables.WordRelTypeLabel.WORD_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.word_relation</code>.
+     */
+    public final WordRelation WORD_RELATION = eki.ekilex.data.db.tables.WordRelation.WORD_RELATION;
 
     /**
      * No further instances allowed
@@ -364,10 +424,12 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
+            Sequences.DEFINITION_REF_LINK_ID_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
             Sequences.FREEFORM_ID_SEQ,
+            Sequences.FREEFORM_REF_LINK_ID_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
@@ -381,7 +443,9 @@ public class Public extends SchemaImpl {
             Sequences.PARADIGM_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
-            Sequences.WORD_ID_SEQ);
+            Sequences.WORD_GUID_ID_SEQ,
+            Sequences.WORD_ID_SEQ,
+            Sequences.WORD_RELATION_ID_SEQ);
     }
 
     @Override
@@ -397,8 +461,11 @@ public class Public extends SchemaImpl {
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
             DefinitionFreeform.DEFINITION_FREEFORM,
+            DefinitionRefLink.DEFINITION_REF_LINK,
             Deriv.DERIV,
             DerivLabel.DERIV_LABEL,
+            DisplayMorph.DISPLAY_MORPH,
+            DisplayMorphLabel.DISPLAY_MORPH_LABEL,
             Domain.DOMAIN,
             DomainLabel.DOMAIN_LABEL,
             EkiUser.EKI_USER,
@@ -408,6 +475,7 @@ public class Public extends SchemaImpl {
             FormRelTypeLabel.FORM_REL_TYPE_LABEL,
             FormRelation.FORM_RELATION,
             Freeform.FREEFORM,
+            FreeformRefLink.FREEFORM_REF_LINK,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
             LabelType.LABEL_TYPE,
@@ -438,10 +506,16 @@ public class Public extends SchemaImpl {
             Paradigm.PARADIGM,
             Pos.POS,
             PosLabel.POS_LABEL,
+            RectionType.RECTION_TYPE,
+            RectionTypeLabel.RECTION_TYPE_LABEL,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
-            Word.WORD);
+            Word.WORD,
+            WordGuid.WORD_GUID,
+            WordRelType.WORD_REL_TYPE,
+            WordRelTypeLabel.WORD_REL_TYPE_LABEL,
+            WordRelation.WORD_RELATION);
     }
 }

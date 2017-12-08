@@ -8,8 +8,11 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
+import eki.ekilex.data.db.tables.DefinitionRefLink;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
+import eki.ekilex.data.db.tables.DisplayMorph;
+import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
@@ -19,6 +22,7 @@ import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
 import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.LabelType;
@@ -49,17 +53,26 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.RectionType;
+import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordRelType;
+import eki.ekilex.data.db.tables.WordRelTypeLabel;
+import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.tables.records.DefinitionRefLinkRecord;
 import eki.ekilex.data.db.tables.records.DerivLabelRecord;
 import eki.ekilex.data.db.tables.records.DerivRecord;
+import eki.ekilex.data.db.tables.records.DisplayMorphLabelRecord;
+import eki.ekilex.data.db.tables.records.DisplayMorphRecord;
 import eki.ekilex.data.db.tables.records.DomainLabelRecord;
 import eki.ekilex.data.db.tables.records.DomainRecord;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
@@ -69,6 +82,7 @@ import eki.ekilex.data.db.tables.records.FormRelTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.FormRelTypeRecord;
 import eki.ekilex.data.db.tables.records.FormRelationRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.tables.records.FreeformRefLinkRecord;
 import eki.ekilex.data.db.tables.records.GenderLabelRecord;
 import eki.ekilex.data.db.tables.records.GenderRecord;
 import eki.ekilex.data.db.tables.records.LabelTypeRecord;
@@ -99,11 +113,17 @@ import eki.ekilex.data.db.tables.records.MorphRecord;
 import eki.ekilex.data.db.tables.records.ParadigmRecord;
 import eki.ekilex.data.db.tables.records.PosLabelRecord;
 import eki.ekilex.data.db.tables.records.PosRecord;
+import eki.ekilex.data.db.tables.records.RectionTypeLabelRecord;
+import eki.ekilex.data.db.tables.records.RectionTypeRecord;
 import eki.ekilex.data.db.tables.records.RegisterLabelRecord;
 import eki.ekilex.data.db.tables.records.RegisterRecord;
 import eki.ekilex.data.db.tables.records.SourceFreeformRecord;
 import eki.ekilex.data.db.tables.records.SourceRecord;
+import eki.ekilex.data.db.tables.records.WordGuidRecord;
 import eki.ekilex.data.db.tables.records.WordRecord;
+import eki.ekilex.data.db.tables.records.WordRelTypeLabelRecord;
+import eki.ekilex.data.db.tables.records.WordRelTypeRecord;
+import eki.ekilex.data.db.tables.records.WordRelationRecord;
 
 import javax.annotation.Generated;
 
@@ -133,10 +153,12 @@ public class Keys {
 
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
+    public static final Identity<DefinitionRefLinkRecord, Long> IDENTITY_DEFINITION_REF_LINK = Identities0.IDENTITY_DEFINITION_REF_LINK;
     public static final Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Identities0.IDENTITY_EKI_USER;
     public static final Identity<FormRecord, Long> IDENTITY_FORM = Identities0.IDENTITY_FORM;
     public static final Identity<FormRelationRecord, Long> IDENTITY_FORM_RELATION = Identities0.IDENTITY_FORM_RELATION;
     public static final Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Identities0.IDENTITY_FREEFORM;
+    public static final Identity<FreeformRefLinkRecord, Long> IDENTITY_FREEFORM_REF_LINK = Identities0.IDENTITY_FREEFORM_REF_LINK;
     public static final Identity<LexRelationRecord, Long> IDENTITY_LEX_RELATION = Identities0.IDENTITY_LEX_RELATION;
     public static final Identity<LexemeRecord, Long> IDENTITY_LEXEME = Identities0.IDENTITY_LEXEME;
     public static final Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Identities0.IDENTITY_LEXEME_DERIV;
@@ -151,6 +173,8 @@ public class Keys {
     public static final Identity<SourceRecord, Long> IDENTITY_SOURCE = Identities0.IDENTITY_SOURCE;
     public static final Identity<SourceFreeformRecord, Long> IDENTITY_SOURCE_FREEFORM = Identities0.IDENTITY_SOURCE_FREEFORM;
     public static final Identity<WordRecord, Long> IDENTITY_WORD = Identities0.IDENTITY_WORD;
+    public static final Identity<WordGuidRecord, Long> IDENTITY_WORD_GUID = Identities0.IDENTITY_WORD_GUID;
+    public static final Identity<WordRelationRecord, Long> IDENTITY_WORD_RELATION = Identities0.IDENTITY_WORD_RELATION;
 
     // -------------------------------------------------------------------------
     // UNIQUE and PRIMARY KEY definitions
@@ -161,8 +185,11 @@ public class Keys {
     public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = UniqueKeys0.DEFINITION_DATASET_PKEY;
     public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_PKEY = UniqueKeys0.DEFINITION_FREEFORM_PKEY;
     public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY = UniqueKeys0.DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY;
+    public static final UniqueKey<DefinitionRefLinkRecord> DEFINITION_REF_LINK_PKEY = UniqueKeys0.DEFINITION_REF_LINK_PKEY;
     public static final UniqueKey<DerivRecord> DERIV_PKEY = UniqueKeys0.DERIV_PKEY;
     public static final UniqueKey<DerivLabelRecord> DERIV_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.DERIV_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<DisplayMorphRecord> DISPLAY_MORPH_PKEY = UniqueKeys0.DISPLAY_MORPH_PKEY;
+    public static final UniqueKey<DisplayMorphLabelRecord> DISPLAY_MORPH_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.DISPLAY_MORPH_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<DomainRecord> DOMAIN_PKEY = UniqueKeys0.DOMAIN_PKEY;
     public static final UniqueKey<DomainLabelRecord> DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = UniqueKeys0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
     public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = UniqueKeys0.EKI_USER_PKEY;
@@ -174,6 +201,7 @@ public class Keys {
     public static final UniqueKey<FormRelationRecord> FORM_RELATION_PKEY = UniqueKeys0.FORM_RELATION_PKEY;
     public static final UniqueKey<FormRelationRecord> FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY = UniqueKeys0.FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY;
     public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = UniqueKeys0.FREEFORM_PKEY;
+    public static final UniqueKey<FreeformRefLinkRecord> FREEFORM_REF_LINK_PKEY = UniqueKeys0.FREEFORM_REF_LINK_PKEY;
     public static final UniqueKey<GenderRecord> GENDER_PKEY = UniqueKeys0.GENDER_PKEY;
     public static final UniqueKey<GenderLabelRecord> GENDER_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.GENDER_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<LabelTypeRecord> LABEL_TYPE_PKEY = UniqueKeys0.LABEL_TYPE_PKEY;
@@ -212,12 +240,20 @@ public class Keys {
     public static final UniqueKey<ParadigmRecord> PARADIGM_PKEY = UniqueKeys0.PARADIGM_PKEY;
     public static final UniqueKey<PosRecord> POS_PKEY = UniqueKeys0.POS_PKEY;
     public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.POS_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<RectionTypeRecord> RECTION_TYPE_PKEY = UniqueKeys0.RECTION_TYPE_PKEY;
+    public static final UniqueKey<RectionTypeLabelRecord> RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<RegisterRecord> REGISTER_PKEY = UniqueKeys0.REGISTER_PKEY;
     public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = UniqueKeys0.SOURCE_FREEFORM_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = UniqueKeys0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<WordRecord> WORD_PKEY = UniqueKeys0.WORD_PKEY;
+    public static final UniqueKey<WordGuidRecord> WORD_GUID_PKEY = UniqueKeys0.WORD_GUID_PKEY;
+    public static final UniqueKey<WordGuidRecord> WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY = UniqueKeys0.WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY;
+    public static final UniqueKey<WordRelTypeRecord> WORD_REL_TYPE_PKEY = UniqueKeys0.WORD_REL_TYPE_PKEY;
+    public static final UniqueKey<WordRelTypeLabelRecord> WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = UniqueKeys0.WORD_RELATION_PKEY;
+    public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = UniqueKeys0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -229,9 +265,13 @@ public class Keys {
     public static final ForeignKey<DefinitionDatasetRecord, DatasetRecord> DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY = ForeignKeys0.DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY;
     public static final ForeignKey<DefinitionFreeformRecord, DefinitionRecord> DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY;
     public static final ForeignKey<DefinitionFreeformRecord, FreeformRecord> DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY;
+    public static final ForeignKey<DefinitionRefLinkRecord, DefinitionRecord> DEFINITION_REF_LINK__DEFINITION_REF_LINK_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_REF_LINK__DEFINITION_REF_LINK_DEFINITION_ID_FKEY;
     public static final ForeignKey<DerivLabelRecord, DerivRecord> DERIV_LABEL__DERIV_LABEL_CODE_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_CODE_FKEY;
     public static final ForeignKey<DerivLabelRecord, LangRecord> DERIV_LABEL__DERIV_LABEL_LANG_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_LANG_FKEY;
     public static final ForeignKey<DerivLabelRecord, LabelTypeRecord> DERIV_LABEL__DERIV_LABEL_TYPE_FKEY = ForeignKeys0.DERIV_LABEL__DERIV_LABEL_TYPE_FKEY;
+    public static final ForeignKey<DisplayMorphLabelRecord, DisplayMorphRecord> DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_CODE_FKEY = ForeignKeys0.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_CODE_FKEY;
+    public static final ForeignKey<DisplayMorphLabelRecord, LangRecord> DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_LANG_FKEY = ForeignKeys0.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_LANG_FKEY;
+    public static final ForeignKey<DisplayMorphLabelRecord, LabelTypeRecord> DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_TYPE_FKEY = ForeignKeys0.DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_TYPE_FKEY;
     public static final ForeignKey<DomainRecord, DomainRecord> DOMAIN__DOMAIN_PARENT_CODE_FKEY = ForeignKeys0.DOMAIN__DOMAIN_PARENT_CODE_FKEY;
     public static final ForeignKey<DomainLabelRecord, DomainRecord> DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY;
     public static final ForeignKey<DomainLabelRecord, LangRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY;
@@ -246,6 +286,7 @@ public class Keys {
     public static final ForeignKey<FormRelationRecord, FormRelTypeRecord> FORM_RELATION__FORM_RELATION_FORM_REL_TYPE_CODE_FKEY = ForeignKeys0.FORM_RELATION__FORM_RELATION_FORM_REL_TYPE_CODE_FKEY;
     public static final ForeignKey<FreeformRecord, FreeformRecord> FREEFORM__FREEFORM_PARENT_ID_FKEY = ForeignKeys0.FREEFORM__FREEFORM_PARENT_ID_FKEY;
     public static final ForeignKey<FreeformRecord, LangRecord> FREEFORM__FREEFORM_LANG_FKEY = ForeignKeys0.FREEFORM__FREEFORM_LANG_FKEY;
+    public static final ForeignKey<FreeformRefLinkRecord, FreeformRecord> FREEFORM_REF_LINK__FREEFORM_REF_LINK_FREEFORM_ID_FKEY = ForeignKeys0.FREEFORM_REF_LINK__FREEFORM_REF_LINK_FREEFORM_ID_FKEY;
     public static final ForeignKey<GenderLabelRecord, GenderRecord> GENDER_LABEL__GENDER_LABEL_CODE_FKEY = ForeignKeys0.GENDER_LABEL__GENDER_LABEL_CODE_FKEY;
     public static final ForeignKey<GenderLabelRecord, LangRecord> GENDER_LABEL__GENDER_LABEL_LANG_FKEY = ForeignKeys0.GENDER_LABEL__GENDER_LABEL_LANG_FKEY;
     public static final ForeignKey<GenderLabelRecord, LabelTypeRecord> GENDER_LABEL__GENDER_LABEL_TYPE_FKEY = ForeignKeys0.GENDER_LABEL__GENDER_LABEL_TYPE_FKEY;
@@ -293,6 +334,9 @@ public class Keys {
     public static final ForeignKey<PosLabelRecord, PosRecord> POS_LABEL__POS_LABEL_CODE_FKEY = ForeignKeys0.POS_LABEL__POS_LABEL_CODE_FKEY;
     public static final ForeignKey<PosLabelRecord, LangRecord> POS_LABEL__POS_LABEL_LANG_FKEY = ForeignKeys0.POS_LABEL__POS_LABEL_LANG_FKEY;
     public static final ForeignKey<PosLabelRecord, LabelTypeRecord> POS_LABEL__POS_LABEL_TYPE_FKEY = ForeignKeys0.POS_LABEL__POS_LABEL_TYPE_FKEY;
+    public static final ForeignKey<RectionTypeLabelRecord, RectionTypeRecord> RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_CODE_FKEY = ForeignKeys0.RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_CODE_FKEY;
+    public static final ForeignKey<RectionTypeLabelRecord, LangRecord> RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_LANG_FKEY = ForeignKeys0.RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_LANG_FKEY;
+    public static final ForeignKey<RectionTypeLabelRecord, LabelTypeRecord> RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<RegisterLabelRecord, RegisterRecord> REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY;
     public static final ForeignKey<RegisterLabelRecord, LangRecord> REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY;
     public static final ForeignKey<RegisterLabelRecord, LabelTypeRecord> REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY = ForeignKeys0.REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY;
@@ -301,6 +345,15 @@ public class Keys {
     public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY;
     public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = ForeignKeys0.WORD__WORD_LANG_FKEY;
     public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_MORPH_CODE_FKEY;
+    public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
+    public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_WORD_ID_FKEY;
+    public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY;
+    public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY;
+    public static final ForeignKey<WordRelTypeLabelRecord, LangRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_LANG_FKEY = ForeignKeys0.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_LANG_FKEY;
+    public static final ForeignKey<WordRelTypeLabelRecord, LabelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_TYPE_FKEY;
+    public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY;
+    public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY;
+    public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -309,10 +362,12 @@ public class Keys {
     private static class Identities0 extends AbstractKeys {
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
+        public static Identity<DefinitionRefLinkRecord, Long> IDENTITY_DEFINITION_REF_LINK = createIdentity(DefinitionRefLink.DEFINITION_REF_LINK, DefinitionRefLink.DEFINITION_REF_LINK.ID);
         public static Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = createIdentity(EkiUser.EKI_USER, EkiUser.EKI_USER.ID);
         public static Identity<FormRecord, Long> IDENTITY_FORM = createIdentity(Form.FORM, Form.FORM.ID);
         public static Identity<FormRelationRecord, Long> IDENTITY_FORM_RELATION = createIdentity(FormRelation.FORM_RELATION, FormRelation.FORM_RELATION.ID);
         public static Identity<FreeformRecord, Long> IDENTITY_FREEFORM = createIdentity(Freeform.FREEFORM, Freeform.FREEFORM.ID);
+        public static Identity<FreeformRefLinkRecord, Long> IDENTITY_FREEFORM_REF_LINK = createIdentity(FreeformRefLink.FREEFORM_REF_LINK, FreeformRefLink.FREEFORM_REF_LINK.ID);
         public static Identity<LexRelationRecord, Long> IDENTITY_LEX_RELATION = createIdentity(LexRelation.LEX_RELATION, LexRelation.LEX_RELATION.ID);
         public static Identity<LexemeRecord, Long> IDENTITY_LEXEME = createIdentity(Lexeme.LEXEME, Lexeme.LEXEME.ID);
         public static Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = createIdentity(LexemeDeriv.LEXEME_DERIV, LexemeDeriv.LEXEME_DERIV.ID);
@@ -327,6 +382,8 @@ public class Keys {
         public static Identity<SourceRecord, Long> IDENTITY_SOURCE = createIdentity(Source.SOURCE, Source.SOURCE.ID);
         public static Identity<SourceFreeformRecord, Long> IDENTITY_SOURCE_FREEFORM = createIdentity(SourceFreeform.SOURCE_FREEFORM, SourceFreeform.SOURCE_FREEFORM.ID);
         public static Identity<WordRecord, Long> IDENTITY_WORD = createIdentity(Word.WORD, Word.WORD.ID);
+        public static Identity<WordGuidRecord, Long> IDENTITY_WORD_GUID = createIdentity(WordGuid.WORD_GUID, WordGuid.WORD_GUID.ID);
+        public static Identity<WordRelationRecord, Long> IDENTITY_WORD_RELATION = createIdentity(WordRelation.WORD_RELATION, WordRelation.WORD_RELATION.ID);
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
@@ -335,8 +392,11 @@ public class Keys {
         public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = createUniqueKey(DefinitionDataset.DEFINITION_DATASET, "definition_dataset_pkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID, DefinitionDataset.DEFINITION_DATASET.DATASET_CODE);
         public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_PKEY = createUniqueKey(DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform_pkey", DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static final UniqueKey<DefinitionFreeformRecord> DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY = createUniqueKey(DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform_definition_id_freeform_id_key", DefinitionFreeform.DEFINITION_FREEFORM.DEFINITION_ID, DefinitionFreeform.DEFINITION_FREEFORM.FREEFORM_ID);
+        public static final UniqueKey<DefinitionRefLinkRecord> DEFINITION_REF_LINK_PKEY = createUniqueKey(DefinitionRefLink.DEFINITION_REF_LINK, "definition_ref_link_pkey", DefinitionRefLink.DEFINITION_REF_LINK.ID);
         public static final UniqueKey<DerivRecord> DERIV_PKEY = createUniqueKey(Deriv.DERIV, "deriv_pkey", Deriv.DERIV.CODE);
         public static final UniqueKey<DerivLabelRecord> DERIV_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(DerivLabel.DERIV_LABEL, "deriv_label_code_lang_type_key", DerivLabel.DERIV_LABEL.CODE, DerivLabel.DERIV_LABEL.LANG, DerivLabel.DERIV_LABEL.TYPE);
+        public static final UniqueKey<DisplayMorphRecord> DISPLAY_MORPH_PKEY = createUniqueKey(DisplayMorph.DISPLAY_MORPH, "display_morph_pkey", DisplayMorph.DISPLAY_MORPH.CODE);
+        public static final UniqueKey<DisplayMorphLabelRecord> DISPLAY_MORPH_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(DisplayMorphLabel.DISPLAY_MORPH_LABEL, "display_morph_label_code_lang_type_key", DisplayMorphLabel.DISPLAY_MORPH_LABEL.CODE, DisplayMorphLabel.DISPLAY_MORPH_LABEL.LANG, DisplayMorphLabel.DISPLAY_MORPH_LABEL.TYPE);
         public static final UniqueKey<DomainRecord> DOMAIN_PKEY = createUniqueKey(Domain.DOMAIN, "domain_pkey", Domain.DOMAIN.CODE, Domain.DOMAIN.ORIGIN);
         public static final UniqueKey<DomainLabelRecord> DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = createUniqueKey(DomainLabel.DOMAIN_LABEL, "domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE);
         public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = createUniqueKey(EkiUser.EKI_USER, "eki_user_pkey", EkiUser.EKI_USER.ID);
@@ -348,6 +408,7 @@ public class Keys {
         public static final UniqueKey<FormRelationRecord> FORM_RELATION_PKEY = createUniqueKey(FormRelation.FORM_RELATION, "form_relation_pkey", FormRelation.FORM_RELATION.ID);
         public static final UniqueKey<FormRelationRecord> FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY = createUniqueKey(FormRelation.FORM_RELATION, "form_relation_form1_id_form2_id_form_rel_type_code_key", FormRelation.FORM_RELATION.FORM1_ID, FormRelation.FORM_RELATION.FORM2_ID, FormRelation.FORM_RELATION.FORM_REL_TYPE_CODE);
         public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = createUniqueKey(Freeform.FREEFORM, "freeform_pkey", Freeform.FREEFORM.ID);
+        public static final UniqueKey<FreeformRefLinkRecord> FREEFORM_REF_LINK_PKEY = createUniqueKey(FreeformRefLink.FREEFORM_REF_LINK, "freeform_ref_link_pkey", FreeformRefLink.FREEFORM_REF_LINK.ID);
         public static final UniqueKey<GenderRecord> GENDER_PKEY = createUniqueKey(Gender.GENDER, "gender_pkey", Gender.GENDER.CODE);
         public static final UniqueKey<GenderLabelRecord> GENDER_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(GenderLabel.GENDER_LABEL, "gender_label_code_lang_type_key", GenderLabel.GENDER_LABEL.CODE, GenderLabel.GENDER_LABEL.LANG, GenderLabel.GENDER_LABEL.TYPE);
         public static final UniqueKey<LabelTypeRecord> LABEL_TYPE_PKEY = createUniqueKey(LabelType.LABEL_TYPE, "label_type_pkey", LabelType.LABEL_TYPE.CODE);
@@ -386,12 +447,20 @@ public class Keys {
         public static final UniqueKey<ParadigmRecord> PARADIGM_PKEY = createUniqueKey(Paradigm.PARADIGM, "paradigm_pkey", Paradigm.PARADIGM.ID);
         public static final UniqueKey<PosRecord> POS_PKEY = createUniqueKey(Pos.POS, "pos_pkey", Pos.POS.CODE);
         public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(PosLabel.POS_LABEL, "pos_label_code_lang_type_key", PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE);
+        public static final UniqueKey<RectionTypeRecord> RECTION_TYPE_PKEY = createUniqueKey(RectionType.RECTION_TYPE, "rection_type_pkey", RectionType.RECTION_TYPE.CODE);
+        public static final UniqueKey<RectionTypeLabelRecord> RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(RectionTypeLabel.RECTION_TYPE_LABEL, "rection_type_label_code_lang_type_key", RectionTypeLabel.RECTION_TYPE_LABEL.CODE, RectionTypeLabel.RECTION_TYPE_LABEL.LANG, RectionTypeLabel.RECTION_TYPE_LABEL.TYPE);
         public static final UniqueKey<RegisterRecord> REGISTER_PKEY = createUniqueKey(Register.REGISTER, "register_pkey", Register.REGISTER.CODE);
         public static final UniqueKey<RegisterLabelRecord> REGISTER_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(RegisterLabel.REGISTER_LABEL, "register_label_code_lang_type_key", RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE);
         public static final UniqueKey<SourceRecord> SOURCE_PKEY = createUniqueKey(Source.SOURCE, "source_pkey", Source.SOURCE.ID);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM.ID);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<WordRecord> WORD_PKEY = createUniqueKey(Word.WORD, "word_pkey", Word.WORD.ID);
+        public static final UniqueKey<WordGuidRecord> WORD_GUID_PKEY = createUniqueKey(WordGuid.WORD_GUID, "word_guid_pkey", WordGuid.WORD_GUID.ID);
+        public static final UniqueKey<WordGuidRecord> WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY = createUniqueKey(WordGuid.WORD_GUID, "word_guid_word_id_guid_dataset_code_key", WordGuid.WORD_GUID.WORD_ID, WordGuid.WORD_GUID.GUID, WordGuid.WORD_GUID.DATASET_CODE);
+        public static final UniqueKey<WordRelTypeRecord> WORD_REL_TYPE_PKEY = createUniqueKey(WordRelType.WORD_REL_TYPE, "word_rel_type_pkey", WordRelType.WORD_REL_TYPE.CODE);
+        public static final UniqueKey<WordRelTypeLabelRecord> WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label_code_lang_type_key", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE, WordRelTypeLabel.WORD_REL_TYPE_LABEL.LANG, WordRelTypeLabel.WORD_REL_TYPE_LABEL.TYPE);
+        public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = createUniqueKey(WordRelation.WORD_RELATION, "word_relation_pkey", WordRelation.WORD_RELATION.ID);
+        public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = createUniqueKey(WordRelation.WORD_RELATION, "word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
     }
 
     private static class ForeignKeys0 extends AbstractKeys {
@@ -401,9 +470,13 @@ public class Keys {
         public static final ForeignKey<DefinitionDatasetRecord, DatasetRecord> DEFINITION_DATASET__DEFINITION_DATASET_DATASET_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DATASET_PKEY, DefinitionDataset.DEFINITION_DATASET, "definition_dataset__definition_dataset_dataset_code_fkey", DefinitionDataset.DEFINITION_DATASET.DATASET_CODE);
         public static final ForeignKey<DefinitionFreeformRecord, DefinitionRecord> DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform__definition_freeform_definition_id_fkey", DefinitionFreeform.DEFINITION_FREEFORM.DEFINITION_ID);
         public static final ForeignKey<DefinitionFreeformRecord, FreeformRecord> DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, DefinitionFreeform.DEFINITION_FREEFORM, "definition_freeform__definition_freeform_freeform_id_fkey", DefinitionFreeform.DEFINITION_FREEFORM.FREEFORM_ID);
+        public static final ForeignKey<DefinitionRefLinkRecord, DefinitionRecord> DEFINITION_REF_LINK__DEFINITION_REF_LINK_DEFINITION_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionRefLink.DEFINITION_REF_LINK, "definition_ref_link__definition_ref_link_definition_id_fkey", DefinitionRefLink.DEFINITION_REF_LINK.DEFINITION_ID);
         public static final ForeignKey<DerivLabelRecord, DerivRecord> DERIV_LABEL__DERIV_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DERIV_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_code_fkey", DerivLabel.DERIV_LABEL.CODE);
         public static final ForeignKey<DerivLabelRecord, LangRecord> DERIV_LABEL__DERIV_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_lang_fkey", DerivLabel.DERIV_LABEL.LANG);
         public static final ForeignKey<DerivLabelRecord, LabelTypeRecord> DERIV_LABEL__DERIV_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DerivLabel.DERIV_LABEL, "deriv_label__deriv_label_type_fkey", DerivLabel.DERIV_LABEL.TYPE);
+        public static final ForeignKey<DisplayMorphLabelRecord, DisplayMorphRecord> DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DISPLAY_MORPH_PKEY, DisplayMorphLabel.DISPLAY_MORPH_LABEL, "display_morph_label__display_morph_label_code_fkey", DisplayMorphLabel.DISPLAY_MORPH_LABEL.CODE);
+        public static final ForeignKey<DisplayMorphLabelRecord, LangRecord> DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, DisplayMorphLabel.DISPLAY_MORPH_LABEL, "display_morph_label__display_morph_label_lang_fkey", DisplayMorphLabel.DISPLAY_MORPH_LABEL.LANG);
+        public static final ForeignKey<DisplayMorphLabelRecord, LabelTypeRecord> DISPLAY_MORPH_LABEL__DISPLAY_MORPH_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DisplayMorphLabel.DISPLAY_MORPH_LABEL, "display_morph_label__display_morph_label_type_fkey", DisplayMorphLabel.DISPLAY_MORPH_LABEL.TYPE);
         public static final ForeignKey<DomainRecord, DomainRecord> DOMAIN__DOMAIN_PARENT_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DOMAIN_PKEY, Domain.DOMAIN, "domain__domain_parent_code_fkey", Domain.DOMAIN.PARENT_CODE, Domain.DOMAIN.PARENT_ORIGIN);
         public static final ForeignKey<DomainLabelRecord, DomainRecord> DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DOMAIN_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_code_fkey", DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN);
         public static final ForeignKey<DomainLabelRecord, LangRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_lang_fkey", DomainLabel.DOMAIN_LABEL.LANG);
@@ -418,6 +491,7 @@ public class Keys {
         public static final ForeignKey<FormRelationRecord, FormRelTypeRecord> FORM_RELATION__FORM_RELATION_FORM_REL_TYPE_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.FORM_REL_TYPE_PKEY, FormRelation.FORM_RELATION, "form_relation__form_relation_form_rel_type_code_fkey", FormRelation.FORM_RELATION.FORM_REL_TYPE_CODE);
         public static final ForeignKey<FreeformRecord, FreeformRecord> FREEFORM__FREEFORM_PARENT_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, Freeform.FREEFORM, "freeform__freeform_parent_id_fkey", Freeform.FREEFORM.PARENT_ID);
         public static final ForeignKey<FreeformRecord, LangRecord> FREEFORM__FREEFORM_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, Freeform.FREEFORM, "freeform__freeform_lang_fkey", Freeform.FREEFORM.LANG);
+        public static final ForeignKey<FreeformRefLinkRecord, FreeformRecord> FREEFORM_REF_LINK__FREEFORM_REF_LINK_FREEFORM_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, FreeformRefLink.FREEFORM_REF_LINK, "freeform_ref_link__freeform_ref_link_freeform_id_fkey", FreeformRefLink.FREEFORM_REF_LINK.FREEFORM_ID);
         public static final ForeignKey<GenderLabelRecord, GenderRecord> GENDER_LABEL__GENDER_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.GENDER_PKEY, GenderLabel.GENDER_LABEL, "gender_label__gender_label_code_fkey", GenderLabel.GENDER_LABEL.CODE);
         public static final ForeignKey<GenderLabelRecord, LangRecord> GENDER_LABEL__GENDER_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, GenderLabel.GENDER_LABEL, "gender_label__gender_label_lang_fkey", GenderLabel.GENDER_LABEL.LANG);
         public static final ForeignKey<GenderLabelRecord, LabelTypeRecord> GENDER_LABEL__GENDER_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, GenderLabel.GENDER_LABEL, "gender_label__gender_label_type_fkey", GenderLabel.GENDER_LABEL.TYPE);
@@ -465,6 +539,9 @@ public class Keys {
         public static final ForeignKey<PosLabelRecord, PosRecord> POS_LABEL__POS_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.POS_PKEY, PosLabel.POS_LABEL, "pos_label__pos_label_code_fkey", PosLabel.POS_LABEL.CODE);
         public static final ForeignKey<PosLabelRecord, LangRecord> POS_LABEL__POS_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, PosLabel.POS_LABEL, "pos_label__pos_label_lang_fkey", PosLabel.POS_LABEL.LANG);
         public static final ForeignKey<PosLabelRecord, LabelTypeRecord> POS_LABEL__POS_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, PosLabel.POS_LABEL, "pos_label__pos_label_type_fkey", PosLabel.POS_LABEL.TYPE);
+        public static final ForeignKey<RectionTypeLabelRecord, RectionTypeRecord> RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.RECTION_TYPE_PKEY, RectionTypeLabel.RECTION_TYPE_LABEL, "rection_type_label__rection_type_label_code_fkey", RectionTypeLabel.RECTION_TYPE_LABEL.CODE);
+        public static final ForeignKey<RectionTypeLabelRecord, LangRecord> RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, RectionTypeLabel.RECTION_TYPE_LABEL, "rection_type_label__rection_type_label_lang_fkey", RectionTypeLabel.RECTION_TYPE_LABEL.LANG);
+        public static final ForeignKey<RectionTypeLabelRecord, LabelTypeRecord> RECTION_TYPE_LABEL__RECTION_TYPE_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, RectionTypeLabel.RECTION_TYPE_LABEL, "rection_type_label__rection_type_label_type_fkey", RectionTypeLabel.RECTION_TYPE_LABEL.TYPE);
         public static final ForeignKey<RegisterLabelRecord, RegisterRecord> REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.REGISTER_PKEY, RegisterLabel.REGISTER_LABEL, "register_label__register_label_code_fkey", RegisterLabel.REGISTER_LABEL.CODE);
         public static final ForeignKey<RegisterLabelRecord, LangRecord> REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, RegisterLabel.REGISTER_LABEL, "register_label__register_label_lang_fkey", RegisterLabel.REGISTER_LABEL.LANG);
         public static final ForeignKey<RegisterLabelRecord, LabelTypeRecord> REGISTER_LABEL__REGISTER_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, RegisterLabel.REGISTER_LABEL, "register_label__register_label_type_fkey", RegisterLabel.REGISTER_LABEL.TYPE);
@@ -473,5 +550,14 @@ public class Keys {
         public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform__source_freeform_freeform_id_fkey", SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
         public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, Word.WORD, "word__word_lang_fkey", Word.WORD.LANG);
         public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Word.WORD, "word__word_morph_code_fkey", Word.WORD.MORPH_CODE);
+        public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word__word_display_morph_code_fkey", Word.WORD.DISPLAY_MORPH_CODE);
+        public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_word_id_fkey", WordGuid.WORD_GUID.WORD_ID);
+        public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DATASET_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_dataset_code_fkey", WordGuid.WORD_GUID.DATASET_CODE);
+        public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label__word_rel_type_label_code_fkey", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE);
+        public static final ForeignKey<WordRelTypeLabelRecord, LangRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label__word_rel_type_label_lang_fkey", WordRelTypeLabel.WORD_REL_TYPE_LABEL.LANG);
+        public static final ForeignKey<WordRelTypeLabelRecord, LabelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label__word_rel_type_label_type_fkey", WordRelTypeLabel.WORD_REL_TYPE_LABEL.TYPE);
+        public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word1_id_fkey", WordRelation.WORD_RELATION.WORD1_ID);
+        public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word2_id_fkey", WordRelation.WORD_RELATION.WORD2_ID);
+        public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word_rel_type_code_fkey", WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
     }
 }

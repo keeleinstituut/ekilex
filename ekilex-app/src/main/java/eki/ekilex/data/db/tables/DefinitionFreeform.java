@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
 
-    private static final long serialVersionUID = -137334601;
+    private static final long serialVersionUID = 380166996;
 
     /**
      * The reference instance of <code>public.definition_freeform</code>
@@ -112,7 +112,7 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY, Indexes.DEFINITION_FREEFORM_PKEY);
+        return Arrays.<Index>asList(Indexes.DEFINITION_FREEFORM_DEFINITION_ID_FREEFORM_ID_KEY, Indexes.DEFINITION_FREEFORM_DEFINITION_ID_IDX, Indexes.DEFINITION_FREEFORM_FREEFORM_ID_IDX, Indexes.DEFINITION_FREEFORM_PKEY);
     }
 
     /**

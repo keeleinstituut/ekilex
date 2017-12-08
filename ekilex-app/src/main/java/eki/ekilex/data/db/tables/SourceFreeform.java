@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
 
-    private static final long serialVersionUID = -1079163305;
+    private static final long serialVersionUID = -704543442;
 
     /**
      * The reference instance of <code>public.source_freeform</code>
@@ -112,7 +112,7 @@ public class SourceFreeform extends TableImpl<SourceFreeformRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SOURCE_FREEFORM_PKEY, Indexes.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY);
+        return Arrays.<Index>asList(Indexes.SOURCE_FREEFORM_FREEFORM_ID_IDX, Indexes.SOURCE_FREEFORM_PKEY, Indexes.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY, Indexes.SOURCE_FREEFORM_SOURCE_ID_IDX);
     }
 
     /**
