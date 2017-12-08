@@ -18,6 +18,7 @@ insert into lang (code, value) values ('hin', 'Hindi');
 insert into lang (code, value) values ('pan', 'Panjabi');
 insert into lang (code, value) values ('ell', 'Greek');
 insert into lang (code, value) values ('spa', 'Spanish');
+insert into lang (code, value) values ('dan', 'Danish');
 
 insert into label_type (code, value) values ('capital', 'capital');
 insert into label_type (code, value) values ('abbrev', 'abbrev');
