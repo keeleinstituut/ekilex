@@ -171,7 +171,15 @@
                               </td>
                             </tr>
                             <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                              <td th:text="${usageDefinition.value}"></td>
+                              <td>
+                                <span th:name="${usageDefinition.id} + '_usage_definition'" th:data-id="${usageDefinition.id}" th:data-op-type="usage_definition" th:text="${usageDefinition.value}"></span>
+                                <button type="button" class="btn btn-primary btn-sm ml-2"
+                                        th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                        onclick="initEditDlg(this)"
+                                        data-toggle="modal" data-target="#editDlg">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                              </td>
                             </tr>
                             <tr th:unless="${usageMeaningIter.last}">
                               <td>
