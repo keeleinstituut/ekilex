@@ -155,7 +155,15 @@
                               </td>
                             </tr>
                             <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                              <td th:text="${usageTranslation.value}"></td>
+                              <td>
+                                <span th:name="${usageTranslation.id} + '_usage_translation'" th:data-id="${usageTranslation.id}" th:data-op-type="usage_translation" th:text="${usageTranslation.value}"></span>
+                                <button type="button" class="btn btn-primary btn-sm ml-2"
+                                        th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                        onclick="initEditDlg(this)"
+                                        data-toggle="modal" data-target="#editDlg">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                              </td>
                             </tr>
                             <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
                               <td>

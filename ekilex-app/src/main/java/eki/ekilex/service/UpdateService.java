@@ -13,8 +13,12 @@ public class UpdateService {
 	private UpdateDbService updateDbService;
 
 	@Transactional
-	public void updateUsageValue(Long id, String usageValue) {
-		updateDbService.updateUsageValue(id, usageValue);
+	public void updateUsageValue(Long id, String value) {
+		updateDbService.updateFreeformTextValue(id, value);
 	}
 
+	@Transactional
+	public void updateUsageTranslationValue(Long id, String value) {
+		updateDbService.updateFreeformTextValue(id, value);
+	}
 }

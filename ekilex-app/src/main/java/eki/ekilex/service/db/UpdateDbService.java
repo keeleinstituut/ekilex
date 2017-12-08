@@ -16,9 +16,9 @@ public class UpdateDbService {
 		create = context;
 	}
 
-	public void updateUsageValue(Long id, String usageValue) {
+	public void updateFreeformTextValue(Long id, String value) {
 		create.update(FREEFORM)
-				.set(FREEFORM.VALUE_TEXT, usageValue)
+				.set(FREEFORM.VALUE_TEXT, value)
 				.where(FREEFORM.ID.eq(id))
 				.execute();
 	}

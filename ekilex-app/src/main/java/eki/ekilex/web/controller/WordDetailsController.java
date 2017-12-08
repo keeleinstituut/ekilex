@@ -25,9 +25,12 @@ public class WordDetailsController {
 
 		logger.debug("Update operation {} : {} : for id {}", opType, value, id);
 		switch (opType) {
-		case "usage" :
-			updateService.updateUsageValue(id, value);
-			break;
+			case "usage" :
+				updateService.updateUsageValue(id, value);
+				break;
+			case "usage_translation" :
+				updateService.updateUsageTranslationValue(id, value);
+				break;
 		}
 
 		return "OK";
