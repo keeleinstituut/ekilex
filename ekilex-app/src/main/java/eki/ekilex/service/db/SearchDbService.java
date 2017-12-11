@@ -22,7 +22,9 @@ import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.Record12;
+import org.jooq.Record13;
 import org.jooq.Record14;
+import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record7;
@@ -191,7 +193,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+	public Result<Record13<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
 
 		return create
 				.select(
@@ -202,10 +204,9 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),
 						MEANING.STATE_CODE.as("meaning_state_code"),
-						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
-						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
+						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"))
 				.from(FORM, PARADIGM, WORD, LEXEME,
-						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
+						MEANING.leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
 				)
 				.where(
 						FORM.ID.eq(formId)
@@ -252,6 +253,14 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId).and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
+				.fetch();
+	}
+
+	public Result<Record2<Long, String>> findMeaningDefinitions(Long meaningId) {
+		return create
+				.select(DEFINITION.ID, DEFINITION.VALUE)
+				.from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.fetch();
 	}
 

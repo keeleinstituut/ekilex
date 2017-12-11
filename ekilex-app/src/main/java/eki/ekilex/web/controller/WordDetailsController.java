@@ -34,6 +34,9 @@ public class WordDetailsController {
 			case "usage_definition" :
 				updateService.updateUsageDefinitionValue(id, value);
 				break;
+			case "definition" :
+				updateService.updateDefinitionValue(id, value);
+				break;
 		}
 
 		return "OK";

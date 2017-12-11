@@ -26,4 +26,9 @@ public class UpdateService {
 	public void updateUsageDefinitionValue(Long id, String value) {
 		updateDbService.updateFreeformTextValue(id, value);
 	}
+
+	@Transactional
+	public void updateDefinitionValue(Long id, String value) {
+		updateDbService.updateDefinitionValue(id, value);
+	}
 }

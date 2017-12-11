@@ -199,7 +199,15 @@
               <b>Seletused</b>
               <br />
               <ul>
-                <li th:each="definition : ${lexeme.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+                <li th:each="definition : ${lexeme.definitions}" th:unless="${#strings.isEmpty(definition)}">
+                  <span th:name="${definition.id} + '_definition'" th:data-id="${definition.id}" th:data-op-type="definition" th:text="${definition.value}"></span>
+                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                          th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                          onclick="initEditDlg(this)"
+                          data-toggle="modal" data-target="#editDlg">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                </li>
               </ul>
               <hr />
             </div>

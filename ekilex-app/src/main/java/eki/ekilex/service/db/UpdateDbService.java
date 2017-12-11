@@ -4,6 +4,7 @@ import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
 @Component
@@ -23,4 +24,10 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateDefinitionValue(Long id, String value) {
+		create.update(DEFINITION)
+				.set(DEFINITION.VALUE, value)
+				.where(DEFINITION.ID.eq(id))
+				.execute();
+	}
 }

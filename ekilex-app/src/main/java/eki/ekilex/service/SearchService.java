@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.Definition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -61,6 +62,9 @@ public class SearchService {
 
 			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
 			lexeme.setDomains(domains);
+
+			List<Definition> meaningDefinitions = searchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+			lexeme.setDefinitions(meaningDefinitions);
 
 			List<FreeForm> meaningFreeforms = searchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			lexeme.setMeaningFreeforms(meaningFreeforms);

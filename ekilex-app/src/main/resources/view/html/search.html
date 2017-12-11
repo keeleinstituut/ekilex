@@ -88,7 +88,7 @@
           <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
           <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
-            <li th:each="definition : ${lexeme.definitions}" th:text="${definition}" th:unless="${#strings.isEmpty(definition)}"></li>
+            <li th:each="definition : ${lexeme.definitions}" th:text="${definition.value}"></li>
           </ul>
           <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
             <table th:each="rection,rectionIter : ${lexeme.rections}">
