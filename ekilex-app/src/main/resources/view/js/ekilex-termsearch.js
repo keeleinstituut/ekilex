@@ -33,7 +33,7 @@ function initEditDlg(elem) {
     var targetElement = $('[name="' + targetName + '"]');
     var editDlg = $('#editDlg');
     var modifyFld = editDlg.find('[name="modified_value"]');
-    modifyFld.val(targetElement.text());
+    modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
     editDlg.find('[name="id"]').val(targetElement.data('id'));
     editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
 
