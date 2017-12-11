@@ -294,11 +294,6 @@
 	</profiles>
 
 	<dependencies>
-		<!-- EXPERIMENTAL!! will be moved or removed -->
-		<dependency>
-			<groupId>com.atlassian.commonmark</groupId>
-			<artifactId>commonmark</artifactId>
-		</dependency>
 		<!-- eki -->
 		<dependency>
 			<groupId>eki.common</groupId>

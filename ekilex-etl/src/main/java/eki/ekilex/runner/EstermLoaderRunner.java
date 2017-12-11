@@ -270,6 +270,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					valueNodes = termGroupNode.selectNodes(sourceExp);
 					for (Element sourceNode : valueNodes) {
+						//FIXME filter only sources!
 						valueStr = sourceNode.getTextTrim();
 						Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, valueStr, null);
 						if (sourceNode.hasMixedContent()) {

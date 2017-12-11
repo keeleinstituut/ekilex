@@ -140,7 +140,7 @@
                             </tr>
                             <tr th:each="usage : ${usageMeaning.usages}">
                               <td>
-                                <span th:name="${usage.id} + '_usage'" th:data-id="${usage.id}" th:data-op-type="usage" th:text="${usage.value}"></span>
+                                <span th:name="${usage.id} + '_usage'" th:data-id="${usage.id}" th:data-op-type="usage" th:utext="${markdown.toHtml(usage.value)}"></span>
                                 <button type="button" class="btn btn-primary btn-sm ml-2"
                                         th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                                         onclick="initEditDlg(this)"
@@ -172,7 +172,7 @@
                             </tr>
                             <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
                               <td>
-                                <span th:name="${usageDefinition.id} + '_usage_definition'" th:data-id="${usageDefinition.id}" th:data-op-type="usage_definition" th:text="${usageDefinition.value}"></span>
+                                <span th:name="${usageDefinition.id} + '_usage_definition'" th:data-id="${usageDefinition.id}" th:data-op-type="usage_definition" th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
                                 <button type="button" class="btn btn-primary btn-sm ml-2"
                                         th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
                                         onclick="initEditDlg(this)"
@@ -200,7 +200,7 @@
               <br />
               <ul>
                 <li th:each="definition : ${lexeme.definitions}" th:unless="${#strings.isEmpty(definition)}">
-                  <span th:name="${definition.id} + '_definition'" th:data-id="${definition.id}" th:data-op-type="definition" th:text="${definition.value}"></span>
+                  <span th:name="${definition.id} + '_definition'" th:data-id="${definition.id}" th:data-op-type="definition" th:utext="${markdown.toHtml(definition.value)}"></span>
                   <button type="button" class="btn btn-primary btn-sm ml-2"
                           th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
                           onclick="initEditDlg(this)"
@@ -224,7 +224,7 @@
                     <span th:text="${freeform.type}"></span>
                   </td>
                   <td>
-                    <span th:text="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+                    <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
                     <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                   </td>
                 </tr>
@@ -240,7 +240,7 @@
                     <span th:text="${freeform.type}"></span>
                   </td>
                   <td>
-                    <span th:text="${freeform.valueText}" th:if="${freeform.valueText != null}"></span>
+                    <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
                     <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                   </td>
                 </tr>

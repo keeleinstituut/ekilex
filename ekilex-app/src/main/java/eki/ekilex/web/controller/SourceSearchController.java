@@ -11,8 +11,10 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eki.common.constant.ContentKey;
 import eki.ekilex.data.Source;
 import eki.ekilex.service.SourceService;
 
@@ -29,6 +31,23 @@ public class SourceSearchController {
 	public String sourceSearch(
 			@RequestParam(required = false) String searchFilter,
 			Model model, HttpSession session) {
+
+		return doSourceSearch(searchFilter, model);
+	}
+
+	@GetMapping("/" + ContentKey.FREEFORM_REF_LINK + ":{refId}")
+	public String ffRefLink(@PathVariable("refId") String refId, Model model) {
+
+		return doSourceSearch(refId, model);
+	}
+
+	@GetMapping("/" + ContentKey.DEFINITION_REF_LINK + ":{refId}")
+	public String defRefLink(@PathVariable("refId") String refId, Model model) {
+
+		return doSourceSearch(refId, model);
+	}
+
+	private String doSourceSearch(String searchFilter, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
