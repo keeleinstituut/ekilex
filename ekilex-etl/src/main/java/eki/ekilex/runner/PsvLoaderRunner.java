@@ -61,8 +61,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
 	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
-	private final static String sqlPosCodeMappings = "select value as key, code as value from " + POS_LABEL + " where lang = :lang and type = :type";
-	private final static String sqlDerivCodeMappings = "select code as key, code as value from " + DERIV + " where :dataset = ANY(datasets)";
 	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
 			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
@@ -85,11 +83,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	void initialise() throws Exception {
 
-		lexemeTypes = readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
-				.filter(line -> line.startsWith("liik_tyyp"))
-				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
-				.filter(cells -> "et".equals(cells[4]))
-				.collect(toMap(cells -> cells[2], cells -> cells[6]));
+		lexemeTypes = loadClassifierMappingsFor("liik_tyyp");
+		derivCodes = loadClassifierMappingsFor("dk_tyyp");
+		posCodes = loadClassifierMappingsFor("sl_tyyp");
+	}
+
+	private Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {
+		// in case of duplicate keys, last value is used
+		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
+				.filter(line -> line.startsWith(ekiClassifierName))
+				.map(line -> StringUtils.split(line, CSV_SEPARATOR)).filter(cells -> "et".equals(cells[4]))
+				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
 	}
 
 	private List<String> readFileLines(String sourcePath) throws Exception {
@@ -121,12 +125,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				COMPOUND_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
 				COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
 				WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
-
-		posCodes = loadPosCodes();
-
-		derivCodes = loadDerivCodes(dataset);
-		//TODO is this mapping or missing code?
-		derivCodes.put("sup", "superl");
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -182,23 +180,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.end();
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
-	}
-
-	private Map<String, String> loadPosCodes() throws Exception {
-
-		Map<String, Object> sqlQueryParamMap = new HashMap<>();
-		sqlQueryParamMap.put("lang", dataLang);
-		sqlQueryParamMap.put("type", "capital");
-		Map<String, String> classifiers = basicDbService.queryListAsMap(sqlPosCodeMappings, sqlQueryParamMap);
-		return classifiers;
-	}
-
-	private Map<String, String> loadDerivCodes(String dataset) throws Exception {
-
-		Map<String, Object> sqlQueryParamMap = new HashMap<>();
-		sqlQueryParamMap.put("dataset", dataset);
-		Map<String, String> classifiers = basicDbService.queryListAsMap(sqlDerivCodeMappings, sqlQueryParamMap);
-		return classifiers;
 	}
 
 	private String extractGuid(Element node) {

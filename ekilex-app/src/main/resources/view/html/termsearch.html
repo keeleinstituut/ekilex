@@ -56,7 +56,7 @@
     <div class="mt-4 ml-4" th:if="${wordsFoundBySearch != null}">
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
-          <td class="w-100">
+          <td class="w-100" name="word_form">
             <span th:text="${word.value}">vorm 1</span>
             <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
             <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">Detailid</button>

@@ -4,7 +4,7 @@ function initialize(urlPrefix) {
     detailsDivs.on('click', function (e) {
         var id = $(e.target).data('id');
         var detailsDiv = $('[name="' + id + '_details"]');
-        if (detailsDiv.html() === '') {
+        if (detailsDiv.html() === '' || detailsDiv.data('reset')) {
             $.get(urlPrefix + 'termdetails/' + id).done(function (data) {
                 detailsDiv.replaceWith(data);
             }).fail(function (data) {
@@ -42,7 +42,10 @@ function initEditDlg(elem) {
         var editForm = editDlg.find('form');
         var url = editForm.attr('action') + '?' + editForm.serialize();
         $.post(url).done(function (data) {
-            targetElement.text(modifyFld.val());
+            var detailsButton = targetElement.closest('[name="word_form"]').find('[name="details"]');
+            var detailsDiv = $('[name="' + detailsButton.data('id') + '_details"]');
+            detailsDiv.data('reset', 'true');
+            detailsButton.trigger('click');
             editDlg.find('button.close').trigger('click');
         }).fail(function(data) {
             alert("Andmete muutmine ebaõnnestus.");
