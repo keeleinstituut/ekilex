@@ -30,8 +30,8 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 	@Column(name = "modified_by")
 	private String modifiedBy;
 
-	@Column(name = "entry_class_code")
-	private String entryClassCode;
+	@Column(name = "process_state_code")
+	private String processStateCode;
 
 	@Column(name = "type")
 	private String type;
@@ -118,12 +118,12 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 		this.modifiedBy = modifiedBy;
 	}
 
-	public String getEntryClassCode() {
-		return entryClassCode;
+	public String getProcessStateCode() {
+		return processStateCode;
 	}
 
-	public void setEntryClassCode(String entryClassCode) {
-		this.entryClassCode = entryClassCode;
+	public void setProcessStateCode(String processStateCode) {
+		this.processStateCode = processStateCode;
 	}
 
 	public String getType() {

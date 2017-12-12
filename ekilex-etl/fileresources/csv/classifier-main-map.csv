@@ -40,9 +40,9 @@ dk_tyyp	dk_tyyp	as	abstraktne substantiiv	et	deriv	as
 dk_tyyp	dk_tyyp	posit	positiiv, algvõrre	et	deriv	posit
 dk_tyyp	dk_tyyp	as	abstract substantive	en	deriv	as
 dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit
-entry class	Entry Class	määramata	määramata	et	entry_class	määramata
-entry class	Entry Class	töös	töös	et	entry_class	töös
-entry class	Entry Class	avalik	avalik	et	entry_class	avalik
+entry class	Entry Class	määramata	määramata	et	process_state	määramata
+entry class	Entry Class	töös	töös	et	process_state	töös
+entry class	Entry Class	avalik	avalik	et	process_state	avalik
 fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-
 fak_tyyp	fakultatiivne	fak	nothing	en	-	-
 gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-

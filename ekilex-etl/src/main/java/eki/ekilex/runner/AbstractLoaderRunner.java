@@ -232,9 +232,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(modifiedBy)) {
 			tableRowParamMap.put("modified_by", modifiedBy);
 		}
-		String entryClassCode = meaning.getEntryClassCode();
-		if (StringUtils.isNotBlank(entryClassCode)) {
-			tableRowParamMap.put("entry_class_code", entryClassCode);
+		String processStateCode = meaning.getProcessStateCode();
+		if (StringUtils.isNotBlank(processStateCode)) {
+			tableRowParamMap.put("process_state_code", processStateCode);
 		}
 		String meaningStateCode = meaning.getMeaningStateCode();
 		if (StringUtils.isNotBlank(meaningStateCode)) {

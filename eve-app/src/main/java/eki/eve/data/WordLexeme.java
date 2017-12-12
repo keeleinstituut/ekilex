@@ -114,12 +114,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningTypeCode = meaningTypeCode;
 	}
 
-	public String getMeaningEntryClassCode() {
-		return meaningEntryClassCode;
+	public String getMeaningProcessStateCode() {
+		return meaningProcessStateCode;
 	}
 
-	public void setMeaningEntryClassCode(String meaningEntryClassCode) {
-		this.meaningEntryClassCode = meaningEntryClassCode;
+	public void setMeaningProcessStateCode(String meaningProcessStateCode) {
+		this.meaningProcessStateCode = meaningProcessStateCode;
 	}
 
 	public String getMeaningStateCode() {
@@ -164,8 +164,8 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "meaning_type_code")
 	private String meaningTypeCode;
 
-	@Column(name = "meaning_entry_class_code")
-	private String meaningEntryClassCode;
+	@Column(name = "meaning_process_state_code")
+	private String meaningProcessStateCode;
 
 	@Column(name = "meaning_state_code")
 	private String meaningStateCode;

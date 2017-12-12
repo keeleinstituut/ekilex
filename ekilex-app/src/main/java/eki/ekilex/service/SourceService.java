@@ -62,7 +62,7 @@ public class SourceService {
 				String createdBy = tuple.getCreatedBy();
 				Timestamp modifiedOn = tuple.getModifiedOn();
 				String modifiedBy = tuple.getModifiedBy();
-				String entryClassCode = tuple.getEntryClassCode();
+				String processStateCode = tuple.getProcessStateCode();
 				String type = tuple.getType();
 				sourceHeadings = new ArrayList<>();
 				source = new Source();
@@ -72,7 +72,7 @@ public class SourceService {
 				source.setCreatedBy(createdBy);
 				source.setModifiedOn(modifiedOn);
 				source.setModifiedBy(modifiedBy);
-				source.setEntryClassCode(entryClassCode);
+				source.setProcessStateCode(processStateCode);
 				source.setType(type);
 				source.setSourceHeadings(sourceHeadings);
 				sourceMap.put(sourceId, source);

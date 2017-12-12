@@ -18,7 +18,7 @@ public class Meaning extends AbstractDataObject {
 
 	private String modifiedBy;
 
-	private String entryClassCode;
+	private String processStateCode;
 
 	private String meaningStateCode;
 
@@ -64,12 +64,12 @@ public class Meaning extends AbstractDataObject {
 		this.modifiedBy = modifiedBy;
 	}
 
-	public String getEntryClassCode() {
-		return entryClassCode;
+	public String getProcessStateCode() {
+		return processStateCode;
 	}
 
-	public void setEntryClassCode(String entryClassCode) {
-		this.entryClassCode = entryClassCode;
+	public void setProcessStateCode(String processStateCode) {
+		this.processStateCode = processStateCode;
 	}
 
 	public String getMeaningStateCode() {

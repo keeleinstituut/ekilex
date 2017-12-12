@@ -91,9 +91,9 @@
               <b>Mõistetüüp</b>
               <span th:text="${lexeme.meaningTypeCode}"></span>
             </div>
-            <div th:if="${lexeme.meaningEntryClassCode != null}">
+            <div th:if="${lexeme.meaningProcessStateCode != null}">
               <b>Entry class</b>
-              <span th:text="${lexeme.meaningEntryClassCode}"></span>
+              <span th:text="${lexeme.meaningProcessStateCode}"></span>
             </div>
             <div th:if="${lexeme.meaningStateCode != null}">
               <b>Staatus</b>

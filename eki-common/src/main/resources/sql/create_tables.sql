@@ -35,7 +35,7 @@ drop table if exists meaning_type;
 --drop table if exists meaning_state_label;
 drop table if exists meaning_state;
 drop table if exists process_state;
---drop table if exists entry_class_label;
+-- FIXME: 2017.12.12 remove entry_class after data import has been run in all environments
 drop table if exists entry_class;
 drop table if exists deriv_label;
 drop table if exists deriv;
@@ -266,14 +266,6 @@ create table process_state
   datasets varchar(10) array not null
 );
 
--- entry class?
-create table entry_class
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null
-);
--- missing entry_class_label
-
 -- tähenduse liik
 create table meaning_type
 (
@@ -385,7 +377,7 @@ create table source
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  entry_class_code varchar(100) references entry_class(code) null,
+  process_state_code varchar(100) references process_state(code) null,
   type varchar(100) null
 );
 alter sequence source_id_seq restart with 10000;
@@ -477,7 +469,7 @@ create table meaning
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  entry_class_code varchar(100) references entry_class(code) null,
+  process_state_code varchar(100) references process_state(code) null,
   state_code varchar(100) references meaning_state(code) null,
   type_code varchar(100) references meaning_type(code) null
 );

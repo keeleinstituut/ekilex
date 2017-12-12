@@ -599,7 +599,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			meaningObj.setEntryClassCode(valueStr);
+			meaningObj.setProcessStateCode(valueStr);
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningStateExp);

@@ -16,7 +16,6 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
-import eki.ekilex.data.db.tables.EntryClass;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -53,6 +52,7 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.RectionType;
 import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
@@ -90,7 +90,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1396822591;
+    private static final long serialVersionUID = -1728212379;
 
     /**
      * The reference instance of <code>public</code>
@@ -156,11 +156,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.eki_user</code>.
      */
     public final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
-
-    /**
-     * The table <code>public.entry_class</code>.
-     */
-    public final EntryClass ENTRY_CLASS = eki.ekilex.data.db.tables.EntryClass.ENTRY_CLASS;
 
     /**
      * The table <code>public.form</code>.
@@ -343,6 +338,11 @@ public class Public extends SchemaImpl {
     public final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
 
     /**
+     * The table <code>public.process_state</code>.
+     */
+    public final ProcessState PROCESS_STATE = eki.ekilex.data.db.tables.ProcessState.PROCESS_STATE;
+
+    /**
      * The table <code>public.rection_type</code>.
      */
     public final RectionType RECTION_TYPE = eki.ekilex.data.db.tables.RectionType.RECTION_TYPE;
@@ -469,7 +469,6 @@ public class Public extends SchemaImpl {
             Domain.DOMAIN,
             DomainLabel.DOMAIN_LABEL,
             EkiUser.EKI_USER,
-            EntryClass.ENTRY_CLASS,
             Form.FORM,
             FormRelType.FORM_REL_TYPE,
             FormRelTypeLabel.FORM_REL_TYPE_LABEL,
@@ -506,6 +505,7 @@ public class Public extends SchemaImpl {
             Paradigm.PARADIGM,
             Pos.POS,
             PosLabel.POS_LABEL,
+            ProcessState.PROCESS_STATE,
             RectionType.RECTION_TYPE,
             RectionTypeLabel.RECTION_TYPE_LABEL,
             Register.REGISTER,

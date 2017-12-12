@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements Record8<Long, Timestamp, String, Timestamp, String, String, String, String> {
 
-    private static final long serialVersionUID = 1265639662;
+    private static final long serialVersionUID = -1736626392;
 
     /**
      * Setter for <code>public.meaning.id</code>.
@@ -103,16 +103,16 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
     }
 
     /**
-     * Setter for <code>public.meaning.entry_class_code</code>.
+     * Setter for <code>public.meaning.process_state_code</code>.
      */
-    public void setEntryClassCode(String value) {
+    public void setProcessStateCode(String value) {
         set(5, value);
     }
 
     /**
-     * Getter for <code>public.meaning.entry_class_code</code>.
+     * Getter for <code>public.meaning.process_state_code</code>.
      */
-    public String getEntryClassCode() {
+    public String getProcessStateCode() {
         return (String) get(5);
     }
 
@@ -221,7 +221,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public Field<String> field6() {
-        return Meaning.MEANING.ENTRY_CLASS_CODE;
+        return Meaning.MEANING.PROCESS_STATE_CODE;
     }
 
     /**
@@ -285,7 +285,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public String component6() {
-        return getEntryClassCode();
+        return getProcessStateCode();
     }
 
     /**
@@ -349,7 +349,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public String value6() {
-        return getEntryClassCode();
+        return getProcessStateCode();
     }
 
     /**
@@ -418,7 +418,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
      */
     @Override
     public MeaningRecord value6(String value) {
-        setEntryClassCode(value);
+        setProcessStateCode(value);
         return this;
     }
 
@@ -470,7 +470,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
     /**
      * Create a detached, initialised MeaningRecord
      */
-    public MeaningRecord(Long id, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String entryClassCode, String stateCode, String typeCode) {
+    public MeaningRecord(Long id, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String processStateCode, String stateCode, String typeCode) {
         super(Meaning.MEANING);
 
         set(0, id);
@@ -478,7 +478,7 @@ public class MeaningRecord extends UpdatableRecordImpl<MeaningRecord> implements
         set(2, createdBy);
         set(3, modifiedOn);
         set(4, modifiedBy);
-        set(5, entryClassCode);
+        set(5, processStateCode);
         set(6, stateCode);
         set(7, typeCode);
     }

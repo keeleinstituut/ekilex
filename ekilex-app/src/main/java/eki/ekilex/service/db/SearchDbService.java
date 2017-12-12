@@ -96,7 +96,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
-						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),
+						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						MEANING.STATE_CODE.as("meaning_state_code"),
 						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
@@ -200,7 +200,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
-						MEANING.ENTRY_CLASS_CODE.as("meaning_entry_class_code"),
+						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						MEANING.STATE_CODE.as("meaning_state_code"),
 						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"))
 				.from(FORM, PARADIGM, WORD, LEXEME,

@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 515262620;
+    private static final long serialVersionUID = -1392323258;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -76,9 +76,9 @@ public class Word extends TableImpl<WordRecord> {
     public final TableField<WordRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
 
     /**
-     * The column <code>public.word.display_pos</code>.
+     * The column <code>public.word.display_morph_code</code>.
      */
-    public final TableField<WordRecord, String> DISPLAY_POS = createField("display_pos", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<WordRecord, String> DISPLAY_MORPH_CODE = createField("display_morph_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.word</code> table reference
@@ -154,7 +154,7 @@ public class Word extends TableImpl<WordRecord> {
      */
     @Override
     public List<ForeignKey<WordRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY);
+        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY);
     }
 
     /**

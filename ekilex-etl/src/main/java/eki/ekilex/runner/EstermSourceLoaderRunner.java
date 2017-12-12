@@ -203,7 +203,7 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			sourceObj.setEntryClassCode(valueStr);
+			sourceObj.setProcessStateCode(valueStr);
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(createdByExp);
@@ -264,9 +264,9 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		if (StringUtils.isNotBlank(modifiedBy)) {
 			tableRowParamMap.put("modified_by", modifiedBy);
 		}
-		String entryClassCode = sourceObj.getEntryClassCode();
-		if (StringUtils.isNotBlank(entryClassCode)) {
-			tableRowParamMap.put("entry_class_code", entryClassCode);
+		String processStateCode = sourceObj.getProcessStateCode();
+		if (StringUtils.isNotBlank(processStateCode)) {
+			tableRowParamMap.put("process_state_code", processStateCode);
 		}
 		String type = sourceObj.getType();
 		if (StringUtils.isNotBlank(type)) {

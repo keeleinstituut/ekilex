@@ -16,7 +16,6 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
-import eki.ekilex.data.db.tables.EntryClass;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -53,6 +52,7 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.RectionType;
 import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
@@ -140,11 +140,6 @@ public class Tables {
      * The table <code>public.eki_user</code>.
      */
     public static final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
-
-    /**
-     * The table <code>public.entry_class</code>.
-     */
-    public static final EntryClass ENTRY_CLASS = eki.ekilex.data.db.tables.EntryClass.ENTRY_CLASS;
 
     /**
      * The table <code>public.form</code>.
@@ -325,6 +320,11 @@ public class Tables {
      * The table <code>public.pos_label</code>.
      */
     public static final PosLabel POS_LABEL = eki.ekilex.data.db.tables.PosLabel.POS_LABEL;
+
+    /**
+     * The table <code>public.process_state</code>.
+     */
+    public static final ProcessState PROCESS_STATE = eki.ekilex.data.db.tables.ProcessState.PROCESS_STATE;
 
     /**
      * The table <code>public.rection_type</code>.

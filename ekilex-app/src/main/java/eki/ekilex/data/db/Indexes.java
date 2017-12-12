@@ -16,7 +16,6 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
-import eki.ekilex.data.db.tables.EntryClass;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -53,6 +52,7 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
+import eki.ekilex.data.db.tables.ProcessState;
 import eki.ekilex.data.db.tables.RectionType;
 import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
@@ -107,7 +107,6 @@ public class Indexes {
     public static final Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Indexes0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
     public static final Index EKI_USER_NAME_KEY = Indexes0.EKI_USER_NAME_KEY;
     public static final Index EKI_USER_PKEY = Indexes0.EKI_USER_PKEY;
-    public static final Index ENTRY_CLASS_PKEY = Indexes0.ENTRY_CLASS_PKEY;
     public static final Index FORM_PARADIGM_ID_IDX = Indexes0.FORM_PARADIGM_ID_IDX;
     public static final Index FORM_PKEY = Indexes0.FORM_PKEY;
     public static final Index FORM_VALUE_IDX = Indexes0.FORM_VALUE_IDX;
@@ -165,6 +164,7 @@ public class Indexes {
     public static final Index PARADIGM_WORD_ID_IDX = Indexes0.PARADIGM_WORD_ID_IDX;
     public static final Index POS_PKEY = Indexes0.POS_PKEY;
     public static final Index POS_LABEL_CODE_LANG_TYPE_KEY = Indexes0.POS_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index PROCESS_STATE_PKEY = Indexes0.PROCESS_STATE_PKEY;
     public static final Index RECTION_TYPE_PKEY = Indexes0.RECTION_TYPE_PKEY;
     public static final Index RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index REGISTER_PKEY = Indexes0.REGISTER_PKEY;
@@ -210,7 +210,6 @@ public class Indexes {
         public static Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = createIndex("domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL, new OrderField[] { DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE }, true);
         public static Index EKI_USER_NAME_KEY = createIndex("eki_user_name_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.NAME }, true);
         public static Index EKI_USER_PKEY = createIndex("eki_user_pkey", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, true);
-        public static Index ENTRY_CLASS_PKEY = createIndex("entry_class_pkey", EntryClass.ENTRY_CLASS, new OrderField[] { EntryClass.ENTRY_CLASS.CODE }, true);
         public static Index FORM_PARADIGM_ID_IDX = createIndex("form_paradigm_id_idx", Form.FORM, new OrderField[] { Form.FORM.PARADIGM_ID }, false);
         public static Index FORM_PKEY = createIndex("form_pkey", Form.FORM, new OrderField[] { Form.FORM.ID }, true);
         public static Index FORM_VALUE_IDX = createIndex("form_value_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE }, false);
@@ -268,6 +267,7 @@ public class Indexes {
         public static Index PARADIGM_WORD_ID_IDX = createIndex("paradigm_word_id_idx", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.WORD_ID }, false);
         public static Index POS_PKEY = createIndex("pos_pkey", Pos.POS, new OrderField[] { Pos.POS.CODE }, true);
         public static Index POS_LABEL_CODE_LANG_TYPE_KEY = createIndex("pos_label_code_lang_type_key", PosLabel.POS_LABEL, new OrderField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
+        public static Index PROCESS_STATE_PKEY = createIndex("process_state_pkey", ProcessState.PROCESS_STATE, new OrderField[] { ProcessState.PROCESS_STATE.CODE }, true);
         public static Index RECTION_TYPE_PKEY = createIndex("rection_type_pkey", RectionType.RECTION_TYPE, new OrderField[] { RectionType.RECTION_TYPE.CODE }, true);
         public static Index RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("rection_type_label_code_lang_type_key", RectionTypeLabel.RECTION_TYPE_LABEL, new OrderField[] { RectionTypeLabel.RECTION_TYPE_LABEL.CODE, RectionTypeLabel.RECTION_TYPE_LABEL.LANG, RectionTypeLabel.RECTION_TYPE_LABEL.TYPE }, true);
         public static Index REGISTER_PKEY = createIndex("register_pkey", Register.REGISTER, new OrderField[] { Register.REGISTER.CODE }, true);
