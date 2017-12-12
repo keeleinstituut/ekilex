@@ -1,5 +1,6 @@
 package eki.ekilex.runner;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -29,6 +30,8 @@ import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.XmlReader;
 
+import static java.util.stream.Collectors.toMap;
+
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
 	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
@@ -36,6 +39,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
+
+	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
 	@Autowired
 	protected XmlReader xmlReader;
@@ -514,6 +519,26 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		relationParams.put("word2_id", wordId2);
 		relationParams.put("word_rel_type_code", relationType);
 		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
+	}
+
+	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {
+		return loadClassifierMappingsFor(ekiClassifierName, null);
+	}
+
+	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName, String lexClassifierName) throws Exception {
+		// in case of duplicate keys, last value is used
+		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
+				.filter(line -> line.startsWith(ekiClassifierName))
+				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
+				.filter(cells -> lexClassifierName == null ? true : lexClassifierName.equals(cells[5]))
+				.filter(cells -> "et".equals(cells[4]))
+				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
+	}
+
+	private List<String> readFileLines(String sourcePath) throws Exception {
+		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
+			return IOUtils.readLines(resourceInputStream, UTF_8);
+		}
 	}
 
 }

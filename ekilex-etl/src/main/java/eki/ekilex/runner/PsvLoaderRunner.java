@@ -88,20 +88,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		posCodes = loadClassifierMappingsFor("sl_tyyp");
 	}
 
-	private Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {
-		// in case of duplicate keys, last value is used
-		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
-				.filter(line -> line.startsWith(ekiClassifierName))
-				.map(line -> StringUtils.split(line, CSV_SEPARATOR)).filter(cells -> "et".equals(cells[4]))
-				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
-	}
-
-	private List<String> readFileLines(String sourcePath) throws Exception {
-		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
-			return IOUtils.readLines(resourceInputStream, UTF_8);
-		}
-	}
-
 	@Transactional
 	public void execute(
 			String dataXmlFilePath,
