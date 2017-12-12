@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Record5<Long, String, String, Integer, String> {
 
-    private static final long serialVersionUID = 2062824484;
+    private static final long serialVersionUID = 1985795773;
 
     /**
      * Setter for <code>public.word.id</code>.
@@ -87,16 +87,16 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
     }
 
     /**
-     * Setter for <code>public.word.display_pos</code>.
+     * Setter for <code>public.word.display_morph_code</code>.
      */
-    public void setDisplayPos(String value) {
+    public void setDisplayMorphCode(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.word.display_pos</code>.
+     * Getter for <code>public.word.display_morph_code</code>.
      */
-    public String getDisplayPos() {
+    public String getDisplayMorphCode() {
         return (String) get(4);
     }
 
@@ -169,7 +169,7 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
      */
     @Override
     public Field<String> field5() {
-        return Word.WORD.DISPLAY_POS;
+        return Word.WORD.DISPLAY_MORPH_CODE;
     }
 
     /**
@@ -209,7 +209,7 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
      */
     @Override
     public String component5() {
-        return getDisplayPos();
+        return getDisplayMorphCode();
     }
 
     /**
@@ -249,7 +249,7 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
      */
     @Override
     public String value5() {
-        return getDisplayPos();
+        return getDisplayMorphCode();
     }
 
     /**
@@ -293,7 +293,7 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
      */
     @Override
     public WordRecord value5(String value) {
-        setDisplayPos(value);
+        setDisplayMorphCode(value);
         return this;
     }
 
@@ -324,13 +324,13 @@ public class WordRecord extends UpdatableRecordImpl<WordRecord> implements Recor
     /**
      * Create a detached, initialised WordRecord
      */
-    public WordRecord(Long id, String lang, String morphCode, Integer homonymNr, String displayPos) {
+    public WordRecord(Long id, String lang, String morphCode, Integer homonymNr, String displayMorphCode) {
         super(Word.WORD);
 
         set(0, id);
         set(1, lang);
         set(2, morphCode);
         set(3, homonymNr);
-        set(4, displayPos);
+        set(4, displayMorphCode);
     }
 }

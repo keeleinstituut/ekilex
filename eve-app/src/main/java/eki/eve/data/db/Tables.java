@@ -8,8 +8,11 @@ import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
 import eki.eve.data.db.tables.DefinitionDataset;
 import eki.eve.data.db.tables.DefinitionFreeform;
+import eki.eve.data.db.tables.DefinitionRefLink;
 import eki.eve.data.db.tables.Deriv;
 import eki.eve.data.db.tables.DerivLabel;
+import eki.eve.data.db.tables.DisplayMorph;
+import eki.eve.data.db.tables.DisplayMorphLabel;
 import eki.eve.data.db.tables.Domain;
 import eki.eve.data.db.tables.DomainLabel;
 import eki.eve.data.db.tables.EkiUser;
@@ -19,6 +22,7 @@ import eki.eve.data.db.tables.FormRelType;
 import eki.eve.data.db.tables.FormRelTypeLabel;
 import eki.eve.data.db.tables.FormRelation;
 import eki.eve.data.db.tables.Freeform;
+import eki.eve.data.db.tables.FreeformRefLink;
 import eki.eve.data.db.tables.Gender;
 import eki.eve.data.db.tables.GenderLabel;
 import eki.eve.data.db.tables.LabelType;
@@ -56,6 +60,7 @@ import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
 import eki.eve.data.db.tables.Word;
+import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
 import eki.eve.data.db.tables.WordRelTypeLabel;
 import eki.eve.data.db.tables.WordRelation;
@@ -97,6 +102,11 @@ public class Tables {
     public static final DefinitionFreeform DEFINITION_FREEFORM = eki.eve.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
 
     /**
+     * The table <code>public.definition_ref_link</code>.
+     */
+    public static final DefinitionRefLink DEFINITION_REF_LINK = eki.eve.data.db.tables.DefinitionRefLink.DEFINITION_REF_LINK;
+
+    /**
      * The table <code>public.deriv</code>.
      */
     public static final Deriv DERIV = eki.eve.data.db.tables.Deriv.DERIV;
@@ -105,6 +115,16 @@ public class Tables {
      * The table <code>public.deriv_label</code>.
      */
     public static final DerivLabel DERIV_LABEL = eki.eve.data.db.tables.DerivLabel.DERIV_LABEL;
+
+    /**
+     * The table <code>public.display_morph</code>.
+     */
+    public static final DisplayMorph DISPLAY_MORPH = eki.eve.data.db.tables.DisplayMorph.DISPLAY_MORPH;
+
+    /**
+     * The table <code>public.display_morph_label</code>.
+     */
+    public static final DisplayMorphLabel DISPLAY_MORPH_LABEL = eki.eve.data.db.tables.DisplayMorphLabel.DISPLAY_MORPH_LABEL;
 
     /**
      * The table <code>public.domain</code>.
@@ -150,6 +170,11 @@ public class Tables {
      * The table <code>public.freeform</code>.
      */
     public static final Freeform FREEFORM = eki.eve.data.db.tables.Freeform.FREEFORM;
+
+    /**
+     * The table <code>public.freeform_ref_link</code>.
+     */
+    public static final FreeformRefLink FREEFORM_REF_LINK = eki.eve.data.db.tables.FreeformRefLink.FREEFORM_REF_LINK;
 
     /**
      * The table <code>public.gender</code>.
@@ -335,6 +360,11 @@ public class Tables {
      * The table <code>public.word</code>.
      */
     public static final Word WORD = eki.eve.data.db.tables.Word.WORD;
+
+    /**
+     * The table <code>public.word_guid</code>.
+     */
+    public static final WordGuid WORD_GUID = eki.eve.data.db.tables.WordGuid.WORD_GUID;
 
     /**
      * The table <code>public.word_rel_type</code>.
