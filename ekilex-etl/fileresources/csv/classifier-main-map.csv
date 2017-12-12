@@ -1,6 +1,6 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-
-as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	konfidentsiaalne
+as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	process_state	konfidentsiaalne
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-

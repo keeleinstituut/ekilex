@@ -19,7 +19,8 @@ public enum ClassifierName {
 	LEX_REL_TYPE(true),
 	FORM_REL_TYPE(true),
 	WORD_REL_TYPE(true),
-	DISPLAY_MORPH(true);
+	DISPLAY_MORPH(true),
+	PROCESS_STATE(false);
 
 	private boolean hasLabel;
 

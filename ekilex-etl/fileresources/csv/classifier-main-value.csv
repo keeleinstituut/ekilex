@@ -436,6 +436,10 @@ pos	adj + ID	indeclinable adjective	eng	descrip
 pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
 pos	pron + ID	indeclinable pronoun	eng	descrip
+process_state	avalik	-	-	-
+process_state	konfidentsiaalne	-	-	-
+process_state	määramata	-	-	-
+process_state	töös	-	-	-
 rection_type	obj	objektirektsioon	est	full
 rection_type	kn	käänderektsioon	est	full
 rection_type	ks	kaassõnarektsioon	est	full

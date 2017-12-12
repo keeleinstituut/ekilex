@@ -34,6 +34,7 @@ drop table if exists lex_rel_type;
 drop table if exists meaning_type;
 --drop table if exists meaning_state_label;
 drop table if exists meaning_state;
+drop table if exists process_state;
 --drop table if exists entry_class_label;
 drop table if exists entry_class;
 drop table if exists deriv_label;
@@ -256,6 +257,13 @@ create table deriv_label
   lang char(3) references lang(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
+);
+
+-- protsessi staatus
+create table process_state
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
 );
 
 -- entry class?
