@@ -55,12 +55,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REVIEW_TIMESTAMP_PATTERN = "yy/MM/dd";
 
-	private static final String SQL_SELECT_MEANING_STATES = "select code \"key\", code \"value\" from " + MEANING_STATE;
-
-	private static final String SQL_SELECT_MEANING_TYPES = "select code \"key\", code \"value\" from " + MEANING_TYPE;
-
-	private static final String SQL_SELECT_LEXEME_TYPES = "select code \"key\", code \"value\" from " + LEXEME_TYPE;
-
 	private static final String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
 	private static final String SQL_SELECT_SOURCE_BY_CODE_OR_NAME =
@@ -75,11 +69,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private DateFormat reviewDateFormat;
 
-	private List<String> meaningStateCodes;
+	private Map<String, String> meaningStateCodes;
 
-	private List<String> meaningTypeCodes;
+	private Map<String, String> processStateCodes;
 
-	private List<String> lexemeTypeCodes;
+	private Map<String, String> meaningTypeCodes;
+
+	private Map<String, String> lexemeTypeCodes;
 
 	private Map<String, String> classifierCorrectionMap;
 
@@ -158,9 +154,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS);
 		}
 
-		meaningStateCodes = getClassifierCodes(SQL_SELECT_MEANING_STATES);
-		meaningTypeCodes = getClassifierCodes(SQL_SELECT_MEANING_TYPES);
-		lexemeTypeCodes = getClassifierCodes(SQL_SELECT_LEXEME_TYPES);
+		meaningStateCodes = loadClassifierMappingsFor("staatus", "meaning_state");
+		processStateCodes = loadClassifierMappingsFor("staatus", "process_state");
+		meaningTypeCodes = loadClassifierMappingsFor("mõistetüüp");
+		lexemeTypeCodes = loadClassifierMappingsFor("keelenditüüp");
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -341,7 +338,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (!meaningStateCodes.contains(valueStr)) {
+			if (!(meaningStateCodes.containsKey(valueStr) || processStateCodes.containsKey(valueStr))) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
 				logBuf.append(concept);
@@ -356,7 +353,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningTypeExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (!meaningTypeCodes.contains(valueStr)) {
+			if (!meaningTypeCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
 				logBuf.append(concept);
@@ -540,7 +537,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 			values.add(valueStr);
-			if (!lexemeTypeCodes.contains(valueStr)) {
+			if (!lexemeTypeCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
 				logBuf.append(concept);
@@ -605,15 +602,21 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (meaningStateCodes.contains(valueStr)) {
-				meaningObj.setMeaningStateCode(valueStr);
+			if (meaningStateCodes.containsKey(valueStr)) {
+				meaningObj.setMeaningStateCode(meaningStateCodes.get(valueStr));
+			} else if (processStateCodes.containsKey(valueStr)) {
+				meaningObj.setProcessStateCode(processStateCodes.get(valueStr));
 			} else {
-				logger.warn("Incorrect meaning state reference: \"{}\"", valueStr);
+				logger.warn("Incorrect meaning state/process state reference: \"{}\"", valueStr);
 				//TODO should fix at source!!
 				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
 				if (StringUtils.isNotBlank(replacingClassifierCode)) {
 					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					meaningObj.setMeaningStateCode(replacingClassifierCode);
+					if (meaningStateCodes.containsKey(replacingClassifierCode)) {
+						meaningObj.setMeaningStateCode(meaningStateCodes.get(replacingClassifierCode));
+					} else {
+						meaningObj.setProcessStateCode(processStateCodes.get(replacingClassifierCode));
+					}
 				}
 			}
 		}
@@ -621,15 +624,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningTypeExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (meaningTypeCodes.contains(valueStr)) {
-				meaningObj.setMeaningTypeCode(valueStr);
+			if (meaningTypeCodes.containsKey(valueStr)) {
+				meaningObj.setMeaningTypeCode(meaningTypeCodes.get(valueStr));
 			} else {
 				logger.warn("Incorrect meaning type reference: \"{}\"", valueStr);
 				//TODO should fix at source!!
 				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
 				if (StringUtils.isNotBlank(replacingClassifierCode)) {
 					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					meaningObj.setMeaningTypeCode(replacingClassifierCode);
+					meaningObj.setMeaningTypeCode(meaningTypeCodes.get(replacingClassifierCode));
 				}
 			}
 		}
@@ -895,15 +898,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (lexemeTypeCodes.contains(valueStr)) {
-				valueParamMap.put("type_code", valueStr);
+			if (lexemeTypeCodes.containsKey(valueStr)) {
+				valueParamMap.put("type_code", lexemeTypeCodes.get(valueStr));
 			} else {
 				logger.warn("Incorrect lexeme type reference: \"{}\"", valueStr);
 				//TODO should fix at source!!
 				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
 				if (StringUtils.isNotBlank(replacingClassifierCode)) {
 					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					valueParamMap.put("type_code", replacingClassifierCode);
+					valueParamMap.put("type_code", lexemeTypeCodes.get(replacingClassifierCode));
 				}
 			}
 		}

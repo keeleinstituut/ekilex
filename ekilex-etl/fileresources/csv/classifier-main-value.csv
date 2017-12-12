@@ -104,8 +104,6 @@ lexeme_type	tugiverb	tugiverb	est	descrip
 lexeme_type	väljend	väljend	est	descrip
 lexeme_type	ühendsidesõna	ühendsidesõna (nii et)	est	descrip
 lexeme_type	rühmsidesõna	rühmsidesõna (ei .. ega)	est	descrip
-meaning_state	komisjoni kinnitatud	-	-	-
-meaning_state	komisjonis arutlusel	-	-	-
 meaning_state	terminiprobleem	-	-	-
 meaning_type	termin	-	-	-
 meaning_type	tõlkeprobleem	-	-	-
@@ -434,6 +432,8 @@ pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
 pos	pron + ID	indeclinable pronoun	eng	descrip
 process_state	avalik	-	-	-
+process_state	komisjoni kinnitatud	-	-	-
+process_state	komisjonis arutlusel	-	-	-
 process_state	konfidentsiaalne	-	-	-
 process_state	määramata	-	-	-
 process_state	töös	-	-	-

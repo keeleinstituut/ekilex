@@ -195,8 +195,8 @@ sl_tyyp	sõnaliik	adp	postposition, preposition	en	pos	adp
 sl_tyyp	sõnaliik	postp	postposition	en	pos	postp
 sl_tyyp	sõnaliik	prep	preposition	en	pos	prep
 sl_tyyp	sõnaliik	pron + ID	indeclinable pronoun	en	pos	pron + ID
-staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	meaning_state	komisjoni kinnitatud
-staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	meaning_state	komisjonis arutlusel
+staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	komisjoni kinnitatud
+staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	komisjonis arutlusel
 staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem
 tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	lex_rel_type	tvt:vrd
 tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	lex_rel_type	tvt:vt ka

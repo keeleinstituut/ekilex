@@ -10,7 +10,6 @@ import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
 import eki.ekilex.service.WordMatcherService;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -20,8 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -66,8 +62,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l join " + LEXEME_DATASET + " ld on ld.lexeme_id = l.id "
 			+ "where l.word_id = :wordId and ld.dataset_code = :dataset";
-
-	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
