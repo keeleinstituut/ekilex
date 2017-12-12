@@ -42,6 +42,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
+	protected static final String EKI_CLASSIFIER_STAATUS = "staatus";
+	protected static final String EKI_CLASSIFIER_MÕISTETÜÜP = "mõistetüüp";
+	protected static final String EKI_CLASSIFIER_KEELENDITÜÜP = "keelenditüüp";
+	protected static final String EKI_CLASSIFIER_LIIKTYYP = "liik_tyyp";
+	protected static final String EKI_CLASSIFIER_DKTYYP = "dk_tyyp";
+	protected static final String EKI_CLASSIFIER_SLTYYP = "sl_tyyp";
+
 	@Autowired
 	protected XmlReader xmlReader;
 
@@ -530,7 +537,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
 				.filter(line -> line.startsWith(ekiClassifierName))
 				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
-				.filter(cells -> lexClassifierName == null ? true : lexClassifierName.equals(cells[5]))
+				.filter(cells -> lexClassifierName == null ? true : StringUtils.equals(lexClassifierName, cells[5]))
 				.filter(cells -> "et".equals(cells[4]))
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
 	}

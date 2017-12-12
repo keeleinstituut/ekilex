@@ -77,9 +77,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	void initialise() throws Exception {
 
-		lexemeTypes = loadClassifierMappingsFor("liik_tyyp");
-		derivCodes = loadClassifierMappingsFor("dk_tyyp");
-		posCodes = loadClassifierMappingsFor("sl_tyyp");
+		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP);
+		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 	}
 
 	@Transactional

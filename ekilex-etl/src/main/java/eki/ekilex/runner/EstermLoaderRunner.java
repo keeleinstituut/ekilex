@@ -23,6 +23,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogType;
@@ -70,6 +71,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private DateFormat reviewDateFormat;
 
+	//TODO obsolete?
+	@Deprecated
 	private Map<String, String> meaningStateCodes;
 
 	private Map<String, String> processStateCodes;
@@ -77,8 +80,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> meaningTypeCodes;
 
 	private Map<String, String> lexemeTypeCodes;
-
-	private Map<String, String> classifierCorrectionMap;
 
 	private final String conceptGroupExp = "/mtf/conceptGrp";
 	private final String langGroupExp = "languageGrp";
@@ -130,12 +131,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
 		ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
 		reviewDateFormat = new SimpleDateFormat(REVIEW_TIMESTAMP_PATTERN);
-
-		classifierCorrectionMap = new HashMap<>();
-		classifierCorrectionMap.put("komisjonis arutusel", "komisjonis arutlusel");
-		classifierCorrectionMap.put("organisatsioon|asutus", "organisatsioon, asutus");
-		classifierCorrectionMap.put("lühend|sünonüüm", "lühend ja sünonüüm");
-		classifierCorrectionMap.put("Reisijatevedu ja –teenindamine", "Reisijatevedu ja -teenindamine");
 	}
 
 	@Transactional
@@ -155,10 +150,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS);
 		}
 
-		meaningStateCodes = loadClassifierMappingsFor("staatus", "meaning_state");
-		processStateCodes = loadClassifierMappingsFor("staatus", "process_state");
-		meaningTypeCodes = loadClassifierMappingsFor("mõistetüüp");
-		lexemeTypeCodes = loadClassifierMappingsFor("keelenditüüp");
+		meaningStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.MEANING_STATE.name());
+		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
+		meaningTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP);
+		lexemeTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP);
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -337,7 +332,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (!(meaningStateCodes.containsKey(valueStr) || processStateCodes.containsKey(valueStr))) {
+			if (!meaningStateCodes.containsKey(valueStr) && !processStateCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
 				logBuf.append(concept);
@@ -578,17 +573,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<String> getClassifierCodes(String queryStr) throws Exception {
-
-		Map<String, String> resultMap = basicDbService.queryListAsMap(queryStr, new HashMap<>());
-		List<String> codes = new ArrayList<>(resultMap.keySet());
-		return codes;
-	}
-
 	private void extractAndApplyMeaningProperties(Element conceptGroupNode, Meaning meaningObj) throws Exception {
 
 		Element valueNode;
-		String valueStr;
+		String valueStr, mappedValueStr;
 		long valueLong;
 		Timestamp valueTs;
 
@@ -602,21 +590,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
 			if (meaningStateCodes.containsKey(valueStr)) {
-				meaningObj.setMeaningStateCode(meaningStateCodes.get(valueStr));
+				mappedValueStr = meaningStateCodes.get(valueStr);
+				meaningObj.setMeaningStateCode(mappedValueStr);
 			} else if (processStateCodes.containsKey(valueStr)) {
-				meaningObj.setProcessStateCode(processStateCodes.get(valueStr));
+				mappedValueStr = processStateCodes.get(valueStr);
+				meaningObj.setProcessStateCode(mappedValueStr);
 			} else {
 				logger.warn("Incorrect meaning state/process state reference: \"{}\"", valueStr);
-				//TODO should fix at source!!
-				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
-				if (StringUtils.isNotBlank(replacingClassifierCode)) {
-					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					if (meaningStateCodes.containsKey(replacingClassifierCode)) {
-						meaningObj.setMeaningStateCode(meaningStateCodes.get(replacingClassifierCode));
-					} else {
-						meaningObj.setProcessStateCode(processStateCodes.get(replacingClassifierCode));
-					}
-				}
 			}
 		}
 
@@ -624,15 +604,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
 			if (meaningTypeCodes.containsKey(valueStr)) {
-				meaningObj.setMeaningTypeCode(meaningTypeCodes.get(valueStr));
+				mappedValueStr = meaningTypeCodes.get(valueStr);
+				meaningObj.setMeaningTypeCode(mappedValueStr);
 			} else {
 				logger.warn("Incorrect meaning type reference: \"{}\"", valueStr);
-				//TODO should fix at source!!
-				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
-				if (StringUtils.isNotBlank(replacingClassifierCode)) {
-					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					meaningObj.setMeaningTypeCode(meaningTypeCodes.get(replacingClassifierCode));
-				}
 			}
 		}
 
@@ -857,7 +832,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private void extractAndUpdateLexemeProperties(Long lexemeId, Element termGroupNode) throws Exception {
 
 		Element valueNode;
-		String valueStr;
+		String valueStr, mappedValueStr;
 		long valueLong;
 		Timestamp valueTs;
 
@@ -898,15 +873,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
 			if (lexemeTypeCodes.containsKey(valueStr)) {
-				valueParamMap.put("type_code", lexemeTypeCodes.get(valueStr));
+				mappedValueStr = lexemeTypeCodes.get(valueStr);
+				valueParamMap.put("type_code", mappedValueStr);
 			} else {
 				logger.warn("Incorrect lexeme type reference: \"{}\"", valueStr);
-				//TODO should fix at source!!
-				String replacingClassifierCode = classifierCorrectionMap.get(valueStr);
-				if (StringUtils.isNotBlank(replacingClassifierCode)) {
-					logger.debug("Assuming \"{}\" is actually \"{}\"", valueStr, replacingClassifierCode);
-					valueParamMap.put("type_code", lexemeTypeCodes.get(replacingClassifierCode));
-				}
 			}
 		}
 
@@ -1006,7 +976,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	//TODO ref link?
 	private void saveDomains(List<Element> domainNodes, Long meaningId, String domainOrigin) throws Exception {
 
 		if (domainNodes == null) {
