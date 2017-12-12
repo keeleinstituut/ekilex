@@ -47,7 +47,7 @@ public class SourceDbService implements SystemConstant {
 						s.CREATED_BY,
 						s.MODIFIED_ON,
 						s.MODIFIED_BY,
-						s.ENTRY_CLASS_CODE,
+						s.PROCESS_STATE_CODE,
 						s.TYPE,
 						sh.ID.as("source_heading_id"),
 						sh.TYPE.as("source_heading_type"),
