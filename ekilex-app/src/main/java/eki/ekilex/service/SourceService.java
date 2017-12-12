@@ -6,7 +6,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -19,10 +24,30 @@ import eki.ekilex.service.db.SourceDbService;
 @Component
 public class SourceService {
 
+	private static final Logger logger = LoggerFactory.getLogger(SourceService.class);
+
 	@Autowired
 	private SourceDbService sourceDbService;
 
-	public List<Source> findSources(String searchFilter) {
+	@Transactional
+	public Source getSource(Long sourceId) {
+
+		List<SourceHeadingPropertyTuple> sourceHeadingPropertyTuples = sourceDbService.getSource(sourceId).into(SourceHeadingPropertyTuple.class);
+		if (CollectionUtils.isEmpty(sourceHeadingPropertyTuples)) {
+			logger.warn("No source found for id {}", sourceId);
+			return null;
+		}
+		List<Source> sources = convert(sourceHeadingPropertyTuples);
+		if (sources.size() > 1) {
+			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
+		}
+		Source source = sources.get(0);
+
+		return source;
+	}
+
+	@Transactional
+	public List<Source> findSourcesByNameOrCode(String searchFilter) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();

@@ -116,6 +116,7 @@ public class Indexes {
     public static final Index FORM_RELATION_PKEY = Indexes0.FORM_RELATION_PKEY;
     public static final Index FREEFORM_PARENT_ID_IDX = Indexes0.FREEFORM_PARENT_ID_IDX;
     public static final Index FREEFORM_PKEY = Indexes0.FREEFORM_PKEY;
+    public static final Index FREEFORM_TYPE_IDX = Indexes0.FREEFORM_TYPE_IDX;
     public static final Index FREEFORM_VALUE_TEXT_IDX = Indexes0.FREEFORM_VALUE_TEXT_IDX;
     public static final Index FREEFORM_REF_LINK_FREEFORM_ID_IDX = Indexes0.FREEFORM_REF_LINK_FREEFORM_ID_IDX;
     public static final Index FREEFORM_REF_LINK_PKEY = Indexes0.FREEFORM_REF_LINK_PKEY;
@@ -219,6 +220,7 @@ public class Indexes {
         public static Index FORM_RELATION_PKEY = createIndex("form_relation_pkey", FormRelation.FORM_RELATION, new OrderField[] { FormRelation.FORM_RELATION.ID }, true);
         public static Index FREEFORM_PARENT_ID_IDX = createIndex("freeform_parent_id_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.PARENT_ID }, false);
         public static Index FREEFORM_PKEY = createIndex("freeform_pkey", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.ID }, true);
+        public static Index FREEFORM_TYPE_IDX = createIndex("freeform_type_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.TYPE }, false);
         public static Index FREEFORM_VALUE_TEXT_IDX = createIndex("freeform_value_text_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.VALUE_TEXT }, false);
         public static Index FREEFORM_REF_LINK_FREEFORM_ID_IDX = createIndex("freeform_ref_link_freeform_id_idx", FreeformRefLink.FREEFORM_REF_LINK, new OrderField[] { FreeformRefLink.FREEFORM_REF_LINK.FREEFORM_ID }, false);
         public static Index FREEFORM_REF_LINK_PKEY = createIndex("freeform_ref_link_pkey", FreeformRefLink.FREEFORM_REF_LINK, new OrderField[] { FreeformRefLink.FREEFORM_REF_LINK.ID }, true);

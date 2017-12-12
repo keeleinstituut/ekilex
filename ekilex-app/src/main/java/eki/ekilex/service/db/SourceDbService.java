@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
+import org.jooq.Record15;
 import org.jooq.Record17;
 import org.jooq.Result;
 import org.jooq.Table;
@@ -29,6 +30,39 @@ public class SourceDbService implements SystemConstant {
 	@Autowired
 	public SourceDbService(DSLContext context) {
 		create = context;
+	}
+
+	public Result<Record15<Long,String,Timestamp,String,Timestamp,String,String,String,Long,String,String,Long,String,String,Timestamp>> getSource(Long sourceId) {
+
+		Source s = SOURCE.as("s");
+		SourceFreeform sff = SOURCE_FREEFORM.as("sff");
+		Freeform sh = FREEFORM.as("sh");
+		Freeform sp = FREEFORM.as("sp");
+
+		return create
+				.select(
+						s.ID.as("source_id"),
+						s.CONCEPT,
+						s.CREATED_ON,
+						s.CREATED_BY,
+						s.MODIFIED_ON,
+						s.MODIFIED_BY,
+						s.ENTRY_CLASS_CODE,
+						s.TYPE,
+						sh.ID.as("source_heading_id"),
+						sh.TYPE.as("source_heading_type"),
+						sh.VALUE_TEXT.as("source_heading_value"),
+						sp.ID.as("source_property_id"),
+						sp.TYPE.as("source_property_type"),
+						sp.VALUE_TEXT.as("source_property_value_text"),
+						sp.VALUE_DATE.as("source_property_value_date")
+						)
+				.from(
+						s.innerJoin(sff).on(s.ID.eq(sff.SOURCE_ID))
+						.innerJoin(sh).on(sff.FREEFORM_ID.eq(sh.ID))
+						.leftOuterJoin(sp).on(sp.PARENT_ID.eq(sh.ID)))
+				.where(s.ID.equal(sourceId))
+				.fetch();
 	}
 
 	public Result<Record17<Long, String, Timestamp, String, Timestamp, String, String, String, Long, String, String, Boolean, Long, String, String, Timestamp, Boolean>> findSources(

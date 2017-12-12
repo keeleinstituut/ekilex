@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogType;
+import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
@@ -85,7 +86,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private final String termGroupExp = "termGrp";
 	private final String termExp = "term";
 	private final String conceptExp = "concept";
-	private final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref[contains(@Tlink, 'Valdkond:')]";//should collect source too?
+	private final String domainExp = "descripGrp/descrip[@type='Valdkonnaviide']/xref[contains(@Tlink, 'Valdkond:')]";
 	private final String subdomainExp = "descripGrp/descrip[@type='Alamvaldkond']";
 	private final String sourceExp = "descripGrp/descrip[@type='Allikaviide']";
 	private final String usageExp = "descripGrp/descrip[@type='Kontekst']";
@@ -196,7 +197,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			meaningId = createMeaning(meaningObj, dataset);
 			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode);
 
-			//TODO source ref?
 			// domains
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
 			saveDomains(domainNodes, meaningId, originLenoch);
@@ -246,7 +246,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 						valueStr = definitionNode.getTextTrim();
 						Long definitionId = createDefinition(meaningId, valueStr, lang, dataset);
 						if (definitionNode.hasMixedContent()) {
-							valueStr = handleRefLinks(definitionNode, RefLinkOwner.DEFINITION, definitionId);
+							valueStr = handleRefLinks(definitionNode, ReferenceOwner.DEFINITION, definitionId);
 							updateDefinitionValue(definitionId, valueStr);
 						}
 					}
@@ -259,7 +259,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 							valueStr = usageNode.getTextTrim();
 							Long freeformId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
 							if (usageNode.hasMixedContent()) {
-								valueStr = handleRefLinks(usageNode, RefLinkOwner.FREEFORM, freeformId);
+								valueStr = handleRefLinks(usageNode, ReferenceOwner.FREEFORM, freeformId);
 								updateFreeformText(freeformId, valueStr);
 							}
 						}
@@ -267,11 +267,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					valueNodes = termGroupNode.selectNodes(sourceExp);
 					for (Element sourceNode : valueNodes) {
-						//FIXME filter only sources!
 						valueStr = sourceNode.getTextTrim();
 						Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, valueStr, null);
 						if (sourceNode.hasMixedContent()) {
-							valueStr = handleRefLinks(sourceNode, RefLinkOwner.FREEFORM, freeformId);
+							valueStr = handleRefLinks(sourceNode, ReferenceOwner.FREEFORM, freeformId);
 							updateFreeformText(freeformId, valueStr);
 						}
 					}
@@ -697,7 +696,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = noteValueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 			if (noteValueNode.hasMixedContent()) {
-				valueStr = handleRefLinks(noteValueNode, RefLinkOwner.FREEFORM, freeformId);
+				valueStr = handleRefLinks(noteValueNode, ReferenceOwner.FREEFORM, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -707,7 +706,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleRefLinks(valueNode, RefLinkOwner.FREEFORM, freeformId);
+				valueStr = handleRefLinks(valueNode, ReferenceOwner.FREEFORM, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -841,14 +840,14 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			String definition = definitionNode.getTextTrim();
 			Long definitionId = createDefinition(meaningId, definition, lang, dataset);
 			if (definitionNode.hasMixedContent()) {
-				definition = handleRefLinks(definitionNode, RefLinkOwner.DEFINITION, definitionId);
+				definition = handleRefLinks(definitionNode, ReferenceOwner.DEFINITION, definitionId);
 				updateDefinitionValue(definitionId, definition);
 			}
 			for (Element definitionNoteNode : definitionNoteNodes) {
 				String definitionNote = definitionNoteNode.getTextTrim();
 				Long freeformId = createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
 				if (definitionNoteNode.hasMixedContent()) {
-					definitionNote = handleRefLinks(definitionNoteNode, RefLinkOwner.FREEFORM, freeformId);
+					definitionNote = handleRefLinks(definitionNoteNode, ReferenceOwner.FREEFORM, freeformId);
 					updateFreeformText(freeformId, definitionNote);
 				}
 			}
@@ -1001,7 +1000,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleRefLinks(valueNode, RefLinkOwner.FREEFORM, freeformId);
+				valueStr = handleRefLinks(valueNode, ReferenceOwner.FREEFORM, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -1040,7 +1039,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private String handleRefLinks(Element mixedContentNode, RefLinkOwner owner, Long ownerId) throws Exception {
+	private String handleRefLinks(Element mixedContentNode, ReferenceOwner owner, Long ownerId) throws Exception {
 
 		Iterator<Node> contentNodeIter = mixedContentNode.nodeIterator();
 		StringBuffer contentBuf = new StringBuffer();
@@ -1049,9 +1048,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		String valueStr;
 
 		String refLinkKey = null;
-		if (RefLinkOwner.FREEFORM.equals(owner)) {
+		if (ReferenceOwner.FREEFORM.equals(owner)) {
 			refLinkKey = ContentKey.FREEFORM_REF_LINK;
-		} else if (RefLinkOwner.DEFINITION.equals(owner)) {
+		} else if (ReferenceOwner.DEFINITION.equals(owner)) {
 			refLinkKey = ContentKey.DEFINITION_REF_LINK;
 		}
 
@@ -1073,9 +1072,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 							contentBuf.append(valueStr);
 						} else {
 							Long refLinkId = null;
-							if (RefLinkOwner.FREEFORM.equals(owner)) {
+							if (ReferenceOwner.FREEFORM.equals(owner)) {
 								refLinkId = createFreeformRefLink(ownerId, ReferenceType.SOURCE, sourceId);
-							} else if (RefLinkOwner.DEFINITION.equals(owner)) {
+							} else if (ReferenceOwner.DEFINITION.equals(owner)) {
 								refLinkId = createDefinitionRefLink(ownerId, ReferenceType.SOURCE, sourceId);
 							}
 							//simulating markdown link syntax
@@ -1120,9 +1119,4 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		return sourceId;
 	}
 
-	private enum RefLinkOwner {
-		FREEFORM,
-		DEFINITION
-		//MEANING_DOMAIN?
-	}
 }

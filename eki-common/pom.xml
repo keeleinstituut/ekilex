@@ -157,6 +157,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-autoconfigure</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jooq</artifactId>
+			<scope>compile</scope>
+		</dependency>
 		<!-- Jackson JSON -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
