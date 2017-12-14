@@ -110,7 +110,7 @@ public class QueryTest {
 
 		final String sqlScriptFilePath1 = "./fileresources/sql/test_query_datasets_common_words.sql";
 		final String sqlScriptFilePath2 = "./fileresources/sql/test_query_datasets_incommon_words.sql";
-		final String dataset1 = "eos";
+		final String dataset1 = "qq2";
 		final String dataset2 = "ss_";
 
 		Map<String, String> paramMap = new HashMap<>();
