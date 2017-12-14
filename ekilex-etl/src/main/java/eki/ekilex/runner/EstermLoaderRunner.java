@@ -131,6 +131,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
 		ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
 		reviewDateFormat = new SimpleDateFormat(REVIEW_TIMESTAMP_PATTERN);
+
+		meaningStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.MEANING_STATE.name());
+		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
+		meaningTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP);
+		lexemeTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP);
 	}
 
 	@Transactional
@@ -149,11 +154,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS);
 		}
-
-		meaningStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.MEANING_STATE.name());
-		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
-		meaningTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP);
-		lexemeTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP);
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
