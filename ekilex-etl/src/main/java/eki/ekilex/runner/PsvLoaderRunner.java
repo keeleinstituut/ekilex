@@ -3,6 +3,7 @@ package eki.ekilex.runner;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Rection;
 import eki.ekilex.data.transform.Usage;
@@ -620,7 +621,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String meaningExternalIdExp = "x:tpid";
 		final String learnerCommentExp = "x:qkom";
 		final String imageNameExp = "x:plp/x:plg/x:plf";
-		final String posAsTyypAttr = "as";
+		final String asTyypAttr = "as";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
@@ -632,6 +633,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			saveSymbol(meaningNumberGroupNode, context, reportingId);
 			WordData abbreviation = processAbbreviation(meaningNumberGroupNode, context);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
+			String processStateCode =  processStateCodes.get(meaningNumberGroupNode.attributeValue(asTyypAttr));
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
@@ -645,7 +647,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			for (Element posCodeNode : posCodeNodes) {
 				PosData posData = new PosData();
 				posData.code = posCodeNode.getTextTrim();
-				posData.processStateCode = posCodeNode.attributeValue(posAsTyypAttr);
+				posData.processStateCode = posCodeNode.attributeValue(asTyypAttr);
 				meaningPosCodes.add(posData);
 			}
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
@@ -659,7 +661,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
 				List<Usage> usages = extractUsages(usageGroupNodes);
 
-				Long meaningId = createMeaning(dataset);
+				Meaning meaning = new Meaning();
+				meaning.setProcessStateCode(processStateCode);
+				Long meaningId = createMeaning(meaning, dataset);
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
 				}
