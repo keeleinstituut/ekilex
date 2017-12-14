@@ -88,7 +88,7 @@
           <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
           <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
           <ul>
-            <li th:each="definition : ${lexeme.definitions}" th:text="${definition.value}"></li>
+            <li th:each="definition : ${lexeme.definitions}" th:utext="${markdown.toHtml(definition.value)}"></li>
           </ul>
           <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
             <table th:each="rection,rectionIter : ${lexeme.rections}">
@@ -101,13 +101,13 @@
                 <td>
                   <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
                     <tr th:each="usage : ${usageMeaning.usages}">
-                      <td th:text="${usage.value}"></td>
+                      <td th:utext="${markdown.toHtml(usage.value)}"></td>
                     </tr>
                     <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
                       <td th:text="${usageTranslation.value}"></td>
                     </tr>
                     <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                      <td th:text="${usageDefinition.value}"></td>
+                      <td th:utext="${markdown.toHtml(usageDefinition.value)}"></td>
                     </tr>
                     <tr th:unless="${usageMeaningIter.last}">
                       <td>

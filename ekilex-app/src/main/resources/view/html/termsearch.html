@@ -36,11 +36,11 @@
                     <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
                     <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
                     <div class="custom-controls-stacked mt-2">
-                    <label class="custom-control custom-checkbox" th:each="dict : ${datasets}">
-                      <input type="checkbox" class="custom-control-input" th:value="${dict.key}" th:name="dicts" th:checked="${#lists.contains(selectedDatasets, dict.key)}">
-                      <span class="custom-control-indicator"></span>
-                      <span class="custom-control-description" th:text="${dict.value}">answer</span>
-                    </label>
+                      <label class="custom-control custom-checkbox" th:each="dict : ${datasets}">
+                        <input type="checkbox" class="custom-control-input" th:value="${dict.key}" th:name="dicts" th:checked="${#lists.contains(selectedDatasets, dict.key)}">
+                        <span class="custom-control-indicator"></span>
+                        <span class="custom-control-description" th:text="${dict.value}">answer</span>
+                      </label>
                     </div>
                   </div>
                 </div>
