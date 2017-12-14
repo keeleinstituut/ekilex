@@ -68,7 +68,7 @@ public class CorporaService {
 		if (words.length > 1) {
 			List<String> items = new ArrayList<>();
 			for (String word : words) {
-				items.add("[word=\"" + word + "\"]");
+				items.add("[word=\"" + word + "\" %c]");
 			}
 			return String.join(" ",items);
 		} else {
