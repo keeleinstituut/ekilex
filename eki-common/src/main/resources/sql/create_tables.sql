@@ -570,6 +570,7 @@ create table lexeme_pos
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   pos_code varchar(100) references pos(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(lexeme_id, pos_code)
 );
 alter sequence lexeme_pos_id_seq restart with 10000;

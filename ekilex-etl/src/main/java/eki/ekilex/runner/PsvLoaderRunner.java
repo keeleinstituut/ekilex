@@ -68,6 +68,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> posCodes;
 	private Map<String, String> derivCodes;
 	private Map<String, String> lexemeTypes;
+	private Map<String, String> processStateCodes;
 	private ReportComposer reportComposer;
 	private boolean reportingEnabled;
 
@@ -80,6 +81,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
 		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP);
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
+		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 	}
 
 	@Transactional
@@ -618,6 +620,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String meaningExternalIdExp = "x:tpid";
 		final String learnerCommentExp = "x:qkom";
 		final String imageNameExp = "x:plp/x:plg/x:plf";
+		final String posAsTyypAttr = "as";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
@@ -638,9 +641,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode, reportingId);
 			List<Long> newLexemes = new ArrayList<>();
 			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
-			List<String> meaningPosCodes = new ArrayList<>();
+			List<PosData> meaningPosCodes = new ArrayList<>();
 			for (Element posCodeNode : posCodeNodes) {
-				meaningPosCodes.add(posCodeNode.getTextTrim());
+				PosData posData = new PosData();
+				posData.code = posCodeNode.getTextTrim();
+				posData.processStateCode = posCodeNode.attributeValue(posAsTyypAttr);
+				meaningPosCodes.add(posData);
 			}
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
@@ -1055,9 +1061,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String reportingId) throws Exception {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<PosData> meaningPosCodes, String reportingId) throws Exception {
 
-		Set<String> lexemePosCodes = new HashSet<>();
+		Set<PosData> lexemePosCodes = new HashSet<>();
 		if (meaningPosCodes.isEmpty()) {
 			lexemePosCodes.addAll(newWordData.posCodes);
 		} else {
@@ -1066,11 +1072,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile(reportingId, "Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", "");
 			}
 		}
-		for (String posCode : lexemePosCodes) {
-			if (posCodes.containsKey(posCode)) {
+		for (PosData posCode : lexemePosCodes) {
+			if (posCodes.containsKey(posCode.code)) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("lexeme_id", lexemeId);
-				params.put("pos_code", posCodes.get(posCode));
+				params.put("pos_code", posCodes.get(posCode.code));
+				params.put("process_state_code", processStateCodes.get(posCode.processStateCode));
 				basicDbService.create(LEXEME_POS, params);
 			}
 		}
@@ -1213,6 +1220,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordFrequencyGroupExp = "x:sag";
 		final String wordComparativeExp = "x:mfp/x:kmpg/x:kmp";
 		final String wordSuperlativeExp = "x:mfp/x:kmpg/x:suprl";
+		final String posAsTyypAttr = "as";
 
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
@@ -1232,7 +1240,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			List<Element> posCodeNodes = wordGroupNode.selectNodes(wordPosCodeExp);
 			for (Element posCodeNode : posCodeNodes) {
-				wordData.posCodes.add(posCodeNode.getTextTrim());
+				PosData posData = new PosData();
+				posData.code = posCodeNode.getTextTrim();
+				posData.processStateCode = posCodeNode.attributeValue(posAsTyypAttr);
+				wordData.posCodes.add(posData);
 			}
 
 			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
@@ -1487,7 +1498,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class WordData {
 		Long id;
-		List<String> posCodes = new ArrayList<>();
+		List<PosData> posCodes = new ArrayList<>();
 		String derivCode;
 		String grammar;
 		String value;
@@ -1497,6 +1508,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String lexemeType;
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
+	}
+
+	private class PosData {
+		String code;
+		String processStateCode;
 	}
 
 	private class SynonymData {
