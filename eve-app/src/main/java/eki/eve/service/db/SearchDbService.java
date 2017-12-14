@@ -40,6 +40,7 @@ import static eki.eve.data.db.Tables.FREEFORM;
 import static eki.eve.data.db.Tables.LEXEME_DATASET;
 import static eki.eve.data.db.Tables.LEXEME_FREEFORM;
 import static eki.eve.data.db.Tables.MEANING_FREEFORM;
+import static java.util.Arrays.asList;
 
 @Service
 public class SearchDbService implements InitializingBean, SystemConstant {
@@ -48,14 +49,16 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 
 	private DSLContext create;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
+	private List<String> allowedDatasets;
 
+	@Override
+	public void afterPropertiesSet() {
 	}
 
 	@Autowired
 	public SearchDbService(DSLContext context) {
 		create = context;
+		allowedDatasets = asList("qq2", "psv");
 	}
 
 	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters) {
@@ -68,7 +71,11 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						FORM.VALUE.likeIgnoreCase(theFilter)
 								.and(FORM.IS_WORD.isTrue())
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID)))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.andExists(DSL.select(LEXEME.WORD_ID).from(LEXEME, LEXEME_DATASET)
+										.where((LEXEME.WORD_ID.eq(WORD.ID))
+												.and(LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
+												.and(LEXEME_DATASET.DATASET_CODE.in(allowedDatasets)))))
 				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
 				.limit(MAX_RESULTS_LIMIT)
 				.fetch();
@@ -114,7 +121,10 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(FORM.IS_WORD.eq(Boolean.TRUE))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(meaningId)))
+								.and(LEXEME.MEANING_ID.eq(meaningId))
+								.andExists(DSL.select(LEXEME_DATASET.LEXEME_ID).from(LEXEME_DATASET)
+										.where((LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
+												.and(LEXEME_DATASET.DATASET_CODE.in(allowedDatasets)))))
 				.fetch();
 	}
 
@@ -139,7 +149,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(MEANING_DATASET.DATASET_CODE.in(allowedDatasets)))
 				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
@@ -200,75 +211,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 
 	public Map<String, String> getDatasetNameMap() {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
-	}
-
-	public Result<Record4<Long, String, Integer, String>> findWordsInDatasets(String wordWithMetaCharacters, List<String> datasets) {
-
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
-		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG)
-				.from(FORM, PARADIGM, WORD)
-				.where(
-						FORM.VALUE.likeIgnoreCase(theFilter)
-								.and(FORM.IS_WORD.isTrue())
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.andExists(DSL.select(LEXEME.WORD_ID).from(LEXEME, LEXEME_DATASET)
-										.where((LEXEME.WORD_ID.eq(WORD.ID))
-												.and(LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
-												.and(LEXEME_DATASET.DATASET_CODE.in(datasets)))
-								)
-				)
-				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
-				.limit(MAX_RESULTS_LIMIT)
-				.fetch();
-	}
-
-	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
-
-		return create
-				.select(
-						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.TYPE_CODE.as("lexeme_type_code"),
-						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-						MEANING.TYPE_CODE.as("meaning_type_code"),
-						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
-						MEANING.STATE_CODE.as("meaning_state_code"),
-						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
-						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
-				.from(FORM, PARADIGM, WORD, LEXEME,
-						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
-				)
-				.where(
-						FORM.ID.eq(formId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(MEANING_DATASET.DATASET_CODE.in(selectedDatasets)))
-				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
-				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-				.fetch();
-	}
-
-	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(Long meaningId, List<String> datasets) {
-
-		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.LANG, FORM.DISPLAY_FORM, FORM.VOCAL_FORM, FORM.MORPH_CODE, MORPH_LABEL.VALUE.as("morph_value"))
-				.from(LEXEME, WORD, PARADIGM,
-						FORM.leftOuterJoin(MORPH_LABEL).on(FORM.MORPH_CODE.eq(MORPH_LABEL.CODE).and(MORPH_LABEL.LANG.eq("est").and(MORPH_LABEL.TYPE.eq("descrip")))))
-				.where(
-						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-								.and(FORM.IS_WORD.eq(Boolean.TRUE))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.andExists(DSL.select(LEXEME_DATASET.LEXEME_ID).from(LEXEME_DATASET)
-										.where((LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
-												.and(LEXEME_DATASET.DATASET_CODE.in(datasets))))
-				)
-				.fetch();
 	}
 
 	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId) {
