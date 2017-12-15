@@ -47,7 +47,7 @@ public class TermSearchController {
 		}
 		model.addAttribute("datasets", datasets.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
-		session.setAttribute("datasets",selectedDatasets);
+		session.setAttribute("datasets", selectedDatasets);
 		List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
 		model.addAttribute("wordsFoundBySearch", words);
 		model.addAttribute("searchFilter", searchFilter);
@@ -59,11 +59,16 @@ public class TermSearchController {
 	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
 
 		logger.debug("Retrieving details by form : {}", formId);
+
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
+		if (selectedDatasets == null) {
+			Map<String, String> datasets = search.getDatasets();
+			selectedDatasets = new ArrayList<>(datasets.keySet());
+		}
 		WordDetails details = search.findWordDetailsInDatasets(formId, selectedDatasets);
 		model.addAttribute("detailsName", formId + "_details");
 		model.addAttribute("details", details);
+
 		return "termsearch :: details";
 	}
-
 }
