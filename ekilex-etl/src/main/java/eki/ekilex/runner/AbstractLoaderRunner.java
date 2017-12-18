@@ -224,7 +224,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return homonymNr;
 	}
 
-	protected Long createMeaning(Meaning meaning, String dataset) throws Exception {
+	protected Long createMeaning(Meaning meaning) throws Exception {
 
 		Map<String, Object> tableRowParamMap;
 
@@ -264,20 +264,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			meaningId = basicDbService.create(MEANING, tableRowParamMap);
 		}
 		meaning.setMeaningId(meaningId);
-		tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("dataset_code", dataset);
-		basicDbService.createWithoutId(MEANING_DATASET, tableRowParamMap);
 		return meaningId;
 	}
 
-	protected Long createMeaning(String dataset) throws Exception {
+	protected Long createMeaning() throws Exception {
 
 		Long meaningId = basicDbService.create(MEANING);
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("dataset_code", dataset);
-		basicDbService.createWithoutId(MEANING_DATASET, tableRowParamMap);
 		return meaningId;
 	}
 
@@ -332,6 +324,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
 		criteriaParamMap.put("meaning_id", meaningId);
+		criteriaParamMap.put("dataset_code", dataset);
 		Long lexemeId = basicDbService.createIfNotExists(LEXEME, criteriaParamMap);
 		lexeme.setLexemeId(lexemeId);
 		if (lexemeId != null) {
@@ -368,10 +361,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
 			}
-			criteriaParamMap.clear();
-			criteriaParamMap.put("lexeme_id", lexemeId);
-			criteriaParamMap.put("dataset_code", dataset);
-			basicDbService.createWithoutId(LEXEME_DATASET, criteriaParamMap);
 		}
 		return lexemeId;
 	}
@@ -488,7 +477,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("freeform_id", freeformId);
 		tableRowParamMap.put("ref_type", refType.name());
 		tableRowParamMap.put("ref_id", refId);
-
 		Long refLinkId = basicDbService.create(FREEFORM_REF_LINK, tableRowParamMap);
 		return refLinkId;
 	}
@@ -501,23 +489,16 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("type", type.name());
 		tableRowParamMap.put("event_by", eventBy);
 		tableRowParamMap.put("event_on", eventOn);
-
 		basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
 	}
 
-	protected void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType, String dataset) throws Exception {
+	protected void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) throws Exception {
 
 		Map<String, Object> relationParams = new HashMap<>();
 		relationParams.put("lexeme1_id", lexemeId1);
 		relationParams.put("lexeme2_id", lexemeId2);
 		relationParams.put("lex_rel_type_code", relationType);
-		Long relationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
-		if (relationId != null) {
-			relationParams.clear();
-			relationParams.put("lex_relation_id", relationId);
-			relationParams.put("dataset_code", dataset);
-			basicDbService.createWithoutId(LEX_RELATION_DATASET, relationParams);
-		}
+		basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
 	}
 
 	protected void createWordRelation(Long wordId1, Long wordId2, String relationType) throws Exception {

@@ -95,7 +95,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 			Integer conceptId = (Integer) term.get("concept_id");
 			if (!conceptMeanings.containsKey(conceptId)) {
-				Long meaningId = createMeaning(dataset);
+				Long meaningId = createMeaning();
 				conceptMeanings.put(conceptId, meaningId);
 				String domainCode = (String) term.get("domain_code");
 				if (isNotBlank(domainCode)) {

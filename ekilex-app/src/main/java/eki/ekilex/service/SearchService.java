@@ -1,19 +1,16 @@
 package eki.ekilex.service;
 
-import static java.util.Collections.emptyList;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import eki.ekilex.data.Definition;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Definition;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Rection;
@@ -50,9 +47,9 @@ public class SearchService {
 
 		lexemes.forEach(lexeme -> {
 
-			List<String> datasets = lexeme.getDatasets();
-			datasets = convertToNames(datasets, datasetNameMap);
-			lexeme.setDatasets(datasets);
+			String dataset = lexeme.getDataset();
+			dataset = datasetNameMap.get(dataset);
+			lexeme.setDataset(dataset);
 
 			Long lexemeId = lexeme.getLexemeId();
 			Long meaningId = lexeme.getMeaningId();
@@ -186,14 +183,6 @@ public class SearchService {
 			}
 		}
 		return rections;
-	}
-
-	private List<String> convertToNames(List<String> datasets, Map<String, String> datasetMap) {
-
-		if (datasets == null) {
-			return emptyList();
-		}
-		return datasets.stream().map(datasetMap::get).collect(Collectors.toList());
 	}
 
 }

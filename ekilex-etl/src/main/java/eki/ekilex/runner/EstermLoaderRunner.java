@@ -189,7 +189,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			// meaning
 			meaningObj = new Meaning();
 			extractAndApplyMeaningProperties(conceptGroupNode, meaningObj);
-			meaningId = createMeaning(meaningObj, dataset);
+			meaningId = createMeaning(meaningObj);
 			extractAndSaveMeaningFreeforms(meaningId, conceptGroupNode);
 
 			// domains

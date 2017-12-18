@@ -49,8 +49,6 @@ public interface TableName {
 	public static final String LEXEME_DERIV = "lexeme_deriv";
 
 	// dataset binds
-	public static final String MEANING_DATASET = "meaning_dataset";
-	public static final String LEXEME_DATASET = "lexeme_dataset";
 	public static final String DEFINITION_DATASET = "definition_dataset";
-	public static final String LEX_RELATION_DATASET = "lex_relation_dataset";
+	
 }

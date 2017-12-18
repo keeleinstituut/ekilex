@@ -6,10 +6,8 @@ import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_DATASET;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DATASET;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
@@ -59,6 +57,10 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 		create = context;
 	}
 
+	public Map<String, String> getDatasetNameMap() {
+		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
+	}
+
 	public Result<Record7<Long, String, String[], String, String, String, String>> findConnectedForms(Long formId) {
 
 		Form f1 = FORM.as("f1");
@@ -87,22 +89,23 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeanings(Long formId) {
+	public Result<Record14<String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String,String[]>> findFormMeanings(Long formId) {
 
 		return create
 				.select(
-						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
+						FORM.VALUE.as("word"),
+						WORD.ID.as("word_id"),
+						LEXEME.ID.as("lexeme_id"),
+						LEXEME.MEANING_ID,
+						LEXEME.DATASET_CODE.as("dataset"),
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
 						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						MEANING.STATE_CODE.as("meaning_state_code"),
-						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
-				.from(FORM, PARADIGM, WORD, LEXEME,
-						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
-						)
+				.from(FORM, PARADIGM, WORD, LEXEME, MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)))
 				.where(
 						FORM.ID.eq(formId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
@@ -165,10 +168,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
-	}
-
 	public Result<Record4<Long, String, Integer, String>> findWordsInDatasets(String wordWithMetaCharacters, List<String> datasets) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
@@ -180,10 +179,9 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						.and(FORM.IS_WORD.isTrue())
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.andExists(DSL.select(LEXEME.WORD_ID).from(LEXEME, LEXEME_DATASET)
+						.andExists(DSL.select(LEXEME.ID).from(LEXEME)
 								.where((LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
-								.and(LEXEME_DATASET.DATASET_CODE.in(datasets)))
+								.and(LEXEME.DATASET_CODE.in(datasets)))
 						)
 				)
 				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
@@ -191,28 +189,29 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record13<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[]>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+	public Result<Record13<String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
 
 		return create
 				.select(
-						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
+						FORM.VALUE.as("word"),
+						WORD.ID.as("word_id"),
+						LEXEME.ID.as("lexeme_id"),
+						LEXEME.MEANING_ID,
+						LEXEME.DATASET_CODE.as("dataset"),
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
 						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
-						MEANING.STATE_CODE.as("meaning_state_code"),
-						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"))
-				.from(FORM, PARADIGM, WORD, LEXEME,
-						MEANING.leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
-				)
+						MEANING.STATE_CODE.as("meaning_state_code"))
+				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 				.where(
 						FORM.ID.eq(formId)
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(MEANING_DATASET.DATASET_CODE.in(selectedDatasets)))
+								.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
 				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
@@ -230,9 +229,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.andExists(DSL.select(LEXEME_DATASET.LEXEME_ID).from(LEXEME_DATASET)
-										.where((LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
-												.and(LEXEME_DATASET.DATASET_CODE.in(datasets))))
+								.and(LEXEME.DATASET_CODE.in(datasets))
 				)
 				.fetch();
 	}

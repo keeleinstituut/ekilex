@@ -1,11 +1,13 @@
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
+--TODO remove later
 drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
+--TODO remove later
 drop table if exists lexeme_dataset;
 drop table if exists lexeme;
 drop table if exists definition_freeform;
@@ -13,6 +15,7 @@ drop table if exists definition_dataset;
 drop table if exists definition;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
+--TODO remove later
 drop table if exists meaning_dataset;
 drop table if exists meaning;
 drop table if exists form_relation;
@@ -35,8 +38,6 @@ drop table if exists meaning_type;
 --drop table if exists meaning_state_label;
 drop table if exists meaning_state;
 drop table if exists process_state;
--- FIXME: 2017.12.12 remove entry_class after data import has been run in all environments
-drop table if exists entry_class;
 drop table if exists deriv_label;
 drop table if exists deriv;
 drop table if exists display_morph_label;
@@ -475,13 +476,6 @@ create table meaning
 );
 alter sequence meaning_id_seq restart with 10000;
 
-create table meaning_dataset
-(
-  meaning_id bigint references meaning(id) on delete CASCADE not null,
-  dataset_code varchar(10) references dataset(code) not null,
-  primary key (meaning_id, dataset_code)
-);
-
 create table meaning_domain
 (
   id bigserial primary key,
@@ -536,6 +530,7 @@ create table lexeme
   id bigserial primary key,
   word_id bigint references word(id) not null,
   meaning_id bigint references meaning(id) not null,
+  dataset_code varchar(10) references dataset(code) not null,
   created_on timestamp null,
   created_by varchar(100) null,
   modified_on timestamp null,
@@ -548,13 +543,6 @@ create table lexeme
   unique(word_id, meaning_id)
 );
 alter sequence lexeme_id_seq restart with 10000;
-
-create table lexeme_dataset
-(
-  lexeme_id bigint references lexeme(id) on delete CASCADE not null,
-  dataset_code varchar(10) references dataset(code) not null,
-  primary key (lexeme_id, dataset_code)
-);
 
 create table lexeme_register
 (
@@ -604,13 +592,6 @@ create table lex_relation
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;
-
-create table lex_relation_dataset
-(
-  lex_relation_id bigint references lex_relation(id) on delete cascade not null,
-  dataset_code varchar(10) references dataset(code) not null,
-  primary key (lex_relation_id, dataset_code)
-);
 
 create table freeform_ref_link
 (
