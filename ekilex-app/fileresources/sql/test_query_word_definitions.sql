@@ -7,7 +7,7 @@ select w.word_id,
        l.id lexeme_id,
        m.id meaning_id,
        d.value definition,
-       ld.dataset_code lexeme_dataset
+       l.dataset_code lexeme_dataset
 from (select w.id word_id,
              f.value word,
              f.components,
@@ -21,7 +21,6 @@ from (select w.id word_id,
   inner join morph wm on w.morph_code = wm.code
   inner join morph_label wml on wml.code = wm.code and wml.lang = :labelLang and wml.type = :labelType
   inner join lexeme l on l.word_id = w.word_id
-  inner join lexeme_dataset ld on ld.lexeme_id = l.id
   inner join meaning m on m.id = l.meaning_id
   left outer join definition d on d.meaning_id = m.id
 where w.word like :wordPrefix
