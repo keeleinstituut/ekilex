@@ -97,7 +97,7 @@
             <span th:unless="${wordIter.last}">|&nbsp;</span>
           </span>
           <span th:text="${lexeme.level1 + '.' + lexeme.level2 + '.' + lexeme.level3}" th:if="${lexeme.level1 > 0}"></span>
-          <span th:each="dataset : ${lexeme.datasets}" th:text="${dataset}" class="pr-2"></span>
+          <span th:text="${lexeme.dataset}" class="pr-2"></span>
           <ul>
             <th:block th:each="definition : ${lexeme.definitions}">
               <li>

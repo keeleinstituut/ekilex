@@ -61,8 +61,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
 			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
-	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l join " + LEXEME_DATASET + " ld on ld.lexeme_id = l.id "
-			+ "where l.word_id = :wordId and ld.dataset_code = :dataset";
+	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -251,7 +250,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundFormData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(compoundFormData.lexemeId, lexemeId, "pyh", dataset);
+				createLexemeRelation(compoundFormData.lexemeId, lexemeId, "pyh");
 			}
 		}
 		logger.debug("Compound form processing done.");
@@ -269,7 +268,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, singleFormData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(singleFormData.lexemeId, lexemeId, "yvr", dataset);
+				createLexemeRelation(singleFormData.lexemeId, lexemeId, "yvr");
 			}
 		}
 		logger.debug("Single form processing done.");
@@ -287,7 +286,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, vormelData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(vormelData.lexemeId, lexemeId, "vor", dataset);
+				createLexemeRelation(vormelData.lexemeId, lexemeId, "vor");
 			}
 		}
 		logger.debug("Vormel processing done.");
@@ -305,7 +304,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.lexemeType);
 			if (lexemeId != null) {
-				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt", dataset);
+				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt");
 			}
 		}
 		logger.debug("Compound references processing done.");
@@ -325,7 +324,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, jointRefData, context, dataset);
 			if (lexemeId != null) {
 				String relationType = "yvt:" + jointRefData.relationType;
-				createLexemeRelation(jointRefData.lexemeId, lexemeId, relationType, dataset);
+				createLexemeRelation(jointRefData.lexemeId, lexemeId, relationType);
 			}
 		}
 		logger.debug("Joint references processing done.");
@@ -345,7 +344,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, meaningRefData, context, dataset);
 			if (lexemeId != null) {
 				String relationType = "tvt:" + meaningRefData.relationType;
-				createLexemeRelation(meaningRefData.lexemeId, lexemeId, relationType, dataset);
+				createLexemeRelation(meaningRefData.lexemeId, lexemeId, relationType);
 			}
 		}
 		logger.debug("Meaning references processing done.");
@@ -361,7 +360,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(compData.lexemeId, lexemeId, "comp", dataset);
+				createLexemeRelation(compData.lexemeId, lexemeId, "comp");
 			}
 		}
 		logger.debug("Compound words processing done.");
@@ -407,7 +406,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		WordData newWord = createDefaultWordFrom(wordData.word);
 		context.importedWords.add(newWord);
-		Long meaningId = createMeaning(dataset);
+		Long meaningId = createMeaning();
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
 		lexeme.setWordId(newWord.id);
@@ -520,7 +519,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					params.put("wordId", wordId);
 					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					for (Map<String, Object> lexeme : lexemes) {
-						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), "head", dataset);
+						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), "head");
 					}
 				}
 			}
@@ -546,7 +545,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					Optional<Map<String, Object>> lexemeObject =
 							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == antonymData.lexemeLevel1).findFirst();
 					if (lexemeObject.isPresent()) {
-						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), "ant", dataset);
+						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), "ant");
 					} else {
 						logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 						writeToLogFile(antonymData.reportingId, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
@@ -663,7 +662,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				Meaning meaning = new Meaning();
 				meaning.setProcessStateCode(processStateCode);
-				Long meaningId = createMeaning(meaning, dataset);
+				Long meaningId = createMeaning(meaning);
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
 				}

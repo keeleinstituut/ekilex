@@ -302,7 +302,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						wordMatches.add(wordObj);
 
 						// meaning
-						meaningId = createMeaning(dataset);
+						meaningId = createMeaning();
 
 						// definitions
 						definitionNodes = wordMatchNode.selectNodes(definitionExp);

@@ -1,12 +1,23 @@
 package eki.eve.service.db;
 
-import eki.common.constant.FreeformType;
-import eki.eve.constant.SystemConstant;
-import eki.eve.data.db.tables.Form;
-import eki.eve.data.db.tables.Freeform;
-import eki.eve.data.db.tables.LexemeFreeform;
-import eki.eve.data.db.tables.MorphLabel;
-import eki.eve.data.db.tables.Paradigm;
+import static eki.eve.data.db.Tables.DATASET;
+import static eki.eve.data.db.Tables.DEFINITION;
+import static eki.eve.data.db.Tables.DOMAIN_LABEL;
+import static eki.eve.data.db.Tables.FORM;
+import static eki.eve.data.db.Tables.FREEFORM;
+import static eki.eve.data.db.Tables.LEXEME;
+import static eki.eve.data.db.Tables.LEXEME_FREEFORM;
+import static eki.eve.data.db.Tables.MEANING;
+import static eki.eve.data.db.Tables.MEANING_DOMAIN;
+import static eki.eve.data.db.Tables.MEANING_FREEFORM;
+import static eki.eve.data.db.Tables.MORPH_LABEL;
+import static eki.eve.data.db.Tables.PARADIGM;
+import static eki.eve.data.db.Tables.WORD;
+
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
+
 import org.jooq.DSLContext;
 import org.jooq.Record12;
 import org.jooq.Record14;
@@ -21,26 +32,13 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
-import java.util.List;
-import java.util.Map;
-
-import static eki.eve.data.db.Tables.DATASET;
-import static eki.eve.data.db.Tables.DEFINITION;
-import static eki.eve.data.db.Tables.DOMAIN_LABEL;
-import static eki.eve.data.db.Tables.FORM;
-import static eki.eve.data.db.Tables.LEXEME;
-import static eki.eve.data.db.Tables.MEANING;
-import static eki.eve.data.db.Tables.MEANING_DATASET;
-import static eki.eve.data.db.Tables.MEANING_DOMAIN;
-import static eki.eve.data.db.Tables.MORPH_LABEL;
-import static eki.eve.data.db.Tables.PARADIGM;
-import static eki.eve.data.db.Tables.WORD;
-import static eki.eve.data.db.Tables.FREEFORM;
-import static eki.eve.data.db.Tables.LEXEME_DATASET;
-import static eki.eve.data.db.Tables.LEXEME_FREEFORM;
-import static eki.eve.data.db.Tables.MEANING_FREEFORM;
-import static java.util.Arrays.asList;
+import eki.common.constant.FreeformType;
+import eki.eve.constant.SystemConstant;
+import eki.eve.data.db.tables.Form;
+import eki.eve.data.db.tables.Freeform;
+import eki.eve.data.db.tables.LexemeFreeform;
+import eki.eve.data.db.tables.MorphLabel;
+import eki.eve.data.db.tables.Paradigm;
 
 @Service
 public class SearchDbService implements InitializingBean, SystemConstant {
@@ -49,8 +47,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 
 	private DSLContext create;
 
-	private List<String> allowedDatasets;
-
 	@Override
 	public void afterPropertiesSet() {
 	}
@@ -58,10 +54,13 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 	@Autowired
 	public SearchDbService(DSLContext context) {
 		create = context;
-		allowedDatasets = asList("qq2", "psv");
 	}
 
-	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters) {
+	public Map<String, String> getDatasetNameMap() {
+		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
+	}
+
+	public Result<Record4<Long, String, Integer, String>> findWords(String wordWithMetaCharacters, List<String> datasets) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
 		return create
@@ -72,10 +71,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(FORM.IS_WORD.isTrue())
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.andExists(DSL.select(LEXEME.WORD_ID).from(LEXEME, LEXEME_DATASET)
-										.where((LEXEME.WORD_ID.eq(WORD.ID))
-												.and(LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
-												.and(LEXEME_DATASET.DATASET_CODE.in(allowedDatasets)))))
+								.andExists(DSL.select(LEXEME.ID).from(LEXEME)
+										.where(LEXEME.WORD_ID.eq(WORD.ID).and(LEXEME.DATASET_CODE.in(datasets)))))
 				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
 				.limit(MAX_RESULTS_LIMIT)
 				.fetch();
@@ -110,7 +107,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWords(Long meaningId) {
+	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWords(Long meaningId, List<String> datasets) {
 
 		return create
 				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.LANG, FORM.DISPLAY_FORM, FORM.VOCAL_FORM, FORM.MORPH_CODE, MORPH_LABEL.VALUE.as("morph_value"))
@@ -122,27 +119,27 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.andExists(DSL.select(LEXEME_DATASET.LEXEME_ID).from(LEXEME_DATASET)
-										.where((LEXEME_DATASET.LEXEME_ID.eq(LEXEME.ID))
-												.and(LEXEME_DATASET.DATASET_CODE.in(allowedDatasets)))))
+								.and(LEXEME.DATASET_CODE.in(datasets)))
 				.fetch();
 	}
 
-	public Result<Record14<String, Long, Long, Long, Integer, Integer, Integer, String, String, String, String, String, String[], String[]>> findFormMeanings(Long formId) {
+	public Result<Record14<String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String,String[]>> findFormMeanings(Long formId, List<String> datasets) {
 
 		return create
 				.select(
-						FORM.VALUE.as("word"), WORD.ID.as("word_id"), LEXEME.ID.as("lexeme_id"), LEXEME.MEANING_ID,
+						FORM.VALUE.as("word"),
+						WORD.ID.as("word_id"),
+						LEXEME.ID.as("lexeme_id"),
+						LEXEME.MEANING_ID,
+						LEXEME.DATASET_CODE.as("dataset"),
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
 						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						MEANING.STATE_CODE.as("meaning_state_code"),
-						DSL.arrayAggDistinct(MEANING_DATASET.DATASET_CODE).as("datasets"),
 						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
-				.from(FORM, PARADIGM, WORD, LEXEME,
-						MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)).leftOuterJoin(MEANING_DATASET).on(MEANING_DATASET.MEANING_ID.eq(MEANING.ID))
+				.from(FORM, PARADIGM, WORD, LEXEME, MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID))
 				)
 				.where(
 						FORM.ID.eq(formId)
@@ -150,7 +147,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(MEANING_DATASET.DATASET_CODE.in(allowedDatasets)))
+								.and(LEXEME.DATASET_CODE.in(datasets)))
 				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
@@ -207,10 +204,6 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.where(lff.LEXEME_ID.eq(lexemeId))
 				.orderBy(r.ID, um.ID, u.ID, ut.ID, ud.ID)
 				.fetch();
-	}
-
-	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
 	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId) {

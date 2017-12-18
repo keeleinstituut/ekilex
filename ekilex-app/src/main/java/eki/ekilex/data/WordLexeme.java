@@ -11,21 +11,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Classifier> domains;
-
-	private List<Form> words;
-
-	private List<Rection> rections;
-
-	@Column(name = "datasets")
-	private List<String> datasets;
-
-	private List<Definition> definitions;
-
-	private List<FreeForm> meaningFreeforms;
-
-	private List<FreeForm> lexemeFreeforms;
-
 	@Column(name = "word")
 	private String word;
 
@@ -38,6 +23,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "meaning_id")
 	private Long meaningId;
 
+	@Column(name = "dataset")
+	private String dataset;
+
 	@Column(name = "level1")
 	private Integer level1;
 
@@ -46,6 +34,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	@Column(name = "level3")
 	private Integer level3;
+
+	private String levels;
 
 	@Column(name = "lexeme_type_code")
 	private String lexemeTypeCode;
@@ -62,7 +52,17 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "meaning_state_code")
 	private String meaningStateCode;
 
-	private String levels;
+	private List<Classifier> domains;
+
+	private List<Form> words;
+
+	private List<Rection> rections;
+
+	private List<Definition> definitions;
+
+	private List<FreeForm> meaningFreeforms;
+
+	private List<FreeForm> lexemeFreeforms;
 
 	public WordLexeme() {
 	}
@@ -103,6 +103,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
+	public String getDataset() {
+		return dataset;
+	}
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
+	}
+
 	public Integer getLevel1() {
 		return level1;
 	}
@@ -125,6 +133,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLevel3(Integer level3) {
 		this.level3 = level3;
+	}
+
+	public String getLevels() {
+		return levels;
+	}
+
+	public void setLevels(String levels) {
+		this.levels = levels;
 	}
 
 	public String getLexemeTypeCode() {
@@ -191,14 +207,6 @@ public class WordLexeme extends AbstractDataObject {
 		this.rections = rections;
 	}
 
-	public List<String> getDatasets() {
-		return datasets;
-	}
-
-	public void setDatasets(List<String> datasets) {
-		this.datasets = datasets;
-	}
-
 	public List<Definition> getDefinitions() {
 		return definitions;
 	}
@@ -227,11 +235,4 @@ public class WordLexeme extends AbstractDataObject {
 		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
 	}
 
-	public String getLevels() {
-		return levels;
-	}
-
-	public void setLevels(String levels) {
-		this.levels = levels;
-	}
 }

@@ -12,14 +12,50 @@ public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "word")
+	private String word;
+
+	@Column(name = "word_id")
+	private Long wordId;
+
+	@Column(name = "lexeme_id")
+	private Long lexemeId;
+
+	@Column(name = "meaning_id")
+	private Long meaningId;
+
+	@Column(name = "dataset")
+	private String dataset;
+
+	@Column(name = "level1")
+	private Integer level1;
+
+	@Column(name = "level2")
+	private Integer level2;
+
+	@Column(name = "level3")
+	private Integer level3;
+
+	@Column(name = "lexeme_type_code")
+	private String lexemeTypeCode;
+
+	@Column(name = "lexeme_frequency_group_code")
+	private String lexemeFrequencyGroupCode;
+
+	@Column(name = "meaning_type_code")
+	private String meaningTypeCode;
+
+	@Column(name = "meaning_process_state_code")
+	private String meaningProcessStateCode;
+
+	@Column(name = "meaning_state_code")
+	private String meaningStateCode;
+
 	private List<Classifier> domains;
 
 	private List<Form> words;
 
 	private List<Rection> rections;
-
-	@Column(name = "datasets")
-	private List<String> datasets;
 
 	private List<Definition> definitions;
 
@@ -64,6 +100,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
+	}
+
+	public String getDataset() {
+		return dataset;
+	}
+
+	public void setDataset(String dataset) {
+		this.dataset = dataset;
 	}
 
 	public Integer getLevel1() {
@@ -134,42 +178,6 @@ public class WordLexeme extends AbstractDataObject {
 		return domains;
 	}
 
-	@Column(name = "word")
-	private String word;
-
-	@Column(name = "word_id")
-	private Long wordId;
-
-	@Column(name = "lexeme_id")
-	private Long lexemeId;
-
-	@Column(name = "meaning_id")
-	private Long meaningId;
-
-	@Column(name = "level1")
-	private Integer level1;
-
-	@Column(name = "level2")
-	private Integer level2;
-
-	@Column(name = "level3")
-	private Integer level3;
-
-	@Column(name = "lexeme_type_code")
-	private String lexemeTypeCode;
-
-	@Column(name = "lexeme_frequency_group_code")
-	private String lexemeFrequencyGroupCode;
-
-	@Column(name = "meaning_type_code")
-	private String meaningTypeCode;
-
-	@Column(name = "meaning_process_state_code")
-	private String meaningProcessStateCode;
-
-	@Column(name = "meaning_state_code")
-	private String meaningStateCode;
-
 	public void setDomains(List<Classifier> domains) {
 		this.domains = domains;
 	}
@@ -188,14 +196,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setRections(List<Rection> rections) {
 		this.rections = rections;
-	}
-
-	public List<String> getDatasets() {
-		return datasets;
-	}
-
-	public void setDatasets(List<String> datasets) {
-		this.datasets = datasets;
 	}
 
 	public List<Definition> getDefinitions() {

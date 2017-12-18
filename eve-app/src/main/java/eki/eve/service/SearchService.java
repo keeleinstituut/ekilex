@@ -1,14 +1,14 @@
 package eki.eve.service;
 
-import static java.util.Collections.emptyList;
+import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,32 +26,36 @@ import eki.eve.data.WordLexeme;
 import eki.eve.service.db.SearchDbService;
 
 @Service
-public class SearchService {
+public class SearchService implements InitializingBean {
 
 	@Autowired
 	private SearchDbService searchDbService;
 
-	public Map<String, String> getDatasets() {
-		return searchDbService.getDatasetNameMap();
+	private List<String> supportedDatasets;
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		this.supportedDatasets = asList("qq2", "psv");
 	}
 
 	public List<Word> findWords(String searchFilter) {
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		return searchDbService.findWords(searchFilter).into(Word.class);
+		return searchDbService.findWords(searchFilter, supportedDatasets).into(Word.class);
 	}
 
 	public WordDetails findWordDetails(Long formId) {
 
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
-		List<WordLexeme> lexemes = searchDbService.findFormMeanings(formId).into(WordLexeme.class);
+		List<WordLexeme> lexemes = searchDbService.findFormMeanings(formId, supportedDatasets).into(WordLexeme.class);
 		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
 
 		lexemes.forEach(lexeme -> {
-			List<String> datasets = lexeme.getDatasets();
-			datasets = convertToNames(datasets, datasetNameMap);
-			lexeme.setDatasets(datasets);
+
+			String dataset = lexeme.getDataset();
+			dataset = datasetNameMap.get(dataset);
+			lexeme.setDataset(dataset);
 
 			Long lexemeId = lexeme.getLexemeId();
 			Long meaningId = lexeme.getMeaningId();
@@ -59,7 +63,7 @@ public class SearchService {
 			List<Definition> definitions = searchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
 			lexeme.setDefinitions(definitions);
 
-			List<Form> words = searchDbService.findConnectedWords(meaningId).into(Form.class);
+			List<Form> words = searchDbService.findConnectedWords(meaningId, supportedDatasets).into(Form.class);
 			lexeme.setWords(words);
 
 			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
@@ -159,13 +163,5 @@ public class SearchService {
 			}
 		}
 		return rections;
-	}
-
-	private List<String> convertToNames(List<String> datasets, Map<String, String> datasetMap) {
-
-		if (datasets == null) {
-			return emptyList();
-		}
-		return datasets.stream().map(datasetMap::get).collect(Collectors.toList());
 	}
 }
