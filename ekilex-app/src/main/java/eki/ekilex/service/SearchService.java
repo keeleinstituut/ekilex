@@ -79,9 +79,35 @@ public class SearchService {
 			lexeme.setRections(rections);
 
 		});
+		combineLevels(lexemes);
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
 			d.setLexemes(lexemes);
+		});
+	}
+
+	private void combineLevels(List<WordLexeme> lexemes) {
+
+		if (lexemes == null || lexemes.isEmpty()) return;
+
+		lexemes.forEach(lex -> {
+			if (lex.getLevel1() == 0) {
+				lex.setLevels("");
+				return;
+			}
+			long nrOfLexemesWithSameLevel1 = lexemes.stream().filter(l -> l.getLevel1().equals(lex.getLevel1())).count();
+			if (nrOfLexemesWithSameLevel1 == 1) {
+				lex.setLevels(String.valueOf(lex.getLevel1()));
+			} else {
+				long nrOfLexemesWithSameLevel2 = lexemes.stream()
+						.filter(l -> l.getLevel1().equals(lex.getLevel1()) && l.getLevel2().equals(lex.getLevel2()))
+						.count();
+				if (nrOfLexemesWithSameLevel2 == 1) {
+					lex.setLevels(lex.getLevel1() + "." + lex.getLevel2());
+				} else {
+					lex.setLevels(lex.getLevel1() + "." + lex.getLevel2() + "." + lex.getLevel3());
+				}
+			}
 		});
 	}
 

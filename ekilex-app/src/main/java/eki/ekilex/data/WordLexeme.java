@@ -11,7 +11,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-
 	private List<Classifier> domains;
 
 	private List<Form> words;
@@ -26,6 +25,44 @@ public class WordLexeme extends AbstractDataObject {
 	private List<FreeForm> meaningFreeforms;
 
 	private List<FreeForm> lexemeFreeforms;
+
+	@Column(name = "word")
+	private String word;
+
+	@Column(name = "word_id")
+	private Long wordId;
+
+	@Column(name = "lexeme_id")
+	private Long lexemeId;
+
+	@Column(name = "meaning_id")
+	private Long meaningId;
+
+	@Column(name = "level1")
+	private Integer level1;
+
+	@Column(name = "level2")
+	private Integer level2;
+
+	@Column(name = "level3")
+	private Integer level3;
+
+	@Column(name = "lexeme_type_code")
+	private String lexemeTypeCode;
+
+	@Column(name = "lexeme_frequency_group_code")
+	private String lexemeFrequencyGroupCode;
+
+	@Column(name = "meaning_type_code")
+	private String meaningTypeCode;
+
+	@Column(name = "meaning_process_state_code")
+	private String meaningProcessStateCode;
+
+	@Column(name = "meaning_state_code")
+	private String meaningStateCode;
+
+	private String levels;
 
 	public WordLexeme() {
 	}
@@ -134,42 +171,6 @@ public class WordLexeme extends AbstractDataObject {
 		return domains;
 	}
 
-	@Column(name = "word")
-	private String word;
-
-	@Column(name = "word_id")
-	private Long wordId;
-
-	@Column(name = "lexeme_id")
-	private Long lexemeId;
-
-	@Column(name = "meaning_id")
-	private Long meaningId;
-
-	@Column(name = "level1")
-	private Integer level1;
-
-	@Column(name = "level2")
-	private Integer level2;
-
-	@Column(name = "level3")
-	private Integer level3;
-
-	@Column(name = "lexeme_type_code")
-	private String lexemeTypeCode;
-
-	@Column(name = "lexeme_frequency_group_code")
-	private String lexemeFrequencyGroupCode;
-
-	@Column(name = "meaning_type_code")
-	private String meaningTypeCode;
-
-	@Column(name = "meaning_process_state_code")
-	private String meaningProcessStateCode;
-
-	@Column(name = "meaning_state_code")
-	private String meaningStateCode;
-
 	public void setDomains(List<Classifier> domains) {
 		this.domains = domains;
 	}
@@ -224,5 +225,13 @@ public class WordLexeme extends AbstractDataObject {
 
 	public boolean isFreeformsExist() {
 		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
+	}
+
+	public String getLevels() {
+		return levels;
+	}
+
+	public void setLevels(String levels) {
+		this.levels = levels;
 	}
 }
