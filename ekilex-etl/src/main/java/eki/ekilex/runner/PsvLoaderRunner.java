@@ -144,7 +144,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			context.importedWords.addAll(newWords);
 		}
 
-		processSynonyms(context, dataset);
+		processSynonymsNotFoundInImportFile(context, dataset);
 		processAntonyms(context, dataset);
 		processBasicWords(context, dataset);
 		processReferenceForms(context);
@@ -558,7 +558,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Antonyms import done.");
 	}
 
-	private void processSynonyms(Context context, String dataset) throws Exception {
+	private void processSynonymsNotFoundInImportFile(Context context, String dataset) throws Exception {
 
 		logger.debug("Found {} synonyms", context.synonyms.size());
 		setActivateReport(SYNONYMS_REPORT_NAME);
@@ -566,25 +566,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		Count newSynonymWordCount = new Count();
 		for (SynonymData synonymData : context.synonyms) {
-			Long wordId;
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> synonymData.word.equals(w.value)).collect(Collectors.toList());
 			if (existingWords.isEmpty()) {
 				WordData newWord = createDefaultWordFrom(synonymData.word);
 				context.importedWords.add(newWord);
 				newSynonymWordCount.increment();
-				wordId = newWord.id;
-			} else {
-				wordId = getWordIdFor(synonymData.word, synonymData.homonymNr, existingWords, synonymData.reportingId);
-				if (wordId == null)
-					continue;
+				Long wordId = newWord.id;
+
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(wordId);
+				lexeme.setMeaningId(synonymData.meaningId);
+				lexeme.setLevel1(0);
+				lexeme.setLevel2(0);
+				lexeme.setLevel3(0);
+				createLexeme(lexeme, dataset);
 			}
-			Lexeme lexeme = new Lexeme();
-			lexeme.setWordId(wordId);
-			lexeme.setMeaningId(synonymData.meaningId);
-			lexeme.setLevel1(0);
-			lexeme.setLevel2(0);
-			lexeme.setLevel3(0);
-			createLexeme(lexeme, dataset);
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
 		logger.debug("Synonyms import done.");
@@ -614,7 +610,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "x:tg";
 		final String usageGroupExp = "x:ng";
-		final String definitionValueExp = "x:dg/x:d";
 		final String commonInfoNodeExp = "x:tyg2";
 		final String lexemePosCodeExp = "x:grg/x:sl";
 		final String meaningExternalIdExp = "x:tpid";
@@ -659,15 +654,28 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
 				List<Usage> usages = extractUsages(usageGroupNodes);
+				List<String> definitions = extractDefinitions(meaningGroupNode);
 
-				Meaning meaning = new Meaning();
-				meaning.setProcessStateCode(processStateCode);
-				Long meaningId = createMeaning(meaning);
+				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
+				if (meaningId == null) {
+					Meaning meaning = new Meaning();
+					meaning.setProcessStateCode(processStateCode);
+					meaningId = createMeaning(meaning);
+					for (String definition : definitions) {
+						createDefinition(meaningId, definition, dataLang, dataset);
+					}
+					if (definitions.size() > 1) {
+						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <x:d>", newWords.get(0).value);
+					}
+					if (isNotEmpty(learnerComment)) {
+						createMeaningFreeform(meaningId, FreeformType.LEARNER_COMMENT, learnerComment);
+					}
+				} else {
+					logger.debug("synonym meaning found : {}", newWords.get(0).value);
+				}
+
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
-				}
-				if (isNotEmpty(learnerComment)) {
-					createMeaningFreeform(meaningId, FreeformType.LEARNER_COMMENT, learnerComment);
 				}
 				if (isNotEmpty(imageName)) {
 					createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, imageName);
@@ -676,13 +684,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					addAbbreviationLexeme(abbreviation, meaningId, dataset);
 				}
 
-				List<Element> definitionValueNodes = meaningGroupNode.selectNodes(definitionValueExp);
-				saveDefinitions(definitionValueNodes, meaningId, dataLang, dataset);
-				if (definitionValueNodes.size() > 1) {
-					writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <x:d>", newWords.get(0).value);
-				}
-
-				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId);
+				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
 				context.synonyms.addAll(meaningSynonyms);
 
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
@@ -767,6 +769,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions) {
+
+		String definition = definitions.isEmpty() ? null : definitions.get(0);
+		Optional<SynonymData> existingSynonym = context.synonyms.stream()
+				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
+				.findFirst();
+		return existingSynonym.orElse(new SynonymData()).meaningId;
 	}
 
 	private void addAbbreviationLexeme(WordData abbreviation, Long meaningId, String dataset) throws Exception {
@@ -1029,7 +1040,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return metadataList;
 	}
 
-	private List<SynonymData> extractSynonyms(String reportingId, Element node, Long meaningId) {
+	private List<SynonymData> extractSynonyms(String reportingId, Element node, Long meaningId, List<String> definitions) {
 
 		final String synonymExp = "x:syn";
 		final String homonymNrAttr = "i";
@@ -1044,6 +1055,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String homonymNrAtrValue = synonymNode.attributeValue(homonymNrAttr);
 			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
 				data.homonymNr = Integer.parseInt(homonymNrAtrValue);
+			}
+			if (!definitions.isEmpty()) {
+				data.definition = definitions.get(0);
 			}
 			synonyms.add(data);
 		}
@@ -1475,15 +1489,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return forms;
 	}
 
-	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String wordMatchLang, String dataset) throws Exception {
+	private List<String> extractDefinitions(Element node) {
 
-		if (definitionValueNodes == null) {
-			return;
-		}
+		final String definitionValueExp = "x:dg/x:d";
+
+		List<String> definitions = new ArrayList<>();
+		List<Element> definitionValueNodes = node.selectNodes(definitionValueExp);
 		for (Element definitionValueNode : definitionValueNodes) {
 			String definition = definitionValueNode.getTextTrim();
-			createDefinition(meaningId, definition, wordMatchLang, dataset);
+			definitions.add(definition);
 		}
+		return definitions;
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
@@ -1523,6 +1539,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Long meaningId;
 		int homonymNr = 0;
 		String reportingId;
+		String definition;
 	}
 
 	private class LexemeToWordData {
