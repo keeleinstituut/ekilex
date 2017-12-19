@@ -93,12 +93,14 @@ public class SearchService {
 				lex.setLevels("");
 				return;
 			}
-			long nrOfLexemesWithSameLevel1 = lexemes.stream().filter(l -> l.getLevel1().equals(lex.getLevel1())).count();
+			long nrOfLexemesWithSameLevel1 = lexemes.stream()
+					.filter(l -> l.getLevel1().equals(lex.getLevel1()) && l.getDataset().equals(lex.getDataset()))
+					.count();
 			if (nrOfLexemesWithSameLevel1 == 1) {
 				lex.setLevels(String.valueOf(lex.getLevel1()));
 			} else {
 				long nrOfLexemesWithSameLevel2 = lexemes.stream()
-						.filter(l -> l.getLevel1().equals(lex.getLevel1()) && l.getLevel2().equals(lex.getLevel2()))
+						.filter(l -> l.getLevel1().equals(lex.getLevel1()) && l.getLevel2().equals(lex.getLevel2()) && l.getDataset().equals(lex.getDataset()))
 						.count();
 				if (nrOfLexemesWithSameLevel2 == 1) {
 					lex.setLevels(lex.getLevel1() + "." + lex.getLevel2());
