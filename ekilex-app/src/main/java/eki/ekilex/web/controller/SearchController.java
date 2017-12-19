@@ -36,7 +36,7 @@ public class SearchController {
 			Model model, HttpSession session) {
 
 		logger.debug("doing search : {}, {}", searchFilter, selectedDatasets);
-		Map<String, String> datasets = search.getDatasets();
+		Map<String, String> datasets = search.getDatasetNameMap();
 		if (selectedDatasets == null) {
 			if (session.getAttribute("datasets") == null) {
 				selectedDatasets = new ArrayList<>(datasets.keySet());
@@ -61,7 +61,7 @@ public class SearchController {
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
-			Map<String, String> datasets = search.getDatasets();
+			Map<String, String> datasets = search.getDatasetNameMap();
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
 		WordDetails details = search.findWordDetailsInDatasets(formId, selectedDatasets);

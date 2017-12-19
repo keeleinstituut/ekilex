@@ -14,13 +14,13 @@ public class Meaning extends AbstractDataObject {
 	private Long meaningId;
 
 	@Column(name = "meaning_type_code")
-	private String meaningTypeCode;
+	private String typeCode;
 
 	@Column(name = "meaning_process_state_code")
-	private String meaningProcessStateCode;
+	private String processStateCode;
 
 	@Column(name = "meaning_state_code")
-	private String meaningStateCode;
+	private String stateCode;
 
 	@Column(name = "lexeme_ids")
 	private List<Long> lexemeIds;
@@ -31,7 +31,7 @@ public class Meaning extends AbstractDataObject {
 
 	private List<Definition> definitions;
 
-	private List<FreeForm> meaningFreeforms;
+	private List<FreeForm> freeforms;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -41,28 +41,28 @@ public class Meaning extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public String getMeaningTypeCode() {
-		return meaningTypeCode;
+	public String getTypeCode() {
+		return typeCode;
 	}
 
-	public void setMeaningTypeCode(String meaningTypeCode) {
-		this.meaningTypeCode = meaningTypeCode;
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
 	}
 
-	public String getMeaningProcessStateCode() {
-		return meaningProcessStateCode;
+	public String getProcessStateCode() {
+		return processStateCode;
 	}
 
-	public void setMeaningProcessStateCode(String meaningProcessStateCode) {
-		this.meaningProcessStateCode = meaningProcessStateCode;
+	public void setProcessStateCode(String processStateCode) {
+		this.processStateCode = processStateCode;
 	}
 
-	public String getMeaningStateCode() {
-		return meaningStateCode;
+	public String getStateCode() {
+		return stateCode;
 	}
 
-	public void setMeaningStateCode(String meaningStateCode) {
-		this.meaningStateCode = meaningStateCode;
+	public void setStateCode(String stateCode) {
+		this.stateCode = stateCode;
 	}
 
 	public List<Long> getLexemeIds() {
@@ -97,12 +97,12 @@ public class Meaning extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<FreeForm> getMeaningFreeforms() {
-		return meaningFreeforms;
+	public List<FreeForm> getFreeforms() {
+		return freeforms;
 	}
 
-	public void setMeaningFreeforms(List<FreeForm> meaningFreeforms) {
-		this.meaningFreeforms = meaningFreeforms;
+	public void setFreeforms(List<FreeForm> freeforms) {
+		this.freeforms = freeforms;
 	}
 
 }

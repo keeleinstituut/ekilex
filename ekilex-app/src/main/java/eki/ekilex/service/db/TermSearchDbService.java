@@ -1,28 +1,16 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.Record1;
-import org.jooq.Record10;
-import org.jooq.Record13;
-import org.jooq.Record2;
+import org.jooq.Record11;
 import org.jooq.Record5;
-import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +22,6 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
-//TODO under construction!
 @Component
 public class TermSearchDbService {
 
@@ -73,14 +60,16 @@ public class TermSearchDbService {
 						.and(l2.DATASET_CODE.in(datasets))
 						)
 				.groupBy(m.ID)
+				.orderBy(m.ID)
 				.fetch();
 	}
 
-	public Result<Record10<String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexeme(Long lexemeId) {
+	public Result<Record11<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long lexemeId) {
 
 		return create
 				.select(
 						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.MEANING_ID,
@@ -96,7 +85,7 @@ public class TermSearchDbService {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						)
-				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
 }

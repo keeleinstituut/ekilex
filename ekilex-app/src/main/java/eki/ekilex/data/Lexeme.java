@@ -13,6 +13,9 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "word")
 	private String word;
 
+	@Column(name = "word_lang")
+	private String wordLang;
+
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -35,14 +38,14 @@ public class Lexeme extends AbstractDataObject {
 	private Integer level3;
 
 	@Column(name = "lexeme_type_code")
-	private String lexemeTypeCode;
+	private String typeCode;
 
 	@Column(name = "lexeme_frequency_group_code")
-	private String lexemeFrequencyGroupCode;
+	private String frequencyGroupCode;
 
 	private List<Rection> rections;
 
-	private List<FreeForm> lexemeFreeforms;
+	private List<FreeForm> freeforms;
 
 	public String getWord() {
 		return word;
@@ -50,6 +53,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getWordLang() {
+		return wordLang;
+	}
+
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
 	}
 
 	public Long getWordId() {
@@ -108,20 +119,20 @@ public class Lexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public String getLexemeTypeCode() {
-		return lexemeTypeCode;
+	public String getTypeCode() {
+		return typeCode;
 	}
 
-	public void setLexemeTypeCode(String lexemeTypeCode) {
-		this.lexemeTypeCode = lexemeTypeCode;
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
 	}
 
-	public String getLexemeFrequencyGroupCode() {
-		return lexemeFrequencyGroupCode;
+	public String getFrequencyGroupCode() {
+		return frequencyGroupCode;
 	}
 
-	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
-		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
+	public void setFrequencyGroupCode(String frequencyGroupCode) {
+		this.frequencyGroupCode = frequencyGroupCode;
 	}
 
 	public List<Rection> getRections() {
@@ -132,12 +143,12 @@ public class Lexeme extends AbstractDataObject {
 		this.rections = rections;
 	}
 
-	public List<FreeForm> getLexemeFreeforms() {
-		return lexemeFreeforms;
+	public List<FreeForm> getFreeforms() {
+		return freeforms;
 	}
 
-	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
-		this.lexemeFreeforms = lexemeFreeforms;
+	public void setFreeforms(List<FreeForm> freeforms) {
+		this.freeforms = freeforms;
 	}
 
 }
