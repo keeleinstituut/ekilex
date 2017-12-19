@@ -43,6 +43,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
 	private final String defaultWordMorphCode = "SgN";
 	private final String defaultRectionValue = "-";
+
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";
 	private final static String ANTONYMS_REPORT_NAME = "antonyms";
@@ -58,6 +59,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_COMPARATIVES_REPORT_NAME = "word_comparatives";
 	private final static String WORD_SUPERLATIVES_REPORT_NAME = "word_superlatives";
 
+	private final static String WORD_RELATION_SUPERLATIVE = "superl";
+	private final static String WORD_RELATION_COMPARATIVE = "komp";
+
+	private final static String FORM_RELATION_REFERENCE_FORM = "mvt";
+
+	private final static String LEXEME_RELATION_COMPOUND_FORM = "pyh";
+	private final static String LEXEME_RELATION_SINGLE_FORM = "yvr";
+	private final static String LEXEME_RELATION_VORMEL = "vor";
+	private final static String LEXEME_RELATION_COMPOUND_REFERENCE = "yhvt";
+	private final static String LEXEME_RELATION_JOINT_REFERENCE = "yvt";
+	private final static String LEXEME_RELATION_MEANING_REFERENCE = "tvt";
+	private final static String LEXEME_RELATION_COMPOUND_WORD = "comp";
+	private final static String LEXEME_RELATION_BASIC_WORD = "head";
+	private final static String LEXEME_RELATION_ANTONYM = "ant";
+
 	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
 			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
@@ -71,6 +87,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> processStateCodes;
 	private ReportComposer reportComposer;
 	private boolean reportingEnabled;
+	private String lexemeTypeAbbreviation;
 
 	@Autowired
 	private WordMatcherService wordMatcherService;
@@ -79,6 +96,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	void initialise() throws Exception {
 
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		lexemeTypeAbbreviation = lexemeTypes.get("l");
 		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP);
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
@@ -201,7 +219,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					superlativeId = existingWords.get(0).id;
 				}
-				createWordRelation(wordData.id, superlativeId, "superl");
+				createWordRelation(wordData.id, superlativeId, WORD_RELATION_SUPERLATIVE);
 			}
 		}
 		logger.debug("Word superlatives processing done, {}.", count);
@@ -232,7 +250,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					comparativeId = existingWords.get(0).id;
 				}
-				createWordRelation(wordData.id, comparativeId, "komp");
+				createWordRelation(wordData.id, comparativeId, WORD_RELATION_COMPARATIVE);
 			}
 		}
 		logger.debug("Word comparatives processing done, {}.", count);
@@ -250,7 +268,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundFormData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(compoundFormData.lexemeId, lexemeId, "pyh");
+				createLexemeRelation(compoundFormData.lexemeId, lexemeId, LEXEME_RELATION_COMPOUND_FORM);
 			}
 		}
 		logger.debug("Compound form processing done.");
@@ -268,7 +286,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, singleFormData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(singleFormData.lexemeId, lexemeId, "yvr");
+				createLexemeRelation(singleFormData.lexemeId, lexemeId, LEXEME_RELATION_SINGLE_FORM);
 			}
 		}
 		logger.debug("Single form processing done.");
@@ -286,7 +304,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, vormelData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(vormelData.lexemeId, lexemeId, "vor");
+				createLexemeRelation(vormelData.lexemeId, lexemeId, LEXEME_RELATION_VORMEL);
 			}
 		}
 		logger.debug("Vormel processing done.");
@@ -304,7 +322,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compoundRefData, context, dataset, compoundRefData.lexemeType);
 			if (lexemeId != null) {
-				createLexemeRelation(compoundRefData.lexemeId, lexemeId, "yhvt");
+				createLexemeRelation(compoundRefData.lexemeId, lexemeId, LEXEME_RELATION_COMPOUND_REFERENCE);
 			}
 		}
 		logger.debug("Compound references processing done.");
@@ -323,7 +341,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, jointRefData, context, dataset);
 			if (lexemeId != null) {
-				String relationType = "yvt:" + jointRefData.relationType;
+				String relationType = LEXEME_RELATION_JOINT_REFERENCE + ":" + jointRefData.relationType;
 				createLexemeRelation(jointRefData.lexemeId, lexemeId, relationType);
 			}
 		}
@@ -343,7 +361,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, meaningRefData, context, dataset);
 			if (lexemeId != null) {
-				String relationType = "tvt:" + meaningRefData.relationType;
+				String relationType = LEXEME_RELATION_MEANING_REFERENCE + ":" + meaningRefData.relationType;
 				createLexemeRelation(meaningRefData.lexemeId, lexemeId, relationType);
 			}
 		}
@@ -360,7 +378,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> compData.word.equals(w.value)).collect(Collectors.toList());
 			Long lexemeId = findOrCreateLexemeForWord(existingWords, compData, context, dataset);
 			if (lexemeId != null) {
-				createLexemeRelation(compData.lexemeId, lexemeId, "comp");
+				createLexemeRelation(compData.lexemeId, lexemeId, LEXEME_RELATION_COMPOUND_WORD);
 			}
 		}
 		logger.debug("Compound words processing done.");
@@ -491,7 +509,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				params.clear();
 				params.put("form1_id", form.get().get("id"));
 				params.put("form2_id", wordForm.get("id"));
-				params.put("form_rel_type_code", "mvt");
+				params.put("form_rel_type_code", FORM_RELATION_REFERENCE_FORM);
 				basicDbService.create(FORM_RELATION, params);
 			} else {
 				logger.debug("Word not found {}, {}, {}", referenceForm.reportingId, referenceForm.wordValue, referenceForm.wordHomonymNr);
@@ -519,7 +537,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					params.put("wordId", wordId);
 					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					for (Map<String, Object> lexeme : lexemes) {
-						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), "head");
+						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
 					}
 				}
 			}
@@ -545,7 +563,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					Optional<Map<String, Object>> lexemeObject =
 							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == antonymData.lexemeLevel1).findFirst();
 					if (lexemeObject.isPresent()) {
-						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), "ant");
+						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), LEXEME_RELATION_ANTONYM);
 					} else {
 						logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
 						writeToLogFile(antonymData.reportingId, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
@@ -787,7 +805,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
-		lexeme.setType(lexemeTypes.get("l"));
+		lexeme.setType(lexemeTypeAbbreviation);
 		createLexeme(lexeme, dataset);
 	}
 
