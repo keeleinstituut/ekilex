@@ -67,6 +67,8 @@ public class TermSearchService {
 
 					String dataset = lexeme.getDataset();
 					dataset = datasetNameMap.get(dataset);
+					String levels = composeLevels(lexeme);
+					lexeme.setLevels(levels);
 					lexeme.setDataset(dataset);
 					lexeme.setFreeforms(lexemeFreeforms);
 					lexeme.setRections(rections);
@@ -79,5 +81,23 @@ public class TermSearchService {
 		termDetails.setMeanings(meanings);
 
 		return termDetails;
+	}
+
+	private String composeLevels(Lexeme lexeme) {
+
+		Integer level1 = lexeme.getLevel1();
+		Integer level2 = lexeme.getLevel2();
+		Integer level3 = lexeme.getLevel3();
+		String levels = null;
+		if (level1 > 0) {
+			levels = String.valueOf(level1);
+			if (level2 > 0) {
+				levels += "." + level2;
+			}
+			if (level3 > 0) {
+				levels += "." + level3;
+			}
+		}
+		return levels;
 	}
 }

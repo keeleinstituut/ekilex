@@ -141,19 +141,14 @@
                   <span th:text="${lexeme.wordLang}"></span>
                   )
                 </a>
-                <span th:if="${lexeme.level1 > 0}">
+                <span th:if="${lexeme.levels != null}">
                   <small>
                     [
-                    <span th:text="${lexeme.level1}"></span>
-                    <span th:text="${'. ' + lexeme.level2}" th:if="${lexeme.level2 > 0}"></span>
-                    <span th:text="${'. ' + lexeme.level3}" th:if="${lexeme.level3 > 0}"></span>
+                    <span th:text="${lexeme.levels}"></span>
                     ]
                   </small>
                   &nbsp;
                 </span>
-                <!-- 
-                <span th:text="${lexeme.levels}"></span>
-                 -->
                 <span th:text="${lexeme.dataset}" class="pr-2"></span>
                 <div th:if="${lexeme.typeCode != null}">
                   <b>Keelendi tüüp</b>

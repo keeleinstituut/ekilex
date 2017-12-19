@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -86,28 +87,37 @@ public class SearchService {
 
 	private void combineLevels(List<WordLexeme> lexemes) {
 
-		if (lexemes == null || lexemes.isEmpty()) return;
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
 
-		lexemes.forEach(lex -> {
-			if (lex.getLevel1() == 0) {
-				lex.setLevels("");
+		lexemes.forEach(lexeme -> {
+			if (lexeme.getLevel1() == 0) {
+				lexeme.setLevels("");
 				return;
 			}
+			String levels;
 			long nrOfLexemesWithSameLevel1 = lexemes.stream()
-					.filter(l -> l.getLevel1().equals(lex.getLevel1()) && l.getDataset().equals(lex.getDataset()))
+					.filter(otherLexeme ->
+							otherLexeme.getLevel1().equals(lexeme.getLevel1())
+							&& StringUtils.equals(otherLexeme.getDataset(), lexeme.getDataset()))
 					.count();
 			if (nrOfLexemesWithSameLevel1 == 1) {
-				lex.setLevels(String.valueOf(lex.getLevel1()));
+				levels = String.valueOf(lexeme.getLevel1());
 			} else {
 				long nrOfLexemesWithSameLevel2 = lexemes.stream()
-						.filter(l -> l.getLevel1().equals(lex.getLevel1()) && l.getLevel2().equals(lex.getLevel2()) && l.getDataset().equals(lex.getDataset()))
+						.filter(otherLexeme ->
+								otherLexeme.getLevel1().equals(lexeme.getLevel1())
+								&& otherLexeme.getLevel2().equals(lexeme.getLevel2())
+								&& StringUtils.equals(otherLexeme.getDataset(), lexeme.getDataset()))
 						.count();
 				if (nrOfLexemesWithSameLevel2 == 1) {
-					lex.setLevels(lex.getLevel1() + "." + lex.getLevel2());
+					levels = lexeme.getLevel1() + "." + lexeme.getLevel2();
 				} else {
-					lex.setLevels(lex.getLevel1() + "." + lex.getLevel2() + "." + lex.getLevel3());
+					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + "." + lexeme.getLevel3();
 				}
 			}
+			lexeme.setLevels(levels);
 		});
 	}
 

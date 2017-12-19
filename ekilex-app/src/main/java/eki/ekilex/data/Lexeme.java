@@ -37,6 +37,8 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "level3")
 	private Integer level3;
 
+	private String levels;
+
 	@Column(name = "lexeme_type_code")
 	private String typeCode;
 
@@ -117,6 +119,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLevel3(Integer level3) {
 		this.level3 = level3;
+	}
+
+	public String getLevels() {
+		return levels;
+	}
+
+	public void setLevels(String levels) {
+		this.levels = levels;
 	}
 
 	public String getTypeCode() {
