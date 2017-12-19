@@ -213,7 +213,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 								.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
 				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
-				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
 
