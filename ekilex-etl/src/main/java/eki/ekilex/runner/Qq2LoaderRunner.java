@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -61,7 +62,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> morphToDerivMap;
 
-	private final String articleExp = "/x:sr/x:A";
 	private final String guidExp = "x:G";
 	private final String articleHeaderExp = "x:P";
 	private final String wordGroupExp = "x:mg";
@@ -142,8 +142,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
-		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
-		int articleCount = articleNodes.size();
+		Element rootElement = dataDoc.getRootElement();
+		long articleCount = rootElement.content().stream().filter(o -> o instanceof Element).count();
 		logger.debug("Extracted {} articles", articleCount);
 
 		Map<Long, List<Rection>> wordIdRectionMap = new HashMap<>();
@@ -176,9 +176,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Count singleUsageTranslationMatchCount = new Count();
 		Count forcedUsageTranslationMatchCount = new Count();
 
-		int articleCounter = 0;
-		int progressIndicator = articleCount / Math.min(articleCount, 100);
+		long articleCounter = 0;
+		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
+		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		for (Element articleNode : articleNodes) {
 
 			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
@@ -365,7 +366,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			// progress
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
-				int progressPercent = articleCounter / progressIndicator;
+				long progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
 		}
