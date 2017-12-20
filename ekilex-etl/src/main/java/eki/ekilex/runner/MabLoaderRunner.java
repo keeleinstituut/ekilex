@@ -19,6 +19,7 @@ import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Paradigm;
 
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 @Component
@@ -27,8 +28,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(MabLoaderRunner.class);
 
 	@Override
-	void initialise() throws Exception {
-
+	void initialise() {
 	}
 
 	@Transactional
@@ -36,7 +36,6 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Loading MAB...");
 
-		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
 		final String wordGroupExp = "x:mg";
 		final String wordExp = "x:m";
@@ -57,11 +56,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		// morph value to code conversion map
 		Map<String, String> morphValueCodeMap = composeMorphValueCodeMap(dataLang);
 
-		dataLang = unifyLang(dataLang);
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
-		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
-		int articleCount = articleNodes.size();
+		Element rootElement = dataDoc.getRootElement();
+
+		long articleCount = rootElement.content().stream().filter(o -> o instanceof Element).count();
+		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		logger.debug("Extracted {} articles", articleCount);
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
@@ -77,8 +77,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		Count uncleanWordCount = new Count();
 
-		int articleCounter = 0;
-		int progressIndicator = articleCount / Math.min(articleCount, 100);
+		long articleCounter = 0;
+		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
 		for (Element articleNode : articleNodes) {
 
@@ -170,7 +170,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			// progress
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
-				int progressPercent = articleCounter / progressIndicator;
+				long progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
 		}
