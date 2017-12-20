@@ -17,5 +17,4 @@ public class UsageMeaning extends AbstractDataObject {
 	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
 	}
-
 }

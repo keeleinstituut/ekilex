@@ -60,8 +60,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		Element rootElement = dataDoc.getRootElement();
 
-		long articleCount = rootElement.content().stream().filter(o -> o instanceof Element).count();
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
+		long articleCount = rootElement.content().stream().filter(node -> node instanceof Element).count();
+		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 		logger.debug("Extracted {} articles", articleCount);
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
@@ -175,7 +175,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		logger.debug("Found {} unclean words", uncleanWordCount);
+		logger.debug("Found {} unclean words", uncleanWordCount.getValue());
 		logger.debug("Found {} words", wordParadigmsMap.size());
 
 		t2 = System.currentTimeMillis();

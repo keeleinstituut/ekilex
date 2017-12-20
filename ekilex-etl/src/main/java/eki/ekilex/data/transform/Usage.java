@@ -14,8 +14,6 @@ public class Usage extends AbstractDataObject {
 
 	private List<UsageTranslation> usageTranslations;
 
-	private boolean matched;
-
 	public String getValue() {
 		return value;
 	}
@@ -38,14 +36,6 @@ public class Usage extends AbstractDataObject {
 
 	public void setDefinition(String definition) {
 		this.definition = definition;
-	}
-
-	public boolean isMatched() {
-		return matched;
-	}
-
-	public void setMatched(boolean matched) {
-		this.matched = matched;
 	}
 
 }
