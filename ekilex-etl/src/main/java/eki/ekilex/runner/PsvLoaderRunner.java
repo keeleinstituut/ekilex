@@ -32,6 +32,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
@@ -39,8 +40,8 @@ import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final String dataLang = "est";
-	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]/";
-	private final String formStrCleanupChars = ".()¤:_|[]/̄̆̇’\"'`´,;–+=";
+	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]";
+	private final String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
 	private final String defaultWordMorphCode = "SgN";
 	private final String defaultRectionValue = "-";
 
@@ -109,7 +110,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Map<String, List<Paradigm>> wordParadigmsMap,
 			boolean isAddReporting) throws Exception {
 
-		final String articleExp = "/x:sr/x:A";
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
 		final String reportingIdExp = "x:P/x:mg/x:m"; // use first word as id for reporting
@@ -130,17 +130,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
-		List<Element> articleNodes = dataDoc.selectNodes(articleExp);
-		int articleCount = articleNodes.size();
+		Element rootElement = dataDoc.getRootElement();
+		long articleCount = rootElement.content().stream().filter(o -> o instanceof Element).count();
 		logger.debug("Extracted {} articles", articleCount);
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
-		int articleCounter = 0;
-		int progressIndicator = articleCount / Math.min(articleCount, 100);
+		long articleCounter = 0;
+		long progressIndicator = articleCount / Math.min(articleCount, 100);
 		Context context = new Context();
 
 		writeToLogFile("Artiklite töötlus", "", "");
+		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		for (Element articleNode : articleNodes) {
 			String guid = extractGuid(articleNode);
 			List<WordData> newWords = new ArrayList<>();
@@ -156,7 +157,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
-				int progressPercent = articleCounter / progressIndicator;
+				long progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
 			context.importedWords.addAll(newWords);
