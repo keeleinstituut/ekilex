@@ -1,7 +1,11 @@
 package eki.ekilex.runner;
 
+import eki.common.constant.FreeformType;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
 import org.apache.commons.collections4.CollectionUtils;
@@ -11,16 +15,18 @@ import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -33,8 +39,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private final static String dataLang = "est";
 	private final static String dataset = "ss1";
-	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´,;–+=";
+	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
 	private final String defaultWordMorphCode = "SgN";
+	private final String defaultRectionValue = "-";
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
@@ -49,10 +56,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private boolean reportingEnabled;
 
 	private Map<String, String> lexemeTypes;
+	private Map<String, String> posCodes;
+	private Map<String, String> processStateCodes;
 
 	@Override
 	void initialise() throws Exception {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
+		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 	}
 
 	@Transactional
@@ -117,7 +128,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	private void processBasicWords(Context context) throws Exception {
+	void processBasicWords(Context context) throws Exception {
 
 		logger.debug("Found {} basic words.", context.basicWords.size());
 		setActivateReport(BASIC_WORDS_REPORT_NAME);
@@ -143,7 +154,222 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Basic words processing done.");
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) {
+	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
+
+		final String meaningNumberGroupExp = "s:tp";
+		final String lexemeLevel1Attr = "tnr";
+		final String meaningGroupExp = "s:tg";
+		final String lexemePosCodeExp = "s:ssp/s:mmg/s:sl";
+		final String meaningExternalIdExp = "s:tpid";
+		final String asTyypAttr = "as";
+
+		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+//		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
+//		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode, reportingId);
+//		List<LexemeToWordData> articleVormels = extractVormels(commonInfoNode);
+
+		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
+//			saveSymbol(meaningNumberGroupNode, context, reportingId);
+//			WordData abbreviation = processAbbreviation(meaningNumberGroupNode, context);
+			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
+			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
+			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+//			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
+//			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode, reportingId);
+//			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
+//			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
+//			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode, reportingId);
+			List<Long> newLexemes = new ArrayList<>();
+			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
+			List<PosData> meaningPosCodes = new ArrayList<>();
+			for (Element posCodeNode : posCodeNodes) {
+				PosData posData = new PosData();
+				posData.code = posCodeNode.getTextTrim();
+				posData.processStateCode = posCodeNode.attributeValue(asTyypAttr);
+				meaningPosCodes.add(posData);
+			}
+			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
+			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
+
+			for (Element meaningGroupNode : meaingGroupNodes) {
+				List<Usage> usages = extractUsages(meaningGroupNode);
+				List<String> definitions = extractDefinitions(meaningGroupNode);
+
+				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
+				if (meaningId == null) {
+					Meaning meaning = new Meaning();
+					meaningId = createMeaning(meaning);
+					for (String definition : definitions) {
+						createDefinition(meaningId, definition, dataLang, dataset);
+					}
+					if (definitions.size() > 1) {
+						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
+					}
+				} else {
+					logger.debug("synonym meaning found : {}", newWords.get(0).value);
+				}
+
+				if (isNotEmpty(meaningExternalId)) {
+					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
+				}
+//				if (abbreviation != null) {
+//					addAbbreviationLexeme(abbreviation, meaningId, dataset);
+//				}
+
+//				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
+//				context.synonyms.addAll(meaningSynonyms);
+
+//				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
+
+				int lexemeLevel2 = 0;
+				for (WordData newWordData : newWords) {
+					lexemeLevel2++;
+					Lexeme lexeme = new Lexeme();
+					lexeme.setWordId(newWordData.id);
+					lexeme.setType(newWordData.lexemeType);
+					lexeme.setMeaningId(meaningId);
+					lexeme.setLevel1(lexemeLevel1);
+					lexeme.setLevel2(lexemeLevel2);
+					lexeme.setLevel3(0);
+					Long lexemeId = createLexeme(lexeme, dataset);
+					if (lexemeId != null) {
+						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
+						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
+						saveGrammars(meaningNumberGroupNode, lexemeId);
+//						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
+//							LexemeToWordData antonymData = meaningAntonym.copy();
+//							antonymData.lexemeId = lexemeId;
+//							antonymData.reportingId = reportingId;
+//							context.antonyms.add(antonymData);
+//						}
+//						for (String compoundWord : compoundWords) {
+//							LexemeToWordData compData = new LexemeToWordData();
+//							compData.word = compoundWord;
+//							compData.lexemeId = lexemeId;
+//							compData.reportingId = reportingId;
+//							context.compoundWords.add(compData);
+//						}
+//						for (LexemeToWordData meaningReference : meaningReferences) {
+//							LexemeToWordData referenceData = meaningReference.copy();
+//							referenceData.lexemeId = lexemeId;
+//							referenceData.reportingId = reportingId;
+//							context.meaningReferences.add(referenceData);
+//						}
+//						for (LexemeToWordData vormel : vormels) {
+//							LexemeToWordData vormelData = vormel.copy();
+//							vormelData.lexemeId = lexemeId;
+//							vormelData.reportingId = reportingId;
+//							context.vormels.add(vormelData);
+//						}
+//						for (LexemeToWordData singleForm : singleForms) {
+//							LexemeToWordData singleFormData = singleForm.copy();
+//							singleFormData.lexemeId = lexemeId;
+//							singleFormData.reportingId = reportingId;
+//							context.singleForms.add(singleFormData);
+//						}
+//						for (LexemeToWordData compoundForm : compoundForms) {
+//							LexemeToWordData compoundFormData = compoundForm.copy();
+//							compoundFormData.lexemeId = lexemeId;
+//							compoundFormData.reportingId = reportingId;
+//							context.compoundForms.add(compoundFormData);
+//						}
+						newLexemes.add(lexemeId);
+					}
+				}
+			}
+//			for (Long lexemeId : newLexemes) {
+//				for (LexemeToWordData jointReference : jointReferences) {
+//					LexemeToWordData referenceData = jointReference.copy();
+//					referenceData.lexemeId = lexemeId;
+//					referenceData.reportingId = reportingId;
+//					context.jointReferences.add(referenceData);
+//				}
+//				for (LexemeToWordData compoundReference : compoundReferences) {
+//					LexemeToWordData referenceData = compoundReference.copy();
+//					referenceData.lexemeId = lexemeId;
+//					referenceData.reportingId = reportingId;
+//					context.compoundReferences.add(referenceData);
+//				}
+//				for (LexemeToWordData vormel : articleVormels) {
+//					LexemeToWordData vormelData = vormel.copy();
+//					vormelData.lexemeId = lexemeId;
+//					vormelData.reportingId = reportingId;
+//					context.vormels.add(vormelData);
+//				}
+//			}
+		}
+	}
+
+	private void saveGrammars(Element node, Long lexemeId) throws Exception {
+
+		final String grammarValueExp = "s:grg/s:gki";
+
+		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
+		for (Element grammarNode : grammarNodes) {
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammarNode.getTextTrim(), dataLang);
+		}
+	}
+
+	//POS - part of speech
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<PosData> meaningPosCodes, String reportingId) throws Exception {
+
+		Set<PosData> lexemePosCodes = new HashSet<>();
+		try {
+			if (meaningPosCodes.isEmpty()) {
+				lexemePosCodes.addAll(newWordData.posCodes);
+			} else {
+				lexemePosCodes.addAll(meaningPosCodes);
+				if (lexemePosCodes.size() > 1) {
+					logger.debug("Found more than one POS <s:tp/s:ssp/s:mmg/s:sl> : {} : {}",
+							reportingId, lexemePosCodes.stream().map(p -> p.code).collect(Collectors.joining(",")));
+					writeToLogFile(reportingId, "Tähenduse juures leiti rohkem kui üks sõnaliik <s:tp/s:ssp/s:mmg/s:sl>", "");
+				}
+			}
+			for (PosData posCode : lexemePosCodes) {
+				if (posCodes.containsKey(posCode.code)) {
+					Map<String, Object> params = new HashMap<>();
+					params.put("lexeme_id", lexemeId);
+					params.put("pos_code", posCodes.get(posCode.code));
+					params.put("process_state_code", processStateCodes.get(posCode.processStateCode));
+					basicDbService.create(LEXEME_POS, params);
+				}
+			}
+		} catch (Exception e) {
+			logger.debug("lexemeId {} : newWord : {}, {}, {}",
+					lexemeId, newWordData.value, newWordData.id, lexemePosCodes.stream().map(p -> p.code).collect(Collectors.joining(",")));
+			logger.error("ERROR", e);
+		}
+	}
+
+	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
+
+		final String rectionExp = "s:rep/s:reg/s:rek";
+
+		List<Element> rectionNodes = node.selectNodes(rectionExp);
+		if (rectionNodes.isEmpty()) {
+			if (!usages.isEmpty()) {
+				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
+				for (Usage usage : usages) {
+					createUsage(rectionId, usage);
+				}
+			}
+		} else {
+			for (Element rectionNode : rectionNodes) {
+				String rectionValue = rectionNode.getTextTrim();
+				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue);
+				for (Usage usage : usages) {
+					createUsage(rectionId, usage);
+				}
+			}
+		}
+	}
+
+	private void createUsage(Long rectionId, Usage usage) throws Exception {
+		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, "", null);
+		createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
+		if (isNotEmpty(usage.getDefinition())) {
+			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
+		}
 	}
 
 	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context,
@@ -177,6 +403,44 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 			newWords.add(wordData);
 		}
+	}
+
+	private List<String> extractDefinitions(Element node) {
+
+		final String definitionValueExp = "s:dg/s:d";
+
+		List<String> definitions = new ArrayList<>();
+		List<Element> definitionValueNodes = node.selectNodes(definitionValueExp);
+		for (Element definitionValueNode : definitionValueNodes) {
+			String definition = definitionValueNode.getTextTrim();
+			definitions.add(definition);
+		}
+		return definitions;
+	}
+
+	private List<Usage> extractUsages(Element node) {
+
+		final String usageExp = "s:np/s:ng/s:n";
+		final String deinitionExp = "s:nd";
+		final String deinitionExp2 = "s:nk";
+
+		List<Usage> usages = new ArrayList<>();
+		List<Element> usageNodes = node.selectNodes(usageExp);
+		for (Element usageNode : usageNodes) {
+			Usage newUsage = new Usage();
+			newUsage.setValue(usageNode.getTextTrim());
+			if (usageNode.hasMixedContent()) {
+				Element definitionNode = (Element) usageNode.selectSingleNode(deinitionExp);
+				if (definitionNode == null) {
+					definitionNode = (Element) usageNode.selectSingleNode(deinitionExp2);
+				}
+				if (definitionNode != null) {
+					newUsage.setDefinition(definitionNode.getText());
+				}
+			}
+			usages.add(newUsage);
+		}
+		return usages;
 	}
 
 	private Word extractWordData(Element wordGroupNode, WordData wordData, String guid) throws Exception {
@@ -283,6 +547,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return reportingId;
 	}
 
+	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions) {
+
+//		String definition = definitions.isEmpty() ? null : definitions.get(0);
+//		Optional<SynonymData> existingSynonym = context.synonyms.stream()
+//				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
+//				.findFirst();
+//		return existingSynonym.orElse(new SynonymData()).meaningId;
+		return null;
+	}
+
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
 
 		Long wordId = null;
@@ -367,6 +641,21 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private class PosData {
 		String code;
 		String processStateCode;
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			PosData posData = (PosData) o;
+			return Objects.equals(code, posData.code);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(code);
+		}
 	}
 
 	private class Context {

@@ -1551,6 +1551,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private class PosData {
 		String code;
 		String processStateCode;
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			PosData posData = (PosData) o;
+			return Objects.equals(code, posData.code);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(code);
+		}
 	}
 
 	private class SynonymData {
