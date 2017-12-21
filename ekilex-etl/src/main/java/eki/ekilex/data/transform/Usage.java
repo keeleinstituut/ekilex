@@ -37,4 +37,5 @@ public class Usage extends AbstractDataObject {
 	public void setDefinition(String definition) {
 		this.definition = definition;
 	}
+
 }
