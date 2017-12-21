@@ -72,9 +72,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			Map<String, List<Paradigm>> wordParadigmsMap,
 			boolean isAddReporting) throws Exception {
 
-		final String articleHeaderExp = "s:P";
-		final String articleBodyExp = "s:S";
-
 		logger.info("Starting import");
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -97,23 +94,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Artiklite töötlus", "", "");
 		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		for (Element articleNode : articleNodes) {
-			String guid = extractGuid(articleNode);
-			String reportingId = extractReporingId(articleNode);
-			List<WordData> newWords = new ArrayList<>();
-
-			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, guid);
-
-			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
-			if (contentNode != null) {
-				processArticleContent(reportingId, contentNode, newWords, context);
-			}
+			processArticle(articleNode, wordParadigmsMap, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				long progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
-			context.importedWords.addAll(newWords);
 		}
 		logger.debug("total {} articles iterated", articleCounter);
 
@@ -126,6 +112,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
+	}
+
+	void processArticle(Element articleNode, Map<String, List<Paradigm>> wordParadigmsMap, Context context) throws Exception {
+
+		final String articleHeaderExp = "s:P";
+		final String articleBodyExp = "s:S";
+
+		String guid = extractGuid(articleNode);
+		String reportingId = extractReporingId(articleNode);
+		List<WordData> newWords = new ArrayList<>();
+
+		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
+		processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, guid);
+
+		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+		if (contentNode != null) {
+			processArticleContent(reportingId, contentNode, newWords, context);
+		}
+		context.importedWords.addAll(newWords);
 	}
 
 	void processBasicWords(Context context) throws Exception {
