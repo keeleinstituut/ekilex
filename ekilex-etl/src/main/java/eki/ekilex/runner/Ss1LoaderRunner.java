@@ -241,9 +241,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel3(lexemeLevel3);
 					Long lexemeId = createLexeme(lexeme, dataset);
 					if (lexemeId != null) {
-						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
+						saveRectionsAndUsages(meaningGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
-						saveGrammars(meaningNumberGroupNode, lexemeId);
+						saveGrammars(meaningGroupNode, lexemeId);
 //						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 //							LexemeToWordData antonymData = meaningAntonym.copy();
 //							antonymData.lexemeId = lexemeId;
@@ -351,7 +351,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
 
-		final String rectionExp = "s:rep/s:reg/s:rek";
+		final String rectionExp = "s:rep/s:reg/s:rek/s:kn";
 
 		List<Element> rectionNodes = node.selectNodes(rectionExp);
 		if (rectionNodes.isEmpty()) {
