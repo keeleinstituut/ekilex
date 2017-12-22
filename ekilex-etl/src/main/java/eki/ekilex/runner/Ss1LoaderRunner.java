@@ -114,6 +114,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
+	@Transactional
 	void processArticle(Element articleNode, Map<String, List<Paradigm>> wordParadigmsMap, Context context) throws Exception {
 
 		final String articleHeaderExp = "s:P";
@@ -196,7 +197,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
+			int lexemeLevel2 = 0;
 			for (Element meaningGroupNode : meaingGroupNodes) {
+				lexemeLevel2++;
 				List<Usage> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 
@@ -226,16 +229,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 //				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 
-				int lexemeLevel2 = 0;
+				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
-					lexemeLevel2++;
+					lexemeLevel3++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
 					lexeme.setType(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
-					lexeme.setLevel3(0);
+					lexeme.setLevel3(lexemeLevel3);
 					Long lexemeId = createLexeme(lexeme, dataset);
 					if (lexemeId != null) {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
