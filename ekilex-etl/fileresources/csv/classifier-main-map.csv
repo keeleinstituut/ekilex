@@ -580,26 +580,26 @@ sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4
 sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	lexeme_frequency	L2
 sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	lexeme_frequency	L3
 sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	lexeme_frequency	L4
-sl_tyyp	sl_tyyp	adj	adjektiiv, omadussõna	et	-	-
-sl_tyyp	sl_tyyp	adj	adjective	en	-	-
-sl_tyyp	sl_tyyp	adv	adverb, määrsõna	et	-	-
-sl_tyyp	sl_tyyp	adv	adverb	en	-	-
-sl_tyyp	sl_tyyp	indekl adj	käändumatu omadussõna	et	-	-
-sl_tyyp	sl_tyyp	indekl adj	indeclinable adjective	en	-	-
-sl_tyyp	sl_tyyp	indekl pron	käändumatu asesõna	et	-	-
-sl_tyyp	sl_tyyp	indekl pron	indeclinable pronoun	en	-	-
-sl_tyyp	sl_tyyp	interj	interjektsioon, hüüdsõna	et	-	-
-sl_tyyp	sl_tyyp	interj	interjection	en	-	-
-sl_tyyp	sl_tyyp	konj	konjunktsioon, sidesõna	et	-	-
-sl_tyyp	sl_tyyp	konj	conjunction	en	-	-
-sl_tyyp	sl_tyyp	num	numeraal, arvsõna	et	-	-
-sl_tyyp	sl_tyyp	num	numeral	en	-	-
-sl_tyyp	sl_tyyp	pron	pronoomen, asesõna	et	-	-
-sl_tyyp	sl_tyyp	pron	pronoun	en	-	-
-sl_tyyp	sl_tyyp	s	substantiiv, nimisõna	et	-	-
-sl_tyyp	sl_tyyp	s	substantive	en	-	-
-sl_tyyp	sl_tyyp	v	verb, tegusõna	et	-	-
-sl_tyyp	sl_tyyp	v	verb	en	-	-
+sl_tyyp	sl_tyyp	adj	adjektiiv, omadussõna	et	pos	adj
+sl_tyyp	sl_tyyp	adj	adjective	en	pos	adj
+sl_tyyp	sl_tyyp	adv	adverb, määrsõna	et	pos	adv
+sl_tyyp	sl_tyyp	adv	adverb	en	pos	adv
+sl_tyyp	sl_tyyp	indekl adj	käändumatu omadussõna	et	pos	adj + ID
+sl_tyyp	sl_tyyp	indekl adj	indeclinable adjective	en	pos	adj + ID
+sl_tyyp	sl_tyyp	indekl pron	käändumatu asesõna	et	pos	pron + ID
+sl_tyyp	sl_tyyp	indekl pron	indeclinable pronoun	en	pos	pron + ID
+sl_tyyp	sl_tyyp	interj	interjektsioon, hüüdsõna	et	pos	interj
+sl_tyyp	sl_tyyp	interj	interjection	en	pos	interj
+sl_tyyp	sl_tyyp	konj	konjunktsioon, sidesõna	et	pos	konj
+sl_tyyp	sl_tyyp	konj	conjunction	en	pos	konj
+sl_tyyp	sl_tyyp	num	numeraal, arvsõna	et	pos	num
+sl_tyyp	sl_tyyp	num	numeral	en	pos	num
+sl_tyyp	sl_tyyp	pron	pronoomen, asesõna	et	pos	pron
+sl_tyyp	sl_tyyp	pron	pronoun	en	pos	pron
+sl_tyyp	sl_tyyp	s	substantiiv, nimisõna	et	pos	s
+sl_tyyp	sl_tyyp	s	substantive	en	pos	s
+sl_tyyp	sl_tyyp	v	verb, tegusõna	et	pos	v
+sl_tyyp	sl_tyyp	v	verb	en	pos	v
 sl_tyyp	sõnaliik	A	A	et	pos	adj
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj
 sl_tyyp	sõnaliik	A	adjective	en	pos	adj
