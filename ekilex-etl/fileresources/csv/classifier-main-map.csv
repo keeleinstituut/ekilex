@@ -1106,8 +1106,8 @@ vk_tyyp	vk_tyyp	as	abstraktne substantiiv	et	-	-
 vk_tyyp	vk_tyyp	as	abstract substantive	en	-	-
 vk_tyyp	vk_tyyp	dem	deminutiiv, vähendussõna	et	-	-
 vk_tyyp	vk_tyyp	dem	diminutive	en	-	-
-vk_tyyp	vk_tyyp	nom	nimetav, nominatiiv	et	-	-
-vk_tyyp	vk_tyyp	nom	nominative	en	-	-
+vk_tyyp	vk_tyyp	nom	nimetav, nominatiiv	et	display_morph	nom
+vk_tyyp	vk_tyyp	nom	nominative	en	display_morph	nom
 vk_tyyp	vk_tyyp	gen	genitiiv, omastav	et	-	-
 vk_tyyp	vk_tyyp	gen	genitive	en	-	-
 vk_tyyp	vk_tyyp	illat	illatiiv, sisseütlev	et	-	-
@@ -1118,9 +1118,9 @@ vk_tyyp	vk_tyyp	indekl	käändumatu	et	-	-
 vk_tyyp	vk_tyyp	indekl	indeclinable	en	-	-
 vk_tyyp	vk_tyyp	iness	inessiiv, seesütlev	et	-	-
 vk_tyyp	vk_tyyp	iness	inessive	en	-	-
-vk_tyyp	vk_tyyp	adess	adessiiv, alalütlev	et	-	-
-vk_tyyp	vk_tyyp	komp	komparatiiv, keskvõrre	et	-	-
-vk_tyyp	vk_tyyp	komp	comparative	en	-	-
+vk_tyyp	vk_tyyp	adess	adessiiv, alalütlev	et	display_morph	adess
+vk_tyyp	vk_tyyp	komp	komparatiiv, keskvõrre	et	display_morph	keskv
+vk_tyyp	vk_tyyp	komp	comparative	en	display_morph	keskv
 vk_tyyp	vk_tyyp	part	partitiiv, osastav	et	-	-
 vk_tyyp	vk_tyyp	part	partitive	en	-	-
 vk_tyyp	vk_tyyp	pl elat	pluurali elatiiv, mitmuse seestütlev	et	-	-
@@ -1138,8 +1138,8 @@ vk_tyyp	vk_tyyp	pl part	plural partitive	en	-	-
 vk_tyyp	vk_tyyp	pl term	pluurali terminatiiv, mitmuse rajav	et	-	-
 vk_tyyp	vk_tyyp	pl term	plural terminative	en	-	-
 vk_tyyp	vk_tyyp	sg gen	ainsuse omastav	et	-	-
-vk_tyyp	vk_tyyp	superl	superlatiiv, ülivõrre	et	-	-
-vk_tyyp	vk_tyyp	superl	superlative	en	-	-
+vk_tyyp	vk_tyyp	superl	superlatiiv, ülivõrre	et	display_morph	üliv
+vk_tyyp	vk_tyyp	superl	superlative	en	display_morph	üliv
 vk_tyyp	vk_tyyp	tgn	tegijanimi	et	-	-
 vk_tyyp	vk_tyyp	tgn	substantive suffix -ja = actor	en	-	-
 vk_tyyp	vk_tyyp	tn	teonimi	et	-	-

@@ -61,6 +61,10 @@ display_morph	sg	singular	eng	descrip
 display_morph	sg gen	singular genitiiv, ainsuse omastav	est	descrip
 display_morph	sg gen	singular genitiv	eng	descrip
 display_morph	ssv	seisundivorm	est	descrip
+display_morph	adess	adessiiv, alalütlev	est	descrip
+display_morph	adess	adessiiv, alalütlev	eng	descrip
+display_morph	nom	nimetav, nominatiiv	est	descrip
+display_morph	nom	nominative	eng	descrip
 form_rel_type	mvt	viitemärksõna	est	full
 lex_rel_type	comp	liitsõna	est	full
 lex_rel_type	ant	antonüüm	est	full
