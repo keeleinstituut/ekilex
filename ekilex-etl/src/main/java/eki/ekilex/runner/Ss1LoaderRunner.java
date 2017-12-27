@@ -58,12 +58,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> lexemeTypes;
 	private Map<String, String> posCodes;
 	private Map<String, String> processStateCodes;
+	private Map<String, String> displayMorpCodes;
 
 	@Override
 	void initialise() throws Exception {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
+		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
 	}
 
 	@Transactional
@@ -481,7 +483,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
-			word.setDisplayMorph(wordDisplayMorphNode.getTextTrim());
+			word.setDisplayMorph(displayMorpCodes.get(wordDisplayMorphNode.getTextTrim()));
+			if (displayMorpCodes.get(wordDisplayMorphNode.getTextTrim()) == null) {
+				logger.warn("Unknown display morph code : {} : {}", wordDisplayMorphNode.getTextTrim(), wordValue);
+			}
 		}
 		return word;
 	}
