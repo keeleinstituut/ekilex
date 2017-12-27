@@ -108,6 +108,21 @@ lexeme_type	tugiverb	tugiverb	est	descrip
 lexeme_type	väljend	väljend	est	descrip
 lexeme_type	ühendsidesõna	ühendsidesõna (nii et)	est	descrip
 lexeme_type	rühmsidesõna	rühmsidesõna (ei .. ega)	est	descrip
+lexeme_type	f	fras-väljend (väljendite plokis)	est	descrip
+lexeme_type	f	(idiomatic) phrase (grp)	eng	descrip
+lexeme_type	mf	märksõna-väljend (iseseisev)	est	descrip
+lexeme_type	mf	multiword unit (in the alphabet)	eng	descrip
+lexeme_type	g	omastavaline täiend, genitiivne täiend	est	descrip
+lexeme_type	lz	tsitaatsõna lühend	est	descrip
+lexeme_type	lz	abbreviation for alien word	eng	descrip
+lexeme_type	n	number (nt 24/7)	est	descrip
+lexeme_type	n	number	eng	descrip
+lexeme_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
+lexeme_type	pf	combining form	eng	descrip
+lexeme_type	s	sarja liige	est	descrip
+lexeme_type	s	serial member	eng	descrip
+lexeme_type	km	kaubamärk	est	descrip
+lexeme_type	th	tähis	est	descrip
 meaning_state	terminiprobleem	-	-	-
 meaning_type	termin	-	-	-
 meaning_type	tõlkeprobleem	-	-	-
