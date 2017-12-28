@@ -49,6 +49,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
+	private final static String SYNONYMS_REPORT_NAME = "synonyms";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -106,6 +107,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("total {} articles iterated", articleCounter);
 
 		processBasicWords(context);
+		processSynonymsNotFoundInImportFile(context);
 
 		logger.debug("Found {} word duplicates", context.wordDuplicateCount);
 
@@ -134,6 +136,36 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			processArticleContent(reportingId, contentNode, newWords, context);
 		}
 		context.importedWords.addAll(newWords);
+	}
+
+	private void processSynonymsNotFoundInImportFile(Context context) throws Exception {
+
+		logger.debug("Found {} synonyms", context.synonyms.size());
+		setActivateReport(SYNONYMS_REPORT_NAME);
+		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
+
+		Count newSynonymWordCount = new Count();
+		for (SynonymData synonymData : context.synonyms) {
+			boolean isImported = context.importedWords.stream().anyMatch(w -> synonymData.word.equals(w.value));
+			if (!isImported) {
+				WordData newWord = createDefaultWordFrom(synonymData.word, synonymData.displayForm);
+				context.importedWords.add(newWord);
+				newSynonymWordCount.increment();
+				Long wordId = newWord.id;
+
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(wordId);
+				lexeme.setMeaningId(synonymData.meaningId);
+				lexeme.setLevel1(0);
+				lexeme.setLevel2(0);
+				lexeme.setLevel3(0);
+				createLexeme(lexeme, dataset);
+				logger.debug("synonym word created : {}", synonymData.word);
+				writeToLogFile(synonymData.reportingId, "sünonüümi ei letud, lisame sõna", synonymData.word);
+			}
+		}
+		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
+		logger.debug("Synonyms import done.");
 	}
 
 	void processBasicWords(Context context) throws Exception {
@@ -226,8 +258,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 //					addAbbreviationLexeme(abbreviation, meaningId, dataset);
 //				}
 
-//				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
-//				context.synonyms.addAll(meaningSynonyms);
+				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
+				context.synonyms.addAll(meaningSynonyms);
 
 //				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 
@@ -415,6 +447,31 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private List<SynonymData> extractSynonyms(String reportingId, Element node, Long meaningId, List<String> definitions) {
+
+		final String synonymExp = "s:ssh/s:syn";
+		final String homonymNrAttr = "i";
+
+		List<SynonymData> synonyms = new ArrayList<>();
+		List<Element> synonymNodes = node.selectNodes(synonymExp);
+		for (Element synonymNode : synonymNodes) {
+			SynonymData data = new SynonymData();
+			data.reportingId = reportingId;
+			data.displayForm = synonymNode.getTextTrim();
+			data.word = cleanUp(data.displayForm);
+			data.meaningId = meaningId;
+			String homonymNrAtrValue = synonymNode.attributeValue(homonymNrAttr);
+			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
+				data.homonymNr = Integer.parseInt(homonymNrAtrValue);
+			}
+			if (!definitions.isEmpty()) {
+				data.definition = definitions.get(0);
+			}
+			synonyms.add(data);
+		}
+		return synonyms;
+	}
+
 	private List<String> extractDefinitions(Element node) {
 
 		final String definitionValueExp = "s:dg/s:d";
@@ -560,14 +617,23 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return reportingId;
 	}
 
+	private WordData createDefaultWordFrom(String wordValue, String displayForm) throws Exception {
+
+		WordData createdWord = new WordData();
+		createdWord.value = wordValue;
+		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
+		Word word = new Word(wordValue, dataLang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null);
+		createdWord.id = saveWord(word, null, null, null);
+		return createdWord;
+	}
+
 	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions) {
 
-//		String definition = definitions.isEmpty() ? null : definitions.get(0);
-//		Optional<SynonymData> existingSynonym = context.synonyms.stream()
-//				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
-//				.findFirst();
-//		return existingSynonym.orElse(new SynonymData()).meaningId;
-		return null;
+		String definition = definitions.isEmpty() ? null : definitions.get(0);
+		Optional<SynonymData> existingSynonym = context.synonyms.stream()
+				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
+				.findFirst();
+		return existingSynonym.orElse(new SynonymData()).meaningId;
 	}
 
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
@@ -671,10 +737,20 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private class SynonymData {
+		String word;
+		String displayForm;
+		Long meaningId;
+		int homonymNr = 0;
+		String reportingId;
+		String definition;
+	}
+
 	private class Context {
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		Count wordDuplicateCount = new Count();
+		List<SynonymData> synonyms = new ArrayList<>();
 	}
 
 }
