@@ -236,23 +236,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String lexemePosCodeExp = "s:ssp/s:mmg/s:sl";
 		final String meaningExternalIdExp = "s:tpid";
 		final String asTyypAttr = "as";
+		final String abbreviationExp = "s:lig/s:lyh";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
-//		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
-//		List<LexemeToWordData> compoundReferences = extractCompoundReferences(contentNode, reportingId);
-//		List<LexemeToWordData> articleVormels = extractVormels(commonInfoNode);
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
-//			saveSymbol(meaningNumberGroupNode, context, reportingId);
-//			WordData abbreviation = processAbbreviation(meaningNumberGroupNode, context);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
-//			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
-//			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode, reportingId);
-//			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
-//			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
-//			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode, reportingId);
 			List<Long> newLexemes = new ArrayList<>();
 			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
 			List<PosData> meaningPosCodes = new ArrayList<>();
@@ -288,13 +279,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
 				}
-//				if (abbreviation != null) {
-//					addAbbreviationLexeme(abbreviation, meaningId, dataset);
-//				}
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
 				context.synonyms.addAll(meaningSynonyms);
 
+				List<LexemeToWordData> abbreviations = extractLexemeMetadata(meaningGroupNode, abbreviationExp, null, reportingId); // <- ???
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 
 				int lexemeLevel3 = 0;
@@ -318,61 +307,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 							antonymData.reportingId = reportingId;
 							context.antonyms.add(antonymData);
 						}
-//						for (String compoundWord : compoundWords) {
-//							LexemeToWordData compData = new LexemeToWordData();
-//							compData.word = compoundWord;
-//							compData.lexemeId = lexemeId;
-//							compData.reportingId = reportingId;
-//							context.compoundWords.add(compData);
-//						}
-//						for (LexemeToWordData meaningReference : meaningReferences) {
-//							LexemeToWordData referenceData = meaningReference.copy();
-//							referenceData.lexemeId = lexemeId;
-//							referenceData.reportingId = reportingId;
-//							context.meaningReferences.add(referenceData);
-//						}
-//						for (LexemeToWordData vormel : vormels) {
-//							LexemeToWordData vormelData = vormel.copy();
-//							vormelData.lexemeId = lexemeId;
-//							vormelData.reportingId = reportingId;
-//							context.vormels.add(vormelData);
-//						}
-//						for (LexemeToWordData singleForm : singleForms) {
-//							LexemeToWordData singleFormData = singleForm.copy();
-//							singleFormData.lexemeId = lexemeId;
-//							singleFormData.reportingId = reportingId;
-//							context.singleForms.add(singleFormData);
-//						}
-//						for (LexemeToWordData compoundForm : compoundForms) {
-//							LexemeToWordData compoundFormData = compoundForm.copy();
-//							compoundFormData.lexemeId = lexemeId;
-//							compoundFormData.reportingId = reportingId;
-//							context.compoundForms.add(compoundFormData);
-//						}
 						newLexemes.add(lexemeId);
 					}
 				}
 			}
-//			for (Long lexemeId : newLexemes) {
-//				for (LexemeToWordData jointReference : jointReferences) {
-//					LexemeToWordData referenceData = jointReference.copy();
-//					referenceData.lexemeId = lexemeId;
-//					referenceData.reportingId = reportingId;
-//					context.jointReferences.add(referenceData);
-//				}
-//				for (LexemeToWordData compoundReference : compoundReferences) {
-//					LexemeToWordData referenceData = compoundReference.copy();
-//					referenceData.lexemeId = lexemeId;
-//					referenceData.reportingId = reportingId;
-//					context.compoundReferences.add(referenceData);
-//				}
-//				for (LexemeToWordData vormel : articleVormels) {
-//					LexemeToWordData vormelData = vormel.copy();
-//					vormelData.lexemeId = lexemeId;
-//					vormelData.reportingId = reportingId;
-//					context.vormels.add(vormelData);
-//				}
-//			}
 		}
 	}
 
