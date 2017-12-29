@@ -73,7 +73,7 @@ public class TermSearchController {
 		}
 		TermDetails details = termSearchService.findWordDetailsInDatasets(formId, selectedDatasets);
 
-		model.addAttribute("detailsName", formId + "_details");
+		model.addAttribute("formId", formId);
 		model.addAttribute("details", details);
 
 		return "termsearch :: details";
