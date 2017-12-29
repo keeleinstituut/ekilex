@@ -53,6 +53,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";
 	private final static String ANTONYMS_REPORT_NAME = "antonyms";
+	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -63,10 +64,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> posCodes;
 	private Map<String, String> processStateCodes;
 	private Map<String, String> displayMorpCodes;
+	private String lexemeTypeAbbreviation;
 
 	@Override
 	void initialise() throws Exception {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		lexemeTypeAbbreviation = lexemeTypes.get("l");
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
@@ -112,6 +115,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		processBasicWords(context);
 		processSynonymsNotFoundInImportFile(context);
 		processAntonyms(context);
+		processAbbreviations(context);
 
 		logger.debug("Found {} word duplicates", context.wordDuplicateCount);
 
@@ -141,6 +145,37 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 		context.importedWords.addAll(newWords);
 	}
+
+	private void processAbbreviations(Context context) throws Exception {
+
+		logger.debug("Found {} abbreviations.", context.abbreviations.size());
+		setActivateReport(ABBREVIATIONS_REPORT_NAME);
+		writeToLogFile("Lühendite töötlus <s:lyh>", "", "");
+
+		for (LexemeToWordData abbreviationData : context.abbreviations) {
+			Optional<WordData> existingWord = context.importedWords.stream()
+					.filter(w -> abbreviationData.word.equals(w.value) && abbreviationData.homonymNr == w.homonymNr)
+					.findFirst();
+			Long wordId;
+			if (existingWord.isPresent()) {
+				wordId = existingWord.get().id;
+			} else {
+				WordData newWord = createDefaultWordFrom(abbreviationData.word, null);
+				wordId = newWord.id;
+				writeToLogFile(abbreviationData.reportingId, "Ei leitud lühendit, loome uue", abbreviationData.word);
+			}
+			Lexeme lexeme = new Lexeme();
+			lexeme.setMeaningId(abbreviationData.meaningId);
+			lexeme.setWordId(wordId);
+			lexeme.setLevel1(0);
+			lexeme.setLevel2(0);
+			lexeme.setLevel3(0);
+			lexeme.setType(abbreviationData.lexemeType);
+			createLexeme(lexeme, dataset);
+		}
+		logger.debug("Abbreviations import done.");
+	}
+
 	private void processAntonyms(Context context) throws Exception {
 
 		logger.debug("Found {} antonyms.", context.antonyms.size());
@@ -236,7 +271,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String lexemePosCodeExp = "s:ssp/s:mmg/s:sl";
 		final String meaningExternalIdExp = "s:tpid";
 		final String asTyypAttr = "as";
-		final String abbreviationExp = "s:lig/s:lyh";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 
@@ -273,7 +307,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				} else {
-					logger.debug("synonym meaning found : {}", newWords.get(0).value);
+//					logger.debug("synonym meaning found : {}", newWords.get(0).value);
 				}
 
 				if (isNotEmpty(meaningExternalId)) {
@@ -283,7 +317,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
 				context.synonyms.addAll(meaningSynonyms);
 
-				List<LexemeToWordData> abbreviations = extractLexemeMetadata(meaningGroupNode, abbreviationExp, null, reportingId); // <- ???
+				List<LexemeToWordData> abbreviations = extractAbbreviations(meaningGroupNode, meaningId, reportingId);
+				context.abbreviations.addAll(abbreviations);
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 
 				int lexemeLevel3 = 0;
@@ -312,6 +347,20 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private List<LexemeToWordData> extractAbbreviations(Element node, Long meaningId, String reportingId) throws Exception {
+
+		final String abbreviationExp = "s:lig/s:lyh";
+
+		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, null, reportingId);
+		abbreviations.forEach(a -> {
+			a.meaningId = meaningId;
+			if (a.lexemeType == null) {
+				a.lexemeType = lexemeTypeAbbreviation;
+			}
+		});
+		return abbreviations;
 	}
 
 	private void saveGrammars(Element node, Long lexemeId) throws Exception {
@@ -438,6 +487,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			lexemeMetadata.displayForm = metadataNode.getTextTrim();
 			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
+			lexemeMetadata.reportingId = reportingId;
 			String lexemeLevel1AttrValue = metadataNode.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
 				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
@@ -775,6 +825,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String lexemeType;
+		Long meaningId;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -789,6 +840,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
 			newData.lexemeType = this.lexemeType;
+			newData.meaningId = this.meaningId;
 			return newData;
 		}
 	}
@@ -799,6 +851,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		Count wordDuplicateCount = new Count();
 		List<SynonymData> synonyms = new ArrayList<>();
 		List<LexemeToWordData> antonyms = new ArrayList<>();
+		List<LexemeToWordData> abbreviations = new ArrayList<>();
 	}
 
 }
