@@ -332,6 +332,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(lexemeLevel3);
+					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, dataset);
 					if (lexemeId != null) {
 						saveRectionsAndUsages(meaningGroupNode, lexemeId, usages);
@@ -441,7 +442,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		final String wordGroupExp = "s:mg";
 		final String wordPosCodeExp = "s:sl";
-		final String posAsTyypAttr = "as";
+		final String wordGrammarPosCodesExp = "s:grg/s:sl";
 
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
@@ -457,16 +458,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
 			context.basicWords.addAll(basicWordsOfTheWord);
 
-			List<Element> posCodeNodes = wordGroupNode.selectNodes(wordPosCodeExp);
-			for (Element posCodeNode : posCodeNodes) {
-				PosData posData = new PosData();
-				posData.code = posCodeNode.getTextTrim();
-				posData.processStateCode = posCodeNode.attributeValue(posAsTyypAttr);
-				wordData.posCodes.add(posData);
-			}
+			List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
+			wordData.posCodes.addAll(posCodes);
+			posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
+			wordData.posCodes.addAll(posCodes);
 
 			newWords.add(wordData);
 		}
+	}
+
+	private List<PosData> extractPosCodes(Element node, String wordPosCodeExp) {
+
+		List<PosData> posCodes = new ArrayList<>();
+		List<Element> posCodeNodes = node.selectNodes(wordPosCodeExp);
+		for (Element posCodeNode : posCodeNodes) {
+			PosData posData = new PosData();
+			posData.code = posCodeNode.getTextTrim();
+			posCodes.add(posData);
+		}
+		return posCodes;
 	}
 
 	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
@@ -585,6 +595,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String wordVocalFormExp = "s:hld";
 		final String homonymNrAttr = "i";
 		final String lexemeTypeAttr = "liik";
+		final String wordFrequencyGroupExp = "s:msag";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
@@ -612,6 +623,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (displayMorpCodes.get(wordDisplayMorphNode.getTextTrim()) == null) {
 				logger.warn("Unknown display morph code : {} : {}", wordDisplayMorphNode.getTextTrim(), wordValue);
 			}
+		}
+		// FIXME: 2018.01.02 take first non 'P' value, change after we get correct logic from EKI
+		Optional<String> frequencyGroup = wordGroupNode.selectNodes(wordFrequencyGroupExp).stream()
+				.map(e -> ((Element)e).getTextTrim())
+				.filter(v -> !v.equals("P"))
+				.findFirst();
+		if (frequencyGroup.isPresent()) {
+			wordData.frequencyGroup = frequencyGroup.get();
 		}
 		return word;
 	}
@@ -783,6 +802,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		String reportingId;
 		String lexemeType;
 		List<PosData> posCodes = new ArrayList<>();
+		String frequencyGroup;
 	}
 
 	private class PosData {

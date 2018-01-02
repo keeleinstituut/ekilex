@@ -478,10 +478,10 @@ liik_tyyp	märksõna liik	vlj	väljend	et	lexeme_type	väljend
 liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	lexeme_type	ühendsidesõna
 liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	lexeme_type	rühmsidesõna
 msag_tyyp	msag_tyyp	P	põhisõnavara	et	-	-
-msag_tyyp	msag_tyyp	1	3000 kõige sagedamat	et	-	-
-msag_tyyp	msag_tyyp	2	3000 kuni 6000	et	-	-
-msag_tyyp	msag_tyyp	3	6000 kuni 10000	et	-	-
-msag_tyyp	msag_tyyp	4	pole sagedussõnastikus	et	-	-
+msag_tyyp	msag_tyyp	1	3000 kõige sagedamat	et	lexeme_frequency	1
+msag_tyyp	msag_tyyp	2	3000 kuni 6000	et	lexeme_frequency	2
+msag_tyyp	msag_tyyp	3	6000 kuni 10000	et	lexeme_frequency	3
+msag_tyyp	msag_tyyp	4	pole sagedussõnastikus	et	lexeme_frequency	4
 mt_tyyp	mt_tyyp	img	pilt	et	-	-
 mt_tyyp	mt_tyyp	img	picture	en	-	-
 mt_tyyp	mt_tyyp	imgA	link pildile	et	-	-
