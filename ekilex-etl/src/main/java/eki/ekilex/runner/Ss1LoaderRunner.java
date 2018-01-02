@@ -337,7 +337,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					if (lexemeId != null) {
 						saveRectionsAndUsages(meaningGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
-						saveGrammars(meaningGroupNode, lexemeId);
+						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
@@ -365,14 +365,23 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return abbreviations;
 	}
 
-	private void saveGrammars(Element node, Long lexemeId) throws Exception {
+	private void saveGrammars(Element node, Long lexemeId, WordData wordData) throws Exception {
+
+		List<String> grammars = extractGrammar(node);
+		grammars.addAll(wordData.grammars);
+		for (String grammar : grammars) {
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammar, dataLang);
+		}
+	}
+
+	private List<String> extractGrammar(Element node) {
 
 		final String grammarValueExp = "s:grg/s:gki";
 
-		List<Element> grammarNodes = node.selectNodes(grammarValueExp);
-		for (Element grammarNode : grammarNodes) {
-			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammarNode.getTextTrim(), dataLang);
-		}
+		List<String> grammars = (List<String>) node.selectNodes(grammarValueExp).stream()
+				.map(e -> ((Element) e).getTextTrim())
+				.collect(toList());
+		return grammars;
 	}
 
 	//POS - part of speech
@@ -632,6 +641,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (frequencyGroup.isPresent()) {
 			wordData.frequencyGroup = frequencyGroup.get();
 		}
+		wordData.grammars = extractGrammar(wordGroupNode);
 		return word;
 	}
 
@@ -803,6 +813,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		String lexemeType;
 		List<PosData> posCodes = new ArrayList<>();
 		String frequencyGroup;
+		List<String> grammars = new ArrayList<>();
 	}
 
 	private class PosData {
