@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_AMBIGUOUS_USAGE_MEANING_MATCH = "ambiguous_usage_meaning_match";
 
+	private static final String REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS = "usage_meaning_match_by_creative_analysis";
+
 	private static final String REPORT_MISSING_MAB_INTEGRATION_CASE = "missing_mab_integration_case";
 
 	@Autowired
@@ -90,6 +93,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
+	private final String[] textCleanupEnitites = new String[] {"&ema;v&eml;", "&v;"};
+	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 	private final String usageTranslationLangRus = "rus";
 
 	@Override
@@ -132,7 +137,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		if (doReports) {
 			reportComposer = new ReportComposer("qq2 load report",
-					REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, REPORT_MISSING_MAB_INTEGRATION_CASE);
+					REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, REPORT_MISSING_MAB_INTEGRATION_CASE,
+					REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS);
 		}
 
 		boolean isAddForms = wordParadigmsMap != null;
@@ -296,6 +302,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
+						wordMatch = StringUtils.replaceEach(wordMatch, textCleanupEnitites, textCleanupEnityReplacements);
 						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormCleanupChars, "");
 
 						if (StringUtils.isBlank(wordMatch)) {
@@ -401,7 +408,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 
 		List<UsageTranslation> usageTranslations;
-		List<String> lemmatisedTokens;
+		List<String> originalTokens, lemmatisedTokens;
 		String usageValue;
 		StringBuffer logBuf;
 
@@ -409,33 +416,76 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<String> wordMatchValues = wordMatches.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
 		List<String> usageTranslationValues;
 
+		boolean containsMultiWordMatches = containsMultiWords(wordMatchValues);
+
 		for (UsageMeaning usageMeaning : usageMeanings) {
 			for (Usage usageObj : usageMeaning.getUsages()) {
-				int usageWordMatchCount = 0;
+				int usageWordMatchByOriginalTokenCount = 0;
+				int usageWordMatchByLemmatisationCount = 0;
+				int usageWordMatchByTokenSplitCount = 0;
 				usageValue = usageObj.getValue();
 				usageTranslations = usageObj.getUsageTranslations();
 				usageTranslationValues = usageTranslations.stream().map(usageTranslation -> usageTranslation.getValue()).collect(Collectors.toList());
 				for (UsageTranslation usageTranslation : usageTranslations) {
+					originalTokens = usageTranslation.getOriginalTokens();
 					lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+					if (CollectionUtils.containsAny(originalTokens, wordMatchValues)) {
+						usageWordMatchByOriginalTokenCount++;
+					}
 					if (CollectionUtils.containsAny(lemmatisedTokens, wordMatchValues)) {
-						usageWordMatchCount++;
+						usageWordMatchByLemmatisationCount++;
+					}
+					if (containsMultiWordMatches) {
+						boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatchValues, originalTokens, lemmatisedTokens);
+						if (containsAnyMatchByWordSplit) {
+							usageWordMatchByTokenSplitCount++;
+						}
 					}
 				}
-				if (usageWordMatchCount == 0) {
-					missingUsageTranslationMatchCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(newWordValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageValue);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordMatchValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageTranslationValues);
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
-				} else if (usageWordMatchCount == 1) {
+				if (usageWordMatchByLemmatisationCount == 0) {
+					//TODO experimental
+					if (usageWordMatchByOriginalTokenCount > 0) {
+						logBuf = new StringBuffer();
+						logBuf.append(newWordValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(usageValue);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(wordMatchValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(usageTranslationValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append("lemmatiseerimata sõnade võrdlus");
+						String logRow = logBuf.toString();
+						reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
+					} else if (usageWordMatchByTokenSplitCount > 0) {
+						logBuf = new StringBuffer();
+						logBuf.append(newWordValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(usageValue);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(wordMatchValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(usageTranslationValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append("mitmesõnalise vaste võrdlus");
+						String logRow = logBuf.toString();
+						reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
+					} else {
+						missingUsageTranslationMatchCount.increment();
+						logBuf = new StringBuffer();
+						logBuf.append(newWordValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(usageValue);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(wordMatchValues);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(usageTranslationValues);
+						String logRow = logBuf.toString();
+						reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
+					}
+				} else if (usageWordMatchByLemmatisationCount == 1) {
 					successfulUsageTranslationMatchCount.increment();
-				} else if (usageWordMatchCount > 1) {
+				} else if (usageWordMatchByLemmatisationCount > 1) {
 					ambiguousUsageTranslationMatchCount.increment();
 					logBuf = new StringBuffer();
 					logBuf.append(newWordValues);
@@ -662,7 +712,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Usage newUsage;
 		UsageTranslation usageTranslation;
 		List<UsageTranslation> usageTranslations;
-		List<String> lemmatisedTokens;
+		List<String> originalTokens, lemmatisedTokens;
 		String usageValue;
 		String usageTranslationLang;
 		Element usageTranslationValueNode;
@@ -689,8 +739,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
 					usageTranslationValue = usageTranslationValueNode.getTextTrim();
+					usageTranslationValue = StringUtils.replaceEach(usageTranslationValue, textCleanupEnitites, textCleanupEnityReplacements);
 					lemmatisedTokens = new ArrayList<>();
 					usageTranslationParts = StringUtils.split(usageTranslationValue, ' ');
+					originalTokens = new ArrayList<>(Arrays.asList(usageTranslationParts));
 					for (String usageTranslationPart : usageTranslationParts) {
 						usageTranslationPart = RussianWordProcessing.stripIllegalLetters(usageTranslationPart);
 						usageTranslationPart = StringUtils.lowerCase(usageTranslationPart);
@@ -703,6 +755,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					usageTranslation = new UsageTranslation();
 					usageTranslation.setLang(usageTranslationLang);
 					usageTranslation.setValue(usageTranslationValue);
+					usageTranslation.setOriginalTokens(originalTokens);
 					usageTranslation.setLemmatisedTokens(lemmatisedTokens);
 					usageTranslations.add(usageTranslation);
 				} else {
@@ -746,6 +799,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 
 		List<String> wordMatches = wordMatchObjs.stream().map(wordMatchObj -> wordMatchObj.getValue().toLowerCase()).collect(Collectors.toList());
+		boolean containsMultiWords = containsMultiWords(wordMatches);
 
 		if (CollectionUtils.isEmpty(rectionObjs)) {
 			Rection rectionObj = new Rection();
@@ -765,6 +819,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		} else {
 			List<UsageMeaning> matchingUsageMeanings = new ArrayList<>();
 			List<Usage> matchingUsages;
+			List<String> originalTokens;
+			List<String> lemmatisedTokens;
 			UsageMeaning matchingUsageMeaning;
 			for (UsageMeaning usageMeaning : allUsageMeanings) {
 				matchingUsages = new ArrayList<>();
@@ -772,9 +828,21 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					usageTranslations = usage.getUsageTranslations();
 					boolean isUsageTranslationMatch = false;
 					for (UsageTranslation usageTranslation : usageTranslations) {
-						if (CollectionUtils.containsAny(usageTranslation.getLemmatisedTokens(), wordMatches)) {
+						originalTokens = usageTranslation.getOriginalTokens();
+						lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+						if (CollectionUtils.containsAny(originalTokens, wordMatches)) {
 							isUsageTranslationMatch = true;
 							break;
+						} else if (CollectionUtils.containsAny(lemmatisedTokens, wordMatches)) {
+							isUsageTranslationMatch = true;
+							break;
+						} else if (containsMultiWords) {
+							// TODO experimental
+							boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatches, originalTokens, lemmatisedTokens);
+							if (containsAnyMatchByWordSplit) {
+								isUsageTranslationMatch = true;
+								break;
+							}
 						}
 					}
 					if (isUsageTranslationMatch) {
@@ -814,6 +882,43 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private boolean containsMultiWords(List<String> words) {
+
+		for (String word : words) {
+			word = StringUtils.trim(word);
+			if (StringUtils.contains(word, ' ')) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	//TODO is this sufficient? should go with ordered words instead?
+	private boolean containsAnyMatchByWordSplit(List<String> words, List<String> originalTokens, List<String> lemmatisedTokens) {
+
+		List<String> wordTokensOfAllKind;
+		List<String> wordTokenLemmas;
+		for (String word : words) {
+			String[] wordTokenArr = StringUtils.split(word, ' ');
+			wordTokensOfAllKind = new ArrayList<>(Arrays.asList(wordTokenArr));
+			for (String wordToken : wordTokenArr) {
+				wordToken = RussianWordProcessing.stripIllegalLetters(wordToken);
+				wordToken = StringUtils.lowerCase(wordToken);
+				if (StringUtils.isBlank(wordToken)) {
+					continue;
+				}
+				wordTokenLemmas = russianMorphology.getLemmas(wordToken);
+				wordTokensOfAllKind.addAll(wordTokenLemmas);
+			}
+			if (CollectionUtils.containsAny(originalTokens, wordTokensOfAllKind)) {
+				return true;
+			} else if (CollectionUtils.containsAny(lemmatisedTokens, wordTokensOfAllKind)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private List<String> getContentLines(InputStream resourceInputStream) throws Exception {

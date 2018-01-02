@@ -12,6 +12,8 @@ public class UsageTranslation extends AbstractDataObject {
 
 	private String value;
 
+	private List<String> originalTokens;
+
 	private List<String> lemmatisedTokens;
 
 	public String getLang() {
@@ -28,6 +30,14 @@ public class UsageTranslation extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public List<String> getOriginalTokens() {
+		return originalTokens;
+	}
+
+	public void setOriginalTokens(List<String> originalTokens) {
+		this.originalTokens = originalTokens;
 	}
 
 	public List<String> getLemmatisedTokens() {
