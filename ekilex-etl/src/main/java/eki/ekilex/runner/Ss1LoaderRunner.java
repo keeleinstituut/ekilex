@@ -87,7 +87,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
-			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME);
+			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
+					ABBREVIATIONS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
