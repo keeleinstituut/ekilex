@@ -61,6 +61,10 @@ display_morph	sg	singular	eng	descrip
 display_morph	sg gen	singular genitiiv, ainsuse omastav	est	descrip
 display_morph	sg gen	singular genitiv	eng	descrip
 display_morph	ssv	seisundivorm	est	descrip
+display_morph	adess	adessiiv, alalütlev	est	descrip
+display_morph	adess	adessiiv, alalütlev	eng	descrip
+display_morph	nom	nimetav, nominatiiv	est	descrip
+display_morph	nom	nominative	eng	descrip
 form_rel_type	mvt	viitemärksõna	est	full
 lex_rel_type	comp	liitsõna	est	full
 lex_rel_type	ant	antonüüm	est	full
@@ -77,10 +81,10 @@ lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
-lexeme_frequency	4	4 - pole sag_S-s	est	descrip
+lexeme_frequency	4	4 - pole sagedussõnastikus	est	descrip
 lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
-lexeme_frequency	L4	L4 - pole sag_S-s (lisatud)	est	descrip
+lexeme_frequency	L4	L4 - pole sagedussõnastikus (lisatud)	est	descrip
 lexeme_type	eelistermin	eelistermin	est	descrip
 lexeme_type	lühend	lühend	est	descrip
 lexeme_type	sünonüüm	sünonüüm	est	descrip
@@ -104,6 +108,21 @@ lexeme_type	tugiverb	tugiverb	est	descrip
 lexeme_type	väljend	väljend	est	descrip
 lexeme_type	ühendsidesõna	ühendsidesõna (nii et)	est	descrip
 lexeme_type	rühmsidesõna	rühmsidesõna (ei .. ega)	est	descrip
+lexeme_type	f	fras-väljend (väljendite plokis)	est	descrip
+lexeme_type	f	(idiomatic) phrase (grp)	eng	descrip
+lexeme_type	mf	märksõna-väljend (iseseisev)	est	descrip
+lexeme_type	mf	multiword unit (in the alphabet)	eng	descrip
+lexeme_type	g	omastavaline täiend, genitiivne täiend	est	descrip
+lexeme_type	lz	tsitaatsõna lühend	est	descrip
+lexeme_type	lz	abbreviation for alien word	eng	descrip
+lexeme_type	n	number (nt 24/7)	est	descrip
+lexeme_type	n	number	eng	descrip
+lexeme_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
+lexeme_type	pf	combining form	eng	descrip
+lexeme_type	s	sarja liige	est	descrip
+lexeme_type	s	serial member	eng	descrip
+lexeme_type	km	kaubamärk	est	descrip
+lexeme_type	th	tähis	est	descrip
 meaning_state	terminiprobleem	-	-	-
 meaning_type	termin	-	-	-
 meaning_type	tõlkeprobleem	-	-	-

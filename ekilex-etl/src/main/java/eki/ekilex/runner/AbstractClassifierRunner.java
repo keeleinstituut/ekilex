@@ -26,6 +26,9 @@ import eki.ekilex.data.transform.Classifier;
 import eki.ekilex.data.transform.ClassifierMapping;
 import eki.ekilex.service.XmlReader;
 
+import static org.apache.commons.lang3.StringUtils.EMPTY;
+import static org.apache.commons.lang3.StringUtils.defaultString;
+
 public abstract class AbstractClassifierRunner implements InitializingBean, SystemConstant, TableName {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractClassifierRunner.class);
@@ -91,7 +94,7 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				if (StringUtils.isNotBlank(filteringEkiType) && !StringUtils.equals(ekiType, filteringEkiType)) {
 					continue;
 				}
-				String ekiName = null;
+				String ekiName;
 				Element classifierNameNode = (Element) classifierGroupNode.selectSingleNode(classifNameExp);
 				if (classifierNameNode == null) {
 					ekiName = ekiType;
@@ -118,15 +121,17 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 							}
 							order++;
 							classifier = new ClassifierMapping();
-							classifier.setEkiOrigin(origin);
+							classifier.setEkiOrigin(defaultString(origin));
 							classifier.setEkiType(ekiType);
 							classifier.setEkiName(ekiName);
-							classifier.setEkiParentCode(null);
+							classifier.setEkiParentCode(EMPTY);
 							classifier.setEkiCode(ekiCode);
 							classifier.setEkiValue(ekiValue);
 							classifier.setEkiValueLang(ekiValueLang);
 							classifier.setOrder(order);
 							classifier.setEkiKey(ekiKey);
+							classifier.setLexCode(EMPTY);
+							classifier.setLexName(EMPTY);
 							loadedClassifiers.add(classifier);
 							loadedClassifierKeys.add(ekiKey);
 						}

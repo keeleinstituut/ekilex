@@ -644,7 +644,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 			saveSymbol(meaningNumberGroupNode, context, reportingId);
-			WordData abbreviation = processAbbreviation(meaningNumberGroupNode, context);
+			WordData abbreviation = extractAbbreviation(meaningNumberGroupNode, context);
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			String processStateCode =  processStateCodes.get(meaningNumberGroupNode.attributeValue(asTyypAttr));
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
@@ -810,7 +810,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		createLexeme(lexeme, dataset);
 	}
 
-	private WordData processAbbreviation(Element node, Context context) throws Exception {
+	private WordData extractAbbreviation(Element node, Context context) throws Exception {
 
 		final String abbreviationExp = "x:lyh";
 		Element abbreviationNode = (Element) node.selectSingleNode(abbreviationExp);
@@ -1551,6 +1551,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private class PosData {
 		String code;
 		String processStateCode;
+
+		@Override
+		public boolean equals(Object o) {
+			if (this == o)
+				return true;
+			if (o == null || getClass() != o.getClass())
+				return false;
+			PosData posData = (PosData) o;
+			return Objects.equals(code, posData.code);
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(code);
+		}
 	}
 
 	private class SynonymData {

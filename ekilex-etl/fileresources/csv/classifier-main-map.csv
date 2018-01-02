@@ -1,9 +1,25 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	konfidentsiaalne
-as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	process_state	konfidentsiaalne
+aliik_tyyp	aliik_tyyp	tlk	tõlkija	et	-	-
+aliik_tyyp	aliik_tyyp	tlk	translator	en	-	-
+alt_tyyp	alt_tyyp	v	või	et	-	-
+alt_tyyp	alt_tyyp	tld	tilde	et	-	-
+as_tyyp	as_tyyp	SS1	sõnastiku artikkel	et	-	-
+as_tyyp	as_tyyp	SS1	sõnastiku artikkel	en	-	-
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	konfidentsiaalne
+as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	process_state	konfidentsiaalne
+att_tyyp	att_tyyp	all	alltähendus	et	-	-
+att_tyyp	att_tyyp	all	sense extension	en	-	-
+dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	-	-
+dk_tyyp	dk_tyyp	komp	comparative	en	-	-
+dk_tyyp	dk_tyyp	partits	partitsiip, kesksõna	et	-	-
+dk_tyyp	dk_tyyp	partits	participle	en	-	-
+dk_tyyp	dk_tyyp	superl	superlatiiv, ülivõrre	et	-	-
+dk_tyyp	dk_tyyp	superl	superlative	en	-	-
+dk_tyyp	dk_tyyp	tgn	substantive suffix -ja = actor	en	-	-
+dk_tyyp	dk_tyyp	tn	substantive suffix -mine = act, process	en	-	-
 dk_tyyp	dk_tyyp	adv	adverb (-lt)	et	deriv	adv
 dk_tyyp	dk_tyyp	dem	KE/KENE	et	deriv	dem
 dk_tyyp	dk_tyyp	dem	diminutive	en	deriv	dem
@@ -43,6 +59,313 @@ dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit
 entry class	Entry Class	määramata	määramata	et	process_state	määramata
 entry class	Entry Class	töös	töös	et	process_state	töös
 entry class	Entry Class	avalik	avalik	et	process_state	avalik
+es_tyyp	es_tyyp	ab	andmebaasi element	et	-	-
+es_tyyp	es_tyyp	ab	andmebaasi element	en	-	-
+es_tyyp	es_tyyp	gen	genereeritud sünonüüm	et	-	-
+etl_tyyp	etl_tyyp	lo	liitsõna osa	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	abhaasi	abhaasi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	abhaasi	Abkhaz	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	afrikaansi	afrikaansi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	alamsaksa	alamsaksa keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	alamsaksa	Low German	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	albaania	albaania keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	albaania	Albanian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	araabia	araabia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	araabia	Arabic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	aravaki	aravaki	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	aravaki	Arawak	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	aserbaidžaani	aserbaidžaani keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	aserbaidžaani	Azerbaijani	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	Austraalia k-d	Austraalia keeled	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	Austraalia k-d	Australian languages	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	avesta	avesta keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	avesta	Avesta	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	balti	balti keel (tiibeti keelerühmas)	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	balti	Balti	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	baltisaksa	baltisaksa murre	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	baltisaksa	Baltic German	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	bambara	bambara keel (Malis)	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	bambara	Bambara	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	bantu k-d	bantu keeled	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	bengali	bengali keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	bengali	Bengal	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	berberi	berberi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	berberi	Berber	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	dharuki	dharuki	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	eenetsi	eenetsi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	eestirootsi	eestirootsi murre	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	eesti-vadja	eesti-vadja	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	eesti-vadja	Estonian and Votic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	egiptuse	egiptuse	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	egiptuse	Egyptian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	ersa	ersa keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	ersa	Erzya	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	etioopia	etioopia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	eveeni	eveeni keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	evengi	evengi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	frangi	frangi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	frangi	Frankish (Old Franconian, Old Frankish)	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	gaeli	gaeli keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	gaeli	Gaelish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	germaani	germaani	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	germaani	Germanic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	gooti	gooti keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	gooti	Gothic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	gruusia	gruusia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	gruusia	Georgian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	grööni	grööni keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	grööni	Greenlandic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	handi	handi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	havai	havai keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	havai	Hawaiian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	heebrea	heebrea keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	heebrea	Hebrew	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	hiina	hiina keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	hiina	Chinese	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	hiliskreeka	hiliskreeka keel (2.-7. saj)	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	hiliskreeka	Late Greek	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	hilisladina	hilisladina keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	hilisladina	Late Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	hindi	hindi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	hindi	Hindi	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	hispaania	hispaania keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	hispaania	Spanish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	hollandi	hollandi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	hollandi	Dutch	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	indoeuroopa	indoeuroopa	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	indoneesia	Indoneesia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	indoneesia	Indonesian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	inglise	inglise keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	inglise	English	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	islandi	islandi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	islandi	Icelandic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	isuri	isuri keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	itaalia	itaalia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	itaalia	Italian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	jaapani	jaapani keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	jaapani	Japanese	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	jidiš	jidiši keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	jidiš	Yidish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kamassi	kamassi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kariibi	kariibi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	karjala	karjala keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	karjala	Karelian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kasahhi	kasahhi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kasahhi	Kazakh	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	katalaani	katalaani keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskhollandi	keskhollandi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskhollandi	Middle Dutch	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskindia	keskindia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskkreeka	keskaja kreeka keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskkreeka	Medieval Greek	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskladina	keskaja ladina keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskladina	Medieval Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskprantsuse	keskprantsuse keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskprantsuse	Middle French	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskpärsia	keskpärsia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskpärsia	Middle Persian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskülemsaksa	keskülemsaksa keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	keskülemsaksa	Middle High German	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	ketšua	ketšua keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	ketšua	Quechua	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kimbundu	kimbundu	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kimbundu	Kimbundu (North Mbundu)	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kirgiisi	kirgiisi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kirgiisi	Kirghiz	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kirikuladina	kirikuladina (keel)	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kirikuladina	Church Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kirikuslaavi	kirikusalaavi (vanaslaavi) keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kirikuslaavi	Old Church Slavonic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	komi	komi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	komi	Komi	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kongo	kongo keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kongo	Kongo	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kreeka	kreeka keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kreeka	Greek	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	krimmitatari	krimmitatari keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kõmri	kõmri keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kõmri	Welsh	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	kõptšaki	kõptšaki keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	kõptšaki	Kipchak	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	ladina	ladina keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	ladina	Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	leedu	leedu keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	leedu	Lithuanian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	liivi	liivi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	liivi	Livonian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	liivi (Salatsi)	liivi keele Salatsi murre	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	läti	läti keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	läti	Latvian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	läänemeresoome	läänemeresoome	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	läänemeresoome	Baltic-Finnic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-mordva	läänemeresoome-mordva	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-permi	läänemeresoome-permi	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-saami	läänemeresoome-saami	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	läänemeresoome-volga	läänemeresoome-volga	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	lüüdi	lüüdi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	malagassi	malagassi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	malai	malai keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	malai	Malay	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	malajalami	malajalami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	malajalami	Malayalam	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	maldiivi	maldiivi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	maldiivi	Dhivehi	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	mansi	mansi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	maoori	maoori keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	mari	mari keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	mari	Mari	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	meditsiiniladina	meditsiiniladina keelend	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	meditsiiniladina	Medical Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	mikmaki	mikmaki keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	mikmaki	Micmac	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	mokša	mokša	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	mokša	Moksha	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	mongoli	mongoli keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	mongoli	Mongolian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	nahua	nahua keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	nahua	Nahuatl	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	nama	nama (endise nimega hotentoti) keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	nama	Khoekhoe (Nama, Hottentot)	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	neenetsi	neenetsi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	nepaali	nepaali keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	nganassaani	nganassaani keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	norra	norra keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	osseedi	osseedi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	poola	poola keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	poola	Polish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	portugali	portugali keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	portugali	Portuguese	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	pouhatani	pouhatani keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	pouhatani	Powhatan	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	prantsuse	prantsuse keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	prantsuse	French	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	provansi	provansi	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	preisi	preisi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	pärsia	pärsia	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	pärsia	Persian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	rahvaladina	rahvaladina keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	rahvaladina	Vulgar Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	romaani k-d	romaani keeled	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	rootsi	rootsi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	rootsi	Swedish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	rumeenia	rumeenia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	rumeenia	Romanian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami	saami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami	Sami	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami (Inari)	Inari saami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami (Kolta)	koltasaami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami (Lule)	Lule saami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami (lõuna)	lõunasaami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami (Pite)	Pite saami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saami (Turja)	turjasaami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saksa	saksa keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	saksa	German	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	sarikoli	sarikoli keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	semi k-d	semi keeled	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	serbohorvaadi	serbohorvaadi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	siuu	siuu	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	slaavi k-d	slaavi keeled	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	sloveeni	sloveeni keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	soome	soome keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	soome	Finnish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	soome-ugri	soome-ugri	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	soome-ugri	Finno-Ugric	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	suahiili	suahiili keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	suahiili	Swahili	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	suulu	suulu keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	suulu	Zulu	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	sölkupi	sölkupi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	süüria	süüria keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	süüria	Syrian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	taani	taani keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	taani	Danish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tadžiki	tadžiki keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tadžiki	Tajiki (Tajiki Persian)	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tagalogi	tagalogi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tagalogi	Tagalog	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tai	tai keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tai	Thai	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	taino	taino keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	taino	Taino	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tamili	tamili keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tamili	Tamil	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tatari	tatari keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tatari	Tatar	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tiibeti	tiibeti keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tiibeti	Tibetan	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tonga	tonga keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tonga	Tongan	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšagatai	tšagatai (vanausbeki) keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšagatai	Chagatai	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšehhi	tšehhi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšehhi	Czech	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšuktši	tšuktši keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšuktši	Chukchi	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšuvaši	tšuvaši keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tšuvaši	Chuvash	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	tupi-guaranii	tupi-guaranii keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	tupi-guaranii	Tupi-Guarani	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	turgi k-d	turgi keeled	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	turgi k-d	Turkic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	türgi	türgi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	türgi	Turkish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	udmurdi	udmurdi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	udmurdi	Udmurt	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	uiguuri	uiguuri keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	uiguuri	Uighur	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	ukraina	ukraina	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	ukraina	Ukrainian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	ungari	ungari keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	ungari	Hungarian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	urdu	urdu keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	urdu	Urdu	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	uurali	uurali	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	uurali	Uralic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	uuskreeka	uuskreeka keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	uuskreeka	New Greek	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	uusladina	uusladina keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	uusladina	New Latin / Neo-Latin	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vadja	vadja keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vadja	Votic	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	valgevene	valgevene keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	valgevene	Belarusian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanaegiptuse	vanaegiptuse keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanafriisi	vanafriisi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanahispaania	vanahispaania keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanaindia	vanaindia keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanainglise	vanainglise keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanasaksi	vanasaksi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanasaksi	Old Saxon	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanaprantsuse	vanaprantsuse keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanaprantsuse	Old French	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanapõhja	vanapõhja keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanarootsi	vanarootsi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanarootsi	Old Swedish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanatürgi	vanatürgi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanatürgi	Old Turkish	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanavene	vanavene keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanavene	Old Russian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanaülemsaksa	vanaülemsaksa keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vanaülemsaksa	Old High German	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vene	vene keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vene	Russian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vepsa	vepsa keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vepsa	Vepsian	en	-	-
+etymkeel_tyyp	etymkeel_tyyp	vietnami	vietnami keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	vietnami	Vietnamese	en	-	-
+etympl_tyyp	etympl_tyyp	kirjakeele sõna	kirjakeeles loodud sõna	et	-	-
+etympl_tyyp	etympl_tyyp	kõlasõna	kõlasõna	et	-	-
+etympl_tyyp	etympl_tyyp	laensõna	laensõna	et	-	-
+etympl_tyyp	etympl_tyyp	laensõna	loanword	en	-	-
+etympl_tyyp	etympl_tyyp	laenväljend	laenatud väljend	et	-	-
+etympl_tyyp	etympl_tyyp	laenväljend	borrowed expression	en	-	-
+etympl_tyyp	etympl_tyyp	pooltõlkelaen	pooltõlkelaen, laenu ja tõlkelaenu ristand	et	-	-
+etympl_tyyp	etympl_tyyp	tehissõna	tehissõna (kirjakeele all-liik)	et	-	-
+etympl_tyyp	etympl_tyyp	tehissõna	artificial word	en	-	-
+etympl_tyyp	etympl_tyyp	tootenimi	tootenimi, kaubamärk	et	-	-
+etympl_tyyp	etympl_tyyp	tootenimi	trade name, trade mark, brand	en	-	-
+etympl_tyyp	etympl_tyyp	tõlkelaen	tõlkelaen	et	-	-
+etympl_tyyp	etympl_tyyp	tõlkelaen	loan translation	en	-	-
 fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-
 fak_tyyp	fakultatiivne	fak	nothing	en	-	-
 gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-
@@ -81,7 +404,63 @@ kmpl_tyyp	kmpl_tyyp	Akomp	omadussõna võrdlus	et	-	-
 kmpl_tyyp	kmpl_tyyp	Dkomp	määrsõna võrdlus	et	-	-
 koht_tyyp	koht_tyyp	er	eelrektsioon	et	-	-
 koht_tyyp	koht_tyyp	jr	järelrektsioon	et	-	-
+kr_tyyp	kr_tyyp	aarja	aarja	et	-	-
+kr_tyyp	kr_tyyp	aarja	Aryan	en	-	-
+kr_tyyp	kr_tyyp	algonkini k-d	algonkini keeled	et	-	-
+kr_tyyp	kr_tyyp	balti	balti	et	-	-
+kr_tyyp	kr_tyyp	balti	Baltic	en	-	-
+kr_tyyp	kr_tyyp	bantu k-d	bantu keeled	et	-	-
+kr_tyyp	kr_tyyp	eesti-liivi	eesti-liivi	et	-	-
+kr_tyyp	kr_tyyp	eesti-liivi	Estonian and Livonian	en	-	-
+kr_tyyp	kr_tyyp	eesti-soome	eesti-soome	et	-	-
+kr_tyyp	kr_tyyp	eesti-soome	Estonian and Finnish	en	-	-
+kr_tyyp	kr_tyyp	eesti-vadja	eesti-vadja	et	-	-
+kr_tyyp	kr_tyyp	eesti-vadja	Estonian and Votic	en	-	-
+kr_tyyp	kr_tyyp	germaani	germaani	et	-	-
+kr_tyyp	kr_tyyp	germaani k-d	germaani keeled	et	-	-
+kr_tyyp	kr_tyyp	indoeuroopa	indoeuroopa	et	-	-
+kr_tyyp	kr_tyyp	iraani	iraani	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome	läänemeresoome	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome (lõunarühm)	läänemeresoome (lõunarühm)	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome (piiratud levikuga)	läänemeresoome (piiratud levikuga)	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome-mordva	läänemeresoome-mordva	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome-permi	läänemeresoome-permi	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome-saami	läänemeresoome-saami	et	-	-
+kr_tyyp	kr_tyyp	läänemeresoome-volga	läänemeresoome-volga	et	-	-
+kr_tyyp	kr_tyyp	lääneslaavi	lääneslaavi keeled	et	-	-
+kr_tyyp	kr_tyyp	lääneslaavi	West Slavic	en	-	-
+kr_tyyp	kr_tyyp	põhjagermaani	põhjagermaani	et	-	-
+kr_tyyp	kr_tyyp	põhjagermaani	North Germanic	en	-	-
+kr_tyyp	kr_tyyp	romaani k-d	romaani keeled	et	-	-
+kr_tyyp	kr_tyyp	semi k-d	semi keeled	et	-	-
+kr_tyyp	kr_tyyp	slaavi k-d	slaavi keeled	et	-	-
+kr_tyyp	kr_tyyp	soome-ugri	soome-ugri keeled	et	-	-
+kr_tyyp	kr_tyyp	soome-ugri	Finno-Ugric	en	-	-
+kr_tyyp	kr_tyyp	tiibeti k-d	tiibeti keeled	et	-	-
+kr_tyyp	kr_tyyp	tunguusi-mandžu k-d	tunguusi-mandžu keeled	et	-	-
+kr_tyyp	kr_tyyp	turgi k-d	turgi keeled	et	-	-
+kr_tyyp	kr_tyyp	uurali	uurali	et	-	-
+kr_tyyp	kr_tyyp	uurali	Uralic	en	-	-
+kr_tyyp	kr_tyyp	vanavene	vanavene	et	-	-
+ky_tyyp	ky_tyyp	ky	küsitav	et	-	-
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-
+liik_tyyp	liik_tyyp	f	fras-väljend (väljendite plokis)	et	lexeme_type	f
+liik_tyyp	liik_tyyp	f	(idiomatic) phrase (grp)	en	lexeme_type	f
+liik_tyyp	liik_tyyp	mf	märksõna-väljend (iseseisev)	et	lexeme_type	mf
+liik_tyyp	liik_tyyp	mf	multiword unit (in the alphabet)	en	lexeme_type	mf
+liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	lexeme_type	g
+liik_tyyp	liik_tyyp	lz	tsitaatsõna lühend	et	lexeme_type	lz
+liik_tyyp	liik_tyyp	lz	abbreviation for alien word	en	lexeme_type	lz
+liik_tyyp	liik_tyyp	n	number (nt 24/7)	et	lexeme_type	n
+liik_tyyp	liik_tyyp	n	number	en	lexeme_type	n
+liik_tyyp	liik_tyyp	pf	prefiksoid, pooleesliide vm esiosa	et	lexeme_type	pf
+liik_tyyp	liik_tyyp	pf	combining form	en	lexeme_type	pf
+liik_tyyp	liik_tyyp	s	sarja liige	et	lexeme_type	s
+liik_tyyp	liik_tyyp	s	serial member	en	lexeme_type	s
+liik_tyyp	liik_tyyp	km	kaubamärk	et	lexeme_type	km
+liik_tyyp	liik_tyyp	th	tähis	et	lexeme_type	th
+liik_tyyp	liik_tyyp	y	ühendverb (-sidesõna)	et	lexeme_type	ühendverb
+liik_tyyp	liik_tyyp	y	phrasal verb	en	lexeme_type	ühendverb
 liik_tyyp	liik_tyyp	k	kohanimi	et	lexeme_type	k
 liik_tyyp	liik_tyyp	k	place name	en	lexeme_type	k
 liik_tyyp	liik_tyyp	l	lühend	et	lexeme_type	l
@@ -98,6 +477,11 @@ liik_tyyp	märksõna liik	tv	tugiverb	et	lexeme_type	tugiverb
 liik_tyyp	märksõna liik	vlj	väljend	et	lexeme_type	väljend
 liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	lexeme_type	ühendsidesõna
 liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	lexeme_type	rühmsidesõna
+msag_tyyp	msag_tyyp	P	põhisõnavara	et	-	-
+msag_tyyp	msag_tyyp	1	3000 kõige sagedamat	et	lexeme_frequency	1
+msag_tyyp	msag_tyyp	2	3000 kuni 6000	et	lexeme_frequency	2
+msag_tyyp	msag_tyyp	3	6000 kuni 10000	et	lexeme_frequency	3
+msag_tyyp	msag_tyyp	4	pole sagedussõnastikus	et	lexeme_frequency	4
 mt_tyyp	mt_tyyp	img	pilt	et	-	-
 mt_tyyp	mt_tyyp	img	picture	en	-	-
 mt_tyyp	mt_tyyp	imgA	link pildile	et	-	-
@@ -106,6 +490,10 @@ mt_tyyp	mt_tyyp	f?v	Flash video	et	-	-
 mt_tyyp	mt_tyyp	f?v	Flash video	en	-	-
 mt_tyyp	mt_tyyp	snd	heli	et	-	-
 mt_tyyp	mt_tyyp	snd	sound	en	-	-
+mvtl_tyyp	mvtl_tyyp	srj	sarjaviide	et	-	-
+mvtl_tyyp	mvtl_tyyp	srj	sarjaviide	en	-	-
+mvtl_tyyp	mvtl_tyyp	vt	vaata seost	et	-	-
+mvtl_tyyp	mvtl_tyyp	vt	see also	en	-	-
 mvtl_tyyp	mvtl_tyyp	adv	adverbiviide	et	-	-
 mvtl_tyyp	mvtl_tyyp	adv	cross-reference (from adverb)	en	-	-
 mvtl_tyyp	mvtl_tyyp	gr	vormiviide	et	-	-
@@ -118,9 +506,43 @@ mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	meaning_type	ametinimet
 mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	meaning_type	organisatsioon, asutus
 mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	meaning_type	õigusakti pealkiri
 mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	meaning_type	dokumendi pealkiri
+nliik_tyyp	nliik_tyyp	ls	liitsõna	et	-	-
+nliik_tyyp	nliik_tyyp	ls	compound	en	-	-
+nliik_tyyp	nliik_tyyp	Rhvl	(ei ole kasutusel)	et	-	-
+nliik_tyyp	nliik_tyyp	Vs	vanasõna	et	-	-
+nliik_tyyp	nliik_tyyp	Vs	proverb	en	-	-
+nliik_tyyp	nliik_tyyp	y	sõnaühend	et	-	-
 pvtl_tyyp	pvtl_tyyp	vp	vaata pilti	et	-	-
 pvtl_tyyp	pvtl_tyyp	vpl	vaata piltide lehte	et	-	-
 pvtl_tyyp	pvtl_tyyp	vqp	vaata kaarti lk	et	-	-
+rk_tyyp	rk_tyyp	abess	abessiiv, ilmaütlev	et	-	-
+rk_tyyp	rk_tyyp	abess	abessive	en	-	-
+rk_tyyp	rk_tyyp	ablat	ablatiiv, alaltütlev	et	-	-
+rk_tyyp	rk_tyyp	ablat	ablative	en	-	-
+rk_tyyp	rk_tyyp	adess	adessiiv, alalütlev	et	-	-
+rk_tyyp	rk_tyyp	adess	adessive	en	-	-
+rk_tyyp	rk_tyyp	allat	allatiiv, alaleütlev	et	-	-
+rk_tyyp	rk_tyyp	allat	allative	en	-	-
+rk_tyyp	rk_tyyp	elat	elatiiv, seestütlev	et	-	-
+rk_tyyp	rk_tyyp	elat	elative	en	-	-
+rk_tyyp	rk_tyyp	ess	essiiv, olev	et	-	-
+rk_tyyp	rk_tyyp	ess	essive	en	-	-
+rk_tyyp	rk_tyyp	gen	genitiiv, omastav	et	-	-
+rk_tyyp	rk_tyyp	gen	genitive	en	-	-
+rk_tyyp	rk_tyyp	illat	illatiiv, sisseütlev	et	-	-
+rk_tyyp	rk_tyyp	illat	illative	en	-	-
+rk_tyyp	rk_tyyp	iness	inessiiv, seesütlev	et	-	-
+rk_tyyp	rk_tyyp	iness	inessive	en	-	-
+rk_tyyp	rk_tyyp	komit	komitatiiv, kaasaütlev	et	-	-
+rk_tyyp	rk_tyyp	komit	comitative	en	-	-
+rk_tyyp	rk_tyyp	nom	nominatiiv, nimetav	et	-	-
+rk_tyyp	rk_tyyp	nom	nominative	en	-	-
+rk_tyyp	rk_tyyp	part	partitiiv, osastav	et	-	-
+rk_tyyp	rk_tyyp	part	partitive	en	-	-
+rk_tyyp	rk_tyyp	term	terminatiiv, rajav	et	-	-
+rk_tyyp	rk_tyyp	term	terminative	en	-	-
+rk_tyyp	rk_tyyp	transl	translatiiv, saav	et	-	-
+rk_tyyp	rk_tyyp	transl	translative	en	-	-
 rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	rection_type	obj
 rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	rection_type	kn
 rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	rection_type	ks
@@ -128,6 +550,29 @@ rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	rection_type	yld
 rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	rection_type	inf
 rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	rection_type	kla
 rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	rection_type	subj
+s_tyyp	s_tyyp	hlv	halvustav, solvav	et	-	-
+s_tyyp	s_tyyp	hlv	offensive	en	-	-
+s_tyyp	s_tyyp	hrv	harvaesinev	et	-	-
+s_tyyp	s_tyyp	hrv	rare	en	-	-
+s_tyyp	s_tyyp	lastek	lastekeelne	et	-	-
+s_tyyp	s_tyyp	lastek	child language	en	-	-
+s_tyyp	s_tyyp	luulek	luulekeelne	et	-	-
+s_tyyp	s_tyyp	luulek	poetic	en	-	-
+s_tyyp	s_tyyp	murd	murdekeelne	et	-	-
+s_tyyp	s_tyyp	murd	dialect, regional	en	-	-
+s_tyyp	s_tyyp	nlj	naljatlev	et	-	-
+s_tyyp	s_tyyp	nlj	humorous	en	-	-
+s_tyyp	s_tyyp	piltl	piltlik	et	-	-
+s_tyyp	s_tyyp	piltl	figurative	en	-	-
+s_tyyp	s_tyyp	släng	släng	et	-	-
+s_tyyp	s_tyyp	släng	slang	en	-	-
+s_tyyp	s_tyyp	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	et	-	-
+s_tyyp	s_tyyp	vabakeel	informal, journalistic	en	-	-
+s_tyyp	s_tyyp	van	vanamoeliselt, vananemas	et	-	-
+s_tyyp	s_tyyp	van	archaic	en	-	-
+s_tyyp	s_tyyp	vulg	vulgaarne	et	-	-
+s_tyyp	s_tyyp	vulg	vulgar	en	-	-
+sa_tyyp	sa_tyyp	s	sarja liige	et	-	-
 sag_tyyp	sagedusrühm	1	1 - 3000	et	lexeme_frequency	1
 sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	lexeme_frequency	2
 sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	lexeme_frequency	3
@@ -135,6 +580,26 @@ sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4
 sag_tyyp	sagedusrühm	L2	L2 - 3000-6000 (lisatud)	et	lexeme_frequency	L2
 sag_tyyp	sagedusrühm	L3	L3 - 6000-10000 (lisatud)	et	lexeme_frequency	L3
 sag_tyyp	sagedusrühm	L4	L4 - pole sag_S-s (lisatud)	et	lexeme_frequency	L4
+sl_tyyp	sl_tyyp	adj	adjektiiv, omadussõna	et	pos	adj
+sl_tyyp	sl_tyyp	adj	adjective	en	pos	adj
+sl_tyyp	sl_tyyp	adv	adverb, määrsõna	et	pos	adv
+sl_tyyp	sl_tyyp	adv	adverb	en	pos	adv
+sl_tyyp	sl_tyyp	indekl adj	käändumatu omadussõna	et	pos	adj + ID
+sl_tyyp	sl_tyyp	indekl adj	indeclinable adjective	en	pos	adj + ID
+sl_tyyp	sl_tyyp	indekl pron	käändumatu asesõna	et	pos	pron + ID
+sl_tyyp	sl_tyyp	indekl pron	indeclinable pronoun	en	pos	pron + ID
+sl_tyyp	sl_tyyp	interj	interjektsioon, hüüdsõna	et	pos	interj
+sl_tyyp	sl_tyyp	interj	interjection	en	pos	interj
+sl_tyyp	sl_tyyp	konj	konjunktsioon, sidesõna	et	pos	konj
+sl_tyyp	sl_tyyp	konj	conjunction	en	pos	konj
+sl_tyyp	sl_tyyp	num	numeraal, arvsõna	et	pos	num
+sl_tyyp	sl_tyyp	num	numeral	en	pos	num
+sl_tyyp	sl_tyyp	pron	pronoomen, asesõna	et	pos	pron
+sl_tyyp	sl_tyyp	pron	pronoun	en	pos	pron
+sl_tyyp	sl_tyyp	s	substantiiv, nimisõna	et	pos	s
+sl_tyyp	sl_tyyp	s	substantive	en	pos	s
+sl_tyyp	sl_tyyp	v	verb, tegusõna	et	pos	v
+sl_tyyp	sl_tyyp	v	verb	en	pos	v
 sl_tyyp	sõnaliik	A	A	et	pos	adj
 sl_tyyp	sõnaliik	A	adjektiiv, omadussõna	et	pos	adj
 sl_tyyp	sõnaliik	A	adjective	en	pos	adj
@@ -195,14 +660,490 @@ sl_tyyp	sõnaliik	adp	postposition, preposition	en	pos	adp
 sl_tyyp	sõnaliik	postp	postposition	en	pos	postp
 sl_tyyp	sõnaliik	prep	preposition	en	pos	prep
 sl_tyyp	sõnaliik	pron + ID	indeclinable pronoun	en	pos	pron + ID
+slg_tyyp	slg_tyyp	slg	sulud ümber	et	-	-
+spm_tyyp	spm_tyyp	abstr/konkr-ese	abstr/konkr meetodil/tehikaga saadud/loodud ese	et	-	-
+spm_tyyp	spm_tyyp	abstr/konkr-ese	abstr/concr-artefact	en	-	-
+spm_tyyp	spm_tyyp	abstr/konkr-seisund	abstr/konkr - sellest tingitud või sellega kaasnev seisund	et	-	-
+spm_tyyp	spm_tyyp	abstr/konkr-seisund	abstr/concr-state	en	-	-
+spm_tyyp	spm_tyyp	abstr/konkr-vald	abstr/konkr - sellise entiteediga seotud valdkond, tehnika	et	-	-
+spm_tyyp	spm_tyyp	abstr/konkr-vald	abstr/concr-domain, speciality, technique	en	-	-
+spm_tyyp	spm_tyyp	aeg-abstr/konkr	aeg - selle aja(hetke)ga seotud abstr/konkr entiteet või sündmus	et	-	-
+spm_tyyp	spm_tyyp	aeg-abstr/konkr	time-abstr/concr, event	en	-	-
+spm_tyyp	spm_tyyp	ese-inimene	ese - selle looja, kasutaja, omadus (nt pilt) vm seotud isik	et	-	-
+spm_tyyp	spm_tyyp	ese-inimene	artefact-human	en	-	-
+spm_tyyp	spm_tyyp	ese-kogus	ese - sellesuurune kogus	et	-	-
+spm_tyyp	spm_tyyp	ese-kogus	artefact-amount	en	-	-
+spm_tyyp	spm_tyyp	ese-koht	ese - on/asub/toimib teatavas kohas	et	-	-
+spm_tyyp	spm_tyyp	ese-koht	artefact-place	en	-	-
+spm_tyyp	spm_tyyp	ese-omadus	ese - selle esilduv omadus	et	-	-
+spm_tyyp	spm_tyyp	ese-omadus	artefact-property	en	-	-
+spm_tyyp	spm_tyyp	ese-toit	ese - selle sisu (toit)	et	-	-
+spm_tyyp	spm_tyyp	ese-toit	artefact-food	en	-	-
+spm_tyyp	spm_tyyp	esitus_tiitel-inimene	tiitel - seda kandev, sellega iseloomustatud isik	et	-	-
+spm_tyyp	spm_tyyp	esitus_tiitel-inimene	title-human	en	-	-
+spm_tyyp	spm_tyyp	inimene-keel	inimene - tema omadus (keel), omadus esindab isikut	et	-	-
+spm_tyyp	spm_tyyp	inimene-keel	human-language	en	-	-
+spm_tyyp	spm_tyyp	inimene-loom	inimene - sama omadusega loom	et	-	-
+spm_tyyp	spm_tyyp	inimene-loom	human-animal	en	-	-
+spm_tyyp	spm_tyyp	inimene-tegevus	inimene - tegevus, mida ta teeb või roll, mida ta esindab (nt kaitse)	et	-	-
+spm_tyyp	spm_tyyp	inimene-tegevus	human-activity	en	-	-
+spm_tyyp	spm_tyyp	kehaosa-ese	kehaosa - selles kohas asuv ese	et	-	-
+spm_tyyp	spm_tyyp	kehaosa-ese	body part-artefact	en	-	-
+spm_tyyp	spm_tyyp	kehaosa-inimene	kehaosa - selle kaudu iseloomustatud inimene	et	-	-
+spm_tyyp	spm_tyyp	kehaosa-inimene	body part-human	en	-	-
+spm_tyyp	spm_tyyp	kehaosa-tegevus	kehaosa - tegevuse vahend ja/või tulemus	et	-	-
+spm_tyyp	spm_tyyp	kehaosa-tegevus	body part-activity	en	-	-
+spm_tyyp	spm_tyyp	kogus-toit	kogus/mõõt/portsjon - selliselt serveeritav/tarvitatav toit/jook	et	-	-
+spm_tyyp	spm_tyyp	kogus-toit	amount-food	en	-	-
+spm_tyyp	spm_tyyp	koht_hoone-asutus	koht - selles hoones tegutsev asutus	et	-	-
+spm_tyyp	spm_tyyp	koht_hoone-asutus	place-institution	en	-	-
+spm_tyyp	spm_tyyp	koht-inimene	koht - selles kohas (hoones, asutuses) tegutsevad inimesed	et	-	-
+spm_tyyp	spm_tyyp	koht-inimene	place-human	en	-	-
+spm_tyyp	spm_tyyp	koht-tegevus/sündmus	koht - selles kohas toimuv, kohaga seotud tegevus/sündmus	et	-	-
+spm_tyyp	spm_tyyp	koht-tegevus/sündmus	place-activity/event	en	-	-
+spm_tyyp	spm_tyyp	konkr-kujutis	konkreetne entiteet - selle kujutis	et	-	-
+spm_tyyp	spm_tyyp	konkr-kujutis	concrete entity - its representation	en	-	-
+spm_tyyp	spm_tyyp	loom-materjal	loom - sellest saadud materjal (nt nahk)	et	-	-
+spm_tyyp	spm_tyyp	loom-materjal	animal-material	en	-	-
+spm_tyyp	spm_tyyp	loom-toit	loom - sellest tehtud toit, selle osa toiduna	et	-	-
+spm_tyyp	spm_tyyp	loom-toit	animal-food	en	-	-
+spm_tyyp	spm_tyyp	materjal-ese	materjal - sellest tehtud ese	et	-	-
+spm_tyyp	spm_tyyp	materjal-ese	material-artefact	en	-	-
+spm_tyyp	spm_tyyp	nähtus-omadus	nähtus - selle esilduv omadus	et	-	-
+spm_tyyp	spm_tyyp	nähtus-omadus	phenomenon-property	en	-	-
+spm_tyyp	spm_tyyp	nähtus-seisund-sündmus	nähtus - seisund - sellest tingitud, sellega kaasnev sündmus	et	-	-
+spm_tyyp	spm_tyyp	nähtus-seisund-sündmus	phenomenon-state-event	en	-	-
+spm_tyyp	spm_tyyp	omadus-inimene/loom	omadus - sellise omadusega inimene/loom	et	-	-
+spm_tyyp	spm_tyyp	omadus-inimene/loom	property-human	en	-	-
+spm_tyyp	spm_tyyp	omadus-kõnetegu	omadus - sellise omadusega kõnetegu, suhtlusakt	et	-	-
+spm_tyyp	spm_tyyp	omadus-kõnetegu	property-speech act	en	-	-
+spm_tyyp	spm_tyyp	omadus-seisund	omadus - sellest tingitud, sellega kaasnev seisund	et	-	-
+spm_tyyp	spm_tyyp	omadus-seisund	property-state	en	-	-
+spm_tyyp	spm_tyyp	osa-tervik	osa - (suurem) entiteet, mille osa ta on	et	-	-
+spm_tyyp	spm_tyyp	osa-tervik	part-whole	en	-	-
+spm_tyyp	spm_tyyp	taim-koht	taim - selle taimega kaetud ala	et	-	-
+spm_tyyp	spm_tyyp	taim-koht	plant-place	en	-	-
+spm_tyyp	spm_tyyp	taim-materjal	taim - sellest saadud materjal/aine	et	-	-
+spm_tyyp	spm_tyyp	taim-materjal	plant-material	en	-	-
+spm_tyyp	spm_tyyp	taim-toit	taim - sellest saadud/tehtud toit, selle osa toiduna	et	-	-
+spm_tyyp	spm_tyyp	taim-toit	plant-food	en	-	-
+spm_tyyp	spm_tyyp	taim-õis	taim - selle õis koos varrega	et	-	-
+spm_tyyp	spm_tyyp	taim-õis	plant-flower together with its stalk	en	-	-
+spm_tyyp	spm_tyyp	tegevus-abstr/konkr	tegevus - selle tulemus või vahend (abstr/konkr); abstr/konkr - tegevuse eeldus, funktsioon või omadus	et	-	-
+spm_tyyp	spm_tyyp	tegevus-abstr/konkr	activity-abstr/concr	en	-	-
+spm_tyyp	spm_tyyp	tegevus-ese	tegevus - selle tulemus või vahend (ese); ese - tegevuse eeldus, funktsioon või omadus	et	-	-
+spm_tyyp	spm_tyyp	tegevus-ese	activity-artefact	en	-	-
+spm_tyyp	spm_tyyp	tegevus-omadus	tegevus - selle esilduv, sellega kaasnev omadus	et	-	-
+spm_tyyp	spm_tyyp	tegevus-omadus	activity-property	en	-	-
+spm_tyyp	spm_tyyp	tegevus-seisund	tegevus - sellest tingitud, selle tulemusel tekkinud seisund	et	-	-
+spm_tyyp	spm_tyyp	tegevus-seisund	activity-state	en	-	-
+spm_tyyp	spm_tyyp	tegevus-sündmus	tegevus - sellega iseloomustatud sündmus	et	-	-
+spm_tyyp	spm_tyyp	tegevus-sündmus	activity-event	en	-	-
+spm_tyyp	spm_tyyp	tegevus-tegu/kõnetegu	tegevus - selle üksikjuhtum, selle tulemus või vahend	et	-	-
+spm_tyyp	spm_tyyp	tegevus-tegu/kõnetegu	activity-(speech) act	en	-	-
+spm_tyyp	spm_tyyp	tegevus-vald	tegevus - seda viljelev valdkond/kunstiliik	et	-	-
+spm_tyyp	spm_tyyp	tegevus-vald	activity - domain, speciality	en	-	-
+spm_tyyp	spm_tyyp	toit-sündmus	toit - teatava sündmuse tüüpiline osa/omadus	et	-	-
+spm_tyyp	spm_tyyp	toit-sündmus	food-event	en	-	-
+src_tyyp	src_tyyp	leksm	LEKS märksõna	et	-	-
+src_tyyp	src_tyyp	leksm	LEKS headword	en	-	-
+src_tyyp	src_tyyp	lekstp	LEKS tähendus	et	-	-
+src_tyyp	src_tyyp	lekstp	LEKS sense	en	-	-
+st_tyyp	st_tyyp	abstr	abstraktne entiteet (nt üksus, suhe, süsteem)	et	-	-
+st_tyyp	st_tyyp	abstr	abstract entity	en	-	-
+st_tyyp	st_tyyp	abstr/konkr	abstr/konkr entiteet (nt vahend, võttestik, teatav süsteem, meetod)	et	-	-
+st_tyyp	st_tyyp	abstr/konkr	abstract/concrete entity	en	-	-
+st_tyyp	st_tyyp	abstr/konkr_omadus	esilduva omadusega abstr/konkr entiteet	et	-	-
+st_tyyp	st_tyyp	abstr/konkr_omadus	abstr/concr_property	en	-	-
+st_tyyp	st_tyyp	abstr_asend/suund	asend, suund, siht (abstr)	et	-	-
+st_tyyp	st_tyyp	abstr_asend/suund	position, direction, target	en	-	-
+st_tyyp	st_tyyp	ADV_aeg	(nt nüüd, eile)	et	-	-
+st_tyyp	st_tyyp	ADV_aste	(nt väga, äärmiselt)	et	-	-
+st_tyyp	st_tyyp	ADV_koht	(nt üles, ette)	et	-	-
+st_tyyp	st_tyyp	ADV_modaalsus	rõhuadverb (nt võib-olla, tõtt-öelda)	et	-	-
+st_tyyp	st_tyyp	ADV_põhjus	(nt järelikult)	et	-	-
+st_tyyp	st_tyyp	ADV_seisund	seisundiadverb (nt kinni, lahti, välja)	et	-	-
+st_tyyp	st_tyyp	ADV_tulemus	märgib lõpetatust või tulemuslikkust, saavutust (nt välja, ära)	et	-	-
+st_tyyp	st_tyyp	ADV_viis	(nt aeglaselt, hästi)	et	-	-
+st_tyyp	st_tyyp	aeg	ajalõik, piiratud või piiramata kestus	et	-	-
+st_tyyp	st_tyyp	aeg	time	en	-	-
+st_tyyp	st_tyyp	aeg_aastaaeg	aastaaeg (4 aastaaega)	et	-	-
+st_tyyp	st_tyyp	aeg_aastaaeg	time_season	en	-	-
+st_tyyp	st_tyyp	aeg_kuu	kuu (12 kuud)	et	-	-
+st_tyyp	st_tyyp	aeg_kuu	time_month	en	-	-
+st_tyyp	st_tyyp	aeg_nädalapäev	nädalapäev (7 päeva)	et	-	-
+st_tyyp	st_tyyp	aeg_nädalapäev	time_day	en	-	-
+st_tyyp	st_tyyp	aeg_tähtpäev	tähtpäev, püha (nt küünlapäev, võidupäev)	et	-	-
+st_tyyp	st_tyyp	aeg_tähtpäev	time_holiday	en	-	-
+st_tyyp	st_tyyp	ese	ese, objekt	et	-	-
+st_tyyp	st_tyyp	ese	artefact, object	en	-	-
+st_tyyp	st_tyyp	ese_anum	anum, nõu, mahuti	et	-	-
+st_tyyp	st_tyyp	ese_anum	artefact_vessel	en	-	-
+st_tyyp	st_tyyp	ese_instru	tööriist, sõiduvahend jt	et	-	-
+st_tyyp	st_tyyp	ese_instru	artefact_instrument, vehicle	en	-	-
+st_tyyp	st_tyyp	ese_kunst	kunstiteos, käsitöö, kunstilooming	et	-	-
+st_tyyp	st_tyyp	ese_kunst	artefact_piece of art, handicraft	en	-	-
+st_tyyp	st_tyyp	ese_raha	rahaühik, rahasumma vm vara	et	-	-
+st_tyyp	st_tyyp	ese_raha	artefact_money	en	-	-
+st_tyyp	st_tyyp	ese_riie	riietusese, rõivas, ka jalats	et	-	-
+st_tyyp	st_tyyp	ese_riie	artefact_clothing	en	-	-
+st_tyyp	st_tyyp	ese_semio	teos, sõnaline (märgiline) toode, programm jm	et	-	-
+st_tyyp	st_tyyp	ese_semio	artefact_semiotical	en	-	-
+st_tyyp	st_tyyp	ese_semio_Piibli raamat	Piibli raamat (Koguja raamat)	et	-	-
+st_tyyp	st_tyyp	ese_semio_Piibli raamat	artefact_semiotical_parts of the Bible	en	-	-
+st_tyyp	st_tyyp	esitus	info, teave, nimetus, märk jt	et	-	-
+st_tyyp	st_tyyp	esitus	representation	en	-	-
+st_tyyp	st_tyyp	esitus_arv	arv, number, arvuline näitaja (nt viies, kolmandik)	et	-	-
+st_tyyp	st_tyyp	esitus_arv	representation_number	en	-	-
+st_tyyp	st_tyyp	esitus_info	info, teave jt (nt aadress, andmed)	et	-	-
+st_tyyp	st_tyyp	esitus_info	representation_information, content	en	-	-
+st_tyyp	st_tyyp	esitus_keel	(grammatiline) keeleüksus, keeletermin	et	-	-
+st_tyyp	st_tyyp	esitus_keel	representation_(grammatical) unit of language, linguistic term	en	-	-
+st_tyyp	st_tyyp	esitus_keel_suhtlus	suhtlusüksus, kõnetlussõna, sõimusõna jms (nt braavo, härra, kurat)	et	-	-
+st_tyyp	st_tyyp	esitus_keel_suhtlus	representation_unit of communication	en	-	-
+st_tyyp	st_tyyp	esitus_keel_täht	täht, häälik	et	-	-
+st_tyyp	st_tyyp	esitus_keel_täht	representation_letter, sound	en	-	-
+st_tyyp	st_tyyp	esitus_kujutis	pilt, sümbol, kujutis, märk	et	-	-
+st_tyyp	st_tyyp	esitus_kujutis	representation_image, symbol	en	-	-
+st_tyyp	st_tyyp	esitus_mõõt	mõõde, mõõt, mõõtühik, suurus, pikkus jt	et	-	-
+st_tyyp	st_tyyp	esitus_mõõt	representation_quantity_definite	en	-	-
+st_tyyp	st_tyyp	esitus_tiitel	seisuse, teaduskraadi nimetus, aunimetus	et	-	-
+st_tyyp	st_tyyp	esitus_tiitel	representation_title	en	-	-
+st_tyyp	st_tyyp	esitus_tähis	tähis, sümbol, märk (nt O, g)	et	-	-
+st_tyyp	st_tyyp	esitus_tähis	representation_symbol	en	-	-
+st_tyyp	st_tyyp	inimene	inimolend, isik, indiviid	et	-	-
+st_tyyp	st_tyyp	inimene	human, person	en	-	-
+st_tyyp	st_tyyp	in_elukutse	elukutse, amet	et	-	-
+st_tyyp	st_tyyp	in_elukutse	profession	en	-	-
+st_tyyp	st_tyyp	in_müt	üleloomulik olend, muinasjututegelane vm (nt Punamütsike)	et	-	-
+st_tyyp	st_tyyp	in_müt	human_mythological	en	-	-
+st_tyyp	st_tyyp	in_omadus	esilduva omadusega inimene	et	-	-
+st_tyyp	st_tyyp	in_omadus	human_his property	en	-	-
+st_tyyp	st_tyyp	in_rahvas	teatud rahva esindaja, rahvas, inimrühm	et	-	-
+st_tyyp	st_tyyp	in_rahvas	human_nation	en	-	-
+st_tyyp	st_tyyp	in_rahvas_keel	mingi rahvuse keel, keele nimetus	et	-	-
+st_tyyp	st_tyyp	in_rahvas_keel	human_nation_language	en	-	-
+st_tyyp	st_tyyp	in_roll	esilduva rolliga olend, mõttesuuna, sotsiaalse staatuse esindaja	et	-	-
+st_tyyp	st_tyyp	in_roll	human_role	en	-	-
+st_tyyp	st_tyyp	in_sugulane	teatava sugulussuhte esindaja	et	-	-
+st_tyyp	st_tyyp	in_sugulane	human_relative	en	-	-
+st_tyyp	st_tyyp	in_tegija	agent, tegevuse tegija, seisundis olija	et	-	-
+st_tyyp	st_tyyp	in_tegija	human_agent of the activity, subject	en	-	-
+st_tyyp	st_tyyp	kehaosa	inimese (ja looma) kehaosa	et	-	-
+st_tyyp	st_tyyp	kehaosa	body part	en	-	-
+st_tyyp	st_tyyp	kehaosa_loom	looma kehaosa	et	-	-
+st_tyyp	st_tyyp	kehaosa_loom	body part_animal	en	-	-
+st_tyyp	st_tyyp	kogus	n-ö puhas kogusesõna, kogus (mis tahes asja)	et	-	-
+st_tyyp	st_tyyp	kogus	amount	en	-	-
+st_tyyp	st_tyyp	koht	ruumi, pinna, joone punkt või piirkond, asukoht	et	-	-
+st_tyyp	st_tyyp	koht	place	en	-	-
+st_tyyp	st_tyyp	koht_ala	maa-ala, piirkond	et	-	-
+st_tyyp	st_tyyp	koht_ala	place_territorium	en	-	-
+st_tyyp	st_tyyp	koht_asutus	asutus, institutsioon, teatav üksus	et	-	-
+st_tyyp	st_tyyp	koht_asutus	institution	en	-	-
+st_tyyp	st_tyyp	koht_geogr	kohanimi, geopoliitiline koht	et	-	-
+st_tyyp	st_tyyp	koht_geogr	place name	en	-	-
+st_tyyp	st_tyyp	koht_geogr_maailmajagu	maailmajagu	et	-	-
+st_tyyp	st_tyyp	koht_geogr_maailmajagu	place name	en	-	-
+st_tyyp	st_tyyp	koht_geogr_veekogu	ookean, meri, jõgi jm veekogud	et	-	-
+st_tyyp	st_tyyp	koht_geogr_veekogu	place name_seas et al	en	-	-
+st_tyyp	st_tyyp	koht_hoone	rajatis, (suurem) ehitis	et	-	-
+st_tyyp	st_tyyp	koht_hoone	place_building	en	-	-
+st_tyyp	st_tyyp	koht_kehaosa	kehapiirkond (ka loomal)	et	-	-
+st_tyyp	st_tyyp	koht_kehaosa	place_body part	en	-	-
+st_tyyp	st_tyyp	koht_loodus	looduslik piirkond, pinnavorm	et	-	-
+st_tyyp	st_tyyp	koht_loodus	place_nature	en	-	-
+st_tyyp	st_tyyp	koht_suund/asend	suund, asupaik	et	-	-
+st_tyyp	st_tyyp	koht_suund/asend	place_direction, location	en	-	-
+st_tyyp	st_tyyp	konkr	konkreetne entiteet	et	-	-
+st_tyyp	st_tyyp	konkr	concrete entity	en	-	-
+st_tyyp	st_tyyp	konkr_omadus	esilduva omadusega konkreetne entiteet	et	-	-
+st_tyyp	st_tyyp	konkr_omadus	concrete entity_its property	en	-	-
+st_tyyp	st_tyyp	loom	loom	et	-	-
+st_tyyp	st_tyyp	loom	animal	en	-	-
+st_tyyp	st_tyyp	loom_kala	kala	et	-	-
+st_tyyp	st_tyyp	loom_kala	animal_fish	en	-	-
+st_tyyp	st_tyyp	loom_liik	liik/tüüp/rühm loomi	et	-	-
+st_tyyp	st_tyyp	loom_liik	animal_kind/type/group of	en	-	-
+st_tyyp	st_tyyp	loom_lind	lind	et	-	-
+st_tyyp	st_tyyp	loom_lind	animal_bird	en	-	-
+st_tyyp	st_tyyp	loom_omadus	esilduva omadusega loom	et	-	-
+st_tyyp	st_tyyp	loom_omadus	animal_its property	en	-	-
+st_tyyp	st_tyyp	loom_putukas	putukas, mardikas, lülijalgne	et	-	-
+st_tyyp	st_tyyp	loom_putukas	animal_insect	en	-	-
+st_tyyp	st_tyyp	materjal/aine	materjal, aine, sh keemiline element	et	-	-
+st_tyyp	st_tyyp	materjal/aine	material/substance, incl. chemical elements	en	-	-
+st_tyyp	st_tyyp	nähtus	asjade muutumine ajas, see, mis ilmneb, tekib	et	-	-
+st_tyyp	st_tyyp	nähtus	phenomenon	en	-	-
+st_tyyp	st_tyyp	nähtus_füüs	füüsikaline nähtus (nt heli)	et	-	-
+st_tyyp	st_tyyp	nähtus_füüs	phenomenon_physical	en	-	-
+st_tyyp	st_tyyp	nähtus_loodus	loodusnähtus, loomulik, isetekkeline nähtus	et	-	-
+st_tyyp	st_tyyp	nähtus_loodus	phenomenon_nature, natural kind	en	-	-
+st_tyyp	st_tyyp	nähtus_psühh	tunne, psüühikaga seotud nähtus, kognitiivne fakt	et	-	-
+st_tyyp	st_tyyp	nähtus_psühh	phenomenon_psychological, emotion	en	-	-
+st_tyyp	st_tyyp	objekt	objekt	et	-	-
+st_tyyp	st_tyyp	objekt	object	en	-	-
+st_tyyp	st_tyyp	objekt_loodus	looduslik, loomulik objekt	et	-	-
+st_tyyp	st_tyyp	objekt_loodus	object_natural	en	-	-
+st_tyyp	st_tyyp	objekt_loodus_tähtkuju	tähtkujud (Kaljukits)	et	-	-
+st_tyyp	st_tyyp	objekt_loodus_tähtkuju	object_natural	en	-	-
+st_tyyp	st_tyyp	omadus	omadus, iseloomulik tunnus	et	-	-
+st_tyyp	st_tyyp	omadus	property	en	-	-
+st_tyyp	st_tyyp	omadus_abstr	abstraktne omadus (nt väärtus)	et	-	-
+st_tyyp	st_tyyp	omadus_abstr	property_abstract	en	-	-
+st_tyyp	st_tyyp	omadus_aeg	ajaga seotud omadus (nt suvine, eilne)	et	-	-
+st_tyyp	st_tyyp	omadus_aeg	property_time	en	-	-
+st_tyyp	st_tyyp	omadus_füüs	füüsikaline omadus (mass, kõrgus, kiirus, heli, värv jne)	et	-	-
+st_tyyp	st_tyyp	omadus_füüs	physical property (weight, speed, height, sound, colour, etc)	en	-	-
+st_tyyp	st_tyyp	omadus_füüs_värv	värv, värvus	et	-	-
+st_tyyp	st_tyyp	omadus_füüs_värv	colour	en	-	-
+st_tyyp	st_tyyp	omadus_koht	koha, asendi, suunaga seotud omadus (nt aknapoolne)	et	-	-
+st_tyyp	st_tyyp	omadus_koht	property_location	en	-	-
+st_tyyp	st_tyyp	omadus_kval	sisuline omadus, hinnang (nt hea)	et	-	-
+st_tyyp	st_tyyp	omadus_kval	qualitative property	en	-	-
+st_tyyp	st_tyyp	omadus_psühh	psüühikaga (tunnetega, tajuga) seotud omadus	et	-	-
+st_tyyp	st_tyyp	omadus_psühh	property_psychological, cognitive, emotional	en	-	-
+st_tyyp	st_tyyp	omadus_vanus	vanust kirjeldav omadus	et	-	-
+st_tyyp	st_tyyp	organism	organism, elusolend	et	-	-
+st_tyyp	st_tyyp	organism	living being	en	-	-
+st_tyyp	st_tyyp	seisund	olek, seis teataval ajahetkel, üldine olukord	et	-	-
+st_tyyp	st_tyyp	seisund	state	en	-	-
+st_tyyp	st_tyyp	seisund_haigus	haiguslik seisund	et	-	-
+st_tyyp	st_tyyp	seisund_haigus	state_illness, disease	en	-	-
+st_tyyp	st_tyyp	seisund_füüs	(asjade) füüsiline seisund	et	-	-
+st_tyyp	st_tyyp	seisund_füüs	state_physical	en	-	-
+st_tyyp	st_tyyp	sündmus	aja, koha ja tegevusega piiritletud sündmus, juhtum	et	-	-
+st_tyyp	st_tyyp	sündmus	event	en	-	-
+st_tyyp	st_tyyp	taim	taim, taimestik	et	-	-
+st_tyyp	st_tyyp	taim	plant, flora	en	-	-
+st_tyyp	st_tyyp	taim_liik	liik/tüüp/rühm taimi	et	-	-
+st_tyyp	st_tyyp	taim_liik	plant_kind/type/group of	en	-	-
+st_tyyp	st_tyyp	taim_omadus	esilduva omadusega taim	et	-	-
+st_tyyp	st_tyyp	taim_omadus	plant_its property	en	-	-
+st_tyyp	st_tyyp	taim_seen	seen	et	-	-
+st_tyyp	st_tyyp	taim_seen	plant_mushroom	en	-	-
+st_tyyp	st_tyyp	taim_õis	taime õis koos varrega	et	-	-
+st_tyyp	st_tyyp	taim_õis	plant_flower together with its stalk	en	-	-
+st_tyyp	st_tyyp	tegevus	tegevus, protsess	et	-	-
+st_tyyp	st_tyyp	tegevus	activity, process	en	-	-
+st_tyyp	st_tyyp	tegevus_kõnetegu	kõnetegu, suhtlusakt (nt käsk, palve, hüüatus)	et	-	-
+st_tyyp	st_tyyp	tegevus_kõnetegu	activity_speech act	en	-	-
+st_tyyp	st_tyyp	tegevus_muutus	seisundit/olekut muutev tegevus	et	-	-
+st_tyyp	st_tyyp	tegevus_muutus	activity_change	en	-	-
+st_tyyp	st_tyyp	tegevus_mäng	sportmäng, lauamäng jt	et	-	-
+st_tyyp	st_tyyp	tegevus_mäng	activity_game	en	-	-
+st_tyyp	st_tyyp	tegevus_tegu	tegevuse üksikjuhtum, toiming, tegevuse tulemus	et	-	-
+st_tyyp	st_tyyp	tegevus_tegu	activity_act, action	en	-	-
+st_tyyp	st_tyyp	toit	toit, söök, toiduaine	et	-	-
+st_tyyp	st_tyyp	toit	food	en	-	-
+st_tyyp	st_tyyp	toit_jook	jook, vedelik joomiseks	et	-	-
+st_tyyp	st_tyyp	toit_jook	food_drink	en	-	-
+st_tyyp	st_tyyp	toit_maitseaine	maitseaine, vürts	et	-	-
+st_tyyp	st_tyyp	toit_maitseaine	food_spice	en	-	-
+st_tyyp	st_tyyp	toit_vili	taime osa toiduna	et	-	-
+st_tyyp	st_tyyp	toit_vili	food_seed of the plant	en	-	-
+st_tyyp	st_tyyp	vald	valdkond, eriala, tegevusala	et	-	-
+st_tyyp	st_tyyp	vald	domain, speciality	en	-	-
+st_tyyp	st_tyyp	VERB_abstr	abstraktse sisuga tegevus	et	-	-
+st_tyyp	st_tyyp	VERB_abstr	verb_abstract	en	-	-
+st_tyyp	st_tyyp	VERB_aeg	ajaga seostuv tegevus (nt kestma)	et	-	-
+st_tyyp	st_tyyp	VERB_aeg	verb_time	en	-	-
+st_tyyp	st_tyyp	VERB_alustama	mingit tegevust alustama, inhoatiivne verb (nt panema)	et	-	-
+st_tyyp	st_tyyp	VERB_alustama	verb_inchoative	en	-	-
+st_tyyp	st_tyyp	VERB_grammatiline	grammatilise funktsiooniga verb (nt tugiverb, abiverb)	et	-	-
+st_tyyp	st_tyyp	VERB_liigutama	liigutama, liigutusega tegema, liikuma panema (nt andma)	et	-	-
+st_tyyp	st_tyyp	VERB_liigutama	verb_cause to move	en	-	-
+st_tyyp	st_tyyp	VERB_liikuma	mingil viisil liikuma ühest kohast teise (nt lendama)	et	-	-
+st_tyyp	st_tyyp	VERB_liikuma	verb_move	en	-	-
+st_tyyp	st_tyyp	VERB_liikuma/liigutama	liikuma, liigutama (nt lendama)	et	-	-
+st_tyyp	st_tyyp	VERB_liikuma/liigutama	verb_move	en	-	-
+st_tyyp	st_tyyp	VERB_modaalsus	võimalikkus, vajalikkus, tõenäosus (nt võima, tohtima, tarvitsema)	et	-	-
+st_tyyp	st_tyyp	VERB_modaalsus	verb_modality	en	-	-
+st_tyyp	st_tyyp	VERB_muutus	muutuma (nii et seisund muutub), teisenema (nt haigestuma, lõhkuma, sulama)	et	-	-
+st_tyyp	st_tyyp	VERB_muutus	verb_change, transition	en	-	-
+st_tyyp	st_tyyp	VERB_muutust põhjustama	muutma, (seisundi) muutust põhjustama	et	-	-
+st_tyyp	st_tyyp	VERB_muutust põhjustama	verb_cause change	en	-	-
+st_tyyp	st_tyyp	VERB_nähtus	heli tekitama, kõlama, loodusnähtus jm	et	-	-
+st_tyyp	st_tyyp	VERB_nähtus	verb_act_phenomenon	en	-	-
+st_tyyp	st_tyyp	VERB_seisund	olema, paiknema, asetsema; ka haigusseisund (nt asetsema, valutama)	et	-	-
+st_tyyp	st_tyyp	VERB_seisund	verb_be/exist, verb_state	en	-	-
+st_tyyp	st_tyyp	VERB_psühh	psüühikaga seotud tegevus	et	-	-
+st_tyyp	st_tyyp	VERB_psühh	verb_psychological state	en	-	-
+st_tyyp	st_tyyp	VERB_psühh_emots	emotsioon (nt rõõmustama, vihkama)	et	-	-
+st_tyyp	st_tyyp	VERB_psühh_mõistus	teadma, mõistma (nt käsitlema, taipama)	et	-	-
+st_tyyp	st_tyyp	VERB_psühh_mõistus	verb_know	en	-	-
+st_tyyp	st_tyyp	VERB_suhtlus	suuline või kirjalik suhtlus jm kõneaktid (nt käskima, kirjutama)	et	-	-
+st_tyyp	st_tyyp	VERB_suhtlus	verb_act_communication	en	-	-
+st_tyyp	st_tyyp	VERB_tegevus	tegevus/protsess üldiselt, mingit tegevust sooritama (nt lööma)	et	-	-
+st_tyyp	st_tyyp	VERB_tegevus	verb_perform/do, verb_ execute	en	-	-
+st_tyyp	st_tyyp	VERB_toimuma	toimuma, aset leidma, juhtuma (nt sattuma, juhtuma)	et	-	-
+st_tyyp	st_tyyp	VERB_toimuma	verb_happen	en	-	-
+st_tyyp	st_tyyp	VERB_toituma	sööma, jooma, toiduga tegelema	et	-	-
+sta_tyyp	sta_tyyp	{grp}	rühm, grupp, kogum (kogumõiste)	et	-	-
+sta_tyyp	sta_tyyp	{grp}	group of sth/sb	en	-	-
+sta_tyyp	sta_tyyp	{kogus}	kogus	et	-	-
+sta_tyyp	sta_tyyp	{kogus}	amount of sth/sb	en	-	-
+sta_tyyp	sta_tyyp	{kogus_max}	(väga) suur kogus	et	-	-
+sta_tyyp	sta_tyyp	{kogus_max}	amount_maximal	en	-	-
+sta_tyyp	sta_tyyp	{kogus_min}	(väga) väike kogus	et	-	-
+sta_tyyp	sta_tyyp	{kogus_min}	amount_min	en	-	-
+sta_tyyp	sta_tyyp	{om}	oluline omadus, teatava omadusega	et	-	-
+sta_tyyp	sta_tyyp	{om}	property of sth/sb	en	-	-
+sta_tyyp	sta_tyyp	{om_max}	intensiivsust, suurust rõhutav omadus	et	-	-
+sta_tyyp	sta_tyyp	{om_max}	property_max	en	-	-
+sta_tyyp	sta_tyyp	{om_min}	väiksust, märkamatust rõhutav omadus	et	-	-
+sta_tyyp	sta_tyyp	{om_min}	property_min	en	-	-
+sta_tyyp	sta_tyyp	{osa}	oluline osa	et	-	-
+sta_tyyp	sta_tyyp	{osa}	part of sth/sb	en	-	-
+sta_tyyp	sta_tyyp	{põhjus}	põhjus(taja), esilekutsuja, tingija (abstr/konkr)	et	-	-
+sta_tyyp	sta_tyyp	{põhjus}	cause of sth/sb	en	-	-
+staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem
 staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	komisjoni kinnitatud
 staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	komisjonis arutlusel
-staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem
+tliik_tyyp	tliik_tyyp	uus	uus tähendus	et	-	-
+tliik_tyyp	tliik_tyyp	uus	new sense	en	-	-
+tvtl_tyyp	tvtl_tyyp	vrd	compare with	en	-	-
+tvtl_tyyp	tvtl_tyyp	vt ka	see also	en	-	-
 tvtl_tyyp	tvtl_tyyp	vrd	võrdle	et	lex_rel_type	tvt:vrd
 tvtl_tyyp	tvtl_tyyp	vt ka	vaata ka	et	lex_rel_type	tvt:vt ka
 u_tyyp	uus märksõna	uus	uus märksõna	et	-	-
 u_tyyp	uus märksõna	uus	new headword	en	-	-
+uust_tyyp	uust_tyyp	uus	uus tähendus	et	-	-
+uust_tyyp	uust_tyyp	uus	new sense	en	-	-
+v_tyyp	v_tyyp	aiand	aiandus	et	-	-
+v_tyyp	v_tyyp	aiand	gardening	en	-	-
+v_tyyp	v_tyyp	aj	ajalugu	et	-	-
+v_tyyp	v_tyyp	aj	history	en	-	-
+v_tyyp	v_tyyp	anat	anatoomia	et	-	-
+v_tyyp	v_tyyp	anat	anatomy	en	-	-
+v_tyyp	v_tyyp	antr	antropoloogia	et	-	-
+v_tyyp	v_tyyp	antr	anthropology	en	-	-
+v_tyyp	v_tyyp	arheol	arheoloogia	et	-	-
+v_tyyp	v_tyyp	arheol	archeology	en	-	-
+v_tyyp	v_tyyp	astr	astronoomia	et	-	-
+v_tyyp	v_tyyp	astr	astronomy	en	-	-
+v_tyyp	v_tyyp	bibl	raamatukogundus, trükindus	et	-	-
+v_tyyp	v_tyyp	bibl	bibliography, printing industry	en	-	-
+v_tyyp	v_tyyp	biol	bioloogia	et	-	-
+v_tyyp	v_tyyp	biol	biology	en	-	-
+v_tyyp	v_tyyp	bot	botaanika	et	-	-
+v_tyyp	v_tyyp	bot	botany	en	-	-
+v_tyyp	v_tyyp	el	elekter ja elektrotehnika	et	-	-
+v_tyyp	v_tyyp	el	electricity	en	-	-
+v_tyyp	v_tyyp	etn	etnograafia	et	-	-
+v_tyyp	v_tyyp	etn	ethnography	en	-	-
+v_tyyp	v_tyyp	filos	filos	et	-	-
+v_tyyp	v_tyyp	filos	philosophy	en	-	-
+v_tyyp	v_tyyp	folkl	folkloor	et	-	-
+v_tyyp	v_tyyp	folkl	folklore	en	-	-
+v_tyyp	v_tyyp	fot	fotograafia	et	-	-
+v_tyyp	v_tyyp	fot	photography	en	-	-
+v_tyyp	v_tyyp	füüs	füüsika	et	-	-
+v_tyyp	v_tyyp	füüs	physics	en	-	-
+v_tyyp	v_tyyp	geogr	geograafia	et	-	-
+v_tyyp	v_tyyp	geogr	geography	en	-	-
+v_tyyp	v_tyyp	geol	geoloogia	et	-	-
+v_tyyp	v_tyyp	geol	geology	en	-	-
+v_tyyp	v_tyyp	info	informaatika, arvutiteadus	et	-	-
+v_tyyp	v_tyyp	info	information technology, computer science	en	-	-
+v_tyyp	v_tyyp	jur	jurisprudents	et	-	-
+v_tyyp	v_tyyp	jur	law	en	-	-
+v_tyyp	v_tyyp	keel	keeleteadus	et	-	-
+v_tyyp	v_tyyp	keel	linguistics	en	-	-
+v_tyyp	v_tyyp	keem	keemia	et	-	-
+v_tyyp	v_tyyp	keem	chemistry	en	-	-
+v_tyyp	v_tyyp	kirj	kirjandusteadus	et	-	-
+v_tyyp	v_tyyp	kirj	literature	en	-	-
+v_tyyp	v_tyyp	loog	loogika	et	-	-
+v_tyyp	v_tyyp	loog	logic	en	-	-
+v_tyyp	v_tyyp	maj	majandus, majandusteadus	et	-	-
+v_tyyp	v_tyyp	maj	economics	en	-	-
+v_tyyp	v_tyyp	mat	matemaatika	et	-	-
+v_tyyp	v_tyyp	mat	mathematics	en	-	-
+v_tyyp	v_tyyp	med	meditsiin	et	-	-
+v_tyyp	v_tyyp	med	medicine	en	-	-
+v_tyyp	v_tyyp	mer	merendus	et	-	-
+v_tyyp	v_tyyp	mer	nautical	en	-	-
+v_tyyp	v_tyyp	meteor	meteoroloogia, klimatoloogia	et	-	-
+v_tyyp	v_tyyp	meteor	meteorology	en	-	-
+v_tyyp	v_tyyp	muus	muusika	et	-	-
+v_tyyp	v_tyyp	muus	music	en	-	-
+v_tyyp	v_tyyp	mäend	mäendus	et	-	-
+v_tyyp	v_tyyp	mäend	mining engineering	en	-	-
+v_tyyp	v_tyyp	psühh	psühholooogia	et	-	-
+v_tyyp	v_tyyp	psühh	psychology	en	-	-
+v_tyyp	v_tyyp	sport	sport	et	-	-
+v_tyyp	v_tyyp	sport	sports	en	-	-
+v_tyyp	v_tyyp	sõj	sõjandus, riigikaitse	et	-	-
+v_tyyp	v_tyyp	sõj	military science, national defence	en	-	-
+v_tyyp	v_tyyp	zool	zooloogia	et	-	-
+v_tyyp	v_tyyp	zool	zoology	en	-	-
+v_tyyp	v_tyyp	vet	veterinaaria	et	-	-
+v_tyyp	v_tyyp	vet	veterinary science	en	-	-
+v_tyyp	v_tyyp	ehit	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	põll	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	farm	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	tekst	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	relig	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kirikl	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	tehn	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	ped	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	pol	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kunst	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	teater	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	füsiol	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	nõuk	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kal	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	mets	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	trük	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	müt	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	paleont	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kok	(ei ole kasutusel)	et	-	-
 var_tyyp	var_tyyp	var	/ variant	et	-	-
+vk_tyyp	vk_tyyp	algvõrre	algvõrre	et	-	-
+vk_tyyp	vk_tyyp	algvõrre	positive degree	en	-	-
+vk_tyyp	vk_tyyp	as	abstraktne substantiiv	et	-	-
+vk_tyyp	vk_tyyp	as	abstract substantive	en	-	-
+vk_tyyp	vk_tyyp	dem	deminutiiv, vähendussõna	et	-	-
+vk_tyyp	vk_tyyp	dem	diminutive	en	-	-
+vk_tyyp	vk_tyyp	gen	genitiiv, omastav	et	-	-
+vk_tyyp	vk_tyyp	gen	genitive	en	-	-
+vk_tyyp	vk_tyyp	illat	illatiiv, sisseütlev	et	-	-
+vk_tyyp	vk_tyyp	illat	illative	en	-	-
+vk_tyyp	vk_tyyp	imperf	imperfekt, lihtminevik	et	-	-
+vk_tyyp	vk_tyyp	imperf	imperfect	en	-	-
+vk_tyyp	vk_tyyp	indekl	käändumatu	et	-	-
+vk_tyyp	vk_tyyp	indekl	indeclinable	en	-	-
+vk_tyyp	vk_tyyp	iness	inessiiv, seesütlev	et	-	-
+vk_tyyp	vk_tyyp	iness	inessive	en	-	-
+vk_tyyp	vk_tyyp	part	partitiiv, osastav	et	-	-
+vk_tyyp	vk_tyyp	part	partitive	en	-	-
+vk_tyyp	vk_tyyp	pl elat	pluurali elatiiv, mitmuse seestütlev	et	-	-
+vk_tyyp	vk_tyyp	pl elat	plural elative	en	-	-
+vk_tyyp	vk_tyyp	pl gen	pluurali genitiiv, mitmuse omastav	et	-	-
+vk_tyyp	vk_tyyp	pl gen	plural genitive	en	-	-
+vk_tyyp	vk_tyyp	pl illat	pluurali illatiiv, mitmuse sisseütlev	et	-	-
+vk_tyyp	vk_tyyp	pl illat	plural illative	en	-	-
+vk_tyyp	vk_tyyp	pl iness	pluurali inessiiv, mitmuse seesütlev	et	-	-
+vk_tyyp	vk_tyyp	pl iness	plural inessive	en	-	-
+vk_tyyp	vk_tyyp	pl nom	pluurali nominatiiv, mitmuse nimetav	et	-	-
+vk_tyyp	vk_tyyp	pl nom	plural nominative	en	-	-
+vk_tyyp	vk_tyyp	pl part	pluurali partitiiv, mitmuse osastav	et	-	-
+vk_tyyp	vk_tyyp	pl part	plural partitive	en	-	-
+vk_tyyp	vk_tyyp	pl term	pluurali terminatiiv, mitmuse rajav	et	-	-
+vk_tyyp	vk_tyyp	pl term	plural terminative	en	-	-
+vk_tyyp	vk_tyyp	sg gen	ainsuse omastav	et	-	-
+vk_tyyp	vk_tyyp	tgn	tegijanimi	et	-	-
+vk_tyyp	vk_tyyp	tgn	substantive suffix -ja = actor	en	-	-
+vk_tyyp	vk_tyyp	tn	teonimi	et	-	-
+vk_tyyp	vk_tyyp	tn	substantive suffix -mine = act, process	en	-	-
+vk_tyyp	vk_tyyp	nom	nimetav, nominatiiv	et	display_morph	nom
+vk_tyyp	vk_tyyp	nom	nominative	en	display_morph	nom
+vk_tyyp	vk_tyyp	adess	adessiiv, alalütlev	et	display_morph	adess
+vk_tyyp	vk_tyyp	komp	komparatiiv, keskvõrre	et	display_morph	keskv
+vk_tyyp	vk_tyyp	komp	comparative	en	display_morph	keskv
+vk_tyyp	vk_tyyp	superl	superlatiiv, ülivõrre	et	display_morph	üliv
+vk_tyyp	vk_tyyp	superl	superlative	en	display_morph	üliv
 vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_morph	mitm
 vk_tyyp	vk_tyyp	mitm	plural	en	display_morph	mitm
 vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_morph	ains

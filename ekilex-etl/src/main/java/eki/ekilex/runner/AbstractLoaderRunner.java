@@ -49,6 +49,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIFIER_DKTYYP = "dk_tyyp";
 	protected static final String EKI_CLASSIFIER_SLTYYP = "sl_tyyp";
 	protected static final String EKI_CLASSIFIER_ASTYYP = "as_tyyp";
+	protected static final String EKI_CLASSIFIER_VKTYYP = "vk_tyyp";
 
 	@Autowired
 	protected XmlReader xmlReader;
