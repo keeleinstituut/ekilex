@@ -322,6 +322,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				context.abbreviations.addAll(abbreviations);
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 
+				processSemanticData(meaningGroupNode, meaningId);
+
 				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
 					lexemeLevel3++;
@@ -348,6 +350,29 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 			}
+		}
+	}
+
+	private void processSemanticData(Element node, Long meaningId) throws Exception {
+
+		final String semanticTypeExp = "s:semg/s:st";
+		final String semanticTypeTheTypeAttr = "sta";
+		final String systematicPolysemyPatternExp = "s:semg/s:spm";
+
+		List<Element> semanticTypeNodes = node.selectNodes(semanticTypeExp);
+		for (Element semanticTypeNode : semanticTypeNodes) {
+			String semanticType = semanticTypeNode.getTextTrim();
+			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
+			String typeOfType = semanticTypeNode.attributeValue(semanticTypeTheTypeAttr);
+			if (isNotEmpty(typeOfType)) {
+				createFreeformTextOrDate(FreeformType.SEMANTIC_TYPE_THE_TYPE, meaningFreeformId, typeOfType, null);
+			}
+		}
+
+		List<Element> systematicPolysemyPatternNodes = node.selectNodes(systematicPolysemyPatternExp);
+		for (Element systematicPolysemyPatternNode : systematicPolysemyPatternNodes) {
+			String systematicPolysemyPattern = systematicPolysemyPatternNode.getTextTrim();
+			createMeaningFreeform(meaningId, FreeformType.SYSTEMATIC_POLYSEMY_PATTERN, systematicPolysemyPattern);
 		}
 	}
 
