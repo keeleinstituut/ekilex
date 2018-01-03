@@ -269,9 +269,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "s:tg";
-		final String lexemePosCodeExp = "s:ssp/s:mmg/s:sl";
+		final String meaningPosCodeExp = "s:grg/s:sl";
 		final String meaningExternalIdExp = "s:tpid";
-		final String asTyypAttr = "as";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 
@@ -280,14 +279,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<Long> newLexemes = new ArrayList<>();
-			List<Element> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
-			List<PosData> meaningPosCodes = new ArrayList<>();
-			for (Element posCodeNode : posCodeNodes) {
-				PosData posData = new PosData();
-				posData.code = posCodeNode.getTextTrim();
-				posData.processStateCode = posCodeNode.attributeValue(asTyypAttr);
-				meaningPosCodes.add(posData);
-			}
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
@@ -296,6 +287,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel2++;
 				List<Usage> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
+				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 
 				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
 				if (meaningId == null) {
@@ -410,19 +402,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<PosData> meaningPosCodes, String reportingId) throws Exception {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<PosData> meaningPosCodes, String reportingId) {
 
 		Set<PosData> lexemePosCodes = new HashSet<>();
 		try {
 			if (meaningPosCodes.isEmpty()) {
 				lexemePosCodes.addAll(newWordData.posCodes);
+				if (lexemePosCodes.size() > 1) {
+					String posCodesStr = lexemePosCodes.stream().map(p -> p.code).collect(Collectors.joining(","));
+//					logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
+					writeToLogFile(reportingId, "Märksõna juures leiti rohkem kui üks sõnaliik <s:mg/s:sl>", posCodesStr);
+				}
 			} else {
 				lexemePosCodes.addAll(meaningPosCodes);
-				if (lexemePosCodes.size() > 1) {
-					logger.debug("Found more than one POS <s:tp/s:ssp/s:mmg/s:sl> : {} : {}",
-							reportingId, lexemePosCodes.stream().map(p -> p.code).collect(Collectors.joining(",")));
-					writeToLogFile(reportingId, "Tähenduse juures leiti rohkem kui üks sõnaliik <s:tp/s:ssp/s:mmg/s:sl>", "");
-				}
 			}
 			for (PosData posCode : lexemePosCodes) {
 				if (posCodes.containsKey(posCode.code)) {
@@ -503,11 +495,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private List<PosData> extractPosCodes(Element node, String wordPosCodeExp) {
 
+		final String asTyypAttr = "as";
+
 		List<PosData> posCodes = new ArrayList<>();
 		List<Element> posCodeNodes = node.selectNodes(wordPosCodeExp);
 		for (Element posCodeNode : posCodeNodes) {
 			PosData posData = new PosData();
 			posData.code = posCodeNode.getTextTrim();
+			posData.processStateCode = posCodeNode.attributeValue(asTyypAttr);
 			posCodes.add(posData);
 		}
 		return posCodes;
