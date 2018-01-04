@@ -349,6 +349,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				context.abbreviations.addAll(abbreviations);
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
+				List<String> registers = extractRegisters(meaningGroupNode);
 
 				processSemanticData(meaningGroupNode, meaningId);
 
@@ -368,6 +369,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						saveRectionsAndUsages(meaningGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
+						saveRegisters(lexemeId, registers);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
@@ -422,6 +424,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 		});
 		return abbreviations;
+	}
+
+	private void saveRegisters(Long lexemeId, List<String> registerCodes) throws Exception {
+		for (String registerCode : registerCodes) {
+			createLexemeRegister(lexemeId, registerCode);
+		}
 	}
 
 	private void saveGrammars(Element node, Long lexemeId, WordData wordData) throws Exception {
@@ -616,17 +624,26 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return synonyms;
 	}
 
+	private List<String> extractRegisters(Element node) {
+
+		final String registerValueExp = "s:dg/s:regr/s:s";
+		return extractValuesAsStrings(node, registerValueExp);
+	}
+
 	private List<String> extractDefinitions(Element node) {
 
 		final String definitionValueExp = "s:dg/s:d";
+		return extractValuesAsStrings(node, definitionValueExp);
+	}
 
-		List<String> definitions = new ArrayList<>();
-		List<Element> definitionValueNodes = node.selectNodes(definitionValueExp);
-		for (Element definitionValueNode : definitionValueNodes) {
-			String definition = definitionValueNode.getTextTrim();
-			definitions.add(definition);
+	private List<String> extractValuesAsStrings(Element node, String registerValueExp) {
+		List<String> registers = new ArrayList<>();
+		List<Element> registerValueNodes = node.selectNodes(registerValueExp);
+		for (Element registerValueNode : registerValueNodes) {
+			String register = registerValueNode.getTextTrim();
+			registers.add(register);
 		}
-		return definitions;
+		return registers;
 	}
 
 	private List<Usage> extractUsages(Element node) {
