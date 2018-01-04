@@ -278,19 +278,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
-			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+			List<Element> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<Long> newLexemes = new ArrayList<>();
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
 			int lexemeLevel2 = 0;
-			for (Element meaningGroupNode : meaingGroupNodes) {
+			for (Element meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
 				List<Usage> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 
-				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
+				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions, lexemeLevel1);
 				if (meaningId == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
@@ -301,7 +301,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				} else {
-//					logger.debug("synonym meaning found : {}", newWords.get(0).value);
+//					logger.debug("meaning found : {}", newWords.get(0).value);
 				}
 
 				if (isNotEmpty(meaningExternalId)) {
@@ -349,16 +349,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processSemanticData(Element node, Long meaningId) throws Exception {
 
 		final String semanticTypeExp = "s:semg/s:st";
-		final String semanticTypeTheTypeAttr = "sta";
+		final String semanticTypeGroupAttr = "sta";
 		final String systematicPolysemyPatternExp = "s:semg/s:spm";
 
 		List<Element> semanticTypeNodes = node.selectNodes(semanticTypeExp);
 		for (Element semanticTypeNode : semanticTypeNodes) {
 			String semanticType = semanticTypeNode.getTextTrim();
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
-			String typeOfType = semanticTypeNode.attributeValue(semanticTypeTheTypeAttr);
-			if (isNotEmpty(typeOfType)) {
-				createFreeformTextOrDate(FreeformType.SEMANTIC_TYPE_THE_TYPE, meaningFreeformId, typeOfType, null);
+			String semanticTypeGroup = semanticTypeNode.attributeValue(semanticTypeGroupAttr);
+			if (isNotEmpty(semanticTypeGroup)) {
+				createFreeformTextOrDate(FreeformType.SEMANTIC_TYPE_GROUP, meaningFreeformId, semanticTypeGroup, null);
 			}
 		}
 
@@ -734,7 +734,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions) {
+	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions, int level1) {
 
 		String definition = definitions.isEmpty() ? null : definitions.get(0);
 		Optional<LexemeToWordData> existingSynonym = context.synonyms.stream()
