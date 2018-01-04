@@ -14,6 +14,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "word")
 	private String word;
 
+	@Column(name = "word_lang")
+	private String wordLang;
+
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -77,6 +80,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getWordLang() {
+		return wordLang;
+	}
+
+	public void setWordLang(String wordLang) {
+		this.wordLang = wordLang;
 	}
 
 	public Long getWordId() {
