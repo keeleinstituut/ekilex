@@ -48,12 +48,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ANTONYM = "ant";
+	private final static String LEXEME_RELATION_COHYPONYM = "cohyponym";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";
 	private final static String ANTONYMS_REPORT_NAME = "antonyms";
 	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
+	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -115,8 +117,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		processBasicWords(context);
 		processSynonymsNotFoundInImportFile(context);
-		processAntonyms(context);
 		processAbbreviations(context);
+		processAntonyms(context);
+		processCohyponyms(context);
 
 		logger.debug("Found {} word duplicates", context.wordDuplicateCount);
 
@@ -175,6 +178,37 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			createLexeme(lexeme, dataset);
 		}
 		logger.debug("Abbreviations import done.");
+	}
+
+	private void processCohyponyms(Context context) throws Exception {
+
+		logger.debug("Found {} cohyponyms.", context.cohyponyms.size());
+		setActivateReport(COHYPONYMS_REPORT_NAME);
+		writeToLogFile("Kaashüponüümide töötlus <s:kyh>", "", "");
+
+		for (LexemeToWordData cohyponymData : context.cohyponyms) {
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> cohyponymData.word.equals(w.value)).collect(Collectors.toList());
+			Long wordId = getWordIdFor(cohyponymData.word, cohyponymData.homonymNr, existingWords, cohyponymData.reportingId);
+			if (!existingWords.isEmpty() && wordId != null) {
+				Map<String, Object> params = new HashMap<>();
+				params.put("wordId", wordId);
+				params.put("dataset", dataset);
+				try {
+					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
+					Optional<Map<String, Object>> lexemeObject =
+							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == cohyponymData.lexemeLevel1).findFirst();
+					if (lexemeObject.isPresent()) {
+						createLexemeRelation(cohyponymData.lexemeId, (Long) lexemeObject.get().get("id"), LEXEME_RELATION_COHYPONYM);
+					} else {
+						logger.debug("Lexeme not found for cohyponym : {}, lexeme level1 : {}.", cohyponymData.word, cohyponymData.lexemeLevel1);
+						writeToLogFile(cohyponymData.reportingId, "Ei leitud ilmikut kaashüponüümile", cohyponymData.word + ", level1 " + cohyponymData.lexemeLevel1);
+					}
+				} catch (Exception e) {
+					logger.error("More than one lexeme {}, {}", cohyponymData.word, wordId);
+				}
+			}
+		}
+		logger.debug("Cohyponyms import done.");
 	}
 
 	private void processAntonyms(Context context) throws Exception {
@@ -314,6 +348,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> abbreviations = extractAbbreviations(meaningGroupNode, meaningId, reportingId);
 				context.abbreviations.addAll(abbreviations);
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
 
 				processSemanticData(meaningGroupNode, meaningId);
 
@@ -336,8 +371,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
-							antonymData.reportingId = reportingId;
 							context.antonyms.add(antonymData);
+						}
+						for (LexemeToWordData meaningCohyponym : meaningCohyponyms) {
+							LexemeToWordData cohyponymData = meaningCohyponym.copy();
+							cohyponymData.lexemeId = lexemeId;
+							context.cohyponyms.add(cohyponymData);
 						}
 						newLexemes.add(lexemeId);
 					}
@@ -372,8 +411,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private List<LexemeToWordData> extractAbbreviations(Element node, Long meaningId, String reportingId) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
+//		final String abbreviationFullFormExp = "s:dg/s:lhx";
 
 		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, null, reportingId);
+//		abbreviations.addAll(extractLexemeMetadata(node, abbreviationFullFormExp, null, reportingId));
 		abbreviations.forEach(a -> {
 			a.meaningId = meaningId;
 			if (a.lexemeType == null) {
@@ -507,6 +548,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			posCodes.add(posData);
 		}
 		return posCodes;
+	}
+
+	private List<LexemeToWordData> extractCohyponyms(Element node, String reportingId) throws Exception {
+
+		final String antonymExp = "s:ssh/s:khy";
+		return extractLexemeMetadata(node, antonymExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
@@ -738,7 +785,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		String definition = definitions.isEmpty() ? null : definitions.get(0);
 		Optional<LexemeToWordData> existingSynonym = context.synonyms.stream()
-				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
+				.filter(s -> newWord.value.equals(s.word) &&
+						newWord.homonymNr == s.homonymNr &&
+						Objects.equals(definition, s.definition) &&
+						level1 == s.lexemeLevel1)
 				.findFirst();
 		return existingSynonym.orElse(new LexemeToWordData()).meaningId;
 	}
@@ -885,6 +935,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> synonyms = new ArrayList<>();
 		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
+		List<LexemeToWordData> cohyponyms = new ArrayList<>();
 	}
 
 }
