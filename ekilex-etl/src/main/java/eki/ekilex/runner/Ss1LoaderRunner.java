@@ -215,7 +215,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
 
 		Count newSynonymWordCount = new Count();
-		for (SynonymData synonymData : context.synonyms) {
+		for (LexemeToWordData synonymData : context.synonyms) {
 			boolean isImported = context.importedWords.stream().anyMatch(w -> synonymData.word.equals(w.value));
 			if (!isImported) {
 				WordData newWord = createDefaultWordFrom(synonymData.word, synonymData.displayForm);
@@ -229,6 +229,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(0);
 				lexeme.setLevel2(0);
 				lexeme.setLevel3(0);
+				lexeme.setType(synonymData.lexemeType);
 				createLexeme(lexeme, dataset);
 				logger.debug("synonym word created : {}", synonymData.word);
 				writeToLogFile(synonymData.reportingId, "sünonüümi ei letud, lisame sõna", synonymData.word);
@@ -307,7 +308,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
 				}
 
-				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
+				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, meaningId, definitions, reportingId);
 				context.synonyms.addAll(meaningSynonyms);
 
 				List<LexemeToWordData> abbreviations = extractAbbreviations(meaningGroupNode, meaningId, reportingId);
@@ -554,28 +555,17 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return metadataList;
 	}
 
-	private List<SynonymData> extractSynonyms(String reportingId, Element node, Long meaningId, List<String> definitions) {
+	private List<LexemeToWordData> extractSynonyms(Element node, Long meaningId, List<String> definitions, String reportingId) throws Exception {
 
 		final String synonymExp = "s:ssh/s:syn";
-		final String homonymNrAttr = "i";
 
-		List<SynonymData> synonyms = new ArrayList<>();
-		List<Element> synonymNodes = node.selectNodes(synonymExp);
-		for (Element synonymNode : synonymNodes) {
-			SynonymData data = new SynonymData();
-			data.reportingId = reportingId;
-			data.displayForm = synonymNode.getTextTrim();
-			data.word = cleanUp(data.displayForm);
-			data.meaningId = meaningId;
-			String homonymNrAtrValue = synonymNode.attributeValue(homonymNrAttr);
-			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
-				data.homonymNr = Integer.parseInt(homonymNrAtrValue);
-			}
+		List<LexemeToWordData> synonyms = extractLexemeMetadata(node, synonymExp, null, reportingId);
+		synonyms.forEach(synonymData -> {
+			synonymData.meaningId = meaningId;
 			if (!definitions.isEmpty()) {
-				data.definition = definitions.get(0);
+				synonymData.definition = definitions.get(0);
 			}
-			synonyms.add(data);
-		}
+		});
 		return synonyms;
 	}
 
@@ -747,10 +737,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions) {
 
 		String definition = definitions.isEmpty() ? null : definitions.get(0);
-		Optional<SynonymData> existingSynonym = context.synonyms.stream()
+		Optional<LexemeToWordData> existingSynonym = context.synonyms.stream()
 				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
 				.findFirst();
-		return existingSynonym.orElse(new SynonymData()).meaningId;
+		return existingSynonym.orElse(new LexemeToWordData()).meaningId;
 	}
 
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
@@ -856,15 +846,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private class SynonymData {
-		String word;
-		String displayForm;
-		Long meaningId;
-		int homonymNr = 0;
-		String reportingId;
-		String definition;
-	}
-
 	private class LexemeToWordData {
 		Long lexemeId;
 		String word;
@@ -901,7 +882,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		Count wordDuplicateCount = new Count();
-		List<SynonymData> synonyms = new ArrayList<>();
+		List<LexemeToWordData> synonyms = new ArrayList<>();
 		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
 	}
