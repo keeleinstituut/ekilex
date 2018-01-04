@@ -40,7 +40,7 @@ public class XsdToClassifierCsvRunner extends AbstractClassifierRunner {
 				.thenComparing(ClassifierMapping::getOrder));
 
 		compare(existingClassifierMappings, existingClassifiers);
-		
+
 		writeMainClassifierMappingsCsvFile(targetClassifierMappings);
 		writeMainClassifiersCsvFile(existingClassifiers);
 

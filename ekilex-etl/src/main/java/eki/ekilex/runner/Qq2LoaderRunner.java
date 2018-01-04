@@ -445,6 +445,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				if (usageWordMatchByLemmatisationCount == 0) {
 					//TODO experimental
 					if (usageWordMatchByOriginalTokenCount > 0) {
+						successfulUsageTranslationMatchCount.increment();
 						logBuf = new StringBuffer();
 						logBuf.append(newWordValues);
 						logBuf.append(CSV_SEPARATOR);
@@ -458,6 +459,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						String logRow = logBuf.toString();
 						reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
 					} else if (usageWordMatchByTokenSplitCount > 0) {
+						successfulUsageTranslationMatchCount.increment();
 						logBuf = new StringBuffer();
 						logBuf.append(newWordValues);
 						logBuf.append(CSV_SEPARATOR);
@@ -514,23 +516,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			String word = wordObj.getValue();
 			String[] wordComponents = wordObj.getComponents();
 			String wordFormsString = wordObj.getFormsString();
-			if (StringUtils.isBlank(wordFormsString)) {
-				missingMabIntegrationCaseCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(word);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("-");
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("QQ vormid puuduvad");
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
-				continue;
-			}
 			int wordComponentCount = wordComponents.length;
 			String wordLastComp = wordComponents[wordComponentCount - 1];
 			List<Paradigm> paradigms = wordParadigmsMap.get(wordLastComp);
 			if (CollectionUtils.isEmpty(paradigms)) {
 				missingMabIntegrationCaseCount.increment();
+				if (StringUtils.isBlank(wordFormsString)) {
+					wordFormsString = "-";
+				}
 				logBuf = new StringBuffer();
 				logBuf.append(word);
 				logBuf.append(CSV_SEPARATOR);
@@ -541,44 +534,60 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
 				continue;
 			}
-			if (StringUtils.countMatches(wordFormsString, '+') > 1) {
-				missingMabIntegrationCaseCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(word);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(wordFormsString);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("Mitmekordselt käänduv liitsõna?");
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
-				continue;
-			}
-			String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
-			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
-			List<String> qq2FormValues = asList(formValuesArr);
-			List<String> mabFormValues;
-			Collection<String> formValuesIntersection;
-			int bestFormValuesMatchCount = 0;
-			Paradigm matchingParadigm = null;
-			for (Paradigm paradigm : paradigms) {
-				mabFormValues = paradigm.getFormValues();
-				formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
-				if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-					bestFormValuesMatchCount = formValuesIntersection.size();
-					matchingParadigm = paradigm;
+			if (StringUtils.isBlank(wordFormsString)) {
+				boolean multipleParadigmsExist = paradigms.size() > 1;
+				if (multipleParadigmsExist) {
+					missingMabIntegrationCaseCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(word);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("-");
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("QQ vormid puuduvad");
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+					continue;
 				}
-			}
-			if (matchingParadigm == null) {
-				missingMabIntegrationCaseCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(word);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(wordFormsString);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("Vormid ei kattu MAB-ga");
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
-				continue;
+			} else {
+				if (StringUtils.countMatches(wordFormsString, '+') > 1) {
+					missingMabIntegrationCaseCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(word);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordFormsString);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("Mitmekordselt käänduv liitsõna?");
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+					continue;
+				}
+				String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
+				String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
+				List<String> qq2FormValues = asList(formValuesArr);
+				List<String> mabFormValues;
+				Collection<String> formValuesIntersection;
+				int bestFormValuesMatchCount = 0;
+				Paradigm matchingParadigm = null;
+				for (Paradigm paradigm : paradigms) {
+					mabFormValues = paradigm.getFormValues();
+					formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
+					if (formValuesIntersection.size() > bestFormValuesMatchCount) {
+						bestFormValuesMatchCount = formValuesIntersection.size();
+						matchingParadigm = paradigm;
+					}
+				}
+				if (matchingParadigm == null) {
+					missingMabIntegrationCaseCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(word);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordFormsString);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("Vormid ei kattu MAB-ga");
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+					continue;
+				}
 			}
 		}
 	}
@@ -592,25 +601,31 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		if (CollectionUtils.isEmpty(paradigms)) {
 			return null;
 		}
-		if (StringUtils.isBlank(wordFormsStr)) {
+		if (StringUtils.isNotBlank(wordFormsStr) && StringUtils.countMatches(wordFormsStr, '+') > 1) {
 			return null;
 		}
-		if (StringUtils.countMatches(wordFormsStr, '+') > 1) {
-			return null;
-		}
-		String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
-		String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
-		List<String> qq2FormValues = asList(formValuesArr);
-		List<String> mabFormValues;
-		Collection<String> formValuesIntersection;
-		int bestFormValuesMatchCount = 0;
 		Paradigm matchingParadigm = null;
-		for (Paradigm paradigm : paradigms) {
-			mabFormValues = paradigm.getFormValues();
-			formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
-			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-				bestFormValuesMatchCount = formValuesIntersection.size();
-				matchingParadigm = paradigm;
+		if (StringUtils.isBlank(wordFormsStr)) {
+			boolean isSingleParadigm = paradigms.size() == 1;
+			if (isSingleParadigm) {
+				matchingParadigm = paradigms.get(0);
+			} else {
+				return null;
+			}
+		} else {
+			String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
+			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
+			List<String> qq2FormValues = asList(formValuesArr);
+			List<String> mabFormValues;
+			Collection<String> formValuesIntersection;
+			int bestFormValuesMatchCount = 0;
+			for (Paradigm paradigm : paradigms) {
+				mabFormValues = paradigm.getFormValues();
+				formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
+				if (formValuesIntersection.size() > bestFormValuesMatchCount) {
+					bestFormValuesMatchCount = formValuesIntersection.size();
+					matchingParadigm = paradigm;
+				}
 			}
 		}
 		if (isCompoundWord && (matchingParadigm != null)) {
@@ -628,7 +643,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				compoundForms.add(compoundForm);
 			}
 			Paradigm compoundWordParadigm = new Paradigm();
-			compoundWordParadigm.setWord(word);
 			compoundWordParadigm.setFormValues(compoundFormValues);
 			compoundWordParadigm.setForms(compoundForms);
 			return compoundWordParadigm;
