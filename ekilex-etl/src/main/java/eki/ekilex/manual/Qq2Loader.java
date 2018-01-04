@@ -43,7 +43,7 @@ public class Qq2Loader {
 
 			Map<String, List<Paradigm>> wordParadigmsMap = null;
 			if (isAddForms) {
-				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang);
+				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang, doReports);
 			}
 			qq2Runner.execute(qq2FilePath, dataLang, dataset, wordParadigmsMap, doReports);
 

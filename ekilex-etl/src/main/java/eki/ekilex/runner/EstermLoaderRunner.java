@@ -840,7 +840,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		criteriaParamMap.put("id", lexemeId);
 
 		Map<String, Object> valueParamMap = new HashMap<>();
-		
+
 		valueNode = (Element) termGroupNode.selectSingleNode(createdByExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();

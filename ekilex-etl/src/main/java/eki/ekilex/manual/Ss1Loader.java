@@ -38,7 +38,7 @@ public class Ss1Loader {
 			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 			if (isAddForms) {
 				MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
-				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang);
+				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang, isAddReporting);
 			}
 			runner.execute(dataXmlFilePath, wordParadigmsMap, isAddReporting);
 

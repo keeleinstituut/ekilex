@@ -1,5 +1,8 @@
 package eki.ekilex.runner;
 
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,21 +21,23 @@ import org.springframework.stereotype.Component;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Paradigm;
-
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import eki.ekilex.service.ReportComposer;
 
 @Component
 public class MabLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(MabLoaderRunner.class);
 
+	private static final String REPORT_ENRICHED_WORDS = "enriched_words";
+
+	private ReportComposer reportComposer;
+
 	@Override
 	void initialise() {
 	}
 
 	@Transactional
-	public Map<String, List<Paradigm>> execute(String dataXmlFilePath, String dataLang) throws Exception {
+	public Map<String, List<Paradigm>> execute(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
 
@@ -49,9 +54,15 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		final String wordCleanupChars = ".+'`()¤:_";//probably () only
 		final String formCleanupChars = "`´[]#";
+		final String expectedWordAppendix = "(ne)";
+		final String expectedWordSuffix = "ne";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
+
+		if (doReports) {
+			reportComposer = new ReportComposer("mab load report", REPORT_ENRICHED_WORDS);
+		}
 
 		// morph value to code conversion map
 		Map<String, String> morphValueCodeMap = composeMorphValueCodeMap(dataLang);
@@ -71,6 +82,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<Paradigm> paradigms, newParadigms;
 		List<Form> forms;
 		List<String> formValues;
+		List<String> words;
 		Paradigm paradigmObj;
 		Form formObj;
 		String word, sourceMorphCode, destinMorphCode, form, inflectionTypeNr;
@@ -98,8 +110,18 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				homonymNr = Integer.parseInt(homonymNrAsString);
 			}
 
-			if (StringUtils.containsAny(word, wordCleanupChars)) {
+			words = new ArrayList<>();
+			if (StringUtils.endsWith(word, expectedWordAppendix)) {
+				word = StringUtils.substringBefore(word, expectedWordAppendix);
+				words.add(word);
+				word = word + expectedWordSuffix;
+				words.add(word);
+			} else if (StringUtils.containsAny(word, wordCleanupChars)) {
 				uncleanWordCount.increment();
+				reportComposer.append(REPORT_ENRICHED_WORDS, word);
+				continue;
+			} else {
+				words.add(word);
 			}
 
 			rootBaseNodes = contentNode.selectNodes(rootBaseExp);
@@ -111,9 +133,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				formGroupNodes = rootBaseNode.selectNodes(formGroupExp);
 				inflectionTypeNrNode = (Element) rootBaseNode.selectSingleNode(inflectionTypeNrExp);
 				inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
-				if (inflectionTypeNr.startsWith("0")) {
-					inflectionTypeNr = String.valueOf(Integer.parseInt(inflectionTypeNr));
-				}
+				inflectionTypeNr = String.valueOf(Integer.parseInt(inflectionTypeNr));
 
 				forms = new ArrayList<>();
 				formValues = new ArrayList<>();
@@ -151,7 +171,6 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				}
 
 				paradigmObj = new Paradigm();
-				paradigmObj.setWord(word);
 				paradigmObj.setForms(forms);
 				paradigmObj.setFormValues(formValues);
 				paradigmObj.setInflectionTypeNr(inflectionTypeNr);
@@ -160,12 +179,14 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				newParadigms.add(paradigmObj);
 			}
 
-			paradigms = wordParadigmsMap.get(word);
-			if (paradigms == null) {
-				paradigms = new ArrayList<>();
-				wordParadigmsMap.put(word, paradigms);
+			for (String newWord : words) {
+				paradigms = wordParadigmsMap.get(newWord);
+				if (paradigms == null) {
+					paradigms = new ArrayList<>();
+					wordParadigmsMap.put(newWord, paradigms);
+				}
+				paradigms.addAll(newParadigms);
 			}
-			paradigms.addAll(newParadigms);
 
 			// progress
 			articleCounter++;
@@ -173,6 +194,10 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				long progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
+		}
+
+		if (reportComposer != null) {
+			reportComposer.end();
 		}
 
 		logger.debug("Found {} unclean words", uncleanWordCount.getValue());

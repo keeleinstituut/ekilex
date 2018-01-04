@@ -1,8 +1,11 @@
 package eki.ekilex.service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
@@ -12,17 +15,21 @@ public class ReportComposer {
 
 	private Map<String, FileOutputStream> reportStreamsMap;
 
+	private List<String> reportFilePaths;
+
 	private String activeStream;
 
 	public ReportComposer(String reportGroupName, String... reportNames) throws Exception {
 
 		reportGroupName = fileNameCleanup(reportGroupName);
 		reportStreamsMap = new HashMap<>();
+		reportFilePaths = new ArrayList<>();
 		for (String reportName : reportNames) {
 			reportName = fileNameCleanup(reportName);
 			String reportFilePath = "./" + reportGroupName + "-" + reportName + ".txt";
 			FileOutputStream reportStream = new FileOutputStream(reportFilePath);
 			reportStreamsMap.put(reportName, reportStream);
+			reportFilePaths.add(reportFilePath);
 		}
 		activeStream = reportNames[0];
 	}
@@ -54,9 +61,18 @@ public class ReportComposer {
 
 	public void end() throws Exception {
 
+		// flush and close streams
 		for (FileOutputStream reportStream : reportStreamsMap.values()) {
 			reportStream.flush();
 			reportStream.close();
+		}
+
+		// delete empty files
+		for (String reportFilePath : reportFilePaths) {
+			File reportFile = new File(reportFilePath);
+			if (reportFile.length() == 0) {
+				reportFile.delete();
+			}
 		}
 	}
 }
