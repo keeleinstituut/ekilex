@@ -1,22 +1,17 @@
 // add on click handlers to details buttons in search result table
 function initialize(urlPrefix) {
-    var detailsDivs = $('#results').find('[name="details"]');
-    detailsDivs.on('click', function (e) {
+    var detailsButtons = $('#results').find('[name="details"]');
+    detailsButtons.on('click', function (e) {
         var id = $(e.target).data('id');
-        var detailsDiv = $('[name="' + id + '_details"]');
-        if (detailsDiv.html() === '') {
-            $.get(urlPrefix + 'details/' + id).done(function (data) {
-                detailsDiv.replaceWith(data);
-            }).fail(function (data) {
-                console.log(data);
-                alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
-            });
-        } else {
-            detailsDiv.toggle();
-        }
+        $.get(urlPrefix + 'details/' + id).done(function (data) {
+            $('#details_div').replaceWith(data);
+        }).fail(function (data) {
+            console.log(data);
+            alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+        });
     });
-    if (detailsDivs.length === 1) {
-        detailsDivs.trigger('click');
+    if (detailsButtons.length === 1) {
+        detailsButtons.trigger('click');
     }
 }
 
