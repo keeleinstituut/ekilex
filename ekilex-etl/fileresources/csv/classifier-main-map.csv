@@ -550,28 +550,28 @@ rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	rection_type	yld
 rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	rection_type	inf
 rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	rection_type	kla
 rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	rection_type	subj
-s_tyyp	s_tyyp	hlv	halvustav, solvav	et	-	-
-s_tyyp	s_tyyp	hlv	offensive	en	-	-
-s_tyyp	s_tyyp	hrv	harvaesinev	et	-	-
-s_tyyp	s_tyyp	hrv	rare	en	-	-
-s_tyyp	s_tyyp	lastek	lastekeelne	et	-	-
-s_tyyp	s_tyyp	lastek	child language	en	-	-
-s_tyyp	s_tyyp	luulek	luulekeelne	et	-	-
-s_tyyp	s_tyyp	luulek	poetic	en	-	-
-s_tyyp	s_tyyp	murd	murdekeelne	et	-	-
-s_tyyp	s_tyyp	murd	dialect, regional	en	-	-
-s_tyyp	s_tyyp	nlj	naljatlev	et	-	-
-s_tyyp	s_tyyp	nlj	humorous	en	-	-
-s_tyyp	s_tyyp	piltl	piltlik	et	-	-
-s_tyyp	s_tyyp	piltl	figurative	en	-	-
-s_tyyp	s_tyyp	släng	släng	et	-	-
-s_tyyp	s_tyyp	släng	slang	en	-	-
-s_tyyp	s_tyyp	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	et	-	-
-s_tyyp	s_tyyp	vabakeel	informal, journalistic	en	-	-
-s_tyyp	s_tyyp	van	vanamoeliselt, vananemas	et	-	-
-s_tyyp	s_tyyp	van	archaic	en	-	-
-s_tyyp	s_tyyp	vulg	vulgaarne	et	-	-
-s_tyyp	s_tyyp	vulg	vulgar	en	-	-
+s_tyyp	s_tyyp	hlv	halvustav, solvav	et	register	hlv
+s_tyyp	s_tyyp	hlv	offensive	en	register	hlv
+s_tyyp	s_tyyp	hrv	harvaesinev	et	register	hrv
+s_tyyp	s_tyyp	hrv	rare	en	register	hrv
+s_tyyp	s_tyyp	lastek	lastekeelne	et	register	lastek
+s_tyyp	s_tyyp	lastek	child language	en	register	lastek
+s_tyyp	s_tyyp	luulek	luulekeelne	et	register	luulek
+s_tyyp	s_tyyp	luulek	poetic	en	register	luulek
+s_tyyp	s_tyyp	murd	murdekeelne	et	register	murd
+s_tyyp	s_tyyp	murd	dialect, regional	en	register	murd
+s_tyyp	s_tyyp	nlj	naljatlev	et	register	nlj
+s_tyyp	s_tyyp	nlj	humorous	en	register	nlj
+s_tyyp	s_tyyp	piltl	piltlik	et	register	piltl
+s_tyyp	s_tyyp	piltl	figurative	en	register	piltl
+s_tyyp	s_tyyp	släng	släng	et	register	släng
+s_tyyp	s_tyyp	släng	slang	en	register	släng
+s_tyyp	s_tyyp	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	et	register	vabakeel
+s_tyyp	s_tyyp	vabakeel	informal, journalistic	en	register	vabakeel
+s_tyyp	s_tyyp	van	vanamoeliselt, vananemas	et	register	van
+s_tyyp	s_tyyp	van	archaic	en	register	van
+s_tyyp	s_tyyp	vulg	vulgaarne	et	register	vulg
+s_tyyp	s_tyyp	vulg	vulgar	en	register	vulg
 sa_tyyp	sa_tyyp	s	sarja liige	et	-	-
 sag_tyyp	sagedusrühm	1	1 - 3000	et	lexeme_frequency	1
 sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	lexeme_frequency	2

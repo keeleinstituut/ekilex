@@ -463,5 +463,27 @@ rection_type	yld	üldrektsioon	est	full
 rection_type	inf	infinitiivirektsioon	est	full
 rection_type	kla	lausungirektsioon	est	full
 rection_type	subj	subjektirektsioon	est	full
+register	hlv	halvustav, solvav	est	descrip
+register	hlv	offensive	eng	descrip
+register	hrv	harvaesinev	et	descrip
+register	hrv	rare	en	descrip
+register	lastek	lastekeelne	et	descrip
+register	lastek	child language	en	descrip
+register	luulek	luulekeelne	et	descrip
+register	luulek	poetic	en	descrip
+register	murd	murdekeelne	et	descrip
+register	murd	dialect, regional	en	descrip
+register	nlj	naljatlev	et	descrip
+register	nlj	humorous	en	descrip
+register	piltl	piltlik	et	descrip
+register	piltl	figurative	en	descrip
+register	släng	släng	et	descrip
+register	släng	slang	en	descrip
+register	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	et	descrip
+register	vabakeel	informal, journalistic	en	descrip
+register	van	vanamoeliselt, vananemas	et	descrip
+register	van	archaic	en	descrip
+register	vulg	vulgaarne	et	descrip
+register	vulg	vulgar	en	descrip
 word_rel_type	komp	keskvõrre	est	full
 word_rel_type	superl	ülivõrre	est	full
