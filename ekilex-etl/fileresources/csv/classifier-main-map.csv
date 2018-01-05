@@ -1010,95 +1010,95 @@ u_tyyp	uus märksõna	uus	uus märksõna	et	-	-
 u_tyyp	uus märksõna	uus	new headword	en	-	-
 uust_tyyp	uust_tyyp	uus	uus tähendus	et	-	-
 uust_tyyp	uust_tyyp	uus	new sense	en	-	-
-v_tyyp	v_tyyp	aiand	aiandus	et	register	aiand
-v_tyyp	v_tyyp	aiand	gardening	en	register	aiand
-v_tyyp	v_tyyp	aj	ajalugu	et	register	aj
-v_tyyp	v_tyyp	aj	history	en	register	aj
-v_tyyp	v_tyyp	anat	anatoomia	et	register	anat
-v_tyyp	v_tyyp	anat	anatomy	en	register	anat
-v_tyyp	v_tyyp	antr	antropoloogia	et	register	antr
-v_tyyp	v_tyyp	antr	anthropology	en	register	antr
-v_tyyp	v_tyyp	arheol	arheoloogia	et	register	arheol
-v_tyyp	v_tyyp	arheol	archeology	en	register	arheol
-v_tyyp	v_tyyp	astr	astronoomia	et	register	astr
-v_tyyp	v_tyyp	astr	astronomy	en	register	astr
-v_tyyp	v_tyyp	bibl	raamatukogundus, trükindus	et	register	bibl
-v_tyyp	v_tyyp	bibl	bibliography, printing industry	en	register	bibl
-v_tyyp	v_tyyp	biol	bioloogia	et	register	biol
-v_tyyp	v_tyyp	biol	biology	en	register	biol
-v_tyyp	v_tyyp	bot	botaanika	et	register	bot
-v_tyyp	v_tyyp	bot	botany	en	register	bot
-v_tyyp	v_tyyp	el	elekter ja elektrotehnika	et	register	el
-v_tyyp	v_tyyp	el	electricity	en	register	el
-v_tyyp	v_tyyp	etn	etnograafia	et	register	etn
-v_tyyp	v_tyyp	etn	ethnography	en	register	etn
-v_tyyp	v_tyyp	filos	filos	et	register	filos
-v_tyyp	v_tyyp	filos	philosophy	en	register	filos
-v_tyyp	v_tyyp	folkl	folkloor	et	register	folkl
-v_tyyp	v_tyyp	folkl	folklore	en	register	folkl
-v_tyyp	v_tyyp	fot	fotograafia	et	register	fot
-v_tyyp	v_tyyp	fot	photography	en	register	fot
-v_tyyp	v_tyyp	füüs	füüsika	et	register	füüs
-v_tyyp	v_tyyp	füüs	physics	en	register	füüs
-v_tyyp	v_tyyp	geogr	geograafia	et	register	geogr
-v_tyyp	v_tyyp	geogr	geography	en	register	geogr
-v_tyyp	v_tyyp	geol	geoloogia	et	register	geol
-v_tyyp	v_tyyp	geol	geology	en	register	geol
-v_tyyp	v_tyyp	info	informaatika, arvutiteadus	et	register	info
-v_tyyp	v_tyyp	info	information technology, computer science	en	register	info
-v_tyyp	v_tyyp	jur	jurisprudents	et	register	jur
-v_tyyp	v_tyyp	jur	law	en	register	jur
-v_tyyp	v_tyyp	keel	keeleteadus	et	register	keel
-v_tyyp	v_tyyp	keel	linguistics	en	register	keel
-v_tyyp	v_tyyp	keem	keemia	et	register	keem
-v_tyyp	v_tyyp	keem	chemistry	en	register	keem
-v_tyyp	v_tyyp	kirj	kirjandusteadus	et	register	kirj
-v_tyyp	v_tyyp	kirj	literature	en	register	kirj
-v_tyyp	v_tyyp	loog	loogika	et	register	loog
-v_tyyp	v_tyyp	loog	logic	en	register	loog
-v_tyyp	v_tyyp	maj	majandus, majandusteadus	et	register	maj
-v_tyyp	v_tyyp	maj	economics	en	register	maj
-v_tyyp	v_tyyp	mat	matemaatika	et	register	mat
-v_tyyp	v_tyyp	mat	mathematics	en	register	mat
-v_tyyp	v_tyyp	med	meditsiin	et	register	med
-v_tyyp	v_tyyp	med	medicine	en	register	med
-v_tyyp	v_tyyp	mer	merendus	et	register	mer
-v_tyyp	v_tyyp	mer	nautical	en	register	mer
-v_tyyp	v_tyyp	meteor	meteoroloogia, klimatoloogia	et	register	meteor
-v_tyyp	v_tyyp	meteor	meteorology	en	register	meteor
-v_tyyp	v_tyyp	muus	muusika	et	register	muus
-v_tyyp	v_tyyp	muus	music	en	register	muus
-v_tyyp	v_tyyp	mäend	mäendus	et	register	mäend
-v_tyyp	v_tyyp	mäend	mining engineering	en	register	mäend
-v_tyyp	v_tyyp	psühh	psühholooogia	et	register	psühh
-v_tyyp	v_tyyp	psühh	psychology	en	register	psühh
-v_tyyp	v_tyyp	sport	sport	et	register	sport
-v_tyyp	v_tyyp	sport	sports	en	register	sport
-v_tyyp	v_tyyp	sõj	sõjandus, riigikaitse	et	register	sõj
-v_tyyp	v_tyyp	sõj	military science, national defence	en	register	sõj
-v_tyyp	v_tyyp	zool	zooloogia	et	register	zool
-v_tyyp	v_tyyp	zool	zoology	en	register	zool
-v_tyyp	v_tyyp	vet	veterinaaria	et	register	vet
-v_tyyp	v_tyyp	vet	veterinary science	en	register	vet
-v_tyyp	v_tyyp	ehit	(ei ole kasutusel)	et	register	ehit
-v_tyyp	v_tyyp	põll	(ei ole kasutusel)	et	register	põll
-v_tyyp	v_tyyp	farm	(ei ole kasutusel)	et	register	farm
-v_tyyp	v_tyyp	tekst	(ei ole kasutusel)	et	register	tekst
-v_tyyp	v_tyyp	relig	(ei ole kasutusel)	et	register	relig
-v_tyyp	v_tyyp	kirikl	(ei ole kasutusel)	et	register	kirikl
-v_tyyp	v_tyyp	tehn	(ei ole kasutusel)	et	register	tehn
-v_tyyp	v_tyyp	ped	(ei ole kasutusel)	et	register	ped
-v_tyyp	v_tyyp	pol	(ei ole kasutusel)	et	register	pol
-v_tyyp	v_tyyp	kunst	(ei ole kasutusel)	et	register	kunst
-v_tyyp	v_tyyp	teater	(ei ole kasutusel)	et	register	teater
-v_tyyp	v_tyyp	füsiol	(ei ole kasutusel)	et	register	füsiol
-v_tyyp	v_tyyp	nõuk	(ei ole kasutusel)	et	register	nõuk
-v_tyyp	v_tyyp	kal	(ei ole kasutusel)	et	register	kal
-v_tyyp	v_tyyp	mets	(ei ole kasutusel)	et	register	mets
-v_tyyp	v_tyyp	trük	(ei ole kasutusel)	et	register	trük
-v_tyyp	v_tyyp	müt	(ei ole kasutusel)	et	register	müt
-v_tyyp	v_tyyp	paleont	(ei ole kasutusel)	et	register	paleont
-v_tyyp	v_tyyp	kok	(ei ole kasutusel)	et	register	kok
+v_tyyp	v_tyyp	aiand	aiandus	et	-	-
+v_tyyp	v_tyyp	aiand	gardening	en	-	-
+v_tyyp	v_tyyp	aj	ajalugu	et	-	-
+v_tyyp	v_tyyp	aj	history	en	-	-
+v_tyyp	v_tyyp	anat	anatoomia	et	-	-
+v_tyyp	v_tyyp	anat	anatomy	en	-	-
+v_tyyp	v_tyyp	antr	antropoloogia	et	-	-
+v_tyyp	v_tyyp	antr	anthropology	en	-	-
+v_tyyp	v_tyyp	arheol	arheoloogia	et	-	-
+v_tyyp	v_tyyp	arheol	archeology	en	-	-
+v_tyyp	v_tyyp	astr	astronoomia	et	-	-
+v_tyyp	v_tyyp	astr	astronomy	en	-	-
+v_tyyp	v_tyyp	bibl	raamatukogundus, trükindus	et	-	-
+v_tyyp	v_tyyp	bibl	bibliography, printing industry	en	-	-
+v_tyyp	v_tyyp	biol	bioloogia	et	-	-
+v_tyyp	v_tyyp	biol	biology	en	-	-
+v_tyyp	v_tyyp	bot	botaanika	et	-	-
+v_tyyp	v_tyyp	bot	botany	en	-	-
+v_tyyp	v_tyyp	el	elekter ja elektrotehnika	et	-	-
+v_tyyp	v_tyyp	el	electricity	en	-	-
+v_tyyp	v_tyyp	etn	etnograafia	et	-	-
+v_tyyp	v_tyyp	etn	ethnography	en	-	-
+v_tyyp	v_tyyp	filos	filos	et	-	-
+v_tyyp	v_tyyp	filos	philosophy	en	-	-
+v_tyyp	v_tyyp	folkl	folkloor	et	-	-
+v_tyyp	v_tyyp	folkl	folklore	en	-	-
+v_tyyp	v_tyyp	fot	fotograafia	et	-	-
+v_tyyp	v_tyyp	fot	photography	en	-	-
+v_tyyp	v_tyyp	füüs	füüsika	et	-	-
+v_tyyp	v_tyyp	füüs	physics	en	-	-
+v_tyyp	v_tyyp	geogr	geograafia	et	-	-
+v_tyyp	v_tyyp	geogr	geography	en	-	-
+v_tyyp	v_tyyp	geol	geoloogia	et	-	-
+v_tyyp	v_tyyp	geol	geology	en	-	-
+v_tyyp	v_tyyp	info	informaatika, arvutiteadus	et	-	-
+v_tyyp	v_tyyp	info	information technology, computer science	en	-	-
+v_tyyp	v_tyyp	jur	jurisprudents	et	-	-
+v_tyyp	v_tyyp	jur	law	en	-	-
+v_tyyp	v_tyyp	keel	keeleteadus	et	-	-
+v_tyyp	v_tyyp	keel	linguistics	en	-	-
+v_tyyp	v_tyyp	keem	keemia	et	-	-
+v_tyyp	v_tyyp	keem	chemistry	en	-	-
+v_tyyp	v_tyyp	kirj	kirjandusteadus	et	-	-
+v_tyyp	v_tyyp	kirj	literature	en	-	-
+v_tyyp	v_tyyp	loog	loogika	et	-	-
+v_tyyp	v_tyyp	loog	logic	en	-	-
+v_tyyp	v_tyyp	maj	majandus, majandusteadus	et	-	-
+v_tyyp	v_tyyp	maj	economics	en	-	-
+v_tyyp	v_tyyp	mat	matemaatika	et	-	-
+v_tyyp	v_tyyp	mat	mathematics	en	-	-
+v_tyyp	v_tyyp	med	meditsiin	et	-	-
+v_tyyp	v_tyyp	med	medicine	en	-	-
+v_tyyp	v_tyyp	mer	merendus	et	-	-
+v_tyyp	v_tyyp	mer	nautical	en	-	-
+v_tyyp	v_tyyp	meteor	meteoroloogia, klimatoloogia	et	-	-
+v_tyyp	v_tyyp	meteor	meteorology	en	-	-
+v_tyyp	v_tyyp	muus	muusika	et	-	-
+v_tyyp	v_tyyp	muus	music	en	-	-
+v_tyyp	v_tyyp	mäend	mäendus	et	-	-
+v_tyyp	v_tyyp	mäend	mining engineering	en	-	-
+v_tyyp	v_tyyp	psühh	psühholooogia	et	-	-
+v_tyyp	v_tyyp	psühh	psychology	en	-	-
+v_tyyp	v_tyyp	sport	sport	et	-	-
+v_tyyp	v_tyyp	sport	sports	en	-	-
+v_tyyp	v_tyyp	sõj	sõjandus, riigikaitse	et	-	-
+v_tyyp	v_tyyp	sõj	military science, national defence	en	-	-
+v_tyyp	v_tyyp	zool	zooloogia	et	-	-
+v_tyyp	v_tyyp	zool	zoology	en	-	-
+v_tyyp	v_tyyp	vet	veterinaaria	et	-	-
+v_tyyp	v_tyyp	vet	veterinary science	en	-	-
+v_tyyp	v_tyyp	ehit	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	põll	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	farm	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	tekst	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	relig	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kirikl	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	tehn	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	ped	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	pol	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kunst	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	teater	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	füsiol	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	nõuk	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kal	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	mets	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	trük	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	müt	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	paleont	(ei ole kasutusel)	et	-	-
+v_tyyp	v_tyyp	kok	(ei ole kasutusel)	et	-	-
 var_tyyp	var_tyyp	var	/ variant	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	algvõrre	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	positive degree	en	-	-
