@@ -57,9 +57,10 @@
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100">
-            <span th:text="${word.value}">vorm 1</span>
-            <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
-            <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">Detailid</button>
+            <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">
+              <span th:text="${word.value}">vorm 1</span>
+              <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
+            </button>
           </td>
         </tr>
       </table>
@@ -81,46 +82,92 @@
         </th:block>
       </div>
       <div class="float-left w-75 pl-2">
-        <th:block th:each="lexeme,meaningIter : ${details.lexemes}">
-          <span th:each="word,wordIter : ${lexeme.words}">
-            <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}" th:text="${word.value}"></a>
-            <span th:unless="${wordIter.last}">|&nbsp;</span>
-          </span>
-          <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
-          <span th:text="${lexeme.dataset}" class="pr-2"></span>
-          <ul>
-            <li th:each="definition : ${lexeme.definitions}" th:utext="${markdown.toHtml(definition.value)}"></li>
-          </ul>
-          <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
-            <table th:each="rection,rectionIter : ${lexeme.rections}">
-              <tr>
-                <td style="vertical-align: text-top; padding-right: 1em">
-                  <span th:text="${rection.value}"></span>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
-                    <tr th:each="usage : ${usageMeaning.usages}">
-                      <td th:utext="${markdown.toHtml(usage.value)}"></td>
-                    </tr>
-                    <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                      <td th:text="${usageTranslation.value}"></td>
-                    </tr>
-                    <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                      <td th:utext="${markdown.toHtml(usageDefinition.value)}"></td>
-                    </tr>
-                    <tr th:unless="${usageMeaningIter.last}">
-                      <td>
-                        <hr />
-                      </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-            </table>
+        <th:block th:each="lexeme : ${details.lexemes}">
+          <div style="border: 1px solid #CCC; padding: 5px;">
+            <span th:each="word,wordIter : ${lexeme.words}">
+              <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}">
+                <span th:text="${word.value}"></span>
+                (
+                <span th:text="${word.lang}"></span>
+                )
+              </a>
+              <span th:unless="${wordIter.last}">|&nbsp;</span>
+            </span>
+            <span th:if="${lexeme.levels != null}">
+              <small>
+                [
+                <span th:text="${lexeme.levels}"></span>
+                ]
+              </small>
+              &nbsp;
+            </span>
+            <b>
+              <span th:text="${lexeme.dataset}" class="float-right"></span>
+            </b>
+            <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+              <hr />
+              <b>Seletused</b>
+              <table th:each="definition : ${lexeme.definitions}">
+                <tr>
+                  <td>
+                    <span th:utext="${markdown.toHtml(definition.value)}"></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.rections)}">
+              <hr />
+              <table th:each="rection,rectionIter : ${lexeme.rections}">
+                <tr>
+                  <th>Rektsioon</th>
+                </tr>
+                <tr>
+                  <td>
+                    <span th:text="${rection.value}"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <th>Kasutusnäited, tõlked, seletused</th>
+                </tr>
+                <tr>
+                  <td>
+                    <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                      <tr th:each="usage : ${usageMeaning.usages}">
+                        <td th:utext="${markdown.toHtml(usage.value)}"></td>
+                      </tr>
+                      <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                        <td th:text="${usageTranslation.value}"></td>
+                      </tr>
+                      <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                        <td th:utext="${markdown.toHtml(usageDefinition.value)}"></td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr th:unless="${rectionIter.last}">
+                  <td>
+                    <hr />
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}">
+              <hr />
+              <b>Ilmiku atribuudid</b>
+              <table>
+                <tr th:each="freeform : ${lexeme.lexemeFreeforms}">
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <span th:text="${freeform.type}"></span>
+                  </td>
+                  <td>
+                    <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
+                    <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
           </div>
-          <hr th:unless="${meaningIter.last}">
+          <div style="padding: 10px"></div>
         </th:block>
       </div>
     </div>

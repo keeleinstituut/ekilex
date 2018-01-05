@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.Record12;
-import org.jooq.Record13;
 import org.jooq.Record14;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -189,11 +188,12 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record13<String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+	public Result<Record14<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
 
 		return create
 				.select(
 						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.MEANING_ID,

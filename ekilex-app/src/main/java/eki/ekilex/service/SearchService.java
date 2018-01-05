@@ -93,7 +93,7 @@ public class SearchService {
 
 		lexemes.forEach(lexeme -> {
 			if (lexeme.getLevel1() == 0) {
-				lexeme.setLevels("");
+				lexeme.setLevels(null);
 				return;
 			}
 			String levels;
