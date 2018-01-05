@@ -90,7 +90,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME);
+					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -828,7 +828,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (meaningData.definition == null || definition == null || Objects.equals(definition, meaningData.definition)) {
 			return true;
 		}
-		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.definition);
+//		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.definition);
 		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningData.definition);
 		return false;
 	}
