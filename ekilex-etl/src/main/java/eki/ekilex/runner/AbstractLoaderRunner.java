@@ -516,7 +516,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> params = new HashMap<>();
 		params.put("lexeme_id", lexemeId);
 		params.put("register_code", registerCode);
-		basicDbService.createIfNotExists(LEXEME_RELATION, params);
+		basicDbService.createIfNotExists(LEXEME_REGISTER, params);
 	}
 
 	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {

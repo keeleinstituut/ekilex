@@ -156,27 +156,28 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(ABBREVIATIONS_REPORT_NAME);
 		writeToLogFile("Lühendite töötlus <s:lyh>", "", "");
 
+		Count newAbbreviationWordCount = new Count();
 		for (LexemeToWordData abbreviationData : context.abbreviations) {
-			Optional<WordData> existingWord = context.importedWords.stream()
-					.filter(w -> abbreviationData.word.equals(w.value) && abbreviationData.homonymNr == w.homonymNr)
-					.findFirst();
-			Long wordId;
-			if (existingWord.isPresent()) {
-				wordId = existingWord.get().id;
-			} else {
-				WordData newWord = createDefaultWordFrom(abbreviationData.word, null);
-				wordId = newWord.id;
+			boolean isImported = context.importedWords.stream().anyMatch(w -> abbreviationData.word.equals(w.value));
+			if (!isImported) {
+				WordData newWord = createDefaultWordFrom(abbreviationData.word, abbreviationData.displayForm);
+				context.importedWords.add(newWord);
+				newAbbreviationWordCount.increment();
+				Long wordId = newWord.id;
+
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(wordId);
+				lexeme.setMeaningId(abbreviationData.meaningId);
+				lexeme.setLevel1(abbreviationData.lexemeLevel1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
+				lexeme.setType(abbreviationData.lexemeType == null ? lexemeTypeAbbreviation : abbreviationData.lexemeType);
+				createLexeme(lexeme, dataset);
+				logger.debug("abbreviation word created : {}", abbreviationData.word);
 				writeToLogFile(abbreviationData.reportingId, "Ei leitud lühendit, loome uue", abbreviationData.word);
 			}
-			Lexeme lexeme = new Lexeme();
-			lexeme.setMeaningId(abbreviationData.meaningId);
-			lexeme.setWordId(wordId);
-			lexeme.setLevel1(0);
-			lexeme.setLevel2(0);
-			lexeme.setLevel3(0);
-			lexeme.setType(abbreviationData.lexemeType);
-			createLexeme(lexeme, dataset);
 		}
+		logger.debug("Abbreviation words created {}", newAbbreviationWordCount.getValue());
 		logger.debug("Abbreviations import done.");
 	}
 
@@ -204,7 +205,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						writeToLogFile(cohyponymData.reportingId, "Ei leitud ilmikut kaashüponüümile", cohyponymData.word + ", level1 " + cohyponymData.lexemeLevel1);
 					}
 				} catch (Exception e) {
-					logger.error("More than one lexeme {}, {}", cohyponymData.word, wordId);
+					logger.error("{} | {} | {}", e.getMessage(), cohyponymData.word, wordId);
 				}
 			}
 		}
@@ -260,9 +261,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(synonymData.meaningId);
-				lexeme.setLevel1(0);
-				lexeme.setLevel2(0);
-				lexeme.setLevel3(0);
+				lexeme.setLevel1(synonymData.lexemeLevel1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
 				lexeme.setType(synonymData.lexemeType);
 				createLexeme(lexeme, dataset);
 				logger.debug("synonym word created : {}", synonymData.word);
@@ -324,18 +325,27 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 
-				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions, lexemeLevel1);
-				if (meaningId == null) {
+				Long meaningId;
+				boolean addDefinitions = true;
+				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, lexemeLevel2);
+				if (meaningData == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
+				} else {
+					meaningId = meaningData.meaningId;
+					validateMeaning(meaningData, definitions, reportingId);
+					addDefinitions = meaningData.definition == null;
+					if (meaningData.definition == null && !definitions.isEmpty()) {
+						meaningData.definition = definitions.get(0);
+					}
+				}
+				if (addDefinitions) {
 					for (String definition : definitions) {
 						createDefinition(meaningId, definition, dataLang, dataset);
 					}
 					if (definitions.size() > 1) {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
-				} else {
-//					logger.debug("meaning found : {}", newWords.get(0).value);
 				}
 
 				if (isNotEmpty(meaningExternalId)) {
@@ -350,6 +360,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
 				List<String> registers = extractRegisters(meaningGroupNode);
+
+				context.meanings.addAll(extractMeaningsData(meaningSynonyms, meaningId, lexemeLevel2, definitions));
+				context.meanings.addAll(extractMeaningsData(abbreviations, meaningId, lexemeLevel2, definitions));
 
 				processSemanticData(meaningGroupNode, meaningId);
 
@@ -413,10 +426,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private List<LexemeToWordData> extractAbbreviations(Element node, Long meaningId, String reportingId) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
-//		final String abbreviationFullFormExp = "s:dg/s:lhx";
+		final String abbreviationFullFormExp = "s:dg/s:lhx";
 
 		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, null, reportingId);
-//		abbreviations.addAll(extractLexemeMetadata(node, abbreviationFullFormExp, null, reportingId));
+		abbreviations.addAll(extractLexemeMetadata(node, abbreviationFullFormExp, null, reportingId));
 		abbreviations.forEach(a -> {
 			a.meaningId = meaningId;
 			if (a.lexemeType == null) {
@@ -560,8 +573,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private List<LexemeToWordData> extractCohyponyms(Element node, String reportingId) throws Exception {
 
-		final String antonymExp = "s:ssh/s:khy";
-		return extractLexemeMetadata(node, antonymExp, null, reportingId);
+		final String cohyponymExp = "s:ssh/s:khy";
+		return extractLexemeMetadata(node, cohyponymExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
@@ -798,16 +811,44 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions, int level1) {
+	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, int level2) {
+
+		Optional<WordToMeaningData> existingMeaning = context.meanings.stream()
+				.filter(cachedMeaning -> newWord.value.equals(cachedMeaning.word) &&
+						newWord.homonymNr == cachedMeaning.homonymNr &&
+						level1 == cachedMeaning.lexemeLevel1 &&
+						level2 == cachedMeaning.lexemeLevel2)
+				.findFirst();
+		return existingMeaning.orElse(null);
+	}
+
+	private boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String reportingId) throws Exception {
 
 		String definition = definitions.isEmpty() ? null : definitions.get(0);
-		Optional<LexemeToWordData> existingSynonym = context.synonyms.stream()
-				.filter(s -> newWord.value.equals(s.word) &&
-						newWord.homonymNr == s.homonymNr &&
-						Objects.equals(definition, s.definition) &&
-						level1 == s.lexemeLevel1)
-				.findFirst();
-		return existingSynonym.orElse(new LexemeToWordData()).meaningId;
+		if (meaningData.definition == null || definition == null || Objects.equals(definition, meaningData.definition)) {
+			return true;
+		}
+		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.definition);
+		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningData.definition);
+		return false;
+	}
+
+	private List<WordToMeaningData> extractMeaningsData(List<LexemeToWordData> items, Long meaningId, int level2, List<String> definitions) {
+
+		List<WordToMeaningData> meanings = new ArrayList<>();
+		for (LexemeToWordData item : items) {
+			WordToMeaningData meaning = new WordToMeaningData();
+			meaning.meaningId = meaningId;
+			if (!definitions.isEmpty()) {
+				meaning.definition = definitions.get(0);
+			}
+			meaning.word = item.word;
+			meaning.homonymNr = item.homonymNr;
+			meaning.lexemeLevel1 = item.lexemeLevel1;
+			meaning.lexemeLevel2 = level2;
+			meanings.add(meaning);
+		}
+		return meanings;
 	}
 
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
@@ -913,6 +954,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private class WordToMeaningData {
+		Long meaningId;
+		String word;
+		int homonymNr = 0;
+		int lexemeLevel1 = 1;
+		int lexemeLevel2 = 1;
+		String definition;
+	}
+
 	private class LexemeToWordData {
 		Long lexemeId;
 		String word;
@@ -953,6 +1003,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
 		List<LexemeToWordData> cohyponyms = new ArrayList<>();
+		List<WordToMeaningData> meanings = new ArrayList<>();
 	}
 
 }
