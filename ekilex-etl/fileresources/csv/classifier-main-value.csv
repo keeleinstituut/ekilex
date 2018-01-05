@@ -78,6 +78,7 @@ lex_rel_type	tvt:vt ka	tähendusviide, vaata ka	est	full
 lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
 lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
+lex_rel_type	cohyponym	kaashüponüüm	est	full
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
