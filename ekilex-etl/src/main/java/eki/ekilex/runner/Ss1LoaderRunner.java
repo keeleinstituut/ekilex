@@ -365,6 +365,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				context.meanings.addAll(extractMeaningsData(abbreviations, meaningId, lexemeLevel2, definitions));
 
 				processSemanticData(meaningGroupNode, meaningId);
+				processDomains(meaningGroupNode, meaningId);
 
 				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
@@ -397,6 +398,21 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 			}
+		}
+	}
+
+	private void processDomains(Element node, Long meaningId) throws Exception {
+
+		final String domainOrigin = "bolan";
+		final String domainExp = "s:dg/s:regr/s:v";
+
+		List<String> domainCodes = extractValuesAsStrings(node, domainExp);
+		for (String domainCode : domainCodes) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("meaning_id", meaningId);
+			params.put("domain_code", domainCode);
+			params.put("domain_origin", domainOrigin);
+			basicDbService.createIfNotExists(MEANING_DOMAIN, params);
 		}
 	}
 
