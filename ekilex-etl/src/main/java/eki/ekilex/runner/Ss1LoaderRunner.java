@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
@@ -56,6 +57,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String ANTONYMS_REPORT_NAME = "antonyms";
 	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
 	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
+	private final static String TOKENS_REPORT_NAME = "tokens";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -67,11 +69,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> processStateCodes;
 	private Map<String, String> displayMorpCodes;
 	private String lexemeTypeAbbreviation;
+	private String lexemeTypeToken;
 
 	@Override
 	void initialise() throws Exception {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
 		lexemeTypeAbbreviation = lexemeTypes.get("l");
+		lexemeTypeToken = lexemeTypes.get("th");
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
@@ -90,7 +94,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME);
+					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -118,6 +122,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		processBasicWords(context);
 		processSynonymsNotFoundInImportFile(context);
 		processAbbreviations(context);
+		processTokens(context);
 		processAntonyms(context);
 		processCohyponyms(context);
 
@@ -150,35 +155,63 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		context.importedWords.addAll(newWords);
 	}
 
+	private void processTokens(Context context) throws Exception {
+
+		logger.debug("Found {} tokens.", context.tokens.size());
+		setActivateReport(TOKENS_REPORT_NAME);
+		writeToLogFile("Tähiste töötlus <s:ths>", "", "");
+
+		Count newTokenWordCount = processLexemeToWord(context, context.tokens, lexemeTypeToken, "Ei leitud tähist, loome uue");
+
+		logger.debug("Token words created {}", newTokenWordCount.getValue());
+		logger.debug("Tokens import done.");
+	}
+
+	private Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultLexemeType, String logMessage) throws Exception {
+		Count newWordCount = new Count();
+		for (LexemeToWordData itemData : items) {
+			boolean isImported = context.importedWords.stream().anyMatch(w -> itemData.word.equals(w.value));
+			if (!isImported) {
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm);
+				context.importedWords.add(newWord);
+				newWordCount.increment();
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(newWord.id);
+				lexeme.setMeaningId(itemData.meaningId);
+				lexeme.setLevel1(itemData.lexemeLevel1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
+				lexeme.setType(itemData.lexemeType == null ? defaultLexemeType : itemData.lexemeType);
+				createLexeme(lexeme, dataset);
+				logger.debug("new word created : {}", itemData.word);
+				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
+			}
+		}
+		return newWordCount;
+	}
+
 	private void processAbbreviations(Context context) throws Exception {
 
 		logger.debug("Found {} abbreviations.", context.abbreviations.size());
 		setActivateReport(ABBREVIATIONS_REPORT_NAME);
-		writeToLogFile("Lühendite töötlus <s:lyh>", "", "");
+		writeToLogFile("Lühendite töötlus <s:lyh> ja <s:lhx>", "", "");
 
-		Count newAbbreviationWordCount = new Count();
-		for (LexemeToWordData abbreviationData : context.abbreviations) {
-			boolean isImported = context.importedWords.stream().anyMatch(w -> abbreviationData.word.equals(w.value));
-			if (!isImported) {
-				WordData newWord = createDefaultWordFrom(abbreviationData.word, abbreviationData.displayForm);
-				context.importedWords.add(newWord);
-				newAbbreviationWordCount.increment();
-				Long wordId = newWord.id;
+		Count newAbbreviationWordCount = processLexemeToWord(context, context.abbreviations, lexemeTypeAbbreviation, "Ei leitud lühendit, loome uue");
 
-				Lexeme lexeme = new Lexeme();
-				lexeme.setWordId(wordId);
-				lexeme.setMeaningId(abbreviationData.meaningId);
-				lexeme.setLevel1(abbreviationData.lexemeLevel1);
-				lexeme.setLevel2(1);
-				lexeme.setLevel3(1);
-				lexeme.setType(abbreviationData.lexemeType == null ? lexemeTypeAbbreviation : abbreviationData.lexemeType);
-				createLexeme(lexeme, dataset);
-				logger.debug("abbreviation word created : {}", abbreviationData.word);
-				writeToLogFile(abbreviationData.reportingId, "Ei leitud lühendit, loome uue", abbreviationData.word);
-			}
-		}
 		logger.debug("Abbreviation words created {}", newAbbreviationWordCount.getValue());
 		logger.debug("Abbreviations import done.");
+	}
+
+	private void processSynonymsNotFoundInImportFile(Context context) throws Exception {
+
+		logger.debug("Found {} synonyms", context.synonyms.size());
+		setActivateReport(SYNONYMS_REPORT_NAME);
+		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
+
+		Count newSynonymWordCount = processLexemeToWord(context, context.synonyms, null, "sünonüümi ei letud, lisame sõna");
+
+		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
+		logger.debug("Synonyms import done.");
 	}
 
 	private void processCohyponyms(Context context) throws Exception {
@@ -243,37 +276,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Antonyms import done.");
 	}
 
-	private void processSynonymsNotFoundInImportFile(Context context) throws Exception {
-
-		logger.debug("Found {} synonyms", context.synonyms.size());
-		setActivateReport(SYNONYMS_REPORT_NAME);
-		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
-
-		Count newSynonymWordCount = new Count();
-		for (LexemeToWordData synonymData : context.synonyms) {
-			boolean isImported = context.importedWords.stream().anyMatch(w -> synonymData.word.equals(w.value));
-			if (!isImported) {
-				WordData newWord = createDefaultWordFrom(synonymData.word, synonymData.displayForm);
-				context.importedWords.add(newWord);
-				newSynonymWordCount.increment();
-				Long wordId = newWord.id;
-
-				Lexeme lexeme = new Lexeme();
-				lexeme.setWordId(wordId);
-				lexeme.setMeaningId(synonymData.meaningId);
-				lexeme.setLevel1(synonymData.lexemeLevel1);
-				lexeme.setLevel2(1);
-				lexeme.setLevel3(1);
-				lexeme.setType(synonymData.lexemeType);
-				createLexeme(lexeme, dataset);
-				logger.debug("synonym word created : {}", synonymData.word);
-				writeToLogFile(synonymData.reportingId, "sünonüümi ei letud, lisame sõna", synonymData.word);
-			}
-		}
-		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
-		logger.debug("Synonyms import done.");
-	}
-
 	void processBasicWords(Context context) throws Exception {
 
 		logger.debug("Found {} basic words.", context.basicWords.size());
@@ -330,11 +332,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
-				List<String> meaningWords = new ArrayList<>();
-				meaningWords.addAll(meaningSynonyms.stream().map(m -> m.word).collect(toList()));
-				meaningWords.addAll(meaningAbbreviations.stream().map(m -> m.word).collect(toList()));
+				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
+				List<LexemeToWordData> connectedWords =
+						Stream.of(meaningSynonyms.stream(), meaningAbbreviations.stream(), meaningTokens.stream()).flatMap(i -> i).collect(toList());
 
-				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, meaningWords);
+				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords);
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
@@ -363,7 +365,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
 				List<String> registers = extractRegisters(meaningGroupNode);
 
-				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0).value, meaningSynonyms, meaningAbbreviations);
+				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
+						meaningSynonyms, meaningAbbreviations, meaningTokens);
 
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId);
@@ -403,22 +406,29 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void cacheMeaningRelatedData(
-			Context context, Long meaningId, List<String> definitions, String wordValue, List<LexemeToWordData> synonyms, List<LexemeToWordData> abbreviations) {
-		synonyms.forEach(synonymData -> {
-			synonymData.meaningId = meaningId;
+			Context context, Long meaningId, List<String> definitions, WordData word, int level1,
+			List<LexemeToWordData> synonyms, List<LexemeToWordData> abbreviations, List<LexemeToWordData> tokens) {
+		synonyms.forEach(data -> {
+			data.meaningId = meaningId;
 			if (!definitions.isEmpty()) {
-				synonymData.definition = definitions.get(0);
+				data.definition = definitions.get(0);
 			}
 		});
 		context.synonyms.addAll(synonyms);
 
-		abbreviations.forEach(a -> {
-			a.meaningId = meaningId;
+		abbreviations.forEach(data -> {
+			data.meaningId = meaningId;
 		});
 		context.abbreviations.addAll(abbreviations);
 
-		context.meanings.addAll(extractMeaningsData(synonyms, wordValue, definitions));
-		context.meanings.addAll(extractMeaningsData(abbreviations, wordValue, definitions));
+		tokens.forEach(data -> {
+			data.meaningId = meaningId;
+		});
+		context.tokens.addAll(tokens);
+
+		context.meanings.addAll(extractMeaningsData(synonyms, word, level1, definitions));
+		context.meanings.addAll(extractMeaningsData(abbreviations, word, level1, definitions));
+		context.meanings.addAll(extractMeaningsData(tokens, word, level1, definitions));
 	}
 
 	private void processDomains(Element node, Long meaningId) throws Exception {
@@ -457,6 +467,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String systematicPolysemyPattern = systematicPolysemyPatternNode.getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.SYSTEMATIC_POLYSEMY_PATTERN, systematicPolysemyPattern);
 		}
+	}
+
+	private List<LexemeToWordData> extractTokens(Element node, String reportingId) throws Exception {
+
+		final String tokenExp = "s:lig/s:ths";
+		return extractLexemeMetadata(node, tokenExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractAbbreviations(Element node, String reportingId) throws Exception {
@@ -838,14 +854,23 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, List<String> meaningWords) {
+	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, List<LexemeToWordData> connectedWords) {
 
+		List<String> connectedWordValues = connectedWords.stream().map(w -> w.word).collect(toList());
 		Optional<WordToMeaningData> existingMeaning = context.meanings.stream()
 				.filter(cachedMeaning -> newWord.value.equals(cachedMeaning.word) &&
 						newWord.homonymNr == cachedMeaning.homonymNr &&
 						level1 == cachedMeaning.lexemeLevel1 &&
-				        meaningWords.contains(cachedMeaning.meaningWord))
+						connectedWordValues.contains(cachedMeaning.meaningWord))
 				.findFirst();
+		if (!existingMeaning.isPresent() && !connectedWords.isEmpty()) {
+			LexemeToWordData connectedWord = connectedWords.get(0);
+			existingMeaning = context.meanings.stream()
+					.filter(cachedMeaning -> connectedWord.word.equals(cachedMeaning.meaningWord) &&
+							connectedWord.homonymNr == cachedMeaning.meaningHomonymNr &&
+							connectedWord.lexemeLevel1 == cachedMeaning.meaningLevel1)
+					.findFirst();
+		}
 		return existingMeaning.orElse(null);
 	}
 
@@ -860,13 +885,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return false;
 	}
 
-	private List<WordToMeaningData> extractMeaningsData(List<LexemeToWordData> items, String meaningWord, List<String> definitions) {
+	private List<WordToMeaningData> extractMeaningsData(List<LexemeToWordData> items, WordData meaningWord, int level1, List<String> definitions) {
 
 		List<WordToMeaningData> meanings = new ArrayList<>();
 		for (LexemeToWordData item : items) {
 			WordToMeaningData meaning = new WordToMeaningData();
 			meaning.meaningId = item.meaningId;
-			meaning.meaningWord = meaningWord;
+			meaning.meaningWord = meaningWord.value;
+			meaning.meaningHomonymNr = meaningWord.homonymNr;
+			meaning.meaningLevel1 = level1;
 			if (!definitions.isEmpty()) {
 				meaning.meaningDefinition = definitions.get(0);
 			}
@@ -988,6 +1015,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		Long meaningId;
 		String meaningDefinition;
 		String meaningWord;
+		int meaningHomonymNr = 0;
+		int meaningLevel1 = 1;
 	}
 
 	private class LexemeToWordData {
@@ -1030,6 +1059,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
 		List<LexemeToWordData> cohyponyms = new ArrayList<>();
+		List<LexemeToWordData> tokens = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
 	}
 
