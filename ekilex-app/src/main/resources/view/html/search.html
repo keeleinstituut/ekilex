@@ -53,7 +53,7 @@
         </form>
       </div>
     </div>
-    <div class="mt-4 float-left" th:if="${wordsFoundBySearch != null}" style="height: calc(100vh - 15em); width: 20%; overflow-y: auto;">
+    <div class="mt-4 float-left" th:if="${wordsFoundBySearch != null}" style="height: calc(100vh - 15em); width: 15%; overflow-y: auto;">
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100">
@@ -67,43 +67,90 @@
     </div>
     <div id="details_div"></div>
   </div>
-
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${formId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 80%; overflow-y: auto;">
-      <div class="float-left w-25">
-        <th:block th:each="form : ${details.forms}">
-          <span th:text="${form.value}"></span>
-          (
-          <span th:text="${form.morphCode + '-' + form.morphValue}"></span>
-          <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-          <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-          )
-          <br>
-        </th:block>
+    <div th:data-id="${formId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 85%; overflow-y: auto;">
+      <div class="float-left w-30">
+        <div th:if="${not #lists.isEmpty(details.relations)}">
+          <th:block th:each="relation : ${details.relations}">
+            <span th:text="${relation.word}"></span>
+            (
+            <span th:text="${relation.wordLang}"></span>
+            ) -
+            <span th:text="${relation.relationTypeLabel}"></span>
+          </th:block>
+          <hr />
+        </div>
+        <div th:if="${not #lists.isEmpty(details.forms)}">
+          <th:block th:each="form : ${details.forms}">
+            <span th:text="${form.value}"></span>
+            (
+            <span th:text="${form.morphCode + '-' + form.morphValue}"></span>
+            <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+            <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+            )
+            <br>
+          </th:block>
+        </div>
       </div>
-      <div class="float-left w-75 pl-2">
+      <div class="float-right w-70 pl-2" style="width:70%">
         <th:block th:each="lexeme : ${details.lexemes}">
-          <div style="border: 1px solid #CCC; padding: 5px;">
-            <span th:each="word,wordIter : ${lexeme.words}">
-              <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}">
-                <span th:text="${word.value}"></span>
-                (
-                <span th:text="${word.lang}"></span>
-                )
-              </a>
-              <span th:unless="${wordIter.last}">|&nbsp;</span>
-            </span>
-            <span th:if="${lexeme.levels != null}">
-              <small>
-                [
-                <span th:text="${lexeme.levels}"></span>
-                ]
-              </small>
-              &nbsp;
-            </span>
-            <b>
-              <span th:text="${lexeme.dataset}" class="float-right"></span>
-            </b>
+          <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
+            <div style="overflow: auto;">
+              <span th:each="word,wordIter : ${lexeme.words}">
+                <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}">
+                  <span th:text="${word.value}"></span>
+                  (
+                  <span th:text="${word.lang}"></span>
+                  )
+                </a>
+                <span th:unless="${wordIter.last}">|&nbsp;</span>
+              </span>
+              <span th:if="${lexeme.levels != null}">
+                <small>
+                  [
+                  <span th:text="${lexeme.levels}"></span>
+                  ]
+                </small>
+                &nbsp;
+              </span>
+              <b>
+                <span th:text="${lexeme.dataset}" class="float-right"></span>
+              </b>
+            </div>
+            <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
+              <hr />
+              <div th:if="${lexeme.lexemeTypeCode != null}">
+                <b>Keelendi tüüp</b>
+                <span th:text="${lexeme.lexemeTypeCode}"></span>
+              </div>
+              <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
+                <b>Sagedusrühm</b>
+                <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
+              </div>
+              <div th:if="${lexeme.meaningTypeCode != null}">
+                <b>Mõistetüüp</b>
+                <span th:text="${lexeme.meaningTypeCode}"></span>
+              </div>
+              <div th:if="${lexeme.meaningProcessStateCode != null}">
+                <b>Olek</b>
+                <span th:text="${lexeme.meaningProcessStateCode}"></span>
+              </div>
+              <div th:if="${lexeme.meaningStateCode != null}">
+                <b>Seisund</b>
+                <span th:text="${lexeme.meaningStateCode}"></span>
+              </div>
+              <p th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
+                <b>Valdkonnad</b>
+                <span th:each="domain,domainIter : ${lexeme.meaningDomains}">
+                  <span th:text="${domain.code}"></span>
+                  <th:block th:unless="${domain.code == domain.value}">
+                  -
+                  <span th:text="${domain.value}"></span>
+                  </th:block>
+                  <span th:unless="${domainIter.last}">,</span>
+                </span>
+              </p>
+            </div>
             <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
               <hr />
               <b>Seletused</b>
@@ -111,6 +158,21 @@
                 <tr>
                   <td>
                     <span th:utext="${markdown.toHtml(definition.value)}"></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
+              <hr />
+              <b>Tähenduse atribuudid</b>
+              <table>
+                <tr th:each="freeform : ${lexeme.meaningFreeforms}">
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <span th:text="${freeform.type}"></span>
+                  </td>
+                  <td>
+                    <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
+                    <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
                   </td>
                 </tr>
               </table>
@@ -162,6 +224,23 @@
                   <td>
                     <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
                     <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+              <hr />
+              <b>Ilmiku seosed</b>
+              <table>
+                <tr th:each="relation : ${lexeme.lexemeRelations}">
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <span th:text="${relation.word}"></span>
+                    (
+                    <span th:text="${relation.wordLang}"></span>
+                    )
+                  </td>
+                  <td>
+                    <span th:text="${relation.relationTypeLabel}"></span>
                   </td>
                 </tr>
               </table>

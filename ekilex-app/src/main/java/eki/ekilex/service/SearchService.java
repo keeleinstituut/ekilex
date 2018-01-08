@@ -15,6 +15,7 @@ import eki.ekilex.data.Form;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
@@ -43,9 +44,14 @@ public class SearchService {
 
 	public WordDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
 
+		final String classifierLabelLang = "est";
+		final String classifierLabelTypeDescrip = "descrip";
+		final String classifierLabelTypeFull = "full";
+
 		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
 		List<WordLexeme> lexemes = searchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(WordLexeme.class);
-		List<Form> connectedForms = searchDbService.findConnectedForms(formId).into(Form.class);
+		List<Form> connectedForms = searchDbService.findConnectedForms(formId, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
+		List<Relation> formRelations = searchDbService.findFormRelations(formId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 
 		lexemes.forEach(lexeme -> {
 
@@ -53,14 +59,16 @@ public class SearchService {
 			dataset = datasetNameMap.get(dataset);
 			lexeme.setDataset(dataset);
 
+			Long wordId = lexeme.getWordId();
 			Long lexemeId = lexeme.getLexemeId();
 			Long meaningId = lexeme.getMeaningId();
 
-			List<Form> words = searchDbService.findConnectedWordsInDatasets(meaningId, selectedDatasets).into(Form.class);
+			List<Form> words = searchDbService.findConnectedWordsInDatasets(
+					meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
 			lexeme.setWords(words);
 
-			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			lexeme.setDomains(domains);
+			List<Classifier> meaningDomains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
+			lexeme.setMeaningDomains(meaningDomains);
 
 			List<Definition> meaningDefinitions = searchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
 			lexeme.setDefinitions(meaningDefinitions);
@@ -77,11 +85,26 @@ public class SearchService {
 			List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
 			lexeme.setRections(rections);
 
+			List<Relation> lexemeRelations = searchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+			lexeme.setLexemeRelations(lexemeRelations);
+
+			List<Relation> wordRelations = searchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+			lexeme.setWordRelations(wordRelations);
+
+			boolean lexemeOrMeaningClassifiersExist =
+					StringUtils.isNotBlank(lexeme.getLexemeTypeCode())
+					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
+					|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
+					|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
+					|| StringUtils.isNotBlank(lexeme.getMeaningStateCode())
+					|| CollectionUtils.isNotEmpty(meaningDomains);
+			lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
 		});
 		combineLevels(lexemes);
 		return new WordDetails(d -> {
 			d.setForms(connectedForms);
 			d.setLexemes(lexemes);
+			d.setRelations(formRelations);
 		});
 	}
 
