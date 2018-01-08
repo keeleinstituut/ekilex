@@ -327,16 +327,23 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 				Long meaningId;
 				boolean addDefinitions = true;
-				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, lexemeLevel2);
+
+				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
+				List<String> meaningWords = new ArrayList<>();
+				meaningWords.addAll(meaningSynonyms.stream().map(m -> m.word).collect(toList()));
+				meaningWords.addAll(meaningAbbreviations.stream().map(m -> m.word).collect(toList()));
+
+				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, meaningWords);
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
 				} else {
 					meaningId = meaningData.meaningId;
 					validateMeaning(meaningData, definitions, reportingId);
-					addDefinitions = meaningData.definition == null;
-					if (meaningData.definition == null && !definitions.isEmpty()) {
-						meaningData.definition = definitions.get(0);
+					addDefinitions = meaningData.meaningDefinition == null;
+					if (meaningData.meaningDefinition == null && !definitions.isEmpty()) {
+						meaningData.meaningDefinition = definitions.get(0);
 					}
 				}
 				if (addDefinitions) {
@@ -352,17 +359,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
 				}
 
-				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, meaningId, definitions, reportingId);
-				context.synonyms.addAll(meaningSynonyms);
-
-				List<LexemeToWordData> abbreviations = extractAbbreviations(meaningGroupNode, meaningId, reportingId);
-				context.abbreviations.addAll(abbreviations);
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
 				List<String> registers = extractRegisters(meaningGroupNode);
 
-				context.meanings.addAll(extractMeaningsData(meaningSynonyms, meaningId, lexemeLevel2, definitions));
-				context.meanings.addAll(extractMeaningsData(abbreviations, meaningId, lexemeLevel2, definitions));
+				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0).value, meaningSynonyms, meaningAbbreviations);
 
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId);
@@ -399,6 +400,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private void cacheMeaningRelatedData(
+			Context context, Long meaningId, List<String> definitions, String wordValue, List<LexemeToWordData> synonyms, List<LexemeToWordData> abbreviations) {
+		synonyms.forEach(synonymData -> {
+			synonymData.meaningId = meaningId;
+			if (!definitions.isEmpty()) {
+				synonymData.definition = definitions.get(0);
+			}
+		});
+		context.synonyms.addAll(synonyms);
+
+		abbreviations.forEach(a -> {
+			a.meaningId = meaningId;
+		});
+		context.abbreviations.addAll(abbreviations);
+
+		context.meanings.addAll(extractMeaningsData(synonyms, wordValue, definitions));
+		context.meanings.addAll(extractMeaningsData(abbreviations, wordValue, definitions));
 	}
 
 	private void processDomains(Element node, Long meaningId) throws Exception {
@@ -439,7 +459,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<LexemeToWordData> extractAbbreviations(Element node, Long meaningId, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractAbbreviations(Element node, String reportingId) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
 		final String abbreviationFullFormExp = "s:dg/s:lhx";
@@ -447,7 +467,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, null, reportingId);
 		abbreviations.addAll(extractLexemeMetadata(node, abbreviationFullFormExp, null, reportingId));
 		abbreviations.forEach(a -> {
-			a.meaningId = meaningId;
 			if (a.lexemeType == null) {
 				a.lexemeType = lexemeTypeAbbreviation;
 			}
@@ -639,18 +658,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return metadataList;
 	}
 
-	private List<LexemeToWordData> extractSynonyms(Element node, Long meaningId, List<String> definitions, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractSynonyms(Element node, String reportingId) throws Exception {
 
 		final String synonymExp = "s:ssh/s:syn";
-
-		List<LexemeToWordData> synonyms = extractLexemeMetadata(node, synonymExp, null, reportingId);
-		synonyms.forEach(synonymData -> {
-			synonymData.meaningId = meaningId;
-			if (!definitions.isEmpty()) {
-				synonymData.definition = definitions.get(0);
-			}
-		});
-		return synonyms;
+		return extractLexemeMetadata(node, synonymExp, null, reportingId);
 	}
 
 	private List<String> extractRegisters(Element node) {
@@ -827,13 +838,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, int level2) {
+	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, List<String> meaningWords) {
 
 		Optional<WordToMeaningData> existingMeaning = context.meanings.stream()
 				.filter(cachedMeaning -> newWord.value.equals(cachedMeaning.word) &&
 						newWord.homonymNr == cachedMeaning.homonymNr &&
 						level1 == cachedMeaning.lexemeLevel1 &&
-						level2 == cachedMeaning.lexemeLevel2)
+				        meaningWords.contains(cachedMeaning.meaningWord))
 				.findFirst();
 		return existingMeaning.orElse(null);
 	}
@@ -841,27 +852,27 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String reportingId) throws Exception {
 
 		String definition = definitions.isEmpty() ? null : definitions.get(0);
-		if (meaningData.definition == null || definition == null || Objects.equals(definition, meaningData.definition)) {
+		if (meaningData.meaningDefinition == null || definition == null || Objects.equals(definition, meaningData.meaningDefinition)) {
 			return true;
 		}
-//		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.definition);
-		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningData.definition);
+		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.meaningDefinition);
+		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningData.meaningDefinition);
 		return false;
 	}
 
-	private List<WordToMeaningData> extractMeaningsData(List<LexemeToWordData> items, Long meaningId, int level2, List<String> definitions) {
+	private List<WordToMeaningData> extractMeaningsData(List<LexemeToWordData> items, String meaningWord, List<String> definitions) {
 
 		List<WordToMeaningData> meanings = new ArrayList<>();
 		for (LexemeToWordData item : items) {
 			WordToMeaningData meaning = new WordToMeaningData();
-			meaning.meaningId = meaningId;
+			meaning.meaningId = item.meaningId;
+			meaning.meaningWord = meaningWord;
 			if (!definitions.isEmpty()) {
-				meaning.definition = definitions.get(0);
+				meaning.meaningDefinition = definitions.get(0);
 			}
 			meaning.word = item.word;
 			meaning.homonymNr = item.homonymNr;
 			meaning.lexemeLevel1 = item.lexemeLevel1;
-			meaning.lexemeLevel2 = level2;
 			meanings.add(meaning);
 		}
 		return meanings;
@@ -971,12 +982,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private class WordToMeaningData {
-		Long meaningId;
 		String word;
 		int homonymNr = 0;
 		int lexemeLevel1 = 1;
-		int lexemeLevel2 = 1;
-		String definition;
+		Long meaningId;
+		String meaningDefinition;
+		String meaningWord;
 	}
 
 	private class LexemeToWordData {
