@@ -17,7 +17,7 @@
     </div>
     <div class="card mt-4">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{search.title}">Vormi otsing</h5>
+        <h5 class="card-title" th:text="#{term.search.title}">Vormi otsing</h5>
       </div>
       <div class="card-body">
         <form th:action="@{/termsearch}">
@@ -53,7 +53,12 @@
         </form>
       </div>
     </div>
-    <div class="mt-4 float-left w-25" th:if="${wordsFoundBySearch != null}" style="height: calc(100vh - 15em); overflow-y: auto;">
+
+    <div class="mt-4 float-left" th:if="${wordsFoundBySearch.isEmpty() && searchFilter != null}">
+      <span th:text="#{term.not.found}">Not found.</span>
+    </div>
+
+    <div class="mt-4 float-left w-25" th:if="${!wordsFoundBySearch.isEmpty()}" style="height: calc(100vh - 15em); overflow-y: auto;">
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100" name="word_form">
