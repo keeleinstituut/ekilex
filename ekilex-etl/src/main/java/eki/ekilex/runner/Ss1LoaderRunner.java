@@ -34,6 +34,7 @@ import java.util.stream.Stream;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.removePattern;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 @Component
@@ -41,7 +42,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private final static String dataLang = "est";
 	private final static String dataset = "ss1";
-	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
+	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
 	private final String defaultWordMorphCode = "SgN";
 	private final String defaultRectionValue = "-";
 
@@ -58,6 +59,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
 	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
 	private final static String TOKENS_REPORT_NAME = "tokens";
+	private final static String FORMULAS_REPORT_NAME = "formulas";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -94,7 +96,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME);
+					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME, FORMULAS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -123,6 +125,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		processSynonymsNotFoundInImportFile(context);
 		processAbbreviations(context);
 		processTokens(context);
+		processFormulas(context);
 		processAntonyms(context);
 		processCohyponyms(context);
 
@@ -153,6 +156,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			processArticleContent(reportingId, contentNode, newWords, context);
 		}
 		context.importedWords.addAll(newWords);
+	}
+
+	private void processFormulas(Context context) throws Exception {
+
+		logger.debug("Found {} formulas.", context.formulas.size());
+		setActivateReport(FORMULAS_REPORT_NAME);
+		writeToLogFile("Valemite töötlus <s:val>", "", "");
+
+		// FIXME: what should be lexeme type ???
+		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeToken, "Ei leitud valemit, loome uue");
+
+		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
+		logger.debug("Formulas import done.");
 	}
 
 	private void processTokens(Context context) throws Exception {
@@ -333,8 +349,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningFormulas = extractFormulas(meaningGroupNode, reportingId);
 				List<LexemeToWordData> connectedWords =
-						Stream.of(meaningSynonyms.stream(), meaningAbbreviations.stream(), meaningTokens.stream()).flatMap(i -> i).collect(toList());
+						Stream.of(meaningSynonyms.stream(), meaningAbbreviations.stream(), meaningTokens.stream(), meaningFormulas.stream())
+								.flatMap(i -> i).collect(toList());
 
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords);
 				if (meaningData == null) {
@@ -366,7 +384,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<String> registers = extractRegisters(meaningGroupNode);
 
 				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
-						meaningSynonyms, meaningAbbreviations, meaningTokens);
+						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas);
 
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId);
@@ -407,7 +425,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void cacheMeaningRelatedData(
 			Context context, Long meaningId, List<String> definitions, WordData word, int level1,
-			List<LexemeToWordData> synonyms, List<LexemeToWordData> abbreviations, List<LexemeToWordData> tokens) {
+			List<LexemeToWordData> synonyms,
+			List<LexemeToWordData> abbreviations,
+			List<LexemeToWordData> tokens,
+			List<LexemeToWordData> formulas
+			) {
 		synonyms.forEach(data -> {
 			data.meaningId = meaningId;
 			if (!definitions.isEmpty()) {
@@ -426,9 +448,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		});
 		context.tokens.addAll(tokens);
 
+		formulas.forEach(data -> {
+			data.meaningId = meaningId;
+		});
+		context.formulas.addAll(formulas);
+
 		context.meanings.addAll(extractMeaningsData(synonyms, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(abbreviations, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(tokens, word, level1, definitions));
+		context.meanings.addAll(extractMeaningsData(formulas, word, level1, definitions));
 	}
 
 	private void processDomains(Element node, Long meaningId) throws Exception {
@@ -467,6 +495,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String systematicPolysemyPattern = systematicPolysemyPatternNode.getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.SYSTEMATIC_POLYSEMY_PATTERN, systematicPolysemyPattern);
 		}
+	}
+
+	private List<LexemeToWordData> extractFormulas(Element node, String reportingId) throws Exception {
+
+		final String tokenExp = "s:lig/s:val";
+		return extractLexemeMetadata(node, tokenExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractTokens(Element node, String reportingId) throws Exception {
@@ -961,7 +995,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private String cleanUp(String value) {
-		return replaceChars(value, formStrCleanupChars, "");
+		String cleanedWord = replaceChars(value, formStrCleanupChars, "");
+		// FIXME: quick fix for removing subscript tags, better solution would be to use some markup for mathematical and chemical formulas
+		return removePattern(cleanedWord, "[&]\\w+[;]");
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
@@ -1060,6 +1096,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
 		List<LexemeToWordData> cohyponyms = new ArrayList<>();
 		List<LexemeToWordData> tokens = new ArrayList<>();
+		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
 	}
 
