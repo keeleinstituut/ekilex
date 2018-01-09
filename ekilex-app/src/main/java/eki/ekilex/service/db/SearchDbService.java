@@ -4,15 +4,21 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FORM_RELATION;
+import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -60,7 +66,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
-	public Result<Record7<Long, String, String[], String, String, String, String>> findConnectedForms(Long formId) {
+	public Result<Record7<Long, String, String[], String, String, String, String>> findConnectedForms(Long formId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Form f1 = FORM.as("f1");
 		Form f2 = FORM.as("f2");
@@ -82,8 +88,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						.and(f1.PARADIGM_ID.eq(p.ID))
 						.and(f2.PARADIGM_ID.eq(p.ID))
 						.and(m.CODE.eq(f2.MORPH_CODE))
-						.and(m.LANG.eq("est"))
-						.and(m.TYPE.eq("descrip")))
+						.and(m.LANG.eq(classifierLabelLang))
+						.and(m.TYPE.eq(classifierLabelTypeCode)))
 				.orderBy(f2.ID)
 				.fetch();
 	}
@@ -217,12 +223,25 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(Long meaningId, List<String> datasets) {
+	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(
+			Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.LANG, FORM.DISPLAY_FORM, FORM.VOCAL_FORM, FORM.MORPH_CODE, MORPH_LABEL.VALUE.as("morph_value"))
+				.select(
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.LANG,
+						FORM.DISPLAY_FORM,
+						FORM.VOCAL_FORM,
+						FORM.MORPH_CODE,
+						MORPH_LABEL.VALUE.as("morph_value")
+						)
 				.from(LEXEME, WORD, PARADIGM,
-						FORM.leftOuterJoin(MORPH_LABEL).on(FORM.MORPH_CODE.eq(MORPH_LABEL.CODE).and(MORPH_LABEL.LANG.eq("est").and(MORPH_LABEL.TYPE.eq("descrip")))))
+						FORM.leftOuterJoin(MORPH_LABEL).on(
+								FORM.MORPH_CODE.eq(MORPH_LABEL.CODE)
+								.and(MORPH_LABEL.LANG.eq(classifierLabelLang)
+								.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))))
+						)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
 								.and(FORM.IS_WORD.eq(Boolean.TRUE))
@@ -259,4 +278,89 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
+	public Result<Record3<String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						)
+				.from(
+						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
+								LEX_RELATION.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
+								.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						LEXEME,
+						WORD,
+						PARADIGM,
+						FORM
+						)
+				.where(
+						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
+						.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						)
+				.orderBy(FORM.VALUE)
+				.fetch();
+				
+	}
+
+	public Result<Record3<String,String,String>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						)
+				.from(
+						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
+								WORD_RELATION.WORD_REL_TYPE_CODE.eq(WORD_REL_TYPE_LABEL.CODE)
+								.and(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						WORD,
+						PARADIGM,
+						FORM
+						)
+				.where(
+						WORD_RELATION.WORD1_ID.eq(wordId)
+						.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						)
+				.orderBy(FORM.VALUE)
+				.fetch();
+	}
+
+	public Result<Record3<String,String,String>> findFormRelations(Long formId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						FORM_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						)
+				.from(
+						FORM_RELATION.leftOuterJoin(FORM_REL_TYPE_LABEL).on(
+								FORM_RELATION.FORM_REL_TYPE_CODE.eq(FORM_REL_TYPE_LABEL.CODE)
+								.and(FORM_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(FORM_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						WORD,
+						PARADIGM,
+						FORM
+						)
+				.where(
+						FORM_RELATION.FORM2_ID.eq(formId)
+						.and(FORM_RELATION.FORM1_ID.eq(FORM.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						)
+				.orderBy(FORM.VALUE)
+				.fetch();
+	}
 }

@@ -55,7 +55,7 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "meaning_state_code")
 	private String meaningStateCode;
 
-	private List<Classifier> domains;
+	private List<Classifier> meaningDomains;
 
 	private List<Form> words;
 
@@ -66,6 +66,12 @@ public class WordLexeme extends AbstractDataObject {
 	private List<FreeForm> meaningFreeforms;
 
 	private List<FreeForm> lexemeFreeforms;
+
+	private List<Relation> lexemeRelations;
+
+	private List<Relation> wordRelations;
+
+	private boolean lexemeOrMeaningClassifiersExist;
 
 	public WordLexeme() {
 	}
@@ -194,12 +200,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningStateCode = meaningStateCode;
 	}
 
-	public List<Classifier> getDomains() {
-		return domains;
+	public List<Classifier> getMeaningDomains() {
+		return meaningDomains;
 	}
 
-	public void setDomains(List<Classifier> domains) {
-		this.domains = domains;
+	public void setMeaningDomains(List<Classifier> meaningDomains) {
+		this.meaningDomains = meaningDomains;
 	}
 
 	public List<Form> getWords() {
@@ -240,6 +246,30 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
 		this.lexemeFreeforms = lexemeFreeforms;
+	}
+
+	public List<Relation> getLexemeRelations() {
+		return lexemeRelations;
+	}
+
+	public void setLexemeRelations(List<Relation> lexemeRelations) {
+		this.lexemeRelations = lexemeRelations;
+	}
+
+	public List<Relation> getWordRelations() {
+		return wordRelations;
+	}
+
+	public void setWordRelations(List<Relation> wordRelations) {
+		this.wordRelations = wordRelations;
+	}
+
+	public boolean isLexemeOrMeaningClassifiersExist() {
+		return lexemeOrMeaningClassifiersExist;
+	}
+
+	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
+		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
 
 	public boolean isFreeformsExist() {
