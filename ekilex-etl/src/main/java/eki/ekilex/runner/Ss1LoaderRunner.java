@@ -46,9 +46,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String dataLang = "est";
 	private final static String dataset = "ss1";
 	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
-	private final String defaultWordMorphCode = "SgN";
-	private final String defaultRectionValue = "-";
-	private final String latinLang = "lat";
+	private final static String defaultWordMorphCode = "SgN";
+	private final static String defaultRectionValue = "-";
+	private final static String latinLang = "lat";
+	private final static String lexemeTypeFormula = "valem";
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
@@ -186,8 +187,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(FORMULAS_REPORT_NAME);
 		writeToLogFile("Valemite töötlus <s:val>", "", "");
 
-		// FIXME: what should be lexeme type ???
-		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, null, "Ei leitud valemit, loome uue", dataLang);
+		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeFormula, "Ei leitud valemit, loome uue", dataLang);
 
 		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
 		logger.debug("Formulas import done.");
