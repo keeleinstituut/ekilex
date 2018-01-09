@@ -71,6 +71,7 @@ insert into lexeme_type (code, datasets) values ('pf', '{}');
 insert into lexeme_type (code, datasets) values ('s', '{}');
 insert into lexeme_type (code, datasets) values ('km', '{}');
 insert into lexeme_type (code, datasets) values ('th', '{}');
+insert into lexeme_type (code, datasets) values ('valem', '{}');
 insert into meaning_state (code, datasets) values ('terminiprobleem', '{}');
 insert into meaning_type (code, datasets) values ('termin', '{}');
 insert into meaning_type (code, datasets) values ('tõlkeprobleem', '{}');
@@ -341,6 +342,7 @@ insert into lexeme_type_label (code, value, lang, type) values ('s', 'sarja liig
 insert into lexeme_type_label (code, value, lang, type) values ('s', 'serial member', 'eng', 'descrip');
 insert into lexeme_type_label (code, value, lang, type) values ('km', 'kaubamärk', 'est', 'descrip');
 insert into lexeme_type_label (code, value, lang, type) values ('th', 'tähis', 'est', 'descrip');
+insert into lexeme_type_label (code, value, lang, type) values ('valem', 'valem', 'est', 'descrip');
 insert into morph_label (code, value, lang, type) values ('ID', 'muutumatu', 'est', 'descrip2');
 insert into morph_label (code, value, lang, type) values ('SgN', 'ainsuse nimetav', 'est', 'descrip2');
 insert into morph_label (code, value, lang, type) values ('SgN', 'SgN', 'eng', 'descrip2');

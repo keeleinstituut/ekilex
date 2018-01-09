@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,8 +46,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String dataLang = "est";
 	private final static String dataset = "ss1";
 	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
-	private final String defaultWordMorphCode = "SgN";
-	private final String defaultRectionValue = "-";
+	private final static String defaultWordMorphCode = "SgN";
+	private final static String defaultRectionValue = "-";
+	private final static String latinLang = "lat";
+	private final static String lexemeTypeFormula = "valem";
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
@@ -60,6 +65,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
 	private final static String TOKENS_REPORT_NAME = "tokens";
 	private final static String FORMULAS_REPORT_NAME = "formulas";
+	private final static String LATIN_TERM_REPORT_NAME = "latin_terms";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -72,6 +78,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> displayMorpCodes;
 	private String lexemeTypeAbbreviation;
 	private String lexemeTypeToken;
+
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	@Override
 	void initialise() throws Exception {
@@ -96,7 +104,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME, FORMULAS_REPORT_NAME);
+					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME, FORMULAS_REPORT_NAME, LATIN_TERM_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -126,6 +134,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		processAbbreviations(context);
 		processTokens(context);
 		processFormulas(context);
+		processLatinTerms(context);
 		processAntonyms(context);
 		processCohyponyms(context);
 
@@ -151,11 +160,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 		processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, guid);
 
+		List<CommentData> comments = extractArticleComments(articleNode);
+
 		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 		if (contentNode != null) {
-			processArticleContent(reportingId, contentNode, newWords, context);
+			processArticleContent(reportingId, contentNode, newWords, context, comments);
 		}
 		context.importedWords.addAll(newWords);
+	}
+
+	private void processLatinTerms(Context context) throws Exception {
+
+		logger.debug("Found {} latin terms.", context.latinTermins.size());
+		setActivateReport(LATIN_TERM_REPORT_NAME);
+		writeToLogFile("Ladina terminite töötlus <s:ld>", "", "");
+
+		Count newLatinTermWordCount = processLexemeToWord(context, context.latinTermins, null, "Ei leitud ladina terminit, loome uue", latinLang);
+
+		logger.debug("Latin terms created {}", newLatinTermWordCount.getValue());
+		logger.debug("Latin term import done.");
 	}
 
 	private void processFormulas(Context context) throws Exception {
@@ -164,8 +187,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(FORMULAS_REPORT_NAME);
 		writeToLogFile("Valemite töötlus <s:val>", "", "");
 
-		// FIXME: what should be lexeme type ???
-		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeToken, "Ei leitud valemit, loome uue");
+		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeFormula, "Ei leitud valemit, loome uue", dataLang);
 
 		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
 		logger.debug("Formulas import done.");
@@ -177,18 +199,18 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(TOKENS_REPORT_NAME);
 		writeToLogFile("Tähiste töötlus <s:ths>", "", "");
 
-		Count newTokenWordCount = processLexemeToWord(context, context.tokens, lexemeTypeToken, "Ei leitud tähist, loome uue");
+		Count newTokenWordCount = processLexemeToWord(context, context.tokens, lexemeTypeToken, "Ei leitud tähist, loome uue", dataLang);
 
 		logger.debug("Token words created {}", newTokenWordCount.getValue());
 		logger.debug("Tokens import done.");
 	}
 
-	private Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultLexemeType, String logMessage) throws Exception {
+	private Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultLexemeType, String logMessage, String lang) throws Exception {
 		Count newWordCount = new Count();
 		for (LexemeToWordData itemData : items) {
 			boolean isImported = context.importedWords.stream().anyMatch(w -> itemData.word.equals(w.value));
 			if (!isImported) {
-				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm);
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
 				Lexeme lexeme = new Lexeme();
@@ -212,7 +234,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(ABBREVIATIONS_REPORT_NAME);
 		writeToLogFile("Lühendite töötlus <s:lyh> ja <s:lhx>", "", "");
 
-		Count newAbbreviationWordCount = processLexemeToWord(context, context.abbreviations, lexemeTypeAbbreviation, "Ei leitud lühendit, loome uue");
+		Count newAbbreviationWordCount = processLexemeToWord(context, context.abbreviations, lexemeTypeAbbreviation, "Ei leitud lühendit, loome uue", dataLang);
 
 		logger.debug("Abbreviation words created {}", newAbbreviationWordCount.getValue());
 		logger.debug("Abbreviations import done.");
@@ -224,7 +246,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(SYNONYMS_REPORT_NAME);
 		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
 
-		Count newSynonymWordCount = processLexemeToWord(context, context.synonyms, null, "sünonüümi ei letud, lisame sõna");
+		Count newSynonymWordCount = processLexemeToWord(context, context.synonyms, null, "sünonüümi ei letud, lisame sõna", dataLang);
 
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
 		logger.debug("Synonyms import done.");
@@ -318,7 +340,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Basic words processing done.");
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
+	private void processArticleContent(
+			String reportingId, Element contentNode, List<WordData> newWords, Context context, List<CommentData> comments) throws Exception {
 
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -332,7 +355,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
-			List<Long> newLexemes = new ArrayList<>();
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
@@ -351,9 +373,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningFormulas = extractFormulas(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> connectedWords =
-						Stream.of(meaningSynonyms.stream(), meaningAbbreviations.stream(), meaningTokens.stream(), meaningFormulas.stream())
-								.flatMap(i -> i).collect(toList());
+						Stream.of(
+								meaningSynonyms.stream(),
+								meaningAbbreviations.stream(),
+								meaningTokens.stream(),
+								meaningFormulas.stream(),
+								meaningLatinTerms.stream()
+						).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords);
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
@@ -377,7 +405,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
 				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
-						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas);
+						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas, meaningLatinTerms);
 
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
@@ -406,6 +434,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
 						saveImportantNotes(lexemeId, importantNotes);
+						saveComments(lexemeId, comments);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
@@ -416,10 +445,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 							cohyponymData.lexemeId = lexemeId;
 							context.cohyponyms.add(cohyponymData);
 						}
-						newLexemes.add(lexemeId);
 					}
 				}
 			}
+		}
+	}
+
+	private void saveComments(Long lexemeId, List<CommentData> comments) throws Exception {
+		for (CommentData comment : comments) {
+			Long commentFreeformId = createLexemeFreeform(lexemeId, FreeformType.PRIVATE_NOTE, comment.value, dataLang);
+			createFreeformTextOrDate(FreeformType.CREATED_BY, commentFreeformId, comment.author, dataLang);
+			Long valueLong = dateFormat.parse(comment.createdAt).getTime();
+			Timestamp valueTs = new Timestamp(valueLong);
+			createFreeformTextOrDate(FreeformType.CREATED_ON, commentFreeformId, valueTs, dataLang);
 		}
 	}
 
@@ -440,7 +478,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			List<LexemeToWordData> synonyms,
 			List<LexemeToWordData> abbreviations,
 			List<LexemeToWordData> tokens,
-			List<LexemeToWordData> formulas
+			List<LexemeToWordData> formulas,
+			List<LexemeToWordData> latinTerms
 			) {
 		synonyms.forEach(data -> {
 			data.meaningId = meaningId;
@@ -465,10 +504,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		});
 		context.formulas.addAll(formulas);
 
+		latinTerms.forEach(data -> {
+			data.meaningId = meaningId;
+		});
+		context.latinTermins.addAll(latinTerms);
+
 		context.meanings.addAll(extractMeaningsData(synonyms, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(abbreviations, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(tokens, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(formulas, word, level1, definitions));
+		context.meanings.addAll(extractMeaningsData(latinTerms, word, level1, definitions));
 	}
 
 	private void processDomains(Element node, Long meaningId) throws Exception {
@@ -507,6 +552,31 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String systematicPolysemyPattern = systematicPolysemyPatternNode.getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.SYSTEMATIC_POLYSEMY_PATTERN, systematicPolysemyPattern);
 		}
+	}
+
+	private List<CommentData> extractArticleComments(Element node) {
+
+		final String commentGroupExp = "s:KOM/s:komg";
+		final String commentValueExp = "s:kom";
+		final String commentAuthorExp = "s:kaut";
+		final String commentCreatedExp = "s:kaeg";
+
+		List<CommentData> comments = new ArrayList<>();
+		List<Element> commentGroupNodes = node.selectNodes(commentGroupExp);
+		for (Element commentGroupNode : commentGroupNodes) {
+			CommentData comment = new CommentData();
+			comment.value = commentGroupNode.selectSingleNode(commentValueExp).getText();
+			comment.author = commentGroupNode.selectSingleNode(commentAuthorExp).getText();
+			comment.createdAt = commentGroupNode.selectSingleNode(commentCreatedExp).getText();
+			comments.add(comment);
+		}
+		return comments;
+	}
+
+	private List<LexemeToWordData> extractLatinTerms(Element node, String reportingId) throws Exception {
+
+		final String latinTermExp = "s:lig/s:ld";
+		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractFormulas(Element node, String reportingId) throws Exception {
@@ -751,13 +821,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private List<String> extractValuesAsStrings(Element node, String registerValueExp) {
-		List<String> registers = new ArrayList<>();
-		List<Element> registerValueNodes = node.selectNodes(registerValueExp);
-		for (Element registerValueNode : registerValueNodes) {
-			String register = registerValueNode.getTextTrim();
-			registers.add(register);
+		List<String> values = new ArrayList<>();
+		List<Element> valueNodes = node.selectNodes(registerValueExp);
+		for (Element valueNode : valueNodes) {
+			String register = valueNode.getTextTrim();
+			values.add(register);
 		}
-		return registers;
+		return values;
 	}
 
 	private List<Usage> extractUsages(Element node) {
@@ -902,12 +972,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return reportingId;
 	}
 
-	private WordData createDefaultWordFrom(String wordValue, String displayForm) throws Exception {
+	private WordData createDefaultWordFrom(String wordValue, String displayForm, String lang) throws Exception {
 
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
-		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null);
+		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
+		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null);
 		createdWord.id = saveWord(word, null, null, null);
 		return createdWord;
 	}
@@ -1037,6 +1107,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private class CommentData {
+		String value;
+		String author;
+		String createdAt;
+	}
+
 	private class WordData {
 		Long id;
 		String value;
@@ -1121,6 +1197,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> cohyponyms = new ArrayList<>();
 		List<LexemeToWordData> tokens = new ArrayList<>();
 		List<LexemeToWordData> formulas = new ArrayList<>();
+		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
 	}
 
