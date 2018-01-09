@@ -2,23 +2,31 @@ package eki.ekilex.constant;
 
 public interface WebConstant {
 
-	public String LOGIN_URI = "/dologin";
+	String LOGIN_URI = "/dologin";
 
-	public String LOGOUT_URI = "/dologout";
+	String LOGOUT_URI = "/dologout";
 
-	public String LOGIN_PAGE = "login";
+	String LOGIN_PAGE = "login";
 
-	public String MAIN_PAGE = "index";
+	String MAIN_PAGE = "index";
 
-	public String MAIN_URI = "/index";
+	String MAIN_URI = "/index";
 
-	public String AUTH_ERROR_URI = "/autherror";
+	String LEX_SEARCH_PAGE = "lexsearch";
 
-	public String ERROR_PAGE = "error";
+	String LEX_SEARCH_URI = "/lexsearch";
 
-	public String APP_DATA_MODEL_KEY = "appData";
+	String TERM_SEARCH_PAGE = "termsearch";
 
-	public String MARKDOWN_RENDERER_KEY = "markdown";
+	String TERM_SEARCH_URI = "/termsearch";
 
-	public String USER_MODEL_KEY = "user";
+	String AUTH_ERROR_URI = "/autherror";
+
+	String ERROR_PAGE = "error";
+
+	String APP_DATA_MODEL_KEY = "appData";
+
+	String MARKDOWN_RENDERER_KEY = "markdown";
+
+	String USER_MODEL_KEY = "user";
 }

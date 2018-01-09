@@ -2,28 +2,27 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,_)">
 </head>
-
 <body>
-
-<div class="container-fluid">
-  <div class="d-flex flex-row"><p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p></div>
-  <div class="card mt-4">
-    <div class="card-header">
-      <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+  <div class="container-fluid">
+    <div class="d-flex flex-row">
+      <p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p>
     </div>
-    <div class="card-body">
-      <p>
-        <a th:href="@{/search}">Leksikograafide otsing</a>
-      </p>
-      <p>
-        <a th:href="@{/termsearch}">Terminoloogide otsing</a>
-      </p>
-      <p>
-        <a th:href="@{/sourcesearch}">Allikate otsing</a>
-      </p>
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+      </div>
+      <div class="card-body">
+        <p>
+          <a th:href="@{/lexsearch}">Leksikograafide otsing</a>
+        </p>
+        <p>
+          <a th:href="@{/termsearch}">Terminoloogide otsing</a>
+        </p>
+        <p>
+          <a th:href="@{/sourcesearch}">Allikate otsing</a>
+        </p>
+      </div>
     </div>
   </div>
-</div>
-
 </body>
 </html>

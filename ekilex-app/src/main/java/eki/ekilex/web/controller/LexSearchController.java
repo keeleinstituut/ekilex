@@ -16,26 +16,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.service.SearchService;
 
 @ConditionalOnWebApplication
 @Controller
-public class SearchController {
+public class LexSearchController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LexSearchController.class);
 
 	@Autowired
 	private SearchService search;
 
-	@GetMapping("/search")
+	@GetMapping(LEX_SEARCH_URI)
 	public String search(
 			@RequestParam(required = false) String searchFilter,
 			@RequestParam(name = "dicts", required = false) List<String> selectedDatasets,
 			Model model, HttpSession session) {
 
-		logger.debug("doing search : {}, {}", searchFilter, selectedDatasets);
+		logger.debug("Searching by \"{}\" in {}", searchFilter, selectedDatasets);
+
 		Map<String, String> datasets = search.getDatasetNameMap();
 		if (selectedDatasets == null) {
 			if (session.getAttribute("datasets") == null) {
@@ -51,13 +53,13 @@ public class SearchController {
 		model.addAttribute("wordsFoundBySearch", words);
 		model.addAttribute("searchFilter", searchFilter);
 
-		return "search";
+		return LEX_SEARCH_PAGE;
 	}
 
-	@GetMapping("/details/{formId}")
+	@GetMapping("/lexdetails/{formId}")
 	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
 
-		logger.debug("doing details : {}", formId);
+		logger.debug("Requesting details by form {}", formId);
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
@@ -68,7 +70,7 @@ public class SearchController {
 		model.addAttribute("detailsName", formId + "_details");
 		model.addAttribute("details", details);
 
-		return "search :: details";
+		return LEX_SEARCH_PAGE + " :: details";
 	}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.SearchService;
@@ -23,7 +24,7 @@ import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
 @Controller
-public class TermSearchController {
+public class TermSearchController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
 
@@ -33,7 +34,7 @@ public class TermSearchController {
 	@Autowired
 	private TermSearchService termSearchService;
 
-	@GetMapping("/termsearch")
+	@GetMapping(TERM_SEARCH_URI)
 	public String termSearch(
 			@RequestParam(required = false) String searchFilter,
 			@RequestParam(name = "dicts", required = false) List<String> selectedDatasets,
@@ -58,13 +59,13 @@ public class TermSearchController {
 		model.addAttribute("wordsFoundBySearch", words);
 		model.addAttribute("searchFilter", searchFilter);
 
-		return "termsearch";
+		return TERM_SEARCH_PAGE;
 	}
 
 	@GetMapping("/termdetails/{formId}")
 	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
 
-		logger.debug("Retrieving details by form {}", formId);
+		logger.debug("Requesting details by form {}", formId);
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
@@ -76,6 +77,6 @@ public class TermSearchController {
 		model.addAttribute("formId", formId);
 		model.addAttribute("details", details);
 
-		return "termsearch :: details";
+		return TERM_SEARCH_PAGE + " :: details";
 	}
 }

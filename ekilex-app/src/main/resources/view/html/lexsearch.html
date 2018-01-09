@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{search.title}">EKILEX otsing</title>
+<title th:text="#{lex.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
-  <script type="text/javascript" th:src="@{/view/js/ekilex-search.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-lexsearch.js}"></script>
 </th:block>
 </head>
 <body style="height: 100vh">
@@ -17,10 +17,10 @@
     </div>
     <div class="card mt-4">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{search.title}">Vormi otsing</h5>
+        <h5 class="card-title" th:text="#{lex.search.title}">Vormi otsing</h5>
       </div>
       <div class="card-body">
-        <form th:action="@{/search}">
+        <form th:action="@{/lexsearch}">
           <div class="form-row">
             <div class="col-12">
               <div class="form-group row">
@@ -97,7 +97,7 @@
           <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
             <div style="overflow: auto;">
               <span th:each="word,wordIter : ${lexeme.words}">
-                <a style="color: #1e7e34" class="mr-2" th:href="@{'/search?searchFilter=' + ${word.value}}">
+                <a style="color: #1e7e34" class="mr-2" th:href="@{'/lexsearch?searchFilter=' + ${word.value}}">
                   <span th:text="${word.value}"></span>
                   (
                   <span th:text="${word.lang}"></span>

@@ -3,7 +3,7 @@ function initialize(urlPrefix) {
     var detailsButtons = $('#results').find('[name="details"]');
     detailsButtons.on('click', function (e) {
         var id = $(this).data('id');
-        $.get(urlPrefix + 'details/' + id).done(function (data) {
+        $.get(urlPrefix + 'lexdetails/' + id).done(function (data) {
             $('#details_div').replaceWith(data);
         }).fail(function (data) {
             console.log(data);
