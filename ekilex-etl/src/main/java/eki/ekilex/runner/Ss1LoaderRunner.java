@@ -342,6 +342,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<Usage> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
+				List<String> importantNotes = extractImportantNotes(meaningGroupNode);
 
 				Long meaningId;
 				boolean addDefinitions = true;
@@ -353,7 +354,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<LexemeToWordData> connectedWords =
 						Stream.of(meaningSynonyms.stream(), meaningAbbreviations.stream(), meaningTokens.stream(), meaningFormulas.stream())
 								.flatMap(i -> i).collect(toList());
-
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords);
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
@@ -374,20 +374,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
+				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
+				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
+						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas);
 
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
 				}
-
-				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
 				List<String> registers = extractRegisters(meaningGroupNode);
-
-				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
-						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas);
-
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId);
+				List<String> publicNotes = extractPublicNotes(meaningGroupNode);
+				savePublicNotes(meaningId, publicNotes);
 
 				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
@@ -406,6 +405,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
+						saveImportantNotes(lexemeId, importantNotes);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
@@ -420,6 +420,18 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 			}
+		}
+	}
+
+	private void savePublicNotes(Long meaningId, List<String> notes) throws Exception {
+		for (String note : notes) {
+			createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, note);
+		}
+	}
+
+	private void saveImportantNotes(Long lexemeId, List<String> notes) throws Exception {
+		for (String note : notes) {
+			createLexemeFreeform(lexemeId, FreeformType.IMPORTANT_NOTE, note, dataLang);
 		}
 	}
 
@@ -712,6 +724,18 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		final String synonymExp = "s:ssh/s:syn";
 		return extractLexemeMetadata(node, synonymExp, null, reportingId);
+	}
+
+	private List<String> extractImportantNotes(Element node) {
+
+		final String registerValueExp = "s:lig/s:nb";
+		return extractValuesAsStrings(node, registerValueExp);
+	}
+
+	private List<String> extractPublicNotes(Element node) {
+
+		final String registerValueExp = "s:lig/s:tx";
+		return extractValuesAsStrings(node, registerValueExp);
 	}
 
 	private List<String> extractRegisters(Element node) {
