@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -74,6 +77,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> displayMorpCodes;
 	private String lexemeTypeAbbreviation;
 	private String lexemeTypeToken;
+
+	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
 	@Override
 	void initialise() throws Exception {
@@ -154,9 +159,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 		processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, guid);
 
+		List<CommentData> comments = extractArticleComments(articleNode);
+
 		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 		if (contentNode != null) {
-			processArticleContent(reportingId, contentNode, newWords, context);
+			processArticleContent(reportingId, contentNode, newWords, context, comments);
 		}
 		context.importedWords.addAll(newWords);
 	}
@@ -333,7 +340,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Basic words processing done.");
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
+	private void processArticleContent(
+			String reportingId, Element contentNode, List<WordData> newWords, Context context, List<CommentData> comments) throws Exception {
 
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -347,7 +355,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
-			List<Long> newLexemes = new ArrayList<>();
 			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
 			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
 
@@ -427,6 +434,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
 						saveImportantNotes(lexemeId, importantNotes);
+						saveComments(lexemeId, comments);
 						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
@@ -437,10 +445,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 							cohyponymData.lexemeId = lexemeId;
 							context.cohyponyms.add(cohyponymData);
 						}
-						newLexemes.add(lexemeId);
 					}
 				}
 			}
+		}
+	}
+
+	private void saveComments(Long lexemeId, List<CommentData> comments) throws Exception {
+		for (CommentData comment : comments) {
+			Long commentFreeformId = createLexemeFreeform(lexemeId, FreeformType.PRIVATE_NOTE, comment.value, dataLang);
+			createFreeformTextOrDate(FreeformType.CREATED_BY, commentFreeformId, comment.author, dataLang);
+			Long valueLong = dateFormat.parse(comment.createdAt).getTime();
+			Timestamp valueTs = new Timestamp(valueLong);
+			createFreeformTextOrDate(FreeformType.CREATED_ON, commentFreeformId, valueTs, dataLang);
 		}
 	}
 
@@ -535,6 +552,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String systematicPolysemyPattern = systematicPolysemyPatternNode.getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.SYSTEMATIC_POLYSEMY_PATTERN, systematicPolysemyPattern);
 		}
+	}
+
+	private List<CommentData> extractArticleComments(Element node) {
+
+		final String commentGroupExp = "s:KOM/s:komg";
+		final String commentValueExp = "s:kom";
+		final String commentAuthorExp = "s:kaut";
+		final String commentCreatedExp = "s:kaeg";
+
+		List<CommentData> comments = new ArrayList<>();
+		List<Element> commentGroupNodes = node.selectNodes(commentGroupExp);
+		for (Element commentGroupNode : commentGroupNodes) {
+			CommentData comment = new CommentData();
+			comment.value = commentGroupNode.selectSingleNode(commentValueExp).getText();
+			comment.author = commentGroupNode.selectSingleNode(commentAuthorExp).getText();
+			comment.createdAt = commentGroupNode.selectSingleNode(commentCreatedExp).getText();
+			comments.add(comment);
+		}
+		return comments;
 	}
 
 	private List<LexemeToWordData> extractLatinTerms(Element node, String reportingId) throws Exception {
@@ -1069,6 +1105,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (reportComposer != null) {
 			reportComposer.setActiveStream(reportName);
 		}
+	}
+
+	private class CommentData {
+		String value;
+		String author;
+		String createdAt;
 	}
 
 	private class WordData {
