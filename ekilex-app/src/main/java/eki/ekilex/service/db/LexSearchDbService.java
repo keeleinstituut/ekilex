@@ -195,7 +195,8 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record14<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+	public Result<Record14<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
+			Long formId, List<String> selectedDatasets) {
 
 		return create
 				.select(
@@ -214,18 +215,18 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 				.where(
 						FORM.ID.eq(formId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+						.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
 				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
 
 	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(
-			Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
+			Long sourceFormId, Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
@@ -245,11 +246,12 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 						)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-								.and(FORM.IS_WORD.eq(Boolean.TRUE))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(FORM.ID.ne(sourceFormId))
+						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.MEANING_ID.eq(meaningId))
+						.and(LEXEME.DATASET_CODE.in(datasets))
 				)
 				.fetch();
 	}

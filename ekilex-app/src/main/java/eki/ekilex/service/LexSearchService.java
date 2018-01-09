@@ -64,7 +64,7 @@ public class LexSearchService {
 			Long meaningId = lexeme.getMeaningId();
 
 			List<Form> words = lexSearchDbService.findConnectedWordsInDatasets(
-					meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
+					formId, meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
 			lexeme.setWords(words);
 
 			List<Classifier> meaningDomains = lexSearchDbService.findMeaningDomains(meaningId).into(Classifier.class);
