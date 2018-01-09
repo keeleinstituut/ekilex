@@ -367,7 +367,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<String> importantNotes = extractImportantNotes(meaningGroupNode);
 
 				Long meaningId;
-				boolean addDefinitions = true;
+				List<String> definitionsToAdd = new ArrayList<>();
+				List<String> definitionsToCache = new ArrayList<>();
 
 				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
@@ -386,25 +387,26 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
+					definitionsToAdd.addAll(definitions);
+					definitionsToCache.addAll(definitions);
 				} else {
 					meaningId = meaningData.meaningId;
 					validateMeaning(meaningData, definitions, reportingId);
-					addDefinitions = meaningData.meaningDefinition == null;
-					if (meaningData.meaningDefinition == null && !definitions.isEmpty()) {
-						meaningData.meaningDefinition = definitions.get(0);
-					}
+					definitionsToAdd = definitions.stream().filter(def -> !meaningData.meaningDefinitions.contains(def)).collect(toList());
+					meaningData.meaningDefinitions.addAll(definitionsToAdd);
+					definitionsToCache.addAll(meaningData.meaningDefinitions);
 				}
-				if (addDefinitions) {
-					for (String definition : definitions) {
+				if (!definitionsToAdd.isEmpty()) {
+					for (String definition : definitionsToAdd) {
 						createDefinition(meaningId, definition, dataLang, dataset);
 					}
-					if (definitions.size() > 1) {
+					if (definitionsToAdd.size() > 1) {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
-				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
+				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
 						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas, meaningLatinTerms);
 
 				if (isNotEmpty(meaningExternalId)) {
@@ -483,9 +485,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			) {
 		synonyms.forEach(data -> {
 			data.meaningId = meaningId;
-			if (!definitions.isEmpty()) {
-				data.definition = definitions.get(0);
-			}
 		});
 		context.synonyms.addAll(synonyms);
 
@@ -1004,12 +1003,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String reportingId) throws Exception {
 
-		String definition = definitions.isEmpty() ? null : definitions.get(0);
-		if (meaningData.meaningDefinition == null || definition == null || Objects.equals(definition, meaningData.meaningDefinition)) {
+		if (meaningData.meaningDefinitions.isEmpty() || definitions.isEmpty()) {
 			return true;
 		}
-		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.meaningDefinition);
-		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningData.meaningDefinition);
+		String definition = definitions.isEmpty() ? null : definitions.get(0);
+		String meaningDefinition = meaningData.meaningDefinitions.isEmpty() ? null : meaningData.meaningDefinitions.get(0);
+		if (Objects.equals(meaningDefinition, definition)) {
+			return true;
+		}
+		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
+		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
 		return false;
 	}
 
@@ -1023,7 +1026,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			meaning.meaningHomonymNr = meaningWord.homonymNr;
 			meaning.meaningLevel1 = level1;
 			if (!definitions.isEmpty()) {
-				meaning.meaningDefinition = definitions.get(0);
+				meaning.meaningDefinitions.addAll(definitions);
 			}
 			meaning.word = item.word;
 			meaning.homonymNr = item.homonymNr;
@@ -1149,7 +1152,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		int lexemeLevel1 = 1;
 		Long meaningId;
-		String meaningDefinition;
+		List<String> meaningDefinitions = new ArrayList<>();
 		String meaningWord;
 		int meaningHomonymNr = 0;
 		int meaningLevel1 = 1;
@@ -1163,7 +1166,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		String relationType;
 		Rection rection;
-		String definition;
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String lexemeType;
@@ -1178,7 +1180,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
 			newData.rection = this.rection;
-			newData.definition = this.definition;
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
 			newData.lexemeType = this.lexemeType;
