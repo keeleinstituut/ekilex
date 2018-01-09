@@ -19,27 +19,27 @@ import eki.ekilex.data.Relation;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.db.SearchDbService;
+import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Service
-public class SearchService {
+public class LexSearchService {
 
 	@Autowired
-	private SearchDbService searchDbService;
+	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
 
 	public Map<String, String> getDatasetNameMap() {
-		return searchDbService.getDatasetNameMap();
+		return lexSearchDbService.getDatasetNameMap();
 	}
 
 	public List<Word> findWordsInDatasets(String searchFilter, List<String> datasets) {
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		return searchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
+		return lexSearchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
 	}
 
 	public WordDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
@@ -48,10 +48,10 @@ public class SearchService {
 		final String classifierLabelTypeDescrip = "descrip";
 		final String classifierLabelTypeFull = "full";
 
-		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
-		List<WordLexeme> lexemes = searchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(WordLexeme.class);
-		List<Form> connectedForms = searchDbService.findConnectedForms(formId, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
-		List<Relation> formRelations = searchDbService.findFormRelations(formId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
+		List<WordLexeme> lexemes = lexSearchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(WordLexeme.class);
+		List<Form> connectedForms = lexSearchDbService.findConnectedForms(formId, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
+		List<Relation> formRelations = lexSearchDbService.findFormRelations(formId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 
 		lexemes.forEach(lexeme -> {
 
@@ -63,32 +63,32 @@ public class SearchService {
 			Long lexemeId = lexeme.getLexemeId();
 			Long meaningId = lexeme.getMeaningId();
 
-			List<Form> words = searchDbService.findConnectedWordsInDatasets(
+			List<Form> words = lexSearchDbService.findConnectedWordsInDatasets(
 					meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
 			lexeme.setWords(words);
 
-			List<Classifier> meaningDomains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
+			List<Classifier> meaningDomains = lexSearchDbService.findMeaningDomains(meaningId).into(Classifier.class);
 			lexeme.setMeaningDomains(meaningDomains);
 
-			List<Definition> meaningDefinitions = searchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+			List<Definition> meaningDefinitions = lexSearchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
 			lexeme.setDefinitions(meaningDefinitions);
 
-			List<FreeForm> meaningFreeforms = searchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
+			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			lexeme.setMeaningFreeforms(meaningFreeforms);
 
-			List<FreeForm> lexemeFreeforms = searchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
+			List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
 
 			List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
-					searchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
+					lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
 
 			List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
 			lexeme.setRections(rections);
 
-			List<Relation> lexemeRelations = searchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			lexeme.setLexemeRelations(lexemeRelations);
 
-			List<Relation> wordRelations = searchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			lexeme.setWordRelations(wordRelations);
 
 			boolean lexemeOrMeaningClassifiersExist =

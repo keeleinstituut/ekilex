@@ -17,7 +17,7 @@ import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
 import eki.ekilex.data.TermDetails;
-import eki.ekilex.service.db.SearchDbService;
+import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
@@ -28,7 +28,7 @@ public class TermSearchService {
 	private TermSearchDbService termSearchDbService;
 
 	@Autowired
-	private SearchDbService searchDbService;
+	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
@@ -36,7 +36,7 @@ public class TermSearchService {
 	@Transactional
 	public TermDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
 
-		Map<String, String> datasetNameMap = searchDbService.getDatasetNameMap();
+		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
 		List<Meaning> meanings = termSearchDbService.findFormMeanings(formId, selectedDatasets).into(Meaning.class);
 
 		for (Meaning meaning : meanings) {
@@ -44,9 +44,9 @@ public class TermSearchService {
 			Long meaningId = meaning.getMeaningId();
 			List<Long> lexemeIds = meaning.getLexemeIds();
 
-			List<Definition> definitions = searchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
-			List<Classifier> domains = searchDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			List<FreeForm> meaningFreeforms = searchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
+			List<Definition> definitions = lexSearchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+			List<Classifier> domains = lexSearchDbService.findMeaningDomains(meaningId).into(Classifier.class);
+			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			List<Lexeme> lexemes = new ArrayList<>();
 
 			meaning.setDefinitions(definitions);
@@ -58,9 +58,9 @@ public class TermSearchService {
 
 				// lexeme is duplicated if many form.is_word-s
 				List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(lexemeId).into(Lexeme.class);
-				List<FreeForm> lexemeFreeforms = searchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
+				List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 				List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
-						searchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
+						lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
 				List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
 
 				for (Lexeme lexeme : lexemeWords) {

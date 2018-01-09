@@ -30,6 +30,7 @@ import org.jooq.Record14;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -46,7 +47,7 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 
 @Service
-public class SearchDbService implements InitializingBean, SystemConstant {
+public class LexSearchDbService implements InitializingBean, SystemConstant {
 
 	private static final int MAX_RESULTS_LIMIT = 50;
 
@@ -58,7 +59,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 	}
 
 	@Autowired
-	public SearchDbService(DSLContext context) {
+	public LexSearchDbService(DSLContext context) {
 		create = context;
 	}
 
@@ -278,10 +279,13 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record6<Long,Long,Long,String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
 						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label")
