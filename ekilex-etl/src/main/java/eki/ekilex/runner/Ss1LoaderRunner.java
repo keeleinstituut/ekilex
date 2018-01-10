@@ -1080,6 +1080,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (CollectionUtils.isEmpty(paradigms)) {
 			return null;
 		}
+		if (paradigms.size() == 1) {
+			return paradigms.get(0);
+		}
 
 		if (isNotEmpty(inflectionTypeNr)) {
 			long nrOfParadigmsMatchingInflectionType = paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).count();
