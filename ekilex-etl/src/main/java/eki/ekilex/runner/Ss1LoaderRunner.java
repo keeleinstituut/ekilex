@@ -633,13 +633,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private List<String> extractGrammar(Element node) {
-
 		final String grammarValueExp = "s:grg/s:gki";
-
-		List<String> grammars = (List<String>) node.selectNodes(grammarValueExp).stream()
-				.map(e -> ((Element) e).getTextTrim())
-				.collect(toList());
-		return grammars;
+		return extractValuesAsStrings(node, grammarValueExp);
 	}
 
 	//POS - part of speech
@@ -771,6 +766,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> metadataList = new ArrayList<>();
 		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
 		for (Element metadataNode : metadataNodes) {
+			if (isRestricted(metadataNode)) continue;
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			lexemeMetadata.displayForm = metadataNode.getTextTrim();
 			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
@@ -831,14 +827,24 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return extractValuesAsStrings(node, definitionValueExp);
 	}
 
-	private List<String> extractValuesAsStrings(Element node, String registerValueExp) {
+	private List<String> extractValuesAsStrings(Element node, String valueExp) {
+
 		List<String> values = new ArrayList<>();
-		List<Element> valueNodes = node.selectNodes(registerValueExp);
+		List<Element> valueNodes = node.selectNodes(valueExp);
 		for (Element valueNode : valueNodes) {
-			String register = valueNode.getTextTrim();
-			values.add(register);
+			if (!isRestricted(valueNode)) {
+				String value = valueNode.getTextTrim();
+				values.add(value);
+			}
 		}
 		return values;
+	}
+
+	private boolean isRestricted(Element node) {
+
+		final String restrictedAttr = "as";
+		String restrictedValue = node.attributeValue(restrictedAttr);
+		return asList("ab", "ap").contains(restrictedValue);
 	}
 
 	private List<Usage> extractUsages(Element node) {
