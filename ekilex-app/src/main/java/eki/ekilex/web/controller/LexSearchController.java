@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
-import eki.ekilex.service.SearchService;
+import eki.ekilex.service.LexSearchService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -28,7 +28,7 @@ public class LexSearchController implements WebConstant {
 	private static final Logger logger = LoggerFactory.getLogger(LexSearchController.class);
 
 	@Autowired
-	private SearchService search;
+	private LexSearchService search;
 
 	@GetMapping(LEX_SEARCH_URI)
 	public String search(

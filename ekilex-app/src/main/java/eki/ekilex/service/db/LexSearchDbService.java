@@ -30,6 +30,7 @@ import org.jooq.Record14;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -46,7 +47,7 @@ import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
 
 @Service
-public class SearchDbService implements InitializingBean, SystemConstant {
+public class LexSearchDbService implements InitializingBean, SystemConstant {
 
 	private static final int MAX_RESULTS_LIMIT = 50;
 
@@ -58,7 +59,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 	}
 
 	@Autowired
-	public SearchDbService(DSLContext context) {
+	public LexSearchDbService(DSLContext context) {
 		create = context;
 	}
 
@@ -194,7 +195,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record14<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(Long formId, List<String> selectedDatasets) {
+	public Result<Record14<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
+			Long formId, List<String> selectedDatasets) {
 
 		return create
 				.select(
@@ -213,18 +215,18 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 				.where(
 						FORM.ID.eq(formId)
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+						.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
 				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
 
 	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(
-			Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
+			Long sourceFormId, Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
@@ -244,11 +246,12 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-								.and(FORM.IS_WORD.eq(Boolean.TRUE))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.MEANING_ID.eq(meaningId))
-								.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(FORM.ID.ne(sourceFormId))
+						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.WORD_ID.eq(WORD.ID))
+						.and(LEXEME.MEANING_ID.eq(meaningId))
+						.and(LEXEME.DATASET_CODE.in(datasets))
 				)
 				.fetch();
 	}
@@ -278,10 +281,13 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record6<Long,Long,Long,String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
 						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label")

@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.data.Word;
-import eki.ekilex.service.SearchService;
+import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
 
 @ConditionalOnWebApplication
@@ -29,7 +29,7 @@ public class TermSearchController implements WebConstant {
 	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
 
 	@Autowired
-	private SearchService searchService;
+	private LexSearchService lexSearchService;
 
 	@Autowired
 	private TermSearchService termSearchService;
@@ -42,7 +42,7 @@ public class TermSearchController implements WebConstant {
 
 		logger.debug("Searching by \"{}\" in {}", searchFilter, selectedDatasets);
 
-		Map<String, String> datasetNameMap = searchService.getDatasetNameMap();
+		Map<String, String> datasetNameMap = lexSearchService.getDatasetNameMap();
 		if (selectedDatasets == null) {
 			if (session.getAttribute("datasets") == null) {
 				selectedDatasets = new ArrayList<>(datasetNameMap.keySet());
@@ -52,7 +52,7 @@ public class TermSearchController implements WebConstant {
 		}
 		session.setAttribute("datasets", selectedDatasets);
 
-		List<Word> words = searchService.findWordsInDatasets(searchFilter, selectedDatasets);
+		List<Word> words = lexSearchService.findWordsInDatasets(searchFilter, selectedDatasets);
 
 		model.addAttribute("datasets", datasetNameMap.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
@@ -69,7 +69,7 @@ public class TermSearchController implements WebConstant {
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
-			Map<String, String> datasets = searchService.getDatasetNameMap();
+			Map<String, String> datasets = lexSearchService.getDatasetNameMap();
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
 		TermDetails details = termSearchService.findWordDetailsInDatasets(formId, selectedDatasets);
