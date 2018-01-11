@@ -1041,7 +1041,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (Objects.equals(meaningDefinition, definition)) {
 			return true;
 		}
-		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
+//		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
 		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
 		return false;
 	}
