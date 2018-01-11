@@ -515,6 +515,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		});
 		context.latinTermins.addAll(latinTerms);
 
+		context.meanings.stream()
+				.filter(m -> Objects.equals(m.meaningId, meaningId))
+				.forEach(m -> {m.meaningDefinitions.clear(); m.meaningDefinitions.addAll(definitions);});
 		context.meanings.addAll(extractMeaningsData(synonyms, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(abbreviations, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(abbreviationFullWords, word, level1, definitions));
@@ -1052,9 +1055,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			meaning.meaningWord = meaningWord.value;
 			meaning.meaningHomonymNr = meaningWord.homonymNr;
 			meaning.meaningLevel1 = level1;
-			if (!definitions.isEmpty()) {
-				meaning.meaningDefinitions.addAll(definitions);
-			}
+			meaning.meaningDefinitions.addAll(definitions);
 			meaning.word = item.word;
 			meaning.homonymNr = item.homonymNr;
 			meaning.lexemeLevel1 = item.lexemeLevel1;
@@ -1111,7 +1112,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		Paradigm matchingParadigm = null;
 		for (Paradigm paradigm : paradigms) {
 			long numberOfMachingEndings = paradigm.getFormValues().stream()
-					.filter(formValue -> formEndings.stream().anyMatch(formEnding -> formValue.endsWith(formEnding)))
+					.filter(formValue -> formEndings.stream().anyMatch(formValue::endsWith))
 					.count();
 			if (numberOfMachingEndings > bestFormValuesMatchCount) {
 				bestFormValuesMatchCount = numberOfMachingEndings;
