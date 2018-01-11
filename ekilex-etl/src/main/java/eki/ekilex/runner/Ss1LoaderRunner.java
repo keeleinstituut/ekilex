@@ -1104,17 +1104,17 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (formsNode == null) {
 			return null;
 		}
-		// FIXME: 20.12.2017 its actually lot more complicated logic, change it when we get documentation about it
-		List<String> formValues = Arrays.stream(formsNode.getTextTrim().split(",")).map(String::trim).collect(Collectors.toList());
-		List<String> mabFormValues;
-		Collection<String> formValuesIntersection;
-		int bestFormValuesMatchCount = 0;
+		List<String> formEndings = Arrays.stream(formsNode.getTextTrim().split(","))
+				.map(v -> v.substring(v.indexOf("-")+1).trim())
+				.collect(Collectors.toList());
+		long bestFormValuesMatchCount = 0;
 		Paradigm matchingParadigm = null;
 		for (Paradigm paradigm : paradigms) {
-			mabFormValues = paradigm.getFormValues();
-			formValuesIntersection = CollectionUtils.intersection(formValues, mabFormValues);
-			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-				bestFormValuesMatchCount = formValuesIntersection.size();
+			long numberOfMachingEndings = paradigm.getFormValues().stream()
+					.filter(formValue -> formEndings.stream().anyMatch(formEnding -> formValue.endsWith(formEnding)))
+					.count();
+			if (numberOfMachingEndings > bestFormValuesMatchCount) {
+				bestFormValuesMatchCount = numberOfMachingEndings;
 				matchingParadigm = paradigm;
 			}
 		}
