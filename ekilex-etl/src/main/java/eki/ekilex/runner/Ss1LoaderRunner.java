@@ -490,7 +490,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		});
 		context.synonyms.addAll(synonyms);
 
-		// abbreviations need also lexemeId, but this is added latter, so we add them to context after assigning lexemeId
+		// abbreviations need also lexemeId, but this is added later, so we add them to context after assigning lexemeId
 		abbreviations.forEach(data -> {
 			data.meaningId = meaningId;
 		});
@@ -933,7 +933,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<Element> morphGroupNodes = wordGroupNode.selectNodes(morphGroupExp);
 		if (morphGroupNodes.isEmpty()) {
 			if (isAddForms) {
-				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, null, wordParadigmsMap);
+				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, wordParadigmsMap);
 				if (paradigmFromMab != null) {
 					paradigms.add(paradigmFromMab);
 				}
@@ -945,7 +945,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					Paradigm paradigm = new Paradigm();
 					paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
 					if (isAddForms) {
-						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, paradigm.getInflectionTypeNr(), morphGroupNode, wordParadigmsMap);
+						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
 						if (paradigmFromMab != null) {
 							paradigm.setForms(paradigmFromMab.getForms());
 						}
@@ -953,7 +953,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					paradigms.add(paradigm);
 				} else {
 					if (isAddForms) {
-						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, morphGroupNode, wordParadigmsMap);
+						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
 						if (paradigmFromMab != null) {
 							paradigms.add(paradigmFromMab);
 						}
@@ -1082,7 +1082,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private Paradigm fetchParadigmFromMab(String wordValue, String inflectionTypeNr, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private Paradigm fetchParadigmFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodeExp = "s:mv";
 
@@ -1092,13 +1092,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 		if (paradigms.size() == 1) {
 			return paradigms.get(0);
-		}
-
-		if (isNotEmpty(inflectionTypeNr)) {
-			long nrOfParadigmsMatchingInflectionType = paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).count();
-			if (nrOfParadigmsMatchingInflectionType == 1) {
-				return paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).findFirst().get();
-			}
 		}
 
 		Element formsNode = (node == null) ? null : (Element) node.selectSingleNode(formsNodeExp);
