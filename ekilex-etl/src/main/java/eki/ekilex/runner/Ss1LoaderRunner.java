@@ -928,23 +928,32 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<Paradigm> paradigms = new ArrayList<>();
 		boolean isAddForms = !wordParadigmsMap.isEmpty();
 		List<Element> morphGroupNodes = wordGroupNode.selectNodes(morphGroupExp);
-		for (Element morphGroupNode : morphGroupNodes) {
-			Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
-			if (inflectionTypeNrNode != null) {
-				Paradigm paradigm = new Paradigm();
-				paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
-				if (isAddForms) {
-					Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, paradigm.getInflectionTypeNr(), morphGroupNode, wordParadigmsMap);
-					if (paradigmFromMab != null) {
-						paradigm.setForms(paradigmFromMab.getForms());
-					}
+		if (morphGroupNodes.isEmpty()) {
+			if (isAddForms) {
+				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, null, wordParadigmsMap);
+				if (paradigmFromMab != null) {
+					paradigms.add(paradigmFromMab);
 				}
-				paradigms.add(paradigm);
-			} else {
-				if (isAddForms) {
-					Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, morphGroupNode, wordParadigmsMap);
-					if (paradigmFromMab != null) {
-						paradigms.add(paradigmFromMab);
+			}
+		} else {
+			for (Element morphGroupNode : morphGroupNodes) {
+				Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
+				if (inflectionTypeNrNode != null) {
+					Paradigm paradigm = new Paradigm();
+					paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
+					if (isAddForms) {
+						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, paradigm.getInflectionTypeNr(), morphGroupNode, wordParadigmsMap);
+						if (paradigmFromMab != null) {
+							paradigm.setForms(paradigmFromMab.getForms());
+						}
+					}
+					paradigms.add(paradigm);
+				} else {
+					if (isAddForms) {
+						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, morphGroupNode, wordParadigmsMap);
+						if (paradigmFromMab != null) {
+							paradigms.add(paradigmFromMab);
+						}
 					}
 				}
 			}
@@ -1091,7 +1100,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		Element formsNode = (Element) node.selectSingleNode(formsNodeExp);
+		Element formsNode = (node == null) ? null : (Element) node.selectSingleNode(formsNodeExp);
 		if (formsNode == null) {
 			return null;
 		}
