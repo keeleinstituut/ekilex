@@ -4,6 +4,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -50,6 +51,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 	private static final String REPORT_DEFINITIONS_AT_TERMS = "definitions_at_terms";
 
 	private static final String REPORT_MISSING_SOURCE_REFS = "missing_source_refs";
+
+	private static final String REPORT_MULTIPLE_DEFINITIONS = "multiple_definitions";
+
+	private static final String REPORT_NOT_A_DEFINITION = "not_a_definition";
+
+	private static final String REPORT_DEFINITIONS_NOTES_MISMATCH = "definitions_notes_mismatch";
 
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
@@ -152,7 +159,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (doReports) {
 			reportComposer = new ReportComposer("esterm load report",
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
-					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS);
+					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
+					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -164,6 +172,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		Element valueNode;
 		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
 		Long wordId, meaningId, lexemeId, rectionId, usageMeaningId;
+		List<Long> definitionIds;
 		String valueStr, concept, term;
 		String lang;
 		int homonymNr;
@@ -172,6 +181,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		Lexeme lexemeObj;
 
 		Count dataErrorCount = new Count();
+		Count definitionsWithSameNoteCount = new Count();
 
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
@@ -212,7 +222,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 				lang = unifyLang(valueStr);
 
-				extractAndSaveDefinitionsAndFreeforms(meaningId, langGroupNode, lang, dataset);
+				extractAndSaveDefinitionsAndFreeforms(meaningId, langGroupNode, lang, dataset, definitionsWithSameNoteCount);
 
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
@@ -236,8 +246,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
+					//TODO split by links
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Element definitionNode : valueNodes) {
+						//definitionIds = new ArrayList<>();
+						//extractAndSaveDefinitionsAndRefLinks(definitionNode, definitionIds, meaningId, lang, dataset);
 						valueStr = definitionNode.getTextTrim();
 						Long definitionId = createDefinition(meaningId, valueStr, lang, dataset);
 						if (definitionNode.hasMixedContent()) {
@@ -246,11 +259,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 						}
 					}
 
+					//TODO split by links
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
 						rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
 						usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
 						for (Element usageNode : valueNodes) {
+							//extractAndSaveUsagesAndRefLinks(usageNode, usageMeaningId, lang, dataset);
 							valueStr = usageNode.getTextTrim();
 							Long freeformId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
 							if (usageNode.hasMixedContent()) {
@@ -281,7 +296,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			if (doReports) {
-				detectAndReportConceptGrp(concept, conceptGroupNode, dataErrorCount);
+				//TODO put it back later
+				//detectAndReportConceptGrp(concept, conceptGroupNode, dataErrorCount);
 			}
 
 			conceptGroupCounter++;
@@ -298,6 +314,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		if (doReports) {
 			logger.debug("Found {} data errors", dataErrorCount);
 		}
+		logger.debug("Found {} definitions with same notes", definitionsWithSameNoteCount.getValue());
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
@@ -486,6 +503,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		StringBuffer logBuf = new StringBuffer();
 
+		/* 
+		 * TODO put it back later
+		 *
 		List<Element> definitionNodes = langGroupNode.selectNodes(definitionExp);
 		List<Element> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
 		int definitionCount = definitionNodes.size();
@@ -503,6 +523,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			String logRow = logBuf.toString();
 			reportComposer.append(REPORT_DEFINITIONS_NOTES_MESS, logRow);
 		}
+		*/
+
+		composeDefinitionsAndNotesReports(concept, "*", langGroupNode);
 	}
 
 	private void detectAndReportTermGrp(String concept, String term, int homonymNr, String lang, Element termGroupNode, Count dataErrorCount) throws Exception {
@@ -513,6 +536,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		List<String> values;
 		String valueStr;
 
+		/* 
+		 * TODO put it back later
+		 * 
 		valueNodes = termGroupNode.selectNodes(lexemeTypeExp);
 		values = new ArrayList<>();
 		for (Element lexemeTypeNode : valueNodes) {
@@ -571,6 +597,122 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			String logRow = logBuf.toString();
 			reportComposer.append(REPORT_DEFINITIONS_AT_TERMS, logRow);
 		}
+		*/
+
+		composeDefinitionsAndNotesReports(concept, term, termGroupNode);
+	}
+
+	private void composeDefinitionsAndNotesReports(String concept, String term, Element sourceNode) throws Exception {
+
+		StringBuffer logBuf;
+		String valueStr;
+		List<Element> definitionNodes = sourceNode.selectNodes(definitionExp);
+
+		if (CollectionUtils.isNotEmpty(definitionNodes)) {
+			List<Element> notesSourceNodes = sourceNode.selectNodes("descripGrp/descrip[@type='Märkus']/xref[contains(@Tlink,'Allikas')]");
+
+			List<String> definitionSourceCodes = new ArrayList<>();
+
+			for (Element definitionNode : definitionNodes) {
+
+				Iterator<Node> contentNodeIter = definitionNode.nodeIterator();
+				DefaultText textContentNode;
+				DefaultElement elemContentNode;
+				String recentDefinition = null;
+				boolean isMultipleDefinitions = false;
+	
+				while (contentNodeIter.hasNext()) {
+					Node contentNode = contentNodeIter.next();
+					if (contentNode instanceof DefaultText) {
+						textContentNode = (DefaultText) contentNode;
+						valueStr = textContentNode.getText();
+						valueStr = StringUtils.trim(valueStr);
+						if (StringUtils.equalsAny(valueStr, "[", "]", ";")) {
+							continue;
+						}
+						boolean containsWord = containsWord(valueStr);
+						if (containsWord) {
+							if (StringUtils.isNotBlank(recentDefinition) && !isMultipleDefinitions) {
+								isMultipleDefinitions = true;
+								logBuf = new StringBuffer();
+								logBuf.append(concept);
+								logBuf.append(CSV_SEPARATOR);
+								logBuf.append(term);
+								logBuf.append(CSV_SEPARATOR);
+								logBuf.append(definitionNode.asXML());
+								String logRow = logBuf.toString();
+								reportComposer.append(REPORT_MULTIPLE_DEFINITIONS, logRow);
+							}
+							recentDefinition = valueStr;
+						} else {
+							logBuf = new StringBuffer();
+							logBuf.append(concept);
+							logBuf.append(CSV_SEPARATOR);
+							logBuf.append(term);
+							logBuf.append(CSV_SEPARATOR);
+							logBuf.append(definitionNode.asXML());
+							String logRow = logBuf.toString();
+							reportComposer.append(REPORT_NOT_A_DEFINITION, logRow);
+						}
+					} else if (contentNode instanceof DefaultElement) {
+						elemContentNode = (DefaultElement) contentNode;
+						valueStr = elemContentNode.getTextTrim();
+						if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
+							String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+							if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
+								String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+								definitionSourceCodes.add(sourceCodeOrName);
+							}
+						}
+					}
+				}
+			}
+
+			for (Element noteSourceNode : notesSourceNodes) {
+				String tlinkAttrValue = noteSourceNode.attributeValue(xrefTlinkAttr);
+				String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+				if (definitionSourceCodes.contains(sourceCodeOrName)) {
+					int sourceCodeOccCount = Collections.frequency(definitionSourceCodes, sourceCodeOrName);
+					if (sourceCodeOccCount > 1) {
+						logBuf = new StringBuffer();
+						logBuf.append(concept);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(term);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append(sourceCodeOrName);
+						logBuf.append(CSV_SEPARATOR);
+						logBuf.append("mitu selle märkuse allikaviitega seletust");
+						String logRow = logBuf.toString();
+						reportComposer.append(REPORT_DEFINITIONS_NOTES_MISMATCH, logRow);
+					}
+				} else {
+					logBuf = new StringBuffer();
+					logBuf.append(concept);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(term);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(sourceCodeOrName);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("pole selle märkuse allikaviitega seletust");
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_DEFINITIONS_NOTES_MISMATCH, logRow);
+				}
+			}
+		}
+	}
+
+	private boolean containsWord(String value) {
+
+		if (StringUtils.length(value) == 1) {
+			return false;
+		}
+		char[] chars = value.toCharArray();
+		for (char ch : chars) {
+			if (Character.isAlphabetic(ch)) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void extractAndApplyMeaningProperties(Element conceptGroupNode, Meaning meaningObj) throws Exception {
@@ -807,11 +949,20 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void extractAndSaveDefinitionsAndFreeforms(Long meaningId, Element langGroupNode, String lang, String dataset) throws Exception {
+	//TODO temporary solution, to be refactored
+	private void extractAndSaveDefinitionsAndFreeforms(Long meaningId, Element langGroupNode, String lang, String dataset, Count definitionsWithSameNoteCount) throws Exception {
 
 		List<Element> definitionNodes = langGroupNode.selectNodes(definitionExp);
 		List<Element> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
+		List<Long> definitionIds;
 		for (Element definitionNode : definitionNodes) {
+			/*
+			definitionIds = new ArrayList<>();
+			extractAndSaveDefinitionsAndRefLinks(definitionNode, definitionIds, meaningId, lang, dataset);
+			if (definitionIds.size() > 1 && definitionNoteNodes.size() > 0) {
+				definitionsWithSameNoteCount.increment();
+			}
+			*/
 			String definition = definitionNode.getTextTrim();
 			Long definitionId = createDefinition(meaningId, definition, lang, dataset);
 			if (definitionNode.hasMixedContent()) {
@@ -825,6 +976,99 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					definitionNote = handleRefLinks(definitionNoteNode, ReferenceOwner.FREEFORM, freeformId);
 					updateFreeformText(freeformId, definitionNote);
 				}
+			}
+		}
+	}
+
+	//TODO temporary solution, to be refactored
+	private void extractAndSaveDefinitionsAndRefLinks(Element definitionNode, List<Long> definitionIds, Long meaningId, String lang, String dataset) throws Exception {
+
+		Iterator<Node> contentNodeIter = definitionNode.nodeIterator();
+		DefaultText textContentNode;
+		DefaultElement elemContentNode;
+		String valueStr;
+		Long definitionId = null;
+
+		while (contentNodeIter.hasNext()) {
+			Node contentNode = contentNodeIter.next();
+			if (contentNode instanceof DefaultText) {
+				textContentNode = (DefaultText) contentNode;
+				valueStr = textContentNode.getText();
+				valueStr = StringUtils.trim(valueStr);
+				definitionId = createDefinition(meaningId, valueStr, lang, dataset);
+				definitionIds.add(definitionId);
+			} else if (contentNode instanceof DefaultElement) {
+				elemContentNode = (DefaultElement) contentNode;
+				valueStr = elemContentNode.getTextTrim();
+				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
+					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
+						String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+						Long sourceId = getSource(sourceCodeOrName);
+						if (sourceId != null) {
+							if (definitionId == null) {
+								definitionId = createDefinition(meaningId, valueStr, lang, dataset);
+								definitionIds.add(definitionId);
+							}
+							createDefinitionRefLink(definitionId, ReferenceType.SOURCE, sourceId);
+						}
+					} else {
+						//TODO not sure about this. should probably just save as definition instead
+						//throw new DataLoadingException("Unsupported tlink node type: " + tlinkAttrValue);
+						logger.debug("Unsupported tlink node type {}", tlinkAttrValue);
+						definitionId = createDefinition(meaningId, valueStr, lang, dataset);
+						definitionIds.add(definitionId);
+					}
+				} else {
+					throw new DataLoadingException("Unsupported mixed content node name: " + contentNode.getName());
+				}
+			} else {
+				throw new DataLoadingException("Unsupported mixed content node type: " + contentNode.getClass());
+			}
+		}
+	}
+
+	//TODO temporary solution, to be refactored
+	private void extractAndSaveUsagesAndRefLinks(Element usageNode, Long usageMeaningId, String lang, String dataset) throws Exception {
+
+		Iterator<Node> contentNodeIter = usageNode.nodeIterator();
+		DefaultText textContentNode;
+		DefaultElement elemContentNode;
+		String valueStr;
+		Long usageId = null;
+
+		while (contentNodeIter.hasNext()) {
+			Node contentNode = contentNodeIter.next();
+			if (contentNode instanceof DefaultText) {
+				textContentNode = (DefaultText) contentNode;
+				valueStr = textContentNode.getText();
+				valueStr = StringUtils.trim(valueStr);
+				usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
+			} else if (contentNode instanceof DefaultElement) {
+				elemContentNode = (DefaultElement) contentNode;
+				valueStr = elemContentNode.getTextTrim();
+				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
+					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
+					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
+						String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+						Long sourceId = getSource(sourceCodeOrName);
+						if (sourceId != null) {
+							if (usageId == null) {
+								usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
+							}
+							createFreeformRefLink(usageId, ReferenceType.SOURCE, sourceId);
+						}
+					} else {
+						//TODO not sure about this. should probably just save as definition instead
+						//throw new DataLoadingException("Unsupported tlink node type: " + tlinkAttrValue);
+						logger.debug("Unsupported tlink node type {} ", tlinkAttrValue);
+						usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, valueStr, lang);
+					}
+				} else {
+					throw new DataLoadingException("Unsupported mixed content node name: " + contentNode.getName());
+				}
+			} else {
+				throw new DataLoadingException("Unsupported mixed content node type: " + contentNode.getClass());
 			}
 		}
 	}
@@ -1077,7 +1321,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("sourceCodeOrName", sourceCodeOrName);
 		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_CODE_OR_NAME, tableRowParamMap);
 		if (CollectionUtils.isEmpty(results)) {
-			logger.warn("Could not find matching source \"{}\"", sourceCodeOrName);
+			//logger.warn("Could not find matching source \"{}\"", sourceCodeOrName);
 			return null;
 		}
 		if (results.size() > 1) {
