@@ -2,6 +2,7 @@ package eki.ekilex.runner;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
@@ -23,7 +24,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -56,6 +56,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ANTONYM = "ant";
 	private final static String LEXEME_RELATION_COHYPONYM = "cohyponym";
+	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
@@ -234,8 +235,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(ABBREVIATIONS_REPORT_NAME);
 		writeToLogFile("Lühendite töötlus <s:lyh> ja <s:lhx>", "", "");
 
+		Count newAbbreviationFullWordCount = processLexemeToWord(context, context.abbreviationFullWords, null, "Ei leitud sõna, loome uue", dataLang);
 		Count newAbbreviationWordCount = processLexemeToWord(context, context.abbreviations, lexemeTypeAbbreviation, "Ei leitud lühendit, loome uue", dataLang);
+		createLexemeRelations(context, context.abbreviations, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendile");
+		for (LexemeToWordData abbreviation : context.abbreviations) {
+			String abbreviationFullWord = context.meanings.stream().filter(m -> m.word.equals(abbreviation.word)).findFirst().get().meaningWord;
+			boolean hasFullWord = context.abbreviationFullWords.stream().anyMatch(a -> a.word.equals(abbreviationFullWord));
+			if (!hasFullWord) {
+				logger.debug("{} : Abbreviation '{}' do not have connected full word, tag <s:lhx> is missing", abbreviation.reportingId, abbreviation.word);
+				writeToLogFile(abbreviation.reportingId, "Lühend ei ole seotud täis nimega, tag <s:lhx> puudub.", abbreviation.word);
+			}
+		}
 
+		logger.debug("Words created {}", newAbbreviationFullWordCount.getValue());
 		logger.debug("Abbreviation words created {}", newAbbreviationWordCount.getValue());
 		logger.debug("Abbreviations import done.");
 	}
@@ -257,29 +269,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} cohyponyms.", context.cohyponyms.size());
 		setActivateReport(COHYPONYMS_REPORT_NAME);
 		writeToLogFile("Kaashüponüümide töötlus <s:kyh>", "", "");
-
-		for (LexemeToWordData cohyponymData : context.cohyponyms) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> cohyponymData.word.equals(w.value)).collect(Collectors.toList());
-			Long wordId = getWordIdFor(cohyponymData.word, cohyponymData.homonymNr, existingWords, cohyponymData.reportingId);
-			if (!existingWords.isEmpty() && wordId != null) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("wordId", wordId);
-				params.put("dataset", dataset);
-				try {
-					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
-					Optional<Map<String, Object>> lexemeObject =
-							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == cohyponymData.lexemeLevel1).findFirst();
-					if (lexemeObject.isPresent()) {
-						createLexemeRelation(cohyponymData.lexemeId, (Long) lexemeObject.get().get("id"), LEXEME_RELATION_COHYPONYM);
-					} else {
-						logger.debug("Lexeme not found for cohyponym : {}, lexeme level1 : {}.", cohyponymData.word, cohyponymData.lexemeLevel1);
-						writeToLogFile(cohyponymData.reportingId, "Ei leitud ilmikut kaashüponüümile", cohyponymData.word + ", level1 " + cohyponymData.lexemeLevel1);
-					}
-				} catch (Exception e) {
-					logger.error("{} | {} | {}", e.getMessage(), cohyponymData.word, wordId);
-				}
-			}
-		}
+		createLexemeRelations(context, context.cohyponyms, LEXEME_RELATION_COHYPONYM, "Ei leitud ilmikut kaashüponüümile");
 		logger.debug("Cohyponyms import done.");
 	}
 
@@ -288,10 +278,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} antonyms.", context.antonyms.size());
 		setActivateReport(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
+		createLexemeRelations(context, context.antonyms, LEXEME_RELATION_ANTONYM, "Ei leitud ilmikut antaonüümile");
+		logger.debug("Antonyms import done.");
+	}
 
-		for (LexemeToWordData antonymData : context.antonyms) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
-			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.reportingId);
+	private void createLexemeRelations(Context context, List<LexemeToWordData> items, String lexemeRelationType, String logMessage) throws Exception {
+
+		for (LexemeToWordData itemData : items) {
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> itemData.word.equals(w.value)).collect(Collectors.toList());
+			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, existingWords, itemData.reportingId);
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", wordId);
@@ -299,19 +294,18 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				try {
 					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					Optional<Map<String, Object>> lexemeObject =
-							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == antonymData.lexemeLevel1).findFirst();
+							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == itemData.lexemeLevel1).findFirst();
 					if (lexemeObject.isPresent()) {
-						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), LEXEME_RELATION_ANTONYM);
+						createLexemeRelation(itemData.lexemeId, (Long) lexemeObject.get().get("id"), lexemeRelationType);
 					} else {
-						logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-						writeToLogFile(antonymData.reportingId, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
+						logger.debug("Lexeme not found for word : {}, lexeme level1 : {}.", itemData.word, itemData.lexemeLevel1);
+						writeToLogFile(itemData.reportingId, logMessage, itemData.word + ", level1 " + itemData.lexemeLevel1);
 					}
 				} catch (Exception e) {
-					logger.error("More than one lexeme {}, {}", antonymData.word, wordId);
+					logger.error("{} | {} | {}", e.getMessage(), itemData.word, wordId);
 				}
 			}
 		}
-		logger.debug("Antonyms import done.");
 	}
 
 	void processBasicWords(Context context) throws Exception {
@@ -367,10 +361,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<String> importantNotes = extractImportantNotes(meaningGroupNode);
 
 				Long meaningId;
-				boolean addDefinitions = true;
+				List<String> definitionsToAdd = new ArrayList<>();
+				List<String> definitionsToCache = new ArrayList<>();
 
 				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningFormulas = extractFormulas(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
@@ -378,6 +374,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						Stream.of(
 								meaningSynonyms.stream(),
 								meaningAbbreviations.stream(),
+								meaningAbbreviationFullWords.stream(),
 								meaningTokens.stream(),
 								meaningFormulas.stream(),
 								meaningLatinTerms.stream()
@@ -386,26 +383,27 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
+					definitionsToAdd.addAll(definitions);
+					definitionsToCache.addAll(definitions);
 				} else {
 					meaningId = meaningData.meaningId;
 					validateMeaning(meaningData, definitions, reportingId);
-					addDefinitions = meaningData.meaningDefinition == null;
-					if (meaningData.meaningDefinition == null && !definitions.isEmpty()) {
-						meaningData.meaningDefinition = definitions.get(0);
-					}
+					definitionsToAdd = definitions.stream().filter(def -> !meaningData.meaningDefinitions.contains(def)).collect(toList());
+					meaningData.meaningDefinitions.addAll(definitionsToAdd);
+					definitionsToCache.addAll(meaningData.meaningDefinitions);
 				}
-				if (addDefinitions) {
-					for (String definition : definitions) {
+				if (!definitionsToAdd.isEmpty()) {
+					for (String definition : definitionsToAdd) {
 						createDefinition(meaningId, definition, dataLang, dataset);
 					}
-					if (definitions.size() > 1) {
+					if (definitionsToAdd.size() > 1) {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
-				cacheMeaningRelatedData(context, meaningId, definitions, newWords.get(0), lexemeLevel1,
-						meaningSynonyms, meaningAbbreviations, meaningTokens, meaningFormulas, meaningLatinTerms);
+				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
+						meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningFormulas, meaningLatinTerms);
 
 				if (isNotEmpty(meaningExternalId)) {
 					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
@@ -445,6 +443,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 							cohyponymData.lexemeId = lexemeId;
 							context.cohyponyms.add(cohyponymData);
 						}
+						for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
+							LexemeToWordData abbreviationData = meaningAbbreviation.copy();
+							abbreviationData.lexemeId = lexemeId;
+							context.abbreviations.add(abbreviationData);
+						}
 					}
 				}
 			}
@@ -477,22 +480,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			Context context, Long meaningId, List<String> definitions, WordData word, int level1,
 			List<LexemeToWordData> synonyms,
 			List<LexemeToWordData> abbreviations,
+			List<LexemeToWordData> abbreviationFullWords,
 			List<LexemeToWordData> tokens,
 			List<LexemeToWordData> formulas,
 			List<LexemeToWordData> latinTerms
 			) {
 		synonyms.forEach(data -> {
 			data.meaningId = meaningId;
-			if (!definitions.isEmpty()) {
-				data.definition = definitions.get(0);
-			}
 		});
 		context.synonyms.addAll(synonyms);
 
+		// abbreviations need also lexemeId, but this is added later, so we add them to context after assigning lexemeId
 		abbreviations.forEach(data -> {
 			data.meaningId = meaningId;
 		});
-		context.abbreviations.addAll(abbreviations);
+
+		abbreviationFullWords.forEach(data -> {
+			data.meaningId = meaningId;
+		});
+		context.abbreviationFullWords.addAll(abbreviationFullWords);
 
 		tokens.forEach(data -> {
 			data.meaningId = meaningId;
@@ -509,8 +515,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		});
 		context.latinTermins.addAll(latinTerms);
 
+		context.meanings.stream()
+				.filter(m -> Objects.equals(m.meaningId, meaningId))
+				.forEach(m -> {m.meaningDefinitions.clear(); m.meaningDefinitions.addAll(definitions);});
 		context.meanings.addAll(extractMeaningsData(synonyms, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(abbreviations, word, level1, definitions));
+		context.meanings.addAll(extractMeaningsData(abbreviationFullWords, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(tokens, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(formulas, word, level1, definitions));
 		context.meanings.addAll(extractMeaningsData(latinTerms, word, level1, definitions));
@@ -594,16 +604,20 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private List<LexemeToWordData> extractAbbreviations(Element node, String reportingId) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
-		final String abbreviationFullFormExp = "s:dg/s:lhx";
 
-		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, null, reportingId);
-		abbreviations.addAll(extractLexemeMetadata(node, abbreviationFullFormExp, null, reportingId));
+		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, lexemeTypeAbbreviation, reportingId);
 		abbreviations.forEach(a -> {
 			if (a.lexemeType == null) {
 				a.lexemeType = lexemeTypeAbbreviation;
 			}
 		});
 		return abbreviations;
+	}
+
+	private List<LexemeToWordData> extractAbbreviationFullWords(Element node, String reportingId) throws Exception {
+
+		final String abbreviationFullWordExp = "s:dg/s:lhx";
+		return extractLexemeMetadata(node, abbreviationFullWordExp, null, reportingId);
 	}
 
 	private void saveRegisters(Long lexemeId, List<String> registerCodes) throws Exception {
@@ -622,13 +636,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private List<String> extractGrammar(Element node) {
-
 		final String grammarValueExp = "s:grg/s:gki";
-
-		List<String> grammars = (List<String>) node.selectNodes(grammarValueExp).stream()
-				.map(e -> ((Element) e).getTextTrim())
-				.collect(toList());
-		return grammars;
+		return extractValuesAsStrings(node, grammarValueExp);
 	}
 
 	//POS - part of speech
@@ -760,6 +769,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> metadataList = new ArrayList<>();
 		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
 		for (Element metadataNode : metadataNodes) {
+			if (isRestricted(metadataNode)) continue;
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			lexemeMetadata.displayForm = metadataNode.getTextTrim();
 			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
@@ -820,14 +830,24 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return extractValuesAsStrings(node, definitionValueExp);
 	}
 
-	private List<String> extractValuesAsStrings(Element node, String registerValueExp) {
+	private List<String> extractValuesAsStrings(Element node, String valueExp) {
+
 		List<String> values = new ArrayList<>();
-		List<Element> valueNodes = node.selectNodes(registerValueExp);
+		List<Element> valueNodes = node.selectNodes(valueExp);
 		for (Element valueNode : valueNodes) {
-			String register = valueNode.getTextTrim();
-			values.add(register);
+			if (!isRestricted(valueNode)) {
+				String value = valueNode.getTextTrim();
+				values.add(value);
+			}
 		}
 		return values;
+	}
+
+	private boolean isRestricted(Element node) {
+
+		final String restrictedAttr = "as";
+		String restrictedValue = node.attributeValue(restrictedAttr);
+		return asList("ab", "ap").contains(restrictedValue);
 	}
 
 	private List<Usage> extractUsages(Element node) {
@@ -911,23 +931,32 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<Paradigm> paradigms = new ArrayList<>();
 		boolean isAddForms = !wordParadigmsMap.isEmpty();
 		List<Element> morphGroupNodes = wordGroupNode.selectNodes(morphGroupExp);
-		for (Element morphGroupNode : morphGroupNodes) {
-			Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
-			if (inflectionTypeNrNode != null) {
-				Paradigm paradigm = new Paradigm();
-				paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
-				if (isAddForms) {
-					Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, paradigm.getInflectionTypeNr(), morphGroupNode, wordParadigmsMap);
-					if (paradigmFromMab != null) {
-						paradigm.setForms(paradigmFromMab.getForms());
-					}
+		if (morphGroupNodes.isEmpty()) {
+			if (isAddForms) {
+				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, wordParadigmsMap);
+				if (paradigmFromMab != null) {
+					paradigms.add(paradigmFromMab);
 				}
-				paradigms.add(paradigm);
-			} else {
-				if (isAddForms) {
-					Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, morphGroupNode, wordParadigmsMap);
-					if (paradigmFromMab != null) {
-						paradigms.add(paradigmFromMab);
+			}
+		} else {
+			for (Element morphGroupNode : morphGroupNodes) {
+				Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
+				if (inflectionTypeNrNode != null) {
+					Paradigm paradigm = new Paradigm();
+					paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
+					if (isAddForms) {
+						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
+						if (paradigmFromMab != null) {
+							paradigm.setForms(paradigmFromMab.getForms());
+						}
+					}
+					paradigms.add(paradigm);
+				} else {
+					if (isAddForms) {
+						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
+						if (paradigmFromMab != null) {
+							paradigms.add(paradigmFromMab);
+						}
 					}
 				}
 			}
@@ -1004,12 +1033,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String reportingId) throws Exception {
 
-		String definition = definitions.isEmpty() ? null : definitions.get(0);
-		if (meaningData.meaningDefinition == null || definition == null || Objects.equals(definition, meaningData.meaningDefinition)) {
+		if (meaningData.meaningDefinitions.isEmpty() || definitions.isEmpty()) {
 			return true;
 		}
-		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningData.meaningDefinition);
-		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningData.meaningDefinition);
+		String definition = definitions.isEmpty() ? null : definitions.get(0);
+		String meaningDefinition = meaningData.meaningDefinitions.isEmpty() ? null : meaningData.meaningDefinitions.get(0);
+		if (Objects.equals(meaningDefinition, definition)) {
+			return true;
+		}
+		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
+		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
 		return false;
 	}
 
@@ -1022,9 +1055,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			meaning.meaningWord = meaningWord.value;
 			meaning.meaningHomonymNr = meaningWord.homonymNr;
 			meaning.meaningLevel1 = level1;
-			if (!definitions.isEmpty()) {
-				meaning.meaningDefinition = definitions.get(0);
-			}
+			meaning.meaningDefinitions.addAll(definitions);
 			meaning.word = item.word;
 			meaning.homonymNr = item.homonymNr;
 			meaning.lexemeLevel1 = item.lexemeLevel1;
@@ -1051,41 +1082,56 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private Paradigm fetchParadigmFromMab(String wordValue, String inflectionTypeNr, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private Paradigm fetchParadigmFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodeExp = "s:mv";
+		final String formsNodeExp2 = "s:hev";
 
 		List<Paradigm> paradigms = wordParadigmsMap.get(wordValue);
 		if (CollectionUtils.isEmpty(paradigms)) {
 			return null;
 		}
-
-		if (isNotEmpty(inflectionTypeNr)) {
-			long nrOfParadigmsMatchingInflectionType = paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).count();
-			if (nrOfParadigmsMatchingInflectionType == 1) {
-				return paradigms.stream().filter(p -> Objects.equals(p.getInflectionTypeNr(), inflectionTypeNr)).findFirst().get();
-			}
+		if (paradigms.size() == 1) {
+			return paradigms.get(0);
 		}
 
-		Element formsNode = (Element) node.selectSingleNode(formsNodeExp);
-		if (formsNode == null) {
+		List<String> formEndings = extractFormEndings(node, formsNodeExp);
+		formEndings.addAll(extractFormEndings(node, formsNodeExp2));
+		if (formEndings.isEmpty()) {
 			return null;
 		}
-		// FIXME: 20.12.2017 its actually lot more complicated logic, change it when we get documentation about it
-		List<String> formValues = Arrays.stream(formsNode.getTextTrim().split(",")).map(String::trim).collect(Collectors.toList());
-		List<String> mabFormValues;
-		Collection<String> formValuesIntersection;
-		int bestFormValuesMatchCount = 0;
+
+		List<String> morphCodesToCheck = asList("SgG", "Inf", "IndPrSg1");
+		long bestFormValuesMatchCount = 0;
 		Paradigm matchingParadigm = null;
 		for (Paradigm paradigm : paradigms) {
-			mabFormValues = paradigm.getFormValues();
-			formValuesIntersection = CollectionUtils.intersection(formValues, mabFormValues);
-			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-				bestFormValuesMatchCount = formValuesIntersection.size();
+			long numberOfMachingEndings = paradigm.getForms().stream()
+					.filter(form -> morphCodesToCheck.contains(form.getMorphCode())).map(Form::getValue)
+					.filter(formValue -> formEndings.stream().anyMatch(formValue::endsWith))
+					.count();
+			if (numberOfMachingEndings > bestFormValuesMatchCount) {
+				bestFormValuesMatchCount = numberOfMachingEndings;
 				matchingParadigm = paradigm;
 			}
 		}
 		return matchingParadigm;
+	}
+
+	private List<String> extractFormEndings(Element node, String formsNodeExp) {
+
+		List<String> formEndings = new ArrayList<>();
+		if (node == null) {
+			return formEndings;
+		}
+
+		Element formsNode = (Element) node.selectSingleNode(formsNodeExp);
+		if (formsNode != null) {
+			formEndings.addAll(Arrays.stream(formsNode.getTextTrim().split(","))
+					.map(v -> v.substring(v.indexOf("-")+1).trim())
+					.collect(Collectors.toList()));
+		}
+
+		return formEndings;
 	}
 
 	private String cleanUp(String value) {
@@ -1149,7 +1195,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		int lexemeLevel1 = 1;
 		Long meaningId;
-		String meaningDefinition;
+		List<String> meaningDefinitions = new ArrayList<>();
 		String meaningWord;
 		int meaningHomonymNr = 0;
 		int meaningLevel1 = 1;
@@ -1163,7 +1209,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		String relationType;
 		Rection rection;
-		String definition;
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String lexemeType;
@@ -1178,7 +1223,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
 			newData.rection = this.rection;
-			newData.definition = this.definition;
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
 			newData.lexemeType = this.lexemeType;
@@ -1194,6 +1238,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> synonyms = new ArrayList<>();
 		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
+		List<LexemeToWordData> abbreviationFullWords = new ArrayList<>();
 		List<LexemeToWordData> cohyponyms = new ArrayList<>();
 		List<LexemeToWordData> tokens = new ArrayList<>();
 		List<LexemeToWordData> formulas = new ArrayList<>();
