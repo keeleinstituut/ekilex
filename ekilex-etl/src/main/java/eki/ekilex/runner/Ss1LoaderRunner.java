@@ -2,6 +2,7 @@ package eki.ekilex.runner;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
+import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
@@ -23,7 +24,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -1085,6 +1085,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Paradigm fetchParadigmFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodeExp = "s:mv";
+		final String formsNodeExp2 = "s:hev";
 
 		List<Paradigm> paradigms = wordParadigmsMap.get(wordValue);
 		if (CollectionUtils.isEmpty(paradigms)) {
@@ -1094,17 +1095,18 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			return paradigms.get(0);
 		}
 
-		Element formsNode = (node == null) ? null : (Element) node.selectSingleNode(formsNodeExp);
-		if (formsNode == null) {
+		List<String> formEndings = extractFormEndings(node, formsNodeExp);
+		formEndings.addAll(extractFormEndings(node, formsNodeExp2));
+		if (formEndings.isEmpty()) {
 			return null;
 		}
-		List<String> formEndings = Arrays.stream(formsNode.getTextTrim().split(","))
-				.map(v -> v.substring(v.indexOf("-")+1).trim())
-				.collect(Collectors.toList());
+
+		List<String> morphCodesToCheck = asList("SgG", "Inf", "IndPrSg1");
 		long bestFormValuesMatchCount = 0;
 		Paradigm matchingParadigm = null;
 		for (Paradigm paradigm : paradigms) {
-			long numberOfMachingEndings = paradigm.getFormValues().stream()
+			long numberOfMachingEndings = paradigm.getForms().stream()
+					.filter(form -> morphCodesToCheck.contains(form.getMorphCode())).map(Form::getValue)
 					.filter(formValue -> formEndings.stream().anyMatch(formValue::endsWith))
 					.count();
 			if (numberOfMachingEndings > bestFormValuesMatchCount) {
@@ -1113,6 +1115,23 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 		return matchingParadigm;
+	}
+
+	private List<String> extractFormEndings(Element node, String formsNodeExp) {
+
+		List<String> formEndings = new ArrayList<>();
+		if (node == null) {
+			return formEndings;
+		}
+
+		Element formsNode = (Element) node.selectSingleNode(formsNodeExp);
+		if (formsNode != null) {
+			formEndings.addAll(Arrays.stream(formsNode.getTextTrim().split(","))
+					.map(v -> v.substring(v.indexOf("-")+1).trim())
+					.collect(Collectors.toList()));
+		}
+
+		return formEndings;
 	}
 
 	private String cleanUp(String value) {
