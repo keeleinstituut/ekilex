@@ -58,6 +58,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
+	private boolean classifiersExist;
+
 	public String getWord() {
 		return word;
 	}
@@ -200,6 +202,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setFreeforms(List<FreeForm> freeforms) {
 		this.freeforms = freeforms;
+	}
+
+	public boolean isClassifiersExist() {
+		return classifiersExist;
+	}
+
+	public void setClassifiersExist(boolean classifiersExist) {
+		this.classifiersExist = classifiersExist;
 	}
 
 }

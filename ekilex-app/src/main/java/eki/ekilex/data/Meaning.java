@@ -33,6 +33,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
+	private boolean contentExists;
+
 	public Long getMeaningId() {
 		return meaningId;
 	}
@@ -103,6 +105,14 @@ public class Meaning extends AbstractDataObject {
 
 	public void setFreeforms(List<FreeForm> freeforms) {
 		this.freeforms = freeforms;
+	}
+
+	public boolean isContentExists() {
+		return contentExists;
+	}
+
+	public void setContentExists(boolean contentExists) {
+		this.contentExists = contentExists;
 	}
 
 }

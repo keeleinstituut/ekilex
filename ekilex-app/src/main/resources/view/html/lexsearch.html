@@ -127,7 +127,7 @@
                 <span class="lbl">Seisund</span>
                 <span th:text="${lexeme.meaningStateCode}"></span>
               </div>
-              <p th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
+              <div th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
                 <span class="lbl">Sõnaliik</span>
                 <span th:each="classif,classifIter : ${lexeme.lexemePos}">
                   <span th:text="${classif.code}"></span>
@@ -137,8 +137,8 @@
                   </th:block>
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
-              </p>
-              <p th:if="${not #lists.isEmpty(lexeme.lexemeDerivs)}">
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.lexemeDerivs)}">
                 <span class="lbl">Tuletuskood</span>
                 <span th:each="classif,classifIter : ${lexeme.lexemeDerivs}">
                   <span th:text="${classif.code}"></span>
@@ -148,8 +148,8 @@
                   </th:block>
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
-              </p>
-              <p th:if="${not #lists.isEmpty(lexeme.lexemeRegisters)}">
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.lexemeRegisters)}">
                 <span class="lbl">Register</span>
                 <span th:each="classif,classifIter : ${lexeme.lexemeRegisters}">
                   <span th:text="${classif.code}"></span>
@@ -159,8 +159,8 @@
                   </th:block>
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
-              </p>
-              <p th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
                 <span class="lbl">Valdkonnad</span>
                 <span th:each="classif,classifIter : ${lexeme.meaningDomains}">
                   <span th:text="${classif.code}"></span>
@@ -170,7 +170,7 @@
                   </th:block>
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
-              </p>
+              </div>
             </div>
             <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
               <hr />

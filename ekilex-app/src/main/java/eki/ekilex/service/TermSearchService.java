@@ -6,6 +6,8 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -52,10 +54,19 @@ public class TermSearchService {
 			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			List<Lexeme> lexemes = new ArrayList<>();
 
+			boolean contentExists =
+					StringUtils.isNotBlank(meaning.getTypeCode())
+					|| StringUtils.isNotBlank(meaning.getProcessStateCode())
+					|| StringUtils.isNotBlank(meaning.getStateCode())
+					|| CollectionUtils.isNotEmpty(definitions)
+					|| CollectionUtils.isNotEmpty(domains)
+					|| CollectionUtils.isNotEmpty(meaningFreeforms);
+
 			meaning.setDefinitions(definitions);
 			meaning.setDomains(domains);
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLexemes(lexemes);
+			meaning.setContentExists(contentExists);
 
 			for (Long lexemeId : lexemeIds) {
 
@@ -71,6 +82,13 @@ public class TermSearchService {
 
 				for (Lexeme lexeme : lexemeWords) {
 
+					boolean classifiersExist =
+							StringUtils.isNotBlank(lexeme.getTypeCode())
+							|| StringUtils.isNotBlank(lexeme.getFrequencyGroupCode())
+							|| CollectionUtils.isNotEmpty(lexemePos)
+							|| CollectionUtils.isNotEmpty(lexemeDerivs)
+							|| CollectionUtils.isNotEmpty(lexemeRegisters);
+
 					String dataset = lexeme.getDataset();
 					dataset = datasetNameMap.get(dataset);
 					String levels = composeLevels(lexeme);
@@ -81,6 +99,7 @@ public class TermSearchService {
 					lexeme.setRegisters(lexemeRegisters);
 					lexeme.setFreeforms(lexemeFreeforms);
 					lexeme.setRections(rections);
+					lexeme.setClassifiersExist(classifiersExist);
 					lexemes.add(lexeme);
 				}
 			}
