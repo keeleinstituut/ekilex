@@ -1,17 +1,12 @@
 package eki.ekilex.manual;
 
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
+import eki.ekilex.service.MabService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Ss1Loader {
 
@@ -35,12 +30,11 @@ public class Ss1Loader {
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
 			String dataLang = "est";
 
-			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 			if (isAddForms) {
-				MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
-				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang, isAddReporting);
+				MabService mabService = applicationContext.getBean(MabService.class);
+				mabService.loadParadigms(mabFilePath, dataLang, isAddReporting);
 			}
-			runner.execute(dataXmlFilePath, wordParadigmsMap, isAddReporting);
+			runner.execute(dataXmlFilePath, isAddReporting);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

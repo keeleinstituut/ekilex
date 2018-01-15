@@ -9,13 +9,14 @@ import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Rection;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -82,6 +84,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+	@Autowired
+	private MabService mabService;
+
 	@Override
 	void initialise() throws Exception {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
@@ -95,7 +100,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	@Transactional
 	public void execute(
 			String dataXmlFilePath,
-			Map<String, List<Paradigm>> wordParadigmsMap,
 			boolean isAddReporting) throws Exception {
 
 		logger.info("Starting import");
@@ -121,7 +125,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Artiklite töötlus", "", "");
 		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		for (Element articleNode : articleNodes) {
-			processArticle(articleNode, wordParadigmsMap, context);
+			processArticle(articleNode, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				long progressPercent = articleCounter / progressIndicator;
@@ -149,7 +153,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	void processArticle(Element articleNode, Map<String, List<Paradigm>> wordParadigmsMap, Context context) throws Exception {
+	void processArticle(Element articleNode, Context context) throws Exception {
 
 		final String articleHeaderExp = "s:P";
 		final String articleBodyExp = "s:S";
@@ -159,7 +163,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<WordData> newWords = new ArrayList<>();
 
 		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-		processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, guid);
+		processArticleHeader(reportingId, headerNode, newWords, context, guid);
 
 		List<CommentData> comments = extractArticleComments(articleNode);
 
@@ -702,8 +706,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context,
-			Map<String, List<Paradigm>> wordParadigmsMap, String guid) throws Exception {
+	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 
 		final String wordGroupExp = "s:mg";
 		final String wordPosCodeExp = "s:sl";
@@ -716,7 +719,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
-				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
+				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
 				wordData.id = saveWord(word, paradigms, dataset, context.wordDuplicateCount);
 			}
 
@@ -911,54 +914,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				logger.warn("Unknown display morph code : {} : {}", wordDisplayMorphNode.getTextTrim(), wordValue);
 			}
 		}
-		// FIXME: 2018.01.02 take first non 'P' value, change after we get correct logic from EKI
 		Optional<String> frequencyGroup = wordGroupNode.selectNodes(wordFrequencyGroupExp).stream()
 				.map(e -> ((Element)e).getTextTrim())
 				.filter(v -> !v.equals("P"))
 				.findFirst();
-		if (frequencyGroup.isPresent()) {
-			wordData.frequencyGroup = frequencyGroup.get();
-		}
+		frequencyGroup.ifPresent(fg -> wordData.frequencyGroup = fg);
 		wordData.grammars = extractGrammar(wordGroupNode);
 		return word;
 	}
 
-	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) {
 
 		final String morphGroupExp = "s:mfp/s:mtg";
-		final String inflectionTypeNrExp = "s:mt";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		boolean isAddForms = !wordParadigmsMap.isEmpty();
-		List<Element> morphGroupNodes = wordGroupNode.selectNodes(morphGroupExp);
-		if (morphGroupNodes.isEmpty()) {
-			if (isAddForms) {
-				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, wordParadigmsMap);
-				if (paradigmFromMab != null) {
-					paradigms.add(paradigmFromMab);
-				}
-			}
-		} else {
-			for (Element morphGroupNode : morphGroupNodes) {
-				Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
-				if (inflectionTypeNrNode != null) {
-					Paradigm paradigm = new Paradigm();
-					paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
-					if (isAddForms) {
-						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
-						if (paradigmFromMab != null) {
-							paradigm.setForms(paradigmFromMab.getForms());
-						}
-					}
-					paradigms.add(paradigm);
-				} else {
-					if (isAddForms) {
-						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
-						if (paradigmFromMab != null) {
-							paradigms.add(paradigmFromMab);
-						}
-					}
-				}
+		if (mabService.wordHasParadigms(word.value)) {
+			Element morphGroupNode = (Element) wordGroupNode.selectSingleNode(morphGroupExp);
+			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode);
+			if (!paradigmsFromMab.isEmpty()) {
+				paradigms.addAll(paradigmsFromMab);
 			}
 		}
 		return paradigms;
@@ -1041,7 +1015,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (Objects.equals(meaningDefinition, definition)) {
 			return true;
 		}
-		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
+//		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
 		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
 		return false;
 	}
@@ -1082,29 +1056,25 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private Paradigm fetchParadigmFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) {
 
 		final String formsNodeExp = "s:mv";
 		final String formsNodeExp2 = "s:hev";
 
-		List<Paradigm> paradigms = wordParadigmsMap.get(wordValue);
-		if (CollectionUtils.isEmpty(paradigms)) {
-			return null;
-		}
-		if (paradigms.size() == 1) {
-			return paradigms.get(0);
+		if (mabService.wordHasOnlyOneHomonym(wordValue)) {
+			return mabService.getWordParadigms(wordValue);
 		}
 
 		List<String> formEndings = extractFormEndings(node, formsNodeExp);
 		formEndings.addAll(extractFormEndings(node, formsNodeExp2));
 		if (formEndings.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<String> morphCodesToCheck = asList("SgG", "Inf", "IndPrSg1");
-		long bestFormValuesMatchCount = 0;
+		long bestFormValuesMatchCount = -1;
 		Paradigm matchingParadigm = null;
-		for (Paradigm paradigm : paradigms) {
+		for (Paradigm paradigm : mabService.getWordParadigms(wordValue)) {
 			long numberOfMachingEndings = paradigm.getForms().stream()
 					.filter(form -> morphCodesToCheck.contains(form.getMorphCode())).map(Form::getValue)
 					.filter(formValue -> formEndings.stream().anyMatch(formValue::endsWith))
@@ -1114,7 +1084,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				matchingParadigm = paradigm;
 			}
 		}
-		return matchingParadigm;
+		Integer matchingHomonymNumber = matchingParadigm.getHomonymNr();
+		return mabService.getWordParadigmsForHomonym(wordValue, matchingHomonymNumber);
 	}
 
 	private List<String> extractFormEndings(Element node, String formsNodeExp) {
