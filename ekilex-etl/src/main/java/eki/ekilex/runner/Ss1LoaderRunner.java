@@ -24,6 +24,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -911,14 +912,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				logger.warn("Unknown display morph code : {} : {}", wordDisplayMorphNode.getTextTrim(), wordValue);
 			}
 		}
-		// FIXME: 2018.01.02 take first non 'P' value, change after we get correct logic from EKI
 		Optional<String> frequencyGroup = wordGroupNode.selectNodes(wordFrequencyGroupExp).stream()
 				.map(e -> ((Element)e).getTextTrim())
 				.filter(v -> !v.equals("P"))
 				.findFirst();
-		if (frequencyGroup.isPresent()) {
-			wordData.frequencyGroup = frequencyGroup.get();
-		}
+		frequencyGroup.ifPresent(fg -> wordData.frequencyGroup = fg);
 		wordData.grammars = extractGrammar(wordGroupNode);
 		return word;
 	}
@@ -926,39 +924,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String morphGroupExp = "s:mfp/s:mtg";
-		final String inflectionTypeNrExp = "s:mt";
 
 		List<Paradigm> paradigms = new ArrayList<>();
 		boolean isAddForms = !wordParadigmsMap.isEmpty();
-		List<Element> morphGroupNodes = wordGroupNode.selectNodes(morphGroupExp);
-		if (morphGroupNodes.isEmpty()) {
-			if (isAddForms) {
-				Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, null, wordParadigmsMap);
-				if (paradigmFromMab != null) {
-					paradigms.add(paradigmFromMab);
-				}
-			}
-		} else {
-			for (Element morphGroupNode : morphGroupNodes) {
-				Element inflectionTypeNrNode = (Element) morphGroupNode.selectSingleNode(inflectionTypeNrExp);
-				if (inflectionTypeNrNode != null) {
-					Paradigm paradigm = new Paradigm();
-					paradigm.setInflectionTypeNr(inflectionTypeNrNode.getTextTrim());
-					if (isAddForms) {
-						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
-						if (paradigmFromMab != null) {
-							paradigm.setForms(paradigmFromMab.getForms());
-						}
-					}
-					paradigms.add(paradigm);
-				} else {
-					if (isAddForms) {
-						Paradigm paradigmFromMab = fetchParadigmFromMab(word.value, morphGroupNode, wordParadigmsMap);
-						if (paradigmFromMab != null) {
-							paradigms.add(paradigmFromMab);
-						}
-					}
-				}
+		if (isAddForms) {
+			Element morphGroupNode = (Element) wordGroupNode.selectSingleNode(morphGroupExp);
+			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode, wordParadigmsMap);
+			if (!paradigmsFromMab.isEmpty()) {
+				paradigms.addAll(paradigmsFromMab);
 			}
 		}
 		return paradigms;
@@ -1082,23 +1055,24 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private Paradigm fetchParadigmFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
 
 		final String formsNodeExp = "s:mv";
 		final String formsNodeExp2 = "s:hev";
 
 		List<Paradigm> paradigms = wordParadigmsMap.get(wordValue);
 		if (CollectionUtils.isEmpty(paradigms)) {
-			return null;
+			return Collections.emptyList();
 		}
-		if (paradigms.size() == 1) {
-			return paradigms.get(0);
+		Integer homonymNumber = paradigms.get(0).getHomonymNr();
+		if (paradigms.size() == 1 || paradigms.stream().allMatch(p -> Objects.equals(homonymNumber, p.getHomonymNr()))) {
+			return paradigms;
 		}
 
 		List<String> formEndings = extractFormEndings(node, formsNodeExp);
 		formEndings.addAll(extractFormEndings(node, formsNodeExp2));
 		if (formEndings.isEmpty()) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<String> morphCodesToCheck = asList("SgG", "Inf", "IndPrSg1");
@@ -1114,7 +1088,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				matchingParadigm = paradigm;
 			}
 		}
-		return matchingParadigm;
+		Integer matchingHomonymNumber = matchingParadigm.getHomonymNr();
+		return paradigms.stream().filter(p -> Objects.equals(matchingHomonymNumber, p.getHomonymNr())).collect(toList());
 	}
 
 	private List<String> extractFormEndings(Element node, String formsNodeExp) {
