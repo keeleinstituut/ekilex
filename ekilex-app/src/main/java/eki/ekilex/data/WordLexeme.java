@@ -17,6 +17,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "word_lang")
 	private String wordLang;
 
+	@Column(name = "word_display_morph_code")
+	private String wordDisplayMorphCode;
+
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -54,6 +57,12 @@ public class WordLexeme extends AbstractDataObject {
 
 	@Column(name = "meaning_state_code")
 	private String meaningStateCode;
+
+	private List<Classifier> lexemePos;
+
+	private List<Classifier> lexemeDerivs;
+
+	private List<Classifier> lexemeRegisters;
 
 	private List<Classifier> meaningDomains;
 
@@ -94,6 +103,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public String getWordDisplayMorphCode() {
+		return wordDisplayMorphCode;
+	}
+
+	public void setWordDisplayMorphCode(String wordDisplayMorphCode) {
+		this.wordDisplayMorphCode = wordDisplayMorphCode;
 	}
 
 	public Long getWordId() {
@@ -198,6 +215,30 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setMeaningStateCode(String meaningStateCode) {
 		this.meaningStateCode = meaningStateCode;
+	}
+
+	public List<Classifier> getLexemePos() {
+		return lexemePos;
+	}
+
+	public void setLexemePos(List<Classifier> lexemePos) {
+		this.lexemePos = lexemePos;
+	}
+
+	public List<Classifier> getLexemeDerivs() {
+		return lexemeDerivs;
+	}
+
+	public void setLexemeDerivs(List<Classifier> lexemeDerivs) {
+		this.lexemeDerivs = lexemeDerivs;
+	}
+
+	public List<Classifier> getLexemeRegisters() {
+		return lexemeRegisters;
+	}
+
+	public void setLexemeRegisters(List<Classifier> lexemeRegisters) {
+		this.lexemeRegisters = lexemeRegisters;
 	}
 
 	public List<Classifier> getMeaningDomains() {

@@ -16,6 +16,9 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "word_lang")
 	private String wordLang;
 
+	@Column(name = "word_display_morph_code")
+	private String wordDisplayMorphCode;
+
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -45,6 +48,12 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "lexeme_frequency_group_code")
 	private String frequencyGroupCode;
 
+	private List<Classifier> pos;
+
+	private List<Classifier> derivs;
+
+	private List<Classifier> registers;
+
 	private List<Rection> rections;
 
 	private List<FreeForm> freeforms;
@@ -63,6 +72,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public String getWordDisplayMorphCode() {
+		return wordDisplayMorphCode;
+	}
+
+	public void setWordDisplayMorphCode(String wordDisplayMorphCode) {
+		this.wordDisplayMorphCode = wordDisplayMorphCode;
 	}
 
 	public Long getWordId() {
@@ -143,6 +160,30 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setFrequencyGroupCode(String frequencyGroupCode) {
 		this.frequencyGroupCode = frequencyGroupCode;
+	}
+
+	public List<Classifier> getPos() {
+		return pos;
+	}
+
+	public void setPos(List<Classifier> pos) {
+		this.pos = pos;
+	}
+
+	public List<Classifier> getDerivs() {
+		return derivs;
+	}
+
+	public void setDerivs(List<Classifier> derivs) {
+		this.derivs = derivs;
+	}
+
+	public List<Classifier> getRegisters() {
+		return registers;
+	}
+
+	public void setRegisters(List<Classifier> registers) {
+		this.registers = registers;
 	}
 
 	public List<Rection> getRections() {

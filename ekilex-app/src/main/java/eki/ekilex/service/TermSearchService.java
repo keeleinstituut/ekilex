@@ -36,6 +36,9 @@ public class TermSearchService {
 	@Transactional
 	public TermDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
 
+		final String classifierLabelLang = "est";
+		final String classifierLabelTypeDescrip = "descrip";
+
 		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
 		List<Meaning> meanings = termSearchDbService.findFormMeanings(formId, selectedDatasets).into(Meaning.class);
 
@@ -57,6 +60,9 @@ public class TermSearchService {
 			for (Long lexemeId : lexemeIds) {
 
 				// lexeme is duplicated if many form.is_word-s
+				List<Classifier> lexemePos = lexSearchDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+				List<Classifier> lexemeDerivs = lexSearchDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+				List<Classifier> lexemeRegisters = lexSearchDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 				List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(lexemeId).into(Lexeme.class);
 				List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 				List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
@@ -70,6 +76,9 @@ public class TermSearchService {
 					String levels = composeLevels(lexeme);
 					lexeme.setLevels(levels);
 					lexeme.setDataset(dataset);
+					lexeme.setPos(lexemePos);
+					lexeme.setDerivs(lexemeDerivs);
+					lexeme.setRegisters(lexemeRegisters);
 					lexeme.setFreeforms(lexemeFreeforms);
 					lexeme.setRections(rections);
 					lexemes.add(lexeme);

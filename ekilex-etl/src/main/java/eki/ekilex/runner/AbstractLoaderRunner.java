@@ -141,7 +141,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				if (CollectionUtils.isNotEmpty(forms)) {
 					for (Form form : forms) {
 						if (form.isWord()) {
-							createForm(form.getValue(), null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
+							createForm(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
 						} else {
 							createForm(form.getValue(), null, null, null, form.getMorphCode(), paradigmId, form.isWord());
 						}

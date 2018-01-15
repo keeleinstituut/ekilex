@@ -67,28 +67,28 @@ public class LexSearchService {
 					formId, meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
 			lexeme.setWords(words);
 
+			List<Classifier> lexemePos = lexSearchDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			List<Classifier> lexemeDerivs = lexSearchDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			List<Classifier> lexemeRegisters = lexSearchDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> meaningDomains = lexSearchDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			lexeme.setMeaningDomains(meaningDomains);
-
 			List<Definition> meaningDefinitions = lexSearchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
-			lexeme.setDefinitions(meaningDefinitions);
-
 			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
-			lexeme.setMeaningFreeforms(meaningFreeforms);
-
 			List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			lexeme.setLexemeFreeforms(lexemeFreeforms);
-
 			List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
 					lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
-
 			List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
-			lexeme.setRections(rections);
-
 			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
-			lexeme.setLexemeRelations(lexemeRelations);
-
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+
+			lexeme.setLexemePos(lexemePos);
+			lexeme.setLexemeDerivs(lexemeDerivs);
+			lexeme.setLexemeRegisters(lexemeRegisters);
+			lexeme.setMeaningDomains(meaningDomains);
+			lexeme.setDefinitions(meaningDefinitions);
+			lexeme.setMeaningFreeforms(meaningFreeforms);
+			lexeme.setLexemeFreeforms(lexemeFreeforms);
+			lexeme.setRections(rections);
+			lexeme.setLexemeRelations(lexemeRelations);
 			lexeme.setWordRelations(wordRelations);
 
 			boolean lexemeOrMeaningClassifiersExist =
@@ -97,6 +97,9 @@ public class LexSearchService {
 					|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
 					|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
 					|| StringUtils.isNotBlank(lexeme.getMeaningStateCode())
+					|| CollectionUtils.isNotEmpty(lexemePos)
+					|| CollectionUtils.isNotEmpty(lexemeDerivs)
+					|| CollectionUtils.isNotEmpty(lexemeRegisters)
 					|| CollectionUtils.isNotEmpty(meaningDomains);
 			lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
 		});

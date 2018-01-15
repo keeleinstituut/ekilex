@@ -149,15 +149,49 @@
                 </small>
                 &nbsp;
               </span>
+              <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
               <span th:text="${lexeme.dataset}" class="pr-2"></span>
               <div th:if="${lexeme.typeCode != null}">
-                <b>Keelendi tüüp</b>
+                <b>Keelenditüüp</b>
                 <span th:text="${lexeme.typeCode}"></span>
               </div>
               <div th:if="${lexeme.frequencyGroupCode != null}">
                 <b>Sagedusrühm</b>
                 <span th:text="${lexeme.frequencyGroupCode}"></span>
               </div>
+              <p th:if="${not #lists.isEmpty(lexeme.pos)}">
+                <b>Sõnaliik</b>
+                <span th:each="classif,classifIter : ${lexeme.pos}">
+                  <span th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </p>
+              <p th:if="${not #lists.isEmpty(lexeme.derivs)}">
+                <b>Tuletuskood</b>
+                <span th:each="classif,classifIter : ${lexeme.derivs}">
+                  <span th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </p>
+              <p th:if="${not #lists.isEmpty(lexeme.registers)}">
+                <b>Register</b>
+                <span th:each="classif,classifIter : ${lexeme.registers}">
+                  <span th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </p>
               <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
                 <table>
                   <tr th:each="rection,rectionIter : ${lexeme.rections}">

@@ -2,13 +2,17 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
 import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -16,6 +20,8 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.POS_LABEL;
+import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
@@ -27,6 +33,7 @@ import java.util.Map;
 import org.jooq.DSLContext;
 import org.jooq.Record12;
 import org.jooq.Record14;
+import org.jooq.Record15;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -123,6 +130,48 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
+	public Result<Record2<String, String>> findLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(POS_LABEL.CODE, POS_LABEL.VALUE)
+				.from(LEXEME_POS, POS_LABEL)
+				.where(
+						LEXEME_POS.LEXEME_ID.eq(lexemeId)
+						.and(POS_LABEL.CODE.eq(LEXEME_POS.POS_CODE))
+						.and(POS_LABEL.LANG.eq(classifierLabelLang))
+						.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> findLexemeDerivs(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(DERIV_LABEL.CODE, DERIV_LABEL.VALUE)
+				.from(LEXEME_DERIV, DERIV_LABEL)
+				.where(
+						LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
+						.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
+						.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
+						.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> findLexemeRegisters(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE)
+				.from(LEXEME_REGISTER, REGISTER_LABEL)
+				.where(
+						LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
+						.and(REGISTER_LABEL.CODE.eq(LEXEME_REGISTER.REGISTER_CODE))
+						.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
+						.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.fetch();
+	}
+
 	public Result<Record3<String, String, String>> findMeaningDomains(Long meaningId) {
 
 		return create
@@ -178,7 +227,11 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
 		return create
-				.select(FORM.ID.as("form_id"), FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG)
+				.select(
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.HOMONYM_NR,
+						WORD.LANG)
 				.from(FORM, PARADIGM, WORD)
 				.where(
 						FORM.VALUE.likeIgnoreCase(theFilter)
@@ -195,18 +248,22 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record14<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
+	public Result<Record15<String,String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
 			Long formId, List<String> selectedDatasets) {
 
-		return create
+		return 
+				create
 				.select(
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
+						WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.MEANING_ID,
 						LEXEME.DATASET_CODE.as("dataset"),
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
+						LEXEME.LEVEL1,
+						LEXEME.LEVEL2,
+						LEXEME.LEVEL3,
 						LEXEME.TYPE_CODE.as("lexeme_type_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
@@ -369,4 +426,5 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.orderBy(FORM.VALUE)
 				.fetch();
 	}
+
 }
