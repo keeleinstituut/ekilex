@@ -9,13 +9,14 @@ import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Rection;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,6 +84,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
+	@Autowired
+	private MabService mabService;
+
 	@Override
 	void initialise() throws Exception {
 		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
@@ -96,7 +100,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	@Transactional
 	public void execute(
 			String dataXmlFilePath,
-			Map<String, List<Paradigm>> wordParadigmsMap,
 			boolean isAddReporting) throws Exception {
 
 		logger.info("Starting import");
@@ -122,7 +125,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Artiklite töötlus", "", "");
 		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		for (Element articleNode : articleNodes) {
-			processArticle(articleNode, wordParadigmsMap, context);
+			processArticle(articleNode, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				long progressPercent = articleCounter / progressIndicator;
@@ -150,7 +153,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	void processArticle(Element articleNode, Map<String, List<Paradigm>> wordParadigmsMap, Context context) throws Exception {
+	void processArticle(Element articleNode, Context context) throws Exception {
 
 		final String articleHeaderExp = "s:P";
 		final String articleBodyExp = "s:S";
@@ -160,7 +163,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<WordData> newWords = new ArrayList<>();
 
 		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-		processArticleHeader(reportingId, headerNode, newWords, context, wordParadigmsMap, guid);
+		processArticleHeader(reportingId, headerNode, newWords, context, guid);
 
 		List<CommentData> comments = extractArticleComments(articleNode);
 
@@ -703,8 +706,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context,
-			Map<String, List<Paradigm>> wordParadigmsMap, String guid) throws Exception {
+	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 
 		final String wordGroupExp = "s:mg";
 		final String wordPosCodeExp = "s:sl";
@@ -717,7 +719,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
-				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData, wordParadigmsMap);
+				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
 				wordData.id = saveWord(word, paradigms, dataset, context.wordDuplicateCount);
 			}
 
@@ -921,15 +923,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return word;
 	}
 
-	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) {
 
 		final String morphGroupExp = "s:mfp/s:mtg";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		boolean isAddForms = !wordParadigmsMap.isEmpty();
-		if (isAddForms) {
+		if (mabService.wordHasParadigms(word.value)) {
 			Element morphGroupNode = (Element) wordGroupNode.selectSingleNode(morphGroupExp);
-			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode, wordParadigmsMap);
+			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode);
 			if (!paradigmsFromMab.isEmpty()) {
 				paradigms.addAll(paradigmsFromMab);
 			}
@@ -1055,18 +1056,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node, Map<String, List<Paradigm>> wordParadigmsMap) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) {
 
 		final String formsNodeExp = "s:mv";
 		final String formsNodeExp2 = "s:hev";
 
-		List<Paradigm> paradigms = wordParadigmsMap.get(wordValue);
-		if (CollectionUtils.isEmpty(paradigms)) {
-			return Collections.emptyList();
-		}
-		Integer homonymNumber = paradigms.get(0).getHomonymNr();
-		if (paradigms.size() == 1 || paradigms.stream().allMatch(p -> Objects.equals(homonymNumber, p.getHomonymNr()))) {
-			return paradigms;
+		if (mabService.wordHasOnlyOneHomonym(wordValue)) {
+			return mabService.getWordParadigms(wordValue);
 		}
 
 		List<String> formEndings = extractFormEndings(node, formsNodeExp);
@@ -1076,9 +1072,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 
 		List<String> morphCodesToCheck = asList("SgG", "Inf", "IndPrSg1");
-		long bestFormValuesMatchCount = 0;
+		long bestFormValuesMatchCount = -1;
 		Paradigm matchingParadigm = null;
-		for (Paradigm paradigm : paradigms) {
+		for (Paradigm paradigm : mabService.getWordParadigms(wordValue)) {
 			long numberOfMachingEndings = paradigm.getForms().stream()
 					.filter(form -> morphCodesToCheck.contains(form.getMorphCode())).map(Form::getValue)
 					.filter(formValue -> formEndings.stream().anyMatch(formValue::endsWith))
@@ -1089,7 +1085,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 		Integer matchingHomonymNumber = matchingParadigm.getHomonymNr();
-		return paradigms.stream().filter(p -> Objects.equals(matchingHomonymNumber, p.getHomonymNr())).collect(toList());
+		return mabService.getWordParadigmsForHomonym(wordValue, matchingHomonymNumber);
 	}
 
 	private List<String> extractFormEndings(Element node, String formsNodeExp) {
