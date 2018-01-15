@@ -1,18 +1,13 @@
 package eki.ekilex.manual;
 
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
+import eki.ekilex.service.MabService;
 import eki.ekilex.service.WordMatcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class PsvLoader {
 
@@ -39,19 +34,17 @@ public class PsvLoader {
 				guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
 			}
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
-			String dataset = "psv";
 			String dataLang = "est";
 
-			Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 			if (isAddForms) {
-				MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
-				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang, isAddReporting);
+				MabService mabService = applicationContext.getBean(MabService.class);
+				mabService.loadParadigms(mabFilePath, dataLang, isAddReporting);
 			}
 			if (isCombineDatasets) {
 				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);
 				wordMatcherService.load(guidMappingFilePath);
 			}
-			runner.execute(dataXmlFilePath, dataset, wordParadigmsMap, isAddReporting);
+			runner.execute(dataXmlFilePath, isAddReporting);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

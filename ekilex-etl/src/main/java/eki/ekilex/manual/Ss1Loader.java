@@ -1,17 +1,12 @@
 package eki.ekilex.manual;
 
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.runner.Ss1LoaderRunner;
 import eki.ekilex.service.MabService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Ss1Loader {
 
