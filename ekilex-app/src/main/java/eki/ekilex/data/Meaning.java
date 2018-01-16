@@ -33,6 +33,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
+	private List<Relation> relations;
+
 	private boolean contentExists;
 
 	public Long getMeaningId() {
@@ -115,4 +117,11 @@ public class Meaning extends AbstractDataObject {
 		this.contentExists = contentExists;
 	}
 
+	public List<Relation> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(List<Relation> relations) {
+		this.relations = relations;
+	}
 }
