@@ -134,6 +134,25 @@
                 </tr>
               </table>
             </div>
+            <div th:if="${not #lists.isEmpty(meaning.relations)}">
+              <hr />
+              <b>Tähenduse seosed</b>
+              <table>
+                <tr th:each="relation : ${meaning.relations}">
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <button type="button" class="btn btn-link" th:data-id="${relation.formId}" name="details">
+                      <span th:text="${relation.word}"></span>
+                      (
+                      <span th:text="${relation.wordLang}"></span>
+                      )
+                    </button>
+                  </td>
+                  <td>
+                    <span th:text="${relation.relationTypeLabel}"></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
             <p />
           </div>
           <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}">
@@ -347,7 +366,7 @@
   </div>
 
   <script th:inline="javascript">
-  	initialize(applicationUrl);
+  	initialize();
   </script>
 </body>
 </html>

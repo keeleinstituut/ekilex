@@ -50,6 +50,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIFIER_SLTYYP = "sl_tyyp";
 	protected static final String EKI_CLASSIFIER_ASTYYP = "as_tyyp";
 	protected static final String EKI_CLASSIFIER_VKTYYP = "vk_tyyp";
+	protected static final String EKI_CLASSIFIER_MSAGTYYP = "msag_tyyp";
 
 	@Autowired
 	protected XmlReader xmlReader;
@@ -509,6 +510,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		relationParams.put("word2_id", wordId2);
 		relationParams.put("word_rel_type_code", relationType);
 		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
+	}
+
+	protected void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) throws Exception {
+
+		Map<String, Object> relationParams = new HashMap<>();
+		relationParams.put("meaning1_id", meaningId1);
+		relationParams.put("meaning2_id", meaningId2);
+		relationParams.put("meaning_rel_type_code", relationType);
+		basicDbService.createIfNotExists(MEANING_RELATION, relationParams);
 	}
 
 	protected void createLexemeRegister(Long lexemeId, String registerCode) throws Exception {

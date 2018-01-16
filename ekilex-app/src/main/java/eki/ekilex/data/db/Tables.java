@@ -42,6 +42,9 @@ import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningRelType;
+import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
+import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningState;
 import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
@@ -267,6 +270,21 @@ public class Tables {
      * The table <code>public.meaning_freeform</code>.
      */
     public static final MeaningFreeform MEANING_FREEFORM = eki.ekilex.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
+
+    /**
+     * The table <code>public.meaning_rel_type</code>.
+     */
+    public static final MeaningRelType MEANING_REL_TYPE = eki.ekilex.data.db.tables.MeaningRelType.MEANING_REL_TYPE;
+
+    /**
+     * The table <code>public.meaning_rel_type_label</code>.
+     */
+    public static final MeaningRelTypeLabel MEANING_REL_TYPE_LABEL = eki.ekilex.data.db.tables.MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.meaning_relation</code>.
+     */
+    public static final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
 
     /**
      * The table <code>public.meaning_state</code>.

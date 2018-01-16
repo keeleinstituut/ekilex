@@ -19,11 +19,12 @@ public enum ClassifierName {
 	FORM_REL_TYPE(true),
 	WORD_REL_TYPE(true),
 	DISPLAY_MORPH(true),
-	PROCESS_STATE(false);
+	PROCESS_STATE(false),
+	MEANING_REL_TYPE(true);
 
 	private boolean hasLabel;
 
-	private ClassifierName(boolean hasLabel) {
+	ClassifierName(boolean hasLabel) {
 		this.hasLabel = hasLabel;
 	}
 

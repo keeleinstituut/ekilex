@@ -6,6 +6,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.Relation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +53,7 @@ public class TermSearchService {
 			List<Definition> definitions = lexSearchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
 			List<Classifier> domains = lexSearchDbService.findMeaningDomains(meaningId).into(Classifier.class);
 			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
+			List<Relation> meaningRelations = lexSearchDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 			List<Lexeme> lexemes = new ArrayList<>();
 
 			boolean contentExists =
@@ -67,6 +69,7 @@ public class TermSearchService {
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLexemes(lexemes);
 			meaning.setContentExists(contentExists);
+			meaning.setRelations(meaningRelations);
 
 			for (Long lexemeId : lexemeIds) {
 

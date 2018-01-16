@@ -42,6 +42,7 @@ public interface TableName {
 	String FORM_RELATION = "form_relation";
 	String LIFECYCLE_LOG = "lifecycle_log";
 	String WORD_RELATION = "word_relation";
+	String MEANING_RELATION = "meaning_relation";
 
 	// classifier binds
 	String MEANING_DOMAIN = "meaning_domain";

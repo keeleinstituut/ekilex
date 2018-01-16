@@ -42,6 +42,9 @@ import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningRelType;
+import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
+import eki.ekilex.data.db.tables.MeaningRelation;
 import eki.ekilex.data.db.tables.MeaningState;
 import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
@@ -87,7 +90,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1992928344;
+    private static final long serialVersionUID = 562672284;
 
     /**
      * The reference instance of <code>public</code>
@@ -285,6 +288,21 @@ public class Public extends SchemaImpl {
     public final MeaningFreeform MEANING_FREEFORM = eki.ekilex.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
 
     /**
+     * The table <code>public.meaning_rel_type</code>.
+     */
+    public final MeaningRelType MEANING_REL_TYPE = eki.ekilex.data.db.tables.MeaningRelType.MEANING_REL_TYPE;
+
+    /**
+     * The table <code>public.meaning_rel_type_label</code>.
+     */
+    public final MeaningRelTypeLabel MEANING_REL_TYPE_LABEL = eki.ekilex.data.db.tables.MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.meaning_relation</code>.
+     */
+    public final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
+
+    /**
      * The table <code>public.meaning_state</code>.
      */
     public final MeaningState MEANING_STATE = eki.ekilex.data.db.tables.MeaningState.MEANING_STATE;
@@ -422,6 +440,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
+            Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.PARADIGM_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
@@ -477,6 +496,9 @@ public class Public extends SchemaImpl {
             Meaning.MEANING,
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
+            MeaningRelType.MEANING_REL_TYPE,
+            MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
+            MeaningRelation.MEANING_RELATION,
             MeaningState.MEANING_STATE,
             MeaningType.MEANING_TYPE,
             Morph.MORPH,
