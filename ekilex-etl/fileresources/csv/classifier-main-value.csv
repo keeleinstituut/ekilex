@@ -78,7 +78,6 @@ lex_rel_type	tvt:vt ka	tähendusviide, vaata ka	est	full
 lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
 lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
-lex_rel_type	cohyponym	kaashüponüüm	est	full
 lex_rel_type	lyh	lühend	est	full
 lexeme_frequency	0	0 - ???	est	descrip
 lexeme_frequency	1	1 - 3000	est	descrip
@@ -128,6 +127,7 @@ lexeme_type	s	serial member	eng	descrip
 lexeme_type	km	kaubamärk	est	descrip
 lexeme_type	th	tähis	est	descrip
 lexeme_type	valem	valem	est	descrip
+meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
 meaning_state	terminiprobleem	-	-	-
 meaning_type	termin	-	-	-
 meaning_type	tõlkeprobleem	-	-	-

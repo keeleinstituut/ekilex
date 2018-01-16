@@ -13,6 +13,7 @@ drop table if exists lexeme;
 drop table if exists definition_freeform;
 drop table if exists definition_dataset;
 drop table if exists definition;
+drop table if exists meaning_relation;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 --TODO remove later
@@ -27,6 +28,8 @@ drop table if exists word;
 drop table if exists source_freeform;
 drop table if exists source;
 drop table if exists freeform;
+drop table if exists meaning_rel_type_label;
+drop table if exists meaning_rel_type;
 drop table if exists word_rel_type_label;
 drop table if exists word_rel_type;
 drop table if exists form_rel_type_label;
@@ -331,6 +334,22 @@ create table word_rel_type_label
   unique(code, lang, type)
 );
 
+-- mõiste seose liik
+create table meaning_rel_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table meaning_rel_type_label
+(
+  code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -611,6 +630,16 @@ create table definition_ref_link
 );
 alter sequence definition_ref_link_id_seq restart with 10000;
 
+create table meaning_relation
+(
+  id bigserial primary key,
+  meaning1_id bigint references meaning(id) on delete cascade not null,
+  meaning2_id bigint references meaning(id) on delete cascade not null,
+  meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  unique(meaning1_id, meaning2_id, meaning_rel_type_code)
+);
+alter sequence meaning_relation_id_seq restart with 10000;
+
 --- indexes
 
 create index form_value_idx on form(value);
@@ -637,3 +666,5 @@ create index definition_freeform_definition_id_idx on definition_freeform(defini
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
 create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
 create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
+create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
+create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
