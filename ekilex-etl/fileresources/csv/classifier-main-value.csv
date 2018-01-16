@@ -80,10 +80,12 @@ lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lex_rel_type	cohyponym	kaashüponüüm	est	full
 lex_rel_type	lyh	lühend	est	full
+lexeme_frequency	0	0 - ???	est	descrip
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
 lexeme_frequency	4	4 - pole sagedussõnastikus	est	descrip
+lexeme_frequency	5	5 - ???	est	descrip
 lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
 lexeme_frequency	L4	L4 - pole sagedussõnastikus (lisatud)	est	descrip

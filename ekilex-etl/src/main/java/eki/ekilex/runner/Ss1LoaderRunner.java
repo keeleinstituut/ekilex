@@ -79,6 +79,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> posCodes;
 	private Map<String, String> processStateCodes;
 	private Map<String, String> displayMorpCodes;
+	private Map<String, String> frequencyGroupCodes;
 	private String lexemeTypeAbbreviation;
 	private String lexemeTypeToken;
 
@@ -95,6 +96,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
+		frequencyGroupCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MSAGTYYP);
 	}
 
 	@Transactional
@@ -914,11 +916,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				logger.warn("Unknown display morph code : {} : {}", wordDisplayMorphNode.getTextTrim(), wordValue);
 			}
 		}
-		Optional<String> frequencyGroup = wordGroupNode.selectNodes(wordFrequencyGroupExp).stream()
-				.map(e -> ((Element)e).getTextTrim())
-				.filter(v -> !v.equals("P"))
-				.findFirst();
-		frequencyGroup.ifPresent(fg -> wordData.frequencyGroup = fg);
+		Element frequencyGroupNode = (Element) wordGroupNode.selectSingleNode(wordFrequencyGroupExp);
+		if (frequencyGroupNode != null) {
+			wordData.frequencyGroup = frequencyGroupCodes.get(frequencyGroupNode.getTextTrim());
+		}
 		wordData.grammars = extractGrammar(wordGroupNode);
 		return word;
 	}
