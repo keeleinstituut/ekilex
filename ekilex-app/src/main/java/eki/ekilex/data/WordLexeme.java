@@ -80,6 +80,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Relation> wordRelations;
 
+	private List<Relation> meaningRelations;
+
 	private boolean lexemeOrMeaningClassifiersExist;
 
 	public WordLexeme() {
@@ -303,6 +305,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setWordRelations(List<Relation> wordRelations) {
 		this.wordRelations = wordRelations;
+	}
+
+	public List<Relation> getMeaningRelations() {
+		return meaningRelations;
+	}
+
+	public void setMeaningRelations(List<Relation> meaningRelations) {
+		this.meaningRelations = meaningRelations;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

@@ -198,6 +198,27 @@
                 </tr>
               </table>
             </div>
+
+            <div th:if="${not #lists.isEmpty(lexeme.meaningRelations)}">
+              <hr />
+              <span class="lbl">Tähenduse seosed</span>
+              <table>
+                <tr th:each="relation : ${lexeme.meaningRelations}">
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <button th:id="${'form_details_' + relation.formId}" type="button" class="btn btn-link" th:data-id="${relation.formId}">
+                      <span th:text="${relation.word}"></span>
+                      (
+                      <span th:text="${relation.wordLang}"></span>
+                      )
+                    </button>
+                  </td>
+                  <td>
+                    <span th:text="${relation.relationTypeLabel}"></span>
+                  </td>
+                </tr>
+              </table>
+            </div>
+
             <div th:if="${not #lists.isEmpty(lexeme.rections)}">
               <hr />
               <table th:each="rection,rectionIter : ${lexeme.rections}">

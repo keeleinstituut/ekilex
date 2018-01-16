@@ -18,6 +18,8 @@ import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
@@ -396,6 +398,42 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						)
+				.orderBy(FORM.VALUE)
+				.fetch();
+	}
+
+	public Result<Record7<Long,Long,Long,Long,String,String,String>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						MEANING.ID.as("meaning_id"),
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+				)
+				.from(
+						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(
+								MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
+										.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+												.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						MEANING,
+						LEXEME,
+						WORD,
+						PARADIGM,
+						FORM
+				)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId)
+								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.IS_WORD.eq(Boolean.TRUE))
+				)
 				.orderBy(FORM.VALUE)
 				.fetch();
 	}

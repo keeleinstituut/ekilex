@@ -79,6 +79,7 @@ public class LexSearchService {
 			List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
 			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+			List<Relation> meaningRelations = lexSearchDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 
 			lexeme.setLexemePos(lexemePos);
 			lexeme.setLexemeDerivs(lexemeDerivs);
@@ -90,6 +91,7 @@ public class LexSearchService {
 			lexeme.setRections(rections);
 			lexeme.setLexemeRelations(lexemeRelations);
 			lexeme.setWordRelations(wordRelations);
+			lexeme.setMeaningRelations(meaningRelations);
 
 			boolean lexemeOrMeaningClassifiersExist =
 					StringUtils.isNotBlank(lexeme.getLexemeTypeCode())

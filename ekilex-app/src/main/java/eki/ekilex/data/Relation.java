@@ -11,6 +11,9 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
+	@Column(name = "meaning_id")
+	private Long meaningId;
+
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -32,6 +35,14 @@ public class Relation extends AbstractDataObject {
 
 	public void setLexemeId(Long lexemeId) {
 		this.lexemeId = lexemeId;
+	}
+
+	public Long getMeaningId() {
+		return meaningId;
+	}
+
+	public void setMeaningId(Long meaningId) {
+		this.meaningId = meaningId;
 	}
 
 	public Long getWordId() {
