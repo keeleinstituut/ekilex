@@ -57,8 +57,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ANTONYM = "ant";
-	private final static String LEXEME_RELATION_COHYPONYM = "cohyponym";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
+
+	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
@@ -275,7 +276,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} cohyponyms.", context.cohyponyms.size());
 		setActivateReport(COHYPONYMS_REPORT_NAME);
 		writeToLogFile("Kaashüponüümide töötlus <s:kyh>", "", "");
-		createLexemeRelations(context, context.cohyponyms, LEXEME_RELATION_COHYPONYM, "Ei leitud ilmikut kaashüponüümile");
+		createMeaningRelations(context, context.cohyponyms, MEANING_RELATION_COHYPONYM, "Ei leitud mõistet kaashüponüümile");
 		logger.debug("Cohyponyms import done.");
 	}
 
@@ -286,6 +287,39 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
 		createLexemeRelations(context, context.antonyms, LEXEME_RELATION_ANTONYM, "Ei leitud ilmikut antaonüümile");
 		logger.debug("Antonyms import done.");
+	}
+
+	private void createMeaningRelations(Context context, List<WordToMeaningData> items, String meaningRelationType, String logMessage) throws Exception {
+
+		for (WordToMeaningData item : items) {
+			Optional<WordToMeaningData> connectedItem = items.stream()
+					.filter(i -> Objects.equals(item.word, i.meaningWord) && Objects.equals(item.homonymNr, i.meaningHomonymNr))
+					.findFirst();
+			if (connectedItem.isPresent()) {
+				createMeaningRelation(item.meaningId, connectedItem.get().meaningId, meaningRelationType);
+			} else {
+				List<WordData> existingWords = context.importedWords.stream().filter(w -> item.word.equals(w.value)).collect(Collectors.toList());
+				Long wordId = getWordIdFor(item.word, item.homonymNr, existingWords, item.meaningWord);
+				if (!existingWords.isEmpty() && wordId != null) {
+					Map<String, Object> params = new HashMap<>();
+					params.put("wordId", wordId);
+					params.put("dataset", dataset);
+					try {
+						List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
+						Optional<Map<String, Object>> lexemeObject =
+								lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == item.lexemeLevel1).findFirst();
+						if (lexemeObject.isPresent()) {
+							createMeaningRelation(item.meaningId, (Long) lexemeObject.get().get("meaning_id"), meaningRelationType);
+						} else {
+							logger.debug("Meaning not found for word : {}, lexeme level1 : {}.", item.word, item.lexemeLevel1);
+							writeToLogFile(item.meaningWord, logMessage, item.word + ", level1 " + item.lexemeLevel1);
+						}
+					} catch (Exception e) {
+						logger.error("{} | {} | {}", e.getMessage(), item.word, wordId);
+					}
+				}
+			}
+		}
 	}
 
 	private void createLexemeRelations(Context context, List<LexemeToWordData> items, String lexemeRelationType, String logMessage) throws Exception {
@@ -407,7 +441,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, reportingId);
+				List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+				context.cohyponyms.addAll(meaningCohyponyms);
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
 						meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningFormulas, meaningLatinTerms);
 
@@ -443,11 +478,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 							LexemeToWordData antonymData = meaningAntonym.copy();
 							antonymData.lexemeId = lexemeId;
 							context.antonyms.add(antonymData);
-						}
-						for (LexemeToWordData meaningCohyponym : meaningCohyponyms) {
-							LexemeToWordData cohyponymData = meaningCohyponym.copy();
-							cohyponymData.lexemeId = lexemeId;
-							context.cohyponyms.add(cohyponymData);
 						}
 						for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
 							LexemeToWordData abbreviationData = meaningAbbreviation.copy();
@@ -524,12 +554,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		context.meanings.stream()
 				.filter(m -> Objects.equals(m.meaningId, meaningId))
 				.forEach(m -> {m.meaningDefinitions.clear(); m.meaningDefinitions.addAll(definitions);});
-		context.meanings.addAll(extractMeaningsData(synonyms, word, level1, definitions));
-		context.meanings.addAll(extractMeaningsData(abbreviations, word, level1, definitions));
-		context.meanings.addAll(extractMeaningsData(abbreviationFullWords, word, level1, definitions));
-		context.meanings.addAll(extractMeaningsData(tokens, word, level1, definitions));
-		context.meanings.addAll(extractMeaningsData(formulas, word, level1, definitions));
-		context.meanings.addAll(extractMeaningsData(latinTerms, word, level1, definitions));
+		context.meanings.addAll(convertToMeaningData(synonyms, word, level1, definitions));
+		context.meanings.addAll(convertToMeaningData(abbreviations, word, level1, definitions));
+		context.meanings.addAll(convertToMeaningData(abbreviationFullWords, word, level1, definitions));
+		context.meanings.addAll(convertToMeaningData(tokens, word, level1, definitions));
+		context.meanings.addAll(convertToMeaningData(formulas, word, level1, definitions));
+		context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
 	}
 
 	private void processDomains(Element node, Long meaningId) throws Exception {
@@ -752,10 +782,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return posCodes;
 	}
 
-	private List<LexemeToWordData> extractCohyponyms(Element node, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractCohyponyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
 
 		final String cohyponymExp = "s:ssh/s:khy";
-		return extractLexemeMetadata(node, cohyponymExp, null, reportingId);
+
+		List<LexemeToWordData> cohyponyms = extractLexemeMetadata(node, cohyponymExp, null, reportingId);
+		cohyponyms.forEach(cohyponym -> cohyponym.meaningId = meaningId);
+		return convertToMeaningData(cohyponyms, wordData, level1, Collections.emptyList());
 	}
 
 	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
@@ -1021,7 +1054,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return false;
 	}
 
-	private List<WordToMeaningData> extractMeaningsData(List<LexemeToWordData> items, WordData meaningWord, int level1, List<String> definitions) {
+	private List<WordToMeaningData> convertToMeaningData(List<LexemeToWordData> items, WordData meaningWord, int level1, List<String> definitions) {
 
 		List<WordToMeaningData> meanings = new ArrayList<>();
 		for (LexemeToWordData item : items) {
@@ -1211,7 +1244,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
 		List<LexemeToWordData> abbreviationFullWords = new ArrayList<>();
-		List<LexemeToWordData> cohyponyms = new ArrayList<>();
+		List<WordToMeaningData> cohyponyms = new ArrayList<>();
 		List<LexemeToWordData> tokens = new ArrayList<>();
 		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<LexemeToWordData> latinTermins = new ArrayList<>();

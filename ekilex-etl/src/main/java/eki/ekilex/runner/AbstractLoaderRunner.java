@@ -512,6 +512,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
 	}
 
+	protected void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) throws Exception {
+
+		Map<String, Object> relationParams = new HashMap<>();
+		relationParams.put("meaning1_id", meaningId1);
+		relationParams.put("meaning2_id", meaningId2);
+		relationParams.put("meaning_rel_type_code", relationType);
+		basicDbService.createIfNotExists(MEANING_RELATION, relationParams);
+	}
+
 	protected void createLexemeRegister(Long lexemeId, String registerCode) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
