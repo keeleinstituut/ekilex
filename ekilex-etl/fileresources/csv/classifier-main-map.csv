@@ -477,12 +477,12 @@ liik_tyyp	märksõna liik	tv	tugiverb	et	lexeme_type	tugiverb
 liik_tyyp	märksõna liik	vlj	väljend	et	lexeme_type	väljend
 liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	lexeme_type	ühendsidesõna
 liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	lexeme_type	rühmsidesõna
-msag_tyyp	msag_tyyp	F0	???	et	lexeme_frequency	0
-msag_tyyp	msag_tyyp	F1	3000 kõige sagedamat	et	lexeme_frequency	1
-msag_tyyp	msag_tyyp	F2	3000 kuni 6000	et	lexeme_frequency	2
-msag_tyyp	msag_tyyp	F3	6000 kuni 10000	et	lexeme_frequency	3
-msag_tyyp	msag_tyyp	F4	pole sagedussõnastikus	et	lexeme_frequency	4
-msag_tyyp	msag_tyyp	F5	???	et	lexeme_frequency	5
+msag_tyyp	msag_tyyp	F0	1 kuni 5000	et	lexeme_frequency	F0
+msag_tyyp	msag_tyyp	F1	5001 kuni 10 000	et	lexeme_frequency	F1
+msag_tyyp	msag_tyyp	F2	10 001 kuni 20 000	et	lexeme_frequency	F2
+msag_tyyp	msag_tyyp	F3	20 001 kuni 30 000	et	lexeme_frequency	F3
+msag_tyyp	msag_tyyp	F4	30 001 kuni 40 000	et	lexeme_frequency	F4
+msag_tyyp	msag_tyyp	F5	40 001 kuni 50 000	et	lexeme_frequency	F5
 mt_tyyp	mt_tyyp	img	pilt	et	-	-
 mt_tyyp	mt_tyyp	img	picture	en	-	-
 mt_tyyp	mt_tyyp	imgA	link pildile	et	-	-
