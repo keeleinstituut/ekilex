@@ -62,14 +62,16 @@ public class TermSearchService {
 					|| StringUtils.isNotBlank(meaning.getStateCode())
 					|| CollectionUtils.isNotEmpty(definitions)
 					|| CollectionUtils.isNotEmpty(domains)
-					|| CollectionUtils.isNotEmpty(meaningFreeforms);
+					|| CollectionUtils.isNotEmpty(meaningFreeforms)
+					|| CollectionUtils.isNotEmpty(meaningRelations)
+					;
 
 			meaning.setDefinitions(definitions);
 			meaning.setDomains(domains);
 			meaning.setFreeforms(meaningFreeforms);
 			meaning.setLexemes(lexemes);
-			meaning.setContentExists(contentExists);
 			meaning.setRelations(meaningRelations);
+			meaning.setContentExists(contentExists);
 
 			for (Long lexemeId : lexemeIds) {
 
