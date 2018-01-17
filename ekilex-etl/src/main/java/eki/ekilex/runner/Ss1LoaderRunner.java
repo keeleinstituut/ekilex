@@ -68,6 +68,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
 	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
 	private final static String TOKENS_REPORT_NAME = "tokens";
+	private final static String DESCRIPTIONS_REPORT_NAME = "keywords_descriptions";
+	private final static String MEANINGS_REPORT_NAME = "keywords_meanings";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
@@ -111,7 +113,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME);
+					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME, DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -438,7 +440,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						createDefinition(meaningId, definition, dataLang, dataset);
 					}
 					if (definitionsToAdd.size() > 1) {
-						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
+						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
 				List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
@@ -1050,7 +1052,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			return true;
 		}
 //		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
-		writeToLogFile(reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
+		writeToLogFile(MEANINGS_REPORT_NAME, reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
 		return false;
 	}
 
@@ -1146,9 +1148,17 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
+		writeToLogFile(null, reportingId, message, values);
+	}
+
+	private void writeToLogFile(String reportFile, String reportingId, String message, String values) throws Exception {
 		if (reportingEnabled && !reportingPaused) {
 			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(reportingId, message, values));
-			reportComposer.append(logMessage);
+			if (reportFile == null) {
+				reportComposer.append(logMessage);
+			} else {
+				reportComposer.append(reportFile, logMessage);
+			}
 		}
 	}
 
