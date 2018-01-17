@@ -962,7 +962,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String morphGroupExp = "s:mfp/s:mtg";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.wordHasParadigms(word.value)) {
+		if (mabService.paradigmsExist(word.value)) {
 			Element morphGroupNode = (Element) wordGroupNode.selectSingleNode(morphGroupExp);
 			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode);
 			if (!paradigmsFromMab.isEmpty()) {
@@ -1095,7 +1095,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String formsNodeExp = "s:mv";
 		final String formsNodeExp2 = "s:hev";
 
-		if (mabService.wordHasOnlyOneHomonym(wordValue)) {
+		if (mabService.isSingleHomonym(wordValue)) {
 			return mabService.getWordParadigms(wordValue);
 		}
 

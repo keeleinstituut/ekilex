@@ -37,6 +37,7 @@ import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
 
 @Component
@@ -53,6 +54,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private static final String REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS = "usage_meaning_match_by_creative_analysis";
 
 	private static final String REPORT_MISSING_MAB_INTEGRATION_CASE = "missing_mab_integration_case";
+
+	@Autowired
+	private MabService mabService;
 
 	@Autowired
 	private LuceneMorphology russianMorphology;
@@ -124,8 +128,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	@Transactional
 	public void execute(
-			String dataXmlFilePath, String dataLang, String dataset,
-			Map<String, List<Paradigm>> wordParadigmsMap, boolean doReports) throws Exception {
+			String dataXmlFilePath, String dataLang, String dataset, boolean doReports) throws Exception {
 
 		logger.debug("Loading QQ2...");
 
@@ -141,7 +144,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS);
 		}
 
-		boolean isAddForms = wordParadigmsMap != null;
+		boolean isAddForms = mabService.isMabLoaded();
 		dataLang = unifyLang(dataLang);
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -237,10 +240,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					formsNode = (Element) wordGroupNode.selectSingleNode(formsExp);
 					if (formsNode != null) {
 						wordFormsStr = formsNode.getTextTrim();
-						paradigmObj = extractParadigm(word, wordFormsStr, wordComponents, wordParadigmsMap);
-						if (paradigmObj != null) {
-							paradigms = asList(paradigmObj);
-						}
+						paradigms = extractParadigms(word, wordFormsStr, wordComponents);
 					}
 				}
 
@@ -365,7 +365,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 
 			if (doReports) {
-				detectAndReportAtArticle(newWords, wordParadigmsMap, missingMabIntegrationCaseCount);
+				detectAndReportAtArticle(newWords, missingMabIntegrationCaseCount);
 			}
 
 			// progress
@@ -443,7 +443,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 				if (usageWordMatchByLemmatisationCount == 0) {
-					//TODO experimental
 					if (usageWordMatchByOriginalTokenCount > 0) {
 						successfulUsageTranslationMatchCount.increment();
 						logBuf = new StringBuffer();
@@ -506,8 +505,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private void detectAndReportAtArticle(
 			List<Word> newWords,
-			Map<String, List<Paradigm>> wordParadigmsMap,
 			Count missingMabIntegrationCaseCount) throws Exception {
+
+		if (!mabService.isMabLoaded()) {
+			return;
+		}
 
 		StringBuffer logBuf;
 
@@ -518,8 +520,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			String wordFormsString = wordObj.getFormsString();
 			int wordComponentCount = wordComponents.length;
 			String wordLastComp = wordComponents[wordComponentCount - 1];
-			List<Paradigm> paradigms = wordParadigmsMap.get(wordLastComp);
-			if (CollectionUtils.isEmpty(paradigms)) {
+
+			if (!mabService.paradigmsExist(wordLastComp)) {
 				missingMabIntegrationCaseCount.increment();
 				if (StringUtils.isBlank(wordFormsString)) {
 					wordFormsString = "-";
@@ -535,8 +537,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 			if (StringUtils.isBlank(wordFormsString)) {
-				boolean multipleParadigmsExist = paradigms.size() > 1;
-				if (multipleParadigmsExist) {
+				if (!mabService.isSingleParadigm(wordLastComp)) {
 					missingMabIntegrationCaseCount.increment();
 					logBuf = new StringBuffer();
 					logBuf.append(word);
@@ -567,6 +568,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				List<String> mabFormValues;
 				Collection<String> formValuesIntersection;
 				int bestFormValuesMatchCount = 0;
+				List<Paradigm> paradigms = mabService.getWordParadigms(wordLastComp);
 				Paradigm matchingParadigm = null;
 				for (Paradigm paradigm : paradigms) {
 					mabFormValues = paradigm.getFormValues();
@@ -592,62 +594,75 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private Paradigm extractParadigm(String word, String wordFormsStr, String[] wordComponents, Map<String, List<Paradigm>> wordParadigmsMap) throws Exception {
+	// TODO paradigms.... 
+	private List<Paradigm> extractParadigms(String word, String wordFormsStr, String[] wordComponents) throws Exception {
 
 		int wordComponentCount = wordComponents.length;
 		boolean isCompoundWord = wordComponentCount > 1;
 		String wordLastComp = wordComponents[wordComponentCount - 1];
-		List<Paradigm> paradigms = wordParadigmsMap.get(wordLastComp);
-		if (CollectionUtils.isEmpty(paradigms)) {
+
+		if (!mabService.isMabLoaded()) {
+			return null;
+		}
+		if (!mabService.paradigmsExist(wordLastComp)) {
 			return null;
 		}
 		if (StringUtils.isNotBlank(wordFormsStr) && StringUtils.countMatches(wordFormsStr, '+') > 1) {
 			return null;
 		}
-		Paradigm matchingParadigm = null;
+		if (mabService.isSingleParadigm(wordLastComp)) {
+			return mabService.getWordParadigms(wordLastComp);
+		}
 		if (StringUtils.isBlank(wordFormsStr)) {
-			boolean isSingleParadigm = paradigms.size() == 1;
-			if (isSingleParadigm) {
-				matchingParadigm = paradigms.get(0);
-			} else {
-				return null;
+			logger.warn("\"{}({})\" has no forms to compare with MAB paradigms", wordLastComp, word);
+			return null;
+		}
+		String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
+		String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
+		List<String> qq2FormValues = asList(formValuesArr);
+		List<String> mabFormValues;
+		Collection<String> formValuesIntersection;
+		int bestFormValuesMatchCount = 0;
+		List<Paradigm> allParadigms = mabService.getWordParadigms(wordLastComp);
+		Paradigm matchingParadigm = null;
+		for (Paradigm paradigm : allParadigms) {
+			mabFormValues = paradigm.getFormValues();
+			formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
+			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
+				bestFormValuesMatchCount = formValuesIntersection.size();
+				matchingParadigm = paradigm;
 			}
-		} else {
-			String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
-			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
-			List<String> qq2FormValues = asList(formValuesArr);
-			List<String> mabFormValues;
-			Collection<String> formValuesIntersection;
-			int bestFormValuesMatchCount = 0;
-			for (Paradigm paradigm : paradigms) {
-				mabFormValues = paradigm.getFormValues();
-				formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
-				if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-					bestFormValuesMatchCount = formValuesIntersection.size();
-					matchingParadigm = paradigm;
+		}
+		if (matchingParadigm == null) {
+			logger.warn("\"{}({})\" has no paradigms in MAB", wordLastComp, word);
+			return null;
+		}
+		Integer homonymNr = matchingParadigm.getHomonymNr();
+		List<Paradigm> matchingParadigms = mabService.getWordParadigmsForHomonym(wordLastComp, homonymNr);
+		if (isCompoundWord) {
+			List<Paradigm> compoundWordParadigms = new ArrayList<>();
+			for (Paradigm paradigm : matchingParadigms) {
+				List<String> compoundFormValues = new ArrayList<>();
+				List<Form> mabForms = paradigm.getForms();
+				List<Form> compoundForms = new ArrayList<>();
+				for (Form mabForm : mabForms) {
+					String mabFormValue = mabForm.getValue();
+					String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
+					compoundFormValues.add(compoundFormValue);
+					Form compoundForm = new Form();
+					compoundForm.setWord(mabForm.isWord());
+					compoundForm.setMorphCode(mabForm.getMorphCode());
+					compoundForm.setValue(compoundFormValue);
+					compoundForms.add(compoundForm);
 				}
+				Paradigm compoundWordParadigm = new Paradigm();
+				compoundWordParadigm.setFormValues(compoundFormValues);
+				compoundWordParadigm.setForms(compoundForms);
+				compoundWordParadigms.add(compoundWordParadigm);
 			}
+			return compoundWordParadigms;
 		}
-		if (isCompoundWord && (matchingParadigm != null)) {
-			List<String> compoundFormValues = new ArrayList<>();
-			List<Form> mabForms = matchingParadigm.getForms();
-			List<Form> compoundForms = new ArrayList<>();
-			for (Form mabForm : mabForms) {
-				String mabFormValue = mabForm.getValue();
-				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
-				compoundFormValues.add(compoundFormValue);
-				Form compoundForm = new Form();
-				compoundForm.setWord(mabForm.isWord());
-				compoundForm.setMorphCode(mabForm.getMorphCode());
-				compoundForm.setValue(compoundFormValue);
-				compoundForms.add(compoundForm);
-			}
-			Paradigm compoundWordParadigm = new Paradigm();
-			compoundWordParadigm.setFormValues(compoundFormValues);
-			compoundWordParadigm.setForms(compoundForms);
-			return compoundWordParadigm;
-		}
-		return matchingParadigm;
+		return matchingParadigms;
 	}
 
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {
@@ -851,7 +866,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							isUsageTranslationMatch = true;
 							break;
 						} else if (containsMultiWords) {
-							// TODO experimental
 							boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatches, originalTokens, lemmatisedTokens);
 							if (containsAnyMatchByWordSplit) {
 								isUsageTranslationMatch = true;

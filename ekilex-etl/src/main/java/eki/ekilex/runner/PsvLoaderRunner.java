@@ -1357,7 +1357,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
 
-		if (mabService.wordHasOnlyOneHomonym(wordValue)) {
+		if (mabService.isSingleHomonym(wordValue)) {
 			return mabService.getWordParadigms(wordValue);
 		}
 
@@ -1439,7 +1439,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.wordHasParadigms(word.value)) {
+		if (mabService.paradigmsExist(word.value)) {
 			paradigms.addAll(fetchParadigmsFromMab(word.value, wordGroupNode));
 		}
 		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);

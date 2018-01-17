@@ -15,12 +15,13 @@ public enum ClassifierName {
 	DERIV(true),
 	MEANING_TYPE(false),
 	MEANING_STATE(false),
+	MEANING_REL_TYPE(true),
 	LEX_REL_TYPE(true),
-	FORM_REL_TYPE(true),
 	WORD_REL_TYPE(true),
+	FORM_REL_TYPE(true),
 	DISPLAY_MORPH(true),
-	PROCESS_STATE(false),
-	MEANING_REL_TYPE(true);
+	PROCESS_STATE(false)
+	;
 
 	private boolean hasLabel;
 

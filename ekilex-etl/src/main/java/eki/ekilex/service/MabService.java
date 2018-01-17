@@ -1,17 +1,19 @@
 package eki.ekilex.service;
 
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.runner.MabLoaderRunner;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import static java.util.Collections.emptyList;
+import static java.util.stream.Collectors.toList;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
+import org.apache.commons.collections4.MapUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.runner.MabLoaderRunner;
 
 @Service
 public class MabService {
@@ -25,33 +27,46 @@ public class MabService {
 		wordParadigms = mabLoader.execute(dataXmlFilePath, dataLang, doReports);
 	}
 
-	public boolean wordHasParadigms(String word) {
+	public boolean isMabLoaded() {
+		return MapUtils.isNotEmpty(wordParadigms);
+	}
+
+	public boolean paradigmsExist(String word) {
 		return wordParadigms.containsKey(word);
 	}
 
-	public boolean wordHasOnlyOneHomonym(String word) {
-		if (!wordHasParadigms(word)) {
+	public boolean isSingleParadigm(String word) {
+		List<Paradigm> paradigms = wordParadigms.get(word);
+		boolean isSingleParadigm = paradigms.size() == 1;
+		return isSingleParadigm;
+	}
+
+	public boolean isSingleHomonym(String word) {
+		if (!paradigmsExist(word)) {
+			return true;
+		}
+		if (isSingleParadigm(word)) {
 			return true;
 		}
 		List<Paradigm> paradigms = wordParadigms.get(word);
-		Integer homonymNumber = paradigms.get(0).getHomonymNr();
-		return paradigms.size() == 1 || paradigms.stream().allMatch(p -> Objects.equals(homonymNumber, p.getHomonymNr()));
-	}
-
-	public List<Paradigm> getWordParadigmsForHomonym(String word, Integer homonymNumber) {
-		if (wordHasParadigms(word)) {
-			return wordParadigms.get(word).stream().filter(p -> Objects.equals(homonymNumber, p.getHomonymNr())).collect(toList());
-		} else {
-			return emptyList();
-		}
+		Integer firstHomonymNumber = paradigms.get(0).getHomonymNr();
+		boolean allParadigmsMatchHomonymNumber = paradigms.stream().allMatch(p -> Objects.equals(firstHomonymNumber, p.getHomonymNr()));
+		return allParadigmsMatchHomonymNumber;
 	}
 
 	public List<Paradigm> getWordParadigms(String word) {
-		if (wordHasParadigms(word)) {
+		if (paradigmsExist(word)) {
 			return wordParadigms.get(word);
 		} else {
 			return emptyList();
 		}
 	}
 
+	public List<Paradigm> getWordParadigmsForHomonym(String word, Integer homonymNumber) {
+		if (paradigmsExist(word)) {
+			return wordParadigms.get(word).stream().filter(p -> Objects.equals(homonymNumber, p.getHomonymNr())).collect(toList());
+		} else {
+			return emptyList();
+		}
+	}
 }

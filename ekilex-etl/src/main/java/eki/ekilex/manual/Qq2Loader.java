@@ -1,17 +1,13 @@
 package eki.ekilex.manual;
 
-import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
+import eki.ekilex.service.MabService;
 
 public class Qq2Loader {
 
@@ -23,7 +19,6 @@ public class Qq2Loader {
 
 		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
 		Qq2LoaderRunner qq2Runner = applicationContext.getBean(Qq2LoaderRunner.class);
-		MabLoaderRunner mabRunner = applicationContext.getBean(MabLoaderRunner.class);
 
 		try {
 			applicationContext.registerShutdownHook();
@@ -41,11 +36,11 @@ public class Qq2Loader {
 			String dataset = "qq2";
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 
-			Map<String, List<Paradigm>> wordParadigmsMap = null;
 			if (isAddForms) {
-				wordParadigmsMap = mabRunner.execute(mabFilePath, dataLang, doReports);
+				MabService mabService = applicationContext.getBean(MabService.class);
+				mabService.loadParadigms(mabFilePath, dataLang, doReports);
 			}
-			qq2Runner.execute(qq2FilePath, dataLang, dataset, wordParadigmsMap, doReports);
+			qq2Runner.execute(qq2FilePath, dataLang, dataset, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
