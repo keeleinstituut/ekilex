@@ -12,7 +12,10 @@ import org.springframework.stereotype.Service;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.Form;
+import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
+import eki.ekilex.data.Paradigm;
+import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Relation;
@@ -42,31 +45,29 @@ public class LexSearchService {
 		return lexSearchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
 	}
 
-	public WordDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
+	public WordDetails findWordDetailsInDatasets(Long wordId, List<String> selectedDatasets) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 		final String classifierLabelTypeFull = "full";
 
 		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
-		List<WordLexeme> lexemes = lexSearchDbService.findFormMeaningsInDatasets(formId, selectedDatasets).into(WordLexeme.class);
-		List<Form> connectedForms = lexSearchDbService.findConnectedForms(formId, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
-		List<Relation> formRelations = lexSearchDbService.findFormRelations(formId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+		List<WordLexeme> lexemes = lexSearchDbService.findFormMeaningsInDatasets(wordId, selectedDatasets).into(WordLexeme.class);
+		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
+		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
+		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);
 
 		lexemes.forEach(lexeme -> {
 
-			String dataset = lexeme.getDataset();
-			dataset = datasetNameMap.get(dataset);
-			lexeme.setDataset(dataset);
+			String datasetCode = lexeme.getDataset();
+			String datasetName = datasetNameMap.get(datasetCode);
+			lexeme.setDataset(datasetName);
 
-			Long wordId = lexeme.getWordId();
 			Long lexemeId = lexeme.getLexemeId();
 			Long meaningId = lexeme.getMeaningId();
 
-			List<Form> words = lexSearchDbService.findConnectedWordsInDatasets(
-					formId, meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
-			lexeme.setWords(words);
-
+			List<Form> meaningWords = lexSearchDbService.findConnectedWordsInDatasets(
+					wordId, meaningId, selectedDatasets, classifierLabelLang, classifierLabelTypeDescrip).into(Form.class);
 			List<Classifier> lexemePos = lexSearchDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeDerivs = lexSearchDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = lexSearchDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
@@ -84,6 +85,7 @@ public class LexSearchService {
 			lexeme.setLexemePos(lexemePos);
 			lexeme.setLexemeDerivs(lexemeDerivs);
 			lexeme.setLexemeRegisters(lexemeRegisters);
+			lexeme.setMeaningWords(meaningWords);
 			lexeme.setMeaningDomains(meaningDomains);
 			lexeme.setDefinitions(meaningDefinitions);
 			lexeme.setMeaningFreeforms(meaningFreeforms);
@@ -107,9 +109,8 @@ public class LexSearchService {
 		});
 		combineLevels(lexemes);
 		return new WordDetails(d -> {
-			d.setForms(connectedForms);
+			d.setParadigms(paradigms);
 			d.setLexemes(lexemes);
-			d.setRelations(formRelations);
 		});
 	}
 

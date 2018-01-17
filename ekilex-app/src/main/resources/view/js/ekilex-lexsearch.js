@@ -5,7 +5,7 @@ function initialise() {
     }
 }
 
-$(document).on("click", "[id^='form_details_']", function() {
+$(document).on("click", "[id^='word_details_']", function() {
 	var id = $(this).data('id');
     $.get(applicationUrl + 'lexdetails/' + id).done(function (data) {
         $('#details_div').replaceWith(data);

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.Record12;
 import org.jooq.Record14;
 import org.jooq.Record15;
@@ -41,7 +42,9 @@ import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record7;
+import org.jooq.Record8;
 import org.jooq.Result;
+import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +55,6 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.MorphLabel;
-import eki.ekilex.data.db.tables.Paradigm;
 
 @Service
 public class LexSearchDbService implements InitializingBean, SystemConstant {
@@ -76,31 +77,60 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
-	public Result<Record7<Long, String, String[], String, String, String, String>> findConnectedForms(Long formId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record> findWordsInDatasets(String wordWithMetaCharacters, List<String> datasets) {
 
-		Form f1 = FORM.as("f1");
-		Form f2 = FORM.as("f2");
-		Paradigm p = PARADIGM.as("p");
-		MorphLabel m = MORPH_LABEL.as("m");
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
+		
+		Table<Record4<Long, String, Integer, String>> wordsQuery = create
+				.select(
+						WORD.ID.as("word_id"),
+						DSL.field("(array_agg(distinct form.value))[1]").cast(String.class).as("word"),
+						WORD.HOMONYM_NR,
+						WORD.LANG)
+				.from(FORM, PARADIGM, WORD)
+				.where(
+						FORM.VALUE.likeIgnoreCase(theFilter)
+						.and(FORM.IS_WORD.isTrue())
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.andExists(DSL.select(LEXEME.ID).from(LEXEME)
+								.where((LEXEME.WORD_ID.eq(WORD.ID))
+								.and(LEXEME.DATASET_CODE.in(datasets)))
+						)
+				)
+				.groupBy(WORD.ID)
+				.asTable("wq");
+
+		return create
+				.select(wordsQuery.fields())
+				.from(wordsQuery)
+				.orderBy(wordsQuery.field("word"), wordsQuery.field("homonym_nr"))
+				.limit(MAX_RESULTS_LIMIT)
+				.fetch();
+	}
+
+	public Result<Record8<Long,Long,String,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+
 		return create
 				.select(
-						f2.ID.as("form_id"),
-						f2.VALUE.as("word"),
-						f2.COMPONENTS,
-						f2.DISPLAY_FORM,
-						f2.VOCAL_FORM,
-						f2.MORPH_CODE,
-						m.VALUE.as("morph_value")
+						PARADIGM.ID.as("paradigm_id"),
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("form"),
+						FORM.COMPONENTS,
+						FORM.DISPLAY_FORM,
+						FORM.VOCAL_FORM,
+						FORM.MORPH_CODE,
+						MORPH_LABEL.VALUE.as("morph_value")
 						)
-				.from(f1, f2, p, m)
+				.from(PARADIGM, FORM, MORPH_LABEL)
 				.where(
-						f1.ID.eq(formId)
-						.and(f1.PARADIGM_ID.eq(p.ID))
-						.and(f2.PARADIGM_ID.eq(p.ID))
-						.and(m.CODE.eq(f2.MORPH_CODE))
-						.and(m.LANG.eq(classifierLabelLang))
-						.and(m.TYPE.eq(classifierLabelTypeCode)))
-				.orderBy(f2.ID)
+						PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(MORPH_LABEL.CODE.eq(FORM.MORPH_CODE))
+						.and(MORPH_LABEL.LANG.eq(classifierLabelLang))
+						.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.orderBy(PARADIGM.ID, FORM.ID)
 				.fetch();
 	}
 
@@ -225,38 +255,13 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record4<Long, String, Integer, String>> findWordsInDatasets(String wordWithMetaCharacters, List<String> datasets) {
-
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
-		return create
-				.select(
-						FORM.ID.as("form_id"),
-						FORM.VALUE.as("word"),
-						WORD.HOMONYM_NR,
-						WORD.LANG)
-				.from(FORM, PARADIGM, WORD)
-				.where(
-						FORM.VALUE.likeIgnoreCase(theFilter)
-						.and(FORM.IS_WORD.isTrue())
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.andExists(DSL.select(LEXEME.ID).from(LEXEME)
-								.where((LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.DATASET_CODE.in(datasets)))
-						)
-				)
-				.orderBy(FORM.VALUE, WORD.HOMONYM_NR)
-				.limit(MAX_RESULTS_LIMIT)
-				.fetch();
-	}
-
-	public Result<Record15<String,String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
-			Long formId, List<String> selectedDatasets) {
+	public Result<Record15<String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
+			Long wordId, List<String> selectedDatasets) {
 
 		return 
 				create
 				.select(
-						FORM.VALUE.as("word"),
+						DSL.arrayAggDistinct(FORM.VALUE).as("words"),
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
@@ -273,19 +278,20 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 						MEANING.STATE_CODE.as("meaning_state_code"))
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 				.where(
-						FORM.ID.eq(formId)
+						WORD.ID.eq(wordId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.IS_WORD.isTrue())
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
 						.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
-				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
+				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
 				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
 
 	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(
-			Long sourceFormId, Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
+			Long sourceWordId, Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
@@ -305,8 +311,8 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 						)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-						.and(FORM.ID.ne(sourceFormId))
-						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						.and(FORM.IS_WORD.isTrue())
+						.and(WORD.ID.ne(sourceWordId))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.MEANING_ID.eq(meaningId))
@@ -438,31 +444,37 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> findFormRelations(Long formId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record7<Long,Long,String,Long,String,String,String>> findWordFormRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Form f1 = FORM.as("f1");
+		Form f2 = FORM.as("f2");
 
 		return create
 				.select(
-						FORM.VALUE.as("word"),
-						WORD.LANG.as("word_lang"),
+						PARADIGM.ID.as("paradigm_id"),
+						f1.ID.as("form1_id"),
+						f1.VALUE.as("form1_value"),
+						f2.ID.as("form2_id"),
+						f2.VALUE.as("form2_value"),
+						FORM_REL_TYPE_LABEL.CODE.as("rel_type_code"),
 						FORM_REL_TYPE_LABEL.VALUE.as("rel_type_label")
 						)
 				.from(
-						FORM_RELATION.leftOuterJoin(FORM_REL_TYPE_LABEL).on(
-								FORM_RELATION.FORM_REL_TYPE_CODE.eq(FORM_REL_TYPE_LABEL.CODE)
-								.and(FORM_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-								.and(FORM_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						WORD,
 						PARADIGM,
-						FORM
+						f1,
+						f2,
+						FORM_RELATION.leftOuterJoin(FORM_REL_TYPE_LABEL).on(
+							FORM_RELATION.FORM_REL_TYPE_CODE.eq(FORM_REL_TYPE_LABEL.CODE)
+							.and(FORM_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+							.and(FORM_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
 						)
 				.where(
-						FORM_RELATION.FORM2_ID.eq(formId)
-						.and(FORM_RELATION.FORM1_ID.eq(FORM.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						PARADIGM.WORD_ID.eq(wordId)
+						.and(f1.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM_RELATION.FORM1_ID.eq(f1.ID))
+						.and(FORM_RELATION.FORM2_ID.eq(f2.ID))
 						)
-				.orderBy(FORM.VALUE)
+				.orderBy(PARADIGM.ID, f1.ID)
 				.fetch();
 	}
-
 }

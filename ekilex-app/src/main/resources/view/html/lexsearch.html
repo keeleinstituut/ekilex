@@ -62,7 +62,7 @@
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100">
-            <button th:id="${'form_details_' + word.formId}" type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">
+            <button th:id="${'word_details_' + word.wordId}" type="button" class="btn btn-link" th:data-id="${word.wordId}" name="details">
               <span th:text="${word.value}" class="ttl">vorm 1</span>
               <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
             </button>
@@ -80,17 +80,20 @@
           <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
             <div style="overflow: auto;">
               <span>
-                <span th:text="${lexeme.word}" class="ttl"></span>
+                <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
+                  <span th:text="${word}" ></span>
+                  <span th:unless="${wordIter.last}">,&nbsp;</span>
+                </span>
                 &nbsp;
               </span>
-              <span th:each="word,wordIter : ${lexeme.words}">
-                <a style="color: #1e7e34" class="mr-2" th:href="@{'/lexsearch?searchFilter=' + ${word.value}}">
-                  <span th:text="${word.value}"></span>
+              <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                <a style="color: #1e7e34" class="mr-2" th:href="@{'/lexsearch?searchFilter=' + ${meaningWord.value}}">
+                  <span th:text="${meaningWord.value}"></span>
                   (
-                  <span th:text="${word.lang}"></span>
+                  <span th:text="${meaningWord.lang}"></span>
                   )
                 </a>
-                <span th:unless="${wordIter.last}">|&nbsp;</span>
+                <span th:unless="${meaningWordIter.last}">|&nbsp;</span>
               </span>
               <span th:if="${lexeme.levels != null}">
                 <small>
@@ -309,27 +312,32 @@
         </th:block>
       </div>
       <div class="float-left" style="width: 30%">
-        <div th:if="${not #lists.isEmpty(details.relations)}">
-          <th:block th:each="relation : ${details.relations}">
-            <span th:text="${relation.word}"></span>
-            (
-            <span th:text="${relation.wordLang}"></span>
-            ) -
-            <span th:text="${relation.relationTypeLabel}"></span>
+        <div th:if="${not #lists.isEmpty(details.paradigms)}">
+          <th:block th:each="paradigm : ${details.paradigms}">
+            <div th:if="${not #lists.isEmpty(paradigm.formRelations)}">
+              <div th:each="formRelation : ${paradigm.formRelations}" style="white-space: nowrap;">
+                <span th:text="${formRelation.form1Value}"></span>
+                -
+                <span th:text="${formRelation.relationTypeLabel}"></span>
+                -
+                <span th:text="${formRelation.form2Value}"></span>
+              </div>
+              <hr />
+            </div>
+            <div th:if="${#lists.size(paradigm.forms) > 1}">
+              <div th:each="form : ${paradigm.forms}" style="white-space: nowrap;">
+                <span th:text="${form.value}"></span>
+                <span style="font-size: 80%; color: #999">
+                  &nbsp;
+                  <span th:text="${form.morphCode + ' - ' + form.morphValue}"></span>
+                  <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+                  <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+                </span>
+                <br>
+              </div>
+            </div>
+            <hr />
           </th:block>
-          <hr />
-        </div>
-        <div th:if="${#lists.size(details.forms) > 1}">
-          <div th:each="form : ${details.forms}" style="white-space: nowrap;">
-            <span th:text="${form.value}"></span>
-            <span style="font-size: 80%; color: #999">
-              &nbsp;
-              <span th:text="${form.morphCode + ' - ' + form.morphValue}"></span>
-              <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-              <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-            </span>
-            <br>
-          </div>
         </div>
       </div>
     </div>

@@ -56,18 +56,18 @@ public class LexSearchController implements WebConstant {
 		return LEX_SEARCH_PAGE;
 	}
 
-	@GetMapping("/lexdetails/{formId}")
-	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
+	@GetMapping("/lexdetails/{wordId}")
+	public String details(@PathVariable("wordId") Long wordId, Model model, HttpSession session) {
 
-		logger.debug("Requesting details by form {}", formId);
+		logger.debug("Requesting details by form {}", wordId);
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
 			Map<String, String> datasets = search.getDatasetNameMap();
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
-		WordDetails details = search.findWordDetailsInDatasets(formId, selectedDatasets);
-		model.addAttribute("detailsName", formId + "_details");
+		WordDetails details = search.findWordDetailsInDatasets(wordId, selectedDatasets);
+		model.addAttribute("detailsName", wordId + "_details");
 		model.addAttribute("details", details);
 
 		return LEX_SEARCH_PAGE + " :: details";

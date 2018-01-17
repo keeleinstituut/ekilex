@@ -11,8 +11,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "word")
-	private String word;
+	@Column(name = "words")
+	private String[] words;
 
 	@Column(name = "word_lang")
 	private String wordLang;
@@ -66,7 +66,7 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Classifier> meaningDomains;
 
-	private List<Form> words;
+	private List<Form> meaningWords;
 
 	private List<Rection> rections;
 
@@ -91,12 +91,12 @@ public class WordLexeme extends AbstractDataObject {
 		builder.accept(this);
 	}
 
-	public String getWord() {
-		return word;
+	public String[] getWords() {
+		return words;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setWords(String[] words) {
+		this.words = words;
 	}
 
 	public String getWordLang() {
@@ -251,12 +251,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningDomains = meaningDomains;
 	}
 
-	public List<Form> getWords() {
-		return words;
+	public List<Form> getMeaningWords() {
+		return meaningWords;
 	}
 
-	public void setWords(List<Form> words) {
-		this.words = words;
+	public void setMeaningWords(List<Form> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 
 	public List<Rection> getRections() {

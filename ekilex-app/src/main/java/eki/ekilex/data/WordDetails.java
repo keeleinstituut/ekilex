@@ -1,19 +1,17 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
 import java.util.List;
 import java.util.function.Consumer;
+
+import eki.common.data.AbstractDataObject;
 
 public class WordDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Form> forms;
+	private List<Paradigm> paradigms;
 
 	private List<WordLexeme> lexemes;
-
-	private List<Relation> relations;
 
 	public WordDetails() {
 	}
@@ -22,12 +20,12 @@ public class WordDetails extends AbstractDataObject {
 		builder.accept(this);
 	}
 
-	public List<Form> getForms() {
-		return forms;
+	public List<Paradigm> getParadigms() {
+		return paradigms;
 	}
 
-	public void setForms(List<Form> forms) {
-		this.forms = forms;
+	public void setParadigms(List<Paradigm> paradigms) {
+		this.paradigms = paradigms;
 	}
 
 	public List<WordLexeme> getLexemes() {
@@ -36,14 +34,6 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setLexemes(List<WordLexeme> lexemes) {
 		this.lexemes = lexemes;
-	}
-
-	public List<Relation> getRelations() {
-		return relations;
-	}
-
-	public void setRelations(List<Relation> relations) {
-		this.relations = relations;
 	}
 
 }

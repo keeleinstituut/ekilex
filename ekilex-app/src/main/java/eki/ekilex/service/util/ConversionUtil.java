@@ -7,6 +7,10 @@ import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.Form;
+import eki.ekilex.data.FormRelation;
+import eki.ekilex.data.Paradigm;
+import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
 import eki.ekilex.data.UsageMeaning;
@@ -14,6 +18,53 @@ import eki.ekilex.data.UsageMember;
 
 @Component
 public class ConversionUtil {
+
+	public List<Paradigm> composeParadigms(List<ParadigmFormTuple> paradigmFormTuples, List<FormRelation> wordFormRelations) {
+
+		List<Paradigm> paradigms = new ArrayList<>();
+
+		Map<Long, Paradigm> paradigmsMap = new HashMap<>();
+		List<Form> forms;
+		List<FormRelation> formRelations; 
+
+		for (ParadigmFormTuple tuple : paradigmFormTuples) {
+
+			Long paradigmId = tuple.getParadigmId();
+
+			Paradigm paradigm = paradigmsMap.get(paradigmId);
+			if (paradigm == null) {
+				forms = new ArrayList<>();
+				formRelations = new ArrayList<>();
+				paradigm = new Paradigm();
+				paradigm.setForms(forms);
+				paradigm.setFormRelations(formRelations);
+				paradigmsMap.put(paradigmId, paradigm);
+				paradigms.add(paradigm);
+			} else {
+				forms = paradigm.getForms();
+			}
+			Form form = new Form();
+			form.setId(tuple.getFormId());
+			form.setValue(tuple.getForm());
+			form.setComponents(tuple.getComponents());
+			form.setDisplayForm(tuple.getDisplayForm());
+			form.setVocalForm(tuple.getVocalForm());
+			form.setMorphCode(tuple.getMorphCode());
+			form.setMorphValue(tuple.getMorphValue());
+			forms.add(form);
+		}
+
+		for (FormRelation formRelation : wordFormRelations) {
+
+			Long paradigmId = formRelation.getParadigmId();
+
+			Paradigm paradigm = paradigmsMap.get(paradigmId);
+			formRelations = paradigm.getFormRelations();
+			formRelations.add(formRelation);
+		}
+
+		return paradigms;
+	}
 
 	public List<Rection> composeRections(List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples) {
 
