@@ -76,7 +76,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String LEXEME_RELATION_MEANING_REFERENCE = "tvt";
 	private final static String LEXEME_RELATION_COMPOUND_WORD = "comp";
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
-	private final static String LEXEME_RELATION_ANTONYM = "ant";
+
+	private final static String MEANING_RELATION_ANTONYM = "ant";
 
 	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
@@ -552,33 +553,46 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private void processAntonyms(Context context) throws Exception {
 
-		logger.debug("Found {} antonyms.", context.antonyms.size());
+		logger.debug("Found {} antonyms <x:ant>.", context.antonyms.size());
 		setActivateReport(ANTONYMS_REPORT_NAME);
-		writeToLogFile("Antonüümide töötlus <x:ant>", "", "");
+		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
+		createMeaningRelations(context, context.antonyms, MEANING_RELATION_ANTONYM, "Ei leitud mõistet antonüümile");
+		logger.debug("Antonyms import done.");
+	}
 
-		for (LexemeToWordData antonymData : context.antonyms) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> antonymData.word.equals(w.value)).collect(Collectors.toList());
-			Long wordId = getWordIdFor(antonymData.word, antonymData.homonymNr, existingWords, antonymData.reportingId);
-			if (!existingWords.isEmpty() && wordId != null) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("wordId", wordId);
-				params.put("dataset", dataset);
-				try {
-					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
-					Optional<Map<String, Object>> lexemeObject =
-							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == antonymData.lexemeLevel1).findFirst();
-					if (lexemeObject.isPresent()) {
-						createLexemeRelation(antonymData.lexemeId, (Long) lexemeObject.get().get("id"), LEXEME_RELATION_ANTONYM);
-					} else {
-						logger.debug("Lexeme not found for antonym : {}, lexeme level1 : {}.", antonymData.word, antonymData.lexemeLevel1);
-						writeToLogFile(antonymData.reportingId, "Ei leitud ilmikut antaonüümile", antonymData.word + ", level1 " + antonymData.lexemeLevel1);
+	private void createMeaningRelations(Context context, List<WordToMeaningData> items, String meaningRelationType, String logMessage) throws Exception {
+
+		for (WordToMeaningData item : items) {
+			Optional<WordToMeaningData> connectedItem = items.stream()
+					.filter(i -> Objects.equals(item.word, i.meaningWord) &&
+							Objects.equals(item.homonymNr, i.meaningHomonymNr) &&
+							Objects.equals(item.lexemeLevel1, i.meaningLevel1))
+					.findFirst();
+			if (connectedItem.isPresent()) {
+				createMeaningRelation(item.meaningId, connectedItem.get().meaningId, meaningRelationType);
+			} else {
+				List<WordData> existingWords = context.importedWords.stream().filter(w -> item.word.equals(w.value)).collect(Collectors.toList());
+				Long wordId = getWordIdFor(item.word, item.homonymNr, existingWords, item.meaningWord);
+				if (!existingWords.isEmpty() && wordId != null) {
+					Map<String, Object> params = new HashMap<>();
+					params.put("wordId", wordId);
+					params.put("dataset", dataset);
+					try {
+						List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
+						Optional<Map<String, Object>> lexemeObject =
+								lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == item.lexemeLevel1).findFirst();
+						if (lexemeObject.isPresent()) {
+							createMeaningRelation(item.meaningId, (Long) lexemeObject.get().get("meaning_id"), meaningRelationType);
+						} else {
+							logger.debug("Meaning not found for word : {}, lexeme level1 : {}.", item.word, item.lexemeLevel1);
+							writeToLogFile(item.meaningWord, logMessage, item.word + ", level1 " + item.lexemeLevel1);
+						}
+					} catch (Exception e) {
+						logger.error("{} | {} | {}", e.getMessage(), item.word, wordId);
 					}
-				} catch (Exception e) {
-					logger.error("More than one lexeme {}, {}", antonymData.word, wordId);
 				}
 			}
 		}
-		logger.debug("Antonyms import done.");
 	}
 
 	private void processSynonymsNotFoundInImportFile(Context context) throws Exception {
@@ -709,8 +723,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 				List<SynonymData> meaningSynonyms = extractSynonyms(reportingId, meaningGroupNode, meaningId, definitions);
 				context.synonyms.addAll(meaningSynonyms);
-
-				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
+				List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+				context.antonyms.addAll(meaningAntonyms);
 
 				int lexemeLevel2 = 0;
 				for (WordData newWordData : newWords) {
@@ -730,12 +744,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
-						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
-							LexemeToWordData antonymData = meaningAntonym.copy();
-							antonymData.lexemeId = lexemeId;
-							antonymData.reportingId = reportingId;
-							context.antonyms.add(antonymData);
-						}
 						for (String compoundWord : compoundWords) {
 							LexemeToWordData compData = new LexemeToWordData();
 							compData.word = compoundWord;
@@ -1020,11 +1028,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return extractLexemeMetadata(node, meaningReferenceExp, relationTypeAttr, reportingId);
 	}
 
-	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractAntonyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
 
 		final String antonymExp = "x:ant";
-		return extractLexemeMetadata(node, antonymExp, null, reportingId);
+
+		List<WordToMeaningData> antonyms = new ArrayList<>();
+		List<LexemeToWordData> items = extractLexemeMetadata(node, antonymExp, null, reportingId);
+		for (LexemeToWordData item : items) {
+			WordToMeaningData meaningData = new WordToMeaningData();
+			meaningData.meaningId = meaningId;
+			meaningData.meaningWord = wordData.value;
+			meaningData.meaningHomonymNr = wordData.homonymNr;
+			meaningData.meaningLevel1 = level1;
+			meaningData.word = item.word;
+			meaningData.homonymNr = item.homonymNr;
+			meaningData.lexemeLevel1 = item.lexemeLevel1;
+			antonyms.add(meaningData);
+		}
+		return antonyms;
 	}
+
 
 	private List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
 
@@ -1559,6 +1582,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private class WordToMeaningData {
+		String word;
+		int homonymNr = 0;
+		int lexemeLevel1 = 1;
+		Long meaningId;
+		String meaningWord;
+		int meaningHomonymNr = 0;
+		int meaningLevel1 = 1;
+	}
+
 	private class SynonymData {
 		String word;
 		Long meaningId;
@@ -1609,7 +1642,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class Context {
 		List<SynonymData> synonyms = new ArrayList<>();
-		List<LexemeToWordData> antonyms = new ArrayList<>();
+		List<WordToMeaningData> antonyms = new ArrayList<>();
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
