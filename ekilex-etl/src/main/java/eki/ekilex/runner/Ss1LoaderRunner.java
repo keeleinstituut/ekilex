@@ -56,9 +56,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
-	private final static String LEXEME_RELATION_ANTONYM = "ant";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 
+	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
@@ -284,7 +284,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} antonyms <s:ant>.", context.antonyms.size());
 		setActivateReport(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
-		createLexemeRelations(context, context.antonyms, LEXEME_RELATION_ANTONYM, "Ei leitud ilmikut antaonüümile");
+		createMeaningRelations(context, context.antonyms, MEANING_RELATION_ANTONYM, "Ei leitud mõistet antaonüümile");
 		logger.debug("Antonyms import done.");
 	}
 
@@ -292,8 +292,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		for (WordToMeaningData item : items) {
 			Optional<WordToMeaningData> connectedItem = items.stream()
-					.filter(i -> Objects.equals(item.word, i.meaningWord) && Objects.equals(item.homonymNr, i.meaningHomonymNr))
-					.findFirst();
+				.filter(i -> Objects.equals(item.word, i.meaningWord) &&
+							 Objects.equals(item.homonymNr, i.meaningHomonymNr) &&
+							 Objects.equals(item.lexemeLevel1, i.meaningLevel1))
+				.findFirst();
 			if (connectedItem.isPresent()) {
 				createMeaningRelation(item.meaningId, connectedItem.get().meaningId, meaningRelationType);
 			} else {
@@ -439,7 +441,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
-				List<LexemeToWordData> meaningAntonyms = extractAntonyms(meaningGroupNode, reportingId);
+				List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+				context.antonyms.addAll(meaningAntonyms);
 				List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
 				context.cohyponyms.addAll(meaningCohyponyms);
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
@@ -473,11 +476,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						saveRegisters(lexemeId, registers);
 						saveImportantNotes(lexemeId, importantNotes);
 						saveComments(lexemeId, comments);
-						for (LexemeToWordData meaningAntonym : meaningAntonyms) {
-							LexemeToWordData antonymData = meaningAntonym.copy();
-							antonymData.lexemeId = lexemeId;
-							context.antonyms.add(antonymData);
-						}
 						for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
 							LexemeToWordData abbreviationData = meaningAbbreviation.copy();
 							abbreviationData.lexemeId = lexemeId;
@@ -790,10 +788,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return convertToMeaningData(cohyponyms, wordData, level1, Collections.emptyList());
 	}
 
-	private List<LexemeToWordData> extractAntonyms(Element node, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractAntonyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
 
 		final String antonymExp = "s:ssh/s:ant";
-		return extractLexemeMetadata(node, antonymExp, null, reportingId);
+
+		List<LexemeToWordData> antonyms = extractLexemeMetadata(node, antonymExp, null, reportingId);
+		antonyms.forEach(antonym -> antonym.meaningId = meaningId);
+		return convertToMeaningData(antonyms, wordData, level1, Collections.emptyList());
 	}
 
 	private List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
@@ -1240,7 +1241,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<WordData> basicWords = new ArrayList<>();
 		Count wordDuplicateCount = new Count();
 		List<LexemeToWordData> synonyms = new ArrayList<>();
-		List<LexemeToWordData> antonyms = new ArrayList<>();
+		List<WordToMeaningData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();
 		List<LexemeToWordData> abbreviationFullWords = new ArrayList<>();
 		List<WordToMeaningData> cohyponyms = new ArrayList<>();
