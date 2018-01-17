@@ -284,7 +284,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} antonyms <s:ant>.", context.antonyms.size());
 		setActivateReport(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
-		createMeaningRelations(context, context.antonyms, MEANING_RELATION_ANTONYM, "Ei leitud mõistet antaonüümile");
+		createMeaningRelations(context, context.antonyms, MEANING_RELATION_ANTONYM, "Ei leitud mõistet antonüümile");
 		logger.debug("Antonyms import done.");
 	}
 
