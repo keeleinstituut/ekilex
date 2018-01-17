@@ -68,13 +68,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
 	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
 	private final static String TOKENS_REPORT_NAME = "tokens";
-	private final static String FORMULAS_REPORT_NAME = "formulas";
-	private final static String LATIN_TERM_REPORT_NAME = "latin_terms";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
 
 	private ReportComposer reportComposer;
 	private boolean reportingEnabled;
+	private boolean reportingPaused;
 
 	private Map<String, String> lexemeTypes;
 	private Map<String, String> posCodes;
@@ -112,7 +111,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME, FORMULAS_REPORT_NAME, LATIN_TERM_REPORT_NAME);
+					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -179,24 +178,24 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void processLatinTerms(Context context) throws Exception {
 
-		logger.debug("Found {} latin terms.", context.latinTermins.size());
-		setActivateReport(LATIN_TERM_REPORT_NAME);
-		writeToLogFile("Ladina terminite töötlus <s:ld>", "", "");
+		logger.debug("Found {} latin terms <s:ld>.", context.latinTermins.size());
+		reportingPaused = true;
 
 		Count newLatinTermWordCount = processLexemeToWord(context, context.latinTermins, null, "Ei leitud ladina terminit, loome uue", latinLang);
 
+		reportingPaused = false;
 		logger.debug("Latin terms created {}", newLatinTermWordCount.getValue());
 		logger.debug("Latin term import done.");
 	}
 
 	private void processFormulas(Context context) throws Exception {
 
-		logger.debug("Found {} formulas.", context.formulas.size());
-		setActivateReport(FORMULAS_REPORT_NAME);
-		writeToLogFile("Valemite töötlus <s:val>", "", "");
+		logger.debug("Found {} formulas <s:val>.", context.formulas.size());
+		reportingPaused = true;
 
 		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeFormula, "Ei leitud valemit, loome uue", dataLang);
 
+		reportingPaused = false;
 		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
 		logger.debug("Formulas import done.");
 	}
@@ -238,7 +237,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void processAbbreviations(Context context) throws Exception {
 
-		logger.debug("Found {} abbreviations.", context.abbreviations.size());
+		logger.debug("Found {} abbreviations <s:lyh> and <s:lhx>.", context.abbreviations.size());
 		setActivateReport(ABBREVIATIONS_REPORT_NAME);
 		writeToLogFile("Lühendite töötlus <s:lyh> ja <s:lhx>", "", "");
 
@@ -261,7 +260,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void processSynonymsNotFoundInImportFile(Context context) throws Exception {
 
-		logger.debug("Found {} synonyms", context.synonyms.size());
+		logger.debug("Found {} synonyms <s:syn>", context.synonyms.size());
 		setActivateReport(SYNONYMS_REPORT_NAME);
 		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
 
@@ -273,7 +272,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void processCohyponyms(Context context) throws Exception {
 
-		logger.debug("Found {} cohyponyms.", context.cohyponyms.size());
+		logger.debug("Found {} cohyponyms <s:kyh>.", context.cohyponyms.size());
 		setActivateReport(COHYPONYMS_REPORT_NAME);
 		writeToLogFile("Kaashüponüümide töötlus <s:kyh>", "", "");
 		createMeaningRelations(context, context.cohyponyms, MEANING_RELATION_COHYPONYM, "Ei leitud mõistet kaashüponüümile");
@@ -282,7 +281,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void processAntonyms(Context context) throws Exception {
 
-		logger.debug("Found {} antonyms.", context.antonyms.size());
+		logger.debug("Found {} antonyms <s:ant>.", context.antonyms.size());
 		setActivateReport(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
 		createLexemeRelations(context, context.antonyms, LEXEME_RELATION_ANTONYM, "Ei leitud ilmikut antaonüümile");
@@ -350,7 +349,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	void processBasicWords(Context context) throws Exception {
 
-		logger.debug("Found {} basic words.", context.basicWords.size());
+		logger.debug("Found {} basic words <s:ps>.", context.basicWords.size());
 		setActivateReport(BASIC_WORDS_REPORT_NAME);
 		writeToLogFile("Märksõna põhisõna seoste töötlus <s:ps>", "", "");
 
@@ -1146,7 +1145,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
-		if (reportingEnabled) {
+		if (reportingEnabled && !reportingPaused) {
 			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(reportingId, message, values));
 			reportComposer.append(logMessage);
 		}
