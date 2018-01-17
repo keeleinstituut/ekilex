@@ -67,7 +67,6 @@ display_morph	nom	nimetav, nominatiiv	est	descrip
 display_morph	nom	nominative	eng	descrip
 form_rel_type	mvt	viitemärksõna	est	full
 lex_rel_type	comp	liitsõna	est	full
-lex_rel_type	ant	antonüüm	est	full
 lex_rel_type	head	põhisõna	est	full
 lex_rel_type	vor	vormel	est	full
 lex_rel_type	yvr	üksikvorm	est	full
@@ -131,6 +130,7 @@ lexeme_type	s	serial member	eng	descrip
 lexeme_type	km	kaubamärk	est	descrip
 lexeme_type	th	tähis	est	descrip
 lexeme_type	valem	valem	est	descrip
+meaning_rel_type	ant	antonüüm	est	descrip
 meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
 meaning_state	terminiprobleem	-	-	-
 meaning_type	termin	-	-	-
