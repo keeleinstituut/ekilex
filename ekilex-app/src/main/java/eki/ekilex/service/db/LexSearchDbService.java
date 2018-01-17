@@ -35,7 +35,6 @@ import java.util.Map;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record12;
-import org.jooq.Record14;
 import org.jooq.Record15;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -131,34 +130,6 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 						.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))
 						)
 				.orderBy(PARADIGM.ID, FORM.ID)
-				.fetch();
-	}
-
-	public Result<Record14<String,Long,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String,String[]>> findFormMeanings(Long formId) {
-
-		return create
-				.select(
-						FORM.VALUE.as("word"),
-						WORD.ID.as("word_id"),
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.MEANING_ID,
-						LEXEME.DATASET_CODE.as("dataset"),
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.TYPE_CODE.as("lexeme_type_code"),
-						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-						MEANING.TYPE_CODE.as("meaning_type_code"),
-						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
-						MEANING.STATE_CODE.as("meaning_state_code"),
-						DSL.when(DSL.count(DEFINITION.VALUE).eq(0), new String[0]).otherwise(DSL.arrayAgg(DEFINITION.VALUE).orderBy(DEFINITION.ID)).as("definitions"))
-				.from(FORM, PARADIGM, WORD, LEXEME, MEANING.leftOuterJoin(DEFINITION).on(DEFINITION.MEANING_ID.eq(MEANING.ID)))
-				.where(
-						FORM.ID.eq(formId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
-				.groupBy(FORM.ID, WORD.ID, LEXEME.ID, MEANING.ID)
-				.orderBy(WORD.ID, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
 

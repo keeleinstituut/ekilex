@@ -49,7 +49,7 @@ public class LexSearchController implements WebConstant {
 		model.addAttribute("datasets", datasets.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
 		session.setAttribute("datasets", selectedDatasets);
-		List<Word> words = search.findWordsInDatasets(searchFilter, selectedDatasets);
+		List<Word> words = search.findWords(searchFilter, selectedDatasets);
 		model.addAttribute("wordsFoundBySearch", words);
 		model.addAttribute("searchFilter", searchFilter);
 
@@ -59,7 +59,7 @@ public class LexSearchController implements WebConstant {
 	@GetMapping("/lexdetails/{wordId}")
 	public String details(@PathVariable("wordId") Long wordId, Model model, HttpSession session) {
 
-		logger.debug("Requesting details by form {}", wordId);
+		logger.debug("Requesting details by word {}", wordId);
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {

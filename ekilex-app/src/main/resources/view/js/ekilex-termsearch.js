@@ -1,6 +1,6 @@
 // add on click handlers to details buttons in search result table
-function initialize() {
-    $(document).on("click", ":button[name='details']", function() {
+function initialise() {
+    $(document).on("click", "[id^='word_details_']", function() {
         var id = $(this).data('id');
         $.get(applicationUrl + 'termdetails/' + id).done(function (data) {
             $('#details_div').replaceWith(data);
@@ -9,7 +9,6 @@ function initialize() {
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
         });
     });
-
     var detailsButtons = $('#results').find('[name="details"]');
     if (detailsButtons.length === 1) {
         detailsButtons.trigger('click');

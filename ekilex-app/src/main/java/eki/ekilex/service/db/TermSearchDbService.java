@@ -16,11 +16,8 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Word;
 
 @Component
 public class TermSearchDbService {
@@ -32,11 +29,8 @@ public class TermSearchDbService {
 		create = context;
 	}
 
-	public Result<Record5<Long, String, String, String, Long[]>> findFormMeanings(Long formId, List<String> datasets) {
+	public Result<Record5<Long, String, String, String, Long[]>> findWordMeanings(Long wordId, List<String> datasets) {
 
-		Form f = FORM.as("f");
-		Paradigm p = PARADIGM.as("p");
-		Word w = WORD.as("w");
 		Meaning m = MEANING.as("m");
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
@@ -48,12 +42,9 @@ public class TermSearchDbService {
 						m.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						m.STATE_CODE.as("meaning_state_code"),
 						DSL.arrayAggDistinct(l2.ID).as("lexeme_ids"))
-				.from(m, l1, l2, w, p, f)
+				.from(m, l1, l2)
 				.where(
-						f.ID.eq(formId)
-						.and(f.PARADIGM_ID.eq(p.ID))
-						.and(p.WORD_ID.eq(w.ID))
-						.and(l1.WORD_ID.eq(w.ID))
+						l1.WORD_ID.eq(wordId)
 						.and(l1.MEANING_ID.eq(m.ID))
 						.and(l2.MEANING_ID.eq(m.ID))
 						.and(l1.DATASET_CODE.in(datasets))

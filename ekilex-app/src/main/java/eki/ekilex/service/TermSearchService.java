@@ -37,13 +37,13 @@ public class TermSearchService {
 	private ConversionUtil conversionUtil;
 
 	@Transactional
-	public TermDetails findWordDetailsInDatasets(Long formId, List<String> selectedDatasets) {
+	public TermDetails findWordDetailsInDatasets(Long wordId, List<String> selectedDatasets) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 
 		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
-		List<Meaning> meanings = termSearchDbService.findFormMeanings(formId, selectedDatasets).into(Meaning.class);
+		List<Meaning> meanings = termSearchDbService.findWordMeanings(wordId, selectedDatasets).into(Meaning.class);
 
 		for (Meaning meaning : meanings) {
 

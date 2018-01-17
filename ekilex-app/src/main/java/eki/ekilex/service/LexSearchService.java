@@ -38,7 +38,7 @@ public class LexSearchService {
 		return lexSearchDbService.getDatasetNameMap();
 	}
 
-	public List<Word> findWordsInDatasets(String searchFilter, List<String> datasets) {
+	public List<Word> findWords(String searchFilter, List<String> datasets) {
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}

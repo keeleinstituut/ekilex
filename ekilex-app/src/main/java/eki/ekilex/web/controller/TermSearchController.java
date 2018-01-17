@@ -52,7 +52,7 @@ public class TermSearchController implements WebConstant {
 		}
 		session.setAttribute("datasets", selectedDatasets);
 
-		List<Word> words = lexSearchService.findWordsInDatasets(searchFilter, selectedDatasets);
+		List<Word> words = lexSearchService.findWords(searchFilter, selectedDatasets);
 
 		model.addAttribute("datasets", datasetNameMap.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
@@ -62,19 +62,19 @@ public class TermSearchController implements WebConstant {
 		return TERM_SEARCH_PAGE;
 	}
 
-	@GetMapping("/termdetails/{formId}")
-	public String details(@PathVariable("formId") Long formId, Model model, HttpSession session) {
+	@GetMapping("/termdetails/{wordId}")
+	public String details(@PathVariable("wordId") Long wordId, Model model, HttpSession session) {
 
-		logger.debug("Requesting details by form {}", formId);
+		logger.debug("Requesting details by form {}", wordId);
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
 			Map<String, String> datasets = lexSearchService.getDatasetNameMap();
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
-		TermDetails details = termSearchService.findWordDetailsInDatasets(formId, selectedDatasets);
+		TermDetails details = termSearchService.findWordDetailsInDatasets(wordId, selectedDatasets);
 
-		model.addAttribute("formId", formId);
+		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);
 
 		return TERM_SEARCH_PAGE + " :: details";

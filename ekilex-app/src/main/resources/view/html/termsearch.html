@@ -62,8 +62,8 @@
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100" name="word_form">
-            <button type="button" class="btn btn-link" th:data-id="${word.formId}" name="details">
-              <span th:text="${word.value}">vorm 1</span>
+            <button th:id="${'word_details_' + word.wordId}" type="button" class="btn btn-link" th:data-id="${word.wordId}" name="details">
+              <span th:text="${word.value}" class="ttl">vorm 1</span>
               <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
             </button>
           </td>
@@ -74,7 +74,7 @@
   </div>
 
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${formId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
+    <div th:data-id="${wordId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
       <th:block th:each="meaning : ${details.meanings}">
         <div style="border: 1px solid #CCC; padding: 5px;">
           <div th:if="${meaning.contentExists}">
@@ -366,7 +366,7 @@
   </div>
 
   <script th:inline="javascript">
-  	initialize();
+  	initialise();
   </script>
 </body>
 </html>
