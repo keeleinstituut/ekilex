@@ -75,11 +75,11 @@ public class TermSearchService {
 
 			for (Long lexemeId : lexemeIds) {
 
-				// lexeme is duplicated if many form.is_word-s
+				// lexeme is duplicated if many form.is_word-s different by value
 				List<Classifier> lexemePos = lexSearchDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 				List<Classifier> lexemeDerivs = lexSearchDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 				List<Classifier> lexemeRegisters = lexSearchDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-				List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(lexemeId).into(Lexeme.class);
+				List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(wordId, lexemeId).into(Lexeme.class);
 				List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 				List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
 						lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);

@@ -9,7 +9,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.Record11;
+import org.jooq.Record12;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -55,11 +55,12 @@ public class TermSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record11<String,String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long lexemeId) {
+	public Result<Record12<String,Integer,String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long sourceWordId, Long lexemeId) {
 
 		return create
 				.select(
 						FORM.VALUE.as("word"),
+						WORD.HOMONYM_NR,
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						LEXEME.ID.as("lexeme_id"),
@@ -71,11 +72,13 @@ public class TermSearchDbService {
 				.from(FORM, PARADIGM, WORD, LEXEME)
 				.where(
 						LEXEME.ID.eq(lexemeId)
+						.and(WORD.ID.ne(sourceWordId))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						)
+				.groupBy(LEXEME.ID, WORD.ID, FORM.VALUE)
 				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}

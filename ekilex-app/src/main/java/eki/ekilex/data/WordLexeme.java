@@ -66,7 +66,7 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Classifier> meaningDomains;
 
-	private List<Form> meaningWords;
+	private List<Word> meaningWords;
 
 	private List<Rection> rections;
 
@@ -251,11 +251,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningDomains = meaningDomains;
 	}
 
-	public List<Form> getMeaningWords() {
+	public List<Word> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<Form> meaningWords) {
+	public void setMeaningWords(List<Word> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 

@@ -64,7 +64,7 @@
           <td class="w-100">
             <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
               <span th:text="${word.value}" class="ttl">vorm 1</span>
-              <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
+              <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
             </button>
           </td>
         </tr>
@@ -87,12 +87,13 @@
                 &nbsp;
               </span>
               <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                <a style="color: #1e7e34" class="mr-2" th:href="@{'/lexsearch?searchFilter=' + ${meaningWord.value}}">
+                <button type="button" class="btn btn-link" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                   <span th:text="${meaningWord.value}"></span>
+                  <span th:text="${meaningWord.homonymNumber}"></span>
                   (
-                  <span th:text="${meaningWord.lang}"></span>
+                  <span th:text="${meaningWord.language}"></span>
                   )
-                </a>
+                </button>
                 <span th:unless="${meaningWordIter.last}">|&nbsp;</span>
               </span>
               <span th:if="${lexeme.levels != null}">

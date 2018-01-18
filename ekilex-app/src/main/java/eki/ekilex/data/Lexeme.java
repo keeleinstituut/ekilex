@@ -13,6 +13,9 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "word")
 	private String word;
 
+	@Column(name = "homonym_nr")
+	private Integer homonymNumber;
+
 	@Column(name = "word_lang")
 	private String wordLang;
 
@@ -66,6 +69,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public Integer getHomonymNumber() {
+		return homonymNumber;
+	}
+
+	public void setHomonymNumber(Integer homonymNumber) {
+		this.homonymNumber = homonymNumber;
 	}
 
 	public String getWordLang() {

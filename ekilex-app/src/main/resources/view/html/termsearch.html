@@ -64,7 +64,7 @@
           <td class="w-100" name="word_form">
             <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
               <span th:text="${word.value}" class="ttl">vorm 1</span>
-              <span th:text="${'(' + word.homonymNumber + ')'}" th:if="${word.homonymNumber > 0}"></span>
+              <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
             </button>
           </td>
         </tr>
@@ -79,19 +79,19 @@
         <div style="border: 1px solid #CCC; padding: 5px;">
           <div th:if="${meaning.contentExists}">
             <div th:if="${meaning.typeCode != null}">
-              <b>Mõistetüüp</b>
+              <span class="lbl">Mõistetüüp</span>
               <span th:text="${meaning.typeCode}"></span>
             </div>
             <div th:if="${meaning.processStateCode != null}">
-              <b>Olek</b>
+              <span class="lbl">Olek</span>
               <span th:text="${meaning.processStateCode}"></span>
             </div>
             <div th:if="${meaning.stateCode != null}">
-              <b>Seisund</b>
+              <span class="lbl">Seisund</span>
               <span th:text="${meaning.stateCode}"></span>
             </div>
             <p th:if="${not #lists.isEmpty(meaning.domains)}">
-              <b>Valdkonnad</b>
+              <span class="lbl">Valdkonnad</span>
               <span th:each="domain,domainIter : ${meaning.domains}">
                 <span th:text="${domain.code}"></span>
                 <th:block th:unless="${domain.code == domain.value}">
@@ -102,7 +102,7 @@
               </span>
             </p>
             <div th:if="${not #lists.isEmpty(meaning.definitions)}">
-              <b>Seletused</b>
+              <span class="lbl">Seletused</span>
               <br />
               <ul>
                 <li th:each="definition : ${meaning.definitions}" th:unless="${#strings.isEmpty(definition)}">
@@ -121,7 +121,7 @@
               </ul>
             </div>
             <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
-              <b>Tähenduse atribuudid</b>
+              <span class="lbl">Tähenduse atribuudid</span>
               <table>
                 <tr th:each="freeform : ${meaning.freeforms}">
                   <td style="vertical-align: text-top; padding-right: 1em">
@@ -136,7 +136,7 @@
             </div>
             <div th:if="${not #lists.isEmpty(meaning.relations)}">
               <hr />
-              <b>Tähenduse seosed</b>
+              <span class="lbl">Tähenduse seosed</span>
               <table>
                 <tr th:each="relation : ${meaning.relations}">
                   <td style="vertical-align: text-top; padding-right: 1em">
@@ -158,12 +158,13 @@
           <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}">
             <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
               <div>
-                <a style="color: #1e7e34" class="mr-2" th:href="@{'/termsearch?searchFilter=' + ${lexeme.word}}">
+                <button type="button" class="btn btn-link" th:data-id="${lexeme.wordId}" name="detailsBtn">
                   <span th:text="${lexeme.word}"></span>
+                  <span th:text="${lexeme.homonymNumber}"></span>
                   (
                   <span th:text="${lexeme.wordLang}"></span>
                   )
-                </a>
+                </button>
                 <span th:if="${lexeme.levels != null}">
                   <small>
                     [
@@ -173,20 +174,22 @@
                   &nbsp;
                 </span>
                 <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-                <span th:text="${lexeme.dataset}" class="float-right"></span>
+                <b>
+                  <span th:text="${lexeme.dataset}" class="float-right"></span>
+                </b>
               </div>
               <div th:if="${lexeme.classifiersExist}">
                 <hr />
                 <div th:if="${lexeme.typeCode != null}">
-                  <b>Keelenditüüp</b>
+                  <span class="lbl">Keelenditüüp</span>
                   <span th:text="${lexeme.typeCode}"></span>
                 </div>
                 <div th:if="${lexeme.frequencyGroupCode != null}">
-                  <b>Sagedusrühm</b>
+                  <span class="lbl">Sagedusrühm</span>
                   <span th:text="${lexeme.frequencyGroupCode}"></span>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.pos)}">
-                  <b>Sõnaliik</b>
+                  <span class="lbl">Sõnaliik</span>
                   <span th:each="classif,classifIter : ${lexeme.pos}">
                     <span th:text="${classif.code}"></span>
                     <th:block th:unless="${classif.code == classif.value}">
@@ -197,7 +200,7 @@
                   </span>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.derivs)}">
-                  <b>Tuletuskood</b>
+                  <span class="lbl">Tuletuskood</span>
                   <span th:each="classif,classifIter : ${lexeme.derivs}">
                     <span th:text="${classif.code}"></span>
                     <th:block th:unless="${classif.code == classif.value}">
@@ -208,7 +211,7 @@
                   </span>
                 </div>
                 <div th:if="${not #lists.isEmpty(lexeme.registers)}">
-                  <b>Register</b>
+                  <span class="lbl">Register</span>
                   <span th:each="classif,classifIter : ${lexeme.registers}">
                     <span th:text="${classif.code}"></span>
                     <th:block th:unless="${classif.code == classif.value}">
@@ -244,7 +247,7 @@
                               </tr>
                               <tr th:if="${not #lists.isEmpty(usageMeaning.usages)}">
                                 <td>
-                                  <b>Kasutusnäited</b>
+                                  <span class="lbl">Kasutusnäited</span>
                                 </td>
                               </tr>
                               <tr th:each="usage : ${usageMeaning.usages}">
@@ -264,7 +267,7 @@
                               </tr>
                               <tr th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
                                 <td>
-                                  <b>Kasutusnäite tõlked</b>
+                                  <span class="lbl">Kasutusnäite tõlked</span>
                                 </td>
                               </tr>
                               <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
@@ -283,7 +286,7 @@
                               </tr>
                               <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
                                 <td>
-                                  <b>Kasutusnäite seletused</b>
+                                  <span class="lbl">Kasutusnäite seletused</span>
                                 </td>
                               </tr>
                               <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
@@ -316,7 +319,7 @@
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.freeforms)}">
                 <hr />
-                <b>Ilmiku atribuudid</b>
+                <span class="lbl">Ilmiku atribuudid</span>
                 <table>
                   <tr th:each="freeform : ${lexeme.freeforms}">
                     <td style="vertical-align: text-top; padding-right: 1em">

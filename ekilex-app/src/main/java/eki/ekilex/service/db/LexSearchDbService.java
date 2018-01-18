@@ -261,25 +261,16 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record7<Long, String, String, String, String, String, String>> findConnectedWordsInDatasets(
-			Long sourceWordId, Long meaningId, List<String> datasets, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record4<Long,String,Integer,String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasets) {
 
 		return create
 				.select(
-						FORM.ID.as("form_id"),
+						WORD.ID.as("word_id"),
 						FORM.VALUE.as("word"),
-						WORD.LANG,
-						FORM.DISPLAY_FORM,
-						FORM.VOCAL_FORM,
-						FORM.MORPH_CODE,
-						MORPH_LABEL.VALUE.as("morph_value")
+						WORD.HOMONYM_NR,
+						WORD.LANG
 						)
-				.from(LEXEME, WORD, PARADIGM,
-						FORM.leftOuterJoin(MORPH_LABEL).on(
-								FORM.MORPH_CODE.eq(MORPH_LABEL.CODE)
-								.and(MORPH_LABEL.LANG.eq(classifierLabelLang)
-								.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))))
-						)
+				.from(LEXEME, WORD, PARADIGM, FORM)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
 						.and(FORM.IS_WORD.isTrue())
@@ -289,6 +280,8 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 						.and(LEXEME.MEANING_ID.eq(meaningId))
 						.and(LEXEME.DATASET_CODE.in(datasets))
 				)
+				.groupBy(WORD.ID, FORM.VALUE)
+				.orderBy(FORM.VALUE)
 				.fetch();
 	}
 
