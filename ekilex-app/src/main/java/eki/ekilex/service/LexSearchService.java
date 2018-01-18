@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
-import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Paradigm;

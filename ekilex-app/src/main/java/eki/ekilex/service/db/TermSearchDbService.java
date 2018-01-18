@@ -55,7 +55,7 @@ public class TermSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record12<String,Integer,String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long sourceWordId, Long lexemeId) {
+	public Result<Record12<String,Integer,String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long lexemeId) {
 
 		return create
 				.select(
@@ -72,7 +72,6 @@ public class TermSearchDbService {
 				.from(FORM, PARADIGM, WORD, LEXEME)
 				.where(
 						LEXEME.ID.eq(lexemeId)
-						.and(WORD.ID.ne(sourceWordId))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))

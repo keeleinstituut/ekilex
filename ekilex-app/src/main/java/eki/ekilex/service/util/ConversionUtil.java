@@ -36,6 +36,7 @@ public class ConversionUtil {
 				forms = new ArrayList<>();
 				formRelations = new ArrayList<>();
 				paradigm = new Paradigm();
+				paradigm.setParadigmId(paradigmId);
 				paradigm.setForms(forms);
 				paradigm.setFormRelations(formRelations);
 				paradigmsMap.put(paradigmId, paradigm);

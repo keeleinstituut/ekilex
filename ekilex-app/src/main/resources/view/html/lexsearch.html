@@ -65,6 +65,9 @@
             <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
               <span th:text="${word.value}" class="ttl">vorm 1</span>
               <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+              (
+              <span th:text="${word.language}"></span>
+              )
             </button>
           </td>
         </tr>
@@ -81,7 +84,7 @@
             <div style="overflow: auto;">
               <span>
                 <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-                  <span th:text="${word}" ></span>
+                  <span th:text="${word}"></span>
                   <span th:unless="${wordIter.last}">,&nbsp;</span>
                 </span>
                 &nbsp;
@@ -314,31 +317,35 @@
       </div>
       <div class="float-left" style="width: 30%">
         <div th:if="${not #lists.isEmpty(details.paradigms)}">
-          <th:block th:each="paradigm : ${details.paradigms}">
-            <div th:if="${not #lists.isEmpty(paradigm.formRelations)}">
-              <div th:each="formRelation : ${paradigm.formRelations}" style="white-space: nowrap;">
-                <span th:text="${formRelation.form1Value}"></span>
-                -
-                <span th:text="${formRelation.relationTypeLabel}"></span>
-                -
-                <span th:text="${formRelation.form2Value}"></span>
+          <div th:each="paradigm,paradigmIter : ${details.paradigms}" style="padding: 5px">
+            <button class="btn" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
+              <span th:text="${'Paradigma ' + paradigmIter.count}"></span>
+            </button>
+            <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse" style="padding: 5px">
+              <div th:if="${not #lists.isEmpty(paradigm.formRelations)}">
+                <div th:each="formRelation : ${paradigm.formRelations}" style="white-space: nowrap;">
+                  <span th:text="${formRelation.form1Value}"></span>
+                  -
+                  <span th:text="${formRelation.relationTypeLabel}"></span>
+                  -
+                  <span th:text="${formRelation.form2Value}"></span>
+                </div>
+                <hr />
               </div>
-              <hr />
-            </div>
-            <div th:if="${#lists.size(paradigm.forms) > 1}">
-              <div th:each="form : ${paradigm.forms}" style="white-space: nowrap;">
-                <span th:text="${form.value}"></span>
-                <span style="font-size: 80%; color: #999">
-                  &nbsp;
-                  <span th:text="${form.morphCode + ' - ' + form.morphValue}"></span>
-                  <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-                  <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-                </span>
-                <br>
+              <div th:if="${#lists.size(paradigm.forms) > 1}">
+                <div th:each="form : ${paradigm.forms}" style="white-space: nowrap;">
+                  <span th:text="${form.value}"></span>
+                  <span style="font-size: 80%; color: #999">
+                    &nbsp;
+                    <span th:text="${form.morphCode + ' - ' + form.morphValue}"></span>
+                    <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+                    <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+                  </span>
+                  <br>
+                </div>
               </div>
             </div>
-            <hr />
-          </th:block>
+          </div>
         </div>
       </div>
     </div>

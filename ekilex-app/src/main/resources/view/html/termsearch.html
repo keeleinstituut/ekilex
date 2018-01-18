@@ -65,6 +65,9 @@
             <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
               <span th:text="${word.value}" class="ttl">vorm 1</span>
               <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+              (
+              <span th:text="${word.language}"></span>
+              )
             </button>
           </td>
         </tr>
@@ -159,7 +162,7 @@
             <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
               <div>
                 <button type="button" class="btn btn-link" th:data-id="${lexeme.wordId}" name="detailsBtn">
-                  <span th:text="${lexeme.word}"></span>
+                  <span th:text="${lexeme.word}" class="ttl"></span>
                   <span th:text="${lexeme.homonymNumber}"></span>
                   (
                   <span th:text="${lexeme.wordLang}"></span>
