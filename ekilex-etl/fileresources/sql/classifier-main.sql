@@ -35,6 +35,7 @@ insert into lex_rel_type (code, datasets) values ('yvt:vrd', '{}');
 insert into lex_rel_type (code, datasets) values ('yvt:vt ka', '{}');
 insert into lex_rel_type (code, datasets) values ('yvt:NB', '{}');
 insert into lex_rel_type (code, datasets) values ('lyh', '{}');
+insert into lex_rel_type (code, datasets) values ('mm', '{}');
 insert into lexeme_frequency (code, datasets) values ('1', '{}');
 insert into lexeme_frequency (code, datasets) values ('2', '{}');
 insert into lexeme_frequency (code, datasets) values ('3', '{}');
@@ -310,6 +311,7 @@ insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vrd', 'üh
 insert into lex_rel_type_label (code, value, lang, type) values ('yvt:vt ka', 'ühisviide, vaata ka', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('yvt:NB', 'ühisviide, ära aja segi', 'est', 'full');
 insert into lex_rel_type_label (code, value, lang, type) values ('lyh', 'lühend', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('mm', 'allmärksõna', 'est', 'full');
 insert into lexeme_type_label (code, value, lang, type) values ('eelistermin', 'eelistermin', 'est', 'descrip');
 insert into lexeme_type_label (code, value, lang, type) values ('lühend', 'lühend', 'est', 'descrip');
 insert into lexeme_type_label (code, value, lang, type) values ('sünonüüm', 'sünonüüm', 'est', 'descrip');
