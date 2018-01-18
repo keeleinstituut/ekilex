@@ -67,7 +67,6 @@ public class LexSearchController implements WebConstant {
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
 		WordDetails details = search.findWordDetailsInDatasets(wordId, selectedDatasets);
-		model.addAttribute("detailsName", wordId + "_details");
 		model.addAttribute("details", details);
 
 		return LEX_SEARCH_PAGE + " :: details";

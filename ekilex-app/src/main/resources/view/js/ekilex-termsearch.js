@@ -1,6 +1,6 @@
 // add on click handlers to details buttons in search result table
 function initialise() {
-    $(document).on("click", "[id^='word_details_']", function() {
+    $(document).on("click", ":button[name='detailsBtn']", function() {
         var id = $(this).data('id');
         $.get(applicationUrl + 'termdetails/' + id).done(function (data) {
             $('#details_div').replaceWith(data);
@@ -9,7 +9,7 @@ function initialise() {
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
         });
     });
-    var detailsButtons = $('#results').find('[name="details"]');
+    var detailsButtons = $('#results').find('[name="detailsBtn"]');
     if (detailsButtons.length === 1) {
         detailsButtons.trigger('click');
     }
@@ -38,7 +38,7 @@ function initEditDlg(elem) {
         var url = editForm.attr('action') + '?' + editForm.serialize();
         $.post(url).done(function (data) {
             var id = $('#details_div').data('id');
-            var detailsButton = $('[name="details"][data-id="' + id + '"]');
+            var detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
             detailsButton.trigger('click');
             editDlg.find('button.close').trigger('click');
         }).fail(function(data) {
@@ -46,5 +46,4 @@ function initEditDlg(elem) {
             console.log(data);
         });
     });
-
 }
