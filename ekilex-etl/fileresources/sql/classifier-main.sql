@@ -229,6 +229,10 @@ insert into register (code, datasets) values ('släng', '{}');
 insert into register (code, datasets) values ('vabakeel', '{}');
 insert into register (code, datasets) values ('van', '{}');
 insert into register (code, datasets) values ('vulg', '{}');
+insert into usage_author_type (code, datasets) values ('tlk', '{}');
+insert into usage_type (code, datasets) values ('ls', '{}');
+insert into usage_type (code, datasets) values ('Vs', '{}');
+insert into usage_type (code, datasets) values ('y', '{}');
 insert into word_rel_type (code, datasets) values ('komp', '{}');
 insert into word_rel_type (code, datasets) values ('superl', '{}');
 
@@ -702,5 +706,12 @@ insert into register_label (code, value, lang, type) values ('van', 'vanamoelise
 insert into register_label (code, value, lang, type) values ('van', 'archaic', 'eng', 'descrip');
 insert into register_label (code, value, lang, type) values ('vulg', 'vulgaarne', 'est', 'descrip');
 insert into register_label (code, value, lang, type) values ('vulg', 'vulgar', 'eng', 'descrip');
+insert into usage_author_type_label (code, value, lang, type) values ('tlk', 'tõlkija', 'est', 'descrip');
+insert into usage_author_type_label (code, value, lang, type) values ('tlk', 'translator', 'eng', 'descrip');
+insert into usage_type_label (code, value, lang, type) values ('ls', 'liitsõna', 'est', 'descrip');
+insert into usage_type_label (code, value, lang, type) values ('ls', 'compound', 'eng', 'descrip');
+insert into usage_type_label (code, value, lang, type) values ('Vs', 'vanasõna', 'est', 'descrip');
+insert into usage_type_label (code, value, lang, type) values ('Vs', 'proverb', 'eng', 'descrip');
+insert into usage_type_label (code, value, lang, type) values ('y', 'sõnaühend', 'est', 'descrip');
 insert into word_rel_type_label (code, value, lang, type) values ('komp', 'keskvõrre', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('superl', 'ülivõrre', 'est', 'full');
