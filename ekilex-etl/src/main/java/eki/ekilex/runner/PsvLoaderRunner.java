@@ -7,6 +7,7 @@ import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Rection;
 import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
@@ -405,12 +406,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (existingWords.isEmpty()) {
 			logger.debug("No word found, adding word with objects : {}.", data.word);
 			lexemeId = createLexemeAndRelatedObjects(data, context, lexemeType);
-			if (!data.usages.isEmpty()) {
+			if (!data.usageMeanings.isEmpty()) {
 				logger.debug("Usages found, adding them");
 				String rectionValue = data.rection == null ? defaultRectionValue : data.rection.getValue();
 				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
-				for (Usage usage : data.usages) {
-					createUsage(rectionId, usage);
+				for (UsageMeaning usageMeaning : data.usageMeanings) {
+					createUsageMeaning(rectionId, usageMeaning);
 				}
 				if (data.rection != null && isNotEmpty(data.rection.getType())) {
 					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, data.rection.getType());
@@ -418,7 +419,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 		} else {
 			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data, lexemeType);
-			if (!data.usages.isEmpty()) {
+			if (!data.usageMeanings.isEmpty()) {
 				logger.debug("Usages found for word, skipping them : {}.", data.word);
 				writeToLogFile(data.reportingId, "Leiti kasutusnäited olemasolevale ilmikule", data.word);
 			}
@@ -690,7 +691,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 			for (Element meaningGroupNode : meaingGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
-				List<Usage> usages = extractUsages(usageGroupNodes);
+				List<UsageMeaning> usages = extractUsages(usageGroupNodes);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 
 				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
@@ -879,12 +880,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				List<Element> usageNodes = definitionGroupNodeNode.selectNodes(usageExp);
 				for (Element usageNode : usageNodes) {
+					UsageMeaning usageMeaning = new UsageMeaning();
 					Usage usage = new Usage();
 					usage.setValue(usageNode.getTextTrim());
+					usageMeaning.getUsages().add(usage);
 					if (usageNode.hasMixedContent()) {
-						usage.setDefinition(usageNode.selectSingleNode(usageDefinitionExp).getText());
+						usageMeaning.getDefinitions().add(usageNode.selectSingleNode(usageDefinitionExp).getText());
 					}
-					data.usages.add(usage);
+					data.usageMeanings.add(usageMeaning);
 				}
 			}
 			compoundForms.addAll(forms);
@@ -932,15 +935,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> singleForms = new ArrayList<>();
 		List<Element> singleFormGroupNodes = node.selectNodes(singleFormGroupNodeExp);
 		for (Element singleFormGroupNode : singleFormGroupNodes) {
-			List<Usage> usages = new ArrayList<>();
+			List<UsageMeaning> usageMeanings = new ArrayList<>();
 			List<Element> formUsageNodes = singleFormGroupNode.selectNodes(usageExp);
 			for (Element usageNode : formUsageNodes) {
+				UsageMeaning usageMeaning = new UsageMeaning();
 				Usage usage = new Usage();
 				usage.setValue(usageNode.getTextTrim());
+				usageMeaning.getUsages().add(usage);
 				if (usageNode.hasMixedContent()) {
-					usage.setDefinition(usageNode.selectSingleNode(usageDefinitionExp).getText());
+					usageMeaning.getDefinitions().add(usageNode.selectSingleNode(usageDefinitionExp).getText());
 				}
-				usages.add(usage);
+				usageMeanings.add(usageMeaning);
 			}
 			List<Element> singleFormNodes = singleFormGroupNode.selectNodes(singleFormNodeExp);
 			for (Element singleFormNode : singleFormNodes) {
@@ -954,7 +959,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				if (formDefinitionNode != null) {
 					data.definition = formDefinitionNode.getTextTrim();
 				}
-				data.usages.addAll(usages);
+				data.usageMeanings.addAll(usageMeanings);
 				singleForms.add(data);
 			}
 		}
@@ -984,9 +989,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				data.definition = vormelDefinitionNode.getTextTrim();
 			}
 			for (Element usageNode : vormelUsages) {
+				UsageMeaning usageMeaning = new UsageMeaning();
 				Usage usage = new Usage();
 				usage.setValue(usageNode.getTextTrim());
-				data.usages.add(usage);
+				usageMeaning.getUsages().add(usage);
+				data.usageMeanings.add(usageMeaning);
 			}
 			vormels.add(data);
 		}
@@ -1152,7 +1159,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
+	private void saveRectionsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usages) throws Exception {
 
 		final String rectionGroupExp = "x:rep/x:reg";
 		final String usageGroupExp = "x:ng";
@@ -1161,21 +1168,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		if (!usages.isEmpty()) {
 			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
-			for (Usage usage : usages) {
-				createUsage(rectionId, usage);
+			for (UsageMeaning usage : usages) {
+				createUsageMeaning(rectionId, usage);
 			}
 		}
 		List<Element> rectionGroups = node.selectNodes(rectionGroupExp);
 		for (Element rectionGroup : rectionGroups) {
 			String rectionPlacement = rectionGroup.attributeValue(rectionPlacementAttr);
 			List<Element> usageGroupNodes = rectionGroup.selectNodes(usageGroupExp);
-			List<Usage> rectionUsages = extractUsages(usageGroupNodes);
+			List<UsageMeaning> rectionUsages = extractUsages(usageGroupNodes);
 			List<Element> rectionNodes = rectionGroup.selectNodes(rectionExp);
 			for (Element rectionNode : rectionNodes) {
 				Rection rection = extractRection(rectionNode);
 				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getValue());
-				for (Usage usage : rectionUsages) {
-					createUsage(rectionId, usage);
+				for (UsageMeaning usage : rectionUsages) {
+					createUsageMeaning(rectionId, usage);
 				}
 				if (isNotEmpty(rection.getType())) {
 					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, rection.getType());
@@ -1193,31 +1200,35 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void createUsage(Long rectionId, Usage usage) throws Exception {
+	private void createUsageMeaning(Long rectionId, UsageMeaning usageMeaning) throws Exception {
 		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, "", null);
-		createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-		if (isNotEmpty(usage.getDefinition())) {
-			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
+		for (Usage usage : usageMeaning.getUsages()) {
+			createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
+		}
+		for (String definition : usageMeaning.getDefinitions()) {
+			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, definition, dataLang);
 		}
 	}
 
-	private List<Usage> extractUsages(List<Element> usageGroupNodes) {
+	private List<UsageMeaning> extractUsages(List<Element> usageGroupNodes) {
 
 		final String usageExp = "x:n";
 
-		List<Usage> usages = new ArrayList<>();
+		List<UsageMeaning> usageMeanings = new ArrayList<>();
 		for (Element usageGroupNode : usageGroupNodes) {
 			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
 			for (Element usageNode : usageNodes) {
+				UsageMeaning usageMeaning = new UsageMeaning();
 				Usage newUsage = new Usage();
 				newUsage.setValue(usageNode.getTextTrim());
+				usageMeaning.getUsages().add(newUsage);
 				if (usageNode.hasMixedContent()) {
-					newUsage.setDefinition(usageNode.selectSingleNode("x:nd").getText());
+					usageMeaning.getDefinitions().add(usageNode.selectSingleNode("x:nd").getText());
 				}
-				usages.add(newUsage);
+				usageMeanings.add(usageMeaning);
 			}
 		}
-		return usages;
+		return usageMeanings;
 	}
 
 	private void processArticleHeader(
@@ -1608,7 +1619,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String relationType;
 		Rection rection;
 		String definition;
-		List<Usage> usages = new ArrayList<>();
+		List<UsageMeaning> usageMeanings = new ArrayList<>();
 		String reportingId;
 		String lexemeType;
 
@@ -1622,7 +1633,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.rection = this.rection;
 			newData.definition = this.definition;
 			newData.reportingId = this.reportingId;
-			newData.usages.addAll(this.usages);
+			newData.usageMeanings.addAll(this.usageMeanings);
 			newData.lexemeType = this.lexemeType;
 			return newData;
 		}

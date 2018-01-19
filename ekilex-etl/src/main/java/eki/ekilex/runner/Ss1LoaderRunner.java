@@ -8,6 +8,7 @@ import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Rection;
 import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
@@ -452,7 +453,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			int lexemeLevel2 = 0;
 			for (Element meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
-				List<Usage> usages = extractUsages(meaningGroupNode);
+				List<UsageMeaning> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> importantNotes = extractImportantNotes(meaningGroupNode);
@@ -758,43 +759,45 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveRectionsAndUsages(Element node, Long lexemeId, List<Usage> usages) throws Exception {
+	private void saveRectionsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usageMeanings) throws Exception {
 
 		final String rectionExp = "s:rep/s:reg/s:rek/s:kn";
 
 		List<Element> rectionNodes = node.selectNodes(rectionExp);
 		if (rectionNodes.isEmpty()) {
-			if (!usages.isEmpty()) {
+			if (!usageMeanings.isEmpty()) {
 				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
-				for (Usage usage : usages) {
-					createUsage(rectionId, usage);
+				for (UsageMeaning usageMeaning : usageMeanings) {
+					createUsageMeaning(rectionId, usageMeaning);
 				}
 			}
 		} else {
 			for (Element rectionNode : rectionNodes) {
 				String rectionValue = rectionNode.getTextTrim();
 				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue);
-				for (Usage usage : usages) {
-					createUsage(rectionId, usage);
+				for (UsageMeaning usageMeaning : usageMeanings) {
+					createUsageMeaning(rectionId, usageMeaning);
 				}
 			}
 		}
 	}
 
-	private void createUsage(Long rectionId, Usage usage) throws Exception {
+	private void createUsageMeaning(Long rectionId, UsageMeaning usageMeaning) throws Exception {
 		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, "", null);
-		createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-		if (isNotEmpty(usage.getDefinition())) {
-			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
+		for (Usage usage : usageMeaning.getUsages()) {
+			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
+			if (isNotEmpty(usage.getUsageType())) {
+				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usage.getUsageType());
+			}
+			if (isNotEmpty(usage.getAuthor())) {
+				createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageId, usage.getAuthor(), dataLang);
+			}
+			if (isNotEmpty(usage.getAuthorType())) {
+				createFreeformClassifier(FreeformType.USAGE_AUTHOR_TYPE, usageId, usage.getAuthorType());
+			}
 		}
-		if (isNotEmpty(usage.getUsageType())) {
-			createFreeformClassifier(FreeformType.USAGE_TYPE, usageMeaningId, usage.getUsageType());
-		}
-		if (isNotEmpty(usage.getAuthor())) {
-			createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageMeaningId, usage.getAuthor(), dataLang);
-		}
-		if (isNotEmpty(usage.getAuthorType())) {
-			createFreeformClassifier(FreeformType.USAGE_AUTHOR_TYPE, usageMeaningId, usage.getAuthorType());
+		for (String definition : usageMeaning.getDefinitions()) {
+			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, definition, dataLang);
 		}
 	}
 
@@ -951,7 +954,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return asList("ab", "ap").contains(restrictedValue);
 	}
 
-	private List<Usage> extractUsages(Element node) {
+	private List<UsageMeaning> extractUsages(Element node) {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
@@ -962,9 +965,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String quotationAuhorExp = "s:caut";
 		final String quotationAuhorTypeAttr = "aliik";
 
-		List<Usage> usages = new ArrayList<>();
+		List<UsageMeaning> usageMeanings = new ArrayList<>();
 		List<Element> usageNodes = node.selectNodes(usageExp);
 		for (Element usageNode : usageNodes) {
+			UsageMeaning usageMeaning = new UsageMeaning();
 			Usage newUsage = new Usage();
 			newUsage.setValue(usageNode.getTextTrim());
 			if (usageNode.hasMixedContent()) {
@@ -973,23 +977,26 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					definitionNode = (Element) usageNode.selectSingleNode(deinitionExp2);
 				}
 				if (definitionNode != null) {
-					newUsage.setDefinition(definitionNode.getText());
+					usageMeaning.getDefinitions().add(definitionNode.getText());
 				}
 			}
 			newUsage.setUsageType(usageNode.attributeValue(usageTypeAttr));
-			usages.add(newUsage);
+			usageMeaning.getUsages().add(newUsage);
+			usageMeanings.add(usageMeaning);
 		}
 		List<Element> quotationGroupNodes = node.selectNodes(quotationGroupExp);
 		for (Element quotationGroupNode : quotationGroupNodes) {
+			UsageMeaning usageMeaning = new UsageMeaning();
 			Usage newUsage = new Usage();
 			Element quotationNode = (Element) quotationGroupNode.selectSingleNode(quotationExp);
 			Element quotationAutorNode = (Element) quotationGroupNode.selectSingleNode(quotationAuhorExp);
 			newUsage.setValue(quotationNode.getTextTrim());
 			newUsage.setAuthor(quotationAutorNode.getTextTrim());
 			newUsage.setAuthorType(quotationAutorNode.attributeValue(quotationAuhorTypeAttr));
-			usages.add(newUsage);
+			usageMeaning.getUsages().add(newUsage);
+			usageMeanings.add(usageMeaning);
 		}
-		return usages;
+		return usageMeanings;
 	}
 
 	private Word extractWordData(Element wordGroupNode, WordData wordData, String guid) throws Exception {
