@@ -78,6 +78,7 @@ lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
 lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lex_rel_type	lyh	lühend	est	full
+lex_rel_type	mm	allmärksõna	est	full
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
@@ -474,25 +475,32 @@ rection_type	kla	lausungirektsioon	est	full
 rection_type	subj	subjektirektsioon	est	full
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
-register	hrv	harvaesinev	et	descrip
-register	hrv	rare	en	descrip
-register	lastek	lastekeelne	et	descrip
-register	lastek	child language	en	descrip
-register	luulek	luulekeelne	et	descrip
-register	luulek	poetic	en	descrip
-register	murd	murdekeelne	et	descrip
-register	murd	dialect, regional	en	descrip
-register	nlj	naljatlev	et	descrip
-register	nlj	humorous	en	descrip
-register	piltl	piltlik	et	descrip
-register	piltl	figurative	en	descrip
-register	släng	släng	et	descrip
-register	släng	slang	en	descrip
-register	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	et	descrip
-register	vabakeel	informal, journalistic	en	descrip
-register	van	vanamoeliselt, vananemas	et	descrip
-register	van	archaic	en	descrip
-register	vulg	vulgaarne	et	descrip
-register	vulg	vulgar	en	descrip
+register	hrv	harvaesinev	est	descrip
+register	hrv	rare	eng	descrip
+register	lastek	lastekeelne	est	descrip
+register	lastek	child language	eng	descrip
+register	luulek	luulekeelne	est	descrip
+register	luulek	poetic	eng	descrip
+register	murd	murdekeelne	est	descrip
+register	murd	dialect, regional	eng	descrip
+register	nlj	naljatlev	est	descrip
+register	nlj	humorous	eng	descrip
+register	piltl	piltlik	est	descrip
+register	piltl	figurative	eng	descrip
+register	släng	släng	est	descrip
+register	släng	slang	eng	descrip
+register	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	est	descrip
+register	vabakeel	informal, journalistic	eng	descrip
+register	van	vanamoeliselt, vananemas	est	descrip
+register	van	archaic	eng	descrip
+register	vulg	vulgaarne	est	descrip
+register	vulg	vulgar	eng	descrip
+usage_author_type	tlk	tõlkija	est	descrip
+usage_author_type	tlk	translator	eng	descrip
+usage_type	ls	liitsõna	est	descrip
+usage_type	ls	compound	eng	descrip
+usage_type	Vs	vanasõna	est	descrip
+usage_type	Vs	proverb	eng	descrip
+usage_type	y	sõnaühend	est	descrip
 word_rel_type	komp	keskvõrre	est	full
 word_rel_type	superl	ülivõrre	est	full

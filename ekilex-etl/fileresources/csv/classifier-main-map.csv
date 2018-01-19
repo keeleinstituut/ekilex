@@ -1,6 +1,6 @@
 EKI liik	EKI nimi	EKI kood	EKI väärtus	EKI keel	LEX nimi	LEX kood
-aliik_tyyp	aliik_tyyp	tlk	tõlkija	et	-	-
-aliik_tyyp	aliik_tyyp	tlk	translator	en	-	-
+aliik_tyyp	aliik_tyyp	tlk	tõlkija	et	usage_author_type	tlk
+aliik_tyyp	aliik_tyyp	tlk	translator	en	usage_author_type	tlk
 alt_tyyp	alt_tyyp	v	või	et	-	-
 alt_tyyp	alt_tyyp	tld	tilde	et	-	-
 as_tyyp	as_tyyp	SS1	sõnastiku artikkel	et	-	-
@@ -507,12 +507,12 @@ mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	meaning_type	ametinimet
 mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	meaning_type	organisatsioon, asutus
 mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	meaning_type	õigusakti pealkiri
 mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	meaning_type	dokumendi pealkiri
-nliik_tyyp	nliik_tyyp	ls	liitsõna	et	-	-
-nliik_tyyp	nliik_tyyp	ls	compound	en	-	-
+nliik_tyyp	nliik_tyyp	ls	liitsõna	et	usage_type	ls
+nliik_tyyp	nliik_tyyp	ls	compound	en	usage_type	ls
 nliik_tyyp	nliik_tyyp	Rhvl	(ei ole kasutusel)	et	-	-
-nliik_tyyp	nliik_tyyp	Vs	vanasõna	et	-	-
-nliik_tyyp	nliik_tyyp	Vs	proverb	en	-	-
-nliik_tyyp	nliik_tyyp	y	sõnaühend	et	-	-
+nliik_tyyp	nliik_tyyp	Vs	vanasõna	et	usage_type	Vs
+nliik_tyyp	nliik_tyyp	Vs	proverb	en	usage_type	Vs
+nliik_tyyp	nliik_tyyp	y	sõnaühend	et	usage_type	y
 pvtl_tyyp	pvtl_tyyp	vp	vaata pilti	et	-	-
 pvtl_tyyp	pvtl_tyyp	vpl	vaata piltide lehte	et	-	-
 pvtl_tyyp	pvtl_tyyp	vqp	vaata kaarti lk	et	-	-
