@@ -787,6 +787,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		if (isNotEmpty(usage.getDefinition())) {
 			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, usage.getDefinition(), dataLang);
 		}
+		if (isNotEmpty(usage.getUsageType())) {
+			createFreeformClassifier(FreeformType.USAGE_TYPE, usageMeaningId, usage.getUsageType());
+		}
+		if (isNotEmpty(usage.getAuthor())) {
+			createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageMeaningId, usage.getAuthor(), dataLang);
+		}
+		if (isNotEmpty(usage.getAuthorType())) {
+			createFreeformClassifier(FreeformType.USAGE_AUTHOR_TYPE, usageMeaningId, usage.getAuthorType());
+		}
 	}
 
 	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
@@ -945,8 +954,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private List<Usage> extractUsages(Element node) {
 
 		final String usageExp = "s:np/s:ng/s:n";
+		final String usageTypeAttr = "nliik";
 		final String deinitionExp = "s:nd";
 		final String deinitionExp2 = "s:nk";
+		final String quotationGroupExp = "s:np/s:cg";
+		final String quotationExp = "s:c";
+		final String quotationAuhorExp = "s:caut";
+		final String quotationAuhorTypeAttr = "aliik";
 
 		List<Usage> usages = new ArrayList<>();
 		List<Element> usageNodes = node.selectNodes(usageExp);
@@ -962,6 +976,17 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					newUsage.setDefinition(definitionNode.getText());
 				}
 			}
+			newUsage.setUsageType(usageNode.attributeValue(usageTypeAttr));
+			usages.add(newUsage);
+		}
+		List<Element> quotationGroupNodes = node.selectNodes(quotationGroupExp);
+		for (Element quotationGroupNode : quotationGroupNodes) {
+			Usage newUsage = new Usage();
+			Element quotationNode = (Element) quotationGroupNode.selectSingleNode(quotationExp);
+			Element quotationAutorNode = (Element) quotationGroupNode.selectSingleNode(quotationAuhorExp);
+			newUsage.setValue(quotationNode.getTextTrim());
+			newUsage.setAuthor(quotationAutorNode.getTextTrim());
+			newUsage.setAuthorType(quotationAutorNode.attributeValue(quotationAuhorTypeAttr));
 			usages.add(newUsage);
 		}
 		return usages;

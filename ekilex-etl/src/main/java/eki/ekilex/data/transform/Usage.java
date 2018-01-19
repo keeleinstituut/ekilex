@@ -12,6 +12,12 @@ public class Usage extends AbstractDataObject {
 
 	private String definition;
 
+	private String author;
+
+	private String usageType;
+
+	private String authorType;
+
 	private List<UsageTranslation> usageTranslations;
 
 	public String getValue() {
@@ -38,4 +44,27 @@ public class Usage extends AbstractDataObject {
 		this.definition = definition;
 	}
 
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getUsageType() {
+		return usageType;
+	}
+
+	public void setUsageType(String usageType) {
+		this.usageType = usageType;
+	}
+
+	public String getAuthorType() {
+		return authorType;
+	}
+
+	public void setAuthorType(String authorType) {
+		this.authorType = authorType;
+	}
 }
