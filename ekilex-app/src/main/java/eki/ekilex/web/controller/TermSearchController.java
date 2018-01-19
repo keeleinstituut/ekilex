@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.data.Word;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
 
@@ -27,6 +28,9 @@ import eki.ekilex.service.TermSearchService;
 public class TermSearchController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(TermSearchController.class);
+
+	@Autowired
+	private CommonDataService commonDataService;
 
 	@Autowired
 	private LexSearchService lexSearchService;
@@ -42,7 +46,7 @@ public class TermSearchController implements WebConstant {
 
 		logger.debug("Searching by \"{}\" in {}", searchFilter, selectedDatasets);
 
-		Map<String, String> datasetNameMap = lexSearchService.getDatasetNameMap();
+		Map<String, String> datasetNameMap = commonDataService.getDatasetNameMap();
 		if (selectedDatasets == null) {
 			if (session.getAttribute("datasets") == null) {
 				selectedDatasets = new ArrayList<>(datasetNameMap.keySet());
@@ -69,10 +73,10 @@ public class TermSearchController implements WebConstant {
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
-			Map<String, String> datasets = lexSearchService.getDatasetNameMap();
+			Map<String, String> datasets = commonDataService.getDatasetNameMap();
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
-		TermDetails details = termSearchService.findWordDetailsInDatasets(wordId, selectedDatasets);
+		TermDetails details = termSearchService.getTermDetails(wordId, selectedDatasets);
 
 		model.addAttribute("wordId", wordId);
 		model.addAttribute("details", details);

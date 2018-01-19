@@ -20,6 +20,7 @@ import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
 import eki.ekilex.data.TermDetails;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
@@ -34,15 +35,18 @@ public class TermSearchService {
 	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
+	private CommonDataDbService commonDataDbService;
+
+	@Autowired
 	private ConversionUtil conversionUtil;
 
 	@Transactional
-	public TermDetails findWordDetailsInDatasets(Long wordId, List<String> selectedDatasets) {
+	public TermDetails getTermDetails(Long wordId, List<String> selectedDatasets) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 
-		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
+		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		List<Meaning> meanings = termSearchDbService.findWordMeanings(wordId, selectedDatasets).into(Meaning.class);
 
 		for (Meaning meaning : meanings) {

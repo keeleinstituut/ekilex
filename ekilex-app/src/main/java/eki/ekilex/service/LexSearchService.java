@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +20,11 @@ import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
@@ -31,27 +35,34 @@ public class LexSearchService {
 	private LexSearchDbService lexSearchDbService;
 
 	@Autowired
+	private CommonDataDbService commonDataDbService;
+
+	@Autowired
 	private ConversionUtil conversionUtil;
 
-	public Map<String, String> getDatasetNameMap() {
-		return lexSearchDbService.getDatasetNameMap();
+	@Transactional
+	public List<Word> findWords(SearchFilter searchFilter, List<String> datasets) {
+
+		return lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
 	}
 
+	@Transactional
 	public List<Word> findWords(String searchFilter, List<String> datasets) {
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		return lexSearchDbService.findWordsInDatasets(searchFilter, datasets).into(Word.class);
+		return lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
 	}
 
-	public WordDetails findWordDetailsInDatasets(Long wordId, List<String> selectedDatasets) {
+	@Transactional
+	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 		final String classifierLabelTypeFull = "full";
 
-		Map<String, String> datasetNameMap = lexSearchDbService.getDatasetNameMap();
-		List<WordLexeme> lexemes = lexSearchDbService.findFormMeaningsInDatasets(wordId, selectedDatasets).into(WordLexeme.class);
+		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+		List<WordLexeme> lexemes = lexSearchDbService.findFormMeanings(wordId, selectedDatasets).into(WordLexeme.class);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
 		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);

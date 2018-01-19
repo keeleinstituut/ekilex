@@ -794,6 +794,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 
 			for (Usage usage : usages) {
+				//FIXME refactor. translations go to meaning
 				usage.setUsageTranslations(usageTranslations);
 			}
 

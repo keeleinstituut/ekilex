@@ -1,14 +1,10 @@
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
---TODO remove later
-drop table if exists lex_relation_dataset;
 drop table if exists lex_relation;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
---TODO remove later
-drop table if exists lexeme_dataset;
 drop table if exists lexeme;
 drop table if exists definition_freeform;
 drop table if exists definition_dataset;
@@ -16,8 +12,6 @@ drop table if exists definition;
 drop table if exists meaning_relation;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
---TODO remove later
-drop table if exists meaning_dataset;
 drop table if exists meaning;
 drop table if exists form_relation;
 drop table if exists form;
@@ -334,7 +328,7 @@ create table word_rel_type_label
   unique(code, lang, type)
 );
 
--- mõiste seose liik
+-- tähenduse seose liik
 create table meaning_rel_type
 (
   code varchar(100) primary key,
@@ -354,6 +348,7 @@ create table meaning_rel_type_label
 -- dünaamiline andmestik --
 ---------------------------
 
+-- olemi elutsükli logi
 create table lifecycle_log
 (
   id bigserial primary key,

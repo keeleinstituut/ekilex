@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
 
 @ConditionalOnWebApplication
@@ -28,7 +29,10 @@ public class LexSearchController implements WebConstant {
 	private static final Logger logger = LoggerFactory.getLogger(LexSearchController.class);
 
 	@Autowired
-	private LexSearchService search;
+	private CommonDataService commonDataService;
+
+	@Autowired
+	private LexSearchService lexSearchService;
 
 	@GetMapping(LEX_SEARCH_URI)
 	public String search(
@@ -38,7 +42,7 @@ public class LexSearchController implements WebConstant {
 
 		logger.debug("Searching by \"{}\" in {}", searchFilter, selectedDatasets);
 
-		Map<String, String> datasets = search.getDatasetNameMap();
+		Map<String, String> datasets = commonDataService.getDatasetNameMap();
 		if (selectedDatasets == null) {
 			if (session.getAttribute("datasets") == null) {
 				selectedDatasets = new ArrayList<>(datasets.keySet());
@@ -49,7 +53,7 @@ public class LexSearchController implements WebConstant {
 		model.addAttribute("datasets", datasets.entrySet());
 		model.addAttribute("selectedDatasets", selectedDatasets);
 		session.setAttribute("datasets", selectedDatasets);
-		List<Word> words = search.findWords(searchFilter, selectedDatasets);
+		List<Word> words = lexSearchService.findWords(searchFilter, selectedDatasets);
 		model.addAttribute("wordsFoundBySearch", words);
 		model.addAttribute("searchFilter", searchFilter);
 
@@ -63,10 +67,10 @@ public class LexSearchController implements WebConstant {
 
 		List<String> selectedDatasets = (List<String>) session.getAttribute("datasets");
 		if (selectedDatasets == null) {
-			Map<String, String> datasets = search.getDatasetNameMap();
+			Map<String, String> datasets = commonDataService.getDatasetNameMap();
 			selectedDatasets = new ArrayList<>(datasets.keySet());
 		}
-		WordDetails details = search.findWordDetailsInDatasets(wordId, selectedDatasets);
+		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets);
 		model.addAttribute("details", details);
 
 		return LEX_SEARCH_PAGE + " :: details";

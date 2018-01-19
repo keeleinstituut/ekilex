@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
@@ -30,8 +29,9 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 
 import java.sql.Timestamp;
 import java.util.List;
-import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record12;
@@ -45,38 +45,125 @@ import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eki.common.constant.FreeformType;
+import eki.ekilex.constant.SearchKey;
+import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Word;
 
 @Service
-public class LexSearchDbService implements InitializingBean, SystemConstant {
+public class LexSearchDbService implements SystemConstant {
 
 	private static final int MAX_RESULTS_LIMIT = 50;
 
 	private DSLContext create;
-
-	@Override
-	public void afterPropertiesSet() throws Exception {
-
-	}
 
 	@Autowired
 	public LexSearchDbService(DSLContext context) {
 		create = context;
 	}
 
-	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
+	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets) {
+
+		List<SearchCriterion> searchCriteria = searchFilter.getSearchCriteria();
+
+		Lexeme l1 = LEXEME.as("l1");
+		Word w1 = WORD.as("w1");
+		Paradigm p1 = PARADIGM.as("p1");
+		Form f1 = FORM.as("f1");
+
+		Table<Record> from1 = w1.join(p1.join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.IS_WORD.isTrue()))).on(p1.WORD_ID.eq(w1.ID));
+
+		Condition where1 = DSL.trueCondition();
+
+		for (SearchCriterion searchCriterion : searchCriteria) {
+
+			SearchKey searchKey = searchCriterion.getSearchKey();
+			SearchOperand searchOperand = searchCriterion.getSearchOperand();
+			Object searchValue = searchCriterion.getSearchValue();
+			String searchValueStr = searchValue.toString();
+
+			if (SearchKey.WORD_VALUE.equals(searchKey)) {
+
+				if (SearchOperand.EQUALS.equals(searchOperand)) {
+					where1 = where1.and(f1.VALUE.equalIgnoreCase(searchValueStr));
+				} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
+					where1 = where1.and(f1.VALUE.startsWith(searchValueStr));
+				} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
+					where1 = where1.and(f1.VALUE.endsWith(searchValueStr));
+				} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
+					where1 = where1.and(f1.VALUE.contains(searchValueStr));
+				}
+
+			} else if (SearchKey.FORM_VALUE.equals(searchKey)) {
+
+				Paradigm p2 = PARADIGM.as("p2");
+				Form f2 = FORM.as("f2");
+
+				Condition where2 = f2.PARADIGM_ID.eq(p2.ID).and(p2.WORD_ID.eq(w1.ID));
+
+				if (SearchOperand.EQUALS.equals(searchOperand)) {
+					where2 = where2.and(f2.VALUE.equalIgnoreCase(searchValueStr));
+				} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
+					where2 = where2.and(f2.VALUE.startsWith(searchValueStr));
+				} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
+					where2 = where2.and(f2.VALUE.endsWith(searchValueStr));
+				} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
+					where2 = where2.and(f2.VALUE.contains(searchValueStr));
+				}
+
+				where1 = where1.and(DSL.exists(DSL.select(f2.ID).from(f2, p2).where(where2)));
+
+			} else if (SearchKey.DEFINITION_VALUE.equals(searchKey)) {
+
+				//TODO impl
+
+			} else if (SearchKey.USAGE_VALUE.equals(searchKey)) {
+
+				//TODO impl
+
+			} else if (SearchKey.CONCEPT_ID.equals(searchKey)) {
+
+				//TODO impl
+			}
+		}
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			where1 = where1.andExists(
+						DSL.select(l1.ID).from(l1)
+						.where((l1.WORD_ID.eq(w1.ID))
+						.and(l1.DATASET_CODE.in(datasets))));
+		}
+
+		Table<Record4<Long,String,Integer,String>> wordsQuery = create
+				.select(
+						w1.ID.as("word_id"),
+						DSL.field("(array_agg(distinct f1.value))[1]").cast(String.class).as("word"),
+						w1.HOMONYM_NR,
+						w1.LANG)
+				.from(from1)
+				.where(where1)
+				.groupBy(w1.ID)
+				.asTable("wq");
+
+		return create
+				.select(wordsQuery.fields())
+				.from(wordsQuery)
+				.orderBy(wordsQuery.field("word"), wordsQuery.field("homonym_nr"))
+				.limit(MAX_RESULTS_LIMIT)
+				.fetch();
 	}
 
-	public Result<Record> findWordsInDatasets(String wordWithMetaCharacters, List<String> datasets) {
+	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
 		
@@ -226,7 +313,7 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record15<String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeaningsInDatasets(
+	public Result<Record15<String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
 			Long wordId, List<String> selectedDatasets) {
 
 		return 
@@ -296,9 +383,15 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 
 	public Result<Record4<Long, String, String, Timestamp>> findMeaningFreeforms(Long meaningId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
+				.select(
+						FREEFORM.ID,
+						FREEFORM.TYPE,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_DATE)
 				.from(FREEFORM, MEANING_FREEFORM)
-				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId).and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
+				.where(
+						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
 				.fetch();
 	}
 
@@ -387,8 +480,8 @@ public class LexSearchDbService implements InitializingBean, SystemConstant {
 				.from(
 						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(
 								MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
-										.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
 						MEANING,
 						LEXEME,
 						WORD,

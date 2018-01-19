@@ -5,8 +5,8 @@ insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat
 insert into dataset (code, name) values ('sys', 'Sünonüümisõnastik');
 insert into dataset (code, name) values ('evs', 'Eesti-vene sõnaraamat');
 
-insert into word (id, lang, morph_code) values (1001, 'est', 'SgN');
-insert into word (id, lang, morph_code) values (1002, 'est', 'SgN');
+insert into word (id, lang, morph_code, homonym_nr) values (1001, 'est', 'SgN', 1);
+insert into word (id, lang, morph_code, homonym_nr) values (1002, 'est', 'SgN', 2);
 insert into word (id, lang, morph_code) values (1003, 'est', 'SgN');
 insert into word (id, lang, morph_code) values (1004, 'est', 'SgN');
 insert into word (id, lang, morph_code) values (1005, 'est', 'SgN');
@@ -84,25 +84,25 @@ insert into definition_dataset (definition_id, dataset_code) values (1013, 'qq2'
 insert into definition_dataset (definition_id, dataset_code) values (1014, 'qq2');
 insert into definition_dataset (definition_id, dataset_code) values (1015, 'qq2');
 
-insert into paradigm (id, word_id, example) values (1001, 1001, 'tark');
-insert into paradigm (id, word_id, example) values (1002, 1002, 'kurt');
-insert into paradigm (id, word_id, example) values (1003, 1003, '');
-insert into paradigm (id, word_id, example) values (1004, 1004, '');
-insert into paradigm (id, word_id, example) values (1005, 1005, '');
-insert into paradigm (id, word_id, example) values (1006, 1006, '');
-insert into paradigm (id, word_id, example) values (1007, 1007, '');
-insert into paradigm (id, word_id, example) values (1008, 1008, '');
-insert into paradigm (id, word_id, example) values (1009, 1009, '');
-insert into paradigm (id, word_id, example) values (1010, 1010, '');
-insert into paradigm (id, word_id, example) values (1011, 1011, '');
-insert into paradigm (id, word_id, example) values (1012, 1012, '');
-insert into paradigm (id, word_id, example) values (1013, 1013, '');
-insert into paradigm (id, word_id, example) values (1014, 1014, 'riik');
-insert into paradigm (id, word_id, example) values (1015, 1015, 'külm');
-insert into paradigm (id, word_id, example) values (1016, 1015, 'õpik');
-insert into paradigm (id, word_id, example) values (1017, 1016, '');
-insert into paradigm (id, word_id, example) values (1018, 1017, '');
-insert into paradigm (id, word_id, example) values (1019, 1018, '');
+insert into paradigm (id, word_id) values (1001, 1001);
+insert into paradigm (id, word_id) values (1002, 1002);
+insert into paradigm (id, word_id) values (1003, 1003);
+insert into paradigm (id, word_id) values (1004, 1004);
+insert into paradigm (id, word_id) values (1005, 1005);
+insert into paradigm (id, word_id) values (1006, 1006);
+insert into paradigm (id, word_id) values (1007, 1007);
+insert into paradigm (id, word_id) values (1008, 1008);
+insert into paradigm (id, word_id) values (1009, 1009);
+insert into paradigm (id, word_id) values (1010, 1010);
+insert into paradigm (id, word_id) values (1011, 1011);
+insert into paradigm (id, word_id) values (1012, 1012);
+insert into paradigm (id, word_id) values (1013, 1013);
+insert into paradigm (id, word_id) values (1014, 1014);
+insert into paradigm (id, word_id) values (1015, 1015);
+insert into paradigm (id, word_id) values (1016, 1015);
+insert into paradigm (id, word_id) values (1017, 1016);
+insert into paradigm (id, word_id) values (1018, 1017);
+insert into paradigm (id, word_id) values (1019, 1018);
 
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (1001, 'SgN', 'hall', '{hall}', 'hall', true);
 insert into form (paradigm_id, morph_code, value, components, display_form, is_word) values (1001, 'SgG', 'halla', '{hall}', 'halla', false);
