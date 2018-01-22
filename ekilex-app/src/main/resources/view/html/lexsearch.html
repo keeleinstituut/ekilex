@@ -242,7 +242,12 @@
                   <td>
                     <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
                       <tr th:each="usage : ${usageMeaning.usages}">
-                        <td th:utext="${markdown.toHtml(usage.value)}"></td>
+                        <td>
+                          <span th:utext="${markdown.toHtml(usage.value)}"></span>
+                          <span th:if="${usage.author != null}">
+                            (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
+                          </span>
+                        </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
                         <td th:text="${usageTranslation.value}"></td>

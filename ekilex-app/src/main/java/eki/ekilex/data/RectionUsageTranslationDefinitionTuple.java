@@ -46,6 +46,12 @@ public class RectionUsageTranslationDefinitionTuple extends AbstractDataObject {
 	@Column(name = "usage_definition_lang")
 	private String usageDefinitionLang;
 
+	@Column(name = "usage_author")
+	private String usageAuthor;
+
+	@Column(name = "usage_author_type")
+	private String usageAuthorType;
+
 	public RectionUsageTranslationDefinitionTuple() {
 	}
 
@@ -149,4 +155,19 @@ public class RectionUsageTranslationDefinitionTuple extends AbstractDataObject {
 		this.usageDefinitionLang = usageDefinitionLang;
 	}
 
+	public String getUsageAuthor() {
+		return usageAuthor;
+	}
+
+	public void setUsageAuthor(String usageAuthor) {
+		this.usageAuthor = usageAuthor;
+	}
+
+	public String getUsageAuthorType() {
+		return usageAuthorType;
+	}
+
+	public void setUsageAuthorType(String usageAuthorType) {
+		this.usageAuthorType = usageAuthorType;
+	}
 }
