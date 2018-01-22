@@ -59,6 +59,10 @@ import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
+import eki.ekilex.data.db.tables.UsageAuthorType;
+import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
+import eki.ekilex.data.db.tables.UsageType;
+import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordRelType;
@@ -90,7 +94,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 562672284;
+    private static final long serialVersionUID = 241222438;
 
     /**
      * The reference instance of <code>public</code>
@@ -373,6 +377,26 @@ public class Public extends SchemaImpl {
     public final SourceFreeform SOURCE_FREEFORM = eki.ekilex.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
 
     /**
+     * The table <code>public.usage_author_type</code>.
+     */
+    public final UsageAuthorType USAGE_AUTHOR_TYPE = eki.ekilex.data.db.tables.UsageAuthorType.USAGE_AUTHOR_TYPE;
+
+    /**
+     * The table <code>public.usage_author_type_label</code>.
+     */
+    public final UsageAuthorTypeLabel USAGE_AUTHOR_TYPE_LABEL = eki.ekilex.data.db.tables.UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL;
+
+    /**
+     * The table <code>public.usage_type</code>.
+     */
+    public final UsageType USAGE_TYPE = eki.ekilex.data.db.tables.UsageType.USAGE_TYPE;
+
+    /**
+     * The table <code>public.usage_type_label</code>.
+     */
+    public final UsageTypeLabel USAGE_TYPE_LABEL = eki.ekilex.data.db.tables.UsageTypeLabel.USAGE_TYPE_LABEL;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
@@ -513,6 +537,10 @@ public class Public extends SchemaImpl {
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
+            UsageAuthorType.USAGE_AUTHOR_TYPE,
+            UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL,
+            UsageType.USAGE_TYPE,
+            UsageTypeLabel.USAGE_TYPE_LABEL,
             Word.WORD,
             WordGuid.WORD_GUID,
             WordRelType.WORD_REL_TYPE,
