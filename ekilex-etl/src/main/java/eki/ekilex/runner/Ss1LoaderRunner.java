@@ -65,6 +65,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
 
+	private final static String WORD_RELATION_DERIVATIVE = "deriv";
+
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SUBWORDS_REPORT_NAME = "subkeywords";
@@ -117,8 +119,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		reportingEnabled = isAddReporting;
 		if (reportingEnabled) {
-			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME,
-					ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME, DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME, SUBWORDS_REPORT_NAME);
+			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME,
+					ANTONYMS_REPORT_NAME, ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME,
+					DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME, SUBWORDS_REPORT_NAME);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -145,6 +148,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		processBasicWords(context);
 		processSubWords(context);
+		processDerivativeWords(context);
 		processSynonymsNotFoundInImportFile(context);
 		processAbbreviations(context);
 		processTokens(context);
@@ -187,6 +191,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processLatinTerms(Context context) throws Exception {
 
 		logger.debug("Found {} latin terms <s:ld>.", context.latinTermins.size());
+		logger.debug("Processing started.");
 		reportingPaused = true;
 
 		Count newLatinTermWordCount = processLexemeToWord(context, context.latinTermins, null, "Ei leitud ladina terminit, loome uue", latinLang);
@@ -199,6 +204,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processFormulas(Context context) throws Exception {
 
 		logger.debug("Found {} formulas <s:val>.", context.formulas.size());
+		logger.debug("Processing started.");
 		reportingPaused = true;
 
 		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeFormula, "Ei leitud valemit, loome uue", dataLang);
@@ -211,6 +217,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processTokens(Context context) throws Exception {
 
 		logger.debug("Found {} tokens.", context.tokens.size());
+		logger.debug("Processing started.");
 		setActivateReport(TOKENS_REPORT_NAME);
 		writeToLogFile("Tähiste töötlus <s:ths>", "", "");
 
@@ -236,7 +243,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel3(1);
 				lexeme.setType(itemData.lexemeType == null ? defaultLexemeType : itemData.lexemeType);
 				createLexeme(lexeme, dataset);
-				logger.debug("new word created : {}", itemData.word);
+				if (!reportingPaused) {
+					logger.debug("new word created : {}", itemData.word);
+				}
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
 			}
 		}
@@ -246,6 +255,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processAbbreviations(Context context) throws Exception {
 
 		logger.debug("Found {} abbreviations <s:lyh> and <s:lhx>.", context.abbreviations.size());
+		logger.debug("Processing started.");
 		setActivateReport(ABBREVIATIONS_REPORT_NAME);
 		writeToLogFile("Lühendite töötlus <s:lyh> ja <s:lhx>", "", "");
 
@@ -269,6 +279,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processSynonymsNotFoundInImportFile(Context context) throws Exception {
 
 		logger.debug("Found {} synonyms <s:syn>", context.synonyms.size());
+		logger.debug("Processing started.");
 		setActivateReport(SYNONYMS_REPORT_NAME);
 		writeToLogFile("Sünonüümide töötlus <s:syn>", "", "");
 
@@ -281,6 +292,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processCohyponyms(Context context) throws Exception {
 
 		logger.debug("Found {} cohyponyms <s:kyh>.", context.cohyponyms.size());
+		logger.debug("Processing started.");
 		setActivateReport(COHYPONYMS_REPORT_NAME);
 		writeToLogFile("Kaashüponüümide töötlus <s:kyh>", "", "");
 		createMeaningRelations(context, context.cohyponyms, MEANING_RELATION_COHYPONYM, "Ei leitud mõistet kaashüponüümile");
@@ -290,6 +302,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void processAntonyms(Context context) throws Exception {
 
 		logger.debug("Found {} antonyms <s:ant>.", context.antonyms.size());
+		logger.debug("Processing started.");
 		setActivateReport(ANTONYMS_REPORT_NAME);
 		writeToLogFile("Antonüümide töötlus <s:ant>", "", "");
 		createMeaningRelations(context, context.antonyms, MEANING_RELATION_ANTONYM, "Ei leitud mõistet antonüümile");
@@ -357,8 +370,37 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private void processDerivativeWords(Context context) throws Exception {
+		logger.debug("Found {} derivatives <s:ssp/s:mmg/s:mm>.", context.derivativeWords.size());
+		logger.debug("Processing started.");
+		reportingPaused = true;
+		Count newWordsCounter = new Count();
+		List<WordData> importedDerivatives = new ArrayList<>();
+		for (WordData derivative : context.derivativeWords) {
+			List<WordData> existingWords = context.importedWords.stream().filter(w -> derivative.value.equals(w.value)).collect(Collectors.toList());
+			Long derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, existingWords, derivative.reportingId);
+			if (derivativeId != null) {
+				logger.debug("derivative found for {} : {}", derivative.reportingId, derivative.value);
+			} else {
+				existingWords = importedDerivatives.stream().filter(w -> derivative.value.equals(w.value)).collect(Collectors.toList());
+				derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, existingWords, derivative.reportingId);
+			}
+			if (derivativeId == null) {
+				WordData newWord = createDefaultWordFrom(derivative.value, derivative.value, dataLang, derivative.displayMorph);
+				derivativeId = newWord.id;
+				newWordsCounter.increment();
+			}
+			createWordRelation(derivative.id, derivativeId, WORD_RELATION_DERIVATIVE);
+		}
+		context.importedWords.addAll(importedDerivatives);
+		reportingPaused = false;
+		logger.debug("new words created {}.", newWordsCounter.getValue());
+		logger.debug("Derivatives processing done.");
+	}
+
 	private void processSubWords(Context context) throws Exception {
 		logger.debug("Found {} sub words <s:mm>.", context.subWords.size());
+		logger.debug("Processing started.");
 		setActivateReport(SUBWORDS_REPORT_NAME);
 		writeToLogFile("Alammärksõna seoste töötlus <s:mm>", "", "");
 
@@ -409,6 +451,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	void processBasicWords(Context context) throws Exception {
 
 		logger.debug("Found {} basic words <s:ps>.", context.basicWords.size());
+		logger.debug("Processing started.");
 		setActivateReport(BASIC_WORDS_REPORT_NAME);
 		writeToLogFile("Märksõna põhisõna seoste töötlus <s:ps>", "", "");
 
@@ -441,8 +484,10 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String meaningPosCodeExp = "s:grg/s:sl";
 		final String meaningExternalIdExp = "s:tpid";
 
-		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		List<WordData> derivativeWords = extractDerivativeWords(contentNode, newWords);
+		context.derivativeWords.addAll(derivativeWords);
 
+		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
@@ -1058,6 +1103,38 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return paradigms;
 	}
 
+	private List<WordData> extractDerivativeWords(Element node, List<WordData> mainWords) {
+
+		final String wordGroupExp = "s:ssp/s:mmg";
+		final String wordExp = "s:mm";
+		final String wordPosCodeExp = "s:sl";
+		final String frequencyGroupExp = "s:msag";
+		final String homonymNrAttr = "i";
+
+		List<WordData> derivatives = new ArrayList<>();
+		List<Element> wordGroupNodes = node.selectNodes(wordGroupExp);
+		for (WordData mainWord : mainWords) {
+			for (Element wordGroupNode: wordGroupNodes) {
+				Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
+				WordData derivative = new WordData();
+				derivative.id = mainWord.id;
+				derivative.reportingId = mainWord.reportingId;
+				derivative.value = cleanUp(wordNode.getTextTrim());
+				if (wordGroupNode.attributeValue(homonymNrAttr) != null) {
+					derivative.homonymNr = Integer.parseInt(wordGroupNode.attributeValue(homonymNrAttr));
+				}
+				Element frequencyGroupNode = (Element) node.selectSingleNode(frequencyGroupExp);
+				if (frequencyGroupNode != null) {
+					derivative.frequencyGroup = frequencyGroupCodes.get(frequencyGroupNode.getTextTrim());
+				}
+				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
+				derivative.posCodes.addAll(posCodes);
+				derivatives.add(derivative);
+			}
+		}
+		return derivatives;
+	}
+
 	private List<WordData> extractSubWords(Element node, WordData mainWord) {
 
 		final String subWordExp = "s:mmg/s:mm";
@@ -1216,7 +1293,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 		if (wordId == null) {
-			logger.debug("No matching word was found for {} word {}, {}", reportingId, wordValue, homonymNr);
+			if (!reportingPaused) {
+				logger.debug("No matching word was found for {} word {}, {}", reportingId, wordValue, homonymNr);
+			}
 			writeToLogFile(reportingId, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 		}
 		return wordId;
@@ -1383,6 +1462,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		List<WordData> subWords = new ArrayList<>();
+		List<WordData> derivativeWords = new ArrayList<>();
 		Count wordDuplicateCount = new Count();
 		List<LexemeToWordData> synonyms = new ArrayList<>();
 		List<WordToMeaningData> antonyms = new ArrayList<>();
