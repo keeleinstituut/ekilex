@@ -23,6 +23,7 @@ import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.Tables.USAGE_AUTHOR_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
@@ -30,11 +31,12 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.sql.Timestamp;
 import java.util.List;
 
+import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record;
-import org.jooq.Record12;
+import org.jooq.Record14;
 import org.jooq.Record15;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -276,7 +278,8 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record12<Long, String, Long, Long, String, String, Long, String, String, Long, String, String>> findRectionUsageTranslationDefinitionTuples(Long lexemeId) {
+	public Result<Record14<Long, String, Long, Long, String, String, Long, String, String, Long, String, String, String, String>>
+		findRectionUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
 		Freeform r = FREEFORM.as("r");
@@ -284,6 +287,9 @@ public class LexSearchDbService implements SystemConstant {
 		Freeform u = FREEFORM.as("u");
 		Freeform ut = FREEFORM.as("ut");
 		Freeform ud = FREEFORM.as("ud");
+		Freeform ua = FREEFORM.as("ua");
+		Freeform uat = FREEFORM.as("uat");
+		UsageAuthorTypeLabel uatl = USAGE_AUTHOR_TYPE_LABEL.as("uatl");
 
 		return create
 				.select(
@@ -298,7 +304,9 @@ public class LexSearchDbService implements SystemConstant {
 						ut.LANG.as("usage_translation_lang"),
 						ud.ID.as("usage_definition_id"),
 						ud.VALUE_TEXT.as("usage_definition_value"),
-						ud.LANG.as("usage_definition_lang")
+						ud.LANG.as("usage_definition_lang"),
+						ua.VALUE_TEXT.as("usage_author"),
+						uatl.VALUE.as("usage_author_type")
 						)
 				.from(
 						lff.innerJoin(r
@@ -306,6 +314,9 @@ public class LexSearchDbService implements SystemConstant {
 								.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
+								.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
+								.leftOuterJoin(uat).on(uat.PARENT_ID.eq(u.ID).and(uat.TYPE.eq(FreeformType.USAGE_AUTHOR_TYPE.name())))
+								.leftOuterJoin(uatl).on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
 								).on(lff.FREEFORM_ID.eq(r.ID).and(r.TYPE.eq(FreeformType.RECTION.name())))
 						)
 				.where(lff.LEXEME_ID.eq(lexemeId))

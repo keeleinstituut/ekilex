@@ -12,6 +12,10 @@ public class UsageMember extends AbstractDataObject {
 
 	private String lang;
 
+	private String author;
+
+	private String authorType;
+
 	public Long getId() {
 		return id;
 	}
@@ -36,4 +40,19 @@ public class UsageMember extends AbstractDataObject {
 		this.lang = lang;
 	}
 
+	public String getAuthor() {
+		return author;
+	}
+
+	public void setAuthor(String author) {
+		this.author = author;
+	}
+
+	public String getAuthorType() {
+		return authorType;
+	}
+
+	public void setAuthorType(String authorType) {
+		this.authorType = authorType;
+	}
 }

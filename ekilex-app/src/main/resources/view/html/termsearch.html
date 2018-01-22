@@ -260,6 +260,9 @@
                                         th:data-op-type="usage"
                                         th:data-value="${usage.value}"
                                         th:utext="${markdown.toHtml(usage.value)}"></span>
+                                  <span th:if="${usage.author != null}">
+                                    (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
+                                  </span>
                                   <button type="button" class="btn btn-primary btn-sm ml-2"
                                           th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                                           onclick="initEditDlg(this)"

@@ -86,7 +86,8 @@ public class TermSearchService {
 				List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(lexemeId).into(Lexeme.class);
 				List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 				List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
-						lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId).into(RectionUsageTranslationDefinitionTuple.class);
+						lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+								.into(RectionUsageTranslationDefinitionTuple.class);
 				List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
 
 				for (Lexeme lexeme : lexemeWords) {
