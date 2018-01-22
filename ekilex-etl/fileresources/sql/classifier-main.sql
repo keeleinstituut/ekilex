@@ -235,6 +235,7 @@ insert into usage_type (code, datasets) values ('Vs', '{}');
 insert into usage_type (code, datasets) values ('y', '{}');
 insert into word_rel_type (code, datasets) values ('komp', '{}');
 insert into word_rel_type (code, datasets) values ('superl', '{}');
+insert into word_rel_type (code, datasets) values ('deriv', '{}');
 
 insert into deriv_label (code, value, lang, type) values ('adv', 'adverb (-lt)', 'est', 'descrip');
 insert into deriv_label (code, value, lang, type) values ('dem', 'KE/KENE', 'est', 'ekimorfo');
@@ -715,3 +716,4 @@ insert into usage_type_label (code, value, lang, type) values ('Vs', 'proverb', 
 insert into usage_type_label (code, value, lang, type) values ('y', 'sõnaühend', 'est', 'descrip');
 insert into word_rel_type_label (code, value, lang, type) values ('komp', 'keskvõrre', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('superl', 'ülivõrre', 'est', 'full');
+insert into word_rel_type_label (code, value, lang, type) values ('deriv', 'tuletis', 'est', 'full');

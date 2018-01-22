@@ -504,3 +504,4 @@ usage_type	Vs	proverb	eng	descrip
 usage_type	y	sõnaühend	est	descrip
 word_rel_type	komp	keskvõrre	est	full
 word_rel_type	superl	ülivõrre	est	full
+word_rel_type	deriv	tuletis	est	full
