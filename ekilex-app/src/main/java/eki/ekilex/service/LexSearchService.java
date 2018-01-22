@@ -41,7 +41,7 @@ public class LexSearchService {
 	private ConversionUtil conversionUtil;
 
 	@Transactional
-	public List<Word> findWords(SearchFilter searchFilter, List<String> datasets) {
+	public List<Word> findWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
 
 		return lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
 	}

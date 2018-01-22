@@ -160,6 +160,7 @@ public class LexSearchServiceTest {
 		SearchOperand searchOperand;
 		Object searchValue;
 		List<Word> words;
+		Word word;
 
 		// case #1
 		searchCriteria.clear();
@@ -176,12 +177,149 @@ public class LexSearchServiceTest {
 		words = lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
-		assertEquals("Incorrect match", "väär", words.get(0).getValue());
+		word = words.get(0);
+		assertEquals("Incorrect match", "väär", word.getValue());
 
-		/*
-		for (Word word : words) {
-			System.out.println(word);
-		}
-		*/
+		// case #2
+		searchCriteria.clear();
+		searchKey = SearchKey.FORM_VALUE;
+		searchOperand = SearchOperand.EQUALS;
+		searchValue = new String("halla");
+
+		searchCriterion = new SearchCriterion();
+		searchCriterion.setSearchKey(searchKey);
+		searchCriterion.setSearchOperand(searchOperand);
+		searchCriterion.setSearchValue(searchValue);
+		searchCriteria.add(searchCriterion);
+
+		words = lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
+
+		assertEquals("Incorrect count of matches", 1, words.size());
+		word = words.get(0);
+		assertEquals("Incorrect match", "hall", word.getValue());
+		assertEquals("Incorrect match", new Integer(1), word.getHomonymNumber());
+
+		// case #3
+		searchCriteria.clear();
+		searchKey = SearchKey.FORM_VALUE;
+		searchOperand = SearchOperand.EQUALS;
+		searchValue = new String("halli");
+
+		searchCriterion = new SearchCriterion();
+		searchCriterion.setSearchKey(searchKey);
+		searchCriterion.setSearchOperand(searchOperand);
+		searchCriterion.setSearchValue(searchValue);
+		searchCriteria.add(searchCriterion);
+
+		words = lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
+
+		assertEquals("Incorrect count of matches", 1, words.size());
+		word = words.get(0);
+		assertEquals("Incorrect match", "hall", word.getValue());
+		assertEquals("Incorrect match", new Integer(2), word.getHomonymNumber());
+	}
+
+	@Test
+	public void testSearchByDefinition() throws Exception {
+
+		SearchFilter searchFilter = new SearchFilter();
+		List<SearchCriterion> searchCriteria = new ArrayList<>();
+		searchFilter.setSearchCriteria(searchCriteria);
+
+		List<String> datasets = new ArrayList<>();
+		SearchCriterion searchCriterion;
+		SearchKey searchKey;
+		SearchOperand searchOperand;
+		Object searchValue;
+		List<Word> words;
+		Word word;
+
+		// case #1
+		searchCriteria.clear();
+		searchKey = SearchKey.DEFINITION_VALUE;
+		searchOperand = SearchOperand.CONTAINS;
+		searchValue = new String("ESIK");
+
+		searchCriterion = new SearchCriterion();
+		searchCriterion.setSearchKey(searchKey);
+		searchCriterion.setSearchOperand(searchOperand);
+		searchCriterion.setSearchValue(searchValue);
+		searchCriteria.add(searchCriterion);
+
+		words = lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
+
+		assertEquals("Incorrect count of matches", 2, words.size());
+		word = words.get(0);
+		assertEquals("Incorrect match", "hall", word.getValue());
+		word = words.get(1);
+		assertEquals("Incorrect match", "холл", word.getValue());
+	}
+
+	@Test
+	public void testSearchByUsage() throws Exception {
+
+		SearchFilter searchFilter = new SearchFilter();
+		List<SearchCriterion> searchCriteria = new ArrayList<>();
+		searchFilter.setSearchCriteria(searchCriteria);
+
+		List<String> datasets = new ArrayList<>();
+		SearchCriterion searchCriterion;
+		SearchKey searchKey;
+		SearchOperand searchOperand;
+		Object searchValue;
+		List<Word> words;
+		Word word;
+
+		// case #1
+		searchCriteria.clear();
+		searchKey = SearchKey.USAGE_VALUE;
+		searchOperand = SearchOperand.CONTAINS;
+		searchValue = new String("haned");
+
+		searchCriterion = new SearchCriterion();
+		searchCriterion.setSearchKey(searchKey);
+		searchCriterion.setSearchOperand(searchOperand);
+		searchCriterion.setSearchValue(searchValue);
+		searchCriteria.add(searchCriterion);
+
+		words = lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
+
+		assertEquals("Incorrect count of matches", 1, words.size());
+		word = words.get(0);
+		assertEquals("Incorrect match", "hall", word.getValue());
+	}
+
+	@Test
+	public void testSearchByConceptId() throws Exception {
+
+		SearchFilter searchFilter = new SearchFilter();
+		List<SearchCriterion> searchCriteria = new ArrayList<>();
+		searchFilter.setSearchCriteria(searchCriteria);
+
+		List<String> datasets = new ArrayList<>();
+		SearchCriterion searchCriterion;
+		SearchKey searchKey;
+		SearchOperand searchOperand;
+		Object searchValue;
+		List<Word> words;
+		Word word;
+
+		// case #1
+		searchCriteria.clear();
+		searchKey = SearchKey.CONCEPT_ID;
+		searchOperand = SearchOperand.EQUALS;
+		searchValue = new String("123456");
+
+		searchCriterion = new SearchCriterion();
+		searchCriterion.setSearchKey(searchKey);
+		searchCriterion.setSearchOperand(searchOperand);
+		searchCriterion.setSearchValue(searchValue);
+		searchCriteria.add(searchCriterion);
+
+		words = lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
+
+		assertEquals("Incorrect count of matches", 1, words.size());
+		word = words.get(0);
+		assertEquals("Incorrect match", "tumehall", word.getValue());
 	}
 }
