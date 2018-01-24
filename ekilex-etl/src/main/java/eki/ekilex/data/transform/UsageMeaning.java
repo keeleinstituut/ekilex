@@ -9,9 +9,17 @@ public class UsageMeaning extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<Usage> usages = new ArrayList<>();
+	private List<Usage> usages;
 
-	private List<String> definitions = new ArrayList<>();
+	private List<UsageTranslation> usageTranslations;
+
+	private List<String> definitions;
+
+	public UsageMeaning() {
+		this.usages = new ArrayList<>();
+		this.usageTranslations = new ArrayList<>();
+		this.definitions = new ArrayList<>();
+	}
 
 	public List<Usage> getUsages() {
 		return usages;
@@ -19,6 +27,14 @@ public class UsageMeaning extends AbstractDataObject {
 
 	public void setUsages(List<Usage> usages) {
 		this.usages = usages;
+	}
+
+	public List<UsageTranslation> getUsageTranslations() {
+		return usageTranslations;
+	}
+
+	public void setUsageTranslations(List<UsageTranslation> usageTranslations) {
+		this.usageTranslations = usageTranslations;
 	}
 
 	public List<String> getDefinitions() {

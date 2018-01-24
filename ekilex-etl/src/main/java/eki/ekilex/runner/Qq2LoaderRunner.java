@@ -394,6 +394,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
+	//TODO test!!
 	private void detectAndReportAtMeaning(
 			List<UsageMeaning> usageMeanings,
 			List<Word> newWords,
@@ -407,98 +408,100 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return;
 		}
 
+		List<Usage> usages;
 		List<UsageTranslation> usageTranslations;
 		List<String> originalTokens, lemmatisedTokens;
-		String usageValue;
 		StringBuffer logBuf;
 
 		List<String> newWordValues = newWords.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
 		List<String> wordMatchValues = wordMatches.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
-		List<String> usageTranslationValues;
+		List<String> usageTranslationValues, usageValues;
 
 		boolean containsMultiWordMatches = containsMultiWords(wordMatchValues);
 
 		for (UsageMeaning usageMeaning : usageMeanings) {
-			for (Usage usageObj : usageMeaning.getUsages()) {
-				int usageWordMatchByOriginalTokenCount = 0;
-				int usageWordMatchByLemmatisationCount = 0;
-				int usageWordMatchByTokenSplitCount = 0;
-				usageValue = usageObj.getValue();
-				usageTranslations = usageObj.getUsageTranslations();
-				usageTranslationValues = usageTranslations.stream().map(usageTranslation -> usageTranslation.getValue()).collect(Collectors.toList());
-				for (UsageTranslation usageTranslation : usageTranslations) {
-					originalTokens = usageTranslation.getOriginalTokens();
-					lemmatisedTokens = usageTranslation.getLemmatisedTokens();
-					if (CollectionUtils.containsAny(originalTokens, wordMatchValues)) {
-						usageWordMatchByOriginalTokenCount++;
-					}
-					if (CollectionUtils.containsAny(lemmatisedTokens, wordMatchValues)) {
-						usageWordMatchByLemmatisationCount++;
-					}
-					if (containsMultiWordMatches) {
-						boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatchValues, originalTokens, lemmatisedTokens);
-						if (containsAnyMatchByWordSplit) {
-							usageWordMatchByTokenSplitCount++;
-						}
+
+			usages = usageMeaning.getUsages();
+			usageTranslations = usageMeaning.getUsageTranslations();
+			usageValues = usages.stream().map(usage -> usage.getValue()).collect(Collectors.toList());
+			usageTranslationValues = usageTranslations.stream().map(usageTranslation -> usageTranslation.getValue()).collect(Collectors.toList());
+
+			int usageWordMatchByOriginalTokenCount = 0;
+			int usageWordMatchByLemmatisationCount = 0;
+			int usageWordMatchByTokenSplitCount = 0;
+
+			for (UsageTranslation usageTranslation : usageTranslations) {
+				originalTokens = usageTranslation.getOriginalTokens();
+				lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+				if (CollectionUtils.containsAny(originalTokens, wordMatchValues)) {
+					usageWordMatchByOriginalTokenCount++;
+				}
+				if (CollectionUtils.containsAny(lemmatisedTokens, wordMatchValues)) {
+					usageWordMatchByLemmatisationCount++;
+				}
+				if (containsMultiWordMatches) {
+					boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatchValues, originalTokens, lemmatisedTokens);
+					if (containsAnyMatchByWordSplit) {
+						usageWordMatchByTokenSplitCount++;
 					}
 				}
-				if (usageWordMatchByLemmatisationCount == 0) {
-					if (usageWordMatchByOriginalTokenCount > 0) {
-						successfulUsageTranslationMatchCount.increment();
-						logBuf = new StringBuffer();
-						logBuf.append(newWordValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(usageValue);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(wordMatchValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(usageTranslationValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("lemmatiseerimata sõnade võrdlus");
-						String logRow = logBuf.toString();
-						reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
-					} else if (usageWordMatchByTokenSplitCount > 0) {
-						successfulUsageTranslationMatchCount.increment();
-						logBuf = new StringBuffer();
-						logBuf.append(newWordValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(usageValue);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(wordMatchValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(usageTranslationValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("mitmesõnalise vaste võrdlus");
-						String logRow = logBuf.toString();
-						reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
-					} else {
-						missingUsageTranslationMatchCount.increment();
-						logBuf = new StringBuffer();
-						logBuf.append(newWordValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(usageValue);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(wordMatchValues);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(usageTranslationValues);
-						String logRow = logBuf.toString();
-						reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
-					}
-				} else if (usageWordMatchByLemmatisationCount == 1) {
+			}
+			if (usageWordMatchByLemmatisationCount == 0) {
+				if (usageWordMatchByOriginalTokenCount > 0) {
 					successfulUsageTranslationMatchCount.increment();
-				} else if (usageWordMatchByLemmatisationCount > 1) {
-					ambiguousUsageTranslationMatchCount.increment();
 					logBuf = new StringBuffer();
 					logBuf.append(newWordValues);
 					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageValue);
+					logBuf.append(usageValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordMatchValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageTranslationValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("lemmatiseerimata sõnade võrdlus");
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
+				} else if (usageWordMatchByTokenSplitCount > 0) {
+					successfulUsageTranslationMatchCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(newWordValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(wordMatchValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageTranslationValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append("mitmesõnalise vaste võrdlus");
+					String logRow = logBuf.toString();
+					reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
+				} else {
+					missingUsageTranslationMatchCount.increment();
+					logBuf = new StringBuffer();
+					logBuf.append(newWordValues);
+					logBuf.append(CSV_SEPARATOR);
+					logBuf.append(usageValues);
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append(wordMatchValues);
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append(usageTranslationValues);
 					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
+					reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
 				}
+			} else if (usageWordMatchByLemmatisationCount == 1) {
+				successfulUsageTranslationMatchCount.increment();
+			} else if (usageWordMatchByLemmatisationCount > 1) {
+				ambiguousUsageTranslationMatchCount.increment();
+				logBuf = new StringBuffer();
+				logBuf.append(newWordValues);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(usageValues);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(wordMatchValues);
+				logBuf.append(CSV_SEPARATOR);
+				logBuf.append(usageTranslationValues);
+				String logRow = logBuf.toString();
+				reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
 			}
 		}
 	}
@@ -594,7 +597,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	// TODO paradigms.... 
 	private List<Paradigm> extractParadigms(String word, String wordFormsStr, String[] wordComponents) throws Exception {
 
 		int wordComponentCount = wordComponents.length;
@@ -793,13 +795,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			for (Usage usage : usages) {
-				//FIXME refactor. translations go to meaning
-				usage.setUsageTranslations(usageTranslations);
-			}
-
 			usageMeaning = new UsageMeaning();
 			usageMeaning.setUsages(usages);
+			usageMeaning.setUsageTranslations(usageTranslations);
 			usageMeanings.add(usageMeaning);
 		}
 		return usageMeanings;
@@ -853,9 +851,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			List<String> lemmatisedTokens;
 			UsageMeaning matchingUsageMeaning;
 			for (UsageMeaning usageMeaning : allUsageMeanings) {
+				usageTranslations = usageMeaning.getUsageTranslations();
 				matchingUsages = new ArrayList<>();
 				for (Usage usage : usageMeaning.getUsages()) {
-					usageTranslations = usage.getUsageTranslations();
 					boolean isUsageTranslationMatch = false;
 					for (UsageTranslation usageTranslation : usageTranslations) {
 						originalTokens = usageTranslation.getOriginalTokens();
@@ -904,9 +902,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
 					for (Usage usage : usageMeaning.getUsages()) {
 						createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-						for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
-							createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
-						}
+					}
+					for (UsageTranslation usageTranslation : usageMeaning.getUsageTranslations()) {
+						createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
 					}
 				}
 			}

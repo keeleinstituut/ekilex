@@ -1,5 +1,7 @@
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
+drop table if exists collocation_usage;
+drop table if exists collocation;
 drop table if exists lex_relation;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
@@ -641,6 +643,23 @@ create table lex_relation
 );
 alter sequence lex_relation_id_seq restart with 10000;
 
+-- kollokatsioon
+create table collocation
+(
+  id bigserial primary key,
+  lexeme1_id bigint references lexeme(id) on delete cascade not null,
+  lexeme2_id bigint references lexeme(id) on delete cascade not null,
+  value text not null,
+  unique(lexeme1_id, lexeme2_id)--this may not be valid restriction
+);
+
+create table collocation_usage
+(
+  id bigserial primary key,
+  collocation_id bigint references collocation(id) on delete cascade not null,
+  value text not null
+);
+
 create table freeform_ref_link
 (
   id bigserial primary key,
@@ -680,10 +699,14 @@ create index word_guid_word_id_idx on word_guid(word_id);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);
+create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
+create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
 create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
 create index word_relation_word1_id_idx on word_relation(word1_id);
 create index word_relation_word2_id_idx on word_relation(word2_id);
+create index form_relation_form1_id_idx on form_relation(form1_id);
+create index form_relation_form2_id_idx on form_relation(form2_id);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_type_idx on freeform(type);
@@ -691,9 +714,12 @@ create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
 create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);
 create index meaning_freeform_freeform_id_idx on meaning_freeform(freeform_id);
+create index lexeme_freeform_lexeme_id_idx on lexeme_freeform(lexeme_id);
+create index lexeme_freeform_freeform_id_idx on lexeme_freeform(freeform_id);
 create index definition_freeform_definition_id_idx on definition_freeform(definition_id);
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
 create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
 create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
-create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
-create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);
+create index collocation_lexeme1_id_idx on collocation(lexeme1_id);
+create index collocation_lexeme2_id_idx on collocation(lexeme2_id);
+create index collocation_usage_collocation_id on collocation_usage(collocation_id);

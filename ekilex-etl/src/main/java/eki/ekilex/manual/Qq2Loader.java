@@ -27,9 +27,9 @@ public class Qq2Loader {
 			// /projects/eki/data/dictionaries/mab/mab.xml
 
 			String qq2FilePath = ConsolePromptUtil.promptDataFilePath("QQ2 type dictionary data file location? (/absolute/path/to/file.xml)");
-			String mabFilePath = null;
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
 			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
+			String mabFilePath = null;
 			if (isAddForms) {
 				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
 			}

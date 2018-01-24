@@ -37,6 +37,9 @@ import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
 
+/*
+ * TODO lots of stuff on hold here until owners of Esterm dare to share full data files.
+ */
 @Component
 public class EstermLoaderRunner extends AbstractLoaderRunner {
 
