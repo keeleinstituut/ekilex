@@ -19,10 +19,6 @@ function initialise() {
 	});
 }
 
-function selectDatasets(selection) {
-	$('#dataset_select').find(':checkbox').prop('checked', selection)
-}
-
 function initEditDlg(elem) {
 	var targetName = $(elem).data('target-elem');
 	var targetElement = $('[name="' + targetName + '"]');
