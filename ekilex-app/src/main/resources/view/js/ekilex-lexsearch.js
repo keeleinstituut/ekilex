@@ -14,7 +14,3 @@ $(document).on("click", ":button[name='detailsBtn']", function() {
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	});
 });
-
-function selectDatasets(selection) {
-	$('#dataset_select').find(':checkbox').prop('checked', selection)
-}

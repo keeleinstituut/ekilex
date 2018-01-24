@@ -20,36 +20,8 @@
         <h5 class="card-title" th:text="#{lex.search.title}">Vormi otsing</h5>
       </div>
       <div class="card-body">
-        <form th:action="@{/lexsearch}">
-          <div class="form-row">
-            <div class="col-12">
-              <div class="form-group row">
-                <label class="col-auto col-form-label">Otsing</label>
-                <div class="col-5">
-                  <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
-                </div>
-                <div class="col-4" th:if="${datasets}">
-                  <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
-                    Sõnastiku valik
-                  </button>
-                  <div id="dataset_select" class="collapse">
-                    <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
-                    <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
-                    <div class="custom-controls-stacked mt-2">
-                      <label class="custom-control custom-checkbox" th:each="dict : ${datasets}">
-                        <input type="checkbox" class="custom-control-input" th:value="${dict.key}" th:name="dicts" th:checked="${#lists.contains(selectedDatasets, dict.key)}">
-                        <span class="custom-control-indicator"></span>
-                        <span class="custom-control-description" th:text="${dict.value}">answer</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-2">
-                  <button type="submit" class="btn btn-primary">Otsi</button>
-                </div>
-              </div>
-            </div>
-          </div>
+        <form th:action="@{/lexsearch}" method="post">
+          <th:block th:replace="search :: search_form"></th:block>
         </form>
       </div>
     </div>

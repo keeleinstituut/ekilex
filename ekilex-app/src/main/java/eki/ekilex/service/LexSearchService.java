@@ -1,6 +1,6 @@
 package eki.ekilex.service;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -49,7 +49,7 @@ public class LexSearchService {
 	@Transactional
 	public List<Word> findWords(String searchFilter, List<String> datasets) {
 		if (StringUtils.isBlank(searchFilter)) {
-			return new ArrayList<>();
+			return Collections.emptyList();
 		}
 		return lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
 	}
