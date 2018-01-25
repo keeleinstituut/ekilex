@@ -30,11 +30,13 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(CollocateLoaderRunner.class);
 
-	private static final String SQL_SELECT_LEXEME_BY_DATASET_POS_WORD_FORM = "sql/select_lexeme_by_dataset_and_pos_and_word_and_form.sql";
+	private static final String SQL_SELECT_LEXEME_BY_DATASET_AND_LANG = "sql/select_lexeme_by_dataset_and_lang.sql";
 
-	private static final String SQL_SELECT_LEXEME_BY_DATASET_POS_WORD = "sql/select_lexeme_by_dataset_and_pos_and_word.sql";
+	private static final String SQL_EXISTS_WORD_WORD = "sql/exists_word_word.sql";
 
-	private static final String SQL_SELECT_LEXEME_BY_DATASET_POS_FORM = "sql/select_lexeme_by_dataset_and_pos_and_form.sql";
+	private static final String SQL_EXISTS_WORD_FORM = "sql/exists_word_form.sql";
+
+	private static final String SQL_EXISTS_LEXEME_POS = "sql/exists_lexeme_pos.sql";
 
 	private static final String REPORT_ILLEGAL_DATA = "illegal_data";
 
@@ -52,11 +54,13 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 
 	private ReportComposer reportComposer;
 
-	private String sqlSelectLexemeByDatasetPosWordForm;
+	private String sqlSelectLexemeByDatasetAndLang;
 
-	private String sqlSelectLexemeByDatasetPosWord;
+	private String sqlExistsWordWord;
 
-	private String sqlSelectLexemeByDatasetPosForm;
+	private String sqlExistsWordForm;
+
+	private String sqlExistsLexemePos;
 
 	private Map<String, String> posCodes;
 
@@ -66,14 +70,17 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_BY_DATASET_POS_WORD_FORM);
-		sqlSelectLexemeByDatasetPosWordForm = getContent(resourceFileInputStream);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_BY_DATASET_AND_LANG);
+		sqlSelectLexemeByDatasetAndLang = getContent(resourceFileInputStream);
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_BY_DATASET_POS_WORD);
-		sqlSelectLexemeByDatasetPosWord = getContent(resourceFileInputStream);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_EXISTS_WORD_WORD);
+		sqlExistsWordWord = getContent(resourceFileInputStream);
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_BY_DATASET_POS_FORM);
-		sqlSelectLexemeByDatasetPosForm = getContent(resourceFileInputStream);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_EXISTS_WORD_FORM);
+		sqlExistsWordForm = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_EXISTS_LEXEME_POS);
+		sqlExistsLexemePos = getContent(resourceFileInputStream);
 
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 	}
@@ -143,10 +150,12 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 						String logRow = logBuf.toString();
 						reportComposer.append(REPORT_ILLEGAL_DATA, logRow);
 					}
-					continue;
+					//continue;
+					wordPosCode = null;
+				} else {
+					wordPosCode = wordPosNode.getTextTrim();
+					wordPosCode = posCodes.get(wordPosCode);
 				}
-				wordPosCode = wordPosNode.getTextTrim();
-				wordPosCode = posCodes.get(wordPosCode);
 				lexemes = getLexemes(targetDataset, wordPosCode, word, null, dataLang);
 				wordLexemeData = new WordLexemeData(word, wordPosCode, lexemes);
 				wordMap.put(word, wordLexemeData);
@@ -229,9 +238,12 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 		List<String> collocWords = collectTextValues(collocWordNodes);
 		List<String> prevWords = collectTextValues(prevWordNodes);
 		List<String> nextWords = collectTextValues(nextWordNodes);
+		boolean collocPosCodeExists = StringUtils.isNotBlank(collocPosCode);
+		String loggedCollocPosCode = collocPosCodeExists ? collocPosCode : "-";
 		List<LexemeMeaningData> lexemes;
 		LexemeMeaningData lexeme;
 		StringBuffer logBuf;
+		int meaningCount;
 
 		int potentialCollocationCounter = Math.max(collocWordNodes.size(), 1) * Math.max(prevWordNodes.size(), 1) * Math.max(nextWordNodes.size(), 1);
 		potentialCollocationCount.increment(potentialCollocationCounter);
@@ -252,7 +264,12 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 
 		Map<String, LexemeMeaningData> collocWordLexemeMap = new HashMap<>();
 		for (String collocWord : collocWords) {
+			// first attempt with pos if exists
 			lexemes = getLexemes(targetDataset, collocPosCode, null, collocWord, dataLang);
+			if (CollectionUtils.isEmpty(lexemes) && collocPosCodeExists) {
+				// second attempt without pos
+				lexemes = getLexemes(targetDataset, null, null, collocWord, dataLang);
+			}
 			if (CollectionUtils.isEmpty(lexemes)) {
 				missingDataCount.increment();
 				logger.warn("Could not find collocate word {}", collocWord);
@@ -266,7 +283,7 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append(collocWord);
 					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(collocPosCode);
+					logBuf.append(loggedCollocPosCode);
 					String logRow = logBuf.toString();
 					reportComposer.append(REPORT_MISSING_WORD, logRow);
 				}
@@ -280,18 +297,20 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append("kollokaat");
 					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("sõnale on mitu vastet");
+					logBuf.append("sõnale on vasteid ");
+					logBuf.append(lexemes.size());
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append(collocWord);
 					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(collocPosCode);
+					logBuf.append(loggedCollocPosCode);
 					String logRow = logBuf.toString();
 					reportComposer.append(REPORT_AMBIGUOUS_WORD_MATCH, logRow);
 				}
 				continue;
 			}
 			lexeme = lexemes.get(0);
-			if (lexeme.getMeaningIds().length > 1) {
+			meaningCount = lexeme.getMeaningIds().length;
+			if (meaningCount > 1) {
 				ambiguousDataCount.increment();
 				logger.warn("Many meanings for collocate word {}", collocWord);
 				if (doReports) {
@@ -300,11 +319,12 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append("kollokaat");
 					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("sõnal on mitu tähendust");
+					logBuf.append("sõnal on tähendusi ");
+					logBuf.append(meaningCount);
 					logBuf.append(CSV_SEPARATOR);
 					logBuf.append(collocWord);
 					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(collocPosCode);
+					logBuf.append(loggedCollocPosCode);
 					String logRow = logBuf.toString();
 					reportComposer.append(REPORT_AMBIGUOUS_MEANING_MATCH, logRow);
 				}
@@ -336,10 +356,24 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 				WordLexemeData wordData = wordMap.get(prevWord);
 				lexemes = null;
 				if (wordData == null) {
+					// first attempt with pos if exists
+					boolean posExists = false;
 					for (WordLexemeData wordDataCand : wordMap.values()) {
+						if (StringUtils.isNotBlank(wordDataCand.getPosCode())) {
+							posExists = true;
+						}
 						lexemes = getLexemes(targetDataset, wordDataCand.getPosCode(), wordDataCand.getWord(), prevWord, dataLang);
 						if (CollectionUtils.isNotEmpty(lexemes)) {
 							break;
+						}
+					}
+					// second attempt without pos
+					if (CollectionUtils.isEmpty(lexemes) && posExists) {
+						for (WordLexemeData wordDataCand : wordMap.values()) {
+							lexemes = getLexemes(targetDataset, null, wordDataCand.getWord(), prevWord, dataLang);
+							if (CollectionUtils.isNotEmpty(lexemes)) {
+								break;
+							}
 						}
 					}
 				} else {
@@ -372,18 +406,20 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append("eel");
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("sõnale on mitu vastet");
+						logBuf.append("sõnale on vasteid ");
+						logBuf.append(lexemes.size());
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append(prevWord);
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(collocPosCode);
+						logBuf.append(wordPos);
 						String logRow = logBuf.toString();
 						reportComposer.append(REPORT_AMBIGUOUS_WORD_MATCH, logRow);
 					}
 					continue;
 				}
 				lexeme = lexemes.get(0);
-				if (lexeme.getMeaningIds().length > 1) {
+				meaningCount = lexeme.getMeaningIds().length;
+				if (meaningCount > 1) {
 					ambiguousDataCount.increment();
 					logger.warn("Many meanings for previous word {}", prevWord);
 					if (doReports) {
@@ -392,11 +428,12 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append("eel");
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("sõnal on mitu tähendust");
+						logBuf.append("sõnal on tähendusi ");
+						logBuf.append(meaningCount);
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append(prevWord);
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(collocPosCode);
+						logBuf.append(wordPos);
 						String logRow = logBuf.toString();
 						reportComposer.append(REPORT_AMBIGUOUS_MEANING_MATCH, logRow);
 					}
@@ -429,10 +466,24 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 				WordLexemeData wordData = wordMap.get(nextWord);
 				lexemes = null;
 				if (wordData == null) {
+					// first attempt with pos if exists
+					boolean posExists = false;
 					for (WordLexemeData wordDataCand : wordMap.values()) {
+						if (StringUtils.isNotBlank(wordDataCand.getPosCode())) {
+							posExists = true;
+						}
 						lexemes = getLexemes(targetDataset, wordDataCand.getPosCode(), wordDataCand.getWord(), nextWord, dataLang);
 						if (CollectionUtils.isNotEmpty(lexemes)) {
 							break;
+						}
+					}
+					// second attempt without pos
+					if (CollectionUtils.isEmpty(lexemes) && posExists) {
+						for (WordLexemeData wordDataCand : wordMap.values()) {
+							lexemes = getLexemes(targetDataset, null, wordDataCand.getWord(), nextWord, dataLang);
+							if (CollectionUtils.isNotEmpty(lexemes)) {
+								break;
+							}
 						}
 					}
 				} else {
@@ -465,18 +516,20 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append("järel");
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("sõnale on mitu vastet");
+						logBuf.append("sõnale on vasteid ");
+						logBuf.append(lexemes.size());
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append(nextWord);
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(collocPosCode);
+						logBuf.append(wordPos);
 						String logRow = logBuf.toString();
 						reportComposer.append(REPORT_AMBIGUOUS_WORD_MATCH, logRow);
 					}
 					continue;
 				}
 				lexeme = lexemes.get(0);
-				if (lexeme.getMeaningIds().length > 1) {
+				meaningCount = lexeme.getMeaningIds().length;
+				if (meaningCount > 1) {
 					ambiguousDataCount.increment();
 					logger.warn("Many meanings for next word {}", nextWord);
 					if (doReports) {
@@ -485,11 +538,12 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append("järel");
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("sõnal on mitu tähendust");
+						logBuf.append("sõnal on tähendusi ");
+						logBuf.append(meaningCount);
 						logBuf.append(CSV_SEPARATOR);
 						logBuf.append(nextWord);
 						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(collocPosCode);
+						logBuf.append(wordPos);
 						String logRow = logBuf.toString();
 						reportComposer.append(REPORT_AMBIGUOUS_MEANING_MATCH, logRow);
 					}
@@ -526,7 +580,6 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 				String logRow = logBuf.toString();
 				reportComposer.append(REPORT_ILLEGAL_DATA, logRow);
 			}
-			
 		}
 	}
 
@@ -538,21 +591,24 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 	private List<LexemeMeaningData> getLexemes(String dataset, String posCode, String word, String form, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		String sql;
+		String sql = new String(sqlSelectLexemeByDatasetAndLang);
+		StringBuffer sqlBuf = new StringBuffer();
 		tableRowParamMap.put("dataset", dataset);
-		tableRowParamMap.put("posCode", posCode);
-		if (StringUtils.isBlank(form)) {
-			tableRowParamMap.put("word", word);
-			sql = sqlSelectLexemeByDatasetPosWord;
-		} else if (StringUtils.isBlank(word)) {
-			tableRowParamMap.put("form", form);
-			sql = sqlSelectLexemeByDatasetPosForm;
-		} else {
-			tableRowParamMap.put("word", word);
-			tableRowParamMap.put("form", form);
-			sql = sqlSelectLexemeByDatasetPosWordForm;
-		}
 		tableRowParamMap.put("lang", lang);
+		if (StringUtils.isNotBlank(posCode)) {
+			tableRowParamMap.put("posCode", posCode);
+			sqlBuf.append(sqlExistsLexemePos);
+		}
+		if (StringUtils.isNotBlank(word)) {
+			tableRowParamMap.put("word", word);
+			sqlBuf.append(sqlExistsWordWord);
+		}
+		if (StringUtils.isNotBlank(form)) {
+			tableRowParamMap.put("form", form);
+			sqlBuf.append(sqlExistsWordForm);
+		}
+		sql = StringUtils.replace(sql, "{placeholder}", sqlBuf.toString());
+
 		List<Map<String, Object>> results = basicDbService.queryList(sql, tableRowParamMap);
 		List<LexemeMeaningData> lexemes =
 				results.stream().map(result -> {
@@ -562,7 +618,7 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 						Long[] meaningIds = (Long[]) meaningIdsProxy.getArray();
 						return new LexemeMeaningData(lexemeId, meaningIds);
 					} catch (SQLException e) {
-						e.printStackTrace();
+						//hardly
 						return null;
 					}
 				}).collect(Collectors.toList());

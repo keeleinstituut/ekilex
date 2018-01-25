@@ -171,7 +171,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String[] wordComponents;
 		Word wordObj;
 		Lexeme lexemeObj;
-		Paradigm paradigmObj;
 
 		Count wordDuplicateCount = new Count();
 		Count lexemeDuplicateCount = new Count();
@@ -203,7 +202,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 			word = null;
-			paradigmObj = null;
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
