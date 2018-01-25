@@ -183,5 +183,5 @@ insert into freeform (id, parent_id, type, value_text) values (1003, 1002, 'USAG
 insert into freeform (id, parent_id, type, value_text) values (1004, 1003, 'USAGE', 'Hommikul oli hall maas');
 insert into freeform (id, parent_id, type, value_text) values (1005, 1003, 'USAGE', 'Haned lähevad, hallad taga');
 
-insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1001, 4024, 1001);
+insert into meaning_freeform (id, meaning_id, freeform_id) values (1001, 2024, 1001);
 insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1002, 4001, 1002);
