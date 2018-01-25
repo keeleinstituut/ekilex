@@ -64,6 +64,7 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
@@ -144,17 +145,19 @@ public class LexSearchDbService implements SystemConstant {
 			} else if (SearchKey.CONCEPT_ID.equals(searchKey)) {
 
 				Lexeme l2 = LEXEME.as("l2");
-				LexemeFreeform l2ff = LEXEME_FREEFORM.as("l2ff");
+				Meaning m2 = MEANING.as("m2");
+				MeaningFreeform m2ff = MEANING_FREEFORM.as("m2ff");
 				Freeform concept = FREEFORM.as("concept");
 
 				Condition where2 =
 						l2.WORD_ID.eq(w1.ID)
-						.and(l2ff.LEXEME_ID.eq(l2.ID))
-						.and(l2ff.FREEFORM_ID.eq(concept.ID))
+						.and(l2.MEANING_ID.eq(m2.ID))
+						.and(m2ff.MEANING_ID.eq(m2.ID))
+						.and(m2ff.FREEFORM_ID.eq(concept.ID))
 						.and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
 				where2 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where2);
-				where1 = where1.and(DSL.exists(DSL.select(concept.ID).from(l2, l2ff, concept).where(where2)));
+				where1 = where1.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
 			}
 		}
 		if (CollectionUtils.isNotEmpty(datasets)) {
