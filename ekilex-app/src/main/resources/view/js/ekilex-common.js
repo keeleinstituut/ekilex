@@ -13,15 +13,15 @@ function displayDetailSearchButtons() {
 }
 
 function displaySimpleSearch() {
-    $('[name="simpleSearch"]').prop('hidden', null);
-    $('[name="detailSearch"]').prop('hidden', 'hidden');
+    $('[name="simpleSearchFilter"]').prop('hidden', null);
+    $('[name="detailSearchFilter"]').prop('hidden', 'hidden');
     $('#searchMode').val('SIMPLE');
     $('#searchModeBtn').text('Detailotsing');
 }
 
 function displayDetailSearch() {
-    $('[name="simpleSearch"]').prop('hidden', 'hidden');
-    $('[name="detailSearch"]').prop('hidden', null);
+    $('[name="simpleSearchFilter"]').prop('hidden', 'hidden');
+    $('[name="detailSearchFilter"]').prop('hidden', null);
     $('#searchMode').val('DETAIL');
     $('#searchModeBtn').text('Lihtotsing');
 }
@@ -53,7 +53,7 @@ function initialiseDeatailSearch() {
         searchOperandElement.val(searchOperandElement.find('option').first().val());
     });
     $(document).on("click", ":button[name='addDetailConditionBtn']", function() {
-        var detailSearchElement = $(this).closest('[name="detailSearch"]');
+        var detailSearchElement = $(this).closest('[name="detailSearchFilter"]');
         var lastConditionElement = detailSearchElement.find('[name="detailCondition"]').last();
         var copyOfLastElement = lastConditionElement.clone();
         var oldIndex = copyOfLastElement.data('index');

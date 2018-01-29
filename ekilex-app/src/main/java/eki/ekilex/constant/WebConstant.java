@@ -24,6 +24,12 @@ public interface WebConstant {
 
 	String ERROR_PAGE = "error";
 
+	String SEARCH_MODE_SIMPLE = "SIMPLE";
+
+	String SEARCH_MODE_DETAIL = "DETAIL";
+
+	String SESSION_BEAN = "sessionBean";
+
 	String APP_DATA_MODEL_KEY = "appData";
 
 	String MARKDOWN_RENDERER_KEY = "markdown";

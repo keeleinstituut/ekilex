@@ -8,10 +8,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.RefLink;
 import eki.ekilex.data.Source;
 import eki.ekilex.service.RefLinkService;
@@ -19,6 +21,7 @@ import eki.ekilex.service.SourceService;
 
 @ConditionalOnWebApplication
 @Controller
+@SessionAttributes(WebConstant.SESSION_BEAN)
 public class RefLinkController {
 
 	private static final Logger logger = LoggerFactory.getLogger(RefLinkController.class);

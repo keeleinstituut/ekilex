@@ -26,11 +26,11 @@
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${wordsFoundBySearch.isEmpty() && searchFilter != null}">
+    <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsFoundBySearch) && (simpleSearchFilter != null)}">
       <span th:text="#{lex.not.found}">Not found.</span>
     </div>
 
-    <div class="mt-4 float-left" th:if="${!wordsFoundBySearch.isEmpty()}" style="height: calc(100vh - 15em); width: 15%; overflow-y: auto;">
+    <div class="mt-4 float-left" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 15em); width: 15%; overflow-y: auto;">
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100">

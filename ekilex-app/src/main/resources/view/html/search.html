@@ -13,9 +13,9 @@
       <div class="form-group row">
         <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
         <div class="col-2">
-          <button type="button" class="btn btn-info" id="searchModeBtn" th:text="${searchMode == 'SIMPLE' ? 'Detailotsing' : 'Lihtotsing'}">search toggle</button>
+          <button type="button" class="btn btn-info" id="searchModeBtn" th:text="#{'search.mode.' + ${searchMode}}">search toggle</button>
         </div>
-        <div class="col-4" th:if="${datasets}" th:insert="~{::dataset_select}"></div>
+        <div class="col-4" th:if="${allDatasets}" th:insert="~{::dataset_select}"></div>
       </div>
     </div>
   </div>
@@ -27,12 +27,12 @@
 </th:block>
 
 <th:block th:fragment="simple_search">
-  <div class="form-row" th:name="simpleSearch" th:hidden="${searchMode != 'SIMPLE'}">
+  <div class="form-row" name="simpleSearchFilter" th:hidden="${searchMode != 'SIMPLE'}">
     <div class="col-12">
       <div class="form-group row">
         <label class="col-auto col-form-label">Otsing</label>
         <div class="col-5">
-          <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
+          <input type="text" class="form-control" name="simpleSearchFilter" th:value="${simpleSearchFilter}" placeholder="sisesta otsitav vorm">
         </div>
         <div class="col-2">
           <button type="submit" class="btn btn-primary">Otsi</button>
@@ -43,9 +43,9 @@
 </th:block>
 
 <th:block th:fragment="detail_search">
-  <div class="form-row" th:name="detailSearch" th:hidden="${searchMode != 'DETAIL'}">
+  <div class="form-row" name="detailSearchFilter" th:hidden="${searchMode != 'DETAIL'}">
     <div class="col-10">
-      <div class="form-group row" th:each="criterion, stat : ${detailSearch.searchCriteria}" name="detailCondition" th:data-index="${stat.index}">
+      <div class="form-group row" th:each="criterion, stat : ${detailSearchFilter.searchCriteria}" name="detailCondition" th:data-index="${stat.index}">
         <div class="col-2">
           <select class="form-control" th:name="'searchCriteria[' + ${stat.index} + '].searchKey'">
             <option th:each="key : ${T(eki.ekilex.constant.SearchKey).values()}"
@@ -89,22 +89,22 @@
     </div>
   </div>
   <script th:inline="javascript">
-      initialiseDeatailSearch()
+  	initialiseDeatailSearch()
   </script>
 </th:block>
 
 <th:block th:fragment="dataset_select">
-    <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
-      Sõnastiku valik
-    </button>
-    <div id="dataset_select" class="collapse">
-      <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
-      <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
-      <div class="form-check mt-2" th:each="dict : ${datasets}">
-        <input class="form-check-input" type="checkbox" th:value="${dict.key}" th:name="dicts" th:checked="${#lists.contains(selectedDatasets, dict.key)}">
-        <label class="form-check-label" th:text="${dict.value}">Default checkbox</label>
-      </div>
+  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
+    Sõnastiku valik
+  </button>
+  <div id="dataset_select" class="collapse">
+    <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
+    <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
+    <div class="form-check mt-2" th:each="dataset : ${allDatasets}">
+      <input class="form-check-input" type="checkbox" th:value="${dataset.code}" th:name="selectedDatasets" th:checked="${#lists.contains(sessionBean.selectedDatasets, dataset.code)}">
+      <label class="form-check-label" th:text="${dataset.name}">Default checkbox</label>
     </div>
+  </div>
 </th:block>
 
 </body>

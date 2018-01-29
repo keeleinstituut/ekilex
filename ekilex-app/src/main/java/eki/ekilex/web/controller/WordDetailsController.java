@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.service.UpdateService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +10,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttributes;
 
 @ConditionalOnWebApplication
 @Controller
+@SessionAttributes(WebConstant.SESSION_BEAN)
 public class WordDetailsController {
 
 	private static final Logger logger = LoggerFactory.getLogger(WordDetailsController.class);

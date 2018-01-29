@@ -20,6 +20,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record2;
 import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.Table;
@@ -54,6 +55,10 @@ public class CommonDataDbService {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
+	public Result<Record2<String,String>> getDatasets() {
+
+		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).fetch();
+	}
 
 	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
 
