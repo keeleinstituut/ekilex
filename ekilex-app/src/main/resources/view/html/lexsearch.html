@@ -84,6 +84,13 @@
                 <span th:text="${lexeme.dataset}" class="float-right"></span>
               </b>
             </div>
+            <div th:if="${!#arrays.isEmpty(lexeme.vocalForms)}">
+              <span class="lbl">Hääldus</span>
+              <span th:each="vocalForm,vocalFormIter : ${lexeme.vocalForms}">
+                  <span th:text="${vocalForm}"></span>
+                  <span th:unless="${vocalFormIter.last}">,&nbsp;</span>
+                </span>
+            </div>
             <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
               <hr />
               <div th:if="${lexeme.lexemeTypeCode != null}">

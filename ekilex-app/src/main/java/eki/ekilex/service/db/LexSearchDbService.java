@@ -40,8 +40,8 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
-import org.jooq.Record14;
 import org.jooq.Record15;
+import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -371,13 +371,14 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record15<String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
+	public Result<Record16<String[],String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
 			Long wordId, List<String> selectedDatasets) {
 
 		return 
 				create
 				.select(
 						DSL.arrayAggDistinct(FORM.VALUE).as("words"),
+						DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
