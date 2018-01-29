@@ -411,6 +411,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (subWordId == null) {
 				WordData newWord = createDefaultWordFrom(subWord.value, subWord.value, dataLang, subWord.displayMorph);
 				subWordId = newWord.id;
+				newWord.homonymNr = subWord.homonymNr;
 				context.importedWords.add(newWord);
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(newWord.id);
@@ -1284,13 +1285,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
 
 		Long wordId = null;
-		if (words.size() == 1) {
-			wordId = words.get(0).id;
-		} else if (words.size() > 1) {
-			Optional<WordData> matchingWord = words.stream().filter(w -> w.homonymNr == homonymNr).findFirst();
-			if (matchingWord.isPresent()) {
-				wordId = matchingWord.get().id;
-			}
+		Optional<WordData> matchingWord = words.stream().filter(w -> w.homonymNr == homonymNr).findFirst();
+		if (matchingWord.isPresent()) {
+			wordId = matchingWord.get().id;
 		}
 		if (wordId == null) {
 			if (!reportingPaused) {
