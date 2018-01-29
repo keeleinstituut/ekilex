@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implements Record11<Long, Long, String, String, Timestamp, BigDecimal, String[], String, String, String, Long> {
 
-    private static final long serialVersionUID = -1856610218;
+    private static final long serialVersionUID = 2116645400;
 
     /**
      * Setter for <code>public.freeform.id</code>.
@@ -174,16 +174,16 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
     }
 
     /**
-     * Setter for <code>public.freeform.ordered_by</code>.
+     * Setter for <code>public.freeform.order_by</code>.
      */
-    public void setOrderedBy(Long value) {
+    public void setOrderBy(Long value) {
         set(10, value);
     }
 
     /**
-     * Getter for <code>public.freeform.ordered_by</code>.
+     * Getter for <code>public.freeform.order_by</code>.
      */
-    public Long getOrderedBy() {
+    public Long getOrderBy() {
         return (Long) get(10);
     }
 
@@ -304,7 +304,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
      */
     @Override
     public Field<Long> field11() {
-        return Freeform.FREEFORM.ORDERED_BY;
+        return Freeform.FREEFORM.ORDER_BY;
     }
 
     /**
@@ -392,7 +392,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
      */
     @Override
     public Long component11() {
-        return getOrderedBy();
+        return getOrderBy();
     }
 
     /**
@@ -480,7 +480,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
      */
     @Override
     public Long value11() {
-        return getOrderedBy();
+        return getOrderBy();
     }
 
     /**
@@ -578,7 +578,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
      */
     @Override
     public FreeformRecord value11(Long value) {
-        setOrderedBy(value);
+        setOrderBy(value);
         return this;
     }
 
@@ -615,7 +615,7 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
     /**
      * Create a detached, initialised FreeformRecord
      */
-    public FreeformRecord(Long id, Long parentId, String type, String valueText, Timestamp valueDate, BigDecimal valueNumber, String[] valueArray, String classifName, String classifCode, String lang, Long orderedBy) {
+    public FreeformRecord(Long id, Long parentId, String type, String valueText, Timestamp valueDate, BigDecimal valueNumber, String[] valueArray, String classifName, String classifCode, String lang, Long orderBy) {
         super(Freeform.FREEFORM);
 
         set(0, id);
@@ -628,6 +628,6 @@ public class FreeformRecord extends UpdatableRecordImpl<FreeformRecord> implemen
         set(7, classifName);
         set(8, classifCode);
         set(9, lang);
-        set(10, orderedBy);
+        set(10, orderBy);
     }
 }

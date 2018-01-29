@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> implements Record5<Long, Long, String, String, Long> {
 
-    private static final long serialVersionUID = -1760341757;
+    private static final long serialVersionUID = 826808423;
 
     /**
      * Setter for <code>public.definition.id</code>.
@@ -87,16 +87,16 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
     }
 
     /**
-     * Setter for <code>public.definition.ordered_by</code>.
+     * Setter for <code>public.definition.order_by</code>.
      */
-    public void setOrderedBy(Long value) {
+    public void setOrderBy(Long value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.definition.ordered_by</code>.
+     * Getter for <code>public.definition.order_by</code>.
      */
-    public Long getOrderedBy() {
+    public Long getOrderBy() {
         return (Long) get(4);
     }
 
@@ -169,7 +169,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public Field<Long> field5() {
-        return Definition.DEFINITION.ORDERED_BY;
+        return Definition.DEFINITION.ORDER_BY;
     }
 
     /**
@@ -209,7 +209,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public Long component5() {
-        return getOrderedBy();
+        return getOrderBy();
     }
 
     /**
@@ -249,7 +249,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public Long value5() {
-        return getOrderedBy();
+        return getOrderBy();
     }
 
     /**
@@ -293,7 +293,7 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
      */
     @Override
     public DefinitionRecord value5(Long value) {
-        setOrderedBy(value);
+        setOrderBy(value);
         return this;
     }
 
@@ -324,13 +324,13 @@ public class DefinitionRecord extends UpdatableRecordImpl<DefinitionRecord> impl
     /**
      * Create a detached, initialised DefinitionRecord
      */
-    public DefinitionRecord(Long id, Long meaningId, String value, String lang, Long orderedBy) {
+    public DefinitionRecord(Long id, Long meaningId, String value, String lang, Long orderBy) {
         super(Definition.DEFINITION);
 
         set(0, id);
         set(1, meaningId);
         set(2, value);
         set(3, lang);
-        set(4, orderedBy);
+        set(4, orderBy);
     }
 }

@@ -44,9 +44,9 @@ public class Sequences {
     public static final Sequence<Long> DEFINITION_ID_SEQ = new SequenceImpl<Long>("definition_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.definition_ordered_by_seq</code>
+     * The sequence <code>public.definition_order_by_seq</code>
      */
-    public static final Sequence<Long> DEFINITION_ORDERED_BY_SEQ = new SequenceImpl<Long>("definition_ordered_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+    public static final Sequence<Long> DEFINITION_ORDER_BY_SEQ = new SequenceImpl<Long>("definition_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.definition_ref_link_id_seq</code>
@@ -74,9 +74,9 @@ public class Sequences {
     public static final Sequence<Long> FREEFORM_ID_SEQ = new SequenceImpl<Long>("freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.freeform_ordered_by_seq</code>
+     * The sequence <code>public.freeform_order_by_seq</code>
      */
-    public static final Sequence<Long> FREEFORM_ORDERED_BY_SEQ = new SequenceImpl<Long>("freeform_ordered_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+    public static final Sequence<Long> FREEFORM_ORDER_BY_SEQ = new SequenceImpl<Long>("freeform_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.freeform_ref_link_id_seq</code>
