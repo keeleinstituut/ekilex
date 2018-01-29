@@ -25,6 +25,9 @@ public class FreeForm extends AbstractDataObject {
 	@Column(name = "value_date")
 	private Timestamp valueDate;
 
+	@Column(name = "order_by")
+	private Long orderBy;
+
 	private List<FreeForm> children = new ArrayList<>();
 
 	public Long getId() {
@@ -65,5 +68,13 @@ public class FreeForm extends AbstractDataObject {
 
 	public void setChildren(List<FreeForm> children) {
 		this.children = children;
+	}
+
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
 	}
 }

@@ -194,7 +194,7 @@ public class LexSearchDbService implements SystemConstant {
 						.on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
 						)
 				.where(lff.LEXEME_ID.eq(lexemeId))
-				.orderBy(r.ID, um.ID, u.ID, ut.ID, ud.ID)
+				.orderBy(r.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)
 				.fetch();
 	}
 
@@ -288,6 +288,7 @@ public class LexSearchDbService implements SystemConstant {
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
 						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
+				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
 
@@ -296,6 +297,7 @@ public class LexSearchDbService implements SystemConstant {
 				.select(DEFINITION.ID, DEFINITION.VALUE)
 				.from(DEFINITION)
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.orderBy(DEFINITION.ORDER_BY)
 				.fetch();
 	}
 
