@@ -24,6 +24,7 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.USAGE_AUTHOR_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
@@ -31,9 +32,12 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.sql.Timestamp;
 import java.util.List;
 
+import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
+import eki.ekilex.data.db.tables.UsageTypeLabel;
 import org.jooq.DSLContext;
-import org.jooq.Record14;
+import org.jooq.Record1;
 import org.jooq.Record15;
+import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -50,7 +54,6 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 
 @Service
 public class LexSearchDbService implements SystemConstant {
@@ -143,7 +146,7 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record14<Long, String, Long, Long, String, String, Long, String, String, Long, String, String, String, String>>
+	public Result<Record15<Long, String, Long, Long, String, String, Long, String, String, Long, String, String, String, String, String>>
 		findRectionUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
@@ -154,7 +157,9 @@ public class LexSearchDbService implements SystemConstant {
 		Freeform ud = FREEFORM.as("ud");
 		Freeform ua = FREEFORM.as("ua");
 		Freeform uat = FREEFORM.as("uat");
+		Freeform utype = FREEFORM.as("utype");
 		UsageAuthorTypeLabel uatl = USAGE_AUTHOR_TYPE_LABEL.as("uatl");
+		UsageTypeLabel utl = USAGE_TYPE_LABEL.as("utl");
 
 		return create
 				.select(
@@ -171,32 +176,36 @@ public class LexSearchDbService implements SystemConstant {
 						ud.VALUE_TEXT.as("usage_definition_value"),
 						ud.LANG.as("usage_definition_lang"),
 						ua.VALUE_TEXT.as("usage_author"),
-						uatl.VALUE.as("usage_author_type")
+						uatl.VALUE.as("usage_author_type"),
+						utl.VALUE.as("usage_type")
 						)
 				.from(
-						lff.innerJoin(r
-								.leftOuterJoin(um).on(um.PARENT_ID.eq(r.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
-								.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
-								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
-								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
-								.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
-								.leftOuterJoin(uat).on(uat.PARENT_ID.eq(u.ID).and(uat.TYPE.eq(FreeformType.USAGE_AUTHOR_TYPE.name())))
-								).on(lff.FREEFORM_ID.eq(r.ID).and(r.TYPE.eq(FreeformType.RECTION.name())))
-								.leftOuterJoin(uatl)
-								.on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
+						lff.innerJoin(r).on(lff.FREEFORM_ID.eq(r.ID).and(r.TYPE.eq(FreeformType.RECTION.name())))
+						.leftOuterJoin(um).on(um.PARENT_ID.eq(r.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
+						.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
+						.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
+						.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
+						.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
+						.leftOuterJoin(uat).on(uat.PARENT_ID.eq(u.ID).and(uat.TYPE.eq(FreeformType.USAGE_AUTHOR_TYPE.name())))
+						.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
+						.leftOuterJoin(utl)
+						.on(utl.CODE.eq(utype.CLASSIF_CODE).and(utl.LANG.eq(classifierLabelLang).and(utl.TYPE.eq(classifierLabelTypeCode))))
+						.leftOuterJoin(uatl)
+						.on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
 						)
 				.where(lff.LEXEME_ID.eq(lexemeId))
 				.orderBy(r.ID, um.ID, u.ID, ut.ID, ud.ID)
 				.fetch();
 	}
 
-	public Result<Record15<String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
+	public Result<Record16<String[],String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
 			Long wordId, List<String> selectedDatasets) {
 
 		return 
 				create
 				.select(
 						DSL.arrayAggDistinct(FORM.VALUE).as("words"),
+						DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
@@ -255,6 +264,16 @@ public class LexSearchDbService implements SystemConstant {
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.notIn(FreeformType.RECTION.name(), FreeformType.GRAMMAR.name())))
+				.fetch();
+	}
+
+	public Result<Record1<String>> findLexemeGrammars(Long lexemeId) {
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
 				.fetch();
 	}
 

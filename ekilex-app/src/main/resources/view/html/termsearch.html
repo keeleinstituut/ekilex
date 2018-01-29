@@ -155,6 +155,13 @@
               </div>
               <div th:if="${lexeme.classifiersExist}">
                 <hr />
+                <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
+                  <span class="lbl">Grammaatika</span>
+                  <span th:each="grammar,grammarIter : ${lexeme.grammars}">
+                  <span th:text="${grammar}"></span>
+                  <span th:unless="${grammarIter.last}">,&nbsp;</span>
+                </span>
+                </div>
                 <div th:if="${lexeme.typeCode != null}">
                   <span class="lbl">Keelenditüüp</span>
                   <span th:text="${lexeme.typeCode}"></span>
@@ -232,6 +239,7 @@
                                         th:data-op-type="usage"
                                         th:data-value="${usage.value}"
                                         th:utext="${markdown.toHtml(usage.value)}"></span>
+                                  <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
                                   <span th:if="${usage.author != null}">
                                     (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
                                   </span>

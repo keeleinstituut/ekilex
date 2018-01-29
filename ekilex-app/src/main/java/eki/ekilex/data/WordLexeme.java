@@ -1,11 +1,14 @@
 package eki.ekilex.data;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
+
+import static java.util.stream.Collectors.toList;
 
 public class WordLexeme extends AbstractDataObject {
 
@@ -13,6 +16,9 @@ public class WordLexeme extends AbstractDataObject {
 
 	@Column(name = "words")
 	private String[] words;
+
+	@Column(name = "vocal_forms")
+	private List<String> vocalForms;
 
 	@Column(name = "word_lang")
 	private String wordLang;
@@ -81,6 +87,8 @@ public class WordLexeme extends AbstractDataObject {
 	private List<Relation> wordRelations;
 
 	private List<Relation> meaningRelations;
+
+	private List<String> grammars;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -315,6 +323,22 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningRelations = meaningRelations;
 	}
 
+	public List<String> getVocalForms() {
+		return vocalForms;
+	}
+
+	public void setVocalForms(List<String> vocalForms) {
+		this.vocalForms = vocalForms;
+	}
+
+	public List<String> getGrammars() {
+		return grammars;
+	}
+
+	public void setGrammars(List<String> grammars) {
+		this.grammars = grammars;
+	}
+
 	public boolean isLexemeOrMeaningClassifiersExist() {
 		return lexemeOrMeaningClassifiersExist;
 	}
@@ -327,4 +351,7 @@ public class WordLexeme extends AbstractDataObject {
 		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
 	}
 
+	public void cleanUpVocalForms() {
+		this.vocalForms = this.vocalForms.stream().filter(Objects::nonNull).collect(toList());
+	}
 }
