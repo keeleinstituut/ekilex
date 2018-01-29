@@ -415,7 +415,8 @@ create table freeform
   value_array text array null,
   classif_name text null,
   classif_code varchar(100) null,
-  lang char(3) references lang(code) null
+  lang char(3) references lang(code) null,
+  ordered_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;
 

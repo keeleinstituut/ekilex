@@ -24,6 +24,16 @@ import org.jooq.impl.SequenceImpl;
 public class Sequences {
 
     /**
+     * The sequence <code>public.collocation_id_seq</code>
+     */
+    public static final Sequence<Long> COLLOCATION_ID_SEQ = new SequenceImpl<Long>("collocation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.collocation_usage_id_seq</code>
+     */
+    public static final Sequence<Long> COLLOCATION_USAGE_ID_SEQ = new SequenceImpl<Long>("collocation_usage_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.definition_freeform_id_seq</code>
      */
     public static final Sequence<Long> DEFINITION_FREEFORM_ID_SEQ = new SequenceImpl<Long>("definition_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -57,6 +67,11 @@ public class Sequences {
      * The sequence <code>public.freeform_id_seq</code>
      */
     public static final Sequence<Long> FREEFORM_ID_SEQ = new SequenceImpl<Long>("freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.freeform_ordered_by_seq</code>
+     */
+    public static final Sequence<Long> FREEFORM_ORDERED_BY_SEQ = new SequenceImpl<Long>("freeform_ordered_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.freeform_ref_link_id_seq</code>

@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -68,6 +70,8 @@ import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.records.CollocationRecord;
+import eki.ekilex.data.db.tables.records.CollocationUsageRecord;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
@@ -159,6 +163,8 @@ public class Keys {
     // IDENTITY definitions
     // -------------------------------------------------------------------------
 
+    public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
+    public static final Identity<CollocationUsageRecord, Long> IDENTITY_COLLOCATION_USAGE = Identities0.IDENTITY_COLLOCATION_USAGE;
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
     public static final Identity<DefinitionRefLinkRecord, Long> IDENTITY_DEFINITION_REF_LINK = Identities0.IDENTITY_DEFINITION_REF_LINK;
@@ -189,6 +195,9 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
+    public static final UniqueKey<CollocationRecord> COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = UniqueKeys0.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY;
+    public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = UniqueKeys0.COLLOCATION_USAGE_PKEY;
     public static final UniqueKey<DatasetRecord> DATASET_PKEY = UniqueKeys0.DATASET_PKEY;
     public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = UniqueKeys0.DEFINITION_PKEY;
     public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = UniqueKeys0.DEFINITION_DATASET_PKEY;
@@ -273,6 +282,9 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY;
+    public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY;
+    public static final ForeignKey<CollocationUsageRecord, CollocationRecord> COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = ForeignKeys0.DEFINITION__DEFINITION_LANG_FKEY;
     public static final ForeignKey<DefinitionDatasetRecord, DefinitionRecord> DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY;
@@ -382,6 +394,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     private static class Identities0 extends AbstractKeys {
+        public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
+        public static Identity<CollocationUsageRecord, Long> IDENTITY_COLLOCATION_USAGE = createIdentity(CollocationUsage.COLLOCATION_USAGE, CollocationUsage.COLLOCATION_USAGE.ID);
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static Identity<DefinitionRefLinkRecord, Long> IDENTITY_DEFINITION_REF_LINK = createIdentity(DefinitionRefLink.DEFINITION_REF_LINK, DefinitionRefLink.DEFINITION_REF_LINK.ID);
@@ -410,6 +424,9 @@ public class Keys {
     }
 
     private static class UniqueKeys0 extends AbstractKeys {
+        public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", Collocation.COLLOCATION.ID);
+        public static final UniqueKey<CollocationRecord> COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = createUniqueKey(Collocation.COLLOCATION, "collocation_lexeme1_id_lexeme2_id_key", Collocation.COLLOCATION.LEXEME1_ID, Collocation.COLLOCATION.LEXEME2_ID);
+        public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = createUniqueKey(CollocationUsage.COLLOCATION_USAGE, "collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE.ID);
         public static final UniqueKey<DatasetRecord> DATASET_PKEY = createUniqueKey(Dataset.DATASET, "dataset_pkey", Dataset.DATASET.CODE);
         public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = createUniqueKey(Definition.DEFINITION, "definition_pkey", Definition.DEFINITION.ID);
         public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = createUniqueKey(DefinitionDataset.DEFINITION_DATASET, "definition_dataset_pkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID, DefinitionDataset.DEFINITION_DATASET.DATASET_CODE);
@@ -492,6 +509,9 @@ public class Keys {
     }
 
     private static class ForeignKeys0 extends AbstractKeys {
+        public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, Collocation.COLLOCATION, "collocation__collocation_lexeme1_id_fkey", Collocation.COLLOCATION.LEXEME1_ID);
+        public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, Collocation.COLLOCATION, "collocation__collocation_lexeme2_id_fkey", Collocation.COLLOCATION.LEXEME2_ID);
+        public static final ForeignKey<CollocationUsageRecord, CollocationRecord> COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, CollocationUsage.COLLOCATION_USAGE, "collocation_usage__collocation_usage_collocation_id_fkey", CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID);
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
         public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, Definition.DEFINITION, "definition__definition_lang_fkey", Definition.DEFINITION.LANG);
         public static final ForeignKey<DefinitionDatasetRecord, DefinitionRecord> DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionDataset.DEFINITION_DATASET, "definition_dataset__definition_dataset_definition_id_fkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID);

@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -84,6 +86,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.collocation</code>.
+     */
+    public static final Collocation COLLOCATION = eki.ekilex.data.db.tables.Collocation.COLLOCATION;
+
+    /**
+     * The table <code>public.collocation_usage</code>.
+     */
+    public static final CollocationUsage COLLOCATION_USAGE = eki.ekilex.data.db.tables.CollocationUsage.COLLOCATION_USAGE;
 
     /**
      * The table <code>public.dataset</code>.

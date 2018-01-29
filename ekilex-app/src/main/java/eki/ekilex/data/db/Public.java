@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -94,12 +96,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 241222438;
+    private static final long serialVersionUID = -1909721404;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.collocation</code>.
+     */
+    public final Collocation COLLOCATION = eki.ekilex.data.db.tables.Collocation.COLLOCATION;
+
+    /**
+     * The table <code>public.collocation_usage</code>.
+     */
+    public final CollocationUsage COLLOCATION_USAGE = eki.ekilex.data.db.tables.CollocationUsage.COLLOCATION_USAGE;
 
     /**
      * The table <code>public.dataset</code>.
@@ -446,6 +458,8 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.COLLOCATION_ID_SEQ,
+            Sequences.COLLOCATION_USAGE_ID_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
             Sequences.DEFINITION_REF_LINK_ID_SEQ,
@@ -453,6 +467,7 @@ public class Public extends SchemaImpl {
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
             Sequences.FREEFORM_ID_SEQ,
+            Sequences.FREEFORM_ORDERED_BY_SEQ,
             Sequences.FREEFORM_REF_LINK_ID_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
@@ -482,6 +497,8 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Collocation.COLLOCATION,
+            CollocationUsage.COLLOCATION_USAGE,
             Dataset.DATASET,
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
