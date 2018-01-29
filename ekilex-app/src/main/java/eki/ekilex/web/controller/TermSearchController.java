@@ -1,5 +1,7 @@
 package eki.ekilex.web.controller;
 
+import static java.util.Collections.emptyList;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -7,9 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpSession;
 
-import eki.ekilex.constant.SearchKey;
-import eki.ekilex.data.SearchCriterion;
-import eki.ekilex.data.SearchFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.data.Word;
 import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
-
-import static java.util.Collections.emptyList;
 
 @ConditionalOnWebApplication
 @Controller
@@ -39,9 +38,6 @@ public class TermSearchController implements WebConstant {
 
 	@Autowired
 	private CommonDataService commonDataService;
-
-	@Autowired
-	private LexSearchService lexSearchService;
 
 	@Autowired
 	private TermSearchService termSearchService;
@@ -75,7 +71,7 @@ public class TermSearchController implements WebConstant {
 
 		List<Word> words = emptyList();
 		if ("SIMPLE".equals(searchMode)) {
-			words = lexSearchService.findWords(searchFilter, selectedDatasets);
+			words = commonDataService.findWords(searchFilter, selectedDatasets);
 		} else {
 			try {
 				List<SearchCriterion> criterions = detailSearch.getSearchCriteria().stream()
@@ -83,7 +79,7 @@ public class TermSearchController implements WebConstant {
 				if (!criterions.isEmpty()) {
 					SearchFilter filter = new SearchFilter();
 					filter.setSearchCriteria(criterions);
-					words = lexSearchService.findWords(filter, selectedDatasets);
+					words = commonDataService.findWords(filter, selectedDatasets);
 				}
 			} catch (Exception e) {
 				words = emptyList();

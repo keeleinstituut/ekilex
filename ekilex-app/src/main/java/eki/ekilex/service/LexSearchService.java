@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Rection;
 import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Relation;
-import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
@@ -39,20 +37,6 @@ public class LexSearchService {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
-
-	@Transactional
-	public List<Word> findWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
-
-		return lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
-	}
-
-	@Transactional
-	public List<Word> findWords(String searchFilter, List<String> datasets) {
-		if (StringUtils.isBlank(searchFilter)) {
-			return Collections.emptyList();
-		}
-		return lexSearchDbService.findWords(searchFilter, datasets).into(Word.class);
-	}
 
 	@Transactional
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
