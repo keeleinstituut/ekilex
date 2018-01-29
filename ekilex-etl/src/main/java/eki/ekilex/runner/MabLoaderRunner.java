@@ -85,7 +85,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<String> words;
 		Paradigm paradigmObj;
 		Form formObj;
-		String word, sourceMorphCode, destinMorphCode, form, inflectionTypeNr;
+		String word, sourceMorphCode, destinMorphCode, form, displayForm, inflectionTypeNr;
 
 		Count uncleanWordCount = new Count();
 
@@ -149,17 +149,17 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 					for (Element formNode : formNodes) {
 
-						form = formNode.getTextTrim();
-						form = StringUtils.replaceChars(form, formCleanupChars, "");
+						displayForm = formNode.getTextTrim();
+						form = StringUtils.replaceChars(displayForm, formCleanupChars, "");
 
 						if (StringUtils.isBlank(form)) {
 							continue;
 						}
 
-						//TODO add display form
 						formObj = new Form();
-						formObj.setMorphCode(destinMorphCode);
 						formObj.setValue(form);
+						formObj.setDisplayForm(displayForm);
+						formObj.setMorphCode(destinMorphCode);
 						formObj.setWord(isWord);
 
 						forms.add(formObj);

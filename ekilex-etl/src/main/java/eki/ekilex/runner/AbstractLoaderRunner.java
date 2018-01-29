@@ -139,16 +139,16 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				Long paradigmId = createParadigm(wordId, paradigm.getInflectionTypeNr(), paradigm.isSecondary());
 				// mab forms
 				List<Form> forms = paradigm.getForms();
-				if (CollectionUtils.isNotEmpty(forms)) {
+				if (CollectionUtils.isEmpty(forms)) {
+					createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
+				} else {
 					for (Form form : forms) {
 						if (form.isWord()) {
 							createForm(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
 						} else {
-							createForm(form.getValue(), null, null, null, form.getMorphCode(), paradigmId, form.isWord());
+							createForm(form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), paradigmId, form.isWord());
 						}
-					}
-				} else {
-					createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
+					}					
 				}
 			}
 		}
