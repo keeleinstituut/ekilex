@@ -232,6 +232,7 @@
                                         th:data-op-type="usage"
                                         th:data-value="${usage.value}"
                                         th:utext="${markdown.toHtml(usage.value)}"></span>
+                                  <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
                                   <span th:if="${usage.author != null}">
                                     (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
                                   </span>

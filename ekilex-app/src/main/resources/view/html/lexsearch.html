@@ -216,6 +216,7 @@
                       <tr th:each="usage : ${usageMeaning.usages}">
                         <td>
                           <span th:utext="${markdown.toHtml(usage.value)}"></span>
+                          <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
                           <span th:if="${usage.author != null}">
                             (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
                           </span>
