@@ -8,6 +8,8 @@ public class Form extends AbstractDataObject {
 
 	private String value;
 
+	private String displayForm;
+
 	private String morphCode;
 
 	private boolean isWord;
@@ -18,6 +20,14 @@ public class Form extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getDisplayForm() {
+		return displayForm;
+	}
+
+	public void setDisplayForm(String displayForm) {
+		this.displayForm = displayForm;
 	}
 
 	public String getMorphCode() {
