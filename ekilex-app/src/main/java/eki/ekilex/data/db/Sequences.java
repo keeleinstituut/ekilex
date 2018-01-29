@@ -44,6 +44,11 @@ public class Sequences {
     public static final Sequence<Long> DEFINITION_ID_SEQ = new SequenceImpl<Long>("definition_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.definition_ordered_by_seq</code>
+     */
+    public static final Sequence<Long> DEFINITION_ORDERED_BY_SEQ = new SequenceImpl<Long>("definition_ordered_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.definition_ref_link_id_seq</code>
      */
     public static final Sequence<Long> DEFINITION_REF_LINK_ID_SEQ = new SequenceImpl<Long>("definition_ref_link_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

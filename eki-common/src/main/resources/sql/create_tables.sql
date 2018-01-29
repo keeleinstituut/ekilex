@@ -554,7 +554,8 @@ create table definition
   id bigserial primary key,
   meaning_id bigint references meaning(id) not null,
   value text not null,
-  lang char(3) references lang(code) not null
+  lang char(3) references lang(code) not null,
+  ordered_by bigserial
 );
 alter sequence definition_id_seq restart with 10000;
 
