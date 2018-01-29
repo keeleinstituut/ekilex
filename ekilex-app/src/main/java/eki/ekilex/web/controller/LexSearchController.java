@@ -69,7 +69,7 @@ public class LexSearchController implements WebConstant {
 
 		List<Word> words = emptyList();
 		if ("SIMPLE".equals(searchMode)) {
-			words = lexSearchService.findWords(searchFilter, selectedDatasets);
+			words = commonDataService.findWords(searchFilter, selectedDatasets);
 		} else {
 			try {
 				List<SearchCriterion> criterions = detailSearch.getSearchCriteria().stream()
@@ -77,7 +77,7 @@ public class LexSearchController implements WebConstant {
 				if (!criterions.isEmpty()) {
 					SearchFilter filter = new SearchFilter();
 					filter.setSearchCriteria(criterions);
-					words = lexSearchService.findWords(filter, selectedDatasets);
+					words = commonDataService.findWords(filter, selectedDatasets);
 				}
 			} catch (Exception e) {
 				words = emptyList();
