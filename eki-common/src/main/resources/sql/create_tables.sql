@@ -590,7 +590,7 @@ create table lexeme
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,
-  unique(word_id, meaning_id)
+  unique(word_id, meaning_id, dataset_code)
 );
 alter sequence lexeme_id_seq restart with 10000;
 

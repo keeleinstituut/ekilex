@@ -21,7 +21,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record2;
-import org.jooq.Record4;
+import org.jooq.Record5;
 import org.jooq.Result;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
@@ -77,6 +77,9 @@ public class CommonDataDbService {
 			SearchKey searchKey = searchCriterion.getSearchKey();
 			SearchOperand searchOperand = searchCriterion.getSearchOperand();
 			Object searchValue = searchCriterion.getSearchValue();
+			if (searchValue == null) {
+				continue;
+			}
 			String searchValueStr = searchValue.toString();
 			searchValueStr = StringUtils.lowerCase(searchValueStr);
 
@@ -148,12 +151,17 @@ public class CommonDataDbService {
 						.and(l1.DATASET_CODE.in(datasets))));
 		}
 
-		Table<Record4<Long,String,Integer,String>> wordsQuery = create
+		Lexeme dscl = LEXEME.as("dscl");
+		Field<String[]> dscf = DSL.field(DSL.select(DSL.arrayAggDistinct(dscl.DATASET_CODE)).from(dscl).where(dscl.WORD_ID.eq(w1.ID)).groupBy(w1.ID));
+		Field<String> wf = DSL.field("(array_agg(distinct f1.value))[1]").cast(String.class);
+
+		Table<Record5<Long,String,Integer,String,String[]>> wordsQuery = create
 				.select(
 						w1.ID.as("word_id"),
-						DSL.field("(array_agg(distinct f1.value))[1]").cast(String.class).as("word"),
+						wf.as("word"),
 						w1.HOMONYM_NR,
-						w1.LANG)
+						w1.LANG,
+						dscf.as("dataset_codes"))
 				.from(from1)
 				.where(where1)
 				.groupBy(w1.ID)
@@ -186,13 +194,17 @@ public class CommonDataDbService {
 	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
-		
-		Table<Record4<Long, String, Integer, String>> wordsQuery = create
+
+		Field<String[]> dscf = DSL.field(DSL.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE)).from(LEXEME).where(LEXEME.WORD_ID.eq(WORD.ID)).groupBy(WORD.ID));
+		Field<String> wf = DSL.field("(array_agg(distinct form.value))[1]").cast(String.class);
+
+		Table<Record5<Long,String,Integer,String,String[]>> wordsQuery = create
 				.select(
 						WORD.ID.as("word_id"),
-						DSL.field("(array_agg(distinct form.value))[1]").cast(String.class).as("word"),
+						wf.as("word"),
 						WORD.HOMONYM_NR,
-						WORD.LANG)
+						WORD.LANG,
+						dscf.as("dataset_codes"))
 				.from(FORM, PARADIGM, WORD)
 				.where(
 						FORM.VALUE.likeIgnoreCase(theFilter)
