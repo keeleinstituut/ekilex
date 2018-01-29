@@ -88,6 +88,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Relation> meaningRelations;
 
+	private List<String> grammars;
+
 	private boolean lexemeOrMeaningClassifiersExist;
 
 	public WordLexeme() {
@@ -327,6 +329,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setVocalForms(List<String> vocalForms) {
 		this.vocalForms = vocalForms;
+	}
+
+	public List<String> getGrammars() {
+		return grammars;
+	}
+
+	public void setGrammars(List<String> grammars) {
+		this.grammars = grammars;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

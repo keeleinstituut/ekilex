@@ -61,6 +61,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
+	private List<String> grammars;
+
 	private boolean classifiersExist;
 
 	public String getWord() {
@@ -223,4 +225,11 @@ public class Lexeme extends AbstractDataObject {
 		this.classifiersExist = classifiersExist;
 	}
 
+	public List<String> getGrammars() {
+		return grammars;
+	}
+
+	public void setGrammars(List<String> grammars) {
+		this.grammars = grammars;
+	}
 }

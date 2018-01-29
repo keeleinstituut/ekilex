@@ -89,6 +89,7 @@ public class TermSearchService {
 						lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 								.into(RectionUsageTranslationDefinitionTuple.class);
 				List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
+				List<String> lexemeGrammars = lexSearchDbService.findLexemeGrammars(lexemeId).into(String.class);
 
 				for (Lexeme lexeme : lexemeWords) {
 
@@ -97,7 +98,8 @@ public class TermSearchService {
 							|| StringUtils.isNotBlank(lexeme.getFrequencyGroupCode())
 							|| CollectionUtils.isNotEmpty(lexemePos)
 							|| CollectionUtils.isNotEmpty(lexemeDerivs)
-							|| CollectionUtils.isNotEmpty(lexemeRegisters);
+							|| CollectionUtils.isNotEmpty(lexemeRegisters)
+							|| CollectionUtils.isNotEmpty(lexemeGrammars);
 
 					String dataset = lexeme.getDataset();
 					dataset = datasetNameMap.get(dataset);
@@ -109,6 +111,7 @@ public class TermSearchService {
 					lexeme.setRegisters(lexemeRegisters);
 					lexeme.setFreeforms(lexemeFreeforms);
 					lexeme.setRections(rections);
+					lexeme.setGrammars(lexemeGrammars);
 					lexeme.setClassifiersExist(classifiersExist);
 					lexemes.add(lexeme);
 				}

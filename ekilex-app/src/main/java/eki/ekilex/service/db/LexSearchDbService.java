@@ -35,6 +35,7 @@ import java.util.List;
 import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
 import org.jooq.Record15;
 import org.jooq.Record16;
 import org.jooq.Record2;
@@ -53,7 +54,6 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 
 @Service
 public class LexSearchDbService implements SystemConstant {
@@ -265,6 +265,16 @@ public class LexSearchDbService implements SystemConstant {
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.notIn(FreeformType.RECTION.name(), FreeformType.GRAMMAR.name())))
+				.fetch();
+	}
+
+	public Result<Record1<String>> findLexemeGrammars(Long lexemeId) {
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
 				.fetch();
 	}
 
