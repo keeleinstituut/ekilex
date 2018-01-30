@@ -148,7 +148,7 @@ public class Indexes {
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
     public static final Index LEXEME_PKEY = Indexes0.LEXEME_PKEY;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
-    public static final Index LEXEME_WORD_ID_MEANING_ID_KEY = Indexes0.LEXEME_WORD_ID_MEANING_ID_KEY;
+    public static final Index LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = Indexes0.LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY;
     public static final Index LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = Indexes0.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY;
     public static final Index LEXEME_DERIV_PKEY = Indexes0.LEXEME_DERIV_PKEY;
     public static final Index LEXEME_FREEFORM_FREEFORM_ID_IDX = Indexes0.LEXEME_FREEFORM_FREEFORM_ID_IDX;
@@ -269,7 +269,7 @@ public class Indexes {
         public static Index LEXEME_MEANING_ID_IDX = createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
         public static Index LEXEME_PKEY = createIndex("lexeme_pkey", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.ID }, true);
         public static Index LEXEME_WORD_ID_IDX = createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);
-        public static Index LEXEME_WORD_ID_MEANING_ID_KEY = createIndex("lexeme_word_id_meaning_id_key", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID }, true);
+        public static Index LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = createIndex("lexeme_word_id_meaning_id_dataset_code_key", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID, Lexeme.LEXEME.DATASET_CODE }, true);
         public static Index LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = createIndex("lexeme_deriv_lexeme_id_deriv_code_key", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID, LexemeDeriv.LEXEME_DERIV.DERIV_CODE }, true);
         public static Index LEXEME_DERIV_PKEY = createIndex("lexeme_deriv_pkey", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.ID }, true);
         public static Index LEXEME_FREEFORM_FREEFORM_ID_IDX = createIndex("lexeme_freeform_freeform_id_idx", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.FREEFORM_ID }, false);

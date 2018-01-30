@@ -229,7 +229,7 @@ public class Keys {
     public static final UniqueKey<LexRelationRecord> LEX_RELATION_PKEY = UniqueKeys0.LEX_RELATION_PKEY;
     public static final UniqueKey<LexRelationRecord> LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = UniqueKeys0.LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY;
     public static final UniqueKey<LexemeRecord> LEXEME_PKEY = UniqueKeys0.LEXEME_PKEY;
-    public static final UniqueKey<LexemeRecord> LEXEME_WORD_ID_MEANING_ID_KEY = UniqueKeys0.LEXEME_WORD_ID_MEANING_ID_KEY;
+    public static final UniqueKey<LexemeRecord> LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = UniqueKeys0.LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY;
     public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_PKEY = UniqueKeys0.LEXEME_DERIV_PKEY;
     public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = UniqueKeys0.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY;
     public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = UniqueKeys0.LEXEME_FREEFORM_PKEY;
@@ -458,7 +458,7 @@ public class Keys {
         public static final UniqueKey<LexRelationRecord> LEX_RELATION_PKEY = createUniqueKey(LexRelation.LEX_RELATION, "lex_relation_pkey", LexRelation.LEX_RELATION.ID);
         public static final UniqueKey<LexRelationRecord> LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = createUniqueKey(LexRelation.LEX_RELATION, "lex_relation_lexeme1_id_lexeme2_id_lex_rel_type_code_key", LexRelation.LEX_RELATION.LEXEME1_ID, LexRelation.LEX_RELATION.LEXEME2_ID, LexRelation.LEX_RELATION.LEX_REL_TYPE_CODE);
         public static final UniqueKey<LexemeRecord> LEXEME_PKEY = createUniqueKey(Lexeme.LEXEME, "lexeme_pkey", Lexeme.LEXEME.ID);
-        public static final UniqueKey<LexemeRecord> LEXEME_WORD_ID_MEANING_ID_KEY = createUniqueKey(Lexeme.LEXEME, "lexeme_word_id_meaning_id_key", Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID);
+        public static final UniqueKey<LexemeRecord> LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = createUniqueKey(Lexeme.LEXEME, "lexeme_word_id_meaning_id_dataset_code_key", Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID, Lexeme.LEXEME.DATASET_CODE);
         public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_PKEY = createUniqueKey(LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_pkey", LexemeDeriv.LEXEME_DERIV.ID);
         public static final UniqueKey<LexemeDerivRecord> LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = createUniqueKey(LexemeDeriv.LEXEME_DERIV, "lexeme_deriv_lexeme_id_deriv_code_key", LexemeDeriv.LEXEME_DERIV.LEXEME_ID, LexemeDeriv.LEXEME_DERIV.DERIV_CODE);
         public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = createUniqueKey(LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_pkey", LexemeFreeform.LEXEME_FREEFORM.ID);

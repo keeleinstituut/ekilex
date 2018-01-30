@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormRelation extends TableImpl<FormRelationRecord> {
 
-    private static final long serialVersionUID = -304109175;
+    private static final long serialVersionUID = 1638712854;
 
     /**
      * The reference instance of <code>public.form_relation</code>
@@ -74,6 +74,11 @@ public class FormRelation extends TableImpl<FormRelationRecord> {
      * The column <code>public.form_relation.form_rel_type_code</code>.
      */
     public final TableField<FormRelationRecord, String> FORM_REL_TYPE_CODE = createField("form_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.form_relation.order_by</code>.
+     */
+    public final TableField<FormRelationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.form_relation</code> table reference
