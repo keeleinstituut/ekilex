@@ -8,8 +8,10 @@ public class Definition extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "id")
 	private Long id;
 
+	@Column(name = "value")
 	private String value;
 
 	@Column(name = "order_by")
