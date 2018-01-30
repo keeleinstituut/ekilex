@@ -156,7 +156,7 @@
               <div th:if="${lexeme.classifiersExist}">
                 <hr />
                 <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
-                  <span class="lbl">Grammaatika</span>
+                  <span class="lbl">Grammatika</span>
                   <span th:each="grammar,grammarIter : ${lexeme.grammars}">
                   <span th:text="${grammar}"></span>
                   <span th:unless="${grammarIter.last}">,&nbsp;</span>
