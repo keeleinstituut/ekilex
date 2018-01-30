@@ -472,6 +472,7 @@ create table word_relation
   word1_id bigint references word(id) on delete cascade not null,
   word2_id bigint references word(id) on delete cascade not null,
   word_rel_type_code varchar(100) references word_rel_type(code),
+  order_by bigserial,
   unique(word1_id, word2_id, word_rel_type_code)
 );
 alter sequence word_relation_id_seq restart with 10000;
@@ -509,6 +510,7 @@ create table form_relation
   form1_id bigint references form(id) on delete cascade not null,
   form2_id bigint references form(id) on delete cascade not null,
   form_rel_type_code varchar(100) references form_rel_type(code),
+  order_by bigserial,
   unique(form1_id, form2_id, form_rel_type_code)
 );
 alter sequence form_relation_id_seq restart with 10000;
@@ -534,6 +536,7 @@ create table meaning_relation
   meaning1_id bigint references meaning(id) on delete cascade not null,
   meaning2_id bigint references meaning(id) on delete cascade not null,
   meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  order_by bigserial,
   unique(meaning1_id, meaning2_id, meaning_rel_type_code)
 );
 alter sequence meaning_relation_id_seq restart with 10000;
@@ -652,6 +655,7 @@ create table lex_relation
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null,
+  order_by bigserial,
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;

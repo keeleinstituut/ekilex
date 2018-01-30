@@ -317,9 +317,9 @@
       </div>
       <div class="float-left" style="width: 30%">
         <div th:if="${not #lists.isEmpty(details.paradigms)}">
-          <div th:each="paradigm,paradigmIter : ${details.paradigms}" style="padding: 5px">
-            <button class="btn" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
-              <span th:text="${'Paradigma ' + paradigmIter.count}"></span>
+          <div th:each="paradigm : ${details.paradigms}" style="padding: 5px">
+            <button class="btn btn-info" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
+              <span th:text="${paradigm.title}"></span>
             </button>
             <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse" style="padding: 5px">
               <div th:if="${not #lists.isEmpty(paradigm.formRelations)}">
@@ -337,9 +337,9 @@
                   <span th:text="${form.value}"></span>
                   <span style="font-size: 80%; color: #999">
                     &nbsp;
-                    <span th:text="${form.morphCode + ' - ' + form.morphValue}"></span>
-                    <span th:text="${' | ' + form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+                    <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
                     <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+                    <span th:text="${' | ' + form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}"></span>
                   </span>
                   <br>
                 </div>

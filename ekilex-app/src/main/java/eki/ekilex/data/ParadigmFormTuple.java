@@ -17,6 +17,9 @@ public class ParadigmFormTuple extends AbstractDataObject {
 	@Column(name = "form")
 	private String form;
 
+	@Column(name = "is_word")
+	private boolean isWord;
+
 	@Column(name = "components")
 	private String[] components;
 
@@ -54,6 +57,14 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	public void setForm(String form) {
 		this.form = form;
+	}
+
+	public boolean isWord() {
+		return isWord;
+	}
+
+	public void setWord(boolean isWord) {
+		this.isWord = isWord;
 	}
 
 	public String[] getComponents() {

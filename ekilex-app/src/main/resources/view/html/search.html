@@ -12,8 +12,8 @@
     <div class="col-12">
       <div class="form-group row">
         <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
-        <div class="col-2">
-          <button type="button" class="btn btn-info" id="searchModeBtn" th:text="#{'search.mode.' + ${searchMode}}">search toggle</button>
+        <div class="col-1">
+          <button type="button" class="btn btn-outline-primary" id="searchModeBtn" th:text="#{'search.mode.' + ${searchMode}}">search toggle</button>
         </div>
         <div class="col-4" th:if="${allDatasets}" th:insert="~{::dataset_select}"></div>
       </div>
@@ -94,7 +94,7 @@
 </th:block>
 
 <th:block th:fragment="dataset_select">
-  <button class="btn btn-info" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
+  <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
     Sõnastiku valik
   </button>
   <div id="dataset_select" class="collapse">

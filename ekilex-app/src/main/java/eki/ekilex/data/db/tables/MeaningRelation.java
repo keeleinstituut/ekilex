@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
 
-    private static final long serialVersionUID = -991947793;
+    private static final long serialVersionUID = -539228611;
 
     /**
      * The reference instance of <code>public.meaning_relation</code>
@@ -74,6 +74,11 @@ public class MeaningRelation extends TableImpl<MeaningRelationRecord> {
      * The column <code>public.meaning_relation.meaning_rel_type_code</code>.
      */
     public final TableField<MeaningRelationRecord, String> MEANING_REL_TYPE_CODE = createField("meaning_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.meaning_relation.order_by</code>.
+     */
+    public final TableField<MeaningRelationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.meaning_relation</code> table reference

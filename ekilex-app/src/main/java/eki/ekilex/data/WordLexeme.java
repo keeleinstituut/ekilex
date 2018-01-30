@@ -1,14 +1,11 @@
 package eki.ekilex.data;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
 
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
-
-import static java.util.stream.Collectors.toList;
 
 public class WordLexeme extends AbstractDataObject {
 
@@ -351,7 +348,4 @@ public class WordLexeme extends AbstractDataObject {
 		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
 	}
 
-	public void cleanUpVocalForms() {
-		this.vocalForms = this.vocalForms.stream().filter(Objects::nonNull).collect(toList());
-	}
 }
