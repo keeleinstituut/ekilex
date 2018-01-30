@@ -330,7 +330,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						)
-				.orderBy(FORM.VALUE)
+				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
 				
 	}
@@ -359,7 +359,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						)
-				.orderBy(FORM.VALUE)
+				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetch();
 	}
 
@@ -395,7 +395,7 @@ public class LexSearchDbService implements SystemConstant {
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.IS_WORD.eq(Boolean.TRUE))
 				)
-				.orderBy(FORM.VALUE)
+				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetch();
 	}
 
@@ -429,7 +429,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(FORM_RELATION.FORM1_ID.eq(f1.ID))
 						.and(FORM_RELATION.FORM2_ID.eq(f2.ID))
 						)
-				.orderBy(PARADIGM.ID, f1.ID)
+				.orderBy(PARADIGM.ID, FORM_RELATION.ORDER_BY)
 				.fetch();
 	}
 }
