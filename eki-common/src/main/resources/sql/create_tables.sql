@@ -527,6 +527,17 @@ create table meaning
 );
 alter sequence meaning_id_seq restart with 10000;
 
+-- tähenduse seos
+create table meaning_relation
+(
+  id bigserial primary key,
+  meaning1_id bigint references meaning(id) on delete cascade not null,
+  meaning2_id bigint references meaning(id) on delete cascade not null,
+  meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  unique(meaning1_id, meaning2_id, meaning_rel_type_code)
+);
+alter sequence meaning_relation_id_seq restart with 10000;
+
 create table meaning_domain
 (
   id bigserial primary key,
@@ -679,16 +690,6 @@ create table definition_ref_link
   ref_id bigint null
 );
 alter sequence definition_ref_link_id_seq restart with 10000;
-
-create table meaning_relation
-(
-  id bigserial primary key,
-  meaning1_id bigint references meaning(id) on delete cascade not null,
-  meaning2_id bigint references meaning(id) on delete cascade not null,
-  meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
-  unique(meaning1_id, meaning2_id, meaning_rel_type_code)
-);
-alter sequence meaning_relation_id_seq restart with 10000;
 
 --- indexes
 
