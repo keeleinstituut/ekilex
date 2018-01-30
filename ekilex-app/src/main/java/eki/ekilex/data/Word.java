@@ -21,6 +21,9 @@ public class Word extends AbstractDataObject {
 	@Column(name = "lang")
 	private String language;
 
+	@Column(name = "dataset_codes")
+	private String[] datasetCodes;
+
 	public Word() {
 	}
 
@@ -59,4 +62,13 @@ public class Word extends AbstractDataObject {
 	public void setLanguage(String language) {
 		this.language = language;
 	}
+
+	public String[] getDatasetCodes() {
+		return datasetCodes;
+	}
+
+	public void setDatasetCodes(String[] datasetCodes) {
+		this.datasetCodes = datasetCodes;
+	}
+
 }

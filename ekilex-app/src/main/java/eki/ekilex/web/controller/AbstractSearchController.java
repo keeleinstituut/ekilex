@@ -49,7 +49,8 @@ public abstract class AbstractSearchController implements WebConstant {
 	}
 
 	protected void performSearch(
-			List<String> selectedDatasets, String searchMode, String simpleSearchFilter, SearchFilter detailSearchFilter, SessionBean sessionBean, Model model) throws Exception {
+			List<String> selectedDatasets, String searchMode, String simpleSearchFilter,
+			SearchFilter detailSearchFilter, SessionBean sessionBean, Model model) throws Exception {
 
 		logger.debug("Searching by \"{}\" in {}", simpleSearchFilter, selectedDatasets);
 
@@ -64,11 +65,6 @@ public abstract class AbstractSearchController implements WebConstant {
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		model.addAttribute("allDatasets", allDatasets);
-		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
-		model.addAttribute("detailSearchFilter", detailSearchFilter);
-		model.addAttribute("searchMode", searchMode);
-
 		List<Word> words = emptyList();
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			List<SearchCriterion> searchCriteria = detailSearchFilter.getSearchCriteria();
@@ -76,7 +72,8 @@ public abstract class AbstractSearchController implements WebConstant {
 					.filter(criterion ->
 							(criterion.getSearchKey() != null)
 							&& (criterion.getSearchValue() != null)
-							&& StringUtils.isNotBlank(criterion.getSearchValue().toString())).collect(Collectors.toList());
+							&& StringUtils.isNotBlank(criterion.getSearchValue().toString()))
+					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(searchCriteria)) {
 				detailSearchFilter.setSearchCriteria(searchCriteria);
 				words = commonDataService.findWords(detailSearchFilter, selectedDatasets);
@@ -84,6 +81,10 @@ public abstract class AbstractSearchController implements WebConstant {
 		} else {
 			words = commonDataService.findWords(simpleSearchFilter, selectedDatasets);
 		}
+		model.addAttribute("allDatasets", allDatasets);
+		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
+		model.addAttribute("detailSearchFilter", detailSearchFilter);
+		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("wordsFoundBySearch", words);
 	}
 

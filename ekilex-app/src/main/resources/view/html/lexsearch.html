@@ -41,6 +41,14 @@
               <span th:text="${word.language}"></span>
               )
             </button>
+            <div style="position:relative; top: -10px; padding-left: 10px">
+              <small>
+                <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
+                  <span th:text="${wordDatasetCode}"></span>
+                  <span th:unless="${wordDatasetIter.last}">,</span>
+                </span>
+              </small>
+            </div>
           </td>
         </tr>
       </table>
