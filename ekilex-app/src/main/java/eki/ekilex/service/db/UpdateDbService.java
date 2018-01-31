@@ -30,4 +30,11 @@ public class UpdateDbService {
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}
+
+	public void updateDefinitionOrderby(Long id, Long orderby) {
+		create.update(DEFINITION)
+				.set(DEFINITION.ORDER_BY, orderby)
+				.where(DEFINITION.ID.eq(id))
+				.execute();
+	}
 }
