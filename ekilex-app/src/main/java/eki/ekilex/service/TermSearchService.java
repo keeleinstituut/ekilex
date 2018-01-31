@@ -17,8 +17,8 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
-import eki.ekilex.data.Rection;
-import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Government;
+import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
@@ -85,10 +85,10 @@ public class TermSearchService {
 				List<Classifier> lexemeRegisters = lexSearchDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 				List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(lexemeId).into(Lexeme.class);
 				List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-				List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
-						lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-								.into(RectionUsageTranslationDefinitionTuple.class);
-				List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
+				List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
+						lexSearchDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+								.into(GovernmentUsageTranslationDefinitionTuple.class);
+				List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
 				List<String> lexemeGrammars = lexSearchDbService.findLexemeGrammars(lexemeId).into(String.class);
 
 				for (Lexeme lexeme : lexemeWords) {
@@ -110,7 +110,7 @@ public class TermSearchService {
 					lexeme.setDerivs(lexemeDerivs);
 					lexeme.setRegisters(lexemeRegisters);
 					lexeme.setFreeforms(lexemeFreeforms);
-					lexeme.setRections(rections);
+					lexeme.setGovernments(governments);
 					lexeme.setGrammars(lexemeGrammars);
 					lexeme.setClassifiersExist(classifiersExist);
 					lexemes.add(lexeme);

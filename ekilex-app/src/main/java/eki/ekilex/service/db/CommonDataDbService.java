@@ -116,7 +116,7 @@ public class CommonDataDbService {
 						l2.WORD_ID.eq(w1.ID)
 						.and(l2ff.LEXEME_ID.eq(l2.ID))
 						.and(l2ff.FREEFORM_ID.eq(rect2.ID))
-						.and(rect2.TYPE.eq(FreeformType.RECTION.name()))
+						.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
 						.and(um2.PARENT_ID.eq(rect2.ID))
 						.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
 						.and(u2.PARENT_ID.eq(um2.ID))

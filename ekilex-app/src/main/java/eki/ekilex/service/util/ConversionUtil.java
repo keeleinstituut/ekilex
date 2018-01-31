@@ -15,8 +15,8 @@ import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.Rection;
-import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Government;
+import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.UsageMeaning;
 import eki.ekilex.data.UsageMember;
 
@@ -190,32 +190,32 @@ public class ConversionUtil {
 		}
 	}
 
-	public List<Rection> composeRections(List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples) {
+	public List<Government> composeGovernments(List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples) {
 
-		List<Rection> rections = new ArrayList<>();
+		List<Government> governments = new ArrayList<>();
 
-		Map<Long, Rection> rectionMap = new HashMap<>();
+		Map<Long, Government> governmentMap = new HashMap<>();
 		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
 		Map<Long, UsageMember> usageMap = new HashMap<>();
 		Map<Long, UsageMember> usageTranslationMap = new HashMap<>();
 		Map<Long, UsageMember> usageDefinitionMap = new HashMap<>();
 
-		for (RectionUsageTranslationDefinitionTuple tuple : rectionUsageTranslationDefinitionTuples) {
+		for (GovernmentUsageTranslationDefinitionTuple tuple : governmentUsageTranslationDefinitionTuples) {
 
-			Long rectionId = tuple.getRectionId();
+			Long governmentId = tuple.getGovernmentId();
 			Long usageMeaningId = tuple.getUsageMeaningId();
 			Long usageId = tuple.getUsageId();
 			Long usageTranslationId = tuple.getUsageTranslationId();
 			Long usageDefinitionId = tuple.getUsageDefinitionId();
 
-			Rection rection = rectionMap.get(rectionId);
-			if (rection == null) {
-				rection = new Rection();
-				rection.setId(rectionId);
-				rection.setValue(tuple.getRectionValue());
-				rection.setUsageMeanings(new ArrayList<>());
-				rectionMap.put(rectionId, rection);
-				rections.add(rection);
+			Government government = governmentMap.get(governmentId);
+			if (government == null) {
+				government = new Government();
+				government.setId(governmentId);
+				government.setValue(tuple.getGovernmentValue());
+				government.setUsageMeanings(new ArrayList<>());
+				governmentMap.put(governmentId, government);
+				governments.add(government);
 			}
 			if (usageMeaningId == null) {
 				continue;
@@ -228,7 +228,7 @@ public class ConversionUtil {
 				usageMeaning.setUsageTranslations(new ArrayList<>());
 				usageMeaning.setUsageDefinitions(new ArrayList<>());
 				usageMeaningMap.put(usageMeaningId, usageMeaning);
-				rection.getUsageMeanings().add(usageMeaning);
+				government.getUsageMeanings().add(usageMeaning);
 			}
 			if (usageId != null) {
 				UsageMember usage = usageMap.get(usageId);
@@ -267,6 +267,6 @@ public class ConversionUtil {
 				}
 			}
 		}
-		return rections;
+		return governments;
 	}
 }

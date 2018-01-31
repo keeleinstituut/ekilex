@@ -466,13 +466,13 @@ process_state	komisjonis arutlusel	-	-	-
 process_state	konfidentsiaalne	-	-	-
 process_state	määramata	-	-	-
 process_state	töös	-	-	-
-rection_type	obj	objektirektsioon	est	full
-rection_type	kn	käänderektsioon	est	full
-rection_type	ks	kaassõnarektsioon	est	full
-rection_type	yld	üldrektsioon	est	full
-rection_type	inf	infinitiivirektsioon	est	full
-rection_type	kla	lausungirektsioon	est	full
-rection_type	subj	subjektirektsioon	est	full
+government_type	obj	objektirektsioon	est	full
+government_type	kn	käänderektsioon	est	full
+government_type	ks	kaassõnarektsioon	est	full
+government_type	yld	üldrektsioon	est	full
+government_type	inf	infinitiivirektsioon	est	full
+government_type	kla	lausungirektsioon	est	full
+government_type	subj	subjektirektsioon	est	full
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
 register	hrv	harvaesinev	est	descrip

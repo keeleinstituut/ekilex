@@ -149,10 +149,10 @@ public class LexSearchDbService implements SystemConstant {
 	}
 
 	public Result<Record15<Long, String, Long, Long, String, String, Long, String, String, Long, String, String, String, String, String>>
-		findRectionUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+		findGovernmentUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		Freeform r = FREEFORM.as("r");
+		Freeform g = FREEFORM.as("g");
 		Freeform um = FREEFORM.as("um");
 		Freeform u = FREEFORM.as("u");
 		Freeform ut = FREEFORM.as("ut");
@@ -165,8 +165,8 @@ public class LexSearchDbService implements SystemConstant {
 
 		return create
 				.select(
-						r.ID.as("rection_id"),
-						r.VALUE_TEXT.as("rection_value"),
+						g.ID.as("government_id"),
+						g.VALUE_TEXT.as("government_value"),
 						um.ID.as("usage_meaning_id"),
 						u.ID.as("usage_id"),
 						u.VALUE_TEXT.as("usage_value"),
@@ -182,8 +182,8 @@ public class LexSearchDbService implements SystemConstant {
 						utl.VALUE.as("usage_type")
 						)
 				.from(
-						lff.innerJoin(r).on(lff.FREEFORM_ID.eq(r.ID).and(r.TYPE.eq(FreeformType.RECTION.name())))
-						.leftOuterJoin(um).on(um.PARENT_ID.eq(r.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
+						lff.innerJoin(g).on(lff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
+						.leftOuterJoin(um).on(um.PARENT_ID.eq(g.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
 						.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 						.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 						.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
@@ -196,7 +196,7 @@ public class LexSearchDbService implements SystemConstant {
 						.on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
 						)
 				.where(lff.LEXEME_ID.eq(lexemeId))
-				.orderBy(r.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)
+				.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)
 				.fetch();
 	}
 
@@ -265,7 +265,7 @@ public class LexSearchDbService implements SystemConstant {
 				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.notIn(FreeformType.RECTION.name(), FreeformType.GRAMMAR.name())))
+						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name())))
 				.fetch();
 	}
 

@@ -169,10 +169,10 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record12<Long,String,Long,Long,String,String,Long,String,String,Long,String,String>> findRectionUsageTranslationDefinitionTuples(Long lexemeId) {
+	public Result<Record12<Long,String,Long,Long,String,String,Long,String,String,Long,String,String>> findGovernmentUsageTranslationDefinitionTuples(Long lexemeId) {
 
 		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-		Freeform r = FREEFORM.as("r");
+		Freeform g = FREEFORM.as("g");
 		Freeform um = FREEFORM.as("um");
 		Freeform u = FREEFORM.as("u");
 		Freeform ut = FREEFORM.as("ut");
@@ -180,8 +180,8 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 
 		return create
 				.select(
-						r.ID.as("rection_id"),
-						r.VALUE_TEXT.as("rection_value"),
+						g.ID.as("government_id"),
+						g.VALUE_TEXT.as("government_value"),
 						um.ID.as("usage_meaning_id"),
 						u.ID.as("usage_id"),
 						u.VALUE_TEXT.as("usage_value"),
@@ -194,15 +194,15 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 						ud.LANG.as("usage_definition_lang")
 				)
 				.from(
-						lff.innerJoin(r
-								.leftOuterJoin(um).on(um.PARENT_ID.eq(r.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
+						lff.innerJoin(g
+								.leftOuterJoin(um).on(um.PARENT_ID.eq(g.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
 								.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 								.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 								.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
-						).on(lff.FREEFORM_ID.eq(r.ID).and(r.TYPE.eq(FreeformType.RECTION.name())))
+						).on(lff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
 				)
 				.where(lff.LEXEME_ID.eq(lexemeId))
-				.orderBy(r.ID, um.ID, u.ID, ut.ID, ud.ID)
+				.orderBy(g.ID, um.ID, u.ID, ut.ID, ud.ID)
 				.fetch();
 	}
 
@@ -211,7 +211,7 @@ public class SearchDbService implements InitializingBean, SystemConstant {
 				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.notIn(FreeformType.RECTION.name(), FreeformType.GRAMMAR.name())))
+						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name())))
 				.fetch();
 	}
 

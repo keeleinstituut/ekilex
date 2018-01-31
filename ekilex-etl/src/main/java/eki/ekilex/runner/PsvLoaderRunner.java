@@ -5,7 +5,7 @@ import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Rection;
+import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.Word;
@@ -47,7 +47,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]";
 	private final String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
 	private final String defaultWordMorphCode = "SgN";
-	private final String defaultRectionValue = "-";
+	private final String defaultGovernmentValue = "-";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";
@@ -408,13 +408,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = createLexemeAndRelatedObjects(data, context, lexemeType);
 			if (!data.usageMeanings.isEmpty()) {
 				logger.debug("Usages found, adding them");
-				String rectionValue = data.rection == null ? defaultRectionValue : data.rection.getValue();
-				Long rectionId = createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue, dataLang);
+				String governmentValue = data.government == null ? defaultGovernmentValue : data.government.getValue();
+				Long governmentId = createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue, dataLang);
 				for (UsageMeaning usageMeaning : data.usageMeanings) {
-					createUsageMeaning(rectionId, usageMeaning);
+					createUsageMeaning(governmentId, usageMeaning);
 				}
-				if (data.rection != null && isNotEmpty(data.rection.getType())) {
-					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, data.rection.getType());
+				if (data.government != null && isNotEmpty(data.government.getType())) {
+					createFreeformClassifier(FreeformType.GOVERNMENT_TYPE, governmentId, data.government.getType());
 				}
 			}
 		} else {
@@ -742,7 +742,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
-						saveRectionsAndUsages(meaningNumberGroupNode, lexemeId, usages);
+						saveGovernmentsAndUsages(meaningNumberGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
 						for (String compoundWord : compoundWords) {
@@ -848,7 +848,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String definitionGroupNodeExp = "x:pyt";
 		final String definitionExp = "x:pyd";
 		final String usageExp = "x:ng/x:n";
-		final String rectionExp = "x:rek";
+		final String governmentExp = "x:rek";
 		final String usageDefinitionExp = "x:nd";
 		final String lexemeTypeAttr = "liik";
 
@@ -861,7 +861,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				LexemeToWordData data = new LexemeToWordData();
 				data.word = compoundFormNode.getTextTrim();
 				if (compoundFormNode.hasMixedContent()) {
-					data.rection = extractRection((Element) compoundFormNode.selectSingleNode(rectionExp));
+					data.government = extractGovernment((Element) compoundFormNode.selectSingleNode(governmentExp));
 				}
 				if (compoundFormNode.attributeValue(lexemeTypeAttr) != null) {
 					String lexemeType = compoundFormNode.attributeValue(lexemeTypeAttr);
@@ -895,18 +895,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return compoundForms;
 	}
 
-	private Rection extractRection(Element rectionNode) {
+	private Government extractGovernment(Element governmentNode) {
 
-		final String rectionTypeAttr = "rliik";
-		final String rectionVariantAttr = "var";
-		final String rectionOptionalAttr = "fak";
+		final String governmentTypeAttr = "rliik";
+		final String governmentVariantAttr = "var";
+		final String governmentOptionalAttr = "fak";
 
-		Rection rection = new Rection();
-		rection.setValue(rectionNode.getTextTrim());
-		rection.setType(rectionNode.attributeValue(rectionTypeAttr));
-		rection.setVariant(rectionNode.attributeValue(rectionVariantAttr));
-		rection.setOptional(rectionNode.attributeValue(rectionOptionalAttr));
-		return rection;
+		Government government = new Government();
+		government.setValue(governmentNode.getTextTrim());
+		government.setType(governmentNode.attributeValue(governmentTypeAttr));
+		government.setVariant(governmentNode.attributeValue(governmentVariantAttr));
+		government.setOptional(governmentNode.attributeValue(governmentOptionalAttr));
+		return government;
 	}
 
 	private void saveSymbol(Element node, Context context, String reportingId) throws Exception {
@@ -929,7 +929,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String formValueExp = "x:yvr";
 		final String formDefinitionExp = "x:yvd";
 		final String usageExp = "x:ng/x:n";
-		final String rectionExp = "x:rek";
+		final String governmentExp = "x:rek";
 		final String usageDefinitionExp = "x:nd";
 
 		List<LexemeToWordData> singleForms = new ArrayList<>();
@@ -954,7 +954,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Element formDefinitionNode = (Element) singleFormNode.selectSingleNode(formDefinitionExp);
 				data.word = formValueNode.getTextTrim();
 				if (formValueNode.hasMixedContent()) {
-					data.rection = extractRection((Element) formValueNode.selectSingleNode(rectionExp));
+					data.government = extractGovernment((Element) formValueNode.selectSingleNode(governmentExp));
 				}
 				if (formDefinitionNode != null) {
 					data.definition = formDefinitionNode.getTextTrim();
@@ -1159,49 +1159,49 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveRectionsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usages) throws Exception {
+	private void saveGovernmentsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usages) throws Exception {
 
-		final String rectionGroupExp = "x:rep/x:reg";
+		final String governmentGroupExp = "x:rep/x:reg";
 		final String usageGroupExp = "x:ng";
-		final String rectionExp = "x:rek";
-		final String rectionPlacementAttr = "koht";
+		final String governmentExp = "x:rek";
+		final String governmentPlacementAttr = "koht";
 
 		if (!usages.isEmpty()) {
-			Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
+			Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 			for (UsageMeaning usage : usages) {
-				createUsageMeaning(rectionId, usage);
+				createUsageMeaning(governmentId, usage);
 			}
 		}
-		List<Element> rectionGroups = node.selectNodes(rectionGroupExp);
-		for (Element rectionGroup : rectionGroups) {
-			String rectionPlacement = rectionGroup.attributeValue(rectionPlacementAttr);
-			List<Element> usageGroupNodes = rectionGroup.selectNodes(usageGroupExp);
-			List<UsageMeaning> rectionUsages = extractUsages(usageGroupNodes);
-			List<Element> rectionNodes = rectionGroup.selectNodes(rectionExp);
-			for (Element rectionNode : rectionNodes) {
-				Rection rection = extractRection(rectionNode);
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rection.getValue());
-				for (UsageMeaning usage : rectionUsages) {
-					createUsageMeaning(rectionId, usage);
+		List<Element> governmentGroups = node.selectNodes(governmentGroupExp);
+		for (Element governmentGroup : governmentGroups) {
+			String governmentPlacement = governmentGroup.attributeValue(governmentPlacementAttr);
+			List<Element> usageGroupNodes = governmentGroup.selectNodes(usageGroupExp);
+			List<UsageMeaning> governmentUsages = extractUsages(usageGroupNodes);
+			List<Element> governmentNodes = governmentGroup.selectNodes(governmentExp);
+			for (Element governmentNode : governmentNodes) {
+				Government government = extractGovernment(governmentNode);
+				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government.getValue());
+				for (UsageMeaning usage : governmentUsages) {
+					createUsageMeaning(governmentId, usage);
 				}
-				if (isNotEmpty(rection.getType())) {
-					createFreeformClassifier(FreeformType.RECTION_TYPE, rectionId, rection.getType());
+				if (isNotEmpty(government.getType())) {
+					createFreeformClassifier(FreeformType.GOVERNMENT_TYPE, governmentId, government.getType());
 				}
-				if (isNotEmpty(rectionPlacement)) {
-					createFreeformTextOrDate(FreeformType.RECTION_PLACEMENT, rectionId, rectionPlacement, null);
+				if (isNotEmpty(governmentPlacement)) {
+					createFreeformTextOrDate(FreeformType.GOVERNMENT_PLACEMENT, governmentId, governmentPlacement, null);
 				}
-				if (isNotEmpty(rection.getVariant())) {
-					createFreeformTextOrDate(FreeformType.RECTION_VARIANT, rectionId, rection.getVariant(), null);
+				if (isNotEmpty(government.getVariant())) {
+					createFreeformTextOrDate(FreeformType.GOVERNMENT_VARIANT, governmentId, government.getVariant(), null);
 				}
-				if (isNotEmpty(rection.getOptional())) {
-					createFreeformTextOrDate(FreeformType.RECTION_OPTIONAL, rectionId, rection.getOptional(), null);
+				if (isNotEmpty(government.getOptional())) {
+					createFreeformTextOrDate(FreeformType.GOVERNMENT_OPTIONAL, governmentId, government.getOptional(), null);
 				}
 			}
 		}
 	}
 
-	private void createUsageMeaning(Long rectionId, UsageMeaning usageMeaning) throws Exception {
-		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, "", null);
+	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
+		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", null);
 		for (Usage usage : usageMeaning.getUsages()) {
 			createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 		}
@@ -1617,7 +1617,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
-		Rection rection;
+		Government government;
 		String definition;
 		List<UsageMeaning> usageMeanings = new ArrayList<>();
 		String reportingId;
@@ -1630,7 +1630,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.lexemeLevel1 = this.lexemeLevel1;
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
-			newData.rection = this.rection;
+			newData.government = this.government;
 			newData.definition = this.definition;
 			newData.reportingId = this.reportingId;
 			newData.usageMeanings.addAll(this.usageMeanings);

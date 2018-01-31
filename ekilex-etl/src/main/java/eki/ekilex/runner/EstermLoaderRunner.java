@@ -153,7 +153,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("Starting loading Esterm...");
 
-		final String defaultRectionValue = "-";
+		final String defaultGovernmentValue = "-";
 		final String defaultWordMorphCode = "SgN";
 
 		long t1, t2;
@@ -174,7 +174,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 		Element valueNode;
 		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
-		Long wordId, meaningId, lexemeId, rectionId, usageMeaningId;
+		Long wordId, meaningId, lexemeId, governmentId, usageMeaningId;
 		List<Long> definitionIds;
 		String valueStr, concept, term;
 		String lang;
@@ -265,8 +265,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					//TODO split by links
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
-						rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
-						usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
+						governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
+						usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
 						for (Element usageNode : valueNodes) {
 							//extractAndSaveUsagesAndRefLinks(usageNode, usageMeaningId, lang, dataset);
 							valueStr = usageNode.getTextTrim();

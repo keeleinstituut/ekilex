@@ -59,8 +59,10 @@ drop table if exists lexeme_frequency_label; -- removed for now
 drop table if exists lexeme_frequency;
 drop table if exists domain_label;
 drop table if exists domain;
-drop table if exists rection_type_label;
-drop table if exists rection_type;
+drop table if exists rection_type_label;--remove later
+drop table if exists rection_type;--remove later
+drop table if exists government_type_label;
+drop table if exists government_type;
 drop table if exists lang_label;
 drop table if exists lang;
 drop table if exists label_type;
@@ -129,15 +131,15 @@ create table domain_label
 );
 
 -- klassif. rektsiooni tüüp
-create table rection_type
+create table government_type
 (
   code varchar(10) primary key,
   datasets varchar(10) array not null
 );
 
-create table rection_type_label
+create table government_type_label
 (
-  code varchar(100) references rection_type(code) on delete cascade not null,
+  code varchar(100) references government_type(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
   type varchar(10) references label_type(code) not null,

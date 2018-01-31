@@ -1,20 +1,19 @@
-package eki.ekilex.data;
-
-import java.util.function.Consumer;
-
-import javax.persistence.Column;
+package eki.eve.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class RectionUsageTranslationDefinitionTuple extends AbstractDataObject {
+import javax.persistence.Column;
+import java.util.function.Consumer;
+
+public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "rection_id")
-	private Long rectionId;
+	@Column(name = "government_id")
+	private Long governmentId;
 
-	@Column(name = "rection_value")
-	private String rectionValue;
+	@Column(name = "government_value")
+	private String governmentValue;
 
 	@Column(name = "usage_meaning_id")
 	private Long usageMeaningId;
@@ -46,36 +45,27 @@ public class RectionUsageTranslationDefinitionTuple extends AbstractDataObject {
 	@Column(name = "usage_definition_lang")
 	private String usageDefinitionLang;
 
-	@Column(name = "usage_author")
-	private String usageAuthor;
-
-	@Column(name = "usage_author_type")
-	private String usageAuthorType;
-
-	@Column(name = "usage_type")
-	private String usageType;
-
-	public RectionUsageTranslationDefinitionTuple() {
+	public GovernmentUsageTranslationDefinitionTuple() {
 	}
 
-	public RectionUsageTranslationDefinitionTuple(Consumer<RectionUsageTranslationDefinitionTuple> builder) {
+	public GovernmentUsageTranslationDefinitionTuple(Consumer<GovernmentUsageTranslationDefinitionTuple> builder) {
 		builder.accept(this);
 	}
 
-	public Long getRectionId() {
-		return rectionId;
+	public Long getGovernmentId() {
+		return governmentId;
 	}
 
-	public void setRectionId(Long rectionId) {
-		this.rectionId = rectionId;
+	public void setGovernmentId(Long governmentId) {
+		this.governmentId = governmentId;
 	}
 
-	public String getRectionValue() {
-		return rectionValue;
+	public String getGovernmentValue() {
+		return governmentValue;
 	}
 
-	public void setRectionValue(String rectionValue) {
-		this.rectionValue = rectionValue;
+	public void setGovernmentValue(String governmentValue) {
+		this.governmentValue = governmentValue;
 	}
 
 	public Long getUsageMeaningId() {
@@ -158,27 +148,4 @@ public class RectionUsageTranslationDefinitionTuple extends AbstractDataObject {
 		this.usageDefinitionLang = usageDefinitionLang;
 	}
 
-	public String getUsageAuthor() {
-		return usageAuthor;
-	}
-
-	public void setUsageAuthor(String usageAuthor) {
-		this.usageAuthor = usageAuthor;
-	}
-
-	public String getUsageAuthorType() {
-		return usageAuthorType;
-	}
-
-	public void setUsageAuthorType(String usageAuthorType) {
-		this.usageAuthorType = usageAuthorType;
-	}
-
-	public String getUsageType() {
-		return usageType;
-	}
-
-	public void setUsageType(String usageType) {
-		this.usageType = usageType;
-	}
 }

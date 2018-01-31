@@ -71,7 +71,7 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Word> meaningWords;
 
-	private List<Rection> rections;
+	private List<Government> governments;
 
 	private List<Definition> definitions;
 
@@ -264,12 +264,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningWords = meaningWords;
 	}
 
-	public List<Rection> getRections() {
-		return rections;
+	public List<Government> getGovernments() {
+		return governments;
 	}
 
-	public void setRections(List<Rection> rections) {
-		this.rections = rections;
+	public void setGovernments(List<Government> governments) {
+		this.governments = governments;
 	}
 
 	public List<Definition> getDefinitions() {

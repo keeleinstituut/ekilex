@@ -5,7 +5,7 @@ public enum ClassifierName {
 	LABEL_TYPE(false),
 	LANG(true),
 	DOMAIN(true),
-	RECTION_TYPE(true),
+	GOVERNMENT_TYPE(true),
 	REGISTER(true),
 	LEXEME_TYPE(true),
 	LEXEME_FREQUENCY(false),

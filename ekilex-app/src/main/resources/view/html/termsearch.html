@@ -204,21 +204,21 @@
                   </span>
                 </div>
               </div>
-              <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
+              <div th:if="${not #lists.isEmpty(lexeme.governments)}" style="margin-top: -0.5em;">
                 <hr />
                 <table>
-                  <tr th:each="rection,rectionIter : ${lexeme.rections}">
+                  <tr th:each="government,governmentIter : ${lexeme.governments}">
                     <td>
                       <table>
                         <tr>
                           <th>Rektsioon</th>
                         </tr>
                         <tr>
-                          <td th:text="${rection.value}"></td>
+                          <td th:text="${government.value}"></td>
                         </tr>
-                        <tr th:if="${rection.meaningful}">
+                        <tr th:if="${government.meaningful}">
                           <td>
-                            <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                            <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
                               <tr>
                                 <td>
                                   <i style="text-decoration: underline;">

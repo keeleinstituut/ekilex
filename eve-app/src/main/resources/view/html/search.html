@@ -107,16 +107,16 @@
               </li>
             </th:block>
           </ul>
-          <div th:if="${not #lists.isEmpty(lexeme.rections)}" style="margin-top: -0.5em;">
-            <table th:each="rection,rectionIter : ${lexeme.rections}">
+          <div th:if="${not #lists.isEmpty(lexeme.governments)}" style="margin-top: -0.5em;">
+            <table th:each="government,governmentIter : ${lexeme.governments}">
               <tr>
                 <td style="vertical-align: text-top; padding-right: 1em">
-                  <span th:text="${rection.value}"></span>
+                  <span th:text="${government.value}"></span>
                 </td>
               </tr>
               <tr>
                 <td>
-                  <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                  <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
                     <tr th:each="usage : ${usageMeaning.usages}">
                       <td>
                         <span th:text="${usage.value}"></span>

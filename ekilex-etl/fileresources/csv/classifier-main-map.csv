@@ -544,13 +544,13 @@ rk_tyyp	rk_tyyp	term	terminatiiv, rajav	et	-	-
 rk_tyyp	rk_tyyp	term	terminative	en	-	-
 rk_tyyp	rk_tyyp	transl	translatiiv, saav	et	-	-
 rk_tyyp	rk_tyyp	transl	translative	en	-	-
-rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	rection_type	obj
-rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	rection_type	kn
-rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	rection_type	ks
-rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	rection_type	yld
-rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	rection_type	inf
-rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	rection_type	kla
-rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	rection_type	subj
+rliik_tyyp	rliik_tyyp	obj	objektirektsioon	et	government_type	obj
+rliik_tyyp	rliik_tyyp	kn	käänderektsioon	et	government_type	kn
+rliik_tyyp	rliik_tyyp	ks	kaassõnarektsioon	et	government_type	ks
+rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	government_type	yld
+rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	government_type	inf
+rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	government_type	kla
+rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	government_type	subj
 s_tyyp	s_tyyp	hlv	halvustav, solvav	et	register	hlv
 s_tyyp	s_tyyp	hlv	offensive	en	register	hlv
 s_tyyp	s_tyyp	hrv	harvaesinev	et	register	hrv

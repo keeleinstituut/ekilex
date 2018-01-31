@@ -19,8 +19,8 @@ import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.Rection;
-import eki.ekilex.data.RectionUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Government;
+import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
@@ -74,10 +74,10 @@ public class LexSearchService {
 			List<Definition> meaningDefinitions = lexSearchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
 			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples =
-					lexSearchDbService.findRectionUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-							.into(RectionUsageTranslationDefinitionTuple.class);
-			List<Rection> rections = conversionUtil.composeRections(rectionUsageTranslationDefinitionTuples);
+			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
+					lexSearchDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+							.into(GovernmentUsageTranslationDefinitionTuple.class);
+			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
 			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> meaningRelations = lexSearchDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
@@ -91,7 +91,7 @@ public class LexSearchService {
 			lexeme.setDefinitions(meaningDefinitions);
 			lexeme.setMeaningFreeforms(meaningFreeforms);
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
-			lexeme.setRections(rections);
+			lexeme.setGovernments(governments);
 			lexeme.setLexemeRelations(lexemeRelations);
 			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);

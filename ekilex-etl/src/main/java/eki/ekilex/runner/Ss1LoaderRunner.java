@@ -6,7 +6,7 @@ import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Rection;
+import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.Word;
@@ -50,7 +50,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String dataset = "ss1";
 	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
 	private final static String defaultWordMorphCode = "SgN";
-	private final static String defaultRectionValue = "-";
+	private final static String defaultGovernmentValue = "-";
 	private final static String latinLang = "lat";
 	private final static String lexemeTypeFormula = "valem";
 
@@ -422,8 +422,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setType(subWord.lexemeType);
 				lexeme.setFrequencyGroup(subWord.frequencyGroup);
 				Long lexemeId = createLexeme(lexeme, dataset);
-				if (subWord.rection != null) {
-					createLexemeFreeform(lexemeId, FreeformType.RECTION, subWord.rection, null);
+				if (subWord.government != null) {
+					createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, subWord.government, null);
 				}
 				logger.debug("new word created : {}", subWord.value);
 				newWordsCounter.increment();
@@ -574,7 +574,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, dataset);
 					if (lexemeId != null) {
-						saveRectionsAndUsages(meaningGroupNode, lexemeId, usages);
+						saveGovernmentsAndUsages(meaningGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
@@ -805,31 +805,31 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveRectionsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usageMeanings) throws Exception {
+	private void saveGovernmentsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usageMeanings) throws Exception {
 
-		final String rectionExp = "s:rep/s:reg/s:rek/s:kn";
+		final String governmentExp = "s:rep/s:reg/s:rek/s:kn";
 
-		List<Element> rectionNodes = node.selectNodes(rectionExp);
-		if (rectionNodes.isEmpty()) {
+		List<Element> governmentNodes = node.selectNodes(governmentExp);
+		if (governmentNodes.isEmpty()) {
 			if (!usageMeanings.isEmpty()) {
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, defaultRectionValue);
+				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 				for (UsageMeaning usageMeaning : usageMeanings) {
-					createUsageMeaning(rectionId, usageMeaning);
+					createUsageMeaning(governmentId, usageMeaning);
 				}
 			}
 		} else {
-			for (Element rectionNode : rectionNodes) {
-				String rectionValue = rectionNode.getTextTrim();
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionValue);
+			for (Element governmentNode : governmentNodes) {
+				String governmentValue = governmentNode.getTextTrim();
+				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
 				for (UsageMeaning usageMeaning : usageMeanings) {
-					createUsageMeaning(rectionId, usageMeaning);
+					createUsageMeaning(governmentId, usageMeaning);
 				}
 			}
 		}
 	}
 
-	private void createUsageMeaning(Long rectionId, UsageMeaning usageMeaning) throws Exception {
-		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, "", null);
+	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
+		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", null);
 		for (Usage usage : usageMeaning.getUsages()) {
 			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 			if (isNotEmpty(usage.getUsageType())) {
@@ -1141,7 +1141,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String subWordExp = "s:mmg/s:mm";
 		final String frequencyGroupExp = "s:mmg/s:msag";
 		final String displayPosExp = "s:mmg/s:vk";
-		final String rectionExp = "s:r";
+		final String governmentExp = "s:r";
 		final String homonymNrAttr = "i";
 
 		Element frequencyGroupNode = (Element) node.selectSingleNode(frequencyGroupExp);
@@ -1169,9 +1169,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				subWord.homonymNr = Integer.parseInt(subWordNode.attributeValue(homonymNrAttr));
 			}
 			if (subWordNode.hasMixedContent()) {
-				Element rectionNode = (Element) subWordNode.selectSingleNode(rectionExp);
-				if (rectionNode != null) {
-					subWord.rection = rectionNode.getTextTrim();
+				Element governmentNode = (Element) subWordNode.selectSingleNode(governmentExp);
+				if (governmentNode != null) {
+					subWord.government = governmentNode.getTextTrim();
 				}
 			}
 			subWord.frequencyGroup = frequencyGroup;
@@ -1390,7 +1390,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		String frequencyGroup;
 		List<String> grammars = new ArrayList<>();
 		Long meaningId;
-		String rection;
+		String government;
 		String displayMorph;
 	}
 
@@ -1432,7 +1432,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
-		Rection rection;
+		Government government;
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String lexemeType;
@@ -1446,7 +1446,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			newData.lexemeLevel1 = this.lexemeLevel1;
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
-			newData.rection = this.rection;
+			newData.government = this.government;
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
 			newData.lexemeType = this.lexemeType;

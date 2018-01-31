@@ -226,15 +226,15 @@
                 </tr>
               </table>
             </div>
-            <div th:if="${not #lists.isEmpty(lexeme.rections)}">
+            <div th:if="${not #lists.isEmpty(lexeme.governments)}">
               <hr />
-              <table th:each="rection,rectionIter : ${lexeme.rections}">
+              <table th:each="government,governmentIter : ${lexeme.governments}">
                 <tr>
                   <th class="lbl">Rektsioon</th>
                 </tr>
                 <tr>
                   <td>
-                    <span th:text="${rection.value}"></span>
+                    <span th:text="${government.value}"></span>
                   </td>
                 </tr>
                 <tr>
@@ -242,7 +242,7 @@
                 </tr>
                 <tr>
                   <td>
-                    <table th:each="usageMeaning,usageMeaningIter : ${rection.usageMeanings}">
+                    <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
                       <tr th:each="usage : ${usageMeaning.usages}">
                         <td>
                           <span th:utext="${markdown.toHtml(usage.value)}"></span>
@@ -261,7 +261,7 @@
                     </table>
                   </td>
                 </tr>
-                <tr th:unless="${rectionIter.last}">
+                <tr th:unless="${governmentIter.last}">
                   <td>
                     <hr />
                   </td>

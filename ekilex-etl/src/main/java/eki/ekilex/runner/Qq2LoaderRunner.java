@@ -32,7 +32,7 @@ import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Grammar;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Rection;
+import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -73,7 +73,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String wordExp = "x:m";
 	private final String wordVocalFormExp = "x:hld";
 	private final String wordMorphExp = "x:vk";
-	private final String wordRectionExp = "x:r";
+	private final String wordGovernmentExp = "x:r";
 	private final String wordGrammarExp = "x:grg/x:gki";
 	private final String articleBodyExp = "x:S";
 	private final String meaningGroupExp = "x:tp";
@@ -81,7 +81,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String wordMatchExpr = "x:xp/x:xg";
 	private final String wordMatchValueExp = "x:x";
 	private final String definitionExp = "x:xd";
-	private final String wordMatchRectionExp = "x:xr";
+	private final String wordMatchGovernmentExp = "x:xr";
 	private final String synonymExp = "x:syn";
 	private final String usageGroupExp = "x:np/x:ng";
 	private final String usageExp = "x:n";
@@ -93,7 +93,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private final String defaultWordMorphCode = "SgN";
 	private final int defaultHomonymNr = 1;
-	private final String defaultRectionValue = "-";
+	private final String defaultGovernmentValue = "-";
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
@@ -152,18 +152,18 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		long articleCount = rootElement.content().stream().filter(node -> node instanceof Element).count();
 		logger.debug("Extracted {} articles", articleCount);
 
-		Map<Long, List<Rection>> wordIdRectionMap = new HashMap<>();
+		Map<Long, List<Government>> wordIdGovernmentMap = new HashMap<>();
 		Map<Long, List<Grammar>> wordIdGrammarMap = new HashMap<>();
 
 		Element headerNode, contentNode;
-		List<Element> wordGroupNodes, rectionNodes, grammarNodes, meaningGroupNodes, meaningNodes;
+		List<Element> wordGroupNodes, governmentNodes, grammarNodes, meaningGroupNodes, meaningNodes;
 		List<Element> definitionNodes, wordMatchNodes, synonymLevel1Nodes, synonymLevel2Nodes, usageGroupNodes;
 		Element guidNode, wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
 		List<UsageMeaning> usageMeanings;
 		List<Word> newWords, wordMatches, allWordMatches;
 		List<Paradigm> paradigms;
-		List<Rection> rections;
+		List<Government> governments;
 		String guid, word, wordFormsStr, wordMatch, pseudoHomonymNr, wordDisplayForm, wordVocalForm, lexemeLevel1Str, wordMatchLang;
 		String sourceMorphCode, destinMorphCode, destinDerivCode;
 		int homonymNr, lexemeLevel1, lexemeLevel2;
@@ -249,9 +249,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// further references...
 
-				// rections...
-				rectionNodes = wordGroupNode.selectNodes(wordRectionExp);
-				extractRections(rectionNodes, wordId, wordIdRectionMap);
+				// governments...
+				governmentNodes = wordGroupNode.selectNodes(wordGovernmentExp);
+				extractGovernments(governmentNodes, wordId, wordIdGovernmentMap);
 
 				// grammar...
 				grammarNodes = wordGroupNode.selectNodes(wordGrammarExp);
@@ -325,13 +325,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
 						} else {
-							// word match lexeme rection
-							rectionNodes = wordMatchValueNode.selectNodes(wordMatchRectionExp);
-							saveRections(rectionNodes, lexemeId);
+							// word match lexeme government
+							governmentNodes = wordMatchValueNode.selectNodes(wordMatchGovernmentExp);
+							saveGovernments(governmentNodes, lexemeId);
 						}
 					}
 
-					// new words lexemes+rections+grammar
+					// new words lexemes+governments+grammar
 					for (Word newWord : newWords) {
 
 						newWordId = newWord.getId();
@@ -342,11 +342,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj.setLevel2(lexemeLevel2);
 						lexemeId = createLexeme(lexemeObj, dataset);
 
-						rections = wordIdRectionMap.get(newWordId);
+						governments = wordIdGovernmentMap.get(newWordId);
 
-						// new word lexeme rections, usages, usage translations
-						createRectionsAndUsagesAndTranslations(
-								dataLang, lexemeId, wordMatches, rections, usageMeanings, isSingleMeaning, singleUsageTranslationMatchCount);
+						// new word lexeme governments, usages, usage translations
+						createGovernmentsAndUsagesAndTranslations(
+								dataLang, lexemeId, wordMatches, governments, usageMeanings, isSingleMeaning, singleUsageTranslationMatchCount);
 
 						// new word lexeme grammars
 						createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
@@ -689,14 +689,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveRections(List<Element> rectionNodes, Long lexemeId) throws Exception {
+	private void saveGovernments(List<Element> governmentNodes, Long lexemeId) throws Exception {
 
-		if (rectionNodes == null) {
+		if (governmentNodes == null) {
 			return;
 		}
-		for (Element rectionNode : rectionNodes) {
-			String rection = rectionNode.getTextTrim();
-			createLexemeFreeform(lexemeId, FreeformType.RECTION, rection, null);
+		for (Element governmentNode : governmentNodes) {
+			String government = governmentNode.getTextTrim();
+			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, null);
 		}
 	}
 
@@ -725,21 +725,21 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void extractRections(List<Element> rectionNodes, Long wordId, Map<Long, List<Rection>> wordIdRectionMap) {
+	private void extractGovernments(List<Element> governmentNodes, Long wordId, Map<Long, List<Government>> wordIdGovernmentMap) {
 
-		if (rectionNodes == null) {
+		if (governmentNodes == null) {
 			return;
 		}
-		List<Rection> rectionObjs = wordIdRectionMap.get(wordId);
-		if (rectionObjs == null) {
-			rectionObjs = new ArrayList<>();
-			wordIdRectionMap.put(wordId, rectionObjs);
+		List<Government> governmentObjs = wordIdGovernmentMap.get(wordId);
+		if (governmentObjs == null) {
+			governmentObjs = new ArrayList<>();
+			wordIdGovernmentMap.put(wordId, governmentObjs);
 		}
-		for (Element rectionNode : rectionNodes) {
-			String rection = rectionNode.getTextTrim();
-			Rection rectionObj = new Rection();
-			rectionObj.setValue(rection);
-			rectionObjs.add(rectionObj);
+		for (Element governmentNode : governmentNodes) {
+			String government = governmentNode.getTextTrim();
+			Government governmentObj = new Government();
+			governmentObj.setValue(government);
+			governmentObjs.add(governmentObj);
 		}
 	}
 
@@ -825,10 +825,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void createRectionsAndUsagesAndTranslations(
+	private void createGovernmentsAndUsagesAndTranslations(
 			String dataLang, Long lexemeId,
 			List<Word> wordMatchObjs,
-			List<Rection> rectionObjs,
+			List<Government> governmentObjs,
 			List<UsageMeaning> allUsageMeanings,
 			boolean isSingleMeaning,
 			Count singleUsageTranslationMatchCount) throws Exception {
@@ -840,19 +840,19 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<String> wordMatches = wordMatchObjs.stream().map(wordMatchObj -> wordMatchObj.getValue().toLowerCase()).collect(Collectors.toList());
 		boolean containsMultiWords = containsMultiWords(wordMatches);
 
-		if (CollectionUtils.isEmpty(rectionObjs)) {
-			Rection rectionObj = new Rection();
-			rectionObj.setValue(defaultRectionValue);
-			rectionObjs = new ArrayList<>();
-			rectionObjs.add(rectionObj);
+		if (CollectionUtils.isEmpty(governmentObjs)) {
+			Government governmentObj = new Government();
+			governmentObj.setValue(defaultGovernmentValue);
+			governmentObjs = new ArrayList<>();
+			governmentObjs.add(governmentObj);
 		}
 
 		List<UsageTranslation> usageTranslations;
 
 		// collect usage meanings, usages, translations
 		if (isSingleMeaning) {
-			for (Rection rectionObj : rectionObjs) {
-				rectionObj.setUsageMeanings(allUsageMeanings);
+			for (Government governmentObj : governmentObjs) {
+				governmentObj.setUsageMeanings(allUsageMeanings);
 			}
 			singleUsageTranslationMatchCount.increment();
 		} else {
@@ -894,23 +894,23 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 			if (CollectionUtils.isNotEmpty(matchingUsageMeanings)) {
-				for (Rection rectionObj : rectionObjs) {
-					rectionObj.setUsageMeanings(matchingUsageMeanings);
+				for (Government governmentObj : governmentObjs) {
+					governmentObj.setUsageMeanings(matchingUsageMeanings);
 				}
 			}
 		}
 
-		// save rections, usage meanings, usages, usage translations
-		for (Rection rectionObj : rectionObjs) {
-			List<UsageMeaning> usageMeanings = rectionObj.getUsageMeanings();
+		// save governments, usage meanings, usages, usage translations
+		for (Government governmentObj : governmentObjs) {
+			List<UsageMeaning> usageMeanings = governmentObj.getUsageMeanings();
 			if (CollectionUtils.isEmpty(usageMeanings)) {
-				if (!StringUtils.equals(rectionObj.getValue(), defaultRectionValue)) {
-					createLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue(), null);
+				if (!StringUtils.equals(governmentObj.getValue(), defaultGovernmentValue)) {
+					createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentObj.getValue(), null);
 				}
 			} else {
-				Long rectionId = createOrSelectLexemeFreeform(lexemeId, FreeformType.RECTION, rectionObj.getValue());
+				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentObj.getValue());
 				for (UsageMeaning usageMeaning : usageMeanings) {
-					Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, rectionId, null, null);
+					Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
 					for (Usage usage : usageMeaning.getUsages()) {
 						createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 					}
