@@ -11,6 +11,9 @@ public class ParadigmFormTuple extends AbstractDataObject {
 	@Column(name = "paradigm_id")
 	private Long paradigmId;
 
+	@Column(name = "inflection_type_nr")
+	private String inflectionTypeNr;
+
 	@Column(name = "form_id")
 	private Long formId;
 
@@ -41,6 +44,14 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
+	}
+
+	public String getInflectionTypeNr() {
+		return inflectionTypeNr;
+	}
+
+	public void setInflectionTypeNr(String inflectionTypeNr) {
+		this.inflectionTypeNr = inflectionTypeNr;
 	}
 
 	public Long getFormId() {

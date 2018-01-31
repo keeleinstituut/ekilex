@@ -34,6 +34,7 @@ import java.util.List;
 
 import org.jooq.DSLContext;
 import org.jooq.Record1;
+import org.jooq.Record10;
 import org.jooq.Record15;
 import org.jooq.Record16;
 import org.jooq.Record2;
@@ -41,7 +42,6 @@ import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record7;
-import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,11 +65,12 @@ public class LexSearchDbService implements SystemConstant {
 		create = context;
 	}
 
-	public Result<Record9<Long,Long,String,Boolean,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record10<Long,String,Long,String,Boolean,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
 						PARADIGM.ID.as("paradigm_id"),
+						PARADIGM.INFLECTION_TYPE_NR,
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("form"),
 						FORM.IS_WORD,

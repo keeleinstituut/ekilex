@@ -600,6 +600,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		int wordComponentCount = wordComponents.length;
 		boolean isCompoundWord = wordComponentCount > 1;
 		String wordLastComp = wordComponents[wordComponentCount - 1];
+		List<Paradigm> matchingParadigms;
 
 		if (!mabService.isMabLoaded()) {
 			return null;
@@ -611,7 +612,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return null;
 		}
 		if (mabService.isSingleParadigm(wordLastComp)) {
-			return mabService.getWordParadigms(wordLastComp);
+			matchingParadigms = mabService.getWordParadigms(wordLastComp);
+			if (isCompoundWord) {
+				return composeCompoundWordParadigms(wordComponents, wordComponentCount, matchingParadigms);
+			}
+			return matchingParadigms;
 		}
 		if (StringUtils.isBlank(wordFormsStr)) {
 			logger.warn("\"{}({})\" has no forms to compare with MAB paradigms", wordLastComp, word);
@@ -638,31 +643,39 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			return null;
 		}
 		Integer homonymNr = matchingParadigm.getHomonymNr();
-		List<Paradigm> matchingParadigms = mabService.getWordParadigmsForHomonym(wordLastComp, homonymNr);
+		matchingParadigms = mabService.getWordParadigmsForHomonym(wordLastComp, homonymNr);
 		if (isCompoundWord) {
-			List<Paradigm> compoundWordParadigms = new ArrayList<>();
-			for (Paradigm paradigm : matchingParadigms) {
-				List<String> compoundFormValues = new ArrayList<>();
-				List<Form> mabForms = paradigm.getForms();
-				List<Form> compoundForms = new ArrayList<>();
-				for (Form mabForm : mabForms) {
-					String mabFormValue = mabForm.getValue();
-					String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
-					compoundFormValues.add(compoundFormValue);
-					Form compoundForm = new Form();
-					compoundForm.setWord(mabForm.isWord());
-					compoundForm.setMorphCode(mabForm.getMorphCode());
-					compoundForm.setValue(compoundFormValue);
-					compoundForms.add(compoundForm);
-				}
-				Paradigm compoundWordParadigm = new Paradigm();
-				compoundWordParadigm.setFormValues(compoundFormValues);
-				compoundWordParadigm.setForms(compoundForms);
-				compoundWordParadigms.add(compoundWordParadigm);
-			}
-			return compoundWordParadigms;
+			return composeCompoundWordParadigms(wordComponents, wordComponentCount, matchingParadigms);
 		}
 		return matchingParadigms;
+	}
+
+	private List<Paradigm> composeCompoundWordParadigms(String[] wordComponents, int wordComponentCount, List<Paradigm> lastCompParadigms) {
+
+		List<Paradigm> compoundWordParadigms = new ArrayList<>();
+		for (Paradigm lastCompParadigm : lastCompParadigms) {
+			List<String> compoundFormValues = new ArrayList<>();
+			List<Form> mabForms = lastCompParadigm.getForms();
+			List<Form> compoundForms = new ArrayList<>();
+			for (Form mabForm : mabForms) {
+				String mabFormValue = mabForm.getValue();
+				String displayForm = mabForm.getDisplayForm();
+				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
+				String compoundDisplayForm = StringUtils.join(wordComponents, '+') + '+' + displayForm; 
+				compoundFormValues.add(compoundFormValue);
+				Form compoundForm = new Form();
+				compoundForm.setValue(compoundFormValue);
+				compoundForm.setDisplayForm(compoundDisplayForm);
+				compoundForm.setMorphCode(mabForm.getMorphCode());
+				compoundForm.setWord(mabForm.isWord());
+				compoundForms.add(compoundForm);
+			}
+			Paradigm compoundWordParadigm = new Paradigm();
+			compoundWordParadigm.setFormValues(compoundFormValues);
+			compoundWordParadigm.setForms(compoundForms);
+			compoundWordParadigms.add(compoundWordParadigm);
+		}
+		return compoundWordParadigms;
 	}
 
 	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {

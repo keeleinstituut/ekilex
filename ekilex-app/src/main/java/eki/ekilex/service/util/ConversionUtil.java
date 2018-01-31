@@ -43,6 +43,7 @@ public class ConversionUtil {
 				formRelations = new ArrayList<>();
 				paradigm = new Paradigm();
 				paradigm.setParadigmId(paradigmId);
+				paradigm.setInflectionTypeNr(tuple.getInflectionTypeNr());
 				paradigm.setForms(forms);
 				paradigm.setFormRelations(formRelations);
 				paradigmsMap.put(paradigmId, paradigm);
@@ -63,6 +64,7 @@ public class ConversionUtil {
 		}
 		composeParadigmTitles(paradigms);
 		flagFormMorphCodes(paradigms);
+		flagFormsExist(paradigms);
 
 		for (FormRelation formRelation : wordFormRelations) {
 
@@ -83,41 +85,61 @@ public class ConversionUtil {
 		}
 		if (paradigms.size() == 1) {
 			Paradigm paradigm = paradigms.get(0);
-			List<Form> forms = paradigm.getForms();
-			String title = null;
-			for (Form form : forms) {
-				if (!form.isWord()) {
-					title = form.getDisplayForm();
-					if (StringUtils.isBlank(title)) {
-						title = form.getValue();
-					}
-					break;
-				}
+			String title = getFirstAvailableTitle(paradigm, false);
+			if (StringUtils.isBlank(title)) {
+				title = getFirstAvailableTitle(paradigm, true);
+			}
+			String inflectionTypeNr = paradigm.getInflectionTypeNr();
+			if (StringUtils.isNotBlank(inflectionTypeNr)) {
+				title = title + " " + inflectionTypeNr;				
 			}
 			paradigm.setTitle(title);
 		} else {
-			for (Paradigm thisParadigm : paradigms) {
-				String title = null;
-				Long paradigmId = thisParadigm.getParadigmId();
-				List<Form> thisForms = thisParadigm.getForms();
-				for (Form thisForm : thisForms) {
-					String thisMorphCode = thisForm.getMorphCode();
-					String titleCandidate = thisForm.getDisplayForm();
-					if (StringUtils.isBlank(titleCandidate)) {
-						titleCandidate = thisForm.getValue();
-					}
-					boolean isDifferentTitle = isDifferentTitle(paradigms, paradigmId, thisMorphCode, titleCandidate);
-					if (isDifferentTitle) {
-						title = titleCandidate;
-						break;
-					}
-				}
+			for (Paradigm paradigm : paradigms) {
+				String title = getFirstDifferentTitle(paradigm, paradigms);
 				if (StringUtils.isBlank(title)) {
 					logger.warn("Could not compose paradigm title. Fix this!");
 				}
-				thisParadigm.setTitle(title);
+				String inflectionTypeNr = paradigm.getInflectionTypeNr();
+				if (StringUtils.isNotBlank(inflectionTypeNr)) {
+					title = title + " " + inflectionTypeNr;				
+				}
+				paradigm.setTitle(title);
 			}
 		}
+	}
+
+	private String getFirstAvailableTitle(Paradigm paradigm, boolean isWord) {
+
+		List<Form> forms = paradigm.getForms();
+		for (Form form : forms) {
+			if (form.isWord() == isWord) {
+				String title = form.getDisplayForm();
+				if (StringUtils.isBlank(title)) {
+					title = form.getValue();
+				}
+				return title;
+			}
+		}
+		return null;
+	}
+
+	private String getFirstDifferentTitle(Paradigm paradigm, List<Paradigm> paradigms) {
+
+		List<Form> forms = paradigm.getForms();
+		Long paradigmId = paradigm.getParadigmId();
+		for (Form form : forms) {
+			String thisMorphCode = form.getMorphCode();
+			String titleCandidate = form.getDisplayForm();
+			if (StringUtils.isBlank(titleCandidate)) {
+				titleCandidate = form.getValue();
+			}
+			boolean isDifferentTitle = isDifferentTitle(paradigms, paradigmId, thisMorphCode, titleCandidate);
+			if (isDifferentTitle) {
+				return titleCandidate;
+			}
+		}
+		return null;
 	}
 
 	private boolean isDifferentTitle(List<Paradigm> paradigms, Long currentParadigmId, String currentMorphCode, String currentTitle) {
@@ -156,6 +178,15 @@ public class ConversionUtil {
 				form.setDisplayMorphCode(displayMorphCode);
 				previousFormMorphCode = form.getMorphCode();
 			}
+		}
+	}
+
+	private void flagFormsExist(List<Paradigm> paradigms) {
+
+		for (Paradigm paradigm : paradigms) {
+			List<Form> forms = paradigm.getForms();
+			boolean formsExist = CollectionUtils.isNotEmpty(forms);
+			paradigm.setFormsExist(formsExist);
 		}
 	}
 

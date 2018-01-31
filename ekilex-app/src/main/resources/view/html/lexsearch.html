@@ -317,7 +317,7 @@
       </div>
       <div class="float-left" style="width: 30%">
         <div th:if="${not #lists.isEmpty(details.paradigms)}">
-          <div th:each="paradigm : ${details.paradigms}" style="padding: 5px">
+          <div th:each="paradigm : ${details.paradigms}" th:if="${paradigm.formsExist}" style="padding: 5px">
             <button class="btn btn-info" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">
               <span th:text="${paradigm.title}"></span>
             </button>
@@ -332,17 +332,23 @@
                 </div>
                 <hr />
               </div>
-              <div th:if="${#lists.size(paradigm.forms) > 1}">
-                <div th:each="form : ${paradigm.forms}" style="white-space: nowrap;">
-                  <span th:text="${form.value}"></span>
-                  <span style="font-size: 80%; color: #999">
-                    &nbsp;
-                    <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-                    <span th:text="${' | ' + form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-                    <span th:text="${' | ' + form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}"></span>
-                  </span>
-                  <br>
-                </div>
+              <div th:if="${not #lists.isEmpty(paradigm.forms)}">
+                <table>
+                  <tr th:each="form : ${paradigm.forms}">
+                    <td style="text-align: right; width: 200px">
+                      <span th:text="${form.morphCode + ' - ' + form.morphValue}" th:if="${form.displayMorphCode}" style="font-size: 80%; color: #999"></span>
+                    </td>
+                    <td>
+                      <span th:text="${form.value}"></span>
+                    </td>
+                    <td>
+                      <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}" style="font-size: 80%; color: #999"></span>
+                    </td>
+                    <td>
+                      <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}" style="font-size: 80%; color: #999"></span>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </div>
           </div>

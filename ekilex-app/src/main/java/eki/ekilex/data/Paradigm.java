@@ -12,9 +12,13 @@ public class Paradigm extends AbstractDataObject {
 
 	private String title;
 
+	private String inflectionTypeNr;
+
 	private List<Form> forms;
 
 	private List<FormRelation> formRelations;
+
+	private boolean formsExist;
 
 	public Long getParadigmId() {
 		return paradigmId;
@@ -32,6 +36,14 @@ public class Paradigm extends AbstractDataObject {
 		this.title = title;
 	}
 
+	public String getInflectionTypeNr() {
+		return inflectionTypeNr;
+	}
+
+	public void setInflectionTypeNr(String inflectionTypeNr) {
+		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
 	public List<Form> getForms() {
 		return forms;
 	}
@@ -46,6 +58,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setFormRelations(List<FormRelation> formRelations) {
 		this.formRelations = formRelations;
+	}
+
+	public boolean isFormsExist() {
+		return formsExist;
+	}
+
+	public void setFormsExist(boolean formsExist) {
+		this.formsExist = formsExist;
 	}
 
 }
