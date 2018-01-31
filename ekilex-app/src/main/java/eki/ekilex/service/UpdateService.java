@@ -36,8 +36,6 @@ public class UpdateService {
 
 	@Transactional
 	public void updateDefinitionOrdering(List<OrderingData> items) {
-		for (OrderingData item : items) {
-			updateDbService.updateDefinitionOrderby(item.getId(), item.getOrderby());
-		}
+		updateDbService.updateDefinitionOrderby(items);
 	}
 }

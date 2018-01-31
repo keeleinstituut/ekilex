@@ -1,8 +1,13 @@
 package eki.ekilex.service.db;
 
+import eki.ekilex.data.OrderingData;
 import org.jooq.DSLContext;
+import org.jooq.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
@@ -31,10 +36,11 @@ public class UpdateDbService {
 				.execute();
 	}
 
-	public void updateDefinitionOrderby(Long id, Long orderby) {
-		create.update(DEFINITION)
-				.set(DEFINITION.ORDER_BY, orderby)
-				.where(DEFINITION.ID.eq(id))
-				.execute();
+	public void updateDefinitionOrderby(List<OrderingData> items) {
+		List<Query> updateQueries = new ArrayList<>();
+		for (OrderingData item : items) {
+			updateQueries.add(create.update(DEFINITION).set(DEFINITION.ORDER_BY, item.getOrderby()).where(DEFINITION.ID.eq(item.getId())));
+		}
+		create.batch(updateQueries).execute();
 	}
 }

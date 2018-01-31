@@ -19,16 +19,16 @@ import java.util.List;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class WordDetailsController {
+public class ModifyController {
 
-	private static final Logger logger = LoggerFactory.getLogger(WordDetailsController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ModifyController.class);
 
 	@Autowired
 	private UpdateService updateService;
 
 	@ResponseBody
 	@PostMapping("/modify")
-	public String details(@RequestParam("op_type") String opType, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
+	public String modifyTextValue(@RequestParam("op_type") String opType, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
 
 		logger.debug("Update operation {} : {} : for id {}", opType, value, id);
 		switch (opType) {

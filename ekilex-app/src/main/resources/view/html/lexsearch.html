@@ -179,10 +179,10 @@
               <table class="orderable">
                 <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                   <td>
-                    <button th:hidden="${itemStat.first}" class="btn badge badge-warning order-up float-left">
+                    <button th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
                       <i class="fa fa-arrow-up" aria-hidden="true"></i>
                     </button>
-                    <button th:hidden="${itemStat.last}" class="btn badge badge-warning order-down float-right">
+                    <button th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right">
                       <i class="fa fa-arrow-down" aria-hidden="true"></i>
                     </button>
                   </td>
