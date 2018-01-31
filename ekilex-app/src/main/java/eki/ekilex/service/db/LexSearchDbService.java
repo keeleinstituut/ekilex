@@ -32,8 +32,6 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.sql.Timestamp;
 import java.util.List;
 
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
-import eki.ekilex.data.db.tables.UsageTypeLabel;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record15;
@@ -43,7 +41,7 @@ import org.jooq.Record3;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record7;
-import org.jooq.Record8;
+import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +52,8 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
+import eki.ekilex.data.db.tables.UsageTypeLabel;
 
 @Service
 public class LexSearchDbService implements SystemConstant {
@@ -65,13 +65,14 @@ public class LexSearchDbService implements SystemConstant {
 		create = context;
 	}
 
-	public Result<Record8<Long,Long,String,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record9<Long,Long,String,Boolean,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
 						PARADIGM.ID.as("paradigm_id"),
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("form"),
+						FORM.IS_WORD,
 						FORM.COMPONENTS,
 						FORM.DISPLAY_FORM,
 						FORM.VOCAL_FORM,

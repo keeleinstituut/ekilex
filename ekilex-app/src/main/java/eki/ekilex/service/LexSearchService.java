@@ -1,7 +1,10 @@
 package eki.ekilex.service;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.transaction.Transactional;
 
@@ -47,7 +50,6 @@ public class LexSearchService {
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		List<WordLexeme> lexemes = lexSearchDbService.findFormMeanings(wordId, selectedDatasets).into(WordLexeme.class);
-		lexemes.forEach(WordLexeme::cleanUpVocalForms);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
 		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);
@@ -60,6 +62,9 @@ public class LexSearchService {
 
 			Long lexemeId = lexeme.getLexemeId();
 			Long meaningId = lexeme.getMeaningId();
+
+			List<String> vocalForms = lexeme.getVocalForms();
+			vocalForms = cleanUpVocalForms(vocalForms);
 
 			List<Word> meaningWords = lexSearchDbService.findMeaningWords(wordId, meaningId, selectedDatasets).into(Word.class);
 			List<Classifier> lexemePos = lexSearchDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
@@ -91,6 +96,7 @@ public class LexSearchService {
 			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);
 			lexeme.setGrammars(lexemeGrammars);
+			lexeme.setVocalForms(vocalForms);
 
 			boolean lexemeOrMeaningClassifiersExist =
 					StringUtils.isNotBlank(lexeme.getLexemeTypeCode())
@@ -110,6 +116,10 @@ public class LexSearchService {
 			d.setParadigms(paradigms);
 			d.setLexemes(lexemes);
 		});
+	}
+
+	private List<String> cleanUpVocalForms(List<String> vocalForms) {
+		return vocalForms.stream().filter(Objects::nonNull).collect(toList());
 	}
 
 	private void combineLevels(List<WordLexeme> lexemes) {

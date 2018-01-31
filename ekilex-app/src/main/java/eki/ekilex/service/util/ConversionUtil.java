@@ -5,6 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Form;
@@ -18,6 +22,8 @@ import eki.ekilex.data.UsageMember;
 
 @Component
 public class ConversionUtil {
+
+	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 
 	public List<Paradigm> composeParadigms(List<ParadigmFormTuple> paradigmFormTuples, List<FormRelation> wordFormRelations) {
 
@@ -47,6 +53,7 @@ public class ConversionUtil {
 			Form form = new Form();
 			form.setId(tuple.getFormId());
 			form.setValue(tuple.getForm());
+			form.setWord(tuple.isWord());
 			form.setComponents(tuple.getComponents());
 			form.setDisplayForm(tuple.getDisplayForm());
 			form.setVocalForm(tuple.getVocalForm());
@@ -54,6 +61,8 @@ public class ConversionUtil {
 			form.setMorphValue(tuple.getMorphValue());
 			forms.add(form);
 		}
+		composeParadigmTitles(paradigms);
+		flagFormMorphCodes(paradigms);
 
 		for (FormRelation formRelation : wordFormRelations) {
 
@@ -65,6 +74,89 @@ public class ConversionUtil {
 		}
 
 		return paradigms;
+	}
+
+	private void composeParadigmTitles(List<Paradigm> paradigms) {
+
+		if (CollectionUtils.isEmpty(paradigms)) {
+			return;
+		}
+		if (paradigms.size() == 1) {
+			Paradigm paradigm = paradigms.get(0);
+			List<Form> forms = paradigm.getForms();
+			String title = null;
+			for (Form form : forms) {
+				if (!form.isWord()) {
+					title = form.getDisplayForm();
+					if (StringUtils.isBlank(title)) {
+						title = form.getValue();
+					}
+					break;
+				}
+			}
+			paradigm.setTitle(title);
+		} else {
+			for (Paradigm thisParadigm : paradigms) {
+				String title = null;
+				Long paradigmId = thisParadigm.getParadigmId();
+				List<Form> thisForms = thisParadigm.getForms();
+				for (Form thisForm : thisForms) {
+					String thisMorphCode = thisForm.getMorphCode();
+					String titleCandidate = thisForm.getDisplayForm();
+					if (StringUtils.isBlank(titleCandidate)) {
+						titleCandidate = thisForm.getValue();
+					}
+					boolean isDifferentTitle = isDifferentTitle(paradigms, paradigmId, thisMorphCode, titleCandidate);
+					if (isDifferentTitle) {
+						title = titleCandidate;
+						break;
+					}
+				}
+				if (StringUtils.isBlank(title)) {
+					logger.warn("Could not compose paradigm title. Fix this!");
+				}
+				thisParadigm.setTitle(title);
+			}
+		}
+	}
+
+	private boolean isDifferentTitle(List<Paradigm> paradigms, Long currentParadigmId, String currentMorphCode, String currentTitle) {
+
+		for (Paradigm otherParadigm : paradigms) {
+			if (currentParadigmId.equals(otherParadigm.getParadigmId())) {
+				continue;
+			}
+			List<Form> otherForms = otherParadigm.getForms();
+			for (Form otherForm : otherForms) {
+				String otherMorphCode = otherForm.getMorphCode();
+				if (!StringUtils.equals(currentMorphCode, otherMorphCode)) {
+					continue;
+				}
+				String otherTitle = otherForm.getDisplayForm();
+				if (StringUtils.isBlank(otherTitle)) {
+					otherTitle = otherForm.getValue();
+				}
+				if (StringUtils.equals(currentTitle, otherTitle)) {
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private void flagFormMorphCodes(List<Paradigm> paradigms) {
+
+		for (Paradigm paradigm : paradigms) {
+			List<Form> forms = paradigm.getForms();
+			String previousFormMorphCode = null;
+			for (Form form : forms) {
+				boolean displayMorphCode = !StringUtils.equals(previousFormMorphCode, form.getMorphCode());
+				form.setDisplayMorphCode(displayMorphCode);
+				previousFormMorphCode = form.getMorphCode();
+			}
+		}
 	}
 
 	public List<Rection> composeRections(List<RectionUsageTranslationDefinitionTuple> rectionUsageTranslationDefinitionTuples) {
