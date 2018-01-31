@@ -1,10 +1,12 @@
 package eki.ekilex.service;
 
+import eki.ekilex.data.OrderingData;
 import eki.ekilex.service.db.UpdateDbService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UpdateService {
@@ -30,5 +32,10 @@ public class UpdateService {
 	@Transactional
 	public void updateDefinitionValue(Long id, String value) {
 		updateDbService.updateDefinitionValue(id, value);
+	}
+
+	@Transactional
+	public void updateDefinitionOrdering(List<OrderingData> items) {
+		updateDbService.updateDefinitionOrderby(items);
 	}
 }

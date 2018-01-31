@@ -73,3 +73,44 @@ function initialiseDeatailSearch() {
         displayDetailSearchButtons();
     });
 }
+
+function changeItemOrdering(target, delta) {
+    var orderBlock = target.closest('.orderable');
+    var itemToMove = target.closest('[data-orderby]');
+    var items = orderBlock.find('[data-orderby]');
+    var itemToMovePos = items.index(itemToMove);
+    var orderedItems = [];
+    if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
+        var orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
+        $(items.get(itemToMovePos + delta)).attr('data-orderby', $(items.get(itemToMovePos)).attr('data-orderby'));
+        $(items.get(itemToMovePos)).attr('data-orderby', orderby);
+        if (delta > 0) {
+            $(items.get(itemToMovePos + delta)).after($(items.get(itemToMovePos)));
+        } else {
+            $(items.get(itemToMovePos + delta)).before($(items.get(itemToMovePos)));
+        }
+        items = orderBlock.find('[data-orderby]');
+        items.each(function (indx, item) {
+            $(item).find('.order-up').prop('hidden', indx == 0 ? 'hidden' : null);
+            $(item).find('.order-down').prop('hidden', indx == items.length - 1 ? 'hidden' : null);
+            var itemData = {};
+            itemData.id = $(item).attr('data-id');
+            itemData.orderby = $(item).attr('data-orderby');
+            orderedItems.push(itemData);
+        });
+    }
+    return orderedItems;
+}
+
+function postJson(url, dataObject) {
+    $.ajax({
+        url: url,
+        data: JSON.stringify(dataObject),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+    }).fail(function (data) {
+        console.log(data);
+        alert('Salvestamine ebaõnnestus.');
+    });
+}

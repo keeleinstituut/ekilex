@@ -294,9 +294,9 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record2<Long, String>> findMeaningDefinitions(Long meaningId) {
+	public Result<Record3<Long, String, Long>> findMeaningDefinitions(Long meaningId) {
 		return create
-				.select(DEFINITION.ID, DEFINITION.VALUE)
+				.select(DEFINITION.ID, DEFINITION.VALUE, DEFINITION.ORDER_BY)
 				.from(DEFINITION)
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(DEFINITION.ORDER_BY)
