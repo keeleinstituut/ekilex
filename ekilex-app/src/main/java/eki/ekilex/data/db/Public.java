@@ -26,6 +26,8 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
+import eki.ekilex.data.db.tables.GovernmentType;
+import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
@@ -55,8 +57,6 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
-import eki.ekilex.data.db.tables.RectionType;
-import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
@@ -96,7 +96,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 247631957;
+    private static final long serialVersionUID = 27316211;
 
     /**
      * The reference instance of <code>public</code>
@@ -212,6 +212,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.gender_label</code>.
      */
     public final GenderLabel GENDER_LABEL = eki.ekilex.data.db.tables.GenderLabel.GENDER_LABEL;
+
+    /**
+     * The table <code>public.government_type</code>.
+     */
+    public final GovernmentType GOVERNMENT_TYPE = eki.ekilex.data.db.tables.GovernmentType.GOVERNMENT_TYPE;
+
+    /**
+     * The table <code>public.government_type_label</code>.
+     */
+    public final GovernmentTypeLabel GOVERNMENT_TYPE_LABEL = eki.ekilex.data.db.tables.GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL;
 
     /**
      * The table <code>public.label_type</code>.
@@ -357,16 +367,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.process_state</code>.
      */
     public final ProcessState PROCESS_STATE = eki.ekilex.data.db.tables.ProcessState.PROCESS_STATE;
-
-    /**
-     * The table <code>public.rection_type</code>.
-     */
-    public final RectionType RECTION_TYPE = eki.ekilex.data.db.tables.RectionType.RECTION_TYPE;
-
-    /**
-     * The table <code>public.rection_type_label</code>.
-     */
-    public final RectionTypeLabel RECTION_TYPE_LABEL = eki.ekilex.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
 
     /**
      * The table <code>public.register</code>.
@@ -524,6 +524,8 @@ public class Public extends SchemaImpl {
             FreeformRefLink.FREEFORM_REF_LINK,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
+            GovernmentType.GOVERNMENT_TYPE,
+            GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL,
             LabelType.LABEL_TYPE,
             Lang.LANG,
             LangLabel.LANG_LABEL,
@@ -553,8 +555,6 @@ public class Public extends SchemaImpl {
             Pos.POS,
             PosLabel.POS_LABEL,
             ProcessState.PROCESS_STATE,
-            RectionType.RECTION_TYPE,
-            RectionTypeLabel.RECTION_TYPE_LABEL,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,

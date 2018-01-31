@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = 1282101137;
+    private static final long serialVersionUID = -875735047;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -74,6 +74,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
      * The column <code>public.definition.lang</code>.
      */
     public final TableField<DefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+
+    /**
+     * The column <code>public.definition.order_by</code>.
+     */
+    public final TableField<DefinitionRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.definition</code> table reference

@@ -26,6 +26,8 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
+import eki.ekilex.data.db.tables.GovernmentType;
+import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
@@ -55,8 +57,6 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
-import eki.ekilex.data.db.tables.RectionType;
-import eki.ekilex.data.db.tables.RectionTypeLabel;
 import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
@@ -196,6 +196,16 @@ public class Tables {
      * The table <code>public.gender_label</code>.
      */
     public static final GenderLabel GENDER_LABEL = eki.ekilex.data.db.tables.GenderLabel.GENDER_LABEL;
+
+    /**
+     * The table <code>public.government_type</code>.
+     */
+    public static final GovernmentType GOVERNMENT_TYPE = eki.ekilex.data.db.tables.GovernmentType.GOVERNMENT_TYPE;
+
+    /**
+     * The table <code>public.government_type_label</code>.
+     */
+    public static final GovernmentTypeLabel GOVERNMENT_TYPE_LABEL = eki.ekilex.data.db.tables.GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL;
 
     /**
      * The table <code>public.label_type</code>.
@@ -341,16 +351,6 @@ public class Tables {
      * The table <code>public.process_state</code>.
      */
     public static final ProcessState PROCESS_STATE = eki.ekilex.data.db.tables.ProcessState.PROCESS_STATE;
-
-    /**
-     * The table <code>public.rection_type</code>.
-     */
-    public static final RectionType RECTION_TYPE = eki.ekilex.data.db.tables.RectionType.RECTION_TYPE;
-
-    /**
-     * The table <code>public.rection_type_label</code>.
-     */
-    public static final RectionTypeLabel RECTION_TYPE_LABEL = eki.ekilex.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
 
     /**
      * The table <code>public.register</code>.

@@ -4,6 +4,8 @@
 package eki.eve.data.db;
 
 
+import eki.eve.data.db.tables.Collocation;
+import eki.eve.data.db.tables.CollocationUsage;
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
 import eki.eve.data.db.tables.DefinitionDataset;
@@ -24,6 +26,8 @@ import eki.eve.data.db.tables.Freeform;
 import eki.eve.data.db.tables.FreeformRefLink;
 import eki.eve.data.db.tables.Gender;
 import eki.eve.data.db.tables.GenderLabel;
+import eki.eve.data.db.tables.GovernmentType;
+import eki.eve.data.db.tables.GovernmentTypeLabel;
 import eki.eve.data.db.tables.LabelType;
 import eki.eve.data.db.tables.Lang;
 import eki.eve.data.db.tables.LangLabel;
@@ -42,6 +46,9 @@ import eki.eve.data.db.tables.LifecycleLog;
 import eki.eve.data.db.tables.Meaning;
 import eki.eve.data.db.tables.MeaningDomain;
 import eki.eve.data.db.tables.MeaningFreeform;
+import eki.eve.data.db.tables.MeaningRelType;
+import eki.eve.data.db.tables.MeaningRelTypeLabel;
+import eki.eve.data.db.tables.MeaningRelation;
 import eki.eve.data.db.tables.MeaningState;
 import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
@@ -50,12 +57,14 @@ import eki.eve.data.db.tables.Paradigm;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
 import eki.eve.data.db.tables.ProcessState;
-import eki.eve.data.db.tables.RectionType;
-import eki.eve.data.db.tables.RectionTypeLabel;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
+import eki.eve.data.db.tables.UsageAuthorType;
+import eki.eve.data.db.tables.UsageAuthorTypeLabel;
+import eki.eve.data.db.tables.UsageType;
+import eki.eve.data.db.tables.UsageTypeLabel;
 import eki.eve.data.db.tables.Word;
 import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
@@ -87,12 +96,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 505997390;
+    private static final long serialVersionUID = 360048611;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.collocation</code>.
+     */
+    public final Collocation COLLOCATION = eki.eve.data.db.tables.Collocation.COLLOCATION;
+
+    /**
+     * The table <code>public.collocation_usage</code>.
+     */
+    public final CollocationUsage COLLOCATION_USAGE = eki.eve.data.db.tables.CollocationUsage.COLLOCATION_USAGE;
 
     /**
      * The table <code>public.dataset</code>.
@@ -195,6 +214,16 @@ public class Public extends SchemaImpl {
     public final GenderLabel GENDER_LABEL = eki.eve.data.db.tables.GenderLabel.GENDER_LABEL;
 
     /**
+     * The table <code>public.government_type</code>.
+     */
+    public final GovernmentType GOVERNMENT_TYPE = eki.eve.data.db.tables.GovernmentType.GOVERNMENT_TYPE;
+
+    /**
+     * The table <code>public.government_type_label</code>.
+     */
+    public final GovernmentTypeLabel GOVERNMENT_TYPE_LABEL = eki.eve.data.db.tables.GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL;
+
+    /**
      * The table <code>public.label_type</code>.
      */
     public final LabelType LABEL_TYPE = eki.eve.data.db.tables.LabelType.LABEL_TYPE;
@@ -285,6 +314,21 @@ public class Public extends SchemaImpl {
     public final MeaningFreeform MEANING_FREEFORM = eki.eve.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
 
     /**
+     * The table <code>public.meaning_rel_type</code>.
+     */
+    public final MeaningRelType MEANING_REL_TYPE = eki.eve.data.db.tables.MeaningRelType.MEANING_REL_TYPE;
+
+    /**
+     * The table <code>public.meaning_rel_type_label</code>.
+     */
+    public final MeaningRelTypeLabel MEANING_REL_TYPE_LABEL = eki.eve.data.db.tables.MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.meaning_relation</code>.
+     */
+    public final MeaningRelation MEANING_RELATION = eki.eve.data.db.tables.MeaningRelation.MEANING_RELATION;
+
+    /**
      * The table <code>public.meaning_state</code>.
      */
     public final MeaningState MEANING_STATE = eki.eve.data.db.tables.MeaningState.MEANING_STATE;
@@ -325,16 +369,6 @@ public class Public extends SchemaImpl {
     public final ProcessState PROCESS_STATE = eki.eve.data.db.tables.ProcessState.PROCESS_STATE;
 
     /**
-     * The table <code>public.rection_type</code>.
-     */
-    public final RectionType RECTION_TYPE = eki.eve.data.db.tables.RectionType.RECTION_TYPE;
-
-    /**
-     * The table <code>public.rection_type_label</code>.
-     */
-    public final RectionTypeLabel RECTION_TYPE_LABEL = eki.eve.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
-
-    /**
      * The table <code>public.register</code>.
      */
     public final Register REGISTER = eki.eve.data.db.tables.Register.REGISTER;
@@ -353,6 +387,26 @@ public class Public extends SchemaImpl {
      * The table <code>public.source_freeform</code>.
      */
     public final SourceFreeform SOURCE_FREEFORM = eki.eve.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
+
+    /**
+     * The table <code>public.usage_author_type</code>.
+     */
+    public final UsageAuthorType USAGE_AUTHOR_TYPE = eki.eve.data.db.tables.UsageAuthorType.USAGE_AUTHOR_TYPE;
+
+    /**
+     * The table <code>public.usage_author_type_label</code>.
+     */
+    public final UsageAuthorTypeLabel USAGE_AUTHOR_TYPE_LABEL = eki.eve.data.db.tables.UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL;
+
+    /**
+     * The table <code>public.usage_type</code>.
+     */
+    public final UsageType USAGE_TYPE = eki.eve.data.db.tables.UsageType.USAGE_TYPE;
+
+    /**
+     * The table <code>public.usage_type_label</code>.
+     */
+    public final UsageTypeLabel USAGE_TYPE_LABEL = eki.eve.data.db.tables.UsageTypeLabel.USAGE_TYPE_LABEL;
 
     /**
      * The table <code>public.word</code>.
@@ -404,15 +458,21 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.COLLOCATION_ID_SEQ,
+            Sequences.COLLOCATION_USAGE_ID_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
+            Sequences.DEFINITION_ORDER_BY_SEQ,
             Sequences.DEFINITION_REF_LINK_ID_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
+            Sequences.FORM_RELATION_ORDER_BY_SEQ,
             Sequences.FREEFORM_ID_SEQ,
+            Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_REF_LINK_ID_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
+            Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
             Sequences.LEXEME_ID_SEQ,
@@ -422,12 +482,15 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
+            Sequences.MEANING_RELATION_ID_SEQ,
+            Sequences.MEANING_RELATION_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
-            Sequences.WORD_RELATION_ID_SEQ);
+            Sequences.WORD_RELATION_ID_SEQ,
+            Sequences.WORD_RELATION_ORDER_BY_SEQ);
     }
 
     @Override
@@ -439,6 +502,8 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            Collocation.COLLOCATION,
+            CollocationUsage.COLLOCATION_USAGE,
             Dataset.DATASET,
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
@@ -459,6 +524,8 @@ public class Public extends SchemaImpl {
             FreeformRefLink.FREEFORM_REF_LINK,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
+            GovernmentType.GOVERNMENT_TYPE,
+            GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL,
             LabelType.LABEL_TYPE,
             Lang.LANG,
             LangLabel.LANG_LABEL,
@@ -477,6 +544,9 @@ public class Public extends SchemaImpl {
             Meaning.MEANING,
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
+            MeaningRelType.MEANING_REL_TYPE,
+            MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
+            MeaningRelation.MEANING_RELATION,
             MeaningState.MEANING_STATE,
             MeaningType.MEANING_TYPE,
             Morph.MORPH,
@@ -485,12 +555,14 @@ public class Public extends SchemaImpl {
             Pos.POS,
             PosLabel.POS_LABEL,
             ProcessState.PROCESS_STATE,
-            RectionType.RECTION_TYPE,
-            RectionTypeLabel.RECTION_TYPE_LABEL,
             Register.REGISTER,
             RegisterLabel.REGISTER_LABEL,
             Source.SOURCE,
             SourceFreeform.SOURCE_FREEFORM,
+            UsageAuthorType.USAGE_AUTHOR_TYPE,
+            UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL,
+            UsageType.USAGE_TYPE,
+            UsageTypeLabel.USAGE_TYPE_LABEL,
             Word.WORD,
             WordGuid.WORD_GUID,
             WordRelType.WORD_REL_TYPE,

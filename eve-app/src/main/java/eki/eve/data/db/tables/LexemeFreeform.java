@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
 
-    private static final long serialVersionUID = -1768717;
+    private static final long serialVersionUID = 1071814751;
 
     /**
      * The reference instance of <code>public.lexeme_freeform</code>
@@ -112,7 +112,7 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY, Indexes.LEXEME_FREEFORM_PKEY);
+        return Arrays.<Index>asList(Indexes.LEXEME_FREEFORM_FREEFORM_ID_IDX, Indexes.LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY, Indexes.LEXEME_FREEFORM_LEXEME_ID_IDX, Indexes.LEXEME_FREEFORM_PKEY);
     }
 
     /**

@@ -4,6 +4,8 @@
 package eki.eve.data.db;
 
 
+import eki.eve.data.db.tables.Collocation;
+import eki.eve.data.db.tables.CollocationUsage;
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
 import eki.eve.data.db.tables.DefinitionDataset;
@@ -24,6 +26,8 @@ import eki.eve.data.db.tables.Freeform;
 import eki.eve.data.db.tables.FreeformRefLink;
 import eki.eve.data.db.tables.Gender;
 import eki.eve.data.db.tables.GenderLabel;
+import eki.eve.data.db.tables.GovernmentType;
+import eki.eve.data.db.tables.GovernmentTypeLabel;
 import eki.eve.data.db.tables.LabelType;
 import eki.eve.data.db.tables.Lang;
 import eki.eve.data.db.tables.LangLabel;
@@ -42,6 +46,9 @@ import eki.eve.data.db.tables.LifecycleLog;
 import eki.eve.data.db.tables.Meaning;
 import eki.eve.data.db.tables.MeaningDomain;
 import eki.eve.data.db.tables.MeaningFreeform;
+import eki.eve.data.db.tables.MeaningRelType;
+import eki.eve.data.db.tables.MeaningRelTypeLabel;
+import eki.eve.data.db.tables.MeaningRelation;
 import eki.eve.data.db.tables.MeaningState;
 import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
@@ -50,12 +57,14 @@ import eki.eve.data.db.tables.Paradigm;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
 import eki.eve.data.db.tables.ProcessState;
-import eki.eve.data.db.tables.RectionType;
-import eki.eve.data.db.tables.RectionTypeLabel;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
+import eki.eve.data.db.tables.UsageAuthorType;
+import eki.eve.data.db.tables.UsageAuthorTypeLabel;
+import eki.eve.data.db.tables.UsageType;
+import eki.eve.data.db.tables.UsageTypeLabel;
 import eki.eve.data.db.tables.Word;
 import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
@@ -77,6 +86,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.collocation</code>.
+     */
+    public static final Collocation COLLOCATION = eki.eve.data.db.tables.Collocation.COLLOCATION;
+
+    /**
+     * The table <code>public.collocation_usage</code>.
+     */
+    public static final CollocationUsage COLLOCATION_USAGE = eki.eve.data.db.tables.CollocationUsage.COLLOCATION_USAGE;
 
     /**
      * The table <code>public.dataset</code>.
@@ -179,6 +198,16 @@ public class Tables {
     public static final GenderLabel GENDER_LABEL = eki.eve.data.db.tables.GenderLabel.GENDER_LABEL;
 
     /**
+     * The table <code>public.government_type</code>.
+     */
+    public static final GovernmentType GOVERNMENT_TYPE = eki.eve.data.db.tables.GovernmentType.GOVERNMENT_TYPE;
+
+    /**
+     * The table <code>public.government_type_label</code>.
+     */
+    public static final GovernmentTypeLabel GOVERNMENT_TYPE_LABEL = eki.eve.data.db.tables.GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL;
+
+    /**
      * The table <code>public.label_type</code>.
      */
     public static final LabelType LABEL_TYPE = eki.eve.data.db.tables.LabelType.LABEL_TYPE;
@@ -269,6 +298,21 @@ public class Tables {
     public static final MeaningFreeform MEANING_FREEFORM = eki.eve.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
 
     /**
+     * The table <code>public.meaning_rel_type</code>.
+     */
+    public static final MeaningRelType MEANING_REL_TYPE = eki.eve.data.db.tables.MeaningRelType.MEANING_REL_TYPE;
+
+    /**
+     * The table <code>public.meaning_rel_type_label</code>.
+     */
+    public static final MeaningRelTypeLabel MEANING_REL_TYPE_LABEL = eki.eve.data.db.tables.MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL;
+
+    /**
+     * The table <code>public.meaning_relation</code>.
+     */
+    public static final MeaningRelation MEANING_RELATION = eki.eve.data.db.tables.MeaningRelation.MEANING_RELATION;
+
+    /**
      * The table <code>public.meaning_state</code>.
      */
     public static final MeaningState MEANING_STATE = eki.eve.data.db.tables.MeaningState.MEANING_STATE;
@@ -309,16 +353,6 @@ public class Tables {
     public static final ProcessState PROCESS_STATE = eki.eve.data.db.tables.ProcessState.PROCESS_STATE;
 
     /**
-     * The table <code>public.rection_type</code>.
-     */
-    public static final RectionType RECTION_TYPE = eki.eve.data.db.tables.RectionType.RECTION_TYPE;
-
-    /**
-     * The table <code>public.rection_type_label</code>.
-     */
-    public static final RectionTypeLabel RECTION_TYPE_LABEL = eki.eve.data.db.tables.RectionTypeLabel.RECTION_TYPE_LABEL;
-
-    /**
      * The table <code>public.register</code>.
      */
     public static final Register REGISTER = eki.eve.data.db.tables.Register.REGISTER;
@@ -337,6 +371,26 @@ public class Tables {
      * The table <code>public.source_freeform</code>.
      */
     public static final SourceFreeform SOURCE_FREEFORM = eki.eve.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
+
+    /**
+     * The table <code>public.usage_author_type</code>.
+     */
+    public static final UsageAuthorType USAGE_AUTHOR_TYPE = eki.eve.data.db.tables.UsageAuthorType.USAGE_AUTHOR_TYPE;
+
+    /**
+     * The table <code>public.usage_author_type_label</code>.
+     */
+    public static final UsageAuthorTypeLabel USAGE_AUTHOR_TYPE_LABEL = eki.eve.data.db.tables.UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL;
+
+    /**
+     * The table <code>public.usage_type</code>.
+     */
+    public static final UsageType USAGE_TYPE = eki.eve.data.db.tables.UsageType.USAGE_TYPE;
+
+    /**
+     * The table <code>public.usage_type_label</code>.
+     */
+    public static final UsageTypeLabel USAGE_TYPE_LABEL = eki.eve.data.db.tables.UsageTypeLabel.USAGE_TYPE_LABEL;
 
     /**
      * The table <code>public.word</code>.

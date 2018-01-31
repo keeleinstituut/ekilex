@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Freeform extends TableImpl<FreeformRecord> {
 
-    private static final long serialVersionUID = -1047311230;
+    private static final long serialVersionUID = 1663025959;
 
     /**
      * The reference instance of <code>public.freeform</code>
@@ -106,6 +106,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
      * The column <code>public.freeform.lang</code>.
      */
     public final TableField<FreeformRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.freeform.order_by</code>.
+     */
+    public final TableField<FreeformRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('freeform_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.freeform</code> table reference

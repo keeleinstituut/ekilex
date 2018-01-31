@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelation extends TableImpl<LexRelationRecord> {
 
-    private static final long serialVersionUID = -1685354233;
+    private static final long serialVersionUID = -1873369293;
 
     /**
      * The reference instance of <code>public.lex_relation</code>
@@ -74,6 +74,11 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
      * The column <code>public.lex_relation.lex_rel_type_code</code>.
      */
     public final TableField<LexRelationRecord, String> LEX_REL_TYPE_CODE = createField("lex_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.lex_relation.order_by</code>.
+     */
+    public final TableField<LexRelationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lex_relation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lex_relation</code> table reference

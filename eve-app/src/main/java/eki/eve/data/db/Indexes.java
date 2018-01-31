@@ -4,6 +4,8 @@
 package eki.eve.data.db;
 
 
+import eki.eve.data.db.tables.Collocation;
+import eki.eve.data.db.tables.CollocationUsage;
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
 import eki.eve.data.db.tables.DefinitionDataset;
@@ -24,6 +26,8 @@ import eki.eve.data.db.tables.Freeform;
 import eki.eve.data.db.tables.FreeformRefLink;
 import eki.eve.data.db.tables.Gender;
 import eki.eve.data.db.tables.GenderLabel;
+import eki.eve.data.db.tables.GovernmentType;
+import eki.eve.data.db.tables.GovernmentTypeLabel;
 import eki.eve.data.db.tables.LabelType;
 import eki.eve.data.db.tables.Lang;
 import eki.eve.data.db.tables.LangLabel;
@@ -42,6 +46,9 @@ import eki.eve.data.db.tables.LifecycleLog;
 import eki.eve.data.db.tables.Meaning;
 import eki.eve.data.db.tables.MeaningDomain;
 import eki.eve.data.db.tables.MeaningFreeform;
+import eki.eve.data.db.tables.MeaningRelType;
+import eki.eve.data.db.tables.MeaningRelTypeLabel;
+import eki.eve.data.db.tables.MeaningRelation;
 import eki.eve.data.db.tables.MeaningState;
 import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
@@ -50,12 +57,14 @@ import eki.eve.data.db.tables.Paradigm;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
 import eki.eve.data.db.tables.ProcessState;
-import eki.eve.data.db.tables.RectionType;
-import eki.eve.data.db.tables.RectionTypeLabel;
 import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
+import eki.eve.data.db.tables.UsageAuthorType;
+import eki.eve.data.db.tables.UsageAuthorTypeLabel;
+import eki.eve.data.db.tables.UsageType;
+import eki.eve.data.db.tables.UsageTypeLabel;
 import eki.eve.data.db.tables.Word;
 import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
@@ -86,6 +95,12 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index COLLOCATION_LEXEME1_ID_IDX = Indexes0.COLLOCATION_LEXEME1_ID_IDX;
+    public static final Index COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = Indexes0.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY;
+    public static final Index COLLOCATION_LEXEME2_ID_IDX = Indexes0.COLLOCATION_LEXEME2_ID_IDX;
+    public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
+    public static final Index COLLOCATION_USAGE_COLLOCATION_ID = Indexes0.COLLOCATION_USAGE_COLLOCATION_ID;
+    public static final Index COLLOCATION_USAGE_PKEY = Indexes0.COLLOCATION_USAGE_PKEY;
     public static final Index DATASET_PKEY = Indexes0.DATASET_PKEY;
     public static final Index DEFINITION_MEANING_ID_IDX = Indexes0.DEFINITION_MEANING_ID_IDX;
     public static final Index DEFINITION_PKEY = Indexes0.DEFINITION_PKEY;
@@ -110,6 +125,8 @@ public class Indexes {
     public static final Index FORM_REL_TYPE_PKEY = Indexes0.FORM_REL_TYPE_PKEY;
     public static final Index FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY = Indexes0.FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY;
+    public static final Index FORM_RELATION_FORM1_ID_IDX = Indexes0.FORM_RELATION_FORM1_ID_IDX;
+    public static final Index FORM_RELATION_FORM2_ID_IDX = Indexes0.FORM_RELATION_FORM2_ID_IDX;
     public static final Index FORM_RELATION_PKEY = Indexes0.FORM_RELATION_PKEY;
     public static final Index FREEFORM_PARENT_ID_IDX = Indexes0.FREEFORM_PARENT_ID_IDX;
     public static final Index FREEFORM_PKEY = Indexes0.FREEFORM_PKEY;
@@ -119,6 +136,8 @@ public class Indexes {
     public static final Index FREEFORM_REF_LINK_PKEY = Indexes0.FREEFORM_REF_LINK_PKEY;
     public static final Index GENDER_PKEY = Indexes0.GENDER_PKEY;
     public static final Index GENDER_LABEL_CODE_LANG_TYPE_KEY = Indexes0.GENDER_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index GOVERNMENT_TYPE_PKEY = Indexes0.GOVERNMENT_TYPE_PKEY;
+    public static final Index GOVERNMENT_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.GOVERNMENT_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index LABEL_TYPE_PKEY = Indexes0.LABEL_TYPE_PKEY;
     public static final Index LANG_PKEY = Indexes0.LANG_PKEY;
     public static final Index LANG_LABEL_CODE_LANG_TYPE_KEY = Indexes0.LANG_LABEL_CODE_LANG_TYPE_KEY;
@@ -131,10 +150,12 @@ public class Indexes {
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
     public static final Index LEXEME_PKEY = Indexes0.LEXEME_PKEY;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
-    public static final Index LEXEME_WORD_ID_MEANING_ID_KEY = Indexes0.LEXEME_WORD_ID_MEANING_ID_KEY;
+    public static final Index LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = Indexes0.LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY;
     public static final Index LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = Indexes0.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY;
     public static final Index LEXEME_DERIV_PKEY = Indexes0.LEXEME_DERIV_PKEY;
+    public static final Index LEXEME_FREEFORM_FREEFORM_ID_IDX = Indexes0.LEXEME_FREEFORM_FREEFORM_ID_IDX;
     public static final Index LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY = Indexes0.LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY;
+    public static final Index LEXEME_FREEFORM_LEXEME_ID_IDX = Indexes0.LEXEME_FREEFORM_LEXEME_ID_IDX;
     public static final Index LEXEME_FREEFORM_PKEY = Indexes0.LEXEME_FREEFORM_PKEY;
     public static final Index LEXEME_FREQUENCY_PKEY = Indexes0.LEXEME_FREQUENCY_PKEY;
     public static final Index LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Indexes0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
@@ -151,6 +172,12 @@ public class Indexes {
     public static final Index MEANING_FREEFORM_MEANING_ID_FREEFORM_ID_KEY = Indexes0.MEANING_FREEFORM_MEANING_ID_FREEFORM_ID_KEY;
     public static final Index MEANING_FREEFORM_MEANING_ID_IDX = Indexes0.MEANING_FREEFORM_MEANING_ID_IDX;
     public static final Index MEANING_FREEFORM_PKEY = Indexes0.MEANING_FREEFORM_PKEY;
+    public static final Index MEANING_REL_TYPE_PKEY = Indexes0.MEANING_REL_TYPE_PKEY;
+    public static final Index MEANING_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.MEANING_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index MEANING_RELATION_MEANING1_ID_IDX = Indexes0.MEANING_RELATION_MEANING1_ID_IDX;
+    public static final Index MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = Indexes0.MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY;
+    public static final Index MEANING_RELATION_MEANING2_ID_IDX = Indexes0.MEANING_RELATION_MEANING2_ID_IDX;
+    public static final Index MEANING_RELATION_PKEY = Indexes0.MEANING_RELATION_PKEY;
     public static final Index MEANING_STATE_PKEY = Indexes0.MEANING_STATE_PKEY;
     public static final Index MEANING_TYPE_PKEY = Indexes0.MEANING_TYPE_PKEY;
     public static final Index MORPH_PKEY = Indexes0.MORPH_PKEY;
@@ -160,8 +187,6 @@ public class Indexes {
     public static final Index POS_PKEY = Indexes0.POS_PKEY;
     public static final Index POS_LABEL_CODE_LANG_TYPE_KEY = Indexes0.POS_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index PROCESS_STATE_PKEY = Indexes0.PROCESS_STATE_PKEY;
-    public static final Index RECTION_TYPE_PKEY = Indexes0.RECTION_TYPE_PKEY;
-    public static final Index RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index REGISTER_PKEY = Indexes0.REGISTER_PKEY;
     public static final Index REGISTER_LABEL_CODE_LANG_TYPE_KEY = Indexes0.REGISTER_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index SOURCE_PKEY = Indexes0.SOURCE_PKEY;
@@ -169,6 +194,10 @@ public class Indexes {
     public static final Index SOURCE_FREEFORM_PKEY = Indexes0.SOURCE_FREEFORM_PKEY;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = Indexes0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_IDX = Indexes0.SOURCE_FREEFORM_SOURCE_ID_IDX;
+    public static final Index USAGE_AUTHOR_TYPE_PKEY = Indexes0.USAGE_AUTHOR_TYPE_PKEY;
+    public static final Index USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index USAGE_TYPE_PKEY = Indexes0.USAGE_TYPE_PKEY;
+    public static final Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
     public static final Index WORD_PKEY = Indexes0.WORD_PKEY;
@@ -187,6 +216,12 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 extends AbstractKeys {
+        public static Index COLLOCATION_LEXEME1_ID_IDX = createIndex("collocation_lexeme1_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID }, false);
+        public static Index COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = createIndex("collocation_lexeme1_id_lexeme2_id_key", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID, Collocation.COLLOCATION.LEXEME2_ID }, true);
+        public static Index COLLOCATION_LEXEME2_ID_IDX = createIndex("collocation_lexeme2_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME2_ID }, false);
+        public static Index COLLOCATION_PKEY = createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
+        public static Index COLLOCATION_USAGE_COLLOCATION_ID = createIndex("collocation_usage_collocation_id", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID }, false);
+        public static Index COLLOCATION_USAGE_PKEY = createIndex("collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.ID }, true);
         public static Index DATASET_PKEY = createIndex("dataset_pkey", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, true);
         public static Index DEFINITION_MEANING_ID_IDX = createIndex("definition_meaning_id_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.MEANING_ID }, false);
         public static Index DEFINITION_PKEY = createIndex("definition_pkey", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.ID }, true);
@@ -211,6 +246,8 @@ public class Indexes {
         public static Index FORM_REL_TYPE_PKEY = createIndex("form_rel_type_pkey", FormRelType.FORM_REL_TYPE, new OrderField[] { FormRelType.FORM_REL_TYPE.CODE }, true);
         public static Index FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("form_rel_type_label_code_lang_type_key", FormRelTypeLabel.FORM_REL_TYPE_LABEL, new OrderField[] { FormRelTypeLabel.FORM_REL_TYPE_LABEL.CODE, FormRelTypeLabel.FORM_REL_TYPE_LABEL.LANG, FormRelTypeLabel.FORM_REL_TYPE_LABEL.TYPE }, true);
         public static Index FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY = createIndex("form_relation_form1_id_form2_id_form_rel_type_code_key", FormRelation.FORM_RELATION, new OrderField[] { FormRelation.FORM_RELATION.FORM1_ID, FormRelation.FORM_RELATION.FORM2_ID, FormRelation.FORM_RELATION.FORM_REL_TYPE_CODE }, true);
+        public static Index FORM_RELATION_FORM1_ID_IDX = createIndex("form_relation_form1_id_idx", FormRelation.FORM_RELATION, new OrderField[] { FormRelation.FORM_RELATION.FORM1_ID }, false);
+        public static Index FORM_RELATION_FORM2_ID_IDX = createIndex("form_relation_form2_id_idx", FormRelation.FORM_RELATION, new OrderField[] { FormRelation.FORM_RELATION.FORM2_ID }, false);
         public static Index FORM_RELATION_PKEY = createIndex("form_relation_pkey", FormRelation.FORM_RELATION, new OrderField[] { FormRelation.FORM_RELATION.ID }, true);
         public static Index FREEFORM_PARENT_ID_IDX = createIndex("freeform_parent_id_idx", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.PARENT_ID }, false);
         public static Index FREEFORM_PKEY = createIndex("freeform_pkey", Freeform.FREEFORM, new OrderField[] { Freeform.FREEFORM.ID }, true);
@@ -220,6 +257,8 @@ public class Indexes {
         public static Index FREEFORM_REF_LINK_PKEY = createIndex("freeform_ref_link_pkey", FreeformRefLink.FREEFORM_REF_LINK, new OrderField[] { FreeformRefLink.FREEFORM_REF_LINK.ID }, true);
         public static Index GENDER_PKEY = createIndex("gender_pkey", Gender.GENDER, new OrderField[] { Gender.GENDER.CODE }, true);
         public static Index GENDER_LABEL_CODE_LANG_TYPE_KEY = createIndex("gender_label_code_lang_type_key", GenderLabel.GENDER_LABEL, new OrderField[] { GenderLabel.GENDER_LABEL.CODE, GenderLabel.GENDER_LABEL.LANG, GenderLabel.GENDER_LABEL.TYPE }, true);
+        public static Index GOVERNMENT_TYPE_PKEY = createIndex("government_type_pkey", GovernmentType.GOVERNMENT_TYPE, new OrderField[] { GovernmentType.GOVERNMENT_TYPE.CODE }, true);
+        public static Index GOVERNMENT_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("government_type_label_code_lang_type_key", GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL, new OrderField[] { GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL.CODE, GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL.LANG, GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL.TYPE }, true);
         public static Index LABEL_TYPE_PKEY = createIndex("label_type_pkey", LabelType.LABEL_TYPE, new OrderField[] { LabelType.LABEL_TYPE.CODE }, true);
         public static Index LANG_PKEY = createIndex("lang_pkey", Lang.LANG, new OrderField[] { Lang.LANG.CODE }, true);
         public static Index LANG_LABEL_CODE_LANG_TYPE_KEY = createIndex("lang_label_code_lang_type_key", LangLabel.LANG_LABEL, new OrderField[] { LangLabel.LANG_LABEL.CODE, LangLabel.LANG_LABEL.LANG, LangLabel.LANG_LABEL.TYPE }, true);
@@ -232,10 +271,12 @@ public class Indexes {
         public static Index LEXEME_MEANING_ID_IDX = createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
         public static Index LEXEME_PKEY = createIndex("lexeme_pkey", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.ID }, true);
         public static Index LEXEME_WORD_ID_IDX = createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);
-        public static Index LEXEME_WORD_ID_MEANING_ID_KEY = createIndex("lexeme_word_id_meaning_id_key", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID }, true);
+        public static Index LEXEME_WORD_ID_MEANING_ID_DATASET_CODE_KEY = createIndex("lexeme_word_id_meaning_id_dataset_code_key", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID, Lexeme.LEXEME.MEANING_ID, Lexeme.LEXEME.DATASET_CODE }, true);
         public static Index LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY = createIndex("lexeme_deriv_lexeme_id_deriv_code_key", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.LEXEME_ID, LexemeDeriv.LEXEME_DERIV.DERIV_CODE }, true);
         public static Index LEXEME_DERIV_PKEY = createIndex("lexeme_deriv_pkey", LexemeDeriv.LEXEME_DERIV, new OrderField[] { LexemeDeriv.LEXEME_DERIV.ID }, true);
+        public static Index LEXEME_FREEFORM_FREEFORM_ID_IDX = createIndex("lexeme_freeform_freeform_id_idx", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.FREEFORM_ID }, false);
         public static Index LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY = createIndex("lexeme_freeform_lexeme_id_freeform_id_key", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID, LexemeFreeform.LEXEME_FREEFORM.FREEFORM_ID }, true);
+        public static Index LEXEME_FREEFORM_LEXEME_ID_IDX = createIndex("lexeme_freeform_lexeme_id_idx", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID }, false);
         public static Index LEXEME_FREEFORM_PKEY = createIndex("lexeme_freeform_pkey", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.ID }, true);
         public static Index LEXEME_FREQUENCY_PKEY = createIndex("lexeme_frequency_pkey", LexemeFrequency.LEXEME_FREQUENCY, new OrderField[] { LexemeFrequency.LEXEME_FREQUENCY.CODE }, true);
         public static Index LEXEME_POS_LEXEME_ID_POS_CODE_KEY = createIndex("lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE }, true);
@@ -252,6 +293,12 @@ public class Indexes {
         public static Index MEANING_FREEFORM_MEANING_ID_FREEFORM_ID_KEY = createIndex("meaning_freeform_meaning_id_freeform_id_key", MeaningFreeform.MEANING_FREEFORM, new OrderField[] { MeaningFreeform.MEANING_FREEFORM.MEANING_ID, MeaningFreeform.MEANING_FREEFORM.FREEFORM_ID }, true);
         public static Index MEANING_FREEFORM_MEANING_ID_IDX = createIndex("meaning_freeform_meaning_id_idx", MeaningFreeform.MEANING_FREEFORM, new OrderField[] { MeaningFreeform.MEANING_FREEFORM.MEANING_ID }, false);
         public static Index MEANING_FREEFORM_PKEY = createIndex("meaning_freeform_pkey", MeaningFreeform.MEANING_FREEFORM, new OrderField[] { MeaningFreeform.MEANING_FREEFORM.ID }, true);
+        public static Index MEANING_REL_TYPE_PKEY = createIndex("meaning_rel_type_pkey", MeaningRelType.MEANING_REL_TYPE, new OrderField[] { MeaningRelType.MEANING_REL_TYPE.CODE }, true);
+        public static Index MEANING_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("meaning_rel_type_label_code_lang_type_key", MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL, new OrderField[] { MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL.CODE, MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL.LANG, MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL.TYPE }, true);
+        public static Index MEANING_RELATION_MEANING1_ID_IDX = createIndex("meaning_relation_meaning1_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING1_ID }, false);
+        public static Index MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = createIndex("meaning_relation_meaning1_id_meaning2_id_meaning_rel_type_c_key", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING1_ID, MeaningRelation.MEANING_RELATION.MEANING2_ID, MeaningRelation.MEANING_RELATION.MEANING_REL_TYPE_CODE }, true);
+        public static Index MEANING_RELATION_MEANING2_ID_IDX = createIndex("meaning_relation_meaning2_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING2_ID }, false);
+        public static Index MEANING_RELATION_PKEY = createIndex("meaning_relation_pkey", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.ID }, true);
         public static Index MEANING_STATE_PKEY = createIndex("meaning_state_pkey", MeaningState.MEANING_STATE, new OrderField[] { MeaningState.MEANING_STATE.CODE }, true);
         public static Index MEANING_TYPE_PKEY = createIndex("meaning_type_pkey", MeaningType.MEANING_TYPE, new OrderField[] { MeaningType.MEANING_TYPE.CODE }, true);
         public static Index MORPH_PKEY = createIndex("morph_pkey", Morph.MORPH, new OrderField[] { Morph.MORPH.CODE }, true);
@@ -261,8 +308,6 @@ public class Indexes {
         public static Index POS_PKEY = createIndex("pos_pkey", Pos.POS, new OrderField[] { Pos.POS.CODE }, true);
         public static Index POS_LABEL_CODE_LANG_TYPE_KEY = createIndex("pos_label_code_lang_type_key", PosLabel.POS_LABEL, new OrderField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
         public static Index PROCESS_STATE_PKEY = createIndex("process_state_pkey", ProcessState.PROCESS_STATE, new OrderField[] { ProcessState.PROCESS_STATE.CODE }, true);
-        public static Index RECTION_TYPE_PKEY = createIndex("rection_type_pkey", RectionType.RECTION_TYPE, new OrderField[] { RectionType.RECTION_TYPE.CODE }, true);
-        public static Index RECTION_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("rection_type_label_code_lang_type_key", RectionTypeLabel.RECTION_TYPE_LABEL, new OrderField[] { RectionTypeLabel.RECTION_TYPE_LABEL.CODE, RectionTypeLabel.RECTION_TYPE_LABEL.LANG, RectionTypeLabel.RECTION_TYPE_LABEL.TYPE }, true);
         public static Index REGISTER_PKEY = createIndex("register_pkey", Register.REGISTER, new OrderField[] { Register.REGISTER.CODE }, true);
         public static Index REGISTER_LABEL_CODE_LANG_TYPE_KEY = createIndex("register_label_code_lang_type_key", RegisterLabel.REGISTER_LABEL, new OrderField[] { RegisterLabel.REGISTER_LABEL.CODE, RegisterLabel.REGISTER_LABEL.LANG, RegisterLabel.REGISTER_LABEL.TYPE }, true);
         public static Index SOURCE_PKEY = createIndex("source_pkey", Source.SOURCE, new OrderField[] { Source.SOURCE.ID }, true);
@@ -270,6 +315,10 @@ public class Indexes {
         public static Index SOURCE_FREEFORM_PKEY = createIndex("source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.ID }, true);
         public static Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createIndex("source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, true);
         public static Index SOURCE_FREEFORM_SOURCE_ID_IDX = createIndex("source_freeform_source_id_idx", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID }, false);
+        public static Index USAGE_AUTHOR_TYPE_PKEY = createIndex("usage_author_type_pkey", UsageAuthorType.USAGE_AUTHOR_TYPE, new OrderField[] { UsageAuthorType.USAGE_AUTHOR_TYPE.CODE }, true);
+        public static Index USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("usage_author_type_label_code_lang_type_key", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, new OrderField[] { UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE }, true);
+        public static Index USAGE_TYPE_PKEY = createIndex("usage_type_pkey", UsageType.USAGE_TYPE, new OrderField[] { UsageType.USAGE_TYPE.CODE }, true);
+        public static Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL, new OrderField[] { UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE }, true);
         public static Index WORD_HOMONYM_NR_IDX = createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
         public static Index WORD_PKEY = createIndex("word_pkey", Word.WORD, new OrderField[] { Word.WORD.ID }, true);
