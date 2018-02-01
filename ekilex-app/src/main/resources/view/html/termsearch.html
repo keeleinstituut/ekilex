@@ -86,7 +86,7 @@
                         th:data-op-type="definition"
                         th:data-value="${definition.value}"
                         th:utext="${markdown.toHtml(definition.value)}"></span>
-                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                  <button type="button" class="btn badge badge-primary ml-2"
                           th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
                           onclick="openEditDlg(this)"
                           data-toggle="modal" data-target="#editDlg">
@@ -243,7 +243,7 @@
                                   <span th:if="${usage.author != null}">
                                     (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
                                   </span>
-                                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                                           onclick="openEditDlg(this)"
                                           data-toggle="modal" data-target="#editDlg">
@@ -262,7 +262,7 @@
                                         th:data-id="${usageTranslation.id}"
                                         th:data-op-type="usage_translation"
                                         th:text="${usageTranslation.value}"></span>
-                                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
                                           onclick="openEditDlg(this)"
                                           data-toggle="modal" data-target="#editDlg">
@@ -282,7 +282,7 @@
                                         th:data-op-type="usage_definition"
                                         th:data-value="${usageDefinition.value}"
                                         th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
-                                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
                                           onclick="openEditDlg(this)"
                                           data-toggle="modal" data-target="#editDlg">
