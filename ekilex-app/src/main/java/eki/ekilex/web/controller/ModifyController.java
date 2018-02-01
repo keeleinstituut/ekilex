@@ -64,6 +64,9 @@ public class ModifyController {
 			case "meaning_relation" :
 				updateService.updateMeaningRelationOrdering(orderingData.getItems());
 				break;
+			case "word_relation" :
+				updateService.updateWordRelationOrdering(orderingData.getItems());
+				break;
 		}
 		return "{}";
 	}

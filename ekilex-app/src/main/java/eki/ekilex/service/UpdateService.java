@@ -48,4 +48,9 @@ public class UpdateService {
 	public void updateMeaningRelationOrdering(List<OrderingData> items) {
 		updateDbService.updateMeaningRelationOrderby(items);
 	}
+
+	@Transactional
+	public void updateWordRelationOrdering(List<OrderingData> items) {
+		updateDbService.updateWordRelationOrderby(items);
+	}
 }

@@ -212,10 +212,7 @@
                   </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word}"></span>
-                      (
-                      <span th:text="${relation.wordLang}"></span>
-                      )
+                      <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                   </td>
                   <td>
@@ -284,13 +281,13 @@
             <div th:if="${not #lists.isEmpty(lexeme.wordRelations)}">
               <hr />
               <span class="lbl">Keelendi seosed</span>
-              <table>
-                <tr th:each="relation : ${lexeme.wordRelations}">
+              <table  class="orderable" th:data-op-code="word_relation">
+                <tr th:each="relation, itemStat : ${lexeme.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                  <td>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                  </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
-                    <span th:text="${relation.word}"></span>
-                    (
-                    <span th:text="${relation.wordLang}"></span>
-                    )
+                    <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                   </td>
                   <td>
                     <span th:text="${relation.relationTypeLabel}"></span>
@@ -308,10 +305,7 @@
                   </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word}"></span>
-                      (
-                      <span th:text="${relation.wordLang}"></span>
-                      )
+                      <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                   </td>
                   <td>
