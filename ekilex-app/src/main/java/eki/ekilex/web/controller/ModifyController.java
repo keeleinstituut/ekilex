@@ -61,6 +61,9 @@ public class ModifyController {
 			case "lexeme_relation" :
 				updateService.updateLexemeRelationOrdering(orderingData.getItems());
 				break;
+			case "meaning_relation" :
+				updateService.updateMeaningRelationOrdering(orderingData.getItems());
+				break;
 		}
 		return "{}";
 	}

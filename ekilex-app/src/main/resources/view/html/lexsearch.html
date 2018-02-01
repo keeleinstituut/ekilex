@@ -179,12 +179,7 @@
               <table class="orderable" th:data-op-code="definition">
                 <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                   <td>
-                    <button th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
-                      <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                    </button>
-                    <button th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right">
-                      <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                    </button>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td>
                     <span th:utext="${markdown.toHtml(definition.value)}"></span>
@@ -210,8 +205,11 @@
             <div th:if="${not #lists.isEmpty(lexeme.meaningRelations)}">
               <hr />
               <span class="lbl">Tähenduse seosed</span>
-              <table>
-                <tr th:each="relation : ${lexeme.meaningRelations}">
+              <table class="orderable" th:data-op-code="meaning_relation">
+                <tr th:each="relation, itemStat : ${lexeme.meaningRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                  <td>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                  </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word}"></span>
@@ -306,12 +304,7 @@
               <table  class="orderable" th:data-op-code="lexeme_relation">
                 <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                   <td>
-                    <button th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
-                      <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                    </button>
-                    <button th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right">
-                      <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                    </button>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">

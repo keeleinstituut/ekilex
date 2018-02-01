@@ -11,6 +11,7 @@ import java.util.List;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
 @Component
@@ -49,6 +50,14 @@ public class UpdateDbService {
 		List<Query> updateQueries = new ArrayList<>();
 		for (OrderingData item : items) {
 			updateQueries.add(create.update(LEX_RELATION).set(LEX_RELATION.ORDER_BY, item.getOrderby()).where(LEX_RELATION.ID.eq(item.getId())));
+		}
+		create.batch(updateQueries).execute();
+	}
+
+	public void updateMeaningRelationOrderby(List<OrderingData> items) {
+		List<Query> updateQueries = new ArrayList<>();
+		for (OrderingData item : items) {
+			updateQueries.add(create.update(MEANING_RELATION).set(MEANING_RELATION.ORDER_BY, item.getOrderby()).where(MEANING_RELATION.ID.eq(item.getId())));
 		}
 		create.batch(updateQueries).execute();
 	}
