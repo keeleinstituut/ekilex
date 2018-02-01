@@ -28,10 +28,10 @@ public class ModifyController {
 
 	@ResponseBody
 	@PostMapping("/modify")
-	public String modifyTextValue(@RequestParam("op_type") String opType, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
+	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
 
-		logger.debug("Update operation {} : {} : for id {}", opType, value, id);
-		switch (opType) {
+		logger.debug("Update operation {} : {} : for id {}", opCode, value, id);
+		switch (opCode) {
 			case "usage" :
 				updateService.updateUsageValue(id, value);
 				break;
@@ -58,21 +58,24 @@ public class ModifyController {
 			case "definition" :
 				updateService.updateDefinitionOrdering(orderingData.getItems());
 				break;
+			case "lexeme_relation" :
+				updateService.updateLexemeRelationOrdering(orderingData.getItems());
+				break;
 		}
 		return "{}";
 	}
 
 	static public class ModifyOrderingRequest {
 
-		private String opcode;
+		private String opCode;
 		private List<OrderingData> items;
 
 		public String getOpcode() {
-			return opcode;
+			return opCode;
 		}
 
 		public void setOpcode(String opcode) {
-			this.opcode = opcode;
+			this.opCode = opcode;
 		}
 
 		public List<OrderingData> getItems() {

@@ -10,16 +10,12 @@ function initialise() {
     });
 
     $(document).on('click', '.order-up', function() {
-        var orderingData = {};
-        orderingData.opcode = "definition";
-        orderingData.items = changeItemOrdering($(this), -1);
+        var orderingData = changeItemOrdering($(this), -1);
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 
     $(document).on('click', '.order-down', function() {
-        var orderingData = {};
-        orderingData.opcode = "definition";
-        orderingData.items = changeItemOrdering($(this), 1);
+        var orderingData = changeItemOrdering($(this), 1);
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 

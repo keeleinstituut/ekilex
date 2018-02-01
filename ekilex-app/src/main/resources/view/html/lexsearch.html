@@ -176,7 +176,7 @@
             <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
               <hr />
               <span class="lbl">Seletused</span>
-              <table class="orderable">
+              <table class="orderable" th:data-op-code="definition">
                 <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                   <td>
                     <button th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
@@ -303,8 +303,16 @@
             <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
               <hr />
               <span class="lbl">Ilmiku seosed</span>
-              <table>
-                <tr th:each="relation : ${lexeme.lexemeRelations}">
+              <table  class="orderable" th:data-op-code="lexeme_relation">
+                <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                  <td>
+                    <button th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
+                      <i class="fa fa-arrow-up" aria-hidden="true"></i>
+                    </button>
+                    <button th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right">
+                      <i class="fa fa-arrow-down" aria-hidden="true"></i>
+                    </button>
+                  </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word}"></span>

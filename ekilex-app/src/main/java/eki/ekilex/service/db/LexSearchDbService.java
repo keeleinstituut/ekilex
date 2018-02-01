@@ -40,8 +40,10 @@ import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
-import org.jooq.Record6;
+import org.jooq.Record5;
 import org.jooq.Record7;
+import org.jooq.Record8;
+import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -303,16 +305,18 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record6<Long,Long,Long,String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record8<Long,Long,Long,Long,String,String,String,Long>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						LEX_RELATION.ID.as("id"),
 						LEXEME.ID.as("lexeme_id"),
 						WORD.ID.as("word_id"),
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						LEX_RELATION.ORDER_BY.as("order_by")
 						)
 				.from(
 						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
@@ -334,16 +338,17 @@ public class LexSearchDbService implements SystemConstant {
 						)
 				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
-				
 	}
 
-	public Result<Record3<String,String,String>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record5<Long,String,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						WORD_RELATION.ID.as("id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						WORD_RELATION.ORDER_BY.as("order_by")
 						)
 				.from(
 						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
@@ -365,17 +370,19 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record7<Long,Long,Long,Long,String,String,String>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						MEANING_RELATION.ID.as("id"),
 						MEANING.ID.as("meaning_id"),
 						LEXEME.ID.as("lexeme_id"),
 						WORD.ID.as("word_id"),
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						MEANING_RELATION.ORDER_BY.as("order_by")
 				)
 				.from(
 						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(

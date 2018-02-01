@@ -13,15 +13,15 @@ function displayDetailSearchButtons() {
 }
 
 function displaySimpleSearch() {
-    $('[name="simpleSearchFilter"]').prop('hidden', null);
-    $('[name="detailSearchFilter"]').prop('hidden', 'hidden');
+    $('[name="simpleSearchFilter"]').prop('hidden', false);
+    $('[name="detailSearchFilter"]').prop('hidden', true);
     $('#searchMode').val('SIMPLE');
     $('#searchModeBtn').text('Detailotsing');
 }
 
 function displayDetailSearch() {
-    $('[name="simpleSearchFilter"]').prop('hidden', 'hidden');
-    $('[name="detailSearchFilter"]').prop('hidden', null);
+    $('[name="simpleSearchFilter"]').prop('hidden', true);
+    $('[name="detailSearchFilter"]').prop('hidden', false);
     $('#searchMode').val('DETAIL');
     $('#searchModeBtn').text('Lihtotsing');
 }
@@ -76,6 +76,7 @@ function initialiseDeatailSearch() {
 
 function changeItemOrdering(target, delta) {
     var orderBlock = target.closest('.orderable');
+    var opCode = orderBlock.attr("data-op-code");
     var itemToMove = target.closest('[data-orderby]');
     var items = orderBlock.find('[data-orderby]');
     var itemToMovePos = items.index(itemToMove);
@@ -91,15 +92,15 @@ function changeItemOrdering(target, delta) {
         }
         items = orderBlock.find('[data-orderby]');
         items.each(function (indx, item) {
-            $(item).find('.order-up').prop('hidden', indx == 0 ? 'hidden' : null);
-            $(item).find('.order-down').prop('hidden', indx == items.length - 1 ? 'hidden' : null);
+            $(item).find('.order-up').prop('hidden', indx == 0);
+            $(item).find('.order-down').prop('hidden', indx == items.length - 1);
             var itemData = {};
             itemData.id = $(item).attr('data-id');
             itemData.orderby = $(item).attr('data-orderby');
             orderedItems.push(itemData);
         });
     }
-    return orderedItems;
+    return {opcode: opCode, items: orderedItems};
 }
 
 function postJson(url, dataObject) {

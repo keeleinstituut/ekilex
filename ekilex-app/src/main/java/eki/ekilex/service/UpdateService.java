@@ -38,4 +38,9 @@ public class UpdateService {
 	public void updateDefinitionOrdering(List<OrderingData> items) {
 		updateDbService.updateDefinitionOrderby(items);
 	}
+
+	@Transactional
+	public void updateLexemeRelationOrdering(List<OrderingData> items) {
+		updateDbService.updateLexemeRelationOrderby(items);
+	}
 }
