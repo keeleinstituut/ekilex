@@ -23,4 +23,9 @@ function initialise() {
     if (detailButtons.length === 1) {
         detailButtons.trigger('click');
     }
+
+    var editDlg = $('#editDlg');
+    editDlg.on('shown.bs.modal', function() {
+        editDlg.find('[name="modified_value"]').focus()
+    });
 }

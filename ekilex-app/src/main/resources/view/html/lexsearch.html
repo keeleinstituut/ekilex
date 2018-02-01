@@ -57,7 +57,7 @@
   </div>
 
   <th:block th:fragment="details" th:if="${details != null}">
-    <div class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 85%; overflow-y: auto;">
+    <div th:data-id="${wordId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 85%; overflow-y: auto;">
       <div class="float-left" style="width:70%">
         <th:block th:each="lexeme : ${details.lexemes}">
           <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
@@ -182,7 +182,17 @@
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td>
-                    <span th:utext="${markdown.toHtml(definition.value)}"></span>
+                    <span th:name="${definition.id} + '_definition'"
+                          th:data-id="${definition.id}"
+                          th:data-op-type="definition"
+                          th:data-value="${definition.value}"
+                          th:utext="${markdown.toHtml(definition.value)}"></span>
+                    <button type="button" class="btn btn-primary btn-sm ml-2"
+                            th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                            onclick="openEditDlg(this)"
+                            data-toggle="modal" data-target="#editDlg">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
               </table>
@@ -237,18 +247,51 @@
                     <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
                       <tr th:each="usage : ${usageMeaning.usages}">
                         <td>
-                          <span th:utext="${markdown.toHtml(usage.value)}"></span>
+                          <span th:name="${usage.id} + '_usage'"
+                                th:data-id="${usage.id}"
+                                th:data-op-type="usage"
+                                th:data-value="${usage.value}"
+                                th:utext="${markdown.toHtml(usage.value)}"></span>
                           <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
                           <span th:if="${usage.author != null}">
                             (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
                           </span>
+                          <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
+                                  onclick="openEditDlg(this)"
+                                  data-toggle="modal" data-target="#editDlg">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
                         </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                        <td th:text="${usageTranslation.value}"></td>
+                        <td>
+                          <span th:name="${usageTranslation.id} + '_usage_translation'"
+                                th:data-id="${usageTranslation.id}"
+                                th:data-op-type="usage_translation"
+                                th:text="${usageTranslation.value}"></span>
+                          <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                  onclick="openEditDlg(this)"
+                                  data-toggle="modal" data-target="#editDlg">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                        </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                        <td th:utext="${markdown.toHtml(usageDefinition.value)}"></td>
+                        <td>
+                                  <span th:name="${usageDefinition.id} + '_usage_definition'"
+                                        th:data-id="${usageDefinition.id}"
+                                        th:data-op-type="usage_definition"
+                                        th:data-value="${usageDefinition.value}"
+                                        th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
+                          <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                  onclick="openEditDlg(this)"
+                                  data-toggle="modal" data-target="#editDlg">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                        </td>
                       </tr>
                     </table>
                   </td>
@@ -356,6 +399,9 @@
       </div>
     </div>
   </th:block>
+
+  <div th:replace="common :: #editDlg"></div>
+
   <script th:inline="javascript">
   	initialise();
   </script>
