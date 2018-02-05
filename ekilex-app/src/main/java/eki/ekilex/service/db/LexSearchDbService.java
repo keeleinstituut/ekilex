@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
 import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -21,6 +22,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PERSON;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.USAGE_AUTHOR_TYPE_LABEL;
@@ -32,6 +34,8 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.sql.Timestamp;
 import java.util.List;
 
+import eki.ekilex.data.db.tables.FreeformRefLink;
+import eki.ekilex.data.db.tables.Person;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record10;
@@ -164,6 +168,8 @@ public class LexSearchDbService implements SystemConstant {
 		Freeform utype = FREEFORM.as("utype");
 		UsageAuthorTypeLabel uatl = USAGE_AUTHOR_TYPE_LABEL.as("uatl");
 		UsageTypeLabel utl = USAGE_TYPE_LABEL.as("utl");
+		FreeformRefLink frl = FREEFORM_REF_LINK.as("frl");
+		Person p = PERSON.as("p");
 
 		return create
 				.select(
@@ -179,7 +185,7 @@ public class LexSearchDbService implements SystemConstant {
 						ud.ID.as("usage_definition_id"),
 						ud.VALUE_TEXT.as("usage_definition_value"),
 						ud.LANG.as("usage_definition_lang"),
-						ua.VALUE_TEXT.as("usage_author"),
+						p.NAME.as("usage_author"),
 						uatl.VALUE.as("usage_author_type"),
 						utl.VALUE.as("usage_type")
 						)
@@ -190,6 +196,8 @@ public class LexSearchDbService implements SystemConstant {
 						.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 						.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
 						.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
+						.leftOuterJoin(frl).on(frl.FREEFORM_ID.eq(ua.ID))
+						.leftOuterJoin(p).on(p.ID.eq(frl.REF_ID))
 						.leftOuterJoin(uat).on(uat.PARENT_ID.eq(u.ID).and(uat.TYPE.eq(FreeformType.USAGE_AUTHOR_TYPE.name())))
 						.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 						.leftOuterJoin(utl)
