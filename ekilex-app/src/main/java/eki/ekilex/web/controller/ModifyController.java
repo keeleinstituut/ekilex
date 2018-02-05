@@ -71,6 +71,16 @@ public class ModifyController {
 		return "{}";
 	}
 
+	@ResponseBody
+	@PostMapping("/modify_levels")
+	public String modifyLexemeLevels(@RequestParam("id") Long lexemeId,
+			@RequestParam("level1") Integer level1, @RequestParam("level2") Integer level2, @RequestParam("level3") Integer level3) {
+
+		logger.debug("Change lexeme levels {} : {} : {} : for id {}", level1, level2, level3, lexemeId);
+		updateService.updateLexemeLevels(lexemeId, level1, level2, level3);
+		return "OK";
+	}
+
 	static public class ModifyOrderingRequest {
 
 		private String opCode;

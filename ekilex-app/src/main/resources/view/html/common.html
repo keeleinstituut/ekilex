@@ -95,5 +95,36 @@
   </div>
 </div>
 
+<div id="editLexemeLevelsDlg" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title"></h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body">
+      <form th:action="@{/modify_levels}" method="post" class="form-inline">
+        <input type="hidden" name="id">
+        <input type="hidden" name="dataset">
+        <div class="form-group col-2">
+          <label class="mr-2">tase 1</label>
+          <input type="text" class="form-control mr-2 col-6" name="level1">
+        </div>
+        <div class="form-group col-2">
+          <label class="mr-2">tase 2</label>
+          <input type="text" class="form-control mr-2 col-6" name="level2">
+        </div>
+        <div class="form-group col-2">
+          <label class="mr-2">tase 3</label>
+          <input type="text" class="form-control mr-2 col-6" name="level3">
+        </div>
+        <button type="submit" class="btn btn-primary mr-1">Salvesta</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

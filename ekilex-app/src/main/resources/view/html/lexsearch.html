@@ -70,22 +70,22 @@
                 &nbsp;
               </span>
               <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                <button type="button" class="btn btn-link" th:data-id="${meaningWord.wordId}" name="detailsBtn">
+                <button type="button" class="btn btn-link pt-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                   <span th:text="${meaningWord.value}"></span>
                   <span th:text="${meaningWord.homonymNumber}"></span>
-                  (
-                  <span th:text="${meaningWord.language}"></span>
-                  )
+                  <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
                 </button>
-                <span th:unless="${meaningWordIter.last}">|&nbsp;</span>
+                <span th:unless="${meaningWordIter.last}">|</span>
               </span>
-              <span th:if="${lexeme.levels != null}">
+              <span th:if="${lexeme.levels != null}"
+                    th:data-id="${lexeme.lexemeId}"
+                    th:data-level1="${lexeme.level1}"
+                    th:data-level2="${lexeme.level2}"
+                    th:data-level3="${lexeme.level3}"
+                    class="btn pt-0" onclick="openLexemeLevelDlg(this)" data-toggle="modal" data-target="#editLexemeLevelsDlg">
                 <small>
-                  [
-                  <span th:text="${lexeme.levels}"></span>
-                  ]
+                  <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
                 </small>
-                &nbsp;
               </span>
               <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
               <b>
@@ -401,6 +401,7 @@
   </th:block>
 
   <div th:replace="common :: #editDlg"></div>
+  <div th:replace="common :: #editLexemeLevelsDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
