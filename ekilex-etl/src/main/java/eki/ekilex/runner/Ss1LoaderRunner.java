@@ -839,7 +839,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (isNotEmpty(usage.getAuthor())) {
 				Long authorId = createOrSelectPerson(usage.getAuthor());
 				Long authorFreeformId = createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageId, usage.getAuthor(), dataLang);
-				createFreeformRefLink(authorFreeformId, ReferenceType.AUTHOR, authorId);
+				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId);
 			}
 			if (isNotEmpty(usage.getAuthorType())) {
 				createFreeformClassifier(FreeformType.USAGE_AUTHOR_TYPE, usageId, usage.getAuthorType());
