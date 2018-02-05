@@ -54,6 +54,7 @@ import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
@@ -96,7 +97,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 27316211;
+    private static final long serialVersionUID = -592054142;
 
     /**
      * The reference instance of <code>public</code>
@@ -354,6 +355,11 @@ public class Public extends SchemaImpl {
     public final Paradigm PARADIGM = eki.ekilex.data.db.tables.Paradigm.PARADIGM;
 
     /**
+     * The table <code>public.person</code>.
+     */
+    public final Person PERSON = eki.ekilex.data.db.tables.Person.PERSON;
+
+    /**
      * The table <code>public.pos</code>.
      */
     public final Pos POS = eki.ekilex.data.db.tables.Pos.POS;
@@ -485,6 +491,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
+            Sequences.PERSON_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
@@ -552,6 +559,7 @@ public class Public extends SchemaImpl {
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,
+            Person.PERSON,
             Pos.POS,
             PosLabel.POS_LABEL,
             ProcessState.PROCESS_STATE,
