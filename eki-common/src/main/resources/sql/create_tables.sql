@@ -69,6 +69,15 @@ drop table if exists label_type;
 drop table if exists dataset;
 drop table if exists lifecycle_log;
 drop table if exists eki_user;
+drop table if exists person;
+
+create table person
+(
+  id bigserial primary key,
+  name varchar(255) not null,
+  unique(name)
+);
+alter sequence person_id_seq restart with 10000;
 
 create table eki_user
 (
