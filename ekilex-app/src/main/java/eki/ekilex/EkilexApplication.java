@@ -4,14 +4,14 @@ import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerFactory;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
 
 @SpringBootApplication(
 		scanBasePackages = {"eki.common", "eki.ekilex"},
@@ -44,9 +44,9 @@ public class EkilexApplication {
 	}
 
 	@Bean
-	public EmbeddedServletContainerFactory servletContainer() {
-		TomcatEmbeddedServletContainerFactory tomcat = new TomcatEmbeddedServletContainerFactory();
-		tomcat.setSessionTimeout(sessionTimeout);
+	public TomcatServletWebServerFactory servletContainer() {
+		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
+		tomcat.getSession().setTimeout(Duration.ofSeconds(sessionTimeout));
 		if (ajpEnabled) {
 			Connector ajpConnector = new Connector("AJP/1.3");
 			ajpConnector.setPort(ajpPort);

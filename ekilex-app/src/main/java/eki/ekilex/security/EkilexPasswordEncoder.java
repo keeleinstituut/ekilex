@@ -1,33 +1,29 @@
 package eki.ekilex.security;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 public class EkilexPasswordEncoder implements PasswordEncoder, InitializingBean {
 
-	public static final String PASSWORD_ENCODING_SALT = "ekilexekilex";
-
-	private Md5PasswordEncoder passwordEncoder;
+	private BCryptPasswordEncoder passwordEncoder;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		passwordEncoder = new Md5PasswordEncoder();
+		passwordEncoder = new BCryptPasswordEncoder();
 	}
 
 	@Override
 	public String encode(CharSequence rawPassword) {
 		String password = rawPassword.toString();
-		String passwordHash = passwordEncoder.encodePassword(password, PASSWORD_ENCODING_SALT);
+		String passwordHash = passwordEncoder.encode(password);
 		return passwordHash;
 	}
 
 	@Override
 	public boolean matches(CharSequence rawPassword, String encodedPassword) {
 		String password = rawPassword.toString();
-		String passwordHash = passwordEncoder.encodePassword(password, PASSWORD_ENCODING_SALT);
-		return StringUtils.equals(passwordHash, encodedPassword);
+		return passwordEncoder.matches(password, encodedPassword);
 	}
 
 }
