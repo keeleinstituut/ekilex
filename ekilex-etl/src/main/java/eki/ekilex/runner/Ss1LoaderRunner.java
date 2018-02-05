@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
@@ -836,7 +837,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usage.getUsageType());
 			}
 			if (isNotEmpty(usage.getAuthor())) {
-				createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageId, usage.getAuthor(), dataLang);
+				Long authorId = createOrSelectPerson(usage.getAuthor());
+				Long authorFreeformId = createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageId, usage.getAuthor(), dataLang);
+				createFreeformRefLink(authorFreeformId, ReferenceType.AUTHOR, authorId);
 			}
 			if (isNotEmpty(usage.getAuthorType())) {
 				createFreeformClassifier(FreeformType.USAGE_AUTHOR_TYPE, usageId, usage.getAuthorType());

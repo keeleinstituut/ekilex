@@ -3,6 +3,7 @@ package eki.common.constant;
 public interface TableName {
 
 	String EKI_USER = "eki_user";
+	String PERSON = "person";
 
 	// classifiers
 	String LANG = "lang";

@@ -543,6 +543,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
 	}
 
+	protected Long createOrSelectPerson(String name) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("name", name);
+		return basicDbService.createIfNotExists(PERSON, params);
+	}
+
 	private List<String> readFileLines(String sourcePath) throws Exception {
 		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
