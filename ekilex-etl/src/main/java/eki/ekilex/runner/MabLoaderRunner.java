@@ -10,6 +10,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.MabData;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.service.ReportComposer;
 
@@ -37,7 +39,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public Map<String, List<Paradigm>> execute(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
+	public MabData execute(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
 
@@ -165,6 +167,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						forms.add(formObj);
 						formValues.add(form);
 					}
+					// TODO ask - first is the word?
 					if (isWord) {
 						isWord = false;
 					}
@@ -196,6 +199,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
+		Map<String, List<String>> formWordsMap = composeFormWordsMap(wordParadigmsMap);
+
 		if (reportComposer != null) {
 			reportComposer.end();
 		}
@@ -206,7 +211,36 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
 
-		return wordParadigmsMap;
+		return new MabData(wordParadigmsMap, formWordsMap);
+	}
+
+	private Map<String, List<String>> composeFormWordsMap(Map<String, List<Paradigm>> wordParadigmsMap) {
+
+		Map<String, List<String>> formWordsMap = new HashMap<>();
+		List<String> wordForms;
+
+		for (String word : wordParadigmsMap.keySet()) {
+			wordForms = new ArrayList<>();
+			List<Paradigm> paradigms = wordParadigmsMap.get(word);
+			for (Paradigm paradigm : paradigms) {
+				List<String> formValues = paradigm.getFormValues();
+				for (String form : formValues) {
+					if (wordForms.contains(form)) {
+						continue;
+					}
+					wordForms.add(form);
+					List<String> assignedWords = formWordsMap.get(form);
+					if (CollectionUtils.isEmpty(assignedWords)) {
+						assignedWords = new ArrayList<>();
+						formWordsMap.put(form, assignedWords);
+					}
+					if (!assignedWords.contains(word)) {
+						assignedWords.add(word);
+					}
+				}
+			}
+		}
+		return formWordsMap;
 	}
 
 	private Map<String, String> composeMorphValueCodeMap(String morphLang) throws Exception {

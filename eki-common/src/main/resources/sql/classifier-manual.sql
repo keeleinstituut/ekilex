@@ -69,3 +69,4 @@ insert into dataset (code, name) values ('tee',	'Teenuste valdkonna terminibaas'
 insert into dataset (code, name) values ('tts',	'Tootmistehnika ja süsteemide terminibaas');
 insert into dataset (code, name) values ('usk',	'Uskumusolendite sõnastik');
 insert into dataset (code, name) values ('vlk',	'Veterinaarmeditsiin ja loomakasvatus');
+insert into dataset (code, name) values ('kol',	'Kollokatsioonid');

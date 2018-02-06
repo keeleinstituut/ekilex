@@ -1089,7 +1089,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return word;
 	}
 
-	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) {
+	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) throws Exception {
 
 		final String morphGroupExp = "s:mfp/s:mtg";
 
@@ -1298,7 +1298,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) throws Exception {
 
 		final String formsNodeExp = "s:mv";
 		final String formsNodeExp2 = "s:hev";

@@ -668,8 +668,8 @@ create table collocation
   id bigserial primary key,
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
-  value text not null,
-  unique(lexeme1_id, lexeme2_id)--this may not be valid restriction
+  value text not null
+  --unique(lexeme1_id, lexeme2_id)--this may not be valid restriction
 );
 
 create table collocation_usage

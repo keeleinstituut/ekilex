@@ -1387,7 +1387,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return basicWords;
 	}
 
-	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) throws Exception {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
 
