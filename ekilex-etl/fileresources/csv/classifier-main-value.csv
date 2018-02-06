@@ -495,8 +495,6 @@ register	van	vanamoeliselt, vananemas	est	descrip
 register	van	archaic	eng	descrip
 register	vulg	vulgaarne	est	descrip
 register	vulg	vulgar	eng	descrip
-usage_author_type	tlk	tõlkija	est	descrip
-usage_author_type	tlk	translator	eng	descrip
 usage_type	ls	liitsõna	est	descrip
 usage_type	ls	compound	eng	descrip
 usage_type	Vs	vanasõna	est	descrip

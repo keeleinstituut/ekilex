@@ -24,7 +24,9 @@ drop table if exists word;
 drop table if exists source_freeform;
 drop table if exists source;
 drop table if exists freeform;
+-- FIXME: to be removed
 drop table if exists usage_author_type_label;
+-- FIXME: to be removed
 drop table if exists usage_author_type;
 drop table if exists usage_type_label;
 drop table if exists usage_type;
@@ -370,21 +372,6 @@ create table usage_type
 create table usage_type_label
 (
   code varchar(100) references usage_type(code) on delete cascade not null,
-  value text not null,
-  lang char(3) references lang(code) not null,
-  type varchar(10) references label_type(code) not null,
-  unique(code, lang, type)
-);
-
-create table usage_author_type
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null
-);
-
-create table usage_author_type_label
-(
-  code varchar(100) references usage_author_type(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
   type varchar(10) references label_type(code) not null,
