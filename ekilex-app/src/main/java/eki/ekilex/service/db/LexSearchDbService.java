@@ -164,12 +164,13 @@ public class LexSearchDbService implements SystemConstant {
 		Freeform ut = FREEFORM.as("ut");
 		Freeform ud = FREEFORM.as("ud");
 		Freeform ua = FREEFORM.as("ua");
-		Freeform uat = FREEFORM.as("uat");
+		Freeform utrans = FREEFORM.as("utrans");
 		Freeform utype = FREEFORM.as("utype");
-		UsageAuthorTypeLabel uatl = USAGE_AUTHOR_TYPE_LABEL.as("uatl");
 		UsageTypeLabel utl = USAGE_TYPE_LABEL.as("utl");
 		FreeformRefLink frl = FREEFORM_REF_LINK.as("frl");
+		FreeformRefLink frl2 = FREEFORM_REF_LINK.as("frl2");
 		Person p = PERSON.as("p");
+		Person p2 = PERSON.as("p2");
 
 		return create
 				.select(
@@ -186,7 +187,7 @@ public class LexSearchDbService implements SystemConstant {
 						ud.VALUE_TEXT.as("usage_definition_value"),
 						ud.LANG.as("usage_definition_lang"),
 						p.NAME.as("usage_author"),
-						uatl.VALUE.as("usage_author_type"),
+						p2.NAME.as("usage_translator"),
 						utl.VALUE.as("usage_type")
 						)
 				.from(
@@ -198,12 +199,12 @@ public class LexSearchDbService implements SystemConstant {
 						.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
 						.leftOuterJoin(frl).on(frl.FREEFORM_ID.eq(ua.ID))
 						.leftOuterJoin(p).on(p.ID.eq(frl.REF_ID))
-						.leftOuterJoin(uat).on(uat.PARENT_ID.eq(u.ID).and(uat.TYPE.eq(FreeformType.USAGE_AUTHOR_TYPE.name())))
+						.leftOuterJoin(utrans).on(utrans.PARENT_ID.eq(u.ID).and(utrans.TYPE.eq(FreeformType.USAGE_TRANSLATOR.name())))
+						.leftOuterJoin(frl2).on(frl2.FREEFORM_ID.eq(utrans.ID))
+						.leftOuterJoin(p2).on(p2.ID.eq(frl2.REF_ID))
 						.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 						.leftOuterJoin(utl)
 						.on(utl.CODE.eq(utype.CLASSIF_CODE).and(utl.LANG.eq(classifierLabelLang).and(utl.TYPE.eq(classifierLabelTypeCode))))
-						.leftOuterJoin(uatl)
-						.on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
 						)
 				.where(lff.LEXEME_ID.eq(lexemeId))
 				.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)

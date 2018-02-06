@@ -14,7 +14,7 @@ public class UsageMember extends AbstractDataObject {
 
 	private String author;
 
-	private String authorType;
+	private String translator;
 
 	private String type;
 
@@ -50,12 +50,12 @@ public class UsageMember extends AbstractDataObject {
 		this.author = author;
 	}
 
-	public String getAuthorType() {
-		return authorType;
+	public String getTranslator() {
+		return translator;
 	}
 
-	public void setAuthorType(String authorType) {
-		this.authorType = authorType;
+	public void setTranslator(String translator) {
+		this.translator = translator;
 	}
 
 	public String getType() {

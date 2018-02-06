@@ -49,8 +49,8 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 	@Column(name = "usage_author")
 	private String usageAuthor;
 
-	@Column(name = "usage_author_type")
-	private String usageAuthorType;
+	@Column(name = "usage_translator")
+	private String usageTranslator;
 
 	@Column(name = "usage_type")
 	private String usageType;
@@ -166,12 +166,12 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 		this.usageAuthor = usageAuthor;
 	}
 
-	public String getUsageAuthorType() {
-		return usageAuthorType;
+	public String getUsageTranslator() {
+		return usageTranslator;
 	}
 
-	public void setUsageAuthorType(String usageAuthorType) {
-		this.usageAuthorType = usageAuthorType;
+	public void setUsageTranslator(String usageTranslator) {
+		this.usageTranslator = usageTranslator;
 	}
 
 	public String getUsageType() {

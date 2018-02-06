@@ -238,7 +238,7 @@ public class ConversionUtil {
 					usage.setValue(tuple.getUsageValue());
 					usage.setLang(tuple.getUsageLang());
 					usage.setAuthor(tuple.getUsageAuthor());
-					usage.setAuthorType(tuple.getUsageAuthorType());
+					usage.setTranslator(tuple.getUsageTranslator());
 					usage.setType(tuple.getUsageType());
 					usageMap.put(usageId, usage);
 					usageMeaning.getUsages().add(usage);

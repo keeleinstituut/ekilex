@@ -3,6 +3,6 @@ package eki.common.constant;
 public enum ReferenceType {
 
 	SOURCE,
-	AUTHOR
+	PERSON
 	//other types will be added later
 }

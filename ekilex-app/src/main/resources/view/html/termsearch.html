@@ -239,10 +239,8 @@
                                         th:data-op-type="usage"
                                         th:data-value="${usage.value}"
                                         th:utext="${markdown.toHtml(usage.value)}"></span>
-                                  <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
-                                  <span th:if="${usage.author != null}">
-                                    (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
-                                  </span>
+                                  <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                                  <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
                                   <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                                           onclick="openEditDlg(this)"

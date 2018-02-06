@@ -838,11 +838,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 			if (isNotEmpty(usage.getAuthor())) {
 				Long authorId = createOrSelectPerson(usage.getAuthor());
-				Long authorFreeformId = createFreeformTextOrDate(FreeformType.USAGE_AUTHOR, usageId, usage.getAuthor(), dataLang);
-				createFreeformRefLink(authorFreeformId, ReferenceType.AUTHOR, authorId);
-			}
-			if (isNotEmpty(usage.getAuthorType())) {
-				createFreeformClassifier(FreeformType.USAGE_AUTHOR_TYPE, usageId, usage.getAuthorType());
+				FreeformType autorType = isNotEmpty(usage.getAuthorType()) ? FreeformType.USAGE_TRANSLATOR : FreeformType.USAGE_AUTHOR;
+				Long authorFreeformId = createFreeformTextOrDate(autorType, usageId, usage.getAuthor(), dataLang);
+				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId);
 			}
 		}
 		for (String definition : usageMeaning.getDefinitions()) {
