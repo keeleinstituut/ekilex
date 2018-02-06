@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -30,7 +29,7 @@ import java.util.Locale;
  */
 @ConditionalOnWebApplication
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
+public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Autowired
 	private PageRequestPostHandler pageRequestPostHandler;
@@ -38,12 +37,8 @@ public class WebMvcConfig implements WebMvcConfigurer, ApplicationContextAware {
 	@Value("${spring.thymeleaf.cache}")
 	private Boolean cacheTemplates;
 
+	@Autowired
 	private ApplicationContext applicationContext;
-
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
-	}
 
 	@Bean
 	public ITemplateResolver templateResolver() {
