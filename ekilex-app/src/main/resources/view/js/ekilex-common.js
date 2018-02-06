@@ -13,15 +13,15 @@ function displayDetailSearchButtons() {
 }
 
 function displaySimpleSearch() {
-    $('[name="simpleSearchFilter"]').prop('hidden', null);
-    $('[name="detailSearchFilter"]').prop('hidden', 'hidden');
+    $('[name="simpleSearchFilter"]').prop('hidden', false);
+    $('[name="detailSearchFilter"]').prop('hidden', true);
     $('#searchMode').val('SIMPLE');
     $('#searchModeBtn').text('Detailotsing');
 }
 
 function displayDetailSearch() {
-    $('[name="simpleSearchFilter"]').prop('hidden', 'hidden');
-    $('[name="detailSearchFilter"]').prop('hidden', null);
+    $('[name="simpleSearchFilter"]').prop('hidden', true);
+    $('[name="detailSearchFilter"]').prop('hidden', false);
     $('#searchMode').val('DETAIL');
     $('#searchModeBtn').text('Lihtotsing');
 }
@@ -76,6 +76,7 @@ function initialiseDeatailSearch() {
 
 function changeItemOrdering(target, delta) {
     var orderBlock = target.closest('.orderable');
+    var opCode = orderBlock.attr("data-op-code");
     var itemToMove = target.closest('[data-orderby]');
     var items = orderBlock.find('[data-orderby]');
     var itemToMovePos = items.index(itemToMove);
@@ -91,15 +92,15 @@ function changeItemOrdering(target, delta) {
         }
         items = orderBlock.find('[data-orderby]');
         items.each(function (indx, item) {
-            $(item).find('.order-up').prop('hidden', indx == 0 ? 'hidden' : null);
-            $(item).find('.order-down').prop('hidden', indx == items.length - 1 ? 'hidden' : null);
+            $(item).find('.order-up').prop('hidden', indx == 0);
+            $(item).find('.order-down').prop('hidden', indx == items.length - 1);
             var itemData = {};
             itemData.id = $(item).attr('data-id');
             itemData.orderby = $(item).attr('data-orderby');
             orderedItems.push(itemData);
         });
     }
-    return orderedItems;
+    return {opcode: opCode, items: orderedItems};
 }
 
 function postJson(url, dataObject) {
@@ -112,5 +113,30 @@ function postJson(url, dataObject) {
     }).fail(function (data) {
         console.log(data);
         alert('Salvestamine ebaõnnestus.');
+    });
+}
+
+function openEditDlg(elem) {
+    var targetName = $(elem).data('target-elem');
+    var targetElement = $('[name="' + targetName + '"]');
+    var editDlg = $('#editDlg');
+    var modifyFld = editDlg.find('[name="modified_value"]');
+    modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
+    editDlg.find('[name="id"]').val(targetElement.data('id'));
+    editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
+
+    editDlg.find('button[type="submit"]').off().on('click', function(e) {
+        e.preventDefault();
+        var editForm = editDlg.find('form');
+        var url = editForm.attr('action') + '?' + editForm.serialize();
+        $.post(url).done(function(data) {
+            var id = $('#details_div').data('id');
+            var detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
+            detailsButton.trigger('click');
+            editDlg.find('button.close').trigger('click');
+        }).fail(function(data) {
+            alert("Andmete muutmine ebaõnnestus.");
+            console.log(data);
+        });
     });
 }

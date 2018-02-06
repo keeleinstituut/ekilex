@@ -54,6 +54,7 @@ import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
@@ -336,6 +337,11 @@ public class Tables {
      * The table <code>public.paradigm</code>.
      */
     public static final Paradigm PARADIGM = eki.ekilex.data.db.tables.Paradigm.PARADIGM;
+
+    /**
+     * The table <code>public.person</code>.
+     */
+    public static final Person PERSON = eki.ekilex.data.db.tables.Person.PERSON;
 
     /**
      * The table <code>public.pos</code>.

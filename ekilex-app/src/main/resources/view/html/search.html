@@ -13,7 +13,8 @@
       <div class="form-group row">
         <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
         <div class="col-1">
-          <button type="button" class="btn btn-outline-primary" id="searchModeBtn" th:text="#{'search.mode.' + ${searchMode}}">search toggle</button>
+          <button type="button" class="btn btn-outline-primary" id="searchModeBtn"
+                  th:text="${searchMode == 'SIMPLE'} ? #{'search.mode.DETAIL'} : #{'search.mode.SIMPLE'}">search toggle</button>
         </div>
         <div class="col-4" th:if="${allDatasets}" th:insert="~{::dataset_select}"></div>
       </div>

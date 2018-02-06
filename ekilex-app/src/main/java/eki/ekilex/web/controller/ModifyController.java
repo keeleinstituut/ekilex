@@ -28,10 +28,10 @@ public class ModifyController {
 
 	@ResponseBody
 	@PostMapping("/modify")
-	public String modifyTextValue(@RequestParam("op_type") String opType, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
+	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
 
-		logger.debug("Update operation {} : {} : for id {}", opType, value, id);
-		switch (opType) {
+		logger.debug("Update operation {} : {} : for id {}", opCode, value, id);
+		switch (opCode) {
 			case "usage" :
 				updateService.updateUsageValue(id, value);
 				break;
@@ -58,21 +58,40 @@ public class ModifyController {
 			case "definition" :
 				updateService.updateDefinitionOrdering(orderingData.getItems());
 				break;
+			case "lexeme_relation" :
+				updateService.updateLexemeRelationOrdering(orderingData.getItems());
+				break;
+			case "meaning_relation" :
+				updateService.updateMeaningRelationOrdering(orderingData.getItems());
+				break;
+			case "word_relation" :
+				updateService.updateWordRelationOrdering(orderingData.getItems());
+				break;
 		}
 		return "{}";
 	}
 
+	@ResponseBody
+	@PostMapping("/modify_levels")
+	public String modifyLexemeLevels(@RequestParam("id") Long lexemeId,
+			@RequestParam("level1") Integer level1, @RequestParam("level2") Integer level2, @RequestParam("level3") Integer level3) {
+
+		logger.debug("Change lexeme levels {} : {} : {} : for id {}", level1, level2, level3, lexemeId);
+		updateService.updateLexemeLevels(lexemeId, level1, level2, level3);
+		return "OK";
+	}
+
 	static public class ModifyOrderingRequest {
 
-		private String opcode;
+		private String opCode;
 		private List<OrderingData> items;
 
 		public String getOpcode() {
-			return opcode;
+			return opCode;
 		}
 
 		public void setOpcode(String opcode) {
-			this.opcode = opcode;
+			this.opCode = opcode;
 		}
 
 		public List<OrderingData> getItems() {

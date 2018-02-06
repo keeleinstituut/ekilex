@@ -86,9 +86,9 @@
                         th:data-op-type="definition"
                         th:data-value="${definition.value}"
                         th:utext="${markdown.toHtml(definition.value)}"></span>
-                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                  <button type="button" class="btn badge badge-primary ml-2"
                           th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
-                          onclick="initEditDlg(this)"
+                          onclick="openEditDlg(this)"
                           data-toggle="modal" data-target="#editDlg">
                     <i class="fa fa-edit" aria-hidden="true"></i>
                   </button>
@@ -239,13 +239,11 @@
                                         th:data-op-type="usage"
                                         th:data-value="${usage.value}"
                                         th:utext="${markdown.toHtml(usage.value)}"></span>
-                                  <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
-                                  <span th:if="${usage.author != null}">
-                                    (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
-                                  </span>
-                                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                                  <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                                  <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                          onclick="initEditDlg(this)"
+                                          onclick="openEditDlg(this)"
                                           data-toggle="modal" data-target="#editDlg">
                                     <i class="fa fa-edit" aria-hidden="true"></i>
                                   </button>
@@ -262,9 +260,9 @@
                                         th:data-id="${usageTranslation.id}"
                                         th:data-op-type="usage_translation"
                                         th:text="${usageTranslation.value}"></span>
-                                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                          onclick="initEditDlg(this)"
+                                          onclick="openEditDlg(this)"
                                           data-toggle="modal" data-target="#editDlg">
                                     <i class="fa fa-edit" aria-hidden="true"></i>
                                   </button>
@@ -282,9 +280,9 @@
                                         th:data-op-type="usage_definition"
                                         th:data-value="${usageDefinition.value}"
                                         th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
-                                  <button type="button" class="btn btn-primary btn-sm ml-2"
+                                  <button type="button" class="btn badge badge-primary ml-2"
                                           th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                          onclick="initEditDlg(this)"
+                                          onclick="openEditDlg(this)"
                                           data-toggle="modal" data-target="#editDlg">
                                     <i class="fa fa-edit" aria-hidden="true"></i>
                                   </button>
@@ -327,32 +325,7 @@
     </div>
   </th:block>
 
-  <div id="editDlg" class="modal fade" role="dialog">
-    <div class="modal-dialog modal-lg" role="document">
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title"></h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <form th:action="@{/modify}" method="post">
-          <div class="modal-body">
-            <input type="hidden" name="id">
-            <input type="hidden" name="op_type">
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control" rows="5" name="modified_value"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Salvesta</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+  <div th:replace="common :: #editDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

@@ -8,6 +8,9 @@ public class Relation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "id")
+	private Long id;
+
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
@@ -28,6 +31,17 @@ public class Relation extends AbstractDataObject {
 
 	@Column(name = "rel_type_label")
 	private String relationTypeLabel;
+
+	@Column(name = "order_by")
+	private Long orderBy;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -85,4 +99,11 @@ public class Relation extends AbstractDataObject {
 		this.relationTypeLabel = relationTypeLabel;
 	}
 
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
 }

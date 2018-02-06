@@ -7,6 +7,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
 import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -21,6 +22,7 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PERSON;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.USAGE_AUTHOR_TYPE_LABEL;
@@ -32,6 +34,8 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.sql.Timestamp;
 import java.util.List;
 
+import eki.ekilex.data.db.tables.FreeformRefLink;
+import eki.ekilex.data.db.tables.Person;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record10;
@@ -40,8 +44,10 @@ import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
-import org.jooq.Record6;
+import org.jooq.Record5;
 import org.jooq.Record7;
+import org.jooq.Record8;
+import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,10 +164,13 @@ public class LexSearchDbService implements SystemConstant {
 		Freeform ut = FREEFORM.as("ut");
 		Freeform ud = FREEFORM.as("ud");
 		Freeform ua = FREEFORM.as("ua");
-		Freeform uat = FREEFORM.as("uat");
+		Freeform utrans = FREEFORM.as("utrans");
 		Freeform utype = FREEFORM.as("utype");
-		UsageAuthorTypeLabel uatl = USAGE_AUTHOR_TYPE_LABEL.as("uatl");
 		UsageTypeLabel utl = USAGE_TYPE_LABEL.as("utl");
+		FreeformRefLink frl = FREEFORM_REF_LINK.as("frl");
+		FreeformRefLink frl2 = FREEFORM_REF_LINK.as("frl2");
+		Person p = PERSON.as("p");
+		Person p2 = PERSON.as("p2");
 
 		return create
 				.select(
@@ -177,8 +186,8 @@ public class LexSearchDbService implements SystemConstant {
 						ud.ID.as("usage_definition_id"),
 						ud.VALUE_TEXT.as("usage_definition_value"),
 						ud.LANG.as("usage_definition_lang"),
-						ua.VALUE_TEXT.as("usage_author"),
-						uatl.VALUE.as("usage_author_type"),
+						p.NAME.as("usage_author"),
+						p2.NAME.as("usage_translator"),
 						utl.VALUE.as("usage_type")
 						)
 				.from(
@@ -188,12 +197,14 @@ public class LexSearchDbService implements SystemConstant {
 						.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 						.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
 						.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
-						.leftOuterJoin(uat).on(uat.PARENT_ID.eq(u.ID).and(uat.TYPE.eq(FreeformType.USAGE_AUTHOR_TYPE.name())))
+						.leftOuterJoin(frl).on(frl.FREEFORM_ID.eq(ua.ID))
+						.leftOuterJoin(p).on(p.ID.eq(frl.REF_ID))
+						.leftOuterJoin(utrans).on(utrans.PARENT_ID.eq(u.ID).and(utrans.TYPE.eq(FreeformType.USAGE_TRANSLATOR.name())))
+						.leftOuterJoin(frl2).on(frl2.FREEFORM_ID.eq(utrans.ID))
+						.leftOuterJoin(p2).on(p2.ID.eq(frl2.REF_ID))
 						.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 						.leftOuterJoin(utl)
 						.on(utl.CODE.eq(utype.CLASSIF_CODE).and(utl.LANG.eq(classifierLabelLang).and(utl.TYPE.eq(classifierLabelTypeCode))))
-						.leftOuterJoin(uatl)
-						.on(uatl.CODE.eq(uat.CLASSIF_CODE).and(uatl.LANG.eq(classifierLabelLang).and(uatl.TYPE.eq(classifierLabelTypeCode))))
 						)
 				.where(lff.LEXEME_ID.eq(lexemeId))
 				.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)
@@ -303,16 +314,18 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record6<Long,Long,Long,String,String,String>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record8<Long,Long,Long,Long,String,String,String,Long>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						LEX_RELATION.ID.as("id"),
 						LEXEME.ID.as("lexeme_id"),
 						WORD.ID.as("word_id"),
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						LEX_RELATION.ORDER_BY.as("order_by")
 						)
 				.from(
 						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
@@ -334,16 +347,17 @@ public class LexSearchDbService implements SystemConstant {
 						)
 				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
-				
 	}
 
-	public Result<Record3<String,String,String>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record5<Long,String,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						WORD_RELATION.ID.as("id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						WORD_RELATION.ORDER_BY.as("order_by")
 						)
 				.from(
 						WORD_RELATION.leftOuterJoin(WORD_REL_TYPE_LABEL).on(
@@ -365,17 +379,19 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record7<Long,Long,Long,Long,String,String,String>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
+						MEANING_RELATION.ID.as("id"),
 						MEANING.ID.as("meaning_id"),
 						LEXEME.ID.as("lexeme_id"),
 						WORD.ID.as("word_id"),
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label")
+						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						MEANING_RELATION.ORDER_BY.as("order_by")
 				)
 				.from(
 						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(

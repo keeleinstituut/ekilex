@@ -57,7 +57,7 @@
   </div>
 
   <th:block th:fragment="details" th:if="${details != null}">
-    <div class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 85%; overflow-y: auto;">
+    <div th:data-id="${wordId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 85%; overflow-y: auto;">
       <div class="float-left" style="width:70%">
         <th:block th:each="lexeme : ${details.lexemes}">
           <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
@@ -70,22 +70,22 @@
                 &nbsp;
               </span>
               <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                <button type="button" class="btn btn-link" th:data-id="${meaningWord.wordId}" name="detailsBtn">
+                <button type="button" class="btn btn-link pt-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                   <span th:text="${meaningWord.value}"></span>
                   <span th:text="${meaningWord.homonymNumber}"></span>
-                  (
-                  <span th:text="${meaningWord.language}"></span>
-                  )
+                  <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
                 </button>
-                <span th:unless="${meaningWordIter.last}">|&nbsp;</span>
+                <span th:unless="${meaningWordIter.last}">|</span>
               </span>
-              <span th:if="${lexeme.levels != null}">
+              <span th:if="${lexeme.levels != null}"
+                    th:data-id="${lexeme.lexemeId}"
+                    th:data-level1="${lexeme.level1}"
+                    th:data-level2="${lexeme.level2}"
+                    th:data-level3="${lexeme.level3}"
+                    class="btn pt-0" onclick="openLexemeLevelDlg(this)" data-toggle="modal" data-target="#editLexemeLevelsDlg">
                 <small>
-                  [
-                  <span th:text="${lexeme.levels}"></span>
-                  ]
+                  <span th:text="${'[ ' + lexeme.levels + ' ]'}"></span>
                 </small>
-                &nbsp;
               </span>
               <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
               <b>
@@ -176,18 +176,23 @@
             <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
               <hr />
               <span class="lbl">Seletused</span>
-              <table class="orderable">
+              <table class="orderable" th:data-op-code="definition">
                 <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                   <td>
-                    <button th:hidden="${itemStat.first}" class="btn badge badge-secondary order-up float-left">
-                      <i class="fa fa-arrow-up" aria-hidden="true"></i>
-                    </button>
-                    <button th:hidden="${itemStat.last}" class="btn badge badge-secondary order-down float-right">
-                      <i class="fa fa-arrow-down" aria-hidden="true"></i>
-                    </button>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td>
-                    <span th:utext="${markdown.toHtml(definition.value)}"></span>
+                    <span th:name="${definition.id} + '_definition'"
+                          th:data-id="${definition.id}"
+                          th:data-op-type="definition"
+                          th:data-value="${definition.value}"
+                          th:utext="${markdown.toHtml(definition.value)}"></span>
+                    <button type="button" class="btn badge badge-primary ml-2"
+                            th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                            onclick="openEditDlg(this)"
+                            data-toggle="modal" data-target="#editDlg">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
               </table>
@@ -214,10 +219,7 @@
                 <tr th:each="relation : ${lexeme.meaningRelations}">
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word}"></span>
-                      (
-                      <span th:text="${relation.wordLang}"></span>
-                      )
+                      <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                   </td>
                   <td>
@@ -245,18 +247,50 @@
                     <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
                       <tr th:each="usage : ${usageMeaning.usages}">
                         <td>
-                          <span th:utext="${markdown.toHtml(usage.value)}"></span>
+                          <span th:name="${usage.id} + '_usage'"
+                                th:data-id="${usage.id}"
+                                th:data-op-type="usage"
+                                th:data-value="${usage.value}"
+                                th:utext="${markdown.toHtml(usage.value)}"></span>
                           <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
-                          <span th:if="${usage.author != null}">
-                            (<span th:if="${usage.authorType != null}" th:text="${usage.authorType + ' : '}"></span><span th:text="${usage.author}"></span>)
-                          </span>
+                          <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                          <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                          <button type="button" class="btn badge badge-primary ml-2"
+                                  th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
+                                  onclick="openEditDlg(this)"
+                                  data-toggle="modal" data-target="#editDlg">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
                         </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                        <td th:text="${usageTranslation.value}"></td>
+                        <td>
+                          <span th:name="${usageTranslation.id} + '_usage_translation'"
+                                th:data-id="${usageTranslation.id}"
+                                th:data-op-type="usage_translation"
+                                th:text="${usageTranslation.value}"></span>
+                          <button type="button" class="btn badge badge-primary ml-2"
+                                  th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                  onclick="openEditDlg(this)"
+                                  data-toggle="modal" data-target="#editDlg">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                        </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                        <td th:utext="${markdown.toHtml(usageDefinition.value)}"></td>
+                        <td>
+                                  <span th:name="${usageDefinition.id} + '_usage_definition'"
+                                        th:data-id="${usageDefinition.id}"
+                                        th:data-op-type="usage_definition"
+                                        th:data-value="${usageDefinition.value}"
+                                        th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
+                          <button type="button" class="btn badge badge-primary ml-2"
+                                  th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                  onclick="openEditDlg(this)"
+                                  data-toggle="modal" data-target="#editDlg">
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                        </td>
                       </tr>
                     </table>
                   </td>
@@ -286,13 +320,13 @@
             <div th:if="${not #lists.isEmpty(lexeme.wordRelations)}">
               <hr />
               <span class="lbl">Keelendi seosed</span>
-              <table>
-                <tr th:each="relation : ${lexeme.wordRelations}">
+              <table  class="orderable" th:data-op-code="word_relation">
+                <tr th:each="relation, itemStat : ${lexeme.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                  <td>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                  </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
-                    <span th:text="${relation.word}"></span>
-                    (
-                    <span th:text="${relation.wordLang}"></span>
-                    )
+                    <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                   </td>
                   <td>
                     <span th:text="${relation.relationTypeLabel}"></span>
@@ -303,14 +337,14 @@
             <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
               <hr />
               <span class="lbl">Ilmiku seosed</span>
-              <table>
-                <tr th:each="relation : ${lexeme.lexemeRelations}">
+              <table  class="orderable" th:data-op-code="lexeme_relation">
+                <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+                  <td>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                  </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word}"></span>
-                      (
-                      <span th:text="${relation.wordLang}"></span>
-                      )
+                      <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                   </td>
                   <td>
@@ -364,6 +398,10 @@
       </div>
     </div>
   </th:block>
+
+  <div th:replace="common :: #editDlg"></div>
+  <div th:replace="common :: #editLexemeLevelsDlg"></div>
+
   <script th:inline="javascript">
   	initialise();
   </script>

@@ -54,6 +54,7 @@ import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosLabel;
 import eki.ekilex.data.db.tables.ProcessState;
@@ -184,6 +185,8 @@ public class Indexes {
     public static final Index MORPH_LABEL_CODE_LANG_TYPE_KEY = Indexes0.MORPH_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index PARADIGM_PKEY = Indexes0.PARADIGM_PKEY;
     public static final Index PARADIGM_WORD_ID_IDX = Indexes0.PARADIGM_WORD_ID_IDX;
+    public static final Index PERSON_NAME_KEY = Indexes0.PERSON_NAME_KEY;
+    public static final Index PERSON_PKEY = Indexes0.PERSON_PKEY;
     public static final Index POS_PKEY = Indexes0.POS_PKEY;
     public static final Index POS_LABEL_CODE_LANG_TYPE_KEY = Indexes0.POS_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index PROCESS_STATE_PKEY = Indexes0.PROCESS_STATE_PKEY;
@@ -305,6 +308,8 @@ public class Indexes {
         public static Index MORPH_LABEL_CODE_LANG_TYPE_KEY = createIndex("morph_label_code_lang_type_key", MorphLabel.MORPH_LABEL, new OrderField[] { MorphLabel.MORPH_LABEL.CODE, MorphLabel.MORPH_LABEL.LANG, MorphLabel.MORPH_LABEL.TYPE }, true);
         public static Index PARADIGM_PKEY = createIndex("paradigm_pkey", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.ID }, true);
         public static Index PARADIGM_WORD_ID_IDX = createIndex("paradigm_word_id_idx", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.WORD_ID }, false);
+        public static Index PERSON_NAME_KEY = createIndex("person_name_key", Person.PERSON, new OrderField[] { Person.PERSON.NAME }, true);
+        public static Index PERSON_PKEY = createIndex("person_pkey", Person.PERSON, new OrderField[] { Person.PERSON.ID }, true);
         public static Index POS_PKEY = createIndex("pos_pkey", Pos.POS, new OrderField[] { Pos.POS.CODE }, true);
         public static Index POS_LABEL_CODE_LANG_TYPE_KEY = createIndex("pos_label_code_lang_type_key", PosLabel.POS_LABEL, new OrderField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
         public static Index PROCESS_STATE_PKEY = createIndex("process_state_pkey", ProcessState.PROCESS_STATE, new OrderField[] { ProcessState.PROCESS_STATE.CODE }, true);
