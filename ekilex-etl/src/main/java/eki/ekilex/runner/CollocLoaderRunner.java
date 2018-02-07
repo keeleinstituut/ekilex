@@ -96,13 +96,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		Element headerNode, contentNode, guidNode, wordNode, wordPosNode;
 		List<Element> wordGroupNodes, meaningBlockNodes, collocPosGroupNodes, relationGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes, collocUsageNodes;
-		String guid, word, wordPosCode, collocPosCode, collocUsage;
+		String guid, word, wordPosCode, collocPosCode, convertedPosCode, collocUsage;
 		List<String> newWords;
 		List<Paradigm> paradigms;
 		List<Long> collocationIds;
+		Long lexemeId;
 		StringBuffer logBuf;
 
 		Count ignoredArticleCount = new Count();
+		Count illegalPosCount = new Count();
 		Count successfulCollocationMatchCount = new Count();
 
 		long articleCounter = 0;
@@ -140,15 +142,16 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				if (paradigmsExist) {
 					boolean isSingleHomonym = mabService.isSingleHomonym(word);
 					if (isSingleHomonym) {
-						if (wordPosNode != null) {
-							wordPosCode = wordPosNode.getTextTrim();
-							wordPosCode = posCodes.get(wordPosCode);
-							//TODO add pos to lexeme
-						}
 						paradigms = mabService.getWordParadigms(word);
 						WordLexemeMeaning wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, guid, paradigms, dataset);
 						wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
 						newWords.add(word);
+						if (wordPosNode != null) {
+							wordPosCode = wordPosNode.getTextTrim();
+							convertedPosCode = posCodes.get(wordPosCode);
+							lexemeId = wordLexemeMeaning.getLexemeId();
+							saveLexemePos(lexemeId, convertedPosCode);
+						}
 					} else {
 						if (doReports) {
 							logBuf = new StringBuffer();
@@ -190,7 +193,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				for (Element colPosGroupNode : collocPosGroupNodes) {
 
 					collocPosCode = colPosGroupNode.attributeValue(collocPosAttr);
-					collocPosCode = posCodes.get(collocPosCode);
+					convertedPosCode = posCodes.get(collocPosCode);
+					if (StringUtils.isBlank(convertedPosCode)) {
+						illegalPosCount.increment();
+					}
 
 					relationGroupNodes = colPosGroupNode.selectNodes(relationGroupExp);
 
@@ -207,7 +213,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							collocationIds = handleAndSaveCollocations(
 									newWords, wordLexemeMeaningIdMap,
 									collocWordNodes, prevWordNodes, nextWordNodes,
-									dataset, dataLang,
+									convertedPosCode, dataset, dataLang,
 									successfulCollocationMatchCount, doReports);
 
 							if (CollectionUtils.isNotEmpty(collocationIds)) {
@@ -237,6 +243,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} ignored articles", ignoredArticleCount.getValue());
+		logger.debug("Found {} illegal POS codes", illegalPosCount.getValue());
 		logger.debug("Found {} successful collocation matches", successfulCollocationMatchCount.getValue());
 
 		t2 = System.currentTimeMillis();
@@ -246,7 +253,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private List<Long> handleAndSaveCollocations(
 			List<String> newWords, Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap,
 			List<Element> collocWordNodes, List<Element> prevWordNodes, List<Element> nextWordNodes,
-			String dataset, String dataLang,
+			String collocPosCode, String dataset, String dataLang,
 			Count successfulCollocationMatchCount,
 			boolean doReports) throws Exception {
 
@@ -274,9 +281,21 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String collocForm = collocWordObj.getForm();
 			WordLexemeMeaning collocWordLexemeMeaning = wordLexemeMeaningIdMap.get(collocWord);
 			if (collocWordLexemeMeaning == null) {
+				//TODO only single homonyms
+				/*
+				 * boolean paradigmsExist = mabService.paradigmsExist(word);
+				if (paradigmsExist) {
+					boolean isSingleHomonym = mabService.isSingleHomonym(word);
+					if (isSingleHomonym) {
+						paradigms = mabService.getWordParadigms(word);
+				 */
 				paradigms = mabService.getWordParadigms(collocWord);
 				collocWordLexemeMeaning = saveWordLexemeMeaning(collocWord, dataLang, null, paradigms, dataset);
 				wordLexemeMeaningIdMap.put(collocWord, collocWordLexemeMeaning);
+				if (StringUtils.isNotBlank(collocPosCode)) {
+					Long collocLexemeId = collocWordLexemeMeaning.getLexemeId();
+					saveLexemePos(collocLexemeId, collocPosCode);
+				}
 			}
 			Long collocLexemeId = collocWordLexemeMeaning.getLexemeId();
 			if (CollectionUtils.isNotEmpty(prevWords)) {
@@ -358,7 +377,23 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				if (isKnownForm) {
 					boolean isSingleWordForm = mabService.isSingleWordForm(form);
 					if (isSingleWordForm) {
-						word = mabService.getSingleWordFormWord(form);
+						String wordCandidate = mabService.getSingleWordFormWord(form);
+						boolean isSingleHomonym = mabService.isSingleHomonym(wordCandidate);
+						if (isSingleHomonym) {
+							word = wordCandidate;
+						} else {
+							if (doReports) {
+								logBuf = new StringBuffer();
+								logBuf.append(source);
+								logBuf.append(CSV_SEPARATOR);
+								logBuf.append(wordCandidate);
+								logBuf.append(CSV_SEPARATOR);
+								logBuf.append("vastab mitu homonüümi");
+								String logRow = logBuf.toString();
+								reportComposer.append(REPORT_AMBIGUOUS_HOMONYM, logRow);
+							}
+							continue;
+						}
 					} else {
 						if (doReports) {
 							List<String> formWords = mabService.getFormWords(form);
@@ -396,6 +431,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			singleWordForms.add(singleWordForm);
 		}
 		return singleWordForms;
+	}
+
+	private void saveLexemePos(Long lexemeId, String posCode) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("pos_code", posCode);
+		basicDbService.create(LEXEME_POS, tableRowParamMap);
 	}
 
 	private WordLexemeMeaning saveWordLexemeMeaning(String word, String dataLang, String guid, List<Paradigm> paradigms, String dataset) throws Exception {

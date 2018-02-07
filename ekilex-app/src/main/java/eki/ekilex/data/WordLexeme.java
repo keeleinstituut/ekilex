@@ -87,6 +87,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<String> grammars;
 
+	private List<Collocation> collocations;
+
 	private boolean lexemeOrMeaningClassifiersExist;
 
 	public WordLexeme() {
@@ -336,16 +338,20 @@ public class WordLexeme extends AbstractDataObject {
 		this.grammars = grammars;
 	}
 
+	public List<Collocation> getCollocations() {
+		return collocations;
+	}
+
+	public void setCollocations(List<Collocation> collocations) {
+		this.collocations = collocations;
+	}
+
 	public boolean isLexemeOrMeaningClassifiersExist() {
 		return lexemeOrMeaningClassifiersExist;
 	}
 
 	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
-	}
-
-	public boolean isFreeformsExist() {
-		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
 	}
 
 }

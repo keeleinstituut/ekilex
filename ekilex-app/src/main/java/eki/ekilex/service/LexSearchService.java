@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Collocation;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
@@ -82,6 +83,7 @@ public class LexSearchService {
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> meaningRelations = lexSearchDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 			List<String> lexemeGrammars = lexSearchDbService.findLexemeGrammars(lexemeId).into(String.class);
+			List<Collocation> collocations = lexSearchDbService.findCollocations(lexemeId).into(Collocation.class);
 
 			lexeme.setLexemePos(lexemePos);
 			lexeme.setLexemeDerivs(lexemeDerivs);
@@ -96,6 +98,7 @@ public class LexSearchService {
 			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);
 			lexeme.setGrammars(lexemeGrammars);
+			lexeme.setCollocations(collocations);
 			lexeme.setVocalForms(vocalForms);
 
 			boolean lexemeOrMeaningClassifiersExist =

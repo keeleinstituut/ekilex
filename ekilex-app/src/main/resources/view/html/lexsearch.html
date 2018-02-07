@@ -320,7 +320,7 @@
             <div th:if="${not #lists.isEmpty(lexeme.wordRelations)}">
               <hr />
               <span class="lbl">Keelendi seosed</span>
-              <table  class="orderable" th:data-op-code="word_relation">
+              <table class="orderable" th:data-op-code="word_relation">
                 <tr th:each="relation, itemStat : ${lexeme.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                   <td>
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
@@ -337,7 +337,7 @@
             <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
               <hr />
               <span class="lbl">Ilmiku seosed</span>
-              <table  class="orderable" th:data-op-code="lexeme_relation">
+              <table class="orderable" th:data-op-code="lexeme_relation">
                 <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                   <td>
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
@@ -353,6 +353,28 @@
                 </tr>
               </table>
             </div>
+          </div>
+          <div th:if="${not #lists.isEmpty(lexeme.collocations)}">
+            <hr />
+            <span class="lbl">Kollokatsioonid</span>
+            <table>
+              <tr th:each="colloc : ${lexeme.collocations}">
+                <td style="vertical-align: text-top; padding: 0px">
+                  <button type="button" class="btn btn-link" th:data-id="${colloc.collocateWordId}" name="detailsBtn">
+                    <span th:text="${colloc.value}"></span>
+                  </button>
+                </td>
+                <td>
+                  <div th:if="${not #lists.isEmpty(colloc.collocationUsages)}">
+                    <div th:each="collocUsage : ${colloc.collocationUsages}">
+                      <i>
+                        <span th:text="${collocUsage}"></span>
+                      </i>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </table>
           </div>
           <div style="padding: 10px"></div>
         </th:block>
