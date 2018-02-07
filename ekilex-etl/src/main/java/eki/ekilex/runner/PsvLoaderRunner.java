@@ -1473,7 +1473,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.paradigmsExist(word.value)) {
+		if (mabService.isMabLoaded() && mabService.paradigmsExist(word.value)) {
 			paradigms.addAll(fetchParadigmsFromMab(word.value, wordGroupNode));
 		}
 		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);

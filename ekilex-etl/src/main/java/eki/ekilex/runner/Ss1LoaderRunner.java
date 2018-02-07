@@ -1095,7 +1095,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String morphGroupExp = "s:mfp/s:mtg";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.paradigmsExist(word.value)) {
+		if (mabService.isMabLoaded() && mabService.paradigmsExist(word.value)) {
 			Element morphGroupNode = (Element) wordGroupNode.selectSingleNode(morphGroupExp);
 			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode);
 			if (!paradigmsFromMab.isEmpty()) {
