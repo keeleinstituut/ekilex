@@ -28,6 +28,8 @@ public class Word extends AbstractDataObject {
 
 	private String guid;
 
+	private String genderCode;
+
 	public Word() {
 	}
 
@@ -138,4 +140,11 @@ public class Word extends AbstractDataObject {
 		this.guid = guid;
 	}
 
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
+	}
 }

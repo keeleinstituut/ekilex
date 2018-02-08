@@ -449,7 +449,8 @@ create table word
   lang char(3) references lang(code) null,
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
-  display_morph_code varchar(100) references display_morph(code) null
+  display_morph_code varchar(100) references display_morph(code) null,
+  gender_code varchar(100) references gender(code) null
 );
 alter sequence word_id_seq restart with 10000;
 

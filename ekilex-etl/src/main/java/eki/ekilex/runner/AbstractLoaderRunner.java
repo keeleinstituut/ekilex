@@ -114,12 +114,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		String wordMorphCode = word.getMorphCode();
 		String wordDisplayMorph = word.getDisplayMorph();
 		String guid = word.getGuid();
+		String genderCode = word.getGenderCode();
 
 		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
 
 		if (tableRowValueMap == null) {
-			wordId = createWord(wordMorphCode, homonymNr, wordLang, wordDisplayMorph);
+			wordId = createWord(wordMorphCode, homonymNr, wordLang, wordDisplayMorph, genderCode);
 			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
 				createWordGuid(wordId, dataset, guid);
 			}
@@ -196,13 +197,14 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return paradigmId;
 	}
 
-	private Long createWord(final String morphCode, final int homonymNr, String lang, String displayMorph) throws Exception {
+	private Long createWord(final String morphCode, final int homonymNr, String lang, String displayMorph, String genderCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("homonym_nr", homonymNr);
 		tableRowParamMap.put("display_morph_code", displayMorph);
+		tableRowParamMap.put("gender_code", genderCode);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 		return wordId;
 	}

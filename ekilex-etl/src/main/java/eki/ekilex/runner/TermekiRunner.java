@@ -102,6 +102,10 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
 			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+			String genderCode = (String)term.get("gender");
+			if (StringUtils.isNotBlank(genderCode)) {
+				word.setGenderCode(genderCode);
+			}
 			Long wordId = saveWord(word, null, null, wordDuplicateCount);
 
 			Integer conceptId = (Integer) term.get("concept_id");
