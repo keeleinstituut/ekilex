@@ -107,6 +107,7 @@ public class LexSearchService {
 					|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
 					|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
 					|| StringUtils.isNotBlank(lexeme.getMeaningStateCode())
+					|| StringUtils.isNotBlank(lexeme.getGenderCode())
 					|| CollectionUtils.isNotEmpty(lexemePos)
 					|| CollectionUtils.isNotEmpty(lexemeDerivs)
 					|| CollectionUtils.isNotEmpty(lexemeRegisters)

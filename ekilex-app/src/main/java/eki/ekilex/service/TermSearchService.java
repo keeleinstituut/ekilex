@@ -95,6 +95,7 @@ public class TermSearchService {
 
 					boolean classifiersExist =
 							StringUtils.isNotBlank(lexeme.getTypeCode())
+							|| StringUtils.isNotBlank(lexeme.getGenderCode())
 							|| StringUtils.isNotBlank(lexeme.getFrequencyGroupCode())
 							|| CollectionUtils.isNotEmpty(lexemePos)
 							|| CollectionUtils.isNotEmpty(lexemeDerivs)
