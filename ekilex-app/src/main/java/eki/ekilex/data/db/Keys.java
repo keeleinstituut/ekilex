@@ -62,8 +62,6 @@ import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.UsageAuthorType;
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
@@ -129,8 +127,6 @@ import eki.ekilex.data.db.tables.records.RegisterLabelRecord;
 import eki.ekilex.data.db.tables.records.RegisterRecord;
 import eki.ekilex.data.db.tables.records.SourceFreeformRecord;
 import eki.ekilex.data.db.tables.records.SourceRecord;
-import eki.ekilex.data.db.tables.records.UsageAuthorTypeLabelRecord;
-import eki.ekilex.data.db.tables.records.UsageAuthorTypeRecord;
 import eki.ekilex.data.db.tables.records.UsageTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.UsageTypeRecord;
 import eki.ekilex.data.db.tables.records.WordGuidRecord;
@@ -199,7 +195,6 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
-    public static final UniqueKey<CollocationRecord> COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = UniqueKeys0.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY;
     public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = UniqueKeys0.COLLOCATION_USAGE_PKEY;
     public static final UniqueKey<DatasetRecord> DATASET_PKEY = UniqueKeys0.DATASET_PKEY;
     public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = UniqueKeys0.DEFINITION_PKEY;
@@ -271,8 +266,6 @@ public class Keys {
     public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = UniqueKeys0.SOURCE_FREEFORM_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = UniqueKeys0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
-    public static final UniqueKey<UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_PKEY = UniqueKeys0.USAGE_AUTHOR_TYPE_PKEY;
-    public static final UniqueKey<UsageAuthorTypeLabelRecord> USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = UniqueKeys0.USAGE_TYPE_PKEY;
     public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordRecord> WORD_PKEY = UniqueKeys0.WORD_PKEY;
@@ -376,15 +369,13 @@ public class Keys {
     public static final ForeignKey<SourceRecord, ProcessStateRecord> SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY = ForeignKeys0.SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY;
     public static final ForeignKey<SourceFreeformRecord, SourceRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY;
     public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY;
-    public static final ForeignKey<UsageAuthorTypeLabelRecord, UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_CODE_FKEY = ForeignKeys0.USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_CODE_FKEY;
-    public static final ForeignKey<UsageAuthorTypeLabelRecord, LangRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_LANG_FKEY = ForeignKeys0.USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_LANG_FKEY;
-    public static final ForeignKey<UsageAuthorTypeLabelRecord, LabelTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, UsageTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, LangRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, LabelTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = ForeignKeys0.WORD__WORD_LANG_FKEY;
     public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
+    public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = ForeignKeys0.WORD__WORD_GENDER_CODE_FKEY;
     public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_WORD_ID_FKEY;
     public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY;
     public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY;
@@ -431,7 +422,6 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", Collocation.COLLOCATION.ID);
-        public static final UniqueKey<CollocationRecord> COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = createUniqueKey(Collocation.COLLOCATION, "collocation_lexeme1_id_lexeme2_id_key", Collocation.COLLOCATION.LEXEME1_ID, Collocation.COLLOCATION.LEXEME2_ID);
         public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = createUniqueKey(CollocationUsage.COLLOCATION_USAGE, "collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE.ID);
         public static final UniqueKey<DatasetRecord> DATASET_PKEY = createUniqueKey(Dataset.DATASET, "dataset_pkey", Dataset.DATASET.CODE);
         public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = createUniqueKey(Definition.DEFINITION, "definition_pkey", Definition.DEFINITION.ID);
@@ -503,8 +493,6 @@ public class Keys {
         public static final UniqueKey<SourceRecord> SOURCE_PKEY = createUniqueKey(Source.SOURCE, "source_pkey", Source.SOURCE.ID);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM.ID);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
-        public static final UniqueKey<UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_PKEY = createUniqueKey(UsageAuthorType.USAGE_AUTHOR_TYPE, "usage_author_type_pkey", UsageAuthorType.USAGE_AUTHOR_TYPE.CODE);
-        public static final UniqueKey<UsageAuthorTypeLabelRecord> USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label_code_lang_type_key", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE);
         public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = createUniqueKey(UsageType.USAGE_TYPE, "usage_type_pkey", UsageType.USAGE_TYPE.CODE);
         public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE);
         public static final UniqueKey<WordRecord> WORD_PKEY = createUniqueKey(Word.WORD, "word_pkey", Word.WORD.ID);
@@ -606,15 +594,13 @@ public class Keys {
         public static final ForeignKey<SourceRecord, ProcessStateRecord> SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, Source.SOURCE, "source__source_process_state_code_fkey", Source.SOURCE.PROCESS_STATE_CODE);
         public static final ForeignKey<SourceFreeformRecord, SourceRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.SOURCE_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform__source_freeform_source_id_fkey", SourceFreeform.SOURCE_FREEFORM.SOURCE_ID);
         public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform__source_freeform_freeform_id_fkey", SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
-        public static final ForeignKey<UsageAuthorTypeLabelRecord, UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.USAGE_AUTHOR_TYPE_PKEY, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label__usage_author_type_label_code_fkey", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE);
-        public static final ForeignKey<UsageAuthorTypeLabelRecord, LangRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label__usage_author_type_label_lang_fkey", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG);
-        public static final ForeignKey<UsageAuthorTypeLabelRecord, LabelTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label__usage_author_type_label_type_fkey", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE);
         public static final ForeignKey<UsageTypeLabelRecord, UsageTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.USAGE_TYPE_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_code_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.CODE);
         public static final ForeignKey<UsageTypeLabelRecord, LangRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_lang_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.LANG);
         public static final ForeignKey<UsageTypeLabelRecord, LabelTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_type_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.TYPE);
         public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, Word.WORD, "word__word_lang_fkey", Word.WORD.LANG);
         public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Word.WORD, "word__word_morph_code_fkey", Word.WORD.MORPH_CODE);
         public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word__word_display_morph_code_fkey", Word.WORD.DISPLAY_MORPH_CODE);
+        public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.GENDER_PKEY, Word.WORD, "word__word_gender_code_fkey", Word.WORD.GENDER_CODE);
         public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_word_id_fkey", WordGuid.WORD_GUID.WORD_ID);
         public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.DATASET_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_dataset_code_fkey", WordGuid.WORD_GUID.DATASET_CODE);
         public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.ekilex.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label__word_rel_type_label_code_fkey", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE);
