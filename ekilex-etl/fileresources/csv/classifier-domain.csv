@@ -3386,6 +3386,7 @@ termeki	ripatsid	ehted	ripatsid	et
 termeki	muud ehted või ehte osad	ehted	muud ehted või ehte osad	et
 termeki	metallid ja sulamid	metallitööga seotud mõisted	metallid ja sulamid	et
 termeki	tehnikad	kiviajaga seotud mõisted	tehnikad	et
+termeki	sõjamehevarustus	sõjandus	sõjamehevarustus	et
 termeki	ühiskond	-	ühiskond	et
 termeki	amb ja selle osad	relvad	amb ja selle osad	et
 termeki	laevandus	majandus	laevandus	et
@@ -3429,9 +3430,14 @@ termeki	konfutsianism	-	konfutsianism	et
 termeki	džainism	-	džainism	et
 termeki	puidukäsitöö	-	puidukäsitöö	et
 termeki	tekstiilikäsitöö	-	tekstiilikäsitöö	et
-termeki	käsitööteaduse üldmõisted	-	käsitööteaduse üldmõisted	et
+termeki	kirivöötehnika	tekstiilikäsitöö	kirivöötehnika	et
+termeki	niplamine	tekstiilikäsitöö	niplamine	et
+termeki	käsitööteadus	-	käsitööteadus	et
+termeki	kangakudumine	tekstiilikäsitöö	kangakudumine	et
+termeki	metallikäsitöö	-	metallikäsitöö	et
 termeki	palkehitus	puidukäsitöö	palkehitus	et
 termeki	kõlatehnika	tekstiilikäsitöö	kõlatehnika	et
+termeki	silmuskudumine	tekstiilikäsitöö	silmuskudumine	et
 termeki	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	et
 termeki	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	coastal landforms	en
 termeki	tuuletekkelised ehk eoolsed pinnavormid	-	tuuletekkelised ehk eoolsed pinnavormid	et
@@ -3485,8 +3491,13 @@ termeki	elutekkelised (füto-, zoo-, antropogeensed/tehnogeensed) pinnavormid	-	
 termeki	klassitsism	-	klassitsism	et
 termeki	keskaeg	-	keskaeg	et
 termeki	avatäited	-	avatäited	et
+termeki	militaararhitektuur	-	militaararhitektuur	et
+termeki	(uus teema)	-	(uus teema)	et
+termeki	(uus teema)	-	(uus teema)	et
 termeki	antiik	-	antiik	et
 termeki	katus	-	katus	et
+termeki	stiil	-	stiil	et
+termeki	stiil	-	stiil	en
 termeki	veski	-	veski	et
 termeki	sakraalarhitektuur	-	sakraalarhitektuur	et
 termeki	katusetüüp	-	katusetüüp	et
