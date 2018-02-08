@@ -51,6 +51,9 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "lexeme_frequency_group_code")
 	private String frequencyGroupCode;
 
+	@Column(name = "gender_code")
+	private String genderCode;
+
 	private List<Classifier> pos;
 
 	private List<Classifier> derivs;
@@ -231,5 +234,13 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setGrammars(List<String> grammars) {
 		this.grammars = grammars;
+	}
+
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
 	}
 }

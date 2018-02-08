@@ -9,7 +9,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import java.util.List;
 
 import org.jooq.DSLContext;
-import org.jooq.Record12;
+import org.jooq.Record13;
 import org.jooq.Record5;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -55,7 +55,7 @@ public class TermSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record12<String,Integer,String,Long,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long lexemeId) {
+	public Result<Record13<String,Integer,String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long lexemeId) {
 
 		return create
 				.select(
@@ -63,6 +63,7 @@ public class TermSearchDbService {
 						WORD.HOMONYM_NR,
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
+						WORD.GENDER_CODE.as("gender_code"),
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.MEANING_ID,
 						LEXEME.DATASET_CODE.as("dataset"),

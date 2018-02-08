@@ -33,8 +33,19 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
+	protected static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
+	protected static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
+
+	private Map<String, String> posCodes;
+
 	@Autowired
 	private TermekiService termekiService;
+
+	@Override
+	void initialise() throws Exception {
+		posCodes = loadClassifierMappingsFor(TERMEKI_CLASSIFIER_PRONUNCIATION);
+		posCodes.putAll(loadClassifierMappingsFor(TERMEKI_CLASSIFIER_WORD_CLASS));
+	}
 
 	public void execute(Integer baseId, String dataset) throws Exception {
 
@@ -91,6 +102,10 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
 			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+			String genderCode = (String)term.get("gender");
+			if (StringUtils.isNotBlank(genderCode)) {
+				word.setGenderCode(genderCode);
+			}
 			Long wordId = saveWord(word, null, null, wordDuplicateCount);
 
 			Integer conceptId = (Integer) term.get("concept_id");
@@ -113,10 +128,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);
-			lexeme.setLevel1(0);
-			lexeme.setLevel2(0);
-			lexeme.setLevel3(0);
-			createLexeme(lexeme, dataset);
+			Long lexemeId = createLexeme(lexeme, dataset);
+			String posCode = StringUtils.isNotBlank((String)term.get("pronunciation")) ? (String)term.get("pronunciation") : term.get("word_class").toString();
+			savePosCode(lexemeId, posCode);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
@@ -137,6 +151,15 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
+	}
+
+	private void savePosCode(Long lexemeId, String posCode) throws Exception {
+		if (posCodes.containsKey(posCode)) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("lexeme_id", lexemeId);
+			params.put("pos_code", posCodes.get(posCode));
+			basicDbService.create(LEXEME_POS, params);
+		}
 	}
 
 	private void updateDomainDatsetsIfNeeded(Map<String, Object> domain, String dataset) throws Exception {
@@ -178,10 +201,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
-	}
-
-	@Override
-	void initialise() {
 	}
 
 }

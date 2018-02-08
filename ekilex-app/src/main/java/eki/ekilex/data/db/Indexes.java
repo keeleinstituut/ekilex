@@ -62,8 +62,6 @@ import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.UsageAuthorType;
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
@@ -97,7 +95,6 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index COLLOCATION_LEXEME1_ID_IDX = Indexes0.COLLOCATION_LEXEME1_ID_IDX;
-    public static final Index COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = Indexes0.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY;
     public static final Index COLLOCATION_LEXEME2_ID_IDX = Indexes0.COLLOCATION_LEXEME2_ID_IDX;
     public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
     public static final Index COLLOCATION_USAGE_COLLOCATION_ID = Indexes0.COLLOCATION_USAGE_COLLOCATION_ID;
@@ -197,8 +194,6 @@ public class Indexes {
     public static final Index SOURCE_FREEFORM_PKEY = Indexes0.SOURCE_FREEFORM_PKEY;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = Indexes0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_IDX = Indexes0.SOURCE_FREEFORM_SOURCE_ID_IDX;
-    public static final Index USAGE_AUTHOR_TYPE_PKEY = Indexes0.USAGE_AUTHOR_TYPE_PKEY;
-    public static final Index USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index USAGE_TYPE_PKEY = Indexes0.USAGE_TYPE_PKEY;
     public static final Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
@@ -220,7 +215,6 @@ public class Indexes {
 
     private static class Indexes0 extends AbstractKeys {
         public static Index COLLOCATION_LEXEME1_ID_IDX = createIndex("collocation_lexeme1_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID }, false);
-        public static Index COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = createIndex("collocation_lexeme1_id_lexeme2_id_key", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID, Collocation.COLLOCATION.LEXEME2_ID }, true);
         public static Index COLLOCATION_LEXEME2_ID_IDX = createIndex("collocation_lexeme2_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME2_ID }, false);
         public static Index COLLOCATION_PKEY = createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
         public static Index COLLOCATION_USAGE_COLLOCATION_ID = createIndex("collocation_usage_collocation_id", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID }, false);
@@ -320,8 +314,6 @@ public class Indexes {
         public static Index SOURCE_FREEFORM_PKEY = createIndex("source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.ID }, true);
         public static Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createIndex("source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, true);
         public static Index SOURCE_FREEFORM_SOURCE_ID_IDX = createIndex("source_freeform_source_id_idx", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID }, false);
-        public static Index USAGE_AUTHOR_TYPE_PKEY = createIndex("usage_author_type_pkey", UsageAuthorType.USAGE_AUTHOR_TYPE, new OrderField[] { UsageAuthorType.USAGE_AUTHOR_TYPE.CODE }, true);
-        public static Index USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("usage_author_type_label_code_lang_type_key", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, new OrderField[] { UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE }, true);
         public static Index USAGE_TYPE_PKEY = createIndex("usage_type_pkey", UsageType.USAGE_TYPE, new OrderField[] { UsageType.USAGE_TYPE.CODE }, true);
         public static Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL, new OrderField[] { UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE }, true);
         public static Index WORD_HOMONYM_NR_IDX = createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);

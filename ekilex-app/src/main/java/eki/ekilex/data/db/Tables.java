@@ -62,8 +62,6 @@ import eki.ekilex.data.db.tables.Register;
 import eki.ekilex.data.db.tables.RegisterLabel;
 import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
-import eki.ekilex.data.db.tables.UsageAuthorType;
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.Word;
@@ -377,16 +375,6 @@ public class Tables {
      * The table <code>public.source_freeform</code>.
      */
     public static final SourceFreeform SOURCE_FREEFORM = eki.ekilex.data.db.tables.SourceFreeform.SOURCE_FREEFORM;
-
-    /**
-     * The table <code>public.usage_author_type</code>.
-     */
-    public static final UsageAuthorType USAGE_AUTHOR_TYPE = eki.ekilex.data.db.tables.UsageAuthorType.USAGE_AUTHOR_TYPE;
-
-    /**
-     * The table <code>public.usage_author_type_label</code>.
-     */
-    public static final UsageAuthorTypeLabel USAGE_AUTHOR_TYPE_LABEL = eki.ekilex.data.db.tables.UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL;
 
     /**
      * The table <code>public.usage_type</code>.

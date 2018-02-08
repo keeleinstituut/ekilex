@@ -101,6 +101,10 @@
             </div>
             <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
               <hr />
+              <div th:if="${lexeme.genderCode != null}">
+                <span class="lbl">Sugu</span>
+                <span th:text="${lexeme.genderCode}"></span>
+              </div>
               <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
                 <span class="lbl">Grammatika</span>
                 <span th:each="grammar,grammarIter : ${lexeme.grammars}">
