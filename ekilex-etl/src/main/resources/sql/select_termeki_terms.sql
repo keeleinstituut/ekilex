@@ -1,5 +1,5 @@
 SELECT
-  t.concept_id, t.term, t.lang, cs.subject_id, lower(tr.subject_name) AS domain_code
+  t.concept_id, t.term, t.lang, cs.subject_id, lower(tr.subject_name) AS domain_code, t.gender, t.pronunciation, t.word_class
 FROM termeki_terms t
   LEFT JOIN termeki_concepts c ON t.concept_id = c.concept_id
   LEFT JOIN termeki_concept_subjects cs ON t.concept_id = cs.concept_id
