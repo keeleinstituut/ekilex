@@ -281,14 +281,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String collocForm = collocWordObj.getForm();
 			WordLexemeMeaning collocWordLexemeMeaning = wordLexemeMeaningIdMap.get(collocWord);
 			if (collocWordLexemeMeaning == null) {
-				//TODO only single homonyms
-				/*
-				 * boolean paradigmsExist = mabService.paradigmsExist(word);
-				if (paradigmsExist) {
-					boolean isSingleHomonym = mabService.isSingleHomonym(word);
-					if (isSingleHomonym) {
-						paradigms = mabService.getWordParadigms(word);
-				 */
 				paradigms = mabService.getWordParadigms(collocWord);
 				collocWordLexemeMeaning = saveWordLexemeMeaning(collocWord, dataLang, null, paradigms, dataset);
 				wordLexemeMeaningIdMap.put(collocWord, collocWordLexemeMeaning);
@@ -316,7 +308,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					WordLexemeMeaning nextWordLexemeMeaning = wordLexemeMeaningIdMap.get(nextWord);
 					Long nextLexemeId = nextWordLexemeMeaning.getLexemeId();
 					String collocation = collocForm + ' ' + nextForm;
-					Long collocId = createCollocation(collocLexemeId, nextLexemeId, collocation);
+					Long collocId = createCollocation(nextLexemeId, collocLexemeId, collocation);
 					collocationIds.add(collocId);
 					successfulCollocationMatchCount.increment();
 				}

@@ -315,7 +315,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		if (doReports) {
-			logger.debug("Found {} data errors", dataErrorCount);
+			logger.debug("Found {} data errors", dataErrorCount.getValue());
 		}
 		logger.debug("Found {} definitions with same notes", definitionsWithSameNoteCount.getValue());
 
