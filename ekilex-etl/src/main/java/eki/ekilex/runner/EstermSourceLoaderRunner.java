@@ -277,18 +277,6 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		return sourceId;
 	}
 
-	private Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
-
-		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("source_id", sourceId);
-		tableRowParamMap.put("freeform_id", freeformId);
-		basicDbService.create(SOURCE_FREEFORM, tableRowParamMap);
-
-		return freeformId;
-	}
-
 	private void extractAndSaveFreeforms(Long sourceTermId, Element termGroupNode, FreeformType freeformType, String sourceTermPropertyExp) throws Exception {
 
 		List<Element> sourceTermPropertyNodes = termGroupNode.selectNodes(sourceTermPropertyExp);

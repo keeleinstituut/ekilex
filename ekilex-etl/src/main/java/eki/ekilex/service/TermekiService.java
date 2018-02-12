@@ -31,6 +31,8 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_DOMAINS = "sql/select_termeki_domains.sql";
 
+	private static final String SQL_SELECT_SOURCES = "sql/select_termeki_sources.sql";
+
 	private static final String TERMBASE_IDS = "csv/termeki-databases.csv";
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
@@ -40,6 +42,8 @@ public class TermekiService implements InitializingBean {
 	private String sqlSelectDefinitions;
 
 	private String sqlSelectDomains;
+
+	private String sqlSelectSources;
 
 	private List<Integer> termbaseIds;
 
@@ -52,6 +56,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectTerms = getContent(SQL_SELECT_TERMS);
 		sqlSelectDefinitions = getContent(SQL_SELECT_DEFINITIONS);
 		sqlSelectDomains = getContent(SQL_SELECT_DOMAINS);
+		sqlSelectSources = getContent(SQL_SELECT_SOURCES);
 		termbaseIds = readFileLines(TERMBASE_IDS).stream()
 				.map(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]))
 				.collect(toList());
@@ -79,6 +84,12 @@ public class TermekiService implements InitializingBean {
 
 		Map<String, Object> params = constructParameters(baseId);
 		return queryList(sqlSelectTerms, params);
+	}
+
+	public List<Map<String, Object>> getSources(Integer baseId) {
+
+		Map<String, Object> params = constructParameters(baseId);
+		return queryList(sqlSelectSources, params);
 	}
 
 	public List<Map<String, Object>> getDefinitions(Integer baseId) {
