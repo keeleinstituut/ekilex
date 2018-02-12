@@ -181,7 +181,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String posCode = StringUtils.isNotBlank((String)term.get("pronunciation")) ? (String)term.get("pronunciation") : term.get("word_class").toString();
 			savePosCode(lexemeId, posCode);
 			Integer sourceId = (Integer) term.get("source_id");
-			connectSource(sourceId, lexemeId, sourceMapping);
+			connectSourceToLexeme(sourceId, lexemeId, sourceMapping);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
@@ -197,25 +197,37 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer conceptId = (Integer) definition.get("concept_id");
 			if (conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = conceptMeanings.get(conceptId);
-				createDefinition(meaningId, (String)definition.get("definition"), language, dataset);
+				String definitionValue = (String) definition.get("definition");
+				Long definitionId = createDefinition(meaningId, definitionValue, language, dataset);
 				definitionsCount++;
 				String publicNote = (String)definition.get("description");
 				if (isNotBlank(publicNote)) {
 					createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, publicNote);
 				}
+				Integer sourceId = (Integer) definition.get("source_id");
+				connectSourceToDefinition(sourceId, definitionId, sourceMapping, definitionValue);
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
 	}
 
-	private void connectSource(Integer sourceId, Long lexemeId, Map<Integer, SourceData> sourceMapping) throws Exception {
+	private void connectSourceToDefinition(Integer sourceId, Long definitionId, Map<Integer, SourceData> sourceMapping, String definition) throws Exception {
 
 		if (sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = sourceMapping.get(sourceId);
+			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id);
+			String markdownLink = String.format("%s [%s](%s:%d)", definition, ekilexSource.name, ContentKey.DEFINITION_REF_LINK, refLinkId);
+			updateDefinitionValue(definitionId, markdownLink);
+		}
+	}
+
+	private void connectSourceToLexeme(Integer sourceId, Long lexemeId, Map<Integer, SourceData> sourceMapping) throws Exception {
+
+		if (sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = sourceMapping.get(sourceId);
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, null, null);
-			Long ekilexSourceId = sourceMapping.get(sourceId).id;
-			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSourceId);
-			String sourceName = sourceMapping.get(sourceId).name;
-			String markdownLink = String.format("[%s](%s:%d)", sourceName, ContentKey.FREEFORM_REF_LINK, refLinkId);
+			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id);
+			String markdownLink = String.format("[%s](%s:%d)", ekilexSource.name, ContentKey.FREEFORM_REF_LINK, refLinkId);
 			updateFreeformText(freeformId, markdownLink);
 		}
 	}

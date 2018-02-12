@@ -1,5 +1,5 @@
 SELECT
-  d.concept_id, d.lang, d.definition, d.description
+  d.concept_id, d.lang, d.definition, d.description, d.source_id
 FROM termeki_concepts c,
   termeki_definitions d
 WHERE c.termbase_id = :baseId
