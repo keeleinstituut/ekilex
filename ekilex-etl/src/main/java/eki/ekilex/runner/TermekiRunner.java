@@ -199,6 +199,10 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				Long meaningId = conceptMeanings.get(conceptId);
 				createDefinition(meaningId, (String)definition.get("definition"), language, dataset);
 				definitionsCount++;
+				String publicNote = (String)definition.get("description");
+				if (isNotBlank(publicNote)) {
+					createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, publicNote);
+				}
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
