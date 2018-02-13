@@ -531,6 +531,18 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.createIfNotExists(LEXEME_REGISTER, params);
 	}
 
+	protected Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
+
+		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("source_id", sourceId);
+		tableRowParamMap.put("freeform_id", freeformId);
+		basicDbService.create(SOURCE_FREEFORM, tableRowParamMap);
+
+		return freeformId;
+	}
+
 	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {
 		return loadClassifierMappingsFor(ekiClassifierName, null);
 	}

@@ -1,5 +1,8 @@
 package eki.ekilex.runner;
 
+import eki.common.constant.ContentKey;
+import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Lexeme;
@@ -17,8 +20,10 @@ import org.springframework.stereotype.Component;
 import javax.transaction.Transactional;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +65,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		logger.info("Found {} terms.", terms.size());
 		List<Map<String, Object>> definitions = termekiService.getDefinitions(baseId);
 		logger.info("Found {} definitions.", definitions.size());
-		doImport(terms, definitions, dataset);
+		Map<Integer, SourceData> sourceMapping = loadSources(baseId);
+		logger.info("Found {} sources.", sourceMapping.size());
+		List<Map<String, Object>> comments = termekiService.getComments(baseId);
+		logger.info("Found {} comments.", comments.size());
+		doImport(terms, definitions, sourceMapping, comments, dataset);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
@@ -86,10 +95,53 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private Map<Integer, SourceData> loadSources(Integer baseId) throws Exception {
+		List<Map<String, Object>> sources = termekiService.getSources(baseId);
+		Map<Integer, SourceData> termekiSourceToEkilexSourceMap = new HashMap<>();
+		for (Map<String, Object> source : sources) {
+			String name = (String)source.get("source_name");
+			if (StringUtils.isNotBlank(name)) {
+				Long sourceId = createSource(source.get("source_id").toString());
+				Long sourceFreeformId = createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, name);
+				String author = (String) source.get("author");
+				if (StringUtils.isNotBlank(author)) {
+					createFreeformTextOrDate(FreeformType.SOURCE_AUTHOR, sourceFreeformId, author, null);
+				}
+				String isbn = (String) source.get("isbn");
+				if (StringUtils.isNotBlank(isbn)) {
+					createFreeformTextOrDate(FreeformType.SOURCE_ISBN, sourceFreeformId, isbn, null);
+				}
+				String www = (String) source.get("source_link");
+				if (StringUtils.isNotBlank(www)) {
+					createFreeformTextOrDate(FreeformType.SOURCE_WWW, sourceFreeformId, www, null);
+				}
+				String publisher = (String) source.get("publisher");
+				if (StringUtils.isNotBlank(publisher)) {
+					createFreeformTextOrDate(FreeformType.SOURCE_PUBLISHER, sourceFreeformId, publisher, null);
+				}
+				Date publishDate = (Date) source.get("publish_date");
+				if (publishDate != null) {
+					Timestamp publishedTs = new Timestamp(publishDate.getTime());
+					createFreeformTextOrDate(FreeformType.SOURCE_PUBLICATION_YEAR, sourceFreeformId, publishedTs, null);
+				}
+				termekiSourceToEkilexSourceMap.put((Integer)source.get("source_id"), new SourceData(sourceId, name));
+			}
+		}
+		return termekiSourceToEkilexSourceMap;
+	}
+
+	private Long createSource(String termekiId) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("concept", termekiId);
+		return basicDbService.create(SOURCE, params);
+	}
+
 	@Transactional
 	void doImport(
 			List<Map<String, Object>> terms,
 			List<Map<String, Object>> definitions,
+			Map<Integer, SourceData> sourceMapping,
+			List<Map<String, Object>> comments,
 			String dataset) throws Exception {
 
 		final String defaultWordMorphCode = "SgN";
@@ -114,11 +166,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				conceptMeanings.put(conceptId, meaningId);
 				String domainCode = (String) term.get("domain_code");
 				if (isNotBlank(domainCode)) {
-					Map<String, Object> domain = getDomain(domainCode, "termeki");
+					Map<String, Object> domain = getDomain(domainCode, dataset);
 					if (domain == null) {
 						logger.info("Invalid domain code : {}", domainCode);
 					} else {
-						createMeaningDomain(meaningId, domainCode, "termeki");
+						createMeaningDomain(meaningId, domainCode, dataset);
 						updateDomainDatsetsIfNeeded(domain, dataset);
 					}
 				}
@@ -131,6 +183,8 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Long lexemeId = createLexeme(lexeme, dataset);
 			String posCode = StringUtils.isNotBlank((String)term.get("pronunciation")) ? (String)term.get("pronunciation") : term.get("word_class").toString();
 			savePosCode(lexemeId, posCode);
+			Integer sourceId = (Integer) term.get("source_id");
+			connectSourceToLexeme(sourceId, lexemeId, sourceMapping);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
@@ -146,14 +200,54 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer conceptId = (Integer) definition.get("concept_id");
 			if (conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = conceptMeanings.get(conceptId);
-				createDefinition(meaningId, (String)definition.get("definition"), language, dataset);
+				String definitionValue = (String) definition.get("definition");
+				Long definitionId = createDefinition(meaningId, definitionValue, language, dataset);
 				definitionsCount++;
+				String publicNote = (String)definition.get("description");
+				if (isNotBlank(publicNote)) {
+					createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, publicNote);
+				}
+				Integer sourceId = (Integer) definition.get("source_id");
+				connectSourceToDefinition(sourceId, definitionId, sourceMapping, definitionValue);
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
+
+		for (Map<String, Object> comment : comments) {
+			Integer conceptId = (Integer) comment.get("concept_id");
+			if (conceptMeanings.containsKey(conceptId)) {
+				Long meaningId = conceptMeanings.get(conceptId);
+				String privateNote = (String) comment.get("content");
+				if (isNotBlank(privateNote)) {
+					createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, privateNote);
+				}
+			}
+		}
+	}
+
+	private void connectSourceToDefinition(Integer sourceId, Long definitionId, Map<Integer, SourceData> sourceMapping, String definition) throws Exception {
+
+		if (sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = sourceMapping.get(sourceId);
+			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id);
+			String markdownLink = String.format("%s [%s](%s:%d)", definition, ekilexSource.name, ContentKey.DEFINITION_REF_LINK, refLinkId);
+			updateDefinitionValue(definitionId, markdownLink);
+		}
+	}
+
+	private void connectSourceToLexeme(Integer sourceId, Long lexemeId, Map<Integer, SourceData> sourceMapping) throws Exception {
+
+		if (sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = sourceMapping.get(sourceId);
+			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, null, null);
+			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id);
+			String markdownLink = String.format("[%s](%s:%d)", ekilexSource.name, ContentKey.FREEFORM_REF_LINK, refLinkId);
+			updateFreeformText(freeformId, markdownLink);
+		}
 	}
 
 	private void savePosCode(Long lexemeId, String posCode) throws Exception {
+
 		if (posCodes.containsKey(posCode)) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("lexeme_id", lexemeId);
@@ -201,6 +295,16 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			logger.info("Dataset {} : {}", dataset, selectedDataset.get("name"));
 		}
 		return selectedDataset != null;
+	}
+
+	private class SourceData {
+		Long id;
+		String name;
+
+		public SourceData(Long id, String name) {
+			this.id = id;
+			this.name = name;
+		}
 	}
 
 }
