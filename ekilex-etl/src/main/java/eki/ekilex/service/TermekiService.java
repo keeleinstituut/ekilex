@@ -33,6 +33,8 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_SOURCES = "sql/select_termeki_sources.sql";
 
+	private static final String SQL_SELECT_COMMENTS = "sql/select_termeki_comments.sql";
+
 	private static final String TERMBASE_IDS = "csv/termeki-databases.csv";
 
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
@@ -44,6 +46,8 @@ public class TermekiService implements InitializingBean {
 	private String sqlSelectDomains;
 
 	private String sqlSelectSources;
+
+	private String sqlSelectComments;
 
 	private List<Integer> termbaseIds;
 
@@ -57,6 +61,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectDefinitions = getContent(SQL_SELECT_DEFINITIONS);
 		sqlSelectDomains = getContent(SQL_SELECT_DOMAINS);
 		sqlSelectSources = getContent(SQL_SELECT_SOURCES);
+		sqlSelectComments = getContent(SQL_SELECT_COMMENTS);
 		termbaseIds = readFileLines(TERMBASE_IDS).stream()
 				.map(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]))
 				.collect(toList());
@@ -96,6 +101,12 @@ public class TermekiService implements InitializingBean {
 
 		Map<String, Object> params = constructParameters(baseId);
 		return queryList(sqlSelectDefinitions, params);
+	}
+
+	public List<Map<String, Object>> getComments(Integer baseId) {
+
+		Map<String, Object> params = constructParameters(baseId);
+		return queryList(sqlSelectComments, params);
 	}
 
 	public List<Map<String, Object>> getDomainsForLanguage(String language) {

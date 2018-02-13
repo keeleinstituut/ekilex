@@ -67,7 +67,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		logger.info("Found {} definitions.", definitions.size());
 		Map<Integer, SourceData> sourceMapping = loadSources(baseId);
 		logger.info("Found {} sources.", sourceMapping.size());
-		doImport(terms, definitions, sourceMapping, dataset);
+		List<Map<String, Object>> comments = termekiService.getComments(baseId);
+		logger.info("Found {} comments.", comments.size());
+		doImport(terms, definitions, sourceMapping, comments, dataset);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
@@ -139,6 +141,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			List<Map<String, Object>> terms,
 			List<Map<String, Object>> definitions,
 			Map<Integer, SourceData> sourceMapping,
+			List<Map<String, Object>> comments,
 			String dataset) throws Exception {
 
 		final String defaultWordMorphCode = "SgN";
@@ -209,6 +212,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
+
+		for (Map<String, Object> comment : comments) {
+			Integer conceptId = (Integer) comment.get("concept_id");
+			if (conceptMeanings.containsKey(conceptId)) {
+				Long meaningId = conceptMeanings.get(conceptId);
+				String privateNote = (String) comment.get("content");
+				if (isNotBlank(privateNote)) {
+					createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, privateNote);
+				}
+			}
+		}
 	}
 
 	private void connectSourceToDefinition(Integer sourceId, Long definitionId, Map<Integer, SourceData> sourceMapping, String definition) throws Exception {
