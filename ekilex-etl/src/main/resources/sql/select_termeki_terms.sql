@@ -8,3 +8,4 @@ WHERE
   c.termbase_id = :baseId
   AND NOT c.is_deleted
   AND NOT t.is_deleted
+ORDER BY t.concept_id, t.is_preferred desc, t.line

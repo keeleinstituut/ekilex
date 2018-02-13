@@ -7,3 +7,4 @@ WHERE c.termbase_id = :baseId
       AND   d.concept_id = c.concept_id
       AND   d.is_deleted = 0
       AND   COALESCE(definition, '') != ''
+ORDER BY d.concept_id, d.is_preferred desc, d.line
