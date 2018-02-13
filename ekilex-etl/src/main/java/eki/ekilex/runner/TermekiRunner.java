@@ -166,11 +166,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				conceptMeanings.put(conceptId, meaningId);
 				String domainCode = (String) term.get("domain_code");
 				if (isNotBlank(domainCode)) {
-					Map<String, Object> domain = getDomain(domainCode, "termeki");
+					Map<String, Object> domain = getDomain(domainCode, dataset);
 					if (domain == null) {
 						logger.info("Invalid domain code : {}", domainCode);
 					} else {
-						createMeaningDomain(meaningId, domainCode, "termeki");
+						createMeaningDomain(meaningId, domainCode, dataset);
 						updateDomainDatsetsIfNeeded(domain, dataset);
 					}
 				}

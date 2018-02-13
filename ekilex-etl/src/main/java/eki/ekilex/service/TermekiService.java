@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -19,7 +20,7 @@ import java.util.Map;
 
 import static eki.ekilex.constant.SystemConstant.CSV_SEPARATOR;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 @Service
 @ConditionalOnBean(name = "dataSourceTermeki")
@@ -49,7 +50,7 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectComments;
 
-	private List<Integer> termbaseIds;
+	private Map<Integer, String> termbaseIds;
 
 	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
@@ -63,8 +64,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectSources = getContent(SQL_SELECT_SOURCES);
 		sqlSelectComments = getContent(SQL_SELECT_COMMENTS);
 		termbaseIds = readFileLines(TERMBASE_IDS).stream()
-				.map(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]))
-				.collect(toList());
+				.collect(toMap(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]), l -> StringUtils.split(l, CSV_SEPARATOR)[1]));
 	}
 
 	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
@@ -113,8 +113,14 @@ public class TermekiService implements InitializingBean {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("lang", language);
-		params.put("termbaseIds", termbaseIds);
-		return queryList(sqlSelectDomains, params);
+		params.put("termbaseIds", termbaseIds.keySet());
+		List<Map<String, Object>> domains = queryList(sqlSelectDomains, params);
+		domains.forEach(d -> d.put("termbase_code", termbaseIds.get(d.get("termbase_id"))));
+		return domains;
+	}
+
+	public Collection<String> termbaseCodes() {
+		return termbaseIds.values();
 	}
 
 	private Map<String, Object> constructParameters(Integer baseId) {

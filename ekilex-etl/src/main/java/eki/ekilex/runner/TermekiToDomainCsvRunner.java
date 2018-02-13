@@ -46,7 +46,7 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 	}
 
 	private List<ClassifierMapping> removeTermekiClassifiers(List<ClassifierMapping> existingClassifiers) {
-		return existingClassifiers.stream().filter(c -> !"termeki".equals(c.getEkiOrigin())).collect(toList());
+		return existingClassifiers.stream().filter(c -> !termekiService.termbaseCodes().contains(c.getEkiOrigin())).collect(toList());
 	}
 
 	private List<ClassifierMapping> loadTermekiClassifiers() {
@@ -77,7 +77,7 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 
 	private ClassifierMapping createClassifierMapping(Map<Object, Object> domainCodes, Map<String, Object> domain, String language) {
 		ClassifierMapping classifierMapping = new ClassifierMapping();
-		classifierMapping.setEkiOrigin("termeki");
+		classifierMapping.setEkiOrigin((String) domain.get("termbase_code"));
 		classifierMapping.setEkiCode((String) domain.get("code"));
 		classifierMapping.setEkiValue((String) domain.get("code"));
 		classifierMapping.setEkiValueLang(language);
