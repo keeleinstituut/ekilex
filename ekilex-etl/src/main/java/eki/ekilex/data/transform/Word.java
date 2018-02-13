@@ -33,10 +33,11 @@ public class Word extends AbstractDataObject {
 	public Word() {
 	}
 
-	public Word(String value, String lang, int homonymNr, String guid) {
+	public Word(String value, String lang, int homonymNr, String morphCode, String guid) {
 		this.value = value;
 		this.lang = lang;
 		this.homonymNr = homonymNr;
+		this.morphCode = morphCode;
 		this.guid = guid;
 	}
 

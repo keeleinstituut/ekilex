@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,17 +56,25 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String nextWordExp = "x:msj";
 	private final String collocUsageExp = "x:cng/x:cn[not(@x:as='ab')]";
 
+	private final String defaultWordMorphCode = "??";
+
 	@Autowired
 	private MabService mabService;
 
 	private ReportComposer reportComposer;
 
-	private Map<String, String> posCodes;
+	private Map<String, String> posConversionMap;
+
+	private Map<String, String> morphConversionMap;
 
 	@Override
 	void initialise() throws Exception {
 
-		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
+		posConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
+		morphConversionMap = new HashMap<>();
+		morphConversionMap.put("SgN", "SgN");
+		morphConversionMap.put("Sup", "Sup");
+		morphConversionMap.put("#", "ID");
 	}
 
 	@Transactional
@@ -96,12 +105,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		Element headerNode, contentNode, guidNode, wordNode, wordPosNode;
 		List<Element> wordGroupNodes, meaningBlockNodes, collocPosGroupNodes, relationGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes, collocUsageNodes;
-		String guid, word, wordPosCode, collocPosCode, convertedPosCode, collocUsage;
+		String guid, word, collocPosCode, convertedPosCode, collocUsage;
 		List<String> newWords;
 		List<Paradigm> paradigms;
 		List<Long> collocationIds;
-		Long lexemeId;
-		StringBuffer logBuf;
+		WordLexemeMeaning wordLexemeMeaning;
 
 		Count ignoredArticleCount = new Count();
 		Count illegalPosCount = new Count();
@@ -132,51 +140,30 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordNode.getTextTrim();
 				wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
-				wordPosCode = null;
+				paradigms = null;
 				if (wordLexemeMeaningIdMap.containsKey(word)) {
-					//log duplicate?
-					//REPORT_ILLEGAL_DATA
-					continue;
-				}
-				boolean paradigmsExist = mabService.paradigmsExist(word);
-				if (paradigmsExist) {
-					boolean isSingleHomonym = mabService.isSingleHomonym(word);
-					if (isSingleHomonym) {
-						paradigms = mabService.getWordParadigms(word);
-						WordLexemeMeaning wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, guid, paradigms, dataset);
-						wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
-						newWords.add(word);
-						if (wordPosNode != null) {
-							wordPosCode = wordPosNode.getTextTrim();
-							convertedPosCode = posCodes.get(wordPosCode);
-							lexemeId = wordLexemeMeaning.getLexemeId();
-							saveLexemePos(lexemeId, convertedPosCode);
+					newWords.add(word);
+				} else {
+					boolean paradigmsExist = mabService.paradigmsExist(word);
+					if (paradigmsExist) {
+						boolean isSingleHomonym = mabService.isSingleHomonym(word);
+						if (isSingleHomonym) {
+							paradigms = mabService.getWordParadigms(word);
+							wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, defaultWordMorphCode, guid, paradigms, dataset);
+							extractAndSaveLexemePos(wordPosNode, wordLexemeMeaning);
+							wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
+							newWords.add(word);
+						} else {
+							appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM, "märksõnale", "-", word, "vastab mitu homonüümi");
+							continue;
 						}
 					} else {
-						if (doReports) {
-							logBuf = new StringBuffer();
-							logBuf.append("märksõnale");
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append(word);
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append("vastab mitu homonüümi");
-							String logRow = logBuf.toString();
-							reportComposer.append(REPORT_AMBIGUOUS_HOMONYM, logRow);
-						}
-						continue;
+						appendToReport(doReports, REPORT_MISSING_IN_MAB, "märksõna", "-", word, "puudub MAB-st");
+						wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, defaultWordMorphCode, guid, paradigms, dataset);
+						extractAndSaveLexemePos(wordPosNode, wordLexemeMeaning);
+						wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
+						newWords.add(word);
 					}
-				} else {
-					if (doReports) {
-						logBuf = new StringBuffer();
-						logBuf.append("märksõna");
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(word);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("puudub MAB-st");
-						String logRow = logBuf.toString();
-						reportComposer.append(REPORT_MISSING_IN_MAB, logRow);
-					}
-					continue;
 				}
 			}
 			if (CollectionUtils.isEmpty(newWords)) {
@@ -193,7 +180,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				for (Element colPosGroupNode : collocPosGroupNodes) {
 
 					collocPosCode = colPosGroupNode.attributeValue(collocPosAttr);
-					convertedPosCode = posCodes.get(collocPosCode);
+					convertedPosCode = posConversionMap.get(collocPosCode);
 					if (StringUtils.isBlank(convertedPosCode)) {
 						illegalPosCount.increment();
 					}
@@ -258,9 +245,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			boolean doReports) throws Exception {
 
 		List<Long> collocationIds = new ArrayList<>();
-		List<SingleWordForm> collocWords = extractAndFindWord(null, collocWordNodes, "kollokaat", doReports);
-		List<SingleWordForm> prevWords = extractAndFindWord(newWords, prevWordNodes, "eelsõna", doReports);
-		List<SingleWordForm> nextWords = extractAndFindWord(newWords, nextWordNodes, "järelsõna", doReports);
+		List<CollocElement> collocWords = extractAndFindWord(null, collocWordNodes, "kollokaat", doReports);
+		List<CollocElement> prevWords = extractAndFindWord(newWords, prevWordNodes, "eelsõna", doReports);
+		List<CollocElement> nextWords = extractAndFindWord(newWords, nextWordNodes, "järelsõna", doReports);
 
 		if (CollectionUtils.isEmpty(collocWords)) {
 			//log missing colloc?
@@ -276,38 +263,51 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 		List<Paradigm> paradigms;
 
-		for (SingleWordForm collocWordObj : collocWords) {
+		for (CollocElement collocWordObj : collocWords) {
 			String collocWord = collocWordObj.getWord();
 			String collocForm = collocWordObj.getForm();
+			String morphCode = collocWordObj.getMorphCode();
 			WordLexemeMeaning collocWordLexemeMeaning = wordLexemeMeaningIdMap.get(collocWord);
 			if (collocWordLexemeMeaning == null) {
 				paradigms = mabService.getWordParadigms(collocWord);
-				collocWordLexemeMeaning = saveWordLexemeMeaning(collocWord, dataLang, null, paradigms, dataset);
+				collocWordLexemeMeaning = saveWordLexemeMeaning(collocWord, dataLang, morphCode, null, paradigms, dataset);
 				wordLexemeMeaningIdMap.put(collocWord, collocWordLexemeMeaning);
 				if (StringUtils.isNotBlank(collocPosCode)) {
 					Long collocLexemeId = collocWordLexemeMeaning.getLexemeId();
-					saveLexemePos(collocLexemeId, collocPosCode);
+					createLexemePos(collocLexemeId, collocPosCode);
 				}
 			}
 			Long collocLexemeId = collocWordLexemeMeaning.getLexemeId();
 			if (CollectionUtils.isNotEmpty(prevWords)) {
-				for (SingleWordForm prevWordObj : prevWords) {
+				for (CollocElement prevWordObj : prevWords) {
 					String prevWord = prevWordObj.getWord();
 					String prevForm = prevWordObj.getForm();
+					String conjunct = prevWordObj.getConjunct();
 					WordLexemeMeaning prevWordLexemeMeaning = wordLexemeMeaningIdMap.get(prevWord);
 					Long prevLexemeId = prevWordLexemeMeaning.getLexemeId();
-					String collocation = prevForm + ' ' + collocForm;
+					String collocation;
+					if (StringUtils.isBlank(conjunct)) {
+						collocation = prevForm + ' ' + collocForm;
+					} else {
+						collocation = prevForm + ' ' + conjunct + ' ' + collocForm;
+					}
 					Long collocId = createCollocation(prevLexemeId, collocLexemeId, collocation);
 					collocationIds.add(collocId);
 					successfulCollocationMatchCount.increment();
 				}
 			} else if (CollectionUtils.isNotEmpty(nextWords)) {
-				for (SingleWordForm nextWordObj : nextWords) {
+				for (CollocElement nextWordObj : nextWords) {
 					String nextWord = nextWordObj.getWord();
 					String nextForm = nextWordObj.getForm();
+					String conjunct = nextWordObj.getConjunct();
 					WordLexemeMeaning nextWordLexemeMeaning = wordLexemeMeaningIdMap.get(nextWord);
 					Long nextLexemeId = nextWordLexemeMeaning.getLexemeId();
-					String collocation = collocForm + ' ' + nextForm;
+					String collocation;
+					if (StringUtils.isBlank(conjunct)) {
+						collocation = collocForm + ' ' + nextForm;
+					} else {
+						collocation = collocForm + ' ' + conjunct + ' ' + nextForm;
+					}
 					Long collocId = createCollocation(nextLexemeId, collocLexemeId, collocation);
 					collocationIds.add(collocId);
 					successfulCollocationMatchCount.increment();
@@ -317,16 +317,44 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocationIds;
 	}
 
-	private List<SingleWordForm> extractAndFindWord(List<String> newWords, List<Element> wordNodes, String source, boolean doReports) throws Exception {
+	private List<CollocElement> extractAndFindWord(List<String> newWords, List<Element> wordNodes, String source, boolean doReports) throws Exception {
 
-		List<SingleWordForm> singleWordForms = new ArrayList<>();
-		StringBuffer logBuf;
+		List<CollocElement> collocElements = new ArrayList<>();
 
 		for (Element wordNode : wordNodes) {
+
 			String form = wordNode.getTextTrim();
 			String word = null;
-			if (newWords != null) {
-				if (newWords.contains(form)) {
+			String morphCode = defaultWordMorphCode;
+			String conjunct = wordNode.attributeValue("jv");
+			String lemmaDataAttr = wordNode.attributeValue("lemposvk");
+			String lemmaDataLog;
+
+			if (StringUtils.isBlank(lemmaDataAttr)) {
+				lemmaDataLog = "-";
+				if (newWords == null) {
+					boolean isKnownForm = mabService.isKnownForm(form);
+					if (isKnownForm) {
+						boolean isSingleWordForm = mabService.isSingleWordForm(form);
+						if (isSingleWordForm) {
+							String wordCandidate = mabService.getSingleWordFormWord(form);
+							boolean isSingleHomonym = mabService.isSingleHomonym(wordCandidate);
+							if (isSingleHomonym) {
+								word = wordCandidate;
+							} else {
+								appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM, source, lemmaDataLog, wordCandidate, "vastab mitu homonüümi");
+								continue;
+							}
+						} else {
+							List<String> formWords = mabService.getFormWords(form);
+							appendToReport(doReports, REPORT_AMBIGUOUS_WORD_MATCH, source, lemmaDataLog, form, "vormile vastab mitu keelendit " + formWords);
+							continue;
+						}
+					} else {
+						appendToReport(doReports, REPORT_MISSING_IN_MAB, source + " vorm", lemmaDataLog, form, "puudub MAB-st");
+						continue;
+					}
+				} else if (newWords.contains(form)) {
 					word = form;
 				} else {
 					boolean isKnownForm = mabService.isKnownForm(form);
@@ -334,98 +362,67 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						List<String> formWords = mabService.getFormWords(form);
 						List<String> matchingWithWords = new ArrayList<>(CollectionUtils.intersection(newWords, formWords));
 						if (CollectionUtils.isEmpty(matchingWithWords)) {
-							if (doReports) {
-								logBuf = new StringBuffer();
-								logBuf.append(source);
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append(form);
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append("vormi järgi ei leidu artikli märksõna");
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append(newWords);
-								String logRow = logBuf.toString();
-								reportComposer.append(REPORT_COLLOC_PAIR_UNMATCH, logRow);
-							}
+							appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, source, lemmaDataLog, form, "vormi järgi ei leidu artikli märksõna", newWords.toString());
 							continue;
 						}
 						word = matchingWithWords.get(0);
+					} else if (newWords.size() == 1) {
+						word = newWords.get(0);
 					} else {
-						if (doReports) {
-							logBuf = new StringBuffer();
-							logBuf.append(source);
-							logBuf.append(" vorm");							
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append(form);
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append("puudub MAB-st");
-							String logRow = logBuf.toString();
-							reportComposer.append(REPORT_MISSING_IN_MAB, logRow);
-						}
+						appendToReport(doReports, REPORT_MISSING_IN_MAB, source + " vorm", lemmaDataLog, form, "puudub MAB-st");
 						continue;
 					}
 				}
 			} else {
-				boolean isKnownForm = mabService.isKnownForm(form);
-				if (isKnownForm) {
-					boolean isSingleWordForm = mabService.isSingleWordForm(form);
-					if (isSingleWordForm) {
-						String wordCandidate = mabService.getSingleWordFormWord(form);
-						boolean isSingleHomonym = mabService.isSingleHomonym(wordCandidate);
-						if (isSingleHomonym) {
-							word = wordCandidate;
-						} else {
-							if (doReports) {
-								logBuf = new StringBuffer();
-								logBuf.append(source);
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append(wordCandidate);
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append("vastab mitu homonüümi");
-								String logRow = logBuf.toString();
-								reportComposer.append(REPORT_AMBIGUOUS_HOMONYM, logRow);
-							}
-							continue;
-						}
-					} else {
-						if (doReports) {
-							List<String> formWords = mabService.getFormWords(form);
-							logBuf = new StringBuffer();
-							logBuf.append(source);
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append(form);
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append("vormile vastab mitu keelendit");
-							logBuf.append(formWords);
-							String logRow = logBuf.toString();
-							reportComposer.append(REPORT_AMBIGUOUS_WORD_MATCH, logRow);
-						}
+				lemmaDataLog = lemmaDataAttr;
+				boolean isMultipleCandidates = StringUtils.contains(lemmaDataAttr, '_');
+				if (isMultipleCandidates) {
+					String[] lemmaDataCandidates = StringUtils.split(lemmaDataAttr, '_');
+					List<String> wordCandidates = Arrays.stream(lemmaDataCandidates).map(lemmaDataCandidate -> {
+							String wordCandidate = StringUtils.split(lemmaDataCandidate, ':')[0];
+							wordCandidate = StringUtils.remove(wordCandidate, '+');
+							return wordCandidate;
+						}).collect(Collectors.toList());
+					appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM, source, lemmaDataLog, wordCandidates.toString(), "vastab mitu keelendit või homonüümi");
+					continue;
+				} else {
+					String[] lemmaDataParts = StringUtils.split(lemmaDataAttr, ':');
+					word = lemmaDataParts[0];
+					word = StringUtils.remove(word, '+');//deal with compound words later
+					morphCode = lemmaDataParts[2];
+					morphCode = morphConversionMap.get(morphCode);
+					if (StringUtils.isBlank(morphCode)) {
+						morphCode = defaultWordMorphCode;
+					}
+					if ((newWords != null) && !newWords.contains(word)) {
+						appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, source, lemmaDataLog, form, "soovitatud lemma ei ole artikli märksõna", newWords.toString());
 						continue;
 					}
-				} else {
-					if (doReports) {
-						logBuf = new StringBuffer();
-						logBuf.append(source);
-						logBuf.append(" vorm");	
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(form);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("puudub MAB-st");
-						String logRow = logBuf.toString();
-						reportComposer.append(REPORT_MISSING_IN_MAB, logRow);
+					boolean isKnownForm = mabService.isKnownForm(word);
+					if (!isKnownForm) {
+						appendToReport(doReports, REPORT_MISSING_IN_MAB, source + " sõna", lemmaDataLog, word, "puudub MAB-st");
 					}
-					continue;
 				}
 			}
 			if (word == null) {
 				continue;
 			}
-			SingleWordForm singleWordForm = new SingleWordForm(word, form);
-			singleWordForms.add(singleWordForm);
+			CollocElement collocElement = new CollocElement(word, form, morphCode, conjunct);
+			collocElements.add(collocElement);
 		}
-		return singleWordForms;
+		return collocElements;
 	}
 
-	private void saveLexemePos(Long lexemeId, String posCode) throws Exception {
+	private void extractAndSaveLexemePos(Element wordPosNode, WordLexemeMeaning wordLexemeMeaning) throws Exception {
+		if (wordPosNode != null) {
+			String wordPosCode = wordPosNode.getTextTrim();
+			String convertedPosCode = posConversionMap.get(wordPosCode);
+			Long lexemeId = wordLexemeMeaning.getLexemeId();
+			createLexemePos(lexemeId, convertedPosCode);
+		}
+	}
+
+	private void createLexemePos(Long lexemeId, String posCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
@@ -433,11 +430,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		basicDbService.create(LEXEME_POS, tableRowParamMap);
 	}
 
-	private WordLexemeMeaning saveWordLexemeMeaning(String word, String dataLang, String guid, List<Paradigm> paradigms, String dataset) throws Exception {
+	private WordLexemeMeaning saveWordLexemeMeaning(String word, String dataLang, String morphCode, String guid, List<Paradigm> paradigms, String dataset) throws Exception {
 
 		int homonymNr = getWordMaxHomonymNr(word, dataLang);
 		homonymNr++;
-		Word wordObj = new Word(word, dataLang, homonymNr, guid);
+		Word wordObj = new Word(word, dataLang, homonymNr, morphCode, guid);
 		Long wordId = saveWord(wordObj, paradigms, dataset, null);
 		Long meaningId = createMeaning();
 		Lexeme lexemeObj = new Lexeme();
@@ -468,15 +465,29 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	class SingleWordForm {
+	private void appendToReport(boolean doReports, String reportName, String ... reportCells) throws Exception {
+		if (!doReports) {
+			return;
+		}
+		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
+		reportComposer.append(reportName, logRow);
+	}
+
+	class CollocElement {
 
 		private String word;
 
 		private String form;
 
-		public SingleWordForm(String word, String form) {
+		private String morphCode;
+
+		private String conjunct;
+
+		public CollocElement(String word, String form, String morphCode, String conjunct) {
 			this.word = word;
 			this.form = form;
+			this.morphCode = morphCode;
+			this.conjunct = conjunct;
 		}
 
 		public String getWord() {
@@ -486,6 +497,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		public String getForm() {
 			return form;
 		}
+
+		public String getMorphCode() {
+			return morphCode;
+		}
+
+		public String getConjunct() {
+			return conjunct;
+		}
+
 	}
 
 	class WordLexemeMeaning {
@@ -525,6 +545,5 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		public void setMeaningId(Long meaningId) {
 			this.meaningId = meaningId;
 		}
-
 	}
 }
