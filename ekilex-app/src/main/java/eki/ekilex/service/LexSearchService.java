@@ -83,7 +83,8 @@ public class LexSearchService {
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> meaningRelations = lexSearchDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 			List<String> lexemeGrammars = lexSearchDbService.findLexemeGrammars(lexemeId).into(String.class);
-			List<Collocation> collocations = lexSearchDbService.findCollocations(lexemeId).into(Collocation.class);
+			//TODO it is all very unclear...
+			//List<Collocation> collocations = lexSearchDbService.findCollocations(lexemeId).into(Collocation.class);
 
 			lexeme.setLexemePos(lexemePos);
 			lexeme.setLexemeDerivs(lexemeDerivs);
@@ -98,7 +99,7 @@ public class LexSearchService {
 			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);
 			lexeme.setGrammars(lexemeGrammars);
-			lexeme.setCollocations(collocations);
+			//lexeme.setCollocations(collocations);
 			lexeme.setVocalForms(vocalForms);
 
 			boolean lexemeOrMeaningClassifiersExist =

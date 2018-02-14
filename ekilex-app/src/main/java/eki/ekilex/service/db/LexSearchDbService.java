@@ -455,8 +455,10 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
+	//TODO it is all very unclear...
 	public Result<Record5<Long,Long,Long,String,String[]>> findCollocations(Long lexemeId) {
 
+		/*
 		Lexeme cl2 = LEXEME.as("cl2");
 		Collocation col = COLLOCATION.as("col");
 		CollocationUsage colu = COLLOCATION_USAGE.as("colu");
@@ -477,5 +479,7 @@ public class LexSearchDbService implements SystemConstant {
 				.groupBy(col.ID, cl2.WORD_ID)
 				.orderBy(col.ID)
 				.fetch();
+				*/
+		return null;
 	}
 }

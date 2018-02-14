@@ -29,6 +29,16 @@ public class Sequences {
     public static final Sequence<Long> COLLOCATION_ID_SEQ = new SequenceImpl<Long>("collocation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.collocation_pos_group_id_seq</code>
+     */
+    public static final Sequence<Long> COLLOCATION_POS_GROUP_ID_SEQ = new SequenceImpl<Long>("collocation_pos_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.collocation_rel_group_id_seq</code>
+     */
+    public static final Sequence<Long> COLLOCATION_REL_GROUP_ID_SEQ = new SequenceImpl<Long>("collocation_rel_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.collocation_usage_id_seq</code>
      */
     public static final Sequence<Long> COLLOCATION_USAGE_ID_SEQ = new SequenceImpl<Long>("collocation_usage_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

@@ -49,7 +49,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String meaningBlockExp = "x:tp";
 	private final String collocPosGroupExp = "x:colp/x:cmg";
 	private final String collocPosAttr = "csl";
-	private final String relationGroupExp = "x:relg";
+	private final String collocRelGroupExp = "x:relg";
 	private final String collocGroupExp = "x:colg";
 	private final String collocWordExp = "x:col";
 	private final String prevWordExp = "x:mse";
@@ -103,10 +103,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap = new HashMap<>();
 
-		Element headerNode, contentNode, guidNode, wordNode, wordPosNode;
-		List<Element> wordGroupNodes, meaningBlockNodes, collocPosGroupNodes, relationGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes, collocUsageNodes;
-		String guid, word, collocPosCode, convertedPosCode, collocUsage;
-		List<String> newWords;
+		Element headerNode, contentNode, guidNode, wordNode, wordGroupNode, wordPosNode, collocRelGroupNameNode, collocRelGroupFreqNode, collocRelGroupScoreNode;
+		List<Element> meaningBlockNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes, collocUsageNodes;
+		String guid, word, collocPosCode, convertedPosCode, collocUsage, collocRelGroupName;
 		List<Paradigm> paradigms;
 		List<Long> collocationIds;
 		WordLexemeMeaning wordLexemeMeaning;
@@ -133,49 +132,39 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			guid = StringUtils.lowerCase(guid);
 
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
+			wordGroupNode = (Element) headerNode.selectSingleNode(wordGroupExp);
 
-			newWords = new ArrayList<>();
-			for (Element wordGroupNode : wordGroupNodes) {
-				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-				word = wordNode.getTextTrim();
-				wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
-				paradigms = null;
-				if (wordLexemeMeaningIdMap.containsKey(word)) {
-					newWords.add(word);
-				} else {
-					boolean paradigmsExist = mabService.paradigmsExist(word);
-					if (paradigmsExist) {
-						boolean isSingleHomonym = mabService.isSingleHomonym(word);
-						if (isSingleHomonym) {
-							paradigms = mabService.getWordParadigms(word);
-							wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, defaultWordMorphCode, guid, paradigms, dataset);
-							extractAndSaveLexemePos(wordPosNode, wordLexemeMeaning);
-							wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
-							newWords.add(word);
-						} else {
-							appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM, "märksõnale", "-", word, "vastab mitu homonüümi");
-							continue;
-						}
-					} else {
-						appendToReport(doReports, REPORT_MISSING_IN_MAB, "märksõna", "-", word, "puudub MAB-st");
+			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
+			word = wordNode.getTextTrim();
+			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
+			paradigms = null;
+			wordLexemeMeaning = wordLexemeMeaningIdMap.get(word);
+			if (wordLexemeMeaning == null) {
+				boolean paradigmsExist = mabService.paradigmsExist(word);
+				if (paradigmsExist) {
+					boolean isSingleHomonym = mabService.isSingleHomonym(word);
+					if (isSingleHomonym) {
+						paradigms = mabService.getWordParadigms(word);
 						wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, defaultWordMorphCode, guid, paradigms, dataset);
 						extractAndSaveLexemePos(wordPosNode, wordLexemeMeaning);
 						wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
-						newWords.add(word);
+					} else {
+						appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM, "märksõnale", "-", word, "vastab mitu homonüümi");
+						continue;
 					}
+				} else {
+					appendToReport(doReports, REPORT_MISSING_IN_MAB, "märksõna", "-", word, "puudub MAB-st");
+					wordLexemeMeaning = saveWordLexemeMeaning(word, dataLang, defaultWordMorphCode, guid, paradigms, dataset);
+					extractAndSaveLexemePos(wordPosNode, wordLexemeMeaning);
+					wordLexemeMeaningIdMap.put(word, wordLexemeMeaning);
 				}
-			}
-			if (CollectionUtils.isEmpty(newWords)) {
-				ignoredArticleCount.increment();
-				continue;
 			}
 
 			meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
 
 			for (Element meaningBlockNode : meaningBlockNodes) {
 
-				collocPosGroupNodes = meaningBlockNode.selectNodes(collocPosGroupExp);
+				collocPosGroupNodes = meaningBlockNode.selectNodes(collocPosGroupExp);//x:colp/x:cmg
 
 				for (Element colPosGroupNode : collocPosGroupNodes) {
 
@@ -184,12 +173,24 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					if (StringUtils.isBlank(convertedPosCode)) {
 						illegalPosCount.increment();
 					}
+					Long collocPosGroupId = createCollocPosGroup(wordLexemeMeaning.getLexemeId(), collocPosCode);
 
-					relationGroupNodes = colPosGroupNode.selectNodes(relationGroupExp);
+					collocRelGroupNodes = colPosGroupNode.selectNodes(collocRelGroupExp);//x:relg
 
-					for (Element relationGroupNode : relationGroupNodes) {
+					for (Element collocRelGroupNode : collocRelGroupNodes) {
 
-						collocGroupNodes = relationGroupNode.selectNodes(collocGroupExp);
+						collocRelGroupNameNode = (Element) collocRelGroupNode.selectSingleNode("x:reln");
+						collocRelGroupName = collocRelGroupNameNode.getTextTrim();
+
+						collocRelGroupFreqNode = (Element) collocRelGroupNode.selectSingleNode("x:rfr");
+						Float collocRelGroupFreq = Float.parseFloat(collocRelGroupFreqNode.getTextTrim());
+
+						collocRelGroupScoreNode = (Element) collocRelGroupNode.selectSingleNode("x:rsc");
+						Float collocRelGroupScore = Float.parseFloat(collocRelGroupScoreNode.getTextTrim());
+
+						Long collocRelGroupId = createCollocRelGroup(collocPosGroupId, collocRelGroupName, collocRelGroupFreq, collocRelGroupScore);
+
+						collocGroupNodes = collocRelGroupNode.selectNodes(collocGroupExp);//x:colg
 
 						for (Element collocGroupNode : collocGroupNodes) {
 
@@ -198,7 +199,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							nextWordNodes = collocGroupNode.selectNodes(nextWordExp);
 
 							collocationIds = handleAndSaveCollocations(
-									newWords, wordLexemeMeaningIdMap,
+									wordLexemeMeaning, wordLexemeMeaningIdMap,
 									collocWordNodes, prevWordNodes, nextWordNodes,
 									convertedPosCode, dataset, dataLang,
 									successfulCollocationMatchCount, doReports);
@@ -238,7 +239,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private List<Long> handleAndSaveCollocations(
-			List<String> newWords, Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap,
+			WordLexemeMeaning newWord, Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap,
 			List<Element> collocWordNodes, List<Element> prevWordNodes, List<Element> nextWordNodes,
 			String collocPosCode, String dataset, String dataLang,
 			Count successfulCollocationMatchCount,
@@ -246,8 +247,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		List<Long> collocationIds = new ArrayList<>();
 		List<CollocElement> collocWords = extractAndFindWord(null, collocWordNodes, "kollokaat", doReports);
-		List<CollocElement> prevWords = extractAndFindWord(newWords, prevWordNodes, "eelsõna", doReports);
-		List<CollocElement> nextWords = extractAndFindWord(newWords, nextWordNodes, "järelsõna", doReports);
+		List<CollocElement> prevWords = extractAndFindWord(newWord.getWord(), prevWordNodes, "eelsõna", doReports);
+		List<CollocElement> nextWords = extractAndFindWord(newWord.getWord(), nextWordNodes, "järelsõna", doReports);
 
 		if (CollectionUtils.isEmpty(collocWords)) {
 			//log missing colloc?
@@ -317,7 +318,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocationIds;
 	}
 
-	private List<CollocElement> extractAndFindWord(List<String> newWords, List<Element> wordNodes, String source, boolean doReports) throws Exception {
+	private List<CollocElement> extractAndFindWord(String newWord, List<Element> wordNodes, String source, boolean doReports) throws Exception {
 
 		List<CollocElement> collocElements = new ArrayList<>();
 
@@ -332,7 +333,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			if (StringUtils.isBlank(lemmaDataAttr)) {
 				lemmaDataLog = "-";
-				if (newWords == null) {
+				if (newWord == null) {
 					boolean isKnownForm = mabService.isKnownForm(form);
 					if (isKnownForm) {
 						boolean isSingleWordForm = mabService.isSingleWordForm(form);
@@ -354,23 +355,19 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						appendToReport(doReports, REPORT_MISSING_IN_MAB, source + " vorm", lemmaDataLog, form, "puudub MAB-st");
 						continue;
 					}
-				} else if (newWords.contains(form)) {
+				} else if (StringUtils.equals(newWord, form)) {
 					word = form;
 				} else {
 					boolean isKnownForm = mabService.isKnownForm(form);
 					if (isKnownForm) {
 						List<String> formWords = mabService.getFormWords(form);
-						List<String> matchingWithWords = new ArrayList<>(CollectionUtils.intersection(newWords, formWords));
-						if (CollectionUtils.isEmpty(matchingWithWords)) {
-							appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, source, lemmaDataLog, form, "vormi järgi ei leidu artikli märksõna", newWords.toString());
+						if (!formWords.contains(newWord)) {
+							appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, source, lemmaDataLog, form, "vormi järgi ei leidu artikli märksõna", newWord);
 							continue;
 						}
-						word = matchingWithWords.get(0);
-					} else if (newWords.size() == 1) {
-						word = newWords.get(0);
+						word = formWords.get(0);
 					} else {
-						appendToReport(doReports, REPORT_MISSING_IN_MAB, source + " vorm", lemmaDataLog, form, "puudub MAB-st");
-						continue;
+						word = newWord;
 					}
 				}
 			} else {
@@ -394,8 +391,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					if (StringUtils.isBlank(morphCode)) {
 						morphCode = defaultWordMorphCode;
 					}
-					if ((newWords != null) && !newWords.contains(word)) {
-						appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, source, lemmaDataLog, form, "soovitatud lemma ei ole artikli märksõna", newWords.toString());
+					if ((newWord != null) && !StringUtils.equals(newWord, word)) {
+						appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, source, lemmaDataLog, form, "soovitatud lemma ei ole artikli märksõna", newWord);
 						continue;
 					}
 					boolean isKnownForm = mabService.isKnownForm(word);
@@ -441,10 +438,31 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		lexemeObj.setWordId(wordId);
 		lexemeObj.setMeaningId(meaningId);
 		Long lexemeId = createLexeme(lexemeObj, dataset);
-		WordLexemeMeaning wordLexemeMeaning = new WordLexemeMeaning(wordId, lexemeId, meaningId);
+		WordLexemeMeaning wordLexemeMeaning = new WordLexemeMeaning(word, wordId, lexemeId, meaningId);
 		return wordLexemeMeaning;
 	}
 
+	private Long createCollocPosGroup(Long lexemeId, String name) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("name", name);
+		Long collocPosGroupId = basicDbService.create(COLLOCATION_POS_GROUP, tableRowParamMap);
+		return collocPosGroupId;
+	}
+
+	private Long createCollocRelGroup(Long collocPosGroupId, String name, Float frequency, Float score) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("collocation_pos_group_id", collocPosGroupId);
+		tableRowParamMap.put("name", name);
+		tableRowParamMap.put("frequency", frequency);
+		tableRowParamMap.put("score", score);
+		Long collocRelGroupId = basicDbService.create(COLLOCATION_REL_GROUP, tableRowParamMap);
+		return collocRelGroupId;
+	}
+
+	@Deprecated
 	private Long createCollocation(Long lexemeId1, Long lexemeId2, String collocation) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -510,16 +528,23 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	class WordLexemeMeaning {
 
+		private String word;
+
 		private Long wordId;
 
 		private Long lexemeId;
 
 		private Long meaningId;
 
-		public WordLexemeMeaning(Long wordId, Long lexemeId, Long meaningId) {
+		public WordLexemeMeaning(String word, Long wordId, Long lexemeId, Long meaningId) {
+			this.word = word;
 			this.wordId = wordId;
 			this.lexemeId = lexemeId;
 			this.meaningId = meaningId;
+		}
+
+		public String getWord() {
+			return word;
 		}
 
 		public Long getWordId() {

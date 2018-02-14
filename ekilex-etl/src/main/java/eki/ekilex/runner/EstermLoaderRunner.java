@@ -61,6 +61,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_DEFINITIONS_NOTES_MISMATCH = "definitions_notes_mismatch";
 
+	private static final String REPORT_MISSING_VALUE = "missing_value";
+
 	private static final String DEFAULT_TIMESTAMP_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
 	private static final String LTB_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";
@@ -163,7 +165,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			reportComposer = new ReportComposer("esterm load report",
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
-					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH);
+					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
+					REPORT_MISSING_VALUE);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -233,6 +236,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 					valueNode = (Element) termGroupNode.selectSingleNode(termExp);
 					term = valueNode.getTextTrim();
+					if (StringUtils.isBlank(term)) {
+						appendToReport(doReports, REPORT_MISSING_VALUE, concept, "term puudub");
+						continue;
+					}
 
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
@@ -282,19 +289,19 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 					for (Element sourceNode : valueNodes) {
 						valueStr = sourceNode.getTextTrim();
 						Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, valueStr, null);
-						if (sourceNode.hasMixedContent()) {
-							valueStr = handleRefLinks(sourceNode, ReferenceOwner.FREEFORM, freeformId);
-							updateFreeformText(freeformId, valueStr);
-						}
+						valueStr = handleRefLinks(sourceNode, ReferenceOwner.FREEFORM, freeformId);
+						updateFreeformText(freeformId, valueStr);
 					}
 
 					if (doReports) {
-						detectAndReportTermGrp(concept, term, homonymNr, lang, termGroupNode, dataErrorCount);
+						//TODO put it back later
+						//detectAndReportTermGrp(concept, term, homonymNr, lang, termGroupNode, dataErrorCount);
 					}
 				}
 
 				if (doReports) {
-					detectAndReportLanguageGrp(concept, langGroupNode, dataErrorCount);
+					//TODO put it back later
+					//detectAndReportLanguageGrp(concept, langGroupNode, dataErrorCount);
 				}
 			}
 
@@ -340,8 +347,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private void detectAndReportConceptGrp(String concept, Element conceptGroupNode, Count dataErrorCount) throws Exception {
 
-		StringBuffer logBuf = new StringBuffer();
-
 		Map<String, Object> tableRowParamMap;
 		Map<String, Object> tableRowValueMap;
 		List<Element> valueNodes;
@@ -354,13 +359,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			if (!meaningStateCodes.containsKey(valueStr) && !processStateCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("tundmatu staatus: ");
-				logBuf.append(valueStr);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);
+				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu staatus: " + valueStr);
 			}
 		}
 
@@ -369,13 +368,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = valueNode.getTextTrim();
 			if (!meaningTypeCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("tundmatu mõistetüüp: ");
-				logBuf.append(valueStr);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);
+				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu mõistetüüp: " + valueStr);
 			}
 		}
 
@@ -385,13 +378,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = domainNode.getTextTrim();
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("korduv valdkonnaviide: ");
-				logBuf.append(valueStr);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);
+				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "korduv valdkonnaviide: " + valueStr);
 				continue;
 			}
 			values.add(valueStr);
@@ -402,13 +389,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			boolean exists = ((Long) tableRowValueMap.get("cnt")) > 0;
 			if (!exists) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("tundmatu valdkonnaviide: ");
-				logBuf.append(valueStr);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);
+				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu valdkonnaviide: " + valueStr);
 			}
 		}
 
@@ -418,13 +399,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			valueStr = domainNode.getTextTrim();
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("korduv alamvaldkonnaviide: ");
-				logBuf.append(valueStr);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);
+				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "korduv alamvaldkonnaviide: " + valueStr);
 				continue;
 			}
 			values.add(valueStr);
@@ -435,13 +410,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			boolean exists = ((Long) tableRowValueMap.get("cnt")) > 0;
 			if (!exists) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("tundmatu alamvaldkonnaviide: ");
-				logBuf.append(valueStr);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);
+				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu alamvaldkonnaviide: " + valueStr);
 			}
 		}
 
@@ -463,23 +432,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			}
 			if (isTooManyCreates) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("sisestajaid ja sisestusaegu on liiga palju: ");
-				logBuf.append(values);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_CREATED_MODIFIED_MESS, logRow);
+				appendToReport(true, REPORT_CREATED_MODIFIED_MESS, concept, "sisestajaid ja sisestusaegu on liiga palju: " + values);
 			}
 			if (isIncompleteCreate) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("puudulik sisestaja ja sisestusaja komplekt: ");
-				logBuf.append(values);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_CREATED_MODIFIED_MESS, logRow);
+				appendToReport(true, REPORT_CREATED_MODIFIED_MESS, concept, "puudulik sisestaja ja sisestusaja komplekt: " + values);
 			}
 		}
 
@@ -492,12 +449,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 			List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_CODE_OR_NAME, tableRowParamMap);
 			if (CollectionUtils.isEmpty(results)) {
 				dataErrorCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(concept);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(sourceCodeOrName);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_MISSING_SOURCE_REFS, logRow);
+				appendToReport(true, REPORT_MISSING_SOURCE_REFS, concept, sourceCodeOrName);
 			}
 		}
 	}
@@ -607,7 +559,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 
 	private void composeDefinitionsAndNotesReports(String concept, String term, Element sourceNode) throws Exception {
 
-		StringBuffer logBuf;
 		String valueStr;
 		List<Element> definitionNodes = sourceNode.selectNodes(definitionExp);
 
@@ -637,25 +588,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 						if (containsWord) {
 							if (StringUtils.isNotBlank(recentDefinition) && !isMultipleDefinitions) {
 								isMultipleDefinitions = true;
-								logBuf = new StringBuffer();
-								logBuf.append(concept);
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append(term);
-								logBuf.append(CSV_SEPARATOR);
-								logBuf.append(definitionNode.asXML());
-								String logRow = logBuf.toString();
-								reportComposer.append(REPORT_MULTIPLE_DEFINITIONS, logRow);
+								appendToReport(true, REPORT_MULTIPLE_DEFINITIONS, concept, term, definitionNode.asXML());
 							}
 							recentDefinition = valueStr;
 						} else {
-							logBuf = new StringBuffer();
-							logBuf.append(concept);
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append(term);
-							logBuf.append(CSV_SEPARATOR);
-							logBuf.append(definitionNode.asXML());
-							String logRow = logBuf.toString();
-							reportComposer.append(REPORT_NOT_A_DEFINITION, logRow);
+							appendToReport(true, REPORT_NOT_A_DEFINITION, concept, term, definitionNode.asXML());
 						}
 					} else if (contentNode instanceof DefaultElement) {
 						elemContentNode = (DefaultElement) contentNode;
@@ -677,28 +614,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 				if (definitionSourceCodes.contains(sourceCodeOrName)) {
 					int sourceCodeOccCount = Collections.frequency(definitionSourceCodes, sourceCodeOrName);
 					if (sourceCodeOccCount > 1) {
-						logBuf = new StringBuffer();
-						logBuf.append(concept);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(term);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append(sourceCodeOrName);
-						logBuf.append(CSV_SEPARATOR);
-						logBuf.append("mitu selle märkuse allikaviitega seletust");
-						String logRow = logBuf.toString();
-						reportComposer.append(REPORT_DEFINITIONS_NOTES_MISMATCH, logRow);
+						appendToReport(true, REPORT_DEFINITIONS_NOTES_MISMATCH, concept, term, sourceCodeOrName, "mitu selle märkuse allikaviitega seletust");
 					}
 				} else {
-					logBuf = new StringBuffer();
-					logBuf.append(concept);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(term);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(sourceCodeOrName);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("pole selle märkuse allikaviitega seletust");
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_DEFINITIONS_NOTES_MISMATCH, logRow);
+					appendToReport(true, REPORT_DEFINITIONS_NOTES_MISMATCH, concept, term, sourceCodeOrName, "pole selle märkuse allikaviitega seletust");
 				}
 			}
 		}
@@ -1335,4 +1254,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner {
 		return sourceId;
 	}
 
+	private void appendToReport(boolean doReports, String reportName, String ... reportCells) throws Exception {
+		if (!doReports) {
+			return;
+		}
+		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
+		reportComposer.append(reportName, logRow);
+	}
 }

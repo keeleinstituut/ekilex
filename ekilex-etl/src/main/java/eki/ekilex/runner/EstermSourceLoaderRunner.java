@@ -111,6 +111,9 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 
 				termNode = (Element) termGroupNode.selectSingleNode(termValueExp);
 				valueStr = termNode.getTextTrim();
+				if (StringUtils.isBlank(valueStr)) {
+					continue;
+				}
 				if (sourceCodes.contains(valueStr)) {
 					sourceType = FreeformType.SOURCE_CODE;
 				} else if (isProbablySourceCode(valueStr)) {
@@ -286,6 +289,9 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 
 		for (Element sourceTermPropertyNode : sourceTermPropertyNodes) {
 			valueStr = sourceTermPropertyNode.getTextTrim();
+			if (StringUtils.isBlank(valueStr)) {
+				continue;
+			}
 			if (FreeformType.CREATED_ON.equals(freeformType)
 					|| FreeformType.MODIFIED_ON.equals(freeformType)) {
 				valueLong = defaultDateFormat.parse(valueStr).getTime();

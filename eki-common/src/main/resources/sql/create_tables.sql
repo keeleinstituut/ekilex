@@ -2,6 +2,8 @@ drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
 drop table if exists collocation_usage;
 drop table if exists collocation;
+drop table if exists collocation_rel_group;
+drop table if exists collocation_pos_group;
 drop table if exists lex_relation;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
@@ -660,21 +662,43 @@ create table lex_relation
 alter sequence lex_relation_id_seq restart with 10000;
 
 -- kollokatsioon
+create table collocation_pos_group
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  name text not null
+);
+alter sequence collocation_pos_group_id_seq restart with 10000;
+
+create table collocation_rel_group
+(
+  id bigserial primary key,
+  collocation_pos_group_id bigint references collocation_pos_group(id) on delete cascade not null,
+  name text not null,
+  frequency numeric(14, 4),
+  score numeric(14, 4)
+);
+alter sequence collocation_rel_group_id_seq restart with 10000;
+
 create table collocation
 (
   id bigserial primary key,
-  lexeme1_id bigint references lexeme(id) on delete cascade not null,
-  lexeme2_id bigint references lexeme(id) on delete cascade not null,
-  value text not null
-  --unique(lexeme1_id, lexeme2_id)--this may not be valid restriction
+  collocation_rel_group_id bigint references collocation_rel_group(id) on delete cascade not null,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  value text not null,
+  frequency numeric(14, 4),
+  score numeric(14, 4)
 );
+alter sequence collocation_id_seq restart with 10000;
 
+-- kollokatsiooni kasutusnäide
 create table collocation_usage
 (
   id bigserial primary key,
   collocation_id bigint references collocation(id) on delete cascade not null,
   value text not null
 );
+alter sequence collocation_usage_id_seq restart with 10000;
 
 create table freeform_ref_link
 (
@@ -697,6 +721,7 @@ alter sequence definition_ref_link_id_seq restart with 10000;
 --- indexes
 
 create index form_value_idx on form(value);
+create index form_value_lower_idx on form(lower(value));
 create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
@@ -726,6 +751,8 @@ create index definition_freeform_definition_id_idx on definition_freeform(defini
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
 create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
 create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
-create index collocation_lexeme1_id_idx on collocation(lexeme1_id);
-create index collocation_lexeme2_id_idx on collocation(lexeme2_id);
+create index collocation_pos_group_lexeme_id_idx on collocation_pos_group(lexeme_id);
+create index collocation_rel_group_collocation_pos_group_id_idx on collocation_rel_group(collocation_pos_group_id);
+create index collocation_collocation_rel_group_id_idx on collocation(collocation_rel_group_id);
+create index collocation_lexeme_id_idx on collocation(lexeme_id);
 create index collocation_usage_collocation_id on collocation_usage(collocation_id);

@@ -44,6 +44,8 @@ public interface TableName {
 	String LIFECYCLE_LOG = "lifecycle_log";
 	String WORD_RELATION = "word_relation";
 	String MEANING_RELATION = "meaning_relation";
+	String COLLOCATION_POS_GROUP = "collocation_pos_group";
+	String COLLOCATION_REL_GROUP = "collocation_rel_group";
 	String COLLOCATION = "collocation";
 	String COLLOCATION_USAGE = "collocation_usage";
 
