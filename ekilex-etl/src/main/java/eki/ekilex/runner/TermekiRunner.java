@@ -52,6 +52,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		posCodes.putAll(loadClassifierMappingsFor(TERMEKI_CLASSIFIER_WORD_CLASS));
 	}
 
+	@Transactional
 	public void execute(Integer baseId, String dataset) throws Exception {
 
 		if (!hasTermDatabaseAndIsKnownDataset(baseId, dataset)) {
@@ -70,6 +71,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> comments = termekiService.getComments(baseId);
 		logger.info("Found {} comments.", comments.size());
 		doImport(terms, definitions, sourceMapping, comments, dataset);
+		updateDataset(baseId, dataset);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done in {} ms", (t2 - t1));
@@ -136,7 +138,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		return basicDbService.create(SOURCE, params);
 	}
 
-	@Transactional
+	private void updateDataset(Integer baseId, String dataset) throws Exception {
+
+		Map<String, Object> termbase = termekiService.getTermbase(baseId);
+		Map<String, Object> params = new HashMap<>();
+		params.put("code", dataset);
+		Map<String, Object> values = new HashMap<>();
+		values.put("description", termbase.get("description"));
+		values.put("is_public", termbase.get("is_public"));
+		basicDbService.update(DATASET, params, values);
+	}
+
 	void doImport(
 			List<Map<String, Object>> terms,
 			List<Map<String, Object>> definitions,
