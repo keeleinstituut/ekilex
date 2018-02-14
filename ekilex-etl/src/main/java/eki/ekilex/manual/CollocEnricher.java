@@ -6,18 +6,18 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.runner.CollocateLoaderRunner;
+import eki.ekilex.runner.CollocEnricherRunner;
 
-public class CollocateLoader {
+public class CollocEnricher {
 
-	private static Logger logger = LoggerFactory.getLogger(CollocateLoader.class);
+	private static Logger logger = LoggerFactory.getLogger(CollocEnricher.class);
 
 	public static void main(String[] args) {
 
 		ConfigurableApplicationContext applicationContext = null;
 
 		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
-		CollocateLoaderRunner runner = applicationContext.getBean(CollocateLoaderRunner.class);
+		CollocEnricherRunner runner = applicationContext.getBean(CollocEnricherRunner.class);
 
 		try {
 			applicationContext.registerShutdownHook();

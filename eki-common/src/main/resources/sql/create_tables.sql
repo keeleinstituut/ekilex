@@ -398,7 +398,9 @@ alter sequence lifecycle_log_id_seq restart with 10000;
 create table dataset
 (
   code varchar(10) primary key,
-  name text not null
+  name text not null,
+  description text,
+  is_public boolean default true
 );
 
 -- vabavorm
@@ -449,7 +451,8 @@ create table word
   lang char(3) references lang(code) null,
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
-  display_morph_code varchar(100) references display_morph(code) null
+  display_morph_code varchar(100) references display_morph(code) null,
+  gender_code varchar(100) references gender(code) null
 );
 alter sequence word_id_seq restart with 10000;
 
@@ -664,8 +667,8 @@ create table collocation
   id bigserial primary key,
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
-  value text not null,
-  unique(lexeme1_id, lexeme2_id)--this may not be valid restriction
+  value text not null
+  --unique(lexeme1_id, lexeme2_id)--this may not be valid restriction
 );
 
 create table collocation_usage

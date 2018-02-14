@@ -28,7 +28,17 @@ public class Word extends AbstractDataObject {
 
 	private String guid;
 
+	private String genderCode;
+
 	public Word() {
+	}
+
+	public Word(String value, String lang, int homonymNr, String morphCode, String guid) {
+		this.value = value;
+		this.lang = lang;
+		this.homonymNr = homonymNr;
+		this.morphCode = morphCode;
+		this.guid = guid;
 	}
 
 	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode, String guid) {
@@ -131,4 +141,11 @@ public class Word extends AbstractDataObject {
 		this.guid = guid;
 	}
 
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
+	}
 }

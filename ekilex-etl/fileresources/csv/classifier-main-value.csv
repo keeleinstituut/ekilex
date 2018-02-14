@@ -66,6 +66,14 @@ display_morph	adess	adessiiv, alalütlev	eng	descrip
 display_morph	nom	nimetav, nominatiiv	est	descrip
 display_morph	nom	nominative	eng	descrip
 form_rel_type	mvt	viitemärksõna	est	full
+gender	f	feminine	eng	descrip
+gender	f	naissugu	est	descrip
+gender	n	neuter	eng	descrip
+gender	n	kesksugu	est	descrip
+gender	o	other	eng	descrip
+gender	o	muu	est	descrip
+gender	m	masculine	eng	descrip
+gender	m	meessugu	est	descrip
 lex_rel_type	comp	liitsõna	est	full
 lex_rel_type	head	põhisõna	est	full
 lex_rel_type	vor	vormel	est	full

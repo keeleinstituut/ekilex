@@ -1410,3 +1410,23 @@ xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-
 yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd
 yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka
 yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB
+termeki_pronunciation	-	ns	-	et	pos	s
+termeki_pronunciation	-	om	-	et	pos	adj
+termeki_pronunciation	-	os	-	et	pos	adj
+termeki_pronunciation	-	ns, ts	-	et	pos	s
+termeki_pronunciation	-	ts	-	et	pos	v
+termeki_pronunciation	-	nim	-	et	pos	s
+termeki_pronunciation	-	ns, om	-	et	pos	s
+termeki_pronunciation	-	ms	-	et	pos	adv
+termeki_pronunciation	-	ns/ts	-	et	pos	s
+termeki_pronunciation	-	ts/ns	-	et	pos	s
+termeki_word_class	-	1	-	et	pos	s
+termeki_word_class	-	2	-	et	pos	v
+termeki_word_class	-	3	-	et	pos	adv
+termeki_word_class	-	4	-	et	pos	pron
+termeki_word_class	-	5	-	et	pos	adj
+termeki_word_class	-	6	-	et	pos	adp
+termeki_word_class	-	7	-	et	pos	konj
+termeki_word_class	-	8	-	et	pos	s
+termeki_word_class	-	9	-	et	pos	interj
+termeki_word_class	-	10	-	et	pos	pron

@@ -26,9 +26,9 @@ import eki.common.data.Count;
 import eki.ekilex.service.ReportComposer;
 
 @Component
-public class CollocateLoaderRunner extends AbstractLoaderRunner {
+public class CollocEnricherRunner extends AbstractLoaderRunner {
 
-	private static Logger logger = LoggerFactory.getLogger(CollocateLoaderRunner.class);
+	private static Logger logger = LoggerFactory.getLogger(CollocEnricherRunner.class);
 
 	private static final String SQL_SELECT_LEXEME_BY_DATASET_AND_LANG = "sql/select_lexeme_by_dataset_and_lang.sql";
 
@@ -94,7 +94,7 @@ public class CollocateLoaderRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 
 		if (doReports) {
-			reportComposer = new ReportComposer("kol load report",
+			reportComposer = new ReportComposer("kol enricher report",
 					REPORT_ILLEGAL_DATA, REPORT_MISSING_WORD, REPORT_AMBIGUOUS_MEANING_MATCH, REPORT_AMBIGUOUS_WORD_MATCH);
 		}
 

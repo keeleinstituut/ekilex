@@ -525,7 +525,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 								meaningFormulas.stream(),
 								meaningLatinTerms.stream()
 						).flatMap(i -> i).collect(toList());
-				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords);
+				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
 				if (meaningData == null) {
 					Meaning meaning = new Meaning();
 					meaningId = createMeaning(meaning);
@@ -1090,12 +1090,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return word;
 	}
 
-	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) {
+	private List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) throws Exception {
 
 		final String morphGroupExp = "s:mfp/s:mtg";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.paradigmsExist(word.value)) {
+		if (mabService.isMabLoaded() && mabService.paradigmsExist(word.value)) {
 			Element morphGroupNode = (Element) wordGroupNode.selectSingleNode(morphGroupExp);
 			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode);
 			if (!paradigmsFromMab.isEmpty()) {
@@ -1230,15 +1230,22 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, List<LexemeToWordData> connectedWords) {
+	private WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, List<LexemeToWordData> connectedWords,
+			List<String> definitions) {
 
 		List<String> connectedWordValues = connectedWords.stream().map(w -> w.word).collect(toList());
-		Optional<WordToMeaningData> existingMeaning = context.meanings.stream()
+		List<WordToMeaningData> existingMeanings = context.meanings.stream()
 				.filter(cachedMeaning -> newWord.value.equals(cachedMeaning.word) &&
 						newWord.homonymNr == cachedMeaning.homonymNr &&
 						level1 == cachedMeaning.lexemeLevel1 &&
 						connectedWordValues.contains(cachedMeaning.meaningWord))
-				.findFirst();
+				.collect(toList());
+		Optional<WordToMeaningData> existingMeaning;
+		if (existingMeanings.size() == 1) {
+			return existingMeanings.get(0);
+		} else {
+			existingMeaning = existingMeanings.stream().filter(meaning -> meaning.meaningDefinitions.containsAll(definitions)).findFirst();
+		}
 		if (!existingMeaning.isPresent() && !connectedWords.isEmpty()) {
 			LexemeToWordData connectedWord = connectedWords.get(0);
 			existingMeaning = context.meanings.stream()
@@ -1299,7 +1306,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) throws Exception {
 
 		final String formsNodeExp = "s:mv";
 		final String formsNodeExp2 = "s:hev";

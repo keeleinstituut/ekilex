@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -35,12 +36,17 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 
 		List<ClassifierMapping> sourceClassifiers = loadTermekiClassifiers();
 		List<ClassifierMapping> existingClassifiers = loadExistingDomainClassifierMappings();
+		existingClassifiers = removeTermekiClassifiers(existingClassifiers);
 		List<ClassifierMapping> targetClassifiers = merge(sourceClassifiers, existingClassifiers);
 		targetClassifiers.sort(Comparator.comparing(ClassifierMapping::getEkiOrigin).thenComparing(ClassifierMapping::getOrder));
 
 		writeDomainClassifierCsvFile(targetClassifiers);
 
 		logger.debug("Done. Recompiled {} rows", targetClassifiers.size());
+	}
+
+	private List<ClassifierMapping> removeTermekiClassifiers(List<ClassifierMapping> existingClassifiers) {
+		return existingClassifiers.stream().filter(c -> !termekiService.termbaseCodes().contains(c.getEkiOrigin())).collect(toList());
 	}
 
 	private List<ClassifierMapping> loadTermekiClassifiers() {
@@ -71,7 +77,7 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 
 	private ClassifierMapping createClassifierMapping(Map<Object, Object> domainCodes, Map<String, Object> domain, String language) {
 		ClassifierMapping classifierMapping = new ClassifierMapping();
-		classifierMapping.setEkiOrigin("termeki");
+		classifierMapping.setEkiOrigin((String) domain.get("termbase_code"));
 		classifierMapping.setEkiCode((String) domain.get("code"));
 		classifierMapping.setEkiValue((String) domain.get("code"));
 		classifierMapping.setEkiValueLang(language);

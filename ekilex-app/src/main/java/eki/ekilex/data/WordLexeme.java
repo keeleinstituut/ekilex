@@ -61,6 +61,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "meaning_state_code")
 	private String meaningStateCode;
 
+	@Column(name = "gender_code")
+	private String genderCode;
+
 	private List<Classifier> lexemePos;
 
 	private List<Classifier> lexemeDerivs;
@@ -86,6 +89,8 @@ public class WordLexeme extends AbstractDataObject {
 	private List<Relation> meaningRelations;
 
 	private List<String> grammars;
+
+	private List<Collocation> collocations;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -336,6 +341,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.grammars = grammars;
 	}
 
+	public List<Collocation> getCollocations() {
+		return collocations;
+	}
+
+	public void setCollocations(List<Collocation> collocations) {
+		this.collocations = collocations;
+	}
+
 	public boolean isLexemeOrMeaningClassifiersExist() {
 		return lexemeOrMeaningClassifiersExist;
 	}
@@ -344,8 +357,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
 
-	public boolean isFreeformsExist() {
-		return (lexemeFreeforms != null && lexemeFreeforms.size() > 0) || (meaningFreeforms != null && meaningFreeforms.size() > 0);
+	public String getGenderCode() {
+		return genderCode;
 	}
 
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
+	}
 }

@@ -1387,7 +1387,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return basicWords;
 	}
 
-	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) {
+	private List<Paradigm> fetchParadigmsFromMab(String wordValue, Element node) throws Exception {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
 
@@ -1473,7 +1473,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.paradigmsExist(word.value)) {
+		if (mabService.isMabLoaded() && mabService.paradigmsExist(word.value)) {
 			paradigms.addAll(fetchParadigmsFromMab(word.value, wordGroupNode));
 		}
 		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);

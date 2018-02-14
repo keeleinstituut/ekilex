@@ -1,5 +1,7 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.COLLOCATION;
+import static eki.ekilex.data.db.Tables.COLLOCATION_USAGE;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
@@ -25,7 +27,6 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PERSON;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
-import static eki.ekilex.data.db.Tables.USAGE_AUTHOR_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
@@ -34,13 +35,11 @@ import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import java.sql.Timestamp;
 import java.util.List;
 
-import eki.ekilex.data.db.tables.FreeformRefLink;
-import eki.ekilex.data.db.tables.Person;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record15;
-import org.jooq.Record16;
+import org.jooq.Record17;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -55,10 +54,14 @@ import org.springframework.stereotype.Service;
 
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformRefLink;
+import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.UsageAuthorTypeLabel;
+import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 
 @Service
@@ -211,7 +214,7 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record16<String[],String[],String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
+	public Result<Record17<String[],String[],String,Long,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
 			Long wordId, List<String> selectedDatasets) {
 
 		return 
@@ -222,6 +225,7 @@ public class LexSearchDbService implements SystemConstant {
 						WORD.LANG.as("word_lang"),
 						WORD.ID.as("word_id"),
 						WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+						WORD.GENDER_CODE,
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.MEANING_ID,
 						LEXEME.DATASET_CODE.as("dataset"),
@@ -448,6 +452,30 @@ public class LexSearchDbService implements SystemConstant {
 						.and(FORM_RELATION.FORM2_ID.eq(f2.ID))
 						)
 				.orderBy(PARADIGM.ID, FORM_RELATION.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record5<Long,Long,Long,String,String[]>> findCollocations(Long lexemeId) {
+
+		Lexeme cl2 = LEXEME.as("cl2");
+		Collocation col = COLLOCATION.as("col");
+		CollocationUsage colu = COLLOCATION_USAGE.as("colu");
+
+		return create
+				.select(
+						col.ID.as("colloc_id"),
+						col.LEXEME2_ID.as("colloc_lexeme_id"),
+						cl2.WORD_ID.as("colloc_word_id"),
+						col.VALUE.as("collocation"),
+						DSL.arrayAgg(colu.VALUE).as("colloc_usages")
+						)
+				.from(
+						col.innerJoin(cl2).on(cl2.ID.eq(col.LEXEME2_ID))
+						.leftOuterJoin(colu).on(colu.COLLOCATION_ID.eq(col.ID))
+						)
+				.where(col.LEXEME1_ID.eq(lexemeId))
+				.groupBy(col.ID, cl2.WORD_ID)
+				.orderBy(col.ID)
 				.fetch();
 	}
 }
