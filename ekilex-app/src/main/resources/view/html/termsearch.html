@@ -208,6 +208,14 @@
                   </span>
                 </div>
               </div>
+              <div th:if="${not #lists.isEmpty(lexeme.sources)}">
+                <hr />
+                <span class="lbl">Allikaviited</span>
+                <th:block th:each="source, sourceIter : ${lexeme.sources}">
+                  <span th:utext="${markdown.toHtml(source)}"></span>
+                  <span th:unless="${sourceIter.last}">;&nbsp;</span>
+                </th:block>
+              </div>
               <div th:if="${not #lists.isEmpty(lexeme.governments)}" style="margin-top: -0.5em;">
                 <hr />
                 <table>

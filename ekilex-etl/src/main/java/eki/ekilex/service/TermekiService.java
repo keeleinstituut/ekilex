@@ -75,14 +75,13 @@ public class TermekiService implements InitializingBean {
 
 	public boolean hasTermDatabase(Integer baseId) {
 
-		Map<String, Object> params = constructParameters(baseId);
-		List<Map<String, Object>> result = queryList("select * from termeki_termbases where termbase_id=:baseId", params);
-		if (!result.isEmpty()) {
-			logger.debug("Connection success, termeki base {} : \"{}\".", baseId, result.get(0).get("termbase_name"));
+		Map<String, Object> termbase = getTermbase(baseId);
+		if (termbase != null) {
+			logger.debug("Connection success, termeki base {} : \"{}\".", baseId, termbase.get("termbase_name"));
 		} else {
 			logger.info("No termeki base with id found", baseId);
 		}
-		return !result.isEmpty();
+		return termbase != null;
 	}
 
 	public List<Map<String, Object>> getTerms(Integer baseId) {
@@ -121,6 +120,12 @@ public class TermekiService implements InitializingBean {
 
 	public Collection<String> termbaseCodes() {
 		return termbaseIds.values();
+	}
+
+	public Map<String, Object> getTermbase(Integer baseId) {
+		Map<String, Object> params = constructParameters(baseId);
+		List<Map<String, Object>> result = queryList("select * from termeki_termbases where termbase_id=:baseId", params);
+		return result.isEmpty() ? null : result.get(0);
 	}
 
 	private Map<String, Object> constructParameters(Integer baseId) {

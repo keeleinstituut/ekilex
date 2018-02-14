@@ -68,6 +68,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private boolean classifiersExist;
 
+	private List<String> sources;
+
 	public String getWord() {
 		return word;
 	}
@@ -242,5 +244,13 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setGenderCode(String genderCode) {
 		this.genderCode = genderCode;
+	}
+
+	public List<String> getSources() {
+		return sources;
+	}
+
+	public void setSources(List<String> sources) {
+		this.sources = sources;
 	}
 }
