@@ -1,11 +1,14 @@
 package eki.ekilex.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.Relation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -114,6 +117,7 @@ public class TermSearchService {
 					lexeme.setGovernments(governments);
 					lexeme.setGrammars(lexemeGrammars);
 					lexeme.setClassifiersExist(classifiersExist);
+					lexeme.setSources(extractSources(lexemeFreeforms));
 					lexemes.add(lexeme);
 				}
 			}
@@ -123,6 +127,17 @@ public class TermSearchService {
 		termDetails.setMeanings(meanings);
 
 		return termDetails;
+	}
+
+	private List<String> extractSources(List<FreeForm> lexemeFreeforms) {
+		List<String> sources = Collections.emptyList();
+		if (lexemeFreeforms != null) {
+			sources = lexemeFreeforms.stream()
+					.filter(f -> f.getType().equals(FreeformType.SOURCE))
+					.map(FreeForm::getValueText)
+					.collect(Collectors.toList());
+		}
+		return sources;
 	}
 
 	private String composeLevels(Lexeme lexeme) {
