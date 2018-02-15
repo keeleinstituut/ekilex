@@ -31,6 +31,9 @@
     </div>
 
     <div class="mt-4 float-left" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 15em); width: 15%; overflow-y: auto;">
+      <div>
+        <a href="javascript:void(0);" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
+      </div>
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100">
@@ -52,9 +55,6 @@
           </td>
         </tr>
       </table>
-      <div class="pb-2">
-        <a href="javascript:void(0);" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
-      </div>
     </div>
     <div id="details_div"></div>
   </div>
