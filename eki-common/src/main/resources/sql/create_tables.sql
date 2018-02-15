@@ -550,6 +550,7 @@ create table meaning_domain
   meaning_id bigint references meaning(id) on delete cascade not null,
   domain_code varchar(100) not null,
   domain_origin varchar(100) not null,
+  order_by bigserial,
   foreign key (domain_code, domain_origin) references domain (code, origin),
   unique(meaning_id, domain_code, domain_origin)
 );
@@ -618,6 +619,7 @@ create table lexeme_register
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   register_code varchar(100) references register(code) not null,
+  order_by bigserial,
   unique(lexeme_id, register_code)
 );
 alter sequence lexeme_register_id_seq restart with 10000;
@@ -628,6 +630,7 @@ create table lexeme_pos
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   pos_code varchar(100) references pos(code) not null,
   process_state_code varchar(100) references process_state(code) null,
+  order_by bigserial,
   unique(lexeme_id, pos_code)
 );
 alter sequence lexeme_pos_id_seq restart with 10000;
@@ -707,7 +710,8 @@ create table freeform_ref_link
   id bigserial primary key,
   freeform_id bigint references freeform(id) on delete cascade not null,
   ref_type varchar(100) not null,
-  ref_id bigint null
+  ref_id bigint null,
+  order_by bigserial
 );
 alter sequence freeform_ref_link_id_seq restart with 10000;
 
@@ -716,7 +720,8 @@ create table definition_ref_link
   id bigserial primary key,
   definition_id bigint references definition(id) on delete cascade not null,
   ref_type varchar(100) not null,
-  ref_id bigint null
+  ref_id bigint null,
+  order_by bigserial
 );
 alter sequence definition_ref_link_id_seq restart with 10000;
 
