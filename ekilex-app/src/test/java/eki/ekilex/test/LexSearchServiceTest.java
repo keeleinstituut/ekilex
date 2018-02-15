@@ -67,7 +67,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 
@@ -83,7 +83,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 6, words.size());
 
@@ -99,7 +99,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 7, words.size());
 
@@ -115,7 +115,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 
@@ -141,7 +141,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		assertEquals("Incorrect match", "hiirhall", words.get(0).getValue());
@@ -174,7 +174,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -192,7 +192,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -211,7 +211,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -246,7 +246,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 		word = words.get(0);
@@ -282,7 +282,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -316,7 +316,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = commonDataDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);

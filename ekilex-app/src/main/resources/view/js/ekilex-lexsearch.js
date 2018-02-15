@@ -19,6 +19,11 @@ function initialise() {
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 
+    $(document).on('click', '#show-all-btn', function() {
+        $('#fetchAll').val(true);
+        $('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
+    });
+
     var detailButtons = $('#results').find('[name="detailsBtn"]');
     if (detailButtons.length === 1) {
         detailButtons.trigger('click');

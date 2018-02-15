@@ -1,11 +1,10 @@
 package eki.ekilex.web.controller;
 
-import static java.util.Collections.emptyList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.WordsResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.Word;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -49,7 +47,7 @@ public abstract class AbstractSearchController implements WebConstant {
 	}
 
 	protected void performSearch(
-			List<String> selectedDatasets, String searchMode, String simpleSearchFilter,
+			List<String> selectedDatasets, String searchMode, boolean fetchAll, String simpleSearchFilter,
 			SearchFilter detailSearchFilter, SessionBean sessionBean, Model model) throws Exception {
 
 		logger.debug("Searching by \"{}\" in {}", simpleSearchFilter, selectedDatasets);
@@ -65,7 +63,7 @@ public abstract class AbstractSearchController implements WebConstant {
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		List<Word> words = emptyList();
+		WordsResult result = new WordsResult();
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			List<SearchCriterion> searchCriteria = detailSearchFilter.getSearchCriteria();
 			searchCriteria = searchCriteria.stream()
@@ -76,16 +74,17 @@ public abstract class AbstractSearchController implements WebConstant {
 					.collect(Collectors.toList());
 			if (CollectionUtils.isNotEmpty(searchCriteria)) {
 				detailSearchFilter.setSearchCriteria(searchCriteria);
-				words = commonDataService.findWords(detailSearchFilter, selectedDatasets);
+				result = commonDataService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
 			}
 		} else {
-			words = commonDataService.findWords(simpleSearchFilter, selectedDatasets);
+			result = commonDataService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
 		}
 		model.addAttribute("allDatasets", allDatasets);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", searchMode);
-		model.addAttribute("wordsFoundBySearch", words);
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
 	}
 
 	protected SearchFilter initSearchFilter() {

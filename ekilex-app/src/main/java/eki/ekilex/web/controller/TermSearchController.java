@@ -52,7 +52,7 @@ public class TermSearchController extends AbstractSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		performSearch(selectedDatasets, searchMode, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		performSearch(selectedDatasets, searchMode, false, simpleSearchFilter, detailSearchFilter, sessionBean, model);
 
 		return TERM_SEARCH_PAGE;
 	}

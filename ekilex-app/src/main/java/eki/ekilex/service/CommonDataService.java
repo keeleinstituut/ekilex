@@ -1,10 +1,10 @@
 package eki.ekilex.service;
 
-import java.util.Collections;
 import java.util.List;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.WordsResult;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,16 +26,30 @@ public class CommonDataService {
 	}
 
 	@Transactional
-	public List<Word> findWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
+	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
 
-		return commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		WordsResult result = new WordsResult();
+		result.setWords(commonDataDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class));
+		if (fetchAll || result.getWords().size() < CommonDataDbService.MAX_RESULTS_LIMIT) {
+			result.setTotalCount(result.getWords().size());
+		} else {
+			result.setTotalCount(commonDataDbService.countWords(searchFilter, datasets));
+		}
+		return result;
 	}
 
 	@Transactional
-	public List<Word> findWords(String searchFilter, List<String> datasets) {
-		if (StringUtils.isBlank(searchFilter)) {
-			return Collections.emptyList();
+	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
+
+		WordsResult result = new WordsResult();
+		if (StringUtils.isNotBlank(searchFilter)) {
+			result.setWords(commonDataDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class));
+			if (fetchAll || result.getWords().size() < CommonDataDbService.MAX_RESULTS_LIMIT) {
+				result.setTotalCount(result.getWords().size());
+			} else {
+				result.setTotalCount(commonDataDbService.countWords(searchFilter, datasets));
+			}
 		}
-		return commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		return result;
 	}
 }
