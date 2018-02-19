@@ -280,6 +280,35 @@ ent	suurliblikad	liblikalised	suurliblikad	et
 ent	pahkvaablased	kiletiivalised	pahkvaablased	et
 ett	snomed ct	-	snomed ct	et
 ett	snomed ct	-	snomed ct	en
+get	(Paleo)Ecol	-	(Paleo)Ecol	et
+get	(Paleo)Ecology	-	(Paleo)Ecology	et
+get	Biol	-	Biol	et
+get	Cim	-	Cim	et
+get	Clim	-	Clim	et
+get	Eco	-	Eco	et
+get	Ecol	-	Ecol	et
+get	Gen. Gl	-	Gen. Gl	et
+get	Geochem	-	Geochem	et
+get	Geom	-	Geom	et
+get	Geophys	-	Geophys	et
+get	Glacio	-	Glacio	et
+get	Glscio	-	Glscio	et
+get	Goechem	-	Goechem	et
+get	Hydro	-	Hydro	et
+get	Hydrogeology	-	Hydrogeology	et
+get	Method	-	Method	et
+get	Min	-	Min	et
+get	Nomencl	-	Nomencl	et
+get	Paleo	-	Paleo	et
+get	Paleoecol	-	Paleoecol	et
+get	Pclim	-	Pclim	et
+get	Pecol	-	Pecol	et
+get	Petro	-	Petro	et
+get	Phyl	-	Phyl	et
+get	Q	-	Q	et
+get	Sedim	-	Sedim	et
+get	Strat	-	Strat	et
+get	Taxonomy	-	Taxonomy	et
 gmt	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	et
 gmt	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	coastal landforms	en
 gmt	tuuletekkelised ehk eoolsed pinnavormid	-	tuuletekkelised ehk eoolsed pinnavormid	et
