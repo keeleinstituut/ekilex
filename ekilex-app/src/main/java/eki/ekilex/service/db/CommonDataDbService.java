@@ -86,6 +86,7 @@ public class CommonDataDbService {
 	}
 
 	private Condition createCondition(List<SearchCriterion> searchCriteria, Word word, Form form) throws Exception {
+
 		Condition where = DSL.trueCondition();
 
 		for (SearchCriterion searchCriterion : searchCriteria) {
@@ -226,12 +227,12 @@ public class CommonDataDbService {
 						.and(ld.DATASET_CODE.in(datasets))));
 		}
 
-		Table<Record4<Long,String,Integer,String>> ww = create
+		Table<Record4<Long,String,Integer,String>> w = DSL
 				.select(
-						word.ID.as("word_id"),
-						wf.as("word"),
-						word.HOMONYM_NR,
-						word.LANG)
+					word.ID.as("word_id"),
+					wf.as("word"),
+					word.HOMONYM_NR,
+					word.LANG)
 				.from(from)
 				.where(where)
 				.groupBy(word.ID)
@@ -240,26 +241,27 @@ public class CommonDataDbService {
 		Field<String[]> dscf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(ww.field("word_id").cast(Long.class)))
-				.groupBy(ww.field("word_id")));
+				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)))
+				.groupBy(w.field("word_id")));
 
-		Table<?> www = create
+		Table<?> ww = DSL
 				.select(
-						ww.field("word_id"),
-						ww.field("word"),
-						ww.field("homonym_nr"),
-						ww.field("lang"),
-						dscf.as("dataset_codes")
+					w.field("word_id"),
+					w.field("word"),
+					w.field("homonym_nr"),
+					w.field("lang"),
+					dscf.as("dataset_codes")
 						)
-				.from(ww)
+				.from(w)
 				.orderBy(
-						ww.field("word"),
-						ww.field("homonym_nr"))
-				.asTable("www");
+					w.field("word"),
+					w.field("homonym_nr"))
+				.asTable("ww");
+
 		if (fetchAll) {
-			return create.select(www.fields()).from(www).fetch();
+			return create.select(ww.fields()).from(ww).fetch();
 		} else {
-			return create.select(www.fields()).from(www).limit(MAX_RESULTS_LIMIT).fetch();
+			return create.select(ww.fields()).from(ww).limit(MAX_RESULTS_LIMIT).fetch();
 		}
 	}
 
@@ -275,22 +277,22 @@ public class CommonDataDbService {
 									.and(ld.DATASET_CODE.in(datasets))));
 		}
 
-		Table<Record1<Long>> ww = create
+		Table<Record1<Long>> w = create
 				.select(
-						word.ID.as("word_id")
+					word.ID.as("word_id")
 				)
 				.from(from)
 				.where(where)
 				.groupBy(word.ID)
 				.asTable("w");
 
-		Table<?> www = create
+		Table<?> ww = create
 				.select(
-						ww.field("word_id")
+					w.field("word_id")
 				)
-				.from(ww)
-				.asTable("www");
-		return create.fetchCount(www);
-	}
+				.from(w)
+				.asTable("ww");
 
+		return create.fetchCount(ww);
+	}
 }

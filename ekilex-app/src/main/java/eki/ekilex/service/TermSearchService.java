@@ -2,27 +2,30 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.common.constant.FreeformType;
-import eki.ekilex.data.Relation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Lexeme;
-import eki.ekilex.data.Meaning;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Lexeme;
+import eki.ekilex.data.Meaning;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.TermDetails;
+import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.WordTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -42,6 +45,23 @@ public class TermSearchService {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Transactional
+	public List<TermMeaning> findMeanings(String searchFilter, List<String> datasets) {
+		if (StringUtils.isBlank(searchFilter)) {
+			return Collections.emptyList();
+		}
+		Map<Long, List<WordTuple>> termMeaningsMap = termSearchDbService.findMeaningsAsMap(searchFilter, datasets);
+		List<TermMeaning> termMeanings = termMeaningsMap.entrySet().stream()
+				.map(meaningMapEntry -> {
+					TermMeaning termMeaning = new TermMeaning();
+					termMeaning.setMeaningId(meaningMapEntry.getKey());
+					termMeaning.setWordTuples(meaningMapEntry.getValue());
+					return termMeaning;
+				}).sorted(Comparator.comparing(TermMeaning::getMeaningId))
+				.collect(Collectors.toList());
+		return termMeanings;
+	}
 
 	@Transactional
 	public TermDetails getTermDetails(Long wordId, List<String> selectedDatasets) {

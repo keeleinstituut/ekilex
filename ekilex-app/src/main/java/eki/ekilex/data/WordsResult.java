@@ -1,13 +1,12 @@
 package eki.ekilex.data;
 
-import java.util.Collections;
 import java.util.List;
 
 public class WordsResult {
 
-	private int totalCount = 0;
+	private int totalCount;
 
-	private List<Word> words = Collections.emptyList();
+	private List<Word> words;
 
 	public long getTotalCount() {
 		return totalCount;
