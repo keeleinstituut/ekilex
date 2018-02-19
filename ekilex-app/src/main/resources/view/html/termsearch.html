@@ -213,7 +213,7 @@
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.sources)}">
                 <hr />
-                <span class="lbl">Allikaviited</span>
+                <span class="lbl">Allikaviide</span>
                 <th:block th:each="source, sourceIter : ${lexeme.sources}">
                   <span th:utext="${markdown.toHtml(source)}"></span>
                   <span th:unless="${sourceIter.last}">;&nbsp;</span>
