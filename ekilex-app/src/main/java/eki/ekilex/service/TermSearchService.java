@@ -2,7 +2,6 @@ package eki.ekilex.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,7 +21,9 @@ import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
+import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.WordTuple;
@@ -46,21 +47,38 @@ public class TermSearchService {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
+	//TODO implement
 	@Transactional
-	public List<TermMeaning> findMeanings(String searchFilter, List<String> datasets) {
+	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
+
+		List<TermMeaning> termMeanings = Collections.emptyList();
+		int meaningCount = 0;
+		MeaningsResult meaningsResult = new MeaningsResult();
+		meaningsResult.setTermMeanings(termMeanings);
+		meaningsResult.setResultCount(meaningCount);
+		return meaningsResult;
+	}
+
+	@Transactional
+	public MeaningsResult findMeanings(String searchFilter, List<String> datasets, boolean fetchAll) {
+
+		Map<Long, List<WordTuple>> termMeaningsMap;
 		if (StringUtils.isBlank(searchFilter)) {
-			return Collections.emptyList();
+			termMeaningsMap = Collections.emptyMap();
+		} else {
+			termMeaningsMap = termSearchDbService.findMeaningsAsMap(searchFilter, datasets, fetchAll);
 		}
-		Map<Long, List<WordTuple>> termMeaningsMap = termSearchDbService.findMeaningsAsMap(searchFilter, datasets);
-		List<TermMeaning> termMeanings = termMeaningsMap.entrySet().stream()
-				.map(meaningMapEntry -> {
-					TermMeaning termMeaning = new TermMeaning();
-					termMeaning.setMeaningId(meaningMapEntry.getKey());
-					termMeaning.setWordTuples(meaningMapEntry.getValue());
-					return termMeaning;
-				}).sorted(Comparator.comparing(TermMeaning::getMeaningId))
-				.collect(Collectors.toList());
-		return termMeanings;
+		List<TermMeaning> termMeanings = conversionUtil.convert(termMeaningsMap);
+		int meaningCount = termMeanings.size();
+		if (!fetchAll && meaningCount == TermSearchDbService.MAX_RESULTS_LIMIT) {
+			meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
+		}
+		boolean resultExist = meaningCount > 0;
+		MeaningsResult meaningsResult = new MeaningsResult();
+		meaningsResult.setTermMeanings(termMeanings);
+		meaningsResult.setResultCount(meaningCount);
+		meaningsResult.setResultExist(resultExist);
+		return meaningsResult;
 	}
 
 	@Transactional

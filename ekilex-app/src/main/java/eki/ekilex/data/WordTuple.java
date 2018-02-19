@@ -15,13 +15,13 @@ public class WordTuple extends AbstractDataObject {
 	private Long wordId;
 
 	@Column(name = "word_lang")
-	private String wordLang;
+	private String language;
 
 	@Column(name = "homonym_nr")
-	private Integer homonymNr;
+	private Integer homonymNumber;
 
 	@Column(name = "word")
-	private String word;
+	private String value;
 
 	@Column(name = "dataset_codes")
 	private String[] datasetCodes;
@@ -45,28 +45,28 @@ public class WordTuple extends AbstractDataObject {
 		this.wordId = wordId;
 	}
 
-	public String getWordLang() {
-		return wordLang;
+	public String getLanguage() {
+		return language;
 	}
 
-	public void setWordLang(String wordLang) {
-		this.wordLang = wordLang;
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 
-	public Integer getHomonymNr() {
-		return homonymNr;
+	public Integer getHomonymNumber() {
+		return homonymNumber;
 	}
 
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
+	public void setHomonymNumber(Integer homonymNumber) {
+		this.homonymNumber = homonymNumber;
 	}
 
-	public String getWord() {
-		return word;
+	public String getValue() {
+		return value;
 	}
 
-	public void setWord(String word) {
-		this.word = word;
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public String[] getDatasetCodes() {

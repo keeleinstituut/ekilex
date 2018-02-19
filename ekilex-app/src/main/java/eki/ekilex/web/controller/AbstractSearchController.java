@@ -1,6 +1,7 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,8 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
 	}
 
+	//TODO not common anymore. will be replaced soon
+	@Deprecated
 	protected void performSearch(
 			List<String> selectedDatasets, String searchMode, boolean fetchAll, String simpleSearchFilter,
 			SearchFilter detailSearchFilter, SessionBean sessionBean, Model model) throws Exception {
@@ -85,6 +88,40 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
+	}
+
+	//TODO also integrate to lex search
+	protected void cleanup(
+			List<String> selectedDatasets,
+			String simpleSearchFilter,
+			SearchFilter detailSearchFilter,
+			SessionBean sessionBean, Model model) {
+
+		List<Dataset> allDatasets = commonDataService.getDatasets();
+		List<String> allDatasetCodes = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
+		if (CollectionUtils.isEmpty(selectedDatasets)) {
+			selectedDatasets = sessionBean.getSelectedDatasets();
+			if (CollectionUtils.isEmpty(selectedDatasets)) {
+				sessionBean.setSelectedDatasets(allDatasetCodes);
+			}
+		}
+
+		List<SearchCriterion> searchCriteria = detailSearchFilter.getSearchCriteria();
+		if (CollectionUtils.isEmpty(searchCriteria)) {
+			searchCriteria = Collections.emptyList();
+		} else {
+			searchCriteria = searchCriteria.stream()
+					.filter(criterion ->
+							(criterion.getSearchKey() != null)
+							&& (criterion.getSearchValue() != null)
+							&& StringUtils.isNotBlank(criterion.getSearchValue().toString()))
+					.collect(Collectors.toList());
+		}
+		detailSearchFilter.setSearchCriteria(searchCriteria);
+
+		model.addAttribute("allDatasets", allDatasets);
+		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
+		model.addAttribute("detailSearchFilter", detailSearchFilter);
 	}
 
 	protected SearchFilter initSearchFilter() {
