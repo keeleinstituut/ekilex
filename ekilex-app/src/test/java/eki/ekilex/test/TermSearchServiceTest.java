@@ -1,7 +1,10 @@
 package eki.ekilex.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -14,20 +17,20 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.service.UserService;
+import eki.ekilex.data.WordTuple;
+import eki.ekilex.service.db.TermSearchDbService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource(locations = "classpath:test-ekilex-app.properties")
 @Transactional
-public class UserServiceTest {
+public class TermSearchServiceTest {
 
 	@Autowired
 	private TestEnvInitialiser testEnvInitialiser;
 
 	@Autowired
-	private UserService userService;
+	private TermSearchDbService termSearchDbService;
 
 	@Before
 	public void beforeTest() throws Exception {
@@ -36,12 +39,13 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void testGetUserByName() throws Exception {
+	public void testSearchTermMeaningsByWord() throws Exception {
 
-		final String name = "Malle Paju";
-		EkiUser user = userService.getUserByName(name);
+		String wordWithMetaCharacters = "hall*";
+		List<String> datasets = new ArrayList<>();
 
-		assertNotNull("Incorrect test result", user);
-		assertEquals("Incorrect test result", name, user.getName());
+		Map<Long, List<WordTuple>> termMeaningsMap = termSearchDbService.findMeaningsAsMap(wordWithMetaCharacters, datasets);
+
+		assertEquals("Incorrect count of matches", 20, termMeaningsMap.size());
 	}
 }

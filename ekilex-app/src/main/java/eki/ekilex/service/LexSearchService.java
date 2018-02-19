@@ -14,14 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Collocation;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Paradigm;
-import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Paradigm;
+import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;

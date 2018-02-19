@@ -194,7 +194,7 @@ public class CommonDataDbService {
 						.and(ld.DATASET_CODE.in(datasets))));
 		}
 
-		Table<Record4<Long,String,Integer,String>> ww = create
+		Table<Record4<Long,String,Integer,String>> w = DSL
 				.select(
 						word.ID.as("word_id"),
 						wf.as("word"),
@@ -208,24 +208,24 @@ public class CommonDataDbService {
 		Field<String[]> dscf = DSL.field(DSL
 				.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE))
 				.from(LEXEME)
-				.where(LEXEME.WORD_ID.eq(ww.field("word_id").cast(Long.class)))
-				.groupBy(ww.field("word_id")));
+				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)))
+				.groupBy(w.field("word_id")));
 
-		Table<?> www = create
+		Table<?> ww = DSL
 				.select(
-						ww.field("word_id"),
-						ww.field("word"),
-						ww.field("homonym_nr"),
-						ww.field("lang"),
+						w.field("word_id"),
+						w.field("word"),
+						w.field("homonym_nr"),
+						w.field("lang"),
 						dscf.as("dataset_codes")
 						)
-				.from(ww)
+				.from(w)
 				.orderBy(
-						ww.field("word"),
-						ww.field("homonym_nr"))
+						w.field("word"),
+						w.field("homonym_nr"))
 				.limit(MAX_RESULTS_LIMIT)
-				.asTable("www");
+				.asTable("ww");
 
-		return create.select(www.fields()).from(www).fetch();
+		return create.select(ww.fields()).from(ww).fetch();
 	}
 }
