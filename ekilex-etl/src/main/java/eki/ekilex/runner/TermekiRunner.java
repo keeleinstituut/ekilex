@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -37,6 +38,10 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(TermekiRunner.class);
 
 	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
+
+	private static final String defaultWordMorphCode = "SgN";
+
+	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 
 	protected static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	protected static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
@@ -62,15 +67,18 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
-		List<Map<String, Object>> terms = termekiService.getTerms(baseId);
-		logger.info("Found {} terms.", terms.size());
-		List<Map<String, Object>> definitions = termekiService.getDefinitions(baseId);
-		logger.info("Found {} definitions.", definitions.size());
-		Map<Integer, SourceData> sourceMapping = loadSources(baseId);
-		logger.info("Found {} sources.", sourceMapping.size());
-		List<Map<String, Object>> comments = termekiService.getComments(baseId);
-		logger.info("Found {} comments.", comments.size());
-		doImport(terms, definitions, sourceMapping, comments, dataset);
+		Context context = new Context();
+		context.terms = termekiService.getTerms(baseId);
+		logger.info("Found {} terms.", context.terms.size());
+		context.definitions = termekiService.getDefinitions(baseId);
+		logger.info("Found {} definitions.", context.definitions.size());
+		context.sourceMapping = loadSources(baseId);
+		logger.info("Found {} sources.", context.sourceMapping.size());
+		context.comments = termekiService.getComments(baseId);
+		logger.info("Found {} comments.", context.comments.size());
+		context.abbreviations = loadAbbreviations();
+		logger.info("Found {} abbreviations.", context.abbreviations.size());
+		doImport(context, dataset);
 		updateDataset(baseId, dataset);
 
 		t2 = System.currentTimeMillis();
@@ -95,6 +103,10 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		try (InputStream resourceInputStream = new FileInputStream(resourcePath)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
+	}
+
+	private List<Map<String, Object>> loadAbbreviations() {
+		return termekiService.getTermAttributes(38708);		// present only in termbase 1283851 - Eesti E-tervise SA terminibaas (ett)
 	}
 
 	private Map<Integer, SourceData> loadSources(Integer baseId) throws Exception {
@@ -150,18 +162,14 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	}
 
 	void doImport(
-			List<Map<String, Object>> terms,
-			List<Map<String, Object>> definitions,
-			Map<Integer, SourceData> sourceMapping,
-			List<Map<String, Object>> comments,
+			Context context,
 			String dataset) throws Exception {
 
-		final String defaultWordMorphCode = "SgN";
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> conceptMeanings = new HashMap<>();
 		long count = 0;
 
-		for (Map<String, Object> term : terms) {
+		for (Map<String, Object> term : context.terms) {
 			String language = unifyLang((String)term.get("lang"));
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
@@ -196,18 +204,20 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String posCode = StringUtils.isNotBlank((String)term.get("pronunciation")) ? (String)term.get("pronunciation") : term.get("word_class").toString();
 			savePosCode(lexemeId, posCode);
 			Integer sourceId = (Integer) term.get("source_id");
-			connectSourceToLexeme(sourceId, lexemeId, sourceMapping);
+			connectSourceToLexeme(sourceId, lexemeId, context.sourceMapping);
+			Integer termId = (Integer) term.get("term_id");
+			createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
 		}
 		System.out.println();
-		logger.info("{} words imported", terms.size());
+		logger.info("{} words imported", context.terms.size());
 		logger.info("{} duplicate words found", wordDuplicateCount.getValue());
 		logger.info("{} meanings created", conceptMeanings.size());
 
 		int definitionsCount = 0;
-		for (Map<String, Object> definition : definitions) {
+		for (Map<String, Object> definition : context.definitions) {
 			String language = unifyLang((String)definition.get("lang"));
 			Integer conceptId = (Integer) definition.get("concept_id");
 			if (conceptMeanings.containsKey(conceptId)) {
@@ -220,12 +230,12 @@ public class TermekiRunner extends AbstractLoaderRunner {
 					createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, publicNote);
 				}
 				Integer sourceId = (Integer) definition.get("source_id");
-				connectSourceToDefinition(sourceId, definitionId, sourceMapping, definitionValue);
+				connectSourceToDefinition(sourceId, definitionId, context.sourceMapping, definitionValue);
 			}
 		}
 		logger.info("{} definitions created", definitionsCount);
 
-		for (Map<String, Object> comment : comments) {
+		for (Map<String, Object> comment : context.comments) {
 			Integer conceptId = (Integer) comment.get("concept_id");
 			if (conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = conceptMeanings.get(conceptId);
@@ -234,6 +244,35 @@ public class TermekiRunner extends AbstractLoaderRunner {
 					createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, privateNote);
 				}
 			}
+		}
+	}
+
+	private void createAbbreviationIfNeeded(
+			Context context,
+			Integer termId,
+			Long meaningId,
+			Long termLexemeId,
+			String language,
+			String dataset,
+			Count wordDuplicateCount) throws Exception {
+
+		if (context.abbreviations.isEmpty()) return;
+
+		Optional<Map<String, Object>> abbreviation = context.abbreviations.stream().filter(a -> a.get("term_id").equals(termId)).findFirst();
+		if (abbreviation.isPresent()) {
+			String abbreviationValue = (String) abbreviation.get().get("attribute_value");
+			if (!context.importedTerms.containsKey(abbreviationValue)) {
+				int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
+				Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+				Long wordId = saveWord(word, null, null, wordDuplicateCount);
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(wordId);
+				lexeme.setMeaningId(meaningId);
+				Long lexemeId = createLexeme(lexeme, dataset);
+				context.importedTerms.put(abbreviationValue, lexemeId);
+			}
+			Long abbreviationLexemeId = context.importedTerms.get(abbreviationValue);
+			createLexemeRelation(abbreviationLexemeId, termLexemeId, LEXEME_RELATION_ABBREVIATION);
 		}
 	}
 
@@ -319,4 +358,12 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private class Context {
+		List<Map<String, Object>> terms;
+		List<Map<String, Object>> definitions;
+		Map<Integer, SourceData> sourceMapping;
+		List<Map<String, Object>> comments;
+		List<Map<String, Object>> abbreviations;
+		Map<String, Long> importedTerms = new HashMap<>();
+	}
 }
