@@ -333,17 +333,13 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		Optional<Map<String, Object>> abbreviation = context.abbreviations.stream().filter(a -> a.get("term_id").equals(termId)).findFirst();
 		if (abbreviation.isPresent()) {
 			String abbreviationValue = (String) abbreviation.get().get("attribute_value");
-			if (!context.importedTerms.containsKey(abbreviationValue)) {
-				int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
-				Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
-				Long wordId = saveWord(word, null, null, wordDuplicateCount);
-				Lexeme lexeme = new Lexeme();
-				lexeme.setWordId(wordId);
-				lexeme.setMeaningId(meaningId);
-				Long lexemeId = createLexeme(lexeme, dataset);
-				context.importedTerms.put(abbreviationValue, lexemeId);
-			}
-			Long abbreviationLexemeId = context.importedTerms.get(abbreviationValue);
+			int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
+			Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+			Long wordId = saveWord(word, null, null, wordDuplicateCount);
+			Lexeme lexeme = new Lexeme();
+			lexeme.setWordId(wordId);
+			lexeme.setMeaningId(meaningId);
+			Long abbreviationLexemeId = createLexeme(lexeme, dataset);
 			createLexemeRelation(abbreviationLexemeId, termLexemeId, LEXEME_RELATION_ABBREVIATION);
 		}
 	}
@@ -436,7 +432,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		Map<Integer, SourceData> sourceMapping;
 		List<Map<String, Object>> comments;
 		List<Map<String, Object>> abbreviations;
-		Map<String, Long> importedTerms = new HashMap<>();
 		List<Map<String, Object>> genuses;
 		List<Map<String, Object>> families;
 		List<Map<String, Object>> describers;
