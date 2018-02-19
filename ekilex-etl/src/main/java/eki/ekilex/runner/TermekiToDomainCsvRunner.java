@@ -92,7 +92,7 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 			if (domainValue.contains(",") || domainValue.contains(";") || domainValue.equals("Gen.Gl")) {
 				continue;
 			}
-			domains.add(domainValue);
+			domains.add(domainValue.toLowerCase());
 		}
 		return domains;
 	}
