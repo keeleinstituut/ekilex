@@ -11,6 +11,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -37,6 +38,8 @@ import eki.ekilex.data.db.tables.Word;
 @Component
 public class TermSearchDbService {
 
+	public static final int MAX_RESULTS_LIMIT = 50;
+
 	private DSLContext create;
 
 	@Autowired
@@ -44,31 +47,9 @@ public class TermSearchDbService {
 		create = context;
 	}
 
-	public Map<Long, List<WordTuple>> findMeaningsAsMap(String wordWithMetaCharacters, List<String> datasets) {
+	public Map<Long, List<WordTuple>> findMeaningsAsMap(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
 
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
-
-		Condition where1 = FORM.IS_WORD.isTrue();
-		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			where1 = where1.and(FORM.VALUE.likeIgnoreCase(theFilter));			
-		} else {
-			where1 = where1.and(FORM.VALUE.equalIgnoreCase(theFilter));
-		}
-		Table<Record1<Long>> f1 = DSL.select(FORM.PARADIGM_ID).from(FORM).where(where1).asTable("f1");
-
-		Paradigm p1 = PARADIGM.as("p1");
-		Word w1 = WORD.as("w1");
-		Lexeme l1 = LEXEME.as("l1");
-		Table<Record1<Long>> m = DSL
-				.select(
-						l1.MEANING_ID
-						)
-				.from(f1, p1, w1, l1)
-				.where(
-						f1.field(FORM.PARADIGM_ID).eq(p1.ID)
-						.and(p1.WORD_ID.eq(w1.ID))
-						.and(l1.WORD_ID.eq(w1.ID))
-				).asTable("m");
+		Table<Record1<Long>> m = getFilteredMeanings(wordWithMetaCharacters, datasets, fetchAll);
 
 		Form f2 = FORM.as("f2");
 		Paradigm p2 = PARADIGM.as("p2");
@@ -119,8 +100,54 @@ public class TermSearchDbService {
 					.leftOuterJoin(c).on(c.field("meaning_id").cast(Long.class).eq(m.field("meaning_id").cast(Long.class)))
 				).asTable("ww");
 
-		Map<Long, List<WordTuple>> result = create.selectFrom(ww).fetchGroups(ww.field("meaning_id", Long.class), WordTuple.class);
+		Map<Long, List<WordTuple>> result = create
+				.selectFrom(ww)
+				.fetchGroups(ww.field("meaning_id", Long.class), WordTuple.class);
 		return result;
+	}
+
+	public int countMeanings(String wordWithMetaCharacters, List<String> datasets) {
+
+		Table<Record1<Long>> m = getFilteredMeanings(wordWithMetaCharacters, datasets, true);
+
+		return create.fetchCount(m);
+	}
+
+	private Table<Record1<Long>> getFilteredMeanings(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
+
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
+
+		Condition where1 = FORM.IS_WORD.isTrue();
+		if (StringUtils.containsAny(theFilter, '%', '_')) {
+			where1 = where1.and(FORM.VALUE.likeIgnoreCase(theFilter));			
+		} else {
+			where1 = where1.and(FORM.VALUE.equalIgnoreCase(theFilter));
+		}
+		Paradigm p1 = PARADIGM.as("p1");
+		Word w1 = WORD.as("w1");
+		Lexeme l1 = LEXEME.as("l1");
+		Table<Record1<Long>> f1 = DSL.select(FORM.PARADIGM_ID).from(FORM).where(where1).asTable("f1");
+
+		Condition where11 = f1.field(FORM.PARADIGM_ID).eq(p1.ID).and(p1.WORD_ID.eq(w1.ID)).and(l1.WORD_ID.eq(w1.ID));
+
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			where11 = where11.and(l1.DATASET_CODE.in(datasets));
+		}
+
+		int limit = MAX_RESULTS_LIMIT;
+		if (fetchAll) {
+			limit = Integer.MAX_VALUE;
+		}
+
+		Table<Record1<Long>> m = DSL
+				.select(l1.MEANING_ID)
+				.from(f1, p1, w1, l1)
+				.where(where11)
+				.groupBy(l1.MEANING_ID)
+				.orderBy(l1.MEANING_ID)
+				.limit(limit)
+				.asTable("m");
+		return m;
 	}
 
 	public Result<Record5<Long, String, String, String, Long[]>> findWordMeanings(Long wordId, List<String> datasets) {

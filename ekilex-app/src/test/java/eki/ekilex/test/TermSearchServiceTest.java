@@ -43,8 +43,9 @@ public class TermSearchServiceTest {
 
 		String wordWithMetaCharacters = "hall*";
 		List<String> datasets = new ArrayList<>();
+		boolean fetchAll = true;
 
-		Map<Long, List<WordTuple>> termMeaningsMap = termSearchDbService.findMeaningsAsMap(wordWithMetaCharacters, datasets);
+		Map<Long, List<WordTuple>> termMeaningsMap = termSearchDbService.findMeaningsAsMap(wordWithMetaCharacters, datasets, fetchAll);
 
 		assertEquals("Incorrect count of matches", 20, termMeaningsMap.size());
 	}

@@ -1,9 +1,11 @@
 package eki.ekilex.service.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -15,15 +17,29 @@ import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
+import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.UsageMeaning;
 import eki.ekilex.data.UsageMember;
+import eki.ekilex.data.WordTuple;
 
 @Component
 public class ConversionUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
+
+	public List<TermMeaning> convert(Map<Long, List<WordTuple>> termMeaningsMap) {
+		List<TermMeaning> termMeanings = termMeaningsMap.entrySet().stream()
+				.map(meaningMapEntry -> {
+					TermMeaning termMeaning = new TermMeaning();
+					termMeaning.setMeaningId(meaningMapEntry.getKey());
+					termMeaning.setWordTuples(meaningMapEntry.getValue());
+					return termMeaning;
+				}).sorted(Comparator.comparing(TermMeaning::getMeaningId))
+				.collect(Collectors.toList());
+		return termMeanings;
+	}
 
 	public List<Paradigm> composeParadigms(List<ParadigmFormTuple> paradigmFormTuples, List<FormRelation> wordFormRelations) {
 

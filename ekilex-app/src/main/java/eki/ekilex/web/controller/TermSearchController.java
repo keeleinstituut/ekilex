@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermDetails;
 import eki.ekilex.service.TermSearchService;
@@ -39,7 +41,10 @@ public class TermSearchController extends AbstractSearchController {
 	public String initSearch(Model model) {
 
 		initSearchForms(model);
-		
+
+		MeaningsResult meaningsResult = new MeaningsResult();
+		model.addAttribute("searchResult", meaningsResult);
+
 		return TERM_SEARCH_PAGE;
 	}
 
@@ -47,13 +52,25 @@ public class TermSearchController extends AbstractSearchController {
 	public String termSearch(
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "searchMode", required = false) String searchMode,
-			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
+			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		performSearch(selectedDatasets, searchMode, fetchAll, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		cleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+
+		if (StringUtils.isBlank(searchMode)) {
+			searchMode = SEARCH_MODE_SIMPLE;
+		}
+		MeaningsResult meaningsResult;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			meaningsResult = termSearchService.findMeanings(detailSearchFilter, sessionBean.getSelectedDatasets(), fetchAll);
+		} else {
+			meaningsResult = termSearchService.findMeanings(simpleSearchFilter, sessionBean.getSelectedDatasets(), fetchAll);
+		}
+		model.addAttribute("searchMode", searchMode);
+		model.addAttribute("searchResult", meaningsResult);
 
 		return TERM_SEARCH_PAGE;
 	}

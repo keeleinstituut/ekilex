@@ -26,23 +26,34 @@
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsFoundBySearch) && (simpleSearchFilter != null)}">
+    <div class="mt-4 float-left" th:if="${(!searchResult.resultExist) && (simpleSearchFilter != null)}">
       <span th:text="#{term.not.found}">Not found.</span>
     </div>
 
-    <div class="mt-4 float-left w-25" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 15em); overflow-y: auto;">
+    <div class="mt-4 float-left w-25" th:if="${searchResult.resultExist}" style="height: calc(100vh - 15em); overflow-y: auto;">
       <div>
-        <a href="javascript:void(0);" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
+        <a href="javascript:void(0);" id="show-all-btn">
+          <span th:text="${'Tulemusi : ' + searchResult.resultCount}"></span>
+        </a>
       </div>
       <table id="results" class="w-100">
-        <tr th:each="word : ${wordsFoundBySearch}">
+        <tr th:each="termMeaning,termMeaningIter : ${searchResult.termMeanings}" style="border-bottom: 1px solid #CCC">
           <td class="w-100" name="word_form">
-            <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
-              <span th:text="${word.value}" class="ttl">vorm 1</span>
-              <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-              (
-              <span th:text="${word.language}"></span>
-              )
+            <button type="button" class="btn btn-link" th:data-id="${termMeaning.meaningId}" name="detailsBtn">
+              <div th:each="word,wordIter : ${termMeaning.wordTuples}" style="text-align: left">
+                <span th:text="${wordIter.count}"></span>
+                &nbsp;
+                <span th:if="${word.value != null}">
+                  <span th:text="${word.value}" class="ttl">EuropeAid</span>
+                  <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+                  (
+                  <span th:text="${word.language}"></span>
+                  )
+                </span>
+                <span th:if="${word.value == null}">
+                  <span th:text="${word.conceptId}" class="ttl">23648236</span>
+                </span>
+              </div>
             </button>
           </td>
         </tr>
