@@ -40,6 +40,8 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_TERM_ATTRIBUTES = "sql/select_termeki_term_attributes.sql";
 
+	private static final String SQL_SELECT_CONCEPT_ATTRIBUTES = "sql/select_termeki_concept_attributes.sql";
+
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
 	private String sqlSelectTerms;
@@ -53,6 +55,8 @@ public class TermekiService implements InitializingBean {
 	private String sqlSelectComments;
 
 	private String sqlSelectTermAttributes;
+
+	private String sqlSelectConceptAttributes;
 
 	private Map<Integer, String> termbaseIds;
 
@@ -68,6 +72,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectSources = getContent(SQL_SELECT_SOURCES);
 		sqlSelectComments = getContent(SQL_SELECT_COMMENTS);
 		sqlSelectTermAttributes = getContent(SQL_SELECT_TERM_ATTRIBUTES);
+		sqlSelectConceptAttributes = getContent(SQL_SELECT_CONCEPT_ATTRIBUTES);
 		termbaseIds = readFileLines(TERMBASE_IDS).stream()
 				.collect(toMap(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]), l -> StringUtils.split(l, CSV_SEPARATOR)[1]));
 	}
@@ -128,6 +133,13 @@ public class TermekiService implements InitializingBean {
 		Map<String, Object> params = new HashMap<>();
 		params.put("attributeId", attributeId);
 		return queryList(sqlSelectTermAttributes, params);
+	}
+
+	public List<Map<String, Object>> getConceptAttributes(Integer attributeId) {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("attributeId", attributeId);
+		return queryList(sqlSelectConceptAttributes, params);
 	}
 
 	public Collection<String> termbaseCodes() {
