@@ -48,11 +48,12 @@ public class TermSearchController extends AbstractSearchController {
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
+			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		performSearch(selectedDatasets, searchMode, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		performSearch(selectedDatasets, searchMode, fetchAll, simpleSearchFilter, detailSearchFilter, sessionBean, model);
 
 		return TERM_SEARCH_PAGE;
 	}

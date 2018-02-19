@@ -20,6 +20,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record;
+import org.jooq.Record1;
 import org.jooq.Record2;
 import org.jooq.Record4;
 import org.jooq.Result;
@@ -46,7 +47,7 @@ import eki.ekilex.data.db.tables.Word;
 @Component
 public class CommonDataDbService {
 
-	private static final int MAX_RESULTS_LIMIT = 50;
+	public static final int MAX_RESULTS_LIMIT = 50;
 
 	@Autowired
 	private DSLContext create;
@@ -60,13 +61,31 @@ public class CommonDataDbService {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).fetch();
 	}
 
-	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
+	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
 
 		List<SearchCriterion> searchCriteria = searchFilter.getSearchCriteria();
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Form form = FORM.as("f");
+		Condition where = createCondition(searchCriteria, word, form);
+
+		return execute(word, paradigm, form, where, datasets, fetchAll);
+	}
+
+	public int countWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
+
+		List<SearchCriterion> searchCriteria = searchFilter.getSearchCriteria();
+
+		Word word = WORD.as("w");
+		Paradigm paradigm = PARADIGM.as("p");
+		Form form = FORM.as("f");
+		Condition where = createCondition(searchCriteria, word, form);
+
+		return count(word, paradigm, form, where, datasets);
+	}
+
+	private Condition createCondition(List<SearchCriterion> searchCriteria, Word word, Form form) throws Exception {
 
 		Condition where = DSL.trueCondition();
 
@@ -141,8 +160,7 @@ public class CommonDataDbService {
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
 			}
 		}
-
-		return execute(word, paradigm, form, where, datasets);
+		return where;
 	}
 
 	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) throws Exception {
@@ -161,26 +179,41 @@ public class CommonDataDbService {
 		return condition;
 	}
 
-	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets) {
-
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
+	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Form form = FORM.as("f");
+		Condition where = createCondition(wordWithMetaCharacters, form);
+
+		return execute(word, paradigm, form, where, datasets, fetchAll);
+	}
+
+	public int countWords(String searchFilter, List<String> datasets) {
+
+		Word word = WORD.as("w");
+		Paradigm paradigm = PARADIGM.as("p");
+		Form form = FORM.as("f");
+		Condition where = createCondition(searchFilter, form);
+
+		return count(word, paradigm, form, where, datasets);
+	}
+
+	private Condition createCondition(String wordWithMetaCharacters, Form form) {
+
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
 
 		Condition where = DSL.trueCondition();
 
 		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			where = where.and(form.VALUE.likeIgnoreCase(theFilter));			
+			where = where.and(form.VALUE.likeIgnoreCase(theFilter));
 		} else {
 			where = where.and(form.VALUE.equalIgnoreCase(theFilter));
 		}
-
-		return execute(word, paradigm, form, where, datasets);
+		return where;
 	}
 
-	private Result<Record> execute(Word word, Paradigm paradigm, Form form, Condition where, List<String> datasets) {
+	private Result<Record> execute(Word word, Paradigm paradigm, Form form, Condition where, List<String> datasets, boolean fetchAll) {
 
 		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class);
 
@@ -196,10 +229,10 @@ public class CommonDataDbService {
 
 		Table<Record4<Long,String,Integer,String>> w = DSL
 				.select(
-						word.ID.as("word_id"),
-						wf.as("word"),
-						word.HOMONYM_NR,
-						word.LANG)
+					word.ID.as("word_id"),
+					wf.as("word"),
+					word.HOMONYM_NR,
+					word.LANG)
 				.from(from)
 				.where(where)
 				.groupBy(word.ID)
@@ -213,19 +246,53 @@ public class CommonDataDbService {
 
 		Table<?> ww = DSL
 				.select(
-						w.field("word_id"),
-						w.field("word"),
-						w.field("homonym_nr"),
-						w.field("lang"),
-						dscf.as("dataset_codes")
+					w.field("word_id"),
+					w.field("word"),
+					w.field("homonym_nr"),
+					w.field("lang"),
+					dscf.as("dataset_codes")
 						)
 				.from(w)
 				.orderBy(
-						w.field("word"),
-						w.field("homonym_nr"))
-				.limit(MAX_RESULTS_LIMIT)
+					w.field("word"),
+					w.field("homonym_nr"))
 				.asTable("ww");
 
-		return create.select(ww.fields()).from(ww).fetch();
+		if (fetchAll) {
+			return create.select(ww.fields()).from(ww).fetch();
+		} else {
+			return create.select(ww.fields()).from(ww).limit(MAX_RESULTS_LIMIT).fetch();
+		}
+	}
+
+	private int count(Word word, Paradigm paradigm, Form form, Condition where, List<String> datasets) {
+
+		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.IS_WORD.isTrue()))).on(paradigm.WORD_ID.eq(word.ID));
+
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			Lexeme ld = LEXEME.as("ld");
+			where = where.andExists(
+					DSL.select(ld.ID).from(ld)
+							.where((ld.WORD_ID.eq(word.ID))
+									.and(ld.DATASET_CODE.in(datasets))));
+		}
+
+		Table<Record1<Long>> w = create
+				.select(
+					word.ID.as("word_id")
+				)
+				.from(from)
+				.where(where)
+				.groupBy(word.ID)
+				.asTable("w");
+
+		Table<?> ww = create
+				.select(
+					w.field("word_id")
+				)
+				.from(w)
+				.asTable("ww");
+
+		return create.fetchCount(ww);
 	}
 }
