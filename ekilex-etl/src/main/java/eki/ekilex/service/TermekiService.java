@@ -60,6 +60,8 @@ public class TermekiService implements InitializingBean {
 
 	private Map<Integer, String> termbaseIds;
 
+	private String sqlSelectGeolDomains = "select distinct attribute_value from termeki_concept_attributes_varchar a where a.attribute_id in (44388)";
+
 	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
 
@@ -126,6 +128,10 @@ public class TermekiService implements InitializingBean {
 		List<Map<String, Object>> domains = queryList(sqlSelectDomains, params);
 		domains.forEach(d -> d.put("termbase_code", termbaseIds.get(d.get("termbase_id"))));
 		return domains;
+	}
+
+	public List<Map<String, Object>> getGeolDomains() {
+		return queryList(sqlSelectGeolDomains, Collections.emptyMap());
 	}
 
 	public List<Map<String, Object>> getTermAttributes(Integer attributeId) {

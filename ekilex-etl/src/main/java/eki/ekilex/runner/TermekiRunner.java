@@ -82,6 +82,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		context.families = loadFamilies(dataset);
 		context.describers = loadDescribers(dataset);
 		context.describingYears = loadDescribingYears(dataset);
+		context.geolDomains = loadGeolDomains(dataset);
 		doImport(context, dataset);
 		updateDataset(baseId, dataset);
 
@@ -164,6 +165,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	// in case of Geol, domains are stored as concept extended attributes, termbase 4441577 - Geol (get)
+	private List<Map<String, Object>> loadGeolDomains(String dataset) {
+		if ("get".equals(dataset)) {
+			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(44388);
+			logger.info("Found {} domains.", attributes.size());
+			return attributes;
+		} else {
+			return emptyList();
+		}
+	}
+
 	private Map<Integer, SourceData> loadSources(Integer baseId) throws Exception {
 		List<Map<String, Object>> sources = termekiService.getSources(baseId);
 		Map<Integer, SourceData> termekiSourceToEkilexSourceMap = new HashMap<>();
@@ -239,14 +251,14 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			if (!conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = createMeaning();
 				conceptMeanings.put(conceptId, meaningId);
-				String domainCode = (String) term.get("domain_code");
-				if (isNotBlank(domainCode)) {
+				List<String> domainCodes = domainCodes(term, context, dataset);
+				for (String domainCode : domainCodes) {
 					Map<String, Object> domain = getDomain(domainCode, dataset);
 					if (domain == null) {
 						logger.info("Invalid domain code : {}", domainCode);
 					} else {
 						createMeaningDomain(meaningId, domainCode, dataset);
-						updateDomainDatsetsIfNeeded(domain, dataset);
+//						updateDomainDatsetsIfNeeded(domain, dataset);
 					}
 				}
 				addMeaningFreeforms(context, conceptId, meaningId);
@@ -301,6 +313,34 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private List<String> domainCodes(Map<String, Object> term, Context context, String dataset) {
+
+		List<String> codes = new ArrayList<>();
+		if ("get".equals(dataset)) {
+			Integer conceptId = (Integer) term.get("concept_id");
+			Optional<Map<String, Object>> domainCode = context.geolDomains.stream().filter(d -> d.get("concept_id").equals(conceptId)).findFirst();
+			if (domainCode.isPresent()) {
+				String codeValue = (String)domainCode.get().get("attribute_value");
+				String[] codeValues = codeValue.replace(";", ",").split(",");
+				for (String code: codeValues) {
+					if (isNotBlank(code)) {
+						if (code.trim().toLowerCase().startsWith("gen")) {
+							codes.add("gen. gl");
+						} else {
+							codes.add(code.trim().toLowerCase());
+						}
+					}
+				}
+			}
+		} else {
+			String code = (String)term.get("domain_code");
+			if (isNotBlank(code)) {
+				codes.add(code);
+			}
+		}
+		return codes;
 	}
 
 	private void addMeaningFreeforms(Context context, Integer conceptId, Long meaningId) throws Exception {
@@ -436,5 +476,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> families;
 		List<Map<String, Object>> describers;
 		List<Map<String, Object>> describingYears;
+		List<Map<String, Object>> geolDomains;
 	}
 }
