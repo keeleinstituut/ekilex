@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.WordsResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,9 +14,11 @@ import org.springframework.ui.Model;
 
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -41,8 +42,11 @@ public abstract class AbstractSearchController implements WebConstant {
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			sessionBean.setSelectedDatasets(allDatasetCodes);
 		}
+		List<Classifier> allLanguages = commonDataService.getLanguages();
 		SearchFilter detailSearchFilter = initSearchFilter();
+
 		model.addAttribute("allDatasets", allDatasets);
+		model.addAttribute("allLanguages", allLanguages);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
 	}
@@ -93,6 +97,7 @@ public abstract class AbstractSearchController implements WebConstant {
 	//TODO also integrate to lex search
 	protected void cleanup(
 			List<String> selectedDatasets,
+			String resultLang,
 			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
 			SessionBean sessionBean, Model model) {
@@ -105,21 +110,29 @@ public abstract class AbstractSearchController implements WebConstant {
 				sessionBean.setSelectedDatasets(allDatasetCodes);
 			}
 		}
+		sessionBean.setResultLang(resultLang);
 
-		List<SearchCriterion> searchCriteria = detailSearchFilter.getSearchCriteria();
-		if (CollectionUtils.isEmpty(searchCriteria)) {
-			searchCriteria = Collections.emptyList();
+		if (detailSearchFilter == null) {
+			detailSearchFilter = initSearchFilter();
 		} else {
-			searchCriteria = searchCriteria.stream()
-					.filter(criterion ->
-							(criterion.getSearchKey() != null)
-							&& (criterion.getSearchValue() != null)
-							&& StringUtils.isNotBlank(criterion.getSearchValue().toString()))
-					.collect(Collectors.toList());
+			List<SearchCriterion> searchCriteria = detailSearchFilter.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
+				searchCriteria = Collections.emptyList();
+			} else {
+				searchCriteria = searchCriteria.stream()
+						.filter(criterion ->
+								(criterion.getSearchKey() != null)
+								&& (criterion.getSearchValue() != null)
+								&& StringUtils.isNotBlank(criterion.getSearchValue().toString()))
+						.collect(Collectors.toList());
+			}
+			detailSearchFilter.setSearchCriteria(searchCriteria);
 		}
-		detailSearchFilter.setSearchCriteria(searchCriteria);
+
+		List<Classifier> allLanguages = commonDataService.getLanguages();
 
 		model.addAttribute("allDatasets", allDatasets);
+		model.addAttribute("allLanguages", allLanguages);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 	}

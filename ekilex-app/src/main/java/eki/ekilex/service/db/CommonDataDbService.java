@@ -10,6 +10,7 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.LANG;
 
 import java.util.List;
 import java.util.Map;
@@ -57,8 +58,15 @@ public class CommonDataDbService {
 	}
 
 	public Result<Record2<String,String>> getDatasets() {
-
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).fetch();
+	}
+
+	public Map<String, String> getLanguagesMap() {
+		return create.select().from(LANG).fetchMap(LANG.CODE, LANG.VALUE);
+	}
+
+	public Result<Record2<String,String>> getLanguages() {
+		return create.select(LANG.CODE, LANG.VALUE).from(LANG).fetch();
 	}
 
 	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {

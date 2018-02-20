@@ -21,9 +21,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.TermDetails;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -53,12 +53,13 @@ public class TermSearchController extends AbstractSearchController {
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
+			@RequestParam(name = "resultLang", required = false) String resultLang,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		cleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		cleanup(selectedDatasets, resultLang, simpleSearchFilter, detailSearchFilter, sessionBean, model);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
@@ -67,7 +68,7 @@ public class TermSearchController extends AbstractSearchController {
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
 			meaningsResult = termSearchService.findMeanings(detailSearchFilter, sessionBean.getSelectedDatasets(), fetchAll);
 		} else {
-			meaningsResult = termSearchService.findMeanings(simpleSearchFilter, sessionBean.getSelectedDatasets(), fetchAll);
+			meaningsResult = termSearchService.findMeanings(simpleSearchFilter, sessionBean.getSelectedDatasets(), sessionBean.getResultLang(), fetchAll);
 		}
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("searchResult", meaningsResult);
@@ -75,19 +76,19 @@ public class TermSearchController extends AbstractSearchController {
 		return TERM_SEARCH_PAGE;
 	}
 
-	@GetMapping("/termdetails/{wordId}")
-	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
+	@GetMapping("/meaningdetails/{meaningId}")
+	public String details(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
-		logger.debug("Requesting details by form {}", wordId);
+		logger.debug("Requesting meaning {} details", meaningId);
 
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			List<Dataset> allDatasets = commonDataService.getDatasets();
 			selectedDatasets = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
 		}
-		TermDetails details = termSearchService.getTermDetails(wordId, selectedDatasets);
-		model.addAttribute("wordId", wordId);
-		model.addAttribute("details", details);
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets);
+		model.addAttribute("meaning", meaning);
+		model.addAttribute("meaningId", meaningId);
 
 		return TERM_SEARCH_PAGE + " :: details";
 	}
