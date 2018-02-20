@@ -41,11 +41,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
 	private static final String defaultWordMorphCode = "SgN";
-
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
-
-	protected static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
-	protected static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
+	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
+	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
 
 	private Map<String, String> posCodes;
 
@@ -228,7 +226,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		basicDbService.update(DATASET, params, values);
 	}
 
-	void doImport(
+	private void doImport(
 			Context context,
 			String dataset) throws Exception {
 
@@ -419,8 +417,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		List<String> datasets = Arrays.asList((String[])((PgArray)domain.get("datasets")).getArray());
 		if (!datasets.contains(dataset)) {
-			List<String> updatedDataset = new ArrayList<>();
-			updatedDataset.addAll(datasets);
+			List<String> updatedDataset = new ArrayList<>(datasets);
 			updatedDataset.add(dataset);
 			Map<String, Object> tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("code", domain.get("code"));
@@ -439,8 +436,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("code", code);
 		tableRowParamMap.put("origin", origin);
-		Map<String, Object> tableRowValueMap = basicDbService.select(DOMAIN, tableRowParamMap);
-		return tableRowValueMap;
+		return basicDbService.select(DOMAIN, tableRowParamMap);
 	}
 
 	private boolean isKnownDataset(String dataset) throws Exception {
@@ -460,7 +456,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		Long id;
 		String name;
 
-		public SourceData(Long id, String name) {
+		SourceData(Long id, String name) {
 			this.id = id;
 			this.name = name;
 		}
