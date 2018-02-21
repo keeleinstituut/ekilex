@@ -10,12 +10,22 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<String> selectedDatasets;
 
+	private String resultLang;
+
 	public List<String> getSelectedDatasets() {
 		return selectedDatasets;
 	}
 
 	public void setSelectedDatasets(List<String> selectedDatasets) {
 		this.selectedDatasets = selectedDatasets;
+	}
+
+	public String getResultLang() {
+		return resultLang;
+	}
+
+	public void setResultLang(String resultLang) {
+		this.resultLang = resultLang;
 	}
 
 }

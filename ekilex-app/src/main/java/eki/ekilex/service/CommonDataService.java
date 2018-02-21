@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
@@ -22,6 +23,11 @@ public class CommonDataService {
 	@Transactional
 	public List<Dataset> getDatasets() {
 		return commonDataDbService.getDatasets().into(Dataset.class);
+	}
+
+	@Transactional
+	public List<Classifier> getLanguages() {
+		return commonDataDbService.getLanguages().into(Classifier.class);
 	}
 
 	@Transactional

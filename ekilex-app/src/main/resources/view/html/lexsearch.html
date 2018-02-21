@@ -37,7 +37,7 @@
       <table id="results" class="w-100">
         <tr th:each="word : ${wordsFoundBySearch}">
           <td class="w-100">
-            <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
+            <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="detailsBtn">
               <span th:text="${word.value}" class="ttl">vorm 1</span>
               <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
               (
@@ -225,7 +225,7 @@
               <table>
                 <tr th:each="relation : ${lexeme.meaningRelations}">
                   <td style="vertical-align: text-top; padding-right: 1em">
-                    <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
+                    <button type="button" class="btn btn-link pt-0" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                   </td>

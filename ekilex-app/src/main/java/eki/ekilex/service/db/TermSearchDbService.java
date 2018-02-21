@@ -31,7 +31,6 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.data.WordTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
-import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
@@ -47,7 +46,7 @@ public class TermSearchDbService {
 		create = context;
 	}
 
-	public Map<Long, List<WordTuple>> findMeaningsAsMap(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
+	public Map<Long, List<WordTuple>> findMeaningsAsMap(String wordWithMetaCharacters, List<String> datasets, String resultLang, boolean fetchAll) {
 
 		Table<Record1<Long>> m = getFilteredMeanings(wordWithMetaCharacters, datasets, fetchAll);
 
@@ -55,6 +54,11 @@ public class TermSearchDbService {
 		Paradigm p2 = PARADIGM.as("p2");
 		Word w2 = WORD.as("w2");
 		Lexeme l2 = LEXEME.as("l2");
+		Condition whereRes = f2.IS_WORD.isTrue().and(f2.PARADIGM_ID.eq(p2.ID)).and(p2.WORD_ID.eq(w2.ID)).and(l2.WORD_ID.eq(w2.ID));
+		if (StringUtils.isNotBlank(resultLang)) {
+			whereRes = whereRes.and(w2.LANG.eq(resultLang));
+		}
+
 		Table<Record5<Long, Long, String, Integer, String>> w = DSL
 				.select(
 					l2.MEANING_ID,
@@ -63,12 +67,8 @@ public class TermSearchDbService {
 					w2.HOMONYM_NR,
 					f2.VALUE.as("word"))
 				.from(f2, p2, w2, l2)
-				.where(
-					f2.IS_WORD.isTrue()
-					.and(f2.PARADIGM_ID.eq(p2.ID))
-					.and(p2.WORD_ID.eq(w2.ID))
-					.and(l2.WORD_ID.eq(w2.ID))
-				).asTable("w");
+				.where(whereRes)
+				.asTable("w");
 
 		Table<Record2<Long, String>> c = DSL
 				.select(
@@ -150,30 +150,28 @@ public class TermSearchDbService {
 		return m;
 	}
 
-	public Result<Record5<Long, String, String, String, Long[]>> findWordMeanings(Long wordId, List<String> datasets) {
+	public Result<Record5<Long, String, String, String, Long[]>> findMeaningLexemeIds(Long meaningId, List<String> selectedDatasets) {
 
-		Meaning m = MEANING.as("m");
-		Lexeme l1 = LEXEME.as("l1");
-		Lexeme l2 = LEXEME.as("l2");
+		return null;
+	}
+
+	public Record5<Long,String,String,String,Long[]> getWordMeaning(Long meaningId, List<String> datasets) {
 
 		return create
 				.select(
-						m.ID.as("meaning_id"),
-						m.TYPE_CODE.as("meaning_type_code"),
-						m.PROCESS_STATE_CODE.as("meaning_process_state_code"),
-						m.STATE_CODE.as("meaning_state_code"),
-						DSL.arrayAggDistinct(l2.ID).as("lexeme_ids"))
-				.from(m, l1, l2)
+						MEANING.ID.as("meaning_id"),
+						MEANING.TYPE_CODE.as("meaning_type_code"),
+						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
+						MEANING.STATE_CODE.as("meaning_state_code"),
+						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
+				.from(MEANING, LEXEME)
 				.where(
-						l1.WORD_ID.eq(wordId)
-						.and(l1.MEANING_ID.eq(m.ID))
-						.and(l2.MEANING_ID.eq(m.ID))
-						.and(l1.DATASET_CODE.in(datasets))
-						.and(l2.DATASET_CODE.in(datasets))
+						MEANING.ID.eq(meaningId)
+						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+						.and(LEXEME.DATASET_CODE.in(datasets))
 						)
-				.groupBy(m.ID)
-				.orderBy(m.ID)
-				.fetch();
+				.groupBy(MEANING.ID)
+				.fetchSingle();
 	}
 
 	public Result<Record13<String,Integer,String,Long,String,Long,Long,String,Integer,Integer,Integer,String,String>> getLexemeWords(Long lexemeId) {
@@ -203,4 +201,5 @@ public class TermSearchDbService {
 				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.fetch();
 	}
+
 }
