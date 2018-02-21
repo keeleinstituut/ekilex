@@ -3,7 +3,9 @@ package eki.ekilex.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.WordsResult;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,22 @@ public class LexSearchController extends AbstractSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		performSearch(selectedDatasets, searchMode, fetchAll, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		logger.debug("Searching by \"{}\" in {}", simpleSearchFilter, selectedDatasets);
+
+		cleanup(selectedDatasets, null, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+
+		if (StringUtils.isBlank(searchMode)) {
+			searchMode = SEARCH_MODE_SIMPLE;
+		}
+		WordsResult result;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			result = commonDataService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
+		} else {
+			result = commonDataService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
+		}
+		model.addAttribute("searchMode", searchMode);
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
 
 		return LEX_SEARCH_PAGE;
 	}

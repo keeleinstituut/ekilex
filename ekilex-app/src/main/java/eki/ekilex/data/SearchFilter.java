@@ -10,6 +10,8 @@ public class SearchFilter extends AbstractDataObject {
 
 	private List<SearchCriterion> searchCriteria;
 
+	private List<SearchCriterionGroup> criteriaGroups;
+
 	public List<SearchCriterion> getSearchCriteria() {
 		return searchCriteria;
 	}
@@ -18,4 +20,11 @@ public class SearchFilter extends AbstractDataObject {
 		this.searchCriteria = searchCriteria;
 	}
 
+	public List<SearchCriterionGroup> getCriteriaGroups() {
+		return criteriaGroups;
+	}
+
+	public void setCriteriaGroups(List<SearchCriterionGroup> criteriaGroups) {
+		this.criteriaGroups = criteriaGroups;
+	}
 }

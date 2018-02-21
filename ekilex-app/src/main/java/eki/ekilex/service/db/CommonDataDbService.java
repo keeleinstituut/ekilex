@@ -4,17 +4,19 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.LANG;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.LANG;
 
 import java.util.List;
 import java.util.Map;
 
+import eki.ekilex.constant.SearchEntity;
+import eki.ekilex.data.SearchCriterionGroup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -31,7 +33,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchFilter;
@@ -71,48 +72,47 @@ public class CommonDataDbService {
 
 	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
 
-		List<SearchCriterion> searchCriteria = searchFilter.getSearchCriteria();
+		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Form form = FORM.as("f");
-		Condition where = createCondition(searchCriteria, word, form);
+		Condition where = createCondition(searchCriteriaGroups, word, form);
 
 		return execute(word, paradigm, form, where, datasets, fetchAll);
 	}
 
 	public int countWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
 
-		List<SearchCriterion> searchCriteria = searchFilter.getSearchCriteria();
-
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
 		Form form = FORM.as("f");
-		Condition where = createCondition(searchCriteria, word, form);
+		Condition where = createCondition(searchFilter.getCriteriaGroups(), word, form);
 
 		return count(word, paradigm, form, where, datasets);
 	}
 
-	private Condition createCondition(List<SearchCriterion> searchCriteria, Word word, Form form) throws Exception {
+	private Condition createCondition(List<SearchCriterionGroup> searchCriterionGroups, Word word, Form form) throws Exception {
 
 		Condition where = DSL.trueCondition();
 
-		for (SearchCriterion searchCriterion : searchCriteria) {
+		for (SearchCriterionGroup searchCriterionGroup : searchCriterionGroups) {
 
-			SearchKey searchKey = searchCriterion.getSearchKey();
-			SearchOperand searchOperand = searchCriterion.getSearchOperand();
-			Object searchValue = searchCriterion.getSearchValue();
+			List<SearchCriterion> searchCriterions = searchCriterionGroup.getSearchCriteria();
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+			// FIXME: fix this code
+			SearchOperand searchOperand = searchCriterions.get(0).getSearchOperand();
+			Object searchValue = searchCriterions.get(0).getSearchValue();
 			if (searchValue == null) {
 				continue;
 			}
-			String searchValueStr = searchValue.toString();
-			searchValueStr = StringUtils.lowerCase(searchValueStr);
+			String searchValueStr = searchValue.toString().toLowerCase();
 
-			if (SearchKey.WORD_VALUE.equals(searchKey)) {
+			if (SearchEntity.WORD.equals(searchEntity)) {
 
 				where = applySearchValueFilter(searchValueStr, searchOperand, form.VALUE, where);
 
-			} else if (SearchKey.FORM_VALUE.equals(searchKey)) {
+			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
 				Paradigm p2 = PARADIGM.as("p2");
 				Form f2 = FORM.as("f2");
@@ -120,7 +120,7 @@ public class CommonDataDbService {
 				where2 = applySearchValueFilter(searchValueStr, searchOperand, f2.VALUE, where2);
 				where = where.and(DSL.exists(DSL.select(f2.ID).from(f2, p2).where(where2)));
 
-			} else if (SearchKey.DEFINITION_VALUE.equals(searchKey)) {
+			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
 				Lexeme l2 = LEXEME.as("l2");
 				Meaning m2 = MEANING.as("m2");
@@ -129,7 +129,7 @@ public class CommonDataDbService {
 				where2 = applySearchValueFilter(searchValueStr, searchOperand, d2.VALUE, where2);
 				where = where.and(DSL.exists(DSL.select(d2.ID).from(l2, m2, d2).where(where2)));
 
-			} else if (SearchKey.USAGE_VALUE.equals(searchKey)) {
+			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
 				Lexeme l2 = LEXEME.as("l2");
 				LexemeFreeform l2ff = LEXEME_FREEFORM.as("l2ff");
@@ -150,7 +150,7 @@ public class CommonDataDbService {
 				where2 = applySearchValueFilter(searchValueStr, searchOperand, u2.VALUE_TEXT, where2);
 				where = where.and(DSL.exists(DSL.select(u2.ID).from(l2, l2ff, rect2, um2, u2).where(where2)));
 
-			} else if (SearchKey.CONCEPT_ID.equals(searchKey)) {
+			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
 				Lexeme l2 = LEXEME.as("l2");
 				Meaning m2 = MEANING.as("m2");

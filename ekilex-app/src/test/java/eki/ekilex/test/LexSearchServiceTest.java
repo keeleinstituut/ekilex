@@ -57,7 +57,7 @@ public class LexSearchServiceTest {
 
 		// case #1
 		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.WORD_VALUE;;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("hall");
 
@@ -73,7 +73,7 @@ public class LexSearchServiceTest {
 
 		// case #2
 		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.WORD_VALUE;;
 		searchOperand = SearchOperand.STARTS_WITH;
 		searchValue = new String("hall");
 
@@ -89,7 +89,7 @@ public class LexSearchServiceTest {
 
 		// case #3
 		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.WORD_VALUE;;
 		searchOperand = SearchOperand.ENDS_WITH;
 		searchValue = new String("hall");
 
@@ -105,7 +105,7 @@ public class LexSearchServiceTest {
 
 		// case #4
 		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.WORD_VALUE;;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("aha");
 
@@ -121,7 +121,7 @@ public class LexSearchServiceTest {
 
 		// case #5
 		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.WORD_VALUE;;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("ii");
 
@@ -131,7 +131,7 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchValue(searchValue);
 		searchCriteria.add(searchCriterion);
 
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.WORD_VALUE;;
 		searchOperand = SearchOperand.ENDS_WITH;
 		searchValue = new String("ll");
 
@@ -164,7 +164,7 @@ public class LexSearchServiceTest {
 
 		// case #1
 		searchCriteria.clear();
-		searchKey = SearchKey.FORM_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.FORM_VALUE;;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("väära");
 
@@ -182,7 +182,7 @@ public class LexSearchServiceTest {
 
 		// case #2
 		searchCriteria.clear();
-		searchKey = SearchKey.FORM_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.FORM_VALUE;;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("halla");
 
@@ -201,7 +201,7 @@ public class LexSearchServiceTest {
 
 		// case #3
 		searchCriteria.clear();
-		searchKey = SearchKey.FORM_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.FORM_VALUE;;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("halli");
 
@@ -236,7 +236,7 @@ public class LexSearchServiceTest {
 
 		// case #1
 		searchCriteria.clear();
-		searchKey = SearchKey.DEFINITION_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.DEFINITION_VALUE;;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("ESIK");
 
@@ -272,7 +272,7 @@ public class LexSearchServiceTest {
 
 		// case #1
 		searchCriteria.clear();
-		searchKey = SearchKey.USAGE_VALUE;
+		searchKey = SearchKey.VALUE; //SearchKey.USAGE_VALUE;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("haned");
 
@@ -306,7 +306,7 @@ public class LexSearchServiceTest {
 
 		// case #1
 		searchCriteria.clear();
-		searchKey = SearchKey.CONCEPT_ID;
+		searchKey = SearchKey.ID; //.CONCEPT_ID;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("123456");
 
