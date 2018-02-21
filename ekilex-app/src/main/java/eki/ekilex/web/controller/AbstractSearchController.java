@@ -51,17 +51,6 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("allLanguages", allLanguages);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
-		model.addAttribute("languages", languagesForSelect(allLanguages));
-	}
-
-	private List<Classifier> languagesForSelect(List<Classifier> allLanguages) {
-		Classifier anyLanguage = new Classifier();
-		anyLanguage.setCode("-");
-		anyLanguage.setValue("kõik keeled");
-		List<Classifier> languages = new ArrayList<>();
-		languages.add(anyLanguage);
-		languages.addAll(allLanguages);
-		return languages;
 	}
 
 	protected void cleanup(
@@ -123,7 +112,6 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("allLanguages", allLanguages);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
-		model.addAttribute("languages", languagesForSelect(allLanguages));
 	}
 
 	protected SearchFilter initSearchFilter() {

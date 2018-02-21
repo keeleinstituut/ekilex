@@ -88,7 +88,8 @@
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
               <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
-                <option th:each="language : ${languages}"
+                <option value="">Kõik keeled</option>
+                <option th:each="language : ${allLanguages}"
                         th:value="${language.code}"
                         th:selected="${criteria.searchValue == language.code}"
                         th:text="${language.value}">language</option>
@@ -141,9 +142,9 @@
         </div>
         <div name="LANGUAGE">
           <select class="form-control">
-            <option th:each="language : ${languages}"
+            <option value="" selected>Kõik keeled</option>
+            <option th:each="language : ${allLanguages}"
                     th:value="${language.code}"
-                    th:selected="${'-' == language.code}"
                     th:text="${language.value}">language</option>
           </select>
         </div>
