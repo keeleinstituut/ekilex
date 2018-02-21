@@ -11,11 +11,14 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 import java.util.Map;
 
 import eki.ekilex.constant.SearchEntity;
+import eki.ekilex.constant.SearchKey;
 import eki.ekilex.data.SearchCriterionGroup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -99,26 +102,46 @@ public class CommonDataDbService {
 		for (SearchCriterionGroup searchCriterionGroup : searchCriterionGroups) {
 
 			List<SearchCriterion> searchCriterions = searchCriterionGroup.getSearchCriteria();
-			SearchEntity searchEntity = searchCriterionGroup.getEntity();
-			// FIXME: fix this code
-			SearchOperand searchOperand = searchCriterions.get(0).getSearchOperand();
-			Object searchValue = searchCriterions.get(0).getSearchValue();
-			if (searchValue == null) {
+			if (searchCriterions.isEmpty()) {
 				continue;
 			}
-			String searchValueStr = searchValue.toString().toLowerCase();
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+
+			List<SearchCriterion> valueCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
+					.collect(toList());
+			List<SearchCriterion> languageCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.LANGUAGE) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+					.collect(toList());
+			List<SearchCriterion> idCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
+					.collect(toList());
 
 			if (SearchEntity.WORD.equals(searchEntity)) {
 
-				where = applySearchValueFilter(searchValueStr, searchOperand, form.VALUE, where);
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where = applySearchValueFilter(searchValueStr, searchOperand, form.VALUE, where);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					where = where.and(word.LANG.eq(criterion.getSearchValue().toString()));
+				}
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
 				Paradigm p2 = PARADIGM.as("p2");
 				Form f2 = FORM.as("f2");
 				Condition where2 = f2.PARADIGM_ID.eq(p2.ID).and(p2.WORD_ID.eq(word.ID));
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, f2.VALUE, where2);
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where2 = applySearchValueFilter(searchValueStr, searchOperand, f2.VALUE, where2);
+				}
 				where = where.and(DSL.exists(DSL.select(f2.ID).from(f2, p2).where(where2)));
+				for (SearchCriterion criterion : languageCriterions) {
+					where = where.and(word.LANG.eq(criterion.getSearchValue().toString()));
+				}
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -126,7 +149,14 @@ public class CommonDataDbService {
 				Meaning m2 = MEANING.as("m2");
 				Definition d2 = DEFINITION.as("d2");
 				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(d2.MEANING_ID.eq(m2.ID));
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, d2.VALUE, where2);
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where2 = applySearchValueFilter(searchValueStr, searchOperand, d2.VALUE, where2);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					where2 = where2.and(d2.LANG.eq(criterion.getSearchValue().toString()));
+				}
 				where = where.and(DSL.exists(DSL.select(d2.ID).from(l2, m2, d2).where(where2)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
@@ -139,15 +169,23 @@ public class CommonDataDbService {
 
 				Condition where2 =
 						l2.WORD_ID.eq(word.ID)
-						.and(l2ff.LEXEME_ID.eq(l2.ID))
-						.and(l2ff.FREEFORM_ID.eq(rect2.ID))
-						.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
-						.and(um2.PARENT_ID.eq(rect2.ID))
-						.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
-						.and(u2.PARENT_ID.eq(um2.ID))
-						.and(u2.TYPE.eq(FreeformType.USAGE.name()));
+								.and(l2ff.LEXEME_ID.eq(l2.ID))
+								.and(l2ff.FREEFORM_ID.eq(rect2.ID))
+								.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
+								.and(um2.PARENT_ID.eq(rect2.ID))
+								.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
+								.and(u2.PARENT_ID.eq(um2.ID))
+								.and(u2.TYPE.eq(FreeformType.USAGE.name()));
 
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, u2.VALUE_TEXT, where2);
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where2 = applySearchValueFilter(searchValueStr, searchOperand, u2.VALUE_TEXT, where2);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					where2 = where2.and(u2.LANG.eq(criterion.getSearchValue().toString()));
+				}
+
 				where = where.and(DSL.exists(DSL.select(u2.ID).from(l2, l2ff, rect2, um2, u2).where(where2)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
@@ -157,14 +195,14 @@ public class CommonDataDbService {
 				MeaningFreeform m2ff = MEANING_FREEFORM.as("m2ff");
 				Freeform concept = FREEFORM.as("concept");
 
-				Condition where2 =
-						l2.WORD_ID.eq(word.ID)
-						.and(l2.MEANING_ID.eq(m2.ID))
-						.and(m2ff.MEANING_ID.eq(m2.ID))
-						.and(m2ff.FREEFORM_ID.eq(concept.ID))
-						.and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(m2ff.MEANING_ID.eq(m2.ID)).and(m2ff.FREEFORM_ID.eq(concept.ID)).and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where2);
+				for (SearchCriterion criterion : idCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where2 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where2);
+				}
+
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
 			}
 		}
