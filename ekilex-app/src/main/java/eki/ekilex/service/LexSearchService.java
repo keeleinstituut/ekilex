@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FormRelation;
@@ -22,15 +23,17 @@ import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Service
-public class LexSearchService {
+public class LexSearchService implements SystemConstant {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -40,6 +43,34 @@ public class LexSearchService {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Transactional
+	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
+
+		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
+		int wordCount = words.size();
+		if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+			wordCount = lexSearchDbService.countWords(searchFilter, datasets);
+		}
+		WordsResult result = new WordsResult();
+		result.setWords(words);
+		result.setTotalCount(wordCount);
+		return result;
+	}
+
+	@Transactional
+	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
+
+		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
+		int wordCount = words.size();
+		if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+			wordCount = lexSearchDbService.countWords(searchFilter, datasets);
+		}
+		WordsResult result = new WordsResult();
+		result.setWords(words);
+		result.setTotalCount(wordCount);
+		return result;
+	}
 
 	@Transactional
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {

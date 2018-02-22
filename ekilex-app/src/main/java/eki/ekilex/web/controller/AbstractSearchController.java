@@ -47,6 +47,7 @@ public abstract class AbstractSearchController implements WebConstant {
 		}
 		List<Classifier> allLanguages = commonDataService.getLanguages();
 		SearchFilter detailSearchFilter = initSearchFilter();
+
 		model.addAttribute("allDatasets", allDatasets);
 		model.addAttribute("allLanguages", allLanguages);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);

@@ -64,9 +64,9 @@ public class LexSearchController extends AbstractSearchController {
 		}
 		WordsResult result;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			result = commonDataService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
+			result = lexSearchService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
 		} else {
-			result = commonDataService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
+			result = lexSearchService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
 		}
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("wordsFoundBySearch", result.getWords());

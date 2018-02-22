@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.WordTuple;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -35,9 +36,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class TermSearchDbService {
-
-	public static final int MAX_RESULTS_LIMIT = 50;
+public class TermSearchDbService implements SystemConstant {
 
 	private DSLContext create;
 

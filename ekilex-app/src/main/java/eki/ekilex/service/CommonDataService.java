@@ -9,9 +9,6 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
-import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 
 @Component
@@ -30,31 +27,4 @@ public class CommonDataService {
 		return commonDataDbService.getLanguages().into(Classifier.class);
 	}
 
-	@Transactional
-	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
-
-		List<Word> words = commonDataDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
-		int wordCount = words.size();
-		if (!fetchAll && wordCount == CommonDataDbService.MAX_RESULTS_LIMIT) {
-			wordCount = commonDataDbService.countWords(searchFilter, datasets);
-		}
-		WordsResult result = new WordsResult();
-		result.setWords(words);
-		result.setTotalCount(wordCount);
-		return result;
-	}
-
-	@Transactional
-	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
-
-		List<Word> words = commonDataDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
-		int wordCount = words.size();
-		if (!fetchAll && wordCount == CommonDataDbService.MAX_RESULTS_LIMIT) {
-			wordCount = commonDataDbService.countWords(searchFilter, datasets);
-		}
-		WordsResult result = new WordsResult();
-		result.setWords(words);
-		result.setTotalCount(wordCount);
-		return result;
-	}
 }
