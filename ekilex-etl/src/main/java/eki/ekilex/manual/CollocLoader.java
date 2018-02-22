@@ -23,7 +23,7 @@ public class CollocLoader {
 		try {
 			applicationContext.registerShutdownHook();
 
-			// /projects/eki/data/dictionaries/kol/kol-test_12-02-18.xml
+			// /projects/eki/data/dictionaries/kol/kol-test_21-02-18.xml
 			// /projects/eki/data/dictionaries/mab/mab.xml
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Collocate data file location? (/absolute/path/to/file.xml)");

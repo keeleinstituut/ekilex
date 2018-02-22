@@ -32,6 +32,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_ILLEGAL_DATA = "illegal_data";
 
+	private static final String REPORT_MISSING_DATA = "missing_data";
+
 	private static final String REPORT_AMBIGUOUS_HOMONYM = "ambiguous_homonym";
 
 	private static final String REPORT_MISSING_IN_MAB = "missing_in_mab";
@@ -55,6 +57,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String prevWordExp = "x:mse";
 	private final String nextWordExp = "x:msj";
 	private final String collocUsageExp = "x:cng/x:cn[not(@x:as='ab')]";
+	private final String collocRelGroupNameExp = "x:reln";
+	private final String collocRelGroupFreqExp = "x:rfr";
+	private final String collocRelGroupScoreExp = "x:rsc";
+	private final String collocFreqExp = "x:cfr";
+	private final String collocScoreExp = "x:csc";
 
 	private final String defaultWordMorphCode = "??";
 
@@ -87,7 +94,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		if (doReports) {
 			reportComposer = new ReportComposer("kol loader report",
-					REPORT_ILLEGAL_DATA, REPORT_AMBIGUOUS_HOMONYM, REPORT_MISSING_IN_MAB, REPORT_AMBIGUOUS_WORD_MATCH, REPORT_COLLOC_PAIR_UNMATCH);
+					REPORT_ILLEGAL_DATA, REPORT_MISSING_DATA, REPORT_AMBIGUOUS_HOMONYM, REPORT_MISSING_IN_MAB, REPORT_AMBIGUOUS_WORD_MATCH, REPORT_COLLOC_PAIR_UNMATCH);
 		}
 		if (!mabService.isMabLoaded()) {
 			logger.error("MAB loading is absolutely required!");
@@ -104,14 +111,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap = new HashMap<>();
 
 		Element headerNode, contentNode, guidNode, wordNode, wordGroupNode, wordPosNode, collocRelGroupNameNode, collocRelGroupFreqNode, collocRelGroupScoreNode;
-		List<Element> meaningBlockNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes, collocUsageNodes;
-		String guid, word, collocPosCode, convertedPosCode, collocUsage, collocRelGroupName;
+		List<Element> meaningBlockNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes, collocUsageNodes;
+		String guid, word, collocPosCode, collocUsage, collocRelGroupName;
 		List<Paradigm> paradigms;
 		List<Long> collocationIds;
 		WordLexemeMeaning wordLexemeMeaning;
 
 		Count ignoredArticleCount = new Count();
-		Count illegalPosCount = new Count();
 		Count successfulCollocationMatchCount = new Count();
 
 		long articleCounter = 0;
@@ -169,40 +175,52 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				for (Element colPosGroupNode : collocPosGroupNodes) {
 
 					collocPosCode = colPosGroupNode.attributeValue(collocPosAttr);
-					convertedPosCode = posConversionMap.get(collocPosCode);
-					if (StringUtils.isBlank(convertedPosCode)) {
-						illegalPosCount.increment();
-					}
 					Long collocPosGroupId = createCollocPosGroup(wordLexemeMeaning.getLexemeId(), collocPosCode);
 
 					collocRelGroupNodes = colPosGroupNode.selectNodes(collocRelGroupExp);//x:relg
+					int collocRelGroupNum = 0;
 
 					for (Element collocRelGroupNode : collocRelGroupNodes) {
 
-						collocRelGroupNameNode = (Element) collocRelGroupNode.selectSingleNode("x:reln");
+						collocRelGroupNum++;
+						collocRelGroupNameNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupNameExp);
 						collocRelGroupName = collocRelGroupNameNode.getTextTrim();
 
-						collocRelGroupFreqNode = (Element) collocRelGroupNode.selectSingleNode("x:rfr");
-						Float collocRelGroupFreq = Float.parseFloat(collocRelGroupFreqNode.getTextTrim());
+						Float collocRelGroupFreq = null;
+						collocRelGroupFreqNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupFreqExp);
+						if (collocRelGroupFreqNode == null) {
+							appendToReport(doReports, REPORT_MISSING_DATA, wordLexemeMeaning.getWord(), "x:relg", "[" + collocRelGroupNum + "]", "puudub sagedus");
+						} else {
+							try {
+								collocRelGroupFreq = Float.parseFloat(collocRelGroupFreqNode.getTextTrim());
+							} catch (Exception e) {
+								appendToReport(doReports, REPORT_ILLEGAL_DATA, wordLexemeMeaning.getWord(), "x:relg", "[" + collocRelGroupNum + "]", "sagedusel sobimatu formaat");
+							}
+						}
 
-						collocRelGroupScoreNode = (Element) collocRelGroupNode.selectSingleNode("x:rsc");
-						Float collocRelGroupScore = Float.parseFloat(collocRelGroupScoreNode.getTextTrim());
+						Float collocRelGroupScore = null;
+						collocRelGroupScoreNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupScoreExp);
+						if (collocRelGroupScoreNode == null) {
+							appendToReport(doReports, REPORT_MISSING_DATA, wordLexemeMeaning.getWord(), "x:relg", "[" + collocRelGroupNum + "]", "puudub skoor");
+						} else {
+							try {
+								collocRelGroupScore = Float.parseFloat(collocRelGroupScoreNode.getTextTrim());
+							} catch (Exception e) {
+								appendToReport(doReports, REPORT_ILLEGAL_DATA, wordLexemeMeaning.getWord(), "x:relg", "[" + collocRelGroupNum + "]", "skooril sobimatu formaat");
+							}
+						}
 
 						Long collocRelGroupId = createCollocRelGroup(collocPosGroupId, collocRelGroupName, collocRelGroupFreq, collocRelGroupScore);
 
 						collocGroupNodes = collocRelGroupNode.selectNodes(collocGroupExp);//x:colg
+						int collocGroupNum = 0;
 
 						for (Element collocGroupNode : collocGroupNodes) {
 
-							collocWordNodes = collocGroupNode.selectNodes(collocWordExp);
-							prevWordNodes = collocGroupNode.selectNodes(prevWordExp);
-							nextWordNodes = collocGroupNode.selectNodes(nextWordExp);
-
-							collocationIds = handleAndSaveCollocations(
-									wordLexemeMeaning, wordLexemeMeaningIdMap,
-									collocWordNodes, prevWordNodes, nextWordNodes,
-									convertedPosCode, dataset, dataLang,
-									successfulCollocationMatchCount, doReports);
+							collocGroupNum++;
+							collocationIds = extractAndSaveCollocations(
+									collocGroupNode, collocGroupNum, wordLexemeMeaning, wordLexemeMeaningIdMap,
+									collocRelGroupId, dataset, dataLang, successfulCollocationMatchCount, doReports);
 
 							if (CollectionUtils.isNotEmpty(collocationIds)) {
 
@@ -231,19 +249,26 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} ignored articles", ignoredArticleCount.getValue());
-		logger.debug("Found {} illegal POS codes", illegalPosCount.getValue());
 		logger.debug("Found {} successful collocation matches", successfulCollocationMatchCount.getValue());
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private List<Long> handleAndSaveCollocations(
-			WordLexemeMeaning newWord, Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap,
-			List<Element> collocWordNodes, List<Element> prevWordNodes, List<Element> nextWordNodes,
-			String collocPosCode, String dataset, String dataLang,
+	private List<Long> extractAndSaveCollocations(
+			Element collocGroupNode,
+			int collocGroupNum,
+			WordLexemeMeaning newWord,
+			Map<String, WordLexemeMeaning> wordLexemeMeaningIdMap,
+			Long collocRelGroupId,
+			String dataset,
+			String dataLang,
 			Count successfulCollocationMatchCount,
 			boolean doReports) throws Exception {
+
+		List<Element> collocWordNodes = collocGroupNode.selectNodes(collocWordExp);
+		List<Element> prevWordNodes = collocGroupNode.selectNodes(prevWordExp);
+		List<Element> nextWordNodes = collocGroupNode.selectNodes(nextWordExp);
 
 		List<Long> collocationIds = new ArrayList<>();
 		List<CollocElement> collocWords = extractAndFindWord(null, collocWordNodes, "kollokaat", doReports);
@@ -251,17 +276,42 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<CollocElement> nextWords = extractAndFindWord(newWord.getWord(), nextWordNodes, "järelsõna", doReports);
 
 		if (CollectionUtils.isEmpty(collocWords)) {
-			//log missing colloc?
+			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "puudub kollokatsioon");
 			return collocationIds;
 		}
 		if (CollectionUtils.isEmpty(prevWords) && CollectionUtils.isEmpty(nextWords)) {
-			//log missing prev and next?
+			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "puuduvad eel- ja järelsõna");
 			return collocationIds;
 		}
 		if (CollectionUtils.isNotEmpty(prevWords) && CollectionUtils.isNotEmpty(nextWords)) {
-			//log colloc overload?
+			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "esinevad korraga eel- ja järelsõna");
 			return collocationIds;
 		}
+
+		Float frequency = null;
+		Element collocFreqNode = (Element) collocGroupNode.selectSingleNode(collocFreqExp);
+		if (collocFreqNode == null) {
+			appendToReport(doReports, REPORT_MISSING_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "puudub sagedus");
+		} else {
+			try {
+				frequency = Float.parseFloat(collocFreqNode.getTextTrim());
+			} catch (Exception e) {
+				appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "sagedusel sobimatu formaat");
+			}
+		}
+
+		Float score = null;
+		Element collocScoreNode = (Element) collocGroupNode.selectSingleNode(collocScoreExp);
+		if (collocScoreNode == null) {
+			appendToReport(doReports, REPORT_MISSING_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "puudub skoor");
+		} else {
+			try {
+				score = Float.parseFloat(collocScoreNode.getTextTrim());
+			} catch (Exception e) {
+				appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord.getWord(), "x:colg", "[" + collocGroupNum + "]", "skooril sobimatu formaat");
+			}
+		}
+
 		List<Paradigm> paradigms;
 
 		for (CollocElement collocWordObj : collocWords) {
@@ -273,43 +323,33 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				paradigms = mabService.getWordParadigms(collocWord);
 				collocWordLexemeMeaning = saveWordLexemeMeaning(collocWord, dataLang, morphCode, null, paradigms, dataset);
 				wordLexemeMeaningIdMap.put(collocWord, collocWordLexemeMeaning);
-				if (StringUtils.isNotBlank(collocPosCode)) {
-					Long collocLexemeId = collocWordLexemeMeaning.getLexemeId();
-					createLexemePos(collocLexemeId, collocPosCode);
-				}
 			}
 			Long collocLexemeId = collocWordLexemeMeaning.getLexemeId();
 			if (CollectionUtils.isNotEmpty(prevWords)) {
 				for (CollocElement prevWordObj : prevWords) {
-					String prevWord = prevWordObj.getWord();
 					String prevForm = prevWordObj.getForm();
 					String conjunct = prevWordObj.getConjunct();
-					WordLexemeMeaning prevWordLexemeMeaning = wordLexemeMeaningIdMap.get(prevWord);
-					Long prevLexemeId = prevWordLexemeMeaning.getLexemeId();
 					String collocation;
 					if (StringUtils.isBlank(conjunct)) {
 						collocation = prevForm + ' ' + collocForm;
 					} else {
 						collocation = prevForm + ' ' + conjunct + ' ' + collocForm;
 					}
-					Long collocId = createCollocation(prevLexemeId, collocLexemeId, collocation);
+					Long collocId = createCollocation(collocRelGroupId, collocLexemeId, collocation, frequency, score);
 					collocationIds.add(collocId);
 					successfulCollocationMatchCount.increment();
 				}
 			} else if (CollectionUtils.isNotEmpty(nextWords)) {
 				for (CollocElement nextWordObj : nextWords) {
-					String nextWord = nextWordObj.getWord();
 					String nextForm = nextWordObj.getForm();
 					String conjunct = nextWordObj.getConjunct();
-					WordLexemeMeaning nextWordLexemeMeaning = wordLexemeMeaningIdMap.get(nextWord);
-					Long nextLexemeId = nextWordLexemeMeaning.getLexemeId();
 					String collocation;
 					if (StringUtils.isBlank(conjunct)) {
 						collocation = collocForm + ' ' + nextForm;
 					} else {
 						collocation = collocForm + ' ' + conjunct + ' ' + nextForm;
 					}
-					Long collocId = createCollocation(nextLexemeId, collocLexemeId, collocation);
+					Long collocId = createCollocation(collocRelGroupId, collocLexemeId, collocation, frequency, score);
 					collocationIds.add(collocId);
 					successfulCollocationMatchCount.increment();
 				}
@@ -372,9 +412,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				}
 			} else {
 				lemmaDataLog = lemmaDataAttr;
-				boolean isMultipleCandidates = StringUtils.contains(lemmaDataAttr, '_');
+				boolean isMultipleCandidates = StringUtils.contains(lemmaDataAttr, '|');
 				if (isMultipleCandidates) {
-					String[] lemmaDataCandidates = StringUtils.split(lemmaDataAttr, '_');
+					String[] lemmaDataCandidates = StringUtils.split(lemmaDataAttr, '|');
 					List<String> wordCandidates = Arrays.stream(lemmaDataCandidates).map(lemmaDataCandidate -> {
 							String wordCandidate = StringUtils.split(lemmaDataCandidate, ':')[0];
 							wordCandidate = StringUtils.remove(wordCandidate, '+');
@@ -456,19 +496,28 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("collocation_pos_group_id", collocPosGroupId);
 		tableRowParamMap.put("name", name);
-		tableRowParamMap.put("frequency", frequency);
-		tableRowParamMap.put("score", score);
+		if (frequency != null) {
+			tableRowParamMap.put("frequency", frequency);
+		}
+		if (score != null) {
+			tableRowParamMap.put("score", score);
+		}
 		Long collocRelGroupId = basicDbService.create(COLLOCATION_REL_GROUP, tableRowParamMap);
 		return collocRelGroupId;
 	}
 
-	@Deprecated
-	private Long createCollocation(Long lexemeId1, Long lexemeId2, String collocation) throws Exception {
+	private Long createCollocation(Long collocRelGroupId, Long lexemeId, String collocation, Float frequency, Float score) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("lexeme1_id", lexemeId1);
-		tableRowParamMap.put("lexeme2_id", lexemeId2);
+		tableRowParamMap.put("collocation_rel_group_id", collocRelGroupId);
+		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("value", collocation);
+		if (frequency != null) {
+			tableRowParamMap.put("frequency", frequency);
+		}
+		if (score != null) {
+			tableRowParamMap.put("score", score);
+		}
 		Long collocationId = basicDbService.create(COLLOCATION, tableRowParamMap);
 		return collocationId;
 	}
