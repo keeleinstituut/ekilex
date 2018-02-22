@@ -21,7 +21,7 @@
       </div>
       <div class="card-body">
         <form th:action="@{/termsearch}" method="post">
-          <th:block th:replace="search :: search_form"></th:block>
+          <th:block th:replace="search :: search_form('term_search')"></th:block>
           <th:block>
             <div class="form-row">
               <div class="col-12">

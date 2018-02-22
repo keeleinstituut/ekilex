@@ -7,7 +7,7 @@
 </head>
 <body>
 
-<th:block th:fragment="search_form">
+<th:block th:fragment="search_form(searchPageName)">
   <div class="form-row">
     <div class="col-12">
       <div class="form-group row">
@@ -21,7 +21,7 @@
       </div>
     </div>
   </div>
-  <th:block th:replace="::detail_search"></th:block>
+  <th:block th:replace="::detail_search(${searchPageName})"></th:block>
   <th:block th:replace="::simple_search"></th:block>
   <script th:inline="javascript">
       initaliseSearchForm()
@@ -44,7 +44,7 @@
   </div>
 </th:block>
 
-<th:block th:fragment="detail_search">
+<th:block th:fragment="detail_search(searchPageName)">
   <div class="form-row" name="detailSearchFilter" th:hidden="${searchMode != 'DETAIL'}">
     <div class="col-10">
       <div class="row border rounded p-2 m-2" th:each="group, stat : ${detailSearchFilter.criteriaGroups}" name="detailGroup" th:data-index="${stat.index}">
@@ -52,7 +52,7 @@
           <div class="row">
             <div class="col-8">
               <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].entity'">
-                <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).values()}"
+                <option th:each="entity : ${searchPageName == 'lex_search' ? T(eki.ekilex.constant.SearchEntity).lexEntities() : T(eki.ekilex.constant.SearchEntity).termEntities()}"
                         th:value="${entity}"
                         th:selected="${group.entity == entity}"
                         th:text="#{|search.entity.${entity.name()}|}">entityName</option>
@@ -124,7 +124,7 @@
       </div>
 
       <div id="searchKeyTemplates" hidden>
-        <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).values()}">
+        <div th:each="entity : ${searchPageName == 'lex_search' ? T(eki.ekilex.constant.SearchEntity).lexEntities() : T(eki.ekilex.constant.SearchEntity).termEntities()}">
           <div th:name="${entity}">
             <option th:each="key : ${entity.getKeys()}"
                     th:value="${key}"
