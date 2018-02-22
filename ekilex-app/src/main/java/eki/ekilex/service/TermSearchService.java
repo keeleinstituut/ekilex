@@ -29,7 +29,6 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.WordTuple;
 import eki.ekilex.service.db.CommonDataDbService;
-import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
@@ -40,23 +39,30 @@ public class TermSearchService implements SystemConstant {
 	private TermSearchDbService termSearchDbService;
 
 	@Autowired
-	private LexSearchDbService lexSearchDbService;
-
-	@Autowired
 	private CommonDataDbService commonDataDbService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
 
-	//TODO implement
 	@Transactional
-	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
+	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
 
-		List<TermMeaning> termMeanings = Collections.emptyList();
-		int meaningCount = 0;
+		Map<Long, List<WordTuple>> termMeaningsMap;
+		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+			termMeaningsMap = Collections.emptyMap();
+		} else {
+			termMeaningsMap = termSearchDbService.findMeaningsAsMap(searchFilter, datasets, resultLang, fetchAll);
+		}
+		List<TermMeaning> termMeanings = conversionUtil.convert(termMeaningsMap);
+		int meaningCount = termMeanings.size();
+		if (!fetchAll && meaningCount == MAX_RESULTS_LIMIT) {
+			meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
+		}
+		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
 		meaningsResult.setTermMeanings(termMeanings);
 		meaningsResult.setResultCount(meaningCount);
+		meaningsResult.setResultExist(resultExist);
 		return meaningsResult;
 	}
 
@@ -89,7 +95,7 @@ public class TermSearchService implements SystemConstant {
 		final String classifierLabelTypeDescrip = "descrip";
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-		Meaning meaning = termSearchDbService.getWordMeaning(meaningId, selectedDatasets).into(Meaning.class);
+		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
 
 		List<Definition> definitions = commonDataDbService.findMeaningDefinitions(meaningId).into(Definition.class);
 		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);

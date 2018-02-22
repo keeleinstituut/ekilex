@@ -1,12 +1,16 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 import java.util.Map;
@@ -28,10 +32,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.ekilex.constant.SearchEntity;
+import eki.ekilex.constant.SearchKey;
+import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchCriterionGroup;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordTuple;
+import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
@@ -45,9 +60,198 @@ public class TermSearchDbService implements SystemConstant {
 		create = context;
 	}
 
+	public Map<Long, List<WordTuple>> findMeaningsAsMap(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
+		
+		Table<Record1<Long>> m = getFilteredMeanings(searchFilter, datasets, fetchAll);
+
+		return execute(m, resultLang);
+	}
+
+	public int countMeanings(SearchFilter searchFilter, List<String> datasets) throws Exception {
+
+		Table<Record1<Long>> m = getFilteredMeanings(searchFilter, datasets, true);
+
+		return create.fetchCount(m);
+	}
+
 	public Map<Long, List<WordTuple>> findMeaningsAsMap(String wordWithMetaCharacters, List<String> datasets, String resultLang, boolean fetchAll) {
 
 		Table<Record1<Long>> m = getFilteredMeanings(wordWithMetaCharacters, datasets, fetchAll);
+
+		return execute(m, resultLang);
+	}
+
+	public int countMeanings(String wordWithMetaCharacters, List<String> datasets) {
+
+		Table<Record1<Long>> m = getFilteredMeanings(wordWithMetaCharacters, datasets, true);
+
+		return create.fetchCount(m);
+	}
+
+	private Table<Record1<Long>> getFilteredMeanings(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
+
+		List<SearchCriterionGroup> criteriaGroups = searchFilter.getCriteriaGroups();
+
+		Meaning m1 = MEANING.as("m1");
+
+		Condition where = DSL.trueCondition();
+
+		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
+
+			List<SearchCriterion> searchCriterions = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriterions)) {
+				continue;
+			}
+			SearchEntity searchEntity = searchCriterionGroup.getEntity();
+
+			List<SearchCriterion> valueCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
+					.collect(toList());
+			List<SearchCriterion> languageCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.LANGUAGE) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+					.collect(toList());
+			List<SearchCriterion> idCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
+					.collect(toList());
+
+			if (SearchEntity.WORD.equals(searchEntity)) {
+
+				Form f1 = FORM.as("f1");
+				Paradigm p1 = PARADIGM.as("p1");
+				Word w1 = WORD.as("w1");
+				Lexeme l1 = LEXEME.as("l1");
+				Condition where1 =
+						f1.IS_WORD.isTrue()
+						.and(f1.PARADIGM_ID.eq(p1.ID))
+						.and(p1.WORD_ID.eq(w1.ID))
+						.and(l1.WORD_ID.eq(w1.ID))
+						.and(l1.MEANING_ID.eq(m1.ID));
+
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where1 = applySearchValueFilter(searchValueStr, searchOperand, f1.VALUE, where1);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = where1.and(w1.LANG.eq(searchValueStr));
+				}
+				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+
+			} else if (SearchEntity.FORM.equals(searchEntity)) {
+
+				Form f1 = FORM.as("f1");
+				Paradigm p1 = PARADIGM.as("p1");
+				Word w1 = WORD.as("w1");
+				Lexeme l1 = LEXEME.as("l1");
+				Condition where1 =
+						f1.PARADIGM_ID.eq(p1.ID)
+						.and(p1.WORD_ID.eq(w1.ID))
+						.and(l1.WORD_ID.eq(w1.ID))
+						.and(l1.MEANING_ID.eq(m1.ID));
+
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where1 = applySearchValueFilter(searchValueStr, searchOperand, f1.VALUE, where1);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = where1.and(w1.LANG.eq(searchValueStr));
+				}
+				where = where.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+
+			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
+
+				Definition d1 = DEFINITION.as("d1");
+				Condition where1 = d1.MEANING_ID.eq(m1.ID);
+
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where1 = applySearchValueFilter(searchValueStr, searchOperand, d1.VALUE, where1);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					String searchValueStr = criterion.getSearchValue().toString();
+					where1 = where1.and(d1.LANG.eq(searchValueStr));
+				}
+				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1).where(where1)));
+
+			} else if (SearchEntity.USAGE.equals(searchEntity)) {
+
+				Lexeme l1 = LEXEME.as("l1");
+				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
+				Freeform rect1 = FREEFORM.as("rect1");
+				Freeform um1 = FREEFORM.as("um1");
+				Freeform u1 = FREEFORM.as("u1");
+
+				Condition where1 =
+						l1.MEANING_ID.eq(m1.ID)
+						.and(l1ff.LEXEME_ID.eq(l1.ID))
+						.and(l1ff.FREEFORM_ID.eq(rect1.ID))
+						.and(rect1.TYPE.eq(FreeformType.GOVERNMENT.name()))
+						.and(um1.PARENT_ID.eq(rect1.ID))
+						.and(um1.TYPE.eq(FreeformType.USAGE_MEANING.name()))
+						.and(u1.PARENT_ID.eq(um1.ID))
+						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
+
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				for (SearchCriterion criterion : valueCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where1 = applySearchValueFilter(searchValueStr, searchOperand, u1.VALUE_TEXT, where1);
+				}
+				for (SearchCriterion criterion : languageCriterions) {
+					where1 = where1.and(u1.LANG.eq(criterion.getSearchValue().toString()));
+				}
+
+				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, rect1, um1, u1).where(where1)));
+
+			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
+
+				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
+				Freeform concept = FREEFORM.as("concept");
+
+				Condition where1 =
+						m1ff.MEANING_ID.eq(m1.ID)
+						.and(m1ff.FREEFORM_ID.eq(concept.ID))
+						.and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+
+				for (SearchCriterion criterion : idCriterions) {
+					SearchOperand searchOperand = criterion.getSearchOperand();
+					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
+					where1 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where1);
+				}
+
+				where = where.and(DSL.exists(DSL.select(concept.ID).from(m1ff, concept).where(where1)));
+			}
+		}
+
+		int limit = MAX_RESULTS_LIMIT;
+		if (fetchAll) {
+			limit = Integer.MAX_VALUE;
+		}
+
+		Table<Record1<Long>> m = DSL
+				.select(m1.ID.as("meaning_id"))
+				.from(m1)
+				.where(where)
+				.groupBy(m1.ID)
+				.orderBy(m1.ID)
+				.limit(limit)
+				.asTable("m");
+		return m;
+	}
+
+	private Map<Long, List<WordTuple>> execute(Table<Record1<Long>> m, String resultLang) {
 
 		Form f2 = FORM.as("f2");
 		Paradigm p2 = PARADIGM.as("p2");
@@ -105,13 +309,6 @@ public class TermSearchDbService implements SystemConstant {
 		return result;
 	}
 
-	public int countMeanings(String wordWithMetaCharacters, List<String> datasets) {
-
-		Table<Record1<Long>> m = getFilteredMeanings(wordWithMetaCharacters, datasets, true);
-
-		return create.fetchCount(m);
-	}
-
 	private Table<Record1<Long>> getFilteredMeanings(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
 
 		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
@@ -149,12 +346,23 @@ public class TermSearchDbService implements SystemConstant {
 		return m;
 	}
 
-	public Result<Record5<Long, String, String, String, Long[]>> findMeaningLexemeIds(Long meaningId, List<String> selectedDatasets) {
+	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) throws Exception {
 
-		return null;
+		if (SearchOperand.EQUALS.equals(searchOperand)) {
+			condition = condition.and(searchField.equalIgnoreCase(searchValueStr));
+		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
+			condition = condition.and(searchField.lower().startsWith(searchValueStr));
+		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
+			condition = condition.and(searchField.lower().endsWith(searchValueStr));
+		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
+			condition = condition.and(searchField.lower().contains(searchValueStr));
+		} else {
+			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+		}
+		return condition;
 	}
 
-	public Record5<Long,String,String,String,Long[]> getWordMeaning(Long meaningId, List<String> datasets) {
+	public Record5<Long,String,String,String,Long[]> getMeaning(Long meaningId, List<String> datasets) {
 
 		return create
 				.select(

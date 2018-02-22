@@ -64,11 +64,13 @@ public class TermSearchController extends AbstractSearchController {
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
+		selectedDatasets = sessionBean.getSelectedDatasets();
+		resultLang = sessionBean.getResultLang();
 		MeaningsResult meaningsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			meaningsResult = termSearchService.findMeanings(detailSearchFilter, sessionBean.getSelectedDatasets(), fetchAll);
+			meaningsResult = termSearchService.findMeanings(detailSearchFilter, selectedDatasets, resultLang, fetchAll);
 		} else {
-			meaningsResult = termSearchService.findMeanings(simpleSearchFilter, sessionBean.getSelectedDatasets(), sessionBean.getResultLang(), fetchAll);
+			meaningsResult = termSearchService.findMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll);
 		}
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("searchResult", meaningsResult);

@@ -7,6 +7,8 @@ import java.util.List;
 
 public class SearchCriterionGroup extends AbstractDataObject {
 
+	private static final long serialVersionUID = 1L;
+
 	private SearchEntity entity;
 
 	private List<SearchCriterion> searchCriteria;
