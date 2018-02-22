@@ -90,7 +90,7 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<String> grammars;
 
-	private List<Collocation> collocations;
+	private List<CollocationPosGroup> collocationPosGroups;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -341,12 +341,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.grammars = grammars;
 	}
 
-	public List<Collocation> getCollocations() {
-		return collocations;
+	public List<CollocationPosGroup> getCollocationPosGroups() {
+		return collocationPosGroups;
 	}
 
-	public void setCollocations(List<Collocation> collocations) {
-		this.collocations = collocations;
+	public void setCollocationPosGroups(List<CollocationPosGroup> collocationPosGroups) {
+		this.collocationPosGroups = collocationPosGroups;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

@@ -16,9 +16,14 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.COLLOCATION_POS_GROUP;
+import static eki.ekilex.data.db.Tables.COLLOCATION_REL_GROUP;
+import static eki.ekilex.data.db.Tables.COLLOCATION;
+import static eki.ekilex.data.db.Tables.COLLOCATION_USAGE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -29,6 +34,7 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
+import org.jooq.Record12;
 import org.jooq.Record17;
 import org.jooq.Record4;
 import org.jooq.Record5;
@@ -524,31 +530,47 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	//TODO it is all very unclear...
-	public Result<Record5<Long,Long,Long,String,String[]>> findCollocations(Long lexemeId) {
-
-		/*
-		Lexeme cl2 = LEXEME.as("cl2");
-		Collocation col = COLLOCATION.as("col");
-		CollocationUsage colu = COLLOCATION_USAGE.as("colu");
+	public Result<Record12<Long,String,Long,String,BigDecimal,BigDecimal,Long,Long,String,BigDecimal,BigDecimal,String[]>> findCollocationTuples(Long lexemeId) {
 
 		return create
 				.select(
-						col.ID.as("colloc_id"),
-						col.LEXEME2_ID.as("colloc_lexeme_id"),
-						cl2.WORD_ID.as("colloc_word_id"),
-						col.VALUE.as("collocation"),
-						DSL.arrayAgg(colu.VALUE).as("colloc_usages")
+						COLLOCATION_POS_GROUP.ID.as("colloc_pos_gr_id"),
+						COLLOCATION_POS_GROUP.NAME.as("colloc_pos_gr_name"),
+						COLLOCATION_REL_GROUP.ID.as("colloc_rel_gr_id"),
+						COLLOCATION_REL_GROUP.NAME.as("colloc_rel_gr_name"),
+						COLLOCATION_REL_GROUP.FREQUENCY.as("colloc_rel_gr_freq"),
+						COLLOCATION_REL_GROUP.SCORE.as("colloc_rel_gr_score"),
+						COLLOCATION.ID.as("colloc_id"),
+						LEXEME.WORD_ID.as("colloc_word_id"),
+						COLLOCATION.VALUE.as("colloc"),
+						COLLOCATION.FREQUENCY.as("colloc_freq"),
+						COLLOCATION.SCORE.as("colloc_score"),
+						DSL.arrayAgg(COLLOCATION_USAGE.VALUE).orderBy(COLLOCATION_USAGE.ID).as("colloc_usages")
 						)
 				.from(
-						col.innerJoin(cl2).on(cl2.ID.eq(col.LEXEME2_ID))
-						.leftOuterJoin(colu).on(colu.COLLOCATION_ID.eq(col.ID))
+						COLLOCATION_POS_GROUP,
+						COLLOCATION_REL_GROUP,
+						COLLOCATION.leftOuterJoin(COLLOCATION_USAGE).on(COLLOCATION_USAGE.COLLOCATION_ID.eq(COLLOCATION.ID)),
+						LEXEME
 						)
-				.where(col.LEXEME1_ID.eq(lexemeId))
-				.groupBy(col.ID, cl2.WORD_ID)
-				.orderBy(col.ID)
+				.where(
+						COLLOCATION_POS_GROUP.LEXEME_ID.eq(lexemeId)
+						.and(COLLOCATION_REL_GROUP.COLLOCATION_POS_GROUP_ID.eq(COLLOCATION_POS_GROUP.ID))
+						.and(COLLOCATION.COLLOCATION_REL_GROUP_ID.eq(COLLOCATION_REL_GROUP.ID))
+						.and(COLLOCATION.LEXEME_ID.eq(LEXEME.ID))
+						)
+				.groupBy(
+						COLLOCATION_POS_GROUP.ID,
+						COLLOCATION_REL_GROUP.ID,
+						COLLOCATION.ID,
+						LEXEME.WORD_ID
+						)
+				.orderBy(
+						COLLOCATION_POS_GROUP.ID,
+						COLLOCATION_REL_GROUP.ID,
+						COLLOCATION.ID,
+						LEXEME.WORD_ID
+						)
 				.fetch();
-				*/
-		return null;
 	}
 }

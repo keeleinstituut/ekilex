@@ -13,13 +13,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.Collocation;
+import eki.ekilex.data.CollocationPosGroup;
+import eki.ekilex.data.CollocationRelGroup;
+import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
+import eki.ekilex.data.Government;
+import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.TermMeaning;
-import eki.ekilex.data.Government;
-import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.UsageMeaning;
 import eki.ekilex.data.UsageMember;
 import eki.ekilex.data.WordTuple;
@@ -284,5 +288,56 @@ public class ConversionUtil {
 			}
 		}
 		return governments;
+	}
+
+	public List<CollocationPosGroup> composeCollocPosGroups(List<CollocationTuple> collocTuples) {
+
+		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
+		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
+		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
+		String name;
+		Float frequency;
+		Float score;
+
+		for (CollocationTuple collocTuple : collocTuples) {
+
+			Long collocationPosGroupId = collocTuple.getCollocationPosGroupId();
+			Long collocationRelGroupId = collocTuple.getCollocationRelGroupId();
+			CollocationPosGroup collocationPosGroup = collocPosGroupMap.get(collocationPosGroupId);
+			if (collocationPosGroup == null) {
+				name = collocTuple.getCollocationPosGroupName();
+				collocationPosGroup = new CollocationPosGroup();
+				collocationPosGroup.setName(name);
+				collocationPosGroup.setRelationGroups(new ArrayList<>());
+				collocPosGroupMap.put(collocationPosGroupId, collocationPosGroup);
+				collocationPosGroups.add(collocationPosGroup);
+			}
+			CollocationRelGroup collocationRelGroup = collocRelGroupMap.get(collocationRelGroupId);
+			if (collocationRelGroup == null) {
+				name = collocTuple.getCollocationRelGroupName();
+				frequency = collocTuple.getCollocationRelGroupFrequency();
+				score = collocTuple.getCollocationRelGroupScore();
+				collocationRelGroup = new CollocationRelGroup();
+				collocationRelGroup.setName(name);
+				collocationRelGroup.setFrequency(frequency);
+				collocationRelGroup.setScore(score);
+				collocationRelGroup.setCollocations(new ArrayList<>());
+				collocRelGroupMap.put(collocationRelGroupId, collocationRelGroup);
+				collocationPosGroup.getRelationGroups().add(collocationRelGroup);
+			}
+			Long collocationWordId = collocTuple.getCollocationWordId();
+			String colloc = collocTuple.getCollocation();
+			frequency = collocTuple.getCollocationFrequency();
+			score = collocTuple.getCollocationScore();
+			List<String> collocationUsages = collocTuple.getCollocationUsages();
+			Collocation collocation = new Collocation();
+			collocation.setCollocationWordId(collocationWordId);
+			collocation.setValue(colloc);
+			collocation.setFrequency(frequency);
+			collocation.setScore(score);
+			collocation.setCollocationUsages(collocationUsages);
+			collocationRelGroup.getCollocations().add(collocation);
+		}
+		return collocationPosGroups;
 	}
 }

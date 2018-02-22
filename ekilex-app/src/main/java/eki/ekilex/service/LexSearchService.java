@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.CollocationPosGroup;
+import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
@@ -113,8 +115,8 @@ public class LexSearchService implements SystemConstant {
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 			List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
-			//TODO it is all very unclear...
-			//List<Collocation> collocations = lexSearchDbService.findCollocations(lexemeId).into(Collocation.class);
+			List<CollocationTuple> collocTuples = lexSearchDbService.findCollocationTuples(lexemeId).into(CollocationTuple.class);
+			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(collocTuples);
 
 			lexeme.setLexemePos(lexemePos);
 			lexeme.setLexemeDerivs(lexemeDerivs);
@@ -129,7 +131,7 @@ public class LexSearchService implements SystemConstant {
 			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);
 			lexeme.setGrammars(lexemeGrammars);
-			//lexeme.setCollocations(collocations);
+			lexeme.setCollocationPosGroups(collocationPosGroups);
 			lexeme.setVocalForms(vocalForms);
 
 			boolean lexemeOrMeaningClassifiersExist =
