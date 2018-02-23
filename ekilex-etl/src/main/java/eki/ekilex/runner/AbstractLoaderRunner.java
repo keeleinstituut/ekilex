@@ -552,8 +552,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
 				.filter(line -> line.startsWith(ekiClassifierName))
 				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
-				.filter(cells -> lexClassifierName == null ? true : StringUtils.equals(lexClassifierName, cells[5]))
+				.filter(cells -> lexClassifierName == null || StringUtils.equals(lexClassifierName, cells[5]))
 				.filter(cells -> "et".equals(cells[4]))
+				.filter(cells -> !"-".equals(cells[5]))
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
 	}
 
