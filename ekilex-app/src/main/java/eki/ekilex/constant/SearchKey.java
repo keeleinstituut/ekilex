@@ -2,7 +2,7 @@ package eki.ekilex.constant;
 
 public enum SearchKey {
 
-	VALUE(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS}, SearchValueType.TEXTUAL),
+	VALUE(new SearchOperand[] {SearchOperand.EQUALS, SearchOperand.STARTS_WITH, SearchOperand.ENDS_WITH, SearchOperand.CONTAINS, SearchOperand.EXACT_WORD}, SearchValueType.TEXTUAL),
 	LANGUAGE(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL),
 	ID(new SearchOperand[] {SearchOperand.EQUALS}, SearchValueType.TEXTUAL)
 	;
