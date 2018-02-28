@@ -9,6 +9,7 @@ public enum SearchEntity {
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
+	MEANING(new SearchKey[] {SearchKey.DOMAIN}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID})
 	;
 
@@ -23,7 +24,7 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> lexEntities() {
-		return asList(WORD, FORM, DEFINITION, USAGE);
+		return asList(WORD, FORM, DEFINITION, USAGE, MEANING);
 	}
 
 	public static List<SearchEntity> termEntities() {

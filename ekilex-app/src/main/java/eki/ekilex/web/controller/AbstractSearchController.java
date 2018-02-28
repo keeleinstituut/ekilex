@@ -46,10 +46,12 @@ public abstract class AbstractSearchController implements WebConstant {
 			sessionBean.setSelectedDatasets(allDatasetCodes);
 		}
 		List<Classifier> allLanguages = commonDataService.getLanguages();
+		List<Classifier> domains = commonDataService.getDomainsInUseForLanguage("est");
 		SearchFilter detailSearchFilter = initSearchFilter();
 
 		model.addAttribute("allDatasets", allDatasets);
 		model.addAttribute("allLanguages", allLanguages);
+		model.addAttribute("domains", domains);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
 	}
@@ -108,9 +110,11 @@ public abstract class AbstractSearchController implements WebConstant {
 		}
 
 		List<Classifier> allLanguages = commonDataService.getLanguages();
+		List<Classifier> domains = commonDataService.getDomainsInUseForLanguage("est");
 
 		model.addAttribute("allDatasets", allDatasets);
 		model.addAttribute("allLanguages", allLanguages);
+		model.addAttribute("domains", domains);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 	}
