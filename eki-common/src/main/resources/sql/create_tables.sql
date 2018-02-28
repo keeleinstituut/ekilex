@@ -763,3 +763,7 @@ create index collocation_rel_group_collocation_pos_group_id_idx on collocation_r
 create index collocation_collocation_rel_group_id_idx on collocation(collocation_rel_group_id);
 create index collocation_lexeme_id_idx on collocation(lexeme_id);
 create index collocation_usage_collocation_id on collocation_usage(collocation_id);
+
+create index definition_fts_idx ON definition USING gin(to_tsvector('simple',value));
+create index freeform_fts_idx ON freeform USING gin(to_tsvector('simple',value_text));
+create index form_fts_idx ON form USING gin(to_tsvector('simple',value));
