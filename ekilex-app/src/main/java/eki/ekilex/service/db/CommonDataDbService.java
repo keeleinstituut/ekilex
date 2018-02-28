@@ -69,22 +69,28 @@ public class CommonDataDbService {
 		return create.select(LANG.CODE, LANG.VALUE).from(LANG).fetch();
 	}
 
-	public Result<Record2<String, String>> getDomainsForLanguage(String lang) {
+	public Result<Record3<String, String, String>> getDomainsForLanguage(String lang) {
 		return create
-				.select(DOMAIN.CODE, DOMAIN_LABEL.VALUE)
+				.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
 				.from(DOMAIN, DOMAIN_LABEL)
 				.where(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.LANG.eq(lang)))
+				.orderBy(DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getDomainsInUseForLanguage(String lang) {
+	public Result<Record3<String, String, String>> getDomainsInUseForLanguage(String lang) {
 		return create
-				.selectDistinct(DOMAIN.CODE, DOMAIN_LABEL.VALUE)
+				.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
 				.from(DOMAIN, DOMAIN_LABEL)
 				.where(
 						DOMAIN_LABEL.CODE.eq(DOMAIN.CODE)
+						.and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN))
 						.and(DOMAIN_LABEL.LANG.eq(lang))
-						.andExists(create.select(MEANING_DOMAIN.DOMAIN_CODE).from(MEANING_DOMAIN).where(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN.CODE))))
+						.andExists(
+								create.select(MEANING_DOMAIN.DOMAIN_CODE)
+										.from(MEANING_DOMAIN)
+										.where(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN.CODE)).and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN.ORIGIN))))
+				.orderBy(DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
 				.fetch();
 	}
 
