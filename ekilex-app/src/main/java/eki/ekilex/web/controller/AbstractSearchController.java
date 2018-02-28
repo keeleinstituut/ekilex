@@ -5,11 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterionGroup;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +24,7 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
 
 import static java.util.Arrays.asList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 public abstract class AbstractSearchController implements WebConstant {
 
@@ -61,7 +62,7 @@ public abstract class AbstractSearchController implements WebConstant {
 			String resultLang,
 			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
-			SessionBean sessionBean, Model model) {
+			SessionBean sessionBean, Model model) throws Exception {
 
 		List<Dataset> allDatasets = commonDataService.getDatasets();
 		List<String> allDatasetCodes = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
@@ -84,7 +85,7 @@ public abstract class AbstractSearchController implements WebConstant {
 						.filter(criterion ->
 								(criterion.getSearchKey() != null)
 								&& (criterion.getSearchValue() != null)
-								&& StringUtils.isNotBlank(criterion.getSearchValue().toString()))
+								&& isNotBlank(criterion.getSearchValue().toString()))
 						.collect(Collectors.toList());
 			}
 			detailSearchFilter.setSearchCriteria(searchCriteria);
@@ -104,6 +105,11 @@ public abstract class AbstractSearchController implements WebConstant {
 					searchCriteria = group.getSearchCriteria().stream()
 							.filter(criterion -> criterion.getSearchKey() != null)
 							.collect(Collectors.toList());
+					for (SearchCriterion c : searchCriteria) {
+						if (c.getSearchKey().equals(SearchKey.DOMAIN)) {
+							covertValueToClassifier(c);
+						}
+					}
 					group.setSearchCriteria(searchCriteria);
 				}
 			}
@@ -117,6 +123,18 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("domains", domains);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
+	}
+
+	private void covertValueToClassifier(SearchCriterion c) throws Exception {
+		if (c.getSearchValue() != null) {
+			if (isNotBlank(c.getSearchValue().toString())) {
+				ObjectMapper mapper = new ObjectMapper();
+				Classifier domain = mapper.readValue(c.getSearchValue().toString(), Classifier.class);
+				c.setSearchValue(domain);
+			} else {
+				c.setSearchValue(null);
+			}
+		}
 	}
 
 	protected SearchFilter initSearchFilter() {

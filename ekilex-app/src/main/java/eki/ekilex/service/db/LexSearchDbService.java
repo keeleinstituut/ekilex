@@ -27,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -120,7 +121,7 @@ public class LexSearchDbService implements SystemConstant {
 					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
 					.collect(toList());
 			List<SearchCriterion> domainCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.DOMAIN) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+					.filter(c -> c.getSearchKey().equals(SearchKey.DOMAIN) && c.getSearchValue() != null)
 					.collect(toList());
 
 			if (SearchEntity.WORD.equals(searchEntity)) {
@@ -220,9 +221,8 @@ public class LexSearchDbService implements SystemConstant {
 				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(md.MEANING_ID.eq(m2.ID));
 
 				for (SearchCriterion criterion : domainCriterions) {
-					SearchOperand searchOperand = criterion.getSearchOperand();
-					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
-					where2 = applySearchValueFilter(searchValueStr, searchOperand, md.DOMAIN_CODE, where2);
+					Classifier domain = (Classifier) criterion.getSearchValue();
+					where2 = where2.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
 				}
 
 				where = where.and(DSL.exists(DSL.select(m2.ID).from(l2, m2, md).where(where2)));

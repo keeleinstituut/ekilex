@@ -99,8 +99,8 @@
               <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
                 <option value="">Kõik valdkonnad</option>
                 <option th:each="domain : ${domains}"
-                        th:value="${domain.code}"
-                        th:selected="${criteria.searchValue == domain.code}"
+                        th:value="${domain}"
+                        th:selected="${criteria.searchValue == domain}"
                         th:text="${domain.value}">domain</option>
               </select>
             </div>
@@ -161,7 +161,7 @@
           <select class="form-control">
             <option value="" selected>Kõik valdkonnad</option>
             <option th:each="domain : ${domains}"
-                    th:value="${domain.code}"
+                    th:value="${domain}"
                     th:text="${domain.value}">domain</option>
           </select>
         </div>
