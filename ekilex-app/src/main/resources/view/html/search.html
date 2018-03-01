@@ -101,7 +101,7 @@
                 <option th:each="domain : ${domains}"
                         th:value="${domain}"
                         th:selected="${criteria.searchValue == domain}"
-                        th:text="${domain.value}">domain</option>
+                        th:text="${domain.origin + ' - ' + domain.value}">domain</option>
               </select>
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'VALUE'}">
@@ -162,7 +162,7 @@
             <option value="" selected>Kõik valdkonnad</option>
             <option th:each="domain : ${domains}"
                     th:value="${domain}"
-                    th:text="${domain.value}">domain</option>
+                    th:text="${domain.origin + ' - ' + domain.value}">domain</option>
           </select>
         </div>
       </div>
