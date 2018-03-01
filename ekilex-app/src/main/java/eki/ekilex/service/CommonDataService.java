@@ -27,4 +27,14 @@ public class CommonDataService {
 		return commonDataDbService.getLanguages().into(Classifier.class);
 	}
 
+	@Transactional
+	public List<Classifier> getDomainsForLanguage(String lang) {
+		return commonDataDbService.getDomainsForLanguage(lang).into(Classifier.class);
+	}
+
+	@Transactional
+	public List<Classifier> getDomainsInUseForLanguage(String lang) {
+		return commonDataDbService.getDomainsInUseForLanguage(lang).into(Classifier.class);
+	}
+
 }

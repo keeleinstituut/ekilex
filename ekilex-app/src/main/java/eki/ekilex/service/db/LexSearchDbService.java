@@ -10,6 +10,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -26,6 +27,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.db.tables.MeaningDomain;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -117,6 +120,9 @@ public class LexSearchDbService implements SystemConstant {
 			List<SearchCriterion> idCriterions = searchCriterions.stream()
 					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
 					.collect(toList());
+			List<SearchCriterion> domainCriterions = searchCriterions.stream()
+					.filter(c -> c.getSearchKey().equals(SearchKey.DOMAIN) && c.getSearchValue() != null)
+					.collect(toList());
 
 			if (SearchEntity.WORD.equals(searchEntity)) {
 
@@ -205,6 +211,22 @@ public class LexSearchDbService implements SystemConstant {
 				}
 
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
+
+			} else if (SearchEntity.MEANING.equals(searchEntity)) {
+
+				Lexeme l2 = LEXEME.as("l2");
+				Meaning m2 = MEANING.as("m2");
+				MeaningDomain md = MEANING_DOMAIN.as("md");
+
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(md.MEANING_ID.eq(m2.ID));
+
+				for (SearchCriterion criterion : domainCriterions) {
+					Classifier domain = (Classifier) criterion.getSearchValue();
+					where2 = where2.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+				}
+
+				where = where.and(DSL.exists(DSL.select(m2.ID).from(l2, m2, md).where(where2)));
+
 			}
 		}
 		return where;

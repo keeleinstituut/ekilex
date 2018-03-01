@@ -95,6 +95,15 @@
                         th:text="${language.value}">language</option>
               </select>
             </div>
+            <div class="col-3" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
+              <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+                <option value="">Kõik valdkonnad</option>
+                <option th:each="domain : ${domains}"
+                        th:value="${domain}"
+                        th:selected="${criteria.searchValue == domain}"
+                        th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+              </select>
+            </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'VALUE'}">
               <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
             </div>
@@ -146,6 +155,14 @@
             <option th:each="language : ${allLanguages}"
                     th:value="${language.code}"
                     th:text="${language.value}">language</option>
+          </select>
+        </div>
+        <div name="DOMAIN">
+          <select class="form-control">
+            <option value="" selected>Kõik valdkonnad</option>
+            <option th:each="domain : ${domains}"
+                    th:value="${domain}"
+                    th:text="${domain.origin + ' - ' + domain.value}">domain</option>
           </select>
         </div>
       </div>
