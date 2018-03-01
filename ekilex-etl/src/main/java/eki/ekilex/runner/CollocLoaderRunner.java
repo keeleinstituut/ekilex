@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
@@ -21,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Word;
@@ -41,9 +41,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_UNKNOWN_CLASSIF = "unknown_classifier";
 
-	private static final String REPORT_AMBIGUOUS_HOMONYM = "ambiguous_homonym";
+	private static final String REPORT_AMBIGUOUS_HOMONYM_MATCH = "ambiguous_homonym_match";
 
 	private static final String REPORT_AMBIGUOUS_WORD_MATCH = "ambiguous_word_match";
+
+	private static final String REPORT_AMBIGUOUS_LEXEME_MATCH = "ambiguous_lexeme_match";
 
 	private static final String REPORT_UNKNOWN_WORD = "unknown_word";
 
@@ -54,8 +56,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String wordGroupExp = "x:mg";
 	private final String wordExp = "x:m";
 	private final String wordPosExp = "x:sl";
+	private final String displayMorphExp = "x:vk";
 	private final String articleBodyExp = "x:S";
-	private final String meaningBlockExp = "x:tp";
+	private final String meaningBlockExp = "x:tp[not(@x:as='ab')]";
+	private final String meaningDefinitionGroupExp = "x:tg/x:dg";
+	private final String lexemeRegisterExp = "x:s";
+	private final String meaningDomainExp = "x:v";
+	private final String meaningDefinitionExp = "x:d";
+	private final String lexemeGrammarExp = "x:grg/x:gki";
 	private final String collocPosGroupExp = "x:colp/x:cmg";
 	private final String collocPosAttr = "csl";
 	private final String collocRelGroupExp = "x:relg";
@@ -69,7 +77,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String collocRelGroupScoreExp = "x:rsc";
 	private final String collocFreqExp = "x:cfr";
 	private final String collocScoreExp = "x:csc";
-	private final String wordHomonymNrAttrExp = "i";
+
+	private final String wordHomonymNrAttr = "i";
+	private final String lexemeLevelAttr = "tnr";
+	private final String collocConjuctAttr = "jv";
+	private final String lemmaDataAttr = "lemposvk";
+
+	private final char lemmaDataDelim = '|';
+	private final char lemmaDataCellDelim = ':';
+	private final char compundWordCompDelim = '+';
 
 	private final String defaultWordMorphCode = "??";
 
@@ -100,7 +116,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		sqlSelectLexemeMeaningByWordAndNoPos = getContent(resourceFileInputStream);
 
 		posConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
-
 		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP, ClassifierName.REGISTER.name());
 
 		morphConversionMap = new HashMap<>();
@@ -119,8 +134,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		if (doReports) {
 			reportComposer = new ReportComposer("kol loader report",
-					REPORT_ILLEGAL_DATA, REPORT_MISSING_DATA, REPORT_UNKNOWN_CLASSIF, REPORT_AMBIGUOUS_HOMONYM,
-					REPORT_AMBIGUOUS_WORD_MATCH, REPORT_UNKNOWN_WORD, REPORT_COLLOC_PAIR_UNMATCH);
+					REPORT_ILLEGAL_DATA, REPORT_MISSING_DATA, REPORT_UNKNOWN_CLASSIF, REPORT_AMBIGUOUS_HOMONYM_MATCH,
+					REPORT_AMBIGUOUS_WORD_MATCH, REPORT_AMBIGUOUS_LEXEME_MATCH, REPORT_UNKNOWN_WORD, REPORT_COLLOC_PAIR_UNMATCH);
 		}
 
 		dataLang = unifyLang(dataLang);
@@ -131,7 +146,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Extracted {} articles", articleCount);
 
 		Element headerNode, contentNode, wordNode, wordGroupNode, wordPosNode, meaningDefinitionGroupNode, collocRelGroupNameNode, collocRelGroupFreqNode, collocRelGroupScoreNode;
-		List<Element> meaningBlockNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes, collocUsageNodes;
+		List<Element> meaningBlockNodes, grammarNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes, collocUsageNodes;
 		String word, collocPosCode, collocUsage, collocRelGroupName;
 		List<Long> collocationIds;
 		Attribute wordHomonymNumAttr;
@@ -146,9 +161,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(Collectors.toList());
 
-		Map<String, Map<Integer, Word>> wordMap = new HashMap<>();
-		Map<Long, Map<String, Integer>> wordLexemeCountMap = new HashMap<>();
-		extractAndSaveWords(articleNodes, wordMap, wordLexemeCountMap, dataLang, dataset, ignoredArticleCount);
+		Map<String, Map<Integer, Word>> wordMap = extractAndSaveWordsLexemesMeanings(articleNodes, dataLang, dataset, ignoredArticleCount);
 
 		for (Element articleNode : articleNodes) {
 
@@ -159,10 +172,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNode = (Element) headerNode.selectSingleNode(wordGroupExp);
-
-			//word
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			wordHomonymNumAttr = wordNode.attribute(wordHomonymNrAttrExp);
+			wordHomonymNumAttr = wordNode.attribute(wordHomonymNrAttr);
 			wordHomonymNum = 1;
 			if (wordHomonymNumAttr != null) {
 				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
@@ -170,33 +181,38 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			word = wordNode.getTextTrim();
 			wordObj = wordMap.get(word).get(wordHomonymNum);
 			Long wordId = wordObj.getId();
-
-			//pos
 			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
 			String wordPosCode = wordPosNode.getTextTrim();
 			wordPosCode = posConversionMap.get(wordPosCode);
 
+			List<LexemeMeaning> lexemeMeanings = getLexemeMeanings(wordId, wordPosCode);
+
 			meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
 
-			for (Element meaningBlockNode : meaningBlockNodes) {
+			for (int meaningBlockIndex = 0; meaningBlockIndex < meaningBlockNodes.size(); meaningBlockIndex++) {
 
-				LexemeMeaning lexemeMeaning = createLexemeMeaning(wordId, wordPosCode, dataset);
+				Element meaningBlockNode = meaningBlockNodes.get(meaningBlockIndex);
+				LexemeMeaning lexemeMeaning = lexemeMeanings.get(meaningBlockIndex);
+				Long lexemeId = lexemeMeaning.getLexemeId();
+				Long meaningId = lexemeMeaning.getMeaningId();
 
-				meaningDefinitionGroupNode = (Element) meaningBlockNode.selectSingleNode("x:tg/x:dg");
+				meaningDefinitionGroupNode = (Element) meaningBlockNode.selectSingleNode(meaningDefinitionGroupExp);
 				if (meaningDefinitionGroupNode != null) {
-					extractAndSaveLexemeRegisters(word, lexemeMeaning.getLexemeId(), meaningDefinitionGroupNode, doReports);
-					extractAndSaveMeaningDomains(word, lexemeMeaning.getMeaningId(), meaningDefinitionGroupNode, doReports);
-					extractAndSaveMeaningDefinitions(lexemeMeaning.getMeaningId(), meaningDefinitionGroupNode, dataLang, dataset);
+					extractAndSaveLexemeRegisters(word, lexemeId, meaningDefinitionGroupNode, doReports);
+					extractAndSaveMeaningDomains(word, meaningId, meaningDefinitionGroupNode, doReports);
+					extractAndSaveMeaningDefinitions(meaningId, meaningDefinitionGroupNode, dataLang, dataset);
 				} else {
 					//log??
 				}
+
+				extractAndSaveGrammar(lexemeId, meaningBlockNode, dataLang);
 
 				collocPosGroupNodes = meaningBlockNode.selectNodes(collocPosGroupExp);//x:colp/x:cmg
 
 				for (Element colPosGroupNode : collocPosGroupNodes) {
 
 					collocPosCode = colPosGroupNode.attributeValue(collocPosAttr);
-					Long collocPosGroupId = createCollocPosGroup(lexemeMeaning.getLexemeId(), collocPosCode);
+					Long collocPosGroupId = createCollocPosGroup(lexemeId, collocPosCode);
 
 					collocRelGroupNodes = colPosGroupNode.selectNodes(collocRelGroupExp);//x:relg
 					int collocRelGroupNum = 0;
@@ -240,7 +256,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 							collocGroupNum++;
 							collocationIds = extractAndSaveCollocations(
-									collocGroupNode, collocGroupNum, collocRelGroupId, word, wordPosCode, wordMap, wordLexemeCountMap,
+									collocGroupNode, collocGroupNum, collocRelGroupId, word, wordPosCode, wordMap,
 									dataset, dataLang, successfulCollocationMatchCount, doReports);
 
 							if (CollectionUtils.isNotEmpty(collocationIds)) {
@@ -276,12 +292,12 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private Map<String, Map<Integer, Word>> extractAndSaveWords(
+	private Map<String, Map<Integer, Word>> extractAndSaveWordsLexemesMeanings(
 			List<Element> articleNodes,
-			Map<String, Map<Integer, Word>> wordMap,
-			Map<Long, Map<String, Integer>> wordLexemeCountMap,
 			String dataLang, String dataset,
 			Count ignoredArticleCount) throws Exception {
+
+		Map<String, Map<Integer, Word>> wordMap = new HashMap<>();
 
 		Element contentNode, guidNode, headerNode, wordGroupNode, wordNode, wordPosNode, wordDisplayMorphNode;
 		List<Element> meaningBlockNodes;
@@ -291,7 +307,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Word wordObj;
 		Long wordId;
 		Map<Integer, Word> homonymWordMap;
-		Map<String, Integer> lexemePosCountMap;
 
 		for (Element articleNode : articleNodes) {
 
@@ -301,31 +316,36 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 
+			// guid
 			guidNode = (Element) articleNode.selectSingleNode(guidExp);
 			guid = guidNode.getTextTrim();
 			guid = StringUtils.lowerCase(guid);
 
+			// word
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNode = (Element) headerNode.selectSingleNode(wordGroupExp);
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			wordHomonymNumAttr = wordNode.attribute(wordHomonymNrAttrExp);
+			wordHomonymNumAttr = wordNode.attribute(wordHomonymNrAttr);
 			wordHomonymNum = 1;
 			if (wordHomonymNumAttr != null) {
 				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
 			}
 			word = wordNode.getTextTrim();
-			wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode("x:vk");
+			wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(displayMorphExp);
 			if (wordDisplayMorphNode == null) {
 				wordDisplayMorph = null;
 			} else {
 				wordDisplayMorph = wordDisplayMorphNode.getTextTrim();
 			}
 
+			// pos
 			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
 			String wordPosCode = wordPosNode.getTextTrim();
 			wordPosCode = posConversionMap.get(wordPosCode);
 
+			// save word
 			wordObj = saveWord(word, dataLang, defaultWordMorphCode, guid, wordDisplayMorph, dataset);
+			wordId = wordObj.getId();
 			homonymWordMap = wordMap.get(word);
 			if (homonymWordMap == null) {
 				homonymWordMap = new HashMap<>();
@@ -333,18 +353,21 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			}
 			homonymWordMap.put(wordHomonymNum, wordObj);
 
+			// save lexemes + meanings
 			meaningBlockNodes = contentNode.selectNodes(meaningBlockExp);
-			wordId = wordObj.getId();
-			Integer lexemeCount = meaningBlockNodes.size();
-			lexemePosCountMap = new HashMap<>();
-			lexemePosCountMap.put(wordPosCode, lexemeCount);
-			wordLexemeCountMap.put(wordId, lexemePosCountMap);
+			
+			for (Element meaningBlockNode : meaningBlockNodes) {
+
+				String level1Str = meaningBlockNode.attributeValue(lexemeLevelAttr);
+				Integer level1 = Integer.valueOf(level1Str);
+				createLexemeMeaning(wordId, level1, wordPosCode, dataset);
+			}
 		}
 		return wordMap;
 	}
 
 	private void extractAndSaveLexemeRegisters(String newWord, Long lexemeId, Element meaningDefinitionGroupNode, boolean doReports) throws Exception {
-		List<Element> lexemeRegisterNodes = meaningDefinitionGroupNode.selectNodes("x:s");
+		List<Element> lexemeRegisterNodes = meaningDefinitionGroupNode.selectNodes(lexemeRegisterExp);
 		for (Element lexemeRegisterNode : lexemeRegisterNodes) {
 			String lexemeRegister = lexemeRegisterNode.getTextTrim();
 			if (registerConversionMap.containsKey(lexemeRegister)) {
@@ -357,7 +380,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void extractAndSaveMeaningDomains(String newWord, Long meaningId, Element meaningDefinitionGroupNode, boolean doReports) throws Exception {
-		List<Element> meaningDomainNodes = meaningDefinitionGroupNode.selectNodes("x:v");
+		List<Element> meaningDomainNodes = meaningDefinitionGroupNode.selectNodes(meaningDomainExp);
 		List<String> domainCodes = new ArrayList<>();
 		for (Element meaningDomainNode : meaningDomainNodes) {
 			String domainCode = meaningDomainNode.getTextTrim();
@@ -372,10 +395,18 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void extractAndSaveMeaningDefinitions(Long meaningId, Element meaningDefinitionGroupNode, String lang, String dataset) throws Exception {
-		List<Element> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes("x:d");
+		List<Element> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes(meaningDefinitionExp);
 		for (Element meaningDefinitionNode : meaningDefinitionNodes) {
 			String definition = meaningDefinitionNode.getTextTrim();
 			createDefinition(meaningId, definition, lang, dataset);
+		}
+	}
+
+	private void extractAndSaveGrammar(Long lexemeId, Element meaningBlockNode, String dataLang) throws Exception {
+		List<Element> lexemeGrammarNodes = meaningBlockNode.selectNodes(lexemeGrammarExp);
+		for (Element lexemeGrammarNode : lexemeGrammarNodes) {
+			String grammar = lexemeGrammarNode.getTextTrim();
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammar, dataLang);
 		}
 	}
 
@@ -386,7 +417,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String newWord,
 			String newWordPosCode,
 			Map<String, Map<Integer, Word>> wordMap,
-			Map<Long, Map<String, Integer>> wordLexemeCountMap,
 			String dataset,
 			String dataLang,
 			Count successfulCollocationMatchCount,
@@ -456,43 +486,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				collocWordObj = homonymWordMap.get(wordHomonymNum);
 			}
 			Long collocWordId = collocWordObj.getId();
-			Map<String, Integer> posLexemeCountMap = wordLexemeCountMap.get(collocWordId);
+			List<LexemeMeaning> collocLexemeMeanings = getLexemeMeanings(collocWordId, collocPosCode);
 			LexemeMeaning collocLexemeMeaning;
-
-			//FIXME investigate. fatally incorrect. creates lexeme duplicates
-
-			if (posLexemeCountMap == null) {
-				// new word and lexeme that exists only on colloc side
-				collocLexemeMeaning = createLexemeMeaning(collocWordId, collocPosCode, dataset);
-				if (StringUtils.isNotBlank(collocPosCode)) {
-					posLexemeCountMap = new HashMap<>();
-					posLexemeCountMap.put(collocPosCode, 1);
-					wordLexemeCountMap.put(collocWordId, posLexemeCountMap);
-				}
-			} else if (StringUtils.isBlank(collocPosCode)) {
-				// word exists, but lexeme probably exists only on colloc side
-				collocLexemeMeaning = getLexemeMeaning(collocWordId, null);
-				if (collocLexemeMeaning == null) {
-					collocLexemeMeaning = createLexemeMeaning(collocWordId, null, dataset);
-				}
+			if (CollectionUtils.isEmpty(collocLexemeMeanings)) {
+				collocLexemeMeaning = createLexemeMeaning(collocWordId, null, collocPosCode, dataset);
+			} else if (collocLexemeMeanings.size() == 1) {
+				collocLexemeMeaning = collocLexemeMeanings.get(0);
 			} else {
-				// word exists, but ...
-				Integer lexemeCount = posLexemeCountMap.get(collocPosCode);
-				if (lexemeCount == null) {
-					// no lexeme exists for that pos - create one
-					collocLexemeMeaning = createLexemeMeaning(collocWordId, collocPosCode, dataset);
-					posLexemeCountMap.put(collocPosCode, 1);
-				} else if (lexemeCount == 1) {
-					// one matching lexeme should exists
-					collocLexemeMeaning = getLexemeMeaning(collocWordId, collocPosCode);
-					if (collocLexemeMeaning == null) {
-						// havent reached to that word yet - create the missing lexeme ahead
-						collocLexemeMeaning = createLexemeMeaning(collocWordId, collocPosCode, dataset);
-					}
-				} else {
-					//TODO too many matches - log as error
-					continue;
-				}
+				appendToReport(doReports, REPORT_AMBIGUOUS_LEXEME_MATCH, newWord, collocWord, collocMorphCode, "kollokaadile vastab mitu ilmikut/tähendust");
+				continue;
 			}
 			Long collocLexemeId = collocLexemeMeaning.getLexemeId();
 			if (CollectionUtils.isNotEmpty(prevWords)) {
@@ -540,10 +542,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String word = null;
 			String posCode = null;
 			String morphCode = defaultWordMorphCode;
-			String conjunct = wordNode.attributeValue("jv");
-			String lemmaDataAttr = wordNode.attributeValue("lemposvk");
+			String conjunct = wordNode.attributeValue(collocConjuctAttr);
+			String lemmaData = wordNode.attributeValue(lemmaDataAttr);
 
-			if (StringUtils.isBlank(lemmaDataAttr)) {
+			if (StringUtils.isBlank(lemmaData)) {
 				Map<Integer, Word> homonymWordMap = wordMap.get(form);
 				if (CollectionUtils.size(homonymWordMap) == 1) {
 					word = form;
@@ -551,22 +553,22 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					collocWords.add(collocElement);
 				} else {
 					//TODO check at ss
-					appendToReport(doReports, REPORT_UNKNOWN_WORD, newWord, form, lemmaDataAttr, "tundmatu kollokaat");
+					appendToReport(doReports, REPORT_UNKNOWN_WORD, newWord, form, lemmaData, "tundmatu kollokaat");
 					continue;
 				}
 			} else {
-				String[] lemmaDataCandidatesArr = StringUtils.split(lemmaDataAttr, '|');
+				String[] lemmaDataCandidatesArr = StringUtils.split(lemmaData, lemmaDataDelim);
 				List<String> lemmaWordCandidates = Arrays.stream(lemmaDataCandidatesArr)
-							.map(lemmaDataCandidate -> StringUtils.remove(StringUtils.split(lemmaDataCandidate, ':')[0], '+'))
+							.map(lemmaDataCandidate -> StringUtils.remove(StringUtils.split(lemmaDataCandidate, lemmaDataCellDelim)[0], compundWordCompDelim))
 							.distinct().collect(Collectors.toList());
 				if (lemmaWordCandidates.size() > 1) {
-					appendToReport(doReports, REPORT_AMBIGUOUS_WORD_MATCH, newWord, form, lemmaDataAttr, "lemposvk sisaldab erinevaid sõnu");
+					appendToReport(doReports, REPORT_AMBIGUOUS_WORD_MATCH, newWord, form, lemmaData, "lemposvk sisaldab erinevaid sõnu");
 					continue;
 				}
 				String lemmaDataCandidate = lemmaDataCandidatesArr[0];
-				String[] lemmaDataParts = StringUtils.split(lemmaDataCandidate, ':');
+				String[] lemmaDataParts = StringUtils.split(lemmaDataCandidate, lemmaDataCellDelim);
 				word = lemmaDataParts[0];
-				word = StringUtils.remove(word, '+');//deal with compound words later
+				word = StringUtils.remove(word, compundWordCompDelim);//deal with compound words later
 				posCode = lemmaDataParts[1];
 				posCode = posConversionMap.get(posCode);
 				morphCode = lemmaDataParts[2];
@@ -579,7 +581,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					CollocElement collocElement = new CollocElement(word, form, morphCode, posCode, conjunct);
 					collocWords.add(collocElement);
 				} else {
-					appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM, newWord, form, lemmaDataAttr, "kollokaadile vastab mitu homonüümi");
+					appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM_MATCH, newWord, form, lemmaData, "kollokaadile vastab mitu homonüümi");
 					continue;
 				}
 			}
@@ -594,15 +596,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String form = wordNode.getTextTrim();
 			String word = newWord;
 			String morphCode = defaultWordMorphCode;
-			String conjunct = wordNode.attributeValue("jv");
-			String lemmaDataAttr = wordNode.attributeValue("lemposvk");
-			if (StringUtils.isNotBlank(lemmaDataAttr)) {
-				String[] lemmaDataCandidatesArr = StringUtils.split(lemmaDataAttr, '|');
+			String conjunct = wordNode.attributeValue(collocConjuctAttr);
+			String lemmaData = wordNode.attributeValue(lemmaDataAttr);
+			if (StringUtils.isNotBlank(lemmaData)) {
+				String[] lemmaDataCandidatesArr = StringUtils.split(lemmaData, lemmaDataDelim);
 				List<String> lemmaWordCandidates = Arrays.stream(lemmaDataCandidatesArr)
-						.map(lemmaDataCandidate -> StringUtils.remove(StringUtils.split(lemmaDataCandidate, ':')[0], '+'))
+						.map(lemmaDataCandidate -> StringUtils.remove(StringUtils.split(lemmaDataCandidate, lemmaDataCellDelim)[0], compundWordCompDelim))
 						.distinct().collect(Collectors.toList());
 				if (!lemmaWordCandidates.contains(word)) {
-					appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, newWord, form, lemmaDataAttr, "lemposvk ei klapi artikli märksõnaga");
+					appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, newWord, form, lemmaData, "lemposvk ei klapi artikli märksõnaga");
 					continue;
 				}
 			}
@@ -624,12 +626,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return wordObj;
 	}
 
-	private LexemeMeaning createLexemeMeaning(Long wordId, String posCode, String dataset) throws Exception {
+	private LexemeMeaning createLexemeMeaning(Long wordId, Integer level1, String posCode, String dataset) throws Exception {
 
 		Long meaningId = createMeaning();
 		Lexeme lexemeObj = new Lexeme();
 		lexemeObj.setWordId(wordId);
 		lexemeObj.setMeaningId(meaningId);
+		lexemeObj.setLevel1(level1);
 		Long lexemeId = createLexeme(lexemeObj, dataset);
 		if (StringUtils.isNotBlank(posCode)) {
 			createLexemePos(lexemeId, posCode);
@@ -696,7 +699,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private LexemeMeaning getLexemeMeaning(Long wordId, String posCode) throws Exception {
+	private List<LexemeMeaning> getLexemeMeanings(Long wordId, String posCode) throws Exception {
 
 		String sql;
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -707,14 +710,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			sql = sqlSelectLexemeMeaningByWordAndPos;
 			tableRowParamMap.put("posCode", posCode);
 		}
-		Map<String, Object> result = basicDbService.queryForMap(sql, tableRowParamMap);
-		if (MapUtils.isEmpty(result)) {
-			return null;
+		List<Map<String, Object>> resultRows = basicDbService.queryList(sql, tableRowParamMap);
+		List<LexemeMeaning> lexemeMeanings = new ArrayList<>();
+		for (Map<String, Object> resultRow : resultRows) {
+			Long lexemeId = Long.valueOf(resultRow.get("lexeme_id").toString());
+			Long meaningId = Long.valueOf(resultRow.get("meaning_id").toString());
+			LexemeMeaning lexemeMeaning = new LexemeMeaning(lexemeId, meaningId);
+			lexemeMeanings.add(lexemeMeaning);
 		}
-		Long lexemeId = Long.valueOf(result.get("lexeme_id").toString());
-		Long meaningId = Long.valueOf(result.get("meaning_id").toString());
-		LexemeMeaning lexemeMeaning = new LexemeMeaning(lexemeId, meaningId);
-		return lexemeMeaning;
+		return lexemeMeanings;
 	}
 
 	private void appendToReport(boolean doReports, String reportName, String ... reportCells) throws Exception {
