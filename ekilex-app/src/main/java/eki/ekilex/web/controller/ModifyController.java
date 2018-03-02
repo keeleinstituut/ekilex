@@ -73,11 +73,10 @@ public class ModifyController {
 
 	@ResponseBody
 	@PostMapping("/modify_levels")
-	public String modifyLexemeLevels(@RequestParam("id") Long lexemeId,
-			@RequestParam("level1") Integer level1, @RequestParam("level2") Integer level2, @RequestParam("level3") Integer level3) {
+	public String modifyLexemeLevels(@RequestParam("id") Long lexemeId,	@RequestParam("action") String action) {
 
-		logger.debug("Change lexeme levels {} : {} : {} : for id {}", level1, level2, level3, lexemeId);
-		updateService.updateLexemeLevels(lexemeId, level1, level2, level3);
+		logger.debug("Change lexeme levels for id {}, action {}", lexemeId, action);
+		updateService.updateLexemeLevels(lexemeId, action);
 		return "OK";
 	}
 
