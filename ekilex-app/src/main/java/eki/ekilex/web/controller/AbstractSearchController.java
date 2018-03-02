@@ -77,19 +77,6 @@ public abstract class AbstractSearchController implements WebConstant {
 		if (detailSearchFilter == null) {
 			detailSearchFilter = initSearchFilter();
 		} else {
-			List<SearchCriterion> searchCriteria = detailSearchFilter.getSearchCriteria();
-			if (CollectionUtils.isEmpty(searchCriteria)) {
-				searchCriteria = Collections.emptyList();
-			} else {
-				searchCriteria = searchCriteria.stream()
-						.filter(criterion ->
-								(criterion.getSearchKey() != null)
-								&& (criterion.getSearchValue() != null)
-								&& isNotBlank(criterion.getSearchValue().toString()))
-						.collect(Collectors.toList());
-			}
-			detailSearchFilter.setSearchCriteria(searchCriteria);
-
 			if (CollectionUtils.isEmpty(detailSearchFilter.getCriteriaGroups())) {
 				detailSearchFilter.setCriteriaGroups(Collections.emptyList());
 			} else {
@@ -102,8 +89,7 @@ public abstract class AbstractSearchController implements WebConstant {
 				if (CollectionUtils.isEmpty(group.getSearchCriteria())) {
 					group.setSearchCriteria(Collections.emptyList());
 				} else {
-					searchCriteria = group.getSearchCriteria().stream()
-							.filter(criterion -> criterion.getSearchKey() != null)
+					List<SearchCriterion> searchCriteria = group.getSearchCriteria().stream().filter(criterion -> criterion.getSearchKey() != null)
 							.collect(Collectors.toList());
 					for (SearchCriterion c : searchCriteria) {
 						if (c.getSearchKey().equals(SearchKey.DOMAIN)) {
@@ -140,11 +126,9 @@ public abstract class AbstractSearchController implements WebConstant {
 	protected SearchFilter initSearchFilter() {
 
 		SearchFilter detailSearch = new SearchFilter();
-		detailSearch.setSearchCriteria(new ArrayList<>());
 		SearchCriterion defaultCriterion = new SearchCriterion();
 		defaultCriterion.setSearchKey(SearchKey.VALUE);
 		defaultCriterion.setSearchOperand(SearchKey.VALUE.getOperands()[0]);
-		detailSearch.getSearchCriteria().add(defaultCriterion);
 		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
 		searchGroup.setEntity(SearchEntity.WORD);
 		searchGroup.setSearchCriteria(asList(defaultCriterion));
