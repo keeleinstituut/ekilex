@@ -21,26 +21,68 @@
       </div>
       <div class="card-body">
         <form th:action="@{/termsearch}" method="post">
-          <th:block th:replace="search :: search_form"></th:block>
+          <th:block th:replace="search :: search_form('term_search')"></th:block>
+          <th:block>
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <label class="col-auto col-form-label">Tulemuste keel</label>
+                  <div class="col-2">
+                    <select name="resultLang" class="form-control">
+                      <option value="">Kõik keeled</option>
+                      <option 
+                          th:each="lang : ${allLanguages}"
+                          th:value="${lang.code}"
+                          th:selected="${lang.code == sessionBean.resultLang}"
+                          th:text="${lang.value}"></option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </th:block>
         </form>
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsFoundBySearch) && (simpleSearchFilter != null)}">
+    <div class="mt-4 float-left" th:if="${(!searchResult.resultExist) && (simpleSearchFilter != null)}">
       <span th:text="#{term.not.found}">Not found.</span>
     </div>
 
-    <div class="mt-4 float-left w-25" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 15em); overflow-y: auto;">
+    <div class="mt-4 float-left w-25" th:if="${searchResult.resultExist}" style="height: calc(100vh - 15em); overflow-y: auto;">
+      <div>
+        <a href="javascript:void(0);" id="show-all-btn">
+          <span th:text="${'Tulemusi : ' + searchResult.resultCount}"></span>
+        </a>
+      </div>
+      <hr />
       <table id="results" class="w-100">
-        <tr th:each="word : ${wordsFoundBySearch}">
-          <td class="w-100" name="word_form">
-            <button type="button" class="btn btn-link" th:data-id="${word.wordId}" name="detailsBtn">
-              <span th:text="${word.value}" class="ttl">vorm 1</span>
-              <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
-              (
-              <span th:text="${word.language}"></span>
-              )
-            </button>
+        <tr th:each="termMeaning,termMeaningIter : ${searchResult.termMeanings}" style="border-bottom: 1px solid #ddd">
+          <td class="w-100" style="padding: 0px">
+            <div th:each="word,wordIter : ${termMeaning.wordTuples}" style="text-align: left">
+              <button type="button" class="btn btn-link pt-0" th:data-id="${termMeaning.meaningId}" name="detailsBtn">
+                <span th:text="${wordIter.count}"></span>
+                &nbsp;
+                <span th:if="${word.value != null}">
+                  <span th:text="${word.value}" class="ttl">EuropeAid</span>
+                  <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+                  (
+                  <span th:text="${word.language}"></span>
+                  )
+                </span>
+                <span th:if="${word.value == null}">
+                  <span th:text="${word.conceptId}" class="ttl">23648236</span>
+                </span>
+              </button>
+              <div style="position:relative; top: -10px; padding-left: 10px">
+                <small>
+                  <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
+                    <span th:text="${wordDatasetCode}"></span>
+                    <span th:unless="${wordDatasetIter.last}">,</span>
+                  </span>
+                </small>
+              </div>
+            </div>
           </td>
         </tr>
       </table>
@@ -48,57 +90,275 @@
     <div id="details_div"></div>
   </div>
 
-  <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
-      <th:block th:each="meaning : ${details.meanings}">
-        <div style="border: 1px solid #CCC; padding: 5px;">
-          <div th:if="${meaning.contentExists}">
-            <div th:if="${meaning.typeCode != null}">
-              <span class="lbl">Mõistetüüp</span>
-              <span th:text="${meaning.typeCode}"></span>
-            </div>
-            <div th:if="${meaning.processStateCode != null}">
-              <span class="lbl">Olek</span>
-              <span th:text="${meaning.processStateCode}"></span>
-            </div>
-            <div th:if="${meaning.stateCode != null}">
-              <span class="lbl">Seisund</span>
-              <span th:text="${meaning.stateCode}"></span>
-            </div>
-            <p th:if="${not #lists.isEmpty(meaning.domains)}">
-              <span class="lbl">Valdkonnad</span>
-              <span th:each="domain,domainIter : ${meaning.domains}">
-                <span th:text="${domain.code}"></span>
-                <th:block th:unless="${domain.code == domain.value}">
-                -
-                <span th:text="${domain.value}"></span>
-                </th:block>
-                <span th:unless="${domainIter.last}">,</span>
-              </span>
-            </p>
-            <div th:if="${not #lists.isEmpty(meaning.definitions)}">
-              <span class="lbl">Seletused</span>
-              <br />
-              <ul>
-                <li th:each="definition : ${meaning.definitions}" th:unless="${#strings.isEmpty(definition)}">
-                  <span th:name="${definition.id} + '_definition'"
-                        th:data-id="${definition.id}"
-                        th:data-op-type="definition"
-                        th:data-value="${definition.value}"
-                        th:utext="${markdown.toHtml(definition.value)}"></span>
-                  <button type="button" class="btn badge badge-primary ml-2"
-                          th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
-                          onclick="openEditDlg(this)"
-                          data-toggle="modal" data-target="#editDlg">
-                    <i class="fa fa-edit" aria-hidden="true"></i>
+  <th:block th:fragment="details" th:if="${meaning != null}">
+    <div th:data-id="${meaningId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
+      <div style="border: 1px solid #CCC; padding: 5px;">
+        <div th:if="${meaning.contentExists}">
+          <div th:if="${meaning.typeCode != null}">
+            <span class="lbl">Mõistetüüp</span>
+            <span th:text="${meaning.typeCode}"></span>
+          </div>
+          <div th:if="${meaning.processStateCode != null}">
+            <span class="lbl">Olek</span>
+            <span th:text="${meaning.processStateCode}"></span>
+          </div>
+          <div th:if="${meaning.stateCode != null}">
+            <span class="lbl">Seisund</span>
+            <span th:text="${meaning.stateCode}"></span>
+          </div>
+          <p th:if="${not #lists.isEmpty(meaning.domains)}">
+            <span class="lbl">Valdkonnad</span>
+            <span th:each="domain,domainIter : ${meaning.domains}">
+              <span th:text="${domain.code}"></span>
+              <th:block th:unless="${domain.code == domain.value}">
+              -
+              <span th:text="${domain.value}"></span>
+              </th:block>
+              <span th:unless="${domainIter.last}">,</span>
+            </span>
+          </p>
+          <div th:if="${not #lists.isEmpty(meaning.definitions)}">
+            <span class="lbl">Seletused</span>
+            <br />
+            <ul>
+              <li th:each="definition : ${meaning.definitions}" th:unless="${#strings.isEmpty(definition)}">
+                <span th:name="${definition.id} + '_definition'"
+                      th:data-id="${definition.id}"
+                      th:data-op-type="definition"
+                      th:data-value="${definition.value}"
+                      th:utext="${markdown.toHtml(definition.value)}"></span>
+                <button type="button" class="btn badge badge-primary ml-2"
+                        th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                        onclick="openEditDlg(this)"
+                        data-toggle="modal" data-target="#editDlg">
+                  <i class="fa fa-edit" aria-hidden="true"></i>
+                </button>
+              </li>
+            </ul>
+          </div>
+          <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
+            <span class="lbl">Tähenduse atribuudid</span>
+            <table>
+              <tr th:each="freeform : ${meaning.freeforms}">
+                <td style="vertical-align: text-top; padding-right: 1em">
+                  <span th:text="${freeform.type}"></span>
+                </td>
+                <td>
+                  <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
+                  <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div th:if="${not #lists.isEmpty(meaning.relations)}">
+            <hr />
+            <span class="lbl">Tähenduse seosed</span>
+            <table>
+              <tr th:each="relation : ${meaning.relations}">
+                <td style="vertical-align: text-top; padding-right: 1em">
+                  <button type="button" class="btn btn-link pt-0" th:data-id="${relation.wordId}" name="detailsBtn">
+                    <span th:text="${relation.word}"></span>
+                    (
+                    <span th:text="${relation.wordLang}"></span>
+                    )
                   </button>
-                </li>
-              </ul>
+                </td>
+                <td>
+                  <span th:text="${relation.relationTypeLabel}"></span>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <p />
+        </div>
+        <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}">
+          <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
+            <div>
+              <button type="button" class="btn btn-link pt-0" th:data-id="${lexeme.wordId}" name="detailsBtn">
+                <span th:text="${lexeme.word}" class="ttl"></span>
+                <span th:text="${lexeme.homonymNumber}"></span>
+                (
+                <span th:text="${lexeme.wordLang}"></span>
+                )
+              </button>
+              <span th:if="${lexeme.levels != null}">
+                <small>
+                  [
+                  <span th:text="${lexeme.levels}"></span>
+                  ]
+                </small>
+                &nbsp;
+              </span>
+              <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
+              <b>
+                <span th:text="${lexeme.dataset}" class="float-right"></span>
+              </b>
             </div>
-            <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
-              <span class="lbl">Tähenduse atribuudid</span>
+            <div th:if="${lexeme.classifiersExist}">
+              <hr />
+              <div th:if="${lexeme.genderCode != null}">
+                <span class="lbl">Sugu</span>
+                <span th:text="${lexeme.genderCode}"></span>
+              </div>
+              <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
+                <span class="lbl">Grammatika</span>
+                <span th:each="grammar,grammarIter : ${lexeme.grammars}">
+                <span th:text="${grammar}"></span>
+                <span th:unless="${grammarIter.last}">,&nbsp;</span>
+              </span>
+              </div>
+              <div th:if="${lexeme.typeCode != null}">
+                <span class="lbl">Keelenditüüp</span>
+                <span th:text="${lexeme.typeCode}"></span>
+              </div>
+              <div th:if="${lexeme.frequencyGroupCode != null}">
+                <span class="lbl">Sagedusrühm</span>
+                <span th:text="${lexeme.frequencyGroupCode}"></span>
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.pos)}">
+                <span class="lbl">Sõnaliik</span>
+                <span th:each="classif,classifIter : ${lexeme.pos}">
+                  <span th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.derivs)}">
+                <span class="lbl">Tuletuskood</span>
+                <span th:each="classif,classifIter : ${lexeme.derivs}">
+                  <span th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.registers)}">
+                <span class="lbl">Register</span>
+                <span th:each="classif,classifIter : ${lexeme.registers}">
+                  <span th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+              </div>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.sources)}">
+              <hr />
+              <span class="lbl">Allikaviide</span>
+              <th:block th:each="source, sourceIter : ${lexeme.sources}">
+                <span th:utext="${markdown.toHtml(source)}"></span>
+                <span th:unless="${sourceIter.last}">;&nbsp;</span>
+              </th:block>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.governments)}" style="margin-top: -0.5em;">
+              <hr />
               <table>
-                <tr th:each="freeform : ${meaning.freeforms}">
+                <tr th:each="government,governmentIter : ${lexeme.governments}">
+                  <td>
+                    <table>
+                      <tr>
+                        <th>Rektsioon</th>
+                      </tr>
+                      <tr>
+                        <td th:text="${government.value}"></td>
+                      </tr>
+                      <tr th:if="${government.meaningful}">
+                        <td>
+                          <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
+                            <tr>
+                              <td>
+                                <i style="text-decoration: underline;">
+                                  <span>Kasutusnäite tähendus #</span>
+                                  <span th:text="${usageMeaningIter.count}"></span>
+                                </i>
+                              </td>
+                            </tr>
+                            <tr th:if="${not #lists.isEmpty(usageMeaning.usages)}">
+                              <td>
+                                <span class="lbl">Kasutusnäited</span>
+                              </td>
+                            </tr>
+                            <tr th:each="usage : ${usageMeaning.usages}">
+                              <td>
+                                <span th:name="${usage.id} + '_usage'"
+                                      th:data-id="${usage.id}"
+                                      th:data-op-type="usage"
+                                      th:data-value="${usage.value}"
+                                      th:utext="${markdown.toHtml(usage.value)}"></span>
+                                <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                                <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                                <button type="button" class="btn badge badge-primary ml-2"
+                                        th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
+                                        onclick="openEditDlg(this)"
+                                        data-toggle="modal" data-target="#editDlg">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                              </td>
+                            </tr>
+                            <tr th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
+                              <td>
+                                <span class="lbl">Kasutusnäite tõlked</span>
+                              </td>
+                            </tr>
+                            <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                              <td>
+                                <span th:name="${usageTranslation.id} + '_usage_translation'"
+                                      th:data-id="${usageTranslation.id}"
+                                      th:data-op-type="usage_translation"
+                                      th:text="${usageTranslation.value}"></span>
+                                <button type="button" class="btn badge badge-primary ml-2"
+                                        th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                        onclick="openEditDlg(this)"
+                                        data-toggle="modal" data-target="#editDlg">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                              </td>
+                            </tr>
+                            <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
+                              <td>
+                                <span class="lbl">Kasutusnäite seletused</span>
+                              </td>
+                            </tr>
+                            <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                              <td>
+                                <span th:name="${usageDefinition.id} + '_usage_definition'"
+                                      th:data-id="${usageDefinition.id}"
+                                      th:data-op-type="usage_definition"
+                                      th:data-value="${usageDefinition.value}"
+                                      th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
+                                <button type="button" class="btn badge badge-primary ml-2"
+                                        th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                        onclick="openEditDlg(this)"
+                                        data-toggle="modal" data-target="#editDlg">
+                                  <i class="fa fa-edit" aria-hidden="true"></i>
+                                </button>
+                              </td>
+                            </tr>
+                            <tr th:unless="${usageMeaningIter.last}">
+                              <td>
+                                <hr />
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div th:if="${not #lists.isEmpty(lexeme.freeforms)}">
+              <hr />
+              <span class="lbl">Ilmiku atribuudid</span>
+              <table>
+                <tr th:each="freeform : ${lexeme.freeforms}">
                   <td style="vertical-align: text-top; padding-right: 1em">
                     <span th:text="${freeform.type}"></span>
                   </td>
@@ -109,231 +369,11 @@
                 </tr>
               </table>
             </div>
-            <div th:if="${not #lists.isEmpty(meaning.relations)}">
-              <hr />
-              <span class="lbl">Tähenduse seosed</span>
-              <table>
-                <tr th:each="relation : ${meaning.relations}">
-                  <td style="vertical-align: text-top; padding-right: 1em">
-                    <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
-                      <span th:text="${relation.word}"></span>
-                      (
-                      <span th:text="${relation.wordLang}"></span>
-                      )
-                    </button>
-                  </td>
-                  <td>
-                    <span th:text="${relation.relationTypeLabel}"></span>
-                  </td>
-                </tr>
-              </table>
-            </div>
-            <p />
           </div>
-          <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}">
-            <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
-              <div>
-                <button type="button" class="btn btn-link" th:data-id="${lexeme.wordId}" name="detailsBtn">
-                  <span th:text="${lexeme.word}" class="ttl"></span>
-                  <span th:text="${lexeme.homonymNumber}"></span>
-                  (
-                  <span th:text="${lexeme.wordLang}"></span>
-                  )
-                </button>
-                <span th:if="${lexeme.levels != null}">
-                  <small>
-                    [
-                    <span th:text="${lexeme.levels}"></span>
-                    ]
-                  </small>
-                  &nbsp;
-                </span>
-                <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-                <b>
-                  <span th:text="${lexeme.dataset}" class="float-right"></span>
-                </b>
-              </div>
-              <div th:if="${lexeme.classifiersExist}">
-                <hr />
-                <div th:if="${lexeme.genderCode != null}">
-                  <span class="lbl">Sugu</span>
-                  <span th:text="${lexeme.genderCode}"></span>
-                </div>
-                <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
-                  <span class="lbl">Grammatika</span>
-                  <span th:each="grammar,grammarIter : ${lexeme.grammars}">
-                  <span th:text="${grammar}"></span>
-                  <span th:unless="${grammarIter.last}">,&nbsp;</span>
-                </span>
-                </div>
-                <div th:if="${lexeme.typeCode != null}">
-                  <span class="lbl">Keelenditüüp</span>
-                  <span th:text="${lexeme.typeCode}"></span>
-                </div>
-                <div th:if="${lexeme.frequencyGroupCode != null}">
-                  <span class="lbl">Sagedusrühm</span>
-                  <span th:text="${lexeme.frequencyGroupCode}"></span>
-                </div>
-                <div th:if="${not #lists.isEmpty(lexeme.pos)}">
-                  <span class="lbl">Sõnaliik</span>
-                  <span th:each="classif,classifIter : ${lexeme.pos}">
-                    <span th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
-                </div>
-                <div th:if="${not #lists.isEmpty(lexeme.derivs)}">
-                  <span class="lbl">Tuletuskood</span>
-                  <span th:each="classif,classifIter : ${lexeme.derivs}">
-                    <span th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
-                </div>
-                <div th:if="${not #lists.isEmpty(lexeme.registers)}">
-                  <span class="lbl">Register</span>
-                  <span th:each="classif,classifIter : ${lexeme.registers}">
-                    <span th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
-                </div>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.sources)}">
-                <hr />
-                <span class="lbl">Allikaviited</span>
-                <th:block th:each="source, sourceIter : ${lexeme.sources}">
-                  <span th:utext="${markdown.toHtml(source)}"></span>
-                  <span th:unless="${sourceIter.last}">;&nbsp;</span>
-                </th:block>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.governments)}" style="margin-top: -0.5em;">
-                <hr />
-                <table>
-                  <tr th:each="government,governmentIter : ${lexeme.governments}">
-                    <td>
-                      <table>
-                        <tr>
-                          <th>Rektsioon</th>
-                        </tr>
-                        <tr>
-                          <td th:text="${government.value}"></td>
-                        </tr>
-                        <tr th:if="${government.meaningful}">
-                          <td>
-                            <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
-                              <tr>
-                                <td>
-                                  <i style="text-decoration: underline;">
-                                    <span>Kasutusnäite tähendus #</span>
-                                    <span th:text="${usageMeaningIter.count}"></span>
-                                  </i>
-                                </td>
-                              </tr>
-                              <tr th:if="${not #lists.isEmpty(usageMeaning.usages)}">
-                                <td>
-                                  <span class="lbl">Kasutusnäited</span>
-                                </td>
-                              </tr>
-                              <tr th:each="usage : ${usageMeaning.usages}">
-                                <td>
-                                  <span th:name="${usage.id} + '_usage'"
-                                        th:data-id="${usage.id}"
-                                        th:data-op-type="usage"
-                                        th:data-value="${usage.value}"
-                                        th:utext="${markdown.toHtml(usage.value)}"></span>
-                                  <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
-                                  <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
-                                  <button type="button" class="btn badge badge-primary ml-2"
-                                          th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                          onclick="openEditDlg(this)"
-                                          data-toggle="modal" data-target="#editDlg">
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                  </button>
-                                </td>
-                              </tr>
-                              <tr th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
-                                <td>
-                                  <span class="lbl">Kasutusnäite tõlked</span>
-                                </td>
-                              </tr>
-                              <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                                <td>
-                                  <span th:name="${usageTranslation.id} + '_usage_translation'"
-                                        th:data-id="${usageTranslation.id}"
-                                        th:data-op-type="usage_translation"
-                                        th:text="${usageTranslation.value}"></span>
-                                  <button type="button" class="btn badge badge-primary ml-2"
-                                          th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                          onclick="openEditDlg(this)"
-                                          data-toggle="modal" data-target="#editDlg">
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                  </button>
-                                </td>
-                              </tr>
-                              <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
-                                <td>
-                                  <span class="lbl">Kasutusnäite seletused</span>
-                                </td>
-                              </tr>
-                              <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                                <td>
-                                  <span th:name="${usageDefinition.id} + '_usage_definition'"
-                                        th:data-id="${usageDefinition.id}"
-                                        th:data-op-type="usage_definition"
-                                        th:data-value="${usageDefinition.value}"
-                                        th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
-                                  <button type="button" class="btn badge badge-primary ml-2"
-                                          th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                          onclick="openEditDlg(this)"
-                                          data-toggle="modal" data-target="#editDlg">
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                  </button>
-                                </td>
-                              </tr>
-                              <tr th:unless="${usageMeaningIter.last}">
-                                <td>
-                                  <hr />
-                                </td>
-                              </tr>
-                            </table>
-                          </td>
-                        </tr>
-                      </table>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.freeforms)}">
-                <hr />
-                <span class="lbl">Ilmiku atribuudid</span>
-                <table>
-                  <tr th:each="freeform : ${lexeme.freeforms}">
-                    <td style="vertical-align: text-top; padding-right: 1em">
-                      <span th:text="${freeform.type}"></span>
-                    </td>
-                    <td>
-                      <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
-                      <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-            <div style="padding: 5px" th:unless="${lexemeIter.last}"></div>
-          </th:block>
-        </div>
-        <div style="padding: 10px"></div>
-      </th:block>
+          <div style="padding: 5px" th:unless="${lexemeIter.last}"></div>
+        </th:block>
+      </div>
+      <div style="padding: 10px"></div>
     </div>
   </th:block>
 

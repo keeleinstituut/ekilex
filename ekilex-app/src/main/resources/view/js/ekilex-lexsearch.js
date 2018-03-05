@@ -19,6 +19,11 @@ function initialise() {
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 
+    $(document).on('click', '#show-all-btn', function() {
+        $('#fetchAll').val(true);
+        $('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
+    });
+
     var detailButtons = $('#results').find('[name="detailsBtn"]');
     if (detailButtons.length === 1) {
         detailButtons.trigger('click');
@@ -39,14 +44,11 @@ function openLexemeLevelDlg(elem) {
     var targetElement = $(elem);
     var editDlg = $('#editLexemeLevelsDlg');
     editDlg.find('[name="id"]').val(targetElement.data('id'));
-    editDlg.find('[name="level1"]').val(targetElement.data('level1'));
-    editDlg.find('[name="level2"]').val(targetElement.data('level2'));
-    editDlg.find('[name="level3"]').val(targetElement.data('level3'));
-    editDlg.find('[name="level1"]').focus();
 
     editDlg.find('button[type="submit"]').off().on('click', function(e) {
         e.preventDefault();
         var editForm = editDlg.find('form');
+        editDlg.find('[name="action"]').val($(this).data('action'));
         var url = editForm.attr('action') + '?' + editForm.serialize();
         $.post(url).done(function(data) {
             var id = $('#details_div').data('id');

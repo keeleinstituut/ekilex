@@ -5,6 +5,8 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationPosGroup;
+import eki.ekilex.data.db.tables.CollocationRelGroup;
 import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
@@ -94,9 +96,13 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index COLLOCATION_LEXEME1_ID_IDX = Indexes0.COLLOCATION_LEXEME1_ID_IDX;
-    public static final Index COLLOCATION_LEXEME2_ID_IDX = Indexes0.COLLOCATION_LEXEME2_ID_IDX;
+    public static final Index COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX = Indexes0.COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX;
+    public static final Index COLLOCATION_LEXEME_ID_IDX = Indexes0.COLLOCATION_LEXEME_ID_IDX;
     public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
+    public static final Index COLLOCATION_POS_GROUP_LEXEME_ID_IDX = Indexes0.COLLOCATION_POS_GROUP_LEXEME_ID_IDX;
+    public static final Index COLLOCATION_POS_GROUP_PKEY = Indexes0.COLLOCATION_POS_GROUP_PKEY;
+    public static final Index COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_IDX = Indexes0.COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_IDX;
+    public static final Index COLLOCATION_REL_GROUP_PKEY = Indexes0.COLLOCATION_REL_GROUP_PKEY;
     public static final Index COLLOCATION_USAGE_COLLOCATION_ID = Indexes0.COLLOCATION_USAGE_COLLOCATION_ID;
     public static final Index COLLOCATION_USAGE_PKEY = Indexes0.COLLOCATION_USAGE_PKEY;
     public static final Index DATASET_PKEY = Indexes0.DATASET_PKEY;
@@ -214,9 +220,13 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 extends AbstractKeys {
-        public static Index COLLOCATION_LEXEME1_ID_IDX = createIndex("collocation_lexeme1_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID }, false);
-        public static Index COLLOCATION_LEXEME2_ID_IDX = createIndex("collocation_lexeme2_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME2_ID }, false);
+        public static Index COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX = createIndex("collocation_collocation_rel_group_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.COLLOCATION_REL_GROUP_ID }, false);
+        public static Index COLLOCATION_LEXEME_ID_IDX = createIndex("collocation_lexeme_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME_ID }, false);
         public static Index COLLOCATION_PKEY = createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
+        public static Index COLLOCATION_POS_GROUP_LEXEME_ID_IDX = createIndex("collocation_pos_group_lexeme_id_idx", CollocationPosGroup.COLLOCATION_POS_GROUP, new OrderField[] { CollocationPosGroup.COLLOCATION_POS_GROUP.LEXEME_ID }, false);
+        public static Index COLLOCATION_POS_GROUP_PKEY = createIndex("collocation_pos_group_pkey", CollocationPosGroup.COLLOCATION_POS_GROUP, new OrderField[] { CollocationPosGroup.COLLOCATION_POS_GROUP.ID }, true);
+        public static Index COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_IDX = createIndex("collocation_rel_group_collocation_pos_group_id_idx", CollocationRelGroup.COLLOCATION_REL_GROUP, new OrderField[] { CollocationRelGroup.COLLOCATION_REL_GROUP.COLLOCATION_POS_GROUP_ID }, false);
+        public static Index COLLOCATION_REL_GROUP_PKEY = createIndex("collocation_rel_group_pkey", CollocationRelGroup.COLLOCATION_REL_GROUP, new OrderField[] { CollocationRelGroup.COLLOCATION_REL_GROUP.ID }, true);
         public static Index COLLOCATION_USAGE_COLLOCATION_ID = createIndex("collocation_usage_collocation_id", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID }, false);
         public static Index COLLOCATION_USAGE_PKEY = createIndex("collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.ID }, true);
         public static Index DATASET_PKEY = createIndex("dataset_pkey", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, true);

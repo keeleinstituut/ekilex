@@ -51,6 +51,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIFIER_ASTYYP = "as_tyyp";
 	protected static final String EKI_CLASSIFIER_VKTYYP = "vk_tyyp";
 	protected static final String EKI_CLASSIFIER_MSAGTYYP = "msag_tyyp";
+	protected static final String EKI_CLASSIFIER_STYYP = "s_tyyp";
 
 	@Autowired
 	protected XmlReader xmlReader;
@@ -552,8 +553,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
 				.filter(line -> line.startsWith(ekiClassifierName))
 				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
-				.filter(cells -> lexClassifierName == null ? true : StringUtils.equals(lexClassifierName, cells[5]))
+				.filter(cells -> lexClassifierName == null || StringUtils.equals(lexClassifierName, cells[5]))
 				.filter(cells -> "et".equals(cells[4]))
+				.filter(cells -> !"-".equals(cells[5]))
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
 	}
 

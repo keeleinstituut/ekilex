@@ -5,6 +5,8 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationPosGroup;
+import eki.ekilex.data.db.tables.CollocationRelGroup;
 import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
@@ -95,7 +97,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1494676150;
+    private static final long serialVersionUID = -454176557;
 
     /**
      * The reference instance of <code>public</code>
@@ -106,6 +108,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.collocation</code>.
      */
     public final Collocation COLLOCATION = eki.ekilex.data.db.tables.Collocation.COLLOCATION;
+
+    /**
+     * The table <code>public.collocation_pos_group</code>.
+     */
+    public final CollocationPosGroup COLLOCATION_POS_GROUP = eki.ekilex.data.db.tables.CollocationPosGroup.COLLOCATION_POS_GROUP;
+
+    /**
+     * The table <code>public.collocation_rel_group</code>.
+     */
+    public final CollocationRelGroup COLLOCATION_REL_GROUP = eki.ekilex.data.db.tables.CollocationRelGroup.COLLOCATION_REL_GROUP;
 
     /**
      * The table <code>public.collocation_usage</code>.
@@ -453,6 +465,8 @@ public class Public extends SchemaImpl {
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
             Sequences.COLLOCATION_ID_SEQ,
+            Sequences.COLLOCATION_POS_GROUP_ID_SEQ,
+            Sequences.COLLOCATION_REL_GROUP_ID_SEQ,
             Sequences.COLLOCATION_USAGE_ID_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
@@ -498,6 +512,8 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Collocation.COLLOCATION,
+            CollocationPosGroup.COLLOCATION_POS_GROUP,
+            CollocationRelGroup.COLLOCATION_REL_GROUP,
             CollocationUsage.COLLOCATION_USAGE,
             Dataset.DATASET,
             Definition.DEFINITION,

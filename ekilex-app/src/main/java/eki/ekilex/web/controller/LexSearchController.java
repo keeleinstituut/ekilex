@@ -3,7 +3,9 @@ package eki.ekilex.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.WordsResult;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,11 +50,27 @@ public class LexSearchController extends AbstractSearchController {
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "searchMode", required = false) String searchMode,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
+			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		performSearch(selectedDatasets, searchMode, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		logger.debug("Searching by \"{}\" in {}", simpleSearchFilter, selectedDatasets);
+
+		cleanup(selectedDatasets, null, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+
+		if (StringUtils.isBlank(searchMode)) {
+			searchMode = SEARCH_MODE_SIMPLE;
+		}
+		WordsResult result;
+		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
+			result = lexSearchService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
+		} else {
+			result = lexSearchService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
+		}
+		model.addAttribute("searchMode", searchMode);
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
 
 		return LEX_SEARCH_PAGE;
 	}

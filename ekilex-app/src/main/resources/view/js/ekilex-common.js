@@ -4,11 +4,22 @@ function selectDatasets(selection) {
     $('#dataset_select').find(':checkbox').prop('checked', selection)
 }
 
-function displayDetailSearchButtons() {
-    if ($('[name="detailCondition"]').length === 1 ) {
-        $('[name="removeDetailConditionBtn"]').hide();
+function displayDetailConditionButtons() {
+    $('[name="removeDetailConditionBtn"]').each(function(i, v) {
+        var groupElement = $(this).closest('[name="detailGroup"]');
+        if (groupElement.find('[name="detailCondition"]').length === 1 ) {
+            $(this).hide();
+        } else {
+            $(this).show();
+        }
+    });
+}
+
+function displayDetailGroupButtons() {
+    if ($('[name="detailGroup"]').length === 1 ) {
+        $('[name="removeDetailGroupBtn"]').hide();
     } else {
-        $('[name="removeDetailConditionBtn"]').show();
+        $('[name="removeDetailGroupBtn"]').show();
     }
 }
 
@@ -40,10 +51,15 @@ function initaliseSearchForm() {
 }
 
 function initialiseDeatailSearch() {
-    displayDetailSearchButtons();
+    displayDetailConditionButtons();
+    displayDetailGroupButtons();
     $(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
         $(this).closest('[name="detailCondition"]').remove();
-        displayDetailSearchButtons();
+        displayDetailConditionButtons();
+    });
+    $(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
+        $(this).closest('[name="detailGroup"]').remove();
+        displayDetailGroupButtons();
     });
     $(document).on("change", "select[name$='searchKey']", function() {
         var searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
@@ -51,27 +67,65 @@ function initialiseDeatailSearch() {
         searchOperandElement.find('option').remove();
         searchOperandElement.append(operandTemplate.html());
         searchOperandElement.val(searchOperandElement.find('option').first().val());
+
+        var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
+        var copyOfValueTemplate = $($('#searchValueTemplates').find('[name="' + $(this).val() + '"]').html());
+        copyOfValueTemplate.attr('name' ,searchValueElement.attr('name'));
+        searchValueElement.replaceWith(copyOfValueTemplate);
+    });
+    $(document).on("change", "select[name$='entity']", function() {
+        var detailGroupElement = $(this).closest('[name="detailGroup"]');
+        while (detailGroupElement.find('[name="detailCondition"]').length > 1) {
+            detailGroupElement.find('[name="detailCondition"]').last().remove();
+        }
+        var conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
+        var searchKeyElement = conditionElement.find('[name$="searchKey"]');
+        var keyTemplate = $('#searchKeyTemplates').find('[name="' + $(this).val() + '"]');
+        searchKeyElement.find('option').remove();
+        searchKeyElement.append(keyTemplate.html());
+        searchKeyElement.val(searchKeyElement.find('option').first().val());
+        initCondition(conditionElement);
     });
     $(document).on("click", ":button[name='addDetailConditionBtn']", function() {
-        var detailSearchElement = $(this).closest('[name="detailSearchFilter"]');
-        var lastConditionElement = detailSearchElement.find('[name="detailCondition"]').last();
-        var copyOfLastElement = lastConditionElement.clone();
-        var oldIndex = copyOfLastElement.data('index');
-        var newIndex = oldIndex + 1;
-        var oldIndexVal = '[' + oldIndex + ']';
-        var newIndexVal = '[' + newIndex + ']';
-        copyOfLastElement.attr('data-index', newIndex);
-        copyOfLastElement.find('[name^="searchCriteria["]').each(function(i, v) {
-           $(this).attr('name', $(this).attr('name').replace(oldIndexVal, newIndexVal))
-        });
-        copyOfLastElement.find('input').val(null);
-        lastConditionElement.after(copyOfLastElement);
-        lastConditionElement = detailSearchElement.find('[name="detailCondition"]').last();
-        var searchKeySelect = lastConditionElement.find('select[name$="searchKey"]');
-        searchKeySelect.val(searchKeySelect.find('option').first().val());
-        searchKeySelect.trigger('change');
-        displayDetailSearchButtons();
+        var detailGroupElement = $(this).closest('[name="detailGroup"]');
+        var addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
+        initCondition(addedConditionElement);
     });
+    $(document).on("click", ":button[name='addDetailGroupBtn']", function() {
+        var detailSearchElement = $(this).closest('[name="detailSearchFilter"]');
+        var addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
+        initConditionGroup(addedGroupElement);
+    });
+}
+
+function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
+    var lastElement = parentElement.find('[name="' + itemName + '"]').last();
+    var copyOfLastElement = lastElement.clone();
+    var oldIndex = copyOfLastElement.data('index');
+    var newIndex = oldIndex + 1;
+    var oldIndexVal = indexName + '[' + oldIndex + ']';
+    var newIndexVal = indexName + '[' + newIndex + ']';
+    copyOfLastElement.attr('data-index', newIndex);
+    copyOfLastElement.find('[name*="' + indexName + '["]').each(function(i, v) {
+        $(this).attr('name', $(this).attr('name').replace(oldIndexVal, newIndexVal))
+    });
+    copyOfLastElement.find('input').val(null);
+    lastElement.after(copyOfLastElement);
+    return parentElement.find('[name="' + itemName + '"]').last();
+}
+
+function initConditionGroup(groupElement) {
+    var entitySelect = groupElement.find('select[name$="entity"]');
+    entitySelect.val(entitySelect.find('option').first().val());
+    entitySelect.trigger('change');
+    displayDetailGroupButtons();
+}
+
+function initCondition(conditionElement) {
+    var searchKeySelect = conditionElement.find('select[name$="searchKey"]');
+    searchKeySelect.val(searchKeySelect.find('option').first().val());
+    searchKeySelect.trigger('change');
+    displayDetailConditionButtons();
 }
 
 function changeItemOrdering(target, delta) {

@@ -5,6 +5,8 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.Collocation;
+import eki.ekilex.data.db.tables.CollocationPosGroup;
+import eki.ekilex.data.db.tables.CollocationRelGroup;
 import eki.ekilex.data.db.tables.CollocationUsage;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
@@ -90,6 +92,16 @@ public class Tables {
      * The table <code>public.collocation</code>.
      */
     public static final Collocation COLLOCATION = eki.ekilex.data.db.tables.Collocation.COLLOCATION;
+
+    /**
+     * The table <code>public.collocation_pos_group</code>.
+     */
+    public static final CollocationPosGroup COLLOCATION_POS_GROUP = eki.ekilex.data.db.tables.CollocationPosGroup.COLLOCATION_POS_GROUP;
+
+    /**
+     * The table <code>public.collocation_rel_group</code>.
+     */
+    public static final CollocationRelGroup COLLOCATION_REL_GROUP = eki.ekilex.data.db.tables.CollocationRelGroup.COLLOCATION_REL_GROUP;
 
     /**
      * The table <code>public.collocation_usage</code>.

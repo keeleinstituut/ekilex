@@ -2,51 +2,53 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DERIV_LABEL;
+import static eki.ekilex.data.db.Tables.DOMAIN;
+import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
+import static eki.ekilex.data.db.Tables.LANG;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.PERSON;
+import static eki.ekilex.data.db.Tables.POS_LABEL;
+import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
+import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.Map;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jooq.Condition;
 import org.jooq.DSLContext;
-import org.jooq.Field;
-import org.jooq.Record;
+import org.jooq.Record1;
+import org.jooq.Record15;
 import org.jooq.Record2;
-import org.jooq.Record5;
+import org.jooq.Record3;
+import org.jooq.Record4;
+import org.jooq.Record9;
 import org.jooq.Result;
-import org.jooq.Table;
-import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.ekilex.constant.SearchKey;
-import eki.ekilex.constant.SearchOperand;
-import eki.ekilex.data.SearchCriterion;
-import eki.ekilex.data.SearchFilter;
-import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.Meaning;
-import eki.ekilex.data.db.tables.MeaningFreeform;
-import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.Person;
+import eki.ekilex.data.db.tables.UsageTypeLabel;
 
 @Component
 public class CommonDataDbService {
-
-	private static final int MAX_RESULTS_LIMIT = 50;
 
 	@Autowired
 	private DSLContext create;
@@ -55,175 +57,234 @@ public class CommonDataDbService {
 		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
-	public Result<Record2<String,String>> getDatasets() {
-
+	public Result<Record2<String, String>> getDatasets() {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).fetch();
 	}
 
-	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets) throws Exception {
+	public Map<String, String> getLanguagesMap() {
+		return create.select().from(LANG).fetchMap(LANG.CODE, LANG.VALUE);
+	}
 
-		List<SearchCriterion> searchCriteria = searchFilter.getSearchCriteria();
+	public Result<Record2<String, String>> getLanguages() {
+		return create.select(LANG.CODE, LANG.VALUE).from(LANG).fetch();
+	}
 
-		Word w1 = WORD.as("w1");
-		Paradigm p1 = PARADIGM.as("p1");
-		Form f1 = FORM.as("f1");
-
-		Table<Record> from1 = w1.join(p1.join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.IS_WORD.isTrue()))).on(p1.WORD_ID.eq(w1.ID));
-
-		Condition where1 = DSL.trueCondition();
-
-		for (SearchCriterion searchCriterion : searchCriteria) {
-
-			SearchKey searchKey = searchCriterion.getSearchKey();
-			SearchOperand searchOperand = searchCriterion.getSearchOperand();
-			Object searchValue = searchCriterion.getSearchValue();
-			if (searchValue == null) {
-				continue;
-			}
-			String searchValueStr = searchValue.toString();
-			searchValueStr = StringUtils.lowerCase(searchValueStr);
-
-			if (SearchKey.WORD_VALUE.equals(searchKey)) {
-
-				where1 = applySearchValueFilter(searchValueStr, searchOperand, f1.VALUE, where1);
-
-			} else if (SearchKey.FORM_VALUE.equals(searchKey)) {
-
-				Paradigm p2 = PARADIGM.as("p2");
-				Form f2 = FORM.as("f2");
-				Condition where2 = f2.PARADIGM_ID.eq(p2.ID).and(p2.WORD_ID.eq(w1.ID));
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, f2.VALUE, where2);
-				where1 = where1.and(DSL.exists(DSL.select(f2.ID).from(f2, p2).where(where2)));
-
-			} else if (SearchKey.DEFINITION_VALUE.equals(searchKey)) {
-
-				Lexeme l2 = LEXEME.as("l2");
-				Meaning m2 = MEANING.as("m2");
-				Definition d2 = DEFINITION.as("d2");
-				Condition where2 = l2.WORD_ID.eq(w1.ID).and(l2.MEANING_ID.eq(m2.ID)).and(d2.MEANING_ID.eq(m2.ID));
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, d2.VALUE, where2);
-				where1 = where1.and(DSL.exists(DSL.select(d2.ID).from(l2, m2, d2).where(where2)));
-
-			} else if (SearchKey.USAGE_VALUE.equals(searchKey)) {
-
-				Lexeme l2 = LEXEME.as("l2");
-				LexemeFreeform l2ff = LEXEME_FREEFORM.as("l2ff");
-				Freeform rect2 = FREEFORM.as("rect2");
-				Freeform um2 = FREEFORM.as("um2");
-				Freeform u2 = FREEFORM.as("u2");
-
-				Condition where2 =
-						l2.WORD_ID.eq(w1.ID)
-						.and(l2ff.LEXEME_ID.eq(l2.ID))
-						.and(l2ff.FREEFORM_ID.eq(rect2.ID))
-						.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
-						.and(um2.PARENT_ID.eq(rect2.ID))
-						.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
-						.and(u2.PARENT_ID.eq(um2.ID))
-						.and(u2.TYPE.eq(FreeformType.USAGE.name()));
-
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, u2.VALUE_TEXT, where2);
-				where1 = where1.and(DSL.exists(DSL.select(u2.ID).from(l2, l2ff, rect2, um2, u2).where(where2)));
-
-			} else if (SearchKey.CONCEPT_ID.equals(searchKey)) {
-
-				Lexeme l2 = LEXEME.as("l2");
-				Meaning m2 = MEANING.as("m2");
-				MeaningFreeform m2ff = MEANING_FREEFORM.as("m2ff");
-				Freeform concept = FREEFORM.as("concept");
-
-				Condition where2 =
-						l2.WORD_ID.eq(w1.ID)
-						.and(l2.MEANING_ID.eq(m2.ID))
-						.and(m2ff.MEANING_ID.eq(m2.ID))
-						.and(m2ff.FREEFORM_ID.eq(concept.ID))
-						.and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
-
-				where2 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where2);
-				where1 = where1.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
-			}
-		}
-		if (CollectionUtils.isNotEmpty(datasets)) {
-			Lexeme l1 = LEXEME.as("l1");
-			where1 = where1.andExists(
-						DSL.select(l1.ID).from(l1)
-						.where((l1.WORD_ID.eq(w1.ID))
-						.and(l1.DATASET_CODE.in(datasets))));
-		}
-
-		Lexeme dscl = LEXEME.as("dscl");
-		Field<String[]> dscf = DSL.field(DSL.select(DSL.arrayAggDistinct(dscl.DATASET_CODE)).from(dscl).where(dscl.WORD_ID.eq(w1.ID)).groupBy(w1.ID));
-		Field<String> wf = DSL.field("(array_agg(distinct f1.value))[1]").cast(String.class);
-
-		Table<Record5<Long,String,Integer,String,String[]>> wordsQuery = create
-				.select(
-						w1.ID.as("word_id"),
-						wf.as("word"),
-						w1.HOMONYM_NR,
-						w1.LANG,
-						dscf.as("dataset_codes"))
-				.from(from1)
-				.where(where1)
-				.groupBy(w1.ID)
-				.asTable("wq");
-
+	public Result<Record3<String, String, String>> getDomainsForLanguage(String lang) {
 		return create
-				.select(wordsQuery.fields())
-				.from(wordsQuery)
-				.orderBy(wordsQuery.field("word"), wordsQuery.field("homonym_nr"))
-				.limit(MAX_RESULTS_LIMIT)
+				.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
+				.from(DOMAIN, DOMAIN_LABEL)
+				.where(DOMAIN_LABEL.CODE.eq(DOMAIN.CODE).and(DOMAIN_LABEL.LANG.eq(lang)))
+				.orderBy(DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
 				.fetch();
 	}
 
-	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) throws Exception {
-
-		if (SearchOperand.EQUALS.equals(searchOperand)) {
-			condition = condition.and(searchField.equalIgnoreCase(searchValueStr));
-		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().startsWith(searchValueStr));
-		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().endsWith(searchValueStr));
-		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().contains(searchValueStr));
-		} else {
-			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
-		}
-		return condition;
+	public Result<Record3<String, String, String>> getDomainsInUseForLanguage(String lang) {
+		return create
+				.select(DOMAIN.CODE, DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
+				.from(DOMAIN, DOMAIN_LABEL)
+				.where(
+						DOMAIN_LABEL.CODE.eq(DOMAIN.CODE)
+						.and(DOMAIN_LABEL.ORIGIN.eq(DOMAIN.ORIGIN))
+						.and(DOMAIN_LABEL.LANG.eq(lang))
+						.andExists(
+								create.select(MEANING_DOMAIN.DOMAIN_CODE)
+										.from(MEANING_DOMAIN)
+										.where(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN.CODE)).and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN.ORIGIN))))
+				.orderBy(DOMAIN.ORIGIN, DOMAIN_LABEL.VALUE)
+				.fetch();
 	}
 
-	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets) {
+	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId) {
+		return create
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name())))
+				.fetch();
+	}
 
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
+	public Result<Record1<String>> findLexemeGrammars(Long lexemeId) {
+		return create
+				.select(FREEFORM.VALUE_TEXT)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
+				.fetch();
+	}
 
-		Field<String[]> dscf = DSL.field(DSL.select(DSL.arrayAggDistinct(LEXEME.DATASET_CODE)).from(LEXEME).where(LEXEME.WORD_ID.eq(WORD.ID)).groupBy(WORD.ID));
-		Field<String> wf = DSL.field("(array_agg(distinct form.value))[1]").cast(String.class);
-
-		Table<Record5<Long,String,Integer,String,String[]>> wordsQuery = create
+	public Result<Record4<Long, String, String, Timestamp>> findMeaningFreeforms(Long meaningId) {
+		return create
 				.select(
-						WORD.ID.as("word_id"),
-						wf.as("word"),
-						WORD.HOMONYM_NR,
-						WORD.LANG,
-						dscf.as("dataset_codes"))
-				.from(FORM, PARADIGM, WORD)
+						FREEFORM.ID,
+						FREEFORM.TYPE,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_DATE)
+				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
-						FORM.VALUE.likeIgnoreCase(theFilter)
-						.and(FORM.IS_WORD.isTrue())
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.andExists(DSL.select(LEXEME.ID).from(LEXEME)
-								.where((LEXEME.WORD_ID.eq(WORD.ID))
-								.and(LEXEME.DATASET_CODE.in(datasets)))
-						)
-				)
-				.groupBy(WORD.ID)
-				.asTable("wq");
+						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record3<Long, String, Long>> findMeaningDefinitions(Long meaningId) {
+		return create
+				.select(DEFINITION.ID, DEFINITION.VALUE, DEFINITION.ORDER_BY)
+				.from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.orderBy(DEFINITION.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record15<Long, String, Long, Long, String, String, Long, String, String, Long, String, String, String, String, String>>
+				findGovernmentUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+	LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+	Freeform g = FREEFORM.as("g");
+	Freeform um = FREEFORM.as("um");
+	Freeform u = FREEFORM.as("u");
+	Freeform ut = FREEFORM.as("ut");
+	Freeform ud = FREEFORM.as("ud");
+	Freeform ua = FREEFORM.as("ua");
+	Freeform utrans = FREEFORM.as("utrans");
+	Freeform utype = FREEFORM.as("utype");
+	UsageTypeLabel utl = USAGE_TYPE_LABEL.as("utl");
+	FreeformRefLink frl = FREEFORM_REF_LINK.as("frl");
+	FreeformRefLink frl2 = FREEFORM_REF_LINK.as("frl2");
+	Person p = PERSON.as("p");
+	Person p2 = PERSON.as("p2");
+
+	return create
+			.select(
+					g.ID.as("government_id"),
+					g.VALUE_TEXT.as("government_value"),
+					um.ID.as("usage_meaning_id"),
+					u.ID.as("usage_id"),
+					u.VALUE_TEXT.as("usage_value"),
+					u.LANG.as("usage_lang"),
+					ut.ID.as("usage_translation_id"),
+					ut.VALUE_TEXT.as("usage_translation_value"),
+					ut.LANG.as("usage_translation_lang"),
+					ud.ID.as("usage_definition_id"),
+					ud.VALUE_TEXT.as("usage_definition_value"),
+					ud.LANG.as("usage_definition_lang"),
+					p.NAME.as("usage_author"),
+					p2.NAME.as("usage_translator"),
+					utl.VALUE.as("usage_type")
+					)
+			.from(
+					lff.innerJoin(g).on(lff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
+					.leftOuterJoin(um).on(um.PARENT_ID.eq(g.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())))
+					.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
+					.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
+					.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
+					.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
+					.leftOuterJoin(frl).on(frl.FREEFORM_ID.eq(ua.ID))
+					.leftOuterJoin(p).on(p.ID.eq(frl.REF_ID))
+					.leftOuterJoin(utrans).on(utrans.PARENT_ID.eq(u.ID).and(utrans.TYPE.eq(FreeformType.USAGE_TRANSLATOR.name())))
+					.leftOuterJoin(frl2).on(frl2.FREEFORM_ID.eq(utrans.ID))
+					.leftOuterJoin(p2).on(p2.ID.eq(frl2.REF_ID))
+					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
+					.leftOuterJoin(utl)
+					.on(utl.CODE.eq(utype.CLASSIF_CODE).and(utl.LANG.eq(classifierLabelLang).and(utl.TYPE.eq(classifierLabelTypeCode))))
+					)
+			.where(lff.LEXEME_ID.eq(lexemeId))
+			.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)
+			.fetch();
+	}
+
+	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(wordsQuery.fields())
-				.from(wordsQuery)
-				.orderBy(wordsQuery.field("word"), wordsQuery.field("homonym_nr"))
-				.limit(MAX_RESULTS_LIMIT)
+				.select(
+						MEANING_RELATION.ID.as("id"),
+						MEANING.ID.as("meaning_id"),
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						MEANING_RELATION.ORDER_BY.as("order_by")
+				)
+				.from(
+						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(
+								MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
+								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						MEANING,
+						LEXEME,
+						WORD,
+						PARADIGM,
+						FORM
+				)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId)
+								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.IS_WORD.eq(Boolean.TRUE))
+				)
+				.orderBy(MEANING_RELATION.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record3<String, String, String>> findMeaningDomains(Long meaningId) {
+
+		return create
+				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.from(
+						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
+								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
+								.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
+								)
+						)
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> findLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(POS_LABEL.CODE, POS_LABEL.VALUE)
+				.from(LEXEME_POS, POS_LABEL)
+				.where(
+						LEXEME_POS.LEXEME_ID.eq(lexemeId)
+						.and(POS_LABEL.CODE.eq(LEXEME_POS.POS_CODE))
+						.and(POS_LABEL.LANG.eq(classifierLabelLang))
+						.and(POS_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> findLexemeDerivs(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(DERIV_LABEL.CODE, DERIV_LABEL.VALUE)
+				.from(LEXEME_DERIV, DERIV_LABEL)
+				.where(
+						LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
+						.and(DERIV_LABEL.CODE.eq(LEXEME_DERIV.DERIV_CODE))
+						.and(DERIV_LABEL.LANG.eq(classifierLabelLang))
+						.and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> findLexemeRegisters(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE)
+				.from(LEXEME_REGISTER, REGISTER_LABEL)
+				.where(
+						LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
+						.and(REGISTER_LABEL.CODE.eq(LEXEME_REGISTER.REGISTER_CODE))
+						.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
+						.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
 				.fetch();
 	}
 }

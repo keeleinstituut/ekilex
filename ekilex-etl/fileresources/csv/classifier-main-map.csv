@@ -8,8 +8,8 @@ as_tyyp	as_tyyp	SS1	sõnastiku artikkel	en	-	-
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	konfidentsiaalne
-as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	process_state	konfidentsiaalne
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-
+as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-
 att_tyyp	att_tyyp	all	alltähendus	et	-	-
 att_tyyp	att_tyyp	all	sense extension	en	-	-
 dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	-	-
@@ -999,8 +999,8 @@ sta_tyyp	sta_tyyp	{osa}	part of sth/sb	en	-	-
 sta_tyyp	sta_tyyp	{põhjus}	põhjus(taja), esilekutsuja, tingija (abstr/konkr)	et	-	-
 sta_tyyp	sta_tyyp	{põhjus}	cause of sth/sb	en	-	-
 staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem
-staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	komisjoni kinnitatud
-staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	komisjonis arutlusel
+staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	heaks kiidetud
+staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	konsulteerimisel
 tliik_tyyp	tliik_tyyp	uus	uus tähendus	et	-	-
 tliik_tyyp	tliik_tyyp	uus	new sense	en	-	-
 tvtl_tyyp	tvtl_tyyp	vrd	compare with	en	-	-

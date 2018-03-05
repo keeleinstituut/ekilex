@@ -1,6 +1,6 @@
 package eki.ekilex.data;
 
-import javax.persistence.Column;
+import java.util.List;
 
 import eki.common.data.AbstractDataObject;
 
@@ -8,43 +8,22 @@ public class Collocation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "colloc_id")
-	private Long collocationId;
+	private Long collocationWordId;
 
-	@Column(name = "colloc_lexeme_id")
-	private Long collocateLexemeId;
-
-	@Column(name = "colloc_word_id")
-	private Long collocateWordId;
-
-	@Column(name = "collocation")
 	private String value;
 
-	@Column(name = "colloc_usages")
-	private String[] collocationUsages;
+	private Float frequency;
 
-	public Long getCollocationId() {
-		return collocationId;
+	private Float score;
+
+	private List<String> collocationUsages;
+
+	public Long getCollocationWordId() {
+		return collocationWordId;
 	}
 
-	public void setCollocationId(Long collocationId) {
-		this.collocationId = collocationId;
-	}
-
-	public Long getCollocateLexemeId() {
-		return collocateLexemeId;
-	}
-
-	public void setCollocateLexemeId(Long collocateLexemeId) {
-		this.collocateLexemeId = collocateLexemeId;
-	}
-
-	public Long getCollocateWordId() {
-		return collocateWordId;
-	}
-
-	public void setCollocateWordId(Long collocateWordId) {
-		this.collocateWordId = collocateWordId;
+	public void setCollocationWordId(Long collocationWordId) {
+		this.collocationWordId = collocationWordId;
 	}
 
 	public String getValue() {
@@ -55,11 +34,27 @@ public class Collocation extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public String[] getCollocationUsages() {
+	public Float getFrequency() {
+		return frequency;
+	}
+
+	public void setFrequency(Float frequency) {
+		this.frequency = frequency;
+	}
+
+	public Float getScore() {
+		return score;
+	}
+
+	public void setScore(Float score) {
+		this.score = score;
+	}
+
+	public List<String> getCollocationUsages() {
 		return collocationUsages;
 	}
 
-	public void setCollocationUsages(String[] collocationUsages) {
+	public void setCollocationUsages(List<String> collocationUsages) {
 		this.collocationUsages = collocationUsages;
 	}
 

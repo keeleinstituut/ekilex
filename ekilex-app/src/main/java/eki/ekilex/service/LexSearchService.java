@@ -13,25 +13,29 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Collocation;
+import eki.ekilex.data.CollocationPosGroup;
+import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Paradigm;
-import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
+import eki.ekilex.data.Paradigm;
+import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
+import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
 
 @Service
-public class LexSearchService {
+public class LexSearchService implements SystemConstant {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -41,6 +45,34 @@ public class LexSearchService {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Transactional
+	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
+
+		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
+		int wordCount = words.size();
+		if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+			wordCount = lexSearchDbService.countWords(searchFilter, datasets);
+		}
+		WordsResult result = new WordsResult();
+		result.setWords(words);
+		result.setTotalCount(wordCount);
+		return result;
+	}
+
+	@Transactional
+	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
+
+		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
+		int wordCount = words.size();
+		if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+			wordCount = lexSearchDbService.countWords(searchFilter, datasets);
+		}
+		WordsResult result = new WordsResult();
+		result.setWords(words);
+		result.setTotalCount(wordCount);
+		return result;
+	}
 
 	@Transactional
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
@@ -68,22 +100,23 @@ public class LexSearchService {
 			vocalForms = cleanUpVocalForms(vocalForms);
 
 			List<Word> meaningWords = lexSearchDbService.findMeaningWords(wordId, meaningId, selectedDatasets).into(Word.class);
-			List<Classifier> lexemePos = lexSearchDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemeDerivs = lexSearchDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemeRegisters = lexSearchDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> meaningDomains = lexSearchDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			List<Definition> meaningDefinitions = lexSearchDbService.findMeaningDefinitions(meaningId).into(Definition.class);
-			List<FreeForm> meaningFreeforms = lexSearchDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
-			List<FreeForm> lexemeFreeforms = lexSearchDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
+			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+			List<Classifier> meaningDomains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
+			List<Definition> meaningDefinitions = commonDataDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+			List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
+			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
-					lexSearchDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
 			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
 			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
-			List<Relation> meaningRelations = lexSearchDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
-			List<String> lexemeGrammars = lexSearchDbService.findLexemeGrammars(lexemeId).into(String.class);
-			List<Collocation> collocations = lexSearchDbService.findCollocations(lexemeId).into(Collocation.class);
+			List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+			List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
+			List<CollocationTuple> collocTuples = lexSearchDbService.findCollocationTuples(lexemeId).into(CollocationTuple.class);
+			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(collocTuples);
 
 			lexeme.setLexemePos(lexemePos);
 			lexeme.setLexemeDerivs(lexemeDerivs);
@@ -98,7 +131,7 @@ public class LexSearchService {
 			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);
 			lexeme.setGrammars(lexemeGrammars);
-			lexeme.setCollocations(collocations);
+			lexeme.setCollocationPosGroups(collocationPosGroups);
 			lexeme.setVocalForms(vocalForms);
 
 			boolean lexemeOrMeaningClassifiersExist =

@@ -468,12 +468,6 @@ pos	adj + ID	indeclinable adjective	eng	descrip
 pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
 pos	pron + ID	indeclinable pronoun	eng	descrip
-process_state	avalik	-	-	-
-process_state	komisjoni kinnitatud	-	-	-
-process_state	komisjonis arutlusel	-	-	-
-process_state	konfidentsiaalne	-	-	-
-process_state	määramata	-	-	-
-process_state	töös	-	-	-
 government_type	obj	objektirektsioon	est	full
 government_type	kn	käänderektsioon	est	full
 government_type	ks	kaassõnarektsioon	est	full
@@ -511,3 +505,22 @@ usage_type	y	sõnaühend	est	descrip
 word_rel_type	komp	keskvõrre	est	full
 word_rel_type	superl	ülivõrre	est	full
 word_rel_type	deriv	tuletis	est	full
+process_state	määramata	-	-	-
+process_state	koostamisel	-	-	-
+process_state	koostatud	-	-	-
+process_state	ajakohastamisel	-	-	-
+process_state	ajakohastatud	-	-	-
+process_state	vajab konsulteerimist	-	-	-
+process_state	saadetud konsulteerimisele	-	-	-
+process_state	konsulteerimisel	-	-	-
+process_state	heaks kiidetud	-	-	-
+process_state	tagasi lükatud	-	-	-
+process_state	lahenduseta	-	-	-
+process_state	toimetamisel	-	-	-
+process_state	toimetatud	-	-	-
+process_state	peatoimetamisel	-	-	-
+process_state	peatoimetatud	-	-	-
+process_state	valmis	-	-	-
+process_state	avalik	-	-	-
+process_state	arhiveeritud	-	-	-
+process_state	töös	-	-	-

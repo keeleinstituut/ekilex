@@ -1,5 +1,6 @@
 package eki.ekilex.test;
 
+import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
@@ -16,12 +17,14 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Word;
-import eki.ekilex.service.db.CommonDataDbService;
+import eki.ekilex.service.db.LexSearchDbService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
@@ -33,7 +36,7 @@ public class LexSearchServiceTest {
 	private TestEnvInitialiser testEnvInitialiser;
 
 	@Autowired
-	private CommonDataDbService commonDataDbService;
+	private LexSearchDbService lexSearchDbService;
 
 	@Before
 	public void beforeTest() throws Exception {
@@ -45,8 +48,10 @@ public class LexSearchServiceTest {
 	public void testSearchByWord() throws Exception {
 
 		SearchFilter searchFilter = new SearchFilter();
-		List<SearchCriterion> searchCriteria = new ArrayList<>();
-		searchFilter.setSearchCriteria(searchCriteria);
+		SearchCriterionGroup wordGroup = new SearchCriterionGroup();
+		wordGroup.setEntity(SearchEntity.WORD);
+		wordGroup.setSearchCriteria(new ArrayList<>());
+		searchFilter.setCriteriaGroups(asList(wordGroup));
 
 		List<String> datasets = new ArrayList<>();
 		SearchCriterion searchCriterion;
@@ -56,8 +61,8 @@ public class LexSearchServiceTest {
 		List<Word> words;
 
 		// case #1
-		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		wordGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("hall");
 
@@ -65,15 +70,15 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 
 		// case #2
-		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		wordGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.STARTS_WITH;
 		searchValue = new String("hall");
 
@@ -81,15 +86,15 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 6, words.size());
 
 		// case #3
-		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		wordGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.ENDS_WITH;
 		searchValue = new String("hall");
 
@@ -97,15 +102,15 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 7, words.size());
 
 		// case #4
-		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		wordGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("aha");
 
@@ -113,15 +118,15 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 
 		// case #5
-		searchCriteria.clear();
-		searchKey = SearchKey.WORD_VALUE;
+		wordGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("ii");
 
@@ -129,9 +134,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		searchKey = SearchKey.WORD_VALUE;
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.ENDS_WITH;
 		searchValue = new String("ll");
 
@@ -139,9 +144,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		wordGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		assertEquals("Incorrect match", "hiirhall", words.get(0).getValue());
@@ -151,8 +156,10 @@ public class LexSearchServiceTest {
 	public void testSearchByForm() throws Exception {
 
 		SearchFilter searchFilter = new SearchFilter();
-		List<SearchCriterion> searchCriteria = new ArrayList<>();
-		searchFilter.setSearchCriteria(searchCriteria);
+		SearchCriterionGroup formGroup = new SearchCriterionGroup();
+		formGroup.setEntity(SearchEntity.FORM);
+		formGroup.setSearchCriteria(new ArrayList<>());
+		searchFilter.setCriteriaGroups(asList(formGroup));
 
 		List<String> datasets = new ArrayList<>();
 		SearchCriterion searchCriterion;
@@ -163,8 +170,8 @@ public class LexSearchServiceTest {
 		Word word;
 
 		// case #1
-		searchCriteria.clear();
-		searchKey = SearchKey.FORM_VALUE;
+		formGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("väära");
 
@@ -172,17 +179,17 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		formGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
 		assertEquals("Incorrect match", "väär", word.getValue());
 
 		// case #2
-		searchCriteria.clear();
-		searchKey = SearchKey.FORM_VALUE;
+		formGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("halla");
 
@@ -190,9 +197,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		formGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -200,8 +207,8 @@ public class LexSearchServiceTest {
 		assertEquals("Incorrect match", new Integer(1), word.getHomonymNumber());
 
 		// case #3
-		searchCriteria.clear();
-		searchKey = SearchKey.FORM_VALUE;
+		formGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("halli");
 
@@ -209,9 +216,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		formGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -223,8 +230,10 @@ public class LexSearchServiceTest {
 	public void testSearchByDefinition() throws Exception {
 
 		SearchFilter searchFilter = new SearchFilter();
-		List<SearchCriterion> searchCriteria = new ArrayList<>();
-		searchFilter.setSearchCriteria(searchCriteria);
+		SearchCriterionGroup definitionGroup = new SearchCriterionGroup();
+		definitionGroup.setEntity(SearchEntity.DEFINITION);
+		definitionGroup.setSearchCriteria(new ArrayList<>());
+		searchFilter.setCriteriaGroups(asList(definitionGroup));
 
 		List<String> datasets = new ArrayList<>();
 		SearchCriterion searchCriterion;
@@ -235,8 +244,8 @@ public class LexSearchServiceTest {
 		Word word;
 
 		// case #1
-		searchCriteria.clear();
-		searchKey = SearchKey.DEFINITION_VALUE;
+		definitionGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("ESIK");
 
@@ -244,9 +253,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		definitionGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 2, words.size());
 		word = words.get(0);
@@ -259,8 +268,10 @@ public class LexSearchServiceTest {
 	public void testSearchByUsage() throws Exception {
 
 		SearchFilter searchFilter = new SearchFilter();
-		List<SearchCriterion> searchCriteria = new ArrayList<>();
-		searchFilter.setSearchCriteria(searchCriteria);
+		SearchCriterionGroup usageGroup = new SearchCriterionGroup();
+		usageGroup.setEntity(SearchEntity.USAGE);
+		usageGroup.setSearchCriteria(new ArrayList<>());
+		searchFilter.setCriteriaGroups(asList(usageGroup));
 
 		List<String> datasets = new ArrayList<>();
 		SearchCriterion searchCriterion;
@@ -271,8 +282,8 @@ public class LexSearchServiceTest {
 		Word word;
 
 		// case #1
-		searchCriteria.clear();
-		searchKey = SearchKey.USAGE_VALUE;
+		usageGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
 		searchOperand = SearchOperand.CONTAINS;
 		searchValue = new String("haned");
 
@@ -280,9 +291,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		usageGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
@@ -293,8 +304,10 @@ public class LexSearchServiceTest {
 	public void testSearchByConceptId() throws Exception {
 
 		SearchFilter searchFilter = new SearchFilter();
-		List<SearchCriterion> searchCriteria = new ArrayList<>();
-		searchFilter.setSearchCriteria(searchCriteria);
+		SearchCriterionGroup conceptIdGroup = new SearchCriterionGroup();
+		conceptIdGroup.setEntity(SearchEntity.CONCEPT_ID);
+		conceptIdGroup.setSearchCriteria(new ArrayList<>());
+		searchFilter.setCriteriaGroups(asList(conceptIdGroup));
 
 		List<String> datasets = new ArrayList<>();
 		SearchCriterion searchCriterion;
@@ -305,8 +318,8 @@ public class LexSearchServiceTest {
 		Word word;
 
 		// case #1
-		searchCriteria.clear();
-		searchKey = SearchKey.CONCEPT_ID;
+		conceptIdGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.ID;
 		searchOperand = SearchOperand.EQUALS;
 		searchValue = new String("123456");
 
@@ -314,9 +327,9 @@ public class LexSearchServiceTest {
 		searchCriterion.setSearchKey(searchKey);
 		searchCriterion.setSearchOperand(searchOperand);
 		searchCriterion.setSearchValue(searchValue);
-		searchCriteria.add(searchCriterion);
+		conceptIdGroup.getSearchCriteria().add(searchCriterion);
 
-		words = commonDataDbService.findWords(searchFilter, datasets).into(Word.class);
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
 		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);

@@ -38,6 +38,10 @@ public class TermekiService implements InitializingBean {
 
 	private static final String TERMBASE_IDS = "csv/termeki-databases.csv";
 
+	private static final String SQL_SELECT_TERM_ATTRIBUTES = "sql/select_termeki_term_attributes.sql";
+
+	private static final String SQL_SELECT_CONCEPT_ATTRIBUTES = "sql/select_termeki_concept_attributes.sql";
+
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
 	private String sqlSelectTerms;
@@ -50,7 +54,13 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectComments;
 
+	private String sqlSelectTermAttributes;
+
+	private String sqlSelectConceptAttributes;
+
 	private Map<Integer, String> termbaseIds;
+
+	private String sqlSelectGeolDomains = "select distinct attribute_value from termeki_concept_attributes_varchar a where a.attribute_id in (44388)";
 
 	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
@@ -63,6 +73,8 @@ public class TermekiService implements InitializingBean {
 		sqlSelectDomains = getContent(SQL_SELECT_DOMAINS);
 		sqlSelectSources = getContent(SQL_SELECT_SOURCES);
 		sqlSelectComments = getContent(SQL_SELECT_COMMENTS);
+		sqlSelectTermAttributes = getContent(SQL_SELECT_TERM_ATTRIBUTES);
+		sqlSelectConceptAttributes = getContent(SQL_SELECT_CONCEPT_ATTRIBUTES);
 		termbaseIds = readFileLines(TERMBASE_IDS).stream()
 				.collect(toMap(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]), l -> StringUtils.split(l, CSV_SEPARATOR)[1]));
 	}
@@ -116,6 +128,24 @@ public class TermekiService implements InitializingBean {
 		List<Map<String, Object>> domains = queryList(sqlSelectDomains, params);
 		domains.forEach(d -> d.put("termbase_code", termbaseIds.get(d.get("termbase_id"))));
 		return domains;
+	}
+
+	public List<Map<String, Object>> getGeolDomains() {
+		return queryList(sqlSelectGeolDomains, Collections.emptyMap());
+	}
+
+	public List<Map<String, Object>> getTermAttributes(Integer attributeId) {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("attributeId", attributeId);
+		return queryList(sqlSelectTermAttributes, params);
+	}
+
+	public List<Map<String, Object>> getConceptAttributes(Integer attributeId) {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("attributeId", attributeId);
+		return queryList(sqlSelectConceptAttributes, params);
 	}
 
 	public Collection<String> termbaseCodes() {

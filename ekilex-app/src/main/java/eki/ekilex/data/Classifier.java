@@ -3,6 +3,8 @@ package eki.ekilex.data;
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 public class Classifier extends AbstractDataObject {
 
@@ -39,6 +41,11 @@ public class Classifier extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	@Override
+	public String toString() {
+		return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
 	}
 
 }
