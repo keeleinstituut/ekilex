@@ -114,9 +114,6 @@ public class LexSearchDbService implements SystemConstant {
 			List<SearchCriterion> valueCriterions = searchCriterions.stream()
 					.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
 					.collect(toList());
-			List<SearchCriterion> languageCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.LANGUAGE) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
-					.collect(toList());
 			List<SearchCriterion> idCriterions = searchCriterions.stream()
 					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
 					.collect(toList());
@@ -131,9 +128,7 @@ public class LexSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where = applySearchValueFilter(searchValueStr, searchOperand, form.VALUE, where);
 				}
-				for (SearchCriterion criterion : languageCriterions) {
-					where = where.and(word.LANG.eq(criterion.getSearchValue().toString()));
-				}
+				where = applyLanguageFilter(searchCriterions, word.LANG, where);
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
@@ -146,9 +141,7 @@ public class LexSearchDbService implements SystemConstant {
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, f2.VALUE, where2);
 				}
 				where = where.and(DSL.exists(DSL.select(f2.ID).from(f2, p2).where(where2)));
-				for (SearchCriterion criterion : languageCriterions) {
-					where = where.and(word.LANG.eq(criterion.getSearchValue().toString()));
-				}
+				where = applyLanguageFilter(searchCriterions, word.LANG, where);
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -161,9 +154,7 @@ public class LexSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, d2.VALUE, where2);
 				}
-				for (SearchCriterion criterion : languageCriterions) {
-					where2 = where2.and(d2.LANG.eq(criterion.getSearchValue().toString()));
-				}
+				where2 = applyLanguageFilter(searchCriterions, d2.LANG, where2);
 				where = where.and(DSL.exists(DSL.select(d2.ID).from(l2, m2, d2).where(where2)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
@@ -189,10 +180,7 @@ public class LexSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, u2.VALUE_TEXT, where2);
 				}
-				for (SearchCriterion criterion : languageCriterions) {
-					where2 = where2.and(u2.LANG.eq(criterion.getSearchValue().toString()));
-				}
-
+				where2 = applyLanguageFilter(searchCriterions, u2.LANG, where2);
 				where = where.and(DSL.exists(DSL.select(u2.ID).from(l2, l2ff, rect2, um2, u2).where(where2)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
@@ -232,7 +220,17 @@ public class LexSearchDbService implements SystemConstant {
 		return where;
 	}
 
-	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) throws Exception {
+	private Condition applyLanguageFilter(List<SearchCriterion> searchCriterions, Field<String> languageField, Condition condition) {
+		List<SearchCriterion> languageCriterions = searchCriterions.stream()
+				.filter(c -> c.getSearchKey().equals(SearchKey.LANGUAGE) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+				.collect(toList());
+		for (SearchCriterion criterion : languageCriterions) {
+			condition = condition.and(languageField.eq(criterion.getSearchValue().toString()));
+		}
+		return condition;
+	}
+
+	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) {
 
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
 			condition = condition.and(searchField.equalIgnoreCase(searchValueStr));
