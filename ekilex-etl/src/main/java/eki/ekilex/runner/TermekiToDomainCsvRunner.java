@@ -72,29 +72,7 @@ public class TermekiToDomainCsvRunner extends AbstractDomainRunner {
 				classifierMappings.add(classifierMapping);
 			}
 		}
-		List<String> geolDomains = uniqueGeolDomainsList();
-		for (String domain : geolDomains) {
-			ClassifierMapping classifierMapping = new ClassifierMapping();
-			classifierMapping.setEkiOrigin("get");
-			classifierMapping.setEkiCode(domain);
-			classifierMapping.setEkiValue(domain);
-			classifierMapping.setEkiValueLang("et");
-			classifierMappings.add(classifierMapping);
-		}
 		return classifierMappings;
-	}
-
-	private List<String> uniqueGeolDomainsList() {
-		List<String> domains = new ArrayList<>();
-		List<Map<String, Object>> geolDomains = termekiService.getGeolDomains();
-		for (Map<String, Object> domain : geolDomains) {
-			String domainValue = domain.get("attribute_value").toString();
-			if (domainValue.contains(",") || domainValue.contains(";") || domainValue.equals("Gen.Gl")) {
-				continue;
-			}
-			domains.add(domainValue.toLowerCase());
-		}
-		return domains;
 	}
 
 	private ClassifierMapping createClassifierMapping(Map<Object, Object> domainCodes, Map<String, Object> domain, String language) {

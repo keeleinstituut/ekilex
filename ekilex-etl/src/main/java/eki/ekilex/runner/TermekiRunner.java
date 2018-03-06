@@ -321,15 +321,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer conceptId = (Integer) term.get("concept_id");
 			Optional<Map<String, Object>> domainCode = context.geolDomains.stream().filter(d -> d.get("concept_id").equals(conceptId)).findFirst();
 			if (domainCode.isPresent()) {
-				String codeValue = (String)domainCode.get().get("attribute_value");
-				String[] codeValues = codeValue.replace(";", ",").split(",");
+				String codeValue = cleanUpGeoDomainCodes((String)domainCode.get().get("attribute_value"));
+				String[] codeValues = codeValue.split(",");
 				for (String code: codeValues) {
 					if (isNotBlank(code)) {
-						if (code.trim().toLowerCase().startsWith("gen")) {
-							codes.add("gen. gl");
-						} else {
-							codes.add(code.trim().toLowerCase());
-						}
+						codes.add(code);
 					}
 				}
 			}
@@ -340,6 +336,26 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			}
 		}
 		return codes;
+	}
+
+	private String cleanUpGeoDomainCodes(String domainCodes) {
+		String cleanedUp = domainCodes.toLowerCase()
+				.replace("(paleo)", "pecol,")
+				.replace("ecology", "ecol")
+				.replace("cim", "clim")
+				.replace("paleoecol", "pecol")
+				.replace("glscio", "glacio")
+				.replace("goechem", "geochem")
+				.replace("hydrogeology", "hydro")
+				.replace(" ", "")
+				.replace("gen.gl", "gen. gl")
+				.replace("gengl", "gen. gl")
+				.replace("q", "Q")
+				.replace(";", ",");
+		if (cleanedUp.equals("eco")) {
+			cleanedUp = "ecol";
+		}
+		return cleanedUp;
 	}
 
 	private void addMeaningFreeforms(Context context, Integer conceptId, Long meaningId) throws Exception {
