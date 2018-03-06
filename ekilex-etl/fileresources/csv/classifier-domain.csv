@@ -3549,7 +3549,7 @@ get	petro	-	petroloogia	est
 get	nomencl	-	nomenklatuur	est
 get	taxonomy	-	taksonoomia	est
 get	phyl	-	fülogenees	est
-get	Q	-	kvaternaarigeoloogia	est
+get	q	-	kvaternaarigeoloogia	est
 get	strat	-	stratigraafia	est
 get	glacio	-	glatsioloogia	est
 get	pecol	-	paleoecology	eng
@@ -3570,6 +3570,6 @@ get	petro	-	petrology	eng
 get	nomencl	-	nomenclature	eng
 get	taxonomy	-	taxonomy	eng
 get	phyl	-	phylogenesis	eng
-get	Q	-	quaternary geology	eng
+get	q	-	quaternary geology	eng
 get	strat	-	stratigraphy	eng
 get	glacio	-	glaciology	eng
