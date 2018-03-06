@@ -182,6 +182,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			wordObj = wordMap.get(word).get(wordHomonymNum);
 			Long wordId = wordObj.getId();
 			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
+			if (wordPosNode == null) {
+				//TODO there should be POS!
+				continue;
+			}
 			String wordPosCode = wordPosNode.getTextTrim();
 			wordPosCode = posConversionMap.get(wordPosCode);
 
@@ -340,6 +344,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			// pos
 			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
+			if (wordPosNode == null) {
+				//TODO there should be POS!
+				logger.warn("Missing POS @ \"{}\". Skipping entire article", word);
+				continue;
+			}
 			String wordPosCode = wordPosNode.getTextTrim();
 			wordPosCode = posConversionMap.get(wordPosCode);
 

@@ -53,7 +53,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	private static final String REVIEW_TIMESTAMP_PATTERN = "yy/MM/dd";
 
 	@Autowired
-	private EstermLoaderHelper helper;
+	private EstermLoaderHelper loaderHelper;
 
 	@Autowired
 	private EstermReportHelper reportHelper;
@@ -525,9 +525,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				valueStr = textContentNode.getText();
 				valueStr = StringUtils.replaceChars(valueStr, '\n', ' ');
 				valueStr = StringUtils.trim(valueStr);
-				boolean isListing = helper.isListing(valueStr);
-				boolean isRefEnd = helper.isRefEnd(valueStr);
-				String content = helper.getContent(valueStr);
+				boolean isListing = loaderHelper.isListing(valueStr);
+				boolean isRefEnd = loaderHelper.isRefEnd(valueStr);
+				String content = loaderHelper.getContent(valueStr);
 				boolean contentExists = StringUtils.isNotBlank(content);
 				if (isListing) {
 					continue;
@@ -536,7 +536,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					logger.warn("Illegal ref end notation @ \"{}\" : {}", term, rootContentNode.asXML());
 				}
 				if (isRefOn && isRefEnd) {
-					String smallRef = helper.collectSmallRef(valueStr);
+					String smallRef = loaderHelper.collectSmallRef(valueStr);
 					if (StringUtils.isNotBlank(smallRef)) {
 						refObj.setMinorRef(smallRef);
 					}
