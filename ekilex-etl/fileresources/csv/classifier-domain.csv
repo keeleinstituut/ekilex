@@ -280,35 +280,6 @@ ent	suurliblikad	liblikalised	suurliblikad	et
 ent	pahkvaablased	kiletiivalised	pahkvaablased	et
 ett	snomed ct	-	snomed ct	et
 ett	snomed ct	-	snomed ct	en
-get	(paleo)ecol	-	(paleo)ecol	et
-get	(paleo)ecology	-	(paleo)ecology	et
-get	biol	-	biol	et
-get	cim	-	cim	et
-get	clim	-	clim	et
-get	eco	-	eco	et
-get	ecol	-	ecol	et
-get	gen. gl	-	gen. gl	et
-get	geochem	-	geochem	et
-get	geom	-	geom	et
-get	geophys	-	geophys	et
-get	glacio	-	glacio	et
-get	glscio	-	glscio	et
-get	goechem	-	goechem	et
-get	hydro	-	hydro	et
-get	hydrogeology	-	hydrogeology	et
-get	method	-	method	et
-get	min	-	min	et
-get	nomencl	-	nomencl	et
-get	paleo	-	paleo	et
-get	paleoecol	-	paleoecol	et
-get	pclim	-	pclim	et
-get	pecol	-	pecol	et
-get	petro	-	petro	et
-get	phyl	-	phyl	et
-get	q	-	q	et
-get	sedim	-	sedim	et
-get	strat	-	strat	et
-get	taxonomy	-	taxonomy	et
 gmt	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	et
 gmt	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	coastal landforms	en
 gmt	tuuletekkelised ehk eoolsed pinnavormid	-	tuuletekkelised ehk eoolsed pinnavormid	et
@@ -779,9 +750,9 @@ lenoch	CE111	CE11	Combined Nomenclature; Tariff and Statistical Nomenclature	eng
 lenoch	CE112	CE11	European patents	eng
 lenoch	CE113	CE11	European Standards; EN	eng
 lenoch	CE12	CE1	documentation & information systems (sn: documentation & information systems of the EU)	eng
-lenoch	CE2	CE	action plans & programmes - information (sn: action plans & programmes - information dealing with "European Integration" and the "European Union " as topics)	eng
+lenoch	CE2	CE	"action plans & programmes - information (sn: action plans & programmes - information dealing with ""European Integration"" and the ""European Union "" as topics)"	eng
 lenoch	CE21	CE2	Citizens first (nt: DG X action programme)	eng
-lenoch	CE3	CE	publications (sn: publications dealing with "European Integration" and the "European Union " as topics)	eng
+lenoch	CE3	CE	"publications (sn: publications dealing with ""European Integration"" and the ""European Union "" as topics)"	eng
 lenoch	CE4	CE	European Union; EU - European Community; European Communities; EC	eng
 lenoch	CE41	CE4	European Coal and Steel Community; ECSC	eng
 lenoch	CE42	CE4	European Economic Community; EEC	eng
@@ -930,7 +901,7 @@ lenoch	CEPN	CEP	European Cooperation in the field of Scientific and Technical Re
 lenoch	CEPO	CEP	commercial policy measures	eng
 lenoch	CEPP	CEP	commodity agreement	eng
 lenoch	CEPR	CEP	regional policy	eng
-lenoch	CEQ	CE	action plans & programmes - framework programmes - information systems & networks (us: For "Social Europe"- Programme. see: SOE)	eng
+lenoch	CEQ	CE	"action plans & programmes - framework programmes - information systems & networks (us: For ""Social Europe""- Programme. see: SOE)"	eng
 lenoch	CEQ1	CEQ	action plans & programmes	eng
 lenoch	CEQ2	CEQ	framework programmes	eng
 lenoch	CEQ3	CEQ	information systems & networks	eng
@@ -1970,7 +1941,7 @@ lenoch	LA9	LA	versification	eng
 lenoch	LAA	LA	etymology	eng
 lenoch	LAB	LA	terminology	eng
 lenoch	LAC	LA	lexicology	eng
-lenoch	LAD	LA	translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as "translator's findings", "useful tricks", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)	eng
+lenoch	LAD	LA	"translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as ""translator's findings"", ""useful tricks"", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)"	eng
 lenoch	LAE	LA	literature - history of literature	eng
 lenoch	LAF	LA	philology	eng
 lenoch	LAG	LA	linguistic philosophy	eng
@@ -3560,3 +3531,45 @@ usk	tule- ja vulkaanijumalad	-	tule- ja vulkaanijumalad	et
 usk	metsavaimud	-	metsavaimud	et
 usk	tõlkekirjandus	-	tõlkekirjandus	et
 usk	kurat ja kuradi derivaadid	-	kurat ja kuradi derivaadid	et
+get	pecol	-	paleoökoloogia	est
+get	ecol	-	ökoloogia	est
+get	gen. gl	-	üldgeoloogia	est
+get	paleo	-	paleontoloogia	est
+get	pclim	-	paleoklimatoloogia	est
+get	biol	-	bioloogia	est
+get	clim	-	klimatoloogia	est
+get	sedim	-	sedimentoloogia	est
+get	hydro	-	hüdrogeoloogia	est
+get	geophys	-	geofüüsika	est
+get	min	-	mineraloogia	est
+get	geochem	-	geokeemia	est
+get	geom	-	geomorfoloogia	est
+get	method	-	meetod	est
+get	petro	-	petroloogia	est
+get	nomencl	-	nomenklatuur	est
+get	taxonomy	-	taksonoomia	est
+get	phyl	-	fülogenees	est
+get	Q	-	kvaternaarigeoloogia	est
+get	strat	-	stratigraafia	est
+get	glacio	-	glatsioloogia	est
+get	pecol	-	paleoecology	eng
+get	ecol	-	ecology	eng
+get	gen. gl	-	general geology	eng
+get	paleo	-	paleontology	eng
+get	pclim	-	palaeoclimatology	eng
+get	biol	-	biology	eng
+get	clim	-	climatology	eng
+get	sedim	-	sedimentology	eng
+get	hydro	-	hydrogeology	eng
+get	geophys	-	geophysics	eng
+get	min	-	mineralogy	eng
+get	geochem	-	geochemistry	eng
+get	geom	-	geomorphology	eng
+get	method	-	method	eng
+get	petro	-	petrology	eng
+get	nomencl	-	nomenclature	eng
+get	taxonomy	-	taxonomy	eng
+get	phyl	-	phylogenesis	eng
+get	Q	-	quaternary geology	eng
+get	strat	-	stratigraphy	eng
+get	glacio	-	glaciology	eng

@@ -110,6 +110,12 @@
             <div class="col-3" th:if="${criteria.searchKey.name() == 'ID'}">
               <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
             </div>
+            <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_CODE'}">
+              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+            </div>
+            <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
+              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+            </div>
             <div class="col-2">
               <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn">
                 <i class="fa fa-plus" aria-hidden="true"></i>
@@ -147,6 +153,12 @@
           <input type="text" class="form-control">
         </div>
         <div name="ID">
+          <input type="text" class="form-control">
+        </div>
+        <div name="SOURCE_CODE">
+          <input type="text" class="form-control">
+        </div>
+        <div name="SOURCE_NAME">
           <input type="text" class="form-control">
         </div>
         <div name="LANGUAGE">
