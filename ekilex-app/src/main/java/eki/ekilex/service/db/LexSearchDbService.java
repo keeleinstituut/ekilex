@@ -85,7 +85,7 @@ public class LexSearchDbService implements SystemConstant {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 
-		if (hasNoSerachCriterions(searchCriteriaGroups)) {
+		if (hasNoSerachCriteria(searchCriteriaGroups)) {
 			return create.newResult();
 		}
 
@@ -97,7 +97,7 @@ public class LexSearchDbService implements SystemConstant {
 		return execute(word, paradigm, form, where, datasets, fetchAll);
 	}
 
-	private boolean hasNoSerachCriterions(List<SearchCriterionGroup> searchCriteriaGroups) {
+	private boolean hasNoSerachCriteria(List<SearchCriterionGroup> searchCriteriaGroups) {
 		for (SearchCriterionGroup group : searchCriteriaGroups) {
 			boolean containsValidCriterion = group.getSearchCriteria().stream()
 					.anyMatch(s -> s.getSearchValue() != null && isNotBlank(s.getSearchValue().toString()));
@@ -131,23 +131,23 @@ public class LexSearchDbService implements SystemConstant {
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
 
 			List<SearchCriterion> valueCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
+					.filter(crit -> crit.getSearchKey().equals(SearchKey.VALUE) && crit.getSearchValue() != null)
 					.collect(toList());
 			List<SearchCriterion> idCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
+					.filter(crit -> crit.getSearchKey().equals(SearchKey.ID) && crit.getSearchValue() != null)
 					.collect(toList());
 			List<SearchCriterion> domainCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.DOMAIN) && c.getSearchValue() != null)
+					.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN) && crit.getSearchValue() != null)
 					.collect(toList());
 
 			if (SearchEntity.WORD.equals(searchEntity)) {
+
 				Lexeme l2 = Lexeme.LEXEME.as("l2");
 				Lexeme l3 = Lexeme.LEXEME.as("l3");
-				Word w3 = Word.WORD.as(("w3"));
 				Paradigm p3 = Paradigm.PARADIGM.as("p3");
 				Form f3 = Form.FORM.as("f3");
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID)).and(l3.WORD_ID.eq(w3.ID))
-						.and(p3.WORD_ID.eq(w3.ID)).and(f3.PARADIGM_ID.eq(p3.ID)).and(f3.IS_WORD.eq(true));
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID))
+						.and(l3.WORD_ID.eq(p3.WORD_ID)).and(f3.PARADIGM_ID.eq(p3.ID)).and(f3.IS_WORD.isTrue());
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
@@ -155,8 +155,8 @@ public class LexSearchDbService implements SystemConstant {
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, f3.VALUE, where2);
 				}
 				where2 = applyLanguageFilter(searchCriterions, word.LANG, where2);
-				if (hasValueOrLanguageCriterions(searchCriterions)) {
-					where = where.and(DSL.exists(DSL.select(w3.ID).from(l2, l3, w3, p3, f3).where(where2)));
+				if (hasValueOrLanguageCriteria(searchCriterions)) {
+					where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3).where(where2)));
 				}
 				where = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriterions, word.ID, where);
 				where = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriterions, word.ID, where);
@@ -165,11 +165,10 @@ public class LexSearchDbService implements SystemConstant {
 
 				Lexeme l2 = Lexeme.LEXEME.as("l2");
 				Lexeme l3 = Lexeme.LEXEME.as("l3");
-				Word w3 = Word.WORD.as(("w3"));
 				Paradigm p3 = Paradigm.PARADIGM.as("p3");
 				Form f3 = Form.FORM.as("f3");
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID)).and(l3.WORD_ID.eq(w3.ID))
-						.and(p3.WORD_ID.eq(w3.ID)).and(f3.PARADIGM_ID.eq(p3.ID));
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID))
+						.and(l3.WORD_ID.eq(p3.WORD_ID)).and(f3.PARADIGM_ID.eq(p3.ID));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
@@ -177,7 +176,7 @@ public class LexSearchDbService implements SystemConstant {
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, f3.VALUE, where2);
 				}
 				where2 = applyLanguageFilter(searchCriterions, word.LANG, where2);
-				where = where.and(DSL.exists(DSL.select(w3.ID).from(l2, l3, w3, p3, f3).where(where2)));
+				where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3).where(where2)));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -185,6 +184,7 @@ public class LexSearchDbService implements SystemConstant {
 				Meaning m2 = MEANING.as("m2");
 				Definition d2 = DEFINITION.as("d2");
 				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(d2.MEANING_ID.eq(m2.ID));
+
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
@@ -228,14 +228,14 @@ public class LexSearchDbService implements SystemConstant {
 				MeaningFreeform m2ff = MEANING_FREEFORM.as("m2ff");
 				Freeform concept = FREEFORM.as("concept");
 
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(m2ff.MEANING_ID.eq(m2.ID)).and(m2ff.FREEFORM_ID.eq(concept.ID)).and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(m2ff.MEANING_ID.eq(m2.ID))
+						.and(m2ff.FREEFORM_ID.eq(concept.ID)).and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
 				for (SearchCriterion criterion : idCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where2);
 				}
-
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
@@ -250,7 +250,6 @@ public class LexSearchDbService implements SystemConstant {
 					Classifier domain = (Classifier) criterion.getSearchValue();
 					where2 = where2.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
 				}
-
 				where = where.and(DSL.exists(DSL.select(m2.ID).from(l2, m2, md).where(where2)));
 
 			}
@@ -258,14 +257,14 @@ public class LexSearchDbService implements SystemConstant {
 		return where;
 	}
 
-	private boolean hasValueOrLanguageCriterions(List<SearchCriterion> searchCriterions) {
-		return searchCriterions.stream().anyMatch(s -> s.getSearchKey().equals(SearchKey.VALUE) || s.getSearchKey().equals(SearchKey.LANGUAGE));
+	private boolean hasValueOrLanguageCriteria(List<SearchCriterion> searchCriterions) {
+		return searchCriterions.stream().anyMatch(crit -> crit.getSearchKey().equals(SearchKey.VALUE) || crit.getSearchKey().equals(SearchKey.LANGUAGE));
 	}
 
 	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
 
 		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
 				.collect(toList());
 		if (sourceCriterions.isEmpty()) {
 			return condition;
@@ -276,10 +275,8 @@ public class LexSearchDbService implements SystemConstant {
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		String sourceType = searchKey.equals(SearchKey.SOURCE_NAME) ? "SOURCE_NAME" : "SOURCE_CODE";
-
-		Condition sourceCondition = rl.DEFINITION_ID.eq(definitionIdField).and(s.ID.eq(rl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
-				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(sourceType));
+		Condition sourceCondition = rl.DEFINITION_ID.eq(definitionIdField).and(s.ID.eq(rl.REF_ID))
+				.and(sf.SOURCE_ID.eq(s.ID)).and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
@@ -290,7 +287,7 @@ public class LexSearchDbService implements SystemConstant {
 	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> wordIdField, Condition condition) {
 
 		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
 				.collect(toList());
 		if (sourceCriterions.isEmpty()) {
 			return condition;
@@ -304,11 +301,9 @@ public class LexSearchDbService implements SystemConstant {
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		String sourceType = searchKey.equals(SearchKey.SOURCE_NAME) ? "SOURCE_NAME" : "SOURCE_CODE";
-
 		Condition sourceCondition = l.WORD_ID.eq(wordIdField).and(lf.LEXEME_ID.eq(l.ID))
 				.and(f.ID.eq(lf.FREEFORM_ID)).and(f.TYPE.eq("SOURCE")).and(rl.FREEFORM_ID.eq(f.ID)).and(s.ID.eq(rl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
-				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(sourceType));
+				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
@@ -319,7 +314,7 @@ public class LexSearchDbService implements SystemConstant {
 	private Condition applyLanguageFilter(List<SearchCriterion> searchCriterions, Field<String> languageField, Condition condition) {
 
 		List<SearchCriterion> languageCriterions = searchCriterions.stream()
-				.filter(c -> c.getSearchKey().equals(SearchKey.LANGUAGE) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
+				.filter(crit -> crit.getSearchKey().equals(SearchKey.LANGUAGE) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
 				.collect(toList());
 		for (SearchCriterion criterion : languageCriterions) {
 			condition = condition.and(languageField.eq(criterion.getSearchValue().toString()));
