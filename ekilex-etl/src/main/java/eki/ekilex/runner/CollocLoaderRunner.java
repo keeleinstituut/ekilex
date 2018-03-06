@@ -172,6 +172,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNode = (Element) headerNode.selectSingleNode(wordGroupExp);
+			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
+			if (wordPosNode == null) {
+				//TODO there should be POS!
+				continue;
+			}
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 			wordHomonymNumAttr = wordNode.attribute(wordHomonymNrAttr);
 			wordHomonymNum = 1;
@@ -181,11 +186,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			word = wordNode.getTextTrim();
 			wordObj = wordMap.get(word).get(wordHomonymNum);
 			Long wordId = wordObj.getId();
-			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
-			if (wordPosNode == null) {
-				//TODO there should be POS!
-				continue;
-			}
+			
 			String wordPosCode = wordPosNode.getTextTrim();
 			wordPosCode = posConversionMap.get(wordPosCode);
 
