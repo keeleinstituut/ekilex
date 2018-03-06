@@ -214,7 +214,7 @@ insert into domain (origin, code, datasets) values ('get', 'petro', '{}');
 insert into domain (origin, code, datasets) values ('get', 'nomencl', '{}');
 insert into domain (origin, code, datasets) values ('get', 'taxonomy', '{}');
 insert into domain (origin, code, datasets) values ('get', 'phyl', '{}');
-insert into domain (origin, code, datasets) values ('get', 'q', '{}');
+insert into domain (origin, code, datasets) values ('get', 'Q', '{}');
 insert into domain (origin, code, datasets) values ('get', 'strat', '{}');
 insert into domain (origin, code, datasets) values ('get', 'glacio', '{}');
 insert into domain (origin, code, datasets) values ('gmt', 'randlate (lainetusest tingitud) pinnavormid - rannamoodustised ', '{}');
@@ -3486,7 +3486,7 @@ insert into domain_label (origin, code, value, lang, type) values ('get', 'petro
 insert into domain_label (origin, code, value, lang, type) values ('get', 'nomencl', 'nomenklatuur', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'taxonomy', 'taksonoomia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'phyl', 'fülogenees', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('get', 'q', 'kvaternaarigeoloogia', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('get', 'Q', 'kvaternaarigeoloogia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'strat', 'stratigraafia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'glacio', 'glatsioloogia', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'pecol', 'paleoecology', 'eng', 'descrip');
@@ -3507,7 +3507,7 @@ insert into domain_label (origin, code, value, lang, type) values ('get', 'petro
 insert into domain_label (origin, code, value, lang, type) values ('get', 'nomencl', 'nomenclature', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'taxonomy', 'taxonomy', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'phyl', 'phylogenesis', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('get', 'q', 'quaternary geology', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('get', 'Q', 'quaternary geology', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'strat', 'stratigraphy', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('get', 'glacio', 'glaciology', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('gmt', 'randlate (lainetusest tingitud) pinnavormid - rannamoodustised ', 'randlate (lainetusest tingitud) pinnavormid - rannamoodustised ', 'est', 'descrip');
