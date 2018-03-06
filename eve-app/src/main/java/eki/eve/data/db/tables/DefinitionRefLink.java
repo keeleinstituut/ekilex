@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionRefLink extends TableImpl<DefinitionRefLinkRecord> {
 
-    private static final long serialVersionUID = 1243432326;
+    private static final long serialVersionUID = -646276572;
 
     /**
      * The reference instance of <code>public.definition_ref_link</code>
@@ -74,6 +74,16 @@ public class DefinitionRefLink extends TableImpl<DefinitionRefLinkRecord> {
      * The column <code>public.definition_ref_link.ref_id</code>.
      */
     public final TableField<DefinitionRefLinkRecord, Long> REF_ID = createField("ref_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.definition_ref_link.name</code>.
+     */
+    public final TableField<DefinitionRefLinkRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.definition_ref_link.order_by</code>.
+     */
+    public final TableField<DefinitionRefLinkRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('definition_ref_link_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.definition_ref_link</code> table reference

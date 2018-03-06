@@ -5,6 +5,8 @@ package eki.eve.data.db;
 
 
 import eki.eve.data.db.tables.Collocation;
+import eki.eve.data.db.tables.CollocationPosGroup;
+import eki.eve.data.db.tables.CollocationRelGroup;
 import eki.eve.data.db.tables.CollocationUsage;
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
@@ -54,6 +56,7 @@ import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
 import eki.eve.data.db.tables.MorphLabel;
 import eki.eve.data.db.tables.Paradigm;
+import eki.eve.data.db.tables.Person;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
 import eki.eve.data.db.tables.ProcessState;
@@ -61,8 +64,6 @@ import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
-import eki.eve.data.db.tables.UsageAuthorType;
-import eki.eve.data.db.tables.UsageAuthorTypeLabel;
 import eki.eve.data.db.tables.UsageType;
 import eki.eve.data.db.tables.UsageTypeLabel;
 import eki.eve.data.db.tables.Word;
@@ -70,7 +71,9 @@ import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
 import eki.eve.data.db.tables.WordRelTypeLabel;
 import eki.eve.data.db.tables.WordRelation;
+import eki.eve.data.db.tables.records.CollocationPosGroupRecord;
 import eki.eve.data.db.tables.records.CollocationRecord;
+import eki.eve.data.db.tables.records.CollocationRelGroupRecord;
 import eki.eve.data.db.tables.records.CollocationUsageRecord;
 import eki.eve.data.db.tables.records.DatasetRecord;
 import eki.eve.data.db.tables.records.DefinitionDatasetRecord;
@@ -120,6 +123,7 @@ import eki.eve.data.db.tables.records.MeaningTypeRecord;
 import eki.eve.data.db.tables.records.MorphLabelRecord;
 import eki.eve.data.db.tables.records.MorphRecord;
 import eki.eve.data.db.tables.records.ParadigmRecord;
+import eki.eve.data.db.tables.records.PersonRecord;
 import eki.eve.data.db.tables.records.PosLabelRecord;
 import eki.eve.data.db.tables.records.PosRecord;
 import eki.eve.data.db.tables.records.ProcessStateRecord;
@@ -127,8 +131,6 @@ import eki.eve.data.db.tables.records.RegisterLabelRecord;
 import eki.eve.data.db.tables.records.RegisterRecord;
 import eki.eve.data.db.tables.records.SourceFreeformRecord;
 import eki.eve.data.db.tables.records.SourceRecord;
-import eki.eve.data.db.tables.records.UsageAuthorTypeLabelRecord;
-import eki.eve.data.db.tables.records.UsageAuthorTypeRecord;
 import eki.eve.data.db.tables.records.UsageTypeLabelRecord;
 import eki.eve.data.db.tables.records.UsageTypeRecord;
 import eki.eve.data.db.tables.records.WordGuidRecord;
@@ -164,6 +166,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
+    public static final Identity<CollocationPosGroupRecord, Long> IDENTITY_COLLOCATION_POS_GROUP = Identities0.IDENTITY_COLLOCATION_POS_GROUP;
+    public static final Identity<CollocationRelGroupRecord, Long> IDENTITY_COLLOCATION_REL_GROUP = Identities0.IDENTITY_COLLOCATION_REL_GROUP;
     public static final Identity<CollocationUsageRecord, Long> IDENTITY_COLLOCATION_USAGE = Identities0.IDENTITY_COLLOCATION_USAGE;
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
@@ -185,6 +189,7 @@ public class Keys {
     public static final Identity<MeaningFreeformRecord, Long> IDENTITY_MEANING_FREEFORM = Identities0.IDENTITY_MEANING_FREEFORM;
     public static final Identity<MeaningRelationRecord, Long> IDENTITY_MEANING_RELATION = Identities0.IDENTITY_MEANING_RELATION;
     public static final Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = Identities0.IDENTITY_PARADIGM;
+    public static final Identity<PersonRecord, Long> IDENTITY_PERSON = Identities0.IDENTITY_PERSON;
     public static final Identity<SourceRecord, Long> IDENTITY_SOURCE = Identities0.IDENTITY_SOURCE;
     public static final Identity<SourceFreeformRecord, Long> IDENTITY_SOURCE_FREEFORM = Identities0.IDENTITY_SOURCE_FREEFORM;
     public static final Identity<WordRecord, Long> IDENTITY_WORD = Identities0.IDENTITY_WORD;
@@ -196,7 +201,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
-    public static final UniqueKey<CollocationRecord> COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = UniqueKeys0.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY;
+    public static final UniqueKey<CollocationPosGroupRecord> COLLOCATION_POS_GROUP_PKEY = UniqueKeys0.COLLOCATION_POS_GROUP_PKEY;
+    public static final UniqueKey<CollocationRelGroupRecord> COLLOCATION_REL_GROUP_PKEY = UniqueKeys0.COLLOCATION_REL_GROUP_PKEY;
     public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = UniqueKeys0.COLLOCATION_USAGE_PKEY;
     public static final UniqueKey<DatasetRecord> DATASET_PKEY = UniqueKeys0.DATASET_PKEY;
     public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = UniqueKeys0.DEFINITION_PKEY;
@@ -258,6 +264,8 @@ public class Keys {
     public static final UniqueKey<MorphRecord> MORPH_PKEY = UniqueKeys0.MORPH_PKEY;
     public static final UniqueKey<MorphLabelRecord> MORPH_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.MORPH_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<ParadigmRecord> PARADIGM_PKEY = UniqueKeys0.PARADIGM_PKEY;
+    public static final UniqueKey<PersonRecord> PERSON_PKEY = UniqueKeys0.PERSON_PKEY;
+    public static final UniqueKey<PersonRecord> PERSON_NAME_KEY = UniqueKeys0.PERSON_NAME_KEY;
     public static final UniqueKey<PosRecord> POS_PKEY = UniqueKeys0.POS_PKEY;
     public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.POS_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<ProcessStateRecord> PROCESS_STATE_PKEY = UniqueKeys0.PROCESS_STATE_PKEY;
@@ -266,8 +274,6 @@ public class Keys {
     public static final UniqueKey<SourceRecord> SOURCE_PKEY = UniqueKeys0.SOURCE_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = UniqueKeys0.SOURCE_FREEFORM_PKEY;
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = UniqueKeys0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
-    public static final UniqueKey<UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_PKEY = UniqueKeys0.USAGE_AUTHOR_TYPE_PKEY;
-    public static final UniqueKey<UsageAuthorTypeLabelRecord> USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = UniqueKeys0.USAGE_TYPE_PKEY;
     public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordRecord> WORD_PKEY = UniqueKeys0.WORD_PKEY;
@@ -282,8 +288,10 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY;
-    public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY;
+    public static final ForeignKey<CollocationRecord, CollocationRelGroupRecord> COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY;
+    public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_LEXEME_ID_FKEY;
+    public static final ForeignKey<CollocationPosGroupRecord, LexemeRecord> COLLOCATION_POS_GROUP__COLLOCATION_POS_GROUP_LEXEME_ID_FKEY = ForeignKeys0.COLLOCATION_POS_GROUP__COLLOCATION_POS_GROUP_LEXEME_ID_FKEY;
+    public static final ForeignKey<CollocationRelGroupRecord, CollocationPosGroupRecord> COLLOCATION_REL_GROUP__COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_FKEY = ForeignKeys0.COLLOCATION_REL_GROUP__COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_FKEY;
     public static final ForeignKey<CollocationUsageRecord, CollocationRecord> COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = ForeignKeys0.DEFINITION__DEFINITION_LANG_FKEY;
@@ -371,15 +379,13 @@ public class Keys {
     public static final ForeignKey<SourceRecord, ProcessStateRecord> SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY = ForeignKeys0.SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY;
     public static final ForeignKey<SourceFreeformRecord, SourceRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY;
     public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY;
-    public static final ForeignKey<UsageAuthorTypeLabelRecord, UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_CODE_FKEY = ForeignKeys0.USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_CODE_FKEY;
-    public static final ForeignKey<UsageAuthorTypeLabelRecord, LangRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_LANG_FKEY = ForeignKeys0.USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_LANG_FKEY;
-    public static final ForeignKey<UsageAuthorTypeLabelRecord, LabelTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, UsageTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, LangRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, LabelTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = ForeignKeys0.WORD__WORD_LANG_FKEY;
     public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
+    public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = ForeignKeys0.WORD__WORD_GENDER_CODE_FKEY;
     public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_WORD_ID_FKEY;
     public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY;
     public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY;
@@ -395,6 +401,8 @@ public class Keys {
 
     private static class Identities0 extends AbstractKeys {
         public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
+        public static Identity<CollocationPosGroupRecord, Long> IDENTITY_COLLOCATION_POS_GROUP = createIdentity(CollocationPosGroup.COLLOCATION_POS_GROUP, CollocationPosGroup.COLLOCATION_POS_GROUP.ID);
+        public static Identity<CollocationRelGroupRecord, Long> IDENTITY_COLLOCATION_REL_GROUP = createIdentity(CollocationRelGroup.COLLOCATION_REL_GROUP, CollocationRelGroup.COLLOCATION_REL_GROUP.ID);
         public static Identity<CollocationUsageRecord, Long> IDENTITY_COLLOCATION_USAGE = createIdentity(CollocationUsage.COLLOCATION_USAGE, CollocationUsage.COLLOCATION_USAGE.ID);
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
@@ -416,6 +424,7 @@ public class Keys {
         public static Identity<MeaningFreeformRecord, Long> IDENTITY_MEANING_FREEFORM = createIdentity(MeaningFreeform.MEANING_FREEFORM, MeaningFreeform.MEANING_FREEFORM.ID);
         public static Identity<MeaningRelationRecord, Long> IDENTITY_MEANING_RELATION = createIdentity(MeaningRelation.MEANING_RELATION, MeaningRelation.MEANING_RELATION.ID);
         public static Identity<ParadigmRecord, Long> IDENTITY_PARADIGM = createIdentity(Paradigm.PARADIGM, Paradigm.PARADIGM.ID);
+        public static Identity<PersonRecord, Long> IDENTITY_PERSON = createIdentity(Person.PERSON, Person.PERSON.ID);
         public static Identity<SourceRecord, Long> IDENTITY_SOURCE = createIdentity(Source.SOURCE, Source.SOURCE.ID);
         public static Identity<SourceFreeformRecord, Long> IDENTITY_SOURCE_FREEFORM = createIdentity(SourceFreeform.SOURCE_FREEFORM, SourceFreeform.SOURCE_FREEFORM.ID);
         public static Identity<WordRecord, Long> IDENTITY_WORD = createIdentity(Word.WORD, Word.WORD.ID);
@@ -425,7 +434,8 @@ public class Keys {
 
     private static class UniqueKeys0 extends AbstractKeys {
         public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", Collocation.COLLOCATION.ID);
-        public static final UniqueKey<CollocationRecord> COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = createUniqueKey(Collocation.COLLOCATION, "collocation_lexeme1_id_lexeme2_id_key", Collocation.COLLOCATION.LEXEME1_ID, Collocation.COLLOCATION.LEXEME2_ID);
+        public static final UniqueKey<CollocationPosGroupRecord> COLLOCATION_POS_GROUP_PKEY = createUniqueKey(CollocationPosGroup.COLLOCATION_POS_GROUP, "collocation_pos_group_pkey", CollocationPosGroup.COLLOCATION_POS_GROUP.ID);
+        public static final UniqueKey<CollocationRelGroupRecord> COLLOCATION_REL_GROUP_PKEY = createUniqueKey(CollocationRelGroup.COLLOCATION_REL_GROUP, "collocation_rel_group_pkey", CollocationRelGroup.COLLOCATION_REL_GROUP.ID);
         public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = createUniqueKey(CollocationUsage.COLLOCATION_USAGE, "collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE.ID);
         public static final UniqueKey<DatasetRecord> DATASET_PKEY = createUniqueKey(Dataset.DATASET, "dataset_pkey", Dataset.DATASET.CODE);
         public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = createUniqueKey(Definition.DEFINITION, "definition_pkey", Definition.DEFINITION.ID);
@@ -487,6 +497,8 @@ public class Keys {
         public static final UniqueKey<MorphRecord> MORPH_PKEY = createUniqueKey(Morph.MORPH, "morph_pkey", Morph.MORPH.CODE);
         public static final UniqueKey<MorphLabelRecord> MORPH_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(MorphLabel.MORPH_LABEL, "morph_label_code_lang_type_key", MorphLabel.MORPH_LABEL.CODE, MorphLabel.MORPH_LABEL.LANG, MorphLabel.MORPH_LABEL.TYPE);
         public static final UniqueKey<ParadigmRecord> PARADIGM_PKEY = createUniqueKey(Paradigm.PARADIGM, "paradigm_pkey", Paradigm.PARADIGM.ID);
+        public static final UniqueKey<PersonRecord> PERSON_PKEY = createUniqueKey(Person.PERSON, "person_pkey", Person.PERSON.ID);
+        public static final UniqueKey<PersonRecord> PERSON_NAME_KEY = createUniqueKey(Person.PERSON, "person_name_key", Person.PERSON.NAME);
         public static final UniqueKey<PosRecord> POS_PKEY = createUniqueKey(Pos.POS, "pos_pkey", Pos.POS.CODE);
         public static final UniqueKey<PosLabelRecord> POS_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(PosLabel.POS_LABEL, "pos_label_code_lang_type_key", PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE);
         public static final UniqueKey<ProcessStateRecord> PROCESS_STATE_PKEY = createUniqueKey(ProcessState.PROCESS_STATE, "process_state_pkey", ProcessState.PROCESS_STATE.CODE);
@@ -495,8 +507,6 @@ public class Keys {
         public static final UniqueKey<SourceRecord> SOURCE_PKEY = createUniqueKey(Source.SOURCE, "source_pkey", Source.SOURCE.ID);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_PKEY = createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM.ID);
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
-        public static final UniqueKey<UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_PKEY = createUniqueKey(UsageAuthorType.USAGE_AUTHOR_TYPE, "usage_author_type_pkey", UsageAuthorType.USAGE_AUTHOR_TYPE.CODE);
-        public static final UniqueKey<UsageAuthorTypeLabelRecord> USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label_code_lang_type_key", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE);
         public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = createUniqueKey(UsageType.USAGE_TYPE, "usage_type_pkey", UsageType.USAGE_TYPE.CODE);
         public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = createUniqueKey(UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE);
         public static final UniqueKey<WordRecord> WORD_PKEY = createUniqueKey(Word.WORD, "word_pkey", Word.WORD.ID);
@@ -509,8 +519,10 @@ public class Keys {
     }
 
     private static class ForeignKeys0 extends AbstractKeys {
-        public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, Collocation.COLLOCATION, "collocation__collocation_lexeme1_id_fkey", Collocation.COLLOCATION.LEXEME1_ID);
-        public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, Collocation.COLLOCATION, "collocation__collocation_lexeme2_id_fkey", Collocation.COLLOCATION.LEXEME2_ID);
+        public static final ForeignKey<CollocationRecord, CollocationRelGroupRecord> COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.COLLOCATION_REL_GROUP_PKEY, Collocation.COLLOCATION, "collocation__collocation_collocation_rel_group_id_fkey", Collocation.COLLOCATION.COLLOCATION_REL_GROUP_ID);
+        public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, Collocation.COLLOCATION, "collocation__collocation_lexeme_id_fkey", Collocation.COLLOCATION.LEXEME_ID);
+        public static final ForeignKey<CollocationPosGroupRecord, LexemeRecord> COLLOCATION_POS_GROUP__COLLOCATION_POS_GROUP_LEXEME_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, CollocationPosGroup.COLLOCATION_POS_GROUP, "collocation_pos_group__collocation_pos_group_lexeme_id_fkey", CollocationPosGroup.COLLOCATION_POS_GROUP.LEXEME_ID);
+        public static final ForeignKey<CollocationRelGroupRecord, CollocationPosGroupRecord> COLLOCATION_REL_GROUP__COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.COLLOCATION_POS_GROUP_PKEY, CollocationRelGroup.COLLOCATION_REL_GROUP, "collocation_rel_group__collocation_rel_group_collocation_pos_group_id_fkey", CollocationRelGroup.COLLOCATION_REL_GROUP.COLLOCATION_POS_GROUP_ID);
         public static final ForeignKey<CollocationUsageRecord, CollocationRecord> COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.COLLOCATION_PKEY, CollocationUsage.COLLOCATION_USAGE, "collocation_usage__collocation_usage_collocation_id_fkey", CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID);
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
         public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, Definition.DEFINITION, "definition__definition_lang_fkey", Definition.DEFINITION.LANG);
@@ -598,15 +610,13 @@ public class Keys {
         public static final ForeignKey<SourceRecord, ProcessStateRecord> SOURCE__SOURCE_PROCESS_STATE_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.PROCESS_STATE_PKEY, Source.SOURCE, "source__source_process_state_code_fkey", Source.SOURCE.PROCESS_STATE_CODE);
         public static final ForeignKey<SourceFreeformRecord, SourceRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_SOURCE_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.SOURCE_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform__source_freeform_source_id_fkey", SourceFreeform.SOURCE_FREEFORM.SOURCE_ID);
         public static final ForeignKey<SourceFreeformRecord, FreeformRecord> SOURCE_FREEFORM__SOURCE_FREEFORM_FREEFORM_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.FREEFORM_PKEY, SourceFreeform.SOURCE_FREEFORM, "source_freeform__source_freeform_freeform_id_fkey", SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
-        public static final ForeignKey<UsageAuthorTypeLabelRecord, UsageAuthorTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.USAGE_AUTHOR_TYPE_PKEY, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label__usage_author_type_label_code_fkey", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE);
-        public static final ForeignKey<UsageAuthorTypeLabelRecord, LangRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_LANG_FKEY = createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label__usage_author_type_label_lang_fkey", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG);
-        public static final ForeignKey<UsageAuthorTypeLabelRecord, LabelTypeRecord> USAGE_AUTHOR_TYPE_LABEL__USAGE_AUTHOR_TYPE_LABEL_TYPE_FKEY = createForeignKey(eki.eve.data.db.Keys.LABEL_TYPE_PKEY, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, "usage_author_type_label__usage_author_type_label_type_fkey", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE);
         public static final ForeignKey<UsageTypeLabelRecord, UsageTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.USAGE_TYPE_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_code_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.CODE);
         public static final ForeignKey<UsageTypeLabelRecord, LangRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY = createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_lang_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.LANG);
         public static final ForeignKey<UsageTypeLabelRecord, LabelTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY = createForeignKey(eki.eve.data.db.Keys.LABEL_TYPE_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_type_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.TYPE);
         public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, Word.WORD, "word__word_lang_fkey", Word.WORD.LANG);
         public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.MORPH_PKEY, Word.WORD, "word__word_morph_code_fkey", Word.WORD.MORPH_CODE);
         public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word__word_display_morph_code_fkey", Word.WORD.DISPLAY_MORPH_CODE);
+        public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.GENDER_PKEY, Word.WORD, "word__word_gender_code_fkey", Word.WORD.GENDER_CODE);
         public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = createForeignKey(eki.eve.data.db.Keys.WORD_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_word_id_fkey", WordGuid.WORD_GUID.WORD_ID);
         public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.DATASET_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_dataset_code_fkey", WordGuid.WORD_GUID.DATASET_CODE);
         public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = createForeignKey(eki.eve.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label__word_rel_type_label_code_fkey", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE);

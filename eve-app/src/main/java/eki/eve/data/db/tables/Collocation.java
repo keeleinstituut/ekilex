@@ -9,6 +9,7 @@ import eki.eve.data.db.Keys;
 import eki.eve.data.db.Public;
 import eki.eve.data.db.tables.records.CollocationRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Collocation extends TableImpl<CollocationRecord> {
 
-    private static final long serialVersionUID = 725456399;
+    private static final long serialVersionUID = -1075662446;
 
     /**
      * The reference instance of <code>public.collocation</code>
@@ -61,19 +62,29 @@ public class Collocation extends TableImpl<CollocationRecord> {
     public final TableField<CollocationRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('collocation_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.collocation.lexeme1_id</code>.
+     * The column <code>public.collocation.collocation_rel_group_id</code>.
      */
-    public final TableField<CollocationRecord, Long> LEXEME1_ID = createField("lexeme1_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CollocationRecord, Long> COLLOCATION_REL_GROUP_ID = createField("collocation_rel_group_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.collocation.lexeme2_id</code>.
+     * The column <code>public.collocation.lexeme_id</code>.
      */
-    public final TableField<CollocationRecord, Long> LEXEME2_ID = createField("lexeme2_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CollocationRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>public.collocation.value</code>.
      */
     public final TableField<CollocationRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.collocation.frequency</code>.
+     */
+    public final TableField<CollocationRecord, BigDecimal> FREQUENCY = createField("frequency", org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
+
+    /**
+     * The column <code>public.collocation.score</code>.
+     */
+    public final TableField<CollocationRecord, BigDecimal> SCORE = createField("score", org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * Create a <code>public.collocation</code> table reference
@@ -117,7 +128,7 @@ public class Collocation extends TableImpl<CollocationRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.COLLOCATION_LEXEME1_ID_IDX, Indexes.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY, Indexes.COLLOCATION_LEXEME2_ID_IDX, Indexes.COLLOCATION_PKEY);
+        return Arrays.<Index>asList(Indexes.COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX, Indexes.COLLOCATION_LEXEME_ID_IDX, Indexes.COLLOCATION_PKEY);
     }
 
     /**
@@ -141,7 +152,7 @@ public class Collocation extends TableImpl<CollocationRecord> {
      */
     @Override
     public List<UniqueKey<CollocationRecord>> getKeys() {
-        return Arrays.<UniqueKey<CollocationRecord>>asList(Keys.COLLOCATION_PKEY, Keys.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY);
+        return Arrays.<UniqueKey<CollocationRecord>>asList(Keys.COLLOCATION_PKEY);
     }
 
     /**
@@ -149,7 +160,7 @@ public class Collocation extends TableImpl<CollocationRecord> {
      */
     @Override
     public List<ForeignKey<CollocationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CollocationRecord, ?>>asList(Keys.COLLOCATION__COLLOCATION_LEXEME1_ID_FKEY, Keys.COLLOCATION__COLLOCATION_LEXEME2_ID_FKEY);
+        return Arrays.<ForeignKey<CollocationRecord, ?>>asList(Keys.COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY, Keys.COLLOCATION__COLLOCATION_LEXEME_ID_FKEY);
     }
 
     /**

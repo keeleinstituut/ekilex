@@ -422,13 +422,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
-	protected Long createDefinitionRefLink(Long definitionId, ReferenceType refType, Long refId) throws Exception {
+	protected Long createDefinitionRefLink(Long definitionId, ReferenceType refType, Long refId, String name) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
 		tableRowParamMap.put("ref_type", refType.name());
 		tableRowParamMap.put("ref_id", refId);
-
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
 		Long refLinkId = basicDbService.create(DEFINITION_REF_LINK, tableRowParamMap);
 		return refLinkId;
 	}
@@ -476,12 +478,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.update(FREEFORM, criteriaParamMap, valueParamMap);
 	}
 
-	protected Long createFreeformRefLink(Long freeformId, ReferenceType refType, Long refId) throws Exception {
+	protected Long createFreeformRefLink(Long freeformId, ReferenceType refType, Long refId, String name) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("freeform_id", freeformId);
 		tableRowParamMap.put("ref_type", refType.name());
 		tableRowParamMap.put("ref_id", refId);
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
 		Long refLinkId = basicDbService.create(FREEFORM_REF_LINK, tableRowParamMap);
 		return refLinkId;
 	}

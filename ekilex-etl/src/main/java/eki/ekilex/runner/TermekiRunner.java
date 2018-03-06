@@ -387,7 +387,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
-			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id);
+			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id, null);
 			String markdownLink = String.format("%s [%s](%s:%d)", definition, ekilexSource.name, ContentKey.DEFINITION_REF_LINK, refLinkId);
 			updateDefinitionValue(definitionId, markdownLink);
 		}
@@ -398,7 +398,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, null, null);
-			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id);
+			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id, null);
 			String markdownLink = String.format("[%s](%s:%d)", ekilexSource.name, ContentKey.FREEFORM_REF_LINK, refLinkId);
 			updateFreeformText(freeformId, markdownLink);
 		}

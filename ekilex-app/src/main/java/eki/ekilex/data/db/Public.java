@@ -97,7 +97,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -454176557;
+    private static final long serialVersionUID = -1103533310;
 
     /**
      * The reference instance of <code>public</code>
@@ -472,6 +472,7 @@ public class Public extends SchemaImpl {
             Sequences.DEFINITION_ID_SEQ,
             Sequences.DEFINITION_ORDER_BY_SEQ,
             Sequences.DEFINITION_REF_LINK_ID_SEQ,
+            Sequences.DEFINITION_REF_LINK_ORDER_BY_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
@@ -479,15 +480,19 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_REF_LINK_ID_SEQ,
+            Sequences.FREEFORM_REF_LINK_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
+            Sequences.LEXEME_POS_ORDER_BY_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
+            Sequences.LEXEME_REGISTER_ORDER_BY_SEQ,
             Sequences.LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
+            Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,

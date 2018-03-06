@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
 
-    private static final long serialVersionUID = -1675042087;
+    private static final long serialVersionUID = 65346783;
 
     /**
      * The reference instance of <code>public.meaning_domain</code>
@@ -74,6 +74,11 @@ public class MeaningDomain extends TableImpl<MeaningDomainRecord> {
      * The column <code>public.meaning_domain.domain_origin</code>.
      */
     public final TableField<MeaningDomainRecord, String> DOMAIN_ORIGIN = createField("domain_origin", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.meaning_domain.order_by</code>.
+     */
+    public final TableField<MeaningDomainRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_domain_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.meaning_domain</code> table reference

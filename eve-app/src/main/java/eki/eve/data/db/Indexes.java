@@ -5,6 +5,8 @@ package eki.eve.data.db;
 
 
 import eki.eve.data.db.tables.Collocation;
+import eki.eve.data.db.tables.CollocationPosGroup;
+import eki.eve.data.db.tables.CollocationRelGroup;
 import eki.eve.data.db.tables.CollocationUsage;
 import eki.eve.data.db.tables.Dataset;
 import eki.eve.data.db.tables.Definition;
@@ -54,6 +56,7 @@ import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
 import eki.eve.data.db.tables.MorphLabel;
 import eki.eve.data.db.tables.Paradigm;
+import eki.eve.data.db.tables.Person;
 import eki.eve.data.db.tables.Pos;
 import eki.eve.data.db.tables.PosLabel;
 import eki.eve.data.db.tables.ProcessState;
@@ -61,8 +64,6 @@ import eki.eve.data.db.tables.Register;
 import eki.eve.data.db.tables.RegisterLabel;
 import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
-import eki.eve.data.db.tables.UsageAuthorType;
-import eki.eve.data.db.tables.UsageAuthorTypeLabel;
 import eki.eve.data.db.tables.UsageType;
 import eki.eve.data.db.tables.UsageTypeLabel;
 import eki.eve.data.db.tables.Word;
@@ -95,10 +96,13 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index COLLOCATION_LEXEME1_ID_IDX = Indexes0.COLLOCATION_LEXEME1_ID_IDX;
-    public static final Index COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = Indexes0.COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY;
-    public static final Index COLLOCATION_LEXEME2_ID_IDX = Indexes0.COLLOCATION_LEXEME2_ID_IDX;
+    public static final Index COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX = Indexes0.COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX;
+    public static final Index COLLOCATION_LEXEME_ID_IDX = Indexes0.COLLOCATION_LEXEME_ID_IDX;
     public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
+    public static final Index COLLOCATION_POS_GROUP_LEXEME_ID_IDX = Indexes0.COLLOCATION_POS_GROUP_LEXEME_ID_IDX;
+    public static final Index COLLOCATION_POS_GROUP_PKEY = Indexes0.COLLOCATION_POS_GROUP_PKEY;
+    public static final Index COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_IDX = Indexes0.COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_IDX;
+    public static final Index COLLOCATION_REL_GROUP_PKEY = Indexes0.COLLOCATION_REL_GROUP_PKEY;
     public static final Index COLLOCATION_USAGE_COLLOCATION_ID = Indexes0.COLLOCATION_USAGE_COLLOCATION_ID;
     public static final Index COLLOCATION_USAGE_PKEY = Indexes0.COLLOCATION_USAGE_PKEY;
     public static final Index DATASET_PKEY = Indexes0.DATASET_PKEY;
@@ -184,6 +188,8 @@ public class Indexes {
     public static final Index MORPH_LABEL_CODE_LANG_TYPE_KEY = Indexes0.MORPH_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index PARADIGM_PKEY = Indexes0.PARADIGM_PKEY;
     public static final Index PARADIGM_WORD_ID_IDX = Indexes0.PARADIGM_WORD_ID_IDX;
+    public static final Index PERSON_NAME_KEY = Indexes0.PERSON_NAME_KEY;
+    public static final Index PERSON_PKEY = Indexes0.PERSON_PKEY;
     public static final Index POS_PKEY = Indexes0.POS_PKEY;
     public static final Index POS_LABEL_CODE_LANG_TYPE_KEY = Indexes0.POS_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index PROCESS_STATE_PKEY = Indexes0.PROCESS_STATE_PKEY;
@@ -194,8 +200,6 @@ public class Indexes {
     public static final Index SOURCE_FREEFORM_PKEY = Indexes0.SOURCE_FREEFORM_PKEY;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = Indexes0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final Index SOURCE_FREEFORM_SOURCE_ID_IDX = Indexes0.SOURCE_FREEFORM_SOURCE_ID_IDX;
-    public static final Index USAGE_AUTHOR_TYPE_PKEY = Indexes0.USAGE_AUTHOR_TYPE_PKEY;
-    public static final Index USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index USAGE_TYPE_PKEY = Indexes0.USAGE_TYPE_PKEY;
     public static final Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
@@ -216,10 +220,13 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 extends AbstractKeys {
-        public static Index COLLOCATION_LEXEME1_ID_IDX = createIndex("collocation_lexeme1_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID }, false);
-        public static Index COLLOCATION_LEXEME1_ID_LEXEME2_ID_KEY = createIndex("collocation_lexeme1_id_lexeme2_id_key", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME1_ID, Collocation.COLLOCATION.LEXEME2_ID }, true);
-        public static Index COLLOCATION_LEXEME2_ID_IDX = createIndex("collocation_lexeme2_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME2_ID }, false);
+        public static Index COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX = createIndex("collocation_collocation_rel_group_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.COLLOCATION_REL_GROUP_ID }, false);
+        public static Index COLLOCATION_LEXEME_ID_IDX = createIndex("collocation_lexeme_id_idx", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.LEXEME_ID }, false);
         public static Index COLLOCATION_PKEY = createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
+        public static Index COLLOCATION_POS_GROUP_LEXEME_ID_IDX = createIndex("collocation_pos_group_lexeme_id_idx", CollocationPosGroup.COLLOCATION_POS_GROUP, new OrderField[] { CollocationPosGroup.COLLOCATION_POS_GROUP.LEXEME_ID }, false);
+        public static Index COLLOCATION_POS_GROUP_PKEY = createIndex("collocation_pos_group_pkey", CollocationPosGroup.COLLOCATION_POS_GROUP, new OrderField[] { CollocationPosGroup.COLLOCATION_POS_GROUP.ID }, true);
+        public static Index COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_IDX = createIndex("collocation_rel_group_collocation_pos_group_id_idx", CollocationRelGroup.COLLOCATION_REL_GROUP, new OrderField[] { CollocationRelGroup.COLLOCATION_REL_GROUP.COLLOCATION_POS_GROUP_ID }, false);
+        public static Index COLLOCATION_REL_GROUP_PKEY = createIndex("collocation_rel_group_pkey", CollocationRelGroup.COLLOCATION_REL_GROUP, new OrderField[] { CollocationRelGroup.COLLOCATION_REL_GROUP.ID }, true);
         public static Index COLLOCATION_USAGE_COLLOCATION_ID = createIndex("collocation_usage_collocation_id", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID }, false);
         public static Index COLLOCATION_USAGE_PKEY = createIndex("collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE, new OrderField[] { CollocationUsage.COLLOCATION_USAGE.ID }, true);
         public static Index DATASET_PKEY = createIndex("dataset_pkey", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, true);
@@ -305,6 +312,8 @@ public class Indexes {
         public static Index MORPH_LABEL_CODE_LANG_TYPE_KEY = createIndex("morph_label_code_lang_type_key", MorphLabel.MORPH_LABEL, new OrderField[] { MorphLabel.MORPH_LABEL.CODE, MorphLabel.MORPH_LABEL.LANG, MorphLabel.MORPH_LABEL.TYPE }, true);
         public static Index PARADIGM_PKEY = createIndex("paradigm_pkey", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.ID }, true);
         public static Index PARADIGM_WORD_ID_IDX = createIndex("paradigm_word_id_idx", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.WORD_ID }, false);
+        public static Index PERSON_NAME_KEY = createIndex("person_name_key", Person.PERSON, new OrderField[] { Person.PERSON.NAME }, true);
+        public static Index PERSON_PKEY = createIndex("person_pkey", Person.PERSON, new OrderField[] { Person.PERSON.ID }, true);
         public static Index POS_PKEY = createIndex("pos_pkey", Pos.POS, new OrderField[] { Pos.POS.CODE }, true);
         public static Index POS_LABEL_CODE_LANG_TYPE_KEY = createIndex("pos_label_code_lang_type_key", PosLabel.POS_LABEL, new OrderField[] { PosLabel.POS_LABEL.CODE, PosLabel.POS_LABEL.LANG, PosLabel.POS_LABEL.TYPE }, true);
         public static Index PROCESS_STATE_PKEY = createIndex("process_state_pkey", ProcessState.PROCESS_STATE, new OrderField[] { ProcessState.PROCESS_STATE.CODE }, true);
@@ -315,8 +324,6 @@ public class Indexes {
         public static Index SOURCE_FREEFORM_PKEY = createIndex("source_freeform_pkey", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.ID }, true);
         public static Index SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = createIndex("source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID }, true);
         public static Index SOURCE_FREEFORM_SOURCE_ID_IDX = createIndex("source_freeform_source_id_idx", SourceFreeform.SOURCE_FREEFORM, new OrderField[] { SourceFreeform.SOURCE_FREEFORM.SOURCE_ID }, false);
-        public static Index USAGE_AUTHOR_TYPE_PKEY = createIndex("usage_author_type_pkey", UsageAuthorType.USAGE_AUTHOR_TYPE, new OrderField[] { UsageAuthorType.USAGE_AUTHOR_TYPE.CODE }, true);
-        public static Index USAGE_AUTHOR_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("usage_author_type_label_code_lang_type_key", UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL, new OrderField[] { UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.CODE, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.LANG, UsageAuthorTypeLabel.USAGE_AUTHOR_TYPE_LABEL.TYPE }, true);
         public static Index USAGE_TYPE_PKEY = createIndex("usage_type_pkey", UsageType.USAGE_TYPE, new OrderField[] { UsageType.USAGE_TYPE.CODE }, true);
         public static Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = createIndex("usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL, new OrderField[] { UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE }, true);
         public static Index WORD_HOMONYM_NR_IDX = createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);

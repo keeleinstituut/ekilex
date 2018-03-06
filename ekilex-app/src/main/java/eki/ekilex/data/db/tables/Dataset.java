@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dataset extends TableImpl<DatasetRecord> {
 
-    private static final long serialVersionUID = 1036554639;
+    private static final long serialVersionUID = 867417065;
 
     /**
      * The reference instance of <code>public.dataset</code>
@@ -62,6 +62,16 @@ public class Dataset extends TableImpl<DatasetRecord> {
      * The column <code>public.dataset.name</code>.
      */
     public final TableField<DatasetRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.dataset.description</code>.
+     */
+    public final TableField<DatasetRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.dataset.is_public</code>.
+     */
+    public final TableField<DatasetRecord, Boolean> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.dataset</code> table reference
