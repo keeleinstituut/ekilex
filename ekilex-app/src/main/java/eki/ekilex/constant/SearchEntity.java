@@ -5,9 +5,9 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public enum SearchEntity {
-	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
+	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
-	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
+	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	MEANING(new SearchKey[] {SearchKey.DOMAIN}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID})
