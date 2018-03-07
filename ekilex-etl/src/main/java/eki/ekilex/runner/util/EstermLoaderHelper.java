@@ -1,5 +1,7 @@
 package eki.ekilex.runner.util;
 
+import java.util.Arrays;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,14 @@ public class EstermLoaderHelper {
 
 	private static final String REF_END_SYM = "]";
 
-	private static final int MAX_SMALL_REF_LENGTH = 20;
+	private static final String[] REPLACED_SYMS = new String[] {"<", ">", "&", "%"};
+
+	public boolean isReplacedContent(String value) {
+		if (StringUtils.length(value) > 1) {
+			return false;
+		}
+		return Arrays.stream(REPLACED_SYMS).anyMatch(sym -> StringUtils.equals(sym, value));
+	}
 
 	//TODO maybe? maybe not?
 	public boolean isBulleted(String value) {
@@ -51,15 +60,20 @@ public class EstermLoaderHelper {
 	public boolean isRefEnd(String value) {
 		value = StringUtils.trim(value);
 		int refEndPos = StringUtils.indexOf(value, REF_END_SYM);
-		int refStartPos = StringUtils.indexOf(value, REF_START_SYM);
-		if (refStartPos < refEndPos) {
+		if (refEndPos == -1) {
 			return false;
 		}
-		boolean isRefEnd = StringUtils.contains(value, REF_END_SYM);
-		return isRefEnd;
+		int refStartPos = StringUtils.indexOf(value, REF_START_SYM);
+		if ((refStartPos > -1) && (refStartPos < refEndPos)) {
+			return false;
+		}
+		return true;
 	}
 
 	public String collectSmallRef(String value) {
+		if (!isRefEnd(value)) {
+			return null;
+		}
 		String smallRef = StringUtils.substringBefore(value, REF_END_SYM);
 		return smallRef;
 	}
