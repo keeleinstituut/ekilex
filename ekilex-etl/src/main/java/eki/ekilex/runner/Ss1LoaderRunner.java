@@ -505,6 +505,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> importantNotes = extractImportantNotes(meaningGroupNode);
 				List<WordData> subWords = extractSubWords(meaningGroupNode, newWords.get(0));
+				List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
 
 				Long meaningId;
 				List<String> definitionsToAdd = new ArrayList<>();
@@ -559,8 +560,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<String> registers = extractRegisters(meaningGroupNode);
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId);
-				List<String> publicNotes = extractPublicNotes(meaningGroupNode);
-				savePublicNotes(meaningId, publicNotes);
 
 				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
@@ -580,6 +579,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
 						saveImportantNotes(lexemeId, importantNotes);
+						saveAdviceNotes(lexemeId, adviceNotes);
 						saveComments(lexemeId, comments);
 						for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
 							LexemeToWordData abbreviationData = meaningAbbreviation.copy();
@@ -602,9 +602,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void savePublicNotes(Long meaningId, List<String> notes) throws Exception {
+	private void saveAdviceNotes(Long lexemeId, List<String> notes) throws Exception {
 		for (String note : notes) {
-			createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, note);
+			createLexemeFreeform(lexemeId, FreeformType.ADVICE_NOTE, note, dataLang);
 		}
 	}
 
@@ -963,7 +963,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return extractValuesAsStrings(node, registerValueExp);
 	}
 
-	private List<String> extractPublicNotes(Element node) {
+	private List<String> extractAdviceNotes(Element node) {
 
 		final String registerValueExp = "s:lig/s:tx";
 		return extractValuesAsStrings(node, registerValueExp);
