@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionRefLink extends TableImpl<DefinitionRefLinkRecord> {
 
-    private static final long serialVersionUID = -646276572;
+    private static final long serialVersionUID = -954708387;
 
     /**
      * The reference instance of <code>public.definition_ref_link</code>
@@ -79,6 +79,11 @@ public class DefinitionRefLink extends TableImpl<DefinitionRefLinkRecord> {
      * The column <code>public.definition_ref_link.name</code>.
      */
     public final TableField<DefinitionRefLinkRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.definition_ref_link.value</code>.
+     */
+    public final TableField<DefinitionRefLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.definition_ref_link.order_by</code>.

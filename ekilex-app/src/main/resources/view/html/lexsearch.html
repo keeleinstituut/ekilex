@@ -193,13 +193,26 @@
                           th:data-id="${definition.id}"
                           th:data-op-type="definition"
                           th:data-value="${definition.value}"
-                          th:utext="${markdown.toHtml(definition.value)}"></span>
+                          th:utext="${definition.value}"></span>
                     <button type="button" class="btn badge badge-primary ml-2"
                             th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
                             onclick="openEditDlg(this)"
                             data-toggle="modal" data-target="#editDlg">
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </button>
+                    <div th:if="${not #lists.isEmpty(definition.refLinks)}">
+                      <span th:each="refLink : ${definition.refLinks}">
+                        [
+                        <a th:href="@{'/def_ref_link:' + ${refLink.id}}" target="_blank">
+                          <span th:if="${refLink.name != null}">
+                            <span th:text="${refLink.name}"></span>
+                            |
+                          </span>
+                          <span th:text="${refLink.value}"></span>
+                        </a>
+                        ]
+                      </span>
+                    </div>
                   </td>
                 </tr>
               </table>

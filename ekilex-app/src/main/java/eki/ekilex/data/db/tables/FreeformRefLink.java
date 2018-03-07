@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformRefLink extends TableImpl<FreeformRefLinkRecord> {
 
-    private static final long serialVersionUID = 1872375490;
+    private static final long serialVersionUID = -1043902165;
 
     /**
      * The reference instance of <code>public.freeform_ref_link</code>
@@ -79,6 +79,11 @@ public class FreeformRefLink extends TableImpl<FreeformRefLinkRecord> {
      * The column <code>public.freeform_ref_link.name</code>.
      */
     public final TableField<FreeformRefLinkRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.freeform_ref_link.value</code>.
+     */
+    public final TableField<FreeformRefLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.freeform_ref_link.order_by</code>.

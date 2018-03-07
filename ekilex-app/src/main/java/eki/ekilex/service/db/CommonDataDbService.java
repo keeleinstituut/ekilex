@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
@@ -35,12 +36,14 @@ import org.jooq.Record15;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record6;
 import org.jooq.Record9;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -128,10 +131,19 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
-	public Result<Record3<Long, String, Long>> findMeaningDefinitions(Long meaningId) {
+	public Result<Record6<Long,String,Long,Long,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
+
 		return create
-				.select(DEFINITION.ID, DEFINITION.VALUE, DEFINITION.ORDER_BY)
-				.from(DEFINITION)
+				.select(
+						DEFINITION.ID.as("definition_id"),
+						DEFINITION.VALUE.as("definition_value"),
+						DEFINITION.ORDER_BY.as("definition_order_by"),
+						DEFINITION_REF_LINK.ID.as("ref_link_id"),
+						DEFINITION_REF_LINK.NAME.as("ref_link_name"),
+						DEFINITION_REF_LINK.VALUE.as("ref_link_value")
+						)
+				.from(DEFINITION.leftOuterJoin(DEFINITION_REF_LINK)
+						.on(DEFINITION_REF_LINK.DEFINITION_ID.eq(DEFINITION.ID)).and(DEFINITION_REF_LINK.REF_TYPE.eq(ReferenceType.SOURCE.name())))
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetch();
@@ -287,4 +299,5 @@ public class CommonDataDbService {
 						)
 				.fetch();
 	}
+
 }

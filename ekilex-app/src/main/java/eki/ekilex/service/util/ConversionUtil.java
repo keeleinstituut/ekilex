@@ -17,12 +17,15 @@ import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
+import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
+import eki.ekilex.data.RefLink;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.UsageMeaning;
 import eki.ekilex.data.UsageMember;
@@ -290,6 +293,41 @@ public class ConversionUtil {
 		return governments;
 	}
 
+	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples) {
+
+		List<Definition> definitions = new ArrayList<>();
+		Map<Long, Definition> definitionMap = new HashMap<>();
+
+		for (DefinitionRefTuple definitionRefTuple : definitionRefTuples) {
+
+			Long definitionId = definitionRefTuple.getDefinitionId();
+			Long refLinkId = definitionRefTuple.getRefLinkId();
+			Definition definition = definitionMap.get(definitionId);
+			if (definition == null) {
+				String definitionValue = definitionRefTuple.getDefinitionValue();
+				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
+				definition = new Definition();
+				definition.setId(definitionId);
+				definition.setValue(definitionValue);
+				definition.setOrderBy(definitionOrderBy);
+				definition.setRefLinks(new ArrayList<>());
+				definitionMap.put(definitionId, definition);
+				definitions.add(definition);
+			}
+			if (refLinkId != null) {
+				String refLinkName = definitionRefTuple.getRefLinkName();
+				String refLinkValue = definitionRefTuple.getRefLinkValue();
+				RefLink refLink = new RefLink();
+				refLink.setId(refLinkId);
+				refLink.setName(refLinkName);
+				refLink.setValue(refLinkValue);
+				definition.getRefLinks().add(refLink);
+			}
+		}
+
+		return definitions;
+	}
+
 	public List<CollocationPosGroup> composeCollocPosGroups(List<CollocationTuple> collocTuples) {
 
 		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
@@ -340,4 +378,5 @@ public class ConversionUtil {
 		}
 		return collocationPosGroups;
 	}
+
 }

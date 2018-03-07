@@ -220,7 +220,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					for (Element sourceNode : valueNodes) {
 						valueStr = sourceNode.getTextTrim();
 						Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, valueStr, null);
-						valueStr = handleRefLinks(sourceNode, ReferenceOwner.FREEFORM, freeformId);
+						valueStr = handleFreeformRefLinks(sourceNode, freeformId);
 						updateFreeformText(freeformId, valueStr);
 					}
 
@@ -371,7 +371,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueStr = noteValueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
 			if (noteValueNode.hasMixedContent()) {
-				valueStr = handleRefLinks(noteValueNode, ReferenceOwner.FREEFORM, freeformId);
+				valueStr = handleFreeformRefLinks(noteValueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -381,7 +381,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, valueStr);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleRefLinks(valueNode, ReferenceOwner.FREEFORM, freeformId);
+				valueStr = handleFreeformRefLinks(valueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -598,7 +598,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
 					continue;
 				}
-				createDefinitionRefLink(definitionId, ReferenceType.SOURCE, sourceId, minorRef);	
+				createDefinitionRefLink(definitionId, ReferenceType.SOURCE, sourceId, minorRef, majorRef);	
 			}
 		}
 	}
@@ -619,7 +619,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
 					continue;
 				}
-				createFreeformRefLink(freeformId, ReferenceType.SOURCE, sourceId, minorRef);
+				createFreeformRefLink(freeformId, ReferenceType.SOURCE, sourceId, minorRef, majorRef);
 			}
 		}
 	}
@@ -642,7 +642,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					String definitionNote = definitionNoteNode.getTextTrim();
 					Long freeformId = createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
 					if (definitionNoteNode.hasMixedContent()) {
-						definitionNote = handleRefLinks(definitionNoteNode, ReferenceOwner.FREEFORM, freeformId);
+						definitionNote = handleFreeformRefLinks(definitionNoteNode, freeformId);
 						updateFreeformText(freeformId, definitionNote);
 					}
 				}
@@ -794,7 +794,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueStr = valueNode.getTextTrim();
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
 			if (valueNode.hasMixedContent()) {
-				valueStr = handleRefLinks(valueNode, ReferenceOwner.FREEFORM, freeformId);
+				valueStr = handleFreeformRefLinks(valueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
@@ -833,20 +833,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	}
 
 	//TODO should be replaced by separate ref links handling later
-	private String handleRefLinks(Element mixedContentNode, ReferenceOwner owner, Long ownerId) throws Exception {
+	private String handleFreeformRefLinks(Element mixedContentNode, Long ownerId) throws Exception {
 
 		Iterator<Node> contentNodeIter = mixedContentNode.nodeIterator();
 		StringBuffer contentBuf = new StringBuffer();
 		DefaultText textContentNode;
 		DefaultElement elemContentNode;
 		String valueStr;
-
-		String refLinkKey = null;
-		if (ReferenceOwner.FREEFORM.equals(owner)) {
-			refLinkKey = ContentKey.FREEFORM_REF_LINK;
-		} else if (ReferenceOwner.DEFINITION.equals(owner)) {
-			refLinkKey = ContentKey.DEFINITION_REF_LINK;
-		}
 
 		while (contentNodeIter.hasNext()) {
 			Node contentNode = contentNodeIter.next();
@@ -865,18 +858,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 						if (sourceId == null) {
 							contentBuf.append(valueStr);
 						} else {
-							Long refLinkId = null;
-							if (ReferenceOwner.FREEFORM.equals(owner)) {
-								refLinkId = createFreeformRefLink(ownerId, ReferenceType.SOURCE, sourceId, null);
-							} else if (ReferenceOwner.DEFINITION.equals(owner)) {
-								refLinkId = createDefinitionRefLink(ownerId, ReferenceType.SOURCE, sourceId, null);
-							}
+							Long refLinkId = createFreeformRefLink(ownerId, ReferenceType.SOURCE, sourceId, null, null);
 							//simulating markdown link syntax
 							contentBuf.append("[");
 							contentBuf.append(valueStr);
 							contentBuf.append("]");
 							contentBuf.append("(");
-							contentBuf.append(refLinkKey);
+							contentBuf.append(ContentKey.FREEFORM_REF_LINK);
 							contentBuf.append(":");
 							contentBuf.append(refLinkId);
 							contentBuf.append(")");
