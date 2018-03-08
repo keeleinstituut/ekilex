@@ -281,6 +281,19 @@
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
+                          <div th:if="${not #lists.isEmpty(usage.refLinks)}">
+                            <span th:each="refLink : ${usage.refLinks}">
+                              [
+                              <a th:href="@{'/def_ref_link:' + ${refLink.id}}" target="_blank">
+                                <span th:if="${refLink.name != null}">
+                                  <span th:text="${refLink.name}"></span>
+                                  |
+                                </span>
+                                <span th:text="${refLink.value}"></span>
+                              </a>
+                              ]
+                            </span>
+                          </div>
                         </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">

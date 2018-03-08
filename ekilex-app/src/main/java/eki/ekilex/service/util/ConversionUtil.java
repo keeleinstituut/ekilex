@@ -230,6 +230,7 @@ public class ConversionUtil {
 			Long usageId = tuple.getUsageId();
 			Long usageTranslationId = tuple.getUsageTranslationId();
 			Long usageDefinitionId = tuple.getUsageDefinitionId();
+			Long usageSourceRefLinkId = tuple.getUsageSourceRefLinkId();
 
 			Government government = governmentMap.get(governmentId);
 			if (government == null) {
@@ -258,13 +259,21 @@ public class ConversionUtil {
 				if (usage == null) {
 					usage = new UsageMember();
 					usage.setId(usageId);
+					usage.setType(tuple.getUsageType());
 					usage.setValue(tuple.getUsageValue());
 					usage.setLang(tuple.getUsageLang());
 					usage.setAuthor(tuple.getUsageAuthor());
 					usage.setTranslator(tuple.getUsageTranslator());
-					usage.setType(tuple.getUsageType());
+					usage.setRefLinks(new ArrayList<>());
 					usageMap.put(usageId, usage);
 					usageMeaning.getUsages().add(usage);
+				}
+				if (usageSourceRefLinkId != null) {
+					RefLink usageSource = new RefLink();
+					usageSource.setId(tuple.getUsageSourceRefLinkId());
+					usageSource.setName(tuple.getUsageSourceRefLinkName());
+					usageSource.setValue(tuple.getUsageSourceRefLinkValue());
+					usage.getRefLinks().add(usageSource);
 				}
 			}
 			if (usageTranslationId != null) {

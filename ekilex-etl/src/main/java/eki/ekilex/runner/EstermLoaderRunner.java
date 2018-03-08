@@ -28,7 +28,6 @@ import eki.common.constant.ClassifierName;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogType;
-import eki.common.constant.ReferenceOwner;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
@@ -95,7 +94,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		logger.debug("Starting loading Esterm...");
 
 		final String defaultGovernmentValue = "-";
-		final String defaultWordMorphCode = "SgN";
+		final String defaultWordMorphCode = "??";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -805,14 +804,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		if (domainNodes == null) {
 			return;
 		}
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("origin", domainOrigin);
-
-		String domainCode;
-		Map<String, Object> tableRowValueMap;
-		boolean domainExists;
-
 		List<String> domainCodes = new ArrayList<>();
+		String domainCode;
 
 		for (Element domainNode : domainNodes) {
 			domainCode = domainNode.getTextTrim();
@@ -820,16 +813,52 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				logger.warn("Domain reference duplicate: \"{}\"", domainCode);
 				continue;
 			}
-			domainCodes.add(domainCode);
-			tableRowParamMap.put("code", domainCode);
-			tableRowValueMap = basicDbService.queryForMap(SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN, tableRowParamMap);
-			domainExists = ((Long) tableRowValueMap.get("cnt")) > 0;
-			if (domainExists) {
-				createMeaningDomain(meaningId, domainCode, domainOrigin);
+			int listingDelimCount = StringUtils.countMatches(domainCode, listingsDelimiter);
+			if (listingDelimCount == 0) {
+				handleDomain(meaningId, domainCode, domainOrigin, domainCodes);
+			} else if (listingDelimCount == 1) {
+				String illDelimitedDomainCode = StringUtils.replace(domainCode, String.valueOf(listingsDelimiter), ", ");
+				boolean domainExists = domainExists(illDelimitedDomainCode, domainOrigin);
+				if (!domainExists) {
+					handleDomainListing(meaningId, domainCode, domainOrigin, domainCodes);
+				}
 			} else {
-				logger.warn("Incorrect domain reference: \"{}\"", domainCode);
+				handleDomainListing(meaningId, domainCode, domainOrigin, domainCodes);
 			}
 		}
+	}
+
+	private void handleDomainListing(Long meaningId, String domainCodeListing, String domainOrigin, List<String> domainCodes) throws Exception {
+
+		String[] separateDomainCodes = StringUtils.split(domainCodeListing, listingsDelimiter);
+		for (String separateDomainCode : separateDomainCodes) {
+			handleDomain(meaningId, separateDomainCode, domainOrigin, domainCodes);
+		}
+	}
+
+	private void handleDomain(Long meaningId, String domainCode, String domainOrigin, List<String> domainCodes) throws Exception {
+
+		if (domainCodes.contains(domainCode)) {
+			logger.warn("Domain reference duplicate: \"{}\"", domainCode);
+			return;
+		}
+		boolean domainExists = domainExists(domainCode, domainOrigin);
+		if (domainExists) {
+			createMeaningDomain(meaningId, domainCode, domainOrigin);
+			domainCodes.add(domainCode);
+		} else {
+			logger.warn("Incorrect domain reference: \"{}\"", domainCode);
+		}
+	}
+
+	private boolean domainExists(String domainCode, String domainOrigin) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("origin", domainOrigin);
+		tableRowParamMap.put("code", domainCode);
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN, tableRowParamMap);
+		boolean domainExists = ((Long) tableRowValueMap.get("cnt")) > 0;
+		return domainExists;
 	}
 
 	//TODO should be replaced by separate ref links handling later

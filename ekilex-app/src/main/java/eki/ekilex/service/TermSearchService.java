@@ -132,7 +132,6 @@ public class TermSearchService implements SystemConstant {
 			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			//TODO redo with refs
 			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
 					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(GovernmentUsageTranslationDefinitionTuple.class);

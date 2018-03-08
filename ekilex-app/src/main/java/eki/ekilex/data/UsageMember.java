@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class UsageMember extends AbstractDataObject {
@@ -7,6 +9,8 @@ public class UsageMember extends AbstractDataObject {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
+
+	private String type;
 
 	private String value;
 
@@ -16,7 +20,8 @@ public class UsageMember extends AbstractDataObject {
 
 	private String translator;
 
-	private String type;
+	//currently only sources
+	private List<RefLink> refLinks;
 
 	public Long getId() {
 		return id;
@@ -24,6 +29,14 @@ public class UsageMember extends AbstractDataObject {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public String getValue() {
@@ -58,11 +71,12 @@ public class UsageMember extends AbstractDataObject {
 		this.translator = translator;
 	}
 
-	public String getType() {
-		return type;
+	public List<RefLink> getRefLinks() {
+		return refLinks;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setRefLinks(List<RefLink> refLinks) {
+		this.refLinks = refLinks;
 	}
+
 }

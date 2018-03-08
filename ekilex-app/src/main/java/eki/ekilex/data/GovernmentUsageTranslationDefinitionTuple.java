@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import java.util.function.Consumer;
-
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
@@ -52,15 +50,17 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 	@Column(name = "usage_translator")
 	private String usageTranslator;
 
+	@Column(name = "usage_source_ref_link_id")
+	private Long usageSourceRefLinkId;
+
+	@Column(name = "usage_source_ref_link_name")
+	private String usageSourceRefLinkName;
+
+	@Column(name = "usage_source_ref_link_value")
+	private String usageSourceRefLinkValue;
+
 	@Column(name = "usage_type")
 	private String usageType;
-
-	public GovernmentUsageTranslationDefinitionTuple() {
-	}
-
-	public GovernmentUsageTranslationDefinitionTuple(Consumer<GovernmentUsageTranslationDefinitionTuple> builder) {
-		builder.accept(this);
-	}
 
 	public Long getGovernmentId() {
 		return governmentId;
@@ -174,6 +174,30 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 		this.usageTranslator = usageTranslator;
 	}
 
+	public Long getUsageSourceRefLinkId() {
+		return usageSourceRefLinkId;
+	}
+
+	public void setUsageSourceRefLinkId(Long usageSourceRefLinkId) {
+		this.usageSourceRefLinkId = usageSourceRefLinkId;
+	}
+
+	public String getUsageSourceRefLinkName() {
+		return usageSourceRefLinkName;
+	}
+
+	public void setUsageSourceRefLinkName(String usageSourceRefLinkName) {
+		this.usageSourceRefLinkName = usageSourceRefLinkName;
+	}
+
+	public String getUsageSourceRefLinkValue() {
+		return usageSourceRefLinkValue;
+	}
+
+	public void setUsageSourceRefLinkValue(String usageSourceRefLinkValue) {
+		this.usageSourceRefLinkValue = usageSourceRefLinkValue;
+	}
+
 	public String getUsageType() {
 		return usageType;
 	}
@@ -181,4 +205,5 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 	public void setUsageType(String usageType) {
 		this.usageType = usageType;
 	}
+
 }

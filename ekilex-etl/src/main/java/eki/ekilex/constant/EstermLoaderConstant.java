@@ -71,4 +71,6 @@ public interface EstermLoaderConstant extends TableName {
 
 	String originLenoch = "lenoch";
 	String originLtb = "ltb";
+
+	char listingsDelimiter = '|';
 }
