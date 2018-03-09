@@ -18,8 +18,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +28,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -99,12 +99,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				String dataset =  cells[1];
 				execute(termbaseId, dataset);
 			}
-		}
-	}
-
-	private List<String> readFileLines(String resourcePath) throws Exception {
-		try (InputStream resourceInputStream = new FileInputStream(resourcePath)) {
-			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
 	}
 
@@ -232,6 +226,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> conceptMeanings = new HashMap<>();
+		List<String> existingGenders = getGenders();
 		long count = 0;
 
 		for (Map<String, Object> term : context.terms) {
@@ -239,9 +234,13 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
 			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
-			String genderCode = (String)term.get("gender");
+			String genderCode = intoGenderCode((String)term.get("gender"));
 			if (StringUtils.isNotBlank(genderCode)) {
-				word.setGenderCode(genderCode);
+				if (existingGenders.contains(genderCode)) {
+					word.setGenderCode(genderCode);
+				} else {
+					logger.info("Invalid gender code : {}", genderCode);
+				}
 			}
 			Long wordId = saveWord(word, null, null, wordDuplicateCount);
 
@@ -312,6 +311,20 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private String intoGenderCode(String gender) {
+		String genderCode = gender;
+		if (genderCode != null) {
+			if (genderCode.startsWith("die")) {
+				genderCode = "f";
+			} else if (genderCode.startsWith("der")) {
+				genderCode = "n";
+			} else if (genderCode.startsWith("das")) {
+				genderCode = "m";
+			}
+		}
+		return genderCode;
 	}
 
 	private List<String> domainCodes(Map<String, Object> term, Context context, String dataset) {
@@ -454,6 +467,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("code", code);
 		tableRowParamMap.put("origin", origin);
 		return basicDbService.select(DOMAIN, tableRowParamMap);
+	}
+
+	private List<String> getGenders() throws Exception {
+		return basicDbService.selectAll(GENDER, emptyMap())
+				.stream().map(rec -> (String)rec.get("code")).collect(toList());
 	}
 
 	private boolean isKnownDataset(String dataset) throws Exception {
