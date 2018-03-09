@@ -280,6 +280,52 @@ ent	suurliblikad	liblikalised	suurliblikad	et
 ent	pahkvaablased	kiletiivalised	pahkvaablased	et
 ett	snomed ct	-	snomed ct	et
 ett	snomed ct	-	snomed ct	en
+fkm	narratoloogia	-	narratoloogia	et
+fkm	narratoloogia	-	narratology	en
+fkm	stsenaristika	-	stsenaristika	et
+fkm	stsenaristika	-	screenwriting	en
+get	pecol	-	paleoökoloogia	est
+get	ecol	-	ökoloogia	est
+get	gen. gl	-	üldgeoloogia	est
+get	paleo	-	paleontoloogia	est
+get	pclim	-	paleoklimatoloogia	est
+get	biol	-	bioloogia	est
+get	clim	-	klimatoloogia	est
+get	sedim	-	sedimentoloogia	est
+get	hydro	-	hüdrogeoloogia	est
+get	geophys	-	geofüüsika	est
+get	min	-	mineraloogia	est
+get	geochem	-	geokeemia	est
+get	geom	-	geomorfoloogia	est
+get	method	-	meetod	est
+get	petro	-	petroloogia	est
+get	nomencl	-	nomenklatuur	est
+get	taxonomy	-	taksonoomia	est
+get	phyl	-	fülogenees	est
+get	Q	-	kvaternaarigeoloogia	est
+get	strat	-	stratigraafia	est
+get	glacio	-	glatsioloogia	est
+get	pecol	-	paleoecology	eng
+get	ecol	-	ecology	eng
+get	gen. gl	-	general geology	eng
+get	paleo	-	paleontology	eng
+get	pclim	-	palaeoclimatology	eng
+get	biol	-	biology	eng
+get	clim	-	climatology	eng
+get	sedim	-	sedimentology	eng
+get	hydro	-	hydrogeology	eng
+get	geophys	-	geophysics	eng
+get	min	-	mineralogy	eng
+get	geochem	-	geochemistry	eng
+get	geom	-	geomorphology	eng
+get	method	-	method	eng
+get	petro	-	petrology	eng
+get	nomencl	-	nomenclature	eng
+get	taxonomy	-	taxonomy	eng
+get	phyl	-	phylogenesis	eng
+get	Q	-	quaternary geology	eng
+get	strat	-	stratigraphy	eng
+get	glacio	-	glaciology	eng
 gmt	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	et
 gmt	randlate (lainetusest tingitud) pinnavormid - rannamoodustised 	-	coastal landforms	en
 gmt	tuuletekkelised ehk eoolsed pinnavormid	-	tuuletekkelised ehk eoolsed pinnavormid	et
@@ -356,6 +402,27 @@ kkt	len talmy	-	len talmy	et
 kkt	len talmy	-	len talmy	en
 kkt	metafooriteooria	-	metafooriteooria	et
 kkt	metafooriteooria	-	conceptual metaphor theory	en
+kok	joogid	-	joogid	et
+kok	seened	-	seened	et
+kok	maitseained ja muud maitsestaja	-	maitseained ja muud maitsestaja	et
+kok	puuviljad	-	puuviljad	et
+kok	mereannid	-	mereannid	et
+kok	piimatooted	-	piimatooted	et
+kok	köögiviljad	-	köögiviljad	et
+kok	teraviljad ja tainatooted	-	teraviljad ja tainatooted	et
+kok	pähklid ja seemned	-	pähklid ja seemned	et
+kok	marjad	-	marjad	et
+kok	liha	-	liha	et
+kok	maitsetaimed	-	maitsetaimed	et
+kok	omadussõnad	-	omadussõnad	et
+kok	muud asjad	-	muud asjad	et
+kok	verbid	-	verbid	et
+kok	maitsekastmed	maitseained ja muud maitsestaja	maitsekastmed	et
+kok	muud asjad ja toidud	-	muud asjad ja toidud	et
+kok	piim, muna jms	-	piim, muna jms	et
+kok	juustud	-	juustud	et
+kok	toidud	muud asjad ja toidud	toidud	et
+kok	töövahendid	-	töövahendid	et
 kto	puidukäsitöö	-	puidukäsitöö	et
 kto	tekstiilikäsitöö	-	tekstiilikäsitöö	et
 kto	kirivöötehnika	tekstiilikäsitöö	kirivöötehnika	et
@@ -3052,6 +3119,11 @@ mef	nukleaarmeditsiin	-	nukleaarmeditsiin	et
 mef	nukleaarmeditsiin	-	nuclear medicine	en
 mef	kiirguskaitse, dosimeetria	-	kiirguskaitse, dosimeetria	et
 mef	kiirguskaitse, dosimeetria	-	radiation protection, dosimetry	en
+mes	jrn	-	jrn	et
+mes	prsn	-	prsn	et
+mes	inst	-	inst	et
+mes	prep	-	prep	et
+mes	bot	-	bot	et
 militerm	A	-	Military (General)	eng
 militerm	A	-	üldsõjaline	est
 militerm	B	-	Land Forces	eng
@@ -3531,45 +3603,3 @@ usk	tule- ja vulkaanijumalad	-	tule- ja vulkaanijumalad	et
 usk	metsavaimud	-	metsavaimud	et
 usk	tõlkekirjandus	-	tõlkekirjandus	et
 usk	kurat ja kuradi derivaadid	-	kurat ja kuradi derivaadid	et
-get	pecol	-	paleoökoloogia	est
-get	ecol	-	ökoloogia	est
-get	gen. gl	-	üldgeoloogia	est
-get	paleo	-	paleontoloogia	est
-get	pclim	-	paleoklimatoloogia	est
-get	biol	-	bioloogia	est
-get	clim	-	klimatoloogia	est
-get	sedim	-	sedimentoloogia	est
-get	hydro	-	hüdrogeoloogia	est
-get	geophys	-	geofüüsika	est
-get	min	-	mineraloogia	est
-get	geochem	-	geokeemia	est
-get	geom	-	geomorfoloogia	est
-get	method	-	meetod	est
-get	petro	-	petroloogia	est
-get	nomencl	-	nomenklatuur	est
-get	taxonomy	-	taksonoomia	est
-get	phyl	-	fülogenees	est
-get	Q	-	kvaternaarigeoloogia	est
-get	strat	-	stratigraafia	est
-get	glacio	-	glatsioloogia	est
-get	pecol	-	paleoecology	eng
-get	ecol	-	ecology	eng
-get	gen. gl	-	general geology	eng
-get	paleo	-	paleontology	eng
-get	pclim	-	palaeoclimatology	eng
-get	biol	-	biology	eng
-get	clim	-	climatology	eng
-get	sedim	-	sedimentology	eng
-get	hydro	-	hydrogeology	eng
-get	geophys	-	geophysics	eng
-get	min	-	mineralogy	eng
-get	geochem	-	geochemistry	eng
-get	geom	-	geomorphology	eng
-get	method	-	method	eng
-get	petro	-	petrology	eng
-get	nomencl	-	nomenclature	eng
-get	taxonomy	-	taxonomy	eng
-get	phyl	-	phylogenesis	eng
-get	Q	-	quaternary geology	eng
-get	strat	-	stratigraphy	eng
-get	glacio	-	glaciology	eng
