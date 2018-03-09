@@ -35,7 +35,7 @@ public class SpeechSynthesisService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesisService.class);
 
-	@Value("${server.contextPath:}")
+	@Value("${server.servlet.contextPath:}")
 	private String contextPath;
 
 	@Value("${speech.synthesizer.path:}")
