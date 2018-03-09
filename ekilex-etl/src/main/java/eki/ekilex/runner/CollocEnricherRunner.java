@@ -25,6 +25,7 @@ import org.springframework.stereotype.Component;
 import eki.common.data.Count;
 import eki.ekilex.service.ReportComposer;
 
+//may be obsolete
 @Component
 public class CollocEnricherRunner extends AbstractLoaderRunner {
 
@@ -164,7 +165,7 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 				continue;
 			}
 
-			meaningBlockNodes = contentNode.selectNodes("x:tp"); // TODO ask: why many?
+			meaningBlockNodes = contentNode.selectNodes("x:tp");
 
 			for (Element meaningBlockNode : meaningBlockNodes) {
 
@@ -175,7 +176,7 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 					collocPosCode = colPosGroupNode.attributeValue("csl");
 					collocPosCode = posCodes.get(collocPosCode);
 
-					relationGroupNodes = colPosGroupNode.selectNodes("x:relg"); // TODO ask: why many?
+					relationGroupNodes = colPosGroupNode.selectNodes("x:relg");
 
 					for (Element relationGroupNode : relationGroupNodes) {
 
@@ -186,7 +187,6 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 							collocWordNodes = collocGroupNode.selectNodes("x:col");
 							prevWordNodes = collocGroupNode.selectNodes("x:mse");
 							nextWordNodes = collocGroupNode.selectNodes("x:msj");
-							//TODO generate collocation value
 							//x:cng/x:cn - usages
 							createCollocations(
 									wordMap, collocWordNodes, prevWordNodes, nextWordNodes, collocPosCode, targetDataset, dataLang,
@@ -454,7 +454,6 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 					if (collocWordLexeme == null) {
 						continue;
 					}
-					//TODO create collocation prev + colloc
 					successfulCollocationMatchCount.increment();
 				}
 			}
@@ -564,7 +563,6 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 					if (collocWordLexeme == null) {
 						continue;
 					}
-					//TODO create collocation colloc + next
 					successfulCollocationMatchCount.increment();
 				}
 			}

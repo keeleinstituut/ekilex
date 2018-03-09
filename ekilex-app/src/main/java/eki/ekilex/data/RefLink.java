@@ -1,7 +1,5 @@
 package eki.ekilex.data;
 
-import java.util.function.Consumer;
-
 import javax.persistence.Column;
 
 import eki.common.constant.ReferenceType;
@@ -10,6 +8,12 @@ import eki.common.data.AbstractDataObject;
 public class RefLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private Long id;
+
+	private String name;
+
+	private String value;
 
 	@Column(name = "owner_id")
 	private Long ownerId;
@@ -20,11 +24,28 @@ public class RefLink extends AbstractDataObject {
 	@Column(name = "ref_id")
 	private Long refId;
 
-	public RefLink() {
+	public Long getId() {
+		return id;
 	}
 
-	public RefLink(Consumer<RefLink> builder) {
-		builder.accept(this);
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
 	}
 
 	public Long getOwnerId() {

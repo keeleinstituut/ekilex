@@ -711,6 +711,8 @@ create table freeform_ref_link
   freeform_id bigint references freeform(id) on delete cascade not null,
   ref_type varchar(100) not null,
   ref_id bigint null,
+  name text null,
+  value text null,
   order_by bigserial
 );
 alter sequence freeform_ref_link_id_seq restart with 10000;
@@ -721,6 +723,8 @@ create table definition_ref_link
   definition_id bigint references definition(id) on delete cascade not null,
   ref_type varchar(100) not null,
   ref_id bigint null,
+  name text null,
+  value text null,
   order_by bigserial
 );
 alter sequence definition_ref_link_id_seq restart with 10000;

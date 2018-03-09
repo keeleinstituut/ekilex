@@ -18,8 +18,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,6 +28,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
@@ -99,12 +99,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 				String dataset =  cells[1];
 				execute(termbaseId, dataset);
 			}
-		}
-	}
-
-	private List<String> readFileLines(String resourcePath) throws Exception {
-		try (InputStream resourceInputStream = new FileInputStream(resourcePath)) {
-			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
 	}
 
@@ -232,6 +226,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> conceptMeanings = new HashMap<>();
+		List<String> existingGenders = getGenders();
 		long count = 0;
 
 		for (Map<String, Object> term : context.terms) {
@@ -239,9 +234,13 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
 			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
-			String genderCode = (String)term.get("gender");
+			String genderCode = intoGenderCode((String)term.get("gender"));
 			if (StringUtils.isNotBlank(genderCode)) {
-				word.setGenderCode(genderCode);
+				if (existingGenders.contains(genderCode)) {
+					word.setGenderCode(genderCode);
+				} else {
+					logger.info("Invalid gender code : {}", genderCode);
+				}
 			}
 			Long wordId = saveWord(word, null, null, wordDuplicateCount);
 
@@ -314,6 +313,20 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private String intoGenderCode(String gender) {
+		String genderCode = gender;
+		if (genderCode != null) {
+			if (genderCode.startsWith("die")) {
+				genderCode = "f";
+			} else if (genderCode.startsWith("der")) {
+				genderCode = "n";
+			} else if (genderCode.startsWith("das")) {
+				genderCode = "m";
+			}
+		}
+		return genderCode;
+	}
+
 	private List<String> domainCodes(Map<String, Object> term, Context context, String dataset) {
 
 		List<String> codes = new ArrayList<>();
@@ -321,15 +334,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer conceptId = (Integer) term.get("concept_id");
 			Optional<Map<String, Object>> domainCode = context.geolDomains.stream().filter(d -> d.get("concept_id").equals(conceptId)).findFirst();
 			if (domainCode.isPresent()) {
-				String codeValue = (String)domainCode.get().get("attribute_value");
-				String[] codeValues = codeValue.replace(";", ",").split(",");
+				String codeValue = cleanUpGeoDomainCodes((String)domainCode.get().get("attribute_value"));
+				String[] codeValues = codeValue.split(",");
 				for (String code: codeValues) {
 					if (isNotBlank(code)) {
-						if (code.trim().toLowerCase().startsWith("gen")) {
-							codes.add("gen. gl");
-						} else {
-							codes.add(code.trim().toLowerCase());
-						}
+						codes.add(code);
 					}
 				}
 			}
@@ -340,6 +349,26 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			}
 		}
 		return codes;
+	}
+
+	private String cleanUpGeoDomainCodes(String domainCodes) {
+		String cleanedUp = domainCodes.toLowerCase()
+				.replace("(paleo)", "pecol,")
+				.replace("ecology", "ecol")
+				.replace("cim", "clim")
+				.replace("paleoecol", "pecol")
+				.replace("glscio", "glacio")
+				.replace("goechem", "geochem")
+				.replace("hydrogeology", "hydro")
+				.replace(" ", "")
+				.replace("gen.gl", "gen. gl")
+				.replace("gengl", "gen. gl")
+				.replace("q", "Q")
+				.replace(";", ",");
+		if (cleanedUp.equals("eco")) {
+			cleanedUp = "ecol";
+		}
+		return cleanedUp;
 	}
 
 	private void addMeaningFreeforms(Context context, Integer conceptId, Long meaningId) throws Exception {
@@ -387,7 +416,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
-			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id);
+			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id, null, null);
 			String markdownLink = String.format("%s [%s](%s:%d)", definition, ekilexSource.name, ContentKey.DEFINITION_REF_LINK, refLinkId);
 			updateDefinitionValue(definitionId, markdownLink);
 		}
@@ -398,7 +427,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, null, null);
-			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id);
+			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id, null, null);
 			String markdownLink = String.format("[%s](%s:%d)", ekilexSource.name, ContentKey.FREEFORM_REF_LINK, refLinkId);
 			updateFreeformText(freeformId, markdownLink);
 		}
@@ -438,6 +467,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("code", code);
 		tableRowParamMap.put("origin", origin);
 		return basicDbService.select(DOMAIN, tableRowParamMap);
+	}
+
+	private List<String> getGenders() throws Exception {
+		return basicDbService.selectAll(GENDER, emptyMap())
+				.stream().map(rec -> (String)rec.get("code")).collect(toList());
 	}
 
 	private boolean isKnownDataset(String dataset) throws Exception {

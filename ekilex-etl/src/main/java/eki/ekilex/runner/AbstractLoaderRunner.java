@@ -422,13 +422,18 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
-	protected Long createDefinitionRefLink(Long definitionId, ReferenceType refType, Long refId) throws Exception {
+	protected Long createDefinitionRefLink(Long definitionId, ReferenceType refType, Long refId, String name, String value) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("definition_id", definitionId);
 		tableRowParamMap.put("ref_type", refType.name());
 		tableRowParamMap.put("ref_id", refId);
-
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
 		Long refLinkId = basicDbService.create(DEFINITION_REF_LINK, tableRowParamMap);
 		return refLinkId;
 	}
@@ -476,12 +481,18 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.update(FREEFORM, criteriaParamMap, valueParamMap);
 	}
 
-	protected Long createFreeformRefLink(Long freeformId, ReferenceType refType, Long refId) throws Exception {
+	protected Long createFreeformRefLink(Long freeformId, ReferenceType refType, Long refId, String name, String value) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("freeform_id", freeformId);
 		tableRowParamMap.put("ref_type", refType.name());
 		tableRowParamMap.put("ref_id", refId);
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
 		Long refLinkId = basicDbService.create(FREEFORM_REF_LINK, tableRowParamMap);
 		return refLinkId;
 	}
@@ -553,7 +564,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return readFileLines(CLASSIFIERS_MAPPING_FILE_PATH).stream()
 				.filter(line -> line.startsWith(ekiClassifierName))
 				.map(line -> StringUtils.split(line, CSV_SEPARATOR))
-				.filter(cells -> lexClassifierName == null || StringUtils.equals(lexClassifierName, cells[5]))
+				.filter(cells -> lexClassifierName == null || StringUtils.equalsIgnoreCase(lexClassifierName, cells[5]))
 				.filter(cells -> "et".equals(cells[4]))
 				.filter(cells -> !"-".equals(cells[5]))
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
@@ -565,7 +576,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return basicDbService.createOrSelect(PERSON, params);
 	}
 
-	private List<String> readFileLines(String sourcePath) throws Exception {
+	protected List<String> readFileLines(String sourcePath) throws Exception {
 		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}

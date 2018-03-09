@@ -19,6 +19,7 @@ public interface TableName {
 	String MEANING_STATE = "meaning_state";
 	String MEANING_TYPE = "meaning_type";
 	String LABEL_TYPE = "label_type";
+	String GENDER = "gender";
 
 	// dynamic
 	String SOURCE = "source";

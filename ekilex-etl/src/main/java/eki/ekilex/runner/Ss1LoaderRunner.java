@@ -503,8 +503,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<UsageMeaning> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
-				List<String> importantNotes = extractImportantNotes(meaningGroupNode);
+				List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
 				List<WordData> subWords = extractSubWords(meaningGroupNode, newWords.get(0));
+				List<String> publicNotes = extractPublicNotes(meaningGroupNode);
 
 				Long meaningId;
 				List<String> definitionsToAdd = new ArrayList<>();
@@ -559,8 +560,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				List<String> registers = extractRegisters(meaningGroupNode);
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId);
-				List<String> publicNotes = extractPublicNotes(meaningGroupNode);
-				savePublicNotes(meaningId, publicNotes);
 
 				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
@@ -579,7 +578,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
-						saveImportantNotes(lexemeId, importantNotes);
+						saveAdviceNotes(lexemeId, adviceNotes);
+						savePublicNotes(lexemeId, publicNotes);
 						saveComments(lexemeId, comments);
 						for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
 							LexemeToWordData abbreviationData = meaningAbbreviation.copy();
@@ -602,15 +602,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void savePublicNotes(Long meaningId, List<String> notes) throws Exception {
+	private void savePublicNotes(Long lexemeId, List<String> notes) throws Exception {
 		for (String note : notes) {
-			createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, note);
+			createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, note, dataLang);
 		}
 	}
 
-	private void saveImportantNotes(Long lexemeId, List<String> notes) throws Exception {
+	private void saveAdviceNotes(Long lexemeId, List<String> notes) throws Exception {
 		for (String note : notes) {
-			createLexemeFreeform(lexemeId, FreeformType.IMPORTANT_NOTE, note, dataLang);
+			createLexemeFreeform(lexemeId, FreeformType.ADVICE_NOTE, note, dataLang);
 		}
 	}
 
@@ -840,7 +840,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				Long authorId = createOrSelectPerson(usage.getAuthor());
 				FreeformType autorType = isNotEmpty(usage.getAuthorType()) ? FreeformType.USAGE_TRANSLATOR : FreeformType.USAGE_AUTHOR;
 				Long authorFreeformId = createFreeformTextOrDate(autorType, usageId, usage.getAuthor(), dataLang);
-				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId);
+				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId, null, null);
 			}
 		}
 		for (String definition : usageMeaning.getDefinitions()) {
@@ -957,7 +957,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return extractLexemeMetadata(node, synonymExp, null, reportingId);
 	}
 
-	private List<String> extractImportantNotes(Element node) {
+	private List<String> extractAdviceNotes(Element node) {
 
 		final String registerValueExp = "s:lig/s:nb";
 		return extractValuesAsStrings(node, registerValueExp);

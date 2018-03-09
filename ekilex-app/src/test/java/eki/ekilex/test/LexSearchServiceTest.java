@@ -74,7 +74,7 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 2, words.size());
+		assertEquals("Incorrect count of matches", 5, words.size());
 
 		// case #2
 		wordGroup.getSearchCriteria().clear();
@@ -90,7 +90,7 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 6, words.size());
+		assertEquals("Incorrect count of matches", 9, words.size());
 
 		// case #3
 		wordGroup.getSearchCriteria().clear();
@@ -106,7 +106,7 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 7, words.size());
+		assertEquals("Incorrect count of matches", 12, words.size());
 
 		// case #4
 		wordGroup.getSearchCriteria().clear();
@@ -148,7 +148,7 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 1, words.size());
+		assertEquals("Incorrect count of matches", 3, words.size());
 		assertEquals("Incorrect match", "hiirhall", words.get(0).getValue());
 	}
 
@@ -201,9 +201,12 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 1, words.size());
+		assertEquals("Incorrect count of matches", 2, words.size());
 		word = words.get(0);
 		assertEquals("Incorrect match", "hall", word.getValue());
+		assertEquals("Incorrect match", new Integer(1), word.getHomonymNumber());
+		word = words.get(1);
+		assertEquals("Incorrect match", "заморозки", word.getValue());
 		assertEquals("Incorrect match", new Integer(1), word.getHomonymNumber());
 
 		// case #3
@@ -220,7 +223,7 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 1, words.size());
+		assertEquals("Incorrect count of matches", 3, words.size());
 		word = words.get(0);
 		assertEquals("Incorrect match", "hall", word.getValue());
 		assertEquals("Incorrect match", new Integer(2), word.getHomonymNumber());

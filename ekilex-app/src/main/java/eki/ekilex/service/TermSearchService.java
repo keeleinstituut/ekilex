@@ -18,6 +18,7 @@ import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
@@ -97,7 +98,8 @@ public class TermSearchService implements SystemConstant {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
 
-		List<Definition> definitions = commonDataDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
 		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);

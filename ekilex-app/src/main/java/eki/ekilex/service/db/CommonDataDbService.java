@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
 import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
@@ -31,16 +32,18 @@ import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.Record1;
-import org.jooq.Record15;
+import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record6;
 import org.jooq.Record9;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -128,16 +131,25 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
-	public Result<Record3<Long, String, Long>> findMeaningDefinitions(Long meaningId) {
+	public Result<Record6<Long,String,Long,Long,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
+
 		return create
-				.select(DEFINITION.ID, DEFINITION.VALUE, DEFINITION.ORDER_BY)
-				.from(DEFINITION)
+				.select(
+						DEFINITION.ID.as("definition_id"),
+						DEFINITION.VALUE.as("definition_value"),
+						DEFINITION.ORDER_BY.as("definition_order_by"),
+						DEFINITION_REF_LINK.ID.as("ref_link_id"),
+						DEFINITION_REF_LINK.NAME.as("ref_link_name"),
+						DEFINITION_REF_LINK.VALUE.as("ref_link_value")
+						)
+				.from(DEFINITION.leftOuterJoin(DEFINITION_REF_LINK)
+						.on(DEFINITION_REF_LINK.DEFINITION_ID.eq(DEFINITION.ID)).and(DEFINITION_REF_LINK.REF_TYPE.eq(ReferenceType.SOURCE.name())))
 				.where(DEFINITION.MEANING_ID.eq(meaningId))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetch();
 	}
 
-	public Result<Record15<Long, String, Long, Long, String, String, Long, String, String, Long, String, String, String, String, String>>
+	public Result<Record18<Long,String,Long,Long,String,String,Long,String,String,Long,String,String,String,String,Long,String,String,String>>
 				findGovernmentUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 	LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
@@ -146,14 +158,15 @@ public class CommonDataDbService {
 	Freeform u = FREEFORM.as("u");
 	Freeform ut = FREEFORM.as("ut");
 	Freeform ud = FREEFORM.as("ud");
-	Freeform ua = FREEFORM.as("ua");
+	Freeform uauth = FREEFORM.as("uauth");
 	Freeform utrans = FREEFORM.as("utrans");
 	Freeform utype = FREEFORM.as("utype");
-	UsageTypeLabel utl = USAGE_TYPE_LABEL.as("utl");
-	FreeformRefLink frl = FREEFORM_REF_LINK.as("frl");
-	FreeformRefLink frl2 = FREEFORM_REF_LINK.as("frl2");
-	Person p = PERSON.as("p");
-	Person p2 = PERSON.as("p2");
+	UsageTypeLabel utypelbl = USAGE_TYPE_LABEL.as("utypelbl");
+	FreeformRefLink uauthl = FREEFORM_REF_LINK.as("uauthl");
+	FreeformRefLink utransl = FREEFORM_REF_LINK.as("utransl");
+	FreeformRefLink usrcl = FREEFORM_REF_LINK.as("usrcl");
+	Person auth = PERSON.as("auth");
+	Person trans = PERSON.as("trans");
 
 	return create
 			.select(
@@ -169,9 +182,12 @@ public class CommonDataDbService {
 					ud.ID.as("usage_definition_id"),
 					ud.VALUE_TEXT.as("usage_definition_value"),
 					ud.LANG.as("usage_definition_lang"),
-					p.NAME.as("usage_author"),
-					p2.NAME.as("usage_translator"),
-					utl.VALUE.as("usage_type")
+					auth.NAME.as("usage_author"),
+					trans.NAME.as("usage_translator"),
+					usrcl.ID.as("usage_source_ref_link_id"),
+					usrcl.NAME.as("usage_source_ref_link_name"),
+					usrcl.VALUE.as("usage_source_ref_link_value"),
+					utypelbl.VALUE.as("usage_type")
 					)
 			.from(
 					lff.innerJoin(g).on(lff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())))
@@ -179,18 +195,19 @@ public class CommonDataDbService {
 					.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())))
 					.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())))
 					.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())))
-					.leftOuterJoin(ua).on(ua.PARENT_ID.eq(u.ID).and(ua.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
-					.leftOuterJoin(frl).on(frl.FREEFORM_ID.eq(ua.ID))
-					.leftOuterJoin(p).on(p.ID.eq(frl.REF_ID))
+					.leftOuterJoin(uauth).on(uauth.PARENT_ID.eq(u.ID).and(uauth.TYPE.eq(FreeformType.USAGE_AUTHOR.name())))
+					.leftOuterJoin(uauthl).on(uauthl.FREEFORM_ID.eq(uauth.ID).and(uauthl.REF_TYPE.eq(ReferenceType.PERSON.name())))
+					.leftOuterJoin(auth).on(auth.ID.eq(uauthl.REF_ID))
 					.leftOuterJoin(utrans).on(utrans.PARENT_ID.eq(u.ID).and(utrans.TYPE.eq(FreeformType.USAGE_TRANSLATOR.name())))
-					.leftOuterJoin(frl2).on(frl2.FREEFORM_ID.eq(utrans.ID))
-					.leftOuterJoin(p2).on(p2.ID.eq(frl2.REF_ID))
+					.leftOuterJoin(utransl).on(utransl.FREEFORM_ID.eq(utrans.ID).and(utransl.REF_TYPE.eq(ReferenceType.PERSON.name())))
+					.leftOuterJoin(trans).on(trans.ID.eq(utransl.REF_ID))
+					.leftOuterJoin(usrcl).on(usrcl.FREEFORM_ID.eq(u.ID).and(usrcl.REF_TYPE.eq(ReferenceType.SOURCE.name())))
 					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
-					.leftOuterJoin(utl)
-					.on(utl.CODE.eq(utype.CLASSIF_CODE).and(utl.LANG.eq(classifierLabelLang).and(utl.TYPE.eq(classifierLabelTypeCode))))
+					.leftOuterJoin(utypelbl)
+					.on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode))))
 					)
 			.where(lff.LEXEME_ID.eq(lexemeId))
-			.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY)
+			.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, usrcl.ORDER_BY)
 			.fetch();
 	}
 
@@ -287,4 +304,5 @@ public class CommonDataDbService {
 						)
 				.fetch();
 	}
+
 }

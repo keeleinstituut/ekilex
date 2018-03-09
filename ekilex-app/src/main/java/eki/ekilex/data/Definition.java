@@ -2,6 +2,8 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
+import java.util.List;
+
 import javax.persistence.Column;
 
 public class Definition extends AbstractDataObject {
@@ -16,6 +18,8 @@ public class Definition extends AbstractDataObject {
 
 	@Column(name = "order_by")
 	private Long orderBy;
+
+	private List<RefLink> refLinks;
 
 	public Long getId() {
 		return id;
@@ -40,4 +44,13 @@ public class Definition extends AbstractDataObject {
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
 	}
+
+	public List<RefLink> getRefLinks() {
+		return refLinks;
+	}
+
+	public void setRefLinks(List<RefLink> refLinks) {
+		this.refLinks = refLinks;
+	}
+
 }

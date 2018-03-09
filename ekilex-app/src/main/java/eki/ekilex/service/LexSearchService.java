@@ -18,6 +18,7 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
@@ -104,9 +105,11 @@ public class LexSearchService implements SystemConstant {
 			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> meaningDomains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			List<Definition> meaningDefinitions = commonDataDbService.findMeaningDefinitions(meaningId).into(Definition.class);
+			List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
+			List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 			List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
+			//TODO redo with refs
 			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
 					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
@@ -123,7 +126,7 @@ public class LexSearchService implements SystemConstant {
 			lexeme.setLexemeRegisters(lexemeRegisters);
 			lexeme.setMeaningWords(meaningWords);
 			lexeme.setMeaningDomains(meaningDomains);
-			lexeme.setDefinitions(meaningDefinitions);
+			lexeme.setDefinitions(definitions);
 			lexeme.setMeaningFreeforms(meaningFreeforms);
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
 			lexeme.setGovernments(governments);
