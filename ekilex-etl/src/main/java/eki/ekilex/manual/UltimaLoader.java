@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -55,45 +56,61 @@ public class UltimaLoader {
 			String doReportsStr = loaderConf.getProperty("doreports");
 			final boolean doReports = Boolean.valueOf(doReportsStr);
 
+			logger.info("Starting to clear database and load all datasets specified in ultima-loader.properties file");
+
 			// db init
 			initRunner.execute();
 
 			// mab
 			dataFilePath = loaderConf.getProperty("mab.data.file");
-			mabService.loadParadigms(dataFilePath, dataLang, doReports);
-			successfullyLoadedDatasets.add("mab");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				mabService.loadParadigms(dataFilePath, dataLang, doReports);
+				successfullyLoadedDatasets.add("mab");
+			}
 
 			// qq2
 			dataFilePath = loaderConf.getProperty("qq2.data.file");
-			qq2Runner.execute(dataFilePath, dataLang, doReports);
-			successfullyLoadedDatasets.add("qq2");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				qq2Runner.execute(dataFilePath, dataLang, doReports);
+				successfullyLoadedDatasets.add("qq2");
+			}
 
 			// est src + est
 			dataFilePath = loaderConf.getProperty("est.data.file");
-			estSrcRunner.execute(dataFilePath, doReports);
-			successfullyLoadedDatasets.add("est src");
-			estRunner.execute(dataFilePath, doReports);
-			successfullyLoadedDatasets.add("est");			
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				estSrcRunner.execute(dataFilePath, doReports);
+				successfullyLoadedDatasets.add("est src");
+				estRunner.execute(dataFilePath, doReports);
+				successfullyLoadedDatasets.add("est");
+			}
 
 			// psv guid matcher
 			mapFilePath = loaderConf.getProperty("psv.map.file");
-			wordMatcherService.load(mapFilePath);
-			successfullyLoadedDatasets.add("psv guid");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				wordMatcherService.load(mapFilePath);
+				successfullyLoadedDatasets.add("psv guid");
+			}
 
 			// psv
 			dataFilePath = loaderConf.getProperty("psv.data.file");
-			psvRunner.execute(dataFilePath, doReports);
-			successfullyLoadedDatasets.add("psv");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				psvRunner.execute(dataFilePath, doReports);
+				successfullyLoadedDatasets.add("psv");
+			}
 
 			// ss1
 			dataFilePath = loaderConf.getProperty("ss1.data.file");
-			ss1Runner.execute(dataFilePath, doReports);
-			successfullyLoadedDatasets.add("ss1");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				ss1Runner.execute(dataFilePath, doReports);
+				successfullyLoadedDatasets.add("ss1");
+			}
 
 			// kol
 			dataFilePath = loaderConf.getProperty("kol.data.file");
-			kolRunner.execute(dataFilePath, dataLang, doReports);
-			successfullyLoadedDatasets.add("kol");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				kolRunner.execute(dataFilePath, dataLang, doReports);
+				successfullyLoadedDatasets.add("kol");
+			}
 
 			logger.info("----DONE LOADING DATASETS!!----");
 		} catch (Exception e) {
