@@ -91,15 +91,17 @@ public class BasicDbService extends AbstractDbService {
 		StringBuffer sqlScriptBuf = new StringBuffer();
 		sqlScriptBuf.append("select * from ");
 		sqlScriptBuf.append(tableName);
-		sqlScriptBuf.append(" where ");
-		for (int fieldIndex = 0; fieldIndex < fieldNames.size(); fieldIndex++) {
-			if (fieldIndex > 0) {
-				sqlScriptBuf.append(" and ");
+		if (!paramMap.isEmpty()) {
+			sqlScriptBuf.append(" where ");
+			for (int fieldIndex = 0; fieldIndex < fieldNames.size(); fieldIndex++) {
+				if (fieldIndex > 0) {
+					sqlScriptBuf.append(" and ");
+				}
+				String fieldName = fieldNames.get(fieldIndex);
+				sqlScriptBuf.append(fieldName);
+				sqlScriptBuf.append(" = :");
+				sqlScriptBuf.append(fieldName);
 			}
-			String fieldName = fieldNames.get(fieldIndex);
-			sqlScriptBuf.append(fieldName);
-			sqlScriptBuf.append(" = :");
-			sqlScriptBuf.append(fieldName);
 		}
 
 		return sqlScriptBuf.toString();

@@ -1,8 +1,6 @@
 package eki.ekilex.manual;
 
-import org.springframework.security.authentication.encoding.Md5PasswordEncoder;
-
-import eki.ekilex.security.EkilexPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 public class ManualPasswordEncoder {
 
@@ -10,8 +8,8 @@ public class ManualPasswordEncoder {
 		try {
 			String password = "Malle";
 
-			Md5PasswordEncoder passwordEncoder = new Md5PasswordEncoder();
-			String encodedPassword = passwordEncoder.encodePassword(password, EkilexPasswordEncoder.PASSWORD_ENCODING_SALT);
+			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+			String encodedPassword = passwordEncoder.encode(password);
 
 			System.out.println(encodedPassword);
 

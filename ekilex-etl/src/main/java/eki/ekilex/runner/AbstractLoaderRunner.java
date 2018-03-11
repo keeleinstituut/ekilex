@@ -578,7 +578,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return basicDbService.createOrSelect(PERSON, params);
 	}
 
-	private List<String> readFileLines(String sourcePath) throws Exception {
+	protected List<String> readFileLines(String sourcePath) throws Exception {
 		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
