@@ -26,10 +26,9 @@ public class CollocLoader {
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Collocate data file location? (/absolute/path/to/file.xml)");
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
-			String dataset = "kol";
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 
-			runner.execute(dataXmlFilePath, dataLang, dataset, doReports);
+			runner.execute(dataXmlFilePath, dataLang, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

@@ -1,13 +1,14 @@
 package eki.ekilex.manual;
 
-import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.runner.PsvLoaderRunner;
-import eki.ekilex.service.MabService;
-import eki.ekilex.service.WordMatcherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import eki.common.util.ConsolePromptUtil;
+import eki.ekilex.runner.PsvLoaderRunner;
+import eki.ekilex.service.MabService;
+import eki.ekilex.service.WordMatcherService;
 
 public class PsvLoader {
 

@@ -27,9 +27,8 @@ public class EstermLoader {
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
-			String dataset = "est";
 
-			runner.execute(dataXmlFilePath, dataset, doReports);
+			runner.execute(dataXmlFilePath, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

@@ -76,6 +76,11 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	private Map<String, String> lexemeTypeCodes;
 
 	@Override
+	String getDataset() {
+		return "est";
+	}
+
+	@Override
 	void initialise() throws Exception {
 
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
@@ -89,7 +94,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataset, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, boolean doReports) throws Exception {
 
 		logger.debug("Starting loading Esterm...");
 
@@ -149,9 +154,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 			// domains
 			domainNodes = conceptGroupNode.selectNodes(domainExp);
-			saveDomains(domainNodes, meaningId, originLenoch);
+			saveDomains(concept, domainNodes, meaningId, originLenoch);
 			domainNodes = conceptGroupNode.selectNodes(subdomainExp);
-			saveDomains(domainNodes, meaningId, originLtb);
+			saveDomains(concept, domainNodes, meaningId, originLtb);
 
 			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 
@@ -168,7 +173,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				lang = unifyLang(valueStr);
 
 				//upper level definitions and notes
-				extractAndSaveDefinitionsAndNotes(meaningId, langGroupNode, lang, dataset, concept, doReports, definitionsWithSameNotesCount);
+				extractAndSaveDefinitionsAndNotes(meaningId, langGroupNode, lang, concept, doReports, definitionsWithSameNotesCount);
 
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
@@ -190,7 +195,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					lexemeObj = new Lexeme();
 					lexemeObj.setWordId(wordId);
 					lexemeObj.setMeaningId(meaningId);
-					lexemeId = createLexeme(lexemeObj, dataset);
+					lexemeId = createLexeme(lexemeObj, getDataset());
 
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
 
@@ -200,7 +205,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Element definitionNode : valueNodes) {
 						definitions = extractContentAndRefs(definitionNode, lang, term);
-						saveDefinitionsAndRefLinks(meaningId, definitions, dataset, concept, term, doReports);
+						saveDefinitionsAndRefLinks(meaningId, definitions, concept, term, doReports);
 					}
 
 					// usages
@@ -581,13 +586,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return contentObj;
 	}
 
-	private void saveDefinitionsAndRefLinks(Long meaningId, List<Content> definitions, String dataset, String concept, String term, boolean doReports) throws Exception {
+	private void saveDefinitionsAndRefLinks(Long meaningId, List<Content> definitions, String concept, String term, boolean doReports) throws Exception {
 
 		for (Content definitionObj : definitions) {
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createDefinition(meaningId, definition, lang, dataset);
+			Long definitionId = createDefinition(meaningId, definition, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
 				String minorRef = ref.getMinorRef();
@@ -624,7 +629,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	}
 
 	private void extractAndSaveDefinitionsAndNotes(
-			Long meaningId, Element langGroupNode, String lang, String dataset, String concept, boolean doReports, Count definitionsWithSameNotesCount) throws Exception {
+			Long meaningId, Element langGroupNode, String lang, String concept, boolean doReports, Count definitionsWithSameNotesCount) throws Exception {
 
 		List<Element> definitionNodes = langGroupNode.selectNodes(definitionExp);
 		List<Element> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
@@ -633,7 +638,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		for (Element definitionNode : definitionNodes) {
 			definitions = extractContentAndRefs(definitionNode, lang, concept);
-			saveDefinitionsAndRefLinks(meaningId, definitions, dataset, concept, "*", doReports);
+			saveDefinitionsAndRefLinks(meaningId, definitions, concept, "*", doReports);
 			totalDefinitionCount += definitions.size();
 			for (Content definitionObj : definitions) {
 				Long definitionId = definitionObj.getId();
@@ -799,7 +804,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void saveDomains(List<Element> domainNodes, Long meaningId, String domainOrigin) throws Exception {
+	private void saveDomains(String concept, List<Element> domainNodes, Long meaningId, String domainOrigin) throws Exception {
 
 		if (domainNodes == null) {
 			return;
@@ -809,37 +814,35 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		for (Element domainNode : domainNodes) {
 			domainCode = domainNode.getTextTrim();
-			if (domainCodes.contains(domainCode)) {
-				logger.warn("Domain reference duplicate: \"{}\"", domainCode);
-				continue;
-			}
 			int listingDelimCount = StringUtils.countMatches(domainCode, listingsDelimiter);
 			if (listingDelimCount == 0) {
-				handleDomain(meaningId, domainCode, domainOrigin, domainCodes);
+				handleDomain(concept, meaningId, domainCode, domainOrigin, domainCodes);
 			} else if (listingDelimCount == 1) {
 				String illDelimitedDomainCode = StringUtils.replace(domainCode, String.valueOf(listingsDelimiter), ", ");
 				boolean domainExists = domainExists(illDelimitedDomainCode, domainOrigin);
-				if (!domainExists) {
-					handleDomainListing(meaningId, domainCode, domainOrigin, domainCodes);
+				if (domainExists) {
+					logger.warn("Recovered illdelimited domain value @ concept \"{}\" - \"{}\"", concept, domainCode);
+				} else {
+					handleDomainListing(concept, meaningId, domainCode, domainOrigin, domainCodes);
 				}
 			} else {
-				handleDomainListing(meaningId, domainCode, domainOrigin, domainCodes);
+				handleDomainListing(concept, meaningId, domainCode, domainOrigin, domainCodes);
 			}
 		}
 	}
 
-	private void handleDomainListing(Long meaningId, String domainCodeListing, String domainOrigin, List<String> domainCodes) throws Exception {
+	private void handleDomainListing(String concept, Long meaningId, String domainCodeListing, String domainOrigin, List<String> domainCodes) throws Exception {
 
 		String[] separateDomainCodes = StringUtils.split(domainCodeListing, listingsDelimiter);
 		for (String separateDomainCode : separateDomainCodes) {
-			handleDomain(meaningId, separateDomainCode, domainOrigin, domainCodes);
+			handleDomain(concept, meaningId, separateDomainCode, domainOrigin, domainCodes);
 		}
 	}
 
-	private void handleDomain(Long meaningId, String domainCode, String domainOrigin, List<String> domainCodes) throws Exception {
+	private void handleDomain(String concept, Long meaningId, String domainCode, String domainOrigin, List<String> domainCodes) throws Exception {
 
 		if (domainCodes.contains(domainCode)) {
-			logger.warn("Domain reference duplicate: \"{}\"", domainCode);
+			logger.warn("Domain reference duplicate @ concept \"{}\" - \"{}\"", concept, domainCode);
 			return;
 		}
 		boolean domainExists = domainExists(domainCode, domainOrigin);
@@ -847,7 +850,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			createMeaningDomain(meaningId, domainCode, domainOrigin);
 			domainCodes.add(domainCode);
 		} else {
-			logger.warn("Incorrect domain reference: \"{}\"", domainCode);
+			logger.warn("Incorrect domain reference @ concept \"{}\" - \"{}\"", concept, domainCode);
 		}
 	}
 

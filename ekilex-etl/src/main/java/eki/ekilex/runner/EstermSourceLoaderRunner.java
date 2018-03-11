@@ -66,6 +66,11 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 	private DateFormat defaultDateFormat;
 
 	@Override
+	String getDataset() {
+		return "est";
+	}
+
+	@Override
 	void initialise() throws Exception {
 
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);

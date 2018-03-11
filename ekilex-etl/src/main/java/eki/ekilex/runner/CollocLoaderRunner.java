@@ -104,6 +104,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> morphConversionMap;
 
 	@Override
+	String getDataset() {
+		return "kol";
+	}
+
+	@Override
 	void initialise() throws Exception {
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
@@ -125,7 +130,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, String dataset, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
 
 		logger.debug("Starting loading collocates...");
 
@@ -161,7 +166,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(Collectors.toList());
 
-		Map<String, Map<Integer, Word>> wordMap = extractAndSaveWordsLexemesMeanings(articleNodes, dataLang, dataset, ignoredArticleCount);
+		Map<String, Map<Integer, Word>> wordMap = extractAndSaveWordsLexemesMeanings(articleNodes, dataLang, getDataset(), ignoredArticleCount);
 
 		for (Element articleNode : articleNodes) {
 
@@ -205,7 +210,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				if (meaningDefinitionGroupNode != null) {
 					extractAndSaveLexemeRegisters(word, lexemeId, meaningDefinitionGroupNode, doReports);
 					extractAndSaveMeaningDomains(word, meaningId, meaningDefinitionGroupNode, doReports);
-					extractAndSaveMeaningDefinitions(meaningId, meaningDefinitionGroupNode, dataLang, dataset);
+					extractAndSaveMeaningDefinitions(meaningId, meaningDefinitionGroupNode, dataLang, getDataset());
 				} else {
 					//log??
 				}
@@ -262,7 +267,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							collocGroupNum++;
 							collocationIds = extractAndSaveCollocations(
 									collocGroupNode, collocGroupNum, collocRelGroupId, word, wordPosCode, wordMap,
-									dataset, dataLang, successfulCollocationMatchCount, doReports);
+									dataLang, successfulCollocationMatchCount, doReports);
 
 							if (CollectionUtils.isNotEmpty(collocationIds)) {
 
@@ -427,7 +432,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String newWord,
 			String newWordPosCode,
 			Map<String, Map<Integer, Word>> wordMap,
-			String dataset,
 			String dataLang,
 			Count successfulCollocationMatchCount,
 			boolean doReports) throws Exception {
@@ -451,7 +455,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			return collocationIds;
 		}
 
-		List<CollocElement> collocWords = extractCollocWords(newWord, collocWordNodes, wordMap, dataset, dataLang, doReports);
+		List<CollocElement> collocWords = extractCollocWords(newWord, collocWordNodes, wordMap, getDataset(), dataLang, doReports);
 		List<CollocElement> prevWords = extractCollocPairWords(newWord, newWordPosCode, prevWordNodes, doReports);
 		List<CollocElement> nextWords = extractCollocPairWords(newWord, newWordPosCode, nextWordNodes, doReports);
 
@@ -488,7 +492,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			Word collocWordObj;
 			Integer wordHomonymNum = 1;
 			if (homonymWordMap == null) {
-				collocWordObj = saveWord(collocWord, dataLang, collocMorphCode, null, null, dataset);
+				collocWordObj = saveWord(collocWord, dataLang, collocMorphCode, null, null, getDataset());
 				homonymWordMap = new HashMap<>();
 				homonymWordMap.put(wordHomonymNum, collocWordObj);
 				wordMap.put(collocWord, homonymWordMap);
@@ -499,7 +503,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			List<LexemeMeaning> collocLexemeMeanings = getLexemeMeanings(collocWordId, collocPosCode);
 			LexemeMeaning collocLexemeMeaning;
 			if (CollectionUtils.isEmpty(collocLexemeMeanings)) {
-				collocLexemeMeaning = createLexemeMeaning(collocWordId, null, collocPosCode, dataset);
+				collocLexemeMeaning = createLexemeMeaning(collocWordId, null, collocPosCode, getDataset());
 			} else if (collocLexemeMeanings.size() == 1) {
 				collocLexemeMeaning = collocLexemeMeanings.get(0);
 			} else {

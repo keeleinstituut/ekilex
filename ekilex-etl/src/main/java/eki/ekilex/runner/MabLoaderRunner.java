@@ -35,6 +35,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private ReportComposer reportComposer;
 
 	@Override
+	String getDataset() {
+		return "mab";
+	}
+
+	@Override
 	void initialise() {
 	}
 

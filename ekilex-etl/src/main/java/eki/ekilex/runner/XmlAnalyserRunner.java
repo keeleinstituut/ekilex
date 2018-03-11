@@ -17,6 +17,11 @@ public class XmlAnalyserRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(XmlAnalyserRunner.class);
 
 	@Override
+	String getDataset() {
+		return null;
+	}
+
+	@Override
 	void initialise() throws Exception {
 		//Nothing
 	}

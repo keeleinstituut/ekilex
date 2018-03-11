@@ -51,6 +51,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private TermekiService termekiService;
 
 	@Override
+	String getDataset() {
+		return null;
+	}
+
+	@Override
 	void initialise() throws Exception {
 		posCodes = loadClassifierMappingsFor(TERMEKI_CLASSIFIER_PRONUNCIATION);
 		posCodes.putAll(loadClassifierMappingsFor(TERMEKI_CLASSIFIER_WORD_CLASS));

@@ -25,7 +25,8 @@ import org.springframework.stereotype.Component;
 import eki.common.data.Count;
 import eki.ekilex.service.ReportComposer;
 
-//may be obsolete
+//obsolete logic
+@Deprecated
 @Component
 public class CollocEnricherRunner extends AbstractLoaderRunner {
 
@@ -64,6 +65,11 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 	private String sqlExistsLexemePos;
 
 	private Map<String, String> posCodes;
+
+	@Override
+	String getDataset() {
+		return "kol";
+	}
 
 	@Override
 	void initialise() throws Exception {

@@ -1,26 +1,10 @@
 package eki.ekilex.runner;
 
-import eki.common.constant.FreeformType;
-import eki.common.constant.ReferenceType;
-import eki.common.data.Count;
-import eki.ekilex.data.transform.Form;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Government;
-import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.UsageMeaning;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.MabService;
-import eki.ekilex.service.ReportComposer;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.removePattern;
+import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -38,17 +22,33 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
-import static org.apache.commons.lang3.StringUtils.removePattern;
-import static org.apache.commons.lang3.StringUtils.replaceChars;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
+import eki.common.data.Count;
+import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Government;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageMeaning;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.MabService;
+import eki.ekilex.service.ReportComposer;
 
 @Component
 public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private final static String dataLang = "est";
-	private final static String dataset = "ss1";
 	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
 	private final static String defaultWordMorphCode = "SgN";
 	private final static String defaultGovernmentValue = "-";
@@ -97,6 +97,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	@Autowired
 	private MabService mabService;
+
+	@Override
+	String getDataset() {
+		return "ss1";
+	}
 
 	@Override
 	void initialise() throws Exception {
@@ -243,7 +248,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
 				lexeme.setType(itemData.lexemeType == null ? defaultLexemeType : itemData.lexemeType);
-				createLexeme(lexeme, dataset);
+				createLexeme(lexeme, getDataset());
 				if (!reportingPaused) {
 					logger.debug("new word created : {}", itemData.word);
 				}
@@ -326,7 +331,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				if (!existingWords.isEmpty() && wordId != null) {
 					Map<String, Object> params = new HashMap<>();
 					params.put("wordId", wordId);
-					params.put("dataset", dataset);
+					params.put("dataset", getDataset());
 					try {
 						List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
 						Optional<Map<String, Object>> lexemeObject =
@@ -353,7 +358,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", wordId);
-				params.put("dataset", dataset);
+				params.put("dataset", getDataset());
 				try {
 					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					Optional<Map<String, Object>> lexemeObject =
@@ -422,7 +427,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel3(1);
 				lexeme.setType(subWord.lexemeType);
 				lexeme.setFrequencyGroup(subWord.frequencyGroup);
-				Long lexemeId = createLexeme(lexeme, dataset);
+				Long lexemeId = createLexeme(lexeme, getDataset());
 				if (subWord.government != null) {
 					createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, subWord.government, null);
 				}
@@ -432,13 +437,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 			Map<String, Object> params = new HashMap<>();
 			params.put("wordId", subWord.id);
-			params.put("dataset", dataset);
+			params.put("dataset", getDataset());
 			params.put("meaningId", subWord.meaningId);
 			List<Map<String, Object>> mainWordLexemes = basicDbService.queryList(sqlWordLexemesByMeaningAndDataset, params);
 			for (Map<String, Object> mainWordLexeme : mainWordLexemes) {
 				params.clear();
 				params.put("wordId", subWordId);
-				params.put("dataset", dataset);
+				params.put("dataset", getDataset());
 				List<Map<String, Object>> subWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 				for (Map<String, Object> subWordLexeme : subWordLexemes) {
 					createLexemeRelation((Long) mainWordLexeme.get("id"), (Long) subWordLexeme.get("id"), LEXEME_RELATION_SUB_WORD);
@@ -463,7 +468,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", basicWord.id);
-				params.put("dataset", dataset);
+				params.put("dataset", getDataset());
 				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
 					params.put("wordId", wordId);
@@ -541,7 +546,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				}
 				if (!definitionsToAdd.isEmpty()) {
 					for (String definition : definitionsToAdd) {
-						createDefinition(meaningId, definition, dataLang, dataset);
+						createDefinition(meaningId, definition, dataLang, getDataset());
 					}
 					if (definitionsToAdd.size() > 1) {
 						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
@@ -572,7 +577,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(lexemeLevel3);
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
-					Long lexemeId = createLexeme(lexeme, dataset);
+					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
 						saveGovernmentsAndUsages(meaningGroupNode, lexemeId, usages);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
@@ -862,7 +867,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = saveWord(word, paradigms, dataset, context.wordDuplicateCount);
+				wordData.id = saveWord(word, paradigms, getDataset(), context.wordDuplicateCount);
 			}
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);

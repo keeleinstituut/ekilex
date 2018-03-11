@@ -1,27 +1,10 @@
 package eki.ekilex.runner;
 
-import eki.common.constant.FreeformType;
-import eki.common.data.Count;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Government;
-import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.UsageMeaning;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.MabService;
-import eki.ekilex.service.ReportComposer;
-import eki.ekilex.service.WordMatcherService;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
-import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,16 +17,34 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import eki.common.constant.FreeformType;
+import eki.common.data.Count;
+import eki.ekilex.data.transform.Government;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageMeaning;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.MabService;
+import eki.ekilex.service.ReportComposer;
+import eki.ekilex.service.WordMatcherService;
 
 @Component
 public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final String dataLang = "est";
-	private final String dataset = "psv";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]";
 	private final String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
 	private final String defaultWordMorphCode = "SgN";
@@ -100,6 +101,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	@Autowired
 	private MabService mabService;
+
+	@Override
+	String getDataset() {
+		return "psv";
+	}
 
 	@Override
 	void initialise() throws Exception {
@@ -440,9 +446,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel3(0);
 		lexeme.setType(lexemeType);
 		if (isNotBlank(wordData.definition)) {
-			createDefinition(meaningId, wordData.definition, dataLang, dataset);
+			createDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
-		return createLexeme(lexeme, dataset);
+		return createLexeme(lexeme, getDataset());
 	}
 
 	private WordData createDefaultWordFrom(String wordValue) throws Exception {
@@ -460,7 +466,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Long lexemeId = null;
 		Map<String, Object> params = new HashMap<>();
 		params.put("wordId", wordId);
-		params.put("dataset", dataset);
+		params.put("dataset", getDataset());
 		if (data.lexemeLevel1 != 0) {
 			params.put("level1", data.lexemeLevel1);
 		}
@@ -538,7 +544,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			if (!existingWords.isEmpty() && wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", basicWord.id);
-				params.put("dataset", dataset);
+				params.put("dataset", getDataset());
 				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
 					params.put("wordId", wordId);
@@ -577,7 +583,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				if (!existingWords.isEmpty() && wordId != null) {
 					Map<String, Object> params = new HashMap<>();
 					params.put("wordId", wordId);
-					params.put("dataset", dataset);
+					params.put("dataset", getDataset());
 					try {
 						List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
 						Optional<Map<String, Object>> lexemeObject =
@@ -617,7 +623,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(0);
 				lexeme.setLevel2(0);
 				lexeme.setLevel3(0);
-				createLexeme(lexeme, dataset);
+				createLexeme(lexeme, getDataset());
 			}
 		}
 		logger.debug("Synonym words created {}", newSynonymWordCount.getValue());
@@ -700,7 +706,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					meaning.setProcessStateCode(processStateCode);
 					meaningId = createMeaning(meaning);
 					for (String definition : definitions) {
-						createDefinition(meaningId, definition, dataLang, dataset);
+						createDefinition(meaningId, definition, dataLang, getDataset());
 					}
 					if (definitions.size() > 1) {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <x:d>", newWords.get(0).value);
@@ -738,7 +744,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(0);
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
-					Long lexemeId = createLexeme(lexeme, dataset);
+					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
@@ -820,7 +826,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
 		lexeme.setType(lexemeTypeAbbreviation);
-		createLexeme(lexeme, dataset);
+		createLexeme(lexeme, getDataset());
 	}
 
 	private WordData extractAbbreviation(Element node, Context context) throws Exception {
@@ -1300,7 +1306,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid, context);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = saveWord(word, paradigms, dataset, wordDuplicateCount);
+				wordData.id = saveWord(word, paradigms, getDataset(), wordDuplicateCount);
 			}
 
 			addSoundFileNamesToForms(wordData.id, wordGroupNode);

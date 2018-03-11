@@ -33,14 +33,13 @@ public class Qq2Loader {
 			if (isAddForms) {
 				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
 			}
-			String dataset = "qq2";
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 
 			if (isAddForms) {
 				MabService mabService = applicationContext.getBean(MabService.class);
 				mabService.loadParadigms(mabFilePath, dataLang, doReports);
 			}
-			qq2Runner.execute(qq2FilePath, dataLang, dataset, doReports);
+			qq2Runner.execute(qq2FilePath, dataLang, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

@@ -34,6 +34,8 @@ import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
+	abstract String getDataset();
+
 	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
 
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";

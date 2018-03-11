@@ -29,10 +29,10 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Grammar;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.UsageTranslation;
@@ -102,6 +102,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String usageTranslationLangRus = "rus";
 
 	@Override
+	String getDataset() {
+		return "qq2";
+	}
+
+	@Override
 	void initialise() throws Exception {
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
@@ -128,7 +133,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	@Transactional
 	public void execute(
-			String dataXmlFilePath, String dataLang, String dataset, boolean doReports) throws Exception {
+			String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
 
 		logger.debug("Loading QQ2...");
 
@@ -244,7 +249,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, guid);
-				wordId = saveWord(wordObj, paradigms, dataset, wordDuplicateCount);
+				wordId = saveWord(wordObj, paradigms, getDataset(), wordDuplicateCount);
 				newWords.add(wordObj);
 
 				// further references...
@@ -288,8 +293,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 					// definitions #1
 					synonymLevel2Nodes = meaningNode.selectNodes(synonymExp);
-					saveDefinitions(synonymLevel1Nodes, meaningId, dataLang, dataset);
-					saveDefinitions(synonymLevel2Nodes, meaningId, dataLang, dataset);
+					saveDefinitions(synonymLevel1Nodes, meaningId, dataLang, getDataset());
+					saveDefinitions(synonymLevel2Nodes, meaningId, dataLang, getDataset());
 
 					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
 					wordMatches = new ArrayList<>();
@@ -314,13 +319,13 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 						// definitions #2
 						definitionNodes = wordMatchNode.selectNodes(definitionExp);
-						saveDefinitions(definitionNodes, meaningId, wordMatchLang, dataset);
+						saveDefinitions(definitionNodes, meaningId, wordMatchLang, getDataset());
 
 						// word match lexeme
 						lexemeObj = new Lexeme();
 						lexemeObj.setWordId(wordId);
 						lexemeObj.setMeaningId(meaningId);
-						lexemeId = createLexeme(lexemeObj, dataset);
+						lexemeId = createLexeme(lexemeObj, getDataset());
 
 						if (lexemeId == null) {
 							lexemeDuplicateCount.increment();
@@ -340,7 +345,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						lexemeObj.setMeaningId(meaningId);
 						lexemeObj.setLevel1(lexemeLevel1);
 						lexemeObj.setLevel2(lexemeLevel2);
-						lexemeId = createLexeme(lexemeObj, dataset);
+						lexemeId = createLexeme(lexemeObj, getDataset());
 
 						governments = wordIdGovernmentMap.get(newWordId);
 
@@ -349,7 +354,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 								dataLang, lexemeId, wordMatches, governments, usageMeanings, isSingleMeaning, singleUsageTranslationMatchCount);
 
 						// new word lexeme grammars
-						createGrammars(wordIdGrammarMap, lexemeId, newWordId, dataset);
+						createGrammars(wordIdGrammarMap, lexemeId, newWordId, getDataset());
 					}
 				}
 

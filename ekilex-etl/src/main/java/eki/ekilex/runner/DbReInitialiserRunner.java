@@ -14,6 +14,11 @@ public class DbReInitialiserRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(DbReInitialiserRunner.class);
 
 	@Override
+	String getDataset() {
+		return null;
+	}
+
+	@Override
 	void initialise() throws Exception {
 
 	}
