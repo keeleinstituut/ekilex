@@ -144,19 +144,20 @@ public class LexSearchDbService implements SystemConstant {
 
 				Lexeme l2 = Lexeme.LEXEME.as("l2");
 				Lexeme l3 = Lexeme.LEXEME.as("l3");
+				Word w3 = Word.WORD.as("w3");
 				Paradigm p3 = Paradigm.PARADIGM.as("p3");
 				Form f3 = Form.FORM.as("f3");
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID))
-						.and(l3.WORD_ID.eq(p3.WORD_ID)).and(f3.PARADIGM_ID.eq(p3.ID)).and(f3.IS_WORD.isTrue());
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID)).and(w3.ID.eq(l3.WORD_ID))
+						.and(p3.WORD_ID.eq(w3.ID)).and(f3.PARADIGM_ID.eq(p3.ID)).and(f3.IS_WORD.isTrue());
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, f3.VALUE, where2);
 				}
-				where2 = applyLanguageFilter(searchCriterions, word.LANG, where2);
+				where2 = applyLanguageFilter(searchCriterions, w3.LANG, where2);
 				if (hasValueOrLanguageCriteria(searchCriterions)) {
-					where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3).where(where2)));
+					where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3, w3).where(where2)));
 				}
 				where = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriterions, word.ID, where);
 				where = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriterions, word.ID, where);
@@ -165,18 +166,19 @@ public class LexSearchDbService implements SystemConstant {
 
 				Lexeme l2 = Lexeme.LEXEME.as("l2");
 				Lexeme l3 = Lexeme.LEXEME.as("l3");
+				Word w3 = Word.WORD.as("w3");
 				Paradigm p3 = Paradigm.PARADIGM.as("p3");
 				Form f3 = Form.FORM.as("f3");
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID))
-						.and(l3.WORD_ID.eq(p3.WORD_ID)).and(f3.PARADIGM_ID.eq(p3.ID));
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(l3.MEANING_ID)).and(w3.ID.eq(l3.WORD_ID))
+						.and(p3.WORD_ID.eq(w3.ID)).and(f3.PARADIGM_ID.eq(p3.ID));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, f3.VALUE, where2);
 				}
-				where2 = applyLanguageFilter(searchCriterions, word.LANG, where2);
-				where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3).where(where2)));
+				where2 = applyLanguageFilter(searchCriterions, w3.LANG, where2);
+				where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3, w3).where(where2)));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
