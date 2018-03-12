@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,7 +47,7 @@ public abstract class AbstractSearchController implements WebConstant {
 			sessionBean.setSelectedDatasets(allDatasetCodes);
 		}
 		List<Classifier> allLanguages = commonDataService.getLanguages();
-		List<Classifier> domains = commonDataService.getDomainsInUse();
+		Map<String,List<Classifier>> domains = commonDataService.getDomainsInUseByOrigin();
 		SearchFilter detailSearchFilter = initSearchFilter();
 
 		model.addAttribute("allDatasets", allDatasets);
@@ -101,7 +102,7 @@ public abstract class AbstractSearchController implements WebConstant {
 		}
 
 		List<Classifier> allLanguages = commonDataService.getLanguages();
-		List<Classifier> domains = commonDataService.getDomainsInUse();
+		Map<String, List<Classifier>> domains = commonDataService.getDomainsInUseByOrigin();
 
 		model.addAttribute("allDatasets", allDatasets);
 		model.addAttribute("allLanguages", allLanguages);
