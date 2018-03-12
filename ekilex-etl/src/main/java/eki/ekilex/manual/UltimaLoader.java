@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+import eki.ekilex.runner.TermekiRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +30,7 @@ public class UltimaLoader {
 
 		ConfigurableApplicationContext applicationContext = null;
 
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
+		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml", "db-termeki-config.xml");
 		Resource loaderConfResource = applicationContext.getResource("ultima-loader.properties");
 
 		DbReInitialiserRunner initRunner = applicationContext.getBean(DbReInitialiserRunner.class);
@@ -37,8 +38,7 @@ public class UltimaLoader {
 		Qq2LoaderRunner qq2Runner = applicationContext.getBean(Qq2LoaderRunner.class);
 		EstermSourceLoaderRunner estSrcRunner = applicationContext.getBean(EstermSourceLoaderRunner.class);
 		EstermLoaderRunner estRunner = applicationContext.getBean(EstermLoaderRunner.class);
-		//TODO requires separate conf
-		//TermekiRunner termekiRunner = applicationContext.getBean(TermekiRunner.class);
+		TermekiRunner termekiRunner = applicationContext.getBean(TermekiRunner.class);
 		PsvLoaderRunner psvRunner = applicationContext.getBean(PsvLoaderRunner.class);
 		Ss1LoaderRunner ss1Runner = applicationContext.getBean(Ss1LoaderRunner.class);
 		CollocLoaderRunner kolRunner = applicationContext.getBean(CollocLoaderRunner.class);
@@ -110,6 +110,13 @@ public class UltimaLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				kolRunner.execute(dataFilePath, dataLang, doReports);
 				successfullyLoadedDatasets.add("kol");
+			}
+
+			// termeki
+			dataFilePath = loaderConf.getProperty("termeki.data.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				termekiRunner.batchLoad(dataFilePath);
+				successfullyLoadedDatasets.add("termeki");
 			}
 
 			logger.info("----DONE LOADING DATASETS!!----");
