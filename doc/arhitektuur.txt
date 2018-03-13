@@ -1,46 +1,81 @@
-EKILEX/EVE
+EKILEX/WORDWEB
 
-Olulisemad tehnoloogiad:
+Olulisemad tehnoloogiad
+-----------------------
 
 Java JDK 8 (x64 u144) 
 Apache Maven 3.5.0
-Spring Framework 4.3.10
-Spring Security 4.2.3
-Thymeleaf 3.0.7
-Hibernate 5.2.10
+Spring Boot 2.0.0
+Spring Framework 5.0.4
+Spring Security ???
+Thymeleaf 3.0.9
+Hibernate 5.2.14
+Jooq 3.10.5
+Postgres 9.6
 
-Rakenduslikud moodulid:
+Rakenduslikud moodulid
+----------------------
 
 ekilex/ekilex-app
-ekilex/eve-app
+ekilex/wordweb-app
+ekilex/ekilex-etl
+ekilex/eve-app (aegunud)
 
-Tugimoodulid:
+Tugimoodulid
+------------
 
 ekilex/eki-common
+ekilex/ekilex-rus-morph
 
-Ehitamine:
+Ehitamine
+---------
 
 ekilex>mvn clean install
 
-Rakendamine Spring Boot Tomcat pistaku abil:
+Veebirakenduste käivitamine Spring Boot Tomcat pistaku abil
+-----------------------------------------------------------
 
 ekilex/ekilex-app>mvn spring-boot:run
-ekilex/ekilex-app>mvn spring-boot:run -Drun.profiles=dev
+ekilex/ekilex-app>mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 http://localhost:5555/ (html)
 http://localhost:5555/data/app (json)
 
+ekilex/wordweb-app>mvn spring-boot:run
+ekilex/wordweb-app>mvn spring-boot:run -Dspring-boot.run.profiles=dev
+
+http://localhost:5577/ (html)
+
+Aegunud eve rakendus...
 ekilex/eve-app>mvn spring-boot:run
-ekilex/ekilex-app>mvn spring-boot:run -Drun.profiles=dev
+ekilex/eve-app>mvn spring-boot:run -Dspring-boot.run.profiles=dev
 
 http://localhost:5566/ (html)
 http://localhost:5566/data/app (json)
+
+Laadurite käivitamine exec pistaku abil
+---------------------------------------
+
+ekilex/ekilex-etl>mvn clean install -P <profiil>
+ekilex/ekilex-etl>mvn exec:java -P testsrvdbinit (tühjendab andmebaasi)
+ekilex/ekilex-etl>mvn exec:java -P testsrvqq2 (laeb qq2)
+ekilex/ekilex-etl>mvn exec:java -P testsrvestsrc (laeb esterm allikad)
+ekilex/ekilex-etl>mvn exec:java -P testsrvest (laeb esterm)
+ekilex/ekilex-etl>mvn exec:java -P testsrvtermeki (laeb termeki)
+ekilex/ekilex-etl>mvn exec:java -P testsrvpsv (laeb psv)
+ekilex/ekilex-etl>mvn exec:java -P testsrvss1 (laeb ss1)
+ekilex/ekilex-etl>mvn exec:java -P testsrvkol (laeb kollokatsioonid)
+ekilex/ekilex-etl>mvn exec:java -P testsrvall (tühjendab andmebaasi ja laeb kõik eelneva)
+
+Muud tehn operatsioonid
+-----------------------
 
 Andmebaasi teenuse klasside genereerimine (kasutatakse ainult arenduses, pärast andmebaasi struktuuri muudatusi):
 
 ekilex>mvn compile -Dskip.jooq.generation=false
 
-Kõnesüntesaatori lisamine/aktiveerimine eve-app:
+Kõnesüntesaatori lisamine/aktiveerimine eve-app
+-----------------------------------------------
 
 eve-app toetab integreeritud, s.o. oma serverile installeeritud süntesaatorit ning EKI avaliku veebi teenust.
 Konfigureerimine toimub läbi application.properties faili. Parameetrid on
