@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>eki.wordweb</groupId>
-	<artifactId>wordweb</artifactId>
+	<artifactId>wordweb-app</artifactId>
 	<version>1.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Wordweb</name>
+	<name>Wordweb App</name>
 
 	<parent>
 		<groupId>eki.ekilex</groupId>
@@ -17,7 +17,7 @@
 	</parent>
 
 	<build>
-		<finalName>wordweb</finalName>
+		<finalName>wordweb-app</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
