@@ -86,7 +86,7 @@ public class UltimaLoader {
 
 			// psv guid matcher
 			mapFilePath = loaderConf.getProperty("psv.map.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
+			if (StringUtils.isNotBlank(mapFilePath)) {
 				wordMatcherService.load(mapFilePath);
 				successfullyLoadedDatasets.add("psv guid");
 			}
