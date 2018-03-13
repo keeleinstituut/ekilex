@@ -4033,9 +4033,9 @@ insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE112', 'European patents', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE113', 'European Standards; EN', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE12', 'documentation & information systems (sn: documentation & information systems of the EU)', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE2', '"action plans & programmes - information (sn: action plans & programmes - information dealing with ""European Integration"" and the ""European Union "" as topics)"', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE2', 'action plans & programmes - information (sn: action plans & programmes - information dealing with "European Integration" and the "European Union" as topics)', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE21', 'Citizens first (nt: DG X action programme)', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE3', '"publications (sn: publications dealing with ""European Integration"" and the ""European Union "" as topics)"', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE3', 'publications (sn: publications dealing with "European Integration" and the "European Union" as topics)', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE4', 'European Union; EU - European Community; European Communities; EC', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE41', 'European Coal and Steel Community; ECSC', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE42', 'European Economic Community; EEC', 'eng', 'descrip');
@@ -4184,7 +4184,7 @@ insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CE
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEPO', 'commercial policy measures', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEPP', 'commodity agreement', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEPR', 'regional policy', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEQ', '"action plans & programmes - framework programmes - information systems & networks (us: For ""Social Europe""- Programme. see: SOE)"', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEQ', 'action plans & programmes - framework programmes - information systems & networks (us: For "Social Europe" - Programme. see: SOE)', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEQ1', 'action plans & programmes', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEQ2', 'framework programmes', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'CEQ3', 'information systems & networks', 'eng', 'descrip');
@@ -5224,7 +5224,7 @@ insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LA
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAA', 'etymology', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAB', 'terminology', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAC', 'lexicology', 'eng', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAD', '"translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as ""translator''s findings"", ""useful tricks"", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)"', 'eng', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAD', 'translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as "translator''s findings", "useful tricks", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAE', 'literature - history of literature', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAF', 'philology', 'eng', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('lenoch', 'LAG', 'linguistic philosophy', 'eng', 'descrip');
