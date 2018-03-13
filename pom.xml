@@ -22,6 +22,7 @@
 		<module>ekilex-etl</module>
 		<module>ekilex-rus-morph</module>
 		<module>eve-app</module>
+		<module>wordweb</module>
 	</modules>
 
 	<developers>
