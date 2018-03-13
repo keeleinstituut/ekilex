@@ -304,7 +304,7 @@
                                       th:data-id="${usage.id}"
                                       th:data-op-type="usage"
                                       th:data-value="${usage.value}"
-                                      th:utext="${markdown.toHtml(usage.value)}"></span>
+                                      th:utext="${usage.value}"></span>
                                 <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
                                 <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
                                 <button type="button" class="btn badge badge-primary ml-2"
@@ -358,7 +358,7 @@
                                       th:data-id="${usageDefinition.id}"
                                       th:data-op-type="usage_definition"
                                       th:data-value="${usageDefinition.value}"
-                                      th:utext="${markdown.toHtml(usageDefinition.value)}"></span>
+                                      th:utext="${usageDefinition.value}"></span>
                                 <button type="button" class="btn badge badge-primary ml-2"
                                         th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
                                         onclick="openEditDlg(this)"

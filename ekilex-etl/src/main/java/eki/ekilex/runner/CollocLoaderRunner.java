@@ -595,6 +595,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					CollocElement collocElement = new CollocElement(word, form, morphCode, posCode, conjunct);
 					collocWords.add(collocElement);
 				} else {
+					//FIXME check with pos also
 					appendToReport(doReports, REPORT_AMBIGUOUS_HOMONYM_MATCH, newWord, form, lemmaData, "kollokaadile vastab mitu homonüümi");
 					continue;
 				}
@@ -619,6 +620,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						.distinct().collect(Collectors.toList());
 				if (!lemmaWordCandidates.contains(word)) {
 					appendToReport(doReports, REPORT_COLLOC_PAIR_UNMATCH, newWord, form, lemmaData, "lemposvk ei klapi artikli märksõnaga");
+					//FIXME really there is no reason to skip
 					continue;
 				}
 			}

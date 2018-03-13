@@ -109,7 +109,6 @@ public class LexSearchService implements SystemConstant {
 			List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 			List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			//TODO redo with refs
 			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
 					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
