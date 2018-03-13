@@ -13,10 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
-@SpringBootApplication(
-		scanBasePackages = {"eki.common", "eki.ekilex"},
-		exclude={org.springframework.boot.autoconfigure.thymeleaf.ThymeleafAutoConfiguration.class}
-)
+@SpringBootApplication(scanBasePackages = {"eki.common", "eki.ekilex"})
 @EnableTransactionManagement
 public class EkilexApplication {
 
