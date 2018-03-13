@@ -817,9 +817,9 @@ lenoch	CE111	CE11	Combined Nomenclature; Tariff and Statistical Nomenclature	eng
 lenoch	CE112	CE11	European patents	eng
 lenoch	CE113	CE11	European Standards; EN	eng
 lenoch	CE12	CE1	documentation & information systems (sn: documentation & information systems of the EU)	eng
-lenoch	CE2	CE	"action plans & programmes - information (sn: action plans & programmes - information dealing with ""European Integration"" and the ""European Union "" as topics)"	eng
+lenoch	CE2	CE	action plans & programmes - information (sn: action plans & programmes - information dealing with "European Integration" and the "European Union" as topics)	eng
 lenoch	CE21	CE2	Citizens first (nt: DG X action programme)	eng
-lenoch	CE3	CE	"publications (sn: publications dealing with ""European Integration"" and the ""European Union "" as topics)"	eng
+lenoch	CE3	CE	publications (sn: publications dealing with "European Integration" and the "European Union" as topics)	eng
 lenoch	CE4	CE	European Union; EU - European Community; European Communities; EC	eng
 lenoch	CE41	CE4	European Coal and Steel Community; ECSC	eng
 lenoch	CE42	CE4	European Economic Community; EEC	eng
@@ -968,7 +968,7 @@ lenoch	CEPN	CEP	European Cooperation in the field of Scientific and Technical Re
 lenoch	CEPO	CEP	commercial policy measures	eng
 lenoch	CEPP	CEP	commodity agreement	eng
 lenoch	CEPR	CEP	regional policy	eng
-lenoch	CEQ	CE	"action plans & programmes - framework programmes - information systems & networks (us: For ""Social Europe""- Programme. see: SOE)"	eng
+lenoch	CEQ	CE	action plans & programmes - framework programmes - information systems & networks (us: For "Social Europe" - Programme. see: SOE)	eng
 lenoch	CEQ1	CEQ	action plans & programmes	eng
 lenoch	CEQ2	CEQ	framework programmes	eng
 lenoch	CEQ3	CEQ	information systems & networks	eng
@@ -2008,7 +2008,7 @@ lenoch	LA9	LA	versification	eng
 lenoch	LAA	LA	etymology	eng
 lenoch	LAB	LA	terminology	eng
 lenoch	LAC	LA	lexicology	eng
-lenoch	LAD	LA	"translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as ""translator's findings"", ""useful tricks"", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)"	eng
+lenoch	LAD	LA	translation & interpretation (nt: linguistic aspects only; do not use for coding terminological entries except those that are coined as "translator's findings", "useful tricks", etc. It is highly recommended to add a subject specific code, e.g. LAD/AGE)	eng
 lenoch	LAE	LA	literature - history of literature	eng
 lenoch	LAF	LA	philology	eng
 lenoch	LAG	LA	linguistic philosophy	eng
