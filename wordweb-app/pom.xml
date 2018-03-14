@@ -78,7 +78,7 @@
 								<generate>
 								</generate>
 								<target>
-									<packageName>eki.eve.data.db</packageName>
+									<packageName>eki.wordweb.data.db</packageName>
 									<directory>src/main/java</directory>
 								</target>
 							</generator>
