@@ -69,8 +69,10 @@ function initialiseDeatailSearch() {
         searchOperandElement.val(searchOperandElement.find('option').first().val());
 
         var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-        var copyOfValueTemplate = $($('#searchValueTemplates').find('[name="' + $(this).val() + '"]').html());
+        var templateElement = $('#searchValueTemplates').find('[name="' + $(this).val() + '"]');
+        var copyOfValueTemplate = $(templateElement.html());
         copyOfValueTemplate.attr('name' ,searchValueElement.attr('name'));
+        searchValueElement.closest('div').attr('class', templateElement.attr('class'));
         searchValueElement.replaceWith(copyOfValueTemplate);
     });
     $(document).on("change", "select[name$='entity']", function() {

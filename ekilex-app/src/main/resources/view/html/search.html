@@ -95,7 +95,7 @@
                         th:text="${language.value}">language</option>
               </select>
             </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
+            <div class="col-6" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
               <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
                 <option value="">Kõik valdkonnad</option>
                 <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
@@ -151,19 +151,19 @@
       </div>
 
       <div id="searchValueTemplates" hidden>
-        <div name="VALUE">
+        <div name="VALUE" class="col-3">
           <input type="text" class="form-control">
         </div>
-        <div name="ID">
+        <div name="ID" class="col-3">
           <input type="text" class="form-control">
         </div>
-        <div name="SOURCE_CODE">
+        <div name="SOURCE_CODE" class="col-3">
           <input type="text" class="form-control">
         </div>
-        <div name="SOURCE_NAME">
+        <div name="SOURCE_NAME" class="col-3">
           <input type="text" class="form-control">
         </div>
-        <div name="LANGUAGE">
+        <div name="LANGUAGE" class="col-3">
           <select class="form-control">
             <option value="" selected>Kõik keeled</option>
             <option th:each="language : ${allLanguages}"
@@ -171,7 +171,7 @@
                     th:text="${language.value}">language</option>
           </select>
         </div>
-        <div name="DOMAIN">
+        <div name="DOMAIN" class="col-6">
           <select class="form-control">
             <option value="" selected>Kõik valdkonnad</option>
             <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
