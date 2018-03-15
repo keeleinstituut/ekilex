@@ -3,6 +3,7 @@ package eki.ekilex.data;
 import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -45,6 +46,11 @@ public class Classifier extends AbstractDataObject {
 
 	public String toIdString() {
 		return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE).setExcludeFieldNames("value").toString();
+	}
+
+	@Override
+	public boolean equals(Object object) {
+		return EqualsBuilder.reflectionEquals(this, object, "value");
 	}
 
 }
