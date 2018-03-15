@@ -382,7 +382,7 @@ public class LexSearchDbService implements SystemConstant {
 
 		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class);
 
-		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.IS_WORD.isTrue()))).on(paradigm.WORD_ID.eq(word.ID));
+		Table<Record> from = word.join(paradigm).on(paradigm.WORD_ID.eq(word.ID)).join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.IS_WORD.isTrue()));
 
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			Lexeme ld = LEXEME.as("ld");
