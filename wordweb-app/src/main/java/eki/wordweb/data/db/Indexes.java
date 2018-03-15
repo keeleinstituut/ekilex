@@ -4,6 +4,7 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -32,17 +33,15 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index MVIEW_WW_CLASSIFIER_NAME_CODE_LANG_IDX = Indexes0.MVIEW_WW_CLASSIFIER_NAME_CODE_LANG_IDX;
+    public static final Index MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX = Indexes0.MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX;
     public static final Index MVIEW_WW_FORM_VALUE_IDX = Indexes0.MVIEW_WW_FORM_VALUE_IDX;
     public static final Index MVIEW_WW_FORM_WORD_ID_IDX = Indexes0.MVIEW_WW_FORM_WORD_ID_IDX;
     public static final Index MVIEW_WW_MEANING_DEFINITION_LANG_IDX = Indexes0.MVIEW_WW_MEANING_DEFINITION_LANG_IDX;
-    public static final Index MVIEW_WW_MEANING_DERIV_LANG_IDX = Indexes0.MVIEW_WW_MEANING_DERIV_LANG_IDX;
-    public static final Index MVIEW_WW_MEANING_DOMAIN_LANG_IDX = Indexes0.MVIEW_WW_MEANING_DOMAIN_LANG_IDX;
     public static final Index MVIEW_WW_MEANING_LEXEME_ID_IDX = Indexes0.MVIEW_WW_MEANING_LEXEME_ID_IDX;
-    public static final Index MVIEW_WW_MEANING_LEXEME_TYPE_LANG_IDX = Indexes0.MVIEW_WW_MEANING_LEXEME_TYPE_LANG_IDX;
     public static final Index MVIEW_WW_MEANING_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_MEANING_ID_IDX;
-    public static final Index MVIEW_WW_MEANING_POS_LANG_IDX = Indexes0.MVIEW_WW_MEANING_POS_LANG_IDX;
-    public static final Index MVIEW_WW_MEANING_REGISTER_LANG_IDX = Indexes0.MVIEW_WW_MEANING_REGISTER_LANG_IDX;
     public static final Index MVIEW_WW_MEANING_WORD_ID_IDX = Indexes0.MVIEW_WW_MEANING_WORD_ID_IDX;
+    public static final Index MVIEW_WW_WORD_LANG_IDX = Indexes0.MVIEW_WW_WORD_LANG_IDX;
     public static final Index MVIEW_WW_WORD_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_WORD_ID_IDX;
 
     // -------------------------------------------------------------------------
@@ -50,17 +49,15 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index MVIEW_WW_CLASSIFIER_NAME_CODE_LANG_IDX = Internal.createIndex("mview_ww_classifier_name_code_lang_idx", MviewWwClassifier.MVIEW_WW_CLASSIFIER, new OrderField[] { MviewWwClassifier.MVIEW_WW_CLASSIFIER.NAME, MviewWwClassifier.MVIEW_WW_CLASSIFIER.CODE, MviewWwClassifier.MVIEW_WW_CLASSIFIER.LANG }, false);
+        public static Index MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX = Internal.createIndex("mview_ww_classifier_name_origin_code_lang_idx", MviewWwClassifier.MVIEW_WW_CLASSIFIER, new OrderField[] { MviewWwClassifier.MVIEW_WW_CLASSIFIER.NAME, MviewWwClassifier.MVIEW_WW_CLASSIFIER.ORIGIN, MviewWwClassifier.MVIEW_WW_CLASSIFIER.CODE, MviewWwClassifier.MVIEW_WW_CLASSIFIER.LANG }, false);
         public static Index MVIEW_WW_FORM_VALUE_IDX = Internal.createIndex("mview_ww_form_value_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.FORM }, false);
         public static Index MVIEW_WW_FORM_WORD_ID_IDX = Internal.createIndex("mview_ww_form_word_id_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.WORD_ID }, false);
         public static Index MVIEW_WW_MEANING_DEFINITION_LANG_IDX = Internal.createIndex("mview_ww_meaning_definition_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.DEFINITION_LANG }, false);
-        public static Index MVIEW_WW_MEANING_DERIV_LANG_IDX = Internal.createIndex("mview_ww_meaning_deriv_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.DERIV_LANG }, false);
-        public static Index MVIEW_WW_MEANING_DOMAIN_LANG_IDX = Internal.createIndex("mview_ww_meaning_domain_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.DOMAIN_LANG }, false);
         public static Index MVIEW_WW_MEANING_LEXEME_ID_IDX = Internal.createIndex("mview_ww_meaning_lexeme_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.LEXEME_ID }, false);
-        public static Index MVIEW_WW_MEANING_LEXEME_TYPE_LANG_IDX = Internal.createIndex("mview_ww_meaning_lexeme_type_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.LEXEME_TYPE_LANG }, false);
         public static Index MVIEW_WW_MEANING_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_meaning_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.MEANING_ID }, false);
-        public static Index MVIEW_WW_MEANING_POS_LANG_IDX = Internal.createIndex("mview_ww_meaning_pos_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.POS_LANG }, false);
-        public static Index MVIEW_WW_MEANING_REGISTER_LANG_IDX = Internal.createIndex("mview_ww_meaning_register_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.REGISTER_LANG }, false);
         public static Index MVIEW_WW_MEANING_WORD_ID_IDX = Internal.createIndex("mview_ww_meaning_word_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.WORD_ID }, false);
+        public static Index MVIEW_WW_WORD_LANG_IDX = Internal.createIndex("mview_ww_word_lang_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.LANG }, false);
         public static Index MVIEW_WW_WORD_WORD_ID_IDX = Internal.createIndex("mview_ww_word_word_id_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD_ID }, false);
     }
 }

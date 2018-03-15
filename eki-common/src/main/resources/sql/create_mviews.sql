@@ -1,6 +1,8 @@
+drop type if exists type_domain;
 drop materialized view if exists mview_ww_word cascade;
 drop materialized view if exists mview_ww_form cascade;
 drop materialized view if exists mview_ww_meaning cascade;
+drop materialized view if exists mview_ww_classifier cascade;
 
 create materialized view mview_ww_word
 as
@@ -48,7 +50,7 @@ from (select w.id as word_id,
                    where l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
                    and   l1.meaning_id = m.id
                    and   l2.meaning_id = m.id
-                   --and   l1.word_id != l2.word_id
+                   and   l1.word_id != l2.word_id
                    and   p2.word_id = l2.word_id
                    and   f2.paradigm_id = p2.id
                    and   f2.is_word = true
@@ -74,6 +76,8 @@ and   exists (select ld.id
               where (ld.word_id = p.word_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
 order by f.id;
 
+create type type_domain as (origin varchar(100), code varchar(100));
+
 create materialized view mview_ww_meaning
 as
 select l.word_id,
@@ -84,56 +88,88 @@ select l.word_id,
        l.level1,
        l.level2,
        l.level3,
-       l_type.code lexeme_type_code,
-       l_type.value lexeme_type_value,
-       l_type.lang lexeme_type_lang,
-       reg.code register_code,
-       reg.value register_value,
-       reg.lang register_lang,
-       pos.code pos_code,
-       pos.value pos_value,
-       pos.lang pos_lang,
-       der.code deriv_code,
-       der.value deriv_value,
-       der.lang deriv_lang,
-       dom.origin domain_origin,
-       dom.code domain_code,
-       dom.value domain_value,
-       dom.lang domain_lang,
+       l.type_code lexeme_type_code,
+       (select array_agg(l_reg.register_code order by l_reg.order_by)
+        from lexeme_register l_reg
+        where l_reg.lexeme_id = l.id
+        group by l_reg.lexeme_id) register_codes,
+       (select array_agg(l_pos.pos_code order by l_pos.order_by)
+        from lexeme_pos l_pos
+        where l_pos.lexeme_id = l.id
+        group by l_pos.lexeme_id) pos_codes,
+       (select array_agg(l_der.deriv_code)
+        from lexeme_deriv l_der
+        where l_der.lexeme_id = l.id
+        group by l_der.lexeme_id) deriv_codes,
+       (select array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by)
+        from meaning_domain m_dom
+        where m_dom.meaning_id = m.id
+        group by m_dom.meaning_id) domain_codes,
        d.value definition,
        d.lang definition_lang
 from lexeme l
-  left outer join lexeme_type_label l_type on l.type_code = l_type.code and l_type.type = 'descrip'
-  left outer join lexeme_register l_reg on l_reg.lexeme_id = l.id
-  left outer join register_label reg on reg.code = l_reg.register_code and reg.type = 'descrip'
-  left outer join lexeme_pos l_pos on l_pos.lexeme_id = l.id
-  left outer join pos_label pos on pos.code = l_pos.pos_code and pos.type = 'descrip'
   left outer join lexeme_deriv l_der on l_der.lexeme_id = l.id
-  left outer join deriv_label der on der.code = l_der.deriv_code and der.type = 'descrip'
   inner join meaning m on l.meaning_id = m.id
-  left outer join meaning_domain m_dom on m_dom.meaning_id = m.id
-  left outer join domain_label dom on dom.origin = m_dom.domain_origin and dom.code = m_dom.domain_code and dom.type = 'descrip'
   left outer join definition d on d.meaning_id = m.id
 where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
 order by l.word_id,
          l.meaning_id,
          d.id,
-         l.id,
-         l_reg.order_by,
-         l_pos.order_by,
-         m_dom.order_by;
+         l.id;
+
+create materialized view mview_ww_classifier
+as
+(select 'MORPH' as name,
+       null as origin,
+       code,
+       value,
+       lang
+from morph_label
+union all
+select 'POS' as name,
+       null as origin,
+       code,
+       value,
+       lang
+from pos_label
+union all
+select 'LEXEME_TYPE' as name,
+       null as origin,
+       code,
+       value,
+       lang
+from lexeme_type_label
+union all
+select 'REGISTER' as name,
+       null as origin,
+       code,
+       value,
+       lang
+from register_label
+union all
+select 'DERIV' as name,
+       null as origin,
+       code,
+       value,
+       lang
+from deriv_label
+union all
+select 'DOMAIN' as name,
+       origin,
+       code,
+       value,
+       lang
+from domain_label);
 
 -- not really required at ekilex
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
+create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
 create index mview_ww_form_value_idx on mview_ww_form (form);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
 create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);
-create index mview_ww_meaning_lexeme_type_lang_idx on mview_ww_meaning (lexeme_type_lang);
-create index mview_ww_meaning_register_lang_idx on mview_ww_meaning (register_lang);
-create index mview_ww_meaning_pos_lang_idx on mview_ww_meaning (pos_lang);
-create index mview_ww_meaning_deriv_lang_idx on mview_ww_meaning (deriv_lang);
-create index mview_ww_meaning_domain_lang_idx on mview_ww_meaning (domain_lang);
 create index mview_ww_meaning_definition_lang_idx on mview_ww_meaning (definition_lang);
+create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
+create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);

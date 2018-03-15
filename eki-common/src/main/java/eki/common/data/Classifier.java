@@ -6,11 +6,11 @@ public class Classifier extends AbstractDataObject {
 
 	private String name;
 
-	private String code;
-
 	private String origin;
 
 	private String parent;
+
+	private String code;
 
 	private String value;
 
@@ -19,11 +19,11 @@ public class Classifier extends AbstractDataObject {
 	public Classifier() {
 	}
 
-	public Classifier(String name, String code, String origin, String parent, String value, String lang) {
+	public Classifier(String name, String origin, String parent, String code, String value, String lang) {
 		this.name = name;
-		this.code = code;
 		this.origin = origin;
 		this.parent = parent;
+		this.code = code;
 		this.value = value;
 		this.lang = lang;
 	}
@@ -34,14 +34,6 @@ public class Classifier extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public String getOrigin() {
@@ -58,6 +50,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setParent(String parent) {
 		this.parent = parent;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getValue() {

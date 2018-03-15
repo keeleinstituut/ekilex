@@ -4,6 +4,8 @@ import eki.common.data.AbstractDataObject;
 
 public class CorporaSentence extends AbstractDataObject {
 
+	private static final long serialVersionUID = 1L;
+
 	private String leftPart = "";
 	private String middlePart = "";
 	private String rightPart = "";

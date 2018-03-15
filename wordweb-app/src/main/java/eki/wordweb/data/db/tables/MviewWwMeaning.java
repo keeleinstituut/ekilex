@@ -7,6 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
+import eki.wordweb.data.db.udt.records.TypeDomainRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 947548619;
+    private static final long serialVersionUID = 1510476424;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -97,79 +98,24 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, String> LEXEME_TYPE_CODE = createField("lexeme_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.lexeme_type_value</code>.
+     * The column <code>public.mview_ww_meaning.register_codes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String> LEXEME_TYPE_VALUE = createField("lexeme_type_value", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> REGISTER_CODES = createField("register_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.lexeme_type_lang</code>.
+     * The column <code>public.mview_ww_meaning.pos_codes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String> LEXEME_TYPE_LANG = createField("lexeme_type_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> POS_CODES = createField("pos_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.register_code</code>.
+     * The column <code>public.mview_ww_meaning.deriv_codes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String> REGISTER_CODE = createField("register_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> DERIV_CODES = createField("deriv_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.register_value</code>.
+     * The column <code>public.mview_ww_meaning.domain_codes</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String> REGISTER_VALUE = createField("register_value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.register_lang</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> REGISTER_LANG = createField("register_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.pos_code</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> POS_CODE = createField("pos_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.pos_value</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> POS_VALUE = createField("pos_value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.pos_lang</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> POS_LANG = createField("pos_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.deriv_code</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DERIV_CODE = createField("deriv_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.deriv_value</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DERIV_VALUE = createField("deriv_value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.deriv_lang</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DERIV_LANG = createField("deriv_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.domain_origin</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DOMAIN_ORIGIN = createField("domain_origin", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.domain_code</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DOMAIN_CODE = createField("domain_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.domain_value</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DOMAIN_VALUE = createField("domain_value", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.domain_lang</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> DOMAIN_LANG = createField("domain_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwMeaningRecord, TypeDomainRecord[]> DOMAIN_CODES = createField("domain_codes", eki.wordweb.data.db.udt.TypeDomain.TYPE_DOMAIN.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.definition</code>.
@@ -223,7 +169,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_DEFINITION_LANG_IDX, Indexes.MVIEW_WW_MEANING_DERIV_LANG_IDX, Indexes.MVIEW_WW_MEANING_DOMAIN_LANG_IDX, Indexes.MVIEW_WW_MEANING_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_LEXEME_TYPE_LANG_IDX, Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX, Indexes.MVIEW_WW_MEANING_POS_LANG_IDX, Indexes.MVIEW_WW_MEANING_REGISTER_LANG_IDX, Indexes.MVIEW_WW_MEANING_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_DEFINITION_LANG_IDX, Indexes.MVIEW_WW_MEANING_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX, Indexes.MVIEW_WW_MEANING_WORD_ID_IDX);
     }
 
     /**
