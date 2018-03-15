@@ -43,9 +43,8 @@ public class Classifier extends AbstractDataObject {
 		this.value = value;
 	}
 
-	@Override
-	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.JSON_STYLE);
+	public String toIdString() {
+		return new ReflectionToStringBuilder(this, ToStringStyle.JSON_STYLE).setExcludeFieldNames("value").toString();
 	}
 
 }
