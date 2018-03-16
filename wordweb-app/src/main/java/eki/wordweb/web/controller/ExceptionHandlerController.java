@@ -20,8 +20,7 @@ public class ExceptionHandlerController implements WebConstant {
 
 	@ExceptionHandler(Exception.class)
 	public ModelAndView exception(Exception exception) throws Exception {
-		// If the exception is annotated with @ResponseStatus rethrow it and let the framework handle it.
-		// AnnotationUtils is a Spring Framework utility class.
+
 		if (AnnotationUtils.findAnnotation(exception.getClass(), ResponseStatus.class) != null) {
 			throw exception;
 		}

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
@@ -14,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @SpringBootApplication(scanBasePackages = {"eki.common","eki.wordweb"})
+@EnableCaching
 @EnableTransactionManagement
 public class WordwebApplication {
 
