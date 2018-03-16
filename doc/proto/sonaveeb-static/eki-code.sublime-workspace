@@ -1,0 +1,389 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"margin",
+				"margin-bottom"
+			],
+			[
+				"paddin",
+				"padding-bottom"
+			],
+			[
+				"list-s",
+				"list-style"
+			],
+			[
+				"col-md",
+				"col-md-4"
+			],
+			[
+				"fon",
+				"font-size"
+			],
+			[
+				"font",
+				"font-size"
+			],
+			[
+				"text",
+				"text-transform"
+			],
+			[
+				"ali",
+				"vertical-align"
+			],
+			[
+				"color",
+				"color-menu"
+			],
+			[
+				"min",
+				"min-height"
+			],
+			[
+				"spa",
+				"word-spacing"
+			],
+			[
+				"ba",
+				"background-color"
+			],
+			[
+				"gu",
+				"gulp"
+			],
+			[
+				"back",
+				"background-color"
+			],
+			[
+				"mar",
+				"margin-bottom"
+			],
+			[
+				"padd",
+				"padding-top"
+			],
+			[
+				"tex",
+				"text-decoration"
+			],
+			[
+				"menu",
+				"width-spartan-menu"
+			],
+			[
+				"rgb",
+				"rgba()"
+			],
+			[
+				"rg",
+				"rgba()"
+			],
+			[
+				"mari",
+				"margin"
+			],
+			[
+				"borde",
+				"border-radius"
+			],
+			[
+				"pos",
+				"position"
+			],
+			[
+				"in",
+				"inline-block"
+			],
+			[
+				"tx",
+				"text-align"
+			],
+			[
+				"margin-",
+				"margin-top"
+			],
+			[
+				"bg",
+				"bg-color"
+			],
+			[
+				"bo",
+				"border-color"
+			],
+			[
+				"wid",
+				"width"
+			],
+			[
+				"h",
+				"height"
+			],
+			[
+				"di",
+				"display"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "ins",
+		"selected_items":
+		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"in",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 521.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/templates",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/templates/macros",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/pages",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/mixins"
+	],
+	"file_history":
+	[
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/javascripts/demo.js",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/templates/layout.nunjucks",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/gulpfile.js",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/gulpfile-withSass.js",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/eki/_eki-variables.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/bootstrap/eki/_eki-variables.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/bootstrap/eki/_eki-styles.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/bootstrap-4.0.0/scss/bootstrap.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/bootstrap.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/bootstrap/_variables.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/scss/bootstrap/_type.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/bootstrap-4.0.0/scss/_eki.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/bootstrap-4.0.0/scss/_mixins.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/bootstrap-4.0.0/scss/bootstrap-grid.scss",
+		"/Users/Hattori/Dropbox (Sander@work)/sonaveeb-static/app/templates/partials/header.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/gulpfile.js",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/templates/macros/header-macro.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/templates/partials/header.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/templates/layout.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/index.nunujucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/horse.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/_index.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/_index.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/index.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/templates/header.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/index.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/pages/horse.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/scss/bootstrap/_spartan-menu.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/templates/partials/header.nunjucks.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/scss/bootstrap.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/package.json",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/index.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/scss/bootstrap/mixins/_border-radius.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/scss/bootstrap/_buttons.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/scss/bootstrap/mixins/_buttons.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/scss/bootstrap/_close.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web-test/app/layout.nunjucks",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/_spartan-layout.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/_spartan-menu.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/_spartan-variables.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/spartan-content.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/index.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/_variables.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/mixins/_progress-bar.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/mixins/_panels.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/mixins/_border-radius.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/stylesheets/bootstrap/spartan-layout.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/assets/stylesheets/bootstrap.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/assets/stylesheets/bootstrap/_spartan-menu.scss",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/assets/index.html",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/test/dummy_sass_only/import_all.sass",
+		"/Users/Hattori/Töö/Spartan Horse/landing-web/assets/stylesheets/bootstrap/_modals.scss",
+		"/Users/Hattori/Dropbox/Töö Dropbox/TRINIDAD/MKM/II-etapi-tood/HTML/et/statistika.html",
+		"/Users/Hattori/Dropbox/Töö Dropbox/TRINIDAD/SMIT-UX/Piko/HTML/sass/style.scss",
+		"/Users/Hattori/Dropbox/Töö Dropbox/TRINIDAD/SMIT-UX/Piko/HTML/grupid.html",
+		"/Users/Hattori/Dropbox/Töö Dropbox/TRINIDAD/SMIT-UX/Piko/HTML/sass/style.css",
+		"/Users/Hattori/Dropbox/Töö Dropbox/TRINIDAD/SMIT-UX/Piko/HTML/sass/style.sass"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 0.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"$headings-h6-font-family",
+			"font-fa",
+			"font-s",
+			"data",
+			"menu",
+			"logo",
+			"menu",
+			"$shadow",
+			"shadow",
+			"box-sha",
+			"border-ra",
+			"$border-radius",
+			"shadow",
+			"gray",
+			"prima",
+			"z-inde",
+			"famil",
+			"sass",
+			"font-fa"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 31.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.SublimeLinter":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "eki-code.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": false,
+	"side_bar_width": 171.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

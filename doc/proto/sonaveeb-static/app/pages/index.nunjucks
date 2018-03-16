@@ -1,0 +1,88 @@
+<!-- index.nunjucks -->
+{% extends "layout.nunjucks" %}
+
+{% block content %}
+			{% import 'macros/header-macro.nunjucks' as header %}
+			{{header.selected('test')}}
+			<div class="container-fluid homonym-page">
+				<div class="row search-wrap">
+					{% import 'macros/search-macro.nunjucks' as search %}
+					{{search.selected('')}}
+				</div>
+				<div class="row homonym-wrap">
+					<div class="col-12 homonym-panel">
+						<ul class="homonym-list">
+						<!-- Homonyms-->
+						{% for homonym in homonyms %}
+							<li>
+								<a class="homonym-item homonym-item-{{homonym.nr}}" href="#">
+								    <h4 class="">
+								    	<div class="homonym-name-container">
+									    	<span class="homonym-name">{{homonym.name}}</span>
+									    </div>
+								    	<span class="homonym-nr">{{homonym.nr}}</span></h4>
+								    <p class="">{{homonym.matches}}</p>
+								    <p class="">{{homonym.intro}}</p>
+								</a>
+							</li>
+						{% endfor %}
+						</ul>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-12 content-panel "d-none d-md-block">
+						<div class="row">
+							<div class="col-md-8 main-data">
+								{% for leveltwo in leveltwos %}
+								<div class="level-2-panel">
+									<span class="dictionary-source">{{leveltwo.source}}</span>
+									{% for levelthree in levelthrees %}
+									<div class="level-3-panel row">
+										<div class="matches col-12">
+											<h6>{{levelthree.matches}}</h6>
+										</div>
+										<div class="definition col-lg-6">
+											<span class="">{{levelthree.definition}}</span>
+										</div>
+										<button class="btn more-btn">Vaata veel</button>
+										<div class="dependencies col-lg-6">
+											{% for dependency in dependencies %}
+											<div class="dependence">
+												<div class="questions-wrap">
+													<span class="question">Mida?</span>
+													<span class="question">Keda?</span>
+												</div>
+												<div class="examples-wrap">
+													<div class="example-item">
+														<span class="example-text">See tee viib külla</span>
+														<button class="listen">Kuula</button>
+													</div>
+												</div>
+											</div>
+											{% endfor %}
+										</div>
+									</div>
+									{% endfor %}
+								</div>
+								{% endfor %}
+							</div>
+							<div class="col-md-4 more-data">
+								<!-- <h5>[moredata-panel]</h5> -->
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+						
+							<!-- Cats- ->
+							{% for cat in cats %}
+							<a href="" class="col-xs-6">
+								<h2>{{cat.name}}</h2>
+								<span>{{cat.priceClass}}</span>
+							</a>
+							{% endfor %}
+			-->
+			</div>		
+
+{% endblock %}

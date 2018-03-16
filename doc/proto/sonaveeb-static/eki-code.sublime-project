@@ -1,0 +1,17 @@
+{
+	"folders":
+	[
+		{
+			"path": "app/templates"
+		},
+		{
+			"path": "app/scss/bootstrap/eki"
+		},
+		{
+			"path": "app/pages"
+		},
+		{
+			"path": "app/scss"
+		}
+	]
+}

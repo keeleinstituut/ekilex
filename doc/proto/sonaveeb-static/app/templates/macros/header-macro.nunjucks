@@ -1,0 +1,32 @@
+{% macro selected(selectedPage='menu1') %}
+  <!-- Macro stuff here -->
+<div class="container-fluid header-container">
+	<div class="row header-wrap">
+		<div class="col-12 header-panel">
+			<a class="logo">
+				< Back
+			</a>
+			<div class="header-links d-none d-md-block">
+				<a href="index.html" class="menu-item selected {%if selectedPage == 'menu1' %} selected {% endif %}">
+					<span>Otsing</span>
+				</a>
+				<a href="" class="menu-item {%if selectedPage == 'menu2' %} selected {% endif %}">
+					<span>Õpi eesti keelt</span>
+				</a>
+				<a href="" class="menu-item {%if selectedPage == 'menu3' %} selected {% endif %}">
+					<span>Keelemängud</span>
+				</a>
+				<a href="" class="menu-item {%if selectedPage == 'menu3' %} selected {% endif %}">
+					<span>Portaalist</span>
+				</a>
+				<a href="" class="menu-item {%if selectedPage == 'menu3' %} selected {% endif %}">
+					<span>Kontakt</span>
+				</a>
+			</div>
+			<button class="menu-btn">
+				Menu
+			</button>
+		</div>
+	</div>
+</div>
+{% endmacro %}
