@@ -5,16 +5,96 @@
 
 <body>
 
-<div class="container-fluid">
-  <div class="d-flex flex-row"><p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p></div>
-  <div class="card mt-4">
-    <div class="card-header">
-      <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+  <div class="">
+
+    <div class="container-fluid header-container">
+      <div class="row header-wrap">
+        <div class="col-12 header-panel">
+          <a class="logo" th:text="#{button.label.back}">
+            < Back
+          </a>
+          <div class="header-links d-none d-md-block">
+            <a th:href="@{/}" href="index.html" class="menu-item selected ">
+              <span th:text="#{menu.search}">Otsing</span>
+            </a>
+            <a th:href="@{/}" href="" class="menu-item ">
+              <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+            </a>
+            <a th:href="@{/}" href="" class="menu-item ">
+              <span th:text="#{menu.games}">Keelemängud</span>
+            </a>
+            <a th:href="@{/}" href="" class="menu-item ">
+              <span th:text="#{menu.info}">Portaalist</span>
+            </a>
+            <a th:href="@{/}" href="" class="menu-item ">
+              <span th:text="#{menu.contacts}">Kontakt</span>
+            </a>
+          </div>
+          <button class="menu-btn">
+            <span th:text="#{button.label.menu}">Menu</span>
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+
+    <div class="container-fluid homonym-page">
+
+      <div class="row search-wrap">
+        <div class="col-12 search-panel">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="search-lang">
+                <button class="btn btn-light">Keelevalik</button>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-5">
+              <div class="search-main">
+              </div>
+              <div class="search-main">
+                <form th:action="@{/}" th:method="post">
+                  <div class="awesomplete">
+                    <input type="text" class="form-control search-phrase" th:name="simpleSearchFilter" th:value="${simpleSearchFilter}" list="mylist" placeholder="Kirjuta mõni sõna">
+                    <ul class="d-none">
+                      <li><mark>Highl</mark>ighted</li>
+                      <li>Regular</li>
+                      <li aria-selected="true">Selected row</li>
+                    </ul>
+                  </div>
+                  <div class="extra-buttons">
+                    <button class="btn btn-light clear-btn">Clear</button>
+                    <button class="btn btn-light speak-btn">Speak</button>
+                  </div>
+                  <button type="submit" class="btn btn-green search-btn">OTSI</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row homonym-wrap" th:if="${!#lists.isEmpty(words)}">
+        <div class="col-12 homonym-panel">
+          <ul class="homonym-list">
+            <li th:each="word : ${words}">
+              <a class="homonym-item" href="#">
+                <h4 class="">
+                  <div class="homonym-name-container">
+                    <span class="homonym-name" th:text="${word.word}">tee</span>
+                  </div>
+                  <span class="homonym-nr" th:text="${word.homonymNr}">1</span></h4>
+                <p class="">дорога, дорога, дорога, дорога, дорога</p>
+                <p class="">maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav</p>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </div>
+
   </div>
-</div>
+
+  <script type="text/javascript" th:src="@{/view/js/index_page.js}" src="js/demo/demo.js"></script>
 
 </body>
 </html>

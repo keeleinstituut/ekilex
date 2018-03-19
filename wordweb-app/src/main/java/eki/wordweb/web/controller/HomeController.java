@@ -28,9 +28,10 @@ public class HomeController implements WebConstant {
 	private LexSearchService lexSearchService;
 
 	@RequestMapping(value = HOME_URI, method = RequestMethod.GET)
-	public String home() {
+	public String home(Model model) {
 
 		//TODO set defaults
+		model.addAttribute("simpleSearchFilter", "");
 
 		return HOME_PAGE;
 	}
@@ -40,6 +41,7 @@ public class HomeController implements WebConstant {
 
 		List<Word> words = lexSearchService.findWords(searchFilter);
 		model.addAttribute("words", words);
+		model.addAttribute("simpleSearchFilter", searchFilter);
 
 		return HOME_PAGE;
 	}

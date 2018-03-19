@@ -4,6 +4,8 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 
+import org.apache.commons.lang3.StringUtils;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Record17;
 import org.jooq.Record9;
@@ -24,6 +26,14 @@ public class LexSearchDbService {
 
 	public Result<Record9<Long,String,Integer,String,String,String,String[],Integer,String[]>> findWords(String searchFilter) {
 
+		String theFilter = searchFilter.replace("*", "%").replace("?", "_");
+		Condition formEqualsCondition;
+		if (StringUtils.containsAny(theFilter, '%', '_')) {
+			formEqualsCondition = MVIEW_WW_FORM.FORM.likeIgnoreCase(theFilter);
+		} else {
+			formEqualsCondition = MVIEW_WW_FORM.FORM.equalIgnoreCase(theFilter);
+		}
+
 		return create
 				.select(
 						MVIEW_WW_WORD.WORD_ID,
@@ -43,7 +53,7 @@ public class LexSearchDbService {
 								.from(MVIEW_WW_FORM)
 								.where(
 										MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
-										.and(MVIEW_WW_FORM.FORM.equalIgnoreCase(searchFilter)))
+										.and(formEqualsCondition))
 								)
 						)
 				.orderBy(MVIEW_WW_WORD.LANG, MVIEW_WW_WORD.HOMONYM_NR)
