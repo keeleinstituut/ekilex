@@ -1,8 +1,13 @@
+-- TODO to be replaced by ordinary views later
+
 drop materialized view if exists mview_ww_word cascade;
 drop materialized view if exists mview_ww_form cascade;
 drop materialized view if exists mview_ww_meaning cascade;
 drop materialized view if exists mview_ww_classifier cascade;
+drop type if exists type_definition;
 drop type if exists type_domain;
+
+create type type_definition as (value text, lang char(3));
 
 create materialized view mview_ww_word
 as
@@ -17,7 +22,8 @@ select w.word_id,
         where ld.word_id = w.word_id
         group by w.word_id) as dataset_codes,
        mc.meaning_count,
-       mw.meaning_words
+       mw.meaning_words,
+       wd.definitions
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
              w.homonym_nr,
@@ -54,7 +60,23 @@ from (select w.id as word_id,
                    and   p2.word_id = l2.word_id
                    and   f2.paradigm_id = p2.id
                    and   f2.is_word = true
-                   group by l1.word_id) mw on mw.word_id = w.word_id;
+                   group by l1.word_id) mw on mw.word_id = w.word_id
+  left outer join (select wd.word_id,
+                          array_agg(row(wd.value, wd.lang)::type_definition) definitions
+                   from (select l.word_id,
+                                d.value,
+                                d.lang
+                         from lexeme l,
+                              meaning m,
+                              definition d
+                         where l.meaning_id = m.id
+                         and   d.meaning_id = m.id
+                         order by l.dataset_code,
+                                  l.level1,
+                                  l.level2,
+                                  l.level3,
+                                  d.order_by) wd
+                   group by wd.word_id) wd on wd.word_id = w.word_id;
 
 create materialized view mview_ww_form
 as

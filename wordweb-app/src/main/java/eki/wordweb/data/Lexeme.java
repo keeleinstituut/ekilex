@@ -5,8 +5,6 @@ import java.util.List;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-import static java.util.stream.Collectors.joining;
-
 public class Lexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -139,10 +137,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setMeaningWords(List<Word> meaningWords) {
 		this.meaningWords = meaningWords;
-	}
-
-	public String meaningWordsAsString() {
-		return meaningWords == null ? "" : meaningWords.stream().map(Word::getWord).collect(joining(", "));
 	}
 
 }

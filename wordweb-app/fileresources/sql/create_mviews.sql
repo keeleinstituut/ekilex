@@ -2,11 +2,14 @@ drop materialized view if exists mview_ww_word cascade;
 drop materialized view if exists mview_ww_form cascade;
 drop materialized view if exists mview_ww_meaning cascade;
 drop materialized view if exists mview_ww_classifier cascade;
+drop type if exists type_definition;
 drop type if exists type_domain;
 
 -- run this once:
 -- CREATE EXTENSION dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
+
+create type type_definition as (value text, lang char(3));
 
 create materialized view mview_ww_word as
 select * from 
@@ -21,7 +24,8 @@ dblink(
 	display_morph_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
-	meaning_words text array
+	meaning_words text array,
+	definitions type_definition array
 );
 
 create materialized view mview_ww_form as

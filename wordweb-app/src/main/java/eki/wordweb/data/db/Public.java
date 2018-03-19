@@ -32,6 +32,7 @@ import eki.wordweb.data.db.tables.records.DblinkGetPkeyRecord;
 import eki.wordweb.data.db.tables.records.DblinkGetResultRecord;
 import eki.wordweb.data.db.tables.records.DblinkRecord;
 import eki.wordweb.data.db.udt.DblinkPkeyResults;
+import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 
 
@@ -48,7 +49,7 @@ import eki.wordweb.data.db.udt.TypeDomain;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 802043847;
+    private static final long serialVersionUID = 212868765;
 
     /**
      * The reference instance of <code>public</code>
@@ -224,6 +225,7 @@ public class Public extends SchemaImpl {
     private final List<UDT<?>> getUDTs0() {
         return Arrays.<UDT<?>>asList(
             DblinkPkeyResults.DBLINK_PKEY_RESULTS,
+            TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN);
     }
 }

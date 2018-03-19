@@ -7,6 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRecord;
+import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
 
-    private static final long serialVersionUID = 2073170741;
+    private static final long serialVersionUID = -1908300597;
 
     /**
      * The reference instance of <code>public.mview_ww_word</code>
@@ -95,6 +96,11 @@ public class MviewWwWord extends TableImpl<MviewWwWordRecord> {
      * The column <code>public.mview_ww_word.meaning_words</code>.
      */
     public final TableField<MviewWwWordRecord, String[]> MEANING_WORDS = createField("meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word.definitions</code>.
+     */
+    public final TableField<MviewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_word</code> table reference
