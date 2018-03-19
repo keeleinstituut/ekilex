@@ -3,6 +3,7 @@ package eki.wordweb.web.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,11 +28,15 @@ public class HomeController implements WebConstant {
 	@Autowired
 	private LexSearchService lexSearchService;
 
+	@Value("${speech.recognition.service.url:}")
+	private String speechRecognitionServiceUrl;
+
 	@RequestMapping(value = HOME_URI, method = RequestMethod.GET)
 	public String home(Model model) {
 
 		//TODO set defaults
 		model.addAttribute("simpleSearchFilter", "");
+		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 
 		return HOME_PAGE;
 	}
@@ -42,6 +47,7 @@ public class HomeController implements WebConstant {
 		List<Word> words = lexSearchService.findWords(searchFilter);
 		model.addAttribute("words", words);
 		model.addAttribute("simpleSearchFilter", searchFilter);
+		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 
 		return HOME_PAGE;
 	}
