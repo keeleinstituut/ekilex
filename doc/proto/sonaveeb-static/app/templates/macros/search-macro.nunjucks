@@ -6,7 +6,7 @@
 									<button class="btn btn-light">Keelevalik</button>
 								</div>
 							</div>
-							<div class="col-md-6 col-lg-5">
+							<div class="col-md-6 col-lg-5 order-md-first">
 								<div class="search-main">						
 								</div>
 								<div class="search-main">

@@ -15,21 +15,24 @@
 						<!-- Homonyms-->
 						{% for homonym in homonyms %}
 							<li>
-								<a class="homonym-item homonym-item-{{homonym.nr}}" href="#">
-								    <h4 class="">
-								    	<div class="homonym-name-container">
-									    	<span class="homonym-name">{{homonym.name}}</span>
-									    </div>
-								    	<span class="homonym-nr">{{homonym.nr}}</span></h4>
-								    <p class="">{{homonym.matches}}</p>
-								    <p class="">{{homonym.intro}}</p>
+								<a class="homonym-item homonym-item-{{homonym.nr}} {{homonym.moreClasses}}" href="#">
+								    <span class="homonym-item-wrap">
+									    <span class="homonym-header">
+									    	<span class="homonym-name-container">
+										    	<span class="homonym-name">{{homonym.name}}</span>
+										    </span>
+									    	<span class="homonym-nr">{{homonym.nr}}</span>
+									    </span>
+									    <span class="homonym-matches">{{homonym.matches}}</span>
+									    <span class="homonym-intro">{{homonym.intro}}</span>
+								    </span>
 								</a>
 							</li>
 						{% endfor %}
 						</ul>
 					</div>
 				</div>
-				<div class="row">
+				<div class="row content-wrap">
 					<div class="col-12 content-panel "d-none d-md-block">
 						<div class="row">
 							<div class="col-md-8 main-data">
@@ -47,7 +50,7 @@
 										<button class="btn more-btn">Vaata veel</button>
 										<div class="dependencies col-lg-6">
 											{% for dependency in dependencies %}
-											<div class="dependence">
+											<div class="dependence row">
 												<div class="questions-wrap">
 													<span class="question">Mida?</span>
 													<span class="question">Keda?</span>
@@ -55,6 +58,10 @@
 												<div class="examples-wrap">
 													<div class="example-item">
 														<span class="example-text">See tee viib külla</span>
+														<button class="listen">Kuula</button>
+													</div>
+													<div class="example-item">
+														<span class="example-text">Sa ei leia siit teed, mis viib külast välja.</span>
 														<button class="listen">Kuula</button>
 													</div>
 												</div>

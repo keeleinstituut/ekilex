@@ -15,7 +15,7 @@ $gray-200: #e9ecef !default;
 $gray-300: #D8D8D8 !default;
 $gray-400: #ced4da !default;
 $gray-500: #adb5bd !default;
-$gray-600: #6c757d !default;
+$gray-600: #7F8891 !default;
 $gray-700: #495057 !default;
 $gray-800: #343a40 !default;
 $gray-900: #212529 !default;
@@ -214,7 +214,7 @@ $border-color:                $gray-300 !default;
 $border-color-lg:             $gray-200 !default;
 
 $border-radius:               rem(22) !default;
-$border-radius-lg:            .3rem !default;
+$border-radius-lg:            rem(999) !default;
 $border-radius-sm:            rem(11) !default;
 $border-radius-card:          rem(30) !default;
 
