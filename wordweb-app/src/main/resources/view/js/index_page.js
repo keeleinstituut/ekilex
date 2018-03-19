@@ -27,7 +27,7 @@ $(function() {
 	});
 	$(".homonym-item").click(function(){
 	    $(".homonym-item").removeClass("selected last-selected");
-	    $(".homonym-item-1").removeClass("animation-target").dequeue();
+	    $(".homonym-item:first").removeClass("animation-target").dequeue();
 	    $(this).addClass("selected last-selected");
 		if ($(window).width() < 767) {
 		   $(".content-panel").removeClass("d-none d-md-block");
@@ -53,6 +53,18 @@ $(window).resize(function() {
 });
 
 $(document).ready(function() {
-	$(".homonym-item:first").addClass("selected last-selected animation-target").delay(1250).queue(function(){});
+	$(".homonym-item:first")
+		.addClass("selected last-selected animation-target")
+		.delay(1250).queue(function(){})
+		.trigger('click');
 });
-// end demo interactions
+
+function fetchDetails(wordId) {
+    var detailsDiv = $('.word-details');
+	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
+		detailsDiv.replaceWith(data);
+	}).fail(function (data) {
+		console.log(data);
+		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
+	})
+}

@@ -76,17 +76,73 @@
         <div class="col-12 homonym-panel">
           <ul class="homonym-list">
             <li th:each="word : ${words}">
-              <a class="homonym-item" href="#">
+              <a class="homonym-item" href="#" th:onclick="'fetchDetails(' + ${word.wordId} + ')'">
                 <h4 class="">
                   <div class="homonym-name-container">
                     <span class="homonym-name" th:text="${word.word}">tee</span>
                   </div>
                   <span class="homonym-nr" th:text="${word.homonymNr}">1</span></h4>
-                <p class="">дорога, дорога, дорога, дорога, дорога</p>
+                <p class="" th:text="${#strings.listJoin(word.meaningWords, ', ')}">дорога, дорога, дорога</p>
                 <p class="">maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav</p>
               </a>
             </li>
           </ul>
+        </div>
+      </div>
+
+      <div class="word-details"></div>
+
+      <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(lexemes)}">
+        <div class="col-12 content-panel d-none d-md-block">
+          <div class="row">
+            <div class="col-md-8 main-data">
+              <div class="level-2-panel">
+                <span class="dictionary-source">Eesti-vene sõnaraamat</span>
+
+                <div class="level-3-panel row" th:each="lexeme : ${lexemes}">
+                  <div class="matches col-12">
+                    <h6 th:text="${lexeme.meaningWordsAsString()}">daroga</h6>
+                  </div>
+                  <div class="definition col-lg-6">
+                    <span class="" th:each="definition : ${lexeme.definitions}" th:text="${definition}">maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav</span>
+                  </div>
+                  <button class="btn more-btn">Vaata veel</button>
+
+                  <div class="dependencies col-lg-6">
+                    <div class="dependence">
+                      <div class="questions-wrap">
+                        <span class="question">Mida?</span>
+                        <span class="question">Keda?</span>
+                      </div>
+                      <div class="examples-wrap">
+                        <div class="example-item">
+                          <span class="example-text">See tee viib külla</span>
+                          <button class="listen">Kuula</button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="dependence">
+                      <div class="questions-wrap">
+                        <span class="question">Mida?</span>
+                        <span class="question">Keda?</span>
+                      </div>
+                      <div class="examples-wrap">
+                        <div class="example-item">
+                          <span class="example-text">See tee viib külla</span>
+                          <button class="listen">Kuula</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+            <div class="col-md-4 more-data">
+              <!-- <h5>[moredata-panel]</h5> -->
+            </div>
+          </div>
         </div>
       </div>
 

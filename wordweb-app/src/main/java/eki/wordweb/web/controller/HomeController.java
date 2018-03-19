@@ -52,7 +52,6 @@ public class HomeController implements WebConstant {
 		List<Lexeme> lexemes = lexSearchService.findLexemes(wordId, DISPLAY_LANG);
 		model.addAttribute("lexemes", lexemes);
 
-		//TODO implement
 		return HOME_PAGE + " :: worddetails";
 	}
 }

@@ -26,14 +26,6 @@ public class LexSearchDbService {
 
 	public Result<Record9<Long,String,Integer,String,String,String,String[],Integer,String[]>> findWords(String searchFilter) {
 
-		String theFilter = searchFilter.replace("*", "%").replace("?", "_");
-		Condition formEqualsCondition;
-		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			formEqualsCondition = MVIEW_WW_FORM.FORM.likeIgnoreCase(theFilter);
-		} else {
-			formEqualsCondition = MVIEW_WW_FORM.FORM.equalIgnoreCase(theFilter);
-		}
-
 		return create
 				.select(
 						MVIEW_WW_WORD.WORD_ID,
@@ -53,7 +45,7 @@ public class LexSearchDbService {
 								.from(MVIEW_WW_FORM)
 								.where(
 										MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
-										.and(formEqualsCondition))
+										.and(MVIEW_WW_FORM.FORM.equalIgnoreCase(searchFilter)))
 								)
 						)
 				.orderBy(MVIEW_WW_WORD.LANG, MVIEW_WW_WORD.HOMONYM_NR)
