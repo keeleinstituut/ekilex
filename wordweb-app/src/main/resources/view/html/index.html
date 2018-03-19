@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(_,_)">
+<head th:replace="common :: common_header(_,~{::links})">
+  <th:block th:fragment="links">
+    <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/index_page.js}" src="js/demo/demo.js"></script>
+  </th:block>
 </head>
 <body>
   <div class="">
@@ -25,9 +29,7 @@
               <span th:text="#{menu.contacts}">Kontakt</span>
             </a>
           </div>
-          <button class="menu-btn">
-            <span th:text="#{button.label.menu}">Menu</span>
-          </button>
+          <button class="menu-btn" th:text="#{button.label.menu}">Menu</button>
         </div>
       </div>
     </div>
@@ -56,8 +58,9 @@
                     </ul>
                   </div>
                   <div class="extra-buttons">
-                    <button class="btn btn-light clear-btn">Clear</button>
-                    <button class="btn btn-light speak-btn">Speak</button>
+                    <button type="button" class="btn btn-light clear-btn" th:text="#{button.label.clear}">Clear</button>
+                    <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:text="#{button.label.start.rec}">Speak</button>
+                    <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
                   </div>
                   <button type="submit" class="btn btn-green search-btn">OTSI</button>
                 </form>
@@ -149,6 +152,9 @@
       </div>
     </div>
   </div>
-  <script type="text/javascript" th:src="@{/view/js/index_page.js}" src="js/demo/demo.js"></script>
+  <script th:inline="javascript">
+      initialisePage();
+      initialiseRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');
+  </script>
 </body>
 </html>
