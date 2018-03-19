@@ -1,8 +1,8 @@
-drop type if exists type_domain;
 drop materialized view if exists mview_ww_word cascade;
 drop materialized view if exists mview_ww_form cascade;
 drop materialized view if exists mview_ww_meaning cascade;
 drop materialized view if exists mview_ww_classifier cascade;
+drop type if exists type_domain;
 
 -- run this once:
 -- CREATE EXTENSION dblink;
