@@ -204,12 +204,11 @@
                       <span th:each="refLink : ${definition.refLinks}">
                         [
                         <a th:href="@{'/def_ref_link:' + ${refLink.id}}" target="_blank">
-                          <span th:if="${refLink.name != null}">
-                            <span th:text="${refLink.name}"></span>
-                            |
-                          </span>
                           <span th:text="${refLink.value}"></span>
                         </a>
+                        <span th:if="${refLink.name != null}">
+                          <span th:text="${refLink.name}"></span>
+                        </span>
                         ]
                       </span>
                     </div>
@@ -285,12 +284,11 @@
                             <span th:each="refLink : ${usage.refLinks}">
                               [
                               <a th:href="@{'/def_ref_link:' + ${refLink.id}}" target="_blank">
-                                <span th:if="${refLink.name != null}">
-                                  <span th:text="${refLink.name}"></span>
-                                  |
-                                </span>
                                 <span th:text="${refLink.value}"></span>
                               </a>
+                              <span th:if="${refLink.name != null}">
+                                <span th:text="${refLink.name}"></span>
+                              </span>
                               ]
                             </span>
                           </div>
