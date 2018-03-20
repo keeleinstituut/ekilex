@@ -65,7 +65,7 @@ body {
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.35;
+  line-height: 1.5;
   color: #001124;
   text-align: left;
   background-color: #fff;
@@ -1729,9 +1729,9 @@ tbody.collapse.show {
 .form-control {
   display: block;
   width: 100%;
-  padding: 1.21875rem 1.25rem;
+  padding: 1.125rem 1.15625rem;
   font-size: 1rem;
-  line-height: 1.35;
+  line-height: 1.5;
   color: #495057;
   background-color: #fff;
   background-clip: padding-box;
@@ -1765,7 +1765,7 @@ tbody.collapse.show {
 }
 
 select.form-control:not([size]):not([multiple]) {
-  height: calc(3.7875rem + 0);
+  height: calc(3.75rem + 0);
 }
 
 select.form-control:focus::-ms-value {
@@ -1780,11 +1780,11 @@ select.form-control:focus::-ms-value {
 }
 
 .col-form-label {
-  padding-top: calc(1.21875rem + 0);
-  padding-bottom: calc(1.21875rem + 0);
+  padding-top: calc(1.125rem + 0);
+  padding-bottom: calc(1.125rem + 0);
   margin-bottom: 0;
   font-size: inherit;
-  line-height: 1.35;
+  line-height: 1.5;
 }
 
 .col-form-label-lg {
@@ -1804,10 +1804,10 @@ select.form-control:focus::-ms-value {
 .form-control-plaintext {
   display: block;
   width: 100%;
-  padding-top: 1.21875rem;
-  padding-bottom: 1.21875rem;
+  padding-top: 1.125rem;
+  padding-bottom: 1.125rem;
   margin-bottom: 0;
-  line-height: 1.35;
+  line-height: 1.5;
   background-color: transparent;
   border: solid transparent;
   border-width: 0 0;
@@ -2155,9 +2155,9 @@ select.form-control-lg:not([size]):not([multiple]) {
   vertical-align: middle;
   user-select: none;
   border: 0 solid transparent;
-  padding: 1.21875rem 1.25rem;
+  padding: 1.125rem 1.15625rem;
   font-size: 1rem;
-  line-height: 1.35;
+  line-height: 1.5;
   border-radius: 1.375rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
@@ -3384,14 +3384,6 @@ html {
   background-color: #001124;
 }
 
-.questions-wrap {
-  background-color: lightyellow;
-}
-
-.examples-wrap {
-  background-color: lightyellow;
-}
-
 * {
   transition: 50ms ease-in-out;
 }
@@ -3442,15 +3434,50 @@ ul {
 .extra-buttons,
 .search-btn {
   position: absolute;
-  top: 0;
+  top: 0.3125rem;
 }
 
-.extra-buttons {
-  right: 80px;
+.clear-btn,
+.speak-btn,
+.search-btn {
+  width: 3.125rem;
+  height: 3.125rem;
+  border-radius: 62.4375rem !important;
+  padding: 0.25rem 0 0 0;
 }
 
 .search-btn {
-  right: 0;
+  right: 0.3125rem;
+  border-radius: 62.4375rem !important;
+  box-shadow: 0 0.125rem 0.625rem rgba(0, 17, 36, 0.3);
+  padding-top: 0.5rem;
+}
+
+.search-btn .icon {
+  font-size: 2rem !important;
+}
+
+.extra-buttons {
+  right: 4.0625rem;
+}
+
+.extra-buttons .btn {
+  color: #7F8891;
+  background-color: transparent;
+}
+
+.btn {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.icon {
+  font-size: 1.5rem;
+  padding-top: 10px;
+}
+
+.btn-light {
+  color: #0077FF;
 }
 
 .homonym-item * {
@@ -3588,6 +3615,27 @@ ul {
   position: absolute;
   top: 0.46875rem;
   right: 1.875rem;
+  padding: 0.3125rem;
+}
+
+.example-text {
+  float: left;
+  font-style: italic;
+  display: block;
+  letter-spacing: 0.02rem;
+  background-color: #F2F2F2;
+  border-radius: 0.6875rem;
+  padding: 0.125rem 0.4375rem;
+}
+
+.example-text strong {
+  font-weight: 700;
+}
+
+.btn-speaker {
+  color: #7F8891;
+  padding: 0.125rem;
+  float: left;
 }
 
 @media (max-width: 767.98px) {
@@ -3631,6 +3679,15 @@ ul {
 }
 
 @media (min-width: 768px) {
+  .homonym-list {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow-x: scroll;
+    display: flex;
+    padding: 1.25rem;
+    margin: -1.25rem;
+  }
   .search-wrap {
     top: 4.375rem;
     box-shadow: 0 0.625rem 0.625rem #F2F2F2;
@@ -3727,7 +3784,7 @@ ul {
     font-weight: 700;
   }
   .homonym-item .homonym-intro {
-    color: #7F8891;
+    color: #7F8891 !important;
   }
   .animation-target {
     animation: animation 1250ms linear both;
@@ -3772,6 +3829,9 @@ ul {
   .level-3-panel {
     padding-left: 1.875rem;
     padding-right: 1.875rem;
+  }
+  .example-text {
+    max-width: calc( 100% - 30px);
   }
 }
 

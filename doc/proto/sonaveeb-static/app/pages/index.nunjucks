@@ -52,17 +52,21 @@
 											{% for dependency in dependencies %}
 											<div class="dependence row">
 												<div class="questions-wrap">
-													<span class="question">Mida?</span>
-													<span class="question">Keda?</span>
+													<span class="question">kuhu?</span>
+													<span class="question">mis?</span>
 												</div>
 												<div class="examples-wrap">
 													<div class="example-item">
-														<span class="example-text">See tee viib külla</span>
-														<button class="listen">Kuula</button>
+														<span class="example-text">See <strong>tee</strong> viib külla</span>
+														<button class="btn btn-speaker">
+															<span class="icon icon-speaker"></span>
+														</button>
 													</div>
 													<div class="example-item">
-														<span class="example-text">Sa ei leia siit teed, mis viib külast välja.</span>
-														<button class="listen">Kuula</button>
+														<span class="example-text">Sa ei leia siit <strong>teed</strong>, mis viib külast välja.</span>
+														<button class="btn btn-speaker">
+															<span class="icon icon-speaker"></span>
+														</button>
 													</div>
 												</div>
 											</div>

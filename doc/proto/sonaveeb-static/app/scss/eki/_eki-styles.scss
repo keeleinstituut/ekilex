@@ -8,12 +8,12 @@ html{
 // 	border-color: pink;	
 // 	border-radius: rem(20);
 // }
-.questions-wrap{
-	background-color:lightyellow;
-}
-.examples-wrap{
-	background-color:lightyellow;
-}
+// .questions-wrap{
+// 	background-color:lightyellow;
+// }
+// .examples-wrap{
+// 	background-color:lightyellow;
+// }
 
 
 
@@ -68,13 +68,42 @@ input{
 .extra-buttons,
 .search-btn{
 	position: absolute;	
-	top:0;
+	top:rem(5);
+}
+.clear-btn,
+.speak-btn,
+.search-btn{
+	width: rem(50);
+	height: rem(50);
+	border-radius: $border-radius-lg !important;
+	padding: rem(4) 0 0 0;
+	}
+.search-btn{
+	right:rem(5);
+	border-radius: $border-radius-lg !important;
+	box-shadow: $dropdown-box-shadow;
+	padding-top: rem(8);
+	.icon{
+		font-size: $font-size-base * 2 !important;		
+	}
 }
 .extra-buttons{
-	right:80px;
+	right: rem(65);
+	.btn{
+		color: $gray-600;
+		background-color: transparent;
+	}
 }
-.search-btn{
-	right:0;
+.btn{
+	text-transform: uppercase;
+	font-weight: $font-weight-bold;
+}
+.icon{
+	font-size: $font-size-base * 1.5;
+	padding-top: 10px;
+}
+.btn-light{
+	color: $teal;
 }
 .homonym-item{
 	*{
@@ -196,8 +225,26 @@ input{
 .more-btn{
 	position: absolute;
 	top:$gutter / 2;
-	right:$gutter * 2;	
+	right:$gutter * 2;
+	padding: rem(5);	
 }
+.example-text{
+	float: left;
+	font-style: italic;
+	display: block;
+	letter-spacing: rem(.32);
+	background-color: $gray-100;
+	border-radius: $border-radius-sm;
+	padding: rem(2) rem(7);
+	strong{
+		font-weight: $font-weight-bold;
+	}
+}
+	.btn-speaker{
+		color: $gray-600;
+		padding: rem(2);
+		float: left;
+	}
 
 ////////////////////////////////
 ////// MOBILE + TABLET /////////
@@ -248,6 +295,15 @@ input{
 
 
 @include media-breakpoint-up(md) {
+	.homonym-list{
+	    width: 100%;
+	    overflow: hidden;
+	    white-space: nowrap;
+	    overflow-x: scroll;
+	    display: flex;
+	    padding: rem(20);
+	    margin: rem(-20);
+	}
 	.search-wrap{
 		top: rem(70);
 		box-shadow: 0 rem(10) rem(10) $gray-100;
@@ -345,7 +401,7 @@ input{
 			font-weight: $font-weight-bold;
 		}
 		.homonym-intro{
-			color: $gray-600;
+			color: $gray-600 !important;
 		}
 	}
 
@@ -386,6 +442,9 @@ input{
 	.level-3-panel{
 		padding-left:$gutter * 2;
 		padding-right:$gutter * 2;
+	}
+	.example-text{
+		max-width: calc( 100% - 30px ) ;
 	}
 }
 
