@@ -42,6 +42,8 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_CONCEPT_ATTRIBUTES = "sql/select_termeki_concept_attributes.sql";
 
+	private static final String SQL_SELECT_EXAMPLES = "sql/select_termeki_examples.sql";
+
 	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
 	private String sqlSelectTerms;
@@ -60,7 +62,7 @@ public class TermekiService implements InitializingBean {
 
 	private Map<Integer, String> termbaseIds;
 
-	private String sqlSelectGeolDomains = "select distinct attribute_value from termeki_concept_attributes_varchar a where a.attribute_id in (44388)";
+	private String sqlSelectExamples;
 
 	@Autowired @Qualifier(value = "jdbcTemplateTermeki")
 	protected NamedParameterJdbcTemplate jdbcTemplate;
@@ -75,6 +77,7 @@ public class TermekiService implements InitializingBean {
 		sqlSelectComments = getContent(SQL_SELECT_COMMENTS);
 		sqlSelectTermAttributes = getContent(SQL_SELECT_TERM_ATTRIBUTES);
 		sqlSelectConceptAttributes = getContent(SQL_SELECT_CONCEPT_ATTRIBUTES);
+		sqlSelectExamples = getContent(SQL_SELECT_EXAMPLES);
 		termbaseIds = readFileLines(TERMBASE_IDS).stream()
 				.collect(toMap(l -> Integer.parseInt(StringUtils.split(l, CSV_SEPARATOR)[0]), l -> StringUtils.split(l, CSV_SEPARATOR)[1]));
 	}
@@ -120,6 +123,12 @@ public class TermekiService implements InitializingBean {
 		return queryList(sqlSelectComments, params);
 	}
 
+	public List<Map<String, Object>> getExamples(Integer baseId) {
+
+		Map<String, Object> params = constructParameters(baseId);
+		return queryList(sqlSelectExamples, params);
+	}
+
 	public List<Map<String, Object>> getDomainsForLanguage(String language) {
 
 		Map<String, Object> params = new HashMap<>();
@@ -128,10 +137,6 @@ public class TermekiService implements InitializingBean {
 		List<Map<String, Object>> domains = queryList(sqlSelectDomains, params);
 		domains.forEach(d -> d.put("termbase_code", termbaseIds.get(d.get("termbase_id"))));
 		return domains;
-	}
-
-	public List<Map<String, Object>> getGeolDomains() {
-		return queryList(sqlSelectGeolDomains, Collections.emptyMap());
 	}
 
 	public List<Map<String, Object>> getTermAttributes(Integer attributeId) {
