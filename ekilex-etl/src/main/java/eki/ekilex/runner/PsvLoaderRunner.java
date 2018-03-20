@@ -656,7 +656,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String usageGroupExp = "x:ng";
 		final String commonInfoNodeExp = "x:tyg2";
 		final String lexemePosCodeExp = "x:grg/x:sl";
-		final String meaningExternalIdExp = "x:tpid";
+		final String conceptIdExp = "x:tpid";
 		final String learnerCommentExp = "x:qkom";
 		final String imageNameExp = "x:plp/x:plg/x:plf";
 		final String asTyypAttr = "as";
@@ -688,8 +688,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				posData.processStateCode = posCodeNode.attributeValue(asTyypAttr);
 				meaningPosCodes.add(posData);
 			}
-			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
-			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
+			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
+			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
 			Element learnerCommentNode = (Element) meaningNumberGroupNode.selectSingleNode(learnerCommentExp);
 			String learnerComment = learnerCommentNode == null ? null : learnerCommentNode.getTextTrim();
 			Element imageNameNode = (Element) meaningNumberGroupNode.selectSingleNode(imageNameExp);
@@ -718,8 +718,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					logger.debug("synonym meaning found : {}", newWords.get(0).value);
 				}
 
-				if (isNotEmpty(meaningExternalId)) {
-					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
+				if (isNotEmpty(conceptId)) {
+					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
 				}
 				if (isNotEmpty(imageName)) {
 					createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, imageName);
