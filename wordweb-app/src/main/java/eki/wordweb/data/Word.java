@@ -26,6 +26,8 @@ public class Word extends AbstractDataObject {
 
 	private List<String> meaningWords;
 
+	private List<TypeDefinition> definitions;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -96,6 +98,14 @@ public class Word extends AbstractDataObject {
 
 	public void setMeaningWords(List<String> meaningWords) {
 		this.meaningWords = meaningWords;
+	}
+
+	public List<TypeDefinition> getDefinitions() {
+		return definitions;
+	}
+
+	public void setDefinitions(List<TypeDefinition> definitions) {
+		this.definitions = definitions;
 	}
 
 }

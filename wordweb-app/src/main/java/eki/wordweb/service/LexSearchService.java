@@ -11,12 +11,16 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.service.db.LexSearchDbService;
+import eki.wordweb.service.util.ConversionUtil;
 
 @Component
 public class LexSearchService {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
+
+	@Autowired
+	private ConversionUtil conversionUtil;
 
 	@Transactional
 	public List<Word> findWords(String searchFilter) {
@@ -25,12 +29,12 @@ public class LexSearchService {
 		return words;
 	}
 
-	//TODO impl
-	public List<Lexeme> findLexemes(Long wordId) {
+	@Transactional
+	public List<Lexeme> findLexemes(Long wordId, String displayLang) {
 
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId).into(LexemeMeaningTuple.class);
-		
-		return null;
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, displayLang);
+		return lexemes;
 	}
 
 }

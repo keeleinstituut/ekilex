@@ -489,7 +489,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "s:tg";
 		final String meaningPosCodeExp = "s:grg/s:sl";
-		final String meaningExternalIdExp = "s:tpid";
+		final String conceptIdExp = "s:tpid";
 
 		List<WordData> derivativeWords = extractDerivativeWords(contentNode, newWords);
 		context.derivativeWords.addAll(derivativeWords);
@@ -499,8 +499,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Element> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
-			Element meaningExternalIdNode = (Element) meaningNumberGroupNode.selectSingleNode(meaningExternalIdExp);
-			String meaningExternalId = meaningExternalIdNode == null ? null : meaningExternalIdNode.getTextTrim();
+			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
+			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
 
 			int lexemeLevel2 = 0;
 			for (Element meaningGroupNode : meanigGroupNodes) {
@@ -559,8 +559,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
 						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningFormulas, meaningLatinTerms);
 
-				if (isNotEmpty(meaningExternalId)) {
-					createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, meaningExternalId);
+				if (isNotEmpty(conceptId)) {
+					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
 				}
 				List<String> registers = extractRegisters(meaningGroupNode);
 				processSemanticData(meaningGroupNode, meaningId);

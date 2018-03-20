@@ -5,8 +5,8 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 
 import org.jooq.DSLContext;
+import org.jooq.Record10;
 import org.jooq.Record17;
-import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeDomainRecord;
 
 @Component
@@ -22,7 +23,7 @@ public class LexSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public Result<Record9<Long,String,Integer,String,String,String,String[],Integer,String[]>> findWords(String searchFilter) {
+	public Result<Record10<Long,String,Integer,String,String,String,String[],Integer,String[],TypeDefinitionRecord[]>> findWords(String searchFilter) {
 
 		return create
 				.select(
@@ -34,7 +35,8 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
-						MVIEW_WW_WORD.MEANING_WORDS
+						MVIEW_WW_WORD.MEANING_WORDS,
+						MVIEW_WW_WORD.DEFINITIONS
 						)
 				.from(MVIEW_WW_WORD)
 				.where(

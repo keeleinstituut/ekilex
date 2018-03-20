@@ -1,18 +1,21 @@
-drop type if exists type_domain;
 drop materialized view if exists mview_ww_word cascade;
 drop materialized view if exists mview_ww_form cascade;
 drop materialized view if exists mview_ww_meaning cascade;
 drop materialized view if exists mview_ww_classifier cascade;
+drop type if exists type_definition;
+drop type if exists type_domain;
 
 -- run this once:
 -- CREATE EXTENSION dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
+create type type_definition as (value text, lang char(3));
+
 create materialized view mview_ww_word as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_word') as word(
+	'select * from view_ww_word') as word(
 	word_id bigint,
 	word text,
 	homonym_nr integer,
@@ -21,14 +24,15 @@ dblink(
 	display_morph_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
-	meaning_words text array
+	meaning_words text array,
+	definitions type_definition array
 );
 
 create materialized view mview_ww_form as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_form') as form(
+	'select * from view_ww_form') as form(
 	word_id bigint,
 	paradigm_id bigint,
 	form_id bigint,
@@ -47,7 +51,7 @@ create materialized view mview_ww_meaning as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_meaning') as meaning(
+	'select * from view_ww_meaning') as meaning(
 	word_id bigint,
 	meaning_id bigint,
 	lexeme_id bigint,
@@ -69,7 +73,7 @@ create materialized view mview_ww_classifier as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_classifier') as classifier(
+	'select * from view_ww_classifier') as classifier(
 	name text,
 	origin text,
 	code varchar(100),

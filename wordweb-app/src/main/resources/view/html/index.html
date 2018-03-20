@@ -1,20 +1,160 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(_,_)">
+<head th:replace="common :: common_header(_,~{::links})">
+  <th:block th:fragment="links">
+    <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/index_page.js}" src="js/demo/demo.js"></script>
+  </th:block>
 </head>
-
 <body>
-
-<div class="container-fluid">
-  <div class="d-flex flex-row"><p class="card-text" th:text="${appData.appName + ' ' + appData.appVersion}"></p></div>
-  <div class="card mt-4">
-    <div class="card-header">
-      <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+  <div class="">
+    <div class="container-fluid header-container">
+      <div class="row header-wrap">
+        <div class="col-12 header-panel">
+          <a class="logo" th:text="#{button.label.back}"> &lt; Back </a>
+          <div class="header-links d-none d-md-block">
+            <a th:href="@{/}" class="menu-item selected ">
+              <span th:text="#{menu.search}">Otsing</span>
+            </a>
+            <a th:href="@{/}" class="menu-item ">
+              <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+            </a>
+            <a th:href="@{/}" class="menu-item ">
+              <span th:text="#{menu.games}">Keelemängud</span>
+            </a>
+            <a th:href="@{/}" class="menu-item ">
+              <span th:text="#{menu.info}">Portaalist</span>
+            </a>
+            <a th:href="@{/}" class="menu-item ">
+              <span th:text="#{menu.contacts}">Kontakt</span>
+            </a>
+          </div>
+          <button class="menu-btn" th:text="#{button.label.menu}">Menu</button>
+        </div>
+      </div>
     </div>
-    <div class="card-body">
+    <div class="container-fluid homonym-page">
+      <div class="row search-wrap">
+        <div class="col-12 search-panel">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="search-lang">
+                <button class="btn btn-light">Keelevalik</button>
+              </div>
+            </div>
+            <div class="col-md-6 col-lg-5">
+              <div class="search-main"></div>
+              <div class="search-main">
+                <form th:action="@{/}" th:method="post">
+                  <div class="awesomplete">
+                    <input type="text" class="form-control search-phrase" th:name="simpleSearchFilter" th:value="${simpleSearchFilter}" list="mylist" placeholder="Kirjuta mõni sõna">
+                    <ul class="d-none">
+                      <li>
+                        <mark>Highl</mark>
+                        ighted
+                      </li>
+                      <li>Regular</li>
+                      <li aria-selected="true">Selected row</li>
+                    </ul>
+                  </div>
+                  <div class="extra-buttons">
+                    <button type="button" class="btn btn-light clear-btn" th:text="#{button.label.clear}">Clear</button>
+                    <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:text="#{button.label.start.rec}">Speak</button>
+                    <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
+                  </div>
+                  <button type="submit" class="btn btn-green search-btn">OTSI</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row homonym-wrap" th:if="${!#lists.isEmpty(words)}">
+        <div class="col-12 homonym-panel">
+          <ul class="homonym-list">
+            <li th:each="word : ${words}">
+              <a class="homonym-item" th:onclick="'fetchDetails(' + ${word.wordId} + ')'">
+                <h4 class="">
+                  <div class="homonym-name-container">
+                    <span class="homonym-name" th:text="${word.word}">tee</span>
+                  </div>
+                  <span class="homonym-nr" th:text="${word.homonymNr}">1</span>
+                </h4>
+                <p class="" th:text="${#strings.listJoin(word.meaningWords, ', ')}">дорога, дорога, дорога</p>
+                <p class="">
+                  <span th:if="${not #lists.isEmpty(word.definitions)}">
+                    <span th:each="definition,definitionIter : ${word.definitions}">
+                      <span th:text="${definition.value}"></span>
+                      <span th:unless="${definitionIter.last}">, </span>
+                    </span>
+                  </span>
+                  <span>&nbsp;</span>
+                </p>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="word-details"></div>
+      <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(lexemes)}">
+        <div class="col-12 content-panel d-none d-md-block">
+          <div class="row">
+            <div class="col-md-8 main-data">
+              <div class="level-2-panel">
+                <span class="dictionary-source">Eesti-vene sõnaraamat</span>
+                <div class="level-3-panel row" th:each="lexeme : ${lexemes}">
+                  <div class="matches col-12">
+                    <h6 th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                        <span th:text="${meaningWord.word}"></span>
+                        <span th:unless="${meaningWordIter.last}">, </span>
+                      </span>
+                    </h6>
+                  </div>
+                  <div class="definition col-lg-6">
+                    <span class="" th:each="definition : ${lexeme.definitions}" th:text="${definition}">maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav</span>
+                  </div>
+                  <button class="btn more-btn">Vaata veel</button>
+                  <div class="dependencies col-lg-6">
+                    <div class="dependence">
+                      <div class="questions-wrap">
+                        <span class="question">Mida?</span>
+                        <span class="question">Keda?</span>
+                      </div>
+                      <div class="examples-wrap">
+                        <div class="example-item">
+                          <span class="example-text">See tee viib külla</span>
+                          <button class="listen" data-words="See tee viib külla" th:onclick="'generateVoiceAndPlay(this)'">Kuula</button>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="dependence">
+                      <div class="questions-wrap">
+                        <span class="question">Mida?</span>
+                        <span class="question">Keda?</span>
+                      </div>
+                      <div class="examples-wrap">
+                        <div class="example-item">
+                          <span class="example-text">See tee viib külla</span>
+                          <button class="listen" data-words="See tee viib külla" th:onclick="'generateVoiceAndPlay(this)'">Kuula</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-4 more-data">
+              <!-- <h5>[moredata-panel]</h5> -->
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
+  <script th:inline="javascript">
+      initialisePage();
+      initialiseRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');
+  </script>
 </body>
 </html>

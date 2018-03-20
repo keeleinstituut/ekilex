@@ -8,7 +8,6 @@ import eki.common.data.PgVarcharArray;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.TermekiService;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
@@ -44,6 +43,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
+	private final static String defaultGovernmentValue = "-";
 
 	private Map<String, String> posCodes;
 
@@ -80,6 +80,8 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		logger.info("Found {} sources.", context.sourceMapping.size());
 		context.comments = termekiService.getComments(baseId);
 		logger.info("Found {} comments.", context.comments.size());
+		context.examples = termekiService.getExamples(baseId);
+		logger.info("Found {} examples.", context.examples.size());
 		context.abbreviations = loadAbbreviations(dataset);
 		context.genuses = loadGenuses(dataset);
 		context.families = loadFamilies(dataset);
@@ -252,7 +254,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer conceptId = (Integer) term.get("concept_id");
 			if (!conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = createMeaning();
-				createMeaningFreeform(meaningId, FreeformType.MEANING_EXTERNAL_ID, conceptId.toString());
+				createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId.toString());
 				conceptMeanings.put(conceptId, meaningId);
 				List<String> domainCodes = domainCodes(term, context, dataset);
 				for (String domainCode : domainCodes) {
@@ -278,6 +280,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			connectSourceToLexeme(sourceId, lexemeId, context.sourceMapping);
 			Integer termId = (Integer) term.get("term_id");
 			createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
+			saveUsages(lexemeId, context, termId);
 			if (++count % 100 == 0) {
 				System.out.print(".");
 			}
@@ -315,6 +318,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 					createMeaningFreeform(meaningId, FreeformType.PRIVATE_NOTE, privateNote);
 				}
 			}
+		}
+	}
+
+	private void saveUsages(Long lexemeId, Context context, Integer termId) throws Exception {
+		List<Map<String, Object>> examples = context.examples.stream().filter(f -> f.get("term_id").equals(termId)).collect(toList());
+		if (examples.isEmpty()) return;
+		Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
+		for (Map<String, Object> example : examples) {
+			String language = unifyLang((String)example.get("lang"));
+			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", language);
+			createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, example.get("example"), language);
 		}
 	}
 
@@ -513,5 +527,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> describers;
 		List<Map<String, Object>> describingYears;
 		List<Map<String, Object>> geolDomains;
+		List<Map<String, Object>> examples;
 	}
 }

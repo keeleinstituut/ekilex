@@ -90,6 +90,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		meaningStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.MEANING_STATE.name());
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
 		meaningTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP);
+		//TODO is to be mapped against two ekilex classifiers
 		lexemeTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP);
 	}
 
@@ -546,8 +547,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					}
 				}
 				if (contentExists) {
-					contentObj = newContent(lang, content);
-					contentList.add(contentObj);
+					if (contentObj == null) {
+						contentObj = newContent(lang, content);
+						contentList.add(contentObj);						
+					} else if (!isRefOn) {
+						content = contentObj.getValue() + '\n' + content;
+						contentObj.setValue(content);
+					} else {
+						contentObj = newContent(lang, content);
+						contentList.add(contentObj);
+					}
 				}
 				isRefOn = false;
 			} else if (contentNode instanceof DefaultElement) {

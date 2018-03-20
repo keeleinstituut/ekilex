@@ -1,65 +1,58 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-
 <head th:fragment="common_header(title,links)">
-  <title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
-  <!-- Common styles and scripts -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
-  <!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
-
-  <th:block th:replace=" :: css"></th:block>
-  <th:block th:replace=" :: js"></th:block>
-
-  <!--/* Per-page placeholder for additional links */-->
-  <th:block th:replace="${links}"/>
-
-  <script th:inline="javascript">
-      var applicationUrl = /*[[@{/}]]*/'/';
-  </script>
+<title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
+<!-- Common styles and scripts -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
+<th:block th:replace=" :: css"></th:block>
+<th:block th:replace=" :: js"></th:block>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:800&amp;subset=cyrillic-ext,latin-ext" rel="stylesheet">
+<!--/* Per-page placeholder for additional links */-->
+<th:block th:replace="${links}" />
+<script th:inline="javascript">
+	var applicationUrl = /*[[@{/}]]*/'/';
+</script>
 </head>
-
 <body>
-<!-- Bootstrap core JS -->
-<th:block th:fragment="js">
-  <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
-</th:block>
-
-<!-- Bootstrap core CSS -->
-<th:block th:fragment="css">
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}"/>
-  <link rel="stylesheet" th:href="@{/view/css/font-awesome.css}"/>
-</th:block>
-
-<!-- debugging aid -->
-<div th:fragment="dump_vars" class="m-4">
-  <h4>Dump of all variables in Thymeleaf context</h4>
-  <hr/>
-  <table>
-    <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
-      <td th:text="${var}"></td>
-      <td th:text="${#vars.getVariable(var)}"></td>
-    </tr>
-    <tr>
-      <td>param</td>
-      <td th:text="${#vars.getVariable('param')}"></td>
-    </tr>
-    <tr>
-      <td>session</td>
-      <td th:text="${#vars.getVariable('session')}"></td>
-    </tr>
-    <tr>
-      <td>application</td>
-      <td th:text="${#vars.getVariable('application')}"></td>
-    </tr>
-  </table>
-</div>
-
+  <!-- Bootstrap core CSS -->
+  <th:block th:fragment="css">
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/font-awesome.css}" />
+  </th:block>
+  <!-- Bootstrap core JS -->
+  <th:block th:fragment="js">
+    <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
+  </th:block>
+  <!-- debugging aid -->
+  <div th:fragment="dump_vars" class="m-4">
+    <h4>Dump of all variables in Thymeleaf context</h4>
+    <hr />
+    <table>
+      <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
+        <td th:text="${var}"></td>
+        <td th:text="${#vars.getVariable(var)}"></td>
+      </tr>
+      <tr>
+        <td>param</td>
+        <td th:text="${#vars.getVariable('param')}"></td>
+      </tr>
+      <tr>
+        <td>session</td>
+        <td th:text="${#vars.getVariable('session')}"></td>
+      </tr>
+      <tr>
+        <td>application</td>
+        <td th:text="${#vars.getVariable('application')}"></td>
+      </tr>
+    </table>
+  </div>
 </body>
 </html>

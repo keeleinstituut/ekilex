@@ -26,11 +26,11 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private String lexemeTypeCode;
 
-	private String[] registerCodes;
+	private List<String> registerCodes;
 
-	private String[] posCodes;
+	private List<String> posCodes;
 
-	private String[] derivCodes;
+	private List<String> derivCodes;
 
 	private List<TypeDomain> domainCodes;
 
@@ -114,27 +114,27 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 		this.lexemeTypeCode = lexemeTypeCode;
 	}
 
-	public String[] getRegisterCodes() {
+	public List<String> getRegisterCodes() {
 		return registerCodes;
 	}
 
-	public void setRegisterCodes(String[] registerCodes) {
+	public void setRegisterCodes(List<String> registerCodes) {
 		this.registerCodes = registerCodes;
 	}
 
-	public String[] getPosCodes() {
+	public List<String> getPosCodes() {
 		return posCodes;
 	}
 
-	public void setPosCodes(String[] posCodes) {
+	public void setPosCodes(List<String> posCodes) {
 		this.posCodes = posCodes;
 	}
 
-	public String[] getDerivCodes() {
+	public List<String> getDerivCodes() {
 		return derivCodes;
 	}
 
-	public void setDerivCodes(String[] derivCodes) {
+	public void setDerivCodes(List<String> derivCodes) {
 		this.derivCodes = derivCodes;
 	}
 
