@@ -15,7 +15,7 @@ create materialized view mview_ww_word as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_word') as word(
+	'select * from view_ww_word') as word(
 	word_id bigint,
 	word text,
 	homonym_nr integer,
@@ -32,7 +32,7 @@ create materialized view mview_ww_form as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_form') as form(
+	'select * from view_ww_form') as form(
 	word_id bigint,
 	paradigm_id bigint,
 	form_id bigint,
@@ -51,7 +51,7 @@ create materialized view mview_ww_meaning as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_meaning') as meaning(
+	'select * from view_ww_meaning') as meaning(
 	word_id bigint,
 	meaning_id bigint,
 	lexeme_id bigint,
@@ -73,7 +73,7 @@ create materialized view mview_ww_classifier as
 select * from 
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-	'select * from mview_ww_classifier') as classifier(
+	'select * from view_ww_classifier') as classifier(
 	name text,
 	origin text,
 	code varchar(100),
