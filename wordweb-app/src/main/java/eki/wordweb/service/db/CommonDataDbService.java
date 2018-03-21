@@ -1,6 +1,7 @@
 package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_CLASSIFIER;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,10 +20,25 @@ import eki.common.data.Classifier;
 import eki.wordweb.data.TypeDomain;
 
 @Component
-public class ClassifierDbService {
+public class CommonDataDbService {
 
 	@Autowired
 	private DSLContext create;
+
+	@Cacheable(value = "dataset", key = "{#code, #lang}")
+	public String getDatasetName(String code, String lang) {
+
+		if (StringUtils.isBlank(code)) {
+			return null;
+		}
+		return create
+				.select(MVIEW_WW_DATASET.NAME)
+				.from(MVIEW_WW_DATASET)
+				.where(
+						MVIEW_WW_DATASET.CODE.eq(code)
+						.and(MVIEW_WW_DATASET.LANG.eq(lang)))
+				.fetchSingle().into(String.class);
+	}
 
 	@Cacheable(value = "classif", key = "{#name, #origin, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String origin, String code, String lang) {

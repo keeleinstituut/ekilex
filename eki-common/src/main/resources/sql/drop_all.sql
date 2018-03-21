@@ -2,6 +2,7 @@ drop view if exists view_ww_word cascade;
 drop view if exists view_ww_form cascade;
 drop view if exists view_ww_meaning cascade;
 drop view if exists view_ww_classifier cascade;
+drop view if exists view_ww_dataset cascade;
 drop type if exists type_definition;
 drop type if exists type_domain;
 

@@ -15,6 +15,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private String datasetCode;
 
+	private String datasetName;
+
 	private Integer level1;
 
 	private Integer level2;
@@ -57,6 +59,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setDatasetCode(String datasetCode) {
 		this.datasetCode = datasetCode;
+	}
+
+	public String getDatasetName() {
+		return datasetName;
+	}
+
+	public void setDatasetName(String datasetName) {
+		this.datasetName = datasetName;
 	}
 
 	public Integer getLevel1() {

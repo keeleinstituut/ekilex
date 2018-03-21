@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DblinkFetch extends TableImpl<DblinkFetchRecord> {
 
-    private static final long serialVersionUID = -2103414746;
+    private static final long serialVersionUID = -1776075831;
 
     /**
      * The reference instance of <code>public.dblink_fetch</code>
@@ -74,7 +74,7 @@ public class DblinkFetch extends TableImpl<DblinkFetchRecord> {
     }
 
     private DblinkFetch(Name alias, Table<DblinkFetchRecord> aliased) {
-        this(alias, aliased, new Field[2]);
+        this(alias, aliased, new Field[3]);
     }
 
     private DblinkFetch(Name alias, Table<DblinkFetchRecord> aliased, Field<?>[] parameters) {
@@ -124,20 +124,22 @@ public class DblinkFetch extends TableImpl<DblinkFetchRecord> {
     /**
      * Call this table-valued function
      */
-    public DblinkFetch call(String __1, Integer __2) {
+    public DblinkFetch call(String __1, String __2, Integer __3) {
         return new DblinkFetch(DSL.name(getName()), null, new Field[] { 
               DSL.val(__1, org.jooq.impl.SQLDataType.CLOB)
-            , DSL.val(__2, org.jooq.impl.SQLDataType.INTEGER)
+            , DSL.val(__2, org.jooq.impl.SQLDataType.CLOB)
+            , DSL.val(__3, org.jooq.impl.SQLDataType.INTEGER)
         });
     }
 
     /**
      * Call this table-valued function
      */
-    public DblinkFetch call(Field<String> __1, Field<Integer> __2) {
+    public DblinkFetch call(Field<String> __1, Field<String> __2, Field<Integer> __3) {
         return new DblinkFetch(DSL.name(getName()), null, new Field[] { 
               __1
             , __2
+            , __3
         });
     }
 }

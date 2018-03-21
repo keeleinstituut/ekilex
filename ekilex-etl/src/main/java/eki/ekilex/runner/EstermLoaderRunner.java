@@ -122,7 +122,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		Element valueNode;
 		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
-		Long wordId, meaningId, lexemeId, governmentId, usageMeaningId;
+		Long wordId, meaningId, lexemeId, governmentId;
 		List<Content> definitions, usages;
 		String valueStr, concept, term;
 		String lang;
@@ -213,10 +213,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
 						governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
-						usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
 						for (Element usageNode : valueNodes) {
 							usages = extractContentAndRefs(usageNode, lang, term);
-							saveUsagesAndRefLinks(usageMeaningId, usages, concept, term, doReports);
+							saveUsagesAndRefLinks(governmentId, usages, concept, term, doReports);
 						}
 					}
 
@@ -616,12 +615,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void saveUsagesAndRefLinks(Long usageMeaningId, List<Content> usages, String concept, String term, boolean doReports) throws Exception {
+	private void saveUsagesAndRefLinks(Long governmentId, List<Content> usages, String concept, String term, boolean doReports) throws Exception {
 
 		for (Content usageObj : usages) {
 			String usage = usageObj.getValue();
 			String lang = usageObj.getLang();
 			List<Ref> refs = usageObj.getRefs();
+			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
 			Long freeformId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage, lang);
 			usageObj.setId(freeformId);
 			for (Ref ref : refs) {

@@ -130,6 +130,17 @@ create view view_ww_meaning
       d.id,
       l.id;
 
+create view view_ww_dataset
+  as
+    (select
+       code,
+       name,
+       description,
+       'est' as lang
+     from dataset
+     where code in ('qq2', 'psv', 'ss1', 'kol')
+    );
+
 create view view_ww_classifier
   as
     (select 'MORPH' as name,

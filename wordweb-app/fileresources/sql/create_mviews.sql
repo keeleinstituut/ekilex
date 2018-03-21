@@ -2,6 +2,7 @@ drop materialized view if exists mview_ww_word cascade;
 drop materialized view if exists mview_ww_form cascade;
 drop materialized view if exists mview_ww_meaning cascade;
 drop materialized view if exists mview_ww_classifier cascade;
+drop materialized view if exists mview_ww_dataset cascade;
 drop type if exists type_definition;
 drop type if exists type_domain;
 
@@ -67,6 +68,17 @@ dblink(
 	domain_codes type_domain array,
 	definition text,
 	definition_lang char(3)
+);
+
+create materialized view mview_ww_dataset as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_dataset') as dataset(
+	code varchar(10),
+	name text,
+	description text,
+	lang char(3)
 );
 
 create materialized view mview_ww_classifier as

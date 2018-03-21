@@ -4,7 +4,6 @@ import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.DERIV_LABEL;
-import static eki.ekilex.data.db.Tables.DOMAIN;
 import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;

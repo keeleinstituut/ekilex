@@ -101,8 +101,8 @@
           <div class="row">
             <div class="col-md-8 main-data">
               <div class="level-2-panel">
-                <span class="dictionary-source">Eesti-vene sõnaraamat</span>
                 <div class="level-3-panel row" th:each="lexeme : ${lexemes}">
+                  <span class="dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</span>
                   <div class="matches col-12">
                     <h6 th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">

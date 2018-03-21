@@ -988,22 +988,22 @@ public class Routines {
     /**
      * Call <code>public.dblink_fetch</code>.
      */
-    public static Result<DblinkFetchRecord> dblinkFetch(Configuration configuration, String __1, Integer __2) {
-        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2)).fetch();
+    public static Result<DblinkFetchRecord> dblinkFetch(Configuration configuration, String __1, String __2, Integer __3) {
+        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3)).fetch();
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch dblinkFetch(String __1, Integer __2) {
-        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2);
+    public static DblinkFetch dblinkFetch(String __1, String __2, Integer __3) {
+        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch dblinkFetch(Field<String> __1, Field<Integer> __2) {
-        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2);
+    public static DblinkFetch dblinkFetch(Field<String> __1, Field<String> __2, Field<Integer> __3) {
+        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
     /**
@@ -1030,21 +1030,21 @@ public class Routines {
     /**
      * Call <code>public.dblink_get_result</code>.
      */
-    public static Result<DblinkGetResultRecord> dblinkGetResult(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1)).fetch();
+    public static Result<DblinkGetResultRecord> dblinkGetResult(Configuration configuration, String __1, Boolean __2) {
+        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.dblink_get_result</code> as a table.
      */
-    public static DblinkGetResult dblinkGetResult(String __1) {
-        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1);
+    public static DblinkGetResult dblinkGetResult(String __1, Boolean __2) {
+        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2);
     }
 
     /**
      * Get <code>public.dblink_get_result</code> as a table.
      */
-    public static DblinkGetResult dblinkGetResult(Field<String> __1) {
-        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1);
+    public static DblinkGetResult dblinkGetResult(Field<String> __1, Field<Boolean> __2) {
+        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2);
     }
 }

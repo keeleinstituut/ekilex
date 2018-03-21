@@ -24,6 +24,7 @@ import eki.wordweb.data.db.tables.DblinkFetch;
 import eki.wordweb.data.db.tables.DblinkGetPkey;
 import eki.wordweb.data.db.tables.DblinkGetResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
+import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -49,7 +50,7 @@ import eki.wordweb.data.db.udt.TypeDomain;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 212868765;
+    private static final long serialVersionUID = -955872976;
 
     /**
      * The reference instance of <code>public</code>
@@ -90,22 +91,22 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.dblink_fetch</code>.
      */
-    public static Result<DblinkFetchRecord> DBLINK_FETCH(Configuration configuration, String __1, Integer __2) {
-        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2)).fetch();
+    public static Result<DblinkFetchRecord> DBLINK_FETCH(Configuration configuration, String __1, String __2, Integer __3) {
+        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3)).fetch();
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch DBLINK_FETCH(String __1, Integer __2) {
-        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2);
+    public static DblinkFetch DBLINK_FETCH(String __1, String __2, Integer __3) {
+        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch DBLINK_FETCH(Field<String> __1, Field<Integer> __2) {
-        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2);
+    public static DblinkFetch DBLINK_FETCH(Field<String> __1, Field<String> __2, Field<Integer> __3) {
+        return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
     /**
@@ -142,28 +143,33 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.dblink_get_result</code>.
      */
-    public static Result<DblinkGetResultRecord> DBLINK_GET_RESULT(Configuration configuration, String __1) {
-        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1)).fetch();
+    public static Result<DblinkGetResultRecord> DBLINK_GET_RESULT(Configuration configuration, String __1, Boolean __2) {
+        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2)).fetch();
     }
 
     /**
      * Get <code>public.dblink_get_result</code> as a table.
      */
-    public static DblinkGetResult DBLINK_GET_RESULT(String __1) {
-        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1);
+    public static DblinkGetResult DBLINK_GET_RESULT(String __1, Boolean __2) {
+        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2);
     }
 
     /**
      * Get <code>public.dblink_get_result</code> as a table.
      */
-    public static DblinkGetResult DBLINK_GET_RESULT(Field<String> __1) {
-        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1);
+    public static DblinkGetResult DBLINK_GET_RESULT(Field<String> __1, Field<Boolean> __2) {
+        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2);
     }
 
     /**
      * The table <code>public.mview_ww_classifier</code>.
      */
     public final MviewWwClassifier MVIEW_WW_CLASSIFIER = eki.wordweb.data.db.tables.MviewWwClassifier.MVIEW_WW_CLASSIFIER;
+
+    /**
+     * The table <code>public.mview_ww_dataset</code>.
+     */
+    public final MviewWwDataset MVIEW_WW_DATASET = eki.wordweb.data.db.tables.MviewWwDataset.MVIEW_WW_DATASET;
 
     /**
      * The table <code>public.mview_ww_form</code>.
@@ -210,6 +216,7 @@ public class Public extends SchemaImpl {
             DblinkGetPkey.DBLINK_GET_PKEY,
             DblinkGetResult.DBLINK_GET_RESULT,
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
+            MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwForm.MVIEW_WW_FORM,
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwWord.MVIEW_WW_WORD);
