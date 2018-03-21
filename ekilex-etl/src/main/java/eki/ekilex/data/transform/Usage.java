@@ -10,8 +10,6 @@ public class Usage extends AbstractDataObject {
 
 	private String author;
 
-	private String usageType;
-
 	private String authorType;
 
 	public String getValue() {
@@ -28,14 +26,6 @@ public class Usage extends AbstractDataObject {
 
 	public void setAuthor(String author) {
 		this.author = author;
-	}
-
-	public String getUsageType() {
-		return usageType;
-	}
-
-	public void setUsageType(String usageType) {
-		this.usageType = usageType;
 	}
 
 	public String getAuthorType() {

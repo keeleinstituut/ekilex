@@ -836,11 +836,11 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
 		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", null);
+		if (isNotEmpty(usageMeaning.getUsageType())) {
+			createFreeformClassifier(FreeformType.USAGE_TYPE, usageMeaningId, usageMeaning.getUsageType());
+		}
 		for (Usage usage : usageMeaning.getUsages()) {
 			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-			if (isNotEmpty(usage.getUsageType())) {
-				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usage.getUsageType());
-			}
 			if (isNotEmpty(usage.getAuthor())) {
 				Long authorId = createOrSelectPerson(usage.getAuthor());
 				FreeformType autorType = isNotEmpty(usage.getAuthorType()) ? FreeformType.USAGE_TRANSLATOR : FreeformType.USAGE_AUTHOR;
@@ -1032,7 +1032,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					usageMeaning.getDefinitions().add(definitionNode.getText());
 				}
 			}
-			newUsage.setUsageType(usageNode.attributeValue(usageTypeAttr));
+			usageMeaning.setUsageType(usageNode.attributeValue(usageTypeAttr));
 			usageMeaning.getUsages().add(newUsage);
 			usageMeanings.add(usageMeaning);
 		}
