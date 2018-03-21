@@ -15,8 +15,6 @@ public interface TableName {
 	String DERIV = "deriv";
 	String MORPH = "morph";
 	String MORPH_LABEL = "morph_label";
-	String LEXEME_TYPE = "lexeme_type";
-	String MEANING_STATE = "meaning_state";
 	String MEANING_TYPE = "meaning_type";
 	String LABEL_TYPE = "label_type";
 	String GENDER = "gender";

@@ -90,10 +90,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> posCodes;
 	private Map<String, String> derivCodes;
-	private Map<String, String> lexemeTypes;
+	private Map<String, String> wordTypes;
 	private Map<String, String> processStateCodes;
 	private ReportComposer reportComposer;
 	private boolean reportingEnabled;
+	@Deprecated
 	private String lexemeTypeAbbreviation;
 
 	@Autowired
@@ -110,8 +111,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	void initialise() throws Exception {
 
-		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
-		lexemeTypeAbbreviation = lexemeTypes.get("l");
+		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		lexemeTypeAbbreviation = wordTypes.get("l");
 		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP);
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
@@ -444,7 +445,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
-		lexeme.setType(lexemeType);
+		lexeme.setValueState(lexemeType);
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
@@ -484,6 +485,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			lexemeId = (Long) lexemes.get(0).get("id");
 			if (isNotEmpty(lexemeType)) {
+				//FIXME no more lexeme type...
 				String existingLexemeType = (String) lexemes.get(0).get("type_code");
 				if (!Objects.equals(existingLexemeType, lexemeType)) {
 					logger.debug("Lexeme types do not match : {}, {} != {}.", data.word, lexemeType, existingLexemeType);
@@ -738,7 +740,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel2++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
-					lexeme.setType(newWordData.lexemeType);
+					lexeme.setValueState(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
@@ -825,7 +827,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(0);
 		lexeme.setLevel2(0);
 		lexeme.setLevel3(0);
-		lexeme.setType(lexemeTypeAbbreviation);
+		//FIXME not sure about this
+		//lexeme.setValueState(lexemeTypeAbbreviation);
 		createLexeme(lexeme, getDataset());
 	}
 
@@ -871,10 +874,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				if (compoundFormNode.attributeValue(lexemeTypeAttr) != null) {
 					String lexemeType = compoundFormNode.attributeValue(lexemeTypeAttr);
-					data.lexemeType = lexemeTypes.get(lexemeType);
+					//FIXME lexeme type became word type
+					/*
+					data.lexemeType = wordTypes.get(lexemeType);
 					if (data.lexemeType == null) {
 						writeToLogFile(reportingId, "Tundmatu märksõnaliik", lexemeType);
 					}
+					*/
 				}
 				forms.add(data);
 			}
@@ -1089,10 +1095,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			String lexemeTypeAttrValue = metadataNode.attributeValue(lexemeTypeAttr);
 			if (StringUtils.isNotBlank(lexemeTypeAttrValue)) {
-				lexemeMetadata.lexemeType = lexemeTypes.get(lexemeTypeAttrValue);
+				//FIXME lexeme type became word type
+				/*
+				lexemeMetadata.lexemeType = wordTypes.get(lexemeTypeAttrValue);
 				if (lexemeMetadata.lexemeType == null) {
 					writeToLogFile(reportingId, "Tundmatu märksõnaliik", lexemeTypeAttrValue);
 				}
+				*/
 			}
 			metadataList.add(lexemeMetadata);
 		}
@@ -1434,7 +1443,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
 		}
 		if (wordNode.attributeValue(lexemeTypeAttr) != null) {
-			wordData.lexemeType = lexemeTypes.get(wordNode.attributeValue(lexemeTypeAttr));
+			//FIXME lexeme type became word type
+			//wordData.lexemeType = wordTypes.get(wordNode.attributeValue(lexemeTypeAttr));
 		}
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;

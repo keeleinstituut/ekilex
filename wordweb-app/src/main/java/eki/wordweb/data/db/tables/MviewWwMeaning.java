@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 1510476424;
+    private static final long serialVersionUID = -1643067570;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -91,11 +91,6 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      * The column <code>public.mview_ww_meaning.level3</code>.
      */
     public final TableField<MviewWwMeaningRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.lexeme_type_code</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, String> LEXEME_TYPE_CODE = createField("lexeme_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.register_codes</code>.

@@ -65,15 +65,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 	private DateFormat reviewDateFormat;
 
-	//TODO obsolete?
-	@Deprecated
-	private Map<String, String> meaningStateCodes;
-
 	private Map<String, String> processStateCodes;
 
 	private Map<String, String> meaningTypeCodes;
 
-	private Map<String, String> lexemeTypeCodes;
+	private Map<String, String> valueStateCodes;
+
+	private Map<String, String> wordTypeCodes;
 
 	@Override
 	String getDataset() {
@@ -87,11 +85,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
 		reviewDateFormat = new SimpleDateFormat(REVIEW_TIMESTAMP_PATTERN);
 
-		meaningStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.MEANING_STATE.name());
-		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
+		processStateCodes = new HashMap<>();
+		Map<String, String> tempCodes;
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ENTRY_CLASS, ClassifierName.PROCESS_STATE.name());
+		processStateCodes.putAll(tempCodes);
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
+		processStateCodes.putAll(tempCodes);
 		meaningTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP);
-		//TODO is to be mapped against two ekilex classifiers
-		lexemeTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP);
+		valueStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.VALUE_STATE.name());
+		wordTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.WORD_TYPE.name());
 	}
 
 	@Transactional
@@ -111,7 +113,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
 					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
 					REPORT_MISSING_VALUE);
-			reportHelper.setup(reportComposer, meaningStateCodes, processStateCodes, meaningTypeCodes, lexemeTypeCodes);
+			reportHelper.setup(reportComposer, processStateCodes, meaningTypeCodes, valueStateCodes);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -290,17 +292,14 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			meaningObj.setProcessStateCode(valueStr);
 		}
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningStateExp);
+		valueNode = (Element) conceptGroupNode.selectSingleNode(processStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (meaningStateCodes.containsKey(valueStr)) {
-				mappedValueStr = meaningStateCodes.get(valueStr);
-				meaningObj.setMeaningStateCode(mappedValueStr);
-			} else if (processStateCodes.containsKey(valueStr)) {
+			if (processStateCodes.containsKey(valueStr)) {
 				mappedValueStr = processStateCodes.get(valueStr);
 				meaningObj.setProcessStateCode(mappedValueStr);
 			} else {
-				logger.warn("Incorrect meaning state/process state reference: \"{}\"", valueStr);
+				logger.warn("Incorrect process state reference: \"{}\"", valueStr);
 			}
 		}
 
@@ -309,7 +308,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueStr = valueNode.getTextTrim();
 			if (meaningTypeCodes.containsKey(valueStr)) {
 				mappedValueStr = meaningTypeCodes.get(valueStr);
-				meaningObj.setMeaningTypeCode(mappedValueStr);
+				//FIXME what happened to meaning type mappings?
+				//meaningObj.setMeaningTypeCode(mappedValueStr);
 			} else {
 				logger.warn("Incorrect meaning type reference: \"{}\"", valueStr);
 			}
@@ -706,14 +706,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueParamMap.put("modified_on", valueTs);
 		}
 
-		valueNode = (Element) termGroupNode.selectSingleNode(lexemeTypeExp);
+		valueNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (lexemeTypeCodes.containsKey(valueStr)) {
-				mappedValueStr = lexemeTypeCodes.get(valueStr);
-				valueParamMap.put("type_code", mappedValueStr);
+			if (valueStateCodes.containsKey(valueStr)) {
+				mappedValueStr = valueStateCodes.get(valueStr);
+				valueParamMap.put("value_state_code", mappedValueStr);
+			} else if (wordTypeCodes.containsKey(valueStr)) {
+				//TODO implement
 			} else {
-				logger.warn("Incorrect lexeme type reference: \"{}\"", valueStr);
+				logger.warn("Incorrect value state reference: \"{}\"", valueStr);
 			}
 		}
 

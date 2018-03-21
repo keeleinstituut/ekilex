@@ -7,14 +7,13 @@ public enum ClassifierName {
 	DOMAIN(true),
 	GOVERNMENT_TYPE(true),
 	REGISTER(true),
-	LEXEME_TYPE(true),
 	LEXEME_FREQUENCY(false),
 	GENDER(true),
 	POS(true),
 	MORPH(true),
 	DERIV(true),
+	WORD_TYPE(true),
 	MEANING_TYPE(false),
-	MEANING_STATE(false),
 	MEANING_REL_TYPE(true),
 	LEX_REL_TYPE(true),
 	WORD_REL_TYPE(true),
@@ -22,7 +21,8 @@ public enum ClassifierName {
 	DISPLAY_MORPH(true),
 	PROCESS_STATE(false),
 	USAGE_AUTHOR_TYPE(true),
-	USAGE_TYPE(true)
+	USAGE_TYPE(true),
+	VALUE_STATE(true)
 	;
 
 	private boolean hasLabel;

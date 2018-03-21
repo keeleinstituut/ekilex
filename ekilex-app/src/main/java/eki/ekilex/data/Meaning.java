@@ -19,9 +19,6 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "meaning_process_state_code")
 	private String processStateCode;
 
-	@Column(name = "meaning_state_code")
-	private String stateCode;
-
 	@Column(name = "lexeme_ids")
 	private List<Long> lexemeIds;
 
@@ -59,14 +56,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setProcessStateCode(String processStateCode) {
 		this.processStateCode = processStateCode;
-	}
-
-	public String getStateCode() {
-		return stateCode;
-	}
-
-	public void setStateCode(String stateCode) {
-		this.stateCode = stateCode;
 	}
 
 	public List<Long> getLexemeIds() {

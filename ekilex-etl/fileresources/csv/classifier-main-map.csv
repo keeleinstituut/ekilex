@@ -8,8 +8,8 @@ as_tyyp	as_tyyp	SS1	sõnastiku artikkel	en	-	-
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	läbi vaatamata
 as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	läbi vaatamata
 att_tyyp	att_tyyp	all	alltähendus	et	-	-
 att_tyyp	att_tyyp	all	sense extension	en	-	-
 dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	-	-
@@ -373,13 +373,12 @@ gkn_tyyp	gkn_tyyp	pl	mitmus	et	-	-
 gkn_tyyp	gkn_tyyp	lv	lisavorm	et	-	-
 gkn_tyyp	gkn_tyyp	ev	erandvorm	et	-	-
 keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	value_state	eelistermin
-keelenditüüp	keelenditüüp	lühend	lühend	et	word_type	l
 keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	value_state	rööptermin
 keelenditüüp	keelenditüüp	variant	variant	et	value_state	variant
 keelenditüüp	keelenditüüp	väldi	väldi	et	value_state	väldi
 keelenditüüp	keelenditüüp	endine	endine	et	value_state	endine
+keelenditüüp	keelenditüüp	lühend	lühend	et	word_type	l
 keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	word_type	l
-keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	value_state	rööptermin
 kl_tyyp	kl_tyyp	ls	liitsõna	et	-	-
 kl_tyyp	kl_tyyp	yh	ühendverb	et	-	-
 kliik_tyyp	kliik_tyyp	S+S	S+S	et	-	-
@@ -508,9 +507,9 @@ mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	word_type	ametinimetus
 mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	word_type	organisatsiooni, asutuse nimi
 mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	word_type	õigusakti pealkiri
 mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	word_type	dokumendi pealkiri
+nliik_tyyp	nliik_tyyp	Rhvl	(ei ole kasutusel)	et	-	-
 nliik_tyyp	nliik_tyyp	ls	liitsõna	et	usage_type	ls
 nliik_tyyp	nliik_tyyp	ls	compound	en	usage_type	ls
-nliik_tyyp	nliik_tyyp	Rhvl	(ei ole kasutusel)	et	-	-
 nliik_tyyp	nliik_tyyp	Vs	vanasõna	et	usage_type	Vs
 nliik_tyyp	nliik_tyyp	Vs	proverb	en	usage_type	Vs
 nliik_tyyp	nliik_tyyp	y	sõnaühend	et	usage_type	y
@@ -1001,6 +1000,27 @@ sta_tyyp	sta_tyyp	{põhjus}	põhjus(taja), esilekutsuja, tingija (abstr/konkr)	e
 sta_tyyp	sta_tyyp	{põhjus}	cause of sth/sb	en	-	-
 staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	heaks kiidetud
 staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	konsulteerimisel
+staatus	Staatus	terminiprobleem	terminiprobleem	et	process_state	vajab konsulteerimist
+termeki_pronunciation	-	ns	-	et	pos	s
+termeki_pronunciation	-	om	-	et	pos	adj
+termeki_pronunciation	-	os	-	et	pos	adj
+termeki_pronunciation	-	ns, ts	-	et	pos	s
+termeki_pronunciation	-	ts	-	et	pos	v
+termeki_pronunciation	-	nim	-	et	pos	s
+termeki_pronunciation	-	ns, om	-	et	pos	s
+termeki_pronunciation	-	ms	-	et	pos	adv
+termeki_pronunciation	-	ns/ts	-	et	pos	s
+termeki_pronunciation	-	ts/ns	-	et	pos	s
+termeki_word_class	-	1	-	et	pos	s
+termeki_word_class	-	2	-	et	pos	v
+termeki_word_class	-	3	-	et	pos	adv
+termeki_word_class	-	4	-	et	pos	pron
+termeki_word_class	-	5	-	et	pos	adj
+termeki_word_class	-	6	-	et	pos	adp
+termeki_word_class	-	7	-	et	pos	konj
+termeki_word_class	-	8	-	et	pos	s
+termeki_word_class	-	9	-	et	pos	interj
+termeki_word_class	-	10	-	et	pos	pron
 tliik_tyyp	tliik_tyyp	uus	uus tähendus	et	-	-
 tliik_tyyp	tliik_tyyp	uus	new sense	en	-	-
 tvtl_tyyp	tvtl_tyyp	vrd	compare with	en	-	-
@@ -1410,24 +1430,3 @@ xmllang_tyyp	XML elementide keelevalik	ru	russian	en	-	-
 yvtl_tyyp	ühisviite liik	vrd	võrdle tähendust	et	lex_rel_type	yvt:vrd
 yvtl_tyyp	ühisviite liik	vt ka	vaata ka	et	lex_rel_type	yvt:vt ka
 yvtl_tyyp	ühisviite liik	NB	ära aja segi	et	lex_rel_type	yvt:NB
-termeki_pronunciation	-	ns	-	et	pos	s
-termeki_pronunciation	-	om	-	et	pos	adj
-termeki_pronunciation	-	os	-	et	pos	adj
-termeki_pronunciation	-	ns, ts	-	et	pos	s
-termeki_pronunciation	-	ts	-	et	pos	v
-termeki_pronunciation	-	nim	-	et	pos	s
-termeki_pronunciation	-	ns, om	-	et	pos	s
-termeki_pronunciation	-	ms	-	et	pos	adv
-termeki_pronunciation	-	ns/ts	-	et	pos	s
-termeki_pronunciation	-	ts/ns	-	et	pos	s
-termeki_word_class	-	1	-	et	pos	s
-termeki_word_class	-	2	-	et	pos	v
-termeki_word_class	-	3	-	et	pos	adv
-termeki_word_class	-	4	-	et	pos	pron
-termeki_word_class	-	5	-	et	pos	adj
-termeki_word_class	-	6	-	et	pos	adp
-termeki_word_class	-	7	-	et	pos	konj
-termeki_word_class	-	8	-	et	pos	s
-termeki_word_class	-	9	-	et	pos	interj
-termeki_word_class	-	10	-	et	pos	pron
-staatus	Staatus	terminiprobleem	terminiprobleem	et	process_state	vajab konsulteerimist

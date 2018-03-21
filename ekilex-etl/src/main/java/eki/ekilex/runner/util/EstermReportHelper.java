@@ -31,25 +31,21 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 	private ReportComposer reportComposer;
 
-	private Map<String, String> meaningStateCodes;
-
 	private Map<String, String> processStateCodes;
 
 	private Map<String, String> meaningTypeCodes;
 
-	private Map<String, String> lexemeTypeCodes;
+	private Map<String, String> valueStateCodes;
 
 	public void setup(
 			ReportComposer reportComposer,
-			Map<String, String> meaningStateCodes,
 			Map<String, String> processStateCodes,
 			Map<String, String> meaningTypeCodes,
-			Map<String, String> lexemeTypeCodes) {
+			Map<String, String> valueStateCodes) {
 		this.reportComposer = reportComposer;
-		this.meaningStateCodes = meaningStateCodes;
 		this.processStateCodes = processStateCodes;
 		this.meaningTypeCodes = meaningTypeCodes;
-		this.lexemeTypeCodes = lexemeTypeCodes;
+		this.valueStateCodes = valueStateCodes;
 	}
 
 	public void detectAndReportConceptGrp(String concept, Element conceptGroupNode, Count dataErrorCount) throws Exception {
@@ -66,10 +62,10 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		List<String> values;
 		String valueStr;
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningStateExp);
+		valueNode = (Element) conceptGroupNode.selectSingleNode(processStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (!meaningStateCodes.containsKey(valueStr) && !processStateCodes.containsKey(valueStr)) {
+			if (!processStateCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
 				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu staatus: " + valueStr);
 			}
@@ -196,7 +192,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		List<String> values;
 		String valueStr;
 
-		valueNodes = termGroupNode.selectNodes(lexemeTypeExp);
+		valueNodes = termGroupNode.selectNodes(valueStateExp);
 		values = new ArrayList<>();
 		for (Element lexemeTypeNode : valueNodes) {
 			valueStr = lexemeTypeNode.getTextTrim();
@@ -214,14 +210,14 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 				continue;
 			}
 			values.add(valueStr);
-			if (!lexemeTypeCodes.containsKey(valueStr)) {
+			if (!valueStateCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
 				logBuf.append(concept);
 				logBuf.append(CSV_SEPARATOR);
 				logBuf.append(term);
 				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("tundmatu keelenditüüp: ");
+				logBuf.append("tundmatu väärtuse olek: ");
 				logBuf.append(valueStr);
 				String logRow = logBuf.toString();
 				reportComposer.append(REPORT_ILLEGAL_CLASSIFIERS, logRow);

@@ -34,10 +34,8 @@ drop table if exists word;
 drop table if exists source_freeform;
 drop table if exists source;
 drop table if exists freeform;
--- FIXME: to be removed
-drop table if exists usage_author_type_label;
--- FIXME: to be removed
-drop table if exists usage_author_type;
+drop table if exists usage_author_type_label;-- remove later
+drop table if exists usage_author_type;-- remove later
 drop table if exists usage_type_label;
 drop table if exists usage_type;
 drop table if exists meaning_rel_type_label;
@@ -51,8 +49,10 @@ drop table if exists lex_rel_type;
 --drop table if exists meaning_type_label;
 drop table if exists meaning_type;
 --drop table if exists meaning_state_label;
-drop table if exists meaning_state;
+drop table if exists meaning_state;-- remove later
 drop table if exists process_state;
+drop table if exists word_type_label;
+drop table if exists word_type;
 drop table if exists deriv_label;
 drop table if exists deriv;
 drop table if exists display_morph_label;
@@ -65,8 +65,8 @@ drop table if exists gender_label;
 drop table if exists gender;
 drop table if exists register_label;
 drop table if exists register;
-drop table if exists lexeme_type_label;
-drop table if exists lexeme_type;
+drop table if exists lexeme_type_label;-- remove later
+drop table if exists lexeme_type;-- remove later
 drop table if exists lexeme_frequency_label; -- removed for now
 drop table if exists lexeme_frequency;
 drop table if exists domain_label;
@@ -75,6 +75,8 @@ drop table if exists rection_type_label;--remove later
 drop table if exists rection_type;--remove later
 drop table if exists government_type_label;
 drop table if exists government_type;
+drop table if exists value_state_label;
+drop table if exists value_state;
 drop table if exists lang_label;
 drop table if exists lang;
 drop table if exists label_type;

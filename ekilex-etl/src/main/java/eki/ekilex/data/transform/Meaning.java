@@ -20,8 +20,6 @@ public class Meaning extends AbstractDataObject {
 
 	private String processStateCode;
 
-	private String meaningStateCode;
-
 	private String meaningTypeCode;
 
 	public Long getMeaningId() {
@@ -70,14 +68,6 @@ public class Meaning extends AbstractDataObject {
 
 	public void setProcessStateCode(String processStateCode) {
 		this.processStateCode = processStateCode;
-	}
-
-	public String getMeaningStateCode() {
-		return meaningStateCode;
-	}
-
-	public void setMeaningStateCode(String meaningStateCode) {
-		this.meaningStateCode = meaningStateCode;
 	}
 
 	public String getMeaningTypeCode() {

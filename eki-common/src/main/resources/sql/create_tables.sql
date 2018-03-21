@@ -67,10 +67,25 @@ create table domain_label
   unique(code, origin, lang, type)
 );
 
+create table value_state
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table value_state_label
+(
+  code varchar(100) references value_state(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 -- klassif. rektsiooni tüüp
 create table government_type
 (
-  code varchar(10) primary key,
+  code varchar(100) primary key,
   datasets varchar(10) array not null
 );
 
@@ -99,16 +114,16 @@ create table register_label
   unique(code, lang, type)
 );
 
--- ilmiku tüüp
-create table lexeme_type
+-- sõnasort
+create table word_type
 (
   code varchar(100) primary key,
   datasets varchar(10) array not null
 );
 
-create table lexeme_type_label
+create table word_type_label
 (
-  code varchar(100) references lexeme_type(code) on delete cascade not null,
+  code varchar(100) references word_type(code) on delete cascade not null,
   value text not null,
   lang char(3) references lang(code) not null,
   type varchar(10) references label_type(code) not null,
@@ -216,14 +231,6 @@ create table meaning_type
   datasets varchar(10) array not null
 );
 -- missing meaning_type_label
-
--- tähenduse staatus
-create table meaning_state
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null
-);
--- missing meaning_state_label
 
 -- seose liik
 create table lex_rel_type
@@ -378,7 +385,8 @@ create table word
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
   display_morph_code varchar(100) references display_morph(code) null,
-  gender_code varchar(100) references gender(code) null
+  gender_code varchar(100) references gender(code) null,
+  type_code varchar(100) references word_type(code) null
 );
 alter sequence word_id_seq restart with 10000;
 
@@ -451,7 +459,6 @@ create table meaning
   modified_on timestamp null,
   modified_by varchar(100) null,
   process_state_code varchar(100) references process_state(code) null,
-  state_code varchar(100) references meaning_state(code) null,
   type_code varchar(100) references meaning_type(code) null
 );
 alter sequence meaning_id_seq restart with 10000;
@@ -529,11 +536,11 @@ create table lexeme
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  type_code varchar(100) references lexeme_type(code) null,
   frequency_group varchar(100) references lexeme_frequency(code) null,
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,
+  value_state_code varchar(100) references value_state(code) null,
   unique(word_id, meaning_id, dataset_code)
 );
 alter sequence lexeme_id_seq restart with 10000;

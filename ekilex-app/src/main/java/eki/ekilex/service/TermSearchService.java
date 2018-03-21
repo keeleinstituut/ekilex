@@ -108,7 +108,6 @@ public class TermSearchService implements SystemConstant {
 		boolean contentExists =
 				StringUtils.isNotBlank(meaning.getTypeCode())
 				|| StringUtils.isNotBlank(meaning.getProcessStateCode())
-				|| StringUtils.isNotBlank(meaning.getStateCode())
 				|| CollectionUtils.isNotEmpty(definitions)
 				|| CollectionUtils.isNotEmpty(domains)
 				|| CollectionUtils.isNotEmpty(meaningFreeforms)
@@ -141,7 +140,7 @@ public class TermSearchService implements SystemConstant {
 			for (Lexeme lexeme : lexemeWords) {
 
 				boolean classifiersExist =
-						StringUtils.isNotBlank(lexeme.getTypeCode())
+						StringUtils.isNotBlank(lexeme.getValueStateCode())
 						|| StringUtils.isNotBlank(lexeme.getGenderCode())
 						|| StringUtils.isNotBlank(lexeme.getFrequencyGroupCode())
 						|| CollectionUtils.isNotEmpty(lexemePos)

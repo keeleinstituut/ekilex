@@ -85,12 +85,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private boolean reportingEnabled;
 	private boolean reportingPaused;
 
-	private Map<String, String> lexemeTypes;
+	private Map<String, String> wordTypes;
 	private Map<String, String> posCodes;
 	private Map<String, String> processStateCodes;
 	private Map<String, String> displayMorpCodes;
 	private Map<String, String> frequencyGroupCodes;
+	@Deprecated
 	private String lexemeTypeAbbreviation;
+	@Deprecated
 	private String lexemeTypeToken;
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
@@ -105,9 +107,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
-		lexemeTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
-		lexemeTypeAbbreviation = lexemeTypes.get("l");
-		lexemeTypeToken = lexemeTypes.get("th");
+		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		lexemeTypeAbbreviation = wordTypes.get("l");
+		lexemeTypeToken = wordTypes.get("th");
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
@@ -247,7 +249,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(itemData.lexemeLevel1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				lexeme.setType(itemData.lexemeType == null ? defaultLexemeType : itemData.lexemeType);
+				//FIXME lexeme type became word type
+				//lexeme.setValueState(itemData.lexemeType == null ? defaultLexemeType : itemData.lexemeType);
 				createLexeme(lexeme, getDataset());
 				if (!reportingPaused) {
 					logger.debug("new word created : {}", itemData.word);
@@ -425,7 +428,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				lexeme.setType(subWord.lexemeType);
+				lexeme.setValueState(subWord.lexemeType);
 				lexeme.setFrequencyGroup(subWord.frequencyGroup);
 				Long lexemeId = createLexeme(lexeme, getDataset());
 				if (subWord.government != null) {
@@ -571,7 +574,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel3++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
-					lexeme.setType(newWordData.lexemeType);
+					lexeme.setValueState(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
@@ -746,11 +749,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String abbreviationExp = "s:lig/s:lyh";
 
 		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, lexemeTypeAbbreviation, reportingId);
+		//FIXME lexeme type became word type
+		/*
 		abbreviations.forEach(a -> {
 			if (a.lexemeType == null) {
 				a.lexemeType = lexemeTypeAbbreviation;
 			}
 		});
+		*/
 		return abbreviations;
 	}
 
@@ -945,11 +951,14 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			}
 			String lexemeTypeAttrValue = metadataNode.attributeValue(lexemeTypeAttr);
 			if (StringUtils.isNotBlank(lexemeTypeAttrValue)) {
-				lexemeMetadata.lexemeType = lexemeTypes.get(lexemeTypeAttrValue);
+				//FIXME lexeme type became word type
+				/*
+				lexemeMetadata.lexemeType = wordTypes.get(lexemeTypeAttrValue);
 				if (lexemeMetadata.lexemeType == null) {
 					logger.debug("unknown lexeme type {}", lexemeTypeAttrValue);
 					writeToLogFile(reportingId, "Tundmatu märksõnaliik", lexemeTypeAttrValue);
 				}
+				*/
 			}
 			metadataList.add(lexemeMetadata);
 		}
@@ -1065,7 +1074,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
 		}
 		if (wordNode.attributeValue(lexemeTypeAttr) != null) {
-			wordData.lexemeType = lexemeTypes.get(wordNode.attributeValue(lexemeTypeAttr));
+			//FIXME lexeme type became word type
+			//wordData.lexemeType = wordTypes.get(wordNode.attributeValue(lexemeTypeAttr));
 		}
 		String wordDisplayForm = wordNode.getTextTrim();
 		String wordValue = cleanUp(wordDisplayForm);

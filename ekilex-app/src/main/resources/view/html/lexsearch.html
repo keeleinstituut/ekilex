@@ -115,9 +115,9 @@
                   <span th:unless="${grammarIter.last}">,&nbsp;</span>
                 </span>
               </div>
-              <div th:if="${lexeme.lexemeTypeCode != null}">
-                <span class="lbl">Keelendi tüüp</span>
-                <span th:text="${lexeme.lexemeTypeCode}"></span>
+              <div th:if="${lexeme.lexemeValueStateCode != null}">
+                <span class="lbl">Väärtusolek</span>
+                <span th:text="${lexeme.lexemeValueStateCode}"></span>
               </div>
               <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
                 <span class="lbl">Sagedusrühm</span>
@@ -128,12 +128,8 @@
                 <span th:text="${lexeme.meaningTypeCode}"></span>
               </div>
               <div th:if="${lexeme.meaningProcessStateCode != null}">
-                <span class="lbl">Olek</span>
+                <span class="lbl">Haldusolek</span>
                 <span th:text="${lexeme.meaningProcessStateCode}"></span>
-              </div>
-              <div th:if="${lexeme.meaningStateCode != null}">
-                <span class="lbl">Seisund</span>
-                <span th:text="${lexeme.meaningStateCode}"></span>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
                 <span class="lbl">Sõnaliik</span>

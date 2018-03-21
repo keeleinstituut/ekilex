@@ -23,8 +23,6 @@ public class Lexeme extends AbstractDataObject {
 
 	private Integer level3;
 
-	private Classifier lexemeType;
-
 	private List<Classifier> registers;
 
 	private List<Classifier> poses;
@@ -91,14 +89,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLevel3(Integer level3) {
 		this.level3 = level3;
-	}
-
-	public Classifier getLexemeType() {
-		return lexemeType;
-	}
-
-	public void setLexemeType(Classifier lexemeType) {
-		this.lexemeType = lexemeType;
 	}
 
 	public List<Classifier> getRegisters() {

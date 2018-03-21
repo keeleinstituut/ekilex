@@ -101,7 +101,6 @@ create view view_ww_meaning
       l.level1,
       l.level2,
       l.level3,
-      l.type_code lexeme_type_code,
       (select array_agg(l_reg.register_code order by l_reg.order_by)
        from lexeme_register l_reg
        where l_reg.lexeme_id = l.id
@@ -156,13 +155,6 @@ create view view_ww_classifier
        value,
        lang
      from pos_label
-     union all
-     select 'LEXEME_TYPE' as name,
-            null as origin,
-       code,
-       value,
-       lang
-     from lexeme_type_label
      union all
      select 'REGISTER' as name,
             null as origin,

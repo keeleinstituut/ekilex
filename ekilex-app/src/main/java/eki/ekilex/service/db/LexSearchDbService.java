@@ -1,5 +1,9 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.COLLOCATION;
+import static eki.ekilex.data.db.Tables.COLLOCATION_POS_GROUP;
+import static eki.ekilex.data.db.Tables.COLLOCATION_REL_GROUP;
+import static eki.ekilex.data.db.Tables.COLLOCATION_USAGE;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
@@ -17,22 +21,12 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.COLLOCATION_POS_GROUP;
-import static eki.ekilex.data.db.Tables.COLLOCATION_REL_GROUP;
-import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.COLLOCATION_USAGE;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.math.BigDecimal;
 import java.util.List;
 
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.db.tables.DefinitionRefLink;
-import eki.ekilex.data.db.tables.FreeformRefLink;
-import eki.ekilex.data.db.tables.MeaningDomain;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceFreeform;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -42,7 +36,7 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record12;
-import org.jooq.Record17;
+import org.jooq.Record16;
 import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.Record7;
@@ -58,17 +52,23 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionRefLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Service
@@ -488,7 +488,7 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record17<String[],String[],String,Long,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String,String>> findFormMeanings(
+	public Result<Record16<String[],String[],String,Long,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String>> findFormMeanings(
 			Long wordId, List<String> selectedDatasets) {
 
 		return 
@@ -506,11 +506,10 @@ public class LexSearchDbService implements SystemConstant {
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
 						LEXEME.LEVEL3,
-						LEXEME.TYPE_CODE.as("lexeme_type_code"),
+						LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						MEANING.TYPE_CODE.as("meaning_type_code"),
-						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
-						MEANING.STATE_CODE.as("meaning_state_code"))
+						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"))
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 				.where(
 						WORD.ID.eq(wordId)

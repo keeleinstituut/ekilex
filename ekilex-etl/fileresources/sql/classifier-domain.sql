@@ -21,7 +21,6 @@ insert into domain (origin, code, datasets) values ('arh', 'sõjandus', '{}');
 insert into domain (origin, code, datasets) values ('arh', 'välitööd', '{}');
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'leidude üldisemad nimetused', 'arh', 'välitööd', '{}');
 insert into domain (origin, code, datasets) values ('arh', 'kunst', '{}');
-insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'sõjamehevarustus', 'arh', 'sõjandus', '{}');
 insert into domain (origin, code, datasets) values ('arh', 'labor', '{}');
 insert into domain (origin, code, datasets) values ('arh', 'ehted', '{}');
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'perioodid', 'arh', 'üldmõisted', '{}');
@@ -83,6 +82,7 @@ insert into domain (origin, code, parent_origin, parent_code, datasets) values (
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'muud ehted või ehte osad', 'arh', 'ehted', '{}');
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'metallid ja sulamid', 'arh', 'metallitööga seotud mõisted', '{}');
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'tehnikad', 'arh', 'kiviajaga seotud mõisted', '{}');
+insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'sõjamehevarustus', 'arh', 'sõjandus', '{}');
 insert into domain (origin, code, datasets) values ('arh', 'ühiskond', '{}');
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'amb ja selle osad', 'arh', 'relvad', '{}');
 insert into domain (origin, code, parent_origin, parent_code, datasets) values ('arh', 'laevandus', 'arh', 'majandus', '{}');
@@ -3241,7 +3241,6 @@ insert into domain_label (origin, code, value, lang, type) values ('arh', 'sõja
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'välitööd', 'välitööd', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'leidude üldisemad nimetused', 'leidude üldisemad nimetused', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'kunst', 'kunst', 'est', 'descrip');
-insert into domain_label (origin, code, value, lang, type) values ('arh', 'sõjamehevarustus', 'sõjamehevarustus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'labor', 'labor', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'ehted', 'ehted', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'perioodid', 'perioodid', 'est', 'descrip');
@@ -3303,6 +3302,7 @@ insert into domain_label (origin, code, value, lang, type) values ('arh', 'ripat
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'muud ehted või ehte osad', 'muud ehted või ehte osad', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'metallid ja sulamid', 'metallid ja sulamid', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'tehnikad', 'tehnikad', 'est', 'descrip');
+insert into domain_label (origin, code, value, lang, type) values ('arh', 'sõjamehevarustus', 'sõjamehevarustus', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'ühiskond', 'ühiskond', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'amb ja selle osad', 'amb ja selle osad', 'est', 'descrip');
 insert into domain_label (origin, code, value, lang, type) values ('arh', 'laevandus', 'laevandus', 'est', 'descrip');

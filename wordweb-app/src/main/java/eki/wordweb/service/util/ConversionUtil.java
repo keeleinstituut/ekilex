@@ -52,9 +52,6 @@ public class ConversionUtil {
 				datasetCode = tuple.getDatasetCode();
 				datasetName = getDatasetName(datasetCode, dataLang);
 				lexeme.setDatasetName(datasetName);
-				classifierCode = tuple.getLexemeTypeCode();
-				classifier = getClassifier(ClassifierName.LEXEME_TYPE, classifierCode, dataLang);
-				lexeme.setLexemeType(classifier);
 				classifierCodes = tuple.getRegisterCodes();
 				classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, dataLang);
 				lexeme.setRegisters(classifiers);

@@ -137,11 +137,10 @@ public class LexSearchService implements SystemConstant {
 			lexeme.setVocalForms(vocalForms);
 
 			boolean lexemeOrMeaningClassifiersExist =
-					StringUtils.isNotBlank(lexeme.getLexemeTypeCode())
+					StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
 					|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
 					|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
-					|| StringUtils.isNotBlank(lexeme.getMeaningStateCode())
 					|| StringUtils.isNotBlank(lexeme.getGenderCode())
 					|| CollectionUtils.isNotEmpty(lexemePos)
 					|| CollectionUtils.isNotEmpty(lexemeDerivs)

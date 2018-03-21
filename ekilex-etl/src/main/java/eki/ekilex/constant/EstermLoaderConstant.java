@@ -39,9 +39,9 @@ public interface EstermLoaderConstant extends TableName {
 	String sourceExp = "descripGrp/descrip[@type='Allikaviide']";
 	String usageExp = "descripGrp/descrip[@type='Kontekst']";
 	String definitionExp = "descripGrp/descrip[@type='Definitsioon']";
-	String lexemeTypeExp = "descripGrp/descrip[@type='Keelenditüüp']";
+	String valueStateExp = "descripGrp/descrip[@type='Keelenditüüp']";
 	String entryClassExp = "system[@type='entryClass']";
-	String meaningStateExp = "descripGrp/descrip[@type='Staatus']";
+	String processStateExp = "descripGrp/descrip[@type='Staatus']";
 	String meaningTypeExp = "descripGrp/descrip[@type='Mõistetüüp']";
 	String createdByExp = "transacGrp/transac[@type='origination']";
 	String createdOnExp = "transacGrp[transac/@type='origination']/date";

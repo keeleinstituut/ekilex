@@ -46,8 +46,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private String levels;
 
-	@Column(name = "lexeme_type_code")
-	private String lexemeTypeCode;
+	@Column(name = "lexeme_value_state_code")
+	private String lexemeValueStateCode;
 
 	@Column(name = "lexeme_frequency_group_code")
 	private String lexemeFrequencyGroupCode;
@@ -57,9 +57,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	@Column(name = "meaning_process_state_code")
 	private String meaningProcessStateCode;
-
-	@Column(name = "meaning_state_code")
-	private String meaningStateCode;
 
 	@Column(name = "gender_code")
 	private String genderCode;
@@ -189,12 +186,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.levels = levels;
 	}
 
-	public String getLexemeTypeCode() {
-		return lexemeTypeCode;
+	public String getLexemeValueStateCode() {
+		return lexemeValueStateCode;
 	}
 
-	public void setLexemeTypeCode(String lexemeTypeCode) {
-		this.lexemeTypeCode = lexemeTypeCode;
+	public void setLexemeValueStateCode(String lexemeValueStateCode) {
+		this.lexemeValueStateCode = lexemeValueStateCode;
 	}
 
 	public String getLexemeFrequencyGroupCode() {
@@ -219,14 +216,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setMeaningProcessStateCode(String meaningProcessStateCode) {
 		this.meaningProcessStateCode = meaningProcessStateCode;
-	}
-
-	public String getMeaningStateCode() {
-		return meaningStateCode;
-	}
-
-	public void setMeaningStateCode(String meaningStateCode) {
-		this.meaningStateCode = meaningStateCode;
 	}
 
 	public List<Classifier> getLexemePos() {

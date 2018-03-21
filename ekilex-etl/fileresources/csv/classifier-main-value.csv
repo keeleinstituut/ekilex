@@ -74,6 +74,13 @@ gender	o	other	eng	descrip
 gender	o	muu	est	descrip
 gender	m	masculine	eng	descrip
 gender	m	meessugu	est	descrip
+government_type	obj	objektirektsioon	est	full
+government_type	kn	käänderektsioon	est	full
+government_type	ks	kaassõnarektsioon	est	full
+government_type	yld	üldrektsioon	est	full
+government_type	inf	infinitiivirektsioon	est	full
+government_type	kla	lausungirektsioon	est	full
+government_type	subj	subjektirektsioon	est	full
 lex_rel_type	comp	liitsõna	est	full
 lex_rel_type	head	põhisõna	est	full
 lex_rel_type	vor	vormel	est	full
@@ -100,46 +107,8 @@ lexeme_frequency	F5	F5 - 40 001 kuni 50 000	est	descrip
 lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
 lexeme_frequency	L4	L4 - pole sagedussõnastikus (lisatud)	est	descrip
-word_type	k	kohanimi	est	descrip
-word_type	k	place name	eng	descrip
-word_type	l	lühend	est	descrip
-word_type	l	abbreviation	eng	descrip
-word_type	p	pärisnimi	est	descrip
-word_type	p	proper name	eng	descrip
-word_type	z	tsitaatsõna	est	descrip
-word_type	z	loanword (alien)	eng	descrip
-word_type	mvv	viiteartikli märksõna	est	descrip
-word_type	yv	ühendverb	est	descrip
-word_type	vv	väljendverb	est	descrip
-word_type	av	ahelverb	est	descrip
-word_type	tv	tugiverb	est	descrip
-word_type	vlj	väljend	est	descrip
-word_type	ys	ühendsidesõna (nii et)	est	descrip
-word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
-word_type	f	fras-väljend (väljendite plokis)	est	descrip
-word_type	f	(idiomatic) phrase (grp)	eng	descrip
-word_type	mf	märksõna-väljend (iseseisev)	est	descrip
-word_type	mf	multiword unit (in the alphabet)	eng	descrip
-word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
-word_type	lz	tsitaatsõna lühend	est	descrip
-word_type	lz	abbreviation for alien word	eng	descrip
-word_type	n	number (nt 24/7)	est	descrip
-word_type	n	number	eng	descrip
-word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
-word_type	pf	combining form	eng	descrip
-word_type	s	sarja liige	est	descrip
-word_type	s	serial member	eng	descrip
-word_type	km	kaubamärk	est	descrip
-word_type	th	tähis	est	descrip
-word_type	valem	valem	est	descrip
 meaning_rel_type	ant	antonüüm	est	descrip
 meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
-word_type	termin	termin	est	descrip
-word_type	tõlkeprobleem	tõlkeprobleem	est	descrip
-word_type	ametinimetus	ametinimetus	est	descrip
-word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	descrip
-word_type	õigusakti pealkiri	õigusakti pealkiri	est	descrip
-word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip
 morph	ID	muutumatu	est	descrip2
 morph	SgN	ainsuse nimetav	est	descrip2
 morph	SgN	SgN	eng	descrip2
@@ -460,13 +429,26 @@ pos	adj + ID	indeclinable adjective	eng	descrip
 pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
 pos	pron + ID	indeclinable pronoun	eng	descrip
-government_type	obj	objektirektsioon	est	full
-government_type	kn	käänderektsioon	est	full
-government_type	ks	kaassõnarektsioon	est	full
-government_type	yld	üldrektsioon	est	full
-government_type	inf	infinitiivirektsioon	est	full
-government_type	kla	lausungirektsioon	est	full
-government_type	subj	subjektirektsioon	est	full
+process_state	määramata	-	-	-
+process_state	koostamisel	-	-	-
+process_state	koostatud	-	-	-
+process_state	ajakohastamisel	-	-	-
+process_state	ajakohastatud	-	-	-
+process_state	vajab konsulteerimist	-	-	-
+process_state	saadetud konsulteerimisele	-	-	-
+process_state	konsulteerimisel	-	-	-
+process_state	heaks kiidetud	-	-	-
+process_state	tagasi lükatud	-	-	-
+process_state	lahenduseta	-	-	-
+process_state	toimetamisel	-	-	-
+process_state	toimetatud	-	-	-
+process_state	peatoimetamisel	-	-	-
+process_state	peatoimetatud	-	-	-
+process_state	valmis	-	-	-
+process_state	avalik	-	-	-
+process_state	arhiveeritud	-	-	-
+process_state	töös	-	-	-
+process_state	läbi vaatamata	-	-	-
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
 register	hrv	harvaesinev	est	descrip
@@ -494,31 +476,6 @@ usage_type	ls	compound	eng	descrip
 usage_type	Vs	vanasõna	est	descrip
 usage_type	Vs	proverb	eng	descrip
 usage_type	y	sõnaühend	est	descrip
-word_rel_type	posit	algvõrre	est	full
-word_rel_type	deriv_base	tuletusalus	est	full
-word_rel_type	komp	keskvõrre	est	full
-word_rel_type	superl	ülivõrre	est	full
-word_rel_type	deriv	tuletis	est	full
-process_state	määramata	-	-	-
-process_state	koostamisel	-	-	-
-process_state	koostatud	-	-	-
-process_state	ajakohastamisel	-	-	-
-process_state	ajakohastatud	-	-	-
-process_state	vajab konsulteerimist	-	-	-
-process_state	saadetud konsulteerimisele	-	-	-
-process_state	konsulteerimisel	-	-	-
-process_state	heaks kiidetud	-	-	-
-process_state	tagasi lükatud	-	-	-
-process_state	lahenduseta	-	-	-
-process_state	toimetamisel	-	-	-
-process_state	toimetatud	-	-	-
-process_state	peatoimetamisel	-	-	-
-process_state	peatoimetatud	-	-	-
-process_state	valmis	-	-	-
-process_state	avalik	-	-	-
-process_state	arhiveeritud	-	-	-
-process_state	töös	-	-	-
-process_state	läbi vaatamata	-	-	-
 value_state	eelistermin	eelistermin	est	descrip
 value_state	eelistermin	preferred	eng	descrip
 value_state	rööptermin	rööptermin	est	descrip
@@ -529,4 +486,46 @@ value_state	väldi	väldi	est	descrip
 value_state	väldi	deprecated	eng	descrip
 value_state	endine	endine	est	descrip
 value_state	endine	superseded	eng	descrip
-word_type	l	lühend		
+word_rel_type	posit	algvõrre	est	full
+word_rel_type	deriv_base	tuletusalus	est	full
+word_rel_type	komp	keskvõrre	est	full
+word_rel_type	superl	ülivõrre	est	full
+word_rel_type	deriv	tuletis	est	full
+word_type	k	kohanimi	est	descrip
+word_type	k	place name	eng	descrip
+word_type	l	lühend	est	descrip
+word_type	l	abbreviation	eng	descrip
+word_type	p	pärisnimi	est	descrip
+word_type	p	proper name	eng	descrip
+word_type	z	tsitaatsõna	est	descrip
+word_type	z	loanword (alien)	eng	descrip
+word_type	mvv	viiteartikli märksõna	est	descrip
+word_type	yv	ühendverb	est	descrip
+word_type	vv	väljendverb	est	descrip
+word_type	av	ahelverb	est	descrip
+word_type	tv	tugiverb	est	descrip
+word_type	vlj	väljend	est	descrip
+word_type	ys	ühendsidesõna (nii et)	est	descrip
+word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
+word_type	f	fras-väljend (väljendite plokis)	est	descrip
+word_type	f	(idiomatic) phrase (grp)	eng	descrip
+word_type	mf	märksõna-väljend (iseseisev)	est	descrip
+word_type	mf	multiword unit (in the alphabet)	eng	descrip
+word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
+word_type	lz	tsitaatsõna lühend	est	descrip
+word_type	lz	abbreviation for alien word	eng	descrip
+word_type	n	number (nt 24/7)	est	descrip
+word_type	n	number	eng	descrip
+word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
+word_type	pf	combining form	eng	descrip
+word_type	s	sarja liige	est	descrip
+word_type	s	serial member	eng	descrip
+word_type	km	kaubamärk	est	descrip
+word_type	th	tähis	est	descrip
+word_type	valem	valem	est	descrip
+word_type	termin	termin	est	descrip
+word_type	tõlkeprobleem	tõlkeprobleem	est	descrip
+word_type	ametinimetus	ametinimetus	est	descrip
+word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	descrip
+word_type	õigusakti pealkiri	õigusakti pealkiri	est	descrip
+word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip

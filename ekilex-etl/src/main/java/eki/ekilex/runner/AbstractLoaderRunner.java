@@ -54,6 +54,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIFIER_VKTYYP = "vk_tyyp";
 	protected static final String EKI_CLASSIFIER_MSAGTYYP = "msag_tyyp";
 	protected static final String EKI_CLASSIFIER_STYYP = "s_tyyp";
+	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
 	@Autowired
 	protected XmlReader xmlReader;
@@ -256,10 +257,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(processStateCode)) {
 			tableRowParamMap.put("process_state_code", processStateCode);
 		}
-		String meaningStateCode = meaning.getMeaningStateCode();
-		if (StringUtils.isNotBlank(meaningStateCode)) {
-			tableRowParamMap.put("state_code", meaningStateCode);
-		}
 		String meaningTypeCode = meaning.getMeaningTypeCode();
 		if (StringUtils.isNotBlank(meaningTypeCode)) {
 			tableRowParamMap.put("type_code", meaningTypeCode);
@@ -326,7 +323,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Integer lexemeLevel2 = lexeme.getLevel2();
 		Integer lexemeLevel3 = lexeme.getLevel3();
 		String frequencyGroup = lexeme.getFrequencyGroup();
-		String lexemeType = lexeme.getType();
+		String valueState = lexeme.getValueState();
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
@@ -362,8 +359,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			if (StringUtils.isNotBlank(frequencyGroup)) {
 				valueParamMap.put("frequency_group", frequencyGroup);
 			}
-			if (StringUtils.isNotBlank(lexemeType)) {
-				valueParamMap.put("type_code", lexemeType);
+			if (StringUtils.isNotBlank(valueState)) {
+				valueParamMap.put("value_state_code", valueState);
 			}
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);

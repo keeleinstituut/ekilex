@@ -42,8 +42,6 @@ import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
-import eki.ekilex.data.db.tables.LexemeType;
-import eki.ekilex.data.db.tables.LexemeTypeLabel;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
@@ -51,7 +49,6 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.MeaningState;
 import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
@@ -66,11 +63,20 @@ import eki.ekilex.data.db.tables.Source;
 import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
+import eki.ekilex.data.db.tables.ValueState;
+import eki.ekilex.data.db.tables.ValueStateLabel;
+import eki.ekilex.data.db.tables.ViewWwClassifier;
+import eki.ekilex.data.db.tables.ViewWwDataset;
+import eki.ekilex.data.db.tables.ViewWwForm;
+import eki.ekilex.data.db.tables.ViewWwMeaning;
+import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordType;
+import eki.ekilex.data.db.tables.WordTypeLabel;
 
 import javax.annotation.Generated;
 
@@ -279,16 +285,6 @@ public class Tables {
     public static final LexemeRegister LEXEME_REGISTER = eki.ekilex.data.db.tables.LexemeRegister.LEXEME_REGISTER;
 
     /**
-     * The table <code>public.lexeme_type</code>.
-     */
-    public static final LexemeType LEXEME_TYPE = eki.ekilex.data.db.tables.LexemeType.LEXEME_TYPE;
-
-    /**
-     * The table <code>public.lexeme_type_label</code>.
-     */
-    public static final LexemeTypeLabel LEXEME_TYPE_LABEL = eki.ekilex.data.db.tables.LexemeTypeLabel.LEXEME_TYPE_LABEL;
-
-    /**
      * The table <code>public.lifecycle_log</code>.
      */
     public static final LifecycleLog LIFECYCLE_LOG = eki.ekilex.data.db.tables.LifecycleLog.LIFECYCLE_LOG;
@@ -322,11 +318,6 @@ public class Tables {
      * The table <code>public.meaning_relation</code>.
      */
     public static final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
-
-    /**
-     * The table <code>public.meaning_state</code>.
-     */
-    public static final MeaningState MEANING_STATE = eki.ekilex.data.db.tables.MeaningState.MEANING_STATE;
 
     /**
      * The table <code>public.meaning_type</code>.
@@ -399,6 +390,41 @@ public class Tables {
     public static final UsageTypeLabel USAGE_TYPE_LABEL = eki.ekilex.data.db.tables.UsageTypeLabel.USAGE_TYPE_LABEL;
 
     /**
+     * The table <code>public.value_state</code>.
+     */
+    public static final ValueState VALUE_STATE = eki.ekilex.data.db.tables.ValueState.VALUE_STATE;
+
+    /**
+     * The table <code>public.value_state_label</code>.
+     */
+    public static final ValueStateLabel VALUE_STATE_LABEL = eki.ekilex.data.db.tables.ValueStateLabel.VALUE_STATE_LABEL;
+
+    /**
+     * The table <code>public.view_ww_classifier</code>.
+     */
+    public static final ViewWwClassifier VIEW_WW_CLASSIFIER = eki.ekilex.data.db.tables.ViewWwClassifier.VIEW_WW_CLASSIFIER;
+
+    /**
+     * The table <code>public.view_ww_dataset</code>.
+     */
+    public static final ViewWwDataset VIEW_WW_DATASET = eki.ekilex.data.db.tables.ViewWwDataset.VIEW_WW_DATASET;
+
+    /**
+     * The table <code>public.view_ww_form</code>.
+     */
+    public static final ViewWwForm VIEW_WW_FORM = eki.ekilex.data.db.tables.ViewWwForm.VIEW_WW_FORM;
+
+    /**
+     * The table <code>public.view_ww_meaning</code>.
+     */
+    public static final ViewWwMeaning VIEW_WW_MEANING = eki.ekilex.data.db.tables.ViewWwMeaning.VIEW_WW_MEANING;
+
+    /**
+     * The table <code>public.view_ww_word</code>.
+     */
+    public static final ViewWwWord VIEW_WW_WORD = eki.ekilex.data.db.tables.ViewWwWord.VIEW_WW_WORD;
+
+    /**
      * The table <code>public.word</code>.
      */
     public static final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
@@ -422,4 +448,14 @@ public class Tables {
      * The table <code>public.word_relation</code>.
      */
     public static final WordRelation WORD_RELATION = eki.ekilex.data.db.tables.WordRelation.WORD_RELATION;
+
+    /**
+     * The table <code>public.word_type</code>.
+     */
+    public static final WordType WORD_TYPE = eki.ekilex.data.db.tables.WordType.WORD_TYPE;
+
+    /**
+     * The table <code>public.word_type_label</code>.
+     */
+    public static final WordTypeLabel WORD_TYPE_LABEL = eki.ekilex.data.db.tables.WordTypeLabel.WORD_TYPE_LABEL;
 }

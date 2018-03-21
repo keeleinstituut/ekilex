@@ -45,14 +45,14 @@ public class Lexeme extends AbstractDataObject {
 
 	private String levels;
 
-	@Column(name = "lexeme_type_code")
-	private String typeCode;
-
 	@Column(name = "lexeme_frequency_group_code")
 	private String frequencyGroupCode;
 
 	@Column(name = "gender_code")
 	private String genderCode;
+
+	@Column(name = "lexeme_value_state_code")
+	private String valueStateCode;
 
 	private List<Classifier> pos;
 
@@ -166,20 +166,20 @@ public class Lexeme extends AbstractDataObject {
 		this.levels = levels;
 	}
 
-	public String getTypeCode() {
-		return typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
 	public String getFrequencyGroupCode() {
 		return frequencyGroupCode;
 	}
 
 	public void setFrequencyGroupCode(String frequencyGroupCode) {
 		this.frequencyGroupCode = frequencyGroupCode;
+	}
+
+	public String getValueStateCode() {
+		return valueStateCode;
+	}
+
+	public void setValueStateCode(String valueStateCode) {
+		this.valueStateCode = valueStateCode;
 	}
 
 	public List<Classifier> getPos() {

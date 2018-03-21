@@ -6,7 +6,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 
 import org.jooq.DSLContext;
 import org.jooq.Record10;
-import org.jooq.Record17;
+import org.jooq.Record16;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class LexSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record17<Long,Long,Long,String,String,Integer,Integer,Integer,String,String[],String[],String[],TypeDomainRecord[],Long,String,Integer,String>> findLexemeMeaningTuples(Long wordId) {
+	public Result<Record16<Long,Long,Long,String,String,Integer,Integer,Integer,String[],String[],String[],TypeDomainRecord[],Long,String,Integer,String>> findLexemeMeaningTuples(Long wordId) {
 
 		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");
 		MviewWwMeaning m2 = MVIEW_WW_MEANING.as("m2");
@@ -68,7 +68,6 @@ public class LexSearchDbService {
 						m1.LEVEL1,
 						m1.LEVEL2,
 						m1.LEVEL3,
-						m1.LEXEME_TYPE_CODE,
 						m1.REGISTER_CODES,
 						m1.POS_CODES,
 						m1.DERIV_CODES,

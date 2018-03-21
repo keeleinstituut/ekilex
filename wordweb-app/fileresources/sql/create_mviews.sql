@@ -61,7 +61,6 @@ dblink(
 	level1 integer,
 	level2 integer,
 	level3 integer,
-	lexeme_type_code varchar(100),
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,
 	deriv_codes varchar(100) array,

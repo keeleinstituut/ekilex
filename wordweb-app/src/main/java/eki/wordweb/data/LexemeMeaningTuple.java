@@ -24,8 +24,6 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private Integer level3;
 
-	private String lexemeTypeCode;
-
 	private List<String> registerCodes;
 
 	private List<String> posCodes;
@@ -104,14 +102,6 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	public void setLevel3(Integer level3) {
 		this.level3 = level3;
-	}
-
-	public String getLexemeTypeCode() {
-		return lexemeTypeCode;
-	}
-
-	public void setLexemeTypeCode(String lexemeTypeCode) {
-		this.lexemeTypeCode = lexemeTypeCode;
 	}
 
 	public List<String> getRegisterCodes() {
