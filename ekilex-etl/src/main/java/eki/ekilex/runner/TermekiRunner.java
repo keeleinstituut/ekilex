@@ -343,7 +343,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		for (Map<String, Object> example : examples) {
 			String language = unifyLang((String)example.get("lang"));
 			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", language);
-			createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, example.get("example"), language);
+			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, example.get("example"), language);
+			Integer sourceId = (Integer) example.get("source_id");
+			connectSourceToUsage(sourceId, usageId, context.sourceMapping);
 		}
 	}
 
@@ -451,9 +453,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
-			Long refLinkId = createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id, null, null);
-			String markdownLink = String.format("%s [%s](%s:%d)", definition, ekilexSource.name, ContentKey.DEFINITION_REF_LINK, refLinkId);
-			updateDefinitionValue(definitionId, markdownLink);
+			createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 
@@ -462,9 +462,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, null, null);
-			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id, null, null);
+			Long refLinkId = createFreeformRefLink(freeformId, ReferenceType.SOURCE, ekilexSource.id, null, ekilexSource.name);
 			String markdownLink = String.format("[%s](%s:%d)", ekilexSource.name, ContentKey.FREEFORM_REF_LINK, refLinkId);
 			updateFreeformText(freeformId, markdownLink);
+		}
+	}
+
+	private void connectSourceToUsage(Integer sourceId, Long usageId, Map<Integer, SourceData> sourceMapping) throws Exception {
+
+		if (sourceMapping.containsKey(sourceId)) {
+			SourceData ekilexSource = sourceMapping.get(sourceId);
+			createFreeformRefLink(usageId, ReferenceType.SOURCE, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 
