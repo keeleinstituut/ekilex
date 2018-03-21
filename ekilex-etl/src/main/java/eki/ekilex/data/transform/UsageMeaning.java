@@ -15,6 +15,8 @@ public class UsageMeaning extends AbstractDataObject {
 
 	private List<String> definitions;
 
+	private String usageType;
+
 	public UsageMeaning() {
 		this.usages = new ArrayList<>();
 		this.usageTranslations = new ArrayList<>();
@@ -43,5 +45,13 @@ public class UsageMeaning extends AbstractDataObject {
 
 	public void setDefinitions(List<String> definitions) {
 		this.definitions = definitions;
+	}
+
+	public String getUsageType() {
+		return usageType;
+	}
+
+	public void setUsageType(String usageType) {
+		this.usageType = usageType;
 	}
 }

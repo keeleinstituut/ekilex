@@ -1,18 +1,49 @@
 {
 
   "homonyms": [{
-    "name": "tee",
+    "name": "ekvivalentsusrelatiivsus",
     "nr": "1",
+    "moreClasses": "selected last-selected animation-target",
     "matches": "дорога, дорога, дорога, дорога, дорога",
     "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
   }, {
-    "name": "kirjanduslikustatamatumatelegi",
+    "name": "ekvivalentsusrelatiivsus",
     "nr": "2",
     "matches": "дорога, дорога, дорога, дорога, дорога",
     "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
   }, {
-    "name": "termostaat",
+    "name": "ekvivalentsusrelatiivsus",
     "nr": "3",
+    "matches": "дорога, дорога, дорога, дорога, дорога",
+    "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
+  }, {
+    "name": "ekvivalentsusrelatiivsus",
+    "nr": "2",
+    "matches": "дорога, дорога, дорога, дорога, дорога",
+    "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
+  }, {
+    "name": "ekvivalentsusrelatiivsus",
+    "nr": "3",
+    "matches": "дорога, дорога, дорога, дорога, дорога",
+    "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
+  }, {
+    "name": "ekvivalentsusrelatiivsus",
+    "nr": "2",
+    "matches": "дорога, дорога, дорога, дорога, дорога",
+    "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
+  }, {
+    "name": "ekvivalentsusrelatiivsus",
+    "nr": "3",
+    "matches": "дорога, дорога, дорога, дорога, дорога",
+    "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
+  }, {
+    "name": "ekvivalentsusrelatiivsus",
+    "nr": "4",
+    "matches": "дорога, дорога, дорога, дорога, дорога",
+    "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
+  }, {
+    "name": "ekvivale",
+    "nr": "5",
     "matches": "дорога, дорога, дорога, дорога, дорога",
     "intro": "maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav"
   }],

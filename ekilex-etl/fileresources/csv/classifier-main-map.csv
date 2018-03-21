@@ -8,7 +8,7 @@ as_tyyp	as_tyyp	SS1	sõnastiku artikkel	en	-	-
 as_tyyp	as_tyyp	vp	vaegpöördeline (ainult 3.p)	et	-	-
 as_tyyp	as_tyyp	vpa	vaegpöördeline (ainult ainsuse 3.p)	et	-	-
 as_tyyp	as_tyyp	vpm	vaegpöördeline (v.a ainsuse 1. ja 2. p)	et	-	-
-as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	-	-
+as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	läbi vaatamata
 as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-
 att_tyyp	att_tyyp	all	alltähendus	et	-	-
 att_tyyp	att_tyyp	all	sense extension	en	-	-
@@ -372,13 +372,14 @@ gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-
 gkn_tyyp	gkn_tyyp	pl	mitmus	et	-	-
 gkn_tyyp	gkn_tyyp	lv	lisavorm	et	-	-
 gkn_tyyp	gkn_tyyp	ev	erandvorm	et	-	-
-keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	lexeme_type	eelistermin
-keelenditüüp	keelenditüüp	lühend	lühend	et	lexeme_type	lühend
-keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	lexeme_type	sünonüüm
-keelenditüüp	keelenditüüp	variant	variant	et	lexeme_type	variant
-keelenditüüp	keelenditüüp	väldi	väldi	et	lexeme_type	väldi
-keelenditüüp	keelenditüüp	endine	endine	et	lexeme_type	endine
-keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	lexeme_type	lühend ja sünonüüm
+keelenditüüp	keelenditüüp	eelistermin	eelistermin	et	value_state	eelistermin
+keelenditüüp	keelenditüüp	lühend	lühend	et	word_type	l
+keelenditüüp	keelenditüüp	sünonüüm	sünonüüm	et	value_state	rööptermin
+keelenditüüp	keelenditüüp	variant	variant	et	value_state	variant
+keelenditüüp	keelenditüüp	väldi	väldi	et	value_state	väldi
+keelenditüüp	keelenditüüp	endine	endine	et	value_state	endine
+keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	word_type	l
+keelenditüüp	keelenditüüp	lühend ja sünonüüm	lühend ja sünonüüm	et	value_state	rööptermin
 kl_tyyp	kl_tyyp	ls	liitsõna	et	-	-
 kl_tyyp	kl_tyyp	yh	ühendverb	et	-	-
 kliik_tyyp	kliik_tyyp	S+S	S+S	et	-	-
@@ -444,39 +445,39 @@ kr_tyyp	kr_tyyp	uurali	Uralic	en	-	-
 kr_tyyp	kr_tyyp	vanavene	vanavene	et	-	-
 ky_tyyp	ky_tyyp	ky	küsitav	et	-	-
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-
-liik_tyyp	liik_tyyp	f	fras-väljend (väljendite plokis)	et	lexeme_type	f
-liik_tyyp	liik_tyyp	f	(idiomatic) phrase (grp)	en	lexeme_type	f
-liik_tyyp	liik_tyyp	mf	märksõna-väljend (iseseisev)	et	lexeme_type	mf
-liik_tyyp	liik_tyyp	mf	multiword unit (in the alphabet)	en	lexeme_type	mf
-liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	lexeme_type	g
-liik_tyyp	liik_tyyp	lz	tsitaatsõna lühend	et	lexeme_type	lz
-liik_tyyp	liik_tyyp	lz	abbreviation for alien word	en	lexeme_type	lz
-liik_tyyp	liik_tyyp	n	number (nt 24/7)	et	lexeme_type	n
-liik_tyyp	liik_tyyp	n	number	en	lexeme_type	n
-liik_tyyp	liik_tyyp	pf	prefiksoid, pooleesliide vm esiosa	et	lexeme_type	pf
-liik_tyyp	liik_tyyp	pf	combining form	en	lexeme_type	pf
-liik_tyyp	liik_tyyp	s	sarja liige	et	lexeme_type	s
-liik_tyyp	liik_tyyp	s	serial member	en	lexeme_type	s
-liik_tyyp	liik_tyyp	km	kaubamärk	et	lexeme_type	km
-liik_tyyp	liik_tyyp	th	tähis	et	lexeme_type	th
-liik_tyyp	liik_tyyp	y	ühendverb (-sidesõna)	et	lexeme_type	ühendverb
-liik_tyyp	liik_tyyp	y	phrasal verb	en	lexeme_type	ühendverb
-liik_tyyp	liik_tyyp	k	kohanimi	et	lexeme_type	k
-liik_tyyp	liik_tyyp	k	place name	en	lexeme_type	k
-liik_tyyp	liik_tyyp	l	lühend	et	lexeme_type	l
-liik_tyyp	liik_tyyp	l	abbreviation	en	lexeme_type	l
-liik_tyyp	liik_tyyp	p	pärisnimi	et	lexeme_type	p
-liik_tyyp	liik_tyyp	p	proper name	en	lexeme_type	p
-liik_tyyp	liik_tyyp	z	tsitaatsõna	et	lexeme_type	z
-liik_tyyp	liik_tyyp	z	loanword (alien)	en	lexeme_type	z
-liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	lexeme_type	viiteartikli märksõna
-liik_tyyp	märksõna liik	yv	ühendverb	et	lexeme_type	ühendverb
-liik_tyyp	märksõna liik	vv	väljendverb	et	lexeme_type	väljendverb
-liik_tyyp	märksõna liik	av	ahelverb	et	lexeme_type	ahelverb
-liik_tyyp	märksõna liik	tv	tugiverb	et	lexeme_type	tugiverb
-liik_tyyp	märksõna liik	vlj	väljend	et	lexeme_type	väljend
-liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	lexeme_type	ühendsidesõna
-liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	lexeme_type	rühmsidesõna
+liik_tyyp	liik_tyyp	f	fras-väljend (väljendite plokis)	et	word_type	f
+liik_tyyp	liik_tyyp	f	(idiomatic) phrase (grp)	en	word_type	f
+liik_tyyp	liik_tyyp	mf	märksõna-väljend (iseseisev)	et	word_type	mf
+liik_tyyp	liik_tyyp	mf	multiword unit (in the alphabet)	en	word_type	mf
+liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	word_type	g
+liik_tyyp	liik_tyyp	lz	tsitaatsõna lühend	et	word_type	lz
+liik_tyyp	liik_tyyp	lz	abbreviation for alien word	en	word_type	lz
+liik_tyyp	liik_tyyp	n	number (nt 24/7)	et	word_type	n
+liik_tyyp	liik_tyyp	n	number	en	word_type	n
+liik_tyyp	liik_tyyp	pf	prefiksoid, pooleesliide vm esiosa	et	word_type	pf
+liik_tyyp	liik_tyyp	pf	combining form	en	word_type	pf
+liik_tyyp	liik_tyyp	s	sarja liige	et	word_type	s
+liik_tyyp	liik_tyyp	s	serial member	en	word_type	s
+liik_tyyp	liik_tyyp	km	kaubamärk	et	word_type	km
+liik_tyyp	liik_tyyp	th	tähis	et	word_type	th
+liik_tyyp	liik_tyyp	y	ühendverb (-sidesõna)	et	word_type	yv
+liik_tyyp	liik_tyyp	y	phrasal verb	en	word_type	yv
+liik_tyyp	liik_tyyp	k	kohanimi	et	word_type	k
+liik_tyyp	liik_tyyp	k	place name	en	word_type	k
+liik_tyyp	liik_tyyp	l	lühend	et	word_type	l
+liik_tyyp	liik_tyyp	l	abbreviation	en	word_type	l
+liik_tyyp	liik_tyyp	p	pärisnimi	et	word_type	p
+liik_tyyp	liik_tyyp	p	proper name	en	word_type	p
+liik_tyyp	liik_tyyp	z	tsitaatsõna	et	word_type	z
+liik_tyyp	liik_tyyp	z	loanword (alien)	en	word_type	z
+liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	word_type	mvv
+liik_tyyp	märksõna liik	yv	ühendverb	et	word_type	yv
+liik_tyyp	märksõna liik	vv	väljendverb	et	word_type	vv
+liik_tyyp	märksõna liik	av	ahelverb	et	word_type	av
+liik_tyyp	märksõna liik	tv	tugiverb	et	word_type	tv
+liik_tyyp	märksõna liik	vlj	väljend	et	word_type	vlj
+liik_tyyp	märksõna liik	ys	ühendsidesõna (nii et)	et	word_type	ys
+liik_tyyp	märksõna liik	rs	rühmsidesõna (ei .. ega)	et	word_type	rs
 msag_tyyp	msag_tyyp	F0	1 kuni 5000	et	lexeme_frequency	F0
 msag_tyyp	msag_tyyp	F1	5001 kuni 10 000	et	lexeme_frequency	F1
 msag_tyyp	msag_tyyp	F2	10 001 kuni 20 000	et	lexeme_frequency	F2
@@ -501,12 +502,12 @@ mvtl_tyyp	mvtl_tyyp	gr	vormiviide	et	-	-
 mvtl_tyyp	mvtl_tyyp	gr	cross-reference (from inflectional form)	en	-	-
 mvtl_tyyp	märksõnaviide	cmp	võrdlusvormi viide	et	-	-
 mvtl_tyyp	märksõnaviide	var	variandiviide	et	-	-
-mõistetüüp	Mõistetüüp	termin	termin	et	meaning_type	termin
-mõistetüüp	Mõistetüüp	tõlkeprobleem	tõlkeprobleem	et	meaning_type	tõlkeprobleem
-mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	meaning_type	ametinimetus
-mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	meaning_type	organisatsioon, asutus
-mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	meaning_type	õigusakti pealkiri
-mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	meaning_type	dokumendi pealkiri
+mõistetüüp	Mõistetüüp	termin	termin	et	word_type	termin
+mõistetüüp	Mõistetüüp	tõlkeprobleem	tõlkeprobleem	et	word_type	tõlkeprobleem
+mõistetüüp	Mõistetüüp	ametinimetus	ametinimetus	et	word_type	ametinimetus
+mõistetüüp	Mõistetüüp	organisatsioon, asutus	organisatsioon, asutus	et	word_type	organisatsiooni, asutuse nimi
+mõistetüüp	Mõistetüüp	õigusakti pealkiri	õigusakti pealkiri	et	word_type	õigusakti pealkiri
+mõistetüüp	Mõistetüüp	dokumendi pealkiri	dokumendi pealkiri	et	word_type	dokumendi pealkiri
 nliik_tyyp	nliik_tyyp	ls	liitsõna	et	usage_type	ls
 nliik_tyyp	nliik_tyyp	ls	compound	en	usage_type	ls
 nliik_tyyp	nliik_tyyp	Rhvl	(ei ole kasutusel)	et	-	-
@@ -998,7 +999,6 @@ sta_tyyp	sta_tyyp	{osa}	oluline osa	et	-	-
 sta_tyyp	sta_tyyp	{osa}	part of sth/sb	en	-	-
 sta_tyyp	sta_tyyp	{põhjus}	põhjus(taja), esilekutsuja, tingija (abstr/konkr)	et	-	-
 sta_tyyp	sta_tyyp	{põhjus}	cause of sth/sb	en	-	-
-staatus	Staatus	terminiprobleem	terminiprobleem	et	meaning_state	terminiprobleem
 staatus	Staatus	komisjoni kinnitatud	komisjoni kinnitatud	et	process_state	heaks kiidetud
 staatus	Staatus	komisjonis arutlusel	komisjonis arutlusel	et	process_state	konsulteerimisel
 tliik_tyyp	tliik_tyyp	uus	uus tähendus	et	-	-
@@ -1430,3 +1430,4 @@ termeki_word_class	-	7	-	et	pos	konj
 termeki_word_class	-	8	-	et	pos	s
 termeki_word_class	-	9	-	et	pos	interj
 termeki_word_class	-	10	-	et	pos	pron
+staatus	Staatus	terminiprobleem	terminiprobleem	et	process_state	vajab konsulteerimist

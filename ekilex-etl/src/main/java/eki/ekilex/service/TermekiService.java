@@ -60,6 +60,8 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectConceptAttributes;
 
+	private String sqlSelectImages = "select * from termeki_concept_images where concept_id in (select concept_id from termeki_concepts where termbase_id = :baseId)";
+
 	private Map<Integer, String> termbaseIds;
 
 	private String sqlSelectExamples;
@@ -127,6 +129,12 @@ public class TermekiService implements InitializingBean {
 
 		Map<String, Object> params = constructParameters(baseId);
 		return queryList(sqlSelectExamples, params);
+	}
+
+	public List<Map<String, Object>> getImages(Integer baseId) {
+
+		Map<String, Object> params = constructParameters(baseId);
+		return queryList(sqlSelectImages, params);
 	}
 
 	public List<Map<String, Object>> getDomainsForLanguage(String language) {

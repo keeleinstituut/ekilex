@@ -8,12 +8,12 @@ html{
 // 	border-color: pink;	
 // 	border-radius: rem(20);
 // }
-.questions-wrap{
-	background-color:lightyellow;
-}
-.examples-wrap{
-	background-color:lightyellow;
-}
+// .questions-wrap{
+// 	background-color:lightyellow;
+// }
+// .examples-wrap{
+// 	background-color:lightyellow;
+// }
 
 
 
@@ -56,7 +56,7 @@ input{
 	}
 }
 .search-wrap{
-	top:70px;
+	top: rem(70);
 	width: 100%;
 	position: fixed;
 	z-index: 111;
@@ -68,24 +68,81 @@ input{
 .extra-buttons,
 .search-btn{
 	position: absolute;	
-	top:0;
+	top:rem(5);
+}
+.clear-btn,
+.speak-btn,
+.search-btn{
+	width: rem(50);
+	height: rem(50);
+	border-radius: $border-radius-lg !important;
+	padding: rem(4) 0 0 0;
+	}
+.search-btn{
+	right:rem(5);
+	border-radius: $border-radius-lg !important;
+	box-shadow: $dropdown-box-shadow;
+	padding-top: rem(8);
+	.icon{
+		font-size: $font-size-base * 2 !important;		
+	}
 }
 .extra-buttons{
-	right:80px;
+	right: rem(65);
+	.btn{
+		color: $gray-600;
+		background-color: transparent;
+	}
 }
-.search-btn{
-	right:0;
+.btn{
+	text-transform: uppercase;
+	font-weight: $font-weight-bold;
+}
+.icon{
+	font-size: $font-size-base * 1.5;
+	padding-top: 10px;
+}
+.btn-light{
+	color: $teal;
 }
 .homonym-item{
 	*{
 		white-space: nowrap; 
 	    overflow: hidden;
-	    // text-overflow: ellipsis;
+	}
+	&:hover{
+		text-decoration: none;
 	}
 	.homonym-name-container{
 		max-width: calc( 100% - 24px );
 		padding-right:rem(6);
 	    display: inline-block;
+	    position: relative;
+	    &:before, &:after{
+	    	content: "";
+	    	display: block;
+	    	position: absolute;
+	    	top:0;
+			left: rem(140);
+	    	margin-right: rem(-1);
+	    	height: 100%;
+	    	width: rem(30);
+	    	z-index: 10000;
+	    	background: $white;
+		    background: -webkit-linear-gradient(185deg, $white 20%, rgba($white,0) 100%);
+		    background: -o-linear-gradient(185deg, $white 20%, rgba($white,0) 100%);
+		    background: linear-gradient(275deg, $white 20%, rgba($white,0) 100%);
+	    }
+	}
+	&.selected{
+		.homonym-name-container{
+		    &:before, &:after{
+		    	background: $primary;
+			    background: -webkit-linear-gradient(185deg, $primary 20%, rgba($primary,0) 100%);
+			    background: -o-linear-gradient(185deg, $primary 20%, rgba($primary,0) 100%);
+			    background: linear-gradient(275deg, $primary 20%, rgba($primary,0) 100%);
+		    }
+		}
 	}
 	.homonym-nr{
 		background-color: $teal;
@@ -109,8 +166,8 @@ input{
 .search-panel,
 .homonym-panel,
 .level-2-panel{
-	padding-top: rem(10);
-	padding-bottom: rem(10);
+	padding-top: rem(30);
+	padding-bottom: rem(15);
 }
 .content-wrap{
 	background-color: $gray-100;
@@ -145,6 +202,9 @@ input{
 }
 .level-3-panel{
 	position: relative;
+	&:not(.expand) .dependence:not(:first-child){
+		display: none;
+	}
 }
 .level-3-panel:first-child{
 	margin-top: rem(-30) !important;
@@ -165,8 +225,26 @@ input{
 .more-btn{
 	position: absolute;
 	top:$gutter / 2;
-	right:$gutter * 2;	
+	right:$gutter * 2;
+	padding: rem(5);	
 }
+.example-text{
+	float: left;
+	font-style: italic;
+	display: block;
+	letter-spacing: rem(.32);
+	background-color: $gray-100;
+	border-radius: $border-radius-sm;
+	padding: rem(2) rem(7);
+	strong{
+		font-weight: $font-weight-bold;
+	}
+}
+	.btn-speaker{
+		color: $gray-600;
+		padding: rem(2);
+		float: left;
+	}
 
 ////////////////////////////////
 ////// MOBILE + TABLET /////////
@@ -191,6 +269,7 @@ input{
 		background-color: $white;
 	}
 	.homonym-item{
+		// test
 		display: block;
 		margin-left:-($gutter);
 		margin-right:-($gutter);
@@ -217,41 +296,54 @@ input{
 
 
 @include media-breakpoint-up(md) {
+	.homonym-list{
+	    width: 100%;
+	    overflow: hidden;
+	    white-space: nowrap;
+	    overflow-x: scroll;
+	    display: flex;
+	    padding: rem(20);
+	    margin: rem(-20);
+	}
 	.search-wrap{
-		top:70px;
+		top: rem(70);
+		box-shadow: 0 rem(10) rem(10) $gray-100;
 	}
 	.menu-btn {
 		display: none;
 	}
-	.header-wrap{
+	.header-wrap,
+	.header-container{
 		background-color: $black;
 	}
 	.homonym-panel{
 		background-color: $gray-100;
 	}
-	.homonym-list{}
-	.homonym-item{
-		background-color: $white;
+	.homonym-list li:first-child .homonym-item{
+		padding-left: 0;
 	}
 	.homonym-item{
 		float: left;
 		position: relative;
-		width: rem(240) !important;
-		padding:rem(20);
-		border-radius: $border-radius-card;
-		margin-right: 1.25rem;
+		padding: 0 rem(10);
 		transform: scale(1);
-		transition: 50ms ease-in-out;
-		&:hover{
-			text-decoration: none;
-		}
 		&:not(.selected){
-			color: $teal;
-			transform-origin: center;
-			box-shadow: $dropdown-box-shadow;
-			&:hover{
-				transform: scale(1.03);				
+				&:hover{
+					transform: scale(1.03);				
+				}
+			.homonym-item-wrap{
+				color: $teal;
+				transform-origin: center;
+				box-shadow: $dropdown-box-shadow;
+				background-color: $white;
 			}
+		}
+		.homonym-item-wrap{
+			display: block;
+			width: rem(240) !important;
+			padding:rem(15) rem(25);
+			border-radius: $border-radius-card;
+		    transition: 0ms !important;
 		}
 		&:after{
   			transition: 50ms ease-in-out;
@@ -261,31 +353,61 @@ input{
 			position: absolute;
 			background-image: url(../images/icons/homonym-arrowhead.svg);
 			background-size: 100%;
-			width: rem(4);
-			height: rem(2);
-			margin-left: rem(-2);
+			width: rem(40);
+			height: rem(20);
+			margin-left: rem(-20);
 			left: 50%;
-			bottom:rem(-1);
-			transform: scale(1);
+			bottom:rem(-10);
+			transform: scale(0.25);
 		}
 		&.selected{
-			background-color: $primary;
 			color: $white;
 			transform: scale(1);
+			.homonym-item-wrap{
+				background-color: $primary;
+			}
 			&:after{
 				opacity: 1;
-				margin-left: rem(-2);
+				margin-left: rem(-20);
 				left: 50%;
-				bottom:rem(-8);
-				transform: scale(10);
+				bottom:rem(-18);
+				transform: scale(1);
 			}
 			.homonym-nr{
 				background-color: $white;
 				color: $primary;
 				font-weight: $font-weight-bold;
 			}
+			span:not(.homonym-nr){
+				color: $white !important;
+			}
+		}
+		span:not(.homonym-name-container, .homonym-name, .homonym-nr){
+		    transition: 0ms !important;
+			margin-bottom: 0;
+			color: $black;
+		    text-overflow: ellipsis;
+		    display: block;
+		}
+		.homonym-header{
+			font-family: $headings-font-family;
+			font-weight: $headings-font-weight;
+			font-size: $h5-font-size;
+		}
+		.homonym-name{
+		    transition: 0ms !important;
+			color: $teal;
+		}
+		.homonym-matches{
+			font-weight: $font-weight-bold;
+		}
+		.homonym-intro{
+			color: $gray-600 !important;
 		}
 	}
+
+
+
 	// www.bouncejs.com
 	.animation-target {
 	  animation: animation 1250ms linear both;
@@ -300,20 +422,19 @@ input{
 	  100% { transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1); } 
 	}
 	.homonym-wrap{
-		background-color: $gray-100;
-		position: fixed;
-		width: 100%;
+		// position: fixed;
+		margin-top: rem(160);
 		top: 150px;	
-		z-index: 11;	
+		// z-index: 11;	
 	}
 	.homonym-panel{
 		padding-bottom: rem(20);
 	}
 	.content-panel{
-		margin-top: 400px;
+		// margin-top: rem(300);
 	}
 	.main-data{
-		border-right: $border-width-lg $border-color-lg solid ;	
+		border-right: $border-width $border-color solid ;	
 	}
 	.dictionary-source{
 		right: $gutter * 2;
@@ -322,6 +443,9 @@ input{
 	.level-3-panel{
 		padding-left:$gutter * 2;
 		padding-right:$gutter * 2;
+	}
+	.example-text{
+		max-width: calc( 100% - 30px ) ;
 	}
 }
 
@@ -335,9 +459,13 @@ input{
 	.homonym-page{
 		background-color: $gray-100;
 	}
+	.homonym-list{
+		margin-left:-($gutter);
+		margin-right:-($gutter);
+	}
 	.content-panel{
 		background-color: $white;
-		@include border-radius($border-radius-card);
+		@include border-radius($border-radius-sm);
 	}
 	.header-wrap,
 	.search-panel,
@@ -346,6 +474,10 @@ input{
 		max-width: 90vw !important;
 		margin-left: auto !important;
 		margin-right: auto !important;
+	}
+	.search-panel{
+		padding-left: 0 !important;
+		padding-right: 0 !important;
 	}
 	.container-fluid:first-child{
 		background-color: $black;

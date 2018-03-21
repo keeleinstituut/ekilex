@@ -82,6 +82,8 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		logger.info("Found {} comments.", context.comments.size());
 		context.examples = termekiService.getExamples(baseId);
 		logger.info("Found {} examples.", context.examples.size());
+		context.images = termekiService.getImages(baseId);
+		logger.info("Found {} images.", context.images.size());
 		context.abbreviations = loadAbbreviations(dataset);
 		context.genuses = loadGenuses(dataset);
 		context.families = loadFamilies(dataset);
@@ -267,6 +269,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 					}
 				}
 				addMeaningFreeforms(context, conceptId, meaningId);
+				saveImages(context, conceptId, meaningId);
 			}
 
 			Long meaningId = conceptMeanings.get(conceptId);
@@ -321,9 +324,21 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	private void saveImages(Context context, Integer conceptId, Long meaningId) throws Exception {
+
+		List<Map<String, Object>> images = context.images.stream().filter(f -> f.get("concept_id").equals(conceptId)).collect(toList());
+		if (images.isEmpty()) return;
+
+		for (Map<String, Object> image : images) {
+			createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, image.get("image_id").toString());
+		}
+	}
+
 	private void saveUsages(Long lexemeId, Context context, Integer termId) throws Exception {
+
 		List<Map<String, Object>> examples = context.examples.stream().filter(f -> f.get("term_id").equals(termId)).collect(toList());
 		if (examples.isEmpty()) return;
+
 		Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 		for (Map<String, Object> example : examples) {
 			String language = unifyLang((String)example.get("lang"));
@@ -333,6 +348,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	}
 
 	private String intoGenderCode(String gender) {
+
 		String genderCode = gender;
 		if (genderCode != null) {
 			if (genderCode.startsWith("die")) {
@@ -528,5 +544,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> describingYears;
 		List<Map<String, Object>> geolDomains;
 		List<Map<String, Object>> examples;
+		List<Map<String, Object>> images;
 	}
 }
