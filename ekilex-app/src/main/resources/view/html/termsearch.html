@@ -155,9 +155,12 @@
                 <td style="vertical-align: text-top; padding-right: 1em">
                   <span th:text="${freeform.type}"></span>
                 </td>
-                <td>
+                <td th:unless="${freeform.type.toString() == 'IMAGE_FILE'}">
                   <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
                   <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
+                </td>
+                <td th:if="${freeform.type.toString() == 'IMAGE_FILE'}">
+                  <img th:src="@{'/files/images/' + ${freeform.valueText}}"></img>
                 </td>
               </tr>
             </table>
