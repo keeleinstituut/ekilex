@@ -1,8 +1,10 @@
 // general demo js
 $(function() {
+	// show menu in mobile
 	$(".menu-btn").click(function(){
 	    $(".header-links").toggleClass("d-none d-md-block");
 	});
+	// display full info in 3-rd level content
 	$(".more-btn").click(function(){
 	    $(this).parent().toggleClass("expand");
 	});
@@ -15,6 +17,7 @@ $( ".search-phrase" ).focus(function() {
 $( ".search-phrase" ).focusout(function() {
 	$(".awesomplete ul").addClass("d-none");
 });
+
 
 // demo js for interactions between the mobile and desktop modes
 $(function() {
@@ -51,8 +54,8 @@ $( window ).resize(function() {
 	}
 });
 $( document ).ready(function() {
-	$(".homonym-item-1").addClass("selected last-selected animation-target").delay(1250).queue(function(){
+	if ($(window).width() < 768) {
+		$(".content-panel").addClass("d-none d-md-block");
+		$(".homonym-item").removeClass("last-selected");
+	}
 });
-});
-// end demo interactions
-

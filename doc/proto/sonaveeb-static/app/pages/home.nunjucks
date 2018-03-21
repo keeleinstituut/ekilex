@@ -1,0 +1,18 @@
+<!-- index.nunjucks -->
+{% extends "layout.nunjucks" %}
+
+{% block content %}
+			{% import 'macros/header-macro.nunjucks' as header %}
+			{{header.selected('test')}}
+			<div class="container-fluid homonym-page">
+				<div class="row search-wrap">
+					{% import 'macros/search-macro.nunjucks' as search %}
+					{{search.selected('')}}
+				</div>
+				<div class="row">
+					<div class="col-12 content-panel "d-none d-md-block">
+					</div>
+				</div>
+			</div>		
+
+{% endblock %}
