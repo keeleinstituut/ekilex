@@ -53,7 +53,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String defaultWordMorphCode = "SgN";
 	private final static String defaultGovernmentValue = "-";
 	private final static String latinLang = "lat";
-	private final static String lexemeTypeFormula = "valem";
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 	private final static String sqlWordLexemesByMeaningAndDataset =
@@ -90,10 +89,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> processStateCodes;
 	private Map<String, String> displayMorpCodes;
 	private Map<String, String> frequencyGroupCodes;
-	@Deprecated
-	private String lexemeTypeAbbreviation;
-	@Deprecated
-	private String lexemeTypeToken;
+	private String wordTypeAbbreviation;
+	private String wordTypeToken;
+	private final static String wordTypeFormula = "valem";
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -108,8 +106,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	@Override
 	void initialise() throws Exception {
 		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
-		lexemeTypeAbbreviation = wordTypes.get("l");
-		lexemeTypeToken = wordTypes.get("th");
+		wordTypeAbbreviation = wordTypes.get("l");
+		wordTypeToken = wordTypes.get("th");
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
@@ -215,7 +213,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Processing started.");
 		reportingPaused = true;
 
-		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, lexemeTypeFormula, "Ei leitud valemit, loome uue", dataLang);
+		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, wordTypeFormula, "Ei leitud valemit, loome uue", dataLang);
 
 		reportingPaused = false;
 		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
@@ -229,18 +227,19 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		setActivateReport(TOKENS_REPORT_NAME);
 		writeToLogFile("Tähiste töötlus <s:ths>", "", "");
 
-		Count newTokenWordCount = processLexemeToWord(context, context.tokens, lexemeTypeToken, "Ei leitud tähist, loome uue", dataLang);
+		Count newTokenWordCount = processLexemeToWord(context, context.tokens, wordTypeToken, "Ei leitud tähist, loome uue", dataLang);
 
 		logger.debug("Token words created {}", newTokenWordCount.getValue());
 		logger.debug("Tokens import done.");
 	}
 
-	private Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultLexemeType, String logMessage, String lang) throws Exception {
+	private Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultWordType, String logMessage, String lang) throws Exception {
 		Count newWordCount = new Count();
 		for (LexemeToWordData itemData : items) {
 			boolean isImported = context.importedWords.stream().anyMatch(w -> itemData.word.equals(w.value));
 			if (!isImported) {
-				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null);
+				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
 				Lexeme lexeme = new Lexeme();
@@ -249,8 +248,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(itemData.lexemeLevel1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				//FIXME lexeme type became word type
-				//lexeme.setValueState(itemData.lexemeType == null ? defaultLexemeType : itemData.lexemeType);
+				//FIXME lexeme status ??
+				//lexeme.setValueState(itemData.wordType == null ? defaultLexemeType : itemData.wordType);
 				createLexeme(lexeme, getDataset());
 				if (!reportingPaused) {
 					logger.debug("new word created : {}", itemData.word);
@@ -269,7 +268,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Lühendite töötlus <s:lyh> ja <s:lhx>", "", "");
 
 		Count newAbbreviationFullWordCount = processLexemeToWord(context, context.abbreviationFullWords, null, "Ei leitud sõna, loome uue", dataLang);
-		Count newAbbreviationWordCount = processLexemeToWord(context, context.abbreviations, lexemeTypeAbbreviation, "Ei leitud lühendit, loome uue", dataLang);
+		Count newAbbreviationWordCount = processLexemeToWord(context, context.abbreviations, wordTypeAbbreviation, "Ei leitud lühendit, loome uue", dataLang);
 		createLexemeRelations(context, context.abbreviations, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendile");
 		for (LexemeToWordData abbreviation : context.abbreviations) {
 			String abbreviationFullWord = context.meanings.stream().filter(m -> m.word.equals(abbreviation.word)).findFirst().get().meaningWord;
@@ -395,7 +394,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, existingWords, derivative.reportingId);
 			}
 			if (derivativeId == null) {
-				WordData newWord = createDefaultWordFrom(derivative.value, derivative.value, dataLang, derivative.displayMorph);
+				WordData newWord = createDefaultWordFrom(derivative.value, derivative.value, dataLang, derivative.displayMorph, derivative.wordType);
 				derivativeId = newWord.id;
 				newWordsCounter.increment();
 			}
@@ -418,7 +417,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			List<WordData> existingWords = context.importedWords.stream().filter(w -> subWord.value.equals(w.value)).collect(Collectors.toList());
 			Long subWordId = getWordIdFor(subWord.value, subWord.homonymNr, existingWords, subWord.reportingId);
 			if (subWordId == null) {
-				WordData newWord = createDefaultWordFrom(subWord.value, subWord.value, dataLang, subWord.displayMorph);
+				WordData newWord = createDefaultWordFrom(subWord.value, subWord.value, dataLang, subWord.displayMorph, subWord.wordType);
 				subWordId = newWord.id;
 				newWord.homonymNr = subWord.homonymNr;
 				context.importedWords.add(newWord);
@@ -428,7 +427,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel1(1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				lexeme.setValueState(subWord.lexemeType);
+// FIXME: status needed ???
+//				lexeme.setValueState(subWord.lexemeType);
 				lexeme.setFrequencyGroup(subWord.frequencyGroup);
 				Long lexemeId = createLexeme(lexeme, getDataset());
 				if (subWord.government != null) {
@@ -574,7 +574,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel3++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
-					lexeme.setValueState(newWordData.lexemeType);
+// FIXME: status here ??
+//					lexeme.setValueState(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
@@ -747,17 +748,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private List<LexemeToWordData> extractAbbreviations(Element node, String reportingId) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
-
-		List<LexemeToWordData> abbreviations = extractLexemeMetadata(node, abbreviationExp, lexemeTypeAbbreviation, reportingId);
-		//FIXME lexeme type became word type
-		/*
-		abbreviations.forEach(a -> {
-			if (a.lexemeType == null) {
-				a.lexemeType = lexemeTypeAbbreviation;
-			}
-		});
-		*/
-		return abbreviations;
+		return extractLexemeMetadata(node, abbreviationExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractAbbreviationFullWords(Element node, String reportingId) throws Exception {
@@ -925,7 +916,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
-		final String lexemeTypeAttr = "liik";
+		final String wordTypeAttr = "liik";
 		final int defaultLexemeLevel1 = 1;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
@@ -949,16 +940,13 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (relationTypeAttr != null) {
 				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
 			}
-			String lexemeTypeAttrValue = metadataNode.attributeValue(lexemeTypeAttr);
-			if (StringUtils.isNotBlank(lexemeTypeAttrValue)) {
-				//FIXME lexeme type became word type
-				/*
-				lexemeMetadata.lexemeType = wordTypes.get(lexemeTypeAttrValue);
-				if (lexemeMetadata.lexemeType == null) {
-					logger.debug("unknown lexeme type {}", lexemeTypeAttrValue);
-					writeToLogFile(reportingId, "Tundmatu märksõnaliik", lexemeTypeAttrValue);
+			String wordTypeAttrValue = metadataNode.attributeValue(wordTypeAttr);
+			if (StringUtils.isNotBlank(wordTypeAttrValue)) {
+				lexemeMetadata.wordType = wordTypes.get(wordTypeAttrValue);
+				if (lexemeMetadata.wordType == null) {
+					logger.debug("unknown lexeme type {}", wordTypeAttrValue);
+					writeToLogFile(reportingId, "Tundmatu märksõnaliik", wordTypeAttrValue);
 				}
-				*/
 			}
 			metadataList.add(lexemeMetadata);
 		}
@@ -1066,16 +1054,15 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String wordDisplayMorphExp = "s:vk";
 		final String wordVocalFormExp = "s:hld";
 		final String homonymNrAttr = "i";
-		final String lexemeTypeAttr = "liik";
+		final String wordTypeAttr = "liik";
 		final String wordFrequencyGroupExp = "s:msag";
 
 		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
 		}
-		if (wordNode.attributeValue(lexemeTypeAttr) != null) {
-			//FIXME lexeme type became word type
-			//wordData.lexemeType = wordTypes.get(wordNode.attributeValue(lexemeTypeAttr));
+		if (wordNode.attributeValue(wordTypeAttr) != null) {
+			wordData.wordType = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
 		}
 		String wordDisplayForm = wordNode.getTextTrim();
 		String wordValue = cleanUp(wordDisplayForm);
@@ -1088,7 +1075,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			wordVocalForm = vocalFormNode.getTextTrim();
 		}
 
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, guid, null);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, guid, wordData.wordType);
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
@@ -1234,12 +1221,12 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return reportingId;
 	}
 
-	private WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph) throws Exception {
+	private WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType) throws Exception {
 
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
-		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, null);
+		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
 		word.setDisplayMorph(displayMorph);
 		createdWord.id = saveWord(word, null, null, null);
 		return createdWord;
@@ -1408,7 +1395,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		String value;
 		int homonymNr = 0;
 		String reportingId;
-		String lexemeType;
+		String wordType;
 		List<PosData> posCodes = new ArrayList<>();
 		String frequencyGroup;
 		List<String> grammars = new ArrayList<>();
@@ -1458,7 +1445,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		Government government;
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
-		String lexemeType;
+		String wordType;
 		Long meaningId;
 
 		LexemeToWordData copy() {
@@ -1472,7 +1459,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			newData.government = this.government;
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
-			newData.lexemeType = this.lexemeType;
+			newData.wordType = this.wordType;
 			newData.meaningId = this.meaningId;
 			return newData;
 		}
