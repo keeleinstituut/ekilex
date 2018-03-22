@@ -90,6 +90,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		context.describers = loadDescribers(dataset);
 		context.describingYears = loadDescribingYears(dataset);
 		context.geolDomains = loadGeolDomains(dataset);
+		context.models = loadModelHtml(dataset);
 		doImport(context, dataset);
 		updateDataset(baseId, dataset);
 
@@ -171,6 +172,17 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		if ("get".equals(dataset)) {
 			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(44388);
 			logger.info("Found {} domains.", attributes.size());
+			return attributes;
+		} else {
+			return emptyList();
+		}
+	}
+
+	// models html, termbase 3651782 - Arheoloogia terminibaas (arh)
+	private List<Map<String, Object>> loadModelHtml(String dataset) {
+		if ("arh".equals(dataset)) {
+			List<Map<String, Object>> attributes = termekiService.getConceptAttributes(57314);
+			logger.info("Found {} models.", attributes.size());
 			return attributes;
 		} else {
 			return emptyList();
@@ -413,6 +425,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		createMeaningFreeformOfType(FreeformType.FAMILY, context.families, conceptId, meaningId);
 		createMeaningFreeformOfType(FreeformType.DESCRIBER, context.describers, conceptId, meaningId);
 		createMeaningFreeformOfType(FreeformType.DESCRIBING_YEAR, context.describingYears, conceptId, meaningId);
+		createMeaningFreeformOfType(FreeformType.PUBLIC_NOTE, context.models, conceptId, meaningId);
 	}
 
 	private void createMeaningFreeformOfType(FreeformType freeformType, List<Map<String, Object>> items, Integer conceptId, Long meaningId) throws Exception {
@@ -553,5 +566,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> geolDomains;
 		List<Map<String, Object>> examples;
 		List<Map<String, Object>> images;
+		List<Map<String, Object>> models;
 	}
 }
