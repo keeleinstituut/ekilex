@@ -248,7 +248,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 
 				// save word+paradigm+form
-				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, guid);
+				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, guid, null);
 				wordId = saveWord(wordObj, paradigms, getDataset(), wordDuplicateCount);
 				newWords.add(wordObj);
 
@@ -312,7 +312,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							continue;
 						}
 
-						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, defaultWordMorphCode, null);
+						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, defaultWordMorphCode, null, null);
 						wordId = saveWord(wordObj, null, null, wordDuplicateCount);
 						wordMatches.add(wordObj);
 						allWordMatches.add(wordObj);

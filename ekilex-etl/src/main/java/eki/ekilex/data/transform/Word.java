@@ -30,6 +30,8 @@ public class Word extends AbstractDataObject {
 
 	private String genderCode;
 
+	private String wordTypeCode;
+
 	public Word() {
 	}
 
@@ -41,7 +43,7 @@ public class Word extends AbstractDataObject {
 		this.guid = guid;
 	}
 
-	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode, String guid) {
+	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode, String guid, String wordTypeCode) {
 		this.value = value;
 		this.lang = lang;
 		this.formsString = formsString;
@@ -51,6 +53,7 @@ public class Word extends AbstractDataObject {
 		this.homonymNr = homonymNr;
 		this.morphCode = morphCode;
 		this.guid = guid;
+		this.wordTypeCode = wordTypeCode;
 	}
 
 	public Long getId() {
@@ -147,5 +150,13 @@ public class Word extends AbstractDataObject {
 
 	public void setGenderCode(String genderCode) {
 		this.genderCode = genderCode;
+	}
+
+	public String getWordTypeCode() {
+		return wordTypeCode;
+	}
+
+	public void setWordTypeCode(String wordTypeCode) {
+		this.wordTypeCode = wordTypeCode;
 	}
 }

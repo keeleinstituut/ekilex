@@ -1088,7 +1088,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			wordVocalForm = vocalFormNode.getTextTrim();
 		}
 
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, guid);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, guid, null);
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
@@ -1239,7 +1239,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
-		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null);
+		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, null);
 		word.setDisplayMorph(displayMorph);
 		createdWord.id = saveWord(word, null, null, null);
 		return createdWord;

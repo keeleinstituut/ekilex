@@ -191,7 +191,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
-					wordObj = new Word(term, lang, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+					wordObj = new Word(term, lang, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
 					wordId = saveWord(wordObj, null, null, null);
 
 					//lexeme
