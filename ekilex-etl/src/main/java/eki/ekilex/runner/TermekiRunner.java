@@ -242,7 +242,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String language = unifyLang((String)term.get("lang"));
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
-			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
 			String genderCode = intoGenderCode((String)term.get("gender"));
 			if (StringUtils.isNotBlank(genderCode)) {
 				if (existingGenders.contains(genderCode)) {
@@ -439,7 +439,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		if (abbreviation.isPresent()) {
 			String abbreviationValue = (String) abbreviation.get().get("attribute_value");
 			int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
-			Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null);
+			Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
 			Long wordId = saveWord(word, null, null, wordDuplicateCount);
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
