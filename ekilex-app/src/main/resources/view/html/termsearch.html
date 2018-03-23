@@ -94,18 +94,18 @@
     <div th:data-id="${meaningId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
       <div style="border: 1px solid #CCC; padding: 5px;">
         <div th:if="${meaning.contentExists}">
-          <div th:if="${meaning.typeCode != null}">
-            <span class="lbl">Mõistetüüp</span>
-            <span th:text="${meaning.typeCode}"></span>
-          </div>
+          <!--<div th:if="${meaning.typeCode != null}">-->
+            <!--<span class="lbl">Mõistetüüp</span>-->
+            <!--<span th:text="${meaning.typeCode}"></span>-->
+          <!--</div>-->
           <div th:if="${meaning.processStateCode != null}">
             <span class="lbl">Olek</span>
             <span th:text="${meaning.processStateCode}"></span>
           </div>
-          <div th:if="${meaning.stateCode != null}">
-            <span class="lbl">Seisund</span>
-            <span th:text="${meaning.stateCode}"></span>
-          </div>
+          <!--<div th:if="${meaning.stateCode != null}">-->
+            <!--<span class="lbl">Seisund</span>-->
+            <!--<span th:text="${meaning.stateCode}"></span>-->
+          <!--</div>-->
           <p th:if="${not #lists.isEmpty(meaning.domains)}">
             <span class="lbl">Valdkonnad</span>
             <span th:each="domain,domainIter : ${meaning.domains}">
@@ -222,10 +222,10 @@
                 <span th:unless="${grammarIter.last}">,&nbsp;</span>
               </span>
               </div>
-              <div th:if="${lexeme.typeCode != null}">
-                <span class="lbl">Keelenditüüp</span>
-                <span th:text="${lexeme.typeCode}"></span>
-              </div>
+              <!--<div th:if="${lexeme.typeCode != null}">-->
+                <!--<span class="lbl">Keelenditüüp</span>-->
+                <!--<span th:text="${lexeme.typeCode}"></span>-->
+              <!--</div>-->
               <div th:if="${lexeme.frequencyGroupCode != null}">
                 <span class="lbl">Sagedusrühm</span>
                 <span th:text="${lexeme.frequencyGroupCode}"></span>
