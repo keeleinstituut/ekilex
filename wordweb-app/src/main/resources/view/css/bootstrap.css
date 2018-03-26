@@ -3380,6 +3380,59 @@ input[type="button"].btn-block {
   border-color: #1b1e21;
 }
 
+@font-face {
+  font-family: 'material-icons';
+  src: url("../fonts/material-icons.ttf?gmj77c") format("truetype"), url("../fonts/material-icons.woff?gmj77c") format("woff"), url("../fonts/material-icons.svg?gmj77c#material-icons") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'material-icons' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-arrow-right:before {
+  content: "\e905";
+}
+
+.icon-add:before {
+  content: "\e906";
+}
+
+.icon-chevron-left:before {
+  content: "\e907";
+}
+
+.icon-speaker:before {
+  content: "\e904";
+}
+
+.icon-close:before {
+  content: "\e900";
+}
+
+.icon-caret-down:before {
+  content: "\e901";
+}
+
+.icon-mic:before {
+  content: "\e902";
+}
+
+.icon-search:before {
+  content: "\e903";
+}
+
 * {
   transition: 50ms ease-in-out;
 }
@@ -3395,7 +3448,7 @@ ul {
 
 .header-container {
   position: fixed;
-  z-index: 1111;
+  z-index: 111;
   top: 0;
 }
 
@@ -3476,11 +3529,6 @@ ul {
   color: #0077FF;
 }
 
-.homonym-item * {
-  white-space: nowrap;
-  overflow: hidden;
-}
-
 .homonym-item:hover {
   text-decoration: none;
 }
@@ -3518,17 +3566,35 @@ ul {
 .homonym-item .homonym-nr {
   background-color: #0077FF;
   color: #fff;
-  height: 1.0625rem;
-  width: 1.0625rem;
+  height: 1.375rem;
+  width: 1.375rem;
   display: inline-block;
   border-radius: 6.25rem;
-  font-size: 0.625rem;
-  font-weight: 400;
+  font-size: 0.75rem;
+  font-weight: 700;
   font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   padding-top: 0.125rem;
   text-align: center;
   position: relative;
   top: -0.1875rem;
+  transition: 0ms !important;
+}
+
+.homonym-name {
+  transition: 0ms !important;
+  color: #0077FF;
+}
+
+.homonym-matches {
+  font-weight: 700;
+}
+
+.homonym-intro {
+  color: #7F8891 !important;
+  max-height: 1.5rem;
+  position: absolute;
+  top: 4.75rem;
+  width: calc(100% - 70px);
 }
 
 .content-wrap {
@@ -3538,7 +3604,7 @@ ul {
 .search-panel,
 .homonym-panel,
 .level-2-panel {
-  padding-top: 1.875rem;
+  padding-top: 0rem;
   padding-bottom: 0.9375rem;
 }
 
@@ -3634,12 +3700,13 @@ ul {
   float: left;
 }
 
+.dependencies {
+  margin-top: 1.875rem;
+}
+
 @media (max-width: 767.98px) {
   html {
     background-color: #F2F2F2;
-  }
-  .homonym-panel {
-    margin-top: 200px;
   }
   .header-links {
     background-color: #001124;
@@ -3650,7 +3717,18 @@ ul {
     right: 0;
     z-index: 1050;
   }
+  .lang-btn {
+    position: fixed;
+    top: 0;
+    width: 50%;
+    margin: 0 calc(25% - 15px);
+    z-index: 1111;
+  }
+  .homonym-wrap {
+    overflow: hidden;
+  }
   .homonym-panel {
+    margin-top: 200px;
     background-color: #fff;
   }
   .homonym-item {
@@ -3684,6 +3762,11 @@ ul {
     padding: 1.25rem;
     margin: -1.25rem;
   }
+  .search-panel,
+  .homonym-panel,
+  .level-2-panel {
+    padding-top: 1.875rem;
+  }
   .search-wrap {
     top: 4.375rem;
     box-shadow: 0 0.625rem 0.625rem #F2F2F2;
@@ -3702,11 +3785,15 @@ ul {
     padding-left: 0;
   }
   .homonym-item {
+    cursor: pointer;
     float: left;
     position: relative;
     padding: 0 0.625rem;
-    max-height: 7.25rem;
     transform: scale(1);
+  }
+  .homonym-item * {
+    white-space: nowrap;
+    overflow: hidden;
   }
   .homonym-item:not(.selected):hover {
     transform: scale(1.03);
@@ -3719,6 +3806,7 @@ ul {
   }
   .homonym-item .homonym-item-wrap {
     display: block;
+    height: 7.5rem;
     width: 15rem !important;
     padding: 0.9375rem 1.5625rem;
     border-radius: 1.875rem;
@@ -3754,8 +3842,8 @@ ul {
     transform: scale(1);
   }
   .homonym-item.selected .homonym-nr {
-    background-color: #fff;
-    color: #003F87;
+    background-color: #003F87;
+    color: #fff;
     font-weight: 700;
   }
   .homonym-item.selected span:not(.homonym-nr) {
@@ -3772,17 +3860,6 @@ ul {
     font-family: "Montserrat";
     font-weight: 500;
     font-size: 1.25rem;
-  }
-  .homonym-item .homonym-name {
-    transition: 0ms !important;
-    color: #0077FF;
-  }
-  .homonym-item .homonym-matches {
-    font-weight: 700;
-  }
-  .homonym-item .homonym-intro {
-    color: #7F8891 !important;
-    max-height: 1.5rem;
   }
   .animation-target {
     animation: animation 1250ms linear both;

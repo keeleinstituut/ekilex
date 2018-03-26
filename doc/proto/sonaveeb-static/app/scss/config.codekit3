@@ -812,7 +812,7 @@
 		"ft": 4,
 		"ma": 1,
 		"oA": 0,
-		"oAP": "\/Users\/Hattori\/Trinidad arhiiv\/EKI\/ekilex\/doc\/proto\/sonaveeb-static\/app\/css\/bootstrap-grid.css",
+		"oAP": "\/Users\/Hattori\/Trinidad arhiiv\/EKI\/ekilex\/wordweb-app\/target\/classes\/view\/css\/bootstrap-grid.css",
 		"oF": 6,
 		"oS": 1,
 		"uL": 1
@@ -825,7 +825,7 @@
 		"ft": 4,
 		"ma": 1,
 		"oA": 0,
-		"oAP": "\/Users\/Hattori\/Trinidad arhiiv\/EKI\/ekilex\/doc\/proto\/sonaveeb-static\/app\/css\/bootstrap-reboot.css",
+		"oAP": "\/Users\/Hattori\/Trinidad arhiiv\/EKI\/ekilex\/wordweb-app\/target\/classes\/view\/css\/bootstrap-reboot.css",
 		"oF": 6,
 		"oS": 1,
 		"uL": 1
@@ -838,7 +838,7 @@
 		"ft": 4,
 		"ma": 1,
 		"oA": 0,
-		"oAP": "\/Users\/Hattori\/Trinidad arhiiv\/EKI\/ekilex\/doc\/proto\/sonaveeb-static\/app\/css\/bootstrap.css",
+		"oAP": "\/Users\/Hattori\/Trinidad arhiiv\/EKI\/ekilex\/wordweb-app\/target\/classes\/view\/css\/bootstrap.css",
 		"oF": 6,
 		"oS": 1,
 		"uL": 1
@@ -865,6 +865,32 @@
 		"ma": 0,
 		"oA": 1,
 		"oAP": "\/eki\/_eki-variables.css",
+		"oF": 0,
+		"oS": 0,
+		"uL": 1
+		},
+	"\/eki\/icons\/_style.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "\/eki\/icons\/_style.css",
+		"oF": 0,
+		"oS": 0,
+		"uL": 1
+		},
+	"\/eki\/icons\/_variables.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "\/eki\/icons\/_variables.css",
 		"oF": 0,
 		"oS": 0,
 		"uL": 1

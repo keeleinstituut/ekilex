@@ -38,7 +38,7 @@
         <div class="row">
           <div class="col-md-6">
             <div class="search-lang">
-              <button class="btn btn-light">Keelevalik</button>
+              <button class="btn btn-light lang-btn">Keelevalik</button>
             </div>
           </div>
           <div class="col-md-6 col-lg-5 order-md-first">
@@ -57,11 +57,17 @@
                   </ul>
                 </div>
                 <div class="extra-buttons">
-                  <button type="button" class="btn btn-light clear-btn" th:text="#{button.label.clear}">Clear</button>
-                  <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:text="#{button.label.start.rec}">Speak</button>
+                  <button type="button"  alt="Tühjenda otsinguväli" class="btn btn-light clear-btn">
+                    <span class="icon icon-close"></span>
+                  </button>
+                  <button type="button" id="start-rec-btn" alt="Salvesta mikrofoniga otsisõna" class="btn btn-light speak-btn">
+                    <span class="icon icon-mic"></span>
+                  </button>
                   <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
                 </div>
-                <button type="submit" class="btn btn-green search-btn">OTSI</button>
+                <button type="submit" alt="Otsi" class="btn btn-green search-btn">
+                  <span class="icon icon-search"></span>
+                </button>
               </form>
             </div>
           </div>
