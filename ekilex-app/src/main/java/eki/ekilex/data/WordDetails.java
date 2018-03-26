@@ -13,6 +13,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordLexeme> lexemes;
 
+	private List<Relation> wordRelations;
+
 	public WordDetails() {
 	}
 
@@ -36,4 +38,11 @@ public class WordDetails extends AbstractDataObject {
 		this.lexemes = lexemes;
 	}
 
+	public List<Relation> getWordRelations() {
+		return wordRelations;
+	}
+
+	public void setWordRelations(List<Relation> wordRelations) {
+		this.wordRelations = wordRelations;
+	}
 }
