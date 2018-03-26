@@ -22,22 +22,12 @@ public class FileService {
 
 	private static final Logger logger = LoggerFactory.getLogger(FileService.class);
 
-	@Autowired
-	private ApplicationContext context;
-
 	@Value("${file.repository.path:}")
 	private String fileRepositoryPath;
-
-	@Value("${termeki.file.service.url:}")
-	private String termekiFileServiceUrl;
 
 	public Resource getFileAsResource(String fileName) {
 
 		Path pathToFile = findFilePath(fileName);
-		if (pathToFile == null && isNotEmpty(termekiFileServiceUrl)) {
-			return context.getResource(termekiFileServiceUrl + "/" + fileName);
-		}
-
 		return pathToFile == null ? null : new PathResource(pathToFile);
 	}
 
@@ -47,7 +37,7 @@ public class FileService {
 		try {
 			Optional<Path> fileToServe = Files.find(
 					Paths.get(fileRepositoryPath),
-					2,
+					4,
 					(p, a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
 			if (fileToServe.isPresent()) {
 				filePath = fileToServe.get();
