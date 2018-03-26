@@ -3,7 +3,13 @@ function fetchDetails(wordId) {
     var detailsDiv = $('.word-details');
 	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
 		detailsDiv.replaceWith(data);
-	}).fail(function (data) {
+        // these need to be present after each fetchDetails//
+        $('[data-toggle="tooltip"]').tooltip();
+        $(".more-btn").click(function(){
+            $(this).parent().toggleClass("expand");
+        });
+        ////
+    }).fail(function (data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	})
@@ -151,10 +157,6 @@ function initialisePage() {
     $(".menu-btn").click(function(){
         $(".header-links").toggleClass("d-none d-md-block");
     });
-    $(".more-btn").click(function(){
-        $(this).parent().toggleClass("expand");
-    });
-
     $(".search-phrase").focus(function() {
         $(".awesomplete ul").removeClass("d-none");
     });
@@ -219,8 +221,8 @@ function initialisePage() {
 
     $(document).ready(function() {
         $(".homonym-item:first")
-            .addClass("selected last-selected animation-target")
             .delay(1250).queue(function(){})
             .trigger('click');
+            $(".homonym-item:first").addClass("animation-target");
     });
 }

@@ -563,8 +563,8 @@ pre code {
 
 .container {
   width: 100%;
-  padding-right: 0.9375rem;
-  padding-left: 0.9375rem;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
   margin-right: auto;
   margin-left: auto;
 }
@@ -595,8 +595,8 @@ pre code {
 
 .container-fluid {
   width: 100%;
-  padding-right: 0.9375rem;
-  padding-left: 0.9375rem;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
   margin-right: auto;
   margin-left: auto;
 }
@@ -604,8 +604,8 @@ pre code {
 .row {
   display: flex;
   flex-wrap: wrap;
-  margin-right: -0.9375rem;
-  margin-left: -0.9375rem;
+  margin-right: -1.25rem;
+  margin-left: -1.25rem;
 }
 
 .no-gutters {
@@ -628,8 +628,8 @@ pre code {
   position: relative;
   width: 100%;
   min-height: 1px;
-  padding-right: 0.9375rem;
-  padding-left: 0.9375rem;
+  padding-right: 1.25rem;
+  padding-left: 1.25rem;
 }
 
 .col {
@@ -1731,6 +1731,7 @@ tbody.collapse.show {
   width: 100%;
   padding: 1.125rem 1.15625rem;
   font-size: 1rem;
+  font-weight: 700;
   line-height: 1.5;
   color: #495057;
   background-color: #fff;
@@ -3042,22 +3043,22 @@ input[type="button"].btn-block {
 }
 
 .card-deck .card {
-  margin-bottom: 0.9375rem;
+  margin-bottom: 1.25rem;
 }
 
 @media (min-width: 576px) {
   .card-deck {
     flex-flow: row wrap;
-    margin-right: -0.9375rem;
-    margin-left: -0.9375rem;
+    margin-right: -1.25rem;
+    margin-left: -1.25rem;
   }
   .card-deck .card {
     display: flex;
     flex: 1 0 0%;
     flex-direction: column;
-    margin-right: 0.9375rem;
+    margin-right: 1.25rem;
     margin-bottom: 0;
-    margin-left: 0.9375rem;
+    margin-left: 1.25rem;
   }
 }
 
@@ -3067,7 +3068,7 @@ input[type="button"].btn-block {
 }
 
 .card-group > .card {
-  margin-bottom: 0.9375rem;
+  margin-bottom: 1.25rem;
 }
 
 @media (min-width: 576px) {
@@ -3380,6 +3381,117 @@ input[type="button"].btn-block {
   border-color: #1b1e21;
 }
 
+.tooltip {
+  position: absolute;
+  z-index: 1070;
+  display: block;
+  margin: 0;
+  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  text-align: start;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  word-break: normal;
+  word-spacing: normal;
+  white-space: normal;
+  line-break: auto;
+  font-size: 0.875rem;
+  word-wrap: break-word;
+  opacity: 0;
+}
+
+.tooltip.show {
+  opacity: 0.9;
+}
+
+.tooltip .arrow {
+  position: absolute;
+  display: block;
+  width: 0.8rem;
+  height: 0.4rem;
+}
+
+.tooltip .arrow::before {
+  position: absolute;
+  content: "";
+  border-color: transparent;
+  border-style: solid;
+}
+
+.bs-tooltip-top, .bs-tooltip-auto[x-placement^="top"] {
+  padding: 0.4rem 0;
+}
+
+.bs-tooltip-top .arrow, .bs-tooltip-auto[x-placement^="top"] .arrow {
+  bottom: 0;
+}
+
+.bs-tooltip-top .arrow::before, .bs-tooltip-auto[x-placement^="top"] .arrow::before {
+  top: 0;
+  border-width: 0.4rem 0.4rem 0;
+  border-top-color: #001124;
+}
+
+.bs-tooltip-right, .bs-tooltip-auto[x-placement^="right"] {
+  padding: 0 0.4rem;
+}
+
+.bs-tooltip-right .arrow, .bs-tooltip-auto[x-placement^="right"] .arrow {
+  left: 0;
+  width: 0.4rem;
+  height: 0.8rem;
+}
+
+.bs-tooltip-right .arrow::before, .bs-tooltip-auto[x-placement^="right"] .arrow::before {
+  right: 0;
+  border-width: 0.4rem 0.4rem 0.4rem 0;
+  border-right-color: #001124;
+}
+
+.bs-tooltip-bottom, .bs-tooltip-auto[x-placement^="bottom"] {
+  padding: 0.4rem 0;
+}
+
+.bs-tooltip-bottom .arrow, .bs-tooltip-auto[x-placement^="bottom"] .arrow {
+  top: 0;
+}
+
+.bs-tooltip-bottom .arrow::before, .bs-tooltip-auto[x-placement^="bottom"] .arrow::before {
+  bottom: 0;
+  border-width: 0 0.4rem 0.4rem;
+  border-bottom-color: #001124;
+}
+
+.bs-tooltip-left, .bs-tooltip-auto[x-placement^="left"] {
+  padding: 0 0.4rem;
+}
+
+.bs-tooltip-left .arrow, .bs-tooltip-auto[x-placement^="left"] .arrow {
+  right: 0;
+  width: 0.4rem;
+  height: 0.8rem;
+}
+
+.bs-tooltip-left .arrow::before, .bs-tooltip-auto[x-placement^="left"] .arrow::before {
+  left: 0;
+  border-width: 0.4rem 0 0.4rem 0.4rem;
+  border-left-color: #001124;
+}
+
+.tooltip-inner {
+  max-width: 200px;
+  padding: 0.25rem 0.5rem;
+  color: #fff;
+  text-align: center;
+  background-color: #001124;
+  border-radius: 1.375rem;
+}
+
 @font-face {
   font-family: 'material-icons';
   src: url("../fonts/material-icons.ttf?gmj77c") format("truetype"), url("../fonts/material-icons.woff?gmj77c") format("woff"), url("../fonts/material-icons.svg?gmj77c#material-icons") format("svg");
@@ -3529,55 +3641,19 @@ ul {
   color: #0077FF;
 }
 
-.homonym-item:hover {
-  text-decoration: none;
-}
-
-.homonym-item .homonym-name-container {
-  max-width: calc( 100% - 24px);
-  padding-right: 0.375rem;
-  display: inline-block;
-  position: relative;
-}
-
-.homonym-item .homonym-name-container:before, .homonym-item .homonym-name-container:after {
-  content: "";
+.homonym-item-wrap {
   display: block;
-  position: absolute;
-  top: 0;
-  left: 8.75rem;
-  margin-right: -0.0625rem;
-  height: 100%;
-  width: 1.875rem;
-  z-index: 10000;
-  background: #fff;
-  background: -webkit-linear-gradient(185deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
-  background: -o-linear-gradient(185deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
-  background: linear-gradient(275deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
-}
-
-.homonym-item.selected .homonym-name-container:before, .homonym-item.selected .homonym-name-container:after {
-  background: #003F87;
-  background: -webkit-linear-gradient(185deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
-  background: -o-linear-gradient(185deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
-  background: linear-gradient(275deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
-}
-
-.homonym-item .homonym-nr {
-  background-color: #0077FF;
-  color: #fff;
-  height: 1.375rem;
-  width: 1.375rem;
-  display: inline-block;
-  border-radius: 6.25rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-  padding-top: 0.125rem;
-  text-align: center;
-  position: relative;
-  top: -0.1875rem;
   transition: 0ms !important;
+}
+
+.homonym-name,
+.homonym-matches,
+.homonym-intro {
+  white-space: nowrap;
+}
+
+.homonym-header {
+  font-weight: 700;
 }
 
 .homonym-name {
@@ -3585,16 +3661,17 @@ ul {
   color: #0077FF;
 }
 
+.homonym-matches,
+.homonym-intro {
+  font-size: 0.75rem;
+}
+
 .homonym-matches {
   font-weight: 700;
 }
 
-.homonym-intro {
+.homonym-intro * {
   color: #7F8891 !important;
-  max-height: 1.5rem;
-  position: absolute;
-  top: 4.75rem;
-  width: calc(100% - 70px);
 }
 
 .content-wrap {
@@ -3630,10 +3707,10 @@ ul {
 
 .level-2-panel,
 .level-3-panel {
-  margin-left: -0.9375rem;
-  margin-right: -0.9375rem;
-  padding: 0.9375rem;
-  padding-right: 0.9375rem;
+  margin-left: -1.25rem;
+  margin-right: -1.25rem;
+  padding: 1.25rem;
+  padding-right: 1.25rem;
 }
 
 .level-2-panel:first-child {
@@ -3665,18 +3742,17 @@ ul {
 .dictionary-source {
   position: absolute;
   top: -0.625rem;
-  right: 0.9375rem;
+  right: 1.25rem;
   color: #7F8891;
-  font-size: 0.625rem;
+  font-size: 0.75rem;
   background-color: #fff;
-  text-transform: uppercase;
   padding: 0 0.3125rem;
 }
 
 .more-btn {
   position: absolute;
-  top: 0.46875rem;
-  right: 1.875rem;
+  top: 0.625rem;
+  right: 2.5rem;
   padding: 0.3125rem;
 }
 
@@ -3701,12 +3777,12 @@ ul {
 }
 
 .dependencies {
-  margin-top: 1.875rem;
+  margin-top: 0.625rem;
 }
 
 @media (max-width: 767.98px) {
   html {
-    background-color: #F2F2F2;
+    background-color: #fff;
   }
   .header-links {
     background-color: #001124;
@@ -3728,19 +3804,29 @@ ul {
     overflow: hidden;
   }
   .homonym-panel {
-    margin-top: 200px;
+    margin-top: 9.375rem;
     background-color: #fff;
   }
   .homonym-item {
     display: block;
-    margin-left: -0.9375rem;
-    margin-right: -0.9375rem;
-    padding-left: 0.9375rem;
-    padding-right: 0.9375rem;
+    overflow: hidden;
+    min-height: 6.25rem;
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
     border-bottom: 1px #D8D8D8 solid;
   }
   .homonym-item.last-selected {
     background-color: rgba(0, 63, 135, 0.05);
+  }
+  .homonym-item *:not(.homonym-nr) {
+    display: block;
+    white-space: nowrap;
+    float: left;
+  }
+  .homonym-intro * {
+    white-space: nowrap;
   }
   .examples-wrap {
     float: right;
@@ -3784,6 +3870,52 @@ ul {
   .homonym-list li:first-child .homonym-item {
     padding-left: 0;
   }
+  .homonym-item:hover {
+    text-decoration: none;
+  }
+  .homonym-item .homonym-name-container {
+    max-width: calc( 100% - 24px);
+    padding-right: 0.375rem;
+    display: inline-block;
+    position: relative;
+  }
+  .homonym-item .homonym-name-container:before, .homonym-item .homonym-name-container:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 8.75rem;
+    margin-right: -0.0625rem;
+    height: 100%;
+    width: 1.875rem;
+    z-index: 10000;
+    background: #fff;
+    background: -webkit-linear-gradient(185deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
+    background: -o-linear-gradient(185deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(275deg, #fff 20%, rgba(255, 255, 255, 0) 100%);
+  }
+  .homonym-item.selected .homonym-name-container:before, .homonym-item.selected .homonym-name-container:after {
+    background: #003F87;
+    background: -webkit-linear-gradient(185deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
+    background: -o-linear-gradient(185deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
+    background: linear-gradient(275deg, #003F87 20%, rgba(0, 63, 135, 0) 100%);
+  }
+  .homonym-item .homonym-nr {
+    background-color: #0077FF;
+    color: #fff;
+    height: 1.375rem;
+    width: 1.375rem;
+    display: inline-block;
+    border-radius: 6.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    padding-top: 0.125rem;
+    text-align: center;
+    position: relative;
+    top: -0.1875rem;
+    transition: 0ms !important;
+  }
   .homonym-item {
     cursor: pointer;
     float: left;
@@ -3805,12 +3937,10 @@ ul {
     background-color: #fff;
   }
   .homonym-item .homonym-item-wrap {
-    display: block;
     height: 7.5rem;
     width: 15rem !important;
     padding: 0.9375rem 1.5625rem;
     border-radius: 1.875rem;
-    transition: 0ms !important;
   }
   .homonym-item:after {
     transition: 50ms ease-in-out;
@@ -3858,8 +3988,13 @@ ul {
   }
   .homonym-item .homonym-header {
     font-family: "Montserrat";
-    font-weight: 500;
     font-size: 1.25rem;
+  }
+  .homonym-intro {
+    max-height: 1.5rem;
+    position: absolute;
+    top: 4.75rem;
+    width: calc(100% - 70px);
   }
   .animation-target {
     animation: animation 1250ms linear both;
@@ -3898,12 +4033,12 @@ ul {
     border-right: 1px #D8D8D8 solid;
   }
   .dictionary-source {
-    right: 1.875rem;
+    right: 2.5rem;
     font-size: 0.75rem;
   }
   .level-3-panel {
-    padding-left: 1.875rem;
-    padding-right: 1.875rem;
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
   }
   .example-text {
     max-width: calc( 100% - 30px);
@@ -3915,8 +4050,8 @@ ul {
     background-color: #F2F2F2;
   }
   .homonym-list {
-    margin-left: -0.9375rem;
-    margin-right: -0.9375rem;
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
   }
   .content-panel {
     background-color: #fff;
