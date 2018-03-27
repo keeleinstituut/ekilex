@@ -343,23 +343,6 @@
                 </tr>
               </table>
             </div>
-            <div th:if="${not #lists.isEmpty(lexeme.wordRelations)}">
-              <hr />
-              <span class="lbl">Keelendi seosed</span>
-              <table class="orderable" th:data-op-code="word_relation">
-                <tr th:each="relation, itemStat : ${lexeme.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                  <td>
-                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
-                  </td>
-                  <td style="vertical-align: text-top; padding-right: 1em">
-                    <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
-                  </td>
-                  <td>
-                    <span th:text="${relation.relationTypeLabel}"></span>
-                  </td>
-                </tr>
-              </table>
-            </div>
             <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
               <hr />
               <span class="lbl">Ilmiku seosed</span>
@@ -436,6 +419,25 @@
         </th:block>
       </div>
       <div class="float-left" style="width: 30%">
+        <div th:if="${not #lists.isEmpty(details.wordRelations)}">
+          <span class="lbl">Keelendi seosed</span>
+          <table class="orderable" th:data-op-code="word_relation">
+            <tr th:each="relation, itemStat : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
+              <td>
+                <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+              </td>
+              <td style="vertical-align: text-top; padding-right: 1em">
+                <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
+                  <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
+                </button>
+              </td>
+              <td>
+                <span th:text="${relation.relationTypeLabel}"></span>
+              </td>
+            </tr>
+          </table>
+          <hr />
+        </div>
         <div th:if="${not #lists.isEmpty(details.paradigms)}">
           <div th:each="paradigm : ${details.paradigms}" th:if="${paradigm.formsExist}" style="padding: 5px">
             <button class="btn btn-info" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">

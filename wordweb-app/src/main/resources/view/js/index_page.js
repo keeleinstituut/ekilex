@@ -3,7 +3,10 @@ function fetchDetails(wordId) {
     var detailsDiv = $('.word-details');
 	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
 		detailsDiv.replaceWith(data);
-	}).fail(function (data) {
+        // these need to be present after each fetchDetails//
+        $('.word-details [data-toggle="tooltip"]').tooltip();
+        ////
+    }).fail(function (data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	})
@@ -151,15 +154,14 @@ function initialisePage() {
     $(".menu-btn").click(function(){
         $(".header-links").toggleClass("d-none d-md-block");
     });
-    $(".more-btn").click(function(){
-        $(this).parent().toggleClass("expand");
-    });
-
     $(".search-phrase").focus(function() {
         $(".awesomplete ul").removeClass("d-none");
     });
     $( ".search-phrase" ).focusout(function() {
         $(".awesomplete ul").addClass("d-none");
+    });
+    $(document).on("click", ".more-btn", function() {
+        $(this).parent().toggleClass("expand");
     });
 
     // demo js for interactions between the mobile and desktop modes
@@ -219,8 +221,9 @@ function initialisePage() {
 
     $(document).ready(function() {
         $(".homonym-item:first")
-            .addClass("selected last-selected animation-target")
             .delay(1250).queue(function(){})
             .trigger('click');
+        $(".homonym-item:first").addClass("animation-target");
+        $('[data-toggle="tooltip"]').tooltip();
     });
 }

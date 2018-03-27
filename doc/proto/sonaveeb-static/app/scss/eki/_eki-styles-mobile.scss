@@ -1,0 +1,68 @@
+// MOBILE
+////////////////////////////////
+
+@include media-breakpoint-down(sm) {
+
+////////////////////////////////
+
+html{
+	background-color: $white;
+}
+.header-links{ 
+	background-color: $black;
+	position: fixed;
+	height: 100%;
+	width: calc(100% - 90px);
+	top:0;
+	right: 0;
+	z-index: $zindex-modal;
+}
+.lang-btn{
+	position: fixed;
+	top:0;
+	width: 50%;
+	margin: 0 calc(25% - 15px ) ;
+	z-index: 1111;
+}
+.homonym-wrap{
+	overflow: hidden;
+}
+.homonym-panel{
+	margin-top: rem(150);
+	background-color: $white;
+}
+.homonym-item{
+	display: block;
+	overflow: hidden;
+	min-height: rem(100);
+	margin-left:-($gutter);
+	margin-right:-($gutter);
+	padding-left:$gutter;
+	padding-right:$gutter;
+	border-bottom: $border-width $border-color solid ;
+	&.last-selected{
+		background-color: rgba($primary, 0.05);
+	}
+	*:not(.homonym-nr){
+		display: block;
+		white-space: nowrap;
+		float: left;
+	}
+}
+.homonym-intro{
+	*{
+		white-space: nowrap;
+	}
+}
+.examples-wrap{
+	float:right;
+}
+.example-text{
+	background-color: $gray-100;
+	padding: rem(4) rem(10) rem(6) rem(10);
+	border-radius: $border-radius-sm;
+}
+
+////////////////////////////////
+
+}

@@ -1,0 +1,37 @@
+// LARGE+
+////////////////////////////////
+
+@include media-breakpoint-up(lg) {
+
+////////////////////////////////
+
+.homonym-page{
+	background-color: $gray-100;
+}
+.homonym-list{
+	margin-left:-($gutter);
+	margin-right:-($gutter);
+}
+.content-panel{
+	background-color: $white;
+	@include border-radius($border-radius-sm);
+}
+.header-wrap,
+.search-panel,
+.homonym-panel,
+.content-panel{
+	max-width: 90vw !important;
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+.search-panel{
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+.container-fluid:first-child{
+	background-color: $black;
+}
+
+////////////////////////////////
+
+}

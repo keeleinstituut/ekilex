@@ -87,6 +87,7 @@ public class LexSearchService implements SystemConstant {
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
 		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);
+		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 
 		lexemes.forEach(lexeme -> {
 
@@ -114,7 +115,6 @@ public class LexSearchService implements SystemConstant {
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
 			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
 			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
-			List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 			List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 			List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
 			List<CollocationTuple> collocTuples = lexSearchDbService.findCollocationTuples(lexemeId).into(CollocationTuple.class);
@@ -130,7 +130,6 @@ public class LexSearchService implements SystemConstant {
 			lexeme.setLexemeFreeforms(lexemeFreeforms);
 			lexeme.setGovernments(governments);
 			lexeme.setLexemeRelations(lexemeRelations);
-			lexeme.setWordRelations(wordRelations);
 			lexeme.setMeaningRelations(meaningRelations);
 			lexeme.setGrammars(lexemeGrammars);
 			lexeme.setCollocationPosGroups(collocationPosGroups);
@@ -152,6 +151,7 @@ public class LexSearchService implements SystemConstant {
 		return new WordDetails(d -> {
 			d.setParadigms(paradigms);
 			d.setLexemes(lexemes);
+			d.setWordRelations(wordRelations);
 		});
 	}
 

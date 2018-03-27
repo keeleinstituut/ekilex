@@ -67,6 +67,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final static String WORD_RELATION_SUPERLATIVE = "superl";
 	private final static String WORD_RELATION_COMPARATIVE = "komp";
+	private final static String WORD_RELATION_POSITIVE = "posit";
 
 	private final static String FORM_RELATION_REFERENCE_FORM = "mvt";
 
@@ -220,19 +221,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (WordData wordData : words) {
 			for (String superlative : wordData.superlatives) {
 				count++;
-				Long superlativeId;
-				List<WordData> existingWords = context.importedWords.stream()
-						.filter(w -> superlative.equals(w.value))
-						.collect(Collectors.toList());
-				if (existingWords.isEmpty()) {
-					logger.debug("Creating word {}", superlative);
-					WordData createdWord = createDefaultWordFrom(superlative, null);
-					context.importedWords.add(createdWord);
-					superlativeId = createdWord.id;
-				} else {
-					superlativeId = existingWords.get(0).id;
-				}
+				Long superlativeId = findOrCreateWord(context, superlative);
 				createWordRelation(wordData.id, superlativeId, WORD_RELATION_SUPERLATIVE);
+				createWordRelation(superlativeId, wordData.id, WORD_RELATION_POSITIVE);
 			}
 		}
 		logger.debug("Word superlatives processing done, {}.", count);
@@ -251,22 +242,28 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (WordData wordData : words) {
 			for (String comparative : wordData.comparatives) {
 				count++;
-				Long comparativeId;
-				List<WordData> existingWords = context.importedWords.stream()
-						.filter(w -> comparative.equals(w.value))
-						.collect(Collectors.toList());
-				if (existingWords.isEmpty()) {
-					logger.debug("Creating word {}", comparative);
-					WordData createdWord = createDefaultWordFrom(comparative, null);
-					context.importedWords.add(createdWord);
-					comparativeId = createdWord.id;
-				} else {
-					comparativeId = existingWords.get(0).id;
-				}
+				Long comparativeId = findOrCreateWord(context, comparative);
 				createWordRelation(wordData.id, comparativeId, WORD_RELATION_COMPARATIVE);
+				createWordRelation(comparativeId, wordData.id, WORD_RELATION_POSITIVE);
 			}
 		}
 		logger.debug("Word comparatives processing done, {}.", count);
+	}
+
+	private Long findOrCreateWord(Context context, String wordValue) throws Exception {
+		Long wordId;
+		List<WordData> existingWords = context.importedWords.stream()
+				.filter(w -> wordValue.equals(w.value))
+				.collect(Collectors.toList());
+		if (existingWords.isEmpty()) {
+			logger.debug("Creating word and lexeme {}", wordValue);
+			LexemeToWordData newLexemeData = new LexemeToWordData();
+			newLexemeData.word = wordValue;
+			wordId = createLexemeAndRelatedObjects(newLexemeData, context).wordId;
+		} else {
+			wordId = existingWords.get(0).id;
+		}
+		return wordId;
 	}
 
 	private void processCompoundForms(Context context) throws Exception {
@@ -406,7 +403,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Long lexemeId;
 		if (existingWords.isEmpty()) {
 			logger.debug("No word found, adding word with objects : {}.", data.word);
-			lexemeId = createLexemeAndRelatedObjects(data, context);
+			lexemeId = createLexemeAndRelatedObjects(data, context).lexemeId;
 			if (!data.usageMeanings.isEmpty()) {
 				logger.debug("Usages found, adding them");
 				String governmentValue = data.government == null ? defaultGovernmentValue : data.government.getValue();
@@ -428,23 +425,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return lexemeId;
 	}
 
-	private Long createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context) throws Exception {
+	private LexemeData createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context) throws Exception {
 
+		LexemeData createdLexemeData = new LexemeData();
 		WordData newWord = createDefaultWordFrom(wordData.word, wordData.wordType);
 		context.importedWords.add(newWord);
+		createdLexemeData.wordId = newWord.id;
 		Long meaningId = createMeaning();
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
 		lexeme.setWordId(newWord.id);
-		lexeme.setLevel1(0);
-		lexeme.setLevel2(0);
-		lexeme.setLevel3(0);
+		lexeme.setLevel1(1);
+		lexeme.setLevel2(1);
+		lexeme.setLevel3(1);
 // FIXME: value state, from where this is fetched ?
 //		lexeme.setValueState(lexemeType);
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
-		return createLexeme(lexeme, getDataset());
+		createdLexemeData.lexemeId = createLexeme(lexeme, getDataset());
+		return createdLexemeData;
 	}
 
 	private WordData createDefaultWordFrom(String wordValue, String wordType) throws Exception {
@@ -610,9 +610,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(synonymData.meaningId);
-				lexeme.setLevel1(0);
-				lexeme.setLevel2(0);
-				lexeme.setLevel3(0);
+				lexeme.setLevel1(1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
 				createLexeme(lexeme, getDataset());
 			}
 		}
@@ -733,7 +733,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
-					lexeme.setLevel3(0);
+					lexeme.setLevel3(1);
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId == null) {
@@ -813,9 +813,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
 		lexeme.setWordId(abbreviation.id);
-		lexeme.setLevel1(0);
-		lexeme.setLevel2(0);
-		lexeme.setLevel3(0);
+		lexeme.setLevel1(1);
+		lexeme.setLevel2(1);
+		lexeme.setLevel3(1);
 		//FIXME: from where we get state ?
 		//lexeme.setValueState(wordTypeAbbreviation);
 		createLexeme(lexeme, getDataset());
@@ -1647,6 +1647,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private class SoundFileData {
 		String soundFile;
 		String formValue;
+	}
+
+	private class LexemeData {
+		Long lexemeId;
+		Long wordId;
 	}
 
 	private class Context {

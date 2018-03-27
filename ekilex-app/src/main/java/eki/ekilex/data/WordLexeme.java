@@ -78,8 +78,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Relation> lexemeRelations;
 
-	private List<Relation> wordRelations;
-
 	private List<Relation> meaningRelations;
 
 	private List<String> grammars;
@@ -285,14 +283,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeRelations(List<Relation> lexemeRelations) {
 		this.lexemeRelations = lexemeRelations;
-	}
-
-	public List<Relation> getWordRelations() {
-		return wordRelations;
-	}
-
-	public void setWordRelations(List<Relation> wordRelations) {
-		this.wordRelations = wordRelations;
 	}
 
 	public List<Relation> getMeaningRelations() {

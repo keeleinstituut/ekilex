@@ -39,6 +39,7 @@ import org.jooq.Record12;
 import org.jooq.Record15;
 import org.jooq.Record4;
 import org.jooq.Record5;
+import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Result;
@@ -581,12 +582,13 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record5<Long,String,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record6<Long,String,Long,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
 						WORD_RELATION.ID.as("id"),
 						FORM.VALUE.as("word"),
+						WORD.ID.as("word_id"),
 						WORD.LANG.as("word_lang"),
 						WORD_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
 						WORD_RELATION.ORDER_BY.as("order_by")

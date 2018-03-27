@@ -62,6 +62,8 @@ public class TermekiService implements InitializingBean {
 
 	private String sqlSelectImages = "select * from termeki_concept_images where concept_id in (select concept_id from termeki_concepts where termbase_id = :baseId)";
 
+	private static final String sqlSelectImageIds = "select distinct image_id from termeki_concept_images";
+
 	private Map<Integer, String> termbaseIds;
 
 	private String sqlSelectExamples;
@@ -169,6 +171,10 @@ public class TermekiService implements InitializingBean {
 		Map<String, Object> params = constructParameters(baseId);
 		List<Map<String, Object>> result = queryList("select * from termeki_termbases where termbase_id=:baseId", params);
 		return result.isEmpty() ? null : result.get(0);
+	}
+
+	public List<Map<String, Object>> getImageIds() {
+		return queryList(sqlSelectImageIds, Collections.emptyMap());
 	}
 
 	private Map<String, Object> constructParameters(Integer baseId) {

@@ -187,7 +187,7 @@ public class CommonDataDbService {
 					.leftOuterJoin(utransl).on(utransl.FREEFORM_ID.eq(utrans.ID).and(utransl.REF_TYPE.eq(ReferenceType.PERSON.name())))
 					.leftOuterJoin(trans).on(trans.ID.eq(utransl.REF_ID))
 					.leftOuterJoin(usrcl).on(usrcl.FREEFORM_ID.eq(u.ID).and(usrcl.REF_TYPE.eq(ReferenceType.SOURCE.name())))
-					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
+					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(um.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())))
 					.leftOuterJoin(utypelbl)
 					.on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode))))
 					)

@@ -38,7 +38,7 @@
         <div class="row">
           <div class="col-md-6">
             <div class="search-lang">
-              <button class="btn btn-light">Keelevalik</button>
+              <button class="btn btn-light lang-btn" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Keelevalik</button>
             </div>
           </div>
           <div class="col-md-6 col-lg-5 order-md-first">
@@ -57,11 +57,17 @@
                   </ul>
                 </div>
                 <div class="extra-buttons">
-                  <button type="button" class="btn btn-light clear-btn" th:text="#{button.label.clear}">Clear</button>
-                  <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:text="#{button.label.start.rec}">Speak</button>
+                  <button type="button"  alt="Tühjenda otsinguväli" class="btn btn-light clear-btn">
+                    <span class="icon icon-close"></span>
+                  </button>
+                  <button type="button" id="start-rec-btn" alt="Salvesta mikrofoniga otsisõna" class="btn btn-light speak-btn">
+                    <span class="icon icon-mic"></span>
+                  </button>
                   <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
                 </div>
-                <button type="submit" class="btn btn-green search-btn">OTSI</button>
+                <button type="submit" alt="Otsi" class="btn btn-green search-btn">
+                  <span class="icon icon-search"></span>
+                </button>
               </form>
             </div>
           </div>
@@ -115,29 +121,31 @@
                 <div class="definition col-lg-6">
                   <span class="" th:each="definition : ${lexeme.definitions}" th:text="${definition}">maa-ala, millel sa kõnnid või kus autod sõidavad; rada, tänav</span>
                 </div>
-                <button class="btn more-btn">Vaata veel</button>
+                <button alt="Kuva rohkem infot" class="btn more-btn">
+                  <span class="icon icon-add"></span>
+                </button>
                 <div class="dependencies col-lg-6">
                   <div class="dependence row">
-                    <div class="questions-wrap col">
-                      <span class="question">Mida?</span>
-                      <span class="question">Keda?</span>
-                    </div>
                     <div class="examples-wrap col-12">
                       <div class="example-item">
-                        <span class="example-text">See tee viib külla</span>
-                        <button class="listen" data-words="See tee viib külla" th:onclick="'generateVoiceAndPlay(this)'">Kuula</button>
+                        <span class="example-text" data-toggle="tooltip" title="mida? keda?">
+                          See <strong>tee</strong> viib külla
+                        </span>
+                        <button class="btn btn-speaker" alt="Kuula hääldust" data-words="See tee viib külla" th:onclick="'generateVoiceAndPlay(this)'">
+                          <span class="icon icon-speaker"></span>
+                        </button>
                       </div>
                     </div>
                   </div>
-                  <div class="dependence">
-                    <div class="questions-wrap">
-                      <span class="question">Mida?</span>
-                      <span class="question">Keda?</span>
-                    </div>
-                    <div class="examples-wrap">
+                  <div class="dependence row">
+                    <div class="examples-wrap col-12">
                       <div class="example-item">
-                        <span class="example-text">See tee viib külla</span>
-                        <button class="listen" data-words="See tee viib külla" th:onclick="'generateVoiceAndPlay(this)'">Kuula</button>
+                        <span class="example-text" data-toggle="tooltip" title="mis?">
+                          Sa ei leia siit <strong>teed</strong>, mis viib külast välja.
+                        </span>
+                        <button class="btn btn-speaker" alt="Kuula hääldust" data-words="Sa ei leia siit teed, mis viib külast välja" th:onclick="'generateVoiceAndPlay(this)'">
+                          <span class="icon icon-speaker"></span>
+                        </button>
                       </div>
                     </div>
                   </div>
