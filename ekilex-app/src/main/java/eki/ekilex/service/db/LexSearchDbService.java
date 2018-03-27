@@ -36,16 +36,14 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record12;
-import org.jooq.Record16;
 import org.jooq.Record4;
-import org.jooq.Record5;
 import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Result;
+import org.jooq.SelectField;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import eki.common.constant.FreeformType;
@@ -77,7 +75,6 @@ public class LexSearchDbService implements SystemConstant {
 
 	private DSLContext create;
 
-	@Autowired
 	public LexSearchDbService(DSLContext context) {
 		create = context;
 	}
@@ -489,40 +486,56 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record16<String[],String[],String,Long,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String>> findFormMeanings(
-			Long wordId, List<String> selectedDatasets) {
+	private SelectField<?>[] wordLexemeSelectFields =  {
+			DSL.arrayAggDistinct(FORM.VALUE).as("words"),
+			DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
+			WORD.LANG.as("word_lang"),
+			WORD.ID.as("word_id"),
+			WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
+			WORD.GENDER_CODE,
+			LEXEME.ID.as("lexeme_id"),
+			LEXEME.MEANING_ID,
+			LEXEME.DATASET_CODE.as("dataset"),
+			LEXEME.LEVEL1,
+			LEXEME.LEVEL2,
+			LEXEME.LEVEL3,
+			LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+			LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
+			MEANING.TYPE_CODE.as("meaning_type_code"),
+			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
+		};
 
-		return 
-				create
-				.select(
-						DSL.arrayAggDistinct(FORM.VALUE).as("words"),
-						DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
-						WORD.LANG.as("word_lang"),
-						WORD.ID.as("word_id"),
-						WORD.DISPLAY_MORPH_CODE.as("word_display_morph_code"),
-						WORD.GENDER_CODE,
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.MEANING_ID,
-						LEXEME.DATASET_CODE.as("dataset"),
-						LEXEME.LEVEL1,
-						LEXEME.LEVEL2,
-						LEXEME.LEVEL3,
-						LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-						MEANING.TYPE_CODE.as("meaning_type_code"),
-						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"))
-				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
-				.where(
-						WORD.ID.eq(wordId)
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.IS_WORD.isTrue())
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-						.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
-				.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
-				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-				.fetch();
+	public Result<Record> findFormMeanings(Long wordId, List<String> selectedDatasets) {
+
+		return create.select(wordLexemeSelectFields)
+			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
+			.where(
+					WORD.ID.eq(wordId)
+					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+					.and(FORM.IS_WORD.isTrue())
+					.and(PARADIGM.WORD_ID.eq(WORD.ID))
+					.and(LEXEME.WORD_ID.eq(WORD.ID))
+					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+					.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
+			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
+			.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+			.fetch();
+	}
+
+	public Result<Record> findWordLexeme(Long lexemeId) {
+
+		return create.select(wordLexemeSelectFields)
+			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
+			.where(
+					LEXEME.ID.eq(lexemeId)
+					.and(WORD.ID.eq(LEXEME.WORD_ID))
+					.and(PARADIGM.WORD_ID.eq(WORD.ID))
+					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+					.and(FORM.IS_WORD.isTrue())
+					.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
+			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
+			.orderBy(WORD.ID)
+			.fetch();
 	}
 
 	public Result<Record4<Long,String,Integer,String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasets) {

@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
@@ -37,6 +38,10 @@ import eki.ekilex.service.util.ConversionUtil;
 
 @Service
 public class LexSearchService implements SystemConstant {
+
+	private final static String classifierLabelLang = "est";
+	private final static String classifierLabelTypeDescrip = "descrip";
+	private final static String classifierLabelTypeFull = "full";
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -76,11 +81,19 @@ public class LexSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
+	public WordLexeme getWordLexeme(Long lexemeId) {
 
-		final String classifierLabelLang = "est";
-		final String classifierLabelTypeDescrip = "descrip";
-		final String classifierLabelTypeFull = "full";
+		List<WordLexeme> lexemes = lexSearchDbService.findWordLexeme(lexemeId).into(WordLexeme.class);
+		WordLexeme lexeme = lexemes.isEmpty() ? null : lexemes.get(0);
+		if (lexeme != null) {
+			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+			populateLexeme(singletonList(lexeme.getDataset()), datasetNameMap, lexeme);
+		}
+		return lexeme;
+	}
+
+	@Transactional
+	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		List<WordLexeme> lexemes = lexSearchDbService.findFormMeanings(wordId, selectedDatasets).into(WordLexeme.class);
@@ -89,71 +102,73 @@ public class LexSearchService implements SystemConstant {
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);
 		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 
-		lexemes.forEach(lexeme -> {
-
-			String datasetCode = lexeme.getDataset();
-			String datasetName = datasetNameMap.get(datasetCode);
-			lexeme.setDataset(datasetName);
-
-			Long lexemeId = lexeme.getLexemeId();
-			Long meaningId = lexeme.getMeaningId();
-
-			List<String> vocalForms = lexeme.getVocalForms();
-			vocalForms = cleanUpVocalForms(vocalForms);
-
-			List<Word> meaningWords = lexSearchDbService.findMeaningWords(wordId, meaningId, selectedDatasets).into(Word.class);
-			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-			List<Classifier> meaningDomains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
-			List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
-			List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
-			List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
-			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
-					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-							.into(GovernmentUsageTranslationDefinitionTuple.class);
-			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
-			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
-			List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
-			List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
-			List<CollocationTuple> collocTuples = lexSearchDbService.findCollocationTuples(lexemeId).into(CollocationTuple.class);
-			List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(collocTuples);
-
-			lexeme.setLexemePos(lexemePos);
-			lexeme.setLexemeDerivs(lexemeDerivs);
-			lexeme.setLexemeRegisters(lexemeRegisters);
-			lexeme.setMeaningWords(meaningWords);
-			lexeme.setMeaningDomains(meaningDomains);
-			lexeme.setDefinitions(definitions);
-			lexeme.setMeaningFreeforms(meaningFreeforms);
-			lexeme.setLexemeFreeforms(lexemeFreeforms);
-			lexeme.setGovernments(governments);
-			lexeme.setLexemeRelations(lexemeRelations);
-			lexeme.setMeaningRelations(meaningRelations);
-			lexeme.setGrammars(lexemeGrammars);
-			lexeme.setCollocationPosGroups(collocationPosGroups);
-			lexeme.setVocalForms(vocalForms);
-
-			boolean lexemeOrMeaningClassifiersExist =
-					StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
-					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
-					|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
-					|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
-					|| StringUtils.isNotBlank(lexeme.getGenderCode())
-					|| CollectionUtils.isNotEmpty(lexemePos)
-					|| CollectionUtils.isNotEmpty(lexemeDerivs)
-					|| CollectionUtils.isNotEmpty(lexemeRegisters)
-					|| CollectionUtils.isNotEmpty(meaningDomains)
-					|| CollectionUtils.isNotEmpty(lexemeGrammars);
-			lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
-		});
+		lexemes.forEach(lexeme -> populateLexeme(selectedDatasets, datasetNameMap, lexeme));
 		combineLevels(lexemes);
+
 		return new WordDetails(d -> {
 			d.setParadigms(paradigms);
 			d.setLexemes(lexemes);
 			d.setWordRelations(wordRelations);
 		});
+	}
+
+	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
+		String datasetCode = lexeme.getDataset();
+		String datasetName = datasetNameMap.get(datasetCode);
+		lexeme.setDataset(datasetName);
+
+		Long lexemeId = lexeme.getLexemeId();
+		Long meaningId = lexeme.getMeaningId();
+
+		List<String> vocalForms = lexeme.getVocalForms();
+		vocalForms = cleanUpVocalForms(vocalForms);
+
+		List<Word> meaningWords = lexSearchDbService.findMeaningWords(lexeme.getWordId(), meaningId, selectedDatasets).into(Word.class);
+		List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		List<Classifier> meaningDomains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
+		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
+		List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
+		List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
+				commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+						.into(GovernmentUsageTranslationDefinitionTuple.class);
+		List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
+		List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+		List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
+		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocationTuples(lexemeId).into(CollocationTuple.class);
+		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(collocTuples);
+
+		lexeme.setLexemePos(lexemePos);
+		lexeme.setLexemeDerivs(lexemeDerivs);
+		lexeme.setLexemeRegisters(lexemeRegisters);
+		lexeme.setMeaningWords(meaningWords);
+		lexeme.setMeaningDomains(meaningDomains);
+		lexeme.setDefinitions(definitions);
+		lexeme.setMeaningFreeforms(meaningFreeforms);
+		lexeme.setLexemeFreeforms(lexemeFreeforms);
+		lexeme.setGovernments(governments);
+		lexeme.setLexemeRelations(lexemeRelations);
+		lexeme.setMeaningRelations(meaningRelations);
+		lexeme.setGrammars(lexemeGrammars);
+		lexeme.setCollocationPosGroups(collocationPosGroups);
+		lexeme.setVocalForms(vocalForms);
+
+		boolean lexemeOrMeaningClassifiersExist =
+				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
+				|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
+				|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
+				|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
+				|| StringUtils.isNotBlank(lexeme.getGenderCode())
+				|| CollectionUtils.isNotEmpty(lexemePos)
+				|| CollectionUtils.isNotEmpty(lexemeDerivs)
+				|| CollectionUtils.isNotEmpty(lexemeRegisters)
+				|| CollectionUtils.isNotEmpty(meaningDomains)
+				|| CollectionUtils.isNotEmpty(lexemeGrammars);
+		lexeme.setLexemeOrMeaningClassifiersExist(lexemeOrMeaningClassifiersExist);
 	}
 
 	private List<String> cleanUpVocalForms(List<String> vocalForms) {
