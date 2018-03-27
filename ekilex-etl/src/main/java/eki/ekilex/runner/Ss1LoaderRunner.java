@@ -66,6 +66,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
 
 	private final static String WORD_RELATION_DERIVATIVE = "deriv";
+	private final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
@@ -328,9 +329,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			if (connectedItem.isPresent()) {
 				createMeaningRelation(item.meaningId, connectedItem.get().meaningId, meaningRelationType);
 			} else {
-				List<WordData> existingWords = context.importedWords.stream().filter(w -> item.word.equals(w.value)).collect(Collectors.toList());
-				Long wordId = getWordIdFor(item.word, item.homonymNr, existingWords, item.meaningWord);
-				if (!existingWords.isEmpty() && wordId != null) {
+				Long wordId = getWordIdFor(item.word, item.homonymNr, context.importedWords, item.meaningWord);
+				if (wordId != null) {
 					Map<String, Object> params = new HashMap<>();
 					params.put("wordId", wordId);
 					params.put("dataset", getDataset());
@@ -355,9 +355,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private void createLexemeRelations(Context context, List<LexemeToWordData> items, String lexemeRelationType, String logMessage) throws Exception {
 
 		for (LexemeToWordData itemData : items) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> itemData.word.equals(w.value)).collect(Collectors.toList());
-			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, existingWords, itemData.reportingId);
-			if (!existingWords.isEmpty() && wordId != null) {
+			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, context.importedWords, itemData.reportingId);
+			if (wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", wordId);
 				params.put("dataset", getDataset());
@@ -383,24 +382,17 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Processing started.");
 		reportingPaused = true;
 		Count newWordsCounter = new Count();
-		List<WordData> importedDerivatives = new ArrayList<>();
 		for (WordData derivative : context.derivativeWords) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> derivative.value.equals(w.value)).collect(Collectors.toList());
-			Long derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, existingWords, derivative.reportingId);
+			Long derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, context.importedWords, derivative.reportingId);
 			if (derivativeId != null) {
 				logger.debug("derivative found for {} : {}", derivative.reportingId, derivative.value);
 			} else {
-				existingWords = importedDerivatives.stream().filter(w -> derivative.value.equals(w.value)).collect(Collectors.toList());
-				derivativeId = getWordIdFor(derivative.value, derivative.homonymNr, existingWords, derivative.reportingId);
-			}
-			if (derivativeId == null) {
-				WordData newWord = createDefaultWordFrom(derivative.value, derivative.value, dataLang, derivative.displayMorph, derivative.wordType);
-				derivativeId = newWord.id;
+				derivativeId = createWordWithLexeme(context, derivative);
 				newWordsCounter.increment();
 			}
 			createWordRelation(derivative.id, derivativeId, WORD_RELATION_DERIVATIVE);
+			createWordRelation(derivativeId, derivative.id, WORD_RELATION_DERIVATIVE_BASE);
 		}
-		context.importedWords.addAll(importedDerivatives);
 		reportingPaused = false;
 		logger.debug("new words created {}.", newWordsCounter.getValue());
 		logger.debug("Derivatives processing done.");
@@ -414,27 +406,9 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 
 		Count newWordsCounter = new Count();
 		for (WordData subWord : context.subWords) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> subWord.value.equals(w.value)).collect(Collectors.toList());
-			Long subWordId = getWordIdFor(subWord.value, subWord.homonymNr, existingWords, subWord.reportingId);
+			Long subWordId = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.reportingId);
 			if (subWordId == null) {
-				WordData newWord = createDefaultWordFrom(subWord.value, subWord.value, dataLang, subWord.displayMorph, subWord.wordType);
-				subWordId = newWord.id;
-				newWord.homonymNr = subWord.homonymNr;
-				context.importedWords.add(newWord);
-				Lexeme lexeme = new Lexeme();
-				lexeme.setWordId(newWord.id);
-				lexeme.setMeaningId(subWord.meaningId);
-				lexeme.setLevel1(1);
-				lexeme.setLevel2(1);
-				lexeme.setLevel3(1);
-// FIXME: status needed ???
-//				lexeme.setValueState(subWord.lexemeType);
-				lexeme.setFrequencyGroup(subWord.frequencyGroup);
-				Long lexemeId = createLexeme(lexeme, getDataset());
-				if (subWord.government != null) {
-					createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, subWord.government, null);
-				}
-				logger.debug("new word created : {}", subWord.value);
+				subWordId = createWordWithLexeme(context, subWord);
 				newWordsCounter.increment();
 			}
 
@@ -458,6 +432,31 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Sub words processing done.");
 	}
 
+	private Long createWordWithLexeme(Context context, WordData wordData) throws Exception {
+
+		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, wordData.wordType);
+		newWord.homonymNr = wordData.homonymNr;
+		context.importedWords.add(newWord);
+		logger.debug("new word created : {}", wordData.value);
+
+		Long meaningId = wordData.meaningId == null ? createMeaning() : wordData.meaningId;
+
+		Lexeme lexeme = new Lexeme();
+		lexeme.setWordId(newWord.id);
+		lexeme.setMeaningId(meaningId);
+		lexeme.setLevel1(1);
+		lexeme.setLevel2(1);
+		lexeme.setLevel3(1);
+		// FIXME: status needed ???
+		//				lexeme.setValueState(wordData.lexemeType);
+		lexeme.setFrequencyGroup(wordData.frequencyGroup);
+		Long lexemeId = createLexeme(lexeme, getDataset());
+		if (wordData.government != null) {
+			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, wordData.government, null);
+		}
+		return newWord.id;
+	}
+
 	void processBasicWords(Context context) throws Exception {
 
 		logger.debug("Found {} basic words <s:ps>.", context.basicWords.size());
@@ -466,8 +465,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		writeToLogFile("Märksõna põhisõna seoste töötlus <s:ps>", "", "");
 
 		for (WordData basicWord : context.basicWords) {
-			List<WordData> existingWords = context.importedWords.stream().filter(w -> basicWord.value.equals(w.value)).collect(Collectors.toList());
-			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, existingWords, basicWord.reportingId);
+			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, context.importedWords, basicWord.reportingId);
 			if (wordId != null) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("wordId", basicWord.id);
@@ -1295,7 +1293,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
 
 		Long wordId = null;
-		Optional<WordData> matchingWord = words.stream().filter(w -> w.homonymNr == homonymNr).findFirst();
+		Optional<WordData> matchingWord = words.stream().filter(w -> w.value.equals(wordValue) && w.homonymNr == homonymNr).findFirst();
 		if (matchingWord.isPresent()) {
 			wordId = matchingWord.get().id;
 		}
