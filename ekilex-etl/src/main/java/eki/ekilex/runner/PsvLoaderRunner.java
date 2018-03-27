@@ -435,9 +435,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
 		lexeme.setWordId(newWord.id);
-		lexeme.setLevel1(0);
-		lexeme.setLevel2(0);
-		lexeme.setLevel3(0);
+		lexeme.setLevel1(1);
+		lexeme.setLevel2(1);
+		lexeme.setLevel3(1);
 // FIXME: value state, from where this is fetched ?
 //		lexeme.setValueState(lexemeType);
 		if (isNotBlank(wordData.definition)) {
@@ -610,9 +610,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Lexeme lexeme = new Lexeme();
 				lexeme.setWordId(wordId);
 				lexeme.setMeaningId(synonymData.meaningId);
-				lexeme.setLevel1(0);
-				lexeme.setLevel2(0);
-				lexeme.setLevel3(0);
+				lexeme.setLevel1(1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
 				createLexeme(lexeme, getDataset());
 			}
 		}
@@ -733,7 +733,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
-					lexeme.setLevel3(0);
+					lexeme.setLevel3(1);
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId == null) {
@@ -813,9 +813,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
 		lexeme.setWordId(abbreviation.id);
-		lexeme.setLevel1(0);
-		lexeme.setLevel2(0);
-		lexeme.setLevel3(0);
+		lexeme.setLevel1(1);
+		lexeme.setLevel2(1);
+		lexeme.setLevel3(1);
 		//FIXME: from where we get state ?
 		//lexeme.setValueState(wordTypeAbbreviation);
 		createLexeme(lexeme, getDataset());
