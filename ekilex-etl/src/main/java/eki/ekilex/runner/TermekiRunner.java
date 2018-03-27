@@ -354,7 +354,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 		for (Map<String, Object> example : examples) {
 			String language = unifyLang((String)example.get("lang"));
-			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", language);
+			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, language);
 			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, example.get("example"), language);
 			Integer sourceId = (Integer) example.get("source_id");
 			connectSourceToUsage(sourceId, usageId, context.sourceMapping);

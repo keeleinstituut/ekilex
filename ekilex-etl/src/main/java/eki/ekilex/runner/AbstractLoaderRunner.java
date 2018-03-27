@@ -259,10 +259,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(processStateCode)) {
 			tableRowParamMap.put("process_state_code", processStateCode);
 		}
-		String meaningTypeCode = meaning.getMeaningTypeCode();
-		if (StringUtils.isNotBlank(meaningTypeCode)) {
-			tableRowParamMap.put("type_code", meaningTypeCode);
-		}
 		Long meaningId;
 		if (MapUtils.isEmpty(tableRowParamMap)) {
 			meaningId = basicDbService.create(MEANING);

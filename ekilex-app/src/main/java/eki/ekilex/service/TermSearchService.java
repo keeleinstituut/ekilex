@@ -106,8 +106,7 @@ public class TermSearchService implements SystemConstant {
 		List<Lexeme> lexemes = new ArrayList<>();
 
 		boolean contentExists =
-				StringUtils.isNotBlank(meaning.getTypeCode())
-				|| StringUtils.isNotBlank(meaning.getProcessStateCode())
+				StringUtils.isNotBlank(meaning.getProcessStateCode())
 				|| CollectionUtils.isNotEmpty(definitions)
 				|| CollectionUtils.isNotEmpty(domains)
 				|| CollectionUtils.isNotEmpty(meaningFreeforms)

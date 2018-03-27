@@ -52,9 +52,6 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_frequency_group_code")
 	private String lexemeFrequencyGroupCode;
 
-	@Column(name = "meaning_type_code")
-	private String meaningTypeCode;
-
 	@Column(name = "meaning_process_state_code")
 	private String meaningProcessStateCode;
 
@@ -200,14 +197,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
-	}
-
-	public String getMeaningTypeCode() {
-		return meaningTypeCode;
-	}
-
-	public void setMeaningTypeCode(String meaningTypeCode) {
-		this.meaningTypeCode = meaningTypeCode;
 	}
 
 	public String getMeaningProcessStateCode() {

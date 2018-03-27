@@ -1,10 +1,12 @@
-drop view if exists view_ww_word cascade;
-drop view if exists view_ww_form cascade;
-drop view if exists view_ww_meaning cascade;
-drop view if exists view_ww_classifier cascade;
-drop view if exists view_ww_dataset cascade;
+drop view if exists view_ww_lexeme;
+drop view if exists view_ww_meaning;
+drop view if exists view_ww_form;
+drop view if exists view_ww_word;
+drop view if exists view_ww_classifier;
+drop view if exists view_ww_dataset;
 drop type if exists type_definition;
 drop type if exists type_domain;
+drop type if exists type_usage;
 
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;

@@ -1199,7 +1199,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
-		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", null);
+		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
 		for (Usage usage : usageMeaning.getUsages()) {
 			createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
 		}

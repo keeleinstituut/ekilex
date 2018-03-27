@@ -988,21 +988,21 @@ public class Routines {
     /**
      * Call <code>public.dblink_fetch</code>.
      */
-    public static Result<DblinkFetchRecord> dblinkFetch(Configuration configuration, String __1, String __2, Integer __3) {
+    public static Result<DblinkFetchRecord> dblinkFetch(Configuration configuration, String __1, Integer __2, Boolean __3) {
         return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3)).fetch();
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch dblinkFetch(String __1, String __2, Integer __3) {
+    public static DblinkFetch dblinkFetch(String __1, Integer __2, Boolean __3) {
         return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch dblinkFetch(Field<String> __1, Field<String> __2, Field<Integer> __3) {
+    public static DblinkFetch dblinkFetch(Field<String> __1, Field<Integer> __2, Field<Boolean> __3) {
         return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 

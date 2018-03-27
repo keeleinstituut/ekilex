@@ -204,6 +204,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
+					extractAndUpdateWordProperties(wordId, termGroupNode);
+
 					// definitions
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Element definitionNode : valueNodes) {
@@ -289,7 +291,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			meaningObj.setProcessStateCode(valueStr);
+			if (processStateCodes.containsKey(valueStr)) {
+				mappedValueStr = processStateCodes.get(valueStr);
+				meaningObj.setProcessStateCode(valueStr);
+			} else {
+				logger.warn("Incorrect process state reference @ 'entry class': \"{}\"", valueStr);
+			}
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(processStateExp);
@@ -299,7 +306,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				mappedValueStr = processStateCodes.get(valueStr);
 				meaningObj.setProcessStateCode(mappedValueStr);
 			} else {
-				logger.warn("Incorrect process state reference: \"{}\"", valueStr);
+				logger.warn("Incorrect process state reference @ 'status': \"{}\"", valueStr);
 			}
 		}
 
@@ -713,7 +720,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				mappedValueStr = valueStateCodes.get(valueStr);
 				valueParamMap.put("value_state_code", mappedValueStr);
 			} else if (wordTypeCodes.containsKey(valueStr)) {
-				//TODO implement
+				//word type then, handled elsewhere
 			} else {
 				logger.warn("Incorrect value state reference: \"{}\"", valueStr);
 			}
@@ -721,6 +728,30 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		if (MapUtils.isNotEmpty(valueParamMap)) {
 			basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
+		}
+	}
+
+	private void extractAndUpdateWordProperties(Long wordId, Element termGroupNode) throws Exception {
+
+		Element valueNode;
+		String valueStr, mappedValueStr;
+
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("id", wordId);
+
+		Map<String, Object> valueParamMap = new HashMap<>();
+
+		valueNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
+		if (valueNode != null) {
+			valueStr = valueNode.getTextTrim();
+			if (wordTypeCodes.containsKey(valueStr)) {
+				mappedValueStr = wordTypeCodes.get(valueStr);
+				valueParamMap.put("type_code", mappedValueStr);
+			}
+		}
+
+		if (MapUtils.isNotEmpty(valueParamMap)) {
+			basicDbService.update(WORD, criteriaParamMap, valueParamMap);
 		}
 	}
 

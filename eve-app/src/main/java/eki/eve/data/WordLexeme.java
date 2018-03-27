@@ -36,20 +36,11 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "level3")
 	private Integer level3;
 
-	@Column(name = "lexeme_type_code")
-	private String lexemeTypeCode;
-
 	@Column(name = "lexeme_frequency_group_code")
 	private String lexemeFrequencyGroupCode;
 
-	@Column(name = "meaning_type_code")
-	private String meaningTypeCode;
-
 	@Column(name = "meaning_process_state_code")
 	private String meaningProcessStateCode;
-
-	@Column(name = "meaning_state_code")
-	private String meaningStateCode;
 
 	private List<Classifier> domains;
 
@@ -134,14 +125,6 @@ public class WordLexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public String getLexemeTypeCode() {
-		return lexemeTypeCode;
-	}
-
-	public void setLexemeTypeCode(String lexemeTypeCode) {
-		this.lexemeTypeCode = lexemeTypeCode;
-	}
-
 	public String getLexemeFrequencyGroupCode() {
 		return lexemeFrequencyGroupCode;
 	}
@@ -150,28 +133,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
 	}
 
-	public String getMeaningTypeCode() {
-		return meaningTypeCode;
-	}
-
-	public void setMeaningTypeCode(String meaningTypeCode) {
-		this.meaningTypeCode = meaningTypeCode;
-	}
-
 	public String getMeaningProcessStateCode() {
 		return meaningProcessStateCode;
 	}
 
 	public void setMeaningProcessStateCode(String meaningProcessStateCode) {
 		this.meaningProcessStateCode = meaningProcessStateCode;
-	}
-
-	public String getMeaningStateCode() {
-		return meaningStateCode;
-	}
-
-	public void setMeaningStateCode(String meaningStateCode) {
-		this.meaningStateCode = meaningStateCode;
 	}
 
 	public List<Classifier> getDomains() {

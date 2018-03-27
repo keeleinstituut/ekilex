@@ -36,7 +36,7 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record12;
-import org.jooq.Record16;
+import org.jooq.Record15;
 import org.jooq.Record4;
 import org.jooq.Record5;
 import org.jooq.Record7;
@@ -488,11 +488,10 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record16<String[],String[],String,Long,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,String>> findFormMeanings(
+	public Result<Record15<String[],String[],String,Long,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String>> findFormMeanings(
 			Long wordId, List<String> selectedDatasets) {
 
-		return 
-				create
+		return create
 				.select(
 						DSL.arrayAggDistinct(FORM.VALUE).as("words"),
 						DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
@@ -508,7 +507,6 @@ public class LexSearchDbService implements SystemConstant {
 						LEXEME.LEVEL3,
 						LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"))
 				.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 				.where(

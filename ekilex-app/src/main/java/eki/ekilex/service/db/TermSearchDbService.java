@@ -9,8 +9,8 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 import java.util.Map;
@@ -23,7 +23,7 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
 import org.jooq.Record2;
-import org.jooq.Record4;
+import org.jooq.Record3;
 import org.jooq.Record5;
 import org.jooq.Record7;
 import org.jooq.Result;
@@ -363,12 +363,11 @@ public class TermSearchDbService implements SystemConstant {
 		return condition;
 	}
 
-	public Record4<Long,String,String,Long[]> getMeaning(Long meaningId, List<String> datasets) {
+	public Record3<Long,String,Long[]> getMeaning(Long meaningId, List<String> datasets) {
 
 		return create
 				.select(
 						MEANING.ID.as("meaning_id"),
-						MEANING.TYPE_CODE.as("meaning_type_code"),
 						MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code"),
 						DSL.arrayAggDistinct(LEXEME.ID).orderBy(LEXEME.ID).as("lexeme_ids"))
 				.from(MEANING, LEXEME)
