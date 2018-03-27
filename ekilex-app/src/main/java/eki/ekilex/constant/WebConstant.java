@@ -35,4 +35,6 @@ public interface WebConstant {
 	String MARKDOWN_RENDERER_KEY = "markdown";
 
 	String USER_MODEL_KEY = "user";
+
+	String LEX_JOIN_PAGE = "lexjoin";
 }
