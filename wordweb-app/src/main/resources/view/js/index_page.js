@@ -4,10 +4,7 @@ function fetchDetails(wordId) {
 	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
-        $('[data-toggle="tooltip"]').tooltip();
-        $(".more-btn").click(function(){
-            $(this).parent().toggleClass("expand");
-        });
+        $('.word-details [data-toggle="tooltip"]').tooltip();
         ////
     }).fail(function (data) {
 		console.log(data);
@@ -163,6 +160,9 @@ function initialisePage() {
     $( ".search-phrase" ).focusout(function() {
         $(".awesomplete ul").addClass("d-none");
     });
+    $(document).on("click", ".more-btn", function() {
+        $(this).parent().toggleClass("expand");
+    });
 
     // demo js for interactions between the mobile and desktop modes
     $(".logo").click(function(){
@@ -223,6 +223,7 @@ function initialisePage() {
         $(".homonym-item:first")
             .delay(1250).queue(function(){})
             .trigger('click');
-            $(".homonym-item:first").addClass("animation-target");
+        $(".homonym-item:first").addClass("animation-target");
+        $('[data-toggle="tooltip"]').tooltip();
     });
 }
