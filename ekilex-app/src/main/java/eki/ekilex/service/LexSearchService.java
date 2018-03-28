@@ -53,7 +53,7 @@ public class LexSearchService implements SystemConstant {
 	private ConversionUtil conversionUtil;
 
 	@Transactional
-	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) throws Exception {
+	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
 
 		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
 		int wordCount = words.size();
@@ -87,7 +87,7 @@ public class LexSearchService implements SystemConstant {
 		WordLexeme lexeme = lexemes.isEmpty() ? null : lexemes.get(0);
 		if (lexeme != null) {
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-			populateLexeme(singletonList(lexeme.getDataset()), datasetNameMap, lexeme);
+			populateLexeme(singletonList(lexeme.getDatasetCode()), datasetNameMap, lexeme);
 		}
 		return lexeme;
 	}
@@ -113,8 +113,7 @@ public class LexSearchService implements SystemConstant {
 	}
 
 	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
-		String datasetCode = lexeme.getDataset();
-		String datasetName = datasetNameMap.get(datasetCode);
+		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
 		lexeme.setDataset(datasetName);
 
 		Long lexemeId = lexeme.getLexemeId();
@@ -189,7 +188,7 @@ public class LexSearchService implements SystemConstant {
 			long nrOfLexemesWithSameLevel1 = lexemes.stream()
 					.filter(otherLexeme ->
 							otherLexeme.getLevel1().equals(lexeme.getLevel1())
-							&& StringUtils.equals(otherLexeme.getDataset(), lexeme.getDataset()))
+							&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
 					.count();
 			if (nrOfLexemesWithSameLevel1 == 1) {
 				levels = String.valueOf(lexeme.getLevel1());
@@ -198,7 +197,7 @@ public class LexSearchService implements SystemConstant {
 						.filter(otherLexeme ->
 								otherLexeme.getLevel1().equals(lexeme.getLevel1())
 								&& otherLexeme.getLevel2().equals(lexeme.getLevel2())
-								&& StringUtils.equals(otherLexeme.getDataset(), lexeme.getDataset()))
+								&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
 						.count();
 				if (nrOfLexemesWithSameLevel2 == 1) {
 					levels = lexeme.getLevel1() + "." + lexeme.getLevel2();

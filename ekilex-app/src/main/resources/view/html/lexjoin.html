@@ -23,83 +23,12 @@
 
       <div class="card-body">
         <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
-          <div style="overflow: auto;">
-            <span>
-              <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-                <span th:text="${word}"></span>
-                <span th:unless="${wordIter.last}">,&nbsp;</span>
-              </span>
-              &nbsp;
-            </span>
-            <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-              <span class="pt-0">
-                <span th:text="${meaningWord.value}"></span>
-                <span th:text="${meaningWord.homonymNumber}"></span>
-                <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
-              </span>
-              <span th:unless="${meaningWordIter.last}">|</span>
-            </span>
-            <span th:if="${lexeme.levels != null}">
-              <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
-            </span>
-            <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-            <b th:text="${lexeme.dataset}" class="float-right"></b>
-          </div>
-          <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
-            <hr />
-            <span class="lbl">Seletused</span>
-            <table>
-              <tr th:each="definition : ${lexeme.definitions}">
-                <td th:utext="${definition.value}"></td>
-              </tr>
-            </table>
-          </div>
-          <div th:if="${not #lists.isEmpty(lexeme.governments)}">
-            <hr />
-            <table th:each="government,governmentIter : ${lexeme.governments}">
-              <tr>
-                <th class="lbl">Rektsioon</th>
-              </tr>
-              <tr>
-                <td>
-                  <span th:text="${government.value}"></span>
-                </td>
-              </tr>
-              <tr>
-                <th class="lbl">Kasutusnäited, tõlked, seletused</th>
-              </tr>
-              <tr>
-                <td>
-                  <table th:each="usageMeaning : ${government.usageMeanings}">
-                    <tr th:each="usage : ${usageMeaning.usages}">
-                      <td>
-                        <span th:utext="${usage.value}"></span>
-                        <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
-                        <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
-                        <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
-                      </td>
-                    </tr>
-                    <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                      <td th:text="${usageTranslation.value}"></td>
-                    </tr>
-                    <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                      <td th:utext="${usageDefinition.value}"></td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr th:unless="${governmentIter.last}">
-                <td>
-                  <hr />
-                </td>
-              </tr>
-            </table>
-          </div>
+          <th:block th:replace=":: lexeme_deatails(${sourceLexeme}, ${sourceLexeme})"></th:block>
         </div>
       </div>
 
       <div class="card-body">
-        <form th:action="@{'/lexjoin/' + ${lexeme.lexemeId}}" method="post">
+        <form th:action="@{'/lexjoin/' + ${sourceLexeme.lexemeId}}" method="post">
           <div class="form-row" name="searchFilter">
             <div class="col-12">
               <div class="form-group row">
@@ -116,8 +45,95 @@
         </form>
       </div>
 
+      <div class="card-body" th:if="${#lists.isEmpty(lexemes) && (searchFilter != null)}">
+        <span th:text="#{lexjoin.not.found}">Not found.</span>
+      </div>
+
+      <div class="card-body" th:if="${not #lists.isEmpty(lexemes)}">
+        <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" th:each="lexeme : ${lexemes}">
+          <th:block th:replace=":: lexeme_deatails(${lexeme}, ${sourceLexeme})"></th:block>
+        </div>
+      </div>
+
     </div>
 
   </div>
+
+  <th:block th:fragment="lexeme_deatails(lexeme, lexemeToJoin)" th:if="${lexeme != null}">
+    <div style="overflow: auto;">
+      <span>
+        <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
+          <span th:text="${word}"></span>
+          <span th:unless="${wordIter.last}">,&nbsp;</span>
+        </span>
+        &nbsp;
+      </span>
+      <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+        <span class="pt-0">
+          <span th:text="${meaningWord.value}"></span>
+          <span th:text="${meaningWord.homonymNumber}"></span>
+          <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+        </span>
+        <span th:unless="${meaningWordIter.last}">|</span>
+      </span>
+      <span th:if="${lexeme.levels != null}">
+        <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+      </span>
+      <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
+      <a class="btn btn-primary" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}} + '/' + ${lexemeToJoin.lexemeId}" th:if="${lexeme.meaningId != lexemeToJoin.meaningId}">Ühenda</a>
+      <b th:text="${lexeme.dataset}" class="float-right"></b>
+    </div>
+    <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+      <hr />
+      <span class="lbl">Seletused</span>
+      <table>
+        <tr th:each="definition : ${lexeme.definitions}">
+          <td th:utext="${definition.value}"></td>
+        </tr>
+      </table>
+    </div>
+    <div th:if="${not #lists.isEmpty(lexeme.governments)}">
+      <hr />
+      <table th:each="government,governmentIter : ${lexeme.governments}">
+        <tr>
+          <th class="lbl">Rektsioon</th>
+        </tr>
+        <tr>
+          <td>
+            <span th:text="${government.value}"></span>
+          </td>
+        </tr>
+        <tr>
+          <th class="lbl">Kasutusnäited, tõlked, seletused</th>
+        </tr>
+        <tr>
+          <td>
+            <table th:each="usageMeaning : ${government.usageMeanings}">
+              <tr th:each="usage : ${usageMeaning.usages}">
+                <td>
+                  <span th:utext="${usage.value}"></span>
+                  <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
+                  <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                  <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                </td>
+              </tr>
+              <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                <td th:text="${usageTranslation.value}"></td>
+              </tr>
+              <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                <td th:utext="${usageDefinition.value}"></td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr th:unless="${governmentIter.last}">
+          <td>
+            <hr />
+          </td>
+        </tr>
+      </table>
+    </div>
+  </th:block>
+
 </body>
 </html>

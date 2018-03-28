@@ -32,8 +32,10 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "meaning_id")
 	private Long meaningId;
 
-	@Column(name = "dataset")
 	private String dataset;
+
+	@Column(name = "dataset")
+	private String datasetCode;
 
 	@Column(name = "level1")
 	private Integer level1;
@@ -331,5 +333,13 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setGenderCode(String genderCode) {
 		this.genderCode = genderCode;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 }
