@@ -2,7 +2,9 @@ package eki.ekilex.service;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -90,6 +92,43 @@ public class LexSearchService implements SystemConstant {
 			populateLexeme(singletonList(lexeme.getDatasetCode()), datasetNameMap, lexeme);
 		}
 		return lexeme;
+	}
+
+	@Transactional
+	public List<WordLexeme> findWordLexemesWithMinimalData(String searchWord, List<String> selectedDatasets) {
+
+		List<WordLexeme> lexemes = new ArrayList<>();
+		if (isNotBlank(searchWord)) {
+			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
+			WordsResult words = findWords(cleanedUpFilter, selectedDatasets, true);
+			if (!words.getWords().isEmpty()) {
+				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+				for (Word word : words.getWords()) {
+					List<WordLexeme> wordLexemes = lexSearchDbService.findFormMeanings(word.getWordId(), selectedDatasets).into(WordLexeme.class);
+					wordLexemes.forEach(lexeme -> {
+						Long meaningId = lexeme.getMeaningId();
+						Long lexemeId = lexeme.getLexemeId();
+
+						String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
+						List<Word> meaningWords = lexSearchDbService.findMeaningWords(lexeme.getWordId(), meaningId, selectedDatasets).into(Word.class);
+						List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
+						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+						List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
+								commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+										.into(GovernmentUsageTranslationDefinitionTuple.class);
+						List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
+
+						lexeme.setDataset(datasetName);
+						lexeme.setMeaningWords(meaningWords);
+						lexeme.setDefinitions(definitions);
+						lexeme.setGovernments(governments);
+					});
+					combineLevels(wordLexemes);
+					lexemes.addAll(wordLexemes);
+				}
+			}
+		}
+		return lexemes;
 	}
 
 	@Transactional

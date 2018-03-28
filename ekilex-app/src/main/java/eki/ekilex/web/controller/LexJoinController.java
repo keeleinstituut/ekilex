@@ -1,10 +1,7 @@
 package eki.ekilex.web.controller;
 
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
-import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
 import org.slf4j.Logger;
@@ -20,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @ConditionalOnWebApplication
 @Controller
@@ -55,18 +49,8 @@ public class LexJoinController implements WebConstant {
 			Model model) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
-		List<WordLexeme> lexemes = new ArrayList<>();
-		if (isNotBlank(searchFilter)) {
-			String cleanedUpFilter = searchFilter.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
-			List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
-			WordsResult words = lexSearchService.findWords(cleanedUpFilter, datasets, true);
-			if (!words.getWords().isEmpty()) {
-				for (Word word : words.getWords()) {
-					WordDetails wordDetails = lexSearchService.getWordDetails(word.getWordId(), datasets);
-					lexemes.addAll(wordDetails.getLexemes());
-				}
-			}
-		}
+		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
+		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithMinimalData(searchFilter, datasets);
 
 		model.addAttribute("sourceLexeme", lexeme);
 		model.addAttribute("searchFilter", searchFilter);
