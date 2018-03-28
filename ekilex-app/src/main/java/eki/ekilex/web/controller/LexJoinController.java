@@ -3,9 +3,8 @@ package eki.ekilex.web.controller;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,12 +24,13 @@ import java.util.List;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class LexJoinController implements WebConstant {
 
-	private static final Logger logger = LoggerFactory.getLogger(LexJoinController.class);
-
 	private final LexSearchService lexSearchService;
 
-	public LexJoinController(LexSearchService lexSearchService) {
+	private final UpdateService updateService;
+
+	public LexJoinController(LexSearchService lexSearchService, UpdateService updateService) {
 		this.lexSearchService = lexSearchService;
+		this.updateService  = updateService;
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}")
@@ -67,6 +67,7 @@ public class LexJoinController implements WebConstant {
 			RedirectAttributes attributes) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		updateService.joinLexemeMeanings(lexemeId, lexemeId2);
 		attributes.addFlashAttribute("searchWord", lexeme.getWords()[0]);
 		return "redirect:" + LEX_SEARCH_URI;
 	}

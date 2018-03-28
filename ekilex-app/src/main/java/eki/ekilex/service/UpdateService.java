@@ -3,7 +3,6 @@ package eki.ekilex.service;
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.UpdateDbService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,8 +13,11 @@ import java.util.stream.Collectors;
 @Service
 public class UpdateService {
 
-	@Autowired
-	private UpdateDbService updateDbService;
+	private final UpdateDbService updateDbService;
+
+	public UpdateService(UpdateDbService updateDbService) {
+		this.updateDbService  = updateDbService;
+	}
 
 	@Transactional
 	public void updateUsageValue(Long id, String value) {
@@ -67,6 +69,11 @@ public class UpdateService {
 		for (WordLexeme lexeme: lexemes) {
 			updateDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 		}
+	}
+
+	@Transactional
+	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
+		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
 
 	void changeLevels(List<WordLexeme> lexemes, Long lexemeId, String action) {

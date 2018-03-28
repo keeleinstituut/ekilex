@@ -6,7 +6,7 @@ import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.Record4;
 import org.jooq.Result;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -15,6 +15,9 @@ import java.util.List;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
@@ -24,7 +27,6 @@ public class UpdateDbService {
 
 	private DSLContext create;
 
-	@Autowired
 	public UpdateDbService(DSLContext context) {
 		create = context;
 	}
@@ -98,4 +100,23 @@ public class UpdateDbService {
 				.where(LEXEME.ID.eq(id))
 				.execute();
 	}
+
+	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
+		Long meaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
+		Long sourceMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne().value1();
+		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.update(DEFINITION).set(DEFINITION.MEANING_ID, meaningId).where(DEFINITION.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.update(MEANING_DOMAIN).set(MEANING_DOMAIN.MEANING_ID, meaningId)
+				.where(
+					MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)
+					.and(DSL.row(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).notIn(
+							DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)))))
+				.execute();
+		create.delete(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.update(MEANING_FREEFORM).set(MEANING_FREEFORM.MEANING_ID, meaningId).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
+		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();
+		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
+	}
+
 }
