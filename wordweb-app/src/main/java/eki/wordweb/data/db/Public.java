@@ -26,6 +26,7 @@ import eki.wordweb.data.db.tables.DblinkGetResult;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
+import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.records.DblinkFetchRecord;
@@ -35,6 +36,7 @@ import eki.wordweb.data.db.tables.records.DblinkRecord;
 import eki.wordweb.data.db.udt.DblinkPkeyResults;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
+import eki.wordweb.data.db.udt.TypeUsage;
 
 
 /**
@@ -50,7 +52,7 @@ import eki.wordweb.data.db.udt.TypeDomain;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -955872976;
+    private static final long serialVersionUID = 1776464383;
 
     /**
      * The reference instance of <code>public</code>
@@ -91,21 +93,21 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.dblink_fetch</code>.
      */
-    public static Result<DblinkFetchRecord> DBLINK_FETCH(Configuration configuration, String __1, String __2, Integer __3) {
+    public static Result<DblinkFetchRecord> DBLINK_FETCH(Configuration configuration, String __1, Integer __2, Boolean __3) {
         return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3)).fetch();
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch DBLINK_FETCH(String __1, String __2, Integer __3) {
+    public static DblinkFetch DBLINK_FETCH(String __1, Integer __2, Boolean __3) {
         return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
     /**
      * Get <code>public.dblink_fetch</code> as a table.
      */
-    public static DblinkFetch DBLINK_FETCH(Field<String> __1, Field<String> __2, Field<Integer> __3) {
+    public static DblinkFetch DBLINK_FETCH(Field<String> __1, Field<Integer> __2, Field<Boolean> __3) {
         return eki.wordweb.data.db.tables.DblinkFetch.DBLINK_FETCH.call(__1, __2, __3);
     }
 
@@ -177,6 +179,11 @@ public class Public extends SchemaImpl {
     public final MviewWwForm MVIEW_WW_FORM = eki.wordweb.data.db.tables.MviewWwForm.MVIEW_WW_FORM;
 
     /**
+     * The table <code>public.mview_ww_lexeme</code>.
+     */
+    public final MviewWwLexeme MVIEW_WW_LEXEME = eki.wordweb.data.db.tables.MviewWwLexeme.MVIEW_WW_LEXEME;
+
+    /**
      * The table <code>public.mview_ww_meaning</code>.
      */
     public final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
@@ -218,6 +225,7 @@ public class Public extends SchemaImpl {
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
             MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwForm.MVIEW_WW_FORM,
+            MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwWord.MVIEW_WW_WORD);
     }
@@ -233,6 +241,7 @@ public class Public extends SchemaImpl {
         return Arrays.<UDT<?>>asList(
             DblinkPkeyResults.DBLINK_PKEY_RESULTS,
             TypeDefinition.TYPE_DEFINITION,
-            TypeDomain.TYPE_DOMAIN);
+            TypeDomain.TYPE_DOMAIN,
+            TypeUsage.TYPE_USAGE);
     }
 }

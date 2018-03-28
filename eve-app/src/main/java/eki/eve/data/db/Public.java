@@ -42,8 +42,6 @@ import eki.eve.data.db.tables.LexemeFreeform;
 import eki.eve.data.db.tables.LexemeFrequency;
 import eki.eve.data.db.tables.LexemePos;
 import eki.eve.data.db.tables.LexemeRegister;
-import eki.eve.data.db.tables.LexemeType;
-import eki.eve.data.db.tables.LexemeTypeLabel;
 import eki.eve.data.db.tables.LifecycleLog;
 import eki.eve.data.db.tables.Meaning;
 import eki.eve.data.db.tables.MeaningDomain;
@@ -51,7 +49,6 @@ import eki.eve.data.db.tables.MeaningFreeform;
 import eki.eve.data.db.tables.MeaningRelType;
 import eki.eve.data.db.tables.MeaningRelTypeLabel;
 import eki.eve.data.db.tables.MeaningRelation;
-import eki.eve.data.db.tables.MeaningState;
 import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
 import eki.eve.data.db.tables.MorphLabel;
@@ -66,11 +63,22 @@ import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
 import eki.eve.data.db.tables.UsageType;
 import eki.eve.data.db.tables.UsageTypeLabel;
+import eki.eve.data.db.tables.ValueState;
+import eki.eve.data.db.tables.ValueStateLabel;
+import eki.eve.data.db.tables.ViewWwClassifier;
+import eki.eve.data.db.tables.ViewWwDataset;
+import eki.eve.data.db.tables.ViewWwForm;
+import eki.eve.data.db.tables.ViewWwMeaning;
+import eki.eve.data.db.tables.ViewWwWord;
 import eki.eve.data.db.tables.Word;
 import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
 import eki.eve.data.db.tables.WordRelTypeLabel;
 import eki.eve.data.db.tables.WordRelation;
+import eki.eve.data.db.tables.WordType;
+import eki.eve.data.db.tables.WordTypeLabel;
+import eki.eve.data.db.udt.TypeDefinition;
+import eki.eve.data.db.udt.TypeDomain;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -81,6 +89,7 @@ import javax.annotation.Generated;
 import org.jooq.Catalog;
 import org.jooq.Sequence;
 import org.jooq.Table;
+import org.jooq.UDT;
 import org.jooq.impl.SchemaImpl;
 
 
@@ -97,7 +106,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -143879915;
+    private static final long serialVersionUID = 308911413;
 
     /**
      * The reference instance of <code>public</code>
@@ -295,16 +304,6 @@ public class Public extends SchemaImpl {
     public final LexemeRegister LEXEME_REGISTER = eki.eve.data.db.tables.LexemeRegister.LEXEME_REGISTER;
 
     /**
-     * The table <code>public.lexeme_type</code>.
-     */
-    public final LexemeType LEXEME_TYPE = eki.eve.data.db.tables.LexemeType.LEXEME_TYPE;
-
-    /**
-     * The table <code>public.lexeme_type_label</code>.
-     */
-    public final LexemeTypeLabel LEXEME_TYPE_LABEL = eki.eve.data.db.tables.LexemeTypeLabel.LEXEME_TYPE_LABEL;
-
-    /**
      * The table <code>public.lifecycle_log</code>.
      */
     public final LifecycleLog LIFECYCLE_LOG = eki.eve.data.db.tables.LifecycleLog.LIFECYCLE_LOG;
@@ -338,11 +337,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_relation</code>.
      */
     public final MeaningRelation MEANING_RELATION = eki.eve.data.db.tables.MeaningRelation.MEANING_RELATION;
-
-    /**
-     * The table <code>public.meaning_state</code>.
-     */
-    public final MeaningState MEANING_STATE = eki.eve.data.db.tables.MeaningState.MEANING_STATE;
 
     /**
      * The table <code>public.meaning_type</code>.
@@ -415,6 +409,41 @@ public class Public extends SchemaImpl {
     public final UsageTypeLabel USAGE_TYPE_LABEL = eki.eve.data.db.tables.UsageTypeLabel.USAGE_TYPE_LABEL;
 
     /**
+     * The table <code>public.value_state</code>.
+     */
+    public final ValueState VALUE_STATE = eki.eve.data.db.tables.ValueState.VALUE_STATE;
+
+    /**
+     * The table <code>public.value_state_label</code>.
+     */
+    public final ValueStateLabel VALUE_STATE_LABEL = eki.eve.data.db.tables.ValueStateLabel.VALUE_STATE_LABEL;
+
+    /**
+     * The table <code>public.view_ww_classifier</code>.
+     */
+    public final ViewWwClassifier VIEW_WW_CLASSIFIER = eki.eve.data.db.tables.ViewWwClassifier.VIEW_WW_CLASSIFIER;
+
+    /**
+     * The table <code>public.view_ww_dataset</code>.
+     */
+    public final ViewWwDataset VIEW_WW_DATASET = eki.eve.data.db.tables.ViewWwDataset.VIEW_WW_DATASET;
+
+    /**
+     * The table <code>public.view_ww_form</code>.
+     */
+    public final ViewWwForm VIEW_WW_FORM = eki.eve.data.db.tables.ViewWwForm.VIEW_WW_FORM;
+
+    /**
+     * The table <code>public.view_ww_meaning</code>.
+     */
+    public final ViewWwMeaning VIEW_WW_MEANING = eki.eve.data.db.tables.ViewWwMeaning.VIEW_WW_MEANING;
+
+    /**
+     * The table <code>public.view_ww_word</code>.
+     */
+    public final ViewWwWord VIEW_WW_WORD = eki.eve.data.db.tables.ViewWwWord.VIEW_WW_WORD;
+
+    /**
      * The table <code>public.word</code>.
      */
     public final Word WORD = eki.eve.data.db.tables.Word.WORD;
@@ -438,6 +467,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.word_relation</code>.
      */
     public final WordRelation WORD_RELATION = eki.eve.data.db.tables.WordRelation.WORD_RELATION;
+
+    /**
+     * The table <code>public.word_type</code>.
+     */
+    public final WordType WORD_TYPE = eki.eve.data.db.tables.WordType.WORD_TYPE;
+
+    /**
+     * The table <code>public.word_type_label</code>.
+     */
+    public final WordTypeLabel WORD_TYPE_LABEL = eki.eve.data.db.tables.WordTypeLabel.WORD_TYPE_LABEL;
 
     /**
      * No further instances allowed
@@ -554,8 +593,6 @@ public class Public extends SchemaImpl {
             LexemeFrequency.LEXEME_FREQUENCY,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,
-            LexemeType.LEXEME_TYPE,
-            LexemeTypeLabel.LEXEME_TYPE_LABEL,
             LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
             MeaningDomain.MEANING_DOMAIN,
@@ -563,7 +600,6 @@ public class Public extends SchemaImpl {
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,
-            MeaningState.MEANING_STATE,
             MeaningType.MEANING_TYPE,
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
@@ -578,10 +614,32 @@ public class Public extends SchemaImpl {
             SourceFreeform.SOURCE_FREEFORM,
             UsageType.USAGE_TYPE,
             UsageTypeLabel.USAGE_TYPE_LABEL,
+            ValueState.VALUE_STATE,
+            ValueStateLabel.VALUE_STATE_LABEL,
+            ViewWwClassifier.VIEW_WW_CLASSIFIER,
+            ViewWwDataset.VIEW_WW_DATASET,
+            ViewWwForm.VIEW_WW_FORM,
+            ViewWwMeaning.VIEW_WW_MEANING,
+            ViewWwWord.VIEW_WW_WORD,
             Word.WORD,
             WordGuid.WORD_GUID,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
-            WordRelation.WORD_RELATION);
+            WordRelation.WORD_RELATION,
+            WordType.WORD_TYPE,
+            WordTypeLabel.WORD_TYPE_LABEL);
+    }
+
+    @Override
+    public final List<UDT<?>> getUDTs() {
+        List result = new ArrayList();
+        result.addAll(getUDTs0());
+        return result;
+    }
+
+    private final List<UDT<?>> getUDTs0() {
+        return Arrays.<UDT<?>>asList(
+            TypeDefinition.TYPE_DEFINITION,
+            TypeDomain.TYPE_DOMAIN);
     }
 }

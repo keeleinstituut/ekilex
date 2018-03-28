@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Meaning extends TableImpl<MeaningRecord> {
 
-    private static final long serialVersionUID = -343050085;
+    private static final long serialVersionUID = -1741096249;
 
     /**
      * The reference instance of <code>public.meaning</code>
@@ -85,11 +85,6 @@ public class Meaning extends TableImpl<MeaningRecord> {
      * The column <code>public.meaning.process_state_code</code>.
      */
     public final TableField<MeaningRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.meaning.state_code</code>.
-     */
-    public final TableField<MeaningRecord, String> STATE_CODE = createField("state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.meaning.type_code</code>.
@@ -170,7 +165,7 @@ public class Meaning extends TableImpl<MeaningRecord> {
      */
     @Override
     public List<ForeignKey<MeaningRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningRecord, ?>>asList(Keys.MEANING__MEANING_PROCESS_STATE_CODE_FKEY, Keys.MEANING__MEANING_STATE_CODE_FKEY, Keys.MEANING__MEANING_TYPE_CODE_FKEY);
+        return Arrays.<ForeignKey<MeaningRecord, ?>>asList(Keys.MEANING__MEANING_PROCESS_STATE_CODE_FKEY, Keys.MEANING__MEANING_TYPE_CODE_FKEY);
     }
 
     /**

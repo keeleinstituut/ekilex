@@ -13,7 +13,6 @@ public enum ClassifierName {
 	MORPH(true),
 	DERIV(true),
 	WORD_TYPE(true),
-	MEANING_TYPE(false),
 	MEANING_REL_TYPE(true),
 	LEX_REL_TYPE(true),
 	WORD_REL_TYPE(true),

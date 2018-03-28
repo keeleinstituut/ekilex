@@ -6,6 +6,7 @@ package eki.ekilex.data.db;
 
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
+import eki.ekilex.data.db.udt.TypeUsage;
 
 import javax.annotation.Generated;
 
@@ -32,4 +33,9 @@ public class UDTs {
      * The type <code>public.type_domain</code>
      */
     public static TypeDomain TYPE_DOMAIN = eki.ekilex.data.db.udt.TypeDomain.TYPE_DOMAIN;
+
+    /**
+     * The type <code>public.type_usage</code>
+     */
+    public static TypeUsage TYPE_USAGE = eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE;
 }

@@ -458,8 +458,7 @@ create table meaning
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  process_state_code varchar(100) references process_state(code) null,
-  type_code varchar(100) references meaning_type(code) null
+  process_state_code varchar(100) references process_state(code) null
 );
 alter sequence meaning_id_seq restart with 10000;
 

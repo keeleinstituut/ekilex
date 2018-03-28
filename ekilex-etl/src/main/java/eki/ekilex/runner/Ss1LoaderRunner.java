@@ -830,7 +830,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
-		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, "", null);
+		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
 		if (isNotEmpty(usageMeaning.getUsageType())) {
 			createFreeformClassifier(FreeformType.USAGE_TYPE, usageMeaningId, usageMeaning.getUsageType());
 		}

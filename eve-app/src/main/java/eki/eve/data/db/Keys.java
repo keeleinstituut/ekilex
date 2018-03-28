@@ -42,8 +42,6 @@ import eki.eve.data.db.tables.LexemeFreeform;
 import eki.eve.data.db.tables.LexemeFrequency;
 import eki.eve.data.db.tables.LexemePos;
 import eki.eve.data.db.tables.LexemeRegister;
-import eki.eve.data.db.tables.LexemeType;
-import eki.eve.data.db.tables.LexemeTypeLabel;
 import eki.eve.data.db.tables.LifecycleLog;
 import eki.eve.data.db.tables.Meaning;
 import eki.eve.data.db.tables.MeaningDomain;
@@ -51,7 +49,6 @@ import eki.eve.data.db.tables.MeaningFreeform;
 import eki.eve.data.db.tables.MeaningRelType;
 import eki.eve.data.db.tables.MeaningRelTypeLabel;
 import eki.eve.data.db.tables.MeaningRelation;
-import eki.eve.data.db.tables.MeaningState;
 import eki.eve.data.db.tables.MeaningType;
 import eki.eve.data.db.tables.Morph;
 import eki.eve.data.db.tables.MorphLabel;
@@ -66,11 +63,15 @@ import eki.eve.data.db.tables.Source;
 import eki.eve.data.db.tables.SourceFreeform;
 import eki.eve.data.db.tables.UsageType;
 import eki.eve.data.db.tables.UsageTypeLabel;
+import eki.eve.data.db.tables.ValueState;
+import eki.eve.data.db.tables.ValueStateLabel;
 import eki.eve.data.db.tables.Word;
 import eki.eve.data.db.tables.WordGuid;
 import eki.eve.data.db.tables.WordRelType;
 import eki.eve.data.db.tables.WordRelTypeLabel;
 import eki.eve.data.db.tables.WordRelation;
+import eki.eve.data.db.tables.WordType;
+import eki.eve.data.db.tables.WordTypeLabel;
 import eki.eve.data.db.tables.records.CollocationPosGroupRecord;
 import eki.eve.data.db.tables.records.CollocationRecord;
 import eki.eve.data.db.tables.records.CollocationRelGroupRecord;
@@ -109,8 +110,6 @@ import eki.eve.data.db.tables.records.LexemeFrequencyRecord;
 import eki.eve.data.db.tables.records.LexemePosRecord;
 import eki.eve.data.db.tables.records.LexemeRecord;
 import eki.eve.data.db.tables.records.LexemeRegisterRecord;
-import eki.eve.data.db.tables.records.LexemeTypeLabelRecord;
-import eki.eve.data.db.tables.records.LexemeTypeRecord;
 import eki.eve.data.db.tables.records.LifecycleLogRecord;
 import eki.eve.data.db.tables.records.MeaningDomainRecord;
 import eki.eve.data.db.tables.records.MeaningFreeformRecord;
@@ -118,7 +117,6 @@ import eki.eve.data.db.tables.records.MeaningRecord;
 import eki.eve.data.db.tables.records.MeaningRelTypeLabelRecord;
 import eki.eve.data.db.tables.records.MeaningRelTypeRecord;
 import eki.eve.data.db.tables.records.MeaningRelationRecord;
-import eki.eve.data.db.tables.records.MeaningStateRecord;
 import eki.eve.data.db.tables.records.MeaningTypeRecord;
 import eki.eve.data.db.tables.records.MorphLabelRecord;
 import eki.eve.data.db.tables.records.MorphRecord;
@@ -133,11 +131,15 @@ import eki.eve.data.db.tables.records.SourceFreeformRecord;
 import eki.eve.data.db.tables.records.SourceRecord;
 import eki.eve.data.db.tables.records.UsageTypeLabelRecord;
 import eki.eve.data.db.tables.records.UsageTypeRecord;
+import eki.eve.data.db.tables.records.ValueStateLabelRecord;
+import eki.eve.data.db.tables.records.ValueStateRecord;
 import eki.eve.data.db.tables.records.WordGuidRecord;
 import eki.eve.data.db.tables.records.WordRecord;
 import eki.eve.data.db.tables.records.WordRelTypeLabelRecord;
 import eki.eve.data.db.tables.records.WordRelTypeRecord;
 import eki.eve.data.db.tables.records.WordRelationRecord;
+import eki.eve.data.db.tables.records.WordTypeLabelRecord;
+import eki.eve.data.db.tables.records.WordTypeRecord;
 
 import javax.annotation.Generated;
 
@@ -247,8 +249,6 @@ public class Keys {
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = UniqueKeys0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
     public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_PKEY = UniqueKeys0.LEXEME_REGISTER_PKEY;
     public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = UniqueKeys0.LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY;
-    public static final UniqueKey<LexemeTypeRecord> LEXEME_TYPE_PKEY = UniqueKeys0.LEXEME_TYPE_PKEY;
-    public static final UniqueKey<LexemeTypeLabelRecord> LEXEME_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.LEXEME_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<LifecycleLogRecord> LIFECYCLE_LOG_PKEY = UniqueKeys0.LIFECYCLE_LOG_PKEY;
     public static final UniqueKey<MeaningRecord> MEANING_PKEY = UniqueKeys0.MEANING_PKEY;
     public static final UniqueKey<MeaningDomainRecord> MEANING_DOMAIN_PKEY = UniqueKeys0.MEANING_DOMAIN_PKEY;
@@ -259,7 +259,6 @@ public class Keys {
     public static final UniqueKey<MeaningRelTypeLabelRecord> MEANING_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.MEANING_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<MeaningRelationRecord> MEANING_RELATION_PKEY = UniqueKeys0.MEANING_RELATION_PKEY;
     public static final UniqueKey<MeaningRelationRecord> MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = UniqueKeys0.MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY;
-    public static final UniqueKey<MeaningStateRecord> MEANING_STATE_PKEY = UniqueKeys0.MEANING_STATE_PKEY;
     public static final UniqueKey<MeaningTypeRecord> MEANING_TYPE_PKEY = UniqueKeys0.MEANING_TYPE_PKEY;
     public static final UniqueKey<MorphRecord> MORPH_PKEY = UniqueKeys0.MORPH_PKEY;
     public static final UniqueKey<MorphLabelRecord> MORPH_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.MORPH_LABEL_CODE_LANG_TYPE_KEY;
@@ -276,6 +275,8 @@ public class Keys {
     public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = UniqueKeys0.SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = UniqueKeys0.USAGE_TYPE_PKEY;
     public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<ValueStateRecord> VALUE_STATE_PKEY = UniqueKeys0.VALUE_STATE_PKEY;
+    public static final UniqueKey<ValueStateLabelRecord> VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordRecord> WORD_PKEY = UniqueKeys0.WORD_PKEY;
     public static final UniqueKey<WordGuidRecord> WORD_GUID_PKEY = UniqueKeys0.WORD_GUID_PKEY;
     public static final UniqueKey<WordGuidRecord> WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY = UniqueKeys0.WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY;
@@ -283,6 +284,8 @@ public class Keys {
     public static final UniqueKey<WordRelTypeLabelRecord> WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = UniqueKeys0.WORD_RELATION_PKEY;
     public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = UniqueKeys0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
+    public static final UniqueKey<WordTypeRecord> WORD_TYPE_PKEY = UniqueKeys0.WORD_TYPE_PKEY;
+    public static final UniqueKey<WordTypeLabelRecord> WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
 
     // -------------------------------------------------------------------------
     // FOREIGN KEY definitions
@@ -339,8 +342,8 @@ public class Keys {
     public static final ForeignKey<LexemeRecord, WordRecord> LEXEME__LEXEME_WORD_ID_FKEY = ForeignKeys0.LEXEME__LEXEME_WORD_ID_FKEY;
     public static final ForeignKey<LexemeRecord, MeaningRecord> LEXEME__LEXEME_MEANING_ID_FKEY = ForeignKeys0.LEXEME__LEXEME_MEANING_ID_FKEY;
     public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_DATASET_CODE_FKEY;
-    public static final ForeignKey<LexemeRecord, LexemeTypeRecord> LEXEME__LEXEME_TYPE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_TYPE_CODE_FKEY;
     public static final ForeignKey<LexemeRecord, LexemeFrequencyRecord> LEXEME__LEXEME_FREQUENCY_GROUP_FKEY = ForeignKeys0.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY;
+    public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = ForeignKeys0.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY;
     public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeDerivRecord, DerivRecord> LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY = ForeignKeys0.LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY;
     public static final ForeignKey<LexemeFreeformRecord, LexemeRecord> LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY;
@@ -350,11 +353,7 @@ public class Keys {
     public static final ForeignKey<LexemePosRecord, ProcessStateRecord> LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY = ForeignKeys0.LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY;
     public static final ForeignKey<LexemeRegisterRecord, LexemeRecord> LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeRegisterRecord, RegisterRecord> LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY = ForeignKeys0.LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY;
-    public static final ForeignKey<LexemeTypeLabelRecord, LexemeTypeRecord> LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_CODE_FKEY = ForeignKeys0.LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_CODE_FKEY;
-    public static final ForeignKey<LexemeTypeLabelRecord, LangRecord> LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_LANG_FKEY = ForeignKeys0.LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_LANG_FKEY;
-    public static final ForeignKey<LexemeTypeLabelRecord, LabelTypeRecord> LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<MeaningRecord, ProcessStateRecord> MEANING__MEANING_PROCESS_STATE_CODE_FKEY = ForeignKeys0.MEANING__MEANING_PROCESS_STATE_CODE_FKEY;
-    public static final ForeignKey<MeaningRecord, MeaningStateRecord> MEANING__MEANING_STATE_CODE_FKEY = ForeignKeys0.MEANING__MEANING_STATE_CODE_FKEY;
     public static final ForeignKey<MeaningRecord, MeaningTypeRecord> MEANING__MEANING_TYPE_CODE_FKEY = ForeignKeys0.MEANING__MEANING_TYPE_CODE_FKEY;
     public static final ForeignKey<MeaningDomainRecord, MeaningRecord> MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY = ForeignKeys0.MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY;
     public static final ForeignKey<MeaningDomainRecord, DomainRecord> MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY = ForeignKeys0.MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY;
@@ -382,10 +381,14 @@ public class Keys {
     public static final ForeignKey<UsageTypeLabelRecord, UsageTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, LangRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<UsageTypeLabelRecord, LabelTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY;
+    public static final ForeignKey<ValueStateLabelRecord, ValueStateRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY = ForeignKeys0.VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY;
+    public static final ForeignKey<ValueStateLabelRecord, LangRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY = ForeignKeys0.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY;
+    public static final ForeignKey<ValueStateLabelRecord, LabelTypeRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY = ForeignKeys0.VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY;
     public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = ForeignKeys0.WORD__WORD_LANG_FKEY;
     public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = ForeignKeys0.WORD__WORD_GENDER_CODE_FKEY;
+    public static final ForeignKey<WordRecord, WordTypeRecord> WORD__WORD_TYPE_CODE_FKEY = ForeignKeys0.WORD__WORD_TYPE_CODE_FKEY;
     public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_WORD_ID_FKEY;
     public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = ForeignKeys0.WORD_GUID__WORD_GUID_DATASET_CODE_FKEY;
     public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY;
@@ -394,6 +397,9 @@ public class Keys {
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY;
     public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = ForeignKeys0.WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY;
+    public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY;
+    public static final ForeignKey<WordTypeLabelRecord, LangRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY;
+    public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -480,8 +486,6 @@ public class Keys {
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE);
         public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_PKEY = Internal.createUniqueKey(LexemeRegister.LEXEME_REGISTER, "lexeme_register_pkey", LexemeRegister.LEXEME_REGISTER.ID);
         public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = Internal.createUniqueKey(LexemeRegister.LEXEME_REGISTER, "lexeme_register_lexeme_id_register_code_key", LexemeRegister.LEXEME_REGISTER.LEXEME_ID, LexemeRegister.LEXEME_REGISTER.REGISTER_CODE);
-        public static final UniqueKey<LexemeTypeRecord> LEXEME_TYPE_PKEY = Internal.createUniqueKey(LexemeType.LEXEME_TYPE, "lexeme_type_pkey", LexemeType.LEXEME_TYPE.CODE);
-        public static final UniqueKey<LexemeTypeLabelRecord> LEXEME_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(LexemeTypeLabel.LEXEME_TYPE_LABEL, "lexeme_type_label_code_lang_type_key", LexemeTypeLabel.LEXEME_TYPE_LABEL.CODE, LexemeTypeLabel.LEXEME_TYPE_LABEL.LANG, LexemeTypeLabel.LEXEME_TYPE_LABEL.TYPE);
         public static final UniqueKey<LifecycleLogRecord> LIFECYCLE_LOG_PKEY = Internal.createUniqueKey(LifecycleLog.LIFECYCLE_LOG, "lifecycle_log_pkey", LifecycleLog.LIFECYCLE_LOG.ID);
         public static final UniqueKey<MeaningRecord> MEANING_PKEY = Internal.createUniqueKey(Meaning.MEANING, "meaning_pkey", Meaning.MEANING.ID);
         public static final UniqueKey<MeaningDomainRecord> MEANING_DOMAIN_PKEY = Internal.createUniqueKey(MeaningDomain.MEANING_DOMAIN, "meaning_domain_pkey", MeaningDomain.MEANING_DOMAIN.ID);
@@ -492,7 +496,6 @@ public class Keys {
         public static final UniqueKey<MeaningRelTypeLabelRecord> MEANING_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL, "meaning_rel_type_label_code_lang_type_key", MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL.CODE, MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL.LANG, MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL.TYPE);
         public static final UniqueKey<MeaningRelationRecord> MEANING_RELATION_PKEY = Internal.createUniqueKey(MeaningRelation.MEANING_RELATION, "meaning_relation_pkey", MeaningRelation.MEANING_RELATION.ID);
         public static final UniqueKey<MeaningRelationRecord> MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = Internal.createUniqueKey(MeaningRelation.MEANING_RELATION, "meaning_relation_meaning1_id_meaning2_id_meaning_rel_type_c_key", MeaningRelation.MEANING_RELATION.MEANING1_ID, MeaningRelation.MEANING_RELATION.MEANING2_ID, MeaningRelation.MEANING_RELATION.MEANING_REL_TYPE_CODE);
-        public static final UniqueKey<MeaningStateRecord> MEANING_STATE_PKEY = Internal.createUniqueKey(MeaningState.MEANING_STATE, "meaning_state_pkey", MeaningState.MEANING_STATE.CODE);
         public static final UniqueKey<MeaningTypeRecord> MEANING_TYPE_PKEY = Internal.createUniqueKey(MeaningType.MEANING_TYPE, "meaning_type_pkey", MeaningType.MEANING_TYPE.CODE);
         public static final UniqueKey<MorphRecord> MORPH_PKEY = Internal.createUniqueKey(Morph.MORPH, "morph_pkey", Morph.MORPH.CODE);
         public static final UniqueKey<MorphLabelRecord> MORPH_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(MorphLabel.MORPH_LABEL, "morph_label_code_lang_type_key", MorphLabel.MORPH_LABEL.CODE, MorphLabel.MORPH_LABEL.LANG, MorphLabel.MORPH_LABEL.TYPE);
@@ -509,6 +512,8 @@ public class Keys {
         public static final UniqueKey<SourceFreeformRecord> SOURCE_FREEFORM_SOURCE_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(SourceFreeform.SOURCE_FREEFORM, "source_freeform_source_id_freeform_id_key", SourceFreeform.SOURCE_FREEFORM.SOURCE_ID, SourceFreeform.SOURCE_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<UsageTypeRecord> USAGE_TYPE_PKEY = Internal.createUniqueKey(UsageType.USAGE_TYPE, "usage_type_pkey", UsageType.USAGE_TYPE.CODE);
         public static final UniqueKey<UsageTypeLabelRecord> USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE);
+        public static final UniqueKey<ValueStateRecord> VALUE_STATE_PKEY = Internal.createUniqueKey(ValueState.VALUE_STATE, "value_state_pkey", ValueState.VALUE_STATE.CODE);
+        public static final UniqueKey<ValueStateLabelRecord> VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(ValueStateLabel.VALUE_STATE_LABEL, "value_state_label_code_lang_type_key", ValueStateLabel.VALUE_STATE_LABEL.CODE, ValueStateLabel.VALUE_STATE_LABEL.LANG, ValueStateLabel.VALUE_STATE_LABEL.TYPE);
         public static final UniqueKey<WordRecord> WORD_PKEY = Internal.createUniqueKey(Word.WORD, "word_pkey", Word.WORD.ID);
         public static final UniqueKey<WordGuidRecord> WORD_GUID_PKEY = Internal.createUniqueKey(WordGuid.WORD_GUID, "word_guid_pkey", WordGuid.WORD_GUID.ID);
         public static final UniqueKey<WordGuidRecord> WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY = Internal.createUniqueKey(WordGuid.WORD_GUID, "word_guid_word_id_guid_dataset_code_key", WordGuid.WORD_GUID.WORD_ID, WordGuid.WORD_GUID.GUID, WordGuid.WORD_GUID.DATASET_CODE);
@@ -516,6 +521,8 @@ public class Keys {
         public static final UniqueKey<WordRelTypeLabelRecord> WORD_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label_code_lang_type_key", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE, WordRelTypeLabel.WORD_REL_TYPE_LABEL.LANG, WordRelTypeLabel.WORD_REL_TYPE_LABEL.TYPE);
         public static final UniqueKey<WordRelationRecord> WORD_RELATION_PKEY = Internal.createUniqueKey(WordRelation.WORD_RELATION, "word_relation_pkey", WordRelation.WORD_RELATION.ID);
         public static final UniqueKey<WordRelationRecord> WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Internal.createUniqueKey(WordRelation.WORD_RELATION, "word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
+        public static final UniqueKey<WordTypeRecord> WORD_TYPE_PKEY = Internal.createUniqueKey(WordType.WORD_TYPE, "word_type_pkey", WordType.WORD_TYPE.CODE);
+        public static final UniqueKey<WordTypeLabelRecord> WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(WordTypeLabel.WORD_TYPE_LABEL, "word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE);
     }
 
     private static class ForeignKeys0 {
@@ -570,8 +577,8 @@ public class Keys {
         public static final ForeignKey<LexemeRecord, WordRecord> LEXEME__LEXEME_WORD_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_PKEY, Lexeme.LEXEME, "lexeme__lexeme_word_id_fkey", Lexeme.LEXEME.WORD_ID);
         public static final ForeignKey<LexemeRecord, MeaningRecord> LEXEME__LEXEME_MEANING_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.MEANING_PKEY, Lexeme.LEXEME, "lexeme__lexeme_meaning_id_fkey", Lexeme.LEXEME.MEANING_ID);
         public static final ForeignKey<LexemeRecord, DatasetRecord> LEXEME__LEXEME_DATASET_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.DATASET_PKEY, Lexeme.LEXEME, "lexeme__lexeme_dataset_code_fkey", Lexeme.LEXEME.DATASET_CODE);
-        public static final ForeignKey<LexemeRecord, LexemeTypeRecord> LEXEME__LEXEME_TYPE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LEXEME_TYPE_PKEY, Lexeme.LEXEME, "lexeme__lexeme_type_code_fkey", Lexeme.LEXEME.TYPE_CODE);
         public static final ForeignKey<LexemeRecord, LexemeFrequencyRecord> LEXEME__LEXEME_FREQUENCY_GROUP_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LEXEME_FREQUENCY_PKEY, Lexeme.LEXEME, "lexeme__lexeme_frequency_group_fkey", Lexeme.LEXEME.FREQUENCY_GROUP);
+        public static final ForeignKey<LexemeRecord, ValueStateRecord> LEXEME__LEXEME_VALUE_STATE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.VALUE_STATE_PKEY, Lexeme.LEXEME, "lexeme__lexeme_value_state_code_fkey", Lexeme.LEXEME.VALUE_STATE_CODE);
         public static final ForeignKey<LexemeDerivRecord, LexemeRecord> LEXEME_DERIV__LEXEME_DERIV_LEXEME_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv__lexeme_deriv_lexeme_id_fkey", LexemeDeriv.LEXEME_DERIV.LEXEME_ID);
         public static final ForeignKey<LexemeDerivRecord, DerivRecord> LEXEME_DERIV__LEXEME_DERIV_DERIV_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.DERIV_PKEY, LexemeDeriv.LEXEME_DERIV, "lexeme_deriv__lexeme_deriv_deriv_code_fkey", LexemeDeriv.LEXEME_DERIV.DERIV_CODE);
         public static final ForeignKey<LexemeFreeformRecord, LexemeRecord> LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform__lexeme_freeform_lexeme_id_fkey", LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID);
@@ -581,11 +588,7 @@ public class Keys {
         public static final ForeignKey<LexemePosRecord, ProcessStateRecord> LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.PROCESS_STATE_PKEY, LexemePos.LEXEME_POS, "lexeme_pos__lexeme_pos_process_state_code_fkey", LexemePos.LEXEME_POS.PROCESS_STATE_CODE);
         public static final ForeignKey<LexemeRegisterRecord, LexemeRecord> LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LEXEME_PKEY, LexemeRegister.LEXEME_REGISTER, "lexeme_register__lexeme_register_lexeme_id_fkey", LexemeRegister.LEXEME_REGISTER.LEXEME_ID);
         public static final ForeignKey<LexemeRegisterRecord, RegisterRecord> LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.REGISTER_PKEY, LexemeRegister.LEXEME_REGISTER, "lexeme_register__lexeme_register_register_code_fkey", LexemeRegister.LEXEME_REGISTER.REGISTER_CODE);
-        public static final ForeignKey<LexemeTypeLabelRecord, LexemeTypeRecord> LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LEXEME_TYPE_PKEY, LexemeTypeLabel.LEXEME_TYPE_LABEL, "lexeme_type_label__lexeme_type_label_code_fkey", LexemeTypeLabel.LEXEME_TYPE_LABEL.CODE);
-        public static final ForeignKey<LexemeTypeLabelRecord, LangRecord> LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, LexemeTypeLabel.LEXEME_TYPE_LABEL, "lexeme_type_label__lexeme_type_label_lang_fkey", LexemeTypeLabel.LEXEME_TYPE_LABEL.LANG);
-        public static final ForeignKey<LexemeTypeLabelRecord, LabelTypeRecord> LEXEME_TYPE_LABEL__LEXEME_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LABEL_TYPE_PKEY, LexemeTypeLabel.LEXEME_TYPE_LABEL, "lexeme_type_label__lexeme_type_label_type_fkey", LexemeTypeLabel.LEXEME_TYPE_LABEL.TYPE);
         public static final ForeignKey<MeaningRecord, ProcessStateRecord> MEANING__MEANING_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.PROCESS_STATE_PKEY, Meaning.MEANING, "meaning__meaning_process_state_code_fkey", Meaning.MEANING.PROCESS_STATE_CODE);
-        public static final ForeignKey<MeaningRecord, MeaningStateRecord> MEANING__MEANING_STATE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.MEANING_STATE_PKEY, Meaning.MEANING, "meaning__meaning_state_code_fkey", Meaning.MEANING.STATE_CODE);
         public static final ForeignKey<MeaningRecord, MeaningTypeRecord> MEANING__MEANING_TYPE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.MEANING_TYPE_PKEY, Meaning.MEANING, "meaning__meaning_type_code_fkey", Meaning.MEANING.TYPE_CODE);
         public static final ForeignKey<MeaningDomainRecord, MeaningRecord> MEANING_DOMAIN__MEANING_DOMAIN_MEANING_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.MEANING_PKEY, MeaningDomain.MEANING_DOMAIN, "meaning_domain__meaning_domain_meaning_id_fkey", MeaningDomain.MEANING_DOMAIN.MEANING_ID);
         public static final ForeignKey<MeaningDomainRecord, DomainRecord> MEANING_DOMAIN__MEANING_DOMAIN_DOMAIN_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.DOMAIN_PKEY, MeaningDomain.MEANING_DOMAIN, "meaning_domain__meaning_domain_domain_code_fkey", MeaningDomain.MEANING_DOMAIN.DOMAIN_CODE, MeaningDomain.MEANING_DOMAIN.DOMAIN_ORIGIN);
@@ -613,10 +616,14 @@ public class Keys {
         public static final ForeignKey<UsageTypeLabelRecord, UsageTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.USAGE_TYPE_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_code_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.CODE);
         public static final ForeignKey<UsageTypeLabelRecord, LangRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_lang_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.LANG);
         public static final ForeignKey<UsageTypeLabelRecord, LabelTypeRecord> USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LABEL_TYPE_PKEY, UsageTypeLabel.USAGE_TYPE_LABEL, "usage_type_label__usage_type_label_type_fkey", UsageTypeLabel.USAGE_TYPE_LABEL.TYPE);
+        public static final ForeignKey<ValueStateLabelRecord, ValueStateRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.VALUE_STATE_PKEY, ValueStateLabel.VALUE_STATE_LABEL, "value_state_label__value_state_label_code_fkey", ValueStateLabel.VALUE_STATE_LABEL.CODE);
+        public static final ForeignKey<ValueStateLabelRecord, LangRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, ValueStateLabel.VALUE_STATE_LABEL, "value_state_label__value_state_label_lang_fkey", ValueStateLabel.VALUE_STATE_LABEL.LANG);
+        public static final ForeignKey<ValueStateLabelRecord, LabelTypeRecord> VALUE_STATE_LABEL__VALUE_STATE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LABEL_TYPE_PKEY, ValueStateLabel.VALUE_STATE_LABEL, "value_state_label__value_state_label_type_fkey", ValueStateLabel.VALUE_STATE_LABEL.TYPE);
         public static final ForeignKey<WordRecord, LangRecord> WORD__WORD_LANG_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, Word.WORD, "word__word_lang_fkey", Word.WORD.LANG);
         public static final ForeignKey<WordRecord, MorphRecord> WORD__WORD_MORPH_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.MORPH_PKEY, Word.WORD, "word__word_morph_code_fkey", Word.WORD.MORPH_CODE);
         public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word__word_display_morph_code_fkey", Word.WORD.DISPLAY_MORPH_CODE);
         public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.GENDER_PKEY, Word.WORD, "word__word_gender_code_fkey", Word.WORD.GENDER_CODE);
+        public static final ForeignKey<WordRecord, WordTypeRecord> WORD__WORD_TYPE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_TYPE_PKEY, Word.WORD, "word__word_type_code_fkey", Word.WORD.TYPE_CODE);
         public static final ForeignKey<WordGuidRecord, WordRecord> WORD_GUID__WORD_GUID_WORD_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_word_id_fkey", WordGuid.WORD_GUID.WORD_ID);
         public static final ForeignKey<WordGuidRecord, DatasetRecord> WORD_GUID__WORD_GUID_DATASET_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.DATASET_PKEY, WordGuid.WORD_GUID, "word_guid__word_guid_dataset_code_fkey", WordGuid.WORD_GUID.DATASET_CODE);
         public static final ForeignKey<WordRelTypeLabelRecord, WordRelTypeRecord> WORD_REL_TYPE_LABEL__WORD_REL_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelTypeLabel.WORD_REL_TYPE_LABEL, "word_rel_type_label__word_rel_type_label_code_fkey", WordRelTypeLabel.WORD_REL_TYPE_LABEL.CODE);
@@ -625,5 +632,8 @@ public class Keys {
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD1_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word1_id_fkey", WordRelation.WORD_RELATION.WORD1_ID);
         public static final ForeignKey<WordRelationRecord, WordRecord> WORD_RELATION__WORD_RELATION_WORD2_ID_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word2_id_fkey", WordRelation.WORD_RELATION.WORD2_ID);
         public static final ForeignKey<WordRelationRecord, WordRelTypeRecord> WORD_RELATION__WORD_RELATION_WORD_REL_TYPE_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_REL_TYPE_PKEY, WordRelation.WORD_RELATION, "word_relation__word_relation_word_rel_type_code_fkey", WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE);
+        public static final ForeignKey<WordTypeLabelRecord, WordTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.WORD_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label__word_type_label_code_fkey", WordTypeLabel.WORD_TYPE_LABEL.CODE);
+        public static final ForeignKey<WordTypeLabelRecord, LangRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LANG_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label__word_type_label_lang_fkey", WordTypeLabel.WORD_TYPE_LABEL.LANG);
+        public static final ForeignKey<WordTypeLabelRecord, LabelTypeRecord> WORD_TYPE_LABEL__WORD_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.eve.data.db.Keys.LABEL_TYPE_PKEY, WordTypeLabel.WORD_TYPE_LABEL, "word_type_label__word_type_label_type_fkey", WordTypeLabel.WORD_TYPE_LABEL.TYPE);
     }
 }

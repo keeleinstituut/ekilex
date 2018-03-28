@@ -160,7 +160,6 @@ public class LexSearchService implements SystemConstant {
 		boolean lexemeOrMeaningClassifiersExist =
 				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 				|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
-				|| StringUtils.isNotBlank(lexeme.getMeaningTypeCode())
 				|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
 				|| StringUtils.isNotBlank(lexeme.getGenderCode())
 				|| CollectionUtils.isNotEmpty(lexemePos)

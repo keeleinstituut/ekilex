@@ -501,7 +501,6 @@ public class LexSearchDbService implements SystemConstant {
 			LEXEME.LEVEL3,
 			LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 			LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-			MEANING.TYPE_CODE.as("meaning_type_code"),
 			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
 

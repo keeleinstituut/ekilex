@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
 
-    private static final long serialVersionUID = -1759801665;
+    private static final long serialVersionUID = 802613035;
 
     /**
      * The reference instance of <code>public.government_type</code>
@@ -56,7 +56,7 @@ public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
     /**
      * The column <code>public.government_type.code</code>.
      */
-    public final TableField<GovernmentTypeRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR(10).nullable(false), this, "");
+    public final TableField<GovernmentTypeRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.government_type.datasets</code>.

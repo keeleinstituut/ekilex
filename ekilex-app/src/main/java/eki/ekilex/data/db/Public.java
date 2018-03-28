@@ -68,6 +68,7 @@ import eki.ekilex.data.db.tables.ValueStateLabel;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwForm;
+import eki.ekilex.data.db.tables.ViewWwLexeme;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.Word;
@@ -79,6 +80,7 @@ import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
+import eki.ekilex.data.db.udt.TypeUsage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -106,7 +108,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 2069989291;
+    private static final long serialVersionUID = -193631069;
 
     /**
      * The reference instance of <code>public</code>
@@ -434,6 +436,11 @@ public class Public extends SchemaImpl {
     public final ViewWwForm VIEW_WW_FORM = eki.ekilex.data.db.tables.ViewWwForm.VIEW_WW_FORM;
 
     /**
+     * The table <code>public.view_ww_lexeme</code>.
+     */
+    public final ViewWwLexeme VIEW_WW_LEXEME = eki.ekilex.data.db.tables.ViewWwLexeme.VIEW_WW_LEXEME;
+
+    /**
      * The table <code>public.view_ww_meaning</code>.
      */
     public final ViewWwMeaning VIEW_WW_MEANING = eki.ekilex.data.db.tables.ViewWwMeaning.VIEW_WW_MEANING;
@@ -619,6 +626,7 @@ public class Public extends SchemaImpl {
             ViewWwClassifier.VIEW_WW_CLASSIFIER,
             ViewWwDataset.VIEW_WW_DATASET,
             ViewWwForm.VIEW_WW_FORM,
+            ViewWwLexeme.VIEW_WW_LEXEME,
             ViewWwMeaning.VIEW_WW_MEANING,
             ViewWwWord.VIEW_WW_WORD,
             Word.WORD,
@@ -640,6 +648,7 @@ public class Public extends SchemaImpl {
     private final List<UDT<?>> getUDTs0() {
         return Arrays.<UDT<?>>asList(
             TypeDefinition.TYPE_DEFINITION,
-            TypeDomain.TYPE_DOMAIN);
+            TypeDomain.TYPE_DOMAIN,
+            TypeUsage.TYPE_USAGE);
     }
 }

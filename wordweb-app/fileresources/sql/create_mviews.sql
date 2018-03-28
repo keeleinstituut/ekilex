@@ -1,10 +1,12 @@
-drop materialized view if exists mview_ww_word cascade;
-drop materialized view if exists mview_ww_form cascade;
-drop materialized view if exists mview_ww_meaning cascade;
-drop materialized view if exists mview_ww_classifier cascade;
-drop materialized view if exists mview_ww_dataset cascade;
+drop materialized view if exists mview_ww_lexeme;
+drop materialized view if exists mview_ww_form;
+drop materialized view if exists mview_ww_word;
+drop materialized view if exists mview_ww_meaning;
+drop materialized view if exists mview_ww_classifier;
+drop materialized view if exists mview_ww_dataset;
 drop type if exists type_definition;
 drop type if exists type_domain;
+drop type if exists type_usage;
 
 -- run this once:
 -- CREATE EXTENSION dblink;
@@ -69,6 +71,28 @@ dblink(
 	definition_lang char(3)
 );
 
+create type type_usage as (usage text, usage_author text, usage_translator text);
+
+create materialized view mview_ww_lexeme as
+select * from 
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_lexeme') as lexeme(
+	lexeme_id bigint,
+	word_id bigint,
+	meaning_id bigint,
+	advice_notes text array,
+	public_notes text array,
+	grammars text array,
+	government_id bigint,
+	government text,
+	usage_meaning_id bigint,
+	usage_meaning_type_code varchar(100),
+	usages type_usage array,
+	usage_translations text array,
+	usage_definitions text array
+);
+
 create materialized view mview_ww_dataset as
 select * from
 dblink(
@@ -101,5 +125,8 @@ create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);
 create index mview_ww_meaning_definition_lang_idx on mview_ww_meaning (definition_lang);
+create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
+create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
+create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
 create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);
