@@ -1,4 +1,6 @@
 create type type_definition as (value text, lang char(3));
+create type type_domain as (origin varchar(100), code varchar(100));
+create type type_usage as (usage text, usage_author text, usage_translator text);
 
 create view view_ww_word 
 as
@@ -45,26 +47,23 @@ from (select w.id as word_id,
                          from lexeme l1,
                               lexeme l2,
                               form f2,
-                              paradigm p2,
-                              meaning m
+                              paradigm p2
                          where l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
-                         and   l1.meaning_id = m.id
-                         and   l2.meaning_id = m.id
+                         and   l1.meaning_id = l2.meaning_id
                          and   l1.word_id != l2.word_id
                          and   p2.word_id = l2.word_id
                          and   f2.paradigm_id = p2.id
                          and   f2.is_word = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.value,wd.lang)::type_definition) definitions
+                          array_agg(row (wd.value,wd.lang)::type_definition order by wd.order_by) definitions
                    from (select l.word_id,
                                 d.value,
-                                d.lang
+                                d.lang,
+                                d.order_by
                          from lexeme l,
-                              meaning m,
                               definition d
-                         where l.meaning_id = m.id
-                         and   d.meaning_id = m.id
+                         where l.meaning_id = d.meaning_id
                          order by l.dataset_code,
                                   l.level1,
                                   l.level2,
@@ -92,47 +91,77 @@ create view view_ww_form
                         where (ld.word_id = p.word_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
     order by f.id;
 
-create type type_domain as (origin varchar(100), code varchar(100));
-
-create view view_ww_meaning
+create view view_ww_meaning 
   as
     select l.word_id,
-      l.meaning_id,
-      l.id lexeme_id,
-      d.id definition_id,
-      l.dataset_code,
-      l.level1,
-      l.level2,
-      l.level3,
-      (select array_agg(l_reg.register_code order by l_reg.order_by)
-       from lexeme_register l_reg
-       where l_reg.lexeme_id = l.id
-       group by l_reg.lexeme_id) register_codes,
-      (select array_agg(l_pos.pos_code order by l_pos.order_by)
-       from lexeme_pos l_pos
-       where l_pos.lexeme_id = l.id
-       group by l_pos.lexeme_id) pos_codes,
-      (select array_agg(l_der.deriv_code)
-       from lexeme_deriv l_der
-       where l_der.lexeme_id = l.id
-       group by l_der.lexeme_id) deriv_codes,
-      (select array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by)
-       from meaning_domain m_dom
-       where m_dom.meaning_id = m.id
-       group by m_dom.meaning_id) domain_codes,
-      d.value definition,
-      d.lang definition_lang
+           l.meaning_id,
+           l.id lexeme_id,
+           l.dataset_code,
+           l.level1,
+           l.level2,
+           l.level3,
+           l_reg.register_codes,
+           l_pos.pos_codes,
+           l_der.deriv_codes,
+           m_dom.domain_codes,
+           m_img.image_files,
+           m_spp.systematic_polysemy_patterns,
+           m_smt.semantic_types,
+           m_lcm.learner_comments,
+           d.definitions
     from lexeme l
-      left outer join lexeme_deriv l_der on l_der.lexeme_id = l.id
-      inner join meaning m on l.meaning_id = m.id
-      left outer join definition d on d.meaning_id = m.id
+      left outer join (select l_reg.lexeme_id,
+                              array_agg(l_reg.register_code order by l_reg.order_by) register_codes
+                       from lexeme_register l_reg
+                       group by l_reg.lexeme_id) l_reg on l_reg.lexeme_id = l.id
+      left outer join (select l_pos.lexeme_id,
+                              array_agg(l_pos.pos_code order by l_pos.order_by) pos_codes
+                       from lexeme_pos l_pos
+                       group by l_pos.lexeme_id) l_pos on l_pos.lexeme_id = l.id
+      left outer join (select l_der.lexeme_id,
+                              array_agg(l_der.deriv_code) deriv_codes
+                       from lexeme_deriv l_der
+                       group by l_der.lexeme_id) l_der on l_der.lexeme_id = l.id
+      left outer join (select m_dom.meaning_id,
+                              array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
+                       from meaning_domain m_dom
+                       group by m_dom.meaning_id) m_dom on m_dom.meaning_id = l.meaning_id
+      left outer join (select d.meaning_id,
+                              array_agg(row (d.value,d.lang)::type_definition order by d.order_by) definitions
+                       from definition d
+                       group by d.meaning_id) d on d.meaning_id = l.meaning_id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) image_files
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'IMAGE_FILE'
+                       group by mf.meaning_id) m_img on m_img.meaning_id = l.meaning_id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'SYSTEMATIC_POLYSEMY_PATTERN'
+                       group by mf.meaning_id) m_spp on m_spp.meaning_id = l.meaning_id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) semantic_types
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'SEMANTIC_TYPE'
+                       group by mf.meaning_id) m_smt on m_smt.meaning_id = l.meaning_id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) learner_comments
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'LEARNER_COMMENT'
+                       group by mf.meaning_id) m_lcm on m_lcm.meaning_id = l.meaning_id
     where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
     order by l.word_id,
-      l.meaning_id,
-      d.id,
-      l.id;
-
-create type type_usage as (usage text, usage_author text, usage_translator text);
+             l.meaning_id,
+             l.id;
 
 create view view_ww_lexeme 
   as
@@ -222,37 +251,50 @@ create view view_ww_dataset
 
 create view view_ww_classifier
   as
-    (select 'MORPH' as name,
-            null as origin,
+    (select
+       'MORPH' as name,
+       null as origin,
        code,
        value,
        lang
      from morph_label
      union all
-     select 'POS' as name,
-            null as origin,
+     select
+       'POS' as name,
+       null as origin,
        code,
        value,
        lang
      from pos_label
      union all
-     select 'REGISTER' as name,
-            null as origin,
+     select
+       'REGISTER' as name,
+       null as origin,
        code,
        value,
        lang
      from register_label
      union all
-     select 'DERIV' as name,
-            null as origin,
+     select
+       'DERIV' as name,
+       null as origin,
        code,
        value,
        lang
      from deriv_label
      union all
-     select 'DOMAIN' as name,
+     select
+       'DOMAIN' as name,
        origin,
        code,
        value,
        lang
-     from domain_label);
+     from domain_label
+     union all
+     select
+       'USAGE_TYPE' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from usage_type_label);

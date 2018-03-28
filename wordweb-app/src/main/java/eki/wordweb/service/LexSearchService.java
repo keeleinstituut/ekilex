@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.wordweb.data.Lexeme;
+import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.service.db.LexSearchDbService;
@@ -28,7 +29,7 @@ public class LexSearchService {
 	@Transactional
 	public List<Word> findWords(String searchFilter) {
 
-		List<Word> formMatchWords = lexSearchDbService.findWords(searchFilter).into(Word.class);
+		List<Word> formMatchWords = lexSearchDbService.findWords(searchFilter);
 		List<Word> fullMatchWords = formMatchWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			return fullMatchWords;
@@ -39,9 +40,9 @@ public class LexSearchService {
 	@Transactional
 	public List<Lexeme> findLexemes(Long wordId, String displayLang) {
 
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId).into(LexemeMeaningTuple.class);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, displayLang);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId);
+		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, displayLang);
 		return lexemes;
 	}
-
 }

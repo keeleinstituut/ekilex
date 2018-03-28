@@ -22,6 +22,8 @@ public interface WebConstant {
 
 	String AUTH_ERROR_URI = "/autherror";
 
+	String LEX_JOIN_PAGE = "lexjoin";
+
 	String ERROR_PAGE = "error";
 
 	String SEARCH_MODE_SIMPLE = "SIMPLE";
@@ -36,5 +38,6 @@ public interface WebConstant {
 
 	String USER_MODEL_KEY = "user";
 
-	String LEX_JOIN_PAGE = "lexjoin";
+	String SEARCH_WORD_KEY = "searchWord";
+
 }

@@ -23,6 +23,14 @@ public class Lexeme extends AbstractDataObject {
 
 	private Integer level3;
 
+	private List<String> adviceNotes;
+
+	private List<String> publicNotes;
+
+	private List<String> grammars;
+
+	private List<Government> governments;
+
 	private List<Classifier> registers;
 
 	private List<Classifier> poses;
@@ -31,7 +39,15 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Classifier> domains;
 
-	private List<String> definitions;
+	private List<String> imageFiles;
+
+	private List<String> systematicPolysemyPatterns;
+
+	private List<String> semanticTypes;
+
+	private List<String> learnerComments;
+
+	private List<TypeDefinition> definitions;
 
 	private List<Word> meaningWords;
 
@@ -91,6 +107,38 @@ public class Lexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
+	public List<String> getAdviceNotes() {
+		return adviceNotes;
+	}
+
+	public void setAdviceNotes(List<String> adviceNotes) {
+		this.adviceNotes = adviceNotes;
+	}
+
+	public List<String> getPublicNotes() {
+		return publicNotes;
+	}
+
+	public void setPublicNotes(List<String> publicNotes) {
+		this.publicNotes = publicNotes;
+	}
+
+	public List<String> getGrammars() {
+		return grammars;
+	}
+
+	public void setGrammars(List<String> grammars) {
+		this.grammars = grammars;
+	}
+
+	public List<Government> getGovernments() {
+		return governments;
+	}
+
+	public void setGovernments(List<Government> governments) {
+		this.governments = governments;
+	}
+
 	public List<Classifier> getRegisters() {
 		return registers;
 	}
@@ -123,11 +171,43 @@ public class Lexeme extends AbstractDataObject {
 		this.domains = domains;
 	}
 
-	public List<String> getDefinitions() {
+	public List<String> getImageFiles() {
+		return imageFiles;
+	}
+
+	public void setImageFiles(List<String> imageFiles) {
+		this.imageFiles = imageFiles;
+	}
+
+	public List<String> getSystematicPolysemyPatterns() {
+		return systematicPolysemyPatterns;
+	}
+
+	public void setSystematicPolysemyPatterns(List<String> systematicPolysemyPatterns) {
+		this.systematicPolysemyPatterns = systematicPolysemyPatterns;
+	}
+
+	public List<String> getSemanticTypes() {
+		return semanticTypes;
+	}
+
+	public void setSemanticTypes(List<String> semanticTypes) {
+		this.semanticTypes = semanticTypes;
+	}
+
+	public List<String> getLearnerComments() {
+		return learnerComments;
+	}
+
+	public void setLearnerComments(List<String> learnerComments) {
+		this.learnerComments = learnerComments;
+	}
+
+	public List<TypeDefinition> getDefinitions() {
 		return definitions;
 	}
 
-	public void setDefinitions(List<String> definitions) {
+	public void setDefinitions(List<TypeDefinition> definitions) {
 		this.definitions = definitions;
 	}
 

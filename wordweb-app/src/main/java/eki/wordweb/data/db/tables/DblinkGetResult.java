@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DblinkGetResult extends TableImpl<DblinkGetResultRecord> {
 
-    private static final long serialVersionUID = -1817780009;
+    private static final long serialVersionUID = -1351853646;
 
     /**
      * The reference instance of <code>public.dblink_get_result</code>
@@ -74,7 +74,7 @@ public class DblinkGetResult extends TableImpl<DblinkGetResultRecord> {
     }
 
     private DblinkGetResult(Name alias, Table<DblinkGetResultRecord> aliased) {
-        this(alias, aliased, new Field[2]);
+        this(alias, aliased, new Field[1]);
     }
 
     private DblinkGetResult(Name alias, Table<DblinkGetResultRecord> aliased, Field<?>[] parameters) {
@@ -124,20 +124,18 @@ public class DblinkGetResult extends TableImpl<DblinkGetResultRecord> {
     /**
      * Call this table-valued function
      */
-    public DblinkGetResult call(String __1, Boolean __2) {
+    public DblinkGetResult call(String __1) {
         return new DblinkGetResult(DSL.name(getName()), null, new Field[] { 
               DSL.val(__1, org.jooq.impl.SQLDataType.CLOB)
-            , DSL.val(__2, org.jooq.impl.SQLDataType.BOOLEAN)
         });
     }
 
     /**
      * Call this table-valued function
      */
-    public DblinkGetResult call(Field<String> __1, Field<Boolean> __2) {
+    public DblinkGetResult call(Field<String> __1) {
         return new DblinkGetResult(DSL.name(getName()), null, new Field[] { 
               __1
-            , __2
         });
     }
 }

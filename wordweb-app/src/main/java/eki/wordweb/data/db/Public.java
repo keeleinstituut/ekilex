@@ -52,7 +52,7 @@ import eki.wordweb.data.db.udt.TypeUsage;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1776464383;
+    private static final long serialVersionUID = -126870859;
 
     /**
      * The reference instance of <code>public</code>
@@ -145,22 +145,22 @@ public class Public extends SchemaImpl {
     /**
      * Call <code>public.dblink_get_result</code>.
      */
-    public static Result<DblinkGetResultRecord> DBLINK_GET_RESULT(Configuration configuration, String __1, Boolean __2) {
-        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2)).fetch();
+    public static Result<DblinkGetResultRecord> DBLINK_GET_RESULT(Configuration configuration, String __1) {
+        return DSL.using(configuration).selectFrom(eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1)).fetch();
     }
 
     /**
      * Get <code>public.dblink_get_result</code> as a table.
      */
-    public static DblinkGetResult DBLINK_GET_RESULT(String __1, Boolean __2) {
-        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2);
+    public static DblinkGetResult DBLINK_GET_RESULT(String __1) {
+        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1);
     }
 
     /**
      * Get <code>public.dblink_get_result</code> as a table.
      */
-    public static DblinkGetResult DBLINK_GET_RESULT(Field<String> __1, Field<Boolean> __2) {
-        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1, __2);
+    public static DblinkGetResult DBLINK_GET_RESULT(Field<String> __1) {
+        return eki.wordweb.data.db.tables.DblinkGetResult.DBLINK_GET_RESULT.call(__1);
     }
 
     /**

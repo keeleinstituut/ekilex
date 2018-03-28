@@ -41,7 +41,6 @@ public class Indexes {
     public static final Index MVIEW_WW_LEXEME_LEXEME_ID_IDX = Indexes0.MVIEW_WW_LEXEME_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_LEXEME_MEANING_ID_IDX = Indexes0.MVIEW_WW_LEXEME_MEANING_ID_IDX;
     public static final Index MVIEW_WW_LEXEME_WORD_ID_IDX = Indexes0.MVIEW_WW_LEXEME_WORD_ID_IDX;
-    public static final Index MVIEW_WW_MEANING_DEFINITION_LANG_IDX = Indexes0.MVIEW_WW_MEANING_DEFINITION_LANG_IDX;
     public static final Index MVIEW_WW_MEANING_LEXEME_ID_IDX = Indexes0.MVIEW_WW_MEANING_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_MEANING_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_MEANING_ID_IDX;
     public static final Index MVIEW_WW_MEANING_WORD_ID_IDX = Indexes0.MVIEW_WW_MEANING_WORD_ID_IDX;
@@ -60,7 +59,6 @@ public class Indexes {
         public static Index MVIEW_WW_LEXEME_LEXEME_ID_IDX = Internal.createIndex("mview_ww_lexeme_lexeme_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.LEXEME_ID }, false);
         public static Index MVIEW_WW_LEXEME_MEANING_ID_IDX = Internal.createIndex("mview_ww_lexeme_meaning_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.MEANING_ID }, false);
         public static Index MVIEW_WW_LEXEME_WORD_ID_IDX = Internal.createIndex("mview_ww_lexeme_word_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.WORD_ID }, false);
-        public static Index MVIEW_WW_MEANING_DEFINITION_LANG_IDX = Internal.createIndex("mview_ww_meaning_definition_lang_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.DEFINITION_LANG }, false);
         public static Index MVIEW_WW_MEANING_LEXEME_ID_IDX = Internal.createIndex("mview_ww_meaning_lexeme_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.LEXEME_ID }, false);
         public static Index MVIEW_WW_MEANING_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_meaning_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_WORD_ID_IDX = Internal.createIndex("mview_ww_meaning_word_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.WORD_ID }, false);

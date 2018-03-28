@@ -7,6 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwMeaningRecord;
+import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
 import eki.wordweb.data.db.udt.records.TypeDomainRecord;
 
 import java.util.Arrays;
@@ -37,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = -1643067570;
+    private static final long serialVersionUID = -239524474;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -66,11 +67,6 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      * The column <code>public.mview_ww_meaning.lexeme_id</code>.
      */
     public final TableField<MviewWwMeaningRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_meaning.definition_id</code>.
-     */
-    public final TableField<MviewWwMeaningRecord, Long> DEFINITION_ID = createField("definition_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.dataset_code</code>.
@@ -113,14 +109,29 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, TypeDomainRecord[]> DOMAIN_CODES = createField("domain_codes", eki.wordweb.data.db.udt.TypeDomain.TYPE_DOMAIN.getDataType().getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.definition</code>.
+     * The column <code>public.mview_ww_meaning.image_files</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String> DEFINITION = createField("definition", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> IMAGE_FILES = createField("image_files", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.mview_ww_meaning.definition_lang</code>.
+     * The column <code>public.mview_ww_meaning.systematic_polysemy_patterns</code>.
      */
-    public final TableField<MviewWwMeaningRecord, String> DEFINITION_LANG = createField("definition_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<MviewWwMeaningRecord, String[]> SYSTEMATIC_POLYSEMY_PATTERNS = createField("systematic_polysemy_patterns", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_meaning.semantic_types</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, String[]> SEMANTIC_TYPES = createField("semantic_types", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_meaning.learner_comments</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField("learner_comments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_meaning.definitions</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.wordweb.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_meaning</code> table reference
@@ -164,7 +175,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_DEFINITION_LANG_IDX, Indexes.MVIEW_WW_MEANING_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX, Indexes.MVIEW_WW_MEANING_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX, Indexes.MVIEW_WW_MEANING_WORD_ID_IDX);
     }
 
     /**

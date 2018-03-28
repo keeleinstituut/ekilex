@@ -1,21 +1,22 @@
 package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 
+import java.util.List;
+
 import org.jooq.DSLContext;
-import org.jooq.Record10;
-import org.jooq.Record16;
-import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.data.LexemeDetailsTuple;
+import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.Word;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
-import eki.wordweb.data.db.udt.records.TypeDefinitionRecord;
-import eki.wordweb.data.db.udt.records.TypeDomainRecord;
 
 @Component
 public class LexSearchDbService {
@@ -23,7 +24,7 @@ public class LexSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public Result<Record10<Long,String,Integer,String,String,String,String[],Integer,String[],TypeDefinitionRecord[]>> findWords(String searchFilter) {
+	public List<Word> findWords(String searchFilter) {
 
 		return create
 				.select(
@@ -49,10 +50,11 @@ public class LexSearchDbService {
 								)
 						)
 				.orderBy(MVIEW_WW_WORD.LANG, MVIEW_WW_WORD.HOMONYM_NR)
-				.fetch();
+				.fetch()
+				.into(Word.class);
 	}
 
-	public Result<Record16<Long,Long,Long,String,String,Integer,Integer,Integer,String[],String[],String[],TypeDomainRecord[],Long,String,Integer,String>> findLexemeMeaningTuples(Long wordId) {
+	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId) {
 
 		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");
 		MviewWwMeaning m2 = MVIEW_WW_MEANING.as("m2");
@@ -62,8 +64,6 @@ public class LexSearchDbService {
 				.select(
 						m1.LEXEME_ID,
 						m1.MEANING_ID,
-						m1.DEFINITION_ID,
-						m1.DEFINITION,
 						m1.DATASET_CODE,
 						m1.LEVEL1,
 						m1.LEVEL2,
@@ -72,6 +72,11 @@ public class LexSearchDbService {
 						m1.POS_CODES,
 						m1.DERIV_CODES,
 						m1.DOMAIN_CODES,
+						m1.IMAGE_FILES,
+						m1.SYSTEMATIC_POLYSEMY_PATTERNS,
+						m1.SEMANTIC_TYPES,
+						m1.LEARNER_COMMENTS,
+						m1.DEFINITIONS,
 						m2.WORD_ID.as("meaning_word_id"),
 						w2.WORD.as("meaning_word"),
 						w2.HOMONYM_NR.as("meaning_word_homonym_nr"),
@@ -83,7 +88,32 @@ public class LexSearchDbService {
 						)
 				.where(m1.WORD_ID.eq(wordId))
 				.orderBy(m1.DATASET_CODE, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3)
-				.fetch();
+				.fetch()
+				.into(LexemeMeaningTuple.class);
+	}
+
+	public List<LexemeDetailsTuple> findLexemeDetailsTuples(Long wordId) {
+
+		return create
+				.select(
+						MVIEW_WW_LEXEME.LEXEME_ID,
+						MVIEW_WW_LEXEME.MEANING_ID,
+						MVIEW_WW_LEXEME.ADVICE_NOTES,
+						MVIEW_WW_LEXEME.PUBLIC_NOTES,
+						MVIEW_WW_LEXEME.GRAMMARS,
+						MVIEW_WW_LEXEME.GOVERNMENT_ID,
+						MVIEW_WW_LEXEME.GOVERNMENT,
+						MVIEW_WW_LEXEME.USAGE_MEANING_ID,
+						MVIEW_WW_LEXEME.USAGE_MEANING_TYPE_CODE,
+						MVIEW_WW_LEXEME.USAGES,
+						MVIEW_WW_LEXEME.USAGE_TRANSLATIONS,
+						MVIEW_WW_LEXEME.USAGE_DEFINITIONS
+						)
+				.from(MVIEW_WW_LEXEME)
+				.where(MVIEW_WW_LEXEME.WORD_ID.eq(wordId))
+				.orderBy(MVIEW_WW_LEXEME.LEXEME_ID)
+				.fetch()
+				.into(LexemeDetailsTuple.class);
 	}
 
 }

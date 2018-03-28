@@ -12,10 +12,6 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private Long definitionId;
-
-	private String definition;
-
 	private String datasetCode;
 
 	private Integer level1;
@@ -31,6 +27,16 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 	private List<String> derivCodes;
 
 	private List<TypeDomain> domainCodes;
+
+	private List<String> imageFiles;
+
+	private List<String> systematicPolysemyPatterns;
+
+	private List<String> semanticTypes;
+
+	private List<String> learnerComments;
+
+	private List<TypeDefinition> definitions;
 
 	private Long meaningWordId;
 
@@ -54,22 +60,6 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	public void setMeaningId(Long meaningId) {
 		this.meaningId = meaningId;
-	}
-
-	public Long getDefinitionId() {
-		return definitionId;
-	}
-
-	public void setDefinitionId(Long definitionId) {
-		this.definitionId = definitionId;
-	}
-
-	public String getDefinition() {
-		return definition;
-	}
-
-	public void setDefinition(String definition) {
-		this.definition = definition;
 	}
 
 	public String getDatasetCode() {
@@ -134,6 +124,46 @@ public class LexemeMeaningTuple extends AbstractDataObject {
 
 	public void setDomainCodes(List<TypeDomain> domainCodes) {
 		this.domainCodes = domainCodes;
+	}
+
+	public List<String> getImageFiles() {
+		return imageFiles;
+	}
+
+	public void setImageFiles(List<String> imageFiles) {
+		this.imageFiles = imageFiles;
+	}
+
+	public List<String> getSystematicPolysemyPatterns() {
+		return systematicPolysemyPatterns;
+	}
+
+	public void setSystematicPolysemyPatterns(List<String> systematicPolysemyPatterns) {
+		this.systematicPolysemyPatterns = systematicPolysemyPatterns;
+	}
+
+	public List<String> getSemanticTypes() {
+		return semanticTypes;
+	}
+
+	public void setSemanticTypes(List<String> semanticTypes) {
+		this.semanticTypes = semanticTypes;
+	}
+
+	public List<String> getLearnerComments() {
+		return learnerComments;
+	}
+
+	public void setLearnerComments(List<String> learnerComments) {
+		this.learnerComments = learnerComments;
+	}
+
+	public List<TypeDefinition> getDefinitions() {
+		return definitions;
+	}
+
+	public void setDefinitions(List<TypeDefinition> definitions) {
+		this.definitions = definitions;
 	}
 
 	public Long getMeaningWordId() {

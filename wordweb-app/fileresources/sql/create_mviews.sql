@@ -13,6 +13,8 @@ drop type if exists type_usage;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
 create type type_definition as (value text, lang char(3));
+create type type_domain as (origin varchar(100), code varchar(100));
+create type type_usage as (usage text, usage_author text, usage_translator text);
 
 create materialized view mview_ww_word as
 select * from 
@@ -48,8 +50,6 @@ dblink(
 	is_word boolean
 );
 
-create type type_domain as (origin varchar(100), code varchar(100));
-
 create materialized view mview_ww_meaning as
 select * from 
 dblink(
@@ -58,7 +58,6 @@ dblink(
 	word_id bigint,
 	meaning_id bigint,
 	lexeme_id bigint,
-	definition_id bigint,
 	dataset_code varchar(10),
 	level1 integer,
 	level2 integer,
@@ -67,11 +66,12 @@ dblink(
 	pos_codes varchar(100) array,
 	deriv_codes varchar(100) array,
 	domain_codes type_domain array,
-	definition text,
-	definition_lang char(3)
+	image_files text array,
+	systematic_polysemy_patterns text array,
+	semantic_types text array,
+	learner_comments text array,
+	definitions type_definition array
 );
-
-create type type_usage as (usage text, usage_author text, usage_translator text);
 
 create materialized view mview_ww_lexeme as
 select * from 
@@ -124,7 +124,6 @@ create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
 create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);
-create index mview_ww_meaning_definition_lang_idx on mview_ww_meaning (definition_lang);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);

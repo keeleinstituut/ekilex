@@ -13,9 +13,12 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
+import eki.wordweb.data.Government;
 import eki.wordweb.data.Lexeme;
+import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.TypeDomain;
+import eki.wordweb.data.UsageMeaning;
 import eki.wordweb.data.Word;
 import eki.wordweb.service.db.CommonDataDbService;
 
@@ -25,17 +28,18 @@ public class ConversionUtil {
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public List<Lexeme> composeLexemes(List<LexemeMeaningTuple> lexemeMeaningTuples, String dataLang) {
+	public List<Lexeme> composeLexemes(List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples, String dataLang) {
 
 		List<Lexeme> lexemes = new ArrayList<>();
 		Map<Long, Lexeme> lexemeMap = new HashMap<>();
-		List<Long> definitionIds = null;
+		Map<Long, Government> governmentMap = new HashMap<>();
+		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
 		List<Long> meaningWordIds = null;
 		List<Classifier> classifiers;
 		List<String> classifierCodes;
-		Classifier classifier;
 		String classifierCode, datasetCode, datasetName;
 		List<TypeDomain> domainCodes;
+		Classifier classifier;
 
 		for (LexemeMeaningTuple tuple : lexemeMeaningTuples) {
 
@@ -64,19 +68,18 @@ public class ConversionUtil {
 				domainCodes = tuple.getDomainCodes();
 				classifiers = getClassifiersWithOrigin(ClassifierName.DOMAIN, domainCodes, dataLang);
 				lexeme.setDomains(classifiers);
-				lexeme.setDefinitions(new ArrayList<>());
+				lexeme.setImageFiles(tuple.getImageFiles());
+				lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
+				lexeme.setSemanticTypes(tuple.getSemanticTypes());
+				lexeme.setLearnerComments(tuple.getLearnerComments());
+				lexeme.setDefinitions(tuple.getDefinitions());
 				lexeme.setMeaningWords(new ArrayList<>());
+				lexeme.setGovernments(new ArrayList<>());
 				lexemeMap.put(lexemeId, lexeme);
 				lexemes.add(lexeme);
-				definitionIds = new ArrayList<>();
 				meaningWordIds = new ArrayList<>();
 			}
-			Long definitionId = tuple.getDefinitionId();
-			if ((definitionId != null) && !definitionIds.contains(definitionId)) {
-				String definition = tuple.getDefinition();
-				lexeme.getDefinitions().add(definition);
-				definitionIds.add(definitionId);
-			}
+
 			Long meaningWordId = tuple.getMeaningWordId();
 			if ((meaningWordId != null) && !meaningWordIds.contains(meaningWordId)) {
 				Word meaningWord = new Word();
@@ -86,6 +89,41 @@ public class ConversionUtil {
 				meaningWord.setLang(tuple.getMeaningWordLang());
 				lexeme.getMeaningWords().add(meaningWord);
 				meaningWordIds.add(meaningWordId);
+			}
+		}
+
+		for (LexemeDetailsTuple tuple : lexemeDetailsTuples) {
+
+			Long lexemeId = tuple.getLexemeId();
+			Lexeme lexeme = lexemeMap.get(lexemeId);
+			lexeme.setAdviceNotes(tuple.getAdviceNotes());
+			lexeme.setPublicNotes(tuple.getPublicNotes());
+			lexeme.setGrammars(tuple.getGrammars());
+
+			Long governmentId = tuple.getGovernmentId();
+			Government government = governmentMap.get(governmentId);
+			if (government == null) {
+				government = new Government();
+				government.setGovernmentId(governmentId);
+				government.setGovernment(tuple.getGovernment());
+				government.setUsageMeanings(new ArrayList<>());
+				governmentMap.put(governmentId, government);
+				lexeme.getGovernments().add(government);
+			}
+
+			Long usageMeaningId = tuple.getUsageMeaningId();
+			UsageMeaning usageMeaning = usageMeaningMap.get(usageMeaningId);
+			if (usageMeaning == null) {
+				usageMeaning = new UsageMeaning();
+				usageMeaning.setUsageMeaningId(usageMeaningId);
+				classifierCode = tuple.getUsageMeaningTypeCode();
+				classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, dataLang);
+				usageMeaning.setUsageMeaningType(classifier);
+				usageMeaning.setUsages(tuple.getUsages());
+				usageMeaning.setUsageTranslations(tuple.getUsageTranslations());
+				usageMeaning.setUsageDefinitions(tuple.getUsageDefinitions());
+				usageMeaningMap.put(usageMeaningId, usageMeaning);
+				government.getUsageMeanings().add(usageMeaning);
 			}
 		}
 		return lexemes;

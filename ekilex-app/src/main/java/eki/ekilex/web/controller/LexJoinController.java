@@ -30,7 +30,7 @@ public class LexJoinController implements WebConstant {
 
 	public LexJoinController(LexSearchService lexSearchService, UpdateService updateService) {
 		this.lexSearchService = lexSearchService;
-		this.updateService  = updateService;
+		this.updateService = updateService;
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}")
@@ -38,6 +38,7 @@ public class LexJoinController implements WebConstant {
 
 		model.addAttribute("sourceLexeme", lexSearchService.getWordLexeme(lexemeId));
 		model.addAttribute("searchFilter", null);
+
 		return LEX_JOIN_PAGE;
 	}
 
@@ -55,6 +56,7 @@ public class LexJoinController implements WebConstant {
 		model.addAttribute("sourceLexeme", lexeme);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("lexemes", lexemes);
+
 		return LEX_JOIN_PAGE;
 	}
 
@@ -68,7 +70,8 @@ public class LexJoinController implements WebConstant {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		updateService.joinLexemeMeanings(lexemeId, lexemeId2);
-		attributes.addFlashAttribute("searchWord", lexeme.getWords()[0]);
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
+
 		return "redirect:" + LEX_SEARCH_URI;
 	}
 

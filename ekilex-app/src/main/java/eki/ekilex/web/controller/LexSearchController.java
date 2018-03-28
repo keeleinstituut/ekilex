@@ -40,8 +40,8 @@ public class LexSearchController extends AbstractSearchController {
 	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.GET)
 	public String initSearch(Model model) throws Exception {
 
-		if (model.containsAttribute("searchWord")) {
-			String searchWord = model.asMap().get("searchWord").toString();
+		if (model.containsAttribute(SEARCH_WORD_KEY)) {
+			String searchWord = model.asMap().get(SEARCH_WORD_KEY).toString();
 			SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 			return search(null, null, searchWord, false, null, sessionBean, model);
 		}
