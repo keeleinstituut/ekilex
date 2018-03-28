@@ -170,8 +170,8 @@ $grid-breakpoints: (
   xs: 0,
   sm: 576px,
   md: 768px,
-  lg: 992px,
-  xl: 1200px
+  lg: 1200px,
+  xl: 1400px
 ) !default;
 
 @include _assert-ascending($grid-breakpoints, "$grid-breakpoints");
@@ -209,9 +209,9 @@ $line-height-lg:              1.5 !default;
 $line-height-sm:              1.5 !default;
 
 $border-width:                1px !default;
-$border-width-lg:             7px !default;
+$border-width-lg:             10px !default;
 $border-color:                $gray-300 !default;
-$border-color-lg:             $gray-200 !default;
+$border-color-lg:             $gray-100 !default;
 
 $border-radius:               rem(22) !default;
 $border-radius-lg:            rem(999) !default;

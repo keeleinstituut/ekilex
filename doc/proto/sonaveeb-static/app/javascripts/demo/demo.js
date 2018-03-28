@@ -5,7 +5,7 @@ $(function() {
 	    $(".header-links").toggleClass("d-none d-md-block");
 	});
 	// display full info in 3-rd level content
-	$(".more-btn").click(function(){
+	$(".more-btn, .level-3-panel").click(function(){
 	    $(this).parent().toggleClass("expand");
 	});
 });

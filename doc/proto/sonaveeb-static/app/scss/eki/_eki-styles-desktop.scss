@@ -202,12 +202,12 @@
 	border-right: $border-width $border-color solid ;	
 }
 .dictionary-source{
-	right: $gutter * 2;
+	top:rem(5);
+	right: rem(5);
 	font-size: $tiny-font-size;
 }
 .level-3-panel{
-	padding-left:$gutter * 2;
-	padding-right:$gutter * 2;
+	padding:$gutter * 1.5 $gutter * 2 !important;
 }
 .example-text{
 	max-width: calc( 100% - 30px ) ;

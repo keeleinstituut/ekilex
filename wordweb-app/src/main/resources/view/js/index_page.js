@@ -154,12 +154,12 @@ function initialisePage() {
     $(".menu-btn").click(function(){
         $(".header-links").toggleClass("d-none d-md-block");
     });
-    $(".search-phrase").focus(function() {
-        $(".awesomplete ul").removeClass("d-none");
-    });
-    $( ".search-phrase" ).focusout(function() {
-        $(".awesomplete ul").addClass("d-none");
-    });
+    // $(".search-phrase").focus(function() {
+    //     $(".awesomplete ul").removeClass("d-none");
+    // });
+    // $( ".search-phrase" ).focusout(function() {
+    //     $(".awesomplete ul").addClass("d-none");
+    // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
     });
