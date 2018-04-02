@@ -2,6 +2,10 @@
 ////// MOBILE -> ALL /////////
 ////////////////////////////////
 
+.dependencies + div {
+	display: none;
+}
+
 *{
 	transition: 50ms ease-out;
 }
@@ -152,13 +156,15 @@ input{
 }
 .level-3-panel{
 	position: relative;
-	outline: 0 solid $gray-400 !important;
-	max-height: 500px;
+	outline: 0 solid $border-color-lg !important;
+	// max-height: 500px;
 	// overflow: hidden;
-	border-top: $border-width $border-color solid;
 	margin-top:	-$border-width; 
-	border-bottom: $border-width $border-color solid;
+	border-color: $border-color !important;
+	border-top: $border-width solid;
+	border-bottom: $border-width solid;
 	&:not(.expand){ 
+		.additional-meta,
 		.dictionary-source,
 		.dependence:not(:first-child),
 		.example-item:not(:first-child)
@@ -202,6 +208,10 @@ input{
 	font-size: $tiny-font-size;
 	background-color: $white;
 	padding: 0 rem(5);
+}
+.additional-meta{
+	margin-top:rem(10);
+	color: $gray-600;
 }
 .more-btn{
 	cursor: pointer;

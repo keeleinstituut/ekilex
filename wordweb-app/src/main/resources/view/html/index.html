@@ -57,15 +57,15 @@
                   </ul>
                 </div>
                 <div class="extra-buttons">
-                  <button type="button" alt="Tühjenda otsinguväli" class="btn btn-light clear-btn">
+                  <button type="button" class="btn btn-light clear-btn">
                     <span class="icon icon-close"></span>
                   </button>
-                  <button type="button" id="start-rec-btn" alt="Salvesta mikrofoniga otsisõna" class="btn btn-light speak-btn" >
+                  <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" >
                     <span class="icon icon-mic"></span>
                   </button>
                   <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
                 </div>
-                <button type="submit" alt="Otsi" class="btn btn-green search-btn">
+                <button type="submit" class="btn btn-green search-btn">
                   <span class="icon icon-search"></span>
                 </button>
               </form>
@@ -125,66 +125,61 @@
                       <span th:unless="${definitionIter.last}">, </span>
                     </span>
                   </div>
+                  <div class="additional-meta">
+                    <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
+                    <div th:text="${lexeme.adviceNotes}" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}"></div>
+                    <div th:text="${lexeme.publicNotes}" th:if="${not #lists.isEmpty(lexeme.publicNotes)}"></div>
+                    <div th:text="${lexeme.grammars}" th:if="${not #lists.isEmpty(lexeme.grammars)}"></div>
+                    <div th:text="${lexeme.registers}" th:if="${not #lists.isEmpty(lexeme.registers)}"></div>
+                    <div th:text="${lexeme.poses}" th:if="${not #lists.isEmpty(lexeme.poses)}"></div>
+                    <div th:text="${lexeme.derivs}" th:if="${not #lists.isEmpty(lexeme.derivs)}"></div>
+                    <div th:text="${lexeme.domains}" th:if="${not #lists.isEmpty(lexeme.domains)}"></div>
+                    <div th:text="${lexeme.imageFiles}" th:if="${not #lists.isEmpty(lexeme.imageFiles)}"></div>
+                    <div th:text="${lexeme.systematicPolysemyPatterns}" th:if="${not #lists.isEmpty(lexeme.systematicPolysemyPatterns)}"></div>
+                    <div th:text="${lexeme.semanticTypes}" th:if="${not #lists.isEmpty(lexeme.semanticTypes)}"></div>
+                    <div th:text="${lexeme.learnerComments}" th:if="${not #lists.isEmpty(lexeme.learnerComments)}"></div>
+                  </div>
                 </div>
-                <button alt="Kuva rohkem infot" class="more-btn">
+                <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
                 </button>
                 <div class="dependencies col-lg-6" th:if="${not #lists.isEmpty(lexeme.governments)}">
                   <!-- rektsioonid -->
-                  <div th:each="government : ${lexeme.governments}">
-                    <div class="dependence" data-toggle="tooltip" th:title="${government.government}">
+                  <div class="dependence" th:each="government : ${lexeme.governments}">
+                    <div data-toggle="tooltip" th:title="${government.government}">
                       <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
                         <!-- kasutusnäite tähendused -->
-                        <div th:each="usageMeaning : ${government.usageMeanings}">
-                          <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}"></span>
-                          <div th:if="${not #lists.isEmpty(usageMeaning.usages)}">
+                        <span class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
+                          <!-- seda ei taha kasutada, näiteks päringu "post" kohta "liitsõna", samamoodi tunduvad ebavajalikud kasutusnäidete seletused lõpus. Sama päringu ühes dropdownis "seisin nagu post">"liikumatult"-->
+                          <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
+                          </span>
                             <!-- kasutusnäited -->
-                            <div class="example-item" th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="'generateVoiceAndPlay(this)'">
-                              <span class="example-text" th:text="${usage.usage}"></span>
-                              <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
-                              <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
-                              <button class="btn btn-speaker" alt="Kuula hääldust">
-                                <span class="icon icon-speaker"></span>
-                              </button>
-                            </div>
-                          </div>
-                          <div th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
+                          <span th:if="${not #lists.isEmpty(usageMeaning.usages)}" th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="'generateVoiceAndPlay(this)'">
+                            <span class="example-text" th:text="${usage.usage}"></span>
+                            <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
+                            <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
                             <!-- kasutusnäidete tõlked -->
-                            <div th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                              <span class="example-text" th:text="${usageTranslation}"></span>
-                            </div>
-                          </div>
-                          <div th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
+                            <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}" th:each="usageTranslation : ${usageMeaning.usageTranslations}" th:text="${usageTranslation}"></span>
+                            <button class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
+                          </span>
+                          <span th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
                             <!-- kasutusnäidete seletused -->
-                            <div th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                            <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">/ 
                               <span class="example-text" th:text="${usageDefinition}"></span>
-                            </div>
-                          </div>
-                        </div>
+                            </span>
+                          </span>
+                        </span>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div>
-                  <small>Järgnevad elemendid vaja veel kujundada...</small>
-                  <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
-                  <div th:text="${lexeme.adviceNotes}" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}"></div>
-                  <div th:text="${lexeme.publicNotes}" th:if="${not #lists.isEmpty(lexeme.publicNotes)}"></div>
-                  <div th:text="${lexeme.grammars}" th:if="${not #lists.isEmpty(lexeme.grammars)}"></div>
-                  <div th:text="${lexeme.registers}" th:if="${not #lists.isEmpty(lexeme.registers)}"></div>
-                  <div th:text="${lexeme.poses}" th:if="${not #lists.isEmpty(lexeme.poses)}"></div>
-                  <div th:text="${lexeme.derivs}" th:if="${not #lists.isEmpty(lexeme.derivs)}"></div>
-                  <div th:text="${lexeme.domains}" th:if="${not #lists.isEmpty(lexeme.domains)}"></div>
-                  <div th:text="${lexeme.imageFiles}" th:if="${not #lists.isEmpty(lexeme.imageFiles)}"></div>
-                  <div th:text="${lexeme.systematicPolysemyPatterns}" th:if="${not #lists.isEmpty(lexeme.systematicPolysemyPatterns)}"></div>
-                  <div th:text="${lexeme.semanticTypes}" th:if="${not #lists.isEmpty(lexeme.semanticTypes)}"></div>
-                  <div th:text="${lexeme.learnerComments}" th:if="${not #lists.isEmpty(lexeme.learnerComments)}"></div>
                 </div>
               </div>
             </div>
           </div>
           <div class="col-md-4 more-data">
-            <h5>Käändelised vormid</h5>
+            <!-- <h5>Käändelised vormid</h5> -->
           </div>
         </div>
       </div>

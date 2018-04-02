@@ -3545,6 +3545,10 @@ input[type="button"].btn-block {
   content: "\e903";
 }
 
+.dependencies + div {
+  display: none;
+}
+
 * {
   transition: 50ms ease-out;
 }
@@ -3725,13 +3729,14 @@ ul {
 
 .level-3-panel {
   position: relative;
-  outline: 0 solid #ced4da !important;
-  max-height: 500px;
-  border-top: 1px #D8D8D8 solid;
+  outline: 0 solid #F2F2F2 !important;
   margin-top: -1px;
-  border-bottom: 1px #D8D8D8 solid;
+  border-color: #D8D8D8 !important;
+  border-top: 1px solid;
+  border-bottom: 1px solid;
 }
 
+.level-3-panel:not(.expand) .additional-meta,
 .level-3-panel:not(.expand) .dictionary-source,
 .level-3-panel:not(.expand) .dependence:not(:first-child),
 .level-3-panel:not(.expand) .example-item:not(:first-child) {
@@ -3768,6 +3773,11 @@ ul {
   font-size: 0.75rem;
   background-color: #fff;
   padding: 0 0.3125rem;
+}
+
+.additional-meta {
+  margin-top: 0.625rem;
+  color: #7F8891;
 }
 
 .more-btn {
