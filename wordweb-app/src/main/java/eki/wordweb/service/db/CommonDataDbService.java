@@ -11,6 +11,8 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.Record1;
+import org.jooq.Record5;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -31,13 +33,17 @@ public class CommonDataDbService {
 		if (StringUtils.isBlank(code)) {
 			return null;
 		}
-		return create
+		Record1<String> result = create
 				.select(MVIEW_WW_DATASET.NAME)
 				.from(MVIEW_WW_DATASET)
 				.where(
 						MVIEW_WW_DATASET.CODE.eq(code)
 						.and(MVIEW_WW_DATASET.LANG.eq(lang)))
-				.fetchSingle().into(String.class);
+				.fetchOne();
+		if (result == null) {
+			return null;
+		}
+		return result.into(String.class);
 	}
 
 	@Cacheable(value = "classif", key = "{#name, #origin, #code, #lang}")
@@ -53,7 +59,7 @@ public class CommonDataDbService {
 		if (StringUtils.isNotBlank(origin)) {
 			where = where.and(MVIEW_WW_CLASSIFIER.ORIGIN.eq(origin));
 		}
-		return create
+		Record5<String, String, String, String, String> result = create
 				.select(
 						MVIEW_WW_CLASSIFIER.NAME,
 						MVIEW_WW_CLASSIFIER.ORIGIN,
@@ -63,7 +69,11 @@ public class CommonDataDbService {
 						)
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(where)
-				.fetchSingle().into(Classifier.class);
+				.fetchOne();
+		if (result == null) {
+			return null;
+		}
+		return result.into(Classifier.class);
 	}
 
 	@Cacheable(value = "classif", key = "{#name, #code, #lang}")

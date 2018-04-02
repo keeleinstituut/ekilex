@@ -258,6 +258,16 @@ create view view_ww_classifier
        value,
        lang
      from morph_label
+     where type = 'descrip'
+     union all
+     select
+       'DISPLAY_MORPH' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from display_morph_label
+     where type = 'descrip'
      union all
      select
        'POS' as name,
@@ -266,6 +276,7 @@ create view view_ww_classifier
        value,
        lang
      from pos_label
+     where type = 'descrip'
      union all
      select
        'REGISTER' as name,
@@ -274,6 +285,7 @@ create view view_ww_classifier
        value,
        lang
      from register_label
+     where type = 'descrip'
      union all
      select
        'DERIV' as name,
@@ -282,6 +294,7 @@ create view view_ww_classifier
        value,
        lang
      from deriv_label
+     where type = 'descrip'
      union all
      select
        'DOMAIN' as name,
@@ -290,6 +303,7 @@ create view view_ww_classifier
        value,
        lang
      from domain_label
+     where type = 'descrip'
      union all
      select
        'USAGE_TYPE' as name,
@@ -297,4 +311,5 @@ create view view_ww_classifier
        code,
        value,
        lang
-     from usage_type_label);
+     from usage_type_label
+     where type = 'descrip');

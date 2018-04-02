@@ -2,9 +2,11 @@ package eki.wordweb.service.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,10 +15,12 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
+import eki.wordweb.data.Form;
 import eki.wordweb.data.Government;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.UsageMeaning;
 import eki.wordweb.data.Word;
@@ -129,6 +133,28 @@ public class ConversionUtil {
 		return lexemes;
 	}
 
+	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
+
+		List<Paradigm> paradigms = new ArrayList<>();
+		String classifierCode;
+		Classifier classifier;
+		for (Entry<Long, List<Form>> paradigmFormsEntry : paradigmFormsMap.entrySet()) {
+			Long paradigmId = paradigmFormsEntry.getKey();
+			List<Form> forms = paradigmFormsEntry.getValue();
+			for (Form form : forms) {
+				classifierCode = form.getMorphCode();
+				classifier = getClassifier(ClassifierName.MORPH, classifierCode, displayLang);
+				form.setMorph(classifier);
+			}
+			Paradigm paradigm = new Paradigm();
+			paradigm.setParadigmId(paradigmId);
+			paradigm.setForms(forms);
+			paradigms.add(paradigm);
+		}
+		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
+		return paradigms;
+	}
+
 	private String getDatasetName(String code, String lang) {
 		String name = commonDataDbService.getDatasetName(code, lang);
 		if (StringUtils.isBlank(name)) {
@@ -185,4 +211,5 @@ public class ConversionUtil {
 		}
 		return classifiers;
 	}
+
 }

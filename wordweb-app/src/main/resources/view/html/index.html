@@ -103,12 +103,12 @@
       </div>
     </div>
     <div class="word-details"></div>
-    <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(lexemes)}">
+    <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-none d-md-block">
         <div class="row">
           <div class="col-md-8 main-data">
             <div class="level-2-panel">
-              <div class="level-3-panel row" th:each="lexeme : ${lexemes}">
+              <div class="level-3-panel row" th:each="lexeme : ${wordData.lexemes}">
                 <span class="dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</span>
                 <div class="col-6">
                   <div class="matches">
@@ -153,20 +153,26 @@
                           <!-- seda ei taha kasutada, näiteks päringu "post" kohta "liitsõna", samamoodi tunduvad ebavajalikud kasutusnäidete seletused lõpus. Sama päringu ühes dropdownis "seisin nagu post">"liikumatult"-->
                           <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
                           </span>
-                            <!-- kasutusnäited -->
-                          <span th:if="${not #lists.isEmpty(usageMeaning.usages)}" th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="'generateVoiceAndPlay(this)'">
-                            <span class="example-text" th:text="${usage.usage}"></span>
-                            <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
-                            <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
-                            <!-- kasutusnäidete tõlked -->
-                            <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}" th:each="usageTranslation : ${usageMeaning.usageTranslations}" th:text="${usageTranslation}"></span>
-                            <button class="btn btn-speaker">
-                              <span class="icon icon-speaker"></span>
-                            </button>
+                          <!-- kasutusnäited -->
+                          <span th:if="${not #lists.isEmpty(usageMeaning.usages)}">
+                            <span th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
+                              <span class="example-text" th:text="${usage.usage}"></span>
+                              <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
+                              <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
+                              <button class="btn btn-speaker">
+                                <span class="icon icon-speaker"></span>
+                              </button>
+                            </span>
                           </span>
+                          <!-- kasutusnäidete tõlked -->
+                          <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
+                            <span th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                              <span th:text="${usageTranslation}"></span>
+                            </span>
+                          </span>
+                          <!-- kasutusnäidete seletused -->
                           <span th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
-                            <!-- kasutusnäidete seletused -->
-                            <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">/ 
+                            <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
                               <span class="example-text" th:text="${usageDefinition}"></span>
                             </span>
                           </span>
@@ -180,6 +186,28 @@
           </div>
           <div class="col-md-4 more-data">
             <!-- <h5>Käändelised vormid</h5> -->
+            <div th:if="${not #lists.isEmpty(wordData.paradigms)}">
+              <div th:each="paradigm : ${wordData.paradigms}">
+                <div th:if="${not #lists.isEmpty(paradigm.forms)}">
+                  <table>
+                    <tr th:each="form : ${paradigm.forms}">
+                      <td>
+                        <span th:text="${form.morph.value}" th:if="${form.morph != null}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${form.form}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+                      </td>
+                      <td>
+                        <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

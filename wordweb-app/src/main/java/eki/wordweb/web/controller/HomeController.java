@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordData;
 import eki.wordweb.service.LexSearchService;
 
 @ConditionalOnWebApplication
@@ -35,8 +35,10 @@ public class HomeController implements WebConstant {
 	public String home(Model model) {
 
 		//TODO set defaults
+		WordData wordData = new WordData();
 		model.addAttribute("simpleSearchFilter", "");
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
+		model.addAttribute("wordData", wordData);
 
 		return HOME_PAGE;
 	}
@@ -45,9 +47,11 @@ public class HomeController implements WebConstant {
 	public String searchWords(@RequestParam(name = "simpleSearchFilter", required = false) String searchFilter, Model model) {
 
 		List<Word> words = lexSearchService.findWords(searchFilter);
+		WordData wordData = new WordData();
 		model.addAttribute("words", words);
 		model.addAttribute("simpleSearchFilter", searchFilter);
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
+		model.addAttribute("wordData", wordData);
 
 		return HOME_PAGE;
 	}
@@ -55,8 +59,8 @@ public class HomeController implements WebConstant {
 	@GetMapping("/worddetails/{wordId}")
 	public String wordDetails(@PathVariable("wordId") Long wordId, Model model) {
 
-		List<Lexeme> lexemes = lexSearchService.findLexemes(wordId, DISPLAY_LANG);
-		model.addAttribute("lexemes", lexemes);
+		WordData wordData = lexSearchService.getWordData(wordId, DISPLAY_LANG);
+		model.addAttribute("wordData", wordData);
 
 		return HOME_PAGE + " :: worddetails";
 	}

@@ -1,6 +1,7 @@
 package eki.wordweb.service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -10,10 +11,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
+import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordData;
 import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ConversionUtil;
 
@@ -38,11 +42,16 @@ public class LexSearchService {
 	}
 
 	@Transactional
-	public List<Lexeme> findLexemes(Long wordId, String displayLang) {
+	public WordData getWordData(Long wordId, String displayLang) {
 
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, displayLang);
-		return lexemes;
+		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
+		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
+		WordData wordData = new WordData();
+		wordData.setLexemes(lexemes);
+		wordData.setParadigms(paradigms);
+		return wordData;
 	}
 }

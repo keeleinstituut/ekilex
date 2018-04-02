@@ -6,12 +6,14 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 
 import java.util.List;
+import java.util.Map;
 
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
@@ -116,4 +118,23 @@ public class LexSearchDbService {
 				.into(LexemeDetailsTuple.class);
 	}
 
+	public Map<Long, List<Form>> findWordForms(Long wordId) {
+
+		return create
+				.select(
+						MVIEW_WW_FORM.PARADIGM_ID,
+						MVIEW_WW_FORM.FORM_ID,
+						MVIEW_WW_FORM.FORM,
+						MVIEW_WW_FORM.MORPH_CODE,
+						MVIEW_WW_FORM.COMPONENTS,
+						MVIEW_WW_FORM.DISPLAY_FORM,
+						MVIEW_WW_FORM.VOCAL_FORM,
+						MVIEW_WW_FORM.SOUND_FILE,
+						MVIEW_WW_FORM.IS_WORD
+						)
+				.from(MVIEW_WW_FORM)
+				.where(MVIEW_WW_FORM.WORD_ID.eq(wordId))
+				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.FORM_ID)
+				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
+	}
 }
