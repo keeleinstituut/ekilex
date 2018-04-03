@@ -70,11 +70,27 @@ input{
 		font-size: $font-size-base * 2 !important;		
 	}
 }
+.dropdown-menu{
+	border:none;
+	box-shadow: $dropdown-box-shadow;
+	&.container div{
+		margin-left: 0;
+		margin-right: 0;
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 .extra-buttons{
 	right: rem(65);
 	.btn{
 		color: $gray-600;
 		background-color: transparent;
+	}
+}
+.lang-btn{
+	transition: 0ms;
+	.icon{
+		font-size: $font-size-base;
 	}
 }
 .btn{
@@ -169,7 +185,7 @@ input{
 		.dependence:not(:first-child),
 		.example-item:not(:first-child)
 		{
-			display: none;
+			// display: none;
 			opacity: 0;
 		}
 	}

@@ -162,6 +162,7 @@ function initialisePage() {
     // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
+        $(".additional-meta, .dictionary-source, .dependence:not(:first-child)").toggleClass("fade-target");
     });
 
     // demo js for interactions between the mobile and desktop modes
@@ -181,6 +182,15 @@ function initialisePage() {
             $(".homonym-panel").addClass("d-none d-md-block");
             $(".search-panel").addClass("d-none d-md-block");
         }
+        if ($(window).width() > 766) {
+          $('.homonym-list').animate({
+              scrollLeft: $('.homonym-item.selected').position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
+            },
+            200);
+        }
+
+
+
     });
 
     $(window).resize(function() {

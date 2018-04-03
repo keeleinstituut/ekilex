@@ -24,6 +24,9 @@ html{
 	margin: 0 calc(25% - 15px ) ;
 	z-index: 1111;
 }
+.dropdown-menu{
+	transform: translate3d(0px, 0px, 0px) !important;
+}
 .homonym-wrap{
 	overflow: hidden;
 }

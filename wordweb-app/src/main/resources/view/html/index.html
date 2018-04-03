@@ -37,8 +37,39 @@
       <div class="col-12 search-panel">
         <div class="row">
           <div class="col-md-6">
-            <div class="search-lang">
-              <button class="btn btn-light lang-btn" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Keelevalik</button>
+            <div class="search-lang dropdown">
+              <button class="btn btn-light lang-btn" data-toggle="dropdown" id="dropdownMenu2" aria-haspopup="true" aria-expanded="false">
+                eesti <span class="icon icon-arrow-right"></span> vene
+              </button>
+              <form class="dropdown-menu p-4 container" aria-labelledby="dropdwonTest1">
+                <div class="row">
+                  <div class="col-12">
+                    <button class="dropdown-item" type="button">Automaatne keeletuvastus</button>
+                  </div>
+                  <div class="col-12">
+                    <button class="dropdown-item" type="button">eesti ükskeelne</button>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="row">
+                  <div class="col-6">
+                    <button class="dropdown-item active" type="button">eesti keel</button>
+                    <button class="dropdown-item" type="button">vene keel</button>
+                    <button class="dropdown-item" type="button">inglise keel</button>
+                  </div>
+                  <div class="col-6">
+                    <button class="dropdown-item" type="button">eesti keel</button>
+                    <button class="dropdown-item active" type="button">vene keel</button>
+                    <button class="dropdown-item" type="button">inglise keel</button>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <div class="row">
+                  <div class="col-12">
+                    <button class="btn btn-light" type="button">Jätka</button>
+                  </div>
+                </div>              
+              </form>
             </div>
           </div>
           <div class="col-md-6 col-lg-5 order-md-first">
