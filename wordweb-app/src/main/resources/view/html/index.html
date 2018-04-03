@@ -127,17 +127,67 @@
                   </div>
                   <div class="additional-meta">
                     <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
-                    <div th:text="${lexeme.adviceNotes}" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}"></div>
-                    <div th:text="${lexeme.publicNotes}" th:if="${not #lists.isEmpty(lexeme.publicNotes)}"></div>
-                    <div th:text="${lexeme.grammars}" th:if="${not #lists.isEmpty(lexeme.grammars)}"></div>
-                    <div th:text="${lexeme.registers}" th:if="${not #lists.isEmpty(lexeme.registers)}"></div>
-                    <div th:text="${lexeme.poses}" th:if="${not #lists.isEmpty(lexeme.poses)}"></div>
-                    <div th:text="${lexeme.derivs}" th:if="${not #lists.isEmpty(lexeme.derivs)}"></div>
-                    <div th:text="${lexeme.domains}" th:if="${not #lists.isEmpty(lexeme.domains)}"></div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}">
+                      <div class="col-3"><b>Keelenõu</b></div>
+                      <div class="col-9">
+                        <div th:each="note : ${lexeme.adviceNotes}" th:text="${note}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
+                      <div class="col-3"><b>Märkused</b></div>
+                      <div class="col-9">
+                        <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.learnerComments)}">
+                      <div class="col-3"><b>Õppekommentaar</b></div>
+                      <div class="col-9">
+                        <div th:each="note : ${lexeme.learnerComments}" th:text="${note}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
+                      <div class="col-3"><b>Grammar</b></div>
+                      <div class="col-9">
+                        <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
+                      <div class="col-3"><b>Register</b></div>
+                      <div class="col-9">
+                        <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.poses)}">
+                      <div class="col-3"><b>Sõnaliik</b></div>
+                      <div class="col-9">
+                        <div th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.derivs)}">
+                      <div class="col-3"><b>Tuletuskood</b></div>
+                      <div class="col-9">
+                        <div th:each="deriv : ${lexeme.derivs}" th:text="${deriv.value}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
+                      <div class="col-3"><b>Valdkond</b></div>
+                      <div class="col-9">
+                        <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.systematicPolysemyPatterns)}">
+                      <div class="col-3"><b>süst-polüseemia mall</b></div>
+                      <div class="col-9">
+                        <div th:each="patter : ${lexeme.systematicPolysemyPatterns}" th:text="${patter}"></div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.semanticTypes)}">
+                      <div class="col-3"><b>Semantiline tüüp</b></div>
+                      <div class="col-9">
+                        <div th:each="semanticType : ${lexeme.semanticTypes}" th:text="${semanticType}"></div>
+                      </div>
+                    </div>
                     <div th:text="${lexeme.imageFiles}" th:if="${not #lists.isEmpty(lexeme.imageFiles)}"></div>
-                    <div th:text="${lexeme.systematicPolysemyPatterns}" th:if="${not #lists.isEmpty(lexeme.systematicPolysemyPatterns)}"></div>
-                    <div th:text="${lexeme.semanticTypes}" th:if="${not #lists.isEmpty(lexeme.semanticTypes)}"></div>
-                    <div th:text="${lexeme.learnerComments}" th:if="${not #lists.isEmpty(lexeme.learnerComments)}"></div>
                   </div>
                 </div>
                 <button class="more-btn">
