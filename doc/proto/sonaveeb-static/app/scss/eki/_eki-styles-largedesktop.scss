@@ -18,11 +18,25 @@
 }
 .header-wrap,
 .search-panel,
-.homonym-panel,
 .content-panel{
-	max-width: 90vw !important;
+	max-width: 80vw !important;
 	margin-left: auto !important;
 	margin-right: auto !important;
+}
+.homonym-panel{
+	padding-left: 0;
+	padding-right: 0;
+}
+.homonym-list{
+	padding-left: calc((100% - 80vw)/2 + #{$gutter} ) !important;
+	padding-right: calc((100% - 80vw)/2 + #{$gutter} ) !important;
+	width: calc( 100% + 2 * #{$gutter});
+	li:last-child{
+		padding-right: calc(10vw ) !important;
+		a{
+			padding-right: 0;
+		}
+	}
 }
 .search-panel{
 	padding-left: 0 !important;
