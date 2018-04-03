@@ -22,13 +22,13 @@ import java.util.List;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class LexJoinController implements WebConstant {
+public class LexModifyController implements WebConstant {
 
 	private final LexSearchService lexSearchService;
 
 	private final UpdateService updateService;
 
-	public LexJoinController(LexSearchService lexSearchService, UpdateService updateService) {
+	public LexModifyController(LexSearchService lexSearchService, UpdateService updateService) {
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
 	}
@@ -65,11 +65,23 @@ public class LexJoinController implements WebConstant {
 			@PathVariable("lexemeId") Long lexemeId,
 			@PathVariable("lexemeId2") Long lexemeId2,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model,
 			RedirectAttributes attributes) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		updateService.joinLexemeMeanings(lexemeId, lexemeId2);
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
+
+		return "redirect:" + LEX_SEARCH_URI;
+	}
+
+	@GetMapping("/lexseparate/{lexemeId}")
+	public String separate(
+			@PathVariable("lexemeId") Long lexemeId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		updateService.separateLexemeMeanings(lexemeId);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
 
 		return "redirect:" + LEX_SEARCH_URI;

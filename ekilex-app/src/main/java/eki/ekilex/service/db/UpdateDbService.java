@@ -2,6 +2,12 @@ package eki.ekilex.service.db;
 
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
+import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
+import eki.ekilex.data.db.tables.records.MeaningRecord;
+import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.Record4;
@@ -117,6 +123,66 @@ public class UpdateDbService {
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
+	}
+
+	public void separateLexemeMeanings(Long lexemeId) {
+		MeaningRecord newMeaning = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne();
+		Long lexemeMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
+		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
+		definitions.forEach(d -> {
+			create
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.LANG)
+				.values(newMeaning.getId(), d.getValue(), d.getLang())
+				.execute();
+		});
+		Result<MeaningDomainRecord> domains = create.selectFrom(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(lexemeMeaningId)).fetch();
+		domains.forEach(d -> {
+			create
+				.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
+				.values(newMeaning.getId(), d.getDomainOrigin(), d.getDomainCode())
+				.execute();
+		});
+		Result<MeaningRelationRecord> relations = create.selectFrom(MEANING_RELATION).where(MEANING_RELATION.MEANING1_ID.eq(lexemeMeaningId)).fetch();
+		relations.forEach(r -> {
+			create
+					.insertInto(MEANING_RELATION, MEANING_RELATION.MEANING1_ID, MEANING_RELATION.MEANING2_ID, MEANING_RELATION.MEANING_REL_TYPE_CODE)
+					.values(newMeaning.getId(), r.getMeaning2Id(), r.getMeaningRelTypeCode())
+					.execute();
+		});
+		relations = create.selectFrom(MEANING_RELATION).where(MEANING_RELATION.MEANING2_ID.eq(lexemeMeaningId)).fetch();
+		relations.forEach(r -> {
+			create
+					.insertInto(MEANING_RELATION, MEANING_RELATION.MEANING1_ID, MEANING_RELATION.MEANING2_ID, MEANING_RELATION.MEANING_REL_TYPE_CODE)
+					.values(r.getMeaning1Id(), newMeaning.getId(), r.getMeaningRelTypeCode())
+					.execute();
+		});
+		Result<MeaningFreeformRecord> freeforms = create.selectFrom(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(lexemeMeaningId)).fetch();
+		freeforms.forEach(f -> {
+			Long freeformId = cloneFreeform(f.getFreeformId(), null);
+			create.insertInto(MEANING_FREEFORM, MEANING_FREEFORM.MEANING_ID, MEANING_FREEFORM.FREEFORM_ID).values(newMeaning.getId(), freeformId).execute();
+		});
+
+		create.update(LEXEME).set(LEXEME.MEANING_ID, newMeaning.getId()).where(LEXEME.ID.eq(lexemeId)).execute();
+	}
+
+	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
+		FreeformRecord freeform = create.selectFrom(FREEFORM).where(FREEFORM.ID.eq(freeformId)).fetchOne();
+		FreeformRecord clonedFreeform = create.insertInto(FREEFORM)
+				.set(FREEFORM.TYPE, freeform.getType())
+				.set(FREEFORM.PARENT_ID, parentFreeformId)
+				.set(FREEFORM.VALUE_TEXT, freeform.getValueText())
+				.set(FREEFORM.LANG, freeform.getLang())
+				.set(FREEFORM.VALUE_DATE, freeform.getValueDate())
+				.set(FREEFORM.CLASSIF_CODE, freeform.getClassifCode())
+				.set(FREEFORM.CLASSIF_NAME, freeform.getClassifName())
+				.set(FREEFORM.VALUE_ARRAY, freeform.getValueArray())
+				.set(FREEFORM.VALUE_NUMBER, freeform.getValueNumber())
+				.returning(FREEFORM.ID).fetchOne();
+		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM).where(FREEFORM.PARENT_ID.eq(freeformId)).fetch();
+		childFreeforms.forEach(f -> {
+			cloneFreeform(f.getId(), clonedFreeform.getId());
+		});
+		return clonedFreeform.getId();
 	}
 
 }
