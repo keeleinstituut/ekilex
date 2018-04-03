@@ -18,7 +18,7 @@
 
     <div class="card mt-4">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{lexeme.join.title}">Ilmikute ühendamine</h5>
+        <h5 class="card-title" th:text="#{lexeme.join.title}">Tähenduste ühendamine</h5>
       </div>
 
       <div class="card-body">
@@ -32,7 +32,7 @@
           <div class="form-row" name="searchFilter">
             <div class="col-12">
               <div class="form-group row">
-                <label class="col-auto col-form-label">Otsi ühendatavat ilmikut</label>
+                <label class="col-auto col-form-label">Otsi ühendatavat tähendust</label>
                 <div class="col-5">
                   <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
                 </div>
@@ -50,7 +50,7 @@
       </div>
 
       <div class="card-body" th:if="${not #lists.isEmpty(lexemes)}">
-        <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" th:each="lexeme : ${lexemes}">
+        <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" name="meaning" th:each="lexeme : ${lexemes}">
           <th:block th:replace=":: lexeme_deatails(${lexeme}, ${sourceLexeme})"></th:block>
         </div>
       </div>
@@ -60,7 +60,7 @@
   </div>
 
   <th:block th:fragment="lexeme_deatails(lexeme, lexemeToJoin)" th:if="${lexeme != null}">
-    <div style="overflow: auto;">
+    <div>
       <span>
         <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
           <span th:text="${word}"></span>
@@ -80,7 +80,11 @@
         <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
       </span>
       <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-      <a class="btn btn-primary" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}} + '/' + ${lexemeToJoin.lexemeId}" th:if="${lexeme.meaningId != lexemeToJoin.meaningId}">Ühenda</a>
+      <a class="btn btn-primary"
+         data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite tähendused ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
+         th:href="@{'/lexjoin/' + ${lexeme.lexemeId}} + '/' + ${lexemeToJoin.lexemeId}"
+         th:if="${lexeme.meaningId != lexemeToJoin.meaningId}"
+        >Ühenda</a>
       <b th:text="${lexeme.dataset}" class="float-right"></b>
     </div>
     <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
@@ -135,5 +139,8 @@
     </div>
   </th:block>
 
+  <script th:inline="javascript">
+    $('[data-toggle="confirmation"]').confirmation()
+  </script>
 </body>
 </html>
