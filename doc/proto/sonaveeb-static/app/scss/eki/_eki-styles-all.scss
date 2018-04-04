@@ -185,7 +185,7 @@ input{
 		.dependence:not(:first-child),
 		.example-item:not(:first-child)
 		{
-			// display: none;
+			display: none;
 			opacity: 0;
 		}
 	}
