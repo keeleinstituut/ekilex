@@ -2,6 +2,8 @@ package eki.wordweb.web.controller;
 
 import java.util.List;
 
+import eki.wordweb.data.CorporaSentence;
+import eki.wordweb.service.CorporaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -27,6 +29,9 @@ public class HomeController implements WebConstant {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@Autowired
+	private CorporaService corporaService;
 
 	@Value("${speech.recognition.service.url:}")
 	private String speechRecognitionServiceUrl;
@@ -64,4 +69,14 @@ public class HomeController implements WebConstant {
 
 		return HOME_PAGE + " :: worddetails";
 	}
+
+	@GetMapping("/korp/{sentence}")
+	public String generateSoundFileUrl(@PathVariable String sentence, Model model) {
+
+		List<CorporaSentence> textCorpus = corporaService.fetchSentences(sentence);
+		model.addAttribute("sentences", textCorpus);
+
+		return HOME_PAGE + " :: korp";
+	}
+
 }

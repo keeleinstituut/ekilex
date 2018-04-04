@@ -1,14 +1,25 @@
 
-function fetchDetails(wordId) {
+function fetchDetails(wordId, word) {
     var detailsDiv = $('.word-details');
 	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
         $('.word-details [data-toggle="tooltip"]').tooltip();
+        ////
+        fetchCorpSentences(word);
     }).fail(function (data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	})
+}
+
+function fetchCorpSentences(sentence) {
+    var corpDiv = $('[name="korp"]');
+    $.get(applicationUrl + 'korp/' + sentence).done(function (data) {
+        corpDiv.replaceWith(data);
+    }).fail(function (data) {
+        console.log(data);
+    })
 }
 
 function playSound(soundSource) {
@@ -163,6 +174,7 @@ function initialisePage() {
     // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
+        $(".additional-meta, .dictionary-source, .dependence:not(:first-child)").toggleClass("fade-target");
     });
 
     // demo js for interactions between the mobile and desktop modes
@@ -182,6 +194,15 @@ function initialisePage() {
             $(".homonym-panel").addClass("d-none d-md-block");
             $(".search-panel").addClass("d-none d-md-block");
         }
+        if ($(window).width() > 766) {
+          $('.homonym-list').animate({
+              scrollLeft: $('.homonym-item.selected').position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
+            },
+            200);
+        }
+
+
+
     });
 
     $(window).resize(function() {

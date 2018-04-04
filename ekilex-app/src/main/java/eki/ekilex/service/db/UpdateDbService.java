@@ -2,6 +2,11 @@ package eki.ekilex.service.db;
 
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.db.tables.Lexeme;
+import eki.ekilex.data.db.tables.records.DefinitionRecord;
+import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
+import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
+import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.Record4;
@@ -11,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -102,10 +109,45 @@ public class UpdateDbService {
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
+
 		Long meaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
 		Long sourceMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne().value1();
+
 		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
-		create.update(DEFINITION).set(DEFINITION.MEANING_ID, meaningId).where(DEFINITION.MEANING_ID.eq(sourceMeaningId)).execute();
+		joinMeaningDefinitions(meaningId, sourceMeaningId);
+		joinMeaningDomains(meaningId, sourceMeaningId);
+		joinMeaningFreeforms(meaningId, sourceMeaningId);
+		joinMeaningRelations(meaningId, sourceMeaningId);
+		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
+	}
+
+	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
+		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
+		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();
+	}
+
+	private void joinMeaningFreeforms(Long meaningId, Long sourceMeaningId) {
+		Result<FreeformRecord> meaningFreeforms = create.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))))
+				.fetch();
+		Result<FreeformRecord> sourceMeaningFreeforms = create.selectFrom(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(MEANING_FREEFORM.FREEFORM_ID).from(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId))))
+				.fetch();
+		List<Long> nonDublicateFreeformIds = sourceMeaningFreeforms.stream()
+				.filter(sf -> meaningFreeforms.stream()
+						.noneMatch(mf -> mf.getType().equals(sf.getType()) && (
+								(Objects.nonNull(mf.getValueText()) && mf.getValueText().equals(sf.getValueText())) ||
+								(Objects.nonNull(mf.getValueNumber()) && mf.getValueNumber().equals(sf.getValueNumber())) ||
+								(Objects.nonNull(mf.getClassifCode()) && mf.getClassifCode().equals(sf.getClassifCode())) ||
+								(Objects.nonNull(mf.getValueDate()) && mf.getValueDate().equals(sf.getValueDate())))))
+				.map(FreeformRecord::getId)
+				.collect(Collectors.toList());
+		create.update(MEANING_FREEFORM).set(MEANING_FREEFORM.MEANING_ID, meaningId)
+				.where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId).and(MEANING_FREEFORM.FREEFORM_ID.in(nonDublicateFreeformIds))).execute();
+		create.delete(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)).execute();
+	}
+
+	private void joinMeaningDomains(Long meaningId, Long sourceMeaningId) {
 		create.update(MEANING_DOMAIN).set(MEANING_DOMAIN.MEANING_ID, meaningId)
 				.where(
 					MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)
@@ -113,10 +155,90 @@ public class UpdateDbService {
 							DSL.select(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN).from(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)))))
 				.execute();
 		create.delete(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(sourceMeaningId)).execute();
-		create.update(MEANING_FREEFORM).set(MEANING_FREEFORM.MEANING_ID, meaningId).where(MEANING_FREEFORM.MEANING_ID.eq(sourceMeaningId)).execute();
-		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
-		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();
-		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
+	}
+
+	private void joinMeaningDefinitions(Long meaningId, Long sourceMeaningId) {
+		create.update(DEFINITION).set(DEFINITION.MEANING_ID, meaningId)
+				.where(DEFINITION.MEANING_ID.eq(sourceMeaningId)
+						.and(DEFINITION.VALUE.notIn(DSL.select(DEFINITION.VALUE).from(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId))))).execute();
+		create.delete(DEFINITION).where(DEFINITION.MEANING_ID.eq(sourceMeaningId)).execute();
+	}
+
+	public void separateLexemeMeanings(Long lexemeId) {
+
+		Long newMeaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		Long lexemeMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
+
+		separateMeaningDefinitions(newMeaningId, lexemeMeaningId);
+		separateMeaningDomains(newMeaningId, lexemeMeaningId);
+		separateMeaningRelations(newMeaningId, lexemeMeaningId);
+		separateMeaningFreeforms(newMeaningId, lexemeMeaningId);
+		create.update(LEXEME).set(LEXEME.MEANING_ID, newMeaningId).where(LEXEME.ID.eq(lexemeId)).execute();
+	}
+
+	private void separateMeaningFreeforms(Long newMeaningId, Long lexemeMeaningId) {
+		Result<MeaningFreeformRecord> freeforms = create.selectFrom(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(lexemeMeaningId)).fetch();
+		freeforms.forEach(f -> {
+			Long freeformId = cloneFreeform(f.getFreeformId(), null);
+			create.insertInto(MEANING_FREEFORM, MEANING_FREEFORM.MEANING_ID, MEANING_FREEFORM.FREEFORM_ID).values(newMeaningId, freeformId).execute();
+		});
+	}
+
+	private void separateMeaningRelations(Long newMeaningId, Long lexemeMeaningId) {
+		Result<MeaningRelationRecord> relations = create.selectFrom(MEANING_RELATION).where(MEANING_RELATION.MEANING1_ID.eq(lexemeMeaningId)).fetch();
+		relations.forEach(r -> {
+			create
+					.insertInto(MEANING_RELATION, MEANING_RELATION.MEANING1_ID, MEANING_RELATION.MEANING2_ID, MEANING_RELATION.MEANING_REL_TYPE_CODE)
+					.values(newMeaningId, r.getMeaning2Id(), r.getMeaningRelTypeCode())
+					.execute();
+		});
+		relations = create.selectFrom(MEANING_RELATION).where(MEANING_RELATION.MEANING2_ID.eq(lexemeMeaningId)).fetch();
+		relations.forEach(r -> {
+			create
+					.insertInto(MEANING_RELATION, MEANING_RELATION.MEANING1_ID, MEANING_RELATION.MEANING2_ID, MEANING_RELATION.MEANING_REL_TYPE_CODE)
+					.values(r.getMeaning1Id(), newMeaningId, r.getMeaningRelTypeCode())
+					.execute();
+		});
+	}
+
+	private void separateMeaningDomains(Long newMeaningId, Long lexemeMeaningId) {
+		Result<MeaningDomainRecord> domains = create.selectFrom(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(lexemeMeaningId)).fetch();
+		domains.forEach(d -> {
+			create
+				.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
+				.values(newMeaningId, d.getDomainOrigin(), d.getDomainCode())
+				.execute();
+		});
+	}
+
+	private void separateMeaningDefinitions(Long newMeaningId, Long lexemeMeaningId) {
+		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
+		definitions.forEach(d -> {
+			create
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.LANG)
+				.values(newMeaningId, d.getValue(), d.getLang())
+				.execute();
+		});
+	}
+
+	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
+		FreeformRecord freeform = create.selectFrom(FREEFORM).where(FREEFORM.ID.eq(freeformId)).fetchOne();
+		FreeformRecord clonedFreeform = create.insertInto(FREEFORM)
+				.set(FREEFORM.TYPE, freeform.getType())
+				.set(FREEFORM.PARENT_ID, parentFreeformId)
+				.set(FREEFORM.VALUE_TEXT, freeform.getValueText())
+				.set(FREEFORM.LANG, freeform.getLang())
+				.set(FREEFORM.VALUE_DATE, freeform.getValueDate())
+				.set(FREEFORM.CLASSIF_CODE, freeform.getClassifCode())
+				.set(FREEFORM.CLASSIF_NAME, freeform.getClassifName())
+				.set(FREEFORM.VALUE_ARRAY, freeform.getValueArray())
+				.set(FREEFORM.VALUE_NUMBER, freeform.getValueNumber())
+				.returning(FREEFORM.ID).fetchOne();
+		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM).where(FREEFORM.PARENT_ID.eq(freeformId)).fetch();
+		childFreeforms.forEach(f -> {
+			cloneFreeform(f.getId(), clonedFreeform.getId());
+		});
+		return clonedFreeform.getId();
 	}
 
 }

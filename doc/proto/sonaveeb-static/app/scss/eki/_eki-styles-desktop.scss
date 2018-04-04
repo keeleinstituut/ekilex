@@ -5,15 +5,6 @@
 
 ////////////////////////////////
 
-.homonym-list{
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    overflow-x: scroll;
-    display: flex;
-    padding: rem(20);
-    margin: rem(-20);
-}
 .search-panel,
 .homonym-panel,
 .level-2-panel{
@@ -32,9 +23,21 @@
 }
 .homonym-panel{
 	background-color: $gray-100;
+	overflow: hidden;
+	height: rem(180);
+}
+.homonym-list{
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    overflow-x: scroll;
+    display: flex;
+    padding: rem(20);
+    margin: rem(-20);
+    height: 999999999px;
 }
 .homonym-list li:first-child .homonym-item{
-	padding-left: 0;
+	// padding-left: 0;
 }
 .homonym-item{
 	&:hover{

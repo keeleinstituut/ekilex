@@ -76,6 +76,11 @@ public class UpdateService {
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
 
+	@Transactional
+	public void separateLexemeMeanings(Long lexemeId) {
+		updateDbService.separateLexemeMeanings(lexemeId);
+	}
+
 	void changeLevels(List<WordLexeme> lexemes, Long lexemeId, String action) {
 		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);

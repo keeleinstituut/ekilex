@@ -49,7 +49,7 @@ public class FileService {
 		try {
 			Optional<Path> fileToServe = Files.find(
 					Paths.get(fileRepositoryPath),
-					2,
+					4,
 					(p, a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
 			if (fileToServe.isPresent()) {
 				filePath = fileToServe.get();

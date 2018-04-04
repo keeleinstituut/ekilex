@@ -12,6 +12,8 @@ public class WordData extends AbstractDataObject {
 
 	private List<Paradigm> paradigms;
 
+	private List<String> imageFiles;
+
 	public List<Lexeme> getLexemes() {
 		return lexemes;
 	}
@@ -26,6 +28,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setParadigms(List<Paradigm> paradigms) {
 		this.paradigms = paradigms;
+	}
+
+	public List<String> getImageFiles() {
+		return imageFiles;
+	}
+
+	public void setImageFiles(List<String> imageFiles) {
+		this.imageFiles = imageFiles;
 	}
 
 }

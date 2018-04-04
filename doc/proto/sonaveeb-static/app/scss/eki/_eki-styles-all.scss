@@ -70,11 +70,27 @@ input{
 		font-size: $font-size-base * 2 !important;		
 	}
 }
+.dropdown-menu{
+	border:none;
+	box-shadow: $dropdown-box-shadow;
+	&.container div{
+		margin-left: 0;
+		margin-right: 0;
+		padding-left: 0;
+		padding-right: 0;
+	}
+}
 .extra-buttons{
 	right: rem(65);
 	.btn{
 		color: $gray-600;
 		background-color: transparent;
+	}
+}
+.lang-btn{
+	transition: 0ms;
+	.icon{
+		font-size: $font-size-base;
 	}
 }
 .btn{
@@ -170,13 +186,14 @@ input{
 		.example-item:not(:first-child)
 		{
 			display: none;
+			opacity: 0;
 		}
 	}
 	&.expand{
 		outline: $border-width-lg solid $border-color-lg !important;
 		border: $border-width $border-color solid;
-		margin-right: -1 * $border-width-lg !important;
-    	margin-left: -1 * $border-width-lg !important;
+		margin-right: -3 * $border-width-lg !important;
+    	margin-left: -3 * $border-width-lg !important;
     	margin-top: $border-width-lg !important;
     	margin-bottom: $border-width-lg !important;
     	max-height: 1000px;
@@ -212,7 +229,19 @@ input{
 .additional-meta{
 	margin-top:rem(10);
 	color: $gray-600;
+	opacity: 1;
 }
+
+.fade-target {
+  animation: fade 750ms linear ;
+}
+@keyframes fade { 
+	0%   { opacity: 0; }
+	10%  { opacity: 0; }
+	100% { opacity: 1; }
+}
+
+
 .more-btn{
 	cursor: pointer;
 	position: absolute;
