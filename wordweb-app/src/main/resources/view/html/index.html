@@ -218,9 +218,6 @@
                         <div th:each="semanticType : ${lexeme.semanticTypes}" th:text="${semanticType}"></div>
                       </div>
                     </div>
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
-                      <img th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>
-                    </div>
                   </div>
                 </div>
                 <button class="more-btn">
@@ -290,6 +287,9 @@
                   </table>
                 </div>
               </div>
+            </div>
+            <div th:if="${not #lists.isEmpty(wordData.imageFiles)}">
+              <img th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>
             </div>
           </div>
         </div>

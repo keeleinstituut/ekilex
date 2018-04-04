@@ -1,5 +1,6 @@
 package eki.wordweb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -52,6 +53,13 @@ public class LexSearchService {
 		WordData wordData = new WordData();
 		wordData.setLexemes(lexemes);
 		wordData.setParadigms(paradigms);
+		List<String> allImageFiles = new ArrayList<>();
+		lexemes.forEach(l -> {
+			if (l.getImageFiles() != null) {
+				allImageFiles.addAll(l.getImageFiles());
+			}
+		});
+		wordData.setImageFiles(allImageFiles);
 		return wordData;
 	}
 }
