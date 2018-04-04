@@ -109,7 +109,7 @@
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
           <li th:each="word : ${words}">
-            <a class="homonym-item" th:onclick="'fetchDetails(' + ${word.wordId} + ')'">
+            <a class="homonym-item" th:onclick="'fetchDetails(' + ${word.wordId} + ',\'' + ${word.word} + '\')'">
               <span class="homonym-item-wrap">
                 <span class="homonym-header">
                   <div class="homonym-name-container">
@@ -299,15 +299,21 @@
             <div th:if="${not #lists.isEmpty(wordData.imageFiles)}">
               <img th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>
             </div>
-            <div th:if="${not #lists.isEmpty(wordData.sentences)}">
+            <div name="korp">
               <hr/>
-              <div style="margin-bottom: 0.5em;" th:each="sentence : ${wordData.sentences}" th:text="${sentence.getSentence()}"></div>
+              Otsin näitelauseid...
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <div th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
+    <hr/>
+    <div style="margin-bottom: 0.5em;" th:each="sentence : ${sentences}" th:text="${sentence.getSentence()}"></div>
+  </div>
+
   <script th:inline="javascript">
   	initialisePage();
   	initialiseRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');

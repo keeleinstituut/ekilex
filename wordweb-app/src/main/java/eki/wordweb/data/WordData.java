@@ -14,8 +14,6 @@ public class WordData extends AbstractDataObject {
 
 	private List<String> imageFiles;
 
-	private List<CorporaSentence> sentences;
-
 	public List<Lexeme> getLexemes() {
 		return lexemes;
 	}
@@ -38,14 +36,6 @@ public class WordData extends AbstractDataObject {
 
 	public void setImageFiles(List<String> imageFiles) {
 		this.imageFiles = imageFiles;
-	}
-
-	public List<CorporaSentence> getSentences() {
-		return sentences;
-	}
-
-	public void setSentences(List<CorporaSentence> sentences) {
-		this.sentences = sentences;
 	}
 
 }

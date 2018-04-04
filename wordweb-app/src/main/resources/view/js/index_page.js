@@ -1,15 +1,25 @@
 
-function fetchDetails(wordId) {
+function fetchDetails(wordId, word) {
     var detailsDiv = $('.word-details');
 	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
         $('.word-details [data-toggle="tooltip"]').tooltip();
         ////
+        fetchCorpSentences(word);
     }).fail(function (data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	})
+}
+
+function fetchCorpSentences(sentence) {
+    var corpDiv = $('[name="korp"]');
+    $.get(applicationUrl + 'korp/' + sentence).done(function (data) {
+        corpDiv.replaceWith(data);
+    }).fail(function (data) {
+        console.log(data);
+    })
 }
 
 function playSound(soundSource) {
