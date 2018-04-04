@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -28,7 +27,6 @@ import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.RefLink;
 import eki.ekilex.data.TermMeaning;
-import eki.ekilex.data.TypeCollocWord;
 import eki.ekilex.data.UsageMeaning;
 import eki.ekilex.data.UsageMember;
 import eki.ekilex.data.WordTuple;
