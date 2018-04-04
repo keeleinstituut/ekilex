@@ -3937,6 +3937,7 @@ ul {
 .level-3-panel:not(.expand) .dictionary-source,
 .level-3-panel:not(.expand) .dependence:not(:first-child),
 .level-3-panel:not(.expand) .example-item:not(:first-child) {
+  display: none;
   opacity: 0;
 }
 
