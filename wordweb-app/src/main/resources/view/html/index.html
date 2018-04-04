@@ -291,6 +291,10 @@
             <div th:if="${not #lists.isEmpty(wordData.imageFiles)}">
               <img th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>
             </div>
+            <div th:if="${not #lists.isEmpty(wordData.sentences)}">
+              <hr/>
+              <div style="margin-bottom: 0.5em;" th:each="sentence : ${wordData.sentences}" th:text="${sentence.getSentence()}"></div>
+            </div>
           </div>
         </div>
       </div>

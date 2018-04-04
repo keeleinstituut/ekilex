@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -31,6 +32,7 @@ public class CorporaService {
 	@Value("${corpora.service.url:}")
 	private String serviceUrl;
 
+	@Cacheable(value = "corpora")
 	public List<CorporaSentence> fetchSentences(String sentence) {
 
 		Map<String, Object> response = fetch(sentence);
