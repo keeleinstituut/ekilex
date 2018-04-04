@@ -7,19 +7,24 @@ drop view if exists view_ww_dataset;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
+drop type if exists type_colloc_word;
 
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
-drop table if exists collocation_usage;
-drop table if exists collocation;
-drop table if exists collocation_rel_group;
-drop table if exists collocation_pos_group;
+drop table if exists lex_colloc;
+drop table if exists collocation_rel_group;--remove later
+drop table if exists collocation_pos_group;--remove later
+drop table if exists collocation_usage;-- remove later
+drop table if exists lex_colloc_rel_group;
+drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
 drop table if exists lexeme_pos;
 drop table if exists lexeme_deriv;
 drop table if exists lexeme;
+drop table if exists collocation_freeform;
+drop table if exists collocation;
 drop table if exists definition_freeform;
 drop table if exists definition_dataset;
 drop table if exists definition;

@@ -6,6 +6,7 @@ package eki.ekilex.data.db.tables;
 
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwMeaningRecord;
+import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
 import eki.ekilex.data.db.udt.records.TypeDomainRecord;
 
 import javax.annotation.Generated;
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 1050094822;
+    private static final long serialVersionUID = 1867721330;
 
     /**
      * The reference instance of <code>public.view_ww_meaning</code>
@@ -61,11 +62,6 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
      * The column <code>public.view_ww_meaning.lexeme_id</code>.
      */
     public final TableField<ViewWwMeaningRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_meaning.definition_id</code>.
-     */
-    public final TableField<ViewWwMeaningRecord, Long> DEFINITION_ID = createField("definition_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_meaning.dataset_code</code>.
@@ -108,14 +104,29 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
     public final TableField<ViewWwMeaningRecord, TypeDomainRecord[]> DOMAIN_CODES = createField("domain_codes", eki.ekilex.data.db.udt.TypeDomain.TYPE_DOMAIN.getDataType().getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.view_ww_meaning.definition</code>.
+     * The column <code>public.view_ww_meaning.image_files</code>.
      */
-    public final TableField<ViewWwMeaningRecord, String> DEFINITION = createField("definition", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<ViewWwMeaningRecord, String[]> IMAGE_FILES = createField("image_files", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.view_ww_meaning.definition_lang</code>.
+     * The column <code>public.view_ww_meaning.systematic_polysemy_patterns</code>.
      */
-    public final TableField<ViewWwMeaningRecord, String> DEFINITION_LANG = createField("definition_lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<ViewWwMeaningRecord, String[]> SYSTEMATIC_POLYSEMY_PATTERNS = createField("systematic_polysemy_patterns", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_meaning.semantic_types</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, String[]> SEMANTIC_TYPES = createField("semantic_types", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_meaning.learner_comments</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, String[]> LEARNER_COMMENTS = createField("learner_comments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_meaning.definitions</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.ekilex.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.view_ww_meaning</code> table reference

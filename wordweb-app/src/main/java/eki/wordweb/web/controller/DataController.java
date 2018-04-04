@@ -1,10 +1,13 @@
 package eki.wordweb.web.controller;
 
-import eki.common.data.AppData;
-import eki.common.web.AppDataHolder;
-import eki.wordweb.constant.SystemConstant;
-import eki.wordweb.service.FileService;
-import eki.wordweb.service.SpeechSynthesisService;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
+import eki.common.data.AppData;
+import eki.common.web.AppDataHolder;
+import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.service.FileService;
+import eki.wordweb.service.SpeechSynthesisService;
 
 @ConditionalOnWebApplication
 @RestController
@@ -50,7 +52,7 @@ public class DataController implements SystemConstant {
 	}
 
 	@PostMapping("/generate_voice")
-	public String generateSoundFileUrl(@RequestParam String words) {
+	public String generateSoundFileUrl(@RequestParam String words) throws Exception {
 		return speechSynthesisService.urlToSoundSource(words);
 	}
 

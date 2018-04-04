@@ -384,9 +384,11 @@
                     <table>
                       <tr th:each="colloc : ${collocRelGr.collocations}">
                         <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
-                          <button type="button" class="btn btn-link" th:data-id="${colloc.collocationWordId}" name="detailsBtn">
-                            <span th:text="${colloc.value}"></span>
-                          </button>
+                          <span th:each="collocWord : ${colloc.collocWords}">
+                            <button type="button" class="btn btn-link" th:data-id="${collocWord.wordId}" name="detailsBtn">
+                              <span th:text="${collocWord.word}"></span>
+                            </button>
+                          </span>
                         </td>
                         <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
                           <span th:text="${colloc.frequency}"></span>
@@ -395,8 +397,8 @@
                           <span th:text="${colloc.score}"></span>
                         </td>
                         <td>
-                          <div th:if="${not #lists.isEmpty(colloc.collocationUsages)}">
-                            <div th:each="collocUsage : ${colloc.collocationUsages}">
+                          <div th:if="${not #lists.isEmpty(colloc.collocUsages)}">
+                            <div th:each="collocUsage : ${colloc.collocUsages}">
                               <i>
                                 <span th:text="${collocUsage}"></span>
                               </i>

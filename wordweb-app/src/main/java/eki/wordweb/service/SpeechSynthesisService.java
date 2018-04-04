@@ -1,19 +1,6 @@
 package eki.wordweb.service;
 
-import eki.common.util.CodeGenerator;
-import eki.wordweb.data.Word;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -28,12 +15,28 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import eki.common.util.CodeGenerator;
+import eki.wordweb.data.Word;
 
 @Service
 public class SpeechSynthesisService {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesisService.class);
+
+	private static final String SYNTH_COMMAND_STRING = "bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.1";
 
 	@Value("${server.servlet.contextPath:}")
 	private String contextPath;
@@ -44,7 +47,7 @@ public class SpeechSynthesisService {
 	@Value("${speech.synthesizer.service.url:}")
 	private String synthesizerUrl;
 
-	public String urlToSoundSource(String words) {
+	public String urlToSoundSource(String words) throws Exception {
 		if (!isEnabled()) {
 			return null;
 		}
@@ -54,7 +57,7 @@ public class SpeechSynthesisService {
 		return urlFromEkiPublicService(words);
 	}
 
-	public String urlToSoundSource(Word word) {
+	public String urlToSoundSource(Word word) throws Exception {
 		if (!"est".equals(word.getLang())) {
 			return null;
 		}
@@ -68,32 +71,33 @@ public class SpeechSynthesisService {
 	private String urlFromIntegratedSpeechSynthesizer(String words) {
 
 		String fileId = CodeGenerator.generateUniqueId();
-		String sourceFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".txt";
-		String wavFile = System.getProperty("java.io.tmpdir") + "/" + fileId + ".wav";
-		String mp3File = System.getProperty("java.io.tmpdir") + "/" + fileId + ".mp3";
+		String tempDirPath = System.getProperty("java.io.tmpdir");
+		String sourceFile = tempDirPath + "/" + fileId + ".txt";
+		String wavFile = tempDirPath + "/" + fileId + ".wav";
+		String mp3File = tempDirPath + "/" + fileId + ".mp3";
 		try {
 			Files.write(Paths.get(sourceFile), words.getBytes());
-			String command = String.format("bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.1", wavFile, sourceFile);
-			if (!execute(command)) {
-				fileId = null;
-			} else {
+			String command = String.format(SYNTH_COMMAND_STRING, wavFile, sourceFile);
+			if (execute(command)) {
 				command = String.format("lame --silent %s %s", wavFile, mp3File);
 				if (execute(command)) {
 					Files.delete(Paths.get(wavFile));
 				}
+			} else {
+				fileId = null;
 			}
 			Files.delete(Paths.get(sourceFile));
-		} catch (IOException | InterruptedException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 			fileId = null;
 		}
 		return fileId == null ? null : contextPath + "/files/" + fileId;
 	}
 
-	private String urlFromEkiPublicService(String words) {
+	private String urlFromEkiPublicService(String words) throws Exception {
 
-		URI url= UriComponentsBuilder.fromUriString(synthesizerUrl)
-				.queryParam("haal", 15)  // 14 <- female voice
+		URI url = UriComponentsBuilder.fromUriString(synthesizerUrl)
+				.queryParam("haal", 15) // 14 <- female voice
 				.queryParam("tekst", words)
 				.build()
 				.toUri();
@@ -109,7 +113,6 @@ public class SpeechSynthesisService {
 	private String doGetRequest(URI url) {
 
 		HttpHeaders headers = new HttpHeaders();
-
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		RestTemplate restTemplate = new RestTemplate();
 

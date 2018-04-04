@@ -33,13 +33,13 @@ public class TestEnvInitialiser {
 		final String scriptFilePath4 = "sql/classifier-manual.sql";
 		final String scriptFilePath5 = "sql/classifier-main.sql";
 		final String scriptFilePath6 = "sql/classifier-domain.sql";
+		final String[] scriptFilePaths = new String[] {
+				scriptFilePath1, scriptFilePath2, scriptFilePath3, scriptFilePath4, scriptFilePath5, scriptFilePath6
+		};
 
-		executeSqlScriptFile(scriptFilePath1);
-		executeSqlScriptFile(scriptFilePath2);
-		executeSqlScriptFile(scriptFilePath3);
-		executeSqlScriptFile(scriptFilePath4);
-		executeSqlScriptFile(scriptFilePath5);
-		executeSqlScriptFile(scriptFilePath6);
+		for (String scriptFilePath : scriptFilePaths) {
+			executeSqlScriptFile(scriptFilePath);
+		}
 	}
 
 	public String getSqlScript(String sqlScriptFilePath) throws Exception {

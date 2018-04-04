@@ -4,6 +4,7 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.udt.TypeCollocWord;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -23,6 +24,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
+
+    /**
+     * The type <code>public.type_colloc_word</code>
+     */
+    public static TypeCollocWord TYPE_COLLOC_WORD = eki.ekilex.data.db.udt.TypeCollocWord.TYPE_COLLOC_WORD;
 
     /**
      * The type <code>public.type_definition</code>

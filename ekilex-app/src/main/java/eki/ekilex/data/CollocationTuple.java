@@ -2,144 +2,130 @@ package eki.ekilex.data;
 
 import java.util.List;
 
-import javax.persistence.Column;
-
 import eki.common.data.AbstractDataObject;
 
 public class CollocationTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "colloc_pos_gr_id")
-	private Long collocationPosGroupId;
+	private Long posGroupId;
 
-	@Column(name = "colloc_pos_gr_name")
-	private String collocationPosGroupName;
+	private String posGroupName;
 
-	@Column(name = "colloc_rel_gr_id")
-	private Long collocationRelGroupId;
+	private Long relGroupId;
 
-	@Column(name = "colloc_rel_gr_name")
-	private String collocationRelGroupName;
+	private String relGroupName;
 
-	@Column(name = "colloc_rel_gr_freq")
-	private Float collocationRelGroupFrequency;
+	private Float relGroupFrequency;
 
-	@Column(name = "colloc_rel_gr_score")
-	private Float collocationRelGroupScore;
+	private Float relGroupScore;
 
-	@Column(name = "colloc_id")
-	private Long collocationId;
+	private Long collocId;
 
-	@Column(name = "colloc_word_id")
-	private Long collocationWordId;
+	private String collocValue;
 
-	@Column(name = "colloc")
-	private String collocation;
+	private Float collocFrequency;
 
-	@Column(name = "colloc_freq")
-	private Float collocationFrequency;
+	private Float collocScore;
 
-	@Column(name = "colloc_score")
-	private Float collocationScore;
+	private List<String> collocUsages;
 
-	@Column(name = "colloc_usages")
-	private List<String> collocationUsages;
+	private List<Object> collocWords;
 
-	public Long getCollocationPosGroupId() {
-		return collocationPosGroupId;
+	public Long getPosGroupId() {
+		return posGroupId;
 	}
 
-	public void setCollocationPosGroupId(Long collocationPosGroupId) {
-		this.collocationPosGroupId = collocationPosGroupId;
+	public void setPosGroupId(Long posGroupId) {
+		this.posGroupId = posGroupId;
 	}
 
-	public String getCollocationPosGroupName() {
-		return collocationPosGroupName;
+	public String getPosGroupName() {
+		return posGroupName;
 	}
 
-	public void setCollocationPosGroupName(String collocationPosGroupName) {
-		this.collocationPosGroupName = collocationPosGroupName;
+	public void setPosGroupName(String posGroupName) {
+		this.posGroupName = posGroupName;
 	}
 
-	public Long getCollocationRelGroupId() {
-		return collocationRelGroupId;
+	public Long getRelGroupId() {
+		return relGroupId;
 	}
 
-	public void setCollocationRelGroupId(Long collocationRelGroupId) {
-		this.collocationRelGroupId = collocationRelGroupId;
+	public void setRelGroupId(Long relGroupId) {
+		this.relGroupId = relGroupId;
 	}
 
-	public String getCollocationRelGroupName() {
-		return collocationRelGroupName;
+	public String getRelGroupName() {
+		return relGroupName;
 	}
 
-	public void setCollocationRelGroupName(String collocationRelGroupName) {
-		this.collocationRelGroupName = collocationRelGroupName;
+	public void setRelGroupName(String relGroupName) {
+		this.relGroupName = relGroupName;
 	}
 
-	public Float getCollocationRelGroupFrequency() {
-		return collocationRelGroupFrequency;
+	public Float getRelGroupFrequency() {
+		return relGroupFrequency;
 	}
 
-	public void setCollocationRelGroupFrequency(Float collocationRelGroupFrequency) {
-		this.collocationRelGroupFrequency = collocationRelGroupFrequency;
+	public void setRelGroupFrequency(Float relGroupFrequency) {
+		this.relGroupFrequency = relGroupFrequency;
 	}
 
-	public Float getCollocationRelGroupScore() {
-		return collocationRelGroupScore;
+	public Float getRelGroupScore() {
+		return relGroupScore;
 	}
 
-	public void setCollocationRelGroupScore(Float collocationRelGroupScore) {
-		this.collocationRelGroupScore = collocationRelGroupScore;
+	public void setRelGroupScore(Float relGroupScore) {
+		this.relGroupScore = relGroupScore;
 	}
 
-	public Long getCollocationId() {
-		return collocationId;
+	public Long getCollocId() {
+		return collocId;
 	}
 
-	public void setCollocationId(Long collocationId) {
-		this.collocationId = collocationId;
+	public void setCollocId(Long collocId) {
+		this.collocId = collocId;
 	}
 
-	public Long getCollocationWordId() {
-		return collocationWordId;
+	public String getCollocValue() {
+		return collocValue;
 	}
 
-	public void setCollocationWordId(Long collocationWordId) {
-		this.collocationWordId = collocationWordId;
+	public void setCollocValue(String collocValue) {
+		this.collocValue = collocValue;
 	}
 
-	public String getCollocation() {
-		return collocation;
+	public Float getCollocFrequency() {
+		return collocFrequency;
 	}
 
-	public void setCollocation(String collocation) {
-		this.collocation = collocation;
+	public void setCollocFrequency(Float collocFrequency) {
+		this.collocFrequency = collocFrequency;
 	}
 
-	public Float getCollocationFrequency() {
-		return collocationFrequency;
+	public Float getCollocScore() {
+		return collocScore;
 	}
 
-	public void setCollocationFrequency(Float collocationFrequency) {
-		this.collocationFrequency = collocationFrequency;
+	public void setCollocScore(Float collocScore) {
+		this.collocScore = collocScore;
 	}
 
-	public Float getCollocationScore() {
-		return collocationScore;
+	public List<String> getCollocUsages() {
+		return collocUsages;
 	}
 
-	public void setCollocationScore(Float collocationScore) {
-		this.collocationScore = collocationScore;
+	public void setCollocUsages(List<String> collocUsages) {
+		this.collocUsages = collocUsages;
 	}
 
-	public List<String> getCollocationUsages() {
-		return collocationUsages;
+	public List<Object> getCollocWords() {
+		return collocWords;
 	}
 
-	public void setCollocationUsages(List<String> collocationUsages) {
-		this.collocationUsages = collocationUsages;
+	public void setCollocWords(List<Object> collocWords) {
+		this.collocWords = collocWords;
 	}
 
 }

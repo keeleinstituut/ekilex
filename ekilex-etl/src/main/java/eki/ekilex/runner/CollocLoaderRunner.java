@@ -51,6 +51,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_COLLOC_PAIR_UNMATCH = "colloc_pair_unmatch";
 
+	private static final String REPORT_SAME_WORD_COLLOC = "same_word_colloc";
+
 	private final String guidExp = "x:G";
 	private final String articleHeaderExp = "x:P";
 	private final String wordGroupExp = "x:mg";
@@ -140,7 +142,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		if (doReports) {
 			reportComposer = new ReportComposer("kol loader report",
 					REPORT_ILLEGAL_DATA, REPORT_MISSING_DATA, REPORT_UNKNOWN_CLASSIF, REPORT_AMBIGUOUS_HOMONYM_MATCH,
-					REPORT_AMBIGUOUS_WORD_MATCH, REPORT_AMBIGUOUS_LEXEME_MATCH, REPORT_UNKNOWN_WORD, REPORT_COLLOC_PAIR_UNMATCH);
+					REPORT_AMBIGUOUS_WORD_MATCH, REPORT_AMBIGUOUS_LEXEME_MATCH, REPORT_UNKNOWN_WORD, REPORT_COLLOC_PAIR_UNMATCH,
+					REPORT_SAME_WORD_COLLOC);
 		}
 
 		dataLang = unifyLang(dataLang);
@@ -152,13 +155,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		Element headerNode, contentNode, wordNode, wordGroupNode, wordPosNode, meaningDefinitionGroupNode, collocRelGroupNameNode, collocRelGroupFreqNode, collocRelGroupScoreNode;
 		List<Element> meaningBlockNodes, grammarNodes, collocPosGroupNodes, collocRelGroupNodes, collocGroupNodes, collocUsageNodes;
-		String word, collocPosCode, collocUsage, collocRelGroupName;
-		List<Long> collocationIds;
+		String word, collocPosGroupName, collocUsage, collocRelGroupName;
 		Attribute wordHomonymNumAttr;
 		Integer wordHomonymNum;
 		Word wordObj;
+		List<String> collocUsages;
 
 		Count ignoredArticleCount = new Count();
+		Count sameWordCollocationCount = new Count();
 		Count successfulCollocationMatchCount = new Count();
 
 		long articleCounter = 0;
@@ -180,6 +184,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
 			if (wordPosNode == null) {
 				//TODO there should be POS!
+				ignoredArticleCount.increment();
 				continue;
 			}
 			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
@@ -221,8 +226,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 				for (Element colPosGroupNode : collocPosGroupNodes) {
 
-					collocPosCode = colPosGroupNode.attributeValue(collocPosAttr);
-					Long collocPosGroupId = createCollocPosGroup(lexemeId, collocPosCode);
+					collocPosGroupName = colPosGroupNode.attributeValue(collocPosAttr);
+					Long collocPosGroupId = createCollocPosGroup(lexemeId, collocPosGroupName);
 
 					collocRelGroupNodes = colPosGroupNode.selectNodes(collocRelGroupExp);//x:relg
 					int collocRelGroupNum = 0;
@@ -265,19 +270,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						for (Element collocGroupNode : collocGroupNodes) {
 
 							collocGroupNum++;
-							collocationIds = extractAndSaveCollocations(
-									collocGroupNode, collocGroupNum, collocRelGroupId, word, wordPosCode, wordMap,
-									dataLang, successfulCollocationMatchCount, doReports);
-
-							if (CollectionUtils.isNotEmpty(collocationIds)) {
-
-								collocUsageNodes = collocGroupNode.selectNodes(collocUsageExp);
-
-								for (Element collocUsageNode : collocUsageNodes) {
-									collocUsage = collocUsageNode.getTextTrim();
-									createCollocUsage(collocationIds, collocUsage);
-								}
-							}
+							collocUsages = extractCollocUsages(collocGroupNode);
+							extractAndSaveCollocations(
+									collocGroupNode, collocGroupNum, lexemeId, collocRelGroupId, collocUsages,
+									word, wordPosCode, wordMap, dataLang,
+									sameWordCollocationCount, successfulCollocationMatchCount, doReports);
 						}
 					}
 				}
@@ -296,6 +293,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} ignored articles", ignoredArticleCount.getValue());
+		logger.debug("Found {} same word collocation count", sameWordCollocationCount.getValue());
 		logger.debug("Found {} successful collocation matches", successfulCollocationMatchCount.getValue());
 
 		t2 = System.currentTimeMillis();
@@ -425,14 +423,30 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<Long> extractAndSaveCollocations(
+	private List<String> extractCollocUsages(Element collocGroupNode) {
+		List<Element> collocUsageNodes = collocGroupNode.selectNodes(collocUsageExp);
+		if (CollectionUtils.isEmpty(collocUsageNodes)) {
+			return null;
+		}
+		List<String> collocUsages = new ArrayList<>();
+		for (Element collocUsageNode : collocUsageNodes) {
+			String collocUsage = collocUsageNode.getTextTrim();
+			collocUsages.add(collocUsage);
+		}
+		return collocUsages;
+	}
+
+	private void extractAndSaveCollocations(
 			Element collocGroupNode,
 			int collocGroupNum,
+			Long lexemeId,
 			Long collocRelGroupId,
+			List<String> collocUsages,
 			String newWord,
 			String newWordPosCode,
 			Map<String, Map<Integer, Word>> wordMap,
 			String dataLang,
+			Count sameWordCollocationCount,
 			Count successfulCollocationMatchCount,
 			boolean doReports) throws Exception {
 
@@ -440,19 +454,17 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Element> prevWordNodes = collocGroupNode.selectNodes(prevWordExp);
 		List<Element> nextWordNodes = collocGroupNode.selectNodes(nextWordExp);
 
-		List<Long> collocationIds = new ArrayList<>();
-
 		if (CollectionUtils.isEmpty(collocWordNodes)) {
 			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, "x:colg", "[" + collocGroupNum + "]", "puudub kollokatsioon");
-			return collocationIds;
+			return;
 		}
 		if (CollectionUtils.isEmpty(prevWordNodes) && CollectionUtils.isEmpty(nextWordNodes)) {
 			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, "x:colg", "[" + collocGroupNum + "]", "puuduvad eel- ja järelsõna");
-			return collocationIds;
+			return;
 		}
 		if (CollectionUtils.isNotEmpty(prevWordNodes) && CollectionUtils.isNotEmpty(nextWordNodes)) {
 			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, "x:colg", "[" + collocGroupNum + "]", "esinevad korraga eel- ja järelsõna");
-			return collocationIds;
+			return;
 		}
 
 		List<CollocElement> collocWords = extractCollocWords(newWord, collocWordNodes, wordMap, getDataset(), dataLang, doReports);
@@ -511,6 +523,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 			Long collocLexemeId = collocLexemeMeaning.getLexemeId();
+			if (lexemeId.equals(collocLexemeId)) {
+				sameWordCollocationCount.increment();
+			}
 			if (CollectionUtils.isNotEmpty(prevWords)) {
 				for (CollocElement prevWordElement : prevWords) {
 					String prevForm = prevWordElement.getForm();
@@ -521,8 +536,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					} else {
 						collocation = prevForm + ' ' + conjunct + ' ' + collocForm;
 					}
-					Long collocId = createCollocation(collocRelGroupId, collocLexemeId, collocation, frequency, score);
-					collocationIds.add(collocId);
+					//TODO create colloc once for all members
+					//TODO create symm binds for all members
+					Long collocId = createCollocation(collocation, frequency, score, collocUsages);
+					createLexemeCollocation(lexemeId, collocRelGroupId, collocId);
+					if (lexemeId.equals(collocLexemeId)) {
+						appendToReport(doReports, REPORT_SAME_WORD_COLLOC, newWord, collocation);
+					} else {
+						createLexemeCollocation(collocLexemeId, null, collocId);
+					}
 					successfulCollocationMatchCount.increment();
 				}
 			} else if (CollectionUtils.isNotEmpty(nextWords)) {
@@ -535,13 +557,19 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					} else {
 						collocation = collocForm + ' ' + conjunct + ' ' + nextForm;
 					}
-					Long collocId = createCollocation(collocRelGroupId, collocLexemeId, collocation, frequency, score);
-					collocationIds.add(collocId);
+					//TODO create colloc once for all members
+					//TODO create symm binds for all members
+					Long collocId = createCollocation(collocation, frequency, score, collocUsages);
+					createLexemeCollocation(lexemeId, collocRelGroupId, collocId);
+					if (lexemeId.equals(collocLexemeId)) {
+						appendToReport(doReports, REPORT_SAME_WORD_COLLOC, newWord, collocation);
+					} else {
+						createLexemeCollocation(collocLexemeId, null, collocId);
+					}
 					successfulCollocationMatchCount.increment();
 				}
 			}
 		}
-		return collocationIds;
 	}
 
 	private List<CollocElement> extractCollocWords(
@@ -670,14 +698,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("name", name);
-		Long collocPosGroupId = basicDbService.create(COLLOCATION_POS_GROUP, tableRowParamMap);
+		Long collocPosGroupId = basicDbService.create(LEX_COLLOC_POS_GROUP, tableRowParamMap);
 		return collocPosGroupId;
 	}
 
 	private Long createCollocRelGroup(Long collocPosGroupId, String name, Float frequency, Float score) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("collocation_pos_group_id", collocPosGroupId);
+		tableRowParamMap.put("pos_group_id", collocPosGroupId);
 		tableRowParamMap.put("name", name);
 		if (frequency != null) {
 			tableRowParamMap.put("frequency", frequency);
@@ -685,15 +713,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		if (score != null) {
 			tableRowParamMap.put("score", score);
 		}
-		Long collocRelGroupId = basicDbService.create(COLLOCATION_REL_GROUP, tableRowParamMap);
+		Long collocRelGroupId = basicDbService.create(LEX_COLLOC_REL_GROUP, tableRowParamMap);
 		return collocRelGroupId;
 	}
 
-	private Long createCollocation(Long collocRelGroupId, Long lexemeId, String collocation, Float frequency, Float score) throws Exception {
+	private Long createCollocation(String collocation, Float frequency, Float score, List<String> collocUsages) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("collocation_rel_group_id", collocRelGroupId);
-		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("value", collocation);
 		if (frequency != null) {
 			tableRowParamMap.put("frequency", frequency);
@@ -701,18 +727,24 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		if (score != null) {
 			tableRowParamMap.put("score", score);
 		}
+		if (CollectionUtils.isNotEmpty(collocUsages)) {
+			String[] collocUsagesArr = collocUsages.toArray(new String[0]);
+			tableRowParamMap.put("usages", collocUsagesArr);
+		}
 		Long collocationId = basicDbService.create(COLLOCATION, tableRowParamMap);
 		return collocationId;
 	}
 
-	private void createCollocUsage(List<Long> collocationIds, String collocUsage) throws Exception {
+	private Long createLexemeCollocation(Long lexemeId, Long collocRelGroupId, Long collocId) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("value", collocUsage);
-		for (Long collocationId : collocationIds) {
-			tableRowParamMap.put("collocation_id", collocationId);
-			basicDbService.create(COLLOCATION_USAGE, tableRowParamMap);
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		if (collocRelGroupId != null) {
+			tableRowParamMap.put("rel_group_id", collocRelGroupId);
 		}
+		tableRowParamMap.put("collocation_id", collocId);
+		Long lexCollocId = basicDbService.create(LEX_COLLOC, tableRowParamMap);
+		return lexCollocId;
 	}
 
 	private List<LexemeMeaning> getLexemeMeanings(Long wordId, String posCode) throws Exception {

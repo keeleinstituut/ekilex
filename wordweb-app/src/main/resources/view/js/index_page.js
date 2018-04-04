@@ -5,7 +5,6 @@ function fetchDetails(wordId) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
         $('.word-details [data-toggle="tooltip"]').tooltip();
-        ////
     }).fail(function (data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
@@ -25,7 +24,9 @@ function generateVoiceAndPlay(e) {
     }
     var content = elem.html();
     elem.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-    $.post(applicationUrl + 'generate_voice', {'words': elem.data('words')}).done(function(urlToSound) {
+    var words = elem.data('words');
+    var data = {'words': words};
+    $.post(applicationUrl + 'generate_voice', data).done(function(urlToSound) {
         elem.data('url-to-sound', urlToSound);
         elem.html(content);
         playSound(urlToSound);
@@ -42,8 +43,8 @@ var audio_stream;
 var ws;
 var speechRecognitionServiceUrl;
 /**
- * Patch the APIs for every browser that supports them and check
- * if getUserMedia is supported on the browser.
+ * Patch the APIs for every browser that supports them and check if getUserMedia
+ * is supported on the browser.
  */
 function initialiseRecording(serviceUrl) {
     try {
@@ -155,10 +156,10 @@ function initialisePage() {
         $(".header-links").toggleClass("d-none d-md-block");
     });
     // $(".search-phrase").focus(function() {
-    //     $(".awesomplete ul").removeClass("d-none");
+    // $(".awesomplete ul").removeClass("d-none");
     // });
     // $( ".search-phrase" ).focusout(function() {
-    //     $(".awesomplete ul").addClass("d-none");
+    // $(".awesomplete ul").addClass("d-none");
     // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");

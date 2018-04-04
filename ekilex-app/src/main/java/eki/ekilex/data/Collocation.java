@@ -8,23 +8,15 @@ public class Collocation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long collocationWordId;
-
 	private String value;
 
 	private Float frequency;
 
 	private Float score;
 
-	private List<String> collocationUsages;
+	private List<String> collocUsages;
 
-	public Long getCollocationWordId() {
-		return collocationWordId;
-	}
-
-	public void setCollocationWordId(Long collocationWordId) {
-		this.collocationWordId = collocationWordId;
-	}
+	private List<TypeCollocWord> collocWords;
 
 	public String getValue() {
 		return value;
@@ -50,12 +42,20 @@ public class Collocation extends AbstractDataObject {
 		this.score = score;
 	}
 
-	public List<String> getCollocationUsages() {
-		return collocationUsages;
+	public List<String> getCollocUsages() {
+		return collocUsages;
 	}
 
-	public void setCollocationUsages(List<String> collocationUsages) {
-		this.collocationUsages = collocationUsages;
+	public void setCollocUsages(List<String> collocUsages) {
+		this.collocUsages = collocUsages;
+	}
+
+	public List<TypeCollocWord> getCollocWords() {
+		return collocWords;
+	}
+
+	public void setCollocWords(List<TypeCollocWord> collocWords) {
+		this.collocWords = collocWords;
 	}
 
 }

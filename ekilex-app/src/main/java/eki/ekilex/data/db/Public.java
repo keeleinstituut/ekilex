@@ -5,9 +5,7 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationPosGroup;
-import eki.ekilex.data.db.tables.CollocationRelGroup;
-import eki.ekilex.data.db.tables.CollocationUsage;
+import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -33,6 +31,9 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
+import eki.ekilex.data.db.tables.LexColloc;
+import eki.ekilex.data.db.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
@@ -78,6 +79,7 @@ import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
+import eki.ekilex.data.db.udt.TypeCollocWord;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
 import eki.ekilex.data.db.udt.TypeUsage;
@@ -108,7 +110,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -193631069;
+    private static final long serialVersionUID = 1448179468;
 
     /**
      * The reference instance of <code>public</code>
@@ -121,19 +123,9 @@ public class Public extends SchemaImpl {
     public final Collocation COLLOCATION = eki.ekilex.data.db.tables.Collocation.COLLOCATION;
 
     /**
-     * The table <code>public.collocation_pos_group</code>.
+     * The table <code>public.collocation_freeform</code>.
      */
-    public final CollocationPosGroup COLLOCATION_POS_GROUP = eki.ekilex.data.db.tables.CollocationPosGroup.COLLOCATION_POS_GROUP;
-
-    /**
-     * The table <code>public.collocation_rel_group</code>.
-     */
-    public final CollocationRelGroup COLLOCATION_REL_GROUP = eki.ekilex.data.db.tables.CollocationRelGroup.COLLOCATION_REL_GROUP;
-
-    /**
-     * The table <code>public.collocation_usage</code>.
-     */
-    public final CollocationUsage COLLOCATION_USAGE = eki.ekilex.data.db.tables.CollocationUsage.COLLOCATION_USAGE;
+    public final CollocationFreeform COLLOCATION_FREEFORM = eki.ekilex.data.db.tables.CollocationFreeform.COLLOCATION_FREEFORM;
 
     /**
      * The table <code>public.dataset</code>.
@@ -259,6 +251,21 @@ public class Public extends SchemaImpl {
      * The table <code>public.lang_label</code>.
      */
     public final LangLabel LANG_LABEL = eki.ekilex.data.db.tables.LangLabel.LANG_LABEL;
+
+    /**
+     * The table <code>public.lex_colloc</code>.
+     */
+    public final LexColloc LEX_COLLOC = eki.ekilex.data.db.tables.LexColloc.LEX_COLLOC;
+
+    /**
+     * The table <code>public.lex_colloc_pos_group</code>.
+     */
+    public final LexCollocPosGroup LEX_COLLOC_POS_GROUP = eki.ekilex.data.db.tables.LexCollocPosGroup.LEX_COLLOC_POS_GROUP;
+
+    /**
+     * The table <code>public.lex_colloc_rel_group</code>.
+     */
+    public final LexCollocRelGroup LEX_COLLOC_REL_GROUP = eki.ekilex.data.db.tables.LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
 
     /**
      * The table <code>public.lex_rel_type</code>.
@@ -510,10 +517,9 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
-            Sequences.COLLOCATION_POS_GROUP_ID_SEQ,
-            Sequences.COLLOCATION_REL_GROUP_ID_SEQ,
-            Sequences.COLLOCATION_USAGE_ID_SEQ,
+            Sequences.COLLOCATION_ORDER_BY_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
             Sequences.DEFINITION_ORDER_BY_SEQ,
@@ -527,6 +533,12 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_REF_LINK_ID_SEQ,
             Sequences.FREEFORM_REF_LINK_ORDER_BY_SEQ,
+            Sequences.LEX_COLLOC_ID_SEQ,
+            Sequences.LEX_COLLOC_ORDER_BY_SEQ,
+            Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
+            Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
+            Sequences.LEX_COLLOC_REL_GROUP_ID_SEQ,
+            Sequences.LEX_COLLOC_REL_GROUP_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
@@ -563,9 +575,7 @@ public class Public extends SchemaImpl {
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
             Collocation.COLLOCATION,
-            CollocationPosGroup.COLLOCATION_POS_GROUP,
-            CollocationRelGroup.COLLOCATION_REL_GROUP,
-            CollocationUsage.COLLOCATION_USAGE,
+            CollocationFreeform.COLLOCATION_FREEFORM,
             Dataset.DATASET,
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
@@ -591,6 +601,9 @@ public class Public extends SchemaImpl {
             LabelType.LABEL_TYPE,
             Lang.LANG,
             LangLabel.LANG_LABEL,
+            LexColloc.LEX_COLLOC,
+            LexCollocPosGroup.LEX_COLLOC_POS_GROUP,
+            LexCollocRelGroup.LEX_COLLOC_REL_GROUP,
             LexRelType.LEX_REL_TYPE,
             LexRelTypeLabel.LEX_REL_TYPE_LABEL,
             LexRelation.LEX_RELATION,
@@ -647,6 +660,7 @@ public class Public extends SchemaImpl {
 
     private final List<UDT<?>> getUDTs0() {
         return Arrays.<UDT<?>>asList(
+            TypeCollocWord.TYPE_COLLOC_WORD,
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
             TypeUsage.TYPE_USAGE);

@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.postgresql.util.PGobject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -27,6 +28,7 @@ import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.RefLink;
 import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.TypeCollocWord;
 import eki.ekilex.data.UsageMeaning;
 import eki.ekilex.data.UsageMember;
 import eki.ekilex.data.WordTuple;
@@ -342,48 +344,50 @@ public class ConversionUtil {
 		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
 		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
+		String value;
 		String name;
 		Float frequency;
 		Float score;
 
 		for (CollocationTuple collocTuple : collocTuples) {
 
-			Long collocationPosGroupId = collocTuple.getCollocationPosGroupId();
-			Long collocationRelGroupId = collocTuple.getCollocationRelGroupId();
-			CollocationPosGroup collocationPosGroup = collocPosGroupMap.get(collocationPosGroupId);
-			if (collocationPosGroup == null) {
-				name = collocTuple.getCollocationPosGroupName();
-				collocationPosGroup = new CollocationPosGroup();
-				collocationPosGroup.setName(name);
-				collocationPosGroup.setRelationGroups(new ArrayList<>());
-				collocPosGroupMap.put(collocationPosGroupId, collocationPosGroup);
-				collocationPosGroups.add(collocationPosGroup);
+			Long collocPosGroupId = collocTuple.getPosGroupId();
+			Long collocRelGroupId = collocTuple.getRelGroupId();
+			CollocationPosGroup collocPosGroup = collocPosGroupMap.get(collocPosGroupId);
+			if (collocPosGroup == null) {
+				name = collocTuple.getPosGroupName();
+				collocPosGroup = new CollocationPosGroup();
+				collocPosGroup.setName(name);
+				collocPosGroup.setRelationGroups(new ArrayList<>());
+				collocPosGroupMap.put(collocPosGroupId, collocPosGroup);
+				collocationPosGroups.add(collocPosGroup);
 			}
-			CollocationRelGroup collocationRelGroup = collocRelGroupMap.get(collocationRelGroupId);
-			if (collocationRelGroup == null) {
-				name = collocTuple.getCollocationRelGroupName();
-				frequency = collocTuple.getCollocationRelGroupFrequency();
-				score = collocTuple.getCollocationRelGroupScore();
-				collocationRelGroup = new CollocationRelGroup();
-				collocationRelGroup.setName(name);
-				collocationRelGroup.setFrequency(frequency);
-				collocationRelGroup.setScore(score);
-				collocationRelGroup.setCollocations(new ArrayList<>());
-				collocRelGroupMap.put(collocationRelGroupId, collocationRelGroup);
-				collocationPosGroup.getRelationGroups().add(collocationRelGroup);
+			CollocationRelGroup collocRelGroup = collocRelGroupMap.get(collocRelGroupId);
+			if (collocRelGroup == null) {
+				name = collocTuple.getRelGroupName();
+				frequency = collocTuple.getRelGroupFrequency();
+				score = collocTuple.getRelGroupScore();
+				collocRelGroup = new CollocationRelGroup();
+				collocRelGroup.setName(name);
+				collocRelGroup.setFrequency(frequency);
+				collocRelGroup.setScore(score);
+				collocRelGroup.setCollocations(new ArrayList<>());
+				collocRelGroupMap.put(collocRelGroupId, collocRelGroup);
+				collocPosGroup.getRelationGroups().add(collocRelGroup);
 			}
-			Long collocationWordId = collocTuple.getCollocationWordId();
-			String colloc = collocTuple.getCollocation();
-			frequency = collocTuple.getCollocationFrequency();
-			score = collocTuple.getCollocationScore();
-			List<String> collocationUsages = collocTuple.getCollocationUsages();
+			value = collocTuple.getCollocValue();
+			frequency = collocTuple.getCollocFrequency();
+			score = collocTuple.getCollocScore();
+			List<String> collocUsages = collocTuple.getCollocUsages();
+			//TODO get the datatypes straight
+			//List<TypeCollocWord> collocWords = collocTuple.getCollocWords();
 			Collocation collocation = new Collocation();
-			collocation.setCollocationWordId(collocationWordId);
-			collocation.setValue(colloc);
+			collocation.setValue(value);
 			collocation.setFrequency(frequency);
 			collocation.setScore(score);
-			collocation.setCollocationUsages(collocationUsages);
-			collocationRelGroup.getCollocations().add(collocation);
+			collocation.setCollocUsages(collocUsages);
+			//collocation.setCollocWords(collocWords);
+			collocRelGroup.getCollocations().add(collocation);
 		}
 		return collocationPosGroups;
 	}

@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
 
-    private static final long serialVersionUID = 1036132715;
+    private static final long serialVersionUID = 1539680421;
 
     /**
      * The reference instance of <code>public.lexeme_deriv</code>
@@ -112,7 +112,7 @@ public class LexemeDeriv extends TableImpl<LexemeDerivRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY, Indexes.LEXEME_DERIV_PKEY);
+        return Arrays.<Index>asList(Indexes.LEXEME_DERIV_LEXEME_ID_DERIV_CODE_KEY, Indexes.LEXEME_DERIV_LEXEME_ID_IDX, Indexes.LEXEME_DERIV_PKEY);
     }
 
     /**

@@ -1,3 +1,4 @@
+create type type_colloc_word as (word_id bigint, word text);
 
 create table person
 (
@@ -524,6 +525,28 @@ create table definition_freeform
 );
 alter sequence definition_freeform_id_seq restart with 10000;
 
+-- kollokatsioon
+create table collocation
+(
+  id bigserial primary key,
+  value text not null,
+  frequency numeric(14, 4),
+  score numeric(14, 4),
+  usages text array,
+  order_by bigserial
+);
+alter sequence collocation_id_seq restart with 10000;
+
+-- kollokatsiooni vabavorm
+create table collocation_freeform
+(
+  id bigserial primary key,
+  collocation_id bigint references collocation(id) on delete cascade not null,
+  freeform_id bigint references freeform(id) on delete cascade not null,
+  unique(collocation_id, freeform_id)
+);
+alter sequence collocation_freeform_id_seq restart with 10000;
+
 -- ilmik
 create table lexeme
 (
@@ -584,7 +607,7 @@ create table lexeme_freeform
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
 
--- seos
+-- ilmiku seos
 create table lex_relation
 (
   id bigserial primary key,
@@ -596,44 +619,38 @@ create table lex_relation
 );
 alter sequence lex_relation_id_seq restart with 10000;
 
--- kollokatsioon
-create table collocation_pos_group
+-- ilmiku kollokatsiooni grupid
+create table lex_colloc_pos_group
 (
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
-  name text not null
+  name text not null,
+  order_by bigserial
 );
-alter sequence collocation_pos_group_id_seq restart with 10000;
+alter sequence lex_colloc_pos_group_id_seq restart with 10000;
 
-create table collocation_rel_group
+create table lex_colloc_rel_group
 (
   id bigserial primary key,
-  collocation_pos_group_id bigint references collocation_pos_group(id) on delete cascade not null,
+  pos_group_id bigint references lex_colloc_pos_group(id) on delete cascade not null,
   name text not null,
   frequency numeric(14, 4),
-  score numeric(14, 4)
+  score numeric(14, 4),
+  order_by bigserial
 );
-alter sequence collocation_rel_group_id_seq restart with 10000;
+alter sequence lex_colloc_rel_group_id_seq restart with 10000;
 
-create table collocation
+-- ilmiku kollokatsioon
+create table lex_colloc
 (
   id bigserial primary key,
-  collocation_rel_group_id bigint references collocation_rel_group(id) on delete cascade not null,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
-  value text not null,
-  frequency numeric(14, 4),
-  score numeric(14, 4)
-);
-alter sequence collocation_id_seq restart with 10000;
-
--- kollokatsiooni kasutusnäide
-create table collocation_usage
-(
-  id bigserial primary key,
+  rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null,
   collocation_id bigint references collocation(id) on delete cascade not null,
-  value text not null
+  order_by bigserial,
+  unique(lexeme_id, collocation_id)
 );
-alter sequence collocation_usage_id_seq restart with 10000;
+alter sequence lex_colloc_id_seq restart with 10000;
 
 create table freeform_ref_link
 (
@@ -690,14 +707,20 @@ create index lexeme_freeform_lexeme_id_idx on lexeme_freeform(lexeme_id);
 create index lexeme_freeform_freeform_id_idx on lexeme_freeform(freeform_id);
 create index definition_freeform_definition_id_idx on definition_freeform(definition_id);
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
+create index collocation_freeform_collocation_id_idx on collocation_freeform(collocation_id);
+create index collocation_freeform_freeform_id_idx on collocation_freeform(freeform_id);
 create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
 create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
-create index collocation_pos_group_lexeme_id_idx on collocation_pos_group(lexeme_id);
-create index collocation_rel_group_collocation_pos_group_id_idx on collocation_rel_group(collocation_pos_group_id);
-create index collocation_collocation_rel_group_id_idx on collocation(collocation_rel_group_id);
-create index collocation_lexeme_id_idx on collocation(lexeme_id);
-create index collocation_usage_collocation_id on collocation_usage(collocation_id);
+create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
+create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
+create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
+create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
+create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
+create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
+create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
+create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
+create index meaning_domain_lexeme_id_idx on meaning_domain(meaning_id);
 
-create index definition_fts_idx ON definition USING gin(to_tsvector('simple',value));
-create index freeform_fts_idx ON freeform USING gin(to_tsvector('simple',value_text));
-create index form_fts_idx ON form USING gin(to_tsvector('simple',value));
+create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
+create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
+create index form_fts_idx on form using gin(to_tsvector('simple',value));

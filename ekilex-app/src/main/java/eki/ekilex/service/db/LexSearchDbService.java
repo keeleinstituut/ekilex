@@ -1,9 +1,6 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.COLLOCATION;
-import static eki.ekilex.data.db.Tables.COLLOCATION_POS_GROUP;
-import static eki.ekilex.data.db.Tables.COLLOCATION_REL_GROUP;
-import static eki.ekilex.data.db.Tables.COLLOCATION_USAGE;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
@@ -11,6 +8,9 @@ import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEX_COLLOC;
+import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
+import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -55,11 +55,15 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionRefLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformRefLink;
+import eki.ekilex.data.db.tables.LexColloc;
+import eki.ekilex.data.db.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
@@ -661,47 +665,55 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record12<Long,String,Long,String,BigDecimal,BigDecimal,Long,Long,String,BigDecimal,BigDecimal,String[]>> findCollocationTuples(Long lexemeId) {
+	public Result<Record12<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,BigDecimal,BigDecimal,String[],Object[]>> findCollocationTuples(Long lexemeId) {
+
+		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
+		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
+		LexColloc lc1 = LEX_COLLOC.as("lc1");
+		LexColloc lc2 = LEX_COLLOC.as("lc2");
+		Collocation c = COLLOCATION.as("c");
+		Lexeme l2 = LEXEME.as("l2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
+
+		//TODO get the datatypes straight
+		Field<Object[]> cwf = DSL
+				.select(DSL.arrayAgg(DSL.field("row(l2.word_id, f2.value)::type_colloc_word")))
+				.from(lc2, l2, p2, f2)
+				.where(
+						lc2.COLLOCATION_ID.eq(c.ID)
+						.and(lc2.LEXEME_ID.eq(l2.ID))
+						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
+						.and(l2.WORD_ID.eq(p2.WORD_ID))
+						.and(f2.PARADIGM_ID.eq(p2.ID))
+						.and(f2.IS_WORD.isTrue())
+						)
+				.groupBy(lc2.COLLOCATION_ID)
+				.asField();
 
 		return create
 				.select(
-						COLLOCATION_POS_GROUP.ID.as("colloc_pos_gr_id"),
-						COLLOCATION_POS_GROUP.NAME.as("colloc_pos_gr_name"),
-						COLLOCATION_REL_GROUP.ID.as("colloc_rel_gr_id"),
-						COLLOCATION_REL_GROUP.NAME.as("colloc_rel_gr_name"),
-						COLLOCATION_REL_GROUP.FREQUENCY.as("colloc_rel_gr_freq"),
-						COLLOCATION_REL_GROUP.SCORE.as("colloc_rel_gr_score"),
-						COLLOCATION.ID.as("colloc_id"),
-						LEXEME.WORD_ID.as("colloc_word_id"),
-						COLLOCATION.VALUE.as("colloc"),
-						COLLOCATION.FREQUENCY.as("colloc_freq"),
-						COLLOCATION.SCORE.as("colloc_score"),
-						DSL.arrayAgg(COLLOCATION_USAGE.VALUE).orderBy(COLLOCATION_USAGE.ID).as("colloc_usages")
+						pgr1.ID.as("pos_group_id"),
+						pgr1.NAME.as("pos_group_name"),
+						rgr1.ID.as("rel_group_id"),
+						rgr1.NAME.as("rel_group_name"),
+						rgr1.FREQUENCY.as("rel_group_frequency"),
+						rgr1.SCORE.as("rel_group_score"),
+						c.ID.as("colloc_id"),
+						c.VALUE.as("colloc_value"),
+						c.FREQUENCY.as("colloc_frequency"),
+						c.SCORE.as("colloc_score"),
+						c.USAGES.as("colloc_usages"),
+						cwf.as("colloc_words")
 						)
-				.from(
-						COLLOCATION_POS_GROUP,
-						COLLOCATION_REL_GROUP,
-						COLLOCATION.leftOuterJoin(COLLOCATION_USAGE).on(COLLOCATION_USAGE.COLLOCATION_ID.eq(COLLOCATION.ID)),
-						LEXEME
-						)
+				.from(pgr1, rgr1, lc1, c)
 				.where(
-						COLLOCATION_POS_GROUP.LEXEME_ID.eq(lexemeId)
-						.and(COLLOCATION_REL_GROUP.COLLOCATION_POS_GROUP_ID.eq(COLLOCATION_POS_GROUP.ID))
-						.and(COLLOCATION.COLLOCATION_REL_GROUP_ID.eq(COLLOCATION_REL_GROUP.ID))
-						.and(COLLOCATION.LEXEME_ID.eq(LEXEME.ID))
+						pgr1.LEXEME_ID.eq(lexemeId)
+						.and(rgr1.POS_GROUP_ID.eq(pgr1.ID))
+						.and(lc1.REL_GROUP_ID.eq(rgr1.ID))
+						.and(lc1.COLLOCATION_ID.eq(c.ID))
 						)
-				.groupBy(
-						COLLOCATION_POS_GROUP.ID,
-						COLLOCATION_REL_GROUP.ID,
-						COLLOCATION.ID,
-						LEXEME.WORD_ID
-						)
-				.orderBy(
-						COLLOCATION_POS_GROUP.ID,
-						COLLOCATION_REL_GROUP.ID,
-						COLLOCATION.ID,
-						LEXEME.WORD_ID
-						)
+				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, c.ORDER_BY)
 				.fetch();
 	}
 }

@@ -5,9 +5,7 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationPosGroup;
-import eki.ekilex.data.db.tables.CollocationRelGroup;
-import eki.ekilex.data.db.tables.CollocationUsage;
+import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -33,6 +31,9 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
+import eki.ekilex.data.db.tables.LexColloc;
+import eki.ekilex.data.db.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
@@ -72,10 +73,8 @@ import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
-import eki.ekilex.data.db.tables.records.CollocationPosGroupRecord;
+import eki.ekilex.data.db.tables.records.CollocationFreeformRecord;
 import eki.ekilex.data.db.tables.records.CollocationRecord;
-import eki.ekilex.data.db.tables.records.CollocationRelGroupRecord;
-import eki.ekilex.data.db.tables.records.CollocationUsageRecord;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionDatasetRecord;
 import eki.ekilex.data.db.tables.records.DefinitionFreeformRecord;
@@ -101,6 +100,9 @@ import eki.ekilex.data.db.tables.records.GovernmentTypeRecord;
 import eki.ekilex.data.db.tables.records.LabelTypeRecord;
 import eki.ekilex.data.db.tables.records.LangLabelRecord;
 import eki.ekilex.data.db.tables.records.LangRecord;
+import eki.ekilex.data.db.tables.records.LexCollocPosGroupRecord;
+import eki.ekilex.data.db.tables.records.LexCollocRecord;
+import eki.ekilex.data.db.tables.records.LexCollocRelGroupRecord;
 import eki.ekilex.data.db.tables.records.LexRelTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.LexRelTypeRecord;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
@@ -168,9 +170,7 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
-    public static final Identity<CollocationPosGroupRecord, Long> IDENTITY_COLLOCATION_POS_GROUP = Identities0.IDENTITY_COLLOCATION_POS_GROUP;
-    public static final Identity<CollocationRelGroupRecord, Long> IDENTITY_COLLOCATION_REL_GROUP = Identities0.IDENTITY_COLLOCATION_REL_GROUP;
-    public static final Identity<CollocationUsageRecord, Long> IDENTITY_COLLOCATION_USAGE = Identities0.IDENTITY_COLLOCATION_USAGE;
+    public static final Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Identities0.IDENTITY_COLLOCATION_FREEFORM;
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
     public static final Identity<DefinitionRefLinkRecord, Long> IDENTITY_DEFINITION_REF_LINK = Identities0.IDENTITY_DEFINITION_REF_LINK;
@@ -179,6 +179,9 @@ public class Keys {
     public static final Identity<FormRelationRecord, Long> IDENTITY_FORM_RELATION = Identities0.IDENTITY_FORM_RELATION;
     public static final Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Identities0.IDENTITY_FREEFORM;
     public static final Identity<FreeformRefLinkRecord, Long> IDENTITY_FREEFORM_REF_LINK = Identities0.IDENTITY_FREEFORM_REF_LINK;
+    public static final Identity<LexCollocRecord, Long> IDENTITY_LEX_COLLOC = Identities0.IDENTITY_LEX_COLLOC;
+    public static final Identity<LexCollocPosGroupRecord, Long> IDENTITY_LEX_COLLOC_POS_GROUP = Identities0.IDENTITY_LEX_COLLOC_POS_GROUP;
+    public static final Identity<LexCollocRelGroupRecord, Long> IDENTITY_LEX_COLLOC_REL_GROUP = Identities0.IDENTITY_LEX_COLLOC_REL_GROUP;
     public static final Identity<LexRelationRecord, Long> IDENTITY_LEX_RELATION = Identities0.IDENTITY_LEX_RELATION;
     public static final Identity<LexemeRecord, Long> IDENTITY_LEXEME = Identities0.IDENTITY_LEXEME;
     public static final Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Identities0.IDENTITY_LEXEME_DERIV;
@@ -203,9 +206,8 @@ public class Keys {
     // -------------------------------------------------------------------------
 
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
-    public static final UniqueKey<CollocationPosGroupRecord> COLLOCATION_POS_GROUP_PKEY = UniqueKeys0.COLLOCATION_POS_GROUP_PKEY;
-    public static final UniqueKey<CollocationRelGroupRecord> COLLOCATION_REL_GROUP_PKEY = UniqueKeys0.COLLOCATION_REL_GROUP_PKEY;
-    public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = UniqueKeys0.COLLOCATION_USAGE_PKEY;
+    public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = UniqueKeys0.COLLOCATION_FREEFORM_PKEY;
+    public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = UniqueKeys0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<DatasetRecord> DATASET_PKEY = UniqueKeys0.DATASET_PKEY;
     public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = UniqueKeys0.DEFINITION_PKEY;
     public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = UniqueKeys0.DEFINITION_DATASET_PKEY;
@@ -234,6 +236,10 @@ public class Keys {
     public static final UniqueKey<LabelTypeRecord> LABEL_TYPE_PKEY = UniqueKeys0.LABEL_TYPE_PKEY;
     public static final UniqueKey<LangRecord> LANG_PKEY = UniqueKeys0.LANG_PKEY;
     public static final UniqueKey<LangLabelRecord> LANG_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.LANG_LABEL_CODE_LANG_TYPE_KEY;
+    public static final UniqueKey<LexCollocRecord> LEX_COLLOC_PKEY = UniqueKeys0.LEX_COLLOC_PKEY;
+    public static final UniqueKey<LexCollocRecord> LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY = UniqueKeys0.LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY;
+    public static final UniqueKey<LexCollocPosGroupRecord> LEX_COLLOC_POS_GROUP_PKEY = UniqueKeys0.LEX_COLLOC_POS_GROUP_PKEY;
+    public static final UniqueKey<LexCollocRelGroupRecord> LEX_COLLOC_REL_GROUP_PKEY = UniqueKeys0.LEX_COLLOC_REL_GROUP_PKEY;
     public static final UniqueKey<LexRelTypeRecord> LEX_REL_TYPE_PKEY = UniqueKeys0.LEX_REL_TYPE_PKEY;
     public static final UniqueKey<LexRelTypeLabelRecord> LEX_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.LEX_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<LexRelationRecord> LEX_RELATION_PKEY = UniqueKeys0.LEX_RELATION_PKEY;
@@ -291,11 +297,8 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
-    public static final ForeignKey<CollocationRecord, CollocationRelGroupRecord> COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY;
-    public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME_ID_FKEY = ForeignKeys0.COLLOCATION__COLLOCATION_LEXEME_ID_FKEY;
-    public static final ForeignKey<CollocationPosGroupRecord, LexemeRecord> COLLOCATION_POS_GROUP__COLLOCATION_POS_GROUP_LEXEME_ID_FKEY = ForeignKeys0.COLLOCATION_POS_GROUP__COLLOCATION_POS_GROUP_LEXEME_ID_FKEY;
-    public static final ForeignKey<CollocationRelGroupRecord, CollocationPosGroupRecord> COLLOCATION_REL_GROUP__COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_FKEY = ForeignKeys0.COLLOCATION_REL_GROUP__COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_FKEY;
-    public static final ForeignKey<CollocationUsageRecord, CollocationRecord> COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY;
+    public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY;
+    public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = ForeignKeys0.DEFINITION__DEFINITION_LANG_FKEY;
     public static final ForeignKey<DefinitionDatasetRecord, DefinitionRecord> DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY = ForeignKeys0.DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY;
@@ -333,6 +336,11 @@ public class Keys {
     public static final ForeignKey<LangLabelRecord, LangRecord> LANG_LABEL__LANG_LABEL_CODE_FKEY = ForeignKeys0.LANG_LABEL__LANG_LABEL_CODE_FKEY;
     public static final ForeignKey<LangLabelRecord, LangRecord> LANG_LABEL__LANG_LABEL_LANG_FKEY = ForeignKeys0.LANG_LABEL__LANG_LABEL_LANG_FKEY;
     public static final ForeignKey<LangLabelRecord, LabelTypeRecord> LANG_LABEL__LANG_LABEL_TYPE_FKEY = ForeignKeys0.LANG_LABEL__LANG_LABEL_TYPE_FKEY;
+    public static final ForeignKey<LexCollocRecord, LexemeRecord> LEX_COLLOC__LEX_COLLOC_LEXEME_ID_FKEY = ForeignKeys0.LEX_COLLOC__LEX_COLLOC_LEXEME_ID_FKEY;
+    public static final ForeignKey<LexCollocRecord, LexCollocRelGroupRecord> LEX_COLLOC__LEX_COLLOC_REL_GROUP_ID_FKEY = ForeignKeys0.LEX_COLLOC__LEX_COLLOC_REL_GROUP_ID_FKEY;
+    public static final ForeignKey<LexCollocRecord, CollocationRecord> LEX_COLLOC__LEX_COLLOC_COLLOCATION_ID_FKEY = ForeignKeys0.LEX_COLLOC__LEX_COLLOC_COLLOCATION_ID_FKEY;
+    public static final ForeignKey<LexCollocPosGroupRecord, LexemeRecord> LEX_COLLOC_POS_GROUP__LEX_COLLOC_POS_GROUP_LEXEME_ID_FKEY = ForeignKeys0.LEX_COLLOC_POS_GROUP__LEX_COLLOC_POS_GROUP_LEXEME_ID_FKEY;
+    public static final ForeignKey<LexCollocRelGroupRecord, LexCollocPosGroupRecord> LEX_COLLOC_REL_GROUP__LEX_COLLOC_REL_GROUP_POS_GROUP_ID_FKEY = ForeignKeys0.LEX_COLLOC_REL_GROUP__LEX_COLLOC_REL_GROUP_POS_GROUP_ID_FKEY;
     public static final ForeignKey<LexRelTypeLabelRecord, LexRelTypeRecord> LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_CODE_FKEY = ForeignKeys0.LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_CODE_FKEY;
     public static final ForeignKey<LexRelTypeLabelRecord, LangRecord> LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_LANG_FKEY = ForeignKeys0.LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_LANG_FKEY;
     public static final ForeignKey<LexRelTypeLabelRecord, LabelTypeRecord> LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_TYPE_FKEY;
@@ -406,9 +414,7 @@ public class Keys {
 
     private static class Identities0 {
         public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Internal.createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
-        public static Identity<CollocationPosGroupRecord, Long> IDENTITY_COLLOCATION_POS_GROUP = Internal.createIdentity(CollocationPosGroup.COLLOCATION_POS_GROUP, CollocationPosGroup.COLLOCATION_POS_GROUP.ID);
-        public static Identity<CollocationRelGroupRecord, Long> IDENTITY_COLLOCATION_REL_GROUP = Internal.createIdentity(CollocationRelGroup.COLLOCATION_REL_GROUP, CollocationRelGroup.COLLOCATION_REL_GROUP.ID);
-        public static Identity<CollocationUsageRecord, Long> IDENTITY_COLLOCATION_USAGE = Internal.createIdentity(CollocationUsage.COLLOCATION_USAGE, CollocationUsage.COLLOCATION_USAGE.ID);
+        public static Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Internal.createIdentity(CollocationFreeform.COLLOCATION_FREEFORM, CollocationFreeform.COLLOCATION_FREEFORM.ID);
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Internal.createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Internal.createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static Identity<DefinitionRefLinkRecord, Long> IDENTITY_DEFINITION_REF_LINK = Internal.createIdentity(DefinitionRefLink.DEFINITION_REF_LINK, DefinitionRefLink.DEFINITION_REF_LINK.ID);
@@ -417,6 +423,9 @@ public class Keys {
         public static Identity<FormRelationRecord, Long> IDENTITY_FORM_RELATION = Internal.createIdentity(FormRelation.FORM_RELATION, FormRelation.FORM_RELATION.ID);
         public static Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Internal.createIdentity(Freeform.FREEFORM, Freeform.FREEFORM.ID);
         public static Identity<FreeformRefLinkRecord, Long> IDENTITY_FREEFORM_REF_LINK = Internal.createIdentity(FreeformRefLink.FREEFORM_REF_LINK, FreeformRefLink.FREEFORM_REF_LINK.ID);
+        public static Identity<LexCollocRecord, Long> IDENTITY_LEX_COLLOC = Internal.createIdentity(LexColloc.LEX_COLLOC, LexColloc.LEX_COLLOC.ID);
+        public static Identity<LexCollocPosGroupRecord, Long> IDENTITY_LEX_COLLOC_POS_GROUP = Internal.createIdentity(LexCollocPosGroup.LEX_COLLOC_POS_GROUP, LexCollocPosGroup.LEX_COLLOC_POS_GROUP.ID);
+        public static Identity<LexCollocRelGroupRecord, Long> IDENTITY_LEX_COLLOC_REL_GROUP = Internal.createIdentity(LexCollocRelGroup.LEX_COLLOC_REL_GROUP, LexCollocRelGroup.LEX_COLLOC_REL_GROUP.ID);
         public static Identity<LexRelationRecord, Long> IDENTITY_LEX_RELATION = Internal.createIdentity(LexRelation.LEX_RELATION, LexRelation.LEX_RELATION.ID);
         public static Identity<LexemeRecord, Long> IDENTITY_LEXEME = Internal.createIdentity(Lexeme.LEXEME, Lexeme.LEXEME.ID);
         public static Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Internal.createIdentity(LexemeDeriv.LEXEME_DERIV, LexemeDeriv.LEXEME_DERIV.ID);
@@ -439,9 +448,8 @@ public class Keys {
 
     private static class UniqueKeys0 {
         public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = Internal.createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", Collocation.COLLOCATION.ID);
-        public static final UniqueKey<CollocationPosGroupRecord> COLLOCATION_POS_GROUP_PKEY = Internal.createUniqueKey(CollocationPosGroup.COLLOCATION_POS_GROUP, "collocation_pos_group_pkey", CollocationPosGroup.COLLOCATION_POS_GROUP.ID);
-        public static final UniqueKey<CollocationRelGroupRecord> COLLOCATION_REL_GROUP_PKEY = Internal.createUniqueKey(CollocationRelGroup.COLLOCATION_REL_GROUP, "collocation_rel_group_pkey", CollocationRelGroup.COLLOCATION_REL_GROUP.ID);
-        public static final UniqueKey<CollocationUsageRecord> COLLOCATION_USAGE_PKEY = Internal.createUniqueKey(CollocationUsage.COLLOCATION_USAGE, "collocation_usage_pkey", CollocationUsage.COLLOCATION_USAGE.ID);
+        public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_pkey", CollocationFreeform.COLLOCATION_FREEFORM.ID);
+        public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_collocation_id_freeform_id_key", CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<DatasetRecord> DATASET_PKEY = Internal.createUniqueKey(Dataset.DATASET, "dataset_pkey", Dataset.DATASET.CODE);
         public static final UniqueKey<DefinitionRecord> DEFINITION_PKEY = Internal.createUniqueKey(Definition.DEFINITION, "definition_pkey", Definition.DEFINITION.ID);
         public static final UniqueKey<DefinitionDatasetRecord> DEFINITION_DATASET_PKEY = Internal.createUniqueKey(DefinitionDataset.DEFINITION_DATASET, "definition_dataset_pkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID, DefinitionDataset.DEFINITION_DATASET.DATASET_CODE);
@@ -470,6 +478,10 @@ public class Keys {
         public static final UniqueKey<LabelTypeRecord> LABEL_TYPE_PKEY = Internal.createUniqueKey(LabelType.LABEL_TYPE, "label_type_pkey", LabelType.LABEL_TYPE.CODE);
         public static final UniqueKey<LangRecord> LANG_PKEY = Internal.createUniqueKey(Lang.LANG, "lang_pkey", Lang.LANG.CODE);
         public static final UniqueKey<LangLabelRecord> LANG_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(LangLabel.LANG_LABEL, "lang_label_code_lang_type_key", LangLabel.LANG_LABEL.CODE, LangLabel.LANG_LABEL.LANG, LangLabel.LANG_LABEL.TYPE);
+        public static final UniqueKey<LexCollocRecord> LEX_COLLOC_PKEY = Internal.createUniqueKey(LexColloc.LEX_COLLOC, "lex_colloc_pkey", LexColloc.LEX_COLLOC.ID);
+        public static final UniqueKey<LexCollocRecord> LEX_COLLOC_LEXEME_ID_COLLOCATION_ID_KEY = Internal.createUniqueKey(LexColloc.LEX_COLLOC, "lex_colloc_lexeme_id_collocation_id_key", LexColloc.LEX_COLLOC.LEXEME_ID, LexColloc.LEX_COLLOC.COLLOCATION_ID);
+        public static final UniqueKey<LexCollocPosGroupRecord> LEX_COLLOC_POS_GROUP_PKEY = Internal.createUniqueKey(LexCollocPosGroup.LEX_COLLOC_POS_GROUP, "lex_colloc_pos_group_pkey", LexCollocPosGroup.LEX_COLLOC_POS_GROUP.ID);
+        public static final UniqueKey<LexCollocRelGroupRecord> LEX_COLLOC_REL_GROUP_PKEY = Internal.createUniqueKey(LexCollocRelGroup.LEX_COLLOC_REL_GROUP, "lex_colloc_rel_group_pkey", LexCollocRelGroup.LEX_COLLOC_REL_GROUP.ID);
         public static final UniqueKey<LexRelTypeRecord> LEX_REL_TYPE_PKEY = Internal.createUniqueKey(LexRelType.LEX_REL_TYPE, "lex_rel_type_pkey", LexRelType.LEX_REL_TYPE.CODE);
         public static final UniqueKey<LexRelTypeLabelRecord> LEX_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(LexRelTypeLabel.LEX_REL_TYPE_LABEL, "lex_rel_type_label_code_lang_type_key", LexRelTypeLabel.LEX_REL_TYPE_LABEL.CODE, LexRelTypeLabel.LEX_REL_TYPE_LABEL.LANG, LexRelTypeLabel.LEX_REL_TYPE_LABEL.TYPE);
         public static final UniqueKey<LexRelationRecord> LEX_RELATION_PKEY = Internal.createUniqueKey(LexRelation.LEX_RELATION, "lex_relation_pkey", LexRelation.LEX_RELATION.ID);
@@ -525,11 +537,8 @@ public class Keys {
     }
 
     private static class ForeignKeys0 {
-        public static final ForeignKey<CollocationRecord, CollocationRelGroupRecord> COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_REL_GROUP_PKEY, Collocation.COLLOCATION, "collocation__collocation_collocation_rel_group_id_fkey", Collocation.COLLOCATION.COLLOCATION_REL_GROUP_ID);
-        public static final ForeignKey<CollocationRecord, LexemeRecord> COLLOCATION__COLLOCATION_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, Collocation.COLLOCATION, "collocation__collocation_lexeme_id_fkey", Collocation.COLLOCATION.LEXEME_ID);
-        public static final ForeignKey<CollocationPosGroupRecord, LexemeRecord> COLLOCATION_POS_GROUP__COLLOCATION_POS_GROUP_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, CollocationPosGroup.COLLOCATION_POS_GROUP, "collocation_pos_group__collocation_pos_group_lexeme_id_fkey", CollocationPosGroup.COLLOCATION_POS_GROUP.LEXEME_ID);
-        public static final ForeignKey<CollocationRelGroupRecord, CollocationPosGroupRecord> COLLOCATION_REL_GROUP__COLLOCATION_REL_GROUP_COLLOCATION_POS_GROUP_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_POS_GROUP_PKEY, CollocationRelGroup.COLLOCATION_REL_GROUP, "collocation_rel_group__collocation_rel_group_collocation_pos_group_id_fkey", CollocationRelGroup.COLLOCATION_REL_GROUP.COLLOCATION_POS_GROUP_ID);
-        public static final ForeignKey<CollocationUsageRecord, CollocationRecord> COLLOCATION_USAGE__COLLOCATION_USAGE_COLLOCATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, CollocationUsage.COLLOCATION_USAGE, "collocation_usage__collocation_usage_collocation_id_fkey", CollocationUsage.COLLOCATION_USAGE.COLLOCATION_ID);
+        public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform__collocation_freeform_collocation_id_fkey", CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID);
+        public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform__collocation_freeform_freeform_id_fkey", CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID);
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
         public static final ForeignKey<DefinitionRecord, LangRecord> DEFINITION__DEFINITION_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, Definition.DEFINITION, "definition__definition_lang_fkey", Definition.DEFINITION.LANG);
         public static final ForeignKey<DefinitionDatasetRecord, DefinitionRecord> DEFINITION_DATASET__DEFINITION_DATASET_DEFINITION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DEFINITION_PKEY, DefinitionDataset.DEFINITION_DATASET, "definition_dataset__definition_dataset_definition_id_fkey", DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID);
@@ -567,6 +576,11 @@ public class Keys {
         public static final ForeignKey<LangLabelRecord, LangRecord> LANG_LABEL__LANG_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, LangLabel.LANG_LABEL, "lang_label__lang_label_code_fkey", LangLabel.LANG_LABEL.CODE);
         public static final ForeignKey<LangLabelRecord, LangRecord> LANG_LABEL__LANG_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, LangLabel.LANG_LABEL, "lang_label__lang_label_lang_fkey", LangLabel.LANG_LABEL.LANG);
         public static final ForeignKey<LangLabelRecord, LabelTypeRecord> LANG_LABEL__LANG_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, LangLabel.LANG_LABEL, "lang_label__lang_label_type_fkey", LangLabel.LANG_LABEL.TYPE);
+        public static final ForeignKey<LexCollocRecord, LexemeRecord> LEX_COLLOC__LEX_COLLOC_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LexColloc.LEX_COLLOC, "lex_colloc__lex_colloc_lexeme_id_fkey", LexColloc.LEX_COLLOC.LEXEME_ID);
+        public static final ForeignKey<LexCollocRecord, LexCollocRelGroupRecord> LEX_COLLOC__LEX_COLLOC_REL_GROUP_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEX_COLLOC_REL_GROUP_PKEY, LexColloc.LEX_COLLOC, "lex_colloc__lex_colloc_rel_group_id_fkey", LexColloc.LEX_COLLOC.REL_GROUP_ID);
+        public static final ForeignKey<LexCollocRecord, CollocationRecord> LEX_COLLOC__LEX_COLLOC_COLLOCATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, LexColloc.LEX_COLLOC, "lex_colloc__lex_colloc_collocation_id_fkey", LexColloc.LEX_COLLOC.COLLOCATION_ID);
+        public static final ForeignKey<LexCollocPosGroupRecord, LexemeRecord> LEX_COLLOC_POS_GROUP__LEX_COLLOC_POS_GROUP_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LexCollocPosGroup.LEX_COLLOC_POS_GROUP, "lex_colloc_pos_group__lex_colloc_pos_group_lexeme_id_fkey", LexCollocPosGroup.LEX_COLLOC_POS_GROUP.LEXEME_ID);
+        public static final ForeignKey<LexCollocRelGroupRecord, LexCollocPosGroupRecord> LEX_COLLOC_REL_GROUP__LEX_COLLOC_REL_GROUP_POS_GROUP_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEX_COLLOC_POS_GROUP_PKEY, LexCollocRelGroup.LEX_COLLOC_REL_GROUP, "lex_colloc_rel_group__lex_colloc_rel_group_pos_group_id_fkey", LexCollocRelGroup.LEX_COLLOC_REL_GROUP.POS_GROUP_ID);
         public static final ForeignKey<LexRelTypeLabelRecord, LexRelTypeRecord> LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEX_REL_TYPE_PKEY, LexRelTypeLabel.LEX_REL_TYPE_LABEL, "lex_rel_type_label__lex_rel_type_label_code_fkey", LexRelTypeLabel.LEX_REL_TYPE_LABEL.CODE);
         public static final ForeignKey<LexRelTypeLabelRecord, LangRecord> LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, LexRelTypeLabel.LEX_REL_TYPE_LABEL, "lex_rel_type_label__lex_rel_type_label_lang_fkey", LexRelTypeLabel.LEX_REL_TYPE_LABEL.LANG);
         public static final ForeignKey<LexRelTypeLabelRecord, LabelTypeRecord> LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, LexRelTypeLabel.LEX_REL_TYPE_LABEL, "lex_rel_type_label__lex_rel_type_label_type_fkey", LexRelTypeLabel.LEX_REL_TYPE_LABEL.TYPE);

@@ -16,7 +16,6 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
-import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
@@ -41,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Collocation extends TableImpl<CollocationRecord> {
 
-    private static final long serialVersionUID = 230598523;
+    private static final long serialVersionUID = -873976089;
 
     /**
      * The reference instance of <code>public.collocation</code>
@@ -62,16 +61,6 @@ public class Collocation extends TableImpl<CollocationRecord> {
     public final TableField<CollocationRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('collocation_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.collocation.collocation_rel_group_id</code>.
-     */
-    public final TableField<CollocationRecord, Long> COLLOCATION_REL_GROUP_ID = createField("collocation_rel_group_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.collocation.lexeme_id</code>.
-     */
-    public final TableField<CollocationRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
      * The column <code>public.collocation.value</code>.
      */
     public final TableField<CollocationRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
@@ -85,6 +74,16 @@ public class Collocation extends TableImpl<CollocationRecord> {
      * The column <code>public.collocation.score</code>.
      */
     public final TableField<CollocationRecord, BigDecimal> SCORE = createField("score", org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
+
+    /**
+     * The column <code>public.collocation.usages</code>.
+     */
+    public final TableField<CollocationRecord, String[]> USAGES = createField("usages", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.collocation.order_by</code>.
+     */
+    public final TableField<CollocationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('collocation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.collocation</code> table reference
@@ -128,7 +127,7 @@ public class Collocation extends TableImpl<CollocationRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.COLLOCATION_COLLOCATION_REL_GROUP_ID_IDX, Indexes.COLLOCATION_LEXEME_ID_IDX, Indexes.COLLOCATION_PKEY);
+        return Arrays.<Index>asList(Indexes.COLLOCATION_PKEY);
     }
 
     /**
@@ -153,14 +152,6 @@ public class Collocation extends TableImpl<CollocationRecord> {
     @Override
     public List<UniqueKey<CollocationRecord>> getKeys() {
         return Arrays.<UniqueKey<CollocationRecord>>asList(Keys.COLLOCATION_PKEY);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ForeignKey<CollocationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CollocationRecord, ?>>asList(Keys.COLLOCATION__COLLOCATION_COLLOCATION_REL_GROUP_ID_FKEY, Keys.COLLOCATION__COLLOCATION_LEXEME_ID_FKEY);
     }
 
     /**

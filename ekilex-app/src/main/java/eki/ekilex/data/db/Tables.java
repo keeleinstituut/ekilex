@@ -5,9 +5,7 @@ package eki.ekilex.data.db;
 
 
 import eki.ekilex.data.db.tables.Collocation;
-import eki.ekilex.data.db.tables.CollocationPosGroup;
-import eki.ekilex.data.db.tables.CollocationRelGroup;
-import eki.ekilex.data.db.tables.CollocationUsage;
+import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
@@ -33,6 +31,9 @@ import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
 import eki.ekilex.data.db.tables.Lang;
 import eki.ekilex.data.db.tables.LangLabel;
+import eki.ekilex.data.db.tables.LexColloc;
+import eki.ekilex.data.db.tables.LexCollocPosGroup;
+import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelType;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.LexRelation;
@@ -101,19 +102,9 @@ public class Tables {
     public static final Collocation COLLOCATION = eki.ekilex.data.db.tables.Collocation.COLLOCATION;
 
     /**
-     * The table <code>public.collocation_pos_group</code>.
+     * The table <code>public.collocation_freeform</code>.
      */
-    public static final CollocationPosGroup COLLOCATION_POS_GROUP = eki.ekilex.data.db.tables.CollocationPosGroup.COLLOCATION_POS_GROUP;
-
-    /**
-     * The table <code>public.collocation_rel_group</code>.
-     */
-    public static final CollocationRelGroup COLLOCATION_REL_GROUP = eki.ekilex.data.db.tables.CollocationRelGroup.COLLOCATION_REL_GROUP;
-
-    /**
-     * The table <code>public.collocation_usage</code>.
-     */
-    public static final CollocationUsage COLLOCATION_USAGE = eki.ekilex.data.db.tables.CollocationUsage.COLLOCATION_USAGE;
+    public static final CollocationFreeform COLLOCATION_FREEFORM = eki.ekilex.data.db.tables.CollocationFreeform.COLLOCATION_FREEFORM;
 
     /**
      * The table <code>public.dataset</code>.
@@ -239,6 +230,21 @@ public class Tables {
      * The table <code>public.lang_label</code>.
      */
     public static final LangLabel LANG_LABEL = eki.ekilex.data.db.tables.LangLabel.LANG_LABEL;
+
+    /**
+     * The table <code>public.lex_colloc</code>.
+     */
+    public static final LexColloc LEX_COLLOC = eki.ekilex.data.db.tables.LexColloc.LEX_COLLOC;
+
+    /**
+     * The table <code>public.lex_colloc_pos_group</code>.
+     */
+    public static final LexCollocPosGroup LEX_COLLOC_POS_GROUP = eki.ekilex.data.db.tables.LexCollocPosGroup.LEX_COLLOC_POS_GROUP;
+
+    /**
+     * The table <code>public.lex_colloc_rel_group</code>.
+     */
+    public static final LexCollocRelGroup LEX_COLLOC_REL_GROUP = eki.ekilex.data.db.tables.LexCollocRelGroup.LEX_COLLOC_REL_GROUP;
 
     /**
      * The table <code>public.lex_rel_type</code>.

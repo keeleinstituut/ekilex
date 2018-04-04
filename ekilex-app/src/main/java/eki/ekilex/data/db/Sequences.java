@@ -24,24 +24,19 @@ import org.jooq.impl.SequenceImpl;
 public class Sequences {
 
     /**
+     * The sequence <code>public.collocation_freeform_id_seq</code>
+     */
+    public static final Sequence<Long> COLLOCATION_FREEFORM_ID_SEQ = new SequenceImpl<Long>("collocation_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.collocation_id_seq</code>
      */
     public static final Sequence<Long> COLLOCATION_ID_SEQ = new SequenceImpl<Long>("collocation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.collocation_pos_group_id_seq</code>
+     * The sequence <code>public.collocation_order_by_seq</code>
      */
-    public static final Sequence<Long> COLLOCATION_POS_GROUP_ID_SEQ = new SequenceImpl<Long>("collocation_pos_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.collocation_rel_group_id_seq</code>
-     */
-    public static final Sequence<Long> COLLOCATION_REL_GROUP_ID_SEQ = new SequenceImpl<Long>("collocation_rel_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.collocation_usage_id_seq</code>
-     */
-    public static final Sequence<Long> COLLOCATION_USAGE_ID_SEQ = new SequenceImpl<Long>("collocation_usage_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+    public static final Sequence<Long> COLLOCATION_ORDER_BY_SEQ = new SequenceImpl<Long>("collocation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.definition_freeform_id_seq</code>
@@ -107,6 +102,36 @@ public class Sequences {
      * The sequence <code>public.freeform_ref_link_order_by_seq</code>
      */
     public static final Sequence<Long> FREEFORM_REF_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("freeform_ref_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lex_colloc_id_seq</code>
+     */
+    public static final Sequence<Long> LEX_COLLOC_ID_SEQ = new SequenceImpl<Long>("lex_colloc_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lex_colloc_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEX_COLLOC_ORDER_BY_SEQ = new SequenceImpl<Long>("lex_colloc_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lex_colloc_pos_group_id_seq</code>
+     */
+    public static final Sequence<Long> LEX_COLLOC_POS_GROUP_ID_SEQ = new SequenceImpl<Long>("lex_colloc_pos_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lex_colloc_pos_group_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ = new SequenceImpl<Long>("lex_colloc_pos_group_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lex_colloc_rel_group_id_seq</code>
+     */
+    public static final Sequence<Long> LEX_COLLOC_REL_GROUP_ID_SEQ = new SequenceImpl<Long>("lex_colloc_rel_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lex_colloc_rel_group_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEX_COLLOC_REL_GROUP_ORDER_BY_SEQ = new SequenceImpl<Long>("lex_colloc_rel_group_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.lex_relation_id_seq</code>
