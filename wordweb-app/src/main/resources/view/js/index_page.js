@@ -177,7 +177,7 @@ function initialisePage() {
     // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
-        $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro)").toggleClass("fade-target");
+        $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
     });
 
     // demo js for interactions between the mobile and desktop modes

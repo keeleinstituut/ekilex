@@ -1,3 +1,9 @@
+// test
+
+.morphology-test{
+	font-size: $tiny-font-size;
+}
+
 ////////////////////////////////
 ////// MOBILE -> ALL /////////
 ////////////////////////////////
@@ -188,8 +194,9 @@ input{
 		.example-item:not(:first-child),
 		.label,
 		.label-md,
-		.morphology-section .row:not(.intro)
-		{
+		.morphology-section .row:not(.intro),
+		.corp-panel div:nth-child(n+5){
+			color: red;
 			display: none;
 			opacity: 0;
 		}
@@ -274,7 +281,9 @@ input{
 	color: $gray-600;
 }
 .label-md{
-	font-weight: $font-weight-bold;
+	color: $gray-600;
+	// font-weight: $font-weight-bold;
+	// font-size: $tiny-font-size;
 }
 .expand .more-btn{
 	top: -$border-width-lg;
@@ -334,7 +343,6 @@ input{
 		box-shadow: none !important;
     }
 }
-
 .morphology-section{
 	.row div{
 		&:not(.label){
@@ -348,6 +356,12 @@ input{
 }
 .expand .morphology-section{
 	.col{
-		margin-left: rem(20); 
+		margin-left: rem(15); 
 	}
+}
+.homonym-image{
+	max-width: 100%;
+	max-height: 20vh;
+	margin: 0 auto;
+	display: block;
 }

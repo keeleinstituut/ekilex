@@ -3722,6 +3722,10 @@ input[type="button"].btn-block {
   content: "\e903";
 }
 
+.morphology-test {
+  font-size: 0.75rem;
+}
+
 .dependencies + div {
   display: none;
 }
@@ -3942,7 +3946,9 @@ ul {
 .level-3-panel:not(.expand) .example-item:not(:first-child),
 .level-3-panel:not(.expand) .label,
 .level-3-panel:not(.expand) .label-md,
-.level-3-panel:not(.expand) .morphology-section .row:not(.intro) {
+.level-3-panel:not(.expand) .morphology-section .row:not(.intro),
+.level-3-panel:not(.expand) .corp-panel div:nth-child(n+5) {
+  color: red;
   display: none;
   opacity: 0;
 }
@@ -4036,7 +4042,7 @@ ul {
 }
 
 .label-md {
-  font-weight: 700;
+  color: #7F8891;
 }
 
 .expand .more-btn {
@@ -4118,7 +4124,14 @@ ul {
 }
 
 .expand .morphology-section .col {
-  margin-left: 1.25rem;
+  margin-left: 0.9375rem;
+}
+
+.homonym-image {
+  max-width: 100%;
+  max-height: 20vh;
+  margin: 0 auto;
+  display: block;
 }
 
 @media (max-width: 767.98px) {
