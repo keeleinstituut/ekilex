@@ -39,7 +39,9 @@
           <div class="col-md-6">
             <div class="search-lang dropdown">
               <button class="btn btn-light lang-btn" data-toggle="dropdown" id="dropdownMenu2" aria-haspopup="true" aria-expanded="false">
-                eesti <span class="icon icon-arrow-right"></span> vene
+                eesti
+                <span class="icon icon-arrow-right"></span>
+                vene
               </button>
               <form class="dropdown-menu p-4 container" aria-labelledby="dropdwonTest1">
                 <div class="row">
@@ -68,7 +70,7 @@
                   <div class="col-12">
                     <button class="btn btn-light" type="button">Jätka</button>
                   </div>
-                </div>              
+                </div>
               </form>
             </div>
           </div>
@@ -91,7 +93,7 @@
                   <button type="button" class="btn btn-light clear-btn">
                     <span class="icon icon-close"></span>
                   </button>
-                  <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" >
+                  <button type="button" id="start-rec-btn" class="btn btn-light speak-btn">
                     <span class="icon icon-mic"></span>
                   </button>
                   <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
@@ -139,7 +141,10 @@
         <div class="row">
           <div class="col-12 content-title">
             <!-- Siia palun valitud homonüümi nimi -->
-            <h3><span class="homonym-name" th:text="${word.word}">tee</span><span class="homonym-nr" th:text="${word.homonymNr}">1</span></h3>
+            <h3>
+              <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
+              <span class="homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
+            </h3>
           </div>
         </div>
         <div class="row">
@@ -173,26 +178,34 @@
                   <div class="additional-meta">
                     <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}">
-                      <div class="col-3"><b>Keelenõu</b></div>
+                      <div class="col-3">
+                        <b>Keelenõu</b>
+                      </div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.adviceNotes}" th:text="${note}"></div>
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.learnerComments)}">
-                      <div class="col-3"><b>Õppekommentaar</b></div>
+                      <div class="col-3">
+                        <b>Õppekommentaar</b>
+                      </div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.learnerComments}" th:text="${note}"></div>
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
-                      <div class="col-3"><b>Märkused</b></div>
+                      <div class="col-3">
+                        <b>Märkused</b>
+                      </div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
                       </div>
                     </div>
                     <!---->
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
-                      <div class="col-3"><b>Register</b></div>
+                      <div class="col-3">
+                        <b>Register</b>
+                      </div>
                       <div class="col-9">
                         <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
                       </div>
@@ -205,13 +218,17 @@
                       </div>
                     </div>-->
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
-                      <div class="col-3"><b>Valdkond</b></div>
+                      <div class="col-3">
+                        <b>Valdkond</b>
+                      </div>
                       <div class="col-9">
                         <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <div class="col-3"><b>Grammar</b></div>
+                      <div class="col-3">
+                        <b>Grammar</b>
+                      </div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
                       </div>
@@ -278,7 +295,7 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row"> 
+            <div class="level-3-panel row">
               <div class="col-12 morphology-panel">
                 <div class="morphology-section">
                   <div class="intro">
@@ -375,7 +392,7 @@
               </div>
             </div>
             <div name="korp">
-              <hr/>
+              <hr />
               Otsin näitelauseid...
             </div>
           </div>
@@ -383,10 +400,9 @@
       </div>
     </div>
   </div>
-
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
-    <h6>Veel näitelauseid</h6>
+      <h6>Veel näitelauseid</h6>
       <div style="margin-bottom: 0.5em;" th:each="sentence : ${sentences}">
         <span th:text="${sentence.getLeftPart()}"></span>
         <b th:text="${sentence.getMiddlePart()}"></b>
@@ -397,7 +413,6 @@
       <span class="icon icon-chevron-left"></span>
     </button>
   </div>
-
   <script th:inline="javascript">
   	initialisePage();
   	initialiseRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');

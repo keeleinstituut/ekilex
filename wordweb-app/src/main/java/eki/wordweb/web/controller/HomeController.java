@@ -65,8 +65,6 @@ public class HomeController implements WebConstant {
 	public String wordDetails(@PathVariable("wordId") Long wordId, Model model) {
 
 		WordData wordData = lexSearchService.getWordData(wordId, DISPLAY_LANG);
-		Word word = lexSearchService.getWord(wordId);
-		model.addAttribute("word", word);
 		model.addAttribute("wordData", wordData);
 
 		return HOME_PAGE + " :: worddetails";

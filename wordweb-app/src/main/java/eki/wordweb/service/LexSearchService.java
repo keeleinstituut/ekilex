@@ -43,27 +43,25 @@ public class LexSearchService {
 	}
 
 	@Transactional
-	public Word getWord(Long wordId) {
-		return lexSearchDbService.getWord(wordId);
-	}
-
-	@Transactional
 	public WordData getWordData(Long wordId, String displayLang) {
 
+		Word word = lexSearchDbService.getWord(wordId);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
-		WordData wordData = new WordData();
-		wordData.setLexemes(lexemes);
-		wordData.setParadigms(paradigms);
 		List<String> allImageFiles = new ArrayList<>();
-		lexemes.forEach(l -> {
-			if (l.getImageFiles() != null) {
-				allImageFiles.addAll(l.getImageFiles());
+		lexemes.forEach(lexeme -> {
+			if (CollectionUtils.isNotEmpty(lexeme.getImageFiles())) {
+				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
+
+		WordData wordData = new WordData();
+		wordData.setWord(word);
+		wordData.setLexemes(lexemes);
+		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
 		return wordData;
 	}

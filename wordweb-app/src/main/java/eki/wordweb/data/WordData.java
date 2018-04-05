@@ -8,11 +8,21 @@ public class WordData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Word word;
+
 	private List<Lexeme> lexemes;
 
 	private List<Paradigm> paradigms;
 
 	private List<String> imageFiles;
+
+	public Word getWord() {
+		return word;
+	}
+
+	public void setWord(Word word) {
+		this.word = word;
+	}
 
 	public List<Lexeme> getLexemes() {
 		return lexemes;

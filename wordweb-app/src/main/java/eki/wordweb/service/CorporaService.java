@@ -46,7 +46,7 @@ public class CorporaService {
 			return response;
 		}
 
-		URI url= UriComponentsBuilder.fromUriString(serviceUrl)
+		URI url = UriComponentsBuilder.fromUriString(serviceUrl)
 				.queryParam("command", "query")
 				.queryParam("corpus", "ETSKELL01,ETSKELL02,ETSKELL03,ETSKELL04,ETSKELL05,ETSKELL06,ETSKELL07,ETSKELL08,ETSKELL09")
 				.queryParam("start", 0)
@@ -72,7 +72,7 @@ public class CorporaService {
 			for (String word : words) {
 				items.add("[word=\"" + word + "\" %c]");
 			}
-			return String.join(" ",items);
+			return String.join(" ", items);
 		} else {
 			return "[lemma=\"" + sentence + "\"]";
 		}
