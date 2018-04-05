@@ -56,6 +56,27 @@ public class LexSearchDbService {
 				.into(Word.class);
 	}
 
+	public Word getWord(Long wordId) {
+
+		return create
+				.select(
+						MVIEW_WW_WORD.WORD_ID,
+						MVIEW_WW_WORD.WORD,
+						MVIEW_WW_WORD.HOMONYM_NR,
+						MVIEW_WW_WORD.LANG,
+						MVIEW_WW_WORD.MORPH_CODE,
+						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
+						MVIEW_WW_WORD.DATASET_CODES,
+						MVIEW_WW_WORD.MEANING_COUNT,
+						MVIEW_WW_WORD.MEANING_WORDS,
+						MVIEW_WW_WORD.DEFINITIONS
+						)
+				.from(MVIEW_WW_WORD)
+				.where(MVIEW_WW_WORD.WORD_ID.eq(wordId))
+				.fetchOne()
+				.into(Word.class);
+	}
+
 	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId) {
 
 		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");

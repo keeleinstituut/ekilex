@@ -5,6 +5,9 @@ function fetchDetails(wordId, word) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
         $('.word-details [data-toggle="tooltip"]').tooltip();
+        if ($(window).width() < 767) {
+            $(".content-panel").removeClass("d-none d-md-block");
+        }
         ////
         fetchCorpSentences(word);
     }).fail(function (data) {
@@ -174,7 +177,7 @@ function initialisePage() {
     // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
-        $(".additional-meta, .dictionary-source, .dependence:not(:first-child)").toggleClass("fade-target");
+        $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
     });
 
     // demo js for interactions between the mobile and desktop modes
@@ -190,33 +193,15 @@ function initialisePage() {
         $(".homonym-item:first").removeClass("animation-target").dequeue();
         $(this).addClass("selected last-selected");
         if ($(window).width() < 767) {
-            $(".content-panel").removeClass("d-none d-md-block");
-            $(".homonym-panel").addClass("d-none d-md-block");
+            $(".homonym-panel").addClass("d-none d-md-block testklass");
             $(".search-panel").addClass("d-none d-md-block");
+            $(".content-panel").removeClass("d-none d-md-block");
         }
         if ($(window).width() > 766) {
           $('.homonym-list').animate({
-              scrollLeft: $('.homonym-item.selected').position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
+              scrollLeft: $('.homonym-item.selected').parent().position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
             },
             200);
-        }
-
-
-
-    });
-
-    $(window).resize(function() {
-        if ($(window).width() < 768) {
-            $(".homonym-item").removeClass("selected");
-            $(".content-panel").addClass("d-none d-md-block");
-            $(".homonym-panel").removeClass("d-none d-md-block");
-            $(".search-panel").removeClass("d-none d-md-block");
-        }
-        else {
-            $(".last-selected").addClass("selected");
-            if (!$(".homonym-item").hasClass("last-selected")) {
-                $(".homonym-item:first").addClass("selected last-selected");
-            }
         }
     });
 
@@ -241,11 +226,33 @@ function initialisePage() {
         $('.search-btn').trigger('click');
     });
 
+    function calculateAndSetStyles() {
+        if ($(window).width() < 767) {
+            $(".homonym-item").removeClass("selected");
+            $(".content-panel").addClass("d-none d-md-block");
+            $(".homonym-panel").removeClass("d-none d-md-block");
+            $(".search-panel").removeClass("d-none d-md-block");
+        }
+        else {
+            $(".last-selected").addClass("selected");
+            if (!$(".homonym-item").hasClass("last-selected")) {
+                $(".homonym-item:first").addClass("selected last-selected");
+            }
+        }
+    }
+
+    $(window).resize(function() {
+        calculateAndSetStyles();
+    });
+
     $(document).ready(function() {
-        $(".homonym-item:first")
-            .delay(1250).queue(function(){})
-            .trigger('click');
-        $(".homonym-item:first").addClass("animation-target");
+        if ($(window).width() > 766) {
+            $(".homonym-item:first")
+                .delay(1250).queue(function() {})
+                .trigger('click');
+            $(".homonym-item:first").addClass("animation-target");
+        }
         $('[data-toggle="tooltip"]').tooltip();
+        calculateAndSetStyles();
     });
 }

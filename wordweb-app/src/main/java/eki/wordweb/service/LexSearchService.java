@@ -43,6 +43,11 @@ public class LexSearchService {
 	}
 
 	@Transactional
+	public Word getWord(Long wordId) {
+		return lexSearchDbService.getWord(wordId);
+	}
+
+	@Transactional
 	public WordData getWordData(Long wordId, String displayLang) {
 
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId);
