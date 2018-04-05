@@ -387,6 +387,9 @@
                     </p>
                     <table>
                       <tr th:each="colloc : ${collocRelGr.collocations}">
+                        <td>
+                          <span th:text="${colloc.value}"></span>
+                        </td>
                         <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
                           <span th:each="collocWord : ${colloc.collocWords}">
                             <button type="button" class="btn btn-link" th:data-id="${collocWord.wordId}" name="detailsBtn">
@@ -424,6 +427,9 @@
             <div style="border: 1px solid #CCC; padding: 5px">
               <table>
                 <tr th:each="colloc : ${lexeme.secondaryCollocations}">
+                  <td>
+                    <span th:text="${colloc.value}"></span>
+                  </td>
                   <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
                     <span th:each="collocWord : ${colloc.collocWords}">
                       <button type="button" class="btn btn-link" th:data-id="${collocWord.wordId}" name="detailsBtn">

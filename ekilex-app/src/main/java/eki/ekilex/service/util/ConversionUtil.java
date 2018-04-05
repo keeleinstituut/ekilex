@@ -408,6 +408,7 @@ public class ConversionUtil {
 			collocation.setScore(score);
 			collocation.setCollocUsages(collocUsages);
 			collocation.setCollocWords(new ArrayList<>());
+			collocMap.put(collocId, collocation);
 			collocations.add(collocation);
 		}
 		return collocation;
