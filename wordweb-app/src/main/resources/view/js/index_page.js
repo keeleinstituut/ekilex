@@ -205,21 +205,6 @@ function initialisePage() {
 
     });
 
-    $(window).resize(function() {
-        if ($(window).width() < 768) {
-            $(".homonym-item").removeClass("selected");
-            $(".content-panel").addClass("d-none d-md-block");
-            $(".homonym-panel").removeClass("d-none d-md-block");
-            $(".search-panel").removeClass("d-none d-md-block");
-        }
-        else {
-            $(".last-selected").addClass("selected");
-            if (!$(".homonym-item").hasClass("last-selected")) {
-                $(".homonym-item:first").addClass("selected last-selected");
-            }
-        }
-    });
-
     $('#start-rec-btn').on('click', function (e) {
         $('#start-rec-btn').prop('hidden','hidden');
         $('#stop-rec-btn').prop('hidden', null);
@@ -241,11 +226,31 @@ function initialisePage() {
         $('.search-btn').trigger('click');
     });
 
+    function calculateAndSetStyles() {
+        if ($(window).width() < 768) {
+            $(".homonym-item").removeClass("selected");
+            $(".content-panel").addClass("d-none d-md-block");
+            $(".homonym-panel").removeClass("d-none d-md-block");
+            $(".search-panel").removeClass("d-none d-md-block");
+        }
+        else {
+            $(".last-selected").addClass("selected");
+            if (!$(".homonym-item").hasClass("last-selected")) {
+                $(".homonym-item:first").addClass("selected last-selected");
+            }
+        }
+    }
+
+    $(window).resize(function() {
+        calculateAndSetStyles();
+    });
+
     $(document).ready(function() {
         $(".homonym-item:first")
             .delay(1250).queue(function(){})
             .trigger('click');
         $(".homonym-item:first").addClass("animation-target");
         $('[data-toggle="tooltip"]').tooltip();
+        calculateAndSetStyles();
     });
 }
