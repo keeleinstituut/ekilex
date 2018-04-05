@@ -5,6 +5,9 @@ function fetchDetails(wordId, word) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
         $('.word-details [data-toggle="tooltip"]').tooltip();
+        if ($(window).width() < 767) {
+            $(".content-panel").removeClass("d-none d-md-block");
+        }
         ////
         fetchCorpSentences(word);
     }).fail(function (data) {
@@ -200,9 +203,6 @@ function initialisePage() {
             },
             200);
         }
-
-
-
     });
 
     $('#start-rec-btn').on('click', function (e) {
@@ -227,7 +227,7 @@ function initialisePage() {
     });
 
     function calculateAndSetStyles() {
-        if ($(window).width() < 768) {
+        if ($(window).width() < 767) {
             $(".homonym-item").removeClass("selected");
             $(".content-panel").addClass("d-none d-md-block");
             $(".homonym-panel").removeClass("d-none d-md-block");
@@ -246,10 +246,12 @@ function initialisePage() {
     });
 
     $(document).ready(function() {
-        $(".homonym-item:first")
-            .delay(1250).queue(function(){})
-            .trigger('click');
-        $(".homonym-item:first").addClass("animation-target");
+        if ($(window).width() > 766) {
+            $(".homonym-item:first")
+                .delay(1250).queue(function() {})
+                .trigger('click');
+            $(".homonym-item:first").addClass("animation-target");
+        }
         $('[data-toggle="tooltip"]').tooltip();
         calculateAndSetStyles();
     });
