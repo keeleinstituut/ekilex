@@ -3879,9 +3879,12 @@ ul {
   padding-top: 0.625rem;
 }
 
+.content-title {
+  border-bottom: 1px solid #D8D8D8;
+}
+
 .search-panel,
-.homonym-panel,
-.level-2-panel {
+.homonym-panel {
   padding-top: 0rem;
   padding-bottom: 0.9375rem;
 }
@@ -3915,11 +3918,11 @@ ul {
 }
 
 .level-2-panel:first-child {
-  margin-top: 1.875rem;
-  border-top-color: transparent;
+  border-top: none;
 }
 
 .level-2-panel {
+  padding-top: 0;
   position: relative;
   border-top: 5px #F2F2F2 solid;
 }
@@ -3936,7 +3939,10 @@ ul {
 .level-3-panel:not(.expand) .additional-meta,
 .level-3-panel:not(.expand) .dictionary-source,
 .level-3-panel:not(.expand) .dependence:not(:first-child),
-.level-3-panel:not(.expand) .example-item:not(:first-child) {
+.level-3-panel:not(.expand) .example-item:not(:first-child),
+.level-3-panel:not(.expand) .label,
+.level-3-panel:not(.expand) .label-md,
+.level-3-panel:not(.expand) .morphology-section .row:not(.intro) {
   display: none;
   opacity: 0;
 }
@@ -4024,6 +4030,15 @@ ul {
   margin-left: -0.625rem;
 }
 
+.label {
+  font-size: 0.75rem;
+  color: #7F8891;
+}
+
+.label-md {
+  font-weight: 700;
+}
+
 .expand .more-btn {
   top: -5px;
   right: -5px;
@@ -4093,6 +4108,19 @@ ul {
   box-shadow: none !important;
 }
 
+.morphology-section .row div:not(.label) {
+  display: block;
+  height: 1.875rem;
+}
+
+.morphology-section .row div div {
+  float: left;
+}
+
+.expand .morphology-section .col {
+  margin-left: 1.25rem;
+}
+
 @media (max-width: 767.98px) {
   html {
     background-color: #fff;
@@ -4151,8 +4179,7 @@ ul {
 
 @media (min-width: 768px) {
   .search-panel,
-  .homonym-panel,
-  .level-2-panel {
+  .homonym-panel {
     padding-top: 1.875rem;
   }
   .search-wrap {

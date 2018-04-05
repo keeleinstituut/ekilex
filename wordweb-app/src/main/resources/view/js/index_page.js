@@ -174,7 +174,7 @@ function initialisePage() {
     // });
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
-        $(".additional-meta, .dictionary-source, .dependence:not(:first-child)").toggleClass("fade-target");
+        $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro)").toggleClass("fade-target");
     });
 
     // demo js for interactions between the mobile and desktop modes
@@ -190,13 +190,13 @@ function initialisePage() {
         $(".homonym-item:first").removeClass("animation-target").dequeue();
         $(this).addClass("selected last-selected");
         if ($(window).width() < 767) {
-            $(".content-panel").removeClass("d-none d-md-block");
-            $(".homonym-panel").addClass("d-none d-md-block");
+            $(".homonym-panel").addClass("d-none d-md-block testklass");
             $(".search-panel").addClass("d-none d-md-block");
+            $(".content-panel").removeClass("d-none d-md-block");
         }
         if ($(window).width() > 766) {
           $('.homonym-list').animate({
-              scrollLeft: $('.homonym-item.selected').position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
+              scrollLeft: $('.homonym-item.selected').parent().position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
             },
             200);
         }

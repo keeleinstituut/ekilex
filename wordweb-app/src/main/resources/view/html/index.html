@@ -137,11 +137,17 @@
     <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-none d-md-block">
         <div class="row">
-          <div class="col-md-8 main-data">
+          <div class="col-12 content-title">
+            <!-- Siia palun valitud homonüümi nimi -->
+            <h3>Tekk</h3>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-7 col-lg-8 main-data">
             <div class="level-2-panel">
               <div class="level-3-panel row" th:each="lexeme : ${wordData.lexemes}">
                 <span class="dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</span>
-                <div class="col-6">
+                <div class="col-lg-6">
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
@@ -272,8 +278,74 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4 more-data">
-            <!-- <h5>Käändelised vormid</h5> -->
+          <div class="col-md-5 col-lg-4 more-data">
+            <div class="level-3-panel  row"> 
+              <div class="col-12 morphology-panel">
+                <div class="morphology-section">
+                  <div class="intro">
+                    <h6>Käänamine</h6>
+                    <div class="row label-md">
+                      <div class="col-6">Ainsus</div>
+                      <div class="col-6">Mitmus</div>
+                    </div>
+                    <div class="row intro">
+                      <div class="col-12 label">nimetav</div>
+                      <div class="col">
+                        <div>tekk</div>
+                        <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </div>
+                      <div class="col">
+                        <div>tekid</div>
+                        <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="row intro">
+                      <div class="col-12 label">omastav</div>
+                      <div class="col">
+                        <div>teki</div>
+                      </div>
+                      <div class="col">
+                        <div>tekkidehasidhaisds</div>
+                      </div>
+                    </div>
+                    <div class="row intro">
+                      <div class="col-12 label">osastav</div>
+                      <div class="col">
+                        <div>tekki</div>
+                      </div>
+                      <div class="col">
+                        <div>tekke</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 label">[kääne]</div>
+                    <div class="col">
+                      <div>[sõna]</div>
+                    </div>
+                    <div class="col">
+                      <div>[sõna]</div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 label">[kääne]</div>
+                    <div class="col">
+                      <div>[sõna]</div>
+                    </div>
+                    <div class="col">
+                      <div>[sõna]</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="more-btn">
+                <span class="icon icon-chevron-left"></span>
+              </button>
+          </div>
             <div th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div th:each="paradigm : ${wordData.paradigms}">
                 <div th:if="${not #lists.isEmpty(paradigm.forms)}">
