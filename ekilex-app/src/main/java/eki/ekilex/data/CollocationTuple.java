@@ -30,7 +30,9 @@ public class CollocationTuple extends AbstractDataObject {
 
 	private List<String> collocUsages;
 
-	private List<Object> collocWords;
+	private Long collocWordId;
+
+	private String collocWord;
 
 	public Long getPosGroupId() {
 		return posGroupId;
@@ -120,12 +122,20 @@ public class CollocationTuple extends AbstractDataObject {
 		this.collocUsages = collocUsages;
 	}
 
-	public List<Object> getCollocWords() {
-		return collocWords;
+	public Long getCollocWordId() {
+		return collocWordId;
 	}
 
-	public void setCollocWords(List<Object> collocWords) {
-		this.collocWords = collocWords;
+	public void setCollocWordId(Long collocWordId) {
+		this.collocWordId = collocWordId;
+	}
+
+	public String getCollocWord() {
+		return collocWord;
+	}
+
+	public void setCollocWord(String collocWord) {
+		this.collocWord = collocWord;
 	}
 
 }

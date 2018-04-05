@@ -419,6 +419,38 @@
             </th:block>
           </div>
           <div style="padding: 10px"></div>
+          <div th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
+            <span class="lbl">Kasutatud kollokatsioonides</span>
+            <div style="border: 1px solid #CCC; padding: 5px">
+              <table>
+                <tr th:each="colloc : ${lexeme.secondaryCollocations}">
+                  <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
+                    <span th:each="collocWord : ${colloc.collocWords}">
+                      <button type="button" class="btn btn-link" th:data-id="${collocWord.wordId}" name="detailsBtn">
+                        <span th:text="${collocWord.word}"></span>
+                      </button>
+                    </span>
+                  </td>
+                  <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
+                    <span th:text="${colloc.frequency}"></span>
+                  </td>
+                  <td style="vertical-align: text-top; padding: 0px 20px 0px 0px">
+                    <span th:text="${colloc.score}"></span>
+                  </td>
+                  <td>
+                    <div th:if="${not #lists.isEmpty(colloc.collocUsages)}">
+                      <div th:each="collocUsage : ${colloc.collocUsages}">
+                        <i>
+                          <span th:text="${collocUsage}"></span>
+                        </i>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div style="padding: 10px"></div>
         </th:block>
       </div>
       <div class="float-left" style="width: 30%">

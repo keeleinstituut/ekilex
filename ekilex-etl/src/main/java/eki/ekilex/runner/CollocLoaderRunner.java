@@ -93,6 +93,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private final String domainOriginBolan = "bolan";
 
+	private final String[] textCleanupEnitites = new String[] {"&ba;", "&bl;"};
+	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
+
 	private ReportComposer reportComposer;
 
 	private String sqlSelectLexemeMeaningByWordAndPos;
@@ -384,6 +387,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		for (Element lexemeRegisterNode : lexemeRegisterNodes) {
 			String lexemeRegister = lexemeRegisterNode.getTextTrim();
 			if (registerConversionMap.containsKey(lexemeRegister)) {
+				lexemeRegister = registerConversionMap.get(lexemeRegister);
 				createLexemeRegister(lexemeId, lexemeRegister);
 			} else {
 				logger.warn("Unknown register \"{}\"", lexemeRegister);
@@ -431,6 +435,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<String> collocUsages = new ArrayList<>();
 		for (Element collocUsageNode : collocUsageNodes) {
 			String collocUsage = collocUsageNode.getTextTrim();
+			collocUsage = StringUtils.replaceEach(collocUsage, textCleanupEnitites, textCleanupEnityReplacements);
 			collocUsages.add(collocUsage);
 		}
 		return collocUsages;

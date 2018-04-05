@@ -16,7 +16,7 @@ public class Collocation extends AbstractDataObject {
 
 	private List<String> collocUsages;
 
-	private List<TypeCollocWord> collocWords;
+	private List<CollocWord> collocWords;
 
 	public String getValue() {
 		return value;
@@ -50,11 +50,11 @@ public class Collocation extends AbstractDataObject {
 		this.collocUsages = collocUsages;
 	}
 
-	public List<TypeCollocWord> getCollocWords() {
+	public List<CollocWord> getCollocWords() {
 		return collocWords;
 	}
 
-	public void setCollocWords(List<TypeCollocWord> collocWords) {
+	public void setCollocWords(List<CollocWord> collocWords) {
 		this.collocWords = collocWords;
 	}
 

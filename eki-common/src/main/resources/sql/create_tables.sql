@@ -1,5 +1,3 @@
-create type type_colloc_word as (word_id bigint, word text);
-
 create table person
 (
   id bigserial primary key,

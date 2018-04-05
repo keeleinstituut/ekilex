@@ -35,7 +35,7 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
-import org.jooq.Record12;
+import org.jooq.Record13;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record7;
@@ -665,7 +665,7 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record12<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,BigDecimal,BigDecimal,String[],Object[]>> findCollocationTuples(Long lexemeId) {
+	public Result<Record13<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,BigDecimal,BigDecimal,String[],Long,String>> findPrimaryCollocationTuples(Long lexemeId) {
 
 		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
 		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
@@ -675,21 +675,6 @@ public class LexSearchDbService implements SystemConstant {
 		Lexeme l2 = LEXEME.as("l2");
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
-
-		//TODO get the datatypes straight
-		Field<Object[]> cwf = DSL
-				.select(DSL.arrayAgg(DSL.field("row(l2.word_id, f2.value)::type_colloc_word")))
-				.from(lc2, l2, p2, f2)
-				.where(
-						lc2.COLLOCATION_ID.eq(c.ID)
-						.and(lc2.LEXEME_ID.eq(l2.ID))
-						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
-						.and(l2.WORD_ID.eq(p2.WORD_ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
-						)
-				.groupBy(lc2.COLLOCATION_ID)
-				.asField();
 
 		return create
 				.select(
@@ -704,16 +689,58 @@ public class LexSearchDbService implements SystemConstant {
 						c.FREQUENCY.as("colloc_frequency"),
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
-						cwf.as("colloc_words")
+						l2.WORD_ID.as("colloc_word_id"),
+						f2.VALUE.as("colloc_word")
 						)
-				.from(pgr1, rgr1, lc1, c)
+				.from(pgr1, rgr1, lc1, lc2, c, l2, p2, f2)
 				.where(
 						pgr1.LEXEME_ID.eq(lexemeId)
 						.and(rgr1.POS_GROUP_ID.eq(pgr1.ID))
 						.and(lc1.REL_GROUP_ID.eq(rgr1.ID))
 						.and(lc1.COLLOCATION_ID.eq(c.ID))
+						.and(lc2.COLLOCATION_ID.eq(c.ID))
+						.and(lc2.LEXEME_ID.eq(l2.ID))
+						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
+						.and(l2.WORD_ID.eq(p2.WORD_ID))
+						.and(f2.PARADIGM_ID.eq(p2.ID))
+						.and(f2.IS_WORD.isTrue())
 						)
 				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, c.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record7<Long,String,BigDecimal,BigDecimal,String[],Long,String>> findSecondaryCollocationTuples(Long lexemeId) {
+
+		LexColloc lc1 = LEX_COLLOC.as("lc1");
+		LexColloc lc2 = LEX_COLLOC.as("lc2");
+		Collocation c = COLLOCATION.as("c");
+		Lexeme l2 = LEXEME.as("l2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
+
+		return create
+				.select(
+						c.ID.as("colloc_id"),
+						c.VALUE.as("colloc_value"),
+						c.FREQUENCY.as("colloc_frequency"),
+						c.SCORE.as("colloc_score"),
+						c.USAGES.as("colloc_usages"),
+						l2.WORD_ID.as("colloc_word_id"),
+						f2.VALUE.as("colloc_word")
+						)
+				.from(lc1, lc2, c, l2, p2, f2)
+				.where(
+						lc1.LEXEME_ID.eq(lexemeId)
+						.and(lc1.REL_GROUP_ID.isNull())
+						.and(lc1.COLLOCATION_ID.eq(c.ID))
+						.and(lc2.COLLOCATION_ID.eq(c.ID))
+						.and(lc2.LEXEME_ID.eq(l2.ID))
+						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
+						.and(l2.WORD_ID.eq(p2.WORD_ID))
+						.and(f2.PARADIGM_ID.eq(p2.ID))
+						.and(f2.IS_WORD.isTrue())
+						)
+				.orderBy(c.ORDER_BY)
 				.fetch();
 	}
 }

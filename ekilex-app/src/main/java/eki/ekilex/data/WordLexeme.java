@@ -86,6 +86,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
+	private List<Collocation> secondaryCollocations;
+
 	private boolean lexemeOrMeaningClassifiersExist;
 
 	public WordLexeme() {
@@ -101,6 +103,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setWords(String[] words) {
 		this.words = words;
+	}
+
+	public List<String> getVocalForms() {
+		return vocalForms;
+	}
+
+	public void setVocalForms(List<String> vocalForms) {
+		this.vocalForms = vocalForms;
 	}
 
 	public String getWordLang() {
@@ -149,6 +159,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setDataset(String dataset) {
 		this.dataset = dataset;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 	public Integer getLevel1() {
@@ -205,6 +223,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setMeaningProcessStateCode(String meaningProcessStateCode) {
 		this.meaningProcessStateCode = meaningProcessStateCode;
+	}
+
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
 	}
 
 	public List<Classifier> getLexemePos() {
@@ -295,14 +321,6 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningRelations = meaningRelations;
 	}
 
-	public List<String> getVocalForms() {
-		return vocalForms;
-	}
-
-	public void setVocalForms(List<String> vocalForms) {
-		this.vocalForms = vocalForms;
-	}
-
 	public List<String> getGrammars() {
 		return grammars;
 	}
@@ -319,6 +337,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.collocationPosGroups = collocationPosGroups;
 	}
 
+	public List<Collocation> getSecondaryCollocations() {
+		return secondaryCollocations;
+	}
+
+	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
+		this.secondaryCollocations = secondaryCollocations;
+	}
+
 	public boolean isLexemeOrMeaningClassifiersExist() {
 		return lexemeOrMeaningClassifiersExist;
 	}
@@ -327,19 +353,4 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
 
-	public String getGenderCode() {
-		return genderCode;
-	}
-
-	public void setGenderCode(String genderCode) {
-		this.genderCode = genderCode;
-	}
-
-	public String getDatasetCode() {
-		return datasetCode;
-	}
-
-	public void setDatasetCode(String datasetCode) {
-		this.datasetCode = datasetCode;
-	}
 }

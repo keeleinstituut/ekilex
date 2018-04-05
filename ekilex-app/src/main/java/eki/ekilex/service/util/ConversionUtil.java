@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.CollocWord;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
@@ -342,7 +343,7 @@ public class ConversionUtil {
 		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
 		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
-		String value;
+		Map<Long, Collocation> collocMap = new HashMap<>();
 		String name;
 		Float frequency;
 		Float score;
@@ -373,21 +374,52 @@ public class ConversionUtil {
 				collocRelGroupMap.put(collocRelGroupId, collocRelGroup);
 				collocPosGroup.getRelationGroups().add(collocRelGroup);
 			}
-			value = collocTuple.getCollocValue();
-			frequency = collocTuple.getCollocFrequency();
-			score = collocTuple.getCollocScore();
-			List<String> collocUsages = collocTuple.getCollocUsages();
-			//TODO get the datatypes straight
-			//List<TypeCollocWord> collocWords = collocTuple.getCollocWords();
-			Collocation collocation = new Collocation();
-			collocation.setValue(value);
-			collocation.setFrequency(frequency);
-			collocation.setScore(score);
-			collocation.setCollocUsages(collocUsages);
-			//collocation.setCollocWords(collocWords);
-			collocRelGroup.getCollocations().add(collocation);
+			Collocation collocation = addCollocation(collocMap, collocTuple, collocRelGroup.getCollocations());
+			addCollocWord(collocTuple, collocation);
 		}
 		return collocationPosGroups;
 	}
 
+	public List<Collocation> composeCollocations(List<CollocationTuple> collocTuples) {
+
+		List<Collocation> collocations = new ArrayList<>();
+		Map<Long, Collocation> collocMap = new HashMap<>();
+
+		for (CollocationTuple collocTuple : collocTuples) {
+
+			Collocation collocation = addCollocation(collocMap, collocTuple, collocations);
+			addCollocWord(collocTuple, collocation);
+		}
+		return collocations;
+	}
+
+	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {
+
+		Long collocId = collocTuple.getCollocId();
+		Collocation collocation = collocMap.get(collocId);
+		if (collocation == null) {
+			String value = collocTuple.getCollocValue();
+			Float frequency = collocTuple.getCollocFrequency();
+			Float score = collocTuple.getCollocScore();
+			List<String> collocUsages = collocTuple.getCollocUsages();
+			collocation = new Collocation();
+			collocation.setValue(value);
+			collocation.setFrequency(frequency);
+			collocation.setScore(score);
+			collocation.setCollocUsages(collocUsages);
+			collocation.setCollocWords(new ArrayList<>());
+			collocations.add(collocation);
+		}
+		return collocation;
+	}
+
+	private void addCollocWord(CollocationTuple collocTuple, Collocation collocation) {
+
+		Long collocWordId = collocTuple.getCollocWordId();
+		String word = collocTuple.getCollocWord();
+		CollocWord collocWord = new CollocWord();
+		collocWord.setWordId(collocWordId);
+		collocWord.setWord(word);
+		collocation.getCollocWords().add(collocWord);
+	}
 }

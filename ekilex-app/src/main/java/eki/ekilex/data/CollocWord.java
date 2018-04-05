@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class TypeCollocWord extends AbstractDataObject {
+public class CollocWord extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

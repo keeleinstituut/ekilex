@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
@@ -152,6 +153,7 @@ public class LexSearchService implements SystemConstant {
 	}
 
 	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
+
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
 		lexeme.setDataset(datasetName);
 
@@ -177,8 +179,10 @@ public class LexSearchService implements SystemConstant {
 		List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 		List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
-		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocationTuples(lexemeId).into(CollocationTuple.class);
-		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(collocTuples);
+		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.findPrimaryCollocationTuples(lexemeId).into(CollocationTuple.class);
+		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
+		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.findSecondaryCollocationTuples(lexemeId).into(CollocationTuple.class);
+		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 
 		lexeme.setLexemePos(lexemePos);
 		lexeme.setLexemeDerivs(lexemeDerivs);
@@ -193,6 +197,7 @@ public class LexSearchService implements SystemConstant {
 		lexeme.setMeaningRelations(meaningRelations);
 		lexeme.setGrammars(lexemeGrammars);
 		lexeme.setCollocationPosGroups(collocationPosGroups);
+		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setVocalForms(vocalForms);
 
 		boolean lexemeOrMeaningClassifiersExist =
