@@ -72,7 +72,7 @@
 								<database>
 									<name>org.jooq.util.postgres.PostgresDatabase</name>
 									<includes>.*</includes>
-									<excludes></excludes>
+									<excludes>dblink.*</excludes>
 									<inputSchema>public</inputSchema>
 								</database>
 								<generate>

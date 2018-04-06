@@ -4,7 +4,6 @@
 package eki.wordweb.data.db;
 
 
-import eki.wordweb.data.db.udt.DblinkPkeyResults;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeUsage;
@@ -24,11 +23,6 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UDTs {
-
-    /**
-     * The type <code>public.dblink_pkey_results</code>
-     */
-    public static DblinkPkeyResults DBLINK_PKEY_RESULTS = eki.wordweb.data.db.udt.DblinkPkeyResults.DBLINK_PKEY_RESULTS;
 
     /**
      * The type <code>public.type_definition</code>
