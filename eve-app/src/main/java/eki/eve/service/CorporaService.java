@@ -124,7 +124,7 @@ public class CorporaService {
 
 		logger.debug("Sending request to > {}", url.toString());
 		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-		return response == null ? null : response.getBody();
+		return response.getBody();
 	}
 
 	private boolean isNotEnabled() {
