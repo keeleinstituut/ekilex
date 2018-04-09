@@ -50,7 +50,7 @@ public class CorporaService {
 				.queryParam("command", "query")
 				.queryParam("corpus", "ETSKELL01,ETSKELL02,ETSKELL03,ETSKELL04,ETSKELL05,ETSKELL06,ETSKELL07,ETSKELL08,ETSKELL09")
 				.queryParam("start", 0)
-				.queryParam("end", 50)
+				.queryParam("end", 25)
 				.queryParam("cqp", parseSentenceToQueryString(sentence))
 				.queryParam("defaultcontext", "1+sentence")
 				.queryParam("show", "pos")
