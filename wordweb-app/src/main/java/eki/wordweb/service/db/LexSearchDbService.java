@@ -26,7 +26,7 @@ public class LexSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public List<Word> findWords(String searchFilter) {
+	public List<Word> findWords(String searchFilter, String lang, String[] datasets) {
 
 		return create
 				.select(
@@ -39,18 +39,15 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
-						MVIEW_WW_WORD.DEFINITIONS
-						)
+						MVIEW_WW_WORD.DEFINITIONS)
 				.from(MVIEW_WW_WORD)
 				.where(
-						DSL.exists(
-								DSL.select(MVIEW_WW_FORM.WORD_ID)
-								.from(MVIEW_WW_FORM)
-								.where(
-										MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
-										.and(MVIEW_WW_FORM.FORM.equalIgnoreCase(searchFilter)))
-								)
-						)
+						MVIEW_WW_WORD.LANG.eq(lang)
+						.and(DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets)))
+						.and(DSL.exists(DSL.select(MVIEW_WW_FORM.WORD_ID)
+												.from(MVIEW_WW_FORM)
+												.where(MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
+														.and(MVIEW_WW_FORM.FORM.equalIgnoreCase(searchFilter))))))
 				.orderBy(MVIEW_WW_WORD.LANG, MVIEW_WW_WORD.HOMONYM_NR)
 				.fetch()
 				.into(Word.class);
@@ -77,7 +74,7 @@ public class LexSearchDbService {
 				.into(Word.class);
 	}
 
-	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId) {
+	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId, String[] datasets) {
 
 		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");
 		MviewWwMeaning m2 = MVIEW_WW_MEANING.as("m2");
@@ -109,13 +106,15 @@ public class LexSearchDbService {
 						.leftOuterJoin(m2).on(m2.MEANING_ID.eq(m1.MEANING_ID).and(m2.WORD_ID.ne(m1.WORD_ID)))
 						.leftOuterJoin(w2).on(w2.WORD_ID.eq(m2.WORD_ID))
 						)
-				.where(m1.WORD_ID.eq(wordId))
+				.where(
+						m1.WORD_ID.eq(wordId)
+						.and(m1.DATASET_CODE.in(datasets)))
 				.orderBy(m1.DATASET_CODE, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3)
 				.fetch()
 				.into(LexemeMeaningTuple.class);
 	}
 
-	public List<LexemeDetailsTuple> findLexemeDetailsTuples(Long wordId) {
+	public List<LexemeDetailsTuple> findLexemeDetailsTuples(Long wordId, String[] datasets) {
 
 		return create
 				.select(
@@ -133,7 +132,16 @@ public class LexSearchDbService {
 						MVIEW_WW_LEXEME.USAGE_DEFINITIONS
 						)
 				.from(MVIEW_WW_LEXEME)
-				.where(MVIEW_WW_LEXEME.WORD_ID.eq(wordId))
+				.where(
+						MVIEW_WW_LEXEME.WORD_ID.eq(wordId)
+						.and(DSL.exists(DSL
+								.select(MVIEW_WW_MEANING.LEXEME_ID)
+								.from(MVIEW_WW_MEANING)
+								.where(
+										MVIEW_WW_MEANING.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID))
+										.and(MVIEW_WW_MEANING.DATASET_CODE.in(datasets)))
+										)
+						)
 				.orderBy(MVIEW_WW_LEXEME.LEXEME_ID)
 				.fetch()
 				.into(LexemeDetailsTuple.class);

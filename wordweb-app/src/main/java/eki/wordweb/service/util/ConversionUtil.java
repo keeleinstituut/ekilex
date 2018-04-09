@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,19 @@ public class ConversionUtil {
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
+
+	public void filterMeaningWords(List<Word> words, final String destinLang) {
+		for (Word word : words) {
+			if (CollectionUtils.isEmpty(word.getMeaningWords())) {
+				continue;
+			}
+			List<String> meaningWordValues = word.getMeaningWords().stream()
+				.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
+				.map(meaningWord -> meaningWord.getValue()).collect(Collectors.toList());
+			String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+			word.setMeaningWordsWrapup(meaningWordsWrapup);
+		}
+	}
 
 	public List<Lexeme> composeLexemes(List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples, String dataLang) {
 

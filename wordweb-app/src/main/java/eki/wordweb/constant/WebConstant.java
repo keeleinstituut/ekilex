@@ -2,11 +2,13 @@ package eki.wordweb.constant;
 
 public interface WebConstant {
 
-	public static final String HOME_PAGE = "index";
+	String HOME_PAGE = "index";
 
-	public static final String HOME_URI = "/";
+	String HOME_URI = "/";
 
-	public static final String ERROR_PAGE = "error";
+	String ERROR_PAGE = "error";
 
-	public static final String APP_DATA_MODEL_KEY = "appData";
+	String SESSION_BEAN = "sessionBean";
+
+	String APP_DATA_MODEL_KEY = "appData";
 }

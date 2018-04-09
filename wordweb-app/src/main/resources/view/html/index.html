@@ -38,12 +38,13 @@
         <div class="row">
           <div class="col-md-6">
             <div class="search-lang dropdown">
-              <button class="btn btn-light lang-btn" data-toggle="dropdown" id="dropdownMenu2" aria-haspopup="true" aria-expanded="false">
-                eesti
+              <button id="lang-selector-btn" class="btn btn-light lang-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <span id="source-lang-lbl">eesti</span>
                 <span class="icon icon-arrow-right"></span>
-                vene
+                <span id="destin-lang-lbl">vene</span>
               </button>
               <form class="dropdown-menu p-4 container" aria-labelledby="dropdwonTest1">
+                <!-- 
                 <div class="row">
                   <div class="col-12">
                     <button class="dropdown-item" type="button">Automaatne keeletuvastus</button>
@@ -53,22 +54,21 @@
                   </div>
                 </div>
                 <div class="dropdown-divider"></div>
+                 -->
                 <div class="row">
                   <div class="col-6">
-                    <button class="dropdown-item active" type="button">eesti keel</button>
-                    <button class="dropdown-item" type="button">vene keel</button>
-                    <button class="dropdown-item" type="button">inglise keel</button>
+                    <button name="source-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
+                    <button name="source-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
                   </div>
                   <div class="col-6">
-                    <button class="dropdown-item" type="button">eesti keel</button>
-                    <button class="dropdown-item active" type="button">vene keel</button>
-                    <button class="dropdown-item" type="button">inglise keel</button>
+                    <button name="destin-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
+                    <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
                   </div>
                 </div>
                 <div class="dropdown-divider"></div>
                 <div class="row">
                   <div class="col-12">
-                    <button class="btn btn-light" type="button">Jätka</button>
+                    <button id="lang-sel-complete-btn" class="btn btn-light" type="button">Jätka</button>
                   </div>
                 </div>
               </form>
@@ -79,7 +79,9 @@
             <div class="search-main">
               <form th:action="@{/}" th:method="post">
                 <div class="awesomplete">
-                  <input type="text" class="form-control search-phrase" th:name="simpleSearchFilter" th:value="${simpleSearchFilter}" list="mylist" placeholder="Kirjuta mõni sõna">
+                  <input type="text" class="form-control search-phrase" name="simpleSearchFilter" th:value="${simpleSearchFilter}" list="mylist" placeholder="Kirjuta mõni sõna" />
+                  <input type="hidden" name="sourceLang" value=""/>
+                  <input type="hidden" name="destinLang" value=""/>
                   <ul class="d-none">
                     <li>
                       <mark>Highl</mark>
@@ -98,7 +100,7 @@
                   </button>
                   <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
                 </div>
-                <button type="submit" class="btn btn-green search-btn">
+                <button id="search-btn" type="submit" class="btn btn-green search-btn">
                   <span class="icon icon-search"></span>
                 </button>
               </form>
@@ -107,30 +109,35 @@
         </div>
       </div>
     </div>
-    <div class="row homonym-wrap" th:if="${!#lists.isEmpty(words)}">
+    <div class="row homonym-wrap" th:if="${not #lists.isEmpty(words)}">
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
           <li th:each="word : ${words}">
-            <a class="homonym-item" th:onclick="'fetchDetails(' + ${word.wordId} + ',\'' + ${word.word} + '\')'">
-              <span class="homonym-item-wrap">
-                <span class="homonym-header">
-                  <div class="homonym-name-container">
-                    <span class="homonym-name" th:text="${word.word}">tee</span>
-                  </div>
-                  <span class="homonym-nr" th:text="${word.homonymNr}">1</span>
-                </span>
-                <span class="homonym-matches" th:text="${#strings.listJoin(word.meaningWords, ', ')}">дорога, дорога, дорога</span>
-                <span class="homonym-intro">
-                  <span th:if="${not #lists.isEmpty(word.definitions)}">
-                    <span th:each="definition,definitionIter : ${word.definitions}">
-                      <span th:text="${definition.value}"></span>
-                      <span th:unless="${definitionIter.last}">, </span>
-                    </span>
+            <form>
+              <input type="hidden" name="word-id" th:value="${word.wordId}"/>
+              <input type="hidden" name="word-value" th:value="${word.word}"/>
+              <a th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
+                <span class="homonym-item-wrap">
+                  <span class="homonym-header">
+                    <div class="homonym-name-container">
+                      <span class="homonym-name" th:text="${word.word}">tee</span>
+                    </div>
+                    <span class="homonym-nr" th:text="${word.homonymNr}">1</span>
                   </span>
-                  <span>&nbsp;</span>
+                  <span class="homonym-matches" th:text="${word.meaningWordsWrapup}">
+                  </span>
+                  <span class="homonym-intro">
+                    <span th:if="${not #lists.isEmpty(word.definitions)}">
+                      <span th:each="definition,definitionIter : ${word.definitions}">
+                        <span th:text="${definition.value}"></span>
+                        <span th:unless="${definitionIter.last}">, </span>
+                      </span>
+                    </span>
+                    <span>&nbsp;</span>
+                  </span>
                 </span>
-              </span>
-            </a>
+              </a>
+            </form>
           </li>
         </ul>
       </div>
@@ -414,8 +421,11 @@
     </button>
   </div>
   <script th:inline="javascript">
+    var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+    var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+    var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	initialisePage();
-  	initialiseRecording(/*[[${speechRecognitionServiceUrl}]]*/'/');
+  	initialiseRecording(speechRecognitionServiceUrl);
   </script>
 </body>
 </html>

@@ -655,6 +655,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return matchingParadigms;
 	}
 
+	//FIXME double morph ending bug
 	private List<Paradigm> composeCompoundWordParadigms(String[] wordComponents, int wordComponentCount, List<Paradigm> lastCompParadigms) {
 
 		List<Paradigm> compoundWordParadigms = new ArrayList<>();

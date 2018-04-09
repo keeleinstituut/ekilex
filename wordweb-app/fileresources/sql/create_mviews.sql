@@ -4,6 +4,7 @@ drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
+drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
@@ -12,6 +13,7 @@ drop type if exists type_usage;
 -- CREATE EXTENSION dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
+create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
@@ -29,7 +31,7 @@ dblink(
 	display_morph_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
-	meaning_words text array,
+	meaning_words type_word array,
 	definitions type_definition array
 );
 

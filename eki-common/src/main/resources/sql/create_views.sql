@@ -1,3 +1,4 @@
+create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
@@ -40,18 +41,22 @@ from (select w.id as word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(mw.meaning_word order by mw.order_by) meaning_words
-                   from (select l1.word_id,
-                                (l1.word_id || '_' || l1.dataset_code || '_' || l1.level1 || '_' || l1.level2 || '_' || l1.level3) order_by,
-                                f2.value meaning_word
+                          array_agg(row(mw.meaning_word_value, mw.meaning_word_lang)::type_word order by mw.order_by) meaning_words
+                   from (select distinct
+                                l1.word_id,
+                                f2.value meaning_word_value,
+                                w2.lang meaning_word_lang,
+                                (l2.dataset_code || '_' || l2.level1 || '_' || l2.level2 || '_' || l2.level3) order_by
                          from lexeme l1,
                               lexeme l2,
                               form f2,
-                              paradigm p2
+                              paradigm p2,
+                              word w2
                          where l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
                          and   l1.meaning_id = l2.meaning_id
-                         and   l1.word_id != l2.word_id
-                         and   p2.word_id = l2.word_id
+                         and   l1.word_id != w2.id
+                         and   l2.word_id = w2.id
+                         and   p2.word_id = w2.id
                          and   f2.paradigm_id = p2.id
                          and   f2.is_word = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id

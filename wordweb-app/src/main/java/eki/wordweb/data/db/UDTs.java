@@ -7,6 +7,7 @@ package eki.wordweb.data.db;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeUsage;
+import eki.wordweb.data.db.udt.TypeWord;
 
 import javax.annotation.Generated;
 
@@ -38,4 +39,9 @@ public class UDTs {
      * The type <code>public.type_usage</code>
      */
     public static TypeUsage TYPE_USAGE = eki.wordweb.data.db.udt.TypeUsage.TYPE_USAGE;
+
+    /**
+     * The type <code>public.type_word</code>
+     */
+    public static TypeWord TYPE_WORD = eki.wordweb.data.db.udt.TypeWord.TYPE_WORD;
 }

@@ -4,10 +4,10 @@ drop view if exists view_ww_form;
 drop view if exists view_ww_word;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
+drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
-drop type if exists type_colloc_word;
 
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;

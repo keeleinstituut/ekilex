@@ -1,13 +1,15 @@
+var windowWidthTreshold = 767;
 
 function fetchDetails(wordId, word) {
     var detailsDiv = $('.word-details');
-	$.get(applicationUrl + 'worddetails/' + wordId).done(function (data) {
+    var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
+	$.get(wordDetailsUrl).done(function (data) {
 		detailsDiv.replaceWith(data);
         // these need to be present after each fetchDetails//
-        $('.word-details [data-toggle="tooltip"]').tooltip();
         if ($(window).width() < 767) {
             $(".content-panel").removeClass("d-none d-md-block");
         }
+        $('.word-details [data-toggle="tooltip"]').tooltip();
         ////
         fetchCorpSentences(word);
     }).fail(function (data) {
@@ -165,19 +167,86 @@ function sendToWebSocket(audioBlob) {
     }
 }
 
+function initLanguageFilter() {
+	$("button[name = 'source-lang-btn'][value = '" + sourceLang + "']").addClass("active");
+	$("button[name = 'destin-lang-btn'][value = '" + destinLang + "']").addClass("active");
+	empowerLanguageSelection();
+}
+
+function empowerLanguageSelection() {
+	var sourceLangLabel = $("button[name = 'source-lang-btn'].active").text();
+	var destinLangLabel = $("button[name = 'destin-lang-btn'].active").text();
+	$("#source-lang-lbl").text(sourceLangLabel);
+	$("#destin-lang-lbl").text(destinLangLabel);
+	sourceLang = $("button[name = 'source-lang-btn'].active").val();
+	destinLang = $("button[name = 'destin-lang-btn'].active").val();
+	$("input[name = 'sourceLang']").val(sourceLang);
+	$("input[name = 'destinLang']").val(destinLang);
+}
+
+function calculateAndSetStyles() {
+    if ($(window).width() < windowWidthTreshold) {
+        $(".homonym-item").removeClass("selected");
+        $(".content-panel").addClass("d-none d-md-block");
+        $(".homonym-panel").removeClass("d-none d-md-block");
+        $(".search-panel").removeClass("d-none d-md-block");
+    } else {
+        $(".last-selected").addClass("selected");
+        if (!$(".homonym-item").hasClass("last-selected")) {
+            $(".homonym-item:first").addClass("selected last-selected");
+        }
+    }
+}
+
 function initialisePage() {
+
     $(".menu-btn").click(function(){
         $(".header-links").toggleClass("d-none d-md-block");
     });
-    // $(".search-phrase").focus(function() {
-    // $(".awesomplete ul").removeClass("d-none");
-    // });
-    // $( ".search-phrase" ).focusout(function() {
-    // $(".awesomplete ul").addClass("d-none");
-    // });
+
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
         $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
+    });
+
+    $("[id^='word-details-link'").click(function() {
+    	var wordWrapperForm = $(this).closest("form");
+    	var wordId = wordWrapperForm.children("[name = 'word-id']").val();
+    	var word = wordWrapperForm.children("[name = 'word-value']").val();
+    	fetchDetails(wordId, word);
+    });
+
+    $("button[name = 'source-lang-btn']").click(function() {
+    	var tempSourceLang = $(this).val();
+    	var tempDestinLang = $("button[name = 'destin-lang-btn'].active").val();
+    	if ((tempSourceLang == tempDestinLang) && (tempSourceLang == "rus")) {
+    		return;
+    	}
+    	$("button[name = 'source-lang-btn']").each(function() {
+    		$(this).removeClass("active");
+    	});
+    	$(this).addClass("active");
+    	empowerLanguageSelection();
+    });
+
+    $("button[name = 'destin-lang-btn']").click(function() {
+    	var tempSourceLang = $("button[name = 'source-lang-btn'].active").val();
+    	var tempDestinLang = $(this).val();
+    	if ((tempSourceLang == tempDestinLang) && (tempDestinLang == "rus")) {
+    		return;
+    	}
+    	$("button[name = 'destin-lang-btn']").each(function() {
+    		$(this).removeClass("active");
+    	});
+    	$(this).addClass("active");
+    	empowerLanguageSelection();
+    });
+
+    $("button[id = 'lang-sel-complete-btn']").click(function() {
+    	$("#lang-selector-btn").click();
+    	if ($("input[name = 'simpleSearchFilter']").val()) {
+    		$("#search-btn").click();
+    	}
     });
 
     // demo js for interactions between the mobile and desktop modes
@@ -192,12 +261,12 @@ function initialisePage() {
         $(".homonym-item").removeClass("selected last-selected");
         $(".homonym-item:first").removeClass("animation-target").dequeue();
         $(this).addClass("selected last-selected");
-        if ($(window).width() < 767) {
+        if ($(window).width() < windowWidthTreshold) {
             $(".homonym-panel").addClass("d-none d-md-block testklass");
             $(".search-panel").addClass("d-none d-md-block");
             $(".content-panel").removeClass("d-none d-md-block");
         }
-        if ($(window).width() > 766) {
+        if ($(window).width() > windowWidthTreshold - 1) {
           $('.homonym-list').animate({
               scrollLeft: $('.homonym-item.selected').parent().position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
             },
@@ -226,33 +295,19 @@ function initialisePage() {
         $('.search-btn').trigger('click');
     });
 
-    function calculateAndSetStyles() {
-        if ($(window).width() < 767) {
-            $(".homonym-item").removeClass("selected");
-            $(".content-panel").addClass("d-none d-md-block");
-            $(".homonym-panel").removeClass("d-none d-md-block");
-            $(".search-panel").removeClass("d-none d-md-block");
-        }
-        else {
-            $(".last-selected").addClass("selected");
-            if (!$(".homonym-item").hasClass("last-selected")) {
-                $(".homonym-item:first").addClass("selected last-selected");
-            }
-        }
-    }
-
     $(window).resize(function() {
         calculateAndSetStyles();
     });
 
     $(document).ready(function() {
-        if ($(window).width() > 766) {
+    	initLanguageFilter();
+        if ($(window).width() > windowWidthTreshold - 1) {
             $(".homonym-item:first")
                 .delay(1250).queue(function() {})
                 .trigger('click');
             $(".homonym-item:first").addClass("animation-target");
         }
-        $('[data-toggle="tooltip"]').tooltip();
         calculateAndSetStyles();
+        $('[data-toggle="tooltip"]').tooltip();
     });
 }

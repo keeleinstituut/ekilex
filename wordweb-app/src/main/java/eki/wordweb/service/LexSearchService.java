@@ -1,6 +1,7 @@
 package eki.wordweb.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,6 +10,7 @@ import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +25,7 @@ import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ConversionUtil;
 
 @Component
-public class LexSearchService {
+public class LexSearchService implements InitializingBean {
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -31,10 +33,24 @@ public class LexSearchService {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
-	@Transactional
-	public List<Word> findWords(String searchFilter) {
+	private Map<String, String[]> languagesDatasetMap;
 
-		List<Word> formMatchWords = lexSearchDbService.findWords(searchFilter);
+	@Override
+	public void afterPropertiesSet() throws Exception {
+
+		languagesDatasetMap = new HashMap<>();
+		languagesDatasetMap.put("estest", new String[] {"ss1", "psv"});
+		languagesDatasetMap.put("estrus", new String[] {"qq2"});
+		languagesDatasetMap.put("rusest", new String[] {"qq2"});
+	}
+
+	@Transactional
+	public List<Word> findWords(String searchFilter, String sourceLang, String destinLang) {
+
+		String languagesDatasetKey = sourceLang + destinLang;
+		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
+		List<Word> formMatchWords = lexSearchDbService.findWords(searchFilter, sourceLang, datasets);
+		conversionUtil.filterMeaningWords(formMatchWords, destinLang);
 		List<Word> fullMatchWords = formMatchWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			return fullMatchWords;
@@ -43,11 +59,13 @@ public class LexSearchService {
 	}
 
 	@Transactional
-	public WordData getWordData(Long wordId, String displayLang) {
+	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang) {
 
+		String languagesDatasetKey = sourceLang + destinLang;
+		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		Word word = lexSearchDbService.getWord(wordId);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId);
-		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
+		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
