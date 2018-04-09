@@ -256,39 +256,38 @@
                 <div class="dependencies col-lg-6" th:if="${not #lists.isEmpty(lexeme.governments)}">
                   <!-- rektsioonid -->
                   <div class="dependence" th:each="government : ${lexeme.governments}">
-                    <div data-toggle="tooltip" th:title="${government.government}">
-                      <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
-                        <!-- kasutusnäite tähendused -->
-                        <span class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
-                          <!-- Kliendiga kokku lepitud: Kasutusnäite tähendusI ei näita -->
-                          <!-- <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
-                          </span> -->
-                          <!-- kasutusnäited -->
-                          <span th:if="${not #lists.isEmpty(usageMeaning.usages)}">
-                            <span th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
-                              <span class="example-text" th:text="${usage.usage}"></span>
-                              <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
-                              <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
-                              <button class="btn btn-speaker">
-                                <span class="icon icon-speaker"></span>
-                              </button>
-                            </span>
+                    <h6 th:if="${government.government != '-'}" th:text="${government.government}"></h6>
+                    <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
+                      <!-- kasutusnäite tähendused -->
+                      <span class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
+                        <!-- Kliendiga kokku lepitud: Kasutusnäite tähendusI ei näita -->
+                        <!-- <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
+                        </span> -->
+                        <!-- kasutusnäited -->
+                        <span th:if="${not #lists.isEmpty(usageMeaning.usages)}">
+                          <span th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
+                            <span class="example-text" th:text="${usage.usage}"></span>
+                            <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
+                            <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
+                            <button class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
                           </span>
-                          <!-- kasutusnäidete tõlked -->
-                          <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
-                            <span th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                              <span th:text="${usageTranslation}"></span>
-                            </span>
-                          </span>
-                          <!-- kasutusnäidete seletused -->
-                          <!-- Kliendiga kokku lepitud: Kasutusnäite seletusi ei näita -->
-                          <!-- <span th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
-                            <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                              <span class="example-text" th:text="${usageDefinition}"></span>
-                            </span>
-                          </span> -->
                         </span>
-                      </div>
+                        <!-- kasutusnäidete tõlked -->
+                        <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
+                          <span th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                            <span th:text="${usageTranslation}"></span>
+                          </span>
+                        </span>
+                        <!-- kasutusnäidete seletused -->
+                        <!-- Kliendiga kokku lepitud: Kasutusnäite seletusi ei näita -->
+                        <!-- <span th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
+                          <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                            <span class="example-text" th:text="${usageDefinition}"></span>
+                          </span>
+                        </span> -->
+                      </span>
                     </div>
                   </div>
                 </div>
