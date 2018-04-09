@@ -80,8 +80,8 @@
               <form th:action="@{/}" th:method="post">
                 <div class="awesomplete">
                   <input type="text" class="form-control search-phrase" name="simpleSearchFilter" th:value="${simpleSearchFilter}" list="mylist" placeholder="Kirjuta mõni sõna" />
-                  <input type="hidden" name="sourceLang" value=""/>
-                  <input type="hidden" name="destinLang" value=""/>
+                  <input type="hidden" name="sourceLang" value="" />
+                  <input type="hidden" name="destinLang" value="" />
                   <ul class="d-none">
                     <li>
                       <mark>Highl</mark>
@@ -114,8 +114,8 @@
         <ul class="homonym-list">
           <li th:each="word : ${words}">
             <form>
-              <input type="hidden" name="word-id" th:value="${word.wordId}"/>
-              <input type="hidden" name="word-value" th:value="${word.word}"/>
+              <input type="hidden" name="word-id" th:value="${word.wordId}" />
+              <input type="hidden" name="word-value" th:value="${word.word}" />
               <a th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
                 <span class="homonym-item-wrap">
                   <span class="homonym-header">
@@ -124,8 +124,7 @@
                     </div>
                     <span class="homonym-nr" th:text="${word.homonymNr}">1</span>
                   </span>
-                  <span class="homonym-matches" th:text="${word.meaningWordsWrapup}">
-                  </span>
+                  <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
                   <span class="homonym-intro">
                     <span th:if="${not #lists.isEmpty(word.definitions)}">
                       <span th:each="definition,definitionIter : ${word.definitions}">
@@ -141,10 +140,11 @@
           </li>
         </ul>
       </div>
+      <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div>
     </div>
     <div class="word-details"></div>
     <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(wordData.lexemes)}">
-      <div class="col-12 content-panel d-none d-md-block">
+      <div class="col-12 content-panel d-md-block">
         <div class="row">
           <div class="col-12 content-title">
             <!-- Siia palun valitud homonüümi nimi -->
@@ -262,39 +262,38 @@
                 <div class="dependencies col-lg-6" th:if="${not #lists.isEmpty(lexeme.governments)}">
                   <!-- rektsioonid -->
                   <div class="dependence" th:each="government : ${lexeme.governments}">
-                    <div data-toggle="tooltip" th:title="${government.government}">
-                      <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
-                        <!-- kasutusnäite tähendused -->
-                        <span class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
-                          <!-- Kliendiga kokku lepitud: Kasutusnäite tähendusI ei näita -->
-                          <!-- <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
-                          </span> -->
-                          <!-- kasutusnäited -->
-                          <span th:if="${not #lists.isEmpty(usageMeaning.usages)}">
-                            <span th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
-                              <span class="example-text" th:text="${usage.usage}"></span>
-                              <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
-                              <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
-                              <button class="btn btn-speaker">
-                                <span class="icon icon-speaker"></span>
-                              </button>
-                            </span>
+                    <h6 th:if="${government.government != '-'}" th:text="${government.government}"></h6>
+                    <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
+                      <!-- kasutusnäite tähendused -->
+                      <span class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
+                        <!-- Kliendiga kokku lepitud: Kasutusnäite tähendusI ei näita -->
+                        <!-- <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
+                        </span> -->
+                        <!-- kasutusnäited -->
+                        <span th:if="${not #lists.isEmpty(usageMeaning.usages)}">
+                          <span th:each="usage : ${usageMeaning.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
+                            <span class="example-text" th:text="${usage.usage}"></span>
+                            <span class="example-text" th:text="${usage.usageAuthor}" th:if="${usage.usageAuthor != null}"></span>
+                            <span class="example-text" th:text="${usage.usageTranslator}" th:if="${usage.usageTranslator != null}"></span>
+                            <button class="btn btn-speaker">
+                              <span class="icon icon-speaker"></span>
+                            </button>
                           </span>
-                          <!-- kasutusnäidete tõlked -->
-                          <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
-                            <span th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                              <span th:text="${usageTranslation}"></span>
-                            </span>
-                          </span>
-                          <!-- kasutusnäidete seletused -->
-                          <!-- Kliendiga kokku lepitud: Kasutusnäite seletusi ei näita -->
-                          <!-- <span th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
-                            <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                              <span class="example-text" th:text="${usageDefinition}"></span>
-                            </span>
-                          </span> -->
                         </span>
-                      </div>
+                        <!-- kasutusnäidete tõlked -->
+                        <span th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
+                          <span th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                            <span th:text="${usageTranslation}"></span>
+                          </span>
+                        </span>
+                        <!-- kasutusnäidete seletused -->
+                        <!-- Kliendiga kokku lepitud: Kasutusnäite seletusi ei näita -->
+                        <!-- <span th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
+                          <span th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                            <span class="example-text" th:text="${usageDefinition}"></span>
+                          </span>
+                        </span> -->
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -302,7 +301,7 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row">
+            <div class="level-3-panel row" hidden>
               <div class="col-12 morphology-panel">
                 <div class="morphology-section">
                   <div class="intro">
@@ -371,6 +370,7 @@
             </div>
             <!-- esialgne morfoloogia -->
             <div class="level-3-panel morphology-test row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
+              <h6>Sõnavormid</h6>
               <div class="col" th:each="paradigm : ${wordData.paradigms}">
                 <div th:if="${not #lists.isEmpty(paradigm.forms)}">
                   <table>
@@ -421,9 +421,9 @@
     </button>
   </div>
   <script th:inline="javascript">
-    var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
-    var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
-    var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+  	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	initialisePage();
   	initialiseRecording(speechRecognitionServiceUrl);
   </script>
