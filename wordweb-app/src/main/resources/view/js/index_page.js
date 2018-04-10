@@ -1,4 +1,4 @@
-var windowWidthTreshold = 768;
+var windowWidthTreshold = 769;
 
 function fetchDetails(wordId, word) {
     var detailsDiv = $('.word-details');
@@ -194,24 +194,28 @@ function empowerLanguageSelection() {
 }
 
 function calculateAndSetStyles() {
-    if ($(".homonym-item").length == 1) {
-        $(".homonym-panel").addClass("d-none");
-        $(".homonym-panel-empty").removeClass("d-none");
-    }
     if ($(window).width() > windowWidthTreshold) {
         $(".search-panel").removeClass("d-none");
         $(".content-panel").removeClass("d-none");
-        if (!$(".homonym-item").hasClass("last-selected")) {
-            $(".homonym-item:first").addClass("last-selected");
-        }
-        $(".last-selected").addClass("selected");
-    } else {
-        if ($(".homonym-item").length > 1) {
-            $(".content-panel").addClass("d-none");
+        if ($(".homonym-item").length == 1) {
+            $(".homonym-panel").addClass("d-none");
+            $(".homonym-panel-empty").removeClass("d-none");
+        } else {
             $(".homonym-panel").removeClass("d-none");
             $(".homonym-panel-empty").addClass("d-none");
+            if (!$(".homonym-item").hasClass("last-selected")) {
+                $(".homonym-item:first").addClass("last-selected");
+            }
+            $(".last-selected").addClass("selected");
         }
-        if ($(".homonym-item").length == 1) {
+    } else {
+        if ($(".homonym-item").length > 1) {
+            if (!$(".homonym-panel").hasClass("d-none")) {
+                $(".content-panel").addClass("d-none");
+            }
+            $(".homonym-panel-empty").addClass("d-none");
+        }
+        if ($(".homonym-item").length == 1 && $(".homonym-panel").hasClass("d-none")) {
             $(".search-panel").addClass("d-none");
         }
     }
