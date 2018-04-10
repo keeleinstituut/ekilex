@@ -6,11 +6,19 @@ function fetchDetails(wordId, word) {
 	$.get(wordDetailsUrl).done(function (data) {
 		detailsDiv.replaceWith(data);
         fetchCorpSentences(word);
+        setHomonymNrVisibility();
         $('.word-details [data-toggle="tooltip"]').tooltip();
     }).fail(function (data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	})
+}
+
+function setHomonymNrVisibility() {
+    var nrOfHomonyms = $(".homonym-item").length;
+    if (nrOfHomonyms == 1) {
+        $('.word-details .homonym-nr').addClass('d-none');
+    }
 }
 
 function fetchCorpSentences(sentence) {
