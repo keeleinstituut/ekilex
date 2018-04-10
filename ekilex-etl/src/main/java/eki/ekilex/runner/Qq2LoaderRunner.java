@@ -667,7 +667,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				String mabFormValue = mabForm.getValue();
 				String displayForm = mabForm.getDisplayForm();
 				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
-				String compoundDisplayForm = StringUtils.join(wordComponents, '+') + '+' + displayForm; 
+				String compoundDisplayForm = StringUtils.join(wordComponents, '+', 0, wordComponentCount - 1) + '+' + displayForm; 
 				compoundFormValues.add(compoundFormValue);
 				Form compoundForm = new Form();
 				compoundForm.setValue(compoundFormValue);
