@@ -232,7 +232,7 @@ function initialisePage() {
         $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
     });
 
-    $("[id^='word-details-link'").click(function() {
+    $("[id^='word-details-link']").click(function() {
     	var wordWrapperForm = $(this).closest("form");
     	var wordId = wordWrapperForm.children("[name = 'word-id']").val();
     	var word = wordWrapperForm.children("[name = 'word-value']").val();
