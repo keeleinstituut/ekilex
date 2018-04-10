@@ -168,6 +168,12 @@ function initLanguageFilter() {
 	empowerLanguageSelection();
 }
 
+function clearLanguageSelection(name) {
+	$("button[name = '" + name + "']").each(function() {
+		$(this).removeClass("active");
+	});
+}
+
 function empowerLanguageSelection() {
 	var sourceLangLabel = $("button[name = 'source-lang-btn'].active").text();
 	var destinLangLabel = $("button[name = 'destin-lang-btn'].active").text();
@@ -223,26 +229,24 @@ function initialisePage() {
     $("button[name = 'source-lang-btn']").click(function() {
     	var tempSourceLang = $(this).val();
     	var tempDestinLang = $("button[name = 'destin-lang-btn'].active").val();
-    	if ((tempSourceLang == tempDestinLang) && (tempSourceLang == "rus")) {
-    		return;
-    	}
-    	$("button[name = 'source-lang-btn']").each(function() {
-    		$(this).removeClass("active");
-    	});
+    	clearLanguageSelection('source-lang-btn');
     	$(this).addClass("active");
+    	if ((tempSourceLang == tempDestinLang) && (tempSourceLang == "rus")) {
+    		clearLanguageSelection('destin-lang-btn');
+    		$("button[name = 'destin-lang-btn'][value = 'est']").addClass("active");
+    	}
     	empowerLanguageSelection();
     });
 
     $("button[name = 'destin-lang-btn']").click(function() {
     	var tempSourceLang = $("button[name = 'source-lang-btn'].active").val();
     	var tempDestinLang = $(this).val();
-    	if ((tempSourceLang == tempDestinLang) && (tempDestinLang == "rus")) {
-    		return;
-    	}
-    	$("button[name = 'destin-lang-btn']").each(function() {
-    		$(this).removeClass("active");
-    	});
+    	clearLanguageSelection('destin-lang-btn');
     	$(this).addClass("active");
+    	if ((tempSourceLang == tempDestinLang) && (tempDestinLang == "rus")) {
+    		clearLanguageSelection('source-lang-btn');
+    		$("button[name = 'source-lang-btn'][value = 'est']").addClass("active");
+    	}
     	empowerLanguageSelection();
     });
 

@@ -61,8 +61,12 @@ from (select w.id as word_id,
                          and   f2.is_word = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.value,wd.lang)::type_definition order by wd.order_by) definitions
+                          array_agg(row (wd.value,wd.lang)::type_definition order by wd.dataset_code, wd.level1, wd.level2, wd.level3, wd.order_by) definitions
                    from (select l.word_id,
+                                l.dataset_code,
+                                l.level1,
+                                l.level2,
+                                l.level3,
                                 d.value,
                                 d.lang,
                                 d.order_by
