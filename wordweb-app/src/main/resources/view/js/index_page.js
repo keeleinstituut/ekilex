@@ -210,7 +210,8 @@ function calculateAndSetStyles() {
             $(".content-panel").addClass("d-none");
             $(".homonym-panel").removeClass("d-none");
             $(".homonym-panel-empty").addClass("d-none");
-        } else {
+        }
+        if ($(".homonym-item").length == 1) {
             $(".search-panel").addClass("d-none");
         }
     }
