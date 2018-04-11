@@ -170,6 +170,12 @@
                       <span th:text="${definition.value}"></span>
                       <span th:unless="${definitionIter.last}">, </span>
                     </span>
+                    <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}">
+                        <span th:text="${meaningWord.word}"></span>
+                        <span th:unless="${meaningWordIter.last}">, </span>
+                      </span>
+                    </div>
                   </div>
                   <div class="word-type" th:if="${not #lists.isEmpty(lexeme.poses)}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
