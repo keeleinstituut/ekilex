@@ -1,6 +1,7 @@
 package eki.wordweb.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.wordweb.data.WordsData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -45,7 +47,7 @@ public class LexSearchService implements InitializingBean {
 	}
 
 	@Transactional
-	public List<Word> findWords(String searchFilter, String sourceLang, String destinLang) {
+	public WordsData findWords(String searchFilter, String sourceLang, String destinLang) {
 
 		String languagesDatasetKey = sourceLang + destinLang;
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
@@ -53,9 +55,10 @@ public class LexSearchService implements InitializingBean {
 		conversionUtil.filterMeaningWords(formMatchWords, destinLang);
 		List<Word> fullMatchWords = formMatchWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
-			return fullMatchWords;
+			List<Word> partialMatchWords = formMatchWords.stream().filter(word -> !fullMatchWords.contains(word)).collect(Collectors.toList());
+			return new WordsData(fullMatchWords, partialMatchWords);
 		}
-		return formMatchWords;
+		return new WordsData(formMatchWords, Collections.emptyList());
 	}
 
 	@Transactional

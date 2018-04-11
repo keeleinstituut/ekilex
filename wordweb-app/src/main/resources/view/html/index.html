@@ -142,6 +142,12 @@
       </div>
       <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div>
     </div>
+    <div class="row" style="max-width: 80vw; margin-left: auto; margin-right: auto; margin-bottom: 1em;" id="form-words" th:if="${!#lists.isEmpty(moreWords)}">
+      <div class="col-12">
+        <span>see on ka vorm sõnast</span>
+        <button class="btn btn-sm" name="word-form-btn" th:each="word : ${moreWords}" th:text="${word.word}" th:data-word="${word.word}"></button>
+      </div>
+    </div>
     <div class="word-details"></div>
     <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-md-block">

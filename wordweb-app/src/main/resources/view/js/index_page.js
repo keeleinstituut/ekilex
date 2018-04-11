@@ -315,6 +315,11 @@ function initialisePage() {
         $('.search-btn').trigger('click');
     });
 
+    $('[name="word-form-btn"]').on('click', function (e) {
+        $("input[name = 'simpleSearchFilter']").val($(this).data('word'));
+        $('#search-btn').trigger('click');
+    });
+
     $(window).resize(function() {
         calculateAndSetStyles();
     });

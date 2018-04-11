@@ -3,6 +3,7 @@ package eki.wordweb.web.controller;
 import java.util.Collections;
 import java.util.List;
 
+import eki.wordweb.data.WordsData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,6 +25,8 @@ import eki.wordweb.data.WordData;
 import eki.wordweb.service.CorporaService;
 import eki.wordweb.service.LexSearchService;
 import eki.wordweb.web.bean.SessionBean;
+
+import static java.util.Collections.emptyList;
 
 @ConditionalOnWebApplication
 @Controller
@@ -49,7 +52,7 @@ public class HomeController implements WebConstant {
 	@RequestMapping(value = HOME_URI, method = RequestMethod.GET)
 	public String home(Model model) {
 
-		populateModel("", Collections.emptyList(), new WordData(), model);
+		populateModel("", new WordsData(emptyList(), emptyList()), new WordData(), model);
 
 		return HOME_PAGE;
 	}
@@ -63,7 +66,7 @@ public class HomeController implements WebConstant {
 			Model model) {
 
 		searchFilter = StringUtils.trim(searchFilter);
-		List<Word> words = lexSearchService.findWords(searchFilter, sourceLang, destinLang);
+		WordsData words = lexSearchService.findWords(searchFilter, sourceLang, destinLang);
 		populateModel(searchFilter, words, new WordData(), model);
 
 		return HOME_PAGE;
@@ -92,7 +95,7 @@ public class HomeController implements WebConstant {
 		return HOME_PAGE + " :: korp";
 	}
 
-	private void populateModel(String simpleSearchFilter, List<Word> words, WordData wordData, Model model) {
+	private void populateModel(String simpleSearchFilter, WordsData words, WordData wordData, Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		if (sessionBean == null) {
@@ -112,7 +115,8 @@ public class HomeController implements WebConstant {
 
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
-		model.addAttribute("words", words);
+		model.addAttribute("words", words.getFullWords());
 		model.addAttribute("wordData", wordData);
+		model.addAttribute("moreWords", words.getPartialWords());
 	}
 }
