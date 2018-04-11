@@ -22,7 +22,9 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
+import eki.wordweb.data.TypeWord;
 import eki.wordweb.data.UsageMeaning;
 import eki.wordweb.data.Word;
 import eki.wordweb.service.db.CommonDataDbService;
@@ -33,20 +35,32 @@ public class ConversionUtil {
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public void filterMeaningWords(List<Word> words, final String destinLang) {
+	public void filterLanguageValues(List<Word> words, final String destinLang) {
 		for (Word word : words) {
-			if (CollectionUtils.isEmpty(word.getMeaningWords())) {
-				continue;
+			List<TypeWord> meaningWords = word.getMeaningWords();
+			if (CollectionUtils.isNotEmpty(meaningWords)) {
+				List<String> meaningWordValues = meaningWords.stream()
+						.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
+						.map(meaningWord -> meaningWord.getValue())
+						.collect(Collectors.toList());
+				String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+				word.setMeaningWordsWrapup(meaningWordsWrapup);
 			}
-			List<String> meaningWordValues = word.getMeaningWords().stream()
-				.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
-				.map(meaningWord -> meaningWord.getValue()).collect(Collectors.toList());
-			String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
-			word.setMeaningWordsWrapup(meaningWordsWrapup);
+			List<TypeDefinition> definitions = word.getDefinitions();
+			if (CollectionUtils.isNotEmpty(definitions)) {
+				List<String> definitionValues = definitions.stream()
+						.filter(definition -> StringUtils.equals(definition.getLang(), destinLang))
+						.map(definition -> definition.getValue())
+						.collect(Collectors.toList());
+				String definitionsWrapup = StringUtils.join(definitionValues, ", ");
+				word.setDefinitionsWrapup(definitionsWrapup);
+			}
 		}
 	}
 
-	public List<Lexeme> composeLexemes(List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples, String dataLang) {
+	public List<Lexeme> composeLexemes(
+			List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples,
+			String sourceLang, String destinLang, String displayLang) {
 
 		List<Lexeme> lexemes = new ArrayList<>();
 		Map<Long, Lexeme> lexemeMap = new HashMap<>();
@@ -72,26 +86,28 @@ public class ConversionUtil {
 				lexeme.setLevel2(tuple.getLevel2());
 				lexeme.setLevel3(tuple.getLevel3());
 				datasetCode = tuple.getDatasetCode();
-				datasetName = getDatasetName(datasetCode, dataLang);
+				datasetName = getDatasetName(datasetCode, displayLang);
 				lexeme.setDatasetName(datasetName);
 				classifierCodes = tuple.getRegisterCodes();
-				classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, dataLang);
+				classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
 				lexeme.setRegisters(classifiers);
 				classifierCodes = tuple.getPosCodes();
-				classifiers = getClassifiers(ClassifierName.POS, classifierCodes, dataLang);
+				classifiers = getClassifiers(ClassifierName.POS, classifierCodes, displayLang);
 				lexeme.setPoses(classifiers);
 				classifierCodes = tuple.getDerivCodes();
-				classifiers = getClassifiers(ClassifierName.DERIV, classifierCodes, dataLang);
+				classifiers = getClassifiers(ClassifierName.DERIV, classifierCodes, displayLang);
 				lexeme.setDerivs(classifiers);
 				domainCodes = tuple.getDomainCodes();
-				classifiers = getClassifiersWithOrigin(ClassifierName.DOMAIN, domainCodes, dataLang);
+				classifiers = getClassifiersWithOrigin(ClassifierName.DOMAIN, domainCodes, displayLang);
 				lexeme.setDomains(classifiers);
 				lexeme.setImageFiles(tuple.getImageFiles());
 				lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 				lexeme.setSemanticTypes(tuple.getSemanticTypes());
 				lexeme.setLearnerComments(tuple.getLearnerComments());
 				lexeme.setDefinitions(tuple.getDefinitions());
-				lexeme.setMeaningWords(new ArrayList<>());
+				lexeme.setSynonymWords(new ArrayList<>());
+				lexeme.setDestinLangMatchWords(new ArrayList<>());
+				lexeme.setOtherLangMatchWords(new ArrayList<>());
 				lexeme.setGovernments(new ArrayList<>());
 				lexemeMap.put(lexemeId, lexeme);
 				lexemes.add(lexeme);
@@ -105,7 +121,13 @@ public class ConversionUtil {
 				meaningWord.setWord(tuple.getMeaningWord());
 				meaningWord.setHomonymNr(tuple.getMeaningWordHomonymNr());
 				meaningWord.setLang(tuple.getMeaningWordLang());
-				lexeme.getMeaningWords().add(meaningWord);
+				if (StringUtils.equals(tuple.getMeaningWordLang(), sourceLang)) {
+					lexeme.getSynonymWords().add(meaningWord);
+				} else if (StringUtils.equals(tuple.getMeaningWordLang(), destinLang)) {
+					lexeme.getDestinLangMatchWords().add(meaningWord);
+				} else {
+					lexeme.getOtherLangMatchWords().add(meaningWord);
+				}
 				meaningWordIds.add(meaningWordId);
 			}
 		}
@@ -135,7 +157,7 @@ public class ConversionUtil {
 				usageMeaning = new UsageMeaning();
 				usageMeaning.setUsageMeaningId(usageMeaningId);
 				classifierCode = tuple.getUsageMeaningTypeCode();
-				classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, dataLang);
+				classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, displayLang);
 				usageMeaning.setUsageMeaningType(classifier);
 				usageMeaning.setUsages(tuple.getUsages());
 				usageMeaning.setUsageTranslations(tuple.getUsageTranslations());

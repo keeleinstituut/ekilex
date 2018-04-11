@@ -30,6 +30,8 @@ public class Word extends AbstractDataObject {
 
 	private List<TypeDefinition> definitions;
 
+	private String definitionsWrapup;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -116,6 +118,14 @@ public class Word extends AbstractDataObject {
 
 	public void setDefinitions(List<TypeDefinition> definitions) {
 		this.definitions = definitions;
+	}
+
+	public String getDefinitionsWrapup() {
+		return definitionsWrapup;
+	}
+
+	public void setDefinitionsWrapup(String definitionsWrapup) {
+		this.definitionsWrapup = definitionsWrapup;
 	}
 
 }

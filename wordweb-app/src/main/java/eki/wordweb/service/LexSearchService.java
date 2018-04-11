@@ -50,7 +50,7 @@ public class LexSearchService implements InitializingBean {
 		String languagesDatasetKey = sourceLang + destinLang;
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		List<Word> formMatchWords = lexSearchDbService.findWords(searchFilter, sourceLang, datasets);
-		conversionUtil.filterMeaningWords(formMatchWords, destinLang);
+		conversionUtil.filterLanguageValues(formMatchWords, destinLang);
 		List<Word> fullMatchWords = formMatchWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			return fullMatchWords;
@@ -66,7 +66,7 @@ public class LexSearchService implements InitializingBean {
 		Word word = lexSearchDbService.getWord(wordId);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, displayLang);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
