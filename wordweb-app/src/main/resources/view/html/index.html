@@ -125,15 +125,7 @@
                     <span class="homonym-nr" th:text="${word.homonymNr}">1</span>
                   </span>
                   <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
-                  <span class="homonym-intro">
-                    <span th:if="${not #lists.isEmpty(word.definitions)}">
-                      <span th:each="definition,definitionIter : ${word.definitions}">
-                        <span th:text="${definition.value}"></span>
-                        <span th:unless="${definitionIter.last}">, </span>
-                      </span>
-                    </span>
-                    <span>&nbsp;</span>
-                  </span>
+                  <span class="homonym-intro" th:text="${word.definitionsWrapup}"></span>
                 </span>
               </a>
             </form>
@@ -153,7 +145,6 @@
       <div class="col-12 content-panel d-md-block">
         <div class="row">
           <div class="col-12 content-title">
-            <!-- Siia palun valitud homonüümi nimi -->
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span class="homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
@@ -167,8 +158,8 @@
                 <span class="dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</span>
                 <div class="col-lg-6">
                   <div class="matches">
-                    <h6 th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
-                      <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
                         <span th:text="${meaningWord.word}"></span>
                         <span th:unless="${meaningWordIter.last}">, </span>
                       </span>
@@ -180,13 +171,18 @@
                       <span th:unless="${definitionIter.last}">, </span>
                     </span>
                   </div>
-                  <!-- Sõnaliik -->
                   <div class="word-type" th:if="${not #lists.isEmpty(lexeme.poses)}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                   </div>
                   <div class="synonyms">
-                    <a href="" class="synonym">[sünonüüm1]</a>
-                    <a href="" class="synonym">[sünonüüm2]</a>
+                    <span th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.synonymWords}">
+                        <a th:id="${'word_search_link_syn_' + meaningWordIter.count}" href="" class="synonym">
+                          <span th:text="${meaningWord.word}"></span>
+                        </a>
+                        <span th:unless="${meaningWordIter.last}">, </span>
+                      </span>
+                    </span>
                   </div>
                   <div class="additional-meta">
                     <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
@@ -406,7 +402,7 @@
                 <img class="homonym-image" th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>
               </div>
             </div>
-            <div name="korp">
+            <div id="korp">
               <hr />
               Otsin näitelauseid...
             </div>

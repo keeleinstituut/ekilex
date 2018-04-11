@@ -22,7 +22,7 @@ function setHomonymNrVisibility() {
 }
 
 function fetchCorpSentences(sentence) {
-    var corpDiv = $('[name="korp"]');
+    var corpDiv = $("#korp");
     $.get(applicationUrl + 'korp/' + sentence).done(function (data) {
         corpDiv.replaceWith(data);
     }).fail(function (data) {
@@ -223,49 +223,60 @@ function calculateAndSetStyles() {
 
 function initialisePage() {
 
-    $(".menu-btn").click(function(){
-        $(".header-links").toggleClass("d-none d-md-block");
-    });
+	// interaction in details
+
+	$(document).on("click", "a[id^='word_search_link']", function(e) {
+		e.preventDefault();
+		var newWord = $.trim($(this).text());
+		$("input[name='simpleSearchFilter']").val(newWord);
+		$("#search-btn").click();
+	});
 
     $(document).on("click", ".more-btn", function() {
         $(this).parent().toggleClass("expand");
         $(".additional-meta, .dictionary-source, .dependence:not(:first-child), .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
     });
 
-    $("[id^='word-details-link']").click(function() {
+    // interaction elsewhere
+
+    $(".menu-btn").click(function(){
+        $(".header-links").toggleClass("d-none d-md-block");
+    });
+
+    $("a[id^='word-details-link']").click(function() {
     	var wordWrapperForm = $(this).closest("form");
-    	var wordId = wordWrapperForm.children("[name = 'word-id']").val();
-    	var word = wordWrapperForm.children("[name = 'word-value']").val();
+    	var wordId = wordWrapperForm.children("[name='word-id']").val();
+    	var word = wordWrapperForm.children("[name='word-value']").val();
     	fetchDetails(wordId, word);
     });
 
-    $("button[name = 'source-lang-btn']").click(function() {
+    $("button[name='source-lang-btn']").click(function() {
     	var tempSourceLang = $(this).val();
-    	var tempDestinLang = $("button[name = 'destin-lang-btn'].active").val();
+    	var tempDestinLang = $("button[name='destin-lang-btn'].active").val();
     	clearLanguageSelection('source-lang-btn');
     	$(this).addClass("active");
     	if ((tempSourceLang == tempDestinLang) && (tempSourceLang == "rus")) {
     		clearLanguageSelection('destin-lang-btn');
-    		$("button[name = 'destin-lang-btn'][value = 'est']").addClass("active");
+    		$("button[name='destin-lang-btn'][value='est']").addClass("active");
     	}
     	empowerLanguageSelection();
     });
 
-    $("button[name = 'destin-lang-btn']").click(function() {
-    	var tempSourceLang = $("button[name = 'source-lang-btn'].active").val();
+    $("button[name='destin-lang-btn']").click(function() {
+    	var tempSourceLang = $("button[name='source-lang-btn'].active").val();
     	var tempDestinLang = $(this).val();
     	clearLanguageSelection('destin-lang-btn');
     	$(this).addClass("active");
     	if ((tempSourceLang == tempDestinLang) && (tempDestinLang == "rus")) {
     		clearLanguageSelection('source-lang-btn');
-    		$("button[name = 'source-lang-btn'][value = 'est']").addClass("active");
+    		$("button[name='source-lang-btn'][value='est']").addClass("active");
     	}
     	empowerLanguageSelection();
     });
 
-    $("button[id = 'lang-sel-complete-btn']").click(function() {
+    $("button[id='lang-sel-complete-btn']").click(function() {
     	$("#lang-selector-btn").click();
-    	if ($("input[name = 'simpleSearchFilter']").val()) {
+    	if ($("input[name='simpleSearchFilter']").val()) {
     		$("#search-btn").click();
     	}
     });
@@ -278,6 +289,7 @@ function initialisePage() {
             $(".search-panel").removeClass("d-none d-md-block");
         }
     });
+
     $(".homonym-item").click(function(){
         $(".homonym-item").removeClass("selected last-selected");
         $(".homonym-item:first").removeClass("animation-target").dequeue();
