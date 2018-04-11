@@ -208,6 +208,7 @@ function calculateAndSetStyles() {
             }
             $(".last-selected").addClass("selected");
         }
+        $('#form-words').css("margin-top", '1.5em');
     } else {
         if ($(".homonym-item").length > 1) {
             if (!$(".homonym-panel").hasClass("d-none")) {
@@ -217,6 +218,12 @@ function calculateAndSetStyles() {
         }
         if ($(".homonym-item").length == 1 && $(".homonym-panel").hasClass("d-none")) {
             $(".search-panel").addClass("d-none");
+            $(".homonym-panel-empty").removeClass("d-none");
+        }
+        if ($(".search-panel").hasClass("d-none")) {
+            $('#form-words').css("margin-top", '5em');
+        } else {
+            $('#form-words').css("margin-top", '0');
         }
     }
 }
@@ -287,6 +294,7 @@ function initialisePage() {
             $(".content-panel").addClass("d-none d-md-block");
             $(".homonym-panel").removeClass("d-none d-md-block");
             $(".search-panel").removeClass("d-none d-md-block");
+            $('#form-words').css("margin-top", '0');
         }
     });
 
@@ -303,6 +311,7 @@ function initialisePage() {
         } else {
             $(".homonym-panel").addClass("d-none");
             $(".search-panel").addClass("d-none");
+            $('#form-words').css("margin-top", '5em');
         }
     });
 
