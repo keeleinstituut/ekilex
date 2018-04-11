@@ -46,7 +46,7 @@ from (select w.id as word_id,
                                 l1.word_id,
                                 f2.value meaning_word_value,
                                 w2.lang meaning_word_lang,
-                                (l2.dataset_code || '_' || l2.level1 || '_' || l2.level2 || '_' || l2.level3) order_by
+                                (l2.dataset_code || '_' || l2.level1 || '_' || l2.level2 || '_' || l2.level3 || '_' || w2.id) order_by
                          from lexeme l1,
                               lexeme l2,
                               form f2,
