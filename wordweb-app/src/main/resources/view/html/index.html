@@ -109,16 +109,14 @@
         </div>
       </div>
     </div>
-
-
-    <div class="row homonym-wrap" th:if="${not #lists.isEmpty(words)}">
-      <div class="col-12" style="max-width: 80vw; margin-left: auto; margin-right: auto; margin-top: 1.5em;" id="form-words" th:if="${!#lists.isEmpty(moreWords)}">
-          <span>see on ka vorm sõnast</span>
-          <button class="btn btn-sm" name="word-form-btn" th:each="word : ${moreWords}" th:text="${word.word}" th:data-word="${word.word}"></button>
+    <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
+      <div class="col-12" style="max-width: 80vw; margin-left: auto; margin-right: auto; margin-top: 1.5em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+        <span>see on ka vorm sõnast</span>
+        <button class="btn btn-sm" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
       </div>
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
-          <li th:each="word : ${words}">
+          <li th:each="word : ${wordsData.fullMatchWords}">
             <form>
               <input type="hidden" name="word-id" th:value="${word.wordId}" />
               <input type="hidden" name="word-value" th:value="${word.word}" />
@@ -141,7 +139,7 @@
       <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div>
     </div>
     <div class="word-details"></div>
-    <div class="row word-details" th:fragment="worddetails" th:if="${!#lists.isEmpty(wordData.lexemes)}">
+    <div class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-md-block">
         <div class="row">
           <div class="col-12 content-title">
@@ -416,8 +414,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
