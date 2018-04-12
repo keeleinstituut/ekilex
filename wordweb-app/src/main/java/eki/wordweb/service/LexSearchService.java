@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.ClassifierName;
+import eki.wordweb.data.Relation;
 import eki.wordweb.data.WordsData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -78,12 +80,15 @@ public class LexSearchService implements InitializingBean {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
+		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId);
+		conversionUtil.composeRelations(wordRelations, ClassifierName.WORD_REL_TYPE, displayLang);
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
+		wordData.setWordRelations(wordRelations);
 		return wordData;
 	}
 }

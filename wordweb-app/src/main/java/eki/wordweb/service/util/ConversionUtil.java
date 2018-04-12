@@ -22,6 +22,7 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.Relation;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeWord;
@@ -189,6 +190,13 @@ public class ConversionUtil {
 		}
 		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
 		return paradigms;
+	}
+
+	public void composeRelations(List<Relation> relations, ClassifierName relationType, String lang) {
+		relations.forEach(relation -> {
+			Classifier relationTypeClassifier = getClassifier(relationType, relation.getRelationTypeCode(), lang);
+			relation.setRelationType(relationTypeClassifier);
+		});
 	}
 
 	private String getDatasetName(String code, String lang) {
