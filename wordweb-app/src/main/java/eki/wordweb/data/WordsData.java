@@ -4,21 +4,21 @@ import java.util.List;
 
 public class WordsData {
 
-	private final List<Word> fullWords;
+	private final List<Word> fullMatchWords;
 
-	private final List<Word> partialWords;
+	private final List<String> formMatchWords;
 
-	public WordsData(List<Word> fullWords, List<Word> partialWords) {
-		this.fullWords = fullWords;
-		this.partialWords = partialWords;
+	public WordsData(List<Word> fullMatchWords, List<String> formMatchWords) {
+		this.fullMatchWords = fullMatchWords;
+		this.formMatchWords = formMatchWords;
 	}
 
-	public List<Word> getFullWords() {
-		return fullWords;
+	public List<Word> getFullMatchWords() {
+		return fullMatchWords;
 	}
 
-	public List<Word> getPartialWords() {
-		return partialWords;
+	public List<String> getFormMatchWords() {
+		return formMatchWords;
 	}
 
 }
