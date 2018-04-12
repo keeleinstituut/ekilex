@@ -324,7 +324,7 @@ create view view_ww_classifier
      where type = 'descrip'
      union all
      select
-       'WORD_RELATION' as name,
+       'WORD_REL_TYPE' as name,
        null as origin,
        code,
        value,
