@@ -10,6 +10,7 @@ import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeUsage;
@@ -40,7 +41,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 540755050;
+    private static final long serialVersionUID = -1652161086;
 
     /**
      * The reference instance of <code>public</code>
@@ -78,6 +79,11 @@ public class Public extends SchemaImpl {
     public final MviewWwWord MVIEW_WW_WORD = eki.wordweb.data.db.tables.MviewWwWord.MVIEW_WW_WORD;
 
     /**
+     * The table <code>public.mview_ww_word_relation</code>.
+     */
+    public final MviewWwWordRelation MVIEW_WW_WORD_RELATION = eki.wordweb.data.db.tables.MviewWwWordRelation.MVIEW_WW_WORD_RELATION;
+
+    /**
      * No further instances allowed
      */
     private Public() {
@@ -107,7 +113,8 @@ public class Public extends SchemaImpl {
             MviewWwForm.MVIEW_WW_FORM,
             MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwMeaning.MVIEW_WW_MEANING,
-            MviewWwWord.MVIEW_WW_WORD);
+            MviewWwWord.MVIEW_WW_WORD,
+            MviewWwWordRelation.MVIEW_WW_WORD_RELATION);
     }
 
     @Override

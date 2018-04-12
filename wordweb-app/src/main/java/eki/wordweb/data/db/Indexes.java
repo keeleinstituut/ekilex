@@ -9,6 +9,7 @@ import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordRelation;
 
 import javax.annotation.Generated;
 
@@ -46,6 +47,8 @@ public class Indexes {
     public static final Index MVIEW_WW_MEANING_WORD_ID_IDX = Indexes0.MVIEW_WW_MEANING_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_LANG_IDX = Indexes0.MVIEW_WW_WORD_LANG_IDX;
     public static final Index MVIEW_WW_WORD_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_WORD_ID_IDX;
+    public static final Index MVIEW_WW_WORD_RELATION_WORD1_ID_IDX = Indexes0.MVIEW_WW_WORD_RELATION_WORD1_ID_IDX;
+    public static final Index MVIEW_WW_WORD_RELATION_WORD2_ID_IDX = Indexes0.MVIEW_WW_WORD_RELATION_WORD2_ID_IDX;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -64,5 +67,7 @@ public class Indexes {
         public static Index MVIEW_WW_MEANING_WORD_ID_IDX = Internal.createIndex("mview_ww_meaning_word_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_LANG_IDX = Internal.createIndex("mview_ww_word_lang_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.LANG }, false);
         public static Index MVIEW_WW_WORD_WORD_ID_IDX = Internal.createIndex("mview_ww_word_word_id_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD_ID }, false);
+        public static Index MVIEW_WW_WORD_RELATION_WORD1_ID_IDX = Internal.createIndex("mview_ww_word_relation_word1_id_idx", MviewWwWordRelation.MVIEW_WW_WORD_RELATION, new OrderField[] { MviewWwWordRelation.MVIEW_WW_WORD_RELATION.WORD1_ID }, false);
+        public static Index MVIEW_WW_WORD_RELATION_WORD2_ID_IDX = Internal.createIndex("mview_ww_word_relation_word2_id_idx", MviewWwWordRelation.MVIEW_WW_WORD_RELATION, new OrderField[] { MviewWwWordRelation.MVIEW_WW_WORD_RELATION.WORD2_ID }, false);
     }
 }
