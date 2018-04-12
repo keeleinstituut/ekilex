@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
 
-    private static final long serialVersionUID = -484751296;
+    private static final long serialVersionUID = 51354491;
 
     /**
      * The reference instance of <code>public.mview_ww_word_relation</code>
@@ -85,6 +85,11 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
      * The column <code>public.mview_ww_word_relation.word_rel_type_code</code>.
      */
     public final TableField<MviewWwWordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_relation.order_by</code>.
+     */
+    public final TableField<MviewWwWordRelationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.mview_ww_word_relation</code> table reference

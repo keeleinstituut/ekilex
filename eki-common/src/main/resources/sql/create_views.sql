@@ -335,14 +335,15 @@ create view view_ww_classifier
 
 create view view_ww_word_relation
   as
-    (select
+    (select distinct
        wr.word1_id,
        f.value as word1,
        w1.lang as lang1,
        wr.word2_id,
        f2.value as word2,
        w2.lang as lang2,
-       wr.word_rel_type_code
+       wr.word_rel_type_code,
+       wr.order_by
      from word_relation wr
       left join word w1 on w1.id = wr.word1_id
       left join paradigm p on p.word_id = wr.word1_id

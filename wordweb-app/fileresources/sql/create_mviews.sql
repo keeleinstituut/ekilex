@@ -130,7 +130,8 @@ dblink(
 		word2_id bigint,
 		word2 text,
 		lang2 char(3),
-		word_rel_type_code varchar(100)
+		word_rel_type_code varchar(100),
+	  order_by bigint
 );
 
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
