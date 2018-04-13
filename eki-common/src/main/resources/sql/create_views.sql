@@ -331,6 +331,15 @@ create view view_ww_classifier
        lang
      from word_rel_type_label
      where type = 'full'
+     union all
+     select
+       'LEX_REL_TYPE' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from lex_rel_type_label
+     where type = 'full'
     );
 
 create view view_ww_word_relation
@@ -358,4 +367,27 @@ create view view_ww_word_relation
                   from lexeme as ld
                   where (ld.word_id = wr.word2_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
       order by wr.order_by
+    );
+
+create view view_ww_lexeme_relation
+  as
+    (select distinct
+       lr.lexeme1_id,
+       f.value as word1,
+       w1.lang as lang1,
+       lr.lexeme2_id,
+       f2.value as word2,
+       w2.lang as lang2,
+       lr.lex_rel_type_code,
+       lr.order_by
+     from lex_relation lr
+       left join lexeme l1 on l1.id = lr.lexeme1_id and l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+       left join word w1 on w1.id = l1.word_id
+       left join paradigm p on p.word_id = w1.id
+       left join form f on f.paradigm_id = p.id and f.is_word = true
+       left join lexeme l2 on l2.id = lr.lexeme2_id and l2.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+       left join word w2 on w2.id = l2.word_id
+       left join paradigm p2 on p2.word_id = w2.id
+       left join form f2 on f2.paradigm_id = p2.id and f2.is_word = true
+     order by lr.order_by
     );

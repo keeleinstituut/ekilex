@@ -5,6 +5,7 @@ drop view if exists view_ww_word;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_word_relation;
+drop view if exists view_ww_lexeme_relation;
 drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
