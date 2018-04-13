@@ -126,6 +126,22 @@ input{
     transition: 0ms !important;
 	color: $teal;
 }
+.homonym-nr{
+	background-color: $teal;
+    color: $white;
+    height: rem(22);
+    width: rem(22);
+    display: inline-block;
+    border-radius: rem(100);
+    font-size: $tiny-font-size;
+    font-weight: $font-weight-bold;
+    font-family: $font-family-sans-serif;
+    padding-top: rem(2);
+    text-align: center;
+    position: relative;
+    top: rem(-3);
+    transition: 0ms !important;
+}
 .homonym-matches,
 .homonym-intro{
 	font-size: $tiny-font-size;
@@ -141,7 +157,12 @@ input{
 }
 .content-title{
 	border-bottom: $border-width solid $border-color;
+	padding:rem(15) rem(25);
+	.homonym-name{
+		color: $black;
+	}
 }
+
 .search-panel,
 .homonym-panel{
 	padding-top: rem(0);
@@ -163,13 +184,6 @@ input{
 	background-color: $white;
 	box-shadow: $dropdown-box-shadow;
 }
-.level-2-panel,
-.level-3-panel{
-	margin-left:-($gutter);
-	margin-right:-($gutter);
-	padding:$gutter;
-	padding-right:$gutter;
-}
 .level-2-panel:first-child{
 	border-top: none; 
 }
@@ -187,6 +201,7 @@ input{
 	border-color: $border-color !important;
 	border-top: $border-width solid;
 	border-bottom: $border-width solid;
+	background-color: $white;
 	&:not(.expand){ 
 		.additional-meta,
 		.dictionary-source,
@@ -196,19 +211,15 @@ input{
 		.label-md,
 		.morphology-section .row:not(.intro),
 		.corp-panel div:nth-child(n+5){
-			color: red;
 			display: none;
 			opacity: 0;
 		}
 	}
 	&.expand{
-		outline: $border-width-lg solid $border-color-lg !important;
-		border: $border-width $border-color solid;
-		margin-right: -3 * $border-width-lg !important;
-    	margin-left: -3 * $border-width-lg !important;
     	margin-top: $border-width-lg !important;
     	margin-bottom: $border-width-lg !important;
-    	max-height: 1000px;
+    	max-height: rem(10000);
+		box-shadow: 0 -5px $gray-100, 0  5px $gray-100;	
 		.dependence{
 			padding-bottom: rem(5);
 		}
@@ -295,6 +306,10 @@ input{
 		transform: rotate(90deg);
 	}
 }
+.tag{
+	font-size: $tiny-font-size;
+
+}
 .dependencies *{
 	transition: 0ms;
 }
@@ -304,7 +319,8 @@ input{
 	max-width: rem(500);
 }
 .example-item{
-	display: flex;
+	// display: flex;
+	clear: both;
 	&:hover{
 		cursor: pointer;
 		.example-text{
@@ -313,6 +329,9 @@ input{
 		.btn-speaker{
 			color: $teal;
 		}
+	}
+	.btn-speaker{
+		clear: right;
 	}
 }
 .example-text{

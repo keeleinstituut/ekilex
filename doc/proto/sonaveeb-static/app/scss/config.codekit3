@@ -7,7 +7,7 @@
 		"uuidString": "5433DB9B-CB0B-4618-86FA-0DCC7ABBDF7A"
 		}
 	],
-"creatorBuild": "26330",
+"creatorBuild": "26680",
 "files": {
 	"\/.sass-cache\/1a7126c546b1439e95eb5128b0665ee7d982b29b\/_eki.scssc": {
 		"cB": 0,
@@ -1541,7 +1541,8 @@
 	"creationDate": 541690501,
 	"displayValue": "scss",
 	"displayValueWasSetByUser": 0,
-	"iconImageName": "meme-yesBaby"
+	"iconImageName": "meme-yesBaby",
+	"iconImageWasSetByUser": 0
 	},
 "projectSettings": {
 	"abortBuildOnError": 1,
@@ -3344,6 +3345,7 @@
 		"autoOutputPathReplace1": "",
 		"autoOutputPathReplace2": "",
 		"autoOutputPathStyle": 0,
+		"outputFormat": 0,
 		"quality": 100
 		},
 	"languageDefaultsJS": {
