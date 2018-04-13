@@ -7,6 +7,7 @@ package eki.wordweb.data.db;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
@@ -42,6 +43,8 @@ public class Indexes {
     public static final Index MVIEW_WW_LEXEME_LEXEME_ID_IDX = Indexes0.MVIEW_WW_LEXEME_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_LEXEME_MEANING_ID_IDX = Indexes0.MVIEW_WW_LEXEME_MEANING_ID_IDX;
     public static final Index MVIEW_WW_LEXEME_WORD_ID_IDX = Indexes0.MVIEW_WW_LEXEME_WORD_ID_IDX;
+    public static final Index MVIEW_WW_LEXEME_RELATION_LEX1_ID_IDX = Indexes0.MVIEW_WW_LEXEME_RELATION_LEX1_ID_IDX;
+    public static final Index MVIEW_WW_LEXEME_RELATION_LEX2_ID_IDX = Indexes0.MVIEW_WW_LEXEME_RELATION_LEX2_ID_IDX;
     public static final Index MVIEW_WW_MEANING_LEXEME_ID_IDX = Indexes0.MVIEW_WW_MEANING_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_MEANING_MEANING_ID_IDX = Indexes0.MVIEW_WW_MEANING_MEANING_ID_IDX;
     public static final Index MVIEW_WW_MEANING_WORD_ID_IDX = Indexes0.MVIEW_WW_MEANING_WORD_ID_IDX;
@@ -62,6 +65,8 @@ public class Indexes {
         public static Index MVIEW_WW_LEXEME_LEXEME_ID_IDX = Internal.createIndex("mview_ww_lexeme_lexeme_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.LEXEME_ID }, false);
         public static Index MVIEW_WW_LEXEME_MEANING_ID_IDX = Internal.createIndex("mview_ww_lexeme_meaning_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.MEANING_ID }, false);
         public static Index MVIEW_WW_LEXEME_WORD_ID_IDX = Internal.createIndex("mview_ww_lexeme_word_id_idx", MviewWwLexeme.MVIEW_WW_LEXEME, new OrderField[] { MviewWwLexeme.MVIEW_WW_LEXEME.WORD_ID }, false);
+        public static Index MVIEW_WW_LEXEME_RELATION_LEX1_ID_IDX = Internal.createIndex("mview_ww_lexeme_relation_lex1_id_idx", MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION, new OrderField[] { MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION.LEXEME1_ID }, false);
+        public static Index MVIEW_WW_LEXEME_RELATION_LEX2_ID_IDX = Internal.createIndex("mview_ww_lexeme_relation_lex2_id_idx", MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION, new OrderField[] { MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION.LEXEME2_ID }, false);
         public static Index MVIEW_WW_MEANING_LEXEME_ID_IDX = Internal.createIndex("mview_ww_meaning_lexeme_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.LEXEME_ID }, false);
         public static Index MVIEW_WW_MEANING_MEANING_ID_IDX = Internal.createIndex("mview_ww_meaning_meaning_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.MEANING_ID }, false);
         public static Index MVIEW_WW_MEANING_WORD_ID_IDX = Internal.createIndex("mview_ww_meaning_word_id_idx", MviewWwMeaning.MVIEW_WW_MEANING, new OrderField[] { MviewWwMeaning.MVIEW_WW_MEANING.WORD_ID }, false);

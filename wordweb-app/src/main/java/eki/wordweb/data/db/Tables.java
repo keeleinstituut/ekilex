@@ -8,6 +8,7 @@ import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
@@ -47,6 +48,11 @@ public class Tables {
      * The table <code>public.mview_ww_lexeme</code>.
      */
     public static final MviewWwLexeme MVIEW_WW_LEXEME = eki.wordweb.data.db.tables.MviewWwLexeme.MVIEW_WW_LEXEME;
+
+    /**
+     * The table <code>public.mview_ww_lexeme_relation</code>.
+     */
+    public static final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
 
     /**
      * The table <code>public.mview_ww_meaning</code>.
