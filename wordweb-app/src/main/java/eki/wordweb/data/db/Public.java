@@ -8,8 +8,10 @@ import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
+import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeUsage;
@@ -40,7 +42,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 540755050;
+    private static final long serialVersionUID = 179479218;
 
     /**
      * The reference instance of <code>public</code>
@@ -68,6 +70,11 @@ public class Public extends SchemaImpl {
     public final MviewWwLexeme MVIEW_WW_LEXEME = eki.wordweb.data.db.tables.MviewWwLexeme.MVIEW_WW_LEXEME;
 
     /**
+     * The table <code>public.mview_ww_lexeme_relation</code>.
+     */
+    public final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
+
+    /**
      * The table <code>public.mview_ww_meaning</code>.
      */
     public final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
@@ -76,6 +83,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_word</code>.
      */
     public final MviewWwWord MVIEW_WW_WORD = eki.wordweb.data.db.tables.MviewWwWord.MVIEW_WW_WORD;
+
+    /**
+     * The table <code>public.mview_ww_word_relation</code>.
+     */
+    public final MviewWwWordRelation MVIEW_WW_WORD_RELATION = eki.wordweb.data.db.tables.MviewWwWordRelation.MVIEW_WW_WORD_RELATION;
 
     /**
      * No further instances allowed
@@ -106,8 +118,10 @@ public class Public extends SchemaImpl {
             MviewWwDataset.MVIEW_WW_DATASET,
             MviewWwForm.MVIEW_WW_FORM,
             MviewWwLexeme.MVIEW_WW_LEXEME,
+            MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
             MviewWwMeaning.MVIEW_WW_MEANING,
-            MviewWwWord.MVIEW_WW_WORD);
+            MviewWwWord.MVIEW_WW_WORD,
+            MviewWwWordRelation.MVIEW_WW_WORD_RELATION);
     }
 
     @Override

@@ -2,12 +2,15 @@ package eki.wordweb.service.db;
 
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 
 import java.util.List;
 import java.util.Map;
 
+import eki.wordweb.data.Relation;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -166,4 +169,29 @@ public class LexSearchDbService {
 				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.FORM_ID)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}
+
+	public List<Relation> findWordRelations(Long wordId) {
+		return create
+				.select(
+						MVIEW_WW_WORD_RELATION.WORD2_ID.as("targetId"),
+						MVIEW_WW_WORD_RELATION.WORD2.as("label"),
+						MVIEW_WW_WORD_RELATION.WORD_REL_TYPE_CODE.as("relationTypeCode")
+				)
+				.from(MVIEW_WW_WORD_RELATION).where(MVIEW_WW_WORD_RELATION.WORD1_ID.eq(wordId))
+				.fetch()
+				.into(Relation.class);
+	}
+
+	public List<Relation> findLexemeRelations(Long lexemeId) {
+		return create
+				.select(
+						MVIEW_WW_LEXEME_RELATION.LEXEME1_ID.as("targetId"),
+						MVIEW_WW_LEXEME_RELATION.WORD2.as("label"),
+						MVIEW_WW_LEXEME_RELATION.LEX_REL_TYPE_CODE.as("relationTypeCode")
+				)
+				.from(MVIEW_WW_LEXEME_RELATION).where(MVIEW_WW_LEXEME_RELATION.LEXEME1_ID.eq(lexemeId))
+				.fetch()
+				.into(Relation.class);
+	}
+
 }

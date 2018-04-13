@@ -9,6 +9,8 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.ClassifierName;
+import eki.wordweb.data.Relation;
 import eki.wordweb.data.WordsData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -51,14 +53,14 @@ public class LexSearchService implements InitializingBean {
 
 		String languagesDatasetKey = sourceLang + destinLang;
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
-		List<Word> formMatchWords = lexSearchDbService.findWords(searchFilter, sourceLang, datasets);
-		conversionUtil.filterLanguageValues(formMatchWords, destinLang);
-		List<Word> fullMatchWords = formMatchWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
+		List<Word> allWords = lexSearchDbService.findWords(searchFilter, sourceLang, datasets);
+		conversionUtil.filterLanguageValues(allWords, destinLang);
+		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
-			List<Word> partialMatchWords = formMatchWords.stream().filter(word -> !fullMatchWords.contains(word)).collect(Collectors.toList());
-			return new WordsData(fullMatchWords, partialMatchWords);
+			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(word -> word.getWord()).distinct().collect(Collectors.toList());
+			return new WordsData(fullMatchWords, formMatchWords);
 		}
-		return new WordsData(formMatchWords, Collections.emptyList());
+		return new WordsData(allWords, Collections.emptyList());
 	}
 
 	@Transactional
@@ -77,13 +79,20 @@ public class LexSearchService implements InitializingBean {
 			if (CollectionUtils.isNotEmpty(lexeme.getImageFiles())) {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
+			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexeme.getLexemeId());
+			lexemeRelations = conversionUtil.compactRelationsByLabelAndType(lexemeRelations);
+			conversionUtil.composeRelations(lexemeRelations, ClassifierName.LEX_REL_TYPE, displayLang);
+			lexeme.setLexemeRelations(lexemeRelations);
 		});
+		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId);
+		conversionUtil.composeRelations(wordRelations, ClassifierName.WORD_REL_TYPE, displayLang);
 
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
+		wordData.setWordRelations(wordRelations);
 		return wordData;
 	}
 }

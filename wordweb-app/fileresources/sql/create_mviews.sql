@@ -4,6 +4,8 @@ drop materialized view if exists mview_ww_word;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
+drop materialized view if exists mview_ww_word_relation;
+drop materialized view if exists mview_ww_lexeme_relation;
 drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
@@ -118,6 +120,36 @@ dblink(
 	lang char(3)
 );
 
+create materialized view mview_ww_word_relation as
+select * from
+dblink(
+		'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+		'select * from view_ww_word_relation') as word_relation(
+		word1_id bigint,
+		word1 text,
+		lang1 char(3),
+		word2_id bigint,
+		word2 text,
+		lang2 char(3),
+		word_rel_type_code varchar(100),
+	  order_by bigint
+);
+
+create materialized view mview_ww_lexeme_relation as
+select * from
+dblink(
+		'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+		'select * from view_ww_lexeme_relation') as lexeme_relation(
+		lexeme1_id bigint,
+		word1 text,
+		lang1 char(3),
+		lexeme2_id bigint,
+		word2 text,
+		lang2 char(3),
+		lex_rel_type_code varchar(100),
+	  order_by bigint
+);
+
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
@@ -131,3 +163,7 @@ create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
 create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);
+create index mview_ww_word_relation_word1_id_idx on mview_ww_word_relation (word1_id);
+create index mview_ww_word_relation_word2_id_idx on mview_ww_word_relation (word2_id);
+create index mview_ww_lexeme_relation_lex1_id_idx on mview_ww_lexeme_relation (lexeme1_id);
+create index mview_ww_lexeme_relation_lex2_id_idx on mview_ww_lexeme_relation (lexeme2_id);
