@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -197,6 +198,18 @@ public class ConversionUtil {
 			Classifier relationTypeClassifier = getClassifier(relationType, relation.getRelationTypeCode(), lang);
 			relation.setRelationType(relationTypeClassifier);
 		});
+	}
+
+	public List<Relation> compactRelationsByLabelAndType(List<Relation> lexemeRelations) {
+		List<Relation> compactedRelations = new ArrayList<>();
+		lexemeRelations.forEach(relation -> {
+			boolean noneMatch = compactedRelations.stream().noneMatch(
+					r -> Objects.equals(relation.getLabel(), r.getLabel()) && Objects.equals(relation.getRelationTypeCode(), r.getRelationTypeCode()));
+			if (noneMatch) {
+				compactedRelations.add(relation);
+			}
+		});
+		return compactedRelations;
 	}
 
 	private String getDatasetName(String code, String lang) {

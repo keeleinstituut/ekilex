@@ -55,6 +55,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Word> otherLangMatchWords;
 
+	private List<Relation> lexemeRelations;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -237,6 +239,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setOtherLangMatchWords(List<Word> otherLangMatchWords) {
 		this.otherLangMatchWords = otherLangMatchWords;
+	}
+
+	public List<Relation> getLexemeRelations() {
+		return lexemeRelations;
+	}
+
+	public void setLexemeRelations(List<Relation> lexemeRelations) {
+		this.lexemeRelations = lexemeRelations;
 	}
 
 }

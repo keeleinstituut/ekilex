@@ -79,6 +79,10 @@ public class LexSearchService implements InitializingBean {
 			if (CollectionUtils.isNotEmpty(lexeme.getImageFiles())) {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
+			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexeme.getLexemeId());
+			lexemeRelations = conversionUtil.compactRelationsByLabelAndType(lexemeRelations);
+			conversionUtil.composeRelations(lexemeRelations, ClassifierName.LEX_REL_TYPE, displayLang);
+			lexeme.setLexemeRelations(lexemeRelations);
 		});
 		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId);
 		conversionUtil.composeRelations(wordRelations, ClassifierName.WORD_REL_TYPE, displayLang);
