@@ -305,7 +305,7 @@ function initialisePage() {
         calculateAndSetStyles();
         if ($(window).width() > windowWidthTreshold) {
           $('.homonym-list').animate({
-              scrollLeft: $('.homonym-item.selected').parent().position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
+              scrollLeft: $('.homonym-item.selected homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
             },
             200);
         } else {

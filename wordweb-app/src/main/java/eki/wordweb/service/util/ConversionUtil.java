@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -22,6 +23,7 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.Relation;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeWord;
@@ -189,6 +191,25 @@ public class ConversionUtil {
 		}
 		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
 		return paradigms;
+	}
+
+	public void composeRelations(List<Relation> relations, ClassifierName relationType, String lang) {
+		relations.forEach(relation -> {
+			Classifier relationTypeClassifier = getClassifier(relationType, relation.getRelationTypeCode(), lang);
+			relation.setRelationType(relationTypeClassifier);
+		});
+	}
+
+	public List<Relation> compactRelationsByLabelAndType(List<Relation> lexemeRelations) {
+		List<Relation> compactedRelations = new ArrayList<>();
+		lexemeRelations.forEach(relation -> {
+			boolean noneMatch = compactedRelations.stream().noneMatch(
+					r -> Objects.equals(relation.getLabel(), r.getLabel()) && Objects.equals(relation.getRelationTypeCode(), r.getRelationTypeCode()));
+			if (noneMatch) {
+				compactedRelations.add(relation);
+			}
+		});
+		return compactedRelations;
 	}
 
 	private String getDatasetName(String code, String lang) {

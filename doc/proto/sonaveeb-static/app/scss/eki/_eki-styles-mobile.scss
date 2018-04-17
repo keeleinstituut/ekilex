@@ -1,5 +1,10 @@
 // MOBILE
 ////////////////////////////////
+@media (min-width: 375px) and (min-height: 532px) and (max-width: 767px)  {
+	html{
+		font-size: calc( (4.2666666666666666666666666vw + 3.007518797vh) / 2 );
+	}
+}
 
 @include media-breakpoint-down(sm) {
 
@@ -20,6 +25,7 @@ html{
 .lang-btn{
 	position: fixed;
 	top:0;
+	font-size: $supertiny-font-size;
 	width: 50%;
 	margin: 0 calc(25% - 15px ) ;
 	z-index: 1111;
@@ -36,12 +42,13 @@ html{
 }
 .homonym-item{
 	display: block;
+	position: relative;
 	overflow: hidden;
-	min-height: rem(100);
+	// min-height: rem(100);
 	margin-left:-($gutter);
 	margin-right:-($gutter);
-	padding-left:$gutter;
-	padding-right:$gutter;
+	padding:$gutter;
+	padding-right: (3 * $gutter); 
 	border-bottom: $border-width $border-color solid ;
 	&.last-selected{
 		background-color: rgba($primary, 0.05);
@@ -51,16 +58,54 @@ html{
 		white-space: nowrap;
 		float: left;
 	}
-}
-.homonym-intro{
-	*{
-		white-space: nowrap;
+	&:after{
+		content: unicode($icon-arrow-right);
+		font-family: 'material-icons';
+		position: absolute;
+		top:50%;
+		right:$gutter;
+		width:$gutter;
+		height:$gutter;
+		margin-top: -($gutter / 2);
 	}
+}
+.homonym-item-wrap{
+	max-width: 100%;
+}
+.homonym-name,
+.homonym-matches,
+.homonym-intro{
+		white-space: nowrap !important;
+		text-overflow: ellipsis !important; 
+		overflow: hidden !important;
+		max-width: 100%;
+	}
+.homonym-nr{
+    // height: rem(22);
+    // width: rem(22);
+    // display: inline-block;
+    // font-size: $tiny-font-size;
+    padding-top: rem(2);
+    top: rem(-1);
+    margin: 0 rem(10);
+}
+.homonym-matches{
+	font-size: $font-size-base;
+	font-weight: $font-weight-normal;
+}
+.word-details{
+	margin-top: rem(70);
+}
+.level-3-panel{
+	padding-top:$gutter * 1.5;
+	padding-bottom:$gutter * 1.5;
 }
 .examples-wrap{
 	float:right;
 }
-
+.btn-speaker{
+	color: $teal;
+}
 ////////////////////////////////
 
 }

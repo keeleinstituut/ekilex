@@ -147,6 +147,12 @@
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span class="homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
             </h3>
+            <button class="btn btn-speaker">
+              <span class="icon icon-speaker"></span>
+            </button>
+            <button class="btn btn-speaker">
+              <span class="icon icon-search"></span>
+            </button>
           </div>
         </div>
         <div class="row">
@@ -190,6 +196,19 @@
                   </div>
                   <div class="additional-meta">
                     <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+                      <div class="col-3">
+                        <b>Seosed</b>
+                      </div>
+                      <div class="col-9">
+                        <div th:each="relation, relationIter : ${lexeme.lexemeRelations}">
+                          <a th:id="${'word_search_link_lex_rel_' + lexeme.lexemeId + '_' + relationIter.count}" href="">
+                            <span th:text="${relation.getLabel()}"></span>
+                          </a>
+                          <span th:text="${'('+relation.getRelationType().getValue()+')'}"></span>
+                        </div>
+                      </div>
+                    </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.adviceNotes)}">
                       <div class="col-3">
                         <b>Keelenõu</b>
@@ -271,7 +290,7 @@
                     <h6 th:if="${government.government != '-'}" th:text="${government.government}"></h6>
                     <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
                       <!-- kasutusnäite tähendused -->
-                      <span class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
+                      <div class="example-item" th:each="usageMeaning : ${government.usageMeanings}">
                         <!-- Kliendiga kokku lepitud: Kasutusnäite tähendusI ei näita -->
                         <!-- <span th:text="${usageMeaning.usageMeaningType.value}" th:if="${usageMeaning.usageMeaningType != null}">
                         </span> -->
@@ -299,7 +318,7 @@
                             <span class="example-text" th:text="${usageDefinition}"></span>
                           </span>
                         </span> -->
-                      </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -377,9 +396,20 @@
             </div>
              -->
             <!-- esialgne morfoloogia -->
+            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.wordRelations)}">
+              <div class="col-12">
+                <h6>Sõna seosed</h6>
+                <div style="margin-bottom: 0.5em;" th:each="relation, relationIter : ${wordData.wordRelations}">
+                  <a th:id="${'word_search_link_rel_' + relationIter.count}" href="">
+                    <span th:text="${relation.getLabel()}"></span>
+                  </a>
+                  <span th:text="${'('+relation.getRelationType().getValue()+')'}"></span>
+                </div>
+              </div>
+            </div>
             <div class="level-3-panel morphology-test row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
-              <h6>Sõnavormid</h6>
               <div class="col" th:each="paradigm : ${wordData.paradigms}">
+                <h6>Sõnavormid</h6>
                 <div th:if="${not #lists.isEmpty(paradigm.forms)}">
                   <table>
                     <tr th:each="form : ${paradigm.forms}">

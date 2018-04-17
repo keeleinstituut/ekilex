@@ -30,7 +30,7 @@
       <span th:text="#{lex.not.found}">Not found.</span>
     </div>
 
-    <div class="mt-4 float-left" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 15em); width: 15%; overflow-y: auto;">
+    <div class="mt-4 float-left" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 18em); width: 15%; overflow-y: auto;">
       <div>
         <a href="javascript:void(0);" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
       </div>
@@ -60,7 +60,7 @@
   </div>
 
   <th:block th:fragment="details" th:if="${details != null}">
-    <div th:data-id="${wordId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 15em); width: 85%; overflow-y: auto;">
+    <div th:data-id="${wordId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 18em); width: 85%; overflow-y: auto;">
       <div class="float-left" style="width:70%">
         <th:block th:each="lexeme : ${details.lexemes}">
           <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
