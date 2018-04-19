@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -23,10 +22,11 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
-import eki.wordweb.data.Relation;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
+import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeWord;
+import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.UsageMeaning;
 import eki.wordweb.data.Word;
 import eki.wordweb.service.db.CommonDataDbService;
@@ -167,6 +167,16 @@ public class ConversionUtil {
 				usageMeaningMap.put(usageMeaningId, usageMeaning);
 				government.getUsageMeanings().add(usageMeaning);
 			}
+
+			List<TypeLexemeRelation> relatedLexemes = tuple.getRelatedLexemes();
+			if (CollectionUtils.isNotEmpty(relatedLexemes)) {
+				for (TypeLexemeRelation lexemeRelation : relatedLexemes) {
+					classifierCode = lexemeRelation.getLexRelTypeCode();
+					classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
+					lexemeRelation.setLexRelType(classifier);
+				}
+			}
+			lexeme.setRelatedLexemes(relatedLexemes);
 		}
 		return lexemes;
 	}
@@ -193,23 +203,18 @@ public class ConversionUtil {
 		return paradigms;
 	}
 
-	public void composeRelations(List<Relation> relations, ClassifierName relationType, String lang) {
-		relations.forEach(relation -> {
-			Classifier relationTypeClassifier = getClassifier(relationType, relation.getRelationTypeCode(), lang);
-			relation.setRelationType(relationTypeClassifier);
-		});
-	}
+	public void populateWordRelationClassifiers(Word word, String displayLang) {
 
-	public List<Relation> compactRelationsByLabelAndType(List<Relation> lexemeRelations) {
-		List<Relation> compactedRelations = new ArrayList<>();
-		lexemeRelations.forEach(relation -> {
-			boolean noneMatch = compactedRelations.stream().noneMatch(
-					r -> Objects.equals(relation.getLabel(), r.getLabel()) && Objects.equals(relation.getRelationTypeCode(), r.getRelationTypeCode()));
-			if (noneMatch) {
-				compactedRelations.add(relation);
-			}
-		});
-		return compactedRelations;
+		if (CollectionUtils.isEmpty(word.getRelatedWords())) {
+			return;
+		}
+		String classifierCode;
+		Classifier classifier;
+		for (TypeWordRelation wordRelation : word.getRelatedWords()) {
+			classifierCode = wordRelation.getWordRelTypeCode();
+			classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
+			wordRelation.setWordRelType(classifier);
+		}
 	}
 
 	private String getDatasetName(String code, String lang) {

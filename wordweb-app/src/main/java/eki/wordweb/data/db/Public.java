@@ -14,8 +14,10 @@ import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
+import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWord;
+import eki.wordweb.data.db.udt.TypeWordRelation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +44,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 179479218;
+    private static final long serialVersionUID = 691764056;
 
     /**
      * The reference instance of <code>public</code>
@@ -135,7 +137,9 @@ public class Public extends SchemaImpl {
         return Arrays.<UDT<?>>asList(
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
+            TypeLexemeRelation.TYPE_LEXEME_RELATION,
             TypeUsage.TYPE_USAGE,
-            TypeWord.TYPE_WORD);
+            TypeWord.TYPE_WORD,
+            TypeWordRelation.TYPE_WORD_RELATION);
     }
 }

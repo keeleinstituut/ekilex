@@ -7,6 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwLexemeRelationRecord;
+import eki.wordweb.data.db.udt.records.TypeLexemeRelationRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord> {
 
-    private static final long serialVersionUID = -242262522;
+    private static final long serialVersionUID = -2119446433;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme_relation</code>
@@ -52,44 +53,14 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
     }
 
     /**
-     * The column <code>public.mview_ww_lexeme_relation.lexeme1_id</code>.
+     * The column <code>public.mview_ww_lexeme_relation.lexeme_id</code>.
      */
-    public final TableField<MviewWwLexemeRelationRecord, Long> LEXEME1_ID = createField("lexeme1_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRelationRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_lexeme_relation.word1</code>.
+     * The column <code>public.mview_ww_lexeme_relation.related_lexemes</code>.
      */
-    public final TableField<MviewWwLexemeRelationRecord, String> WORD1 = createField("word1", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme_relation.lang1</code>.
-     */
-    public final TableField<MviewWwLexemeRelationRecord, String> LANG1 = createField("lang1", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme_relation.lexeme2_id</code>.
-     */
-    public final TableField<MviewWwLexemeRelationRecord, Long> LEXEME2_ID = createField("lexeme2_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme_relation.word2</code>.
-     */
-    public final TableField<MviewWwLexemeRelationRecord, String> WORD2 = createField("word2", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme_relation.lang2</code>.
-     */
-    public final TableField<MviewWwLexemeRelationRecord, String> LANG2 = createField("lang2", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme_relation.lex_rel_type_code</code>.
-     */
-    public final TableField<MviewWwLexemeRelationRecord, String> LEX_REL_TYPE_CODE = createField("lex_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_lexeme_relation.order_by</code>.
-     */
-    public final TableField<MviewWwLexemeRelationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwLexemeRelationRecord, TypeLexemeRelationRecord[]> RELATED_LEXEMES = createField("related_lexemes", eki.wordweb.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_lexeme_relation</code> table reference
@@ -133,7 +104,7 @@ public class MviewWwLexemeRelation extends TableImpl<MviewWwLexemeRelationRecord
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_RELATION_LEX1_ID_IDX, Indexes.MVIEW_WW_LEXEME_RELATION_LEX2_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_LEXEME_RELATION_LEXEME_ID_IDX);
     }
 
     /**

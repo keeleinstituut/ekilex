@@ -7,6 +7,7 @@ package eki.wordweb.data.db.tables;
 import eki.wordweb.data.db.Indexes;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.tables.records.MviewWwWordRelationRecord;
+import eki.wordweb.data.db.udt.records.TypeWordRelationRecord;
 
 import java.util.Arrays;
 import java.util.List;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
 
-    private static final long serialVersionUID = 51354491;
+    private static final long serialVersionUID = 54566575;
 
     /**
      * The reference instance of <code>public.mview_ww_word_relation</code>
@@ -52,44 +53,14 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
     }
 
     /**
-     * The column <code>public.mview_ww_word_relation.word1_id</code>.
+     * The column <code>public.mview_ww_word_relation.word_id</code>.
      */
-    public final TableField<MviewWwWordRelationRecord, Long> WORD1_ID = createField("word1_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRelationRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_word_relation.word1</code>.
+     * The column <code>public.mview_ww_word_relation.related_words</code>.
      */
-    public final TableField<MviewWwWordRelationRecord, String> WORD1 = createField("word1", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.lang1</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, String> LANG1 = createField("lang1", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.word2_id</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, Long> WORD2_ID = createField("word2_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.word2</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, String> WORD2 = createField("word2", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.lang2</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, String> LANG2 = createField("lang2", org.jooq.impl.SQLDataType.CHAR(3), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.word_rel_type_code</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_relation.order_by</code>.
-     */
-    public final TableField<MviewWwWordRelationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> RELATED_WORDS = createField("related_words", eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_word_relation</code> table reference
@@ -133,7 +104,7 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_RELATION_WORD1_ID_IDX, Indexes.MVIEW_WW_WORD_RELATION_WORD2_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_WORD_RELATION_WORD_ID_IDX);
     }
 
     /**

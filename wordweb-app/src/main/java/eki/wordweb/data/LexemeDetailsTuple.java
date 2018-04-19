@@ -32,6 +32,8 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	private List<String> usageDefinitions;
 
+	private List<TypeLexemeRelation> relatedLexemes;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -126,6 +128,14 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	public void setUsageDefinitions(List<String> usageDefinitions) {
 		this.usageDefinitions = usageDefinitions;
+	}
+
+	public List<TypeLexemeRelation> getRelatedLexemes() {
+		return relatedLexemes;
+	}
+
+	public void setRelatedLexemes(List<TypeLexemeRelation> relatedLexemes) {
+		this.relatedLexemes = relatedLexemes;
 	}
 
 }

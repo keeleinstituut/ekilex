@@ -9,9 +9,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.common.constant.ClassifierName;
-import eki.wordweb.data.Relation;
-import eki.wordweb.data.WordsData;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -25,6 +22,7 @@ import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
+import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ConversionUtil;
 
@@ -69,6 +67,7 @@ public class LexSearchService implements InitializingBean {
 		String languagesDatasetKey = sourceLang + destinLang;
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		Word word = lexSearchDbService.getWord(wordId);
+		conversionUtil.populateWordRelationClassifiers(word, displayLang);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, sourceLang, destinLang, displayLang);
@@ -79,20 +78,12 @@ public class LexSearchService implements InitializingBean {
 			if (CollectionUtils.isNotEmpty(lexeme.getImageFiles())) {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
-			List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexeme.getLexemeId());
-			lexemeRelations = conversionUtil.compactRelationsByLabelAndType(lexemeRelations);
-			conversionUtil.composeRelations(lexemeRelations, ClassifierName.LEX_REL_TYPE, displayLang);
-			lexeme.setLexemeRelations(lexemeRelations);
 		});
-		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId);
-		conversionUtil.composeRelations(wordRelations, ClassifierName.WORD_REL_TYPE, displayLang);
-
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
-		wordData.setWordRelations(wordRelations);
 		return wordData;
 	}
 }

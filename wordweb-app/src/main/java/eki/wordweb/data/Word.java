@@ -32,6 +32,8 @@ public class Word extends AbstractDataObject {
 
 	private String definitionsWrapup;
 
+	private List<TypeWordRelation> relatedWords;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -126,6 +128,14 @@ public class Word extends AbstractDataObject {
 
 	public void setDefinitionsWrapup(String definitionsWrapup) {
 		this.definitionsWrapup = definitionsWrapup;
+	}
+
+	public List<TypeWordRelation> getRelatedWords() {
+		return relatedWords;
+	}
+
+	public void setRelatedWords(List<TypeWordRelation> relatedWords) {
+		this.relatedWords = relatedWords;
 	}
 
 }

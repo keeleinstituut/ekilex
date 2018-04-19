@@ -10,6 +10,8 @@ drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
+drop type if exists type_word_relation;
+drop type if exists type_lexeme_relation;
 
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;

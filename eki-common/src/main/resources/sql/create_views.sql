@@ -2,7 +2,10 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
+create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
+create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
 
+-- words
 create view view_ww_word 
 as
 select w.word_id,
@@ -80,6 +83,7 @@ from (select w.id as word_id,
                                   d.order_by) wd
                    group by wd.word_id) wd on wd.word_id = w.word_id;
 
+-- word forms
 create view view_ww_form
   as
     select p.word_id,
@@ -100,6 +104,7 @@ create view view_ww_form
                         where (ld.word_id = p.word_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
     order by f.id;
 
+-- lexeme meanings
 create view view_ww_meaning 
   as
     select l.word_id,
@@ -172,6 +177,7 @@ create view view_ww_meaning
              l.meaning_id,
              l.id;
 
+-- lexeme details
 create view view_ww_lexeme 
   as
     select l.id lexeme_id,
@@ -247,6 +253,57 @@ create view view_ww_lexeme
     where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
     order by l.id;
 
+-- word relations
+create view view_ww_word_relation 
+  as
+    select w1.id word_id,
+           array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
+    from word w1
+      inner join (select r.word1_id,
+                         r.word2_id related_word_id,
+                         r.word_rel_type_code,
+                         r.order_by word_rel_order_by,
+                         f2.value related_word,
+                         w2.lang related_word_lang
+                  from word_relation r,
+                       word w2,
+                       paradigm p2,
+                       form f2
+                  where r.word2_id = w2.id
+                  and   p2.word_id = w2.id
+                  and   f2.paradigm_id = p2.id
+                  and   f2.is_word = true
+                  and   exists (select l2.id
+                                from lexeme l2
+                                where l2.word_id = w2.id
+                                and   l2.dataset_code in ('qq2', 'psv', 'ss1', 'kol'))) w2 on w2.word1_id = w1.id
+    where exists (select l1.id
+                  from lexeme l1
+                  where l1.word_id = w1.id
+                  and   l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol'))
+    group by w1.id;
+
+-- lexeme relations
+create view view_ww_lexeme_relation 
+  as
+    select r.lexeme1_id lexeme_id,
+           array_agg(row (l2.related_lexeme_id,l2.related_word_id,l2.related_word,l2.related_word_lang,r.lex_rel_type_code)::type_lexeme_relation order by r.order_by) related_lexemes
+    from lex_relation r
+      inner join (select l2.id related_lexeme_id,
+                         w2.id related_word_id,
+                         w2.lang related_word_lang,
+                         f2.value related_word
+                  from lexeme l2,
+                       word w2,
+                       paradigm p2,
+                       form f2
+                  where f2.is_word = true
+                  and   f2.paradigm_id = p2.id
+                  and   p2.word_id = w2.id
+                  and   l2.word_id = w2.id) l2 on l2.related_lexeme_id = r.lexeme2_id
+    group by r.lexeme1_id;
+
+-- datasets, classifiers
 create view view_ww_dataset
   as
     (select
@@ -340,54 +397,4 @@ create view view_ww_classifier
        lang
      from lex_rel_type_label
      where type = 'full'
-    );
-
-create view view_ww_word_relation
-  as
-    (select distinct
-       wr.word1_id,
-       f.value as word1,
-       w1.lang as lang1,
-       wr.word2_id,
-       f2.value as word2,
-       w2.lang as lang2,
-       wr.word_rel_type_code,
-       wr.order_by
-     from word_relation wr
-      left join word w1 on w1.id = wr.word1_id
-      left join paradigm p on p.word_id = wr.word1_id
-      left join form f on f.paradigm_id = p.id and f.is_word = true
-      left join word w2 on w2.id = wr.word2_id
-      left join paradigm p2 on p2.word_id = wr.word2_id
-      left join form f2 on f2.paradigm_id = p2.id and f2.is_word = true
-      and exists (select ld.id
-                  from lexeme as ld
-                  where (ld.word_id = wr.word1_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
-      and exists (select ld.id
-                  from lexeme as ld
-                  where (ld.word_id = wr.word2_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
-      order by wr.order_by
-    );
-
-create view view_ww_lexeme_relation
-  as
-    (select distinct
-       lr.lexeme1_id,
-       f.value as word1,
-       w1.lang as lang1,
-       lr.lexeme2_id,
-       f2.value as word2,
-       w2.lang as lang2,
-       lr.lex_rel_type_code,
-       lr.order_by
-     from lex_relation lr
-       left join lexeme l1 on l1.id = lr.lexeme1_id and l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
-       left join word w1 on w1.id = l1.word_id
-       left join paradigm p on p.word_id = w1.id
-       left join form f on f.paradigm_id = p.id and f.is_word = true
-       left join lexeme l2 on l2.id = lr.lexeme2_id and l2.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
-       left join word w2 on w2.id = l2.word_id
-       left join paradigm p2 on p2.word_id = w2.id
-       left join form f2 on f2.paradigm_id = p2.id and f2.is_word = true
-     order by lr.order_by
     );

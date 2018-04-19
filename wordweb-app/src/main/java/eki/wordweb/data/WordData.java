@@ -16,8 +16,6 @@ public class WordData extends AbstractDataObject {
 
 	private List<String> imageFiles;
 
-	private List<Relation> wordRelations;
-
 	public Word getWord() {
 		return word;
 	}
@@ -48,13 +46,5 @@ public class WordData extends AbstractDataObject {
 
 	public void setImageFiles(List<String> imageFiles) {
 		this.imageFiles = imageFiles;
-	}
-
-	public List<Relation> getWordRelations() {
-		return wordRelations;
-	}
-
-	public void setWordRelations(List<Relation> wordRelations) {
-		this.wordRelations = wordRelations;
 	}
 }

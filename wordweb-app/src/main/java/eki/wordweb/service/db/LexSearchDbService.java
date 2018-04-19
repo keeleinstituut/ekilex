@@ -10,7 +10,6 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 import java.util.List;
 import java.util.Map;
 
-import eki.wordweb.data.Relation;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +68,11 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
-						MVIEW_WW_WORD.DEFINITIONS
+						MVIEW_WW_WORD.DEFINITIONS,
+						MVIEW_WW_WORD_RELATION.RELATED_WORDS
 						)
-				.from(MVIEW_WW_WORD)
+				.from(MVIEW_WW_WORD
+						.leftOuterJoin(MVIEW_WW_WORD_RELATION).on(MVIEW_WW_WORD_RELATION.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)))
 				.where(MVIEW_WW_WORD.WORD_ID.eq(wordId))
 				.fetchOne()
 				.into(Word.class);
@@ -132,9 +133,11 @@ public class LexSearchDbService {
 						MVIEW_WW_LEXEME.USAGE_MEANING_TYPE_CODE,
 						MVIEW_WW_LEXEME.USAGES,
 						MVIEW_WW_LEXEME.USAGE_TRANSLATIONS,
-						MVIEW_WW_LEXEME.USAGE_DEFINITIONS
+						MVIEW_WW_LEXEME.USAGE_DEFINITIONS,
+						MVIEW_WW_LEXEME_RELATION.RELATED_LEXEMES
 						)
-				.from(MVIEW_WW_LEXEME)
+				.from(MVIEW_WW_LEXEME
+						.leftOuterJoin(MVIEW_WW_LEXEME_RELATION).on(MVIEW_WW_LEXEME_RELATION.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID)))
 				.where(
 						MVIEW_WW_LEXEME.WORD_ID.eq(wordId)
 						.and(DSL.exists(DSL
@@ -168,30 +171,6 @@ public class LexSearchDbService {
 				.where(MVIEW_WW_FORM.WORD_ID.eq(wordId))
 				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.FORM_ID)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
-	}
-
-	public List<Relation> findWordRelations(Long wordId) {
-		return create
-				.select(
-						MVIEW_WW_WORD_RELATION.WORD2_ID.as("targetId"),
-						MVIEW_WW_WORD_RELATION.WORD2.as("label"),
-						MVIEW_WW_WORD_RELATION.WORD_REL_TYPE_CODE.as("relationTypeCode")
-				)
-				.from(MVIEW_WW_WORD_RELATION).where(MVIEW_WW_WORD_RELATION.WORD1_ID.eq(wordId))
-				.fetch()
-				.into(Relation.class);
-	}
-
-	public List<Relation> findLexemeRelations(Long lexemeId) {
-		return create
-				.select(
-						MVIEW_WW_LEXEME_RELATION.LEXEME1_ID.as("targetId"),
-						MVIEW_WW_LEXEME_RELATION.WORD2.as("label"),
-						MVIEW_WW_LEXEME_RELATION.LEX_REL_TYPE_CODE.as("relationTypeCode")
-				)
-				.from(MVIEW_WW_LEXEME_RELATION).where(MVIEW_WW_LEXEME_RELATION.LEXEME1_ID.eq(lexemeId))
-				.fetch()
-				.into(Relation.class);
 	}
 
 }

@@ -196,16 +196,16 @@
                   </div>
                   <div class="additional-meta">
                     <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                       <div class="col-3">
                         <b>Seosed</b>
                       </div>
                       <div class="col-9">
-                        <div th:each="relation, relationIter : ${lexeme.lexemeRelations}">
-                          <a th:id="${'word_search_link_lex_rel_' + lexeme.lexemeId + '_' + relationIter.count}" href="">
-                            <span th:text="${relation.getLabel()}"></span>
+                        <div th:each="relation, relationIter : ${lexeme.relatedLexemes}">
+                          <a th:id="${'word_search_link_lex_rel_' + relationIter.count}" href="">
+                            <span th:text="${relation.word}"></span>
                           </a>
-                          <span th:text="${'('+relation.getRelationType().getValue()+')'}"></span>
+                          <span th:text="${'(' + relation.lexRelType.value + ')'}"></span>
                         </div>
                       </div>
                     </div>
@@ -395,18 +395,18 @@
               </button>
             </div>
              -->
-            <!-- esialgne morfoloogia -->
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.wordRelations)}">
+            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
               <div class="col-12">
                 <h6>Sõna seosed</h6>
-                <div style="margin-bottom: 0.5em;" th:each="relation, relationIter : ${wordData.wordRelations}">
-                  <a th:id="${'word_search_link_rel_' + relationIter.count}" href="">
-                    <span th:text="${relation.getLabel()}"></span>
+                <div style="margin-bottom: 0.5em;" th:each="relation, relationIter : ${wordData.word.relatedWords}">
+                  <a th:id="${'word_search_link_word_rel_' + relationIter.count}" href="">
+                    <span th:text="${relation.word}"></span>
                   </a>
-                  <span th:text="${'('+relation.getRelationType().getValue()+')'}"></span>
+                  <span th:text="${'(' + relation.wordRelType.value + ')'}"></span>
                 </div>
               </div>
             </div>
+            <!-- esialgne morfoloogia -->
             <div class="level-3-panel morphology-test row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col" th:each="paradigm : ${wordData.paradigms}">
                 <h6>Sõnavormid</h6>

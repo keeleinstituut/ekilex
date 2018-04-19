@@ -10,6 +10,8 @@ drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
+drop type if exists type_word_relation;
+drop type if exists type_lexeme_relation;
 
 -- run this once:
 -- CREATE EXTENSION dblink;
@@ -19,6 +21,8 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
+create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
+create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
 
 create materialized view mview_ww_word as
 select * from 
@@ -97,6 +101,25 @@ dblink(
 	usage_definitions text array
 );
 
+
+create materialized view mview_ww_word_relation as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_word_relation') as word_relation(
+	word_id bigint,
+	related_words type_word_relation array
+);
+
+create materialized view mview_ww_lexeme_relation as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_lexeme_relation') as lexeme_relation(
+	lexeme_id bigint,
+	related_lexemes type_lexeme_relation array
+);
+
 create materialized view mview_ww_dataset as
 select * from
 dblink(
@@ -120,36 +143,6 @@ dblink(
 	lang char(3)
 );
 
-create materialized view mview_ww_word_relation as
-select * from
-dblink(
-		'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-		'select * from view_ww_word_relation') as word_relation(
-		word1_id bigint,
-		word1 text,
-		lang1 char(3),
-		word2_id bigint,
-		word2 text,
-		lang2 char(3),
-		word_rel_type_code varchar(100),
-	  order_by bigint
-);
-
-create materialized view mview_ww_lexeme_relation as
-select * from
-dblink(
-		'host=localhost user=ekilex password=3kil3x dbname=ekilex',
-		'select * from view_ww_lexeme_relation') as lexeme_relation(
-		lexeme1_id bigint,
-		word1 text,
-		lang1 char(3),
-		lexeme2_id bigint,
-		word2 text,
-		lang2 char(3),
-		lex_rel_type_code varchar(100),
-	  order_by bigint
-);
-
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
@@ -161,9 +154,7 @@ create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
+create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
+create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
 create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
 create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);
-create index mview_ww_word_relation_word1_id_idx on mview_ww_word_relation (word1_id);
-create index mview_ww_word_relation_word2_id_idx on mview_ww_word_relation (word2_id);
-create index mview_ww_lexeme_relation_lex1_id_idx on mview_ww_lexeme_relation (lexeme1_id);
-create index mview_ww_lexeme_relation_lex2_id_idx on mview_ww_lexeme_relation (lexeme2_id);
