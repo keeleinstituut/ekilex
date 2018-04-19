@@ -188,6 +188,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocMemberOverloadGroupCount = new Count();
 		Count collocMemberGuessingHomonymMeaningCount = new Count();
 		Count collocMemberGuessedHomonymMeaningCount = new Count();
+		Count successfulCollocateMatchCount = new Count();
 		Count successfulCollocationMatchCount = new Count();
 
 		long articleCounter = 0;
@@ -305,6 +306,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 									collocMemberOverloadGroupCount,
 									collocMemberGuessingHomonymMeaningCount,
 									collocMemberGuessedHomonymMeaningCount,
+									successfulCollocateMatchCount,
 									successfulCollocationMatchCount,
 									doReports);
 						}
@@ -330,7 +332,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} overloaded colloc members groups", collocMemberOverloadGroupCount.getValue());
 		logger.debug("Found {} guess colloc member homonym/meaning attempts", collocMemberGuessingHomonymMeaningCount.getValue());
 		logger.debug("Found {} successfully guessed colloc member homonym/meaning", collocMemberGuessedHomonymMeaningCount.getValue());
-		logger.debug("Found {} successful collocation matches", successfulCollocationMatchCount.getValue());
+		logger.debug("Found {} successful collocate matches", successfulCollocateMatchCount.getValue());
+		logger.debug("Found {} collocations", successfulCollocationMatchCount.getValue());
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
@@ -576,6 +579,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			Count collocMemberOverloadGroupCount,
 			Count collocMemberGuessingHomonymMeaningCount,
 			Count collocMemberGuessedHomonymMeaningCount,
+			Count successfulCollocateMatchCount,
 			Count successfulCollocationMatchCount,
 			boolean doReports) throws Exception {
 
@@ -650,6 +654,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			}
 			String collocation = StringUtils.trim(collocBuf.toString());
 			Long collocId = createCollocation(collocation, frequency, score, collocUsages);
+			successfulCollocationMatchCount.increment();
 			bindedLexemeIds = new ArrayList<>();
 			bindedLexemeIds.add(lexemeId);
 
@@ -668,10 +673,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
 						createLexemeCollocation(lexemeId, collocRelGroupId, collocId);
-						successfulCollocationMatchCount.increment();
+						successfulCollocateMatchCount.increment();
 					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
 						createLexemeCollocation(lexemeId, collocRelGroupId, collocId);
-						successfulCollocationMatchCount.increment();
+						successfulCollocateMatchCount.increment();
 					} else if (collocMemberRefNum == null) {
 						//TODO just guessing here. should be determined by more intelligent logic
 						if (homonymWordMap.size() == 1) {
@@ -690,7 +695,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 								} else {
 									createLexemeCollocation(collocLexemeId, null, collocId);
 									bindedLexemeIds.add(collocLexemeId);
-									successfulCollocationMatchCount.increment();
+									successfulCollocateMatchCount.increment();
 								}
 								collocMemberGuessedHomonymMeaningCount.increment();
 							} else {
@@ -717,7 +722,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							} else {
 								createLexemeCollocation(collocLexemeId, null, collocId);
 								bindedLexemeIds.add(collocLexemeId);
-								successfulCollocationMatchCount.increment();
+								successfulCollocateMatchCount.increment();
 							}
 						}
 					}
