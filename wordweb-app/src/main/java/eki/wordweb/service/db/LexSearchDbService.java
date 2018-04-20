@@ -3,6 +3,7 @@ package eki.wordweb.service.db;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
@@ -134,10 +135,12 @@ public class LexSearchDbService {
 						MVIEW_WW_LEXEME.USAGES,
 						MVIEW_WW_LEXEME.USAGE_TRANSLATIONS,
 						MVIEW_WW_LEXEME.USAGE_DEFINITIONS,
-						MVIEW_WW_LEXEME_RELATION.RELATED_LEXEMES
+						MVIEW_WW_LEXEME_RELATION.RELATED_LEXEMES,
+						MVIEW_WW_MEANING_RELATION.RELATED_MEANINGS
 						)
 				.from(MVIEW_WW_LEXEME
-						.leftOuterJoin(MVIEW_WW_LEXEME_RELATION).on(MVIEW_WW_LEXEME_RELATION.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID)))
+						.leftOuterJoin(MVIEW_WW_LEXEME_RELATION).on(MVIEW_WW_LEXEME_RELATION.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID))
+						.leftOuterJoin(MVIEW_WW_MEANING_RELATION).on(MVIEW_WW_MEANING_RELATION.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID)))
 				.where(
 						MVIEW_WW_LEXEME.WORD_ID.eq(wordId)
 						.and(DSL.exists(DSL

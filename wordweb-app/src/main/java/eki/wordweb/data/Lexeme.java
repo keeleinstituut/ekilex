@@ -57,6 +57,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
+	private List<TypeMeaningRelation> relatedMeanings;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -247,6 +249,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setRelatedLexemes(List<TypeLexemeRelation> relatedLexemes) {
 		this.relatedLexemes = relatedLexemes;
+	}
+
+	public List<TypeMeaningRelation> getRelatedMeanings() {
+		return relatedMeanings;
+	}
+
+	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
+		this.relatedMeanings = relatedMeanings;
 	}
 
 }

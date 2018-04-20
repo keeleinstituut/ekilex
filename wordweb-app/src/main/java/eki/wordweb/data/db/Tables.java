@@ -10,6 +10,7 @@ import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
+import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 
@@ -58,6 +59,11 @@ public class Tables {
      * The table <code>public.mview_ww_meaning</code>.
      */
     public static final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
+
+    /**
+     * The table <code>public.mview_ww_meaning_relation</code>.
+     */
+    public static final MviewWwMeaningRelation MVIEW_WW_MEANING_RELATION = eki.wordweb.data.db.tables.MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION;
 
     /**
      * The table <code>public.mview_ww_word</code>.

@@ -6,12 +6,14 @@ drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_word_relation;
 drop materialized view if exists mview_ww_lexeme_relation;
+drop materialized view if exists mview_ww_meaning_relation;
 drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
+drop type if exists type_meaning_relation;
 
 -- run this once:
 -- CREATE EXTENSION dblink;
@@ -23,6 +25,7 @@ create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
 create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
+create type type_meaning_relation as (meaning_id bigint,lexeme_id bigint,word_id bigint,word text,word_lang char(3),meaning_rel_type_code varchar(100));
 
 create materialized view mview_ww_word as
 select * from 
@@ -120,6 +123,16 @@ dblink(
 	related_lexemes type_lexeme_relation array
 );
 
+create materialized view mview_ww_meaning_relation as
+select * from
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_meaning_relation') as meaning_relation(
+	lexeme_id bigint,
+	meaning_id bigint,
+	related_meanings type_meaning_relation array
+);
+
 create materialized view mview_ww_dataset as
 select * from
 dblink(
@@ -156,5 +169,7 @@ create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
+create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);
+create index mview_ww_meaning_relation_lexeme_id_idx on mview_ww_meaning_relation (lexeme_id);
 create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
 create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);

@@ -196,16 +196,28 @@
                   </div>
                   <div class="additional-meta">
                     <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes) or not #lists.isEmpty(lexeme.relatedMeanings)}">
                       <div class="col-3">
                         <b>Seosed</b>
                       </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                       <div class="col-9">
                         <div th:each="relation, relationIter : ${lexeme.relatedLexemes}">
                           <a th:id="${'word_search_link_lex_rel_' + relationIter.count}" href="">
                             <span th:text="${relation.word}"></span>
                           </a>
                           <span th:text="${'(' + relation.lexRelType.value + ')'}"></span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
+                      <div class="col-9">
+                        <div th:each="relation, relationIter : ${lexeme.relatedMeanings}">
+                          <a th:id="${'word_search_link_meaning_rel_' + relationIter.count}" href="">
+                            <span th:text="${relation.word}"></span>
+                          </a>
+                          <span th:text="${'(' + relation.meaningRelType.value + ')'}"></span>
                         </div>
                       </div>
                     </div>

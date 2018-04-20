@@ -10,11 +10,13 @@ import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
+import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
+import eki.wordweb.data.db.udt.TypeMeaningRelation;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWord;
 import eki.wordweb.data.db.udt.TypeWordRelation;
@@ -44,7 +46,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 691764056;
+    private static final long serialVersionUID = 1874110883;
 
     /**
      * The reference instance of <code>public</code>
@@ -80,6 +82,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_meaning</code>.
      */
     public final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
+
+    /**
+     * The table <code>public.mview_ww_meaning_relation</code>.
+     */
+    public final MviewWwMeaningRelation MVIEW_WW_MEANING_RELATION = eki.wordweb.data.db.tables.MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION;
 
     /**
      * The table <code>public.mview_ww_word</code>.
@@ -122,6 +129,7 @@ public class Public extends SchemaImpl {
             MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
             MviewWwMeaning.MVIEW_WW_MEANING,
+            MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
             MviewWwWord.MVIEW_WW_WORD,
             MviewWwWordRelation.MVIEW_WW_WORD_RELATION);
     }
@@ -138,6 +146,7 @@ public class Public extends SchemaImpl {
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
             TypeLexemeRelation.TYPE_LEXEME_RELATION,
+            TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
             TypeWordRelation.TYPE_WORD_RELATION);

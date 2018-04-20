@@ -4,6 +4,7 @@ create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
 create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
+create type type_meaning_relation as (meaning_id bigint,lexeme_id bigint,word_id bigint,word text,word_lang char(3),meaning_rel_type_code varchar(100));
 
 -- words
 create view view_ww_word 
@@ -303,6 +304,33 @@ create view view_ww_lexeme_relation
                   and   l2.word_id = w2.id) l2 on l2.related_lexeme_id = r.lexeme2_id
     group by r.lexeme1_id;
 
+-- meaning relations
+create view view_ww_meaning_relation 
+  as
+    select l1.id lexeme_id,
+           l1.meaning_id,
+           array_agg(row (m2.meaning_id,m2.lexeme_id,m2.word_id,m2.word,m2.word_lang,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by) related_meanings
+    from meaning_relation r,
+         lexeme l1,
+         (select distinct l2.meaning_id,
+                 l2.id lexeme_id,
+                 l2.word_id,
+                 f2.value word,
+                 w2.lang word_lang
+          from lexeme l2,
+               word w2,
+               paradigm p2,
+               form f2
+          where f2.is_word = true
+          and   f2.paradigm_id = p2.id
+          and   p2.word_id = w2.id
+          and   l2.word_id = w2.id
+          and   l2.dataset_code in ('qq2', 'psv', 'ss1', 'kol')) m2
+    where l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+    and   r.meaning1_id = l1.meaning_id
+    and   r.meaning2_id = m2.meaning_id
+    group by l1.id;
+
 -- datasets, classifiers
 create view view_ww_dataset
   as
@@ -397,4 +425,13 @@ create view view_ww_classifier
        lang
      from lex_rel_type_label
      where type = 'full'
+     union all
+     select
+       'MEANING_REL_TYPE' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from meaning_rel_type_label
+     where type = 'descrip'
     );

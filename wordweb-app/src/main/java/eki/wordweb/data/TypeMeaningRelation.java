@@ -3,9 +3,11 @@ package eki.wordweb.data;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeLexemeRelation extends AbstractDataObject {
+public class TypeMeaningRelation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private Long meaningId;
 
 	private Long lexemeId;
 
@@ -15,9 +17,17 @@ public class TypeLexemeRelation extends AbstractDataObject {
 
 	private String wordLang;
 
-	private String lexRelTypeCode;
+	private String meaningRelTypeCode;
 
-	private Classifier lexRelType;
+	private Classifier meaningRelType;
+
+	public Long getMeaningId() {
+		return meaningId;
+	}
+
+	public void setMeaningId(Long meaningId) {
+		this.meaningId = meaningId;
+	}
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -51,19 +61,20 @@ public class TypeLexemeRelation extends AbstractDataObject {
 		this.wordLang = wordLang;
 	}
 
-	public String getLexRelTypeCode() {
-		return lexRelTypeCode;
+	public String getMeaningRelTypeCode() {
+		return meaningRelTypeCode;
 	}
 
-	public void setLexRelTypeCode(String lexRelTypeCode) {
-		this.lexRelTypeCode = lexRelTypeCode;
+	public void setMeaningRelTypeCode(String meaningRelTypeCode) {
+		this.meaningRelTypeCode = meaningRelTypeCode;
 	}
 
-	public Classifier getLexRelType() {
-		return lexRelType;
+	public Classifier getMeaningRelType() {
+		return meaningRelType;
 	}
 
-	public void setLexRelType(Classifier lexRelType) {
-		this.lexRelType = lexRelType;
+	public void setMeaningRelType(Classifier meaningRelType) {
+		this.meaningRelType = meaningRelType;
 	}
+
 }
