@@ -41,6 +41,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	@Deprecated
 	private static final String SQL_SELECT_LEXEME_MEANING_BY_WORD_AND_NO_POS_PATH = "sql/select_lexeme_meaning_by_word_and_no_pos.sql";
 
+	private static final String SQL_SELECT_COLLOC_LEXEME_FULL_MATCH = "sql/select_colloc_lexeme_full_match.sql";
+
 	private static final String REPORT_ILLEGAL_DATA = "illegal_data";
 
 	private static final String REPORT_MISSING_DATA = "missing_data";
@@ -91,6 +93,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String collocRelGroupScoreExp = "x:rsc";
 	private final String collocFreqExp = "x:cfr";
 	private final String collocScoreExp = "x:csc";
+	private final String collocDefinitionExp = "x:cd";
 
 	private final String wordHomonymNrAttr = "i";
 	private final String lexemeLevelAttr = "tnr";
@@ -105,8 +108,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private final String domainOriginBolan = "bolan";
 
+	private final String prevWordCollocMemberName = "mse";
+	private final String nextWordCollocMemberName = "msj";
 	private final String[] collocMemberNodeNames = new String[] {
-			"col", "mse", "msj", "cnte", "cce", "ccj", "cnt"};
+			"col", prevWordCollocMemberName, nextWordCollocMemberName, "cnte", "cce", "ccj", "cnt"};
 	private final String[] textCleanupEnitites = new String[] {"&ba;", "&bl;"};
 	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 
@@ -117,6 +122,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	@Deprecated
 	private String sqlSelectLexemeMeaningByWordAndNoPos;
+
+	private String sqlSelectCollocLexemeFullMatch;
 
 	private Map<String, String> posConversionMap;
 
@@ -140,6 +147,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_MEANING_BY_WORD_AND_NO_POS_PATH);
 		sqlSelectLexemeMeaningByWordAndNoPos = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_COLLOC_LEXEME_FULL_MATCH);
+		sqlSelectCollocLexemeFullMatch = getContent(resourceFileInputStream);
 
 		posConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP, ClassifierName.REGISTER.name());
@@ -188,8 +198,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocMemberOverloadGroupCount = new Count();
 		Count collocMemberGuessingHomonymMeaningCount = new Count();
 		Count collocMemberGuessedHomonymMeaningCount = new Count();
-		Count successfulCollocateMatchCount = new Count();
-		Count successfulCollocationMatchCount = new Count();
+		Count collocateCount = new Count();
+		Count collocationCount = new Count();
+		Count reusedCollocationCount = new Count();
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -298,16 +309,17 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							collocGroupNum++;
 							collocUsages = extractCollocUsages(collocGroupNode);
 							collocMembers = extractCollocMembers(collocGroupNode, ignoredCollocGroupCount);
-							collocGroup = new CollocGroup(collocPosGroupName, collocPosGroupId, collocRelGroupName, collocRelGroupId, collocGroupNum);
+							collocGroup = new CollocGroup(word, wordPosCode, lexemeId, collocPosGroupName, collocPosGroupId, collocRelGroupName, collocRelGroupId, collocGroupNum);
 							saveCollocations(
-									collocGroupNode, collocGroup, word, wordPosCode, lexemeId,
-									collocUsages, collocMembers, wordMap, meaningMap, dataLang,
+									collocGroupNode, collocGroup, collocUsages, collocMembers,
+									wordMap, meaningMap, dataLang,
 									repeatingCollocMemberCount,
 									collocMemberOverloadGroupCount,
 									collocMemberGuessingHomonymMeaningCount,
 									collocMemberGuessedHomonymMeaningCount,
-									successfulCollocateMatchCount,
-									successfulCollocationMatchCount,
+									collocateCount,
+									collocationCount,
+									reusedCollocationCount,
 									doReports);
 						}
 					}
@@ -332,8 +344,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} overloaded colloc members groups", collocMemberOverloadGroupCount.getValue());
 		logger.debug("Found {} guess colloc member homonym/meaning attempts", collocMemberGuessingHomonymMeaningCount.getValue());
 		logger.debug("Found {} successfully guessed colloc member homonym/meaning", collocMemberGuessedHomonymMeaningCount.getValue());
-		logger.debug("Found {} successful collocate matches", successfulCollocateMatchCount.getValue());
-		logger.debug("Found {} collocations", successfulCollocationMatchCount.getValue());
+		logger.debug("Found {} collocates", collocateCount.getValue());
+		logger.debug("Found {} collocations", collocationCount.getValue());
+		logger.debug("Found {} reused collocations", reusedCollocationCount.getValue());
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
@@ -567,9 +580,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private void saveCollocations(
 			Element collocGroupNode,
 			CollocGroup collocGroup,
-			String newWord,
-			String newWordPosCode,
-			Long lexemeId,
 			List<String> collocUsages,
 			List<CollocMember> collocMembers,
 			Map<String, Map<Integer, Word>> wordMap,
@@ -579,44 +589,50 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			Count collocMemberOverloadGroupCount,
 			Count collocMemberGuessingHomonymMeaningCount,
 			Count collocMemberGuessedHomonymMeaningCount,
-			Count successfulCollocateMatchCount,
-			Count successfulCollocationMatchCount,
+			Count collocateCount,
+			Count collocationCount,
+			Count reusedCollocationCount,
 			boolean doReports) throws Exception {
 
+		String word = collocGroup.getWord();
+		Long lexemeId = collocGroup.getLexemeId();
 		String collocPosGroupName = collocGroup.getCollocPosGroupName();
 		String collocRelGroupName = collocGroup.getCollocRelGroupName();
 		Long collocRelGroupId = collocGroup.getCollocRelGroupId();
 		int collocGroupNum = collocGroup.getCollocGroupNum();
 
 		if (CollectionUtils.isEmpty(collocMembers)) {
-			appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "puuduvad valiidsed kollokaadid");
+			appendToReport(doReports, REPORT_ILLEGAL_DATA, word, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "puuduvad valiidsed kollokaadid");
 			return;
 		}
 
-		final String prevWordCollocMemberName = "mse";
-		final String nextWordCollocMemberName = "msj";
+		String definition = null;
+		Element collocDefinitionNode = (Element) collocGroupNode.selectSingleNode(collocDefinitionExp);
+		if (collocDefinitionNode != null) {
+			definition = collocDefinitionNode.getTextTrim();
+		}
 
 		Float frequency = null;
 		Element collocFreqNode = (Element) collocGroupNode.selectSingleNode(collocFreqExp);
 		if (collocFreqNode == null) {
-			appendToReport(doReports, REPORT_MISSING_DATA, newWord, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "puudub sagedus");
+			appendToReport(doReports, REPORT_MISSING_DATA, word, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "puudub sagedus");
 		} else {
 			try {
 				frequency = Float.parseFloat(collocFreqNode.getTextTrim());
 			} catch (Exception e) {
-				appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "sagedusel sobimatu formaat");
+				appendToReport(doReports, REPORT_ILLEGAL_DATA, word, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "sagedusel sobimatu formaat");
 			}
 		}
 
 		Float score = null;
 		Element collocScoreNode = (Element) collocGroupNode.selectSingleNode(collocScoreExp);
 		if (collocScoreNode == null) {
-			appendToReport(doReports, REPORT_MISSING_DATA, newWord, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "puudub skoor");
+			appendToReport(doReports, REPORT_MISSING_DATA, word, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "puudub skoor");
 		} else {
 			try {
 				score = Float.parseFloat(collocScoreNode.getTextTrim());
 			} catch (Exception e) {
-				appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "skooril sobimatu formaat");
+				appendToReport(doReports, REPORT_ILLEGAL_DATA, word, collocPosGroupName, collocRelGroupName, "x:colg", "[" + collocGroupNum + "]", "skooril sobimatu formaat");
 			}
 		}
 
@@ -625,38 +641,17 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			collocMemberOverloadGroupCount.increment();
 		}
 
-		List<Long> bindedLexemeIds;
-		StringBuffer collocBuf;
+		List<Long> collocMemberIds;
+		List<CollocMemberRecord> collocMemberRecords;
+		CollocMemberRecord collocMemberRecord;
 
 		for (List<CollocMember> collocMembersPermutation : collocMembersPermutations) {
 
-			collocBuf = new StringBuffer();
-			for (CollocMember collocMember : collocMembersPermutation) {
-				String collocMemberName = collocMember.getName();
-				String collocMemberForm = collocMember.getForm();
-				String conjunct = collocMember.getConjunct();
-				if (StringUtils.isNotBlank(conjunct)) {
-					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
-						collocBuf.append(collocMemberForm);
-						collocBuf.append(' ');
-						collocBuf.append(conjunct);
-					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
-						collocBuf.append(conjunct);
-						collocBuf.append(' ');
-						collocBuf.append(collocMemberForm);
-					} else {
-						//illegal case
-					}
-				} else {
-					collocBuf.append(collocMemberForm);
-					collocBuf.append(' ');
-				}
-			}
-			String collocation = StringUtils.trim(collocBuf.toString());
-			Long collocId = createCollocation(collocation, frequency, score, collocUsages);
-			successfulCollocationMatchCount.increment();
-			bindedLexemeIds = new ArrayList<>();
-			bindedLexemeIds.add(lexemeId);
+			String collocation = composeCollocValue(collocMembersPermutation);
+
+			collocMemberRecords = new ArrayList<>();
+			collocMemberIds = new ArrayList<>();
+			collocMemberIds.add(lexemeId);
 
 			for (CollocMember collocMember : collocMembersPermutation) {
 
@@ -669,14 +664,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				Map<Integer, Word> homonymWordMap = wordMap.get(collocMemberWord);
 				if (homonymWordMap == null) {
 					// should be illegal case
-					appendToReport(doReports, REPORT_UNKNOWN_COLLOC_MEMBER, newWord, collocation, collocMemberWord);
+					appendToReport(doReports, REPORT_UNKNOWN_COLLOC_MEMBER, word, collocation, collocMemberWord);
 				} else {
 					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
-						createLexemeCollocation(lexemeId, collocRelGroupId, collocId);
-						successfulCollocateMatchCount.increment();
+						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId);
+						collocMemberRecords.add(collocMemberRecord);
 					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
-						createLexemeCollocation(lexemeId, collocRelGroupId, collocId);
-						successfulCollocateMatchCount.increment();
+						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId);
+						collocMemberRecords.add(collocMemberRecord);
 					} else if (collocMemberRefNum == null) {
 						//TODO just guessing here. should be determined by more intelligent logic
 						if (homonymWordMap.size() == 1) {
@@ -689,13 +684,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 								//success!
 								LexemeMeaning collocLexemeMeaning = lexemeMeaningCandidates.get(0);
 								Long collocLexemeId = collocLexemeMeaning.getLexemeId();
-								if (bindedLexemeIds.contains(collocLexemeId)) {
+								if (collocMemberIds.contains(collocLexemeId)) {
 									repeatingCollocMemberCount.increment();
-									appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, newWord, collocation, collocMemberForm);
+									appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
 								} else {
-									createLexemeCollocation(collocLexemeId, null, collocId);
-									bindedLexemeIds.add(collocLexemeId);
-									successfulCollocateMatchCount.increment();
+									collocMemberRecord = new CollocMemberRecord(collocLexemeId, null);
+									collocMemberRecords.add(collocMemberRecord);
+									collocMemberIds.add(collocLexemeId);
 								}
 								collocMemberGuessedHomonymMeaningCount.increment();
 							} else {
@@ -713,22 +708,81 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						if (collocLexemeMeaning == null) {
 							logger.debug("No lexeme/meaning match word \"{}\" homonym nr \"{}\" meaning nr \"{}\"",
 									collocMemberWord, collocMemberHomonymNr, collocMemberMeaningNr);
-							appendToReport(doReports, REPORT_ILLEGAL_LEMPOSVK_REF, newWord, collocation, collocMemberWord, "i=" + collocMemberHomonymNr, "tnr=" + collocMemberMeaningNr);
+							appendToReport(doReports, REPORT_ILLEGAL_LEMPOSVK_REF, word, collocation, collocMemberWord, "i=" + collocMemberHomonymNr, "tnr=" + collocMemberMeaningNr);
 						} else {
 							Long collocLexemeId = collocLexemeMeaning.getLexemeId();
-							if (bindedLexemeIds.contains(collocLexemeId)) {
+							if (collocMemberIds.contains(collocLexemeId)) {
 								repeatingCollocMemberCount.increment();
-								appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, newWord, collocation, collocMemberForm);
+								appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
 							} else {
-								createLexemeCollocation(collocLexemeId, null, collocId);
-								bindedLexemeIds.add(collocLexemeId);
-								successfulCollocateMatchCount.increment();
+								collocMemberRecord = new CollocMemberRecord(collocLexemeId, null);
+								collocMemberRecords.add(collocMemberRecord);
+								collocMemberIds.add(collocLexemeId);
 							}
 						}
 					}
 				}
 			}
+
+			List<CollocMemberRecord> existingCollocMemberRecords = getCollocationWithFullMembersMatch(collocMemberIds);
+			if (CollectionUtils.isEmpty(existingCollocMemberRecords)) {
+				collocationCount.increment();
+				collocateCount.increment(collocMemberRecords.size());
+				Long collocId = createCollocation(collocation, definition, frequency, score, collocUsages);
+				for (CollocMemberRecord newCollocMemberRecord : collocMemberRecords) {
+					createLexemeCollocation(newCollocMemberRecord.getLexemeId(), newCollocMemberRecord.getCollocRelGroupId(), collocId);
+				}
+			} else {
+				reusedCollocationCount.increment();
+				compareAndUpdateCollocMembers(existingCollocMemberRecords, collocMemberRecords);
+			}
 		}
+	}
+
+	private void compareAndUpdateCollocMembers(List<CollocMemberRecord> existingCollocMemberRecords, List<CollocMemberRecord> collocMemberRecords) throws Exception {
+		for (CollocMemberRecord existingCollocmemberRecord : existingCollocMemberRecords) {
+			Long existingCollocationId = existingCollocmemberRecord.getCollocationId();
+			Long existingCollocMemberLexemeId = existingCollocmemberRecord.getLexemeId();
+			for (CollocMemberRecord newCollocMemberRecord : collocMemberRecords) {
+				Long newCollocMemberLexemeId = newCollocMemberRecord.getLexemeId();
+				if (existingCollocMemberLexemeId.equals(newCollocMemberLexemeId)) {
+					Long existingCollocRelGroupId = existingCollocmemberRecord.getCollocRelGroupId();
+					Long newCollocRelGroupId = newCollocMemberRecord.getCollocRelGroupId();
+					if ((existingCollocRelGroupId == null) && (newCollocRelGroupId != null)) {
+						updateLexemeCollocation(existingCollocationId, existingCollocMemberLexemeId, newCollocRelGroupId);
+						break;
+					}
+				}
+			}
+		}
+	}
+
+	private String composeCollocValue(List<CollocMember> collocMembers) {
+
+		StringBuffer collocBuf = new StringBuffer();
+		for (CollocMember collocMember : collocMembers) {
+			String collocMemberName = collocMember.getName();
+			String collocMemberForm = collocMember.getForm();
+			String conjunct = collocMember.getConjunct();
+			if (StringUtils.isNotBlank(conjunct)) {
+				if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
+					collocBuf.append(collocMemberForm);
+					collocBuf.append(' ');
+					collocBuf.append(conjunct);
+				} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
+					collocBuf.append(conjunct);
+					collocBuf.append(' ');
+					collocBuf.append(collocMemberForm);
+				} else {
+					//illegal case
+				}
+			} else {
+				collocBuf.append(collocMemberForm);
+				collocBuf.append(' ');
+			}
+		}
+		String collocation = StringUtils.trim(collocBuf.toString());
+		return collocation;
 	}
 
 	private List<List<CollocMember>> composeCollocMembersPermutations(List<CollocMember> collocMembers, Count collocMemberPermutationGroupCount) {
@@ -829,10 +883,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocRelGroupId;
 	}
 
-	private Long createCollocation(String collocation, Float frequency, Float score, List<String> collocUsages) throws Exception {
+	private Long createCollocation(String collocation, String definition, Float frequency, Float score, List<String> collocUsages) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("value", collocation);
+		if (StringUtils.isNotBlank(definition)) {
+			tableRowParamMap.put("definition", frequency);
+		}
 		if (frequency != null) {
 			tableRowParamMap.put("frequency", frequency);
 		}
@@ -859,6 +916,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return lexCollocId;
 	}
 
+	private void updateLexemeCollocation(Long collocId, Long lexemeId, Long collocRelGroupId) throws Exception {
+		Map<String, Object> criteriaParamMap = new HashMap<>();
+		criteriaParamMap.put("collocation_id", collocId);
+		criteriaParamMap.put("lexeme_id", lexemeId);
+		Map<String, Object> valueParamMap = new HashMap<>();
+		valueParamMap.put("rel_group_id", collocRelGroupId);
+		basicDbService.update(LEX_COLLOC, criteriaParamMap, valueParamMap);
+	}
+
 	private List<LexemeMeaning> getLexemeMeanings(Long wordId, String posCode) throws Exception {
 
 		String sql;
@@ -879,6 +945,30 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			lexemeMeanings.add(lexemeMeaning);
 		}
 		return lexemeMeanings;
+	}
+
+	private List<CollocMemberRecord> getCollocationWithFullMembersMatch(List<Long> lexemeIds) throws Exception {
+
+		String sql = new String(sqlSelectCollocLexemeFullMatch);
+		sql = StringUtils.replace(sql, ":collocMemberLexemeIds", StringUtils.join(lexemeIds, ','));
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		List<Map<String, Object>> resultRows = basicDbService.queryList(sql, tableRowParamMap);
+		if (CollectionUtils.isEmpty(resultRows)) {
+			return null;
+		}
+		List<CollocMemberRecord> collocMemberRecords = new ArrayList<>();
+		for (Map<String, Object> resultRow : resultRows) {
+			Long collocationId = Long.valueOf(resultRow.get("collocation_id").toString());
+			Long lexemeId = Long.valueOf(resultRow.get("lexeme_id").toString());
+			Object relGroupIdRaw = resultRow.get("rel_group_id");
+			Long collocRelGroupId = null;
+			if (relGroupIdRaw != null) {
+				collocRelGroupId = Long.valueOf(relGroupIdRaw.toString());
+			}
+			CollocMemberRecord collocMemberRecord = new CollocMemberRecord(collocationId, lexemeId, collocRelGroupId);
+			collocMemberRecords.add(collocMemberRecord);
+		}
+		return collocMemberRecords;
 	}
 
 	private void appendToReport(boolean doReports, String reportName, String ... reportCells) throws Exception {
@@ -942,10 +1032,48 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		public RefNum getRefNum() {
 			return refNum;
 		}
+	}
+
+	class CollocMemberRecord {
+
+		private Long collocationId;
+
+		private Long lexemeId;
+
+		private Long collocRelGroupId;
+
+		public CollocMemberRecord(Long lexemeId, Long collocRelGroupId) {
+			this.lexemeId = lexemeId;
+			this.collocRelGroupId = collocRelGroupId;
+		}
+
+		public CollocMemberRecord(Long collocationId, Long lexemeId, Long collocRelGroupId) {
+			this.collocationId = collocationId;
+			this.lexemeId = lexemeId;
+			this.collocRelGroupId = collocRelGroupId;
+		}
+
+		public Long getCollocationId() {
+			return collocationId;
+		}
+
+		public Long getLexemeId() {
+			return lexemeId;
+		}
+
+		public Long getCollocRelGroupId() {
+			return collocRelGroupId;
+		}
 
 	}
 
 	class CollocGroup {
+
+		private String word;
+
+		private String wordPosCode;
+
+		private Long lexemeId;
 
 		private String collocPosGroupName;
 
@@ -957,12 +1085,27 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		private int collocGroupNum;
 
-		public CollocGroup(String collocPosGroupName, Long collocPosGroupId, String collocRelGroupName, Long collocRelGroupId, int collocGroupNum) {
+		public CollocGroup(String word, String wordPosCode, Long lexemeId, String collocPosGroupName, Long collocPosGroupId, String collocRelGroupName, Long collocRelGroupId, int collocGroupNum) {
+			this.word = word;
+			this.wordPosCode = wordPosCode;
+			this.lexemeId = lexemeId;
 			this.collocPosGroupName = collocPosGroupName;
 			this.collocPosGroupId = collocPosGroupId;
 			this.collocRelGroupName = collocRelGroupName;
 			this.collocRelGroupId = collocRelGroupId;
 			this.collocGroupNum = collocGroupNum;
+		}
+
+		public String getWord() {
+			return word;
+		}
+
+		public String getWordPosCode() {
+			return wordPosCode;
+		}
+
+		public Long getLexemeId() {
+			return lexemeId;
 		}
 
 		public String getCollocPosGroupName() {

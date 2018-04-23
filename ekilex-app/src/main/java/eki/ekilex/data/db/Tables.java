@@ -70,8 +70,11 @@ import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
+import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
+import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwWord;
+import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordRelType;
@@ -427,14 +430,29 @@ public class Tables {
     public static final ViewWwLexeme VIEW_WW_LEXEME = eki.ekilex.data.db.tables.ViewWwLexeme.VIEW_WW_LEXEME;
 
     /**
+     * The table <code>public.view_ww_lexeme_relation</code>.
+     */
+    public static final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = eki.ekilex.data.db.tables.ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
+
+    /**
      * The table <code>public.view_ww_meaning</code>.
      */
     public static final ViewWwMeaning VIEW_WW_MEANING = eki.ekilex.data.db.tables.ViewWwMeaning.VIEW_WW_MEANING;
 
     /**
+     * The table <code>public.view_ww_meaning_relation</code>.
+     */
+    public static final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = eki.ekilex.data.db.tables.ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
+
+    /**
      * The table <code>public.view_ww_word</code>.
      */
     public static final ViewWwWord VIEW_WW_WORD = eki.ekilex.data.db.tables.ViewWwWord.VIEW_WW_WORD;
+
+    /**
+     * The table <code>public.view_ww_word_relation</code>.
+     */
+    public static final ViewWwWordRelation VIEW_WW_WORD_RELATION = eki.ekilex.data.db.tables.ViewWwWordRelation.VIEW_WW_WORD_RELATION;
 
     /**
      * The table <code>public.word</code>.

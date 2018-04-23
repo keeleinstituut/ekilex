@@ -528,6 +528,7 @@ create table collocation
 (
   id bigserial primary key,
   value text not null,
+  definition text,
   frequency numeric(14, 4),
   score numeric(14, 4),
   usages text array,

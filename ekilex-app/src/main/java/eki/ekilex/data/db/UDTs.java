@@ -6,7 +6,11 @@ package eki.ekilex.data.db;
 
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
+import eki.ekilex.data.db.udt.TypeLexemeRelation;
+import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeUsage;
+import eki.ekilex.data.db.udt.TypeWord;
+import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import javax.annotation.Generated;
 
@@ -35,7 +39,27 @@ public class UDTs {
     public static TypeDomain TYPE_DOMAIN = eki.ekilex.data.db.udt.TypeDomain.TYPE_DOMAIN;
 
     /**
+     * The type <code>public.type_lexeme_relation</code>
+     */
+    public static TypeLexemeRelation TYPE_LEXEME_RELATION = eki.ekilex.data.db.udt.TypeLexemeRelation.TYPE_LEXEME_RELATION;
+
+    /**
+     * The type <code>public.type_meaning_relation</code>
+     */
+    public static TypeMeaningRelation TYPE_MEANING_RELATION = eki.ekilex.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
+
+    /**
      * The type <code>public.type_usage</code>
      */
     public static TypeUsage TYPE_USAGE = eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE;
+
+    /**
+     * The type <code>public.type_word</code>
+     */
+    public static TypeWord TYPE_WORD = eki.ekilex.data.db.udt.TypeWord.TYPE_WORD;
+
+    /**
+     * The type <code>public.type_word_relation</code>
+     */
+    public static TypeWordRelation TYPE_WORD_RELATION = eki.ekilex.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION;
 }

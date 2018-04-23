@@ -7,6 +7,7 @@ package eki.ekilex.data.db.tables;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.ViewWwWordRecord;
 import eki.ekilex.data.db.udt.records.TypeDefinitionRecord;
+import eki.ekilex.data.db.udt.records.TypeWordRecord;
 
 import javax.annotation.Generated;
 
@@ -32,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = 23859120;
+    private static final long serialVersionUID = 1355412150;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -90,7 +91,7 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     /**
      * The column <code>public.view_ww_word.meaning_words</code>.
      */
-    public final TableField<ViewWwWordRecord, String[]> MEANING_WORDS = createField("meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+    public final TableField<ViewWwWordRecord, TypeWordRecord[]> MEANING_WORDS = createField("meaning_words", eki.ekilex.data.db.udt.TypeWord.TYPE_WORD.getDataType().getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.definitions</code>.

@@ -70,8 +70,11 @@ import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwDataset;
 import eki.ekilex.data.db.tables.ViewWwForm;
 import eki.ekilex.data.db.tables.ViewWwLexeme;
+import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
+import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwWord;
+import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordRelType;
@@ -81,7 +84,11 @@ import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 import eki.ekilex.data.db.udt.TypeDefinition;
 import eki.ekilex.data.db.udt.TypeDomain;
+import eki.ekilex.data.db.udt.TypeLexemeRelation;
+import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeUsage;
+import eki.ekilex.data.db.udt.TypeWord;
+import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -109,7 +116,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -248681727;
+    private static final long serialVersionUID = -1265658255;
 
     /**
      * The reference instance of <code>public</code>
@@ -447,14 +454,29 @@ public class Public extends SchemaImpl {
     public final ViewWwLexeme VIEW_WW_LEXEME = eki.ekilex.data.db.tables.ViewWwLexeme.VIEW_WW_LEXEME;
 
     /**
+     * The table <code>public.view_ww_lexeme_relation</code>.
+     */
+    public final ViewWwLexemeRelation VIEW_WW_LEXEME_RELATION = eki.ekilex.data.db.tables.ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION;
+
+    /**
      * The table <code>public.view_ww_meaning</code>.
      */
     public final ViewWwMeaning VIEW_WW_MEANING = eki.ekilex.data.db.tables.ViewWwMeaning.VIEW_WW_MEANING;
 
     /**
+     * The table <code>public.view_ww_meaning_relation</code>.
+     */
+    public final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = eki.ekilex.data.db.tables.ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
+
+    /**
      * The table <code>public.view_ww_word</code>.
      */
     public final ViewWwWord VIEW_WW_WORD = eki.ekilex.data.db.tables.ViewWwWord.VIEW_WW_WORD;
+
+    /**
+     * The table <code>public.view_ww_word_relation</code>.
+     */
+    public final ViewWwWordRelation VIEW_WW_WORD_RELATION = eki.ekilex.data.db.tables.ViewWwWordRelation.VIEW_WW_WORD_RELATION;
 
     /**
      * The table <code>public.word</code>.
@@ -639,8 +661,11 @@ public class Public extends SchemaImpl {
             ViewWwDataset.VIEW_WW_DATASET,
             ViewWwForm.VIEW_WW_FORM,
             ViewWwLexeme.VIEW_WW_LEXEME,
+            ViewWwLexemeRelation.VIEW_WW_LEXEME_RELATION,
             ViewWwMeaning.VIEW_WW_MEANING,
+            ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwWord.VIEW_WW_WORD,
+            ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             Word.WORD,
             WordGuid.WORD_GUID,
             WordRelType.WORD_REL_TYPE,
@@ -661,6 +686,10 @@ public class Public extends SchemaImpl {
         return Arrays.<UDT<?>>asList(
             TypeDefinition.TYPE_DEFINITION,
             TypeDomain.TYPE_DOMAIN,
-            TypeUsage.TYPE_USAGE);
+            TypeLexemeRelation.TYPE_LEXEME_RELATION,
+            TypeMeaningRelation.TYPE_MEANING_RELATION,
+            TypeUsage.TYPE_USAGE,
+            TypeWord.TYPE_WORD,
+            TypeWordRelation.TYPE_WORD_RELATION);
     }
 }

@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Collocation extends TableImpl<CollocationRecord> {
 
-    private static final long serialVersionUID = -1197976122;
+    private static final long serialVersionUID = 1705903909;
 
     /**
      * The reference instance of <code>public.collocation</code>
@@ -64,6 +64,11 @@ public class Collocation extends TableImpl<CollocationRecord> {
      * The column <code>public.collocation.value</code>.
      */
     public final TableField<CollocationRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.collocation.definition</code>.
+     */
+    public final TableField<CollocationRecord, String> DEFINITION = createField("definition", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.collocation.frequency</code>.
