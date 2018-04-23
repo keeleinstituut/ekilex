@@ -81,7 +81,7 @@ public class CorporaService {
 	private List<CorporaSentence> parseResponse(Map<String, Object> response) {
 
 		List<CorporaSentence> sentences = new ArrayList<>();
-		if (response.isEmpty() || (response.containsKey("hits") && (int) response.get("hits") == 0)) {
+		if (response.isEmpty() || (response.containsKey("hits") && (int) response.get("hits") == 0) || !response.containsKey("kwic")) {
 			return sentences;
 		}
 		for (Map<String, Object> kwic : (List<Map<String, Object>>) response.get("kwic")) {
