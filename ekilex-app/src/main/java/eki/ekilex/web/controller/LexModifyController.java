@@ -42,6 +42,18 @@ public class LexModifyController implements WebConstant {
 		return LEX_JOIN_PAGE;
 	}
 
+	@GetMapping("/lexback/{lexemeId}")
+	public String back(
+			@PathVariable("lexemeId") Long lexemeId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
+
+		return "redirect:" + LEX_SEARCH_URI;
+	}
+
 	@PostMapping("/lexjoin/{lexemeId}")
 	public String search(
 			@PathVariable("lexemeId") Long lexemeId,
