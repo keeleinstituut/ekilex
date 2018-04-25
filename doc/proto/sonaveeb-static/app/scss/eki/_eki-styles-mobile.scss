@@ -1,6 +1,6 @@
 // MOBILE
 ////////////////////////////////
-@media (min-width: 375px) and (min-height: 532px) and (max-width: 767px)  {
+@media (min-width: 401px) and (min-height: 561px) and (max-width: 767px)  {
 	html{
 		font-size: calc( (4.2666666666666666666666666vw + 3.007518797vh) / 2 );
 	}
@@ -12,15 +12,6 @@
 
 html{
 	background-color: $white;
-}
-.header-links{ 
-	background-color: $black;
-	position: fixed;
-	height: 100%;
-	width: calc(100% - 90px);
-	top:0;
-	right: 0;
-	z-index: $zindex-modal;
 }
 .lang-btn{
 	position: fixed;
@@ -51,7 +42,16 @@ html{
 	padding-right: (3 * $gutter); 
 	border-bottom: $border-width $border-color solid ;
 	&.last-selected{
-		background-color: rgba($primary, 0.05);
+		background-color: rgba($black, 0.15);
+		border-top: $border-width solid $white;
+		border-bottom-color: $white;
+		margin-top: -$border-width;
+		*:not(.homonym-nr), *:after{
+			color: $black !important;
+		}
+		.homonym-nr{
+			background-color: $black; 
+		}
 	}
 	*:not(.homonym-nr){
 		display: block;
@@ -59,7 +59,8 @@ html{
 		float: left;
 	}
 	&:after{
-		content: unicode($icon-arrow-right);
+		content: unicode($icon-chevron-right);
+		color: $gray-600;
 		font-family: 'material-icons';
 		position: absolute;
 		top:50%;

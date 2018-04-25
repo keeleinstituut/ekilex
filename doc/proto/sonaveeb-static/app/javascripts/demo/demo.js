@@ -2,7 +2,7 @@
 $(function() {
 	// show menu in mobile
 	$(".menu-btn").click(function(){
-	    $(".header-links").toggleClass("d-none d-md-block");
+	    $(".header-container").toggleClass("show-header");
 	});
 	// display full info in 3-rd level content
 	$(".more-btn, .level-3-panel").click(function(){
