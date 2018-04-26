@@ -199,10 +199,10 @@ function calculateAndSetStyles() {
         $(".content-panel").removeClass("d-none");
         if ($(".homonym-item").length == 1) {
             $(".homonym-panel").addClass("d-none");
-            $(".homonym-panel-empty").removeClass("d-none");
+            // $(".homonym-panel-empty").removeClass("d-none");
         } else {
             $(".homonym-panel").removeClass("d-none");
-            $(".homonym-panel-empty").addClass("d-none");
+            // $(".homonym-panel-empty").addClass("d-none");
             if (!$(".homonym-item").hasClass("last-selected")) {
                 $(".homonym-item:first").addClass("last-selected");
             }
@@ -214,11 +214,11 @@ function calculateAndSetStyles() {
             if (!$(".homonym-panel").hasClass("d-none")) {
                 $(".content-panel").addClass("d-none");
             }
-            $(".homonym-panel-empty").addClass("d-none");
+            // $(".homonym-panel-empty").addClass("d-none");
         }
         if ($(".homonym-item").length == 1 && $(".homonym-panel").hasClass("d-none")) {
             $(".search-panel").addClass("d-none");
-            $(".homonym-panel-empty").removeClass("d-none");
+            // $(".homonym-panel-empty").removeClass("d-none");
         }
         if ($(".search-panel").hasClass("d-none")) {
             $('#form-words').css("margin-top", '5em');
@@ -247,7 +247,8 @@ function initialisePage() {
     // interaction elsewhere
 
     $(".menu-btn").click(function(){
-        $(".header-links").toggleClass("d-none d-md-block");
+        $(".header-container").toggleClass("show-header");
+        // $(".header-links").toggleClass("d-none d-md-block");
     });
 
     $("a[id^='word-details-link']").click(function() {
@@ -289,7 +290,7 @@ function initialisePage() {
     });
 
     // demo js for interactions between the mobile and desktop modes
-    $(".logo").click(function(){
+    $(".back").click(function(){
         if ($(".homonym-panel").hasClass( "d-none" )) {
             $(".content-panel").addClass("d-none d-md-block");
             $(".homonym-panel").removeClass("d-none d-md-block");
@@ -298,16 +299,28 @@ function initialisePage() {
         }
     });
 
+
+
+    // test: Mis ma ei saa .show-search peale vajutades mitte midagi tööle panna?
+    $("*").click(function(){
+        $(".show-search").addClass("matafaka");
+    });
+    $(".matafaka").click(function(){
+        $(".show-search").addClass("success");
+    });
+    /// end test ////////////////////////////////
+
+
     $(".homonym-item").click(function(){
         $(".homonym-item").removeClass("selected last-selected");
         $(".homonym-item:first").removeClass("animation-target").dequeue();
         $(this).addClass("selected last-selected");
         calculateAndSetStyles();
-        if ($(window).width() > windowWidthTreshold) {
-          $('.homonym-list').animate({
-              scrollLeft: $('.homonym-item.selected homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + 10 + $('.homonym-list').scrollLeft()
-            },
-            200);
+         if ($(window).width() > windowWidthTreshold) {
+           $('.homonym-list').animate({
+                scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
+             },
+             200);
         } else {
             $(".homonym-panel").addClass("d-none");
             $(".search-panel").addClass("d-none");

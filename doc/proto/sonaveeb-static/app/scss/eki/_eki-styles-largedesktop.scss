@@ -5,9 +5,6 @@
 
 ////////////////////////////////
 
-.homonym-page{
-	background-color: $gray-100;
-}
 .homonym-list{
 	margin-left:-($gutter);
 	margin-right:-($gutter);
@@ -42,9 +39,9 @@
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }
-.container-fluid:first-child{
-	background-color: $black;
-}
+// .container-fluid:first-child{
+// 	background-color: $black;
+// }
 .dependencies{
 	margin-top: rem(-4);
 }
