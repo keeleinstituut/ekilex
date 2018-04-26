@@ -195,8 +195,7 @@
                     </button>
                     <button type="button" class="btn badge badge-warning"
                             th:data-target-elem="${definition.id} + '_definition'"
-                            data-toggle="delete-confirmation" data-placement="right"
-                    >
+                            data-toggle="delete-confirmation" data-placement="right">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                     <div th:if="${not #lists.isEmpty(definition.refLinks)}">
@@ -282,6 +281,11 @@
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${usage.id} + '_usage'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
                           <div th:if="${not #lists.isEmpty(usage.refLinks)}">
                             <span th:each="refLink : ${usage.refLinks}">
                               [
@@ -308,6 +312,11 @@
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
                         </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
@@ -322,6 +331,11 @@
                                   onclick="openEditDlg(this)"
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </td>
                       </tr>
