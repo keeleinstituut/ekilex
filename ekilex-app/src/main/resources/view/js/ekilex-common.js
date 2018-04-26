@@ -186,13 +186,25 @@ function openEditDlg(elem) {
         var editForm = editDlg.find('form');
         var url = editForm.attr('action') + '?' + editForm.serialize();
         $.post(url).done(function(data) {
-            var id = $('#details_div').data('id');
-            var detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
-            detailsButton.trigger('click');
-            editDlg.find('button.close').trigger('click');
+            var refreshButton = $('#refresh-details');
+            refreshButton.trigger('click');
+            editDlg.find('button[data-dismiss="modal"]').trigger('click');
         }).fail(function(data) {
             alert("Andmete muutmine ebaõnnestus.");
             console.log(data);
         });
+    });
+}
+
+function performDelete() {
+    var targetName = $(this)[0].getAttribute('data-target-elem');
+    var targetElement = $('[name="' + targetName + '"]');
+    var url = applicationUrl + 'remove?op_type=' + targetElement.data('op-type') + '&id=' + targetElement.data('id');
+    $.post(url).done(function(data) {
+        var refreshButton = $('#refresh-details');
+        refreshButton.trigger('click');
+    }).fail(function(data) {
+        alert("Andmete eemaldamine ebaõnnestus.");
+        console.log(data);
     });
 }

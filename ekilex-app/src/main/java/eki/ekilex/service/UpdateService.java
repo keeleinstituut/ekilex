@@ -81,6 +81,26 @@ public class UpdateService {
 		updateDbService.separateLexemeMeanings(lexemeId);
 	}
 
+	@Transactional
+	public void removeUsage(Long id) {
+		updateDbService.removeFreeform(id);
+	}
+
+	@Transactional
+	public void removeUsageTranslation(Long id) {
+		updateDbService.removeFreeform(id);
+	}
+
+	@Transactional
+	public void removeUsageDefinition(Long id) {
+		updateDbService.removeFreeform(id);
+	}
+
+	@Transactional
+	public void removeDefinition(Long id) {
+		updateDbService.removeDefinition(id);
+	}
+
 	void changeLevels(List<WordLexeme> lexemes, Long lexemeId, String action) {
 		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);

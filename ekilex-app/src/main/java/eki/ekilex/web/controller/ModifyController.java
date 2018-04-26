@@ -101,4 +101,27 @@ public class ModifyController {
 			this.items = items;
 		}
 	}
+
+	@ResponseBody
+	@PostMapping("/remove")
+	public String removeElement(@RequestParam("op_type") String opCode, @RequestParam("id") Long id) {
+
+		logger.debug("Delete operation : {} : for id {}", opCode, id);
+		switch (opCode) {
+		case "usage" :
+			updateService.removeUsage(id);
+			break;
+		case "usage_translation" :
+			updateService.removeUsageTranslation(id);
+			break;
+		case "usage_definition" :
+			updateService.removeUsageDefinition(id);
+			break;
+		case "definition" :
+			updateService.removeDefinition(id);
+			break;
+		}
+		return "OK";
+	}
+
 }

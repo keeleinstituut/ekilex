@@ -121,6 +121,18 @@ public class UpdateDbService {
 		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
 	}
 
+	public void removeFreeform(Long id) {
+		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM).where(FREEFORM.PARENT_ID.eq(id)).fetch();
+		childFreeforms.forEach(f -> {
+			removeFreeform(f.getId());
+		});
+		create.delete(FREEFORM).where(FREEFORM.ID.eq(id)).execute();
+	}
+
+	public void removeDefinition(Long id) {
+		create.delete(DEFINITION).where(DEFINITION.ID.eq(id)).execute();
+	}
+
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();

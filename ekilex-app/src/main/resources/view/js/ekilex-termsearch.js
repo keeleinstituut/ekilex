@@ -17,8 +17,10 @@ function initialise() {
 	if (detailsButtons.length === 1) {
 		detailsButtons.trigger('click');
 	}
-	var editDlg = $('#editDlg');
-	editDlg.on('shown.bs.modal', function() {
-		editDlg.find('[name="modified_value"]').focus()
-	});
+    var editDlg = $('#editDlg');
+    editDlg.on('shown.bs.modal', function(e) {
+        editDlg.find('[name="modified_value"]').focus();
+        var dlgTop =  $(e.relatedTarget).offset().top - editDlg.find('.modal-content').height() - 30;
+        editDlg.find('.modal-content').css('top', dlgTop);
+    });
 }
