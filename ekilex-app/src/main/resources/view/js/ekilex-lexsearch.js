@@ -1,8 +1,13 @@
 function initialise() {
     $(document).on("click", ":button[name='detailsBtn']", function() {
         var id = $(this).data('id');
+        var isRestoreScrollPos = this.hasAttribute('data-refresh');
         $.get(applicationUrl + 'lexdetails/' + id).done(function(data) {
+            var scrollPos = $('#details_div').scrollTop();
             $('#details_div').replaceWith(data);
+            if (isRestoreScrollPos) {
+                $('#details_div').scrollTop(scrollPos);
+            }
         }).fail(function(data) {
             console.log(data);
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
