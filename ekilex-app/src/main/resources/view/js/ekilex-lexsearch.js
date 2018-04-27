@@ -45,6 +45,13 @@ function initialise() {
     editLexemeDlg.on('shown.bs.modal', function() {
         editLexemeDlg.find('[name="level1"]').focus();
     });
+
+    var addDefinitionDlg = $('#addNewDefinitionDlg');
+    addDefinitionDlg.on('shown.bs.modal', function(e) {
+        addDefinitionDlg.find('[name=lang]').focus();
+        var dlgTop =  $(e.relatedTarget).offset().top - addDefinitionDlg.find('.modal-content').height() - 30;
+        addDefinitionDlg.find('.modal-content').css('top', dlgTop);
+    });
 }
 
 function openLexemeLevelDlg(elem) {

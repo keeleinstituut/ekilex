@@ -208,3 +208,25 @@ function performDelete() {
         console.log(data);
     });
 }
+
+function openAddDefinitionDlg(elem) {
+    var addDlg = $('#addNewDefinitionDlg');
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=value]').val(null);
+    var languageSelect = addDlg.find('[name=language]');
+    languageSelect.val(languageSelect.find('option').first().val());
+
+    addDlg.find('button[type="submit"]').off().on('click', function(e) {
+        e.preventDefault();
+        var addForm = addDlg.find('form');
+        var url = addForm.attr('action') + '?' + addForm.serialize();
+        $.post(url).done(function(data) {
+            var refreshButton = $('#refresh-details');
+            refreshButton.trigger('click');
+            addDlg.find('button[data-dismiss="modal"]').trigger('click');
+        }).fail(function(data) {
+            alert("Andmete lisamine ebaõnnestus.");
+            console.log(data);
+        });
+    });
+}

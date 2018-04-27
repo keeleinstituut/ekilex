@@ -101,6 +101,11 @@ public class UpdateService {
 		updateDbService.removeDefinition(id);
 	}
 
+	@Transactional
+	public void addDefinition(Long meaningId, String languageCode, String value) {
+		updateDbService.addDefinition(meaningId, languageCode, value);
+	}
+
 	void changeLevels(List<WordLexeme> lexemes, Long lexemeId, String action) {
 		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);

@@ -133,6 +133,13 @@ public class UpdateDbService {
 		create.delete(DEFINITION).where(DEFINITION.ID.eq(id)).execute();
 	}
 
+	public Long addDefinition(Long meaningId, String languageCode, String value) {
+		return create
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
+				.values(meaningId, languageCode, value)
+				.returning(DEFINITION.ID).fetchOne().getId();
+	}
+
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();

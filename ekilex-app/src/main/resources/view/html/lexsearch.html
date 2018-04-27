@@ -173,10 +173,16 @@
                 </span>
               </div>
             </div>
-            <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+            <div>
               <hr />
               <span class="lbl">Seletused</span>
-              <table class="orderable" th:data-op-code="definition">
+              <button type="button" class="btn badge badge-success" title="Lisa uus"
+                      th:data-id="${lexeme.meaningId}"
+                      onclick="openAddDefinitionDlg(this)"
+                      data-toggle="modal" data-target="#addNewDefinitionDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <table class="orderable" th:data-op-code="definition" th:if="${not #lists.isEmpty(lexeme.definitions)}">
                 <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                   <td>
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
@@ -558,6 +564,7 @@
 
   <div th:replace="common :: #editDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
+  <div th:replace="common :: #addNewDefinitionDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

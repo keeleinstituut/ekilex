@@ -26,6 +26,28 @@ public class ModifyController {
 	@Autowired
 	private UpdateService updateService;
 
+	static public class ModifyOrderingRequest {
+
+		private String opCode;
+		private List<OrderingData> items;
+
+		public String getOpcode() {
+			return opCode;
+		}
+
+		public void setOpcode(String opcode) {
+			this.opCode = opcode;
+		}
+
+		public List<OrderingData> getItems() {
+			return items;
+		}
+
+		public void setItems(List<OrderingData> items) {
+			this.items = items;
+		}
+	}
+
 	@ResponseBody
 	@PostMapping("/modify")
 	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
@@ -80,28 +102,6 @@ public class ModifyController {
 		return "OK";
 	}
 
-	static public class ModifyOrderingRequest {
-
-		private String opCode;
-		private List<OrderingData> items;
-
-		public String getOpcode() {
-			return opCode;
-		}
-
-		public void setOpcode(String opcode) {
-			this.opCode = opcode;
-		}
-
-		public List<OrderingData> getItems() {
-			return items;
-		}
-
-		public void setItems(List<OrderingData> items) {
-			this.items = items;
-		}
-	}
-
 	@ResponseBody
 	@PostMapping("/remove")
 	public String removeElement(@RequestParam("op_type") String opCode, @RequestParam("id") Long id) {
@@ -121,6 +121,15 @@ public class ModifyController {
 			updateService.removeDefinition(id);
 			break;
 		}
+		return "OK";
+	}
+
+	@ResponseBody
+	@PostMapping("/add_definition")
+	public String addNewDescription(@RequestParam("id") Long meaningId, @RequestParam("language") String languageCode, @RequestParam("value") String value) {
+
+		logger.debug("Add new definition operation : {} : {} : {}", meaningId, languageCode, value);
+		updateService.addDefinition(meaningId, languageCode, value);
 		return "OK";
 	}
 
