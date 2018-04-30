@@ -129,7 +129,20 @@ public class ModifyController {
 	public String addNewDescription(@RequestParam("id") Long meaningId, @RequestParam("language") String languageCode, @RequestParam("value") String value) {
 
 		logger.debug("Add new definition operation : {} : {} : {}", meaningId, languageCode, value);
-		updateService.addDefinition(meaningId, languageCode, value);
+		updateService.addDefinition(meaningId, value, languageCode);
+		return "OK";
+	}
+
+	@ResponseBody
+	@PostMapping("/add_usage")
+	public String addNewUsage(
+			@RequestParam("id") Long governmentId,
+			@RequestParam("usage_type") String usageMemberType,
+			@RequestParam("language") String languageCode,
+			@RequestParam("value") String value) {
+
+		logger.debug("Add new usage operation : {} : {} : {}", governmentId, languageCode, value);
+		updateService.addUsageMember(governmentId, usageMemberType, value, languageCode);
 		return "OK";
 	}
 

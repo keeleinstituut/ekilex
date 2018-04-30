@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -133,11 +134,33 @@ public class UpdateDbService {
 		create.delete(DEFINITION).where(DEFINITION.ID.eq(id)).execute();
 	}
 
-	public Long addDefinition(Long meaningId, String languageCode, String value) {
+	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
 				.values(meaningId, languageCode, value)
 				.returning(DEFINITION.ID).fetchOne().getId();
+	}
+
+	public Long findOrAddUsageMeaning(Long governmentId) {
+		List<FreeformRecord> usageMeanings = create
+				.selectFrom(FREEFORM)
+				.where(FREEFORM.TYPE.eq(FreeformType.USAGE_MEANING.name()).and(FREEFORM.PARENT_ID.eq(governmentId)))
+				.fetch();
+		if (usageMeanings.isEmpty()) {
+			usageMeanings.add(create
+					.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID)
+					.values(FreeformType.USAGE_MEANING.name(), governmentId).returning()
+					.fetchOne());
+		}
+		return usageMeanings.get(0).getId();
+	}
+
+	public Long addUsageMeaningMember(Long usageMeaningId, String usageMemberType, String value, String languageCode) {
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
+				.values(usageMemberType, usageMeaningId, value, languageCode).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

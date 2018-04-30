@@ -266,7 +266,14 @@
                   </td>
                 </tr>
                 <tr>
-                  <th class="lbl">Kasutusnäited, tõlked, seletused</th>
+                  <th class="lbl">Kasutusnäited, tõlked, seletused
+                    <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            th:data-id="${government.id}"
+                            onclick="openAddUsageDlg(this)"
+                            data-toggle="modal" data-target="#addNewUsageDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </th>
                 </tr>
                 <tr>
                   <td>
@@ -565,6 +572,7 @@
   <div th:replace="common :: #editDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
   <div th:replace="common :: #addNewDefinitionDlg"></div>
+  <div th:replace="common :: #addNewUsageDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

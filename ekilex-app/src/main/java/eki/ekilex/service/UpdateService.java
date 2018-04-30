@@ -102,8 +102,14 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addDefinition(Long meaningId, String languageCode, String value) {
-		updateDbService.addDefinition(meaningId, languageCode, value);
+	public void addDefinition(Long meaningId, String value, String languageCode) {
+		updateDbService.addDefinition(meaningId, value, languageCode);
+	}
+
+	@Transactional
+	public void addUsageMember(Long governmentId, String usageMemberType, String value, String languageCode) {
+		Long usageMeaningId = updateDbService.findOrAddUsageMeaning(governmentId);
+		updateDbService.addUsageMeaningMember(usageMeaningId, usageMemberType, value, languageCode);
 	}
 
 	void changeLevels(List<WordLexeme> lexemes, Long lexemeId, String action) {
