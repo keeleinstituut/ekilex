@@ -35,11 +35,12 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
-import org.jooq.Record13;
+import org.jooq.Record15;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record7;
 import org.jooq.Record8;
+import org.jooq.Record9;
 import org.jooq.Result;
 import org.jooq.SelectField;
 import org.jooq.Table;
@@ -665,7 +666,7 @@ public class LexSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
-	public Result<Record13<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,BigDecimal,BigDecimal,String[],Long,String>> findPrimaryCollocationTuples(Long lexemeId) {
+	public Result<Record15<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,String,BigDecimal,BigDecimal,String[],Long,String,BigDecimal>> findPrimaryCollocationTuples(Long lexemeId) {
 
 		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
 		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
@@ -686,11 +687,13 @@ public class LexSearchDbService implements SystemConstant {
 						rgr1.SCORE.as("rel_group_score"),
 						c.ID.as("colloc_id"),
 						c.VALUE.as("colloc_value"),
+						c.DEFINITION.as("colloc_definition"),
 						c.FREQUENCY.as("colloc_frequency"),
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
-						l2.WORD_ID.as("colloc_word_id"),
-						f2.VALUE.as("colloc_word")
+						l2.WORD_ID.as("colloc_member_word_id"),
+						f2.VALUE.as("colloc_member_word"),
+						lc2.WEIGHT.as("colloc_member_weight")
 						)
 				.from(pgr1, rgr1, lc1, lc2, c, l2, p2, f2)
 				.where(
@@ -705,11 +708,11 @@ public class LexSearchDbService implements SystemConstant {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue())
 						)
-				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc2.ORDER_BY, c.ORDER_BY)
+				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, c.ORDER_BY, lc2.ORDER_BY)
 				.fetch();
 	}
 
-	public Result<Record7<Long,String,BigDecimal,BigDecimal,String[],Long,String>> findSecondaryCollocationTuples(Long lexemeId) {
+	public Result<Record9<Long,String,String,BigDecimal,BigDecimal,String[],Long,String,BigDecimal>> findSecondaryCollocationTuples(Long lexemeId) {
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
@@ -722,11 +725,13 @@ public class LexSearchDbService implements SystemConstant {
 				.select(
 						c.ID.as("colloc_id"),
 						c.VALUE.as("colloc_value"),
+						c.DEFINITION.as("colloc_definition"),
 						c.FREQUENCY.as("colloc_frequency"),
 						c.SCORE.as("colloc_score"),
 						c.USAGES.as("colloc_usages"),
-						l2.WORD_ID.as("colloc_word_id"),
-						f2.VALUE.as("colloc_word")
+						l2.WORD_ID.as("colloc_member_word_id"),
+						f2.VALUE.as("colloc_member_word"),
+						lc2.WEIGHT.as("colloc_member_weight")
 						)
 				.from(lc1, lc2, c, l2, p2, f2)
 				.where(
@@ -740,7 +745,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue())
 						)
-				.orderBy(c.ORDER_BY)
+				.orderBy(c.ORDER_BY, lc2.ORDER_BY)
 				.fetch();
 	}
 }

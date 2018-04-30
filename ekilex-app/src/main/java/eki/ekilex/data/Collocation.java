@@ -10,13 +10,15 @@ public class Collocation extends AbstractDataObject {
 
 	private String value;
 
+	private String definition;
+
 	private Float frequency;
 
 	private Float score;
 
 	private List<String> collocUsages;
 
-	private List<CollocWord> collocWords;
+	private List<CollocMember> collocMembers;
 
 	public String getValue() {
 		return value;
@@ -24,6 +26,14 @@ public class Collocation extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getDefinition() {
+		return definition;
+	}
+
+	public void setDefinition(String definition) {
+		this.definition = definition;
 	}
 
 	public Float getFrequency() {
@@ -50,12 +60,12 @@ public class Collocation extends AbstractDataObject {
 		this.collocUsages = collocUsages;
 	}
 
-	public List<CollocWord> getCollocWords() {
-		return collocWords;
+	public List<CollocMember> getCollocMembers() {
+		return collocMembers;
 	}
 
-	public void setCollocWords(List<CollocWord> collocWords) {
-		this.collocWords = collocWords;
+	public void setCollocMembers(List<CollocMember> collocMembers) {
+		this.collocMembers = collocMembers;
 	}
 
 }

@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import eki.ekilex.data.CollocWord;
+import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
@@ -375,7 +375,7 @@ public class ConversionUtil {
 				collocPosGroup.getRelationGroups().add(collocRelGroup);
 			}
 			Collocation collocation = addCollocation(collocMap, collocTuple, collocRelGroup.getCollocations());
-			addCollocWord(collocTuple, collocation);
+			addCollocMember(collocTuple, collocation);
 		}
 		return collocationPosGroups;
 	}
@@ -388,7 +388,7 @@ public class ConversionUtil {
 		for (CollocationTuple collocTuple : collocTuples) {
 
 			Collocation collocation = addCollocation(collocMap, collocTuple, collocations);
-			addCollocWord(collocTuple, collocation);
+			addCollocMember(collocTuple, collocation);
 		}
 		return collocations;
 	}
@@ -399,28 +399,32 @@ public class ConversionUtil {
 		Collocation collocation = collocMap.get(collocId);
 		if (collocation == null) {
 			String value = collocTuple.getCollocValue();
+			String definition = collocTuple.getCollocDefinition();
 			Float frequency = collocTuple.getCollocFrequency();
 			Float score = collocTuple.getCollocScore();
 			List<String> collocUsages = collocTuple.getCollocUsages();
 			collocation = new Collocation();
 			collocation.setValue(value);
+			collocation.setDefinition(definition);
 			collocation.setFrequency(frequency);
 			collocation.setScore(score);
 			collocation.setCollocUsages(collocUsages);
-			collocation.setCollocWords(new ArrayList<>());
+			collocation.setCollocMembers(new ArrayList<>());
 			collocMap.put(collocId, collocation);
 			collocations.add(collocation);
 		}
 		return collocation;
 	}
 
-	private void addCollocWord(CollocationTuple collocTuple, Collocation collocation) {
+	private void addCollocMember(CollocationTuple collocTuple, Collocation collocation) {
 
-		Long collocWordId = collocTuple.getCollocWordId();
-		String word = collocTuple.getCollocWord();
-		CollocWord collocWord = new CollocWord();
-		collocWord.setWordId(collocWordId);
-		collocWord.setWord(word);
-		collocation.getCollocWords().add(collocWord);
+		Long collocWordId = collocTuple.getCollocMemberWordId();
+		String word = collocTuple.getCollocMemberWord();
+		Float weight = collocTuple.getCollocMemberWeight();
+		CollocMember collocMember = new CollocMember();
+		collocMember.setWordId(collocWordId);
+		collocMember.setWord(word);
+		collocMember.setWeight(weight);
+		collocation.getCollocMembers().add(collocMember);
 	}
 }

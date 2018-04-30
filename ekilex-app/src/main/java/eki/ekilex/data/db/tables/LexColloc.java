@@ -9,6 +9,7 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexCollocRecord;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexColloc extends TableImpl<LexCollocRecord> {
 
-    private static final long serialVersionUID = -1147185299;
+    private static final long serialVersionUID = -1406763212;
 
     /**
      * The reference instance of <code>public.lex_colloc</code>
@@ -74,6 +75,11 @@ public class LexColloc extends TableImpl<LexCollocRecord> {
      * The column <code>public.lex_colloc.collocation_id</code>.
      */
     public final TableField<LexCollocRecord, Long> COLLOCATION_ID = createField("collocation_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lex_colloc.weight</code>.
+     */
+    public final TableField<LexCollocRecord, BigDecimal> WEIGHT = createField("weight", org.jooq.impl.SQLDataType.NUMERIC(14, 4), this, "");
 
     /**
      * The column <code>public.lex_colloc.order_by</code>.

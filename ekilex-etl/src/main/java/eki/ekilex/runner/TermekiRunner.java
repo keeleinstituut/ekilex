@@ -263,7 +263,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 					logger.info("Invalid gender code : {}", genderCode);
 				}
 			}
-			Long wordId = saveWord(word, null, null, wordDuplicateCount);
+			Long wordId = createWord(word, null, null, wordDuplicateCount);
 
 			Integer conceptId = (Integer) term.get("concept_id");
 			if (!conceptMeanings.containsKey(conceptId)) {
@@ -453,7 +453,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String abbreviationValue = (String) abbreviation.get().get("attribute_value");
 			int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
 			Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
-			Long wordId = saveWord(word, null, null, wordDuplicateCount);
+			Long wordId = createWord(word, null, null, wordDuplicateCount);
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(meaningId);

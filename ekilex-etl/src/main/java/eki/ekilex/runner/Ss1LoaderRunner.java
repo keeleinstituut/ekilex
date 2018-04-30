@@ -862,7 +862,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = saveWord(word, paradigms, getDataset(), context.wordDuplicateCount);
+				wordData.id = createWord(word, paradigms, getDataset(), context.wordDuplicateCount);
 			}
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
@@ -1226,7 +1226,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
 		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
 		word.setDisplayMorph(displayMorph);
-		createdWord.id = saveWord(word, null, null, null);
+		createdWord.id = createWord(word, null, null, null);
 		return createdWord;
 	}
 

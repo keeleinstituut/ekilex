@@ -107,7 +107,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lang;
 	}
 
-	protected Long saveWord(Word word, List<Paradigm> paradigms, String dataset, Count wordDuplicateCount) throws Exception {
+	protected Long createWord(Word word, List<Paradigm> paradigms, String dataset, Count wordDuplicateCount) throws Exception {
 
 		String wordValue = word.getValue();
 		String wordLang = word.getLang();

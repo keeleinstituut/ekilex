@@ -646,6 +646,7 @@ create table lex_colloc
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null,
   collocation_id bigint references collocation(id) on delete cascade not null,
+  weight numeric(14, 4),
   order_by bigserial,
   unique(lexeme_id, collocation_id)
 );

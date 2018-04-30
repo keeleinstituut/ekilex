@@ -24,15 +24,19 @@ public class CollocationTuple extends AbstractDataObject {
 
 	private String collocValue;
 
+	private String collocDefinition;
+
 	private Float collocFrequency;
 
 	private Float collocScore;
 
 	private List<String> collocUsages;
 
-	private Long collocWordId;
+	private Long collocMemberWordId;
 
-	private String collocWord;
+	private String collocMemberWord;
+
+	private Float collocMemberWeight;
 
 	public Long getPosGroupId() {
 		return posGroupId;
@@ -98,6 +102,14 @@ public class CollocationTuple extends AbstractDataObject {
 		this.collocValue = collocValue;
 	}
 
+	public String getCollocDefinition() {
+		return collocDefinition;
+	}
+
+	public void setCollocDefinition(String collocDefinition) {
+		this.collocDefinition = collocDefinition;
+	}
+
 	public Float getCollocFrequency() {
 		return collocFrequency;
 	}
@@ -122,20 +134,28 @@ public class CollocationTuple extends AbstractDataObject {
 		this.collocUsages = collocUsages;
 	}
 
-	public Long getCollocWordId() {
-		return collocWordId;
+	public Long getCollocMemberWordId() {
+		return collocMemberWordId;
 	}
 
-	public void setCollocWordId(Long collocWordId) {
-		this.collocWordId = collocWordId;
+	public void setCollocMemberWordId(Long collocMemberWordId) {
+		this.collocMemberWordId = collocMemberWordId;
 	}
 
-	public String getCollocWord() {
-		return collocWord;
+	public String getCollocMemberWord() {
+		return collocMemberWord;
 	}
 
-	public void setCollocWord(String collocWord) {
-		this.collocWord = collocWord;
+	public void setCollocMemberWord(String collocMemberWord) {
+		this.collocMemberWord = collocMemberWord;
+	}
+
+	public Float getCollocMemberWeight() {
+		return collocMemberWeight;
+	}
+
+	public void setCollocMemberWeight(Float collocMemberWeight) {
+		this.collocMemberWeight = collocMemberWeight;
 	}
 
 }

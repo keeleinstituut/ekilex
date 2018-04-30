@@ -20,6 +20,7 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
+import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -102,7 +103,7 @@ public class LexSearchService implements SystemConstant {
 		if (isNotBlank(searchWord)) {
 			String cleanedUpFilter = searchWord.replace("*", "").replace("?", "").replace("%", "").replace("_", "");
 			WordsResult words = findWords(cleanedUpFilter, selectedDatasets, true);
-			if (!words.getWords().isEmpty()) {
+			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
 					List<WordLexeme> wordLexemes = lexSearchDbService.findFormMeanings(word.getWordId(), selectedDatasets).into(WordLexeme.class);
