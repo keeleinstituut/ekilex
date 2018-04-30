@@ -20,7 +20,6 @@ import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
-import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
@@ -87,8 +86,7 @@ public class LexSearchService implements SystemConstant {
 	@Transactional
 	public WordLexeme getWordLexeme(Long lexemeId) {
 
-		List<WordLexeme> lexemes = lexSearchDbService.findWordLexeme(lexemeId).into(WordLexeme.class);
-		WordLexeme lexeme = lexemes.isEmpty() ? null : lexemes.get(0);
+		WordLexeme lexeme = lexSearchDbService.findLexeme(lexemeId).into(WordLexeme.class);
 		if (lexeme != null) {
 			Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 			populateLexeme(singletonList(lexeme.getDatasetCode()), datasetNameMap, lexeme);
@@ -106,7 +104,7 @@ public class LexSearchService implements SystemConstant {
 			if (CollectionUtils.isNotEmpty(words.getWords())) {
 				Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 				for (Word word : words.getWords()) {
-					List<WordLexeme> wordLexemes = lexSearchDbService.findFormMeanings(word.getWordId(), selectedDatasets).into(WordLexeme.class);
+					List<WordLexeme> wordLexemes = lexSearchDbService.findWordLexemes(word.getWordId(), selectedDatasets).into(WordLexeme.class);
 					wordLexemes.forEach(lexeme -> {
 						Long meaningId = lexeme.getMeaningId();
 						Long lexemeId = lexeme.getLexemeId();
@@ -137,7 +135,7 @@ public class LexSearchService implements SystemConstant {
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-		List<WordLexeme> lexemes = lexSearchDbService.findFormMeanings(wordId, selectedDatasets).into(WordLexeme.class);
+		List<WordLexeme> lexemes = lexSearchDbService.findWordLexemes(wordId, selectedDatasets).into(WordLexeme.class);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
 		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);

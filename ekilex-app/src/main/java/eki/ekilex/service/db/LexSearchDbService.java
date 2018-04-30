@@ -509,7 +509,7 @@ public class LexSearchDbService implements SystemConstant {
 			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
 
-	public Result<Record> findFormMeanings(Long wordId, List<String> selectedDatasets) {
+	public Result<Record> findWordLexemes(Long wordId, List<String> selectedDatasets) {
 
 		return create.select(wordLexemeSelectFields)
 			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
@@ -526,7 +526,7 @@ public class LexSearchDbService implements SystemConstant {
 			.fetch();
 	}
 
-	public Result<Record> findWordLexeme(Long lexemeId) {
+	public Record findLexeme(Long lexemeId) {
 
 		return create.select(wordLexemeSelectFields)
 			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
@@ -539,7 +539,7 @@ public class LexSearchDbService implements SystemConstant {
 					.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
 			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
 			.orderBy(WORD.ID)
-			.fetch();
+			.fetchSingle();
 	}
 
 	public Result<Record4<Long,String,Integer,String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasets) {
