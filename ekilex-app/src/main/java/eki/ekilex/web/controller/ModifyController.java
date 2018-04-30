@@ -26,6 +26,28 @@ public class ModifyController {
 	@Autowired
 	private UpdateService updateService;
 
+	static public class ModifyOrderingRequest {
+
+		private String opCode;
+		private List<OrderingData> items;
+
+		public String getOpcode() {
+			return opCode;
+		}
+
+		public void setOpcode(String opcode) {
+			this.opCode = opcode;
+		}
+
+		public List<OrderingData> getItems() {
+			return items;
+		}
+
+		public void setItems(List<OrderingData> items) {
+			this.items = items;
+		}
+	}
+
 	@ResponseBody
 	@PostMapping("/modify")
 	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
@@ -80,25 +102,48 @@ public class ModifyController {
 		return "OK";
 	}
 
-	static public class ModifyOrderingRequest {
+	@ResponseBody
+	@PostMapping("/remove")
+	public String removeElement(@RequestParam("op_type") String opCode, @RequestParam("id") Long id) {
 
-		private String opCode;
-		private List<OrderingData> items;
-
-		public String getOpcode() {
-			return opCode;
+		logger.debug("Delete operation : {} : for id {}", opCode, id);
+		switch (opCode) {
+		case "usage" :
+			updateService.removeUsage(id);
+			break;
+		case "usage_translation" :
+			updateService.removeUsageTranslation(id);
+			break;
+		case "usage_definition" :
+			updateService.removeUsageDefinition(id);
+			break;
+		case "definition" :
+			updateService.removeDefinition(id);
+			break;
 		}
-
-		public void setOpcode(String opcode) {
-			this.opCode = opcode;
-		}
-
-		public List<OrderingData> getItems() {
-			return items;
-		}
-
-		public void setItems(List<OrderingData> items) {
-			this.items = items;
-		}
+		return "OK";
 	}
+
+	@ResponseBody
+	@PostMapping("/add_definition")
+	public String addNewDescription(@RequestParam("id") Long meaningId, @RequestParam("language") String languageCode, @RequestParam("value") String value) {
+
+		logger.debug("Add new definition operation : {} : {} : {}", meaningId, languageCode, value);
+		updateService.addDefinition(meaningId, value, languageCode);
+		return "OK";
+	}
+
+	@ResponseBody
+	@PostMapping("/add_usage")
+	public String addNewUsage(
+			@RequestParam("id") Long governmentId,
+			@RequestParam("usage_type") String usageMemberType,
+			@RequestParam("language") String languageCode,
+			@RequestParam("value") String value) {
+
+		logger.debug("Add new usage operation : {} : {} : {}", governmentId, languageCode, value);
+		updateService.addUsageMember(governmentId, usageMemberType, value, languageCode);
+		return "OK";
+	}
+
 }

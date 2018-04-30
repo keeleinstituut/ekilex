@@ -181,18 +181,62 @@ function openEditDlg(elem) {
     editDlg.find('[name="id"]').val(targetElement.data('id'));
     editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
 
-    editDlg.find('button[type="submit"]').off().on('click', function(e) {
-        e.preventDefault();
-        var editForm = editDlg.find('form');
-        var url = editForm.attr('action') + '?' + editForm.serialize();
-        $.post(url).done(function(data) {
-            var id = $('#details_div').data('id');
-            var detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
-            detailsButton.trigger('click');
-            editDlg.find('button.close').trigger('click');
-        }).fail(function(data) {
-            alert("Andmete muutmine ebaõnnestus.");
-            console.log(data);
-        });
+    editDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, editDlg, 'Andmete muutmine ebaõnnestus.')});
+}
+
+function performDelete() {
+    var targetName = $(this)[0].getAttribute('data-target-elem');
+    var targetElement = $('[name="' + targetName + '"]');
+    var url = applicationUrl + 'remove?op_type=' + targetElement.data('op-type') + '&id=' + targetElement.data('id');
+    $.post(url).done(function(data) {
+        var refreshButton = $('#refresh-details');
+        refreshButton.trigger('click');
+    }).fail(function(data) {
+        alert("Andmete eemaldamine ebaõnnestus.");
+        console.log(data);
     });
+}
+
+function openAddDefinitionDlg(elem) {
+    var addDlg = $('#addNewDefinitionDlg');
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=value]').val(null);
+    var languageSelect = addDlg.find('[name=language]');
+    languageSelect.val(languageSelect.find('option').first().val());
+
+    addDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')});
+    addDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, addDlg)});
+}
+
+function openAddUsageDlg(elem) {
+    var addDlg = $('#addNewUsageDlg');
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=value]').val(null);
+    var languageSelect = addDlg.find('[name=language]');
+    languageSelect.val(languageSelect.find('option').first().val());
+    var typeSelect = addDlg.find('[name=usage_type]');
+    typeSelect.val(typeSelect.find('option').first().val());
+
+    addDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')});
+    addDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, addDlg)});
+}
+
+function submitForm(e, dlg, failMessage) {
+    e.preventDefault();
+    var theForm = dlg.find('form');
+    var url = theForm.attr('action') + '?' + theForm.serialize();
+    $.post(url).done(function(data) {
+        var refreshButton = $('#refresh-details');
+        refreshButton.trigger('click');
+        dlg.find('button[data-dismiss="modal"]').trigger('click');
+    }).fail(function(data) {
+        alert(failMessage);
+        console.log(data);
+    });
+}
+
+function alignAndFocus(e, dlg) {
+    dlg.find('.form-control').first().focus();
+    var dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
+    dlg.find('.modal-content').css('top', dlgTop);
 }

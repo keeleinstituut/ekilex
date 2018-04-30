@@ -29,24 +29,24 @@
   @return unquote("\"") + $str + unquote("\"");
 }
 
-.icon-arrow-right {
+.icon-logo {
   &:before {
-    content: unicode($icon-arrow-right); 
+    content: unicode($icon-logo); 
   }
 }
-.icon-add {
+.icon-logo-s {
   &:before {
-    content: unicode($icon-add); 
+    content: unicode($icon-logo-s); 
   }
 }
-.icon-chevron-left {
+.icon-logo-type {
   &:before {
-    content: unicode($icon-chevron-left); 
+    content: unicode($icon-logo-type); 
   }
 }
-.icon-speaker {
+.icon-menu {
   &:before {
-    content: unicode($icon-speaker); 
+    content: unicode($icon-menu); 
   }
 }
 .icon-close {
@@ -69,3 +69,34 @@
     content: unicode($icon-search); 
   }
 }
+.icon-speaker {
+  &:before {
+    content: unicode($icon-speaker); 
+  }
+}
+.icon-arrow-right {
+  &:before {
+    content: unicode($icon-arrow-right); 
+  }
+}
+.icon-add {
+  &:before {
+    content: unicode($icon-add); 
+  }
+}
+.icon-chevron-left {
+  &:before {
+    content: unicode($icon-chevron-left); 
+  }
+}
+.icon-chevron-right {
+  &:before {
+    content: unicode($icon-chevron-right); 
+  }
+}
+.icon-back {
+  &:before {
+    content: unicode($icon-back); 
+  }
+}
+

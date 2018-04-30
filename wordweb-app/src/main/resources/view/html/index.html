@@ -10,8 +10,13 @@
   <div class="container-fluid header-container">
     <div class="row header-wrap">
       <div class="col-12 header-panel">
-        <a class="logo" th:text="#{button.label.back}"> &lt; Back </a>
-        <div class="header-links d-none d-md-block">
+        <a class="logo">
+          <span class="icon icon-logo-s"></span>
+        </a>
+        <a class="back">
+          <span class="icon icon-back"></span>
+        </a>
+        <div class="header-links">
           <a th:href="@{/}" class="menu-item selected ">
             <span th:text="#{menu.search}">Otsing</span>
           </a>
@@ -28,7 +33,9 @@
             <span th:text="#{menu.contacts}">Kontakt</span>
           </a>
         </div>
-        <button class="menu-btn" th:text="#{button.label.menu}">Menu</button>
+        <button class="btn menu-btn">
+          <span class="icon icon-menu"></span>
+        </button>
       </div>
     </div>
   </div>
@@ -136,7 +143,8 @@
           </li>
         </ul>
       </div>
-      <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div>
+      <!-- Sander: miks sellist asja (homonym-panel-empty) vaja on ?: -->
+      <!-- <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div> -->
     </div>
     <div class="word-details"></div>
     <div class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
@@ -145,12 +153,12 @@
           <div class="col-12 content-title">
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
-              <span class="homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
+              <span th:text="${wordData.word.homonymNr}">1</span>
             </h3>
             <button class="btn btn-speaker">
               <span class="icon icon-speaker"></span>
             </button>
-            <button class="btn btn-speaker">
+            <button class="btn show-search d-none">
               <span class="icon icon-search"></span>
             </button>
           </div>
@@ -299,7 +307,7 @@
                 <div class="dependencies col-lg-6" th:if="${not #lists.isEmpty(lexeme.governments)}">
                   <!-- rektsioonid -->
                   <div class="dependence" th:each="government : ${lexeme.governments}">
-                    <h6 th:if="${government.government != '-'}" th:text="${government.government}"></h6>
+                    <span class="question" th:if="${government.government != '-'}" th:text="${government.government}"></span>
                     <div th:if="${not #lists.isEmpty(government.usageMeanings)}">
                       <!-- kasutusnäite tähendused -->
                       <div class="example-item" th:each="usageMeaning : ${government.usageMeanings}">

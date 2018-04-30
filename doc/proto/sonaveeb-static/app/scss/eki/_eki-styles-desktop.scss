@@ -4,21 +4,24 @@
 @include media-breakpoint-up(md) {
 
 ////////////////////////////////
-
+.homonym-page{
+	background-color: $gray-100;
+}
 .search-panel,
-.homonym-panel{
+.homonym-panel,
+.word-details{
 	padding-top: rem(30);
 }
 .search-wrap{
 	top: rem(70);
 	box-shadow: 0 rem(10) rem(10) $gray-100;
 }
-.menu-btn {
-	display: none;
+.dropdown-menu.container{
+	max-width: rem(500) !important;
+	width: auto !important;
 }
-.header-wrap,
-.header-container{
-	background-color: $black;
+.back{
+	display: none;
 }
 .homonym-panel{
 	background-color: $gray-100;
@@ -33,12 +36,21 @@
     display: flex;
     padding: rem(20);
     margin: rem(-20);
-    height: 999999999px;
+    padding-bottom: rem(1600000);
 }
-.homonym-list li:first-child .homonym-item{
-	// padding-left: 0;
+.homonym-list li{
+	display: flex;
+	.homonym-item{
+		margin-left: rem(-10);
+		margin-right: rem(10);
+	}
+	&:last-child .homonym-item{
+		margin-right: 0;
+	}
 }
 .homonym-item{
+	height: 100%;
+    display: flex;
 	&:hover{
 		text-decoration: none;
 	}
@@ -78,18 +90,27 @@
 	    display: inline-block;
 	}
 }
+h3 span + span{
+	font-size:rem(19.2);
+	font-family: $font-family-sans-serif !important;
+}
 .homonym-item{
 	cursor: pointer;
 	float: left;
 	position: relative;
 	padding: 0 rem(10);
-		transform: scale(1);
 	*{
 		white-space: nowrap; 
 	    overflow: hidden;
 	}
+	.homonym-item-wrap{
+		transform: scale(1);
+		transition: 50ms ease-out !important;
+		display: flex;
+		flex-direction: column;
+	}
 	&:not(.selected){
-			&:hover{
+			&:hover .homonym-item-wrap{
 				transform: scale(1.03);				
 			}
 		.homonym-item-wrap{
@@ -100,13 +121,13 @@
 		}
 	}
 	.homonym-item-wrap{
-		height: rem(120);
+		// height: rem(120);
 		width: rem(240) !important;
 		padding:rem(15) rem(25);
 		border-radius: $border-radius-card;
 	}
 	&:after{
-			transition: 50ms ease-in-out;
+		transition: 50ms ease-out;
 		content: "";
 		display: block;
 		opacity: 0;
@@ -156,9 +177,14 @@
 }
 .homonym-intro{
 	max-height: ($line-height-base)+rem;
-	position: absolute;
+	// position: absolute;
     top: rem(76);
     width: calc(100% - 70px );
+    margin-top: auto;
+}
+.homonym-matches{
+	// min-height: rem(18);
+	margin-bottom: auto;
 }
 
 
@@ -183,10 +209,10 @@
 	// z-index: 11;	
 }
 .homonym-panel{
-	padding-bottom: rem(20);
+	// padding-bottom: rem(20);
 }
 .content-panel{
-	// margin-top: rem(300);
+	box-shadow: $dropdown-box-shadow;
 }
 .main-data{
 	border-right: $border-width $border-color solid ;	

@@ -22,3 +22,7 @@ td {
 	font-weight: bold;
 	color: #000;
 }
+
+.modal-backdrop.show {
+	opacity: 0.1;
+}

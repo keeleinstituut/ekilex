@@ -61,6 +61,7 @@
 
   <th:block th:fragment="details" th:if="${details != null}">
     <div th:data-id="${wordId}" class="float-left mt-4 pl-2" id="details_div" style="height: calc(100vh - 18em); width: 85%; overflow-y: auto;">
+      <button id="refresh-details" hidden th:data-id="${wordId}" name="detailsBtn" data-refresh></button>
       <div class="float-left" style="width:70%">
         <th:block th:each="lexeme : ${details.lexemes}">
           <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
@@ -92,7 +93,6 @@
               <a class="btn btn-primary" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}">Ühenda</a>
               <a class="btn btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}" th:if="${!#lists.isEmpty(lexeme.meaningWords)}"
                  data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
-                 data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
                 >Lahuta</a>
               <b th:text="${lexeme.dataset}" class="float-right"></b>
             </div>
@@ -173,10 +173,16 @@
                 </span>
               </div>
             </div>
-            <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+            <div>
               <hr />
               <span class="lbl">Seletused</span>
-              <table class="orderable" th:data-op-code="definition">
+              <button type="button" class="btn badge badge-success" title="Lisa uus"
+                      th:data-id="${lexeme.meaningId}"
+                      onclick="openAddDefinitionDlg(this)"
+                      data-toggle="modal" data-target="#addNewDefinitionDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <table class="orderable" th:data-op-code="definition" th:if="${not #lists.isEmpty(lexeme.definitions)}">
                 <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                   <td>
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
@@ -192,6 +198,11 @@
                             onclick="openEditDlg(this)"
                             data-toggle="modal" data-target="#editDlg">
                       <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-target-elem="${definition.id} + '_definition'"
+                            data-toggle="delete-confirmation" data-placement="right">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                     <div th:if="${not #lists.isEmpty(definition.refLinks)}">
                       <span th:each="refLink : ${definition.refLinks}">
@@ -255,7 +266,14 @@
                   </td>
                 </tr>
                 <tr>
-                  <th class="lbl">Kasutusnäited, tõlked, seletused</th>
+                  <th class="lbl">Kasutusnäited, tõlked, seletused
+                    <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            th:data-id="${government.id}"
+                            onclick="openAddUsageDlg(this)"
+                            data-toggle="modal" data-target="#addNewUsageDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </th>
                 </tr>
                 <tr>
                   <td>
@@ -275,6 +293,11 @@
                                   onclick="openEditDlg(this)"
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${usage.id} + '_usage'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                           <div th:if="${not #lists.isEmpty(usage.refLinks)}">
                             <span th:each="refLink : ${usage.refLinks}">
@@ -302,6 +325,11 @@
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
                         </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
@@ -316,6 +344,11 @@
                                   onclick="openEditDlg(this)"
                                   data-toggle="modal" data-target="#editDlg">
                             <i class="fa fa-edit" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
                         </td>
                       </tr>
@@ -535,12 +568,27 @@
       </div>
     </div>
     <script th:inline="javascript">
-      $('[data-toggle="confirmation"]').confirmation()
+      $('[data-toggle=confirmation]').confirmation(
+          {
+              btnOkLabel: 'Jah',
+              btnCancelLabel: 'Ei'
+          }
+      );
+      $('[data-toggle=delete-confirmation]').confirmation(
+          {
+              btnOkLabel: 'Jah',
+              btnCancelLabel: 'Ei',
+              title: 'Kas olete kindel, et soovite eemaldada ?',
+              onConfirm: performDelete
+          }
+      );
     </script>
   </th:block>
 
   <div th:replace="common :: #editDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
+  <div th:replace="common :: #addNewDefinitionDlg"></div>
+  <div th:replace="common :: #addNewUsageDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
