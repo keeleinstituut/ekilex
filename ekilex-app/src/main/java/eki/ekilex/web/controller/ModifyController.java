@@ -125,6 +125,9 @@ public class ModifyController {
 		case "definition" :
 			updateService.removeDefinition(id);
 			break;
+		case "lexeme_frequency_group" :
+			updateService.updateLexemeFrequencyGroup(id, null);
+			break;
 		}
 		return "OK";
 	}
