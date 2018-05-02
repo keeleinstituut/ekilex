@@ -105,6 +105,13 @@
             </div>
             <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
               <hr />
+              <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
+                      th:data-lexeme-id="${lexeme.lexemeId}"
+                      th:data-meaning-id="${lexeme.meaningId}"
+                      onclick="openLexemeClassifiersDlg(this)"
+                      data-toggle="modal" data-target="#lexemeClassifiersDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
               <div th:if="${lexeme.genderCode != null}">
                 <span class="lbl">Sugu</span>
                 <span th:text="${lexeme.genderCode}"></span>
@@ -589,6 +596,7 @@
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
   <div th:replace="common :: #addNewDefinitionDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
+  <div th:replace="common :: #lexemeClassifiersDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

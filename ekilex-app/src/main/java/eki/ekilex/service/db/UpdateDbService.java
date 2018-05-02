@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.common.constant.FreeformType;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
@@ -10,6 +11,7 @@ import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Query;
+import org.jooq.Record1;
 import org.jooq.Record4;
 import org.jooq.Result;
 import org.jooq.impl.DSL;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -107,6 +110,39 @@ public class UpdateDbService {
 				.set(LEXEME.LEVEL3, level3)
 				.where(LEXEME.ID.eq(id))
 				.execute();
+	}
+
+	public void updateLexemeFrequencyGroup(Long lexemeId, String groupCode) {
+		create.update(LEXEME)
+				.set(LEXEME.FREQUENCY_GROUP, groupCode)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void addLexemePos(Long lexemeId, String posCode) {
+		Record1<Long> lexemePos = create
+				.select(LEXEME_POS.ID).from(LEXEME_POS)
+				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)))
+				.fetchOne();
+		if (lexemePos == null) {
+			create
+				.insertInto(LEXEME_POS, LEXEME_POS.LEXEME_ID, LEXEME_POS.POS_CODE)
+				.values(lexemeId, posCode)
+				.execute();
+		}
+	}
+
+	public void addMeaningDomain(Long meaningId, Classifier domain) {
+		Record1<Long> meaningDomain = create
+				.select(MEANING_DOMAIN.ID).from(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())).and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin())))
+				.fetchOne();
+		if (meaningDomain == null) {
+			create
+					.insertInto(MEANING_DOMAIN, MEANING_DOMAIN.MEANING_ID, MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
+					.values(meaningId, domain.getOrigin(), domain.getCode())
+					.execute();
+		}
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {

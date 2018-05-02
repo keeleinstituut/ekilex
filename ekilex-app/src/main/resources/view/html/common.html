@@ -79,7 +79,7 @@
           <input type="hidden" name="op_type">
           <div class="form-group row">
             <div class="col-md-12">
-              <textarea class="form-control" rows="5" name="modified_value"></textarea>
+              <textarea class="form-control" rows="2" name="modified_value"></textarea>
             </div>
           </div>
         </div>
@@ -132,7 +132,7 @@
           </div>
           <div class="form-group row">
             <div class="col-md-12">
-              <textarea class="form-control" rows="5" name="value"></textarea>
+              <textarea class="form-control" rows="2" name="value"></textarea>
             </div>
           </div>
         </div>
@@ -171,7 +171,63 @@
           </div>
           <div class="form-group row">
             <div class="col-md-12">
-              <textarea class="form-control" rows="5" name="value"></textarea>
+              <textarea class="form-control" rows="2" name="value"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeClassifiersDlg" class="modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_classifier}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="lexeme_id">
+          <input type="hidden" name="meaning_id">
+          <input type="hidden" name="value">
+          <div class="form-group row">
+            <div class="col-md-6">
+              <select class="form-control" th:name="classif_name">
+                <option value="lexeme_frequency_group">Sagedusrühm</option>
+                <option value="lexeme_pos">Sõnaliik</option>
+                <option value="meaning_domain">Valdkond</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" id="lexeme_frequency_group">
+            <div class="col-md-2">
+              <select class="form-control value-select">
+                <option th:each="freqGroup : ${lexemeFrequencyGroups}"
+                        th:value="${freqGroup.code}"
+                        th:text="${freqGroup.value}">freqGroup</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" id="lexeme_pos">
+            <div class="col-md-6">
+              <select class="form-control value-select">
+                <option th:each="pos : ${allLexemePos}"
+                        th:value="${pos.code}"
+                        th:text="${pos.value}">pos</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" id="meaning_domain">
+            <div class="col-md-12">
+              <select class="form-control value-select">
+                <optgroup th:each="origin : ${addDomains}" th:label="${origin.getKey()}">
+                  <option th:each="domain : ${origin.getValue()}"
+                          th:value="${domain.toIdString()}"
+                          th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+                </optgroup>
+              </select>
             </div>
           </div>
         </div>

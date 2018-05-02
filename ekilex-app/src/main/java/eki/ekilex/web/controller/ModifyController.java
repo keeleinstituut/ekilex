@@ -1,8 +1,10 @@
 package eki.ekilex.web.controller;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.service.UpdateService;
+import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class ModifyController {
 
 	@Autowired
 	private UpdateService updateService;
+
+	@Autowired
+	private ConversionUtil conversionUtil;
 
 	static public class ModifyOrderingRequest {
 
@@ -143,6 +148,30 @@ public class ModifyController {
 
 		logger.debug("Add new usage operation : {} : {} : {}", governmentId, languageCode, value);
 		updateService.addUsageMember(governmentId, usageMemberType, value, languageCode);
+		return "OK";
+	}
+
+	@ResponseBody
+	@PostMapping("/add_classifier")
+	public String addLexemeClassifier(
+			@RequestParam("classif_name") String classifierName,
+			@RequestParam("lexeme_id") Long lexemeId,
+			@RequestParam("meaning_id") Long meaningId,
+			@RequestParam("value") String value) {
+
+		logger.debug("Add classifier {} : {} : for lexemeId {}, meaningId {}", classifierName, value, lexemeId, meaningId);
+		switch (classifierName) {
+		case "lexeme_frequency_group" :
+			updateService.updateLexemeFrequencyGroup(lexemeId, value);
+			break;
+		case "lexeme_pos" :
+			updateService.addLexemePos(lexemeId, value);
+			break;
+		case "meaning_domain" :
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
+			updateService.addMeaningDomain(meaningId, meaningDomain);
+			break;
+		}
 		return "OK";
 	}
 

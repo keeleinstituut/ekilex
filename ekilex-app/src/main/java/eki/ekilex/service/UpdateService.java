@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.UpdateDbService;
@@ -69,6 +70,21 @@ public class UpdateService {
 		for (WordLexeme lexeme: lexemes) {
 			updateDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 		}
+	}
+
+	@Transactional
+	public void updateLexemeFrequencyGroup(Long lexemeId, String groupCode) {
+		updateDbService.updateLexemeFrequencyGroup(lexemeId, groupCode);
+	}
+
+	@Transactional
+	public void addLexemePos(Long lexemeId, String posCode) {
+		updateDbService.addLexemePos(lexemeId, posCode);
+	}
+
+	@Transactional
+	public void addMeaningDomain(Long meaningId, Classifier domain) {
+		updateDbService.addMeaningDomain(meaningId, domain);
 	}
 
 	@Transactional

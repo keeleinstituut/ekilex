@@ -221,6 +221,23 @@ function openAddUsageDlg(elem) {
     addDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, addDlg)});
 }
 
+function openLexemeClassifiersDlg(elem) {
+    var theDlg = $('#lexemeClassifiersDlg');
+    theDlg.find('[name=lexeme_id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=meaning_id]').val($(elem).data('meaning-id'));
+    theDlg.find('select').each(function(indx, item) {
+        $(item).val($(item).find('option').first().val());
+    });
+
+    theDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
+    theDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
+    theDlg.find('[name=classif_name]').off().on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
+    theDlg.find('.value-select').off().on('change', function(e) {
+        theDlg.find('[name=value]').val($(this).val());
+    });
+    toggleValueGroup(theDlg, theDlg.find('[name=classif_name]').val());
+}
+
 function submitForm(e, dlg, failMessage) {
     e.preventDefault();
     var theForm = dlg.find('form');
@@ -239,4 +256,10 @@ function alignAndFocus(e, dlg) {
     dlg.find('.form-control').first().focus();
     var dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
     dlg.find('.modal-content').css('top', dlgTop);
+}
+
+function toggleValueGroup(dlg, groupName) {
+    dlg.find('.value-group').hide();
+    dlg.find('#' + groupName).show();
+    dlg.find('#' + groupName).find('.value-select').trigger('change');
 }

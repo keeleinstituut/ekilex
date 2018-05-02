@@ -12,6 +12,7 @@ import static eki.ekilex.data.db.Tables.LANG;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -71,6 +72,26 @@ public class CommonDataDbService {
 
 	public Result<Record2<String, String>> getLanguages() {
 		return create.select(LANG.CODE, LANG.VALUE).from(LANG).fetch();
+	}
+
+	public Result<Record2<String, String>> getLexemeFrequencyGroups() {
+		return create.select(LEXEME_FREQUENCY.CODE, LEXEME_FREQUENCY.CODE.as("value")).from(LEXEME_FREQUENCY).fetch();
+	}
+
+	public Result<Record2<String, String>> getAllLexemePos(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(POS_LABEL.CODE, POS_LABEL.VALUE)
+				.from(POS_LABEL)
+				.where(POS_LABEL.LANG.eq(classifierLabelLang).and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record3<String, String, String>> getDomains() {
+		return create
+				.select(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE)
+				.from(DOMAIN_LABEL)
+				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.fetch();
 	}
 
 	public Result<Record3<String, String, String>> getDomainsInUse() {
