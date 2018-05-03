@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
@@ -88,7 +89,8 @@ public class TermSearchController extends AbstractSearchController {
 			List<Dataset> allDatasets = commonDataService.getDatasets();
 			selectedDatasets = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
 		}
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets);
+		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 

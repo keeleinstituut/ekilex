@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -8,6 +9,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.SearchCriterionGroup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -47,6 +49,10 @@ public abstract class AbstractSearchController implements WebConstant {
 			sessionBean.setSelectedDatasets(allDatasetCodes);
 		}
 		List<Classifier> allLanguages = commonDataService.getLanguages();
+		if (CollectionUtils.isEmpty(sessionBean.getLanguagesOrder())) {
+			List<ClassifierSelect> languagesOrder = convert(allLanguages);
+			sessionBean.setLanguagesOrder(languagesOrder);
+		}
 		Map<String,List<Classifier>> domains = commonDataService.getDomainsInUseByOrigin();
 		SearchFilter detailSearchFilter = initSearchFilter();
 
@@ -55,6 +61,18 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("domains", domains);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
+	}
+
+	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {
+		List<ClassifierSelect> languagesOrder = new ArrayList<>();
+		for (Classifier language : allLanguages) {
+			ClassifierSelect languageSelect = new ClassifierSelect();
+			languageSelect.setCode(language.getCode());
+			languageSelect.setValue(language.getValue());
+			languageSelect.setSelected(true);
+			languagesOrder.add(languageSelect);
+		}
+		return languagesOrder;
 	}
 
 	protected void cleanup(
@@ -111,14 +129,14 @@ public abstract class AbstractSearchController implements WebConstant {
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 	}
 
-	private void covertValueToClassifier(SearchCriterion c) throws Exception {
-		if (c.getSearchValue() != null) {
-			if (isNotBlank(c.getSearchValue().toString())) {
+	private void covertValueToClassifier(SearchCriterion crit) throws Exception {
+		if (crit.getSearchValue() != null) {
+			if (isNotBlank(crit.getSearchValue().toString())) {
 				ObjectMapper mapper = new ObjectMapper();
-				Classifier domain = mapper.readValue(c.getSearchValue().toString(), Classifier.class);
-				c.setSearchValue(domain);
+				Classifier domain = mapper.readValue(crit.getSearchValue().toString(), Classifier.class);
+				crit.setSearchValue(domain);
 			} else {
-				c.setSearchValue(null);
+				crit.setSearchValue(null);
 			}
 		}
 	}

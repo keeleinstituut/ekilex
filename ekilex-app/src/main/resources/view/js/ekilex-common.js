@@ -152,11 +152,12 @@ function changeItemOrdering(target, delta) {
             $(item).find('.order-down').prop('hidden', indx == items.length - 1);
             var itemData = {};
             itemData.id = $(item).attr('data-id');
+            itemData.code = $(item).attr('data-code');
             itemData.orderby = $(item).attr('data-orderby');
             orderedItems.push(itemData);
         });
     }
-    return {opcode: opCode, items: orderedItems};
+    return {opCode: opCode, items: orderedItems};
 }
 
 function postJson(url, dataObject) {
@@ -173,15 +174,16 @@ function postJson(url, dataObject) {
 }
 
 function openEditDlg(elem) {
-    var targetName = $(elem).data('target-elem');
-    var targetElement = $('[name="' + targetName + '"]');
-    var editDlg = $('#editDlg');
-    var modifyFld = editDlg.find('[name="modified_value"]');
-    modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
-    editDlg.find('[name="id"]').val(targetElement.data('id'));
-    editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
-
-    editDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, editDlg, 'Andmete muutmine ebaõnnestus.')});
+	var targetName = $(elem).data('target-elem');
+	var targetElement = $('[name="' + targetName + '"]');
+	var editDlg = $('#editDlg');
+	var modifyFld = editDlg.find('[name="modified_value"]');
+	modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
+	editDlg.find('[name="id"]').val(targetElement.data('id'));
+	editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
+	editDlg.find('button[type="submit"]').off().on('click', function(e) {
+		submitForm(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+	});
 }
 
 function performDelete() {
@@ -198,27 +200,33 @@ function performDelete() {
 }
 
 function openAddDefinitionDlg(elem) {
-    var addDlg = $('#addNewDefinitionDlg');
-    addDlg.find('[name=id]').val($(elem).data('id'));
-    addDlg.find('[name=value]').val(null);
-    var languageSelect = addDlg.find('[name=language]');
-    languageSelect.val(languageSelect.find('option').first().val());
-
-    addDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')});
-    addDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, addDlg)});
+	var addDlg = $('#addNewDefinitionDlg');
+	addDlg.find('[name=id]').val($(elem).data('id'));
+	addDlg.find('[name=value]').val(null);
+	var languageSelect = addDlg.find('[name=language]');
+	languageSelect.val(languageSelect.find('option').first().val());
+	addDlg.find('button[type="submit"]').off().on('click', function(e) {
+		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+	});
+	addDlg.off().on('shown.bs.modal', function(e) {
+		alignAndFocus(e, addDlg)
+	});
 }
 
 function openAddUsageDlg(elem) {
-    var addDlg = $('#addNewUsageDlg');
-    addDlg.find('[name=id]').val($(elem).data('id'));
-    addDlg.find('[name=value]').val(null);
-    var languageSelect = addDlg.find('[name=language]');
-    languageSelect.val(languageSelect.find('option').first().val());
-    var typeSelect = addDlg.find('[name=usage_type]');
-    typeSelect.val(typeSelect.find('option').first().val());
-
-    addDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')});
-    addDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, addDlg)});
+	var addDlg = $('#addNewUsageDlg');
+	addDlg.find('[name=id]').val($(elem).data('id'));
+	addDlg.find('[name=value]').val(null);
+	var languageSelect = addDlg.find('[name=language]');
+	languageSelect.val(languageSelect.find('option').first().val());
+	var typeSelect = addDlg.find('[name=usage_type]');
+	typeSelect.val(typeSelect.find('option').first().val());
+	addDlg.find('button[type="submit"]').off().on('click', function(e) {
+		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+	});
+	addDlg.off().on('shown.bs.modal', function(e) {
+		alignAndFocus(e, addDlg)
+	});
 }
 
 function submitForm(e, dlg, failMessage) {

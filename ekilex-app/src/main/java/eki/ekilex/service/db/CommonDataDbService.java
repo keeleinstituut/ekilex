@@ -37,7 +37,7 @@ import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
-import org.jooq.Record6;
+import org.jooq.Record7;
 import org.jooq.Record9;
 import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -118,12 +118,13 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
-	public Result<Record6<Long,String,Long,Long,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
+	public Result<Record7<Long,String,String,Long,Long,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
 
 		return create
 				.select(
 						DEFINITION.ID.as("definition_id"),
 						DEFINITION.VALUE.as("definition_value"),
+						DEFINITION.LANG.as("definition_lang"),
 						DEFINITION.ORDER_BY.as("definition_order_by"),
 						DEFINITION_REF_LINK.ID.as("ref_link_id"),
 						DEFINITION_REF_LINK.NAME.as("ref_link_name"),
