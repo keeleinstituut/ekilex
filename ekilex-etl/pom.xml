@@ -109,7 +109,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -144,7 +145,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -179,7 +181,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -215,7 +218,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -250,7 +254,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -285,7 +290,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -320,7 +326,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -355,7 +362,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
@@ -390,8 +398,13 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-ultima-loader/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>ultima-loader.properties</include>
+							<include>log-ultima-loader/logback.xml</include>
 						</includes>
+						<excludes>
+							<exclude>log-console/logback.xml</exclude>
+						</excludes>
 					</resource>
 				</resources>
 				<plugins>
@@ -425,7 +438,8 @@
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
 						<includes>
-							<include>log-console/logback.xml/</include>
+							<include>ekilex-etl.properties</include>
+							<include>log-console/logback.xml</include>
 						</includes>
 					</resource>
 				</resources>
