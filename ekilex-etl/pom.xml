@@ -402,6 +402,9 @@
 							<include>ultima-loader.properties</include>
 							<include>log-ultima-loader/logback.xml</include>
 						</includes>
+						<excludes>
+							<exclude>log-console/logback.xml</exclude>
+						</excludes>
 					</resource>
 				</resources>
 				<plugins>
