@@ -26,3 +26,11 @@ td {
 .modal-backdrop.show {
 	opacity: 0.1;
 }
+
+.select-dlg .modal-body {
+	padding: 0;
+}
+
+.select-dlg select {
+	overflow-y: auto;
+}

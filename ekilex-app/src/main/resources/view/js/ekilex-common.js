@@ -199,12 +199,13 @@ function performDelete() {
     });
 }
 
-function openAddDefinitionDlg(elem) {
-	var addDlg = $('#addNewDefinitionDlg');
+function openAddDlg(elem) {
+    var addDlg = $($(elem).data('target'));
 	addDlg.find('[name=id]').val($(elem).data('id'));
 	addDlg.find('[name=value]').val(null);
-	var languageSelect = addDlg.find('[name=language]');
-	languageSelect.val(languageSelect.find('option').first().val());
+    addDlg.find('select').each(function(indx, item) {
+        $(item).val($(item).find('option').first().val());
+    });
 	addDlg.find('button[type="submit"]').off().on('click', function(e) {
 		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
 	});
@@ -213,20 +214,53 @@ function openAddDefinitionDlg(elem) {
 	});
 }
 
-function openAddUsageDlg(elem) {
-	var addDlg = $('#addNewUsageDlg');
-	addDlg.find('[name=id]').val($(elem).data('id'));
-	addDlg.find('[name=value]').val(null);
-	var languageSelect = addDlg.find('[name=language]');
-	languageSelect.val(languageSelect.find('option').first().val());
-	var typeSelect = addDlg.find('[name=usage_type]');
-	typeSelect.val(typeSelect.find('option').first().val());
-	addDlg.find('button[type="submit"]').off().on('click', function(e) {
-		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
-	});
-	addDlg.off().on('shown.bs.modal', function(e) {
-		alignAndFocus(e, addDlg)
-	});
+function openLexemeClassifiersDlg(elem) {
+    var theDlg = $('#lexemeClassifiersDlg');
+    theDlg.find('[name=lexeme_id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=meaning_id]').val($(elem).data('meaning-id'));
+    theDlg.find('select').each(function(indx, item) {
+        $(item).val($(item).find('option').first().val());
+    });
+
+    theDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
+    theDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
+    theDlg.find('[name=classif_name]').off().on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
+    theDlg.find('.value-select').off().on('change', function(e) {
+        theDlg.find('[name=value]').val($(this).val());
+    });
+    toggleValueGroup(theDlg, theDlg.find('[name=classif_name]').val());
+}
+
+function openSelectDlg(elem) {
+    var selectDlg = $($(elem).data('target'));
+    var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
+    var currentValue = targetElement.data('value');
+    selectDlg.find('[name=id]').val(targetElement.data('id'));
+    selectDlg.find('[name=current_value]').val(currentValue);
+    var selectControl = selectDlg.find('select');
+    selectControl.val(currentValue);
+
+    var maxItemLength = 0;
+    selectControl.find('option').each(function(indx, item) {
+        var itemLenght = $(item).text().length;
+        if (itemLenght > maxItemLength) {
+            maxItemLength = itemLenght;
+        }
+    });
+    var dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
+    var numberOfOptins = selectControl.find('option').length;
+    selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
+
+    selectControl.off().on('change', function(e) {submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
+    selectDlg.off().on('shown.bs.modal', function(e) {
+        var dlgTop =  $(e.relatedTarget).offset().top;
+        var dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
+        selectDlg.find('.modal-content').css('top', dlgTop - 30);
+        selectDlg.find('.modal-content').css('left', dlgLeft);
+        selectDlg.find('.modal-content').css('width', dlgWidth);
+        selectDlg.find('.form-control').first().focus();
+        $('.modal-backdrop').css('opacity', 0);
+    });
 }
 
 function submitForm(e, dlg, failMessage) {
@@ -236,10 +270,11 @@ function submitForm(e, dlg, failMessage) {
     $.post(url).done(function(data) {
         var refreshButton = $('#refresh-details');
         refreshButton.trigger('click');
-        dlg.find('button[data-dismiss="modal"]').trigger('click');
+        dlg.modal('hide');
     }).fail(function(data) {
         alert(failMessage);
         console.log(data);
+        dlg.modal('hide');
     });
 }
 
@@ -247,4 +282,10 @@ function alignAndFocus(e, dlg) {
     dlg.find('.form-control').first().focus();
     var dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
     dlg.find('.modal-content').css('top', dlgTop);
+}
+
+function toggleValueGroup(dlg, groupName) {
+    dlg.find('.value-group').hide();
+    dlg.find('#' + groupName).show();
+    dlg.find('#' + groupName).find('.value-select').trigger('change');
 }

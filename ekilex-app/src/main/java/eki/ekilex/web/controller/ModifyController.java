@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.service.UpdateService;
+import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.ModifyListRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.ModifyItemRequest;
-import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
@@ -34,6 +35,9 @@ public class ModifyController implements WebConstant {
 
 	@Autowired
 	private UpdateService updateService;
+
+	@Autowired
+	private ConversionUtil conversionUtil;
 
 	//TODO move over to modifyItem
 	@ResponseBody
@@ -163,6 +167,9 @@ public class ModifyController implements WebConstant {
 		case "definition" :
 			updateService.removeDefinition(id);
 			break;
+		case "lexeme_frequency_group" :
+			updateService.updateLexemeFrequencyGroup(id, null);
+			break;
 		}
 		return "OK";
 	}
@@ -186,6 +193,55 @@ public class ModifyController implements WebConstant {
 
 		logger.debug("Add new usage operation : {} : {} : {}", governmentId, languageCode, value);
 		updateService.addUsageMember(governmentId, usageMemberType, value, languageCode);
+		return "OK";
+	}
+
+	@ResponseBody
+	@PostMapping("/add_classifier")
+	public String addLexemeClassifier(
+			@RequestParam("classif_name") String classifierName,
+			@RequestParam("lexeme_id") Long lexemeId,
+			@RequestParam("meaning_id") Long meaningId,
+			@RequestParam("value") String value) {
+
+		logger.debug("Add classifier {} : {} : for lexemeId {}, meaningId {}", classifierName, value, lexemeId, meaningId);
+		switch (classifierName) {
+		case "lexeme_frequency_group" :
+			updateService.updateLexemeFrequencyGroup(lexemeId, value);
+			break;
+		case "lexeme_pos" :
+			updateService.addLexemePos(lexemeId, value);
+			break;
+		case "meaning_domain" :
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
+			updateService.addMeaningDomain(meaningId, meaningDomain);
+			break;
+		}
+		return "OK";
+	}
+
+	@ResponseBody
+	@PostMapping("/modify_classifier")
+	public String modifyLexemeClassifier(
+			@RequestParam("classif_name") String classifierName,
+			@RequestParam("id") Long id,
+			@RequestParam("current_value") String currentValue,
+			@RequestParam("new_value") String newValue) {
+
+		logger.debug("Modify classifier {} : {} : {} : for id {}", classifierName, currentValue, newValue, id);
+		switch (classifierName) {
+		case "lexeme_frequency_group" :
+			updateService.updateLexemeFrequencyGroup(id, newValue);
+			break;
+		case "lexeme_pos" :
+//			updateService.updateLexemePos(id, currentValue, newValue);
+			break;
+		case "meaning_domain" :
+			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
+			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(newValue);
+//			updateService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain);
+			break;
+		}
 		return "OK";
 	}
 

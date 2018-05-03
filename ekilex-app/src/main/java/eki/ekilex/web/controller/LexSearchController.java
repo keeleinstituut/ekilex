@@ -3,6 +3,7 @@ package eki.ekilex.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordsResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,11 @@ public class LexSearchController extends AbstractSearchController {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@ModelAttribute("allLexemePos")
+	public List<Classifier> getLexemePos() {
+		return lexSearchService.getAllLexemePos();
+	}
 
 	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.GET)
 	public String initSearch(Model model) throws Exception {

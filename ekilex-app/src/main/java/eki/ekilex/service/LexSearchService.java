@@ -151,6 +151,11 @@ public class LexSearchService implements SystemConstant {
 		});
 	}
 
+	@Transactional
+	public List<Classifier> getAllLexemePos() {
+		return commonDataDbService.getAllLexemePos(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
 	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
 
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());

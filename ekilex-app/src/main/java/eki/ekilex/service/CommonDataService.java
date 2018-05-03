@@ -41,4 +41,15 @@ public class CommonDataService {
 		return domains.stream().collect(groupingBy(Classifier::getOrigin));
 	}
 
+	@Transactional
+	public Map<String, List<Classifier>> getAllDomainsByOrigin() {
+		List<Classifier> domains = commonDataDbService.getDomains().into(Classifier.class);
+		return domains.stream().collect(groupingBy(Classifier::getOrigin));
+	}
+
+	@Transactional
+	public List<Classifier> getLexemeFrequencyGroups() {
+		return commonDataDbService.getLexemeFrequencyGroups().into(Classifier.class);
+	}
+
 }

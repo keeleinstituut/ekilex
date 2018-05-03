@@ -24,6 +24,7 @@ import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import static java.util.Arrays.asList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -35,6 +36,31 @@ public abstract class AbstractSearchController implements WebConstant {
 	@Autowired
 	protected CommonDataService commonDataService;
 
+	@ModelAttribute("allDatasets")
+	public List<Dataset> getAllDatasets() {
+		return commonDataService.getDatasets();
+	}
+
+	@ModelAttribute("allLanguages")
+	public List<Classifier> getAllLanguages() {
+		return commonDataService.getLanguages();
+	}
+
+	@ModelAttribute("domains")
+	public Map<String,List<Classifier>> getDomainsInUse() {
+		return commonDataService.getDomainsInUseByOrigin();
+	}
+
+	@ModelAttribute("addDomains")
+	public Map<String,List<Classifier>> getAllDomains() {
+		return commonDataService.getAllDomainsByOrigin();
+	}
+
+	@ModelAttribute("lexemeFrequencyGroups")
+	public List<Classifier> getLexemeFrequencyGroups() {
+		return commonDataService.getLexemeFrequencyGroups();
+	}
+
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
@@ -42,7 +68,7 @@ public abstract class AbstractSearchController implements WebConstant {
 			sessionBean = new SessionBean();
 			model.addAttribute(SESSION_BEAN, sessionBean);
 		}
-		List<Dataset> allDatasets = commonDataService.getDatasets();
+		List<Dataset> allDatasets = getAllDatasets();
 		List<String> allDatasetCodes = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
@@ -56,9 +82,6 @@ public abstract class AbstractSearchController implements WebConstant {
 		Map<String,List<Classifier>> domains = commonDataService.getDomainsInUseByOrigin();
 		SearchFilter detailSearchFilter = initSearchFilter();
 
-		model.addAttribute("allDatasets", allDatasets);
-		model.addAttribute("allLanguages", allLanguages);
-		model.addAttribute("domains", domains);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
 	}
@@ -82,7 +105,7 @@ public abstract class AbstractSearchController implements WebConstant {
 			SearchFilter detailSearchFilter,
 			SessionBean sessionBean, Model model) throws Exception {
 
-		List<Dataset> allDatasets = commonDataService.getDatasets();
+		List<Dataset> allDatasets = getAllDatasets();
 		List<String> allDatasetCodes = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = sessionBean.getSelectedDatasets();
@@ -119,12 +142,6 @@ public abstract class AbstractSearchController implements WebConstant {
 			}
 		}
 
-		List<Classifier> allLanguages = commonDataService.getLanguages();
-		Map<String, List<Classifier>> domains = commonDataService.getDomainsInUseByOrigin();
-
-		model.addAttribute("allDatasets", allDatasets);
-		model.addAttribute("allLanguages", allLanguages);
-		model.addAttribute("domains", domains);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 	}

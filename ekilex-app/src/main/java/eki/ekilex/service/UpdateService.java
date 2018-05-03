@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import eki.ekilex.data.ListData;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.UpdateDbService;
 import org.springframework.stereotype.Service;
@@ -72,6 +73,21 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateLexemeFrequencyGroup(Long lexemeId, String groupCode) {
+		updateDbService.updateLexemeFrequencyGroup(lexemeId, groupCode);
+	}
+
+	@Transactional
+	public void addLexemePos(Long lexemeId, String posCode) {
+		updateDbService.addLexemePos(lexemeId, posCode);
+	}
+
+	@Transactional
+	public void addMeaningDomain(Long meaningId, Classifier domain) {
+		updateDbService.addMeaningDomain(meaningId, domain);
+	}
+
+	@Transactional
 	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
@@ -108,7 +124,7 @@ public class UpdateService {
 
 	@Transactional
 	public void addUsageMember(Long governmentId, String usageMemberType, String value, String languageCode) {
-		Long usageMeaningId = updateDbService.findOrAddUsageMeaning(governmentId);
+		Long usageMeaningId = updateDbService.addUsageMeaning(governmentId);
 		updateDbService.addUsageMeaningMember(usageMeaningId, usageMemberType, value, languageCode);
 	}
 

@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.Classifier;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
 import eki.ekilex.data.CollocMember;
@@ -47,6 +50,15 @@ public class ConversionUtil {
 				}).sorted(Comparator.comparing(TermMeaning::getMeaningId))
 				.collect(Collectors.toList());
 		return termMeanings;
+	}
+
+	public Classifier classifierFromIdString(String idString) {
+		JsonParser jsonParser = JsonParserFactory.getJsonParser();
+		Map<String, Object>  memberMap = jsonParser.parseMap(idString);
+		Classifier classifier = new Classifier();
+		classifier.setCode((String) memberMap.get("code"));
+		classifier.setOrigin((String) memberMap.get("origin"));
+		return classifier;
 	}
 
 	public List<Paradigm> composeParadigms(List<ParadigmFormTuple> paradigmFormTuples, List<FormRelation> wordFormRelations) {
