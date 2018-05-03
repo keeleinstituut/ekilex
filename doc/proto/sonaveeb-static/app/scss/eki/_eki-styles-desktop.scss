@@ -10,7 +10,7 @@
 .search-panel,
 .homonym-panel,
 .word-details{
-	padding-top: rem(30);
+	// padding-top: rem(30);
 }
 .search-wrap{
 	top: rem(70);
@@ -26,16 +26,16 @@
 .homonym-panel{
 	background-color: $gray-100;
 	overflow: hidden;
-	height: rem(180);
+	height: rem(150);
 }
 .homonym-list{
-    width: 100%;
+    width: calc(100% + 2 * #{$gutter});
     overflow: hidden;
     white-space: nowrap;
     overflow-x: scroll;
     display: flex;
-    padding: rem(20);
-    margin: rem(-20);
+    padding: $gutter;
+    margin: -$gutter;
     padding-bottom: rem(1600000);
 }
 .homonym-list li{
@@ -44,8 +44,11 @@
 		margin-left: rem(-10);
 		margin-right: rem(10);
 	}
-	&:last-child .homonym-item{
-		margin-right: 0;
+	&:last-child{
+		padding-right: rem(30);
+		.homonym-item{
+			margin-right: 0;
+		}
 	}
 }
 .homonym-item{
@@ -179,14 +182,13 @@ h3 span + span{
 	max-height: ($line-height-base)+rem;
 	// position: absolute;
     top: rem(76);
-    width: calc(100% - 70px );
+    // width: calc(100% - 70px );
     margin-top: auto;
 }
 .homonym-matches{
 	// min-height: rem(18);
 	margin-bottom: auto;
 }
-
 
 
 // www.bouncejs.com
@@ -218,8 +220,8 @@ h3 span + span{
 	border-right: $border-width $border-color solid ;	
 }
 .dictionary-source{
-	top:rem(5);
-	right: rem(5);
+	// top:rem(5);
+	// right: rem(5);
 	font-size: $tiny-font-size;
 }
 .level-2-panel,
@@ -234,6 +236,27 @@ h3 span + span{
 }
 .level-3-panel{
 	padding:$gutter * 1.5 $gutter * 2;
+}
+.content-title{
+    z-index: 1;
+}
+.meaning-panel{
+	// &:not(:first-child){
+		border-color: $gray-100 !important;
+	// }
+	overflow:auto;
+	&, .meaningpanel > div {
+		display: block !important;
+	}
+	.meaning,
+	.meaning-meta{
+		max-width: 50.01% !important;
+		float: left;
+	}
+	.dependencies{
+		max-width: 49.99% !important;
+		float: right;
+	}
 }
 .example-text{
 	max-width: calc( 100% - 30px ) ;
