@@ -132,7 +132,15 @@
                 <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
                       th:data-id="${lexeme.lexemeId}"
                       th:data-op-type="lexeme_frequency_group"
+                      th:data-value="${lexeme.lexemeFrequencyGroupCode}"
                       th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
+                <button type="button" class="btn badge badge-primary"
+                        th:title="Muuda"
+                        onclick="openSelectDlg(this)"
+                        data-toggle="modal" data-target="#lexemeFrequencyDlg"
+                        th:data-target-elem="${lexeme.lexemeId} + '_lexeme_frequency_group'">
+                  <i class="fa fa-caret-down" aria-hidden="true"></i>
+                </button>
                 <button type="button" class="btn badge badge-warning"
                         th:data-target-elem="${lexeme.lexemeId} + '_lexeme_frequency_group'"
                         data-toggle="delete-confirmation" data-placement="right">
@@ -605,6 +613,7 @@
   <div th:replace="common :: #addNewDefinitionDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>
+  <div th:replace="common :: #lexemeFrequencyDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

@@ -238,6 +238,38 @@ function openLexemeClassifiersDlg(elem) {
     toggleValueGroup(theDlg, theDlg.find('[name=classif_name]').val());
 }
 
+function openSelectDlg(elem) {
+    var selectDlg = $($(elem).data('target'));
+    var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
+    var currentValue = targetElement.data('value');
+    selectDlg.find('[name=id]').val(targetElement.data('id'));
+    selectDlg.find('[name=current_value]').val(currentValue);
+    var selectControl = selectDlg.find('select');
+    selectControl.val(currentValue);
+
+    var maxItemLength = 0;
+    selectControl.find('option').each(function(indx, item) {
+        var itemLenght = $(item).text().length;
+        if (itemLenght > maxItemLength) {
+            maxItemLength = itemLenght;
+        }
+    });
+    var dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
+    var numberOfOptins = selectControl.find('option').length;
+    selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
+
+    selectControl.off().on('change', function(e) {submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
+    selectDlg.off().on('shown.bs.modal', function(e) {
+        var dlgTop =  $(e.relatedTarget).offset().top;
+        var dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
+        selectDlg.find('.modal-content').css('top', dlgTop - 30);
+        selectDlg.find('.modal-content').css('left', dlgLeft);
+        selectDlg.find('.modal-content').css('width', dlgWidth);
+        selectDlg.find('.form-control').first().focus();
+        $('.modal-backdrop').css('opacity', 0);
+    });
+}
+
 function submitForm(e, dlg, failMessage) {
     e.preventDefault();
     var theForm = dlg.find('form');
@@ -245,10 +277,11 @@ function submitForm(e, dlg, failMessage) {
     $.post(url).done(function(data) {
         var refreshButton = $('#refresh-details');
         refreshButton.trigger('click');
-        dlg.find('button[data-dismiss="modal"]').trigger('click');
+        dlg.modal('hide');
     }).fail(function(data) {
         alert(failMessage);
         console.log(data);
+        dlg.modal('hide');
     });
 }
 

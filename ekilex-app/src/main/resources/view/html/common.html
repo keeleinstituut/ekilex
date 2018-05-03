@@ -240,5 +240,24 @@
   </div>
 </div>
 
+<div id="lexemeFrequencyDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_classifier}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="current_value">
+          <input type="hidden" name="classif_name" value="lexeme_frequency_group">
+          <select class="form-control" name="new_value">
+            <option th:each="freqGroup : ${lexemeFrequencyGroups}"
+                    th:value="${freqGroup.code}"
+                    th:text="${freqGroup.value}">freqGroup</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

@@ -178,4 +178,29 @@ public class ModifyController {
 		return "OK";
 	}
 
+	@ResponseBody
+	@PostMapping("/modify_classifier")
+	public String modifyLexemeClassifier(
+			@RequestParam("classif_name") String classifierName,
+			@RequestParam("id") Long id,
+			@RequestParam("current_value") String currentValue,
+			@RequestParam("new_value") String newValue) {
+
+		logger.debug("Modify classifier {} : {} : {} : for id {}", classifierName, currentValue, newValue, id);
+		switch (classifierName) {
+		case "lexeme_frequency_group" :
+			updateService.updateLexemeFrequencyGroup(id, newValue);
+			break;
+		case "lexeme_pos" :
+//			updateService.updateLexemePos(id, currentValue, newValue);
+			break;
+		case "meaning_domain" :
+			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
+			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(newValue);
+//			updateService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain);
+			break;
+		}
+		return "OK";
+	}
+
 }
