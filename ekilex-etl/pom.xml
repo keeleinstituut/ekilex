@@ -108,6 +108,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -140,6 +143,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -172,6 +178,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -205,6 +214,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -237,6 +249,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -269,6 +284,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -301,6 +319,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -333,6 +354,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -365,6 +389,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-ultima-loader/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
@@ -389,7 +416,7 @@
 			</properties>
 		</profile>
 		<profile>
-			<id>termeki_images</id>
+			<id>testsrvtermekiimg</id>
 			<build>
 				<resources>
 					<resource>
@@ -397,6 +424,9 @@
 					</resource>
 					<resource>
 						<directory>/var/apps/cli/appresources</directory>
+						<includes>
+							<include>log-console/logback.xml/</include>
+						</includes>
 					</resource>
 				</resources>
 				<plugins>
