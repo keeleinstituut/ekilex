@@ -124,7 +124,7 @@ public class UpdateService {
 
 	@Transactional
 	public void addUsageMember(Long governmentId, String usageMemberType, String value, String languageCode) {
-		Long usageMeaningId = updateDbService.findOrAddUsageMeaning(governmentId);
+		Long usageMeaningId = updateDbService.addUsageMeaning(governmentId);
 		updateDbService.addUsageMeaningMember(usageMeaningId, usageMemberType, value, languageCode);
 	}
 

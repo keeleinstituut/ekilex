@@ -121,15 +121,7 @@
       <form th:action="@{/add_definition}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <div class="form-group row">
-            <div class="col-md-6">
-              <select class="form-control" th:name="language">
-                <option th:each="language : ${allLanguages}"
-                        th:value="${language.code}"
-                        th:text="${language.value}">language</option>
-              </select>
-            </div>
-          </div>
+          <input type="hidden" name="language" value="est">
           <div class="form-group row">
             <div class="col-md-12">
               <textarea class="form-control" rows="2" name="value"></textarea>
@@ -151,24 +143,8 @@
       <form th:action="@{/add_usage}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <div class="form-group row">
-            <div class="col-md-6">
-              <select class="form-control" th:name="language">
-                <option th:each="language : ${allLanguages}"
-                        th:value="${language.code}"
-                        th:text="${language.value}">language</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-md-6">
-              <select class="form-control" th:name="usage_type">
-                <option value="USAGE">Kasutusnäide</option>
-                <option value="USAGE_TRANSLATION">Kasutusnäite tõlge</option>
-                <option value="USAGE_DEFINITION">Kasutusnäide seletus</option>
-              </select>
-            </div>
-          </div>
+          <input type="hidden" name="usage_type" value="USAGE">
+          <input type="hidden" name="language" value="est">
           <div class="form-group row">
             <div class="col-md-12">
               <textarea class="form-control" rows="2" name="value"></textarea>

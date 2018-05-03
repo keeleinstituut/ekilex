@@ -177,18 +177,11 @@ public class UpdateDbService {
 				.returning(DEFINITION.ID).fetchOne().getId();
 	}
 
-	public Long findOrAddUsageMeaning(Long governmentId) {
-		List<FreeformRecord> usageMeanings = create
-				.selectFrom(FREEFORM)
-				.where(FREEFORM.TYPE.eq(FreeformType.USAGE_MEANING.name()).and(FREEFORM.PARENT_ID.eq(governmentId)))
-				.fetch();
-		if (usageMeanings.isEmpty()) {
-			usageMeanings.add(create
-					.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID)
-					.values(FreeformType.USAGE_MEANING.name(), governmentId).returning()
-					.fetchOne());
-		}
-		return usageMeanings.get(0).getId();
+	public Long addUsageMeaning(Long governmentId) {
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID)
+				.values(FreeformType.USAGE_MEANING.name(), governmentId).returning()
+				.fetchOne().getId();
 	}
 
 	public Long addUsageMeaningMember(Long usageMeaningId, String usageMemberType, String value, String languageCode) {

@@ -199,28 +199,13 @@ function performDelete() {
     });
 }
 
-function openAddDefinitionDlg(elem) {
-	var addDlg = $('#addNewDefinitionDlg');
+function openAddDlg(elem) {
+    var addDlg = $($(elem).data('target'));
 	addDlg.find('[name=id]').val($(elem).data('id'));
 	addDlg.find('[name=value]').val(null);
-	var languageSelect = addDlg.find('[name=language]');
-	languageSelect.val(languageSelect.find('option').first().val());
-	addDlg.find('button[type="submit"]').off().on('click', function(e) {
-		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
-	});
-	addDlg.off().on('shown.bs.modal', function(e) {
-		alignAndFocus(e, addDlg)
-	});
-}
-
-function openAddUsageDlg(elem) {
-	var addDlg = $('#addNewUsageDlg');
-	addDlg.find('[name=id]').val($(elem).data('id'));
-	addDlg.find('[name=value]').val(null);
-	var languageSelect = addDlg.find('[name=language]');
-	languageSelect.val(languageSelect.find('option').first().val());
-	var typeSelect = addDlg.find('[name=usage_type]');
-	typeSelect.val(typeSelect.find('option').first().val());
+    addDlg.find('select').each(function(indx, item) {
+        $(item).val($(item).find('option').first().val());
+    });
 	addDlg.find('button[type="submit"]').off().on('click', function(e) {
 		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
 	});

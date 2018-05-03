@@ -201,7 +201,7 @@
               <span class="lbl">Seletused</span>
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       th:data-id="${lexeme.meaningId}"
-                      onclick="openAddDefinitionDlg(this)"
+                      onclick="openAddDlg(this)"
                       data-toggle="modal" data-target="#addNewDefinitionDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
@@ -292,7 +292,7 @@
                   <th class="lbl">Kasutusnäited, tõlked, seletused
                     <button type="button" class="btn badge badge-success" title="Lisa uus"
                             th:data-id="${government.id}"
-                            onclick="openAddUsageDlg(this)"
+                            onclick="openAddDlg(this)"
                             data-toggle="modal" data-target="#addNewUsageDlg">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
