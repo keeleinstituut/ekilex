@@ -107,11 +107,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -143,11 +139,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -179,11 +171,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -216,11 +204,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -252,11 +236,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -288,11 +268,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -324,11 +300,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -360,11 +332,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -396,15 +364,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>ultima-loader.properties</include>
-							<include>log-ultima-loader/logback.xml</include>
-						</includes>
-						<excludes>
-							<exclude>log-console/logback.xml</exclude>
-						</excludes>
+						<directory>/var/apps/cli/appresources-ultima-loader</directory>
 					</resource>
 				</resources>
 				<plugins>
@@ -436,11 +396,7 @@
 						<directory>${project.basedir}/src/main/resources</directory>
 					</resource>
 					<resource>
-						<directory>/var/apps/cli/appresources</directory>
-						<includes>
-							<include>ekilex-etl.properties</include>
-							<include>log-console/logback.xml</include>
-						</includes>
+						<directory>/var/apps/cli/appresources-console</directory>
 					</resource>
 				</resources>
 				<plugins>
