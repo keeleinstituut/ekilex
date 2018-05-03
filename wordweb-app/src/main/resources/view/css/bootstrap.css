@@ -3768,12 +3768,15 @@ input[type="button"].btn-block {
   }
 }
 
-.morphology-test {
-  font-size: 0.75rem;
+.break {
+  flex-basis: 100%;
+  width: 0px;
+  height: 0px;
+  overflow: hidden;
 }
 
-.dependencies + div {
-  display: none;
+.morphology-test {
+  font-size: 0.75rem;
 }
 
 * {
@@ -3790,12 +3793,10 @@ ul {
 }
 
 .header-container {
+  background-color: #F2F2F2;
   position: fixed;
   top: 0;
-}
-
-.header-container {
-  z-index: 1;
+  z-index: 2;
 }
 
 .header-container.show-header {
@@ -4048,6 +4049,7 @@ ul {
 
 .level-3-panel:not(.expand) .additional-meta,
 .level-3-panel:not(.expand) .dictionary-source,
+.level-3-panel:not(.expand) .meaning-meta,
 .level-3-panel:not(.expand) .dependence:not(:first-child),
 .level-3-panel:not(.expand) .example-item:not(:first-child),
 .level-3-panel:not(.expand) .label,
@@ -4059,9 +4061,9 @@ ul {
 }
 
 .level-3-panel.expand {
+  flex-direction: column;
   margin-top: 5px !important;
   margin-bottom: 5px !important;
-  max-height: 625rem;
   box-shadow: 0 -5px #F2F2F2, 0 5px #F2F2F2;
 }
 
@@ -4073,18 +4075,20 @@ ul {
   margin-bottom: 0.1875rem;
 }
 
+.level-3-panel.expand .meaning,
+.level-3-panel.expand .meaning-meta {
+  flex: 0 1 auto;
+}
+
 .level-3-panel:hover .more-btn {
   color: #001124;
 }
 
 .dictionary-source {
-  position: absolute;
-  top: -0.3125rem;
-  right: 1.25rem;
+  clear: both;
+  display: block;
   color: #7F8891;
   font-size: 0.75rem;
-  background-color: #fff;
-  padding: 0 0.3125rem;
 }
 
 .additional-meta {
@@ -4112,8 +4116,7 @@ ul {
 .more-btn {
   cursor: pointer;
   position: absolute;
-  height: 100%;
-  top: 0;
+  top: 1.25rem;
   right: 0;
   width: 3.75rem;
   background: transparent;
@@ -4148,10 +4151,7 @@ ul {
 }
 
 .expand .more-btn {
-  top: -5px;
-  right: -5px;
-  height: calc(100% + 5px);
-  width: 4.375rem;
+  top: calc( 1.25rem + 5px);
 }
 
 .expand .more-btn .icon:before {
@@ -4360,11 +4360,6 @@ ul {
   .homonym-page {
     background-color: #F2F2F2;
   }
-  .search-panel,
-  .homonym-panel,
-  .word-details {
-    padding-top: 1.875rem;
-  }
   .search-wrap {
     top: 4.375rem;
     box-shadow: 0 0.625rem 0.625rem #F2F2F2;
@@ -4379,10 +4374,10 @@ ul {
   .homonym-panel {
     background-color: #F2F2F2;
     overflow: hidden;
-    height: 11.25rem;
+    height: 9.375rem;
   }
   .homonym-list {
-    width: 100%;
+    width: calc(100% + 2 * 1.25rem);
     overflow: hidden;
     white-space: nowrap;
     overflow-x: scroll;
@@ -4397,6 +4392,9 @@ ul {
   .homonym-list li .homonym-item {
     margin-left: -0.625rem;
     margin-right: 0.625rem;
+  }
+  .homonym-list li:last-child {
+    padding-right: 1.875rem;
   }
   .homonym-list li:last-child .homonym-item {
     margin-right: 0;
@@ -4524,7 +4522,6 @@ ul {
   .homonym-intro {
     max-height: 1.5rem;
     top: 4.75rem;
-    width: calc(100% - 70px);
     margin-top: auto;
   }
   .homonym-matches {
@@ -4567,8 +4564,6 @@ ul {
     border-right: 1px #D8D8D8 solid;
   }
   .dictionary-source {
-    top: 0.3125rem;
-    right: 0.3125rem;
     font-size: 0.75rem;
   }
   .level-2-panel,
@@ -4583,6 +4578,25 @@ ul {
   }
   .level-3-panel {
     padding: 1.875rem 2.5rem;
+  }
+  .content-title {
+    z-index: 1;
+  }
+  .meaning-panel {
+    border-color: #F2F2F2 !important;
+    overflow: auto;
+  }
+  .meaning-panel, .meaning-panel .meaningpanel > div {
+    display: block !important;
+  }
+  .meaning-panel .meaning,
+  .meaning-panel .meaning-meta {
+    max-width: 50.01% !important;
+    float: left;
+  }
+  .meaning-panel .dependencies {
+    max-width: 49.99% !important;
+    float: right;
   }
   .example-text {
     max-width: calc( 100% - 30px);
