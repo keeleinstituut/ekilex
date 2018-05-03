@@ -36,6 +36,8 @@ public interface WebConstant {
 
 	String MARKDOWN_RENDERER_KEY = "markdown";
 
+	String TERM_VIEW_UTIL_KEY = "termViewUtil";
+
 	String USER_MODEL_KEY = "user";
 
 	String SEARCH_WORD_KEY = "searchWord";

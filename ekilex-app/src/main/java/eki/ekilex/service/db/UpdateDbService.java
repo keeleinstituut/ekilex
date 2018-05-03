@@ -3,6 +3,7 @@ package eki.ekilex.service.db;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.OrderingData;
+import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
@@ -56,33 +57,33 @@ public class UpdateDbService {
 				.execute();
 	}
 
-	public void updateDefinitionOrderby(List<OrderingData> items) {
+	public void updateDefinitionOrderby(List<ListData> items) {
 		List<Query> updateQueries = new ArrayList<>();
-		for (OrderingData item : items) {
+		for (ListData item : items) {
 			updateQueries.add(create.update(DEFINITION).set(DEFINITION.ORDER_BY, item.getOrderby()).where(DEFINITION.ID.eq(item.getId())));
 		}
 		create.batch(updateQueries).execute();
 	}
 
-	public void updateLexemeRelationOrderby(List<OrderingData> items) {
+	public void updateLexemeRelationOrderby(List<ListData> items) {
 		List<Query> updateQueries = new ArrayList<>();
-		for (OrderingData item : items) {
+		for (ListData item : items) {
 			updateQueries.add(create.update(LEX_RELATION).set(LEX_RELATION.ORDER_BY, item.getOrderby()).where(LEX_RELATION.ID.eq(item.getId())));
 		}
 		create.batch(updateQueries).execute();
 	}
 
-	public void updateMeaningRelationOrderby(List<OrderingData> items) {
+	public void updateMeaningRelationOrderby(List<ListData> items) {
 		List<Query> updateQueries = new ArrayList<>();
-		for (OrderingData item : items) {
+		for (ListData item : items) {
 			updateQueries.add(create.update(MEANING_RELATION).set(MEANING_RELATION.ORDER_BY, item.getOrderby()).where(MEANING_RELATION.ID.eq(item.getId())));
 		}
 		create.batch(updateQueries).execute();
 	}
 
-	public void updateWordRelationOrderby(List<OrderingData> items) {
+	public void updateWordRelationOrderby(List<ListData> items) {
 		List<Query> updateQueries = new ArrayList<>();
-		for (OrderingData item : items) {
+		for (ListData item : items) {
 			updateQueries.add(create.update(WORD_RELATION).set(WORD_RELATION.ORDER_BY, item.getOrderby()).where(WORD_RELATION.ID.eq(item.getId())));
 		}
 		create.batch(updateQueries).execute();

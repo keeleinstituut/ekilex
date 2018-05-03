@@ -24,10 +24,10 @@
           <th:block th:replace="search :: search_form('term_search')"></th:block>
           <th:block>
             <div class="form-row">
-              <div class="col-12">
-                <div class="form-group row">
-                  <label class="col-auto col-form-label">Tulemuste keel</label>
-                  <div class="col-2">
+              <div class="col-auto">
+                <div class="row">
+                  <label class="col-auto col-form-label">Tähenduste keel:</label>
+                  <div class="col-auto">
                     <select name="resultLang" class="form-control">
                       <option value="">Kõik keeled</option>
                       <option 
@@ -36,6 +36,42 @@
                           th:selected="${lang.code == sessionBean.resultLang}"
                           th:text="${lang.value}"></option>
                     </select>
+                  </div>
+                </div>
+              </div>
+              <div class="col-1">
+                &nbsp;
+              </div>
+              <div class="col-auto">
+                <div class="row">
+                  <label class="col-auto col-form-label">Ilmikute keeled:</label>
+                  <div class="col-auto">
+                    <div>
+                      <a id="term_user_lang_wrapup" href="#term_user_lang_area" data-toggle="collapse">
+                        <span th:text="${termViewUtil.composeLanguagesOrderWrapup(sessionBean.languagesOrder)}"></span>
+                      </a>
+                    </div>
+                    <div id="term_user_lang_area" class="collapse">
+                      <table class="orderable" th:data-op-code="term_user_lang">
+                        <tr th:each="lang, itemStat : ${sessionBean.languagesOrder}"
+                          th:data-code="${lang.code}" 
+                          th:data-orderby="${itemStat.count}" 
+                          th:data-index="${itemStat.index}"
+                          th:data-value="${lang.value}">
+                          <td>
+                            <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                          </td>
+                          <td>
+                            <div class="checkbox">
+                              <input type="checkbox" name="term_user_lang_check" th:checked="${lang.selected}"/>
+                            </div>
+                          </td>
+                          <td>
+                            <span th:text="${lang.value}"></span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -114,7 +150,7 @@
             <span class="lbl">Seletused</span>
             <br />
             <ul>
-              <li th:each="definition : ${meaning.definitions}" th:unless="${#strings.isEmpty(definition)}">
+              <li th:each="definition : ${meaning.definitions}" th:if="${termViewUtil.isSelectedLang(definition.lang,sessionBean.languagesOrder)}">
                 <span th:name="${definition.id} + '_definition'"
                       th:data-id="${definition.id}"
                       th:data-op-type="definition"
@@ -179,7 +215,7 @@
           </div>
           <p />
         </div>
-        <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}">
+        <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}" th:if="${termViewUtil.isSelectedLang(lexeme.wordLang,sessionBean.languagesOrder)}">
           <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
             <div>
               <button type="button" class="btn btn-link pt-0" th:data-id="${lexeme.wordId}" name="detailsBtn">

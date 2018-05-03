@@ -315,7 +315,7 @@ public class ConversionUtil {
 		return governments;
 	}
 
-	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples) {
+	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples, List<String> langCodeOrder) {
 
 		List<Definition> definitions = new ArrayList<>();
 		Map<Long, Definition> definitionMap = new HashMap<>();
@@ -327,10 +327,12 @@ public class ConversionUtil {
 			Definition definition = definitionMap.get(definitionId);
 			if (definition == null) {
 				String definitionValue = definitionRefTuple.getDefinitionValue();
+				String definitionLang = definitionRefTuple.getDefinitionLang();
 				Long definitionOrderBy = definitionRefTuple.getDefinitionOrderBy();
 				definition = new Definition();
 				definition.setId(definitionId);
 				definition.setValue(definitionValue);
+				definition.setLang(definitionLang);
 				definition.setOrderBy(definitionOrderBy);
 				definition.setRefLinks(new ArrayList<>());
 				definitionMap.put(definitionId, definition);
@@ -346,6 +348,17 @@ public class ConversionUtil {
 				definition.getRefLinks().add(refLink);
 			}
 		}
+
+		definitions.sort((Definition definition1, Definition definition2) -> {
+			String definition1LangCode = definition1.getLang();
+			String definition2LangCode = definition2.getLang();
+			if (CollectionUtils.isEmpty(langCodeOrder)) {
+				return StringUtils.compare(definition1LangCode, definition2LangCode);
+			}
+			int definition1LangOrder = langCodeOrder.indexOf(definition1LangCode);
+			int definition2LangOrder = langCodeOrder.indexOf(definition2LangCode);
+			return definition1LangOrder - definition2LangOrder;
+		});
 
 		return definitions;
 	}

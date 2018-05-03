@@ -1,22 +1,19 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
 import java.util.List;
 
-import javax.persistence.Column;
+import eki.common.data.AbstractDataObject;
 
 public class Definition extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "value")
 	private String value;
 
-	@Column(name = "order_by")
+	private String lang;
+
 	private Long orderBy;
 
 	private List<RefLink> refLinks;
@@ -35,6 +32,14 @@ public class Definition extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getLang() {
+		return lang;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 	public Long getOrderBy() {

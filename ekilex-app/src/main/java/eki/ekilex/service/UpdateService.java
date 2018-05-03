@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.ekilex.data.ListData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.WordLexeme;
@@ -41,22 +42,22 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void updateDefinitionOrdering(List<OrderingData> items) {
+	public void updateDefinitionOrdering(List<ListData> items) {
 		updateDbService.updateDefinitionOrderby(items);
 	}
 
 	@Transactional
-	public void updateLexemeRelationOrdering(List<OrderingData> items) {
+	public void updateLexemeRelationOrdering(List<ListData> items) {
 		updateDbService.updateLexemeRelationOrderby(items);
 	}
 
 	@Transactional
-	public void updateMeaningRelationOrdering(List<OrderingData> items) {
+	public void updateMeaningRelationOrdering(List<ListData> items) {
 		updateDbService.updateMeaningRelationOrderby(items);
 	}
 
 	@Transactional
-	public void updateWordRelationOrdering(List<OrderingData> items) {
+	public void updateWordRelationOrdering(List<ListData> items) {
 		updateDbService.updateWordRelationOrderby(items);
 	}
 

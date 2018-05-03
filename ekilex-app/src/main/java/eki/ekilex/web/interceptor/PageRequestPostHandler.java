@@ -29,6 +29,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	@Autowired
 	private MarkdownRenderer markdownRenderer;
 
+	@Autowired
+	private TermViewUtil termViewUtil;
+
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
 
@@ -49,6 +52,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 		if (!modelMap.containsKey(MARKDOWN_RENDERER_KEY)) {
 			modelMap.addAttribute(MARKDOWN_RENDERER_KEY, markdownRenderer);
+		}
+		if (!modelMap.containsKey(TERM_VIEW_UTIL_KEY)) {
+			modelMap.addAttribute(TERM_VIEW_UTIL_KEY, termViewUtil);
 		}
 
 		// add model attributes here...

@@ -14,6 +14,9 @@ public class DefinitionRefTuple extends AbstractDataObject {
 	@Column(name = "definition_value")
 	private String definitionValue;
 
+	@Column(name = "definition_lang")
+	private String definitionLang;
+
 	@Column(name = "definition_order_by")
 	private Long definitionOrderBy;
 
@@ -40,6 +43,14 @@ public class DefinitionRefTuple extends AbstractDataObject {
 
 	public void setDefinitionValue(String definitionValue) {
 		this.definitionValue = definitionValue;
+	}
+
+	public String getDefinitionLang() {
+		return definitionLang;
+	}
+
+	public void setDefinitionLang(String definitionLang) {
+		this.definitionLang = definitionLang;
 	}
 
 	public Long getDefinitionOrderBy() {
