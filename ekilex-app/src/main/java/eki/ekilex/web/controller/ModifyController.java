@@ -39,6 +39,7 @@ public class ModifyController implements WebConstant {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
+	//TODO move over to modifyItem
 	@ResponseBody
 	@PostMapping("/modify")
 	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
