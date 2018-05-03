@@ -19,7 +19,12 @@
 		filter: blur( rem(1) );
 	}
 }
-
+.break{
+	flex-basis: 100%;
+	width: 0px; 
+	height: 0px; 
+	overflow: hidden;
+}
 .morphology-test{
 	font-size: $tiny-font-size;
 }
@@ -28,9 +33,9 @@
 ////// MOBILE -> ALL /////////
 ////////////////////////////////
 
-.dependencies + div {
-	display: none;
-}
+// .dependencies + div {
+// 	display: none;
+// }
 
 *{
 	transition: 50ms ease-out;
@@ -49,11 +54,10 @@ input{
 // 	background-color: $black;
 // }
 .header-container{
+	background-color: $gray-100;
 	position: fixed;
 	top:0;
-}
-.header-container{
-	z-index: 1;
+	z-index: 2;
 	&.show-header{
 		z-index: 999;
 		.header-links{
@@ -270,6 +274,7 @@ input{
 	&:not(.expand){ 
 		.additional-meta,
 		.dictionary-source,
+		.meaning-meta,
 		.dependence:not(:first-child),
 		.example-item:not(:first-child),
 		.label,
@@ -281,15 +286,20 @@ input{
 		}
 	}
 	&.expand{
+		flex-direction: column;
     	margin-top: $border-width-lg !important;
     	margin-bottom: $border-width-lg !important;
-    	max-height: rem(10000);
+    	// max-height: rem(10000);
 		box-shadow: 0 -5px $gray-100, 0  5px $gray-100;	
 		.dependence{
 			padding-bottom: rem(5);
 		}
 		.example-text{
 			margin-bottom: rem(3);
+		}
+		.meaning,
+		.meaning-meta{
+			flex: 0 1 auto;
 		}
 	}
 	&:hover{
@@ -306,13 +316,15 @@ input{
 	// border-bottom: $border-width $border-color solid ;
 }
 .dictionary-source{
-	position: absolute;
-	top:rem(-5);
-	right: $gutter;
+	// position: absolute;
+	// top:rem(-5);
+	// right: $gutter;
+	clear: both;
+	display: block;
 	color: $gray-600;
 	font-size: $tiny-font-size;
-	background-color: $white;
-	padding: 0 rem(5);
+	// background-color: $white;
+	// padding: 0 rem(5);
 }
 .additional-meta{
 	margin-top:rem(10);
@@ -330,8 +342,8 @@ input{
 .more-btn{
 	cursor: pointer;
 	position: absolute;
-	height: 100%;
-    top: 0;
+	// height: 100%;
+    top: $gutter;
     right: 0;
     width: rem(60);
     background: transparent;
@@ -362,10 +374,10 @@ input{
 	// font-size: $tiny-font-size;
 }
 .expand .more-btn{
-	top: -$border-width-lg;
-    right: -$border-width-lg;
-    height: calc(100% + #{$border-width-lg});
-    width: rem(70);
+	top: calc( #{$gutter} + #{$border-width-lg} );
+    // right: -$border-width-lg;
+    // height: calc(100% + #{$border-width-lg});
+    // width: rem(70);
 	.icon:before{
 		color: $black !important;
 		transform: rotate(90deg);
