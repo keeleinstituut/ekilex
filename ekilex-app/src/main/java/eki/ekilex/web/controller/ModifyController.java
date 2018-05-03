@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.OrderingData;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
@@ -21,13 +20,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.ModifyListRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.ModifyItemRequest;
-import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication

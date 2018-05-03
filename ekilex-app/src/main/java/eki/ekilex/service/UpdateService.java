@@ -2,7 +2,6 @@ package eki.ekilex.service;
 
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.UpdateDbService;
 import org.springframework.stereotype.Service;

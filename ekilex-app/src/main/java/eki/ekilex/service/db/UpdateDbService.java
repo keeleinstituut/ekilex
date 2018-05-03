@@ -2,7 +2,6 @@ package eki.ekilex.service.db;
 
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.OrderingData;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
