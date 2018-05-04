@@ -151,9 +151,12 @@ public class ModifyController implements WebConstant {
 
 	@ResponseBody
 	@PostMapping("/remove")
-	public String removeElement(@RequestParam("op_type") String opCode, @RequestParam("id") Long id) {
+	public String removeElement(
+			@RequestParam("op_type") String opCode,
+			@RequestParam("id") Long id,
+			@RequestParam(value = "value", required = false) String valueToRemove) {
 
-		logger.debug("Delete operation : {} : for id {}", opCode, id);
+		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToRemove);
 		switch (opCode) {
 		case "usage" :
 			updateService.removeUsage(id);
@@ -169,6 +172,13 @@ public class ModifyController implements WebConstant {
 			break;
 		case "lexeme_frequency_group" :
 			updateService.updateLexemeFrequencyGroup(id, null);
+			break;
+		case "lexeme_pos" :
+			updateService.removeLexemePos(id, valueToRemove);
+			break;
+		case "meaning_domain" :
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToRemove);
+			updateService.removeMeaningDomain(id, meaningDomain);
 			break;
 		}
 		return "OK";

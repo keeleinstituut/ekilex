@@ -198,7 +198,7 @@
           <div class="form-group row value-group" id="meaning_domain">
             <div class="col-md-12">
               <select class="form-control value-select">
-                <optgroup th:each="origin : ${addDomains}" th:label="${origin.getKey()}">
+                <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}"
                           th:value="${domain.toIdString()}"
                           th:text="${domain.origin + ' - ' + domain.value}">domain</option>
@@ -228,6 +228,46 @@
             <option th:each="freqGroup : ${lexemeFrequencyGroups}"
                     th:value="${freqGroup.code}"
                     th:text="${freqGroup.value}">freqGroup</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemePosDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_classifier}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="current_value">
+          <input type="hidden" name="classif_name" value="lexeme_pos">
+          <select class="form-control" name="new_value">
+            <option th:each="pos : ${allLexemePos}"
+                    th:value="${pos.code}"
+                    th:text="${pos.value}">lexeme pos</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="meaningDomainDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_classifier}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="current_value">
+          <input type="hidden" name="classif_name" value="meaning_domain">
+          <select class="form-control" name="new_value">
+            <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+              <option th:each="domain : ${origin.getValue()}"
+                      th:value="${domain.toIdString()}"
+                      th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+            </optgroup>
           </select>
         </div>
       </form>

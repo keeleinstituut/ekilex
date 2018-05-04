@@ -170,6 +170,21 @@ public class UpdateDbService {
 		create.delete(DEFINITION).where(DEFINITION.ID.eq(id)).execute();
 	}
 
+	public void removeLexemePos(Long lexemeId, String posCode) {
+		create.delete(LEXEME_POS)
+				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_POS.POS_CODE.eq(posCode)))
+				.execute();
+	}
+
+	public void removeMeaningDomain(Long meaningId,  Classifier domain) {
+		create.delete(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())))
+				.execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)

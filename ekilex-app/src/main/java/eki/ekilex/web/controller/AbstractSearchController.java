@@ -51,7 +51,7 @@ public abstract class AbstractSearchController implements WebConstant {
 		return commonDataService.getDomainsInUseByOrigin();
 	}
 
-	@ModelAttribute("addDomains")
+	@ModelAttribute("allDomains")
 	public Map<String,List<Classifier>> getAllDomains() {
 		return commonDataService.getAllDomainsByOrigin();
 	}

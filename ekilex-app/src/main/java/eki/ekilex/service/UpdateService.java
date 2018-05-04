@@ -128,6 +128,20 @@ public class UpdateService {
 		updateDbService.addUsageMeaningMember(usageMeaningId, usageMemberType, value, languageCode);
 	}
 
+	@Transactional
+	public void removeLexemePos(Long lexemeId, String posCode) {
+		if (posCode != null) {
+			updateDbService.removeLexemePos(lexemeId, posCode);
+		}
+	}
+
+	@Transactional
+	public void removeMeaningDomain(Long meaningId,  Classifier domain) {
+		if (domain != null) {
+			updateDbService.removeMeaningDomain(meaningId, domain);
+		}
+	}
+
 	void changeLevels(List<WordLexeme> lexemes, Long lexemeId, String action) {
 		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);

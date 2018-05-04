@@ -189,7 +189,8 @@ function openEditDlg(elem) {
 function performDelete() {
     var targetName = $(this)[0].getAttribute('data-target-elem');
     var targetElement = $('[name="' + targetName + '"]');
-    var url = applicationUrl + 'remove?op_type=' + targetElement.data('op-type') + '&id=' + targetElement.data('id');
+    var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
+    var url = applicationUrl + 'remove?op_type=' + targetElement.data('op-type') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
     $.post(url).done(function(data) {
         var refreshButton = $('#refresh-details');
         refreshButton.trigger('click');
@@ -234,7 +235,7 @@ function openLexemeClassifiersDlg(elem) {
 function openSelectDlg(elem) {
     var selectDlg = $($(elem).data('target'));
     var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
-    var currentValue = targetElement.data('value');
+    var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
     selectDlg.find('[name=current_value]').val(currentValue);
     var selectControl = selectDlg.find('select');

@@ -154,11 +154,28 @@
               <div th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
                 <span class="lbl">Sõnaliik</span>
                 <span th:each="classif,classifIter : ${lexeme.lexemePos}">
-                  <span th:text="${classif.code}"></span>
+                  <span
+                    th:data-id="${lexeme.lexemeId}"
+                    th:data-op-type="lexeme_pos"
+                    th:data-value="${classif.code}"
+                    th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
+                    th:text="${classif.code}"></span>
                   <th:block th:unless="${classif.code == classif.value}">
                     -
                     <span th:text="${classif.value}"></span>
                   </th:block>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="Muuda"
+                          onclick="openSelectDlg(this)"
+                          data-toggle="modal" data-target="#lexemePosDlg"
+                          th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'">
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
+                          data-toggle="delete-confirmation" data-placement="right">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
               </div>
@@ -187,11 +204,28 @@
               <div th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
                 <span class="lbl">Valdkonnad</span>
                 <span th:each="classif,classifIter : ${lexeme.meaningDomains}">
-                  <span th:text="${classif.code}"></span>
+                  <span
+                    th:data-id="${lexeme.meaningId}"
+                    th:data-op-type="meaning_domain"
+                    th:data-value="${classif.toIdString()}"
+                    th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
+                    th:text="${classif.code}"></span>
                   <th:block th:unless="${classif.code == classif.value}">
                     -
                     <span th:text="${classif.value}"></span>
                   </th:block>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="Muuda"
+                          onclick="openSelectDlg(this)"
+                          data-toggle="modal" data-target="#meaningDomainDlg"
+                          th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'">
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
+                          data-toggle="delete-confirmation" data-placement="right">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
               </div>
@@ -614,6 +648,8 @@
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>
   <div th:replace="common :: #lexemeFrequencyDlg"></div>
+  <div th:replace="common :: #lexemePosDlg"></div>
+  <div th:replace="common :: #meaningDomainDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
