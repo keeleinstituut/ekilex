@@ -66,11 +66,18 @@ function initialise() {
 }
 
 function updateTermUserLangWrapup(clickable) {
-	var langWrapup = clickable.closest('.orderable').find("[data-value]").filter(function() {
+	var langWrapupArr = clickable.closest('.orderable').find("[data-value]").filter(function() {
 		return $(this).find("input[name='term_user_lang_check']").is(":checked");
 	}).map(function() {
 		return $(this).attr("data-value");
-	}).get().join(", ");
+	}).get();
+	var languagesWrapupLimit = 4;
+	var langWrapup;
+	if (langWrapupArr.length > languagesWrapupLimit) {
+		langWrapup = langWrapupArr.slice(0, languagesWrapupLimit).join(", ") + " ...";
+	} else {
+		langWrapup = langWrapupArr.join(", ");
+	}
 	$("#term_user_lang_wrapup").text(langWrapup);
 }
 

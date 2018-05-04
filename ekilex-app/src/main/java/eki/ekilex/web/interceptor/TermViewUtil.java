@@ -11,9 +11,16 @@ import eki.ekilex.data.ClassifierSelect;
 @Component
 public class TermViewUtil {
 
+	private static final int LANGUAGES_WRAPUP_LIMIT = 4;
+
 	public String composeLanguagesOrderWrapup(List<ClassifierSelect> languagesOrder) {
 		List<String> languageValues = languagesOrder.stream().filter(lang -> lang.isSelected()).map(lang -> lang.getValue()).collect(Collectors.toList());
-		String languagesOrderWrapup = StringUtils.join(languageValues, ", ");
+		String languagesOrderWrapup;
+		if (languageValues.size() > LANGUAGES_WRAPUP_LIMIT) {
+			languagesOrderWrapup = StringUtils.join(languageValues.toArray(new String[0]), ", ", 0, LANGUAGES_WRAPUP_LIMIT) + " ...";
+		} else {
+			languagesOrderWrapup = StringUtils.join(languageValues, ", ");
+		}
 		return languagesOrderWrapup;
 	}
 
