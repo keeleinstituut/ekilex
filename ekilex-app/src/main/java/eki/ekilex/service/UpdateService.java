@@ -78,6 +78,16 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
+		updateDbService.updateLexemePos(lexemeId, currentPos, newPos);
+	}
+
+	@Transactional
+	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
+		updateDbService.updateMeaningDomain(meaningId, currentDomain, newDomain);
+	}
+
+	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		updateDbService.addLexemePos(lexemeId, posCode);
 	}

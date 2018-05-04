@@ -244,12 +244,12 @@ public class ModifyController implements WebConstant {
 			updateService.updateLexemeFrequencyGroup(id, newValue);
 			break;
 		case "lexeme_pos" :
-//			updateService.updateLexemePos(id, currentValue, newValue);
+			updateService.updateLexemePos(id, currentValue, newValue);
 			break;
 		case "meaning_domain" :
 			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
 			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(newValue);
-//			updateService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain);
+			updateService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain);
 			break;
 		}
 		return "OK";

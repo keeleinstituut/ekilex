@@ -119,6 +119,24 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
+		create.update(LEXEME_POS)
+				.set(LEXEME_POS.POS_CODE, newPos)
+				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(currentPos)))
+				.execute();
+	}
+
+	public void updateMeaningDomain(Long meaningId, Classifier currentDomain, Classifier newDomain) {
+		create.update(MEANING_DOMAIN)
+				.set(MEANING_DOMAIN.DOMAIN_CODE, newDomain.getCode())
+				.set(MEANING_DOMAIN.DOMAIN_ORIGIN, newDomain.getOrigin())
+				.where(
+						MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(
+						MEANING_DOMAIN.DOMAIN_CODE.eq(currentDomain.getCode())).and(
+						MEANING_DOMAIN.DOMAIN_ORIGIN.eq(currentDomain.getOrigin())))
+				.execute();
+	}
+
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
