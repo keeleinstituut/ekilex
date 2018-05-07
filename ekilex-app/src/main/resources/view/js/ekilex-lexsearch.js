@@ -52,7 +52,7 @@ function openLexemeLevelDlg(elem) {
     var editDlg = $('#editLexemeLevelsDlg');
     editDlg.find('[name="id"]').val(targetElement.data('id'));
 
-    editDlg.find('button[type="submit"]').off().on('click', function(e) {
+    editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
         var editForm = editDlg.find('form');
         editDlg.find('[name="action"]').val($(this).data('action'));
