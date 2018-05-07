@@ -238,9 +238,11 @@ function openSelectDlg(elem) {
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
     selectDlg.find('[name=current_value]').val(currentValue);
-    var selectControl = selectDlg.find('select');
-    selectControl.val(currentValue);
+    selectDlg.find('select').val(currentValue);
+}
 
+function initSelectDlg(selectDlg) {
+    var selectControl = selectDlg.find('select');
     var maxItemLength = 0;
     selectControl.find('option').each(function(indx, item) {
         var itemLenght = $(item).text().length;

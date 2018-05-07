@@ -45,6 +45,10 @@ function initialise() {
     editLexemeDlg.on('shown.bs.modal', function() {
         editLexemeDlg.find('[name="level1"]').focus();
     });
+
+    initSelectDlg($('#lexemeFrequencyDlg'));
+    initSelectDlg($('#lexemePosDlg'));
+    initSelectDlg($('#meaningDomainDlg'));
 }
 
 function openLexemeLevelDlg(elem) {
