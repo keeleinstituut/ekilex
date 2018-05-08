@@ -39,30 +39,6 @@ public class ModifyController implements WebConstant {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
-	//TODO move over to modifyItem
-	@ResponseBody
-	@PostMapping("/modify")
-	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
-
-		logger.debug("Update operation {} : {} : for id {}", opCode, value, id);
-		switch (opCode) {
-			case "usage" :
-				updateService.updateUsageValue(id, value);
-				break;
-			case "usage_translation" :
-				updateService.updateUsageTranslationValue(id, value);
-				break;
-			case "usage_definition" :
-				updateService.updateUsageDefinitionValue(id, value);
-				break;
-			case "definition" :
-				updateService.updateDefinitionValue(id, value);
-				break;
-		}
-
-		return "OK";
-	}
-
 	@ResponseBody
 	@PostMapping("/modify_item")
 	public String modifyItem(@RequestBody ModifyItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
@@ -71,6 +47,18 @@ public class ModifyController implements WebConstant {
 		switch (itemData.getOpCode()) {
 			case "term_user_lang" :
 				updateLanguageSelection(itemData, sessionBean);
+				break;
+			case "usage" :
+				updateService.updateUsageValue(itemData.getId(), itemData.getValue());
+				break;
+			case "usage_translation" :
+				updateService.updateUsageTranslationValue(itemData.getId(), itemData.getValue());
+				break;
+			case "usage_definition" :
+				updateService.updateUsageDefinitionValue(itemData.getId(), itemData.getValue());
+				break;
+			case "definition" :
+				updateService.updateDefinitionValue(itemData.getId(), itemData.getValue());
 				break;
 		}
 

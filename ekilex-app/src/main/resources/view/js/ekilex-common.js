@@ -177,12 +177,12 @@ function openEditDlg(elem) {
 	var targetName = $(elem).data('target-elem');
 	var targetElement = $('[name="' + targetName + '"]');
 	var editDlg = $('#editDlg');
-	var modifyFld = editDlg.find('[name="modified_value"]');
+	var modifyFld = editDlg.find('[name=value]');
 	modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
-	editDlg.find('[name="id"]').val(targetElement.data('id'));
-	editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
+	editDlg.find('[name=id]').val(targetElement.data('id'));
+	editDlg.find('[name=opCode]').val(targetElement.data('op-type'));
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitForm(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
 }
 
@@ -208,7 +208,7 @@ function openAddDlg(elem) {
         $(item).val($(item).find('option').first().val());
     });
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+		submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.')
 	});
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		alignAndFocus(e, addDlg)
@@ -223,7 +223,7 @@ function openLexemeClassifiersDlg(elem) {
         $(item).val($(item).find('option').first().val());
     });
 
-    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitForm(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
+    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
     theDlg.find('[name=classif_name]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
     theDlg.find('.value-select').off('change').on('change', function(e) {
@@ -254,10 +254,10 @@ function initSelectDlg(selectDlg) {
     var numberOfOptins = selectControl.find('option').length;
     selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
 
-    selectControl.off('click').on('click', function(e) {submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
+    selectControl.off('click').on('click', function(e) {submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
     selectControl.off('keydown').on('keydown', function(e) {
         if (e.key === "Enter") {
-            submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+            submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
         }
     });
     selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
@@ -271,17 +271,22 @@ function initSelectDlg(selectDlg) {
     });
 }
 
-function submitForm(e, dlg, failMessage) {
+function submitDialog(e, dlg, failMessage) {
     e.preventDefault();
     var theForm = dlg.find('form');
-    var url = theForm.attr('action') + '?' + theForm.serialize();
-    $.post(url).done(function(data) {
-        var refreshButton = $('#refresh-details');
-        refreshButton.trigger('click');
+
+    $.ajax({
+        url: theForm.attr('action'),
+        data: JSON.stringify(theForm.serializeJSON()),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+    }).done(function(data) {
+        $('#refresh-details').trigger('click');
         dlg.modal('hide');
-    }).fail(function(data) {
-        alert(failMessage);
+    }).fail(function (data) {
         console.log(data);
+        alert(failMessage);
         dlg.modal('hide');
     });
 }

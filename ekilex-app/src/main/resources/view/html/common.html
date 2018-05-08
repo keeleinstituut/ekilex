@@ -25,6 +25,7 @@
 <!-- Bootstrap core JS -->
 <th:block th:fragment="js">
   <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
@@ -73,13 +74,13 @@
 <div id="editDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="op_type">
+          <input type="hidden" name="opCode">
           <div class="form-group row">
             <div class="col-md-12">
-              <textarea class="form-control" rows="2" name="modified_value"></textarea>
+              <textarea class="form-control" rows="2" name="value"></textarea>
             </div>
           </div>
         </div>
