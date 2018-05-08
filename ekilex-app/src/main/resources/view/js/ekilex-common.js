@@ -181,7 +181,7 @@ function openEditDlg(elem) {
 	modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
 	editDlg.find('[name="id"]').val(targetElement.data('id'));
 	editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
-	editDlg.find('button[type="submit"]').off().on('click', function(e) {
+	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitForm(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
 }
@@ -207,10 +207,10 @@ function openAddDlg(elem) {
     addDlg.find('select').each(function(indx, item) {
         $(item).val($(item).find('option').first().val());
     });
-	addDlg.find('button[type="submit"]').off().on('click', function(e) {
+	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
 	});
-	addDlg.off().on('shown.bs.modal', function(e) {
+	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		alignAndFocus(e, addDlg)
 	});
 }
@@ -223,10 +223,10 @@ function openLexemeClassifiersDlg(elem) {
         $(item).val($(item).find('option').first().val());
     });
 
-    theDlg.find('button[type="submit"]').off().on('click', function(e) {submitForm(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
-    theDlg.off().on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
-    theDlg.find('[name=classif_name]').off().on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
-    theDlg.find('.value-select').off().on('change', function(e) {
+    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitForm(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
+    theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
+    theDlg.find('[name=classif_name]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
+    theDlg.find('.value-select').off('change').on('change', function(e) {
         theDlg.find('[name=value]').val($(this).val());
     });
     toggleValueGroup(theDlg, theDlg.find('[name=classif_name]').val());
@@ -252,8 +252,13 @@ function openSelectDlg(elem) {
     var numberOfOptins = selectControl.find('option').length;
     selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
 
-    selectControl.off().on('change', function(e) {submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
-    selectDlg.off().on('shown.bs.modal', function(e) {
+    selectControl.off('click').on('click', function(e) {submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
+    selectControl.off('keydown').on('keydown', function(e) {
+        if (e.key === "Enter") {
+            submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+        }
+    });
+    selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         var dlgTop =  $(e.relatedTarget).offset().top;
         var dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
         selectDlg.find('.modal-content').css('top', dlgTop - 30);
