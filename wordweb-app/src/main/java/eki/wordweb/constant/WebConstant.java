@@ -6,6 +6,8 @@ public interface WebConstant {
 
 	String HOME_URI = "/";
 
+	String SEARCH_URI = "/search/";
+
 	String ERROR_PAGE = "error";
 
 	String SESSION_BEAN = "sessionBean";

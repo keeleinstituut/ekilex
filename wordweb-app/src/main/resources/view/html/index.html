@@ -86,7 +86,7 @@
             <div class="search-main">
               <form th:action="@{/}" th:method="post">
                 <div class="awesomplete">
-                  <input type="text" class="form-control search-phrase" name="simpleSearchFilter" th:value="${simpleSearchFilter}" list="mylist" placeholder="Kirjuta mõni sõna" />
+                  <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" list="mylist" placeholder="Kirjuta mõni sõna" />
                   <input type="hidden" name="sourceLang" value="" />
                   <input type="hidden" name="destinLang" value="" />
                   <ul class="d-none">
@@ -127,6 +127,8 @@
             <form>
               <input type="hidden" name="word-id" th:value="${word.wordId}" />
               <input type="hidden" name="word-value" th:value="${word.word}" />
+              <input type="hidden" name="word-selected" th:value="${word.selected}" />
+              <input type="hidden" name="word-select-url" th:value="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} + '/' + ${word.word} + '/' + ${word.homonymNr}}" />
               <a th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
                 <span class="homonym-item-wrap">
                   <span class="homonym-header">
@@ -167,9 +169,6 @@
           <div class="col-md-7 col-lg-8 main-data">
             <div class="level-2-panel">
               <div class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexemes}">
-
-
-
                 <div class="col-lg-6 meaning">
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
@@ -237,7 +236,7 @@
                   <div class="synonyms">
                     <span th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.synonymWords}">
-                        <a th:id="${'word_search_link_syn_' + meaningWordIter.count}" href="" class="synonym">
+                        <a th:id="${'word-search-link-syn-' + meaningWordIter.count}" href="" class="synonym">
                           <span th:text="${meaningWord.word}"></span>
                         </a>
                         <span th:unless="${meaningWordIter.last}">, </span>
@@ -245,7 +244,6 @@
                     </span>
                   </div>
                   <div class="additional-meta">
-                    <!-- need vajavad kõik veel kujundamist. enamus on komplekstüüpide kollektsioonid -->
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes) or not #lists.isEmpty(lexeme.relatedMeanings)}">
                       <div class="col-3">
                         <b>Seosed</b>
@@ -254,7 +252,7 @@
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                       <div class="col-9">
                         <div th:each="relation, relationIter : ${lexeme.relatedLexemes}">
-                          <a th:id="${'word_search_link_lex_rel_' + relationIter.count}" href="">
+                          <a th:id="${'word-search-link-lex-rel-' + relationIter.count}" href="">
                             <span th:text="${relation.word}"></span>
                           </a>
                           <span th:text="${'(' + relation.lexRelType.value + ')'}"></span>
@@ -264,7 +262,7 @@
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
                       <div class="col-9">
                         <div th:each="relation, relationIter : ${lexeme.relatedMeanings}">
-                          <a th:id="${'word_search_link_meaning_rel_' + relationIter.count}" href="">
+                          <a th:id="${'word-search-link-meaning-rel-' + relationIter.count}" href="">
                             <span th:text="${relation.word}"></span>
                           </a>
                           <span th:text="${'(' + relation.meaningRelType.value + ')'}"></span>
@@ -295,7 +293,6 @@
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
                       </div>
                     </div>
-                    <!---->
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
                       <div class="col-3">
                         <b>Register</b>
@@ -344,9 +341,6 @@
                   </div>
                 </div>
                 <div class="col-lg-12 dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</div>
-
-
-
                 <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
                 </button>
@@ -427,7 +421,7 @@
               <div class="col-12">
                 <h6>Sõna seosed</h6>
                 <div style="margin-bottom: 0.5em;" th:each="relation, relationIter : ${wordData.word.relatedWords}">
-                  <a th:id="${'word_search_link_word_rel_' + relationIter.count}" href="">
+                  <a th:id="${'word-search-link-word-rel-' + relationIter.count}" href="">
                     <span th:text="${relation.word}"></span>
                   </a>
                   <span th:text="${'(' + relation.wordRelType.value + ')'}"></span>
@@ -464,9 +458,7 @@
                 <img class="homonym-image" th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>
               </div>
             </div>
-            <div id="korp">
-              Otsin näitelauseid...
-            </div>
+            <div id="korp">Otsin näitelauseid...</div>
           </div>
         </div>
       </div>

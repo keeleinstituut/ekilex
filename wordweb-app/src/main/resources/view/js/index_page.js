@@ -1,10 +1,12 @@
 var windowWidthTreshold = 769;
 
-function fetchDetails(wordId, word) {
+function fetchDetails(wordId, word, wordSelectUrl) {
     var detailsDiv = $('.word-details');
     var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
 	$.get(wordDetailsUrl).done(function (data) {
 		detailsDiv.replaceWith(data);
+		var historyState = {wordId : wordId, word : word, wordSelectUrl : wordSelectUrl};
+		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
         fetchCorpSentences(word);
         setHomonymNrVisibility();
         $('.word-details [data-toggle="tooltip"]').tooltip();
@@ -194,7 +196,10 @@ function empowerLanguageSelection() {
 }
 
 function calculateAndSetStyles() {
-    if ($(window).width() > windowWidthTreshold) {
+	var isWideWindow = $(window).width() > windowWidthTreshold;
+    var isSingleHomonym = $(".homonym-item").length == 1;
+    var isMultiHomonym = $(".homonym-item").length > 1;
+    if (isWideWindow) {
         $(".search-panel").removeClass("d-none");
         $(".content-panel").removeClass("d-none");
         if ($(".homonym-item").length == 1) {
@@ -210,13 +215,13 @@ function calculateAndSetStyles() {
         }
         $('#form-words').css("margin-top", '1.5em');
     } else {
-        if ($(".homonym-item").length > 1) {
+        if (isMultiHomonym) {
             if (!$(".homonym-panel").hasClass("d-none")) {
                 $(".content-panel").addClass("d-none");
             }
             // $(".homonym-panel-empty").addClass("d-none");
         }
-        if ($(".homonym-item").length == 1 && $(".homonym-panel").hasClass("d-none")) {
+        if (isSingleHomonym && $(".homonym-panel").hasClass("d-none")) {
             $(".search-panel").addClass("d-none");
             // $(".homonym-panel-empty").removeClass("d-none");
         }
@@ -232,10 +237,10 @@ function initialisePage() {
 
 	// interaction in details
 
-	$(document).on("click", "a[id^='word_search_link']", function(e) {
+	$(document).on("click", "a[id^='word-search-link']", function(e) {
 		e.preventDefault();
 		var newWord = $.trim($(this).text());
-		$("input[name='simpleSearchFilter']").val(newWord);
+		$("input[name='searchWord']").val(newWord);
 		$("#search-btn").click();
 	});
 
@@ -263,7 +268,16 @@ function initialisePage() {
         //     });
         // }
     });
-    
+
+    $(window).on("popstate", function (e) {
+    	e.preventDefault();
+        var historyState = e.originalEvent.state;
+        if (historyState != null) {
+        	var wordSelectUrl = historyState.wordSelectUrl;
+        	window.location = wordSelectUrl;
+        }
+    });
+
     // interaction elsewhere
 
     $(".menu-btn").click(function(){
@@ -275,7 +289,8 @@ function initialisePage() {
     	var wordWrapperForm = $(this).closest("form");
     	var wordId = wordWrapperForm.children("[name='word-id']").val();
     	var word = wordWrapperForm.children("[name='word-value']").val();
-    	fetchDetails(wordId, word);
+    	var wordSelectUrl = wordWrapperForm.children("[name='word-select-url']").val();
+    	fetchDetails(wordId, word, wordSelectUrl);
     });
 
     $("button[name='source-lang-btn']").click(function() {
@@ -304,7 +319,7 @@ function initialisePage() {
 
     $("button[id='lang-sel-complete-btn']").click(function() {
     	$("#lang-selector-btn").click();
-    	if ($("input[name='simpleSearchFilter']").val()) {
+    	if ($("input[name='searchWord']").val()) {
     		$("#search-btn").click();
     	}
     });
@@ -318,18 +333,6 @@ function initialisePage() {
             $('#form-words').css("margin-top", '0');
         }
     });
-
-
-
-    // test: Mis ma ei saa .show-search peale vajutades mitte midagi tööle panna?
-    $("*").click(function(){
-        $(".show-search").addClass("matafaka");
-    });
-    $(".matafaka").click(function(){
-        $(".show-search").addClass("success");
-    });
-    /// end test ////////////////////////////////
-
 
     $(".homonym-item").click(function(){
         $(".homonym-item").removeClass("selected last-selected");
@@ -375,7 +378,7 @@ function initialisePage() {
     });
 
     $('[name="word-form-btn"]').on('click', function (e) {
-        $("input[name = 'simpleSearchFilter']").val($(this).data('word'));
+        $("input[name = 'searchWord']").val($(this).data('word'));
         $('#search-btn').trigger('click');
     });
 
@@ -385,12 +388,18 @@ function initialisePage() {
 
     $(document).ready(function() {
     	initLanguageFilter();
-        $('[data-toggle="tooltip"]').tooltip();
-        if ($(window).width() > windowWidthTreshold || $(".homonym-item").length == 1) {
-            $(".homonym-item:first")
-                .delay(1250).queue(function() {})
-                .trigger('click');
-            $(".homonym-item:first").addClass("animation-target");
+        var isWideWindow = $(window).width() > windowWidthTreshold;
+        var isSingleHomonym = $(".homonym-item").length == 1;
+        if (isWideWindow || isSingleHomonym) {
+        	var selectedHomonymItem = $(".homonym-item").filter(function() {
+        		var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
+        		return isHomonymSelected == "true";
+        	}).filter(":first");
+        	if (selectedHomonymItem.get().length == 0) {
+        		selectedHomonymItem = $(".homonym-item:first");
+        	}
+        	selectedHomonymItem.delay(1250).queue(function() {}).trigger('click');
+        	selectedHomonymItem.addClass("animation-target");
         }
         calculateAndSetStyles();
         $('[data-toggle="tooltip"]').tooltip();
