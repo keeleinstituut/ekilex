@@ -150,9 +150,9 @@ public class ModifyController implements WebConstant {
 	}
 
 	@ResponseBody
-	@PostMapping("/remove")
+	@PostMapping("/remove_item")
 	public String removeElement(
-			@RequestParam("op_type") String opCode,
+			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
 			@RequestParam(value = "value", required = false) String valueToRemove) {
 

@@ -131,7 +131,7 @@
                 <span class="lbl">Sagedusrühm</span>
                 <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
                       th:data-id="${lexeme.lexemeId}"
-                      th:data-op-type="lexeme_frequency_group"
+                      th:data-op-code="lexeme_frequency_group"
                       th:data-value="${lexeme.lexemeFrequencyGroupCode}"
                       th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
                 <button type="button" class="btn badge badge-primary"
@@ -156,7 +156,7 @@
                 <span th:each="classif,classifIter : ${lexeme.lexemePos}">
                   <span
                     th:data-id="${lexeme.lexemeId}"
-                    th:data-op-type="lexeme_pos"
+                    th:data-op-code="lexeme_pos"
                     th:data-value="${classif.code}"
                     th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
                     th:text="${classif.code}"></span>
@@ -206,7 +206,7 @@
                 <span th:each="classif,classifIter : ${lexeme.meaningDomains}">
                   <span
                     th:data-id="${lexeme.meaningId}"
-                    th:data-op-type="meaning_domain"
+                    th:data-op-code="meaning_domain"
                     th:data-value="${classif.toIdString()}"
                     th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
                     th:text="${classif.code}"></span>
@@ -247,7 +247,7 @@
                   <td>
                     <span th:name="${definition.id} + '_definition'"
                           th:data-id="${definition.id}"
-                          th:data-op-type="definition"
+                          th:data-op-code="definition"
                           th:data-value="${definition.value}"
                           th:utext="${definition.value}"></span>
                     <button type="button" class="btn badge badge-primary ml-2"
@@ -339,7 +339,7 @@
                         <td>
                           <span th:name="${usage.id} + '_usage'"
                                 th:data-id="${usage.id}"
-                                th:data-op-type="usage"
+                                th:data-op-code="usage"
                                 th:data-value="${usage.value}"
                                 th:utext="${usage.value}"></span>
                           <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
@@ -374,7 +374,7 @@
                         <td>
                           <span th:name="${usageTranslation.id} + '_usage_translation'"
                                 th:data-id="${usageTranslation.id}"
-                                th:data-op-type="usage_translation"
+                                th:data-op-code="usage_translation"
                                 th:text="${usageTranslation.value}"></span>
                           <button type="button" class="btn badge badge-primary ml-2"
                                   th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
@@ -393,7 +393,7 @@
                         <td>
                           <span th:name="${usageDefinition.id} + '_usage_definition'"
                                 th:data-id="${usageDefinition.id}"
-                                th:data-op-type="usage_definition"
+                                th:data-op-code="usage_definition"
                                 th:data-value="${usageDefinition.value}"
                                 th:utext="${usageDefinition.value}"></span>
                           <button type="button" class="btn badge badge-primary ml-2"

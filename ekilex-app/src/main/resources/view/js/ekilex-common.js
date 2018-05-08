@@ -180,7 +180,7 @@ function openEditDlg(elem) {
 	var modifyFld = editDlg.find('[name=value]');
 	modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
 	editDlg.find('[name=id]').val(targetElement.data('id'));
-	editDlg.find('[name=opCode]').val(targetElement.data('op-type'));
+	editDlg.find('[name=opCode]').val(targetElement.data('op-code'));
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
@@ -190,7 +190,7 @@ function performDelete() {
     var targetName = $(this)[0].getAttribute('data-target-elem');
     var targetElement = $('[name="' + targetName + '"]');
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
-    var url = applicationUrl + 'remove?op_type=' + targetElement.data('op-type') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
+    var url = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
     $.post(url).done(function(data) {
         var refreshButton = $('#refresh-details');
         refreshButton.trigger('click');
