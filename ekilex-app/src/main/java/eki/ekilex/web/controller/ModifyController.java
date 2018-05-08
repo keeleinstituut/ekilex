@@ -61,6 +61,17 @@ public class ModifyController implements WebConstant {
 			case "definition" :
 				updateService.updateDefinitionValue(itemData.getId(), itemData.getValue());
 				break;
+			case "lexeme_frequency_group" :
+				updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
+				break;
+			case "lexeme_pos" :
+				updateService.updateLexemePos(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+				break;
+			case "meaning_domain" :
+				Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(itemData.getCurrentValue());
+				Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+				updateService.updateMeaningDomain(itemData.getId(), currentMeaningDomain, newMeaningDomain);
+				break;
 		}
 
 		return "{}";
@@ -197,31 +208,6 @@ public class ModifyController implements WebConstant {
 			break;
 		}
 		return "{}";
-	}
-
-	@ResponseBody
-	@PostMapping("/modify_classifier")
-	public String modifyLexemeClassifier(
-			@RequestParam("classif_name") String classifierName,
-			@RequestParam("id") Long id,
-			@RequestParam("current_value") String currentValue,
-			@RequestParam("new_value") String newValue) {
-
-		logger.debug("Modify classifier {} : {} : {} : for id {}", classifierName, currentValue, newValue, id);
-		switch (classifierName) {
-		case "lexeme_frequency_group" :
-			updateService.updateLexemeFrequencyGroup(id, newValue);
-			break;
-		case "lexeme_pos" :
-			updateService.updateLexemePos(id, currentValue, newValue);
-			break;
-		case "meaning_domain" :
-			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
-			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(newValue);
-			updateService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain);
-			break;
-		}
-		return "OK";
 	}
 
 }

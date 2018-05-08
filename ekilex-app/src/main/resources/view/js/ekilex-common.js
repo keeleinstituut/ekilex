@@ -237,7 +237,7 @@ function openSelectDlg(elem) {
     var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
-    selectDlg.find('[name=current_value]').val(currentValue);
+    selectDlg.find('[name=currentValue]').val(currentValue);
     selectDlg.find('select').val(currentValue);
 }
 

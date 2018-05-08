@@ -21,6 +21,8 @@ public class ModifyItemRequest extends AbstractDataObject {
 
 	private String value;
 
+	private String currentValue;
+
 	private boolean selected;
 
 	public String getTarget() {
@@ -77,6 +79,14 @@ public class ModifyItemRequest extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getCurrentValue() {
+		return currentValue;
+	}
+
+	public void setCurrentValue(String currentValue) {
+		this.currentValue = currentValue;
 	}
 
 	public boolean isSelected() {

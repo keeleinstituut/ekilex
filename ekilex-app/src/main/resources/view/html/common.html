@@ -221,12 +221,12 @@
 <div id="lexemeFrequencyDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify_classifier}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="current_value">
-          <input type="hidden" name="classif_name" value="lexeme_frequency_group">
-          <select class="form-control" name="new_value">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_frequency_group">
+          <select class="form-control" name="value">
             <option th:each="freqGroup : ${lexemeFrequencyGroups}"
                     th:value="${freqGroup.code}"
                     th:text="${freqGroup.value}">freqGroup</option>
@@ -240,12 +240,12 @@
 <div id="lexemePosDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify_classifier}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="current_value">
-          <input type="hidden" name="classif_name" value="lexeme_pos">
-          <select class="form-control" name="new_value">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_pos">
+          <select class="form-control" name="value">
             <option th:each="pos : ${allLexemePos}"
                     th:value="${pos.code}"
                     th:text="${pos.value}">lexeme pos</option>
@@ -259,12 +259,12 @@
 <div id="meaningDomainDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify_classifier}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="current_value">
-          <input type="hidden" name="classif_name" value="meaning_domain">
-          <select class="form-control" name="new_value">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="meaning_domain">
+          <select class="form-control" name="value">
             <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
               <option th:each="domain : ${origin.getValue()}"
                       th:value="${domain.toIdString()}"
