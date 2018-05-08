@@ -217,19 +217,19 @@ function openAddDlg(elem) {
 
 function openLexemeClassifiersDlg(elem) {
     var theDlg = $('#lexemeClassifiersDlg');
-    theDlg.find('[name=lexeme_id]').val($(elem).data('lexeme-id'));
-    theDlg.find('[name=meaning_id]').val($(elem).data('meaning-id'));
+    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
     theDlg.find('select').each(function(indx, item) {
         $(item).val($(item).find('option').first().val());
     });
 
     theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
-    theDlg.find('[name=classif_name]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
+    theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
     theDlg.find('.value-select').off('change').on('change', function(e) {
         theDlg.find('[name=value]').val($(this).val());
     });
-    toggleValueGroup(theDlg, theDlg.find('[name=classif_name]').val());
+    toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
 }
 
 function openSelectDlg(elem) {

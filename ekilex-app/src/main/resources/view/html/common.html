@@ -119,10 +119,11 @@
 <div id="addNewDefinitionDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_definition}" method="post">
+      <form th:action="@{/add_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
           <input type="hidden" name="language" value="est">
+          <input type="hidden" name="opCode" value="definition">
           <div class="form-group row">
             <div class="col-md-12">
               <textarea class="form-control" rows="2" name="value"></textarea>
@@ -141,11 +142,11 @@
 <div id="addNewUsageDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_usage}" method="post">
+      <form th:action="@{/add_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="usage_type" value="USAGE">
           <input type="hidden" name="language" value="est">
+          <input type="hidden" name="opCode" value="USAGE">
           <div class="form-group row">
             <div class="col-md-12">
               <textarea class="form-control" rows="2" name="value"></textarea>
@@ -164,14 +165,14 @@
 <div id="lexemeClassifiersDlg" class="modal" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_classifier}" method="post">
+      <form th:action="@{/add_item}" method="post">
         <div class="modal-body">
-          <input type="hidden" name="lexeme_id">
-          <input type="hidden" name="meaning_id">
+          <input type="hidden" name="id">
+          <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="form-group row">
             <div class="col-md-6">
-              <select class="form-control" th:name="classif_name">
+              <select class="form-control" name="opCode">
                 <option value="lexeme_frequency_group">Sagedusrühm</option>
                 <option value="lexeme_pos">Sõnaliik</option>
                 <option value="meaning_domain">Valdkond</option>

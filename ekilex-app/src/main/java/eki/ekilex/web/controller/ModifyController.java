@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
@@ -173,49 +174,29 @@ public class ModifyController implements WebConstant {
 	}
 
 	@ResponseBody
-	@PostMapping("/add_definition")
-	public String addNewDescription(@RequestParam("id") Long meaningId, @RequestParam("language") String languageCode, @RequestParam("value") String value) {
+	@PostMapping("/add_item")
+	public String addItem(@RequestBody AddItemRequest itemData) {
 
-		logger.debug("Add new definition operation : {} : {} : {}", meaningId, languageCode, value);
-		updateService.addDefinition(meaningId, value, languageCode);
-		return "OK";
-	}
-
-	@ResponseBody
-	@PostMapping("/add_usage")
-	public String addNewUsage(
-			@RequestParam("id") Long governmentId,
-			@RequestParam("usage_type") String usageMemberType,
-			@RequestParam("language") String languageCode,
-			@RequestParam("value") String value) {
-
-		logger.debug("Add new usage operation : {} : {} : {}", governmentId, languageCode, value);
-		updateService.addUsageMember(governmentId, usageMemberType, value, languageCode);
-		return "OK";
-	}
-
-	@ResponseBody
-	@PostMapping("/add_classifier")
-	public String addLexemeClassifier(
-			@RequestParam("classif_name") String classifierName,
-			@RequestParam("lexeme_id") Long lexemeId,
-			@RequestParam("meaning_id") Long meaningId,
-			@RequestParam("value") String value) {
-
-		logger.debug("Add classifier {} : {} : for lexemeId {}, meaningId {}", classifierName, value, lexemeId, meaningId);
-		switch (classifierName) {
+		logger.debug("Add new item : {}", itemData.getOpCode());
+		switch (itemData.getOpCode()) {
+		case "definition" :
+			updateService.addDefinition(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			break;
+		case "USAGE" :
+			updateService.addUsageMember(itemData.getId(), itemData.getOpCode(), itemData.getValue(), itemData.getLanguage());
+			break;
 		case "lexeme_frequency_group" :
-			updateService.updateLexemeFrequencyGroup(lexemeId, value);
+			updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
 			break;
 		case "lexeme_pos" :
-			updateService.addLexemePos(lexemeId, value);
+			updateService.addLexemePos(itemData.getId(), itemData.getValue());
 			break;
 		case "meaning_domain" :
-			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
-			updateService.addMeaningDomain(meaningId, meaningDomain);
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+			updateService.addMeaningDomain(itemData.getId2(), meaningDomain);
 			break;
 		}
-		return "OK";
+		return "{}";
 	}
 
 	@ResponseBody
