@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -137,6 +138,13 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateGovernment(Long governmentId, String government) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, government)
+				.where(FREEFORM.ID.eq(governmentId))
+				.execute();
+	}
+
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
@@ -203,6 +211,10 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void removeLexemeFreeform(Long freeformId) {
+		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.FREEFORM_ID.eq(freeformId)).execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
@@ -223,6 +235,16 @@ public class UpdateDbService {
 				.values(usageMemberType, usageMeaningId, value, languageCode).returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public Long addGovernment(Long lexemeId, String government) {
+		Long governmentFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.values(FreeformType.GOVERNMENT.name(), government).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, governmentFreeformId).execute();
+		return governmentFreeformId;
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

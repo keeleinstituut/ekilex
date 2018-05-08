@@ -72,6 +72,9 @@ public class ModifyController implements WebConstant {
 				Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
 				updateService.updateMeaningDomain(itemData.getId(), currentMeaningDomain, newMeaningDomain);
 				break;
+			case "government" :
+				updateService.updateGovernment(itemData.getId(), itemData.getValue());
+				break;
 		}
 
 		return "{}";
@@ -180,6 +183,9 @@ public class ModifyController implements WebConstant {
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToRemove);
 			updateService.removeMeaningDomain(id, meaningDomain);
 			break;
+		case "government" :
+			updateService.removeGovernment(id);
+			break;
 		}
 		return "OK";
 	}
@@ -205,6 +211,9 @@ public class ModifyController implements WebConstant {
 		case "meaning_domain" :
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
 			updateService.addMeaningDomain(itemData.getId2(), meaningDomain);
+			break;
+		case "government" :
+			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
 		}
 		return "{}";

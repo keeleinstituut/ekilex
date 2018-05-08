@@ -315,11 +315,33 @@
               <hr />
               <table th:each="government,governmentIter : ${lexeme.governments}">
                 <tr>
-                  <th class="lbl">Rektsioon</th>
+                  <th class="lbl">Rektsioon
+                    <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            th:data-id="${lexeme.lexemeId}"
+                            onclick="openAddDlg(this)"
+                            data-toggle="modal" data-target="#addNewGovernmentDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </th>
                 </tr>
                 <tr>
                   <td>
-                    <span th:text="${government.value}"></span>
+                    <span th:name="${government.id} + '_government'"
+                          th:data-id="${government.id}"
+                          th:data-op-code="government"
+                          th:data-value="${government.value}"
+                          th:text="${government.value}"></span>
+                    <button type="button" class="btn badge badge-primary ml-2"
+                            th:title="Muuda" th:data-target-elem="${government.id} + '_government'"
+                            onclick="openEditDlg(this)"
+                            data-toggle="modal" data-target="#editDlg">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-target-elem="${government.id} + '_government'"
+                            data-toggle="delete-confirmation" data-placement="right">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -650,6 +672,7 @@
   <div th:replace="common :: #lexemeFrequencyDlg"></div>
   <div th:replace="common :: #lexemePosDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
+  <div th:replace="common :: #addNewGovernmentDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

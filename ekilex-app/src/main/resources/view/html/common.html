@@ -277,5 +277,27 @@
   </div>
 </div>
 
+<div id="addNewGovernmentDlg" class="modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="opCode" value="government">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <textarea class="form-control" rows="1" name="value"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
