@@ -47,13 +47,14 @@ public class LexSearchService implements InitializingBean {
 	}
 
 	@Transactional
-	public WordsData findWords(String searchFilter, String sourceLang, String destinLang) {
+	public WordsData findWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr) {
 
 		String languagesDatasetKey = sourceLang + destinLang;
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
-		List<Word> allWords = lexSearchDbService.findWords(searchFilter, sourceLang, datasets);
+		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, datasets);
 		conversionUtil.filterLanguageValues(allWords, destinLang);
-		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchFilter)).collect(Collectors.toList());
+		conversionUtil.selectHomonym(allWords, homonymNr);
+		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(word -> word.getWord()).distinct().collect(Collectors.toList());
 			return new WordsData(fullMatchWords, formMatchWords);

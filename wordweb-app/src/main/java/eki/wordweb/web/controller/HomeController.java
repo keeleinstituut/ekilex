@@ -2,8 +2,11 @@ package eki.wordweb.web.controller;
 
 import static java.util.Collections.emptyList;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,13 +16,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.CorporaSentence;
+import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CorporaService;
@@ -38,6 +42,10 @@ public class HomeController implements WebConstant {
 
 	private static final String DEFAULT_DESTIN_LANG = "est";
 
+	private static final String[] SUPPORTED_LANGUAGES = new String[] {"est", "rus"};
+
+	private static final char LANGUAGE_PAIR_SEPARATOR = '-';
+
 	@Autowired
 	private LexSearchService lexSearchService;
 
@@ -47,25 +55,54 @@ public class HomeController implements WebConstant {
 	@Value("${speech.recognition.service.url:}")
 	private String speechRecognitionServiceUrl;
 
-	@RequestMapping(value = HOME_URI, method = RequestMethod.GET)
+	@GetMapping(HOME_URI)
 	public String home(Model model) {
 
-		populateModel("", new WordsData(emptyList(), emptyList()), new WordData(), model);
+		populateModel("", new WordsData(emptyList(), emptyList()), model);
 
 		return HOME_PAGE;
 	}
 
-	@RequestMapping(value = HOME_URI, method = RequestMethod.POST)
+	@PostMapping(HOME_URI)
 	public String searchWords(
-			@RequestParam(name = "simpleSearchFilter", required = false) String searchFilter,
+			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "sourceLang") String sourceLang,
-			@RequestParam(name = "destinLang") String destinLang,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) {
+			@RequestParam(name = "destinLang") String destinLang) throws Exception {
 
-		searchFilter = StringUtils.trim(searchFilter);
-		WordsData wordsData = lexSearchService.findWords(searchFilter, sourceLang, destinLang);
-		populateModel(searchFilter, wordsData, new WordData(), model);
+		searchWord = StringUtils.trim(searchWord);
+		if (StringUtils.isBlank(searchWord)) {
+			return "redirect:" + HOME_URI;
+		}
+		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, null);
+
+		return "redirect:" + searchUri;
+	}
+
+	@GetMapping({
+		SEARCH_URI + "{langPair}/{searchWord}/{homonymNr}",
+		SEARCH_URI + "{langPair}/{searchWord}"})
+	public String searchWordsByUri(
+			@PathVariable(name = "langPair") String langPair,
+			@PathVariable(name = "searchWord") String searchWord,
+			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) throws Exception {
+
+		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr);
+
+		if (!searchFilter.isValid()) {
+			return "redirect:" + searchFilter.getSearchUri();
+		}
+
+		searchWord = searchFilter.getSearchWord();
+		String sourceLang = searchFilter.getSourceLang();
+		String destinLang = searchFilter.getDestinLang();
+		Integer homonymNr = searchFilter.getHomonymNr();
+		sessionBean.setSourceLang(sourceLang);
+		sessionBean.setDestinLang(destinLang);
+
+		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr);
+		populateModel(searchWord, wordsData, model);
 
 		return HOME_PAGE;
 	}
@@ -93,7 +130,7 @@ public class HomeController implements WebConstant {
 		return HOME_PAGE + " :: korp";
 	}
 
-	private void populateModel(String simpleSearchFilter, WordsData wordsData, WordData wordData, Model model) {
+	private void populateModel(String searchWord, WordsData wordsData, Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		if (sessionBean == null) {
@@ -112,8 +149,70 @@ public class HomeController implements WebConstant {
 		}
 
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
-		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
+		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("wordsData", wordsData);
-		model.addAttribute("wordData", wordData);
+		model.addAttribute("wordData", new WordData());
+	}
+
+	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr) throws Exception {
+
+		boolean isValid = true;
+		String[] languages = StringUtils.split(langPair, LANGUAGE_PAIR_SEPARATOR);
+
+		String sourceLang;
+		String destinLang;
+		Integer homonymNr;
+
+		if (languages.length == 2) {
+			if (ArrayUtils.contains(SUPPORTED_LANGUAGES, languages[0])) {
+				sourceLang = languages[0];
+				isValid = isValid & true;
+			} else {
+				sourceLang = DEFAULT_SOURCE_LANG;
+				isValid = isValid & false;
+			}
+			if (ArrayUtils.contains(SUPPORTED_LANGUAGES, languages[1])) {
+				destinLang = languages[1];
+				isValid = isValid & true;
+			} else {
+				destinLang = DEFAULT_DESTIN_LANG;
+				isValid = isValid & false;
+			}
+		} else {
+			sourceLang = DEFAULT_SOURCE_LANG;
+			destinLang = DEFAULT_DESTIN_LANG;
+			isValid = isValid & false;
+		}
+		if (StringUtils.isBlank(homonymNrStr)) {
+			homonymNr = 1;
+			isValid = isValid & false;
+		} else if (!StringUtils.isNumeric(homonymNrStr)) {
+			homonymNr = 1;
+			isValid = isValid & false;
+		} else {
+			homonymNr = new Integer(homonymNrStr);
+			isValid = isValid & true;
+		}
+
+		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, homonymNr);
+
+		SearchFilter searchFilter = new SearchFilter();
+		searchFilter.setSearchWord(searchWord);
+		searchFilter.setSourceLang(sourceLang);
+		searchFilter.setDestinLang(destinLang);
+		searchFilter.setHomonymNr(homonymNr);
+		searchFilter.setSearchUri(searchUri);
+		searchFilter.setValid(isValid);
+
+		return searchFilter;
+	}
+
+	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr) throws UnsupportedEncodingException {
+		String encodedSearchWord = URLEncoder.encode(searchWord, SystemConstant.UTF_8);
+		String searchUri = SEARCH_URI + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + encodedSearchWord;
+		if (homonymNr != null) {
+			searchUri += "/" + homonymNr;
+		}
+		return searchUri;
 	}
 }

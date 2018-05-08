@@ -61,6 +61,19 @@ public class ConversionUtil {
 		}
 	}
 
+	public void selectHomonym(List<Word> words, Integer homonymNr) {
+
+		if (homonymNr == null) {
+			return;
+		}
+		for (Word word : words) {
+			if (homonymNr.equals(word.getHomonymNr())) {
+				word.setSelected(true);
+				break;
+			}
+		}
+	}
+
 	public List<Lexeme> composeLexemes(
 			List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples,
 			String sourceLang, String destinLang, String displayLang) {
