@@ -107,15 +107,16 @@
                   <span th:unless="${vocalFormIter.last}">,&nbsp;</span>
               </span>
             </div>
+            <hr />
+            <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
+                    th:data-lexeme-id="${lexeme.lexemeId}"
+                    th:data-meaning-id="${lexeme.meaningId}"
+                    onclick="openLexemeClassifiersDlg(this)"
+                    data-toggle="modal" data-target="#lexemeClassifiersDlg">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+            <div th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">&nbsp;</div>
             <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
-              <hr />
-              <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
-                      th:data-lexeme-id="${lexeme.lexemeId}"
-                      th:data-meaning-id="${lexeme.meaningId}"
-                      onclick="openLexemeClassifiersDlg(this)"
-                      data-toggle="modal" data-target="#lexemeClassifiersDlg">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
               <div th:if="${lexeme.genderCode != null}">
                 <span class="lbl">Sugu</span>
                 <span th:text="${lexeme.genderCode}"></span>
@@ -312,6 +313,21 @@
                   <td>
                     <span th:text="${relation.relationTypeLabel}"></span>
                   </td>
+                </tr>
+              </table>
+            </div>
+            <div th:unless="${not #lists.isEmpty(lexeme.governments)}">
+              <hr />
+              <table>
+                <tr>
+                  <th class="lbl">Rektsioon
+                    <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            th:data-id="${lexeme.lexemeId}"
+                            onclick="openAddDlg(this)"
+                            data-toggle="modal" data-target="#addNewGovernmentDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </th>
                 </tr>
               </table>
             </div>
