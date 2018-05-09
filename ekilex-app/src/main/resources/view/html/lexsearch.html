@@ -153,7 +153,7 @@
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
                 <span class="lbl">Sõnaliik</span>
-                <span th:each="classif,classifIter : ${lexeme.lexemePos}">
+                <span th:each="classif,classifIter : ${lexeme.lexemePos}" class="hidden-buttons">
                   <span
                     th:data-id="${lexeme.lexemeId}"
                     th:data-op-code="lexeme_pos"
