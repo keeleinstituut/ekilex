@@ -224,10 +224,12 @@ public class ModifyController implements WebConstant {
 	public String addNewWord(
 			@RequestParam("dataset") String dataset,
 			@RequestParam("value") String value,
+			@RequestParam("language") String language,
 			@RequestParam("returnPage") String returnPage,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
+		updateService.addWord(value, dataset, language);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
 		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
 	}

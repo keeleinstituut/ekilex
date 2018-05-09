@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -31,11 +32,15 @@ import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
 @Component
 public class UpdateDbService {
+
+	private final static String defaultWordMorphCode = "SgN";
 
 	private DSLContext create;
 
@@ -169,6 +174,21 @@ public class UpdateDbService {
 					.values(meaningId, domain.getOrigin(), domain.getCode())
 					.execute();
 		}
+	}
+
+	public void addWord(String word, String datasetCode, String language) {
+
+		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(1, language).returning(WORD.ID).fetchOne().getId();
+		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
+		create
+				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)
+				.values(paradigmId, word, word, true, defaultWordMorphCode)
+				.execute();
+		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		create
+				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1)
+				.execute();
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {

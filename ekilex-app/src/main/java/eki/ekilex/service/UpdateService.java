@@ -3,6 +3,7 @@ package eki.ekilex.service;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.db.LexSearchDbService;
 import eki.ekilex.service.db.UpdateDbService;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +12,18 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Arrays.asList;
+
 @Service
 public class UpdateService {
 
 	private final UpdateDbService updateDbService;
 
-	public UpdateService(UpdateDbService updateDbService) {
+	private final LexSearchDbService lexSearchDbService;
+
+	public UpdateService(UpdateDbService updateDbService, LexSearchDbService lexSearchDbService) {
 		this.updateDbService  = updateDbService;
+		this.lexSearchDbService = lexSearchDbService;
 	}
 
 	@Transactional
@@ -105,6 +111,14 @@ public class UpdateService {
 	@Transactional
 	public void addGovernment(Long lexemeId, String government) {
 		updateDbService.addGovernment(lexemeId, government);
+	}
+
+	@Transactional
+	public void addWord(String word, String datasetCode, String language) {
+		boolean wordWasNotFound = lexSearchDbService.findWords(word, asList(datasetCode), false).size() == 0;
+		if (wordWasNotFound) {
+			updateDbService.addWord(word, datasetCode, language);
+		}
 	}
 
 	@Transactional
