@@ -49,6 +49,8 @@ function initialise() {
     initSelectDlg($('#lexemeFrequencyDlg'));
     initSelectDlg($('#lexemePosDlg'));
     initSelectDlg($('#meaningDomainDlg'));
+    initMultiValueAddDlg($('#lexemeClassifiersDlg'));
+    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
 }
 
 function openLexemeLevelDlg(elem) {

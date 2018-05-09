@@ -201,6 +201,9 @@ public class ModifyController implements WebConstant {
 			updateService.addDefinition(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
 		case "USAGE" :
+		case "USAGE_MEANING" :
+		case "USAGE_TRANSLATION" :
+		case "USAGE_DEFINITION" :
 			updateService.addUsageMember(itemData.getId(), itemData.getOpCode(), itemData.getValue(), itemData.getLanguage());
 			break;
 		case "lexeme_frequency_group" :

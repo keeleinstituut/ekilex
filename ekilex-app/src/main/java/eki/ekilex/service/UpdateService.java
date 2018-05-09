@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
@@ -163,9 +164,13 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addUsageMember(Long governmentId, String usageMemberType, String value, String languageCode) {
-		Long usageMeaningId = updateDbService.addUsageMeaning(governmentId);
-		updateDbService.addUsageMeaningMember(usageMeaningId, usageMemberType, value, languageCode);
+	public void addUsageMember(Long id, String usageMemberType, String value, String languageCode) {
+		if ("USAGE_MEANING".equals(usageMemberType)) {
+			Long usageMeaningId = updateDbService.addUsageMeaning(id);
+			updateDbService.addUsageMeaningMember(usageMeaningId, FreeformType.USAGE.name(), value, languageCode);
+		} else {
+			updateDbService.addUsageMeaningMember(id, usageMemberType, value, languageCode);
+		}
 	}
 
 	@Transactional

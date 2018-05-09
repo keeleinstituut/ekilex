@@ -376,9 +376,9 @@
                 </tr>
                 <tr>
                   <td>
-                    <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
+                    <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}" class="border">
                       <tr th:each="usage : ${usageMeaning.usages}">
-                        <td>
+                        <td class="hidden-buttons">
                           <span th:name="${usage.id} + '_usage'"
                                 th:data-id="${usage.id}"
                                 th:data-op-code="usage"
@@ -398,6 +398,12 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                  th:data-id="${usageMeaning.id}"
+                                  onclick="openUsageMemberDlg(this)"
+                                  data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
                           <div th:if="${not #lists.isEmpty(usage.refLinks)}">
                             <span th:each="refLink : ${usage.refLinks}">
                               [
@@ -413,7 +419,7 @@
                         </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                        <td>
+                        <td class="hidden-buttons">
                           <span th:name="${usageTranslation.id} + '_usage_translation'"
                                 th:data-id="${usageTranslation.id}"
                                 th:data-op-code="usage_translation"
@@ -429,10 +435,16 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                  th:data-id="${usageMeaning.id}"
+                                  onclick="openUsageMemberDlg(this)"
+                                  data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
                         </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                        <td>
+                        <td class="hidden-buttons">
                           <span th:name="${usageDefinition.id} + '_usage_definition'"
                                 th:data-id="${usageDefinition.id}"
                                 th:data-op-code="usage_definition"
@@ -448,6 +460,12 @@
                                   th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                  th:data-id="${usageMeaning.id}"
+                                  onclick="openUsageMemberDlg(this)"
+                                  data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
                         </td>
                       </tr>
@@ -694,6 +712,7 @@
   <div th:replace="common :: #meaningDomainDlg"></div>
   <div th:replace="common :: #addNewGovernmentDlg"></div>
   <div th:replace="common :: newWordDlg('LEX_SEARCH')"></div>
+  <div th:replace="common :: #addNewUsageMemberDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
