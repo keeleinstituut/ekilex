@@ -26,6 +26,7 @@ import eki.ekilex.data.ModifyListRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.ModifyItemRequest;
 import eki.ekilex.web.bean.SessionBean;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @ConditionalOnWebApplication
 @Controller
@@ -217,6 +218,18 @@ public class ModifyController implements WebConstant {
 			break;
 		}
 		return "{}";
+	}
+
+	@PostMapping("/add_word")
+	public String addNewWord(
+			@RequestParam("dataset") String dataset,
+			@RequestParam("value") String value,
+			@RequestParam("returnPage") String returnPage,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
 	}
 
 }
