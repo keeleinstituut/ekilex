@@ -44,7 +44,7 @@ public class TermSearchController extends AbstractSearchController {
 		if (model.containsAttribute(SEARCH_WORD_KEY)) {
 			String searchWord = model.asMap().get(SEARCH_WORD_KEY).toString();
 			SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-			return termSearch(null, null, false, null, searchWord, null, sessionBean, model);
+			return termSearch(sessionBean.getSelectedDatasets(), null, false, null, searchWord, null, sessionBean, model);
 		}
 
 		initSearchForms(model);

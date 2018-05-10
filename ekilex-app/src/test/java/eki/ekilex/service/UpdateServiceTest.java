@@ -15,7 +15,7 @@ public class UpdateServiceTest {
 
 	@Before
 	public void beforeTest() {
-		updateService = new UpdateService(null, null);
+		updateService = new UpdateService(null);
 	}
 
 	@Test

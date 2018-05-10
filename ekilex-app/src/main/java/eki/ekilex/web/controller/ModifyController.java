@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
@@ -28,6 +30,8 @@ import eki.ekilex.data.ModifyItemRequest;
 import eki.ekilex.web.bean.SessionBean;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import static java.util.Arrays.asList;
+
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
@@ -37,6 +41,9 @@ public class ModifyController implements WebConstant {
 
 	@Autowired
 	private UpdateService updateService;
+
+	@Autowired
+	private LexSearchService lexSearchService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
@@ -232,8 +239,14 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		updateService.addWord(value, dataset, language);
+		WordsResult words = lexSearchService.findWords(value, asList(dataset), false);
+		if (words.getTotalCount() == 0) {
+			updateService.addWord(value, dataset, language);
+		}
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+			sessionBean.getSelectedDatasets().add(dataset);
+		}
 		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
 	}
 

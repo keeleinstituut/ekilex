@@ -49,7 +49,7 @@ public class LexSearchController extends AbstractSearchController {
 		if (model.containsAttribute(SEARCH_WORD_KEY)) {
 			String searchWord = model.asMap().get(SEARCH_WORD_KEY).toString();
 			SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-			return search(null, null, searchWord, false, null, sessionBean, model);
+			return search(sessionBean.getSelectedDatasets(), null, searchWord, false, null, sessionBean, model);
 		}
 
 		initSearchForms(model);
