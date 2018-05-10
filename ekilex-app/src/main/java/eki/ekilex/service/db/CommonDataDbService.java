@@ -20,6 +20,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PERSON;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
@@ -311,6 +312,14 @@ public class CommonDataDbService {
 						.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
 						.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
 						)
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getWordMorphCodes(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(MORPH_LABEL.CODE, MORPH_LABEL.VALUE)
+				.from(MORPH_LABEL)
+				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 

@@ -235,13 +235,14 @@ public class ModifyController implements WebConstant {
 			@RequestParam("dataset") String dataset,
 			@RequestParam("value") String value,
 			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
 			@RequestParam("returnPage") String returnPage,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
 		WordsResult words = lexSearchService.findWords(value, asList(dataset), false);
 		if (words.getTotalCount() == 0) {
-			updateService.addWord(value, dataset, language);
+			updateService.addWord(value, dataset, language,morphCode);
 		}
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
 		if (!sessionBean.getSelectedDatasets().contains(dataset)) {

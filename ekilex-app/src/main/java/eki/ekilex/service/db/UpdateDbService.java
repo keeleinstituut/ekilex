@@ -40,8 +40,6 @@ import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 @Component
 public class UpdateDbService {
 
-	private final static String defaultWordMorphCode = "SgN";
-
 	private DSLContext create;
 
 	public UpdateDbService(DSLContext context) {
@@ -176,13 +174,13 @@ public class UpdateDbService {
 		}
 	}
 
-	public void addWord(String word, String datasetCode, String language) {
+	public void addWord(String word, String datasetCode, String language, String morphCode) {
 
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(1, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
 				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)
-				.values(paradigmId, word, word, true, defaultWordMorphCode)
+				.values(paradigmId, word, word, true, morphCode)
 				.execute();
 		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		create

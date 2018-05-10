@@ -109,8 +109,8 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addWord(String word, String datasetCode, String language) {
-		updateDbService.addWord(word, datasetCode, language);
+	public void addWord(String word, String datasetCode, String language, String morphCode) {
+		updateDbService.addWord(word, datasetCode, language, morphCode);
 	}
 
 	@Transactional
