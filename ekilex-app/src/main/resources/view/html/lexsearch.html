@@ -132,7 +132,7 @@
                 <span class="lbl">Väärtusolek</span>
                 <span th:text="${lexeme.lexemeValueStateCode}"></span>
               </div>
-              <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
+              <div th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons">
                 <span class="lbl">Sagedusrühm</span>
                 <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
                       th:data-id="${lexeme.lexemeId}"
@@ -208,7 +208,7 @@
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
                 <span class="lbl">Valdkonnad</span>
-                <span th:each="classif,classifIter : ${lexeme.meaningDomains}">
+                <span th:each="classif,classifIter : ${lexeme.meaningDomains}" class="hidden-buttons">
                   <span
                     th:data-id="${lexeme.meaningId}"
                     th:data-op-code="meaning_domain"
@@ -249,7 +249,7 @@
                   <td>
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
-                  <td>
+                  <td class="hidden-buttons">
                     <span th:name="${definition.id} + '_definition'"
                           th:data-id="${definition.id}"
                           th:data-op-code="definition"
@@ -345,7 +345,7 @@
                   </th>
                 </tr>
                 <tr>
-                  <td>
+                  <td class="hidden-buttons">
                     <span th:name="${government.id} + '_government'"
                           th:data-id="${government.id}"
                           th:data-op-code="government"
