@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+  <title th:text="#{lexeme.join.title}">EKILEX sõna valik</title>
+  <th:block th:fragment="links">
+  </th:block>
+</head>
+<body style="height: 100vh">
+  <div class="container-fluid">
+    <div class="d-flex flex-row">
+      <p class="card-text">
+        <a th:href="@{/}">
+          <span th:text="${appData.appName + ' ' + appData.appVersion}"></span>
+        </a>
+      </p>
+    </div>
+    <div class="d-flex flex-row mt-2">
+      <p class="card-text">
+        <a class="btn btn-sm btn-secondary text-light" th:href="@{${returnPage} == 'LEX_SEARCH' ? '/lexsearch' : '/termsearch'}">Tagasi</a>
+      </p>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="card-title">Olemasoleva sõna valik</h5>
+      </div>
+
+      <div class="card-body" th:if="${not #lists.isEmpty(words)}">
+        <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" th:each="word : ${words}">
+          <div>
+            <span th:text="${word.value}" class="ttl"></span>
+            <span th:text="${word.homonymNumber}" class="ttl"></span>
+            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${word.wordId} + '/' + ${dataset} + '/' + ${returnPage}}">Vali</a>
+            <span class="float-right">
+              <th:block th:each="code, codeIter : ${word.datasetCodes}">
+                <b th:text="${code}"></b>
+                <b th:unless="${codeIter.last}">, </b>
+              </th:block>
+            </span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</body>
+</html>

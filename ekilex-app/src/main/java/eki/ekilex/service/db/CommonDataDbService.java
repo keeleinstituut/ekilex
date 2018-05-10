@@ -323,4 +323,13 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
+	public Record4<Long, String, Integer, String> getWord(Long wordId) {
+		return create.select(PARADIGM.WORD_ID, FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG).from(PARADIGM, FORM, WORD)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.IS_WORD.isTrue())
+						.and(WORD.ID.eq(wordId)))
+				.fetchOne();
+	}
+
 }

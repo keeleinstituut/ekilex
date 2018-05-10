@@ -7,7 +7,10 @@ import java.util.stream.Collectors;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Word;
 import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
@@ -16,7 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -44,6 +50,9 @@ public class ModifyController implements WebConstant {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@Autowired
+	private CommonDataService commonDataService;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
@@ -240,11 +249,52 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		WordsResult words = lexSearchService.findWords(value, asList(dataset), false);
+		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+		WordsResult words = lexSearchService.findWords(value, allDatasets, true);
 		if (words.getTotalCount() == 0) {
 			updateService.addWord(value, dataset, language,morphCode);
+		} else {
+			long wordsFromOtherDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).count();
+			if (wordsFromOtherDatasets != 0) {
+				attributes.addFlashAttribute("dataset", dataset);
+				attributes.addFlashAttribute("wordValue", value);
+				attributes.addFlashAttribute("returnPage", returnPage);
+				return "redirect:/wordselect";
+			}
 		}
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+			sessionBean.getSelectedDatasets().add(dataset);
+		}
+		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+	}
+
+	@GetMapping("/wordselect")
+	public String listSelectableWords(
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			@ModelAttribute(name = "dataset") String dataset,
+			@ModelAttribute(name = "wordValue") String word,
+			Model model) {
+
+		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+		allDatasets.remove(dataset);
+		WordsResult words = lexSearchService.findWords(word, allDatasets, true);
+		model.addAttribute("words", words.getWords());
+
+		return "wordselect";
+	}
+
+	@GetMapping("/wordselect/{wordId}/{dataset}/{returnPage}")
+	public String selectWord(
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			@PathVariable(name = "wordId") Long wordId,
+			@PathVariable(name = "dataset") String dataset,
+			@PathVariable(name = "returnPage") String returnPage,
+			RedirectAttributes attributes) {
+
+		updateService.addWordToDataset(wordId, dataset);
+		Word word = commonDataService.getWord(wordId);
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, word.getValue());
 		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
 			sessionBean.getSelectedDatasets().add(dataset);
 		}

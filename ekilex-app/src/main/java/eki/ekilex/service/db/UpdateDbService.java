@@ -189,6 +189,15 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void addWordToDataset(Long wordId, String datasetCode) {
+
+		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		create
+				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1)
+				.execute();
+	}
+
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
 
 		Long meaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();

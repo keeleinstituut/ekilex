@@ -114,6 +114,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void addWordToDataset(Long wordId, String datasetCode) {
+		updateDbService.addWordToDataset(wordId, datasetCode);
+	}
+
+	@Transactional
 	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
