@@ -3,7 +3,7 @@
 <head th:replace="common :: common_header(_,~{::links})">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/index_page.js}" src="js/demo/demo.js"></script>
+  <script type="text/javascript" th:src="@{/view/js/index-page.js}"></script>
 </th:block>
 </head>
 <body>
@@ -85,18 +85,10 @@
             <div class="search-main"></div>
             <div class="search-main">
               <form th:action="@{/}" th:method="post">
-                <div class="awesomplete">
-                  <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" list="mylist" placeholder="Kirjuta mõni sõna" />
+                <div>
+                  <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" placeholder="Kirjuta mõni sõna" />
                   <input type="hidden" name="sourceLang" value="" />
                   <input type="hidden" name="destinLang" value="" />
-                  <ul class="d-none">
-                    <li>
-                      <mark>Highl</mark>
-                      ighted
-                    </li>
-                    <li>Regular</li>
-                    <li aria-selected="true">Selected row</li>
-                  </ul>
                 </div>
                 <div class="extra-buttons">
                   <button type="button" class="btn btn-light clear-btn">
@@ -480,6 +472,7 @@
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+  	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	initialisePage();
   	initialiseRecording(speechRecognitionServiceUrl);

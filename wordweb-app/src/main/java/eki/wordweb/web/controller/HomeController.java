@@ -5,6 +5,7 @@ import static java.util.Collections.emptyList;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.wordweb.constant.SystemConstant;
@@ -34,6 +36,8 @@ import eki.wordweb.web.bean.SessionBean;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class HomeController implements WebConstant {
+
+	private static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 10;
 
 	//TODO should be set by defaults and/or ui
 	private static final String DISPLAY_LANG = "est";
@@ -105,6 +109,17 @@ public class HomeController implements WebConstant {
 		populateModel(searchWord, wordsData, model);
 
 		return HOME_PAGE;
+	}
+
+	@GetMapping(value = "/prefix/{sourceLang}/{destinLang}/{wordPrefix}", produces = "application/json;charset=UTF-8")
+	@ResponseBody
+	public Map<String, List<String>> searchWordsByPrefix(
+			@PathVariable("sourceLang") String sourceLang,
+			@PathVariable("destinLang") String destinLang,
+			@PathVariable("wordPrefix") String wordPrefix) {
+
+		Map<String, List<String>> searchResultCandidates = lexSearchService.findWordsByPrefix(wordPrefix, sourceLang, destinLang, AUTOCOMPLETE_MAX_RESULTS_LIMIT);
+		return searchResultCandidates;
 	}
 
 	@GetMapping("/worddetails/{wordId}")

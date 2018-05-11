@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +44,7 @@ public class DataController implements SystemConstant {
 	@Autowired
 	private FileService fileService;
 
-	@RequestMapping(value="/data/app", method = RequestMethod.GET, produces = "application/json;charset=UTF-8")
+	@GetMapping(value="/data/app", produces = "application/json;charset=UTF-8")
 	public AppData getAppData(HttpServletRequest request) {
 		return appDataHolder.getAppData(request, POM_PATH);
 	}

@@ -87,23 +87,40 @@ from (select w.id as word_id,
 -- word forms
 create view view_ww_form
   as
-    select p.word_id,
+    select
+      w.id word_id,
+      fw.value word,
+      w.lang,
       p.id paradigm_id,
-      f.id form_id,
-      f.value form,
-      f.morph_code,
-      f.components,
-      f.display_form,
-      f.vocal_form,
-      f.sound_file,
-      f.is_word
-    from paradigm p,
-      form f
-    where f.paradigm_id = p.id
-          and   exists (select ld.id
+      ff.id form_id,
+      ff.value form,
+      ff.morph_code,
+      ff.components,
+      ff.display_form,
+      ff.vocal_form,
+      ff.sound_file,
+      ff.is_word,
+      (select
+        array_agg(ld.dataset_code) 
+      from
+        lexeme ld
+      where
+        ld.word_id = w.id
+        group by ld.word_id
+      ) dataset_codes
+    from
+      word w,
+      paradigm p,
+      form ff,
+      form fw
+    where p.word_id = w.id
+          and ff.paradigm_id = p.id
+          and fw.paradigm_id = p.id
+          and fw.is_word = true
+          and exists (select ld.id
                         from lexeme as ld
-                        where (ld.word_id = p.word_id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
-    order by f.id;
+                        where (ld.word_id = w.id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
+    order by ff.id;
 
 -- lexeme meanings
 create view view_ww_meaning 

@@ -50,6 +50,8 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_form') as form(
 	word_id bigint,
+	word text,
+	lang char(3),
 	paradigm_id bigint,
 	form_id bigint,
 	form text,
@@ -58,7 +60,8 @@ dblink(
 	display_form varchar(255),
 	vocal_form varchar(255),
 	sound_file varchar(255),
-	is_word boolean
+	is_word boolean,
+	dataset_codes varchar(100) array
 );
 
 create materialized view mview_ww_meaning as
@@ -157,8 +160,14 @@ dblink(
 );
 
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
+create index mview_ww_word_value_idx on mview_ww_word (word);
+create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
+create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
+create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
+create index mview_ww_form_word_idx on mview_ww_form (word);
+create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));
 create index mview_ww_form_value_idx on mview_ww_form (form);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
 create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);

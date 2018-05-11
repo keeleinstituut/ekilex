@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 704812676;
+    private static final long serialVersionUID = 83941113;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -55,6 +55,16 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.word_id</code>.
      */
     public final TableField<MviewWwFormRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.word</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.lang</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.mview_ww_form.paradigm_id</code>.
@@ -102,6 +112,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Boolean> IS_WORD = createField("is_word", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
+     * The column <code>public.mview_ww_form.dataset_codes</code>.
+     */
+    public final TableField<MviewWwFormRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
      * Create a <code>public.mview_ww_form</code> table reference
      */
     public MviewWwForm() {
@@ -143,7 +158,7 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX, Indexes.MVIEW_WW_FORM_WORD_IDX);
     }
 
     /**

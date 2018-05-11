@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -22,6 +24,7 @@ import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
+import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ConversionUtil;
@@ -60,6 +63,24 @@ public class LexSearchService implements InitializingBean {
 			return new WordsData(fullMatchWords, formMatchWords);
 		}
 		return new WordsData(allWords, Collections.emptyList());
+	}
+
+	@Transactional
+	public Map<String, List<String>> findWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
+
+		String languagesDatasetKey = sourceLang + destinLang;
+		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
+		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, datasets, limit);
+		Set<Entry<String, List<WordOrForm>>> resultsEntrySet = results.entrySet();
+		Map<String, List<String>> searchResultCandidates = new HashMap<>();
+		for (Entry<String, List<WordOrForm>> resultsEntry : resultsEntrySet) {
+			String group = resultsEntry.getKey();
+			List<WordOrForm> resultsList = resultsEntry.getValue();
+			List<String> wordsOrForms = resultsList.stream().map(WordOrForm::getValue).collect(Collectors.toList());
+			searchResultCandidates.put(group, wordsOrForms);
+		}
+		System.out.println(searchResultCandidates);
+		return searchResultCandidates;
 	}
 
 	@Transactional
