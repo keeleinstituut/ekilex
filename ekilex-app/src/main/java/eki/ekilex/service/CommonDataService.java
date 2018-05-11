@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.Word;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -50,6 +51,11 @@ public class CommonDataService {
 	@Transactional
 	public List<Classifier> getLexemeFrequencyGroups() {
 		return commonDataDbService.getLexemeFrequencyGroups().into(Classifier.class);
+	}
+
+	@Transactional
+	public Word getWord(Long wordId) {
+		return commonDataDbService.getWord(wordId).into(Word.class);
 	}
 
 }

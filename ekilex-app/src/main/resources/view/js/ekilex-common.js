@@ -177,12 +177,12 @@ function openEditDlg(elem) {
 	var targetName = $(elem).data('target-elem');
 	var targetElement = $('[name="' + targetName + '"]');
 	var editDlg = $('#editDlg');
-	var modifyFld = editDlg.find('[name="modified_value"]');
+	var modifyFld = editDlg.find('[name=value]');
 	modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
-	editDlg.find('[name="id"]').val(targetElement.data('id'));
-	editDlg.find('[name="op_type"]').val(targetElement.data('op-type'));
+	editDlg.find('[name=id]').val(targetElement.data('id'));
+	editDlg.find('[name=opCode]').val(targetElement.data('op-code'));
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitForm(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
 }
 
@@ -190,7 +190,7 @@ function performDelete() {
     var targetName = $(this)[0].getAttribute('data-target-elem');
     var targetElement = $('[name="' + targetName + '"]');
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
-    var url = applicationUrl + 'remove?op_type=' + targetElement.data('op-type') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
+    var url = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
     $.post(url).done(function(data) {
         var refreshButton = $('#refresh-details');
         refreshButton.trigger('click');
@@ -208,28 +208,11 @@ function openAddDlg(elem) {
         $(item).val($(item).find('option').first().val());
     });
 	addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
-		submitForm(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+		submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.')
 	});
 	addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
 		alignAndFocus(e, addDlg)
 	});
-}
-
-function openLexemeClassifiersDlg(elem) {
-    var theDlg = $('#lexemeClassifiersDlg');
-    theDlg.find('[name=lexeme_id]').val($(elem).data('lexeme-id'));
-    theDlg.find('[name=meaning_id]').val($(elem).data('meaning-id'));
-    theDlg.find('select').each(function(indx, item) {
-        $(item).val($(item).find('option').first().val());
-    });
-
-    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitForm(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
-    theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {alignAndFocus(e, theDlg)});
-    theDlg.find('[name=classif_name]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
-    theDlg.find('.value-select').off('change').on('change', function(e) {
-        theDlg.find('[name=value]').val($(this).val());
-    });
-    toggleValueGroup(theDlg, theDlg.find('[name=classif_name]').val());
 }
 
 function openSelectDlg(elem) {
@@ -237,10 +220,12 @@ function openSelectDlg(elem) {
     var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
-    selectDlg.find('[name=current_value]').val(currentValue);
-    var selectControl = selectDlg.find('select');
-    selectControl.val(currentValue);
+    selectDlg.find('[name=currentValue]').val(currentValue);
+    selectDlg.find('select').val(currentValue);
+}
 
+function initSelectDlg(selectDlg) {
+    var selectControl = selectDlg.find('select');
     var maxItemLength = 0;
     selectControl.find('option').each(function(indx, item) {
         var itemLenght = $(item).text().length;
@@ -252,10 +237,10 @@ function openSelectDlg(elem) {
     var numberOfOptins = selectControl.find('option').length;
     selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
 
-    selectControl.off('click').on('click', function(e) {submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
+    selectControl.off('click').on('click', function(e) {submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
     selectControl.off('keydown').on('keydown', function(e) {
         if (e.key === "Enter") {
-            submitForm(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
+            submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')
         }
     });
     selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
@@ -269,17 +254,22 @@ function openSelectDlg(elem) {
     });
 }
 
-function submitForm(e, dlg, failMessage) {
+function submitDialog(e, dlg, failMessage) {
     e.preventDefault();
     var theForm = dlg.find('form');
-    var url = theForm.attr('action') + '?' + theForm.serialize();
-    $.post(url).done(function(data) {
-        var refreshButton = $('#refresh-details');
-        refreshButton.trigger('click');
+
+    $.ajax({
+        url: theForm.attr('action'),
+        data: JSON.stringify(theForm.serializeJSON()),
+        method: 'POST',
+        dataType: 'json',
+        contentType: 'application/json'
+    }).done(function(data) {
+        $('#refresh-details').trigger('click');
         dlg.modal('hide');
-    }).fail(function(data) {
-        alert(failMessage);
+    }).fail(function (data) {
         console.log(data);
+        alert(failMessage);
         dlg.modal('hide');
     });
 }
@@ -292,6 +282,35 @@ function alignAndFocus(e, dlg) {
 
 function toggleValueGroup(dlg, groupName) {
     dlg.find('.value-group').hide();
-    dlg.find('#' + groupName).show();
-    dlg.find('#' + groupName).find('.value-select').trigger('change');
+    dlg.find('[data-id=' + groupName + ']').show();
+    dlg.find('[data-id=' + groupName + ']').find('.value-select').trigger('change');
+}
+
+function openLexemeClassifiersDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
+}
+
+function openUsageMemberDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id]').val($(elem).data('id'));
+}
+
+function initMultiValueAddDlg(theDlg) {
+    theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
+    theDlg.find('.value-select').off('change').on('change', function(e) {
+        theDlg.find('[name=value]').val($(this).val());
+    });
+    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
+    theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        theDlg.find('select').each(function(indx, item) {
+            $(item).val($(item).find('option').first().val());
+        });
+        theDlg.find('textarea').each(function(indx, item) {
+            $(item).val(null);
+        });
+        toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
+        alignAndFocus(e, theDlg);
+    });
 }

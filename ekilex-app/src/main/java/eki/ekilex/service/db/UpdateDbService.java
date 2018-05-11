@@ -23,13 +23,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
@@ -137,6 +141,13 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateGovernment(Long governmentId, String government) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, government)
+				.where(FREEFORM.ID.eq(governmentId))
+				.execute();
+	}
+
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
@@ -161,6 +172,30 @@ public class UpdateDbService {
 					.values(meaningId, domain.getOrigin(), domain.getCode())
 					.execute();
 		}
+	}
+
+	public void addWord(String word, String datasetCode, String language, String morphCode) {
+
+		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(1, language).returning(WORD.ID).fetchOne().getId();
+		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
+		create
+				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)
+				.values(paradigmId, word, word, true, morphCode)
+				.execute();
+		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		create
+				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1)
+				.execute();
+	}
+
+	public void addWordToDataset(Long wordId, String datasetCode) {
+
+		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		create
+				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+				.values(meaningId, wordId, datasetCode, 1, 1, 1)
+				.execute();
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
@@ -203,6 +238,10 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void removeLexemeFreeform(Long freeformId) {
+		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.FREEFORM_ID.eq(freeformId)).execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
@@ -223,6 +262,16 @@ public class UpdateDbService {
 				.values(usageMemberType, usageMeaningId, value, languageCode).returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public Long addGovernment(Long lexemeId, String government) {
+		Long governmentFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.values(FreeformType.GOVERNMENT.name(), government).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, governmentFreeformId).execute();
+		return governmentFreeformId;
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

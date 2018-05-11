@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
@@ -88,6 +89,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateGovernment(Long governmentId, String government) {
+		updateDbService.updateGovernment(governmentId, government);
+	}
+
+	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		updateDbService.addLexemePos(lexemeId, posCode);
 	}
@@ -95,6 +101,21 @@ public class UpdateService {
 	@Transactional
 	public void addMeaningDomain(Long meaningId, Classifier domain) {
 		updateDbService.addMeaningDomain(meaningId, domain);
+	}
+
+	@Transactional
+	public void addGovernment(Long lexemeId, String government) {
+		updateDbService.addGovernment(lexemeId, government);
+	}
+
+	@Transactional
+	public void addWord(String word, String datasetCode, String language, String morphCode) {
+		updateDbService.addWord(word, datasetCode, language, morphCode);
+	}
+
+	@Transactional
+	public void addWordToDataset(Long wordId, String datasetCode) {
+		updateDbService.addWordToDataset(wordId, datasetCode);
 	}
 
 	@Transactional
@@ -128,14 +149,24 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void removeGovernment(Long governmentId) {
+		updateDbService.removeLexemeFreeform(governmentId);
+		updateDbService.removeFreeform(governmentId);
+	}
+
+	@Transactional
 	public void addDefinition(Long meaningId, String value, String languageCode) {
 		updateDbService.addDefinition(meaningId, value, languageCode);
 	}
 
 	@Transactional
-	public void addUsageMember(Long governmentId, String usageMemberType, String value, String languageCode) {
-		Long usageMeaningId = updateDbService.addUsageMeaning(governmentId);
-		updateDbService.addUsageMeaningMember(usageMeaningId, usageMemberType, value, languageCode);
+	public void addUsageMember(Long id, String usageMemberType, String value, String languageCode) {
+		if ("USAGE_MEANING".equals(usageMemberType)) {
+			Long usageMeaningId = updateDbService.addUsageMeaning(id);
+			updateDbService.addUsageMeaningMember(usageMeaningId, FreeformType.USAGE.name(), value, languageCode);
+		} else {
+			updateDbService.addUsageMeaningMember(id, usageMemberType, value, languageCode);
+		}
 	}
 
 	@Transactional

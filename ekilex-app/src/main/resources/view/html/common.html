@@ -25,6 +25,7 @@
 <!-- Bootstrap core JS -->
 <th:block th:fragment="js">
   <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/jquery.serializejson.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap.bundle.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/bootstrap-confirmation.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ekilex-common.js}"></script>
@@ -73,13 +74,13 @@
 <div id="editDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="op_type">
+          <input type="hidden" name="opCode">
           <div class="form-group row">
             <div class="col-md-12">
-              <textarea class="form-control" rows="2" name="modified_value"></textarea>
+              <textarea class="form-control" rows="2" name="value"></textarea>
             </div>
           </div>
         </div>
@@ -118,10 +119,11 @@
 <div id="addNewDefinitionDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_definition}" method="post">
+      <form th:action="@{/add_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
           <input type="hidden" name="language" value="est">
+          <input type="hidden" name="opCode" value="definition">
           <div class="form-group row">
             <div class="col-md-12">
               <textarea class="form-control" rows="2" name="value"></textarea>
@@ -140,11 +142,11 @@
 <div id="addNewUsageDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_usage}" method="post">
+      <form th:action="@{/add_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="usage_type" value="USAGE">
           <input type="hidden" name="language" value="est">
+          <input type="hidden" name="opCode" value="USAGE_MEANING">
           <div class="form-group row">
             <div class="col-md-12">
               <textarea class="form-control" rows="2" name="value"></textarea>
@@ -160,24 +162,76 @@
   </div>
 </div>
 
+<div id="addNewUsageMemberDlg" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="value">
+          <div class="form-group row">
+            <div class="col-md-4">
+              <select class="form-control" name="opCode">
+                <option value="USAGE">Kasutusnäite</option>
+                <option value="USAGE_TRANSLATION">Kasutusnäite tõlge</option>
+                <option value="USAGE_DEFINITION">Kasutusnäite seletus</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="USAGE">
+            <div class="col-md-12">
+              <textarea class="form-control value-select" rows="2"></textarea>
+            </div>
+          </div>
+          <div class="value-group" data-id="USAGE_TRANSLATION">
+            <div class="form-group row">
+              <div class="col-md-4">
+                <select class="form-control" name="language">
+                  <option th:each="language : ${allLanguages}"
+                          th:value="${language.code}"
+                          th:text="${language.value}">language</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-md-12">
+                <textarea class="form-control value-select" rows="2"></textarea>
+              </div>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="USAGE_DEFINITION">
+            <div class="col-md-12">
+              <textarea class="form-control value-select" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div id="lexemeClassifiersDlg" class="modal" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/add_classifier}" method="post">
+      <form th:action="@{/add_item}" method="post">
         <div class="modal-body">
-          <input type="hidden" name="lexeme_id">
-          <input type="hidden" name="meaning_id">
+          <input type="hidden" name="id">
+          <input type="hidden" name="id2">
           <input type="hidden" name="value">
           <div class="form-group row">
             <div class="col-md-6">
-              <select class="form-control" th:name="classif_name">
+              <select class="form-control" name="opCode">
                 <option value="lexeme_frequency_group">Sagedusrühm</option>
                 <option value="lexeme_pos">Sõnaliik</option>
                 <option value="meaning_domain">Valdkond</option>
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" id="lexeme_frequency_group">
+          <div class="form-group row value-group" data-id="lexeme_frequency_group">
             <div class="col-md-2">
               <select class="form-control value-select">
                 <option th:each="freqGroup : ${lexemeFrequencyGroups}"
@@ -186,7 +240,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" id="lexeme_pos">
+          <div class="form-group row value-group" data-id="lexeme_pos">
             <div class="col-md-6">
               <select class="form-control value-select">
                 <option th:each="pos : ${allLexemePos}"
@@ -195,7 +249,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" id="meaning_domain">
+          <div class="form-group row value-group" data-id="meaning_domain">
             <div class="col-md-12">
               <select class="form-control value-select">
                 <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
@@ -219,12 +273,12 @@
 <div id="lexemeFrequencyDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify_classifier}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="current_value">
-          <input type="hidden" name="classif_name" value="lexeme_frequency_group">
-          <select class="form-control" name="new_value">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_frequency_group">
+          <select class="form-control" name="value">
             <option th:each="freqGroup : ${lexemeFrequencyGroups}"
                     th:value="${freqGroup.code}"
                     th:text="${freqGroup.value}">freqGroup</option>
@@ -238,12 +292,12 @@
 <div id="lexemePosDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify_classifier}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="current_value">
-          <input type="hidden" name="classif_name" value="lexeme_pos">
-          <select class="form-control" name="new_value">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_pos">
+          <select class="form-control" name="value">
             <option th:each="pos : ${allLexemePos}"
                     th:value="${pos.code}"
                     th:text="${pos.value}">lexeme pos</option>
@@ -257,18 +311,88 @@
 <div id="meaningDomainDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <form th:action="@{/modify_classifier}" method="post">
+      <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
-          <input type="hidden" name="current_value">
-          <input type="hidden" name="classif_name" value="meaning_domain">
-          <select class="form-control" name="new_value">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="meaning_domain">
+          <select class="form-control" name="value">
             <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
               <option th:each="domain : ${origin.getValue()}"
                       th:value="${domain.toIdString()}"
                       th:text="${domain.origin + ' - ' + domain.value}">domain</option>
             </optgroup>
           </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="addNewGovernmentDlg" class="modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="opCode" value="government">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <textarea class="form-control" rows="1" name="value"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="newWordDlg" class="modal" role="dialog" th:fragment="newWordDlg(returnPage)">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_word}" method="post">
+        <div class="modal-body">
+          <input hidden name="returnPage" th:value="${returnPage}">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <select class="form-control" name="dataset">
+                <option th:each="dataset : ${allDatasets}"
+                        th:value="${dataset.code}"
+                        th:text="${dataset.name}">name</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-8">
+              <select class="form-control" name="language">
+                <option th:each="language : ${allLanguages}"
+                        th:value="${language.code}"
+                        th:text="${language.value}">language</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-8">
+              <select class="form-control" name="morphCode">
+                <option th:each="morphCode : ${wordMorphCodes}"
+                        th:value="${morphCode.code}"
+                        th:text="${morphCode.value}">morphCode</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-md-12">
+              <input class="form-control" name="value">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
         </div>
       </form>
     </div>

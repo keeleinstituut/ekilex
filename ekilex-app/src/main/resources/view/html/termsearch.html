@@ -153,7 +153,7 @@
               <li th:each="definition : ${meaning.definitions}" th:if="${termViewUtil.isSelectedLang(definition.lang,sessionBean.languagesOrder)}">
                 <span th:name="${definition.id} + '_definition'"
                       th:data-id="${definition.id}"
-                      th:data-op-type="definition"
+                      th:data-op-code="definition"
                       th:data-value="${definition.value}"
                       th:utext="${definition.value}"></span>
                 <button type="button" class="btn badge badge-primary ml-2"
@@ -333,7 +333,7 @@
                               <td>
                                 <span th:name="${usage.id} + '_usage'"
                                       th:data-id="${usage.id}"
-                                      th:data-op-type="usage"
+                                      th:data-op-code="usage"
                                       th:data-value="${usage.value}"
                                       th:utext="${usage.value}"></span>
                                 <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
@@ -367,7 +367,7 @@
                               <td>
                                 <span th:name="${usageTranslation.id} + '_usage_translation'"
                                       th:data-id="${usageTranslation.id}"
-                                      th:data-op-type="usage_translation"
+                                      th:data-op-code="usage_translation"
                                       th:text="${usageTranslation.value}"></span>
                                 <button type="button" class="btn badge badge-primary ml-2"
                                         th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
@@ -386,7 +386,7 @@
                               <td>
                                 <span th:name="${usageDefinition.id} + '_usage_definition'"
                                       th:data-id="${usageDefinition.id}"
-                                      th:data-op-type="usage_definition"
+                                      th:data-op-code="usage_definition"
                                       th:data-value="${usageDefinition.value}"
                                       th:utext="${usageDefinition.value}"></span>
                                 <button type="button" class="btn badge badge-primary ml-2"

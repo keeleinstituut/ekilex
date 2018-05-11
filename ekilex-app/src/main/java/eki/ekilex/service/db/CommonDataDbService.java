@@ -20,6 +20,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.PERSON;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
@@ -312,6 +313,23 @@ public class CommonDataDbService {
 						.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
 						)
 				.fetch();
+	}
+
+	public Result<Record2<String, String>> getWordMorphCodes(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(MORPH_LABEL.CODE, MORPH_LABEL.VALUE)
+				.from(MORPH_LABEL)
+				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Record4<Long, String, Integer, String> getWord(Long wordId) {
+		return create.select(PARADIGM.WORD_ID, FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG).from(PARADIGM, FORM, WORD)
+				.where(PARADIGM.WORD_ID.eq(wordId)
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.IS_WORD.isTrue())
+						.and(WORD.ID.eq(wordId)))
+				.fetchOne();
 	}
 
 }

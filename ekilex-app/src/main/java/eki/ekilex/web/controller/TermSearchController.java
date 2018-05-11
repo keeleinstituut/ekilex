@@ -39,7 +39,13 @@ public class TermSearchController extends AbstractSearchController {
 	private TermSearchService termSearchService;
 
 	@RequestMapping(value = TERM_SEARCH_URI, method = RequestMethod.GET)
-	public String initSearch(Model model) {
+	public String initSearch(Model model) throws Exception {
+
+		if (model.containsAttribute(SEARCH_WORD_KEY)) {
+			String searchWord = model.asMap().get(SEARCH_WORD_KEY).toString();
+			SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
+			return termSearch(sessionBean.getSelectedDatasets(), null, false, null, searchWord, null, sessionBean, model);
+		}
 
 		initSearchForms(model);
 

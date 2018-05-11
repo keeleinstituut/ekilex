@@ -27,7 +27,11 @@
     </div>
 
     <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsFoundBySearch) && (simpleSearchFilter != null)}">
-      <span th:text="#{lex.not.found}">Not found.</span>
+      <div th:text="#{lex.not.found}">Not found.</div>
+      <button type="button" class="btn btn-success mt-2"
+              data-toggle="modal" data-target="#newWordDlg">
+        Lisa uus
+      </button>
     </div>
 
     <div class="mt-4 float-left" th:if="${not #lists.isEmpty(wordsFoundBySearch)}" style="height: calc(100vh - 18em); width: 15%; overflow-y: auto;">
@@ -103,15 +107,16 @@
                   <span th:unless="${vocalFormIter.last}">,&nbsp;</span>
               </span>
             </div>
+            <hr />
+            <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
+                    th:data-lexeme-id="${lexeme.lexemeId}"
+                    th:data-meaning-id="${lexeme.meaningId}"
+                    onclick="openLexemeClassifiersDlg(this)"
+                    data-toggle="modal" data-target="#lexemeClassifiersDlg">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+            <div th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">&nbsp;</div>
             <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
-              <hr />
-              <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
-                      th:data-lexeme-id="${lexeme.lexemeId}"
-                      th:data-meaning-id="${lexeme.meaningId}"
-                      onclick="openLexemeClassifiersDlg(this)"
-                      data-toggle="modal" data-target="#lexemeClassifiersDlg">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
               <div th:if="${lexeme.genderCode != null}">
                 <span class="lbl">Sugu</span>
                 <span th:text="${lexeme.genderCode}"></span>
@@ -127,11 +132,11 @@
                 <span class="lbl">Väärtusolek</span>
                 <span th:text="${lexeme.lexemeValueStateCode}"></span>
               </div>
-              <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
+              <div th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons">
                 <span class="lbl">Sagedusrühm</span>
                 <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
                       th:data-id="${lexeme.lexemeId}"
-                      th:data-op-type="lexeme_frequency_group"
+                      th:data-op-code="lexeme_frequency_group"
                       th:data-value="${lexeme.lexemeFrequencyGroupCode}"
                       th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
                 <button type="button" class="btn badge badge-primary"
@@ -153,10 +158,10 @@
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
                 <span class="lbl">Sõnaliik</span>
-                <span th:each="classif,classifIter : ${lexeme.lexemePos}">
+                <span th:each="classif,classifIter : ${lexeme.lexemePos}" class="hidden-buttons">
                   <span
                     th:data-id="${lexeme.lexemeId}"
-                    th:data-op-type="lexeme_pos"
+                    th:data-op-code="lexeme_pos"
                     th:data-value="${classif.code}"
                     th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
                     th:text="${classif.code}"></span>
@@ -203,10 +208,10 @@
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
                 <span class="lbl">Valdkonnad</span>
-                <span th:each="classif,classifIter : ${lexeme.meaningDomains}">
+                <span th:each="classif,classifIter : ${lexeme.meaningDomains}" class="hidden-buttons">
                   <span
                     th:data-id="${lexeme.meaningId}"
-                    th:data-op-type="meaning_domain"
+                    th:data-op-code="meaning_domain"
                     th:data-value="${classif.toIdString()}"
                     th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
                     th:text="${classif.code}"></span>
@@ -244,10 +249,10 @@
                   <td>
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
-                  <td>
+                  <td class="hidden-buttons">
                     <span th:name="${definition.id} + '_definition'"
                           th:data-id="${definition.id}"
-                          th:data-op-type="definition"
+                          th:data-op-code="definition"
                           th:data-value="${definition.value}"
                           th:utext="${definition.value}"></span>
                     <button type="button" class="btn badge badge-primary ml-2"
@@ -311,15 +316,52 @@
                 </tr>
               </table>
             </div>
+            <div th:unless="${not #lists.isEmpty(lexeme.governments)}">
+              <hr />
+              <table>
+                <tr>
+                  <th class="lbl">Rektsioon
+                    <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            th:data-id="${lexeme.lexemeId}"
+                            onclick="openAddDlg(this)"
+                            data-toggle="modal" data-target="#addNewGovernmentDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </th>
+                </tr>
+              </table>
+            </div>
             <div th:if="${not #lists.isEmpty(lexeme.governments)}">
               <hr />
               <table th:each="government,governmentIter : ${lexeme.governments}">
                 <tr>
-                  <th class="lbl">Rektsioon</th>
+                  <th class="lbl">Rektsioon
+                    <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            th:data-id="${lexeme.lexemeId}"
+                            onclick="openAddDlg(this)"
+                            data-toggle="modal" data-target="#addNewGovernmentDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </th>
                 </tr>
                 <tr>
-                  <td>
-                    <span th:text="${government.value}"></span>
+                  <td class="hidden-buttons">
+                    <span th:name="${government.id} + '_government'"
+                          th:data-id="${government.id}"
+                          th:data-op-code="government"
+                          th:data-value="${government.value}"
+                          th:text="${government.value}"></span>
+                    <button type="button" class="btn badge badge-primary ml-2"
+                            th:title="Muuda" th:data-target-elem="${government.id} + '_government'"
+                            onclick="openEditDlg(this)"
+                            data-toggle="modal" data-target="#editDlg">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-target-elem="${government.id} + '_government'"
+                            data-toggle="delete-confirmation" data-placement="right">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
                   </td>
                 </tr>
                 <tr>
@@ -334,12 +376,12 @@
                 </tr>
                 <tr>
                   <td>
-                    <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
+                    <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}" class="border">
                       <tr th:each="usage : ${usageMeaning.usages}">
-                        <td>
+                        <td class="hidden-buttons">
                           <span th:name="${usage.id} + '_usage'"
                                 th:data-id="${usage.id}"
-                                th:data-op-type="usage"
+                                th:data-op-code="usage"
                                 th:data-value="${usage.value}"
                                 th:utext="${usage.value}"></span>
                           <span th:if="${usage.type != null}" th:text="'(' + ${usage.type + ')'}"></span>
@@ -356,6 +398,12 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                  th:data-id="${usageMeaning.id}"
+                                  onclick="openUsageMemberDlg(this)"
+                                  data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
                           <div th:if="${not #lists.isEmpty(usage.refLinks)}">
                             <span th:each="refLink : ${usage.refLinks}">
                               [
@@ -371,10 +419,10 @@
                         </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                        <td>
+                        <td class="hidden-buttons">
                           <span th:name="${usageTranslation.id} + '_usage_translation'"
                                 th:data-id="${usageTranslation.id}"
-                                th:data-op-type="usage_translation"
+                                th:data-op-code="usage_translation"
                                 th:text="${usageTranslation.value}"></span>
                           <button type="button" class="btn badge badge-primary ml-2"
                                   th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
@@ -387,13 +435,19 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
+                          <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                  th:data-id="${usageMeaning.id}"
+                                  onclick="openUsageMemberDlg(this)"
+                                  data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                          </button>
                         </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                        <td>
+                        <td class="hidden-buttons">
                           <span th:name="${usageDefinition.id} + '_usage_definition'"
                                 th:data-id="${usageDefinition.id}"
-                                th:data-op-type="usage_definition"
+                                th:data-op-code="usage_definition"
                                 th:data-value="${usageDefinition.value}"
                                 th:utext="${usageDefinition.value}"></span>
                           <button type="button" class="btn badge badge-primary ml-2"
@@ -406,6 +460,12 @@
                                   th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                          <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                  th:data-id="${usageMeaning.id}"
+                                  onclick="openUsageMemberDlg(this)"
+                                  data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
                         </td>
                       </tr>
@@ -650,6 +710,9 @@
   <div th:replace="common :: #lexemeFrequencyDlg"></div>
   <div th:replace="common :: #lexemePosDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
+  <div th:replace="common :: #addNewGovernmentDlg"></div>
+  <div th:replace="common :: newWordDlg('LEX_SEARCH')"></div>
+  <div th:replace="common :: #addNewUsageMemberDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

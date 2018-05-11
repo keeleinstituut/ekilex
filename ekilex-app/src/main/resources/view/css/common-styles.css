@@ -34,3 +34,11 @@ td {
 .select-dlg select {
 	overflow-y: auto;
 }
+
+.hidden-buttons button {
+	display: none;
+}
+
+.hidden-buttons:hover button {
+	display: inline-block;
+}

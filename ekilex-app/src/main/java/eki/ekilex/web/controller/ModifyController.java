@@ -5,7 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
@@ -13,7 +19,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,6 +34,9 @@ import eki.ekilex.data.ModifyListRequest;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.ModifyItemRequest;
 import eki.ekilex.web.bean.SessionBean;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import static java.util.Arrays.asList;
 
 @ConditionalOnWebApplication
 @Controller
@@ -37,31 +49,13 @@ public class ModifyController implements WebConstant {
 	private UpdateService updateService;
 
 	@Autowired
+	private LexSearchService lexSearchService;
+
+	@Autowired
+	private CommonDataService commonDataService;
+
+	@Autowired
 	private ConversionUtil conversionUtil;
-
-	//TODO move over to modifyItem
-	@ResponseBody
-	@PostMapping("/modify")
-	public String modifyTextValue(@RequestParam("op_type") String opCode, @RequestParam("id") Long id, @RequestParam("modified_value") String value) {
-
-		logger.debug("Update operation {} : {} : for id {}", opCode, value, id);
-		switch (opCode) {
-			case "usage" :
-				updateService.updateUsageValue(id, value);
-				break;
-			case "usage_translation" :
-				updateService.updateUsageTranslationValue(id, value);
-				break;
-			case "usage_definition" :
-				updateService.updateUsageDefinitionValue(id, value);
-				break;
-			case "definition" :
-				updateService.updateDefinitionValue(id, value);
-				break;
-		}
-
-		return "OK";
-	}
 
 	@ResponseBody
 	@PostMapping("/modify_item")
@@ -71,6 +65,32 @@ public class ModifyController implements WebConstant {
 		switch (itemData.getOpCode()) {
 			case "term_user_lang" :
 				updateLanguageSelection(itemData, sessionBean);
+				break;
+			case "usage" :
+				updateService.updateUsageValue(itemData.getId(), itemData.getValue());
+				break;
+			case "usage_translation" :
+				updateService.updateUsageTranslationValue(itemData.getId(), itemData.getValue());
+				break;
+			case "usage_definition" :
+				updateService.updateUsageDefinitionValue(itemData.getId(), itemData.getValue());
+				break;
+			case "definition" :
+				updateService.updateDefinitionValue(itemData.getId(), itemData.getValue());
+				break;
+			case "lexeme_frequency_group" :
+				updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
+				break;
+			case "lexeme_pos" :
+				updateService.updateLexemePos(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+				break;
+			case "meaning_domain" :
+				Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(itemData.getCurrentValue());
+				Classifier newMeaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+				updateService.updateMeaningDomain(itemData.getId(), currentMeaningDomain, newMeaningDomain);
+				break;
+			case "government" :
+				updateService.updateGovernment(itemData.getId(), itemData.getValue());
 				break;
 		}
 
@@ -150,9 +170,9 @@ public class ModifyController implements WebConstant {
 	}
 
 	@ResponseBody
-	@PostMapping("/remove")
+	@PostMapping("/remove_item")
 	public String removeElement(
-			@RequestParam("op_type") String opCode,
+			@RequestParam("opCode") String opCode,
 			@RequestParam("id") Long id,
 			@RequestParam(value = "value", required = false) String valueToRemove) {
 
@@ -180,79 +200,105 @@ public class ModifyController implements WebConstant {
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToRemove);
 			updateService.removeMeaningDomain(id, meaningDomain);
 			break;
+		case "government" :
+			updateService.removeGovernment(id);
+			break;
 		}
 		return "OK";
 	}
 
 	@ResponseBody
-	@PostMapping("/add_definition")
-	public String addNewDescription(@RequestParam("id") Long meaningId, @RequestParam("language") String languageCode, @RequestParam("value") String value) {
+	@PostMapping("/add_item")
+	public String addItem(@RequestBody AddItemRequest itemData) {
 
-		logger.debug("Add new definition operation : {} : {} : {}", meaningId, languageCode, value);
-		updateService.addDefinition(meaningId, value, languageCode);
-		return "OK";
-	}
-
-	@ResponseBody
-	@PostMapping("/add_usage")
-	public String addNewUsage(
-			@RequestParam("id") Long governmentId,
-			@RequestParam("usage_type") String usageMemberType,
-			@RequestParam("language") String languageCode,
-			@RequestParam("value") String value) {
-
-		logger.debug("Add new usage operation : {} : {} : {}", governmentId, languageCode, value);
-		updateService.addUsageMember(governmentId, usageMemberType, value, languageCode);
-		return "OK";
-	}
-
-	@ResponseBody
-	@PostMapping("/add_classifier")
-	public String addLexemeClassifier(
-			@RequestParam("classif_name") String classifierName,
-			@RequestParam("lexeme_id") Long lexemeId,
-			@RequestParam("meaning_id") Long meaningId,
-			@RequestParam("value") String value) {
-
-		logger.debug("Add classifier {} : {} : for lexemeId {}, meaningId {}", classifierName, value, lexemeId, meaningId);
-		switch (classifierName) {
+		logger.debug("Add new item : {}", itemData.getOpCode());
+		switch (itemData.getOpCode()) {
+		case "definition" :
+			updateService.addDefinition(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			break;
+		case "USAGE" :
+		case "USAGE_MEANING" :
+		case "USAGE_TRANSLATION" :
+		case "USAGE_DEFINITION" :
+			updateService.addUsageMember(itemData.getId(), itemData.getOpCode(), itemData.getValue(), itemData.getLanguage());
+			break;
 		case "lexeme_frequency_group" :
-			updateService.updateLexemeFrequencyGroup(lexemeId, value);
+			updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
 			break;
 		case "lexeme_pos" :
-			updateService.addLexemePos(lexemeId, value);
+			updateService.addLexemePos(itemData.getId(), itemData.getValue());
 			break;
 		case "meaning_domain" :
-			Classifier meaningDomain = conversionUtil.classifierFromIdString(value);
-			updateService.addMeaningDomain(meaningId, meaningDomain);
+			Classifier meaningDomain = conversionUtil.classifierFromIdString(itemData.getValue());
+			updateService.addMeaningDomain(itemData.getId2(), meaningDomain);
+			break;
+		case "government" :
+			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
 		}
-		return "OK";
+		return "{}";
 	}
 
-	@ResponseBody
-	@PostMapping("/modify_classifier")
-	public String modifyLexemeClassifier(
-			@RequestParam("classif_name") String classifierName,
-			@RequestParam("id") Long id,
-			@RequestParam("current_value") String currentValue,
-			@RequestParam("new_value") String newValue) {
+	@PostMapping("/add_word")
+	public String addNewWord(
+			@RequestParam("dataset") String dataset,
+			@RequestParam("value") String value,
+			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("returnPage") String returnPage,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
 
-		logger.debug("Modify classifier {} : {} : {} : for id {}", classifierName, currentValue, newValue, id);
-		switch (classifierName) {
-		case "lexeme_frequency_group" :
-			updateService.updateLexemeFrequencyGroup(id, newValue);
-			break;
-		case "lexeme_pos" :
-			updateService.updateLexemePos(id, currentValue, newValue);
-			break;
-		case "meaning_domain" :
-			Classifier currentMeaningDomain = conversionUtil.classifierFromIdString(currentValue);
-			Classifier newMeaningDomain = conversionUtil.classifierFromIdString(newValue);
-			updateService.updateMeaningDomain(id, currentMeaningDomain, newMeaningDomain);
-			break;
+		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+		WordsResult words = lexSearchService.findWords(value, allDatasets, true);
+		if (words.getTotalCount() == 0) {
+			updateService.addWord(value, dataset, language,morphCode);
+		} else {
+			long wordsFromOtherDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).count();
+			if (wordsFromOtherDatasets != 0) {
+				attributes.addFlashAttribute("dataset", dataset);
+				attributes.addFlashAttribute("wordValue", value);
+				attributes.addFlashAttribute("returnPage", returnPage);
+				return "redirect:/wordselect";
+			}
 		}
-		return "OK";
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+			sessionBean.getSelectedDatasets().add(dataset);
+		}
+		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+	}
+
+	@GetMapping("/wordselect")
+	public String listSelectableWords(
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			@ModelAttribute(name = "dataset") String dataset,
+			@ModelAttribute(name = "wordValue") String word,
+			Model model) {
+
+		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+		allDatasets.remove(dataset);
+		WordsResult words = lexSearchService.findWords(word, allDatasets, true);
+		model.addAttribute("words", words.getWords());
+
+		return "wordselect";
+	}
+
+	@GetMapping("/wordselect/{wordId}/{dataset}/{returnPage}")
+	public String selectWord(
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			@PathVariable(name = "wordId") Long wordId,
+			@PathVariable(name = "dataset") String dataset,
+			@PathVariable(name = "returnPage") String returnPage,
+			RedirectAttributes attributes) {
+
+		updateService.addWordToDataset(wordId, dataset);
+		Word word = commonDataService.getWord(wordId);
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, word.getValue());
+		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+			sessionBean.getSelectedDatasets().add(dataset);
+		}
+		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
 	}
 
 }
