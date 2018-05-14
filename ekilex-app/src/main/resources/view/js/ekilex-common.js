@@ -161,7 +161,7 @@ function changeItemOrdering(target, delta) {
 }
 
 function postJson(url, dataObject) {
-    $.ajax({
+    return $.ajax({
         url: url,
         data: JSON.stringify(dataObject),
         method: 'POST',
@@ -266,10 +266,10 @@ function submitDialog(e, dlg, failMessage) {
         contentType: 'application/json'
     }).done(function(data) {
         $('#refresh-details').trigger('click');
-        dlg.modal('hide');
     }).fail(function (data) {
         console.log(data);
         alert(failMessage);
+    }).always(function () {
         dlg.modal('hide');
     });
 }
@@ -312,5 +312,16 @@ function initMultiValueAddDlg(theDlg) {
         });
         toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
         alignAndFocus(e, theDlg);
+    });
+}
+
+function decorateRefLinks(backUrl) {
+    var detailsDiv = $('#details_div');
+    var id = detailsDiv.data('id');
+
+    detailsDiv.find('a').each(function(indx, item) {
+        if ($(item).attr('href').includes('_ref_link:')) {
+            $(item).attr('href', ($(item).attr('href') + "/" + backUrl + "/" + id));
+        }
     });
 }

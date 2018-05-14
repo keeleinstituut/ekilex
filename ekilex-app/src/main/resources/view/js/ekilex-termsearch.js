@@ -19,16 +19,18 @@ function initialise() {
 		var clickable = $(this);
 		var orderingData = changeItemOrdering(clickable, -1);
 		updateTermUserLangWrapup(clickable);
-		postJson(applicationUrl + 'modify_ordering', orderingData);
-		refreshDetails();
+		postJson(applicationUrl + 'modify_ordering', orderingData).done(function(data) {
+			refreshDetails();
+		});
 	});
 
 	$(document).on('click', '.order-down', function() {
 		var clickable = $(this);
 		var orderingData = changeItemOrdering(clickable, 1);
 		updateTermUserLangWrapup(clickable);
-		postJson(applicationUrl + 'modify_ordering', orderingData);
-		refreshDetails();
+		postJson(applicationUrl + 'modify_ordering', orderingData).done(function(data) {
+			refreshDetails();
+        });
 	});
 
 	$(document).on('click', '#show-all-btn', function() {
@@ -56,13 +58,14 @@ function initialise() {
 		detailsButtons.trigger('click');
 	}
 
-	var editDlg = $('#editDlg');
-	editDlg.on('shown.bs.modal', function(e) {
-		editDlg.find('[name=value]').focus();
-		var dlgTop = $(e.relatedTarget).offset().top - editDlg.find('.modal-content').height() - 30;
-		editDlg.find('.modal-content').css('top', dlgTop);
-	});
+    var editDlg = $('#editDlg');
+	editDlg.find('[name=value]').attr("rows", 4);
+    editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        alignAndFocus(e, editDlg)
+    });
 
+    $('#addNewDefinitionDlg').find('[name=value]').attr("rows", 4);
+    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
 }
 
 function updateTermUserLangWrapup(clickable) {
