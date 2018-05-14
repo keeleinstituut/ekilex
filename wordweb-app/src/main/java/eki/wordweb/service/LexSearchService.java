@@ -79,7 +79,6 @@ public class LexSearchService implements InitializingBean {
 			List<String> wordsOrForms = resultsList.stream().map(WordOrForm::getValue).collect(Collectors.toList());
 			searchResultCandidates.put(group, wordsOrForms);
 		}
-		System.out.println(searchResultCandidates);
 		return searchResultCandidates;
 	}
 

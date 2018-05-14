@@ -350,9 +350,9 @@ function initialisePage() {
 			$(this).data('uiAutocomplete')._renderMenu = searchWordAutocompleteMenuRenderer;
 		},
 		select: function(event, ui) {
-			//TODO call search
 			if (ui.item) {
-				console.log("---> selected " + ui.item.value + "=" + ui.item.label);
+				$("input[name='searchWord']").val(ui.item.value);
+				$("#search-btn").click();
 			}
 			return false;
 		},
