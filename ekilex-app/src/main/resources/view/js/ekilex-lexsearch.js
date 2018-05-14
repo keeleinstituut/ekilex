@@ -35,10 +35,8 @@ function initialise() {
     }
 
     var editDlg = $('#editDlg');
-    editDlg.on('shown.bs.modal', function(e) {
-        editDlg.find('[name=value]').focus();
-        var dlgTop =  $(e.relatedTarget).offset().top - editDlg.find('.modal-content').height() - 30;
-        editDlg.find('.modal-content').css('top', dlgTop);
+    editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        alignAndFocus(e, editDlg)
     });
 
     var editLexemeDlg = $('#editLexemeLevelsDlg');
