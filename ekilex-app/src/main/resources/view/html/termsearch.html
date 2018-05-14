@@ -176,7 +176,7 @@
                 <div th:if="${not #lists.isEmpty(definition.refLinks)}">
                   <span th:each="refLink : ${definition.refLinks}">
                     [
-                    <a th:href="@{'/def_ref_link:' + ${refLink.id}}" target="_blank">
+                    <a th:href="@{'/def_ref_link:' + ${refLink.id}}">
                       <span th:text="${refLink.value}"></span>
                     </a>
                     <span th:if="${refLink.name != null}">
@@ -427,7 +427,7 @@
                                 <div th:if="${not #lists.isEmpty(usage.refLinks)}">
                                   <span th:each="refLink : ${usage.refLinks}">
                                     [
-                                    <a th:href="@{'/ff_ref_link:' + ${refLink.id}}" target="_blank">
+                                    <a th:href="@{'/ff_ref_link:' + ${refLink.id}}">
                                       <span th:text="${refLink.value}"></span>
                                     </a>
                                     <span th:if="${refLink.name != null}">
@@ -548,6 +548,7 @@
                 onConfirm: performDelete
             }
         );
+        decorateRefLinks('meaningback');
     </script>
   </th:block>
 

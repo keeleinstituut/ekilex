@@ -314,3 +314,14 @@ function initMultiValueAddDlg(theDlg) {
         alignAndFocus(e, theDlg);
     });
 }
+
+function decorateRefLinks(backUrl) {
+    var detailsDiv = $('#details_div');
+    var id = detailsDiv.data('id');
+
+    detailsDiv.find('a').each(function(indx, item) {
+        if ($(item).attr('href').includes('_ref_link:')) {
+            $(item).attr('href', ($(item).attr('href') + "/" + backUrl + "/" + id));
+        }
+    });
+}

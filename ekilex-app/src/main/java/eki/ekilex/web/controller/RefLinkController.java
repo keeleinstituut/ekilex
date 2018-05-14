@@ -32,22 +32,32 @@ public class RefLinkController {
 	@Autowired
 	private SourceService sourceService;
 
-	@GetMapping("/" + ContentKey.FREEFORM_REF_LINK + ":{refLinkId}")
-	public String ffRefLink(@PathVariable("refLinkId") String refLinkIdStr, Model model) {
+	@GetMapping("/" + ContentKey.FREEFORM_REF_LINK + ":{refLinkId}/{backUrl}/{id}")
+	public String ffRefLink(
+			@PathVariable("refLinkId") String refLinkIdStr,
+			@PathVariable("backUrl") String backUrl,
+			@PathVariable("id") String id,
+			Model model) {
 
 		logger.debug("Requested freeform ref link \"{}\"", refLinkIdStr);
 
 		Long refLinkId = Long.valueOf(refLinkIdStr);
+		model.addAttribute("backUrl", "/" + backUrl + "/" + id);
 
 		return handleRefLink(refLinkId, ReferenceOwner.FREEFORM, model);
 	}
 
-	@GetMapping("/" + ContentKey.DEFINITION_REF_LINK + ":{refLinkId}")
-	public String defRefLink(@PathVariable("refLinkId") String refLinkIdStr, Model model) {
+	@GetMapping("/" + ContentKey.DEFINITION_REF_LINK + ":{refLinkId}/{backUrl}/{id}")
+	public String defRefLink(
+			@PathVariable("refLinkId") String refLinkIdStr,
+			@PathVariable("backUrl") String backUrl,
+			@PathVariable("id") String id,
+			Model model) {
 
 		logger.debug("Requested definition ref link \"{}\"", refLinkIdStr);
 
 		Long refLinkId = Long.valueOf(refLinkIdStr);
+		model.addAttribute("backUrl", "/" + backUrl + "/" + id);
 
 		return handleRefLink(refLinkId, ReferenceOwner.DEFINITION, model);
 	}
