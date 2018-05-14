@@ -4,9 +4,11 @@ public interface WebConstant {
 
 	String HOME_PAGE = "index";
 
+	String SEARCH_PAGE = "search";
+
 	String HOME_URI = "/";
 
-	String SEARCH_URI = "/search/";
+	String SEARCH_URI = "/search";
 
 	String ERROR_PAGE = "error";
 
