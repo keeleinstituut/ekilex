@@ -64,6 +64,8 @@ function initialise() {
         alignAndFocus(e, editDlg)
     });
 
+    $('#addNewDefinitionDlg').find('[name=value]').attr("rows", 4);
+    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
 }
 
 function updateTermUserLangWrapup(clickable) {
