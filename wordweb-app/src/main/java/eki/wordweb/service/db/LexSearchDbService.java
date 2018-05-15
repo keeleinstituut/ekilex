@@ -14,9 +14,7 @@ import java.util.Map;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record1;
 import org.jooq.Record2;
-import org.jooq.SelectConditionStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,22 +62,20 @@ public class LexSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordOrForm>> findWordsByPrefix(String wordPrefix, String lang, String[] datasets, int limit) {
+	public Map<String, List<WordOrForm>> findWordsByPrefix(String wordPrefix, String lang, String[] datasets, int maxWordCount) {
 
-		Field<String> iswtf = DSL.field(DSL.value("words")).as("group");
-		Field<String> iswff = DSL.field(DSL.value("forms")).as("group");
+		Field<String> iswtf = DSL.field(DSL.value("prefWords")).as("group");
+		Field<String> iswff = DSL.field(DSL.value("formWords")).as("group");
 		Condition wdc = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
 		Condition fdc = DSL.condition("{0} && {1}", MVIEW_WW_FORM.DATASET_CODES, DSL.val(datasets));
 		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefix + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
-		SelectConditionStep<Record1<Long>> nwc = DSL
-				.select(MVIEW_WW_WORD.WORD_ID)
-				.from(MVIEW_WW_WORD)
-				.where(wlc.and(wdc).and(MVIEW_WW_WORD.WORD.lower().eq(MVIEW_WW_FORM.WORD.lower())));
 
 		Table<Record2<String, String>> woft = DSL
 			.selectDistinct(MVIEW_WW_WORD.WORD.as("value"), iswtf)
 			.from(MVIEW_WW_WORD)
 			.where(wlc.and(wdc))
+			.orderBy(MVIEW_WW_WORD.WORD)
+			.limit(maxWordCount)
 			.unionAll(DSL
 			.selectDistinct(MVIEW_WW_FORM.WORD.as("value"), iswff)
 			.from(MVIEW_WW_FORM)
@@ -87,14 +83,13 @@ public class LexSearchDbService {
 					MVIEW_WW_FORM.FORM.lower().eq(wordPrefix)
 					.and(MVIEW_WW_FORM.IS_WORD.isFalse())
 					.and(MVIEW_WW_FORM.LANG.eq(lang))
-					.and(fdc)
-					.and(DSL.notExists(nwc))))
+					.and(fdc))
+			.orderBy(MVIEW_WW_FORM.WORD)
+			.limit(maxWordCount))
 			.asTable("woft");
 
 		return (Map<String, List<WordOrForm>>) create
 				.selectFrom(woft)
-				.orderBy(woft.fields("group", "value"))
-				.limit(limit)
 				.fetchGroups("group", WordOrForm.class);
 	}
 

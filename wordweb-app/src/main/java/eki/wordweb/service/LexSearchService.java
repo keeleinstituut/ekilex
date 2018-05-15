@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -71,14 +69,22 @@ public class LexSearchService implements InitializingBean {
 		String languagesDatasetKey = sourceLang + destinLang;
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, datasets, limit);
-		Set<Entry<String, List<WordOrForm>>> resultsEntrySet = results.entrySet();
-		Map<String, List<String>> searchResultCandidates = new HashMap<>();
-		for (Entry<String, List<WordOrForm>> resultsEntry : resultsEntrySet) {
-			String group = resultsEntry.getKey();
-			List<WordOrForm> resultsList = resultsEntry.getValue();
-			List<String> wordsOrForms = resultsList.stream().map(WordOrForm::getValue).collect(Collectors.toList());
-			searchResultCandidates.put(group, wordsOrForms);
+		List<WordOrForm> prefWordsResult = results.get("prefWords");
+		List<WordOrForm> formWordsResult = results.get("formWords");
+		List<String> formWords;
+		if (CollectionUtils.isEmpty(formWordsResult)) {
+			formWords = Collections.emptyList();
+		} else {
+			formWords = formWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
 		}
+		List<String> prefWords = prefWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
+		prefWords.forEach(prefWord -> formWords.remove(prefWord));
+		int formWordsCount = formWords.size();
+		int requiredPrefWordsCount = limit - formWordsCount;
+		prefWords = prefWords.subList(0, requiredPrefWordsCount);
+		Map<String, List<String>> searchResultCandidates = new HashMap<>();
+		searchResultCandidates.put("prefWords", prefWords);
+		searchResultCandidates.put("formWords", formWords);
 		return searchResultCandidates;
 	}
 

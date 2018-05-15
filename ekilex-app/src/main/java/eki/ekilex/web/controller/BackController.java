@@ -57,7 +57,7 @@ public class BackController implements WebConstant {
 	}
 
 	@GetMapping("/lexback/{lexemeId}")
-	public String back(
+	public String lexemeBack(
 			@PathVariable("lexemeId") Long lexemeId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
