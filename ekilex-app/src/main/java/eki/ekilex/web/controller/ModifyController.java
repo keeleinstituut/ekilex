@@ -206,6 +206,9 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.removeGovernment(id);
 			break;
+		case "def_ref_link" :
+			updateService.removeDefinitionRefLink(id);
+			break;
 		}
 		return "OK";
 	}

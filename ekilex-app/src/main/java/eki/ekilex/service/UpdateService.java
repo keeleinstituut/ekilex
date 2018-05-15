@@ -155,6 +155,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void removeDefinitionRefLink(Long refLinkId) {
+		updateDbService.removeDefinitionRefLink(refLinkId);
+	}
+
+	@Transactional
 	public void addDefinition(Long meaningId, String value, String languageCode) {
 		updateDbService.addDefinition(meaningId, value, languageCode);
 	}

@@ -23,6 +23,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -240,6 +241,10 @@ public class UpdateDbService {
 
 	public void removeLexemeFreeform(Long freeformId) {
 		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.FREEFORM_ID.eq(freeformId)).execute();
+	}
+
+	public void removeDefinitionRefLink(Long refLinkId) {
+		create.delete(DEFINITION_REF_LINK).where(DEFINITION_REF_LINK.ID.eq(refLinkId)).execute();
 	}
 
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
