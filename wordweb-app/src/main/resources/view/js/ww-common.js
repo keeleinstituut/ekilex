@@ -34,7 +34,7 @@ $(document).ready(function() {
 
         ul.addClass("list-group");
         $.each(groups, function (index, group) {
-        	if (group == "form") {
+        	if (group == "formWord") {
         		var li = $("<li>");
         		li.addClass("list-group-item list-group-item-info");
         		//TODO add localised message
@@ -59,14 +59,14 @@ $(document).ready(function() {
 				url: searchWordsByPrefixUrlWithParams,
 				type: "GET",
 				success: function(data) {
-					var words = data.words;
-					var forms = data.forms;
+					var prefWords = data.prefWords;
+					var formWords = data.formWords;
 					var fullList = [];
-					$.each(data.words, function(index, item) {
-						fullList.push({group : "word", label : item, value : item});
+					$.each(data.prefWords, function(index, item) {
+						fullList.push({group : "prefWord", label : item, value : item});
 					});
-					$.each(data.forms, function(index, item) {
-						fullList.push({group : "form", label : item, value : item});
+					$.each(data.formWords, function(index, item) {
+						fullList.push({group : "formWord", label : item, value : item});
 					});
 					response(fullList);
 				}
