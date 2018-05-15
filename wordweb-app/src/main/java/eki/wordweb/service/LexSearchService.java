@@ -71,17 +71,24 @@ public class LexSearchService implements InitializingBean {
 		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, datasets, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
 		List<WordOrForm> formWordsResult = results.get("formWords");
-		List<String> formWords;
+		List<String> prefWords, formWords;
+		if (CollectionUtils.isEmpty(prefWordsResult)) {
+			prefWords = Collections.emptyList();
+		} else {
+			prefWords = prefWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
+		}
 		if (CollectionUtils.isEmpty(formWordsResult)) {
 			formWords = Collections.emptyList();
 		} else {
 			formWords = formWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
 		}
-		List<String> prefWords = prefWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
-		prefWords.forEach(prefWord -> formWords.remove(prefWord));
-		int formWordsCount = formWords.size();
-		int requiredPrefWordsCount = limit - formWordsCount;
-		prefWords = prefWords.subList(0, requiredPrefWordsCount);
+		if (CollectionUtils.isNotEmpty(prefWords)) {
+			prefWords.forEach(prefWord -> formWords.remove(prefWord));
+			int prefWordsCount = prefWords.size();
+			int formWordsCount = formWords.size();
+			int requiredPrefWordsCount = Math.min(prefWordsCount, limit - formWordsCount);
+			prefWords = prefWords.subList(0, requiredPrefWordsCount);
+		}
 		Map<String, List<String>> searchResultCandidates = new HashMap<>();
 		searchResultCandidates.put("prefWords", prefWords);
 		searchResultCandidates.put("formWords", formWords);
