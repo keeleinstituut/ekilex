@@ -43,7 +43,7 @@ public class BackController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		String word = termSearchService.getFirstMeaningWord(meaningId, sessionBean.getSelectedDatasets());
+		String word = termSearchService.getMeaningFirstWord(meaningId, sessionBean.getSelectedDatasets());
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, word);
 
 		return "redirect:" + TERM_SEARCH_URI;

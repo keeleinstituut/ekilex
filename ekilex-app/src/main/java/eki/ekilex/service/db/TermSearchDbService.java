@@ -409,4 +409,20 @@ public class TermSearchDbService implements SystemConstant {
 				.fetch();
 	}
 
+	public Record1<String> getMeaningFirstWord(Long meaningId, List<String> datasets) {
+
+		return create
+				.select(FORM.VALUE)
+				.from(FORM, PARADIGM, LEXEME)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.IS_WORD.isTrue())
+						)
+				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
+				.limit(1)
+				.fetchSingle();
+	}
 }

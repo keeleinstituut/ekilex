@@ -90,10 +90,8 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public String getFirstMeaningWord(Long meaningId, List<String> selectedDatasets) {
-		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
-		List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(meaning.getLexemeIds().get(0)).into(Lexeme.class);
-		return lexemeWords.get(0).getWord();
+	public String getMeaningFirstWord(Long meaningId, List<String> selectedDatasets) {
+		return termSearchDbService.getMeaningFirstWord(meaningId, selectedDatasets).into(String.class);
 	}
 
 	@Transactional
