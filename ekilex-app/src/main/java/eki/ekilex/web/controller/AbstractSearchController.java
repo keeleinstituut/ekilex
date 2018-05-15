@@ -61,6 +61,11 @@ public abstract class AbstractSearchController implements WebConstant {
 		return commonDataService.getLexemeFrequencyGroups();
 	}
 
+	@ModelAttribute("wordMorphCodes")
+	public List<Classifier> getWordMorphCodes() {
+		return commonDataService.getWordMorphCodes();
+	}
+
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);

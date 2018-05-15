@@ -43,11 +43,6 @@ public class LexSearchController extends AbstractSearchController {
 		return lexSearchService.getAllLexemePos();
 	}
 
-	@ModelAttribute("wordMorphCodes")
-	public List<Classifier> getWordMorphCodes() {
-		return lexSearchService.getWordMorphCodes();
-	}
-
 	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.GET)
 	public String initSearch(Model model) throws Exception {
 
