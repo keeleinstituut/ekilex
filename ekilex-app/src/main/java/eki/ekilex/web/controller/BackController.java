@@ -2,10 +2,11 @@ package eki.ekilex.web.controller;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +20,17 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class BackController implements WebConstant {
 
-	@Autowired
-	private CommonDataService commonDataService;
+	private final CommonDataService commonDataService;
 
-	@Autowired
-	private TermSearchService termSearchService;
+	private final TermSearchService termSearchService;
+
+	private final LexSearchService lexSearchService;
+
+	public BackController(CommonDataService commonDataService, TermSearchService termSearchService, LexSearchService lexSearchService) {
+		this.commonDataService = commonDataService;
+		this.termSearchService = termSearchService;
+		this.lexSearchService = lexSearchService;
+	}
 
 	@GetMapping("/wordback/{wordId}")
 	public String wordBack(
@@ -47,6 +54,18 @@ public class BackController implements WebConstant {
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, word);
 
 		return "redirect:" + TERM_SEARCH_URI;
+	}
+
+	@GetMapping("/lexback/{lexemeId}")
+	public String back(
+			@PathVariable("lexemeId") Long lexemeId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
+
+		return "redirect:" + LEX_SEARCH_URI;
 	}
 
 }
