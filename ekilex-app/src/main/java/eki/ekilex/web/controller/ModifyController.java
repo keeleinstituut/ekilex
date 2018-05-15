@@ -1,7 +1,9 @@
 package eki.ekilex.web.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import eki.ekilex.constant.WebConstant;
@@ -9,6 +11,7 @@ import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
@@ -273,13 +276,23 @@ public class ModifyController implements WebConstant {
 	public String listSelectableWords(
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			@ModelAttribute(name = "dataset") String dataset,
-			@ModelAttribute(name = "wordValue") String word,
+			@ModelAttribute(name = "wordValue") String wordValue,
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
 		allDatasets.remove(dataset);
-		WordsResult words = lexSearchService.findWords(word, allDatasets, true);
+		WordsResult words = lexSearchService.findWords(wordValue, allDatasets, true);
 		model.addAttribute("words", words.getWords());
+		Map<Long, WordDetails> details = new HashMap<>();
+		Map<Long, Boolean> wordHasDefinitions = new HashMap<>();
+		for (Word word : words.getWords() ) {
+			WordDetails wordDetails = lexSearchService.getWordDetails(word.getWordId(), allDatasets);
+			details.put(word.getWordId(), wordDetails);
+			boolean hasDefinitions = wordDetails.getLexemes().stream().anyMatch(d -> !d.getDefinitions().isEmpty());
+			wordHasDefinitions.put(word.getWordId(), hasDefinitions);
+		}
+		model.addAttribute("details", details);
+		model.addAttribute("hasDefinitions", wordHasDefinitions);
 
 		return "wordselect";
 	}
