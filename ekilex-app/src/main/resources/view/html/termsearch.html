@@ -179,8 +179,18 @@
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </div>
-                <div th:if="${not #lists.isEmpty(definition.refLinks)}">
-                  <span th:each="refLink : ${definition.refLinks}" class="hidden-buttons">
+                <div th:unless="${not #lists.isEmpty(definition.refLinks)}">
+                  []
+                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                          th:data-id="${definition.id}"
+                          th:data-op-code="defSourceRef"
+                          onclick="openAddSourceRefDlg(this)"
+                          data-toggle="modal" data-target="#addNewSourceRefDlg">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
+                </div>
+                <div th:if="${not #lists.isEmpty(definition.refLinks)}" class="hidden-buttons">
+                  <span th:each="refLink : ${definition.refLinks}">
                     [
                     <a th:href="@{'/def_ref_link:' + ${refLink.id}}"
                        th:name="${refLink.id} + '_def_ref_link'"
@@ -199,6 +209,13 @@
                     </button>
                     ]
                   </span>
+                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                          th:data-id="${definition.id}"
+                          th:data-op-code="defSourceRef"
+                          onclick="openAddSourceRefDlg(this)"
+                          data-toggle="modal" data-target="#addNewSourceRefDlg">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
                 </div>
               </li>
             </ul>
@@ -439,8 +456,18 @@
                                     <i class="fa fa-plus" aria-hidden="true"></i>
                                   </button>
                                 </div>
-                                <div th:if="${not #lists.isEmpty(usage.refLinks)}">
-                                  <span th:each="refLink : ${usage.refLinks}" class="hidden-buttons">
+                                <div th:unless="${not #lists.isEmpty(usage.refLinks)}">
+                                  []
+                                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                          th:data-id="${usage.id}"
+                                          th:data-op-code="ffSourceRef"
+                                          onclick="openAddSourceRefDlg(this)"
+                                          data-toggle="modal" data-target="#addNewSourceRefDlg">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+                                <div th:if="${not #lists.isEmpty(usage.refLinks)}" class="hidden-buttons">
+                                  <span th:each="refLink : ${usage.refLinks}">
                                     [
                                     <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
                                        th:name="${refLink.id} + '_ff_ref_link'"
@@ -459,6 +486,13 @@
                                     </button>
                                     ]
                                   </span>
+                                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                          th:data-id="${usage.id}"
+                                          th:data-op-code="ffSourceRef"
+                                          onclick="openAddSourceRefDlg(this)"
+                                          data-toggle="modal" data-target="#addNewSourceRefDlg">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
                                 </div>
                               </td>
                             </tr>
@@ -582,6 +616,7 @@
   <div th:replace="common :: #addNewGovernmentDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
+  <div th:replace="common :: #addNewSourceRefDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

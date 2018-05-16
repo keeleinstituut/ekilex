@@ -399,5 +399,105 @@
   </div>
 </div>
 
+<div id="addNewSourceRefDlg" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <form th:action="@{/sourcesearchajax}">
+          <div class="form-row">
+            <div class="col-12">
+              <div class="form-group row">
+                <label class="col-auto col-form-label">Otsing</label>
+                <div class="col-5">
+                  <input type="text" class="form-control" name="searchFilter" placeholder="sisesta mõni allika omaduse väärtus">
+                </div>
+                <div class="col-2">
+                  <button type="submit" class="btn btn-primary">Otsi</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <form th:action="@{/add_item}" method="post">
+        <input type="hidden" name="id">
+        <input type="hidden" name="opCode">
+        <input type="hidden" name="id2">
+        <div class="modal-body" data-name="sourceRefDlgContent"></div>
+      </form>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-body" data-name="sourceRefDlgContent" th:fragment="sourceRefDlgContent">
+  <th:block th:each="source,sourceIter : ${sourcesFoundBySearch}">
+    <table>
+      <tr>
+        <td style="width: 50px; text-align: center; vertical-align: top; background-color: #fafafa">
+          <b>
+            <span th:text="${sourceIter.count + '.'}"></span>
+          </b>
+        </td>
+        <td style="width: 30%">
+          <table>
+            <tr>
+              <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
+            </tr>
+            <tr>
+              <th>concept</th>
+              <td th:text="${source.concept}"></td>
+            </tr>
+            <tr>
+              <th>created on</th>
+              <td th:text="${#dates.format(source.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+            </tr>
+            <tr>
+              <th>created by</th>
+              <td th:text="${source.createdBy}"></td>
+            </tr>
+            <tr>
+              <th>modified on</th>
+              <td th:text="${#dates.format(source.modifiedOn, 'dd.MM.yyyy HH:mm')}"></td>
+            </tr>
+            <tr>
+              <th>modified by</th>
+              <td th:text="${source.modifiedBy}"></td>
+            </tr>
+            <tr>
+              <th>process state</th>
+              <td th:text="${source.processStateCode}"></td>
+            </tr>
+            <tr>
+              <th>type</th>
+              <td th:text="${source.type}"></td>
+            </tr>
+          </table>
+        </td>
+        <td>
+          <th:block th:each="sourceHeading,sourceHeadingIter : ${source.sourceHeadings}">
+            <p>
+              <span th:text="${sourceHeading.type}"></span>
+              -
+              <i style="text-decoration: underline;">
+                <span th:text="${sourceHeading.valueText}" th:style="${sourceHeading.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+              </i>
+            </p>
+            <p th:each="sourceProperty : ${sourceHeading.children}">
+              <span th:text="${sourceProperty.type}"></span>
+              -
+              <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
+              <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
+            </p>
+            <hr th:unless="${sourceHeadingIter.last}"/>
+          </th:block>
+        </td>
+      </tr>
+    </table>
+  </th:block>
+</div>
+
 </body>
 </html>

@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Source;
+import eki.ekilex.data.SourceMember;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.SourceService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
@@ -59,6 +64,9 @@ public class ModifyController implements WebConstant {
 
 	@Autowired
 	private ConversionUtil conversionUtil;
+
+	@Autowired
+	private SourceService sourceService;
 
 	@ResponseBody
 	@PostMapping("/modify_item")
@@ -244,6 +252,18 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
+		case "defSourceRef" : {
+			Source source = sourceService.getSource(itemData.getId2());
+			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+			updateService.addDefinitionSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
+			break;
+			}
+		case "ffSourceRef" : {
+			Source source = sourceService.getSource(itemData.getId2());
+			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+			updateService.addFreeformSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
+			break;
+			}
 		}
 		return "{}";
 	}

@@ -258,7 +258,13 @@ function submitDialog(e, dlg, failMessage) {
     e.preventDefault();
     var theForm = dlg.find('form');
 
-    $.ajax({
+    submitForm(theForm, failMessage).always(function () {
+        dlg.modal('hide');
+    });
+}
+
+function submitForm(theForm, failMessage) {
+    return $.ajax({
         url: theForm.attr('action'),
         data: JSON.stringify(theForm.serializeJSON()),
         method: 'POST',
@@ -269,8 +275,6 @@ function submitDialog(e, dlg, failMessage) {
     }).fail(function (data) {
         console.log(data);
         alert(failMessage);
-    }).always(function () {
-        dlg.modal('hide');
     });
 }
 
@@ -339,5 +343,43 @@ function initNewWordDlg() {
         var firstSelectedDataset = $('[name=selectedDatasets]:checked').val();
         $('[name=dataset]').val(firstSelectedDataset);
         $('[name=morphCode]').val('??');
+    });
+}
+
+function openAddSourceRefDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=opCode]').val($(elem).data('op-code'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=sourceRefDlgContent]').html(null);
+
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var content = button.html();
+        button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+        var theForm = $(this).closest('form');
+        var url = theForm.attr('action') + '?' + theForm.serialize();
+        $.get(url).done(function(data) {
+            addDlg.find('[data-name=sourceRefDlgContent]').replaceWith(data);
+            addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
+                e.preventDefault();
+                var button = $(e.target);
+                addDlg.find('[name=id2]').val(button.data('source-id'));
+                var theForm = button.closest('form');
+                submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+                    addDlg.modal('hide');
+                });
+            });
+        }).fail(function(data) {
+            console.log(data);
+            alert(failMessage);
+        }).always(function () {
+            button.html(content);
+        });
+    });
+
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        addDlg.find('.form-control').first().focus();
     });
 }

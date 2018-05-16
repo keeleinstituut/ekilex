@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -282,6 +283,34 @@ public class UpdateDbService {
 				.getId();
 		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, governmentFreeformId).execute();
 		return governmentFreeformId;
+	}
+
+	public Long addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						DEFINITION_REF_LINK,
+						DEFINITION_REF_LINK.DEFINITION_ID,
+						DEFINITION_REF_LINK.REF_ID,
+						DEFINITION_REF_LINK.REF_TYPE,
+						DEFINITION_REF_LINK.VALUE,
+						DEFINITION_REF_LINK.NAME)
+				.values(definitionId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(DEFINITION_REF_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						FREEFORM_REF_LINK,
+						FREEFORM_REF_LINK.FREEFORM_ID,
+						FREEFORM_REF_LINK.REF_ID,
+						FREEFORM_REF_LINK.REF_TYPE,
+						FREEFORM_REF_LINK.VALUE,
+						FREEFORM_REF_LINK.NAME)
+				.values(freeformId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(FREEFORM_REF_LINK.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

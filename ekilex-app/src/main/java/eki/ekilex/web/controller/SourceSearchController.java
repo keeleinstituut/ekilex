@@ -31,7 +31,7 @@ public class SourceSearchController {
 	@GetMapping("/sourcesearch")
 	public String sourceSearch(
 			@RequestParam(required = false) String searchFilter,
-			Model model, HttpSession session) {
+			Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
@@ -40,4 +40,18 @@ public class SourceSearchController {
 		
 		return "sourcesearch";
 	}
+
+	@GetMapping("/sourcesearchajax")
+	public String sourceSearchAjax(
+			@RequestParam(required = false) String searchFilter,
+			Model model) {
+
+		logger.debug("Searching by : \"{}\"", searchFilter);
+
+		List<Source> sources = sourceService.findSourcesByNameOrCode(searchFilter);
+		model.addAttribute("sourcesFoundBySearch", sources);
+
+		return "common :: sourceRefDlgContent";
+	}
+
 }
