@@ -209,6 +209,9 @@ public class ModifyController implements WebConstant {
 		case "def_ref_link" :
 			updateService.removeDefinitionRefLink(id);
 			break;
+		case "ff_ref_link" :
+			updateService.removeFreeformRefLink(id);
+			break;
 		}
 		return "OK";
 	}

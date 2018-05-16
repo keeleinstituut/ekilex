@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -245,6 +246,10 @@ public class UpdateDbService {
 
 	public void removeDefinitionRefLink(Long refLinkId) {
 		create.delete(DEFINITION_REF_LINK).where(DEFINITION_REF_LINK.ID.eq(refLinkId)).execute();
+	}
+
+	public void removeFreeformRefLink(Long refLinkId) {
+		create.delete(FREEFORM_REF_LINK).where(FREEFORM_REF_LINK.ID.eq(refLinkId)).execute();
 	}
 
 	public Long addDefinition(Long meaningId, String value, String languageCode) {

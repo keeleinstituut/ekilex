@@ -160,6 +160,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void removeFreeformRefLink(Long refLinkId) {
+		updateDbService.removeFreeformRefLink(refLinkId);
+	}
+
+	@Transactional
 	public void addDefinition(Long meaningId, String value, String languageCode) {
 		updateDbService.addDefinition(meaningId, value, languageCode);
 	}

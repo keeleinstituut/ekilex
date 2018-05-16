@@ -414,40 +414,51 @@
                               </td>
                             </tr>
                             <tr th:each="usage : ${usageMeaning.usages}">
-                              <td class="hidden-buttons">
-                                <span th:name="${usage.id} + '_usage'"
-                                      th:data-id="${usage.id}"
-                                      th:data-op-code="usage"
-                                      th:data-value="${usage.value}"
-                                      th:utext="${usage.value}"></span>
-                                <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
-                                <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
-                                <button type="button" class="btn badge badge-primary ml-2"
-                                        th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                        onclick="openEditDlg(this)"
-                                        data-toggle="modal" data-target="#editDlg">
-                                  <i class="fa fa-edit" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-warning"
-                                        th:data-target-elem="${usage.id} + '_usage'"
-                                        data-toggle="delete-confirmation" data-placement="right">
-                                  <i class="fa fa-remove" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                        th:data-id="${usageMeaning.id}"
-                                        onclick="openUsageMemberDlg(this)"
-                                        data-toggle="modal" data-target="#addNewUsageMemberDlg">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
+                              <td>
+                                <div class="hidden-buttons">
+                                  <span th:name="${usage.id} + '_usage'"
+                                        th:data-id="${usage.id}"
+                                        th:data-op-code="usage"
+                                        th:data-value="${usage.value}"
+                                        th:utext="${usage.value}"></span>
+                                  <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                                  <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                                  <button type="button" class="btn badge badge-primary ml-2"
+                                          th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
+                                          onclick="openEditDlg(this)"
+                                          data-toggle="modal" data-target="#editDlg">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-warning"
+                                          th:data-target-elem="${usage.id} + '_usage'"
+                                          data-toggle="delete-confirmation" data-placement="right">
+                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                          th:data-id="${usageMeaning.id}"
+                                          onclick="openUsageMemberDlg(this)"
+                                          data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                                </div>
                                 <div th:if="${not #lists.isEmpty(usage.refLinks)}">
-                                  <span th:each="refLink : ${usage.refLinks}">
+                                  <span th:each="refLink : ${usage.refLinks}" class="hidden-buttons">
                                     [
-                                    <a th:href="@{'/ff_ref_link:' + ${refLink.id}}">
+                                    <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
+                                       th:name="${refLink.id} + '_ff_ref_link'"
+                                       th:data-id="${refLink.id}"
+                                       th:data-op-code="ff_ref_link"
+                                    >
                                       <span th:text="${refLink.value}"></span>
                                     </a>
                                     <span th:if="${refLink.name != null}">
                                       <span th:text="${refLink.name}"></span>
                                     </span>
+                                    <button type="button" class="btn badge badge-warning"
+                                            th:data-target-elem="${refLink.id} + '_ff_ref_link'"
+                                            data-toggle="delete-confirmation" data-placement="right">
+                                      <i class="fa fa-remove" aria-hidden="true"></i>
+                                    </button>
                                     ]
                                   </span>
                                 </div>
