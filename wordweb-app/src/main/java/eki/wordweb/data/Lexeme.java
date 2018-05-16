@@ -59,6 +59,10 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeMeaningRelation> relatedMeanings;
 
+	private List<CollocationPosGroup> collocationPosGroups;
+
+	private List<Collocation> secondaryCollocations;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -257,6 +261,22 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
+	}
+
+	public List<CollocationPosGroup> getCollocationPosGroups() {
+		return collocationPosGroups;
+	}
+
+	public void setCollocationPosGroups(List<CollocationPosGroup> collocationPosGroups) {
+		this.collocationPosGroups = collocationPosGroups;
+	}
+
+	public List<Collocation> getSecondaryCollocations() {
+		return secondaryCollocations;
+	}
+
+	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
+		this.secondaryCollocations = secondaryCollocations;
 	}
 
 }

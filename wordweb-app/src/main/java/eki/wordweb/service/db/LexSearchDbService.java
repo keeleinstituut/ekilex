@@ -1,5 +1,6 @@
 package eki.wordweb.service.db;
 
+import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
@@ -20,6 +21,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -191,6 +193,36 @@ public class LexSearchDbService {
 				.orderBy(MVIEW_WW_LEXEME.LEXEME_ID)
 				.fetch()
 				.into(LexemeDetailsTuple.class);
+	}
+
+	public List<CollocationTuple> findCollocations(Long wordId, String[] datasets) {
+
+		return create
+				.select(
+						MVIEW_WW_COLLOCATION.LEXEME_ID,
+						MVIEW_WW_COLLOCATION.WORD_ID,
+						MVIEW_WW_COLLOCATION.POS_GROUP_ID,
+						MVIEW_WW_COLLOCATION.POS_GROUP_NAME,
+						MVIEW_WW_COLLOCATION.REL_GROUP_ID,
+						MVIEW_WW_COLLOCATION.REL_GROUP_NAME,
+						MVIEW_WW_COLLOCATION.COLLOC_ID,
+						MVIEW_WW_COLLOCATION.COLLOC_VALUE,
+						MVIEW_WW_COLLOCATION.COLLOC_DEFINITION,
+						MVIEW_WW_COLLOCATION.COLLOC_USAGES,
+						MVIEW_WW_COLLOCATION.COLLOC_MEMBERS)
+				.from(MVIEW_WW_COLLOCATION)
+				.where(
+						MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId)
+						.and(MVIEW_WW_COLLOCATION.DATASET_CODE.in(datasets)))
+				.orderBy(
+						MVIEW_WW_COLLOCATION.LEVEL1,
+						MVIEW_WW_COLLOCATION.LEVEL2,
+						MVIEW_WW_COLLOCATION.LEVEL3,
+						MVIEW_WW_COLLOCATION.COLLOC_ORDER_BY,
+						MVIEW_WW_COLLOCATION.POS_GROUP_ORDER_BY,
+						MVIEW_WW_COLLOCATION.REL_GROUP_ORDER_BY)
+				.fetch()
+				.into(CollocationTuple.class);
 	}
 
 	public Map<Long, List<Form>> findWordForms(Long wordId) {
