@@ -244,13 +244,11 @@
         <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}" th:if="${termViewUtil.isSelectedLang(lexeme.wordLang,sessionBean.languagesOrder)}">
           <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
             <div>
-              <button type="button" class="btn btn-link pt-0" th:data-id="${lexeme.wordId}" name="detailsBtn">
-                <span th:text="${lexeme.word}" class="ttl"></span>
-                <span th:text="${lexeme.homonymNumber}"></span>
-                (
-                <span th:text="${lexeme.wordLang}"></span>
-                )
-              </button>
+              <span th:text="${lexeme.word}" class="ttl"></span>
+              <span th:text="${lexeme.homonymNumber}"></span>
+              (
+              <span th:text="${lexeme.wordLang}"></span>
+              )
               <span th:if="${lexeme.levels != null}">
                 <small>
                   [
