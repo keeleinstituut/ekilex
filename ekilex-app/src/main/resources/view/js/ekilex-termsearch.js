@@ -66,6 +66,7 @@ function initialise() {
 
     $('#addNewDefinitionDlg').find('[name=value]').attr("rows", 4);
     initMultiValueAddDlg($('#addNewUsageMemberDlg'));
+    initNewWordDlg();
 }
 
 function updateTermUserLangWrapup(clickable) {

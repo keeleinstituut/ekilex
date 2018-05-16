@@ -38,6 +38,26 @@
               </th:block>
             </span>
           </div>
+          <hr />
+          <div>
+            <span th:each="lexeme, lexemeIter : ${details.get(word.getWordId()).getLexemes()}">
+              <th:block th:unless="${lexeme.meaningWords.isEmpty()}">
+                <b th:unless="${lexemeIter.first}">,</b>
+                <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                  <b th:text="${meaningWord.value}"></b>
+                  <b th:text="${meaningWord.homonymNumber}"></b>
+                  <b th:text="${'( ' + meaningWord.language + ' )'}"></b>
+                  <b th:unless="${meaningWordIter.last}">,</b>
+                </span>
+              </th:block>
+            </span>
+          </div>
+          <div class="mt-2" th:if="${hasDefinitions.get(word.getWordId())}">
+            <span class="lbl">Seletused</span>
+            <th:block th:each="lexeme : ${details.get(word.getWordId()).getLexemes()}">
+              <div th:each="definition : ${lexeme.getDefinitions()}" th:text="${definition.getValue()}"></div>
+            </th:block>
+          </div>
         </div>
       </div>
 

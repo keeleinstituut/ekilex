@@ -325,3 +325,19 @@ function decorateRefLinks(backUrl) {
         }
     });
 }
+
+function initNewWordDlg() {
+    var newWordDlg = $('#newWordDlg');
+    newWordDlg.on('shown.bs.modal', function() {
+        newWordDlg.find('.form-control').first().focus();
+        var searchValue = $('input[name=simpleSearchFilter]').val() || '';
+        if (!searchValue.includes('*') && !searchValue.includes('?')) {
+            newWordDlg.find('[name=value]').val(searchValue);
+        } else {
+            newWordDlg.find('[name=value]').val(null);
+        }
+        var firstSelectedDataset = $('[name=selectedDatasets]:checked').val();
+        $('[name=dataset]').val(firstSelectedDataset);
+        $('[name=morphCode]').val('??');
+    });
+}

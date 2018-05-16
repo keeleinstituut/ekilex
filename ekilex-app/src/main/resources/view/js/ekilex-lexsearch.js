@@ -49,6 +49,7 @@ function initialise() {
     initSelectDlg($('#meaningDomainDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'));
     initMultiValueAddDlg($('#addNewUsageMemberDlg'));
+    initNewWordDlg();
 }
 
 function openLexemeLevelDlg(elem) {

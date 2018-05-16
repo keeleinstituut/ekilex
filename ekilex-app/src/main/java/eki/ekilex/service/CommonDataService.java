@@ -18,6 +18,9 @@ import static java.util.stream.Collectors.groupingBy;
 @Component
 public class CommonDataService {
 
+	private final static String classifierLabelLang = "est";
+	private final static String classifierLabelTypeDescrip = "descrip";
+
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
@@ -56,6 +59,11 @@ public class CommonDataService {
 	@Transactional
 	public Word getWord(Long wordId) {
 		return commonDataDbService.getWord(wordId).into(Word.class);
+	}
+
+	@Transactional
+	public List<Classifier> getWordMorphCodes() {
+		return commonDataDbService.getWordMorphCodes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 }

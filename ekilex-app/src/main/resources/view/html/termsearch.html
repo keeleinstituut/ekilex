@@ -83,6 +83,10 @@
 
     <div class="mt-4 float-left" th:if="${(!searchResult.resultExist) && (simpleSearchFilter != null)}">
       <span th:text="#{term.not.found}">Not found.</span>
+      <button type="button" class="btn btn-success mt-2"
+              data-toggle="modal" data-target="#newWordDlg">
+        Lisa uus
+      </button>
     </div>
 
     <div class="mt-4 float-left w-25" th:if="${searchResult.resultExist}" style="height: calc(100vh - 15em); overflow-y: auto;">
@@ -557,6 +561,7 @@
   <div th:replace="common :: #addNewUsageMemberDlg"></div>
   <div th:replace="common :: #addNewGovernmentDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
+  <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
 
   <script th:inline="javascript">
   	initialise();
