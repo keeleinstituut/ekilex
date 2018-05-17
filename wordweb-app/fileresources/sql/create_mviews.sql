@@ -122,7 +122,7 @@ dblink(
 	level2 integer,
 	level3 integer,
 	pos_group_id bigint,
-	pos_group_name text,
+	pos_group_code varchar(100),
 	pos_group_order_by bigint,
 	rel_group_id bigint,
 	rel_group_name text,

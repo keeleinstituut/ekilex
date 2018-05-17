@@ -76,6 +76,8 @@ drop table if exists morph_label;
 drop table if exists morph;
 drop table if exists pos_label;
 drop table if exists pos;
+drop table if exists pos_group_label;
+drop table if exists pos_group;
 drop table if exists gender_label;
 drop table if exists gender;
 drop table if exists register_label;

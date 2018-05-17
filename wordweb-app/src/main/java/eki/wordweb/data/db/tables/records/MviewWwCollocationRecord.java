@@ -28,7 +28,7 @@ import org.jooq.impl.TableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocationRecord> implements Record18<Long, Long, String, Integer, Integer, Integer, Long, String, Long, Long, String, Long, Long, String, String, String[], Long, TypeCollocMemberRecord[]> {
 
-    private static final long serialVersionUID = 1358056963;
+    private static final long serialVersionUID = -918778421;
 
     /**
      * Setter for <code>public.mview_ww_collocation.lexeme_id</code>.
@@ -129,16 +129,16 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
     }
 
     /**
-     * Setter for <code>public.mview_ww_collocation.pos_group_name</code>.
+     * Setter for <code>public.mview_ww_collocation.pos_group_code</code>.
      */
-    public void setPosGroupName(String value) {
+    public void setPosGroupCode(String value) {
         set(7, value);
     }
 
     /**
-     * Getter for <code>public.mview_ww_collocation.pos_group_name</code>.
+     * Getter for <code>public.mview_ww_collocation.pos_group_code</code>.
      */
-    public String getPosGroupName() {
+    public String getPosGroupCode() {
         return (String) get(7);
     }
 
@@ -363,7 +363,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public Field<String> field8() {
-        return MviewWwCollocation.MVIEW_WW_COLLOCATION.POS_GROUP_NAME;
+        return MviewWwCollocation.MVIEW_WW_COLLOCATION.POS_GROUP_CODE;
     }
 
     /**
@@ -507,7 +507,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public String component8() {
-        return getPosGroupName();
+        return getPosGroupCode();
     }
 
     /**
@@ -651,7 +651,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public String value8() {
-        return getPosGroupName();
+        return getPosGroupCode();
     }
 
     /**
@@ -802,7 +802,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
      */
     @Override
     public MviewWwCollocationRecord value8(String value) {
-        setPosGroupName(value);
+        setPosGroupCode(value);
         return this;
     }
 
@@ -936,7 +936,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
     /**
      * Create a detached, initialised MviewWwCollocationRecord
      */
-    public MviewWwCollocationRecord(Long lexemeId, Long wordId, String datasetCode, Integer level1, Integer level2, Integer level3, Long posGroupId, String posGroupName, Long posGroupOrderBy, Long relGroupId, String relGroupName, Long relGroupOrderBy, Long collocId, String collocValue, String collocDefinition, String[] collocUsages, Long collocOrderBy, TypeCollocMemberRecord[] collocMembers) {
+    public MviewWwCollocationRecord(Long lexemeId, Long wordId, String datasetCode, Integer level1, Integer level2, Integer level3, Long posGroupId, String posGroupCode, Long posGroupOrderBy, Long relGroupId, String relGroupName, Long relGroupOrderBy, Long collocId, String collocValue, String collocDefinition, String[] collocUsages, Long collocOrderBy, TypeCollocMemberRecord[] collocMembers) {
         super(MviewWwCollocation.MVIEW_WW_COLLOCATION);
 
         set(0, lexemeId);
@@ -946,7 +946,7 @@ public class MviewWwCollocationRecord extends TableRecordImpl<MviewWwCollocation
         set(4, level2);
         set(5, level3);
         set(6, posGroupId);
-        set(7, posGroupName);
+        set(7, posGroupCode);
         set(8, posGroupOrderBy);
         set(9, relGroupId);
         set(10, relGroupName);

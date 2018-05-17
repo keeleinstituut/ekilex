@@ -519,7 +519,7 @@
             <span class="lbl">Kollokatsioonid</span>
             <th:block th:each="collocPosGr : ${lexeme.collocationPosGroups}">
               <div style="border: 1px solid #CCC; padding: 5px">
-                <p th:text="${collocPosGr.name}"></p>
+                <p th:text="${collocPosGr.code}"></p>
                 <th:block th:each="collocRelGr : ${collocPosGr.relationGroups}">
                   <div style="border: 1px solid #CCC; padding: 5px">
                     <p>

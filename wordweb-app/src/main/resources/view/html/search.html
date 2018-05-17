@@ -237,7 +237,7 @@
                       <div class="col-auto">
                         <div th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}">
                           <b>
-                            <span th:text="${collocPosGr.name}"></span>
+                            <span th:text="${collocPosGr.posGroup.value}"></span>
                           </b>
                           <div th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
                             <table style="width: 100%">

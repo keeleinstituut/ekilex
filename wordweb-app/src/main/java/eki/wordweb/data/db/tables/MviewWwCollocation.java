@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
 
-    private static final long serialVersionUID = 548546178;
+    private static final long serialVersionUID = 2011258109;
 
     /**
      * The reference instance of <code>public.mview_ww_collocation</code>
@@ -88,9 +88,9 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     public final TableField<MviewWwCollocationRecord, Long> POS_GROUP_ID = createField("pos_group_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>public.mview_ww_collocation.pos_group_name</code>.
+     * The column <code>public.mview_ww_collocation.pos_group_code</code>.
      */
-    public final TableField<MviewWwCollocationRecord, String> POS_GROUP_NAME = createField("pos_group_name", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwCollocationRecord, String> POS_GROUP_CODE = createField("pos_group_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.pos_group_order_by</code>.

@@ -3,21 +3,22 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.data.Classifier;
 
 public class CollocationPosGroup extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	private Classifier posGroup;
 
 	private List<CollocationRelGroup> relationGroups;
 
-	public String getName() {
-		return name;
+	public Classifier getPosGroup() {
+		return posGroup;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setPosGroup(Classifier posGroup) {
+		this.posGroup = posGroup;
 	}
 
 	public List<CollocationRelGroup> getRelationGroups() {

@@ -283,7 +283,7 @@ create view view_ww_collocation
       l1.level2,
       l1.level3,
       pgr1.id as pos_group_id,
-      pgr1.name as pos_group_name,
+      pgr1.pos_group_code,
       pgr1.order_by as pos_group_order_by,
       rgr1.id as rel_group_id,
       rgr1.name as rel_group_name,
@@ -469,6 +469,15 @@ create view view_ww_classifier
        value,
        lang
      from usage_type_label
+     where type = 'descrip'
+     union all
+     select
+       'POS_GROUP' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from pos_group_label
      where type = 'descrip'
      union all
      select

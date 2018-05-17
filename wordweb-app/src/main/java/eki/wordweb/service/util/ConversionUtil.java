@@ -124,7 +124,7 @@ public class ConversionUtil {
 			Long lexemeId = tuple.getLexemeId();
 			Lexeme lexeme = lexemeMap.get(lexemeId);
 
-			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexeme, tuple, collocPosGroupMap);
+			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexeme, tuple, collocPosGroupMap, displayLang);
 			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
 			Collocation collocation = populateCollocation(tuple);
 
@@ -284,14 +284,16 @@ public class ConversionUtil {
 		return paradigms;
 	}
 
-	private CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap) {
+	private CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
 		CollocationPosGroup collocPosGroup = null;
 		Long posGroupId = tuple.getPosGroupId();
 		if (posGroupId != null) {
 			collocPosGroup = collocPosGroupMap.get(posGroupId);
 			if (collocPosGroup == null) {
 				collocPosGroup = new CollocationPosGroup();
-				collocPosGroup.setName(tuple.getPosGroupName());
+				String classifierCode = tuple.getPosGroupCode();
+				Classifier classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
+				collocPosGroup.setPosGroup(classifier);
 				collocPosGroup.setRelationGroups(new ArrayList<>());
 				collocPosGroupMap.put(posGroupId, collocPosGroup);
 				lexeme.getCollocationPosGroups().add(collocPosGroup);

@@ -14,7 +14,7 @@ public class CollocationTuple extends AbstractDataObject {
 
 	private Long posGroupId;
 
-	private String posGroupName;
+	private String posGroupCode;
 
 	private Long relGroupId;
 
@@ -54,12 +54,12 @@ public class CollocationTuple extends AbstractDataObject {
 		this.posGroupId = posGroupId;
 	}
 
-	public String getPosGroupName() {
-		return posGroupName;
+	public String getPosGroupCode() {
+		return posGroupCode;
 	}
 
-	public void setPosGroupName(String posGroupName) {
-		this.posGroupName = posGroupName;
+	public void setPosGroupCode(String posGroupCode) {
+		this.posGroupCode = posGroupCode;
 	}
 
 	public Long getRelGroupId() {

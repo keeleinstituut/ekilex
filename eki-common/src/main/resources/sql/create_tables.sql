@@ -168,6 +168,22 @@ create table pos_label
   unique(code, lang, type)
 );
 
+-- kol pos grupp
+create table pos_group
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table pos_group_label
+(
+  code varchar(100) references pos_group(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 -- vormi märgend
 create table morph
 (
@@ -623,7 +639,7 @@ create table lex_colloc_pos_group
 (
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
-  name text not null,
+  pos_group_code varchar(100) references pos_group(code) on delete cascade not null,
   order_by bigserial
 );
 alter sequence lex_colloc_pos_group_id_seq restart with 10000;

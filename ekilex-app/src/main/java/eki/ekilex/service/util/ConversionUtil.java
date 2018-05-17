@@ -369,9 +369,6 @@ public class ConversionUtil {
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
 		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
 		Map<Long, Collocation> collocMap = new HashMap<>();
-		String name;
-		Float frequency;
-		Float score;
 
 		for (CollocationTuple collocTuple : collocTuples) {
 
@@ -379,22 +376,18 @@ public class ConversionUtil {
 			Long collocRelGroupId = collocTuple.getRelGroupId();
 			CollocationPosGroup collocPosGroup = collocPosGroupMap.get(collocPosGroupId);
 			if (collocPosGroup == null) {
-				name = collocTuple.getPosGroupName();
 				collocPosGroup = new CollocationPosGroup();
-				collocPosGroup.setName(name);
+				collocPosGroup.setCode(collocTuple.getPosGroupCode());
 				collocPosGroup.setRelationGroups(new ArrayList<>());
 				collocPosGroupMap.put(collocPosGroupId, collocPosGroup);
 				collocationPosGroups.add(collocPosGroup);
 			}
 			CollocationRelGroup collocRelGroup = collocRelGroupMap.get(collocRelGroupId);
 			if (collocRelGroup == null) {
-				name = collocTuple.getRelGroupName();
-				frequency = collocTuple.getRelGroupFrequency();
-				score = collocTuple.getRelGroupScore();
 				collocRelGroup = new CollocationRelGroup();
-				collocRelGroup.setName(name);
-				collocRelGroup.setFrequency(frequency);
-				collocRelGroup.setScore(score);
+				collocRelGroup.setName(collocTuple.getRelGroupName());
+				collocRelGroup.setFrequency(collocTuple.getRelGroupFrequency());
+				collocRelGroup.setScore(collocTuple.getRelGroupScore());
 				collocRelGroup.setCollocations(new ArrayList<>());
 				collocRelGroupMap.put(collocRelGroupId, collocRelGroup);
 				collocPosGroup.getRelationGroups().add(collocRelGroup);
@@ -423,17 +416,12 @@ public class ConversionUtil {
 		Long collocId = collocTuple.getCollocId();
 		Collocation collocation = collocMap.get(collocId);
 		if (collocation == null) {
-			String value = collocTuple.getCollocValue();
-			String definition = collocTuple.getCollocDefinition();
-			Float frequency = collocTuple.getCollocFrequency();
-			Float score = collocTuple.getCollocScore();
-			List<String> collocUsages = collocTuple.getCollocUsages();
 			collocation = new Collocation();
-			collocation.setValue(value);
-			collocation.setDefinition(definition);
-			collocation.setFrequency(frequency);
-			collocation.setScore(score);
-			collocation.setCollocUsages(collocUsages);
+			collocation.setValue(collocTuple.getCollocValue());
+			collocation.setDefinition(collocTuple.getCollocDefinition());
+			collocation.setFrequency(collocTuple.getCollocFrequency());
+			collocation.setScore(collocTuple.getCollocScore());
+			collocation.setCollocUsages(collocTuple.getCollocUsages());
 			collocation.setCollocMembers(new ArrayList<>());
 			collocMap.put(collocId, collocation);
 			collocations.add(collocation);
@@ -443,13 +431,10 @@ public class ConversionUtil {
 
 	private void addCollocMember(CollocationTuple collocTuple, Collocation collocation) {
 
-		Long collocWordId = collocTuple.getCollocMemberWordId();
-		String word = collocTuple.getCollocMemberWord();
-		Float weight = collocTuple.getCollocMemberWeight();
 		CollocMember collocMember = new CollocMember();
-		collocMember.setWordId(collocWordId);
-		collocMember.setWord(word);
-		collocMember.setWeight(weight);
+		collocMember.setWordId(collocTuple.getCollocMemberWordId());
+		collocMember.setWord(collocTuple.getCollocMemberWord());
+		collocMember.setWeight(collocTuple.getCollocMemberWeight());
 		collocation.getCollocMembers().add(collocMember);
 	}
 }

@@ -680,7 +680,7 @@ public class LexSearchDbService implements SystemConstant {
 		return create
 				.select(
 						pgr1.ID.as("pos_group_id"),
-						pgr1.NAME.as("pos_group_name"),
+						pgr1.POS_GROUP_CODE.as("pos_group_code"),
 						rgr1.ID.as("rel_group_id"),
 						rgr1.NAME.as("rel_group_name"),
 						rgr1.FREQUENCY.as("rel_group_frequency"),
