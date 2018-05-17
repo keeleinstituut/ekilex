@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -23,7 +24,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -242,6 +245,14 @@ public class UpdateDbService {
 		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.FREEFORM_ID.eq(freeformId)).execute();
 	}
 
+	public void removeDefinitionRefLink(Long refLinkId) {
+		create.delete(DEFINITION_REF_LINK).where(DEFINITION_REF_LINK.ID.eq(refLinkId)).execute();
+	}
+
+	public void removeFreeformRefLink(Long refLinkId) {
+		create.delete(FREEFORM_REF_LINK).where(FREEFORM_REF_LINK.ID.eq(refLinkId)).execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
@@ -272,6 +283,34 @@ public class UpdateDbService {
 				.getId();
 		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, governmentFreeformId).execute();
 		return governmentFreeformId;
+	}
+
+	public Long addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						DEFINITION_REF_LINK,
+						DEFINITION_REF_LINK.DEFINITION_ID,
+						DEFINITION_REF_LINK.REF_ID,
+						DEFINITION_REF_LINK.REF_TYPE,
+						DEFINITION_REF_LINK.VALUE,
+						DEFINITION_REF_LINK.NAME)
+				.values(definitionId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(DEFINITION_REF_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						FREEFORM_REF_LINK,
+						FREEFORM_REF_LINK.FREEFORM_ID,
+						FREEFORM_REF_LINK.REF_ID,
+						FREEFORM_REF_LINK.REF_TYPE,
+						FREEFORM_REF_LINK.VALUE,
+						FREEFORM_REF_LINK.NAME)
+				.values(freeformId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(FREEFORM_REF_LINK.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

@@ -119,6 +119,16 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+		updateDbService.addDefinitionSourceRef(definitionId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
+	public void addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+		updateDbService.addFreeformSourceRef(freeformId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
 	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
@@ -152,6 +162,16 @@ public class UpdateService {
 	public void removeGovernment(Long governmentId) {
 		updateDbService.removeLexemeFreeform(governmentId);
 		updateDbService.removeFreeform(governmentId);
+	}
+
+	@Transactional
+	public void removeDefinitionRefLink(Long refLinkId) {
+		updateDbService.removeDefinitionRefLink(refLinkId);
+	}
+
+	@Transactional
+	public void removeFreeformRefLink(Long refLinkId) {
+		updateDbService.removeFreeformRefLink(refLinkId);
 	}
 
 	@Transactional
