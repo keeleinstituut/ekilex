@@ -228,6 +228,8 @@
                 <option value="lexeme_frequency_group">Sagedusrühm</option>
                 <option value="lexeme_pos">Sõnaliik</option>
                 <option value="meaning_domain">Valdkond</option>
+                <option value="lexeme_deriv">Tuletuskood</option>
+                <option value="lexeme_register">Register</option>
               </select>
             </div>
           </div>
@@ -241,7 +243,7 @@
             </div>
           </div>
           <div class="form-group row value-group" data-id="lexeme_pos">
-            <div class="col-md-6">
+            <div class="col-md-8">
               <select class="form-control value-select">
                 <option th:each="pos : ${allLexemePos}"
                         th:value="${pos.code}"
@@ -257,6 +259,24 @@
                           th:value="${domain.toIdString()}"
                           th:text="${domain.origin + ' - ' + domain.value}">domain</option>
                 </optgroup>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="lexeme_deriv">
+            <div class="col-md-8">
+              <select class="form-control value-select">
+                <option th:each="deriv : ${allLexemeDerivs}"
+                        th:value="${deriv.code}"
+                        th:text="${deriv.value}">deriv</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="lexeme_register">
+            <div class="col-md-8">
+              <select class="form-control value-select">
+                <option th:each="register : ${allLexemeRegisters}"
+                        th:value="${register.code}"
+                        th:text="${register.value}">register</option>
               </select>
             </div>
           </div>
@@ -322,6 +342,44 @@
                       th:value="${domain.toIdString()}"
                       th:text="${domain.origin + ' - ' + domain.value}">domain</option>
             </optgroup>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeDerivDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_deriv">
+          <select class="form-control" name="value">
+            <option th:each="item : ${allLexemeDerivs}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeRegisterDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_register">
+          <select class="form-control" name="value">
+            <option th:each="item : ${allLexemeRegisters}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
           </select>
         </div>
       </form>

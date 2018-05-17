@@ -87,6 +87,22 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
+	public Result<Record2<String, String>> getLexemeRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE)
+				.from(REGISTER_LABEL)
+				.where(REGISTER_LABEL.LANG.eq(classifierLabelLang).and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getLexemeDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(DERIV_LABEL.CODE, DERIV_LABEL.VALUE)
+				.from(DERIV_LABEL)
+				.where(DERIV_LABEL.LANG.eq(classifierLabelLang).and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
 	public Result<Record3<String, String, String>> getDomains() {
 		return create
 				.select(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE)
