@@ -77,11 +77,6 @@ $(window).on("popstate", function(e) {
 	}
 });
 
-$(document).on("click", "#clear-search-btn", function(e) {
-	$('.search-phrase').val(null);
-	$('.search-btn').trigger('click');
-});
-
 $(document).on("click", "a[id^='word-details-link']", function(e) {
 	var wordWrapperForm = $(this).closest("form");
 	var wordId = wordWrapperForm.children("[name='word-id']").val();
