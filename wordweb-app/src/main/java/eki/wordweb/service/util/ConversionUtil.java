@@ -16,6 +16,10 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
+import eki.wordweb.data.Collocation;
+import eki.wordweb.data.CollocationPosGroup;
+import eki.wordweb.data.CollocationRelGroup;
+import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Government;
 import eki.wordweb.data.Lexeme;
@@ -75,13 +79,17 @@ public class ConversionUtil {
 	}
 
 	public List<Lexeme> composeLexemes(
-			List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples,
+			List<LexemeMeaningTuple> lexemeMeaningTuples,
+			List<LexemeDetailsTuple> lexemeDetailsTuples,
+			List<CollocationTuple> collocTuples,
 			String sourceLang, String destinLang, String displayLang) {
 
 		List<Lexeme> lexemes = new ArrayList<>();
 		Map<Long, Lexeme> lexemeMap = new HashMap<>();
 		Map<Long, Government> governmentMap = new HashMap<>();
 		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
+		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
+		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
 		List<Long> meaningWordIds = null;
 
 		for (LexemeMeaningTuple tuple : lexemeMeaningTuples) {
@@ -109,6 +117,22 @@ public class ConversionUtil {
 			populateUsageMeaning(government, tuple, usageMeaningMap, displayLang);
 			populateRelatedLexemes(lexeme, tuple, displayLang);
 			populateRelatedMeanings(lexeme, tuple, displayLang);
+		}
+
+		for (CollocationTuple tuple : collocTuples) {
+
+			Long lexemeId = tuple.getLexemeId();
+			Lexeme lexeme = lexemeMap.get(lexemeId);
+
+			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexeme, tuple, collocPosGroupMap);
+			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
+			Collocation collocation = populateCollocation(tuple);
+
+			if (collocPosGroup == null) {
+				lexeme.getSecondaryCollocations().add(collocation);
+			} else {
+				collocRelGroup.getCollocations().add(collocation);
+			}
 		}
 		return lexemes;
 	}
@@ -147,6 +171,8 @@ public class ConversionUtil {
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setOtherLangMatchWords(new ArrayList<>());
 		lexeme.setGovernments(new ArrayList<>());
+		lexeme.setCollocationPosGroups(new ArrayList<>());
+		lexeme.setSecondaryCollocations(new ArrayList<>());
 		return lexeme;
 	}
 
@@ -256,6 +282,47 @@ public class ConversionUtil {
 		}
 		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
 		return paradigms;
+	}
+
+	private CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap) {
+		CollocationPosGroup collocPosGroup = null;
+		Long posGroupId = tuple.getPosGroupId();
+		if (posGroupId != null) {
+			collocPosGroup = collocPosGroupMap.get(posGroupId);
+			if (collocPosGroup == null) {
+				collocPosGroup = new CollocationPosGroup();
+				collocPosGroup.setName(tuple.getPosGroupName());
+				collocPosGroup.setRelationGroups(new ArrayList<>());
+				collocPosGroupMap.put(posGroupId, collocPosGroup);
+				lexeme.getCollocationPosGroups().add(collocPosGroup);
+			}
+		}
+		return collocPosGroup;
+	}
+
+	private CollocationRelGroup populateCollocRelGroup(CollocationPosGroup collocPosGroup, CollocationTuple tuple, Map<Long, CollocationRelGroup> collocRelGroupMap) {
+		CollocationRelGroup collocRelGroup = null;
+		Long relGroupId = tuple.getRelGroupId();
+		if (relGroupId != null) {
+			collocRelGroup = collocRelGroupMap.get(relGroupId);
+			if (collocRelGroup == null) {
+				collocRelGroup = new CollocationRelGroup();
+				collocRelGroup.setName(tuple.getRelGroupName());
+				collocRelGroup.setCollocations(new ArrayList<>());
+				collocRelGroupMap.put(relGroupId, collocRelGroup);
+				collocPosGroup.getRelationGroups().add(collocRelGroup);
+			}
+		}
+		return collocRelGroup;
+	}
+
+	private Collocation populateCollocation(CollocationTuple tuple) {
+		Collocation collocation = new Collocation();
+		collocation.setValue(tuple.getCollocValue());
+		collocation.setDefinition(tuple.getCollocDefinition());
+		collocation.setCollocUsages(tuple.getCollocUsages());
+		collocation.setCollocMembers(tuple.getCollocMembers());
+		return collocation;
 	}
 
 	public void populateWordRelationClassifiers(Word word, String displayLang) {
