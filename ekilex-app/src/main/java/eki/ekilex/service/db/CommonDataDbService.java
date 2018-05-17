@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
+import static eki.ekilex.data.db.Tables.GENDER_LABEL;
 import static eki.ekilex.data.db.Tables.LANG;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
@@ -84,6 +85,30 @@ public class CommonDataDbService {
 				.select(POS_LABEL.CODE, POS_LABEL.VALUE)
 				.from(POS_LABEL)
 				.where(POS_LABEL.LANG.eq(classifierLabelLang).and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getLexemeRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE)
+				.from(REGISTER_LABEL)
+				.where(REGISTER_LABEL.LANG.eq(classifierLabelLang).and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getLexemeDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(DERIV_LABEL.CODE, DERIV_LABEL.VALUE)
+				.from(DERIV_LABEL)
+				.where(DERIV_LABEL.LANG.eq(classifierLabelLang).and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getLexemeGenders(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(GENDER_LABEL.CODE, GENDER_LABEL.VALUE)
+				.from(GENDER_LABEL)
+				.where(GENDER_LABEL.LANG.eq(classifierLabelLang).and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 

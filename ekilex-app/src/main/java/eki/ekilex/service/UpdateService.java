@@ -79,8 +79,23 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateWordGender(Long wordId, String genderCode) {
+		updateDbService.updateWordGender(wordId, genderCode);
+	}
+
+	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		updateDbService.updateLexemePos(lexemeId, currentPos, newPos);
+	}
+
+	@Transactional
+	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
+		updateDbService.updateLexemeDeriv(lexemeId, currentDeriv, newDeriv);
+	}
+
+	@Transactional
+	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
+		updateDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
 	}
 
 	@Transactional
@@ -96,6 +111,16 @@ public class UpdateService {
 	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		updateDbService.addLexemePos(lexemeId, posCode);
+	}
+
+	@Transactional
+	public void addLexemeDeriv(Long lexemeId, String derivCode) {
+		updateDbService.addLexemeDeriv(lexemeId, derivCode);
+	}
+
+	@Transactional
+	public void addLexemeRegister(Long lexemeId, String registerCode) {
+		updateDbService.addLexemeRegister(lexemeId, registerCode);
 	}
 
 	@Transactional
@@ -193,6 +218,20 @@ public class UpdateService {
 	public void removeLexemePos(Long lexemeId, String posCode) {
 		if (posCode != null) {
 			updateDbService.removeLexemePos(lexemeId, posCode);
+		}
+	}
+
+	@Transactional
+	public void removeLexemeDeriv(Long lexemeId, String derivCode) {
+		if (derivCode != null) {
+			updateDbService.removeLexemeDeriv(lexemeId, derivCode);
+		}
+	}
+
+	@Transactional
+	public void removeLexemeRegister(Long lexemeId, String registerCode) {
+		if (registerCode != null) {
+			updateDbService.removeLexemeRegister(lexemeId, registerCode);
 		}
 	}
 

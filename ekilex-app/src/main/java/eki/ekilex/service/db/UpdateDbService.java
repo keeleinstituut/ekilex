@@ -28,8 +28,10 @@ import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -126,10 +128,31 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateWordGender(Long wordId, String genderCode) {
+		create.update(WORD)
+				.set(WORD.GENDER_CODE, genderCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		create.update(LEXEME_POS)
 				.set(LEXEME_POS.POS_CODE, newPos)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(currentPos)))
+				.execute();
+	}
+
+	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
+		create.update(LEXEME_DERIV)
+				.set(LEXEME_DERIV.DERIV_CODE, newDeriv)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(currentDeriv)))
+				.execute();
+	}
+
+	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
+		create.update(LEXEME_REGISTER)
+				.set(LEXEME_REGISTER.REGISTER_CODE, newRegister)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(currentRegister)))
 				.execute();
 	}
 
@@ -160,6 +183,32 @@ public class UpdateDbService {
 			create
 				.insertInto(LEXEME_POS, LEXEME_POS.LEXEME_ID, LEXEME_POS.POS_CODE)
 				.values(lexemeId, posCode)
+				.execute();
+		}
+	}
+
+	public void addLexemeDeriv(Long lexemeId, String derivCode) {
+		Record1<Long> lexemeDeriv = create
+				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
+				.fetchOne();
+		if (lexemeDeriv == null) {
+			create
+				.insertInto(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID, LEXEME_DERIV.DERIV_CODE)
+				.values(lexemeId, derivCode)
+				.execute();
+		}
+	}
+
+	public void addLexemeRegister(Long lexemeId, String registerCode) {
+		Record1<Long> lexemeRegister = create
+				.select(LEXEME_REGISTER.ID).from(LEXEME_REGISTER)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
+				.fetchOne();
+		if (lexemeRegister == null) {
+			create
+				.insertInto(LEXEME_REGISTER, LEXEME_REGISTER.LEXEME_ID, LEXEME_REGISTER.REGISTER_CODE)
+				.values(lexemeId, registerCode)
 				.execute();
 		}
 	}
@@ -230,6 +279,20 @@ public class UpdateDbService {
 		create.delete(LEXEME_POS)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_POS.POS_CODE.eq(posCode)))
+				.execute();
+	}
+
+	public void removeLexemeDeriv(Long lexemeId, String derivCode) {
+		create.delete(LEXEME_DERIV)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
+				.execute();
+	}
+
+	public void removeLexemeRegister(Long lexemeId, String registerCode) {
+		create.delete(LEXEME_REGISTER)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
 				.execute();
 	}
 
