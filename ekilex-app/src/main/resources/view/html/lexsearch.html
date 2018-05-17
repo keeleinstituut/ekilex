@@ -269,9 +269,7 @@
                     <div th:if="${not #lists.isEmpty(definition.refLinks)}">
                       <span th:each="refLink : ${definition.refLinks}">
                         [
-                        <a th:href="@{'/def_ref_link:' + ${refLink.id}}">
-                          <span th:text="${refLink.value}"></span>
-                        </a>
+                        <a th:href="@{'/def_ref_link:' + ${refLink.id}}" th:text="${refLink.value}"></a>
                         <span th:if="${refLink.name != null}">
                           <span th:text="${refLink.name}"></span>
                         </span>
@@ -407,9 +405,7 @@
                           <div th:if="${not #lists.isEmpty(usage.refLinks)}">
                             <span th:each="refLink : ${usage.refLinks}">
                               [
-                              <a th:href="@{'/ff_ref_link:' + ${refLink.id}}">
-                                <span th:text="${refLink.value}"></span>
-                              </a>
+                              <a th:href="@{'/ff_ref_link:' + ${refLink.id}}" th:text="${refLink.value}"></a>
                               <span th:if="${refLink.name != null}">
                                 <span th:text="${refLink.name}"></span>
                               </span>
@@ -699,7 +695,7 @@
               onConfirm: performDelete
           }
       );
-      decorateRefLinks('wordback');
+      decorateRefLinks();
     </script>
   </th:block>
 
@@ -714,6 +710,7 @@
   <div th:replace="common :: #addNewGovernmentDlg"></div>
   <div th:replace="common :: newWordDlg('LEX_SEARCH')"></div>
   <div th:replace="common :: #addNewUsageMemberDlg"></div>
+  <div th:replace="common :: #detailsDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

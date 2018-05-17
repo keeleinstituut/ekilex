@@ -319,13 +319,16 @@ function initMultiValueAddDlg(theDlg) {
     });
 }
 
-function decorateRefLinks(backUrl) {
+function decorateRefLinks() {
     var detailsDiv = $('#details_div');
-    var id = detailsDiv.data('id');
-
     detailsDiv.find('a').each(function(indx, item) {
-        if ($(item).attr('href').includes('_ref_link:')) {
-            $(item).attr('href', ($(item).attr('href') + "/" + backUrl + "/" + id));
+        var theLink = $(item);
+        if (theLink.attr('href').includes('_ref_link:')) {
+            theLink.attr('data-target', '#detailsDlg');
+            theLink.attr('data-toggle', 'modal');
+            theLink.on('click',function(e) {
+                openDetailsDiv(e.target);
+            } );
         }
     });
 }
@@ -381,5 +384,18 @@ function openAddSourceRefDlg(elem) {
 
     addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         addDlg.find('.form-control').first().focus();
+    });
+}
+
+function openDetailsDiv(elem) {
+    var dlg = $($(elem).data('target'));
+    var url = $(elem).attr('href');
+
+    dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        dlg.find('.close').focus();
+        dlg.find('.modal-body').html(null);
+        $.get(url).done(function(data) {
+            dlg.find('.modal-body').html(data);
+        });
     });
 }

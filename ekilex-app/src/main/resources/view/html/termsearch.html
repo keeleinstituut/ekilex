@@ -196,9 +196,8 @@
                        th:name="${refLink.id} + '_def_ref_link'"
                        th:data-id="${refLink.id}"
                        th:data-op-code="def_ref_link"
-                    >
-                      <span th:text="${refLink.value}"></span>
-                    </a>
+                       th:text="${refLink.value}"
+                    ></a>
                     <span th:if="${refLink.name != null}">
                       <span th:text="${refLink.name}"></span>
                     </span>
@@ -473,9 +472,8 @@
                                        th:name="${refLink.id} + '_ff_ref_link'"
                                        th:data-id="${refLink.id}"
                                        th:data-op-code="ff_ref_link"
-                                    >
-                                      <span th:text="${refLink.value}"></span>
-                                    </a>
+                                       th:text="${refLink.value}"
+                                    ></a>
                                     <span th:if="${refLink.name != null}">
                                       <span th:text="${refLink.name}"></span>
                                     </span>
@@ -606,7 +604,7 @@
                 onConfirm: performDelete
             }
         );
-        decorateRefLinks('meaningback');
+        decorateRefLinks();
     </script>
   </th:block>
 
@@ -617,6 +615,7 @@
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
   <div th:replace="common :: #addNewSourceRefDlg"></div>
+  <div th:replace="common :: #detailsDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
