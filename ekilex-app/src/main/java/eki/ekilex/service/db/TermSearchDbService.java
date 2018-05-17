@@ -170,9 +170,13 @@ public class TermSearchDbService implements SystemConstant {
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
+				Lexeme l1 = LEXEME.as("l1");
 				Definition d1 = DEFINITION.as("d1");
-				Condition where1 = d1.MEANING_ID.eq(m1.ID);
+				Condition where1 = d1.MEANING_ID.eq(m1.ID).and(l1.MEANING_ID.eq(m1.ID));
 
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
@@ -182,7 +186,7 @@ public class TermSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString();
 					where1 = where1.and(d1.LANG.eq(searchValueStr));
 				}
-				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -213,7 +217,6 @@ public class TermSearchDbService implements SystemConstant {
 				for (SearchCriterion criterion : languageCriterions) {
 					where1 = where1.and(u1.LANG.eq(criterion.getSearchValue().toString()));
 				}
-
 				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, rect1, um1, u1).where(where1)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
@@ -231,7 +234,6 @@ public class TermSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where1 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where1);
 				}
-
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(m1ff, concept).where(where1)));
 			}
 		}
