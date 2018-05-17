@@ -12,6 +12,8 @@ public class AddItemRequest extends AbstractDataObject {
 
 	private Long id2;
 
+	private Long id3;
+
 	private String itemType;
 
 	private String language;
@@ -64,5 +66,13 @@ public class AddItemRequest extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public Long getId3() {
+		return id3;
+	}
+
+	public void setId3(Long id3) {
+		this.id3 = id3;
 	}
 }

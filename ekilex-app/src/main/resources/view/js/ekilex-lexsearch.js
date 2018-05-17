@@ -48,6 +48,7 @@ function initialise() {
     initSelectDlg($('#lexemePosDlg'));
     initSelectDlg($('#lexemeDerivDlg'));
     initSelectDlg($('#lexemeRegisterDlg'));
+    initSelectDlg($('#lexemeGenderDlg'));
     initSelectDlg($('#meaningDomainDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
     initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
@@ -80,4 +81,5 @@ function openLexemeClassifiersDlg(elem) {
     var theDlg = $($(elem).data('target'));
     theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
     theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
+    theDlg.find('[name=id3]').val($(elem).data('word-id'));
 }

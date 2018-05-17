@@ -128,6 +128,13 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateWordGender(Long wordId, String genderCode) {
+		create.update(WORD)
+				.set(WORD.GENDER_CODE, genderCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		create.update(LEXEME_POS)
 				.set(LEXEME_POS.POS_CODE, newPos)

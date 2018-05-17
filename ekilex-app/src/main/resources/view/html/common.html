@@ -221,6 +221,7 @@
         <div class="modal-body">
           <input type="hidden" name="id">
           <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
           <input type="hidden" name="value">
           <div class="form-group row">
             <div class="col-md-6">
@@ -230,6 +231,7 @@
                 <option value="meaning_domain">Valdkond</option>
                 <option value="lexeme_deriv">Tuletuskood</option>
                 <option value="lexeme_register">Register</option>
+                <option value="lexeme_gender">Sugu</option>
               </select>
             </div>
           </div>
@@ -277,6 +279,15 @@
                 <option th:each="register : ${allLexemeRegisters}"
                         th:value="${register.code}"
                         th:text="${register.value}">register</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="lexeme_gender">
+            <div class="col-md-8">
+              <select class="form-control value-select">
+                <option th:each="gender : ${allLexemeGenders}"
+                        th:value="${gender.code}"
+                        th:text="${gender.value}">gender</option>
               </select>
             </div>
           </div>
@@ -378,6 +389,25 @@
           <input type="hidden" name="opCode" value="lexeme_register">
           <select class="form-control" name="value">
             <option th:each="item : ${allLexemeRegisters}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeGenderDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_gender">
+          <select class="form-control" name="value">
+            <option th:each="item : ${allLexemeGenders}"
                     th:value="${item.code}"
                     th:text="${item.value}">value</option>
           </select>

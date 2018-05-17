@@ -79,6 +79,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateWordGender(Long wordId, String genderCode) {
+		updateDbService.updateWordGender(wordId, genderCode);
+	}
+
+	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		updateDbService.updateLexemePos(lexemeId, currentPos, newPos);
 	}

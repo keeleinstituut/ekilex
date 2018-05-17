@@ -53,6 +53,11 @@ public class LexSearchController extends AbstractSearchController {
 		return lexSearchService.getLexemeDerivs();
 	}
 
+	@ModelAttribute("allLexemeGenders")
+	public List<Classifier> getLexemeGenders() {
+		return lexSearchService.getLexemeGenders();
+	}
+
 	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.GET)
 	public String initSearch(Model model) throws Exception {
 
