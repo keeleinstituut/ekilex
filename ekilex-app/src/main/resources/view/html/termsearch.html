@@ -139,17 +139,40 @@
             <span class="lbl">Olek</span>
             <span th:text="${meaning.processStateCode}"></span>
           </div>
-          <p th:if="${not #lists.isEmpty(meaning.domains)}">
+          <div>
             <span class="lbl">Valdkonnad</span>
-            <span th:each="domain,domainIter : ${meaning.domains}">
-              <span th:text="${domain.code}"></span>
-              <th:block th:unless="${domain.code == domain.value}">
-              -
-              <span th:text="${domain.value}"></span>
+            <span th:each="classif,classifIter : ${meaning.domains}" class="hidden-buttons" th:if="${not #lists.isEmpty(meaning.domains)}">
+              <span
+                th:data-id="${meaningId}"
+                th:data-op-code="meaning_domain"
+                th:data-value="${classif.toIdString()}"
+                th:name="${classifIter.index} + '_meaning_domain'"
+                th:text="${classif.code}"></span>
+              <th:block th:unless="${classif.code == classif.value}">
+                -
+                <span th:text="${classif.value}"></span>
               </th:block>
-              <span th:unless="${domainIter.last}">,</span>
+              <button type="button" class="btn badge badge-primary"
+                      th:title="Muuda"
+                      onclick="openSelectDlg(this)"
+                      data-toggle="modal" data-target="#meaningDomainDlg"
+                      th:data-target-elem="${classifIter.index} + '_meaning_domain'">
+                <i class="fa fa-caret-down" aria-hidden="true"></i>
+              </button>
+              <button type="button" class="btn badge badge-warning"
+                      th:data-target-elem="${classifIter.index} + '_meaning_domain'"
+                      data-toggle="delete-confirmation" data-placement="right">
+                <i class="fa fa-remove" aria-hidden="true"></i>
+              </button>
+              <span th:unless="${classifIter.last}">,</span>
             </span>
-          </p>
+            <button type="button" class="btn badge badge-success" title="Lisa uus"
+                    th:data-id="${meaningId}"
+                    onclick="openLexemeClassifiersDlg(this)"
+                    data-toggle="modal" data-target="#lexemeClassifiersDlg">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
+          </div>
           <div th:if="${not #lists.isEmpty(meaning.definitions)}">
             <span class="lbl">Seletused</span>
             <button type="button" class="btn badge badge-success" title="Lisa uus"
@@ -616,6 +639,8 @@
   <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
   <div th:replace="common :: #addNewSourceRefDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
+  <div th:replace="common :: #meaningDomainDlg"></div>
+  <div th:replace="common :: #lexemeClassifiersDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

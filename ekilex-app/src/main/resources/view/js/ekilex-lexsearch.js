@@ -47,8 +47,8 @@ function initialise() {
     initSelectDlg($('#lexemeFrequencyDlg'));
     initSelectDlg($('#lexemePosDlg'));
     initSelectDlg($('#meaningDomainDlg'));
-    initMultiValueAddDlg($('#lexemeClassifiersDlg'));
-    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
+    initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
+    initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
     initNewWordDlg();
 }
 
@@ -72,4 +72,10 @@ function openLexemeLevelDlg(elem) {
             console.log(data);
         });
     });
+}
+
+function openLexemeClassifiersDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
 }

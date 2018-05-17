@@ -217,11 +217,19 @@ function openAddDlg(elem) {
 
 function openSelectDlg(elem) {
     var selectDlg = $($(elem).data('target'));
-    var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
+    var targetElement = $(elem);
+    if ($(elem).data('target-elem')) {
+        targetElement = $('[name=' + $(elem).data('target-elem') + ']');
+    }
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
     selectDlg.find('[name=currentValue]').val(currentValue);
-    selectDlg.find('select').val(currentValue);
+    var selectElem = selectDlg.find('select');
+    if (currentValue === undefined) {
+        selectElem.val(selectElem.find('option').first().val());
+    } else {
+        selectElem.val(currentValue);
+    }
 }
 
 function initSelectDlg(selectDlg) {
@@ -290,31 +298,27 @@ function toggleValueGroup(dlg, groupName) {
     dlg.find('[data-id=' + groupName + ']').find('.value-select').trigger('change');
 }
 
-function openLexemeClassifiersDlg(elem) {
-    var theDlg = $($(elem).data('target'));
-    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
-    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
-}
-
 function openUsageMemberDlg(elem) {
     var theDlg = $($(elem).data('target'));
     theDlg.find('[name=id]').val($(elem).data('id'));
 }
 
-function initMultiValueAddDlg(theDlg) {
+function initMultiValueAddDlg(theDlg, resetElements) {
     theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
     theDlg.find('.value-select').off('change').on('change', function(e) {
         theDlg.find('[name=value]').val($(this).val());
     });
     theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        theDlg.find('select').each(function(indx, item) {
-            $(item).val($(item).find('option').first().val());
-        });
-        theDlg.find('textarea').each(function(indx, item) {
-            $(item).val(null);
-        });
-        toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
+        if (resetElements) {
+            theDlg.find('select').each(function (indx, item) {
+                $(item).val($(item).find('option').first().val());
+            });
+            theDlg.find('textarea').each(function (indx, item) {
+                $(item).val(null);
+            });
+            toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
+        }
         alignAndFocus(e, theDlg);
     });
 }
