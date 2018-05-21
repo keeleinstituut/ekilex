@@ -109,6 +109,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateGrammar(Long grammarId, String grammar) {
+		updateDbService.updateGrammar(grammarId, grammar);
+	}
+
+	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		updateDbService.addLexemePos(lexemeId, posCode);
 	}
@@ -151,6 +156,11 @@ public class UpdateService {
 	@Transactional
 	public void addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
 		updateDbService.addFreeformSourceRef(freeformId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
+	public void addLexemeGrammar(Long lexemeId, String value) {
+		updateDbService.addLexemeGrammar(lexemeId, value);
 	}
 
 	@Transactional
@@ -197,6 +207,12 @@ public class UpdateService {
 	@Transactional
 	public void removeFreeformRefLink(Long refLinkId) {
 		updateDbService.removeFreeformRefLink(refLinkId);
+	}
+
+	@Transactional
+	public void removeGrammar(Long grammarId) {
+		updateDbService.removeLexemeFreeform(grammarId);
+		updateDbService.removeFreeform(grammarId);
 	}
 
 	@Transactional

@@ -140,9 +140,9 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
-	public Result<Record1<String>> findLexemeGrammars(Long lexemeId) {
+	public Result<Record2<Long, String>> findLexemeGrammars(Long lexemeId) {
 		return create
-				.select(FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))

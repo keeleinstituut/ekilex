@@ -140,8 +140,23 @@
               </div>
               <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
                 <span class="lbl">Grammatika</span>
-                <span th:each="grammar,grammarIter : ${lexeme.grammars}">
-                  <span th:text="${grammar}"></span>
+                <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
+                  <span th:name="${grammar.id} + '_lexeme_grammar'"
+                        th:data-id="${grammar.id}"
+                        th:data-op-code="lexeme_grammar"
+                        th:data-value="${grammar.valueText}"
+                        th:text="${grammar.valueText}"></span>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="Muuda" th:data-target-elem="${grammar.id} + '_lexeme_grammar'"
+                          onclick="openEditDlg(this)"
+                          data-toggle="modal" data-target="#editDlg">
+                    <i class="fa fa-edit" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-target-elem="${grammar.id} + '_lexeme_grammar'"
+                          data-toggle="delete-confirmation" data-placement="right">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
                   <span th:unless="${grammarIter.last}">,&nbsp;</span>
                 </span>
               </div>

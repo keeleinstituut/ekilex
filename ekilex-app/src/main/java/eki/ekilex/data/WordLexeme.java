@@ -82,7 +82,7 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Relation> meaningRelations;
 
-	private List<String> grammars;
+	private List<FreeForm> grammars;
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
@@ -321,11 +321,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningRelations = meaningRelations;
 	}
 
-	public List<String> getGrammars() {
+	public List<FreeForm> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<String> grammars) {
+	public void setGrammars(List<FreeForm> grammars) {
 		this.grammars = grammars;
 	}
 

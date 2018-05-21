@@ -140,7 +140,7 @@ public class TermSearchService implements SystemConstant {
 					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
 			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
-			List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
+			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
 
 			for (Lexeme lexeme : lexemeWords) {
 

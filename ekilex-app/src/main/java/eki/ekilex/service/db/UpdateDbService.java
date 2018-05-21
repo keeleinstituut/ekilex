@@ -174,6 +174,13 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateGrammar(Long grammarId, String grammar) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, grammar)
+				.where(FREEFORM.ID.eq(grammarId))
+				.execute();
+	}
+
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
@@ -254,6 +261,17 @@ public class UpdateDbService {
 				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.values(meaningId, wordId, datasetCode, 1, 1, 1)
 				.execute();
+	}
+
+	public Long addLexemeGrammar(Long lexemeId, String value) {
+
+		Long grammarFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.values(FreeformType.GRAMMAR.name(), value).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, grammarFreeformId).execute();
+		return grammarFreeformId;
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
