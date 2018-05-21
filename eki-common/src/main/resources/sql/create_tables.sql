@@ -692,6 +692,18 @@ create table definition_ref_link
 );
 alter sequence definition_ref_link_id_seq restart with 10000;
 
+create table lexeme_ref_link
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  ref_type varchar(100) not null,
+  ref_id bigint null,
+  name text null,
+  value text null,
+  order_by bigserial
+);
+alter sequence lexeme_ref_link_id_seq restart with 10000;
+
 --- indexes
 
 create index form_value_idx on form(value);
@@ -727,6 +739,7 @@ create index collocation_freeform_collocation_id_idx on collocation_freeform(col
 create index collocation_freeform_freeform_id_idx on collocation_freeform(freeform_id);
 create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
 create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
+create index lexeme_ref_link_lexeme_id_idx on lexeme_ref_link(lexeme_id);
 create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
 create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
