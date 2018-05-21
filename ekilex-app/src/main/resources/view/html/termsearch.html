@@ -134,7 +134,7 @@
     <div th:data-id="${meaningId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
       <button id="refresh-details" hidden th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
       <div style="border: 1px solid #CCC; padding: 5px;">
-        <div th:if="${meaning.contentExists}">
+        <div>
           <div th:if="${meaning.processStateCode != null}">
             <span class="lbl">Olek</span>
             <span th:text="${meaning.processStateCode}"></span>
@@ -173,7 +173,7 @@
               <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
           </div>
-          <div th:if="${not #lists.isEmpty(meaning.definitions)}">
+          <div>
             <span class="lbl">Seletused</span>
             <button type="button" class="btn badge badge-success" title="Lisa uus"
                     th:data-id="${meaningId}"
@@ -181,7 +181,6 @@
                     data-toggle="modal" data-target="#addNewDefinitionDlg">
               <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
-            <br />
             <ul>
               <li th:each="definition : ${meaning.definitions}" th:if="${termViewUtil.isSelectedLang(definition.lang,sessionBean.languagesOrder)}">
                 <div class="hidden-buttons">
