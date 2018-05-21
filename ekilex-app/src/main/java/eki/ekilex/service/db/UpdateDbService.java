@@ -227,8 +227,14 @@ public class UpdateDbService {
 	}
 
 	public void addWord(String word, String datasetCode, String language, String morphCode) {
-
-		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(1, language).returning(WORD.ID).fetchOne().getId();
+		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
+				.where(WORD.LANG.eq(language).and(FORM.IS_WORD.isTrue()).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
+		int homonymNumber = 1;
+		if (currentHomonymNumber.value1() != null) {
+			homonymNumber = currentHomonymNumber.value1() + 1;
+		}
+		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
 				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)

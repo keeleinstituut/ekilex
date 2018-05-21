@@ -310,14 +310,31 @@ public class ModifyController implements WebConstant {
 		if (words.getTotalCount() == 0) {
 			updateService.addWord(value, dataset, language,morphCode);
 		} else {
-			long wordsFromOtherDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).count();
-			if (wordsFromOtherDatasets != 0) {
-				attributes.addFlashAttribute("dataset", dataset);
-				attributes.addFlashAttribute("wordValue", value);
-				attributes.addFlashAttribute("returnPage", returnPage);
-				return "redirect:/wordselect";
-			}
+			attributes.addFlashAttribute("dataset", dataset);
+			attributes.addFlashAttribute("wordValue", value);
+			attributes.addFlashAttribute("language", language);
+			attributes.addFlashAttribute("morphCode", morphCode);
+			attributes.addFlashAttribute("returnPage", returnPage);
+			return "redirect:/wordselect";
 		}
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+			sessionBean.getSelectedDatasets().add(dataset);
+		}
+		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+	}
+
+	@PostMapping("/add_homonym")
+	public String addNewHomonym(
+			@RequestParam("dataset") String dataset,
+			@RequestParam("value") String value,
+			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("returnPage") String returnPage,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		updateService.addWord(value, dataset, language, morphCode);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
 		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
 			sessionBean.getSelectedDatasets().add(dataset);
@@ -330,12 +347,15 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			@ModelAttribute(name = "dataset") String dataset,
 			@ModelAttribute(name = "wordValue") String wordValue,
+			@ModelAttribute(name = "language") String language,
+			@ModelAttribute(name = "morphCode") String morphCode,
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
-		allDatasets.remove(dataset);
 		WordsResult words = lexSearchService.findWords(wordValue, allDatasets, true);
-		model.addAttribute("words", words.getWords());
+		List<Word> wordsInDifferentDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).collect(Collectors.toList());
+		model.addAttribute("words", wordsInDifferentDatasets);
+		model.addAttribute("hasWordInSameDataset", words.getWords().size() != wordsInDifferentDatasets.size());
 		Map<Long, WordDetails> details = new HashMap<>();
 		Map<Long, Boolean> wordHasDefinitions = new HashMap<>();
 		for (Word word : words.getWords() ) {
