@@ -232,7 +232,7 @@ public class ModifyController implements WebConstant {
 		case "ff_ref_link" :
 			updateService.removeFreeformRefLink(id);
 			break;
-		case "_lex_ref_link" :
+		case "lex_ref_link" :
 			updateService.removeLexemeRefLink(id);
 			break;
 		case "lexeme_deriv" :
