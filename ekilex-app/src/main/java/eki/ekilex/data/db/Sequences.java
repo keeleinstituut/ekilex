@@ -169,6 +169,16 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_POS_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_pos_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.lexeme_ref_link_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_REF_LINK_ID_SEQ = new SequenceImpl<Long>("lexeme_ref_link_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.lexeme_ref_link_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_REF_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_ref_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.lexeme_register_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_REGISTER_ID_SEQ = new SequenceImpl<Long>("lexeme_register_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

@@ -42,6 +42,7 @@ import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
@@ -175,6 +176,8 @@ public class Indexes {
     public static final Index LEXEME_POS_LEXEME_ID_IDX = Indexes0.LEXEME_POS_LEXEME_ID_IDX;
     public static final Index LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Indexes0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
     public static final Index LEXEME_POS_PKEY = Indexes0.LEXEME_POS_PKEY;
+    public static final Index LEXEME_REF_LINK_LEXEME_ID_IDX = Indexes0.LEXEME_REF_LINK_LEXEME_ID_IDX;
+    public static final Index LEXEME_REF_LINK_PKEY = Indexes0.LEXEME_REF_LINK_PKEY;
     public static final Index LEXEME_REGISTER_LEXEME_ID_IDX = Indexes0.LEXEME_REGISTER_LEXEME_ID_IDX;
     public static final Index LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = Indexes0.LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY;
     public static final Index LEXEME_REGISTER_PKEY = Indexes0.LEXEME_REGISTER_PKEY;
@@ -311,6 +314,8 @@ public class Indexes {
         public static Index LEXEME_POS_LEXEME_ID_IDX = Internal.createIndex("lexeme_pos_lexeme_id_idx", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.LEXEME_ID }, false);
         public static Index LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Internal.createIndex("lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE }, true);
         public static Index LEXEME_POS_PKEY = Internal.createIndex("lexeme_pos_pkey", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.ID }, true);
+        public static Index LEXEME_REF_LINK_LEXEME_ID_IDX = Internal.createIndex("lexeme_ref_link_lexeme_id_idx", LexemeRefLink.LEXEME_REF_LINK, new OrderField[] { LexemeRefLink.LEXEME_REF_LINK.LEXEME_ID }, false);
+        public static Index LEXEME_REF_LINK_PKEY = Internal.createIndex("lexeme_ref_link_pkey", LexemeRefLink.LEXEME_REF_LINK, new OrderField[] { LexemeRefLink.LEXEME_REF_LINK.ID }, true);
         public static Index LEXEME_REGISTER_LEXEME_ID_IDX = Internal.createIndex("lexeme_register_lexeme_id_idx", LexemeRegister.LEXEME_REGISTER, new OrderField[] { LexemeRegister.LEXEME_REGISTER.LEXEME_ID }, false);
         public static Index LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = Internal.createIndex("lexeme_register_lexeme_id_register_code_key", LexemeRegister.LEXEME_REGISTER, new OrderField[] { LexemeRegister.LEXEME_REGISTER.LEXEME_ID, LexemeRegister.LEXEME_REGISTER.REGISTER_CODE }, true);
         public static Index LEXEME_REGISTER_PKEY = Internal.createIndex("lexeme_register_pkey", LexemeRegister.LEXEME_REGISTER, new OrderField[] { LexemeRegister.LEXEME_REGISTER.ID }, true);
