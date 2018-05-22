@@ -159,6 +159,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+		updateDbService.addLexemeSourceRef(lexemeId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
 	public void addLexemeGrammar(Long lexemeId, String value) {
 		updateDbService.addLexemeGrammar(lexemeId, value);
 	}
@@ -207,6 +212,11 @@ public class UpdateService {
 	@Transactional
 	public void removeFreeformRefLink(Long refLinkId) {
 		updateDbService.removeFreeformRefLink(refLinkId);
+	}
+
+	@Transactional
+	public void removeLexemeRefLink(Long refLinkId) {
+		updateDbService.removeLexemeRefLink(refLinkId);
 	}
 
 	@Transactional

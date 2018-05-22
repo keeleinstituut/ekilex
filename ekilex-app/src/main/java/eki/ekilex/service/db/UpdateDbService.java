@@ -31,6 +31,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -340,6 +341,10 @@ public class UpdateDbService {
 		create.delete(FREEFORM_REF_LINK).where(FREEFORM_REF_LINK.ID.eq(refLinkId)).execute();
 	}
 
+	public void removeLexemeRefLink(Long refLinkId) {
+		create.delete(LEXEME_REF_LINK).where(LEXEME_REF_LINK.ID.eq(refLinkId)).execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
@@ -396,6 +401,20 @@ public class UpdateDbService {
 						FREEFORM_REF_LINK.VALUE,
 						FREEFORM_REF_LINK.NAME)
 				.values(freeformId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(FREEFORM_REF_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						LEXEME_REF_LINK,
+						LEXEME_REF_LINK.LEXEME_ID,
+						LEXEME_REF_LINK.REF_ID,
+						LEXEME_REF_LINK.REF_TYPE,
+						LEXEME_REF_LINK.VALUE,
+						LEXEME_REF_LINK.NAME)
+				.values(lexemeId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(LEXEME_REF_LINK.ID)
 				.fetchOne()
 				.getId();
 	}

@@ -232,6 +232,9 @@ public class ModifyController implements WebConstant {
 		case "ff_ref_link" :
 			updateService.removeFreeformRefLink(id);
 			break;
+		case "_lex_ref_link" :
+			updateService.removeLexemeRefLink(id);
+			break;
 		case "lexeme_deriv" :
 			updateService.removeLexemeDeriv(id, valueToRemove);
 			break;
@@ -286,6 +289,12 @@ public class ModifyController implements WebConstant {
 			Source source = sourceService.getSource(itemData.getId2());
 			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
 			updateService.addFreeformSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
+			break;
+			}
+		case "lexSourceRef" : {
+			Source source = sourceService.getSource(itemData.getId2());
+			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+			updateService.addLexemeSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
 			break;
 			}
 		case "lexeme_deriv" :
