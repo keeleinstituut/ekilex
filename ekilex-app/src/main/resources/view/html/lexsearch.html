@@ -588,13 +588,14 @@
                           <span th:text="${colloc.value}"></span>
                         </td>
                         <td style="padding: 0px 5px 0px 5px">
-                          <span th:each="collocMember : ${colloc.collocMembers}">
+                          <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
                             <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
                               <span th:text="${collocMember.word}"></span>
                               <code>
                                 [<span th:text="${collocMember.weight}"></span>]
                               </code>
                             </button>
+                            <br th:unless="${collocMemberIter.last}"/>
                           </span>
                         </td>
                         <td style="padding: 0px 5px 0px 5px">
@@ -636,13 +637,14 @@
                     <span th:text="${colloc.value}"></span>
                   </td>
                   <td style="padding: 0px 5px 0px 5px">
-                    <span th:each="collocMember : ${colloc.collocMembers}">
+                    <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
                       <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
                         <span th:text="${collocMember.word}"></span>
                         <code>
                           [<span th:text="${collocMember.weight}"></span>]
                         </code>
                       </button>
+                      <br th:unless="${collocMemberIter.last}"/>
                     </span>
                   </td>
                   <td style="padding: 0px 5px 0px 5px">

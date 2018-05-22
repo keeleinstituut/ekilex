@@ -120,7 +120,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1189058988;
+    private static final long serialVersionUID = -851028527;
 
     /**
      * The reference instance of <code>public</code>
@@ -559,7 +559,6 @@ public class Public extends SchemaImpl {
         return Arrays.<Sequence<?>>asList(
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
-            Sequences.COLLOCATION_ORDER_BY_SEQ,
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
             Sequences.DEFINITION_ORDER_BY_SEQ,
@@ -574,7 +573,6 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_REF_LINK_ID_SEQ,
             Sequences.FREEFORM_REF_LINK_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_ID_SEQ,
-            Sequences.LEX_COLLOC_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_REL_GROUP_ID_SEQ,

@@ -547,8 +547,7 @@ create table collocation
   definition text,
   frequency numeric(14, 4),
   score numeric(14, 4),
-  usages text array,
-  order_by bigserial
+  usages text array
 );
 alter sequence collocation_id_seq restart with 10000;
 
@@ -663,7 +662,8 @@ create table lex_colloc
   rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null,
   collocation_id bigint references collocation(id) on delete cascade not null,
   weight numeric(14, 4),
-  order_by bigserial,
+  member_order integer not null,
+  group_order integer,
   unique(lexeme_id, collocation_id)
 );
 alter sequence lex_colloc_id_seq restart with 10000;

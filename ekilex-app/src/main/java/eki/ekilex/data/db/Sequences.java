@@ -34,11 +34,6 @@ public class Sequences {
     public static final Sequence<Long> COLLOCATION_ID_SEQ = new SequenceImpl<Long>("collocation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.collocation_order_by_seq</code>
-     */
-    public static final Sequence<Long> COLLOCATION_ORDER_BY_SEQ = new SequenceImpl<Long>("collocation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
      * The sequence <code>public.definition_freeform_id_seq</code>
      */
     public static final Sequence<Long> DEFINITION_FREEFORM_ID_SEQ = new SequenceImpl<Long>("definition_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -107,11 +102,6 @@ public class Sequences {
      * The sequence <code>public.lex_colloc_id_seq</code>
      */
     public static final Sequence<Long> LEX_COLLOC_ID_SEQ = new SequenceImpl<Long>("lex_colloc_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.lex_colloc_order_by_seq</code>
-     */
-    public static final Sequence<Long> LEX_COLLOC_ORDER_BY_SEQ = new SequenceImpl<Long>("lex_colloc_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.lex_colloc_pos_group_id_seq</code>

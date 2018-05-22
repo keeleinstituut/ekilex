@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
 
-    private static final long serialVersionUID = 2011258109;
+    private static final long serialVersionUID = -1140749856;
 
     /**
      * The reference instance of <code>public.mview_ww_collocation</code>
@@ -113,6 +113,11 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
     public final TableField<MviewWwCollocationRecord, Long> REL_GROUP_ORDER_BY = createField("rel_group_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_collocation.colloc_group_order</code>.
+     */
+    public final TableField<MviewWwCollocationRecord, Integer> COLLOC_GROUP_ORDER = createField("colloc_group_order", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
      * The column <code>public.mview_ww_collocation.colloc_id</code>.
      */
     public final TableField<MviewWwCollocationRecord, Long> COLLOC_ID = createField("colloc_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
@@ -131,11 +136,6 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
      * The column <code>public.mview_ww_collocation.colloc_usages</code>.
      */
     public final TableField<MviewWwCollocationRecord, String[]> COLLOC_USAGES = createField("colloc_usages", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.mview_ww_collocation.colloc_order_by</code>.
-     */
-    public final TableField<MviewWwCollocationRecord, Long> COLLOC_ORDER_BY = createField("colloc_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_collocation.colloc_members</code>.

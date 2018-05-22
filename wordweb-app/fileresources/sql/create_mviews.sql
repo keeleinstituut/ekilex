@@ -127,11 +127,11 @@ dblink(
 	rel_group_id bigint,
 	rel_group_name text,
 	rel_group_order_by bigint,
+	colloc_group_order integer,
 	colloc_id bigint,
 	colloc_value text,
 	colloc_definition text,
 	colloc_usages text array,
-	colloc_order_by bigint,
 	colloc_members type_colloc_member array
 );
 

@@ -288,12 +288,12 @@ create view view_ww_collocation
       rgr1.id as rel_group_id,
       rgr1.name as rel_group_name,
       rgr1.order_by as rel_group_order_by,
+      lc1.group_order as colloc_group_order,
       c.id as colloc_id,
       c.value as colloc_value,
       c.definition as colloc_definition,
       c.usages as colloc_usages,
-      c.order_by as colloc_order_by,
-      array_agg(row(l2.id, l2.word_id, f2.value)::type_colloc_member order by lc2.order_by) as colloc_members
+      array_agg(row(l2.id, l2.word_id, f2.value)::type_colloc_member order by lc2.member_order) as colloc_members
     from
       collocation as c
       inner join lex_colloc as lc1 on lc1.collocation_id = c.id
@@ -308,14 +308,16 @@ create view view_ww_collocation
       l1.id,
       c.id,
       pgr1.id,
-      rgr1.id
+      rgr1.id,
+      lc1.id
     order by
       l1.level1,
       l1.level2,
       l1.level3,
-      c.order_by,
       pgr1.order_by,
-      rgr1.order_by;
+      rgr1.order_by,
+      lc1.group_order,
+      c.id;
 
 -- word relations
 create view view_ww_word_relation 

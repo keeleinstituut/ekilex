@@ -708,7 +708,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue())
 						)
-				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, c.ORDER_BY, lc2.ORDER_BY)
+				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
 				.fetch();
 	}
 
@@ -745,7 +745,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue())
 						)
-				.orderBy(c.ORDER_BY, lc2.ORDER_BY)
+				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetch();
 	}
 }

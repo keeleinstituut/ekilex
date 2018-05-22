@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Collocation extends TableImpl<CollocationRecord> {
 
-    private static final long serialVersionUID = 497277188;
+    private static final long serialVersionUID = -964817030;
 
     /**
      * The reference instance of <code>public.collocation</code>
@@ -84,11 +84,6 @@ public class Collocation extends TableImpl<CollocationRecord> {
      * The column <code>public.collocation.usages</code>.
      */
     public final TableField<CollocationRecord, String[]> USAGES = createField("usages", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.collocation.order_by</code>.
-     */
-    public final TableField<CollocationRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('collocation_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.collocation</code> table reference

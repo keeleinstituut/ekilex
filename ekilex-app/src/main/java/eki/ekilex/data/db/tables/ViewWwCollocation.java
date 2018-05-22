@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
 
-    private static final long serialVersionUID = 917920168;
+    private static final long serialVersionUID = 1592750133;
 
     /**
      * The reference instance of <code>public.view_ww_collocation</code>
@@ -128,9 +128,9 @@ public class ViewWwCollocation extends TableImpl<ViewWwCollocationRecord> {
     public final TableField<ViewWwCollocationRecord, String[]> COLLOC_USAGES = createField("colloc_usages", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.view_ww_collocation.colloc_order_by</code>.
+     * The column <code>public.view_ww_collocation.colloc_group_order</code>.
      */
-    public final TableField<ViewWwCollocationRecord, Long> COLLOC_ORDER_BY = createField("colloc_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<ViewWwCollocationRecord, Integer> COLLOC_GROUP_ORDER = createField("colloc_group_order", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.view_ww_collocation.colloc_members</code>.
