@@ -31,6 +31,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
@@ -174,6 +175,13 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateGrammar(Long grammarId, String grammar) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, grammar)
+				.where(FREEFORM.ID.eq(grammarId))
+				.execute();
+	}
+
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
@@ -227,8 +235,14 @@ public class UpdateDbService {
 	}
 
 	public void addWord(String word, String datasetCode, String language, String morphCode) {
-
-		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(1, language).returning(WORD.ID).fetchOne().getId();
+		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
+				.where(WORD.LANG.eq(language).and(FORM.IS_WORD.isTrue()).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
+		int homonymNumber = 1;
+		if (currentHomonymNumber.value1() != null) {
+			homonymNumber = currentHomonymNumber.value1() + 1;
+		}
+		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
 				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)
@@ -248,6 +262,17 @@ public class UpdateDbService {
 				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.values(meaningId, wordId, datasetCode, 1, 1, 1)
 				.execute();
+	}
+
+	public Long addLexemeGrammar(Long lexemeId, String value) {
+
+		Long grammarFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.values(FreeformType.GRAMMAR.name(), value).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, grammarFreeformId).execute();
+		return grammarFreeformId;
 	}
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
@@ -316,6 +341,10 @@ public class UpdateDbService {
 		create.delete(FREEFORM_REF_LINK).where(FREEFORM_REF_LINK.ID.eq(refLinkId)).execute();
 	}
 
+	public void removeLexemeRefLink(Long refLinkId) {
+		create.delete(LEXEME_REF_LINK).where(LEXEME_REF_LINK.ID.eq(refLinkId)).execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
@@ -372,6 +401,20 @@ public class UpdateDbService {
 						FREEFORM_REF_LINK.VALUE,
 						FREEFORM_REF_LINK.NAME)
 				.values(freeformId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(FREEFORM_REF_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						LEXEME_REF_LINK,
+						LEXEME_REF_LINK.LEXEME_ID,
+						LEXEME_REF_LINK.REF_ID,
+						LEXEME_REF_LINK.REF_TYPE,
+						LEXEME_REF_LINK.VALUE,
+						LEXEME_REF_LINK.NAME)
+				.values(lexemeId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(LEXEME_REF_LINK.ID)
 				.fetchOne()
 				.getId();
 	}

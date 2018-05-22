@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.RefLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -202,11 +203,12 @@ public class LexSearchService implements SystemConstant {
 		List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
 		List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
-		List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
+		List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
 		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.findPrimaryCollocationTuples(lexemeId).into(CollocationTuple.class);
 		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
 		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.findSecondaryCollocationTuples(lexemeId).into(CollocationTuple.class);
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
+		List<RefLink> lexemeRefLinks = commonDataDbService.findLexemeRefLinks(lexemeId).into(RefLink.class);
 
 		lexeme.setLexemePos(lexemePos);
 		lexeme.setLexemeDerivs(lexemeDerivs);
@@ -223,6 +225,7 @@ public class LexSearchService implements SystemConstant {
 		lexeme.setCollocationPosGroups(collocationPosGroups);
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setVocalForms(vocalForms);
+		lexeme.setRefLinks(lexemeRefLinks);
 
 		boolean lexemeOrMeaningClassifiersExist =
 				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())

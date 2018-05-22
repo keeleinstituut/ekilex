@@ -9,10 +9,13 @@ public class RefLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "id")
 	private Long id;
 
+	@Column(name = "name")
 	private String name;
 
+	@Column(name = "value")
 	private String value;
 
 	@Column(name = "owner_id")

@@ -15,6 +15,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -140,13 +141,27 @@ public class CommonDataDbService {
 				.fetch();
 	}
 
-	public Result<Record1<String>> findLexemeGrammars(Long lexemeId) {
+	public Result<Record2<Long, String>> findLexemeGrammars(Long lexemeId) {
 		return create
-				.select(FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
+				.fetch();
+	}
+
+	public Result<Record4<Long,String,String,String>> findLexemeRefLinks(Long lexemeId) {
+		return create
+				.select(
+						LEXEME_REF_LINK.ID,
+						LEXEME_REF_LINK.NAME,
+						LEXEME_REF_LINK.VALUE,
+						LEXEME_REF_LINK.REF_TYPE
+				)
+				.from(LEXEME_REF_LINK)
+				.where(LEXEME_REF_LINK.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_REF_LINK.ORDER_BY)
 				.fetch();
 	}
 

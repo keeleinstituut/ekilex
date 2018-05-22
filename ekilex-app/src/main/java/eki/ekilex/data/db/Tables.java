@@ -42,6 +42,7 @@ import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
@@ -291,6 +292,11 @@ public class Tables {
      * The table <code>public.lexeme_pos</code>.
      */
     public static final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
+
+    /**
+     * The table <code>public.lexeme_ref_link</code>.
+     */
+    public static final LexemeRefLink LEXEME_REF_LINK = eki.ekilex.data.db.tables.LexemeRefLink.LEXEME_REF_LINK;
 
     /**
      * The table <code>public.lexeme_register</code>.

@@ -24,6 +24,8 @@ public class RefLinkService {
 			refLink = refLinkDbService.getFreeformRefLink(refLinkId).into(RefLink.class);
 		} else if (ReferenceOwner.DEFINITION.equals(referenceOwner)) {
 			refLink = refLinkDbService.getDefinitionRefLink(refLinkId).into(RefLink.class);
+		} else if (ReferenceOwner.LEXEME.equals(referenceOwner)) {
+			refLink = refLinkDbService.getLexemeRefLink(refLinkId).into(RefLink.class);
 		}
 		return refLink;
 	}

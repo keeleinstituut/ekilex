@@ -311,11 +311,11 @@ function initMultiValueAddDlg(theDlg, resetElements) {
     theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         if (resetElements) {
+            theDlg.find('.form-control').each(function (indx, item) {
+                $(item).val(null);
+            });
             theDlg.find('select').each(function (indx, item) {
                 $(item).val($(item).find('option').first().val());
-            });
-            theDlg.find('textarea').each(function (indx, item) {
-                $(item).val(null);
             });
             toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
         }
@@ -372,7 +372,9 @@ function openAddSourceRefDlg(elem) {
             addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
                 e.preventDefault();
                 var button = $(e.target);
+                var sourceName = button.closest('.form-group').find('.form-control').val();
                 addDlg.find('[name=id2]').val(button.data('source-id'));
+                addDlg.find('[name=value]').val(sourceName);
                 var theForm = button.closest('form');
                 submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
                     addDlg.modal('hide');

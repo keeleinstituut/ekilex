@@ -19,6 +19,7 @@ drop type if exists type_meaning_relation;
 
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
+drop table if exists lexeme_ref_link;
 drop table if exists lex_colloc;
 drop table if exists collocation_rel_group;--remove later
 drop table if exists collocation_pos_group;--remove later

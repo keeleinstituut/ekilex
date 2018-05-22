@@ -64,11 +64,11 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
-	private List<String> grammars;
+	private List<FreeForm> grammars;
 
 	private boolean classifiersExist;
 
-	private List<String> sources;
+	private List<RefLink> refLinks;
 
 	public String getWord() {
 		return word;
@@ -230,11 +230,11 @@ public class Lexeme extends AbstractDataObject {
 		this.classifiersExist = classifiersExist;
 	}
 
-	public List<String> getGrammars() {
+	public List<FreeForm> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<String> grammars) {
+	public void setGrammars(List<FreeForm> grammars) {
 		this.grammars = grammars;
 	}
 
@@ -246,11 +246,11 @@ public class Lexeme extends AbstractDataObject {
 		this.genderCode = genderCode;
 	}
 
-	public List<String> getSources() {
-		return sources;
+	public List<RefLink> getRefLinks() {
+		return refLinks;
 	}
 
-	public void setSources(List<String> sources) {
-		this.sources = sources;
+	public void setRefLinks(List<RefLink> refLinks) {
+		this.refLinks = refLinks;
 	}
 }

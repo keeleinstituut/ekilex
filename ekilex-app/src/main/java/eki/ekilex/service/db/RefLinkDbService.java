@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_REF_LINK;
 
 import org.jooq.DSLContext;
 import org.jooq.Record3;
@@ -43,4 +44,18 @@ public class RefLinkDbService {
 				.where(DEFINITION_REF_LINK.ID.eq(refLinkId))
 				.fetchOne();
 	}
+
+	public Record3<Long, String, Long> getLexemeRefLink(Long refLinkId) {
+
+		return create
+				.select(
+						LEXEME_REF_LINK.LEXEME_ID.as("owner_id"),
+						LEXEME_REF_LINK.REF_TYPE,
+						LEXEME_REF_LINK.REF_ID
+						)
+				.from(LEXEME_REF_LINK)
+				.where(LEXEME_REF_LINK.ID.eq(refLinkId))
+				.fetchOne();
+	}
+
 }

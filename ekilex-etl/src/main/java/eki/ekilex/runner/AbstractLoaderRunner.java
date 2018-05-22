@@ -494,6 +494,22 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return refLinkId;
 	}
 
+	protected Long createLexemeRefLink(Long lexemeId, ReferenceType refType, Long refId, String name, String value) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("ref_type", refType.name());
+		tableRowParamMap.put("ref_id", refId);
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
+		Long refLinkId = basicDbService.create(LEXEME_REF_LINK, tableRowParamMap);
+		return refLinkId;
+	}
+
 	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleLogType type, String eventBy, Timestamp eventOn) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();

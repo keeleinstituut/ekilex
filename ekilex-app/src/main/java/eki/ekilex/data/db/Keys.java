@@ -42,6 +42,7 @@ import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
@@ -113,6 +114,7 @@ import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemeFrequencyRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.tables.records.LexemeRefLinkRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.LifecycleLogRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
@@ -191,6 +193,7 @@ public class Keys {
     public static final Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Identities0.IDENTITY_LEXEME_DERIV;
     public static final Identity<LexemeFreeformRecord, Long> IDENTITY_LEXEME_FREEFORM = Identities0.IDENTITY_LEXEME_FREEFORM;
     public static final Identity<LexemePosRecord, Long> IDENTITY_LEXEME_POS = Identities0.IDENTITY_LEXEME_POS;
+    public static final Identity<LexemeRefLinkRecord, Long> IDENTITY_LEXEME_REF_LINK = Identities0.IDENTITY_LEXEME_REF_LINK;
     public static final Identity<LexemeRegisterRecord, Long> IDENTITY_LEXEME_REGISTER = Identities0.IDENTITY_LEXEME_REGISTER;
     public static final Identity<LifecycleLogRecord, Long> IDENTITY_LIFECYCLE_LOG = Identities0.IDENTITY_LIFECYCLE_LOG;
     public static final Identity<MeaningRecord, Long> IDENTITY_MEANING = Identities0.IDENTITY_MEANING;
@@ -257,6 +260,7 @@ public class Keys {
     public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_PKEY = UniqueKeys0.LEXEME_FREQUENCY_PKEY;
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_PKEY = UniqueKeys0.LEXEME_POS_PKEY;
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = UniqueKeys0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
+    public static final UniqueKey<LexemeRefLinkRecord> LEXEME_REF_LINK_PKEY = UniqueKeys0.LEXEME_REF_LINK_PKEY;
     public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_PKEY = UniqueKeys0.LEXEME_REGISTER_PKEY;
     public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = UniqueKeys0.LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY;
     public static final UniqueKey<LifecycleLogRecord> LIFECYCLE_LOG_PKEY = UniqueKeys0.LIFECYCLE_LOG_PKEY;
@@ -366,6 +370,7 @@ public class Keys {
     public static final ForeignKey<LexemePosRecord, LexemeRecord> LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemePosRecord, PosRecord> LEXEME_POS__LEXEME_POS_POS_CODE_FKEY = ForeignKeys0.LEXEME_POS__LEXEME_POS_POS_CODE_FKEY;
     public static final ForeignKey<LexemePosRecord, ProcessStateRecord> LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY = ForeignKeys0.LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY;
+    public static final ForeignKey<LexemeRefLinkRecord, LexemeRecord> LEXEME_REF_LINK__LEXEME_REF_LINK_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_REF_LINK__LEXEME_REF_LINK_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeRegisterRecord, LexemeRecord> LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY = ForeignKeys0.LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY;
     public static final ForeignKey<LexemeRegisterRecord, RegisterRecord> LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY = ForeignKeys0.LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY;
     public static final ForeignKey<MeaningRecord, ProcessStateRecord> MEANING__MEANING_PROCESS_STATE_CODE_FKEY = ForeignKeys0.MEANING__MEANING_PROCESS_STATE_CODE_FKEY;
@@ -441,6 +446,7 @@ public class Keys {
         public static Identity<LexemeDerivRecord, Long> IDENTITY_LEXEME_DERIV = Internal.createIdentity(LexemeDeriv.LEXEME_DERIV, LexemeDeriv.LEXEME_DERIV.ID);
         public static Identity<LexemeFreeformRecord, Long> IDENTITY_LEXEME_FREEFORM = Internal.createIdentity(LexemeFreeform.LEXEME_FREEFORM, LexemeFreeform.LEXEME_FREEFORM.ID);
         public static Identity<LexemePosRecord, Long> IDENTITY_LEXEME_POS = Internal.createIdentity(LexemePos.LEXEME_POS, LexemePos.LEXEME_POS.ID);
+        public static Identity<LexemeRefLinkRecord, Long> IDENTITY_LEXEME_REF_LINK = Internal.createIdentity(LexemeRefLink.LEXEME_REF_LINK, LexemeRefLink.LEXEME_REF_LINK.ID);
         public static Identity<LexemeRegisterRecord, Long> IDENTITY_LEXEME_REGISTER = Internal.createIdentity(LexemeRegister.LEXEME_REGISTER, LexemeRegister.LEXEME_REGISTER.ID);
         public static Identity<LifecycleLogRecord, Long> IDENTITY_LIFECYCLE_LOG = Internal.createIdentity(LifecycleLog.LIFECYCLE_LOG, LifecycleLog.LIFECYCLE_LOG.ID);
         public static Identity<MeaningRecord, Long> IDENTITY_MEANING = Internal.createIdentity(Meaning.MEANING, Meaning.MEANING.ID);
@@ -505,6 +511,7 @@ public class Keys {
         public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_PKEY = Internal.createUniqueKey(LexemeFrequency.LEXEME_FREQUENCY, "lexeme_frequency_pkey", LexemeFrequency.LEXEME_FREQUENCY.CODE);
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_PKEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_pkey", LexemePos.LEXEME_POS.ID);
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE);
+        public static final UniqueKey<LexemeRefLinkRecord> LEXEME_REF_LINK_PKEY = Internal.createUniqueKey(LexemeRefLink.LEXEME_REF_LINK, "lexeme_ref_link_pkey", LexemeRefLink.LEXEME_REF_LINK.ID);
         public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_PKEY = Internal.createUniqueKey(LexemeRegister.LEXEME_REGISTER, "lexeme_register_pkey", LexemeRegister.LEXEME_REGISTER.ID);
         public static final UniqueKey<LexemeRegisterRecord> LEXEME_REGISTER_LEXEME_ID_REGISTER_CODE_KEY = Internal.createUniqueKey(LexemeRegister.LEXEME_REGISTER, "lexeme_register_lexeme_id_register_code_key", LexemeRegister.LEXEME_REGISTER.LEXEME_ID, LexemeRegister.LEXEME_REGISTER.REGISTER_CODE);
         public static final UniqueKey<LifecycleLogRecord> LIFECYCLE_LOG_PKEY = Internal.createUniqueKey(LifecycleLog.LIFECYCLE_LOG, "lifecycle_log_pkey", LifecycleLog.LIFECYCLE_LOG.ID);
@@ -612,6 +619,7 @@ public class Keys {
         public static final ForeignKey<LexemePosRecord, LexemeRecord> LEXEME_POS__LEXEME_POS_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LexemePos.LEXEME_POS, "lexeme_pos__lexeme_pos_lexeme_id_fkey", LexemePos.LEXEME_POS.LEXEME_ID);
         public static final ForeignKey<LexemePosRecord, PosRecord> LEXEME_POS__LEXEME_POS_POS_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.POS_PKEY, LexemePos.LEXEME_POS, "lexeme_pos__lexeme_pos_pos_code_fkey", LexemePos.LEXEME_POS.POS_CODE);
         public static final ForeignKey<LexemePosRecord, ProcessStateRecord> LEXEME_POS__LEXEME_POS_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, LexemePos.LEXEME_POS, "lexeme_pos__lexeme_pos_process_state_code_fkey", LexemePos.LEXEME_POS.PROCESS_STATE_CODE);
+        public static final ForeignKey<LexemeRefLinkRecord, LexemeRecord> LEXEME_REF_LINK__LEXEME_REF_LINK_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LexemeRefLink.LEXEME_REF_LINK, "lexeme_ref_link__lexeme_ref_link_lexeme_id_fkey", LexemeRefLink.LEXEME_REF_LINK.LEXEME_ID);
         public static final ForeignKey<LexemeRegisterRecord, LexemeRecord> LEXEME_REGISTER__LEXEME_REGISTER_LEXEME_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LEXEME_PKEY, LexemeRegister.LEXEME_REGISTER, "lexeme_register__lexeme_register_lexeme_id_fkey", LexemeRegister.LEXEME_REGISTER.LEXEME_ID);
         public static final ForeignKey<LexemeRegisterRecord, RegisterRecord> LEXEME_REGISTER__LEXEME_REGISTER_REGISTER_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.REGISTER_PKEY, LexemeRegister.LEXEME_REGISTER, "lexeme_register__lexeme_register_register_code_fkey", LexemeRegister.LEXEME_REGISTER.REGISTER_CODE);
         public static final ForeignKey<MeaningRecord, ProcessStateRecord> MEANING__MEANING_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, Meaning.MEANING, "meaning__meaning_process_state_code_fkey", Meaning.MEANING.PROCESS_STATE_CODE);

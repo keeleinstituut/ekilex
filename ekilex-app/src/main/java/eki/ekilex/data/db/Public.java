@@ -42,6 +42,7 @@ import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
@@ -120,7 +121,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -851028527;
+    private static final long serialVersionUID = -1779032518;
 
     /**
      * The reference instance of <code>public</code>
@@ -316,6 +317,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexeme_pos</code>.
      */
     public final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
+
+    /**
+     * The table <code>public.lexeme_ref_link</code>.
+     */
+    public final LexemeRefLink LEXEME_REF_LINK = eki.ekilex.data.db.tables.LexemeRefLink.LEXEME_REF_LINK;
 
     /**
      * The table <code>public.lexeme_register</code>.
@@ -584,6 +590,8 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
+            Sequences.LEXEME_REF_LINK_ID_SEQ,
+            Sequences.LEXEME_REF_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
             Sequences.LEXEME_REGISTER_ORDER_BY_SEQ,
             Sequences.LIFECYCLE_LOG_ID_SEQ,
@@ -650,6 +658,7 @@ public class Public extends SchemaImpl {
             LexemeFreeform.LEXEME_FREEFORM,
             LexemeFrequency.LEXEME_FREQUENCY,
             LexemePos.LEXEME_POS,
+            LexemeRefLink.LEXEME_REF_LINK,
             LexemeRegister.LEXEME_REGISTER,
             LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
