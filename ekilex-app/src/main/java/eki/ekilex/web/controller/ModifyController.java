@@ -282,19 +282,19 @@ public class ModifyController implements WebConstant {
 		case "defSourceRef" : {
 			Source source = sourceService.getSource(itemData.getId2());
 			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-			updateService.addDefinitionSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
+			updateService.addDefinitionSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
 			break;
 			}
 		case "ffSourceRef" : {
 			Source source = sourceService.getSource(itemData.getId2());
 			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-			updateService.addFreeformSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
+			updateService.addFreeformSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
 			break;
 			}
 		case "lexSourceRef" : {
 			Source source = sourceService.getSource(itemData.getId2());
 			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-			updateService.addLexemeSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), null);
+			updateService.addLexemeSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
 			break;
 			}
 		case "lexeme_deriv" :

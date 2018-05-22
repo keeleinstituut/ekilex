@@ -372,7 +372,9 @@ function openAddSourceRefDlg(elem) {
             addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
                 e.preventDefault();
                 var button = $(e.target);
+                var sourceName = button.closest('.form-group').find('.form-control').val();
                 addDlg.find('[name=id2]').val(button.data('source-id'));
+                addDlg.find('[name=value]').val(sourceName);
                 var theForm = button.closest('form');
                 submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
                     addDlg.modal('hide');
