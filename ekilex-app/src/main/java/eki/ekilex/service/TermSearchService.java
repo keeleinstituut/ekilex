@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.RefLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -141,6 +142,7 @@ public class TermSearchService implements SystemConstant {
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
 			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
+			List<RefLink> lexemeRefLinks = commonDataDbService.findLexemeRefLinks(lexemeId).into(RefLink.class);
 
 			for (Lexeme lexeme : lexemeWords) {
 
@@ -156,7 +158,6 @@ public class TermSearchService implements SystemConstant {
 				String dataset = lexeme.getDataset();
 				dataset = datasetNameMap.get(dataset);
 				String levels = composeLevels(lexeme);
-				List<String> sources = extractSources(lexemeFreeforms);
 
 				lexeme.setLevels(levels);
 				lexeme.setDataset(dataset);
@@ -167,7 +168,7 @@ public class TermSearchService implements SystemConstant {
 				lexeme.setGovernments(governments);
 				lexeme.setGrammars(lexemeGrammars);
 				lexeme.setClassifiersExist(classifiersExist);
-				lexeme.setSources(sources);
+				lexeme.setRefLinks(lexemeRefLinks);
 				lexemes.add(lexeme);
 			}
 		}
@@ -179,17 +180,6 @@ public class TermSearchService implements SystemConstant {
 			});
 
 		return meaning;
-	}
-
-	private List<String> extractSources(List<FreeForm> lexemeFreeforms) {
-		List<String> sources = Collections.emptyList();
-		if (CollectionUtils.isNotEmpty(lexemeFreeforms)) {
-			sources = lexemeFreeforms.stream()
-					.filter(freeform -> freeform.getType().equals(FreeformType.SOURCE))
-					.map(FreeForm::getValueText)
-					.collect(Collectors.toList());
-		}
-		return sources;
 	}
 
 	private String composeLevels(Lexeme lexeme) {

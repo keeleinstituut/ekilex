@@ -52,6 +52,16 @@ public class RefLinkController {
 		return handleRefLink(refLinkId, ReferenceOwner.DEFINITION, model);
 	}
 
+	@GetMapping("/" + ContentKey.LEXEME_REF_LINK + ":{refLinkId}")
+	public String lexRefLink(
+			@PathVariable("refLinkId") String refLinkIdStr,
+			Model model) {
+
+		logger.debug("Requested lexeme ref link \"{}\"", refLinkIdStr);
+		Long refLinkId = Long.valueOf(refLinkIdStr);
+		return handleRefLink(refLinkId, ReferenceOwner.LEXEME, model);
+	}
+
 	private String handleRefLink(Long refLinkId, ReferenceOwner referenceOwner, Model model) {
 
 		RefLink refLink = refLinkService.getRefLink(refLinkId, referenceOwner);
