@@ -125,7 +125,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		Element valueNode;
 		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
 		Long wordId, meaningId, lexemeId, governmentId;
-		List<Content> definitions, usages;
+		List<Content> definitions, usages, sources;
 		String valueStr, concept, term;
 		String lang;
 		int homonymNr;
@@ -209,7 +209,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					// definitions
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Element definitionNode : valueNodes) {
-						definitions = extractContentAndRefs(definitionNode, lang, term);
+						definitions = extractContentAndRefs(definitionNode, lang, term, true);
 						saveDefinitionsAndRefLinks(meaningId, definitions, concept, term, doReports);
 					}
 
@@ -218,7 +218,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
 						governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 						for (Element usageNode : valueNodes) {
-							usages = extractContentAndRefs(usageNode, lang, term);
+							usages = extractContentAndRefs(usageNode, lang, term, true);
 							saveUsagesAndRefLinks(governmentId, usages, concept, term, doReports);
 						}
 					}
@@ -226,10 +226,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					// sources
 					valueNodes = termGroupNode.selectNodes(sourceExp);
 					for (Element sourceNode : valueNodes) {
-						valueStr = sourceNode.getTextTrim();
-						Long freeformId = createLexemeFreeform(lexemeId, FreeformType.SOURCE, valueStr, null);
-						valueStr = handleFreeformRefLinks(sourceNode, freeformId);
-						updateFreeformText(freeformId, valueStr);
+						sources = extractContentAndRefs(sourceNode, lang, term, false);
+						saveSourceRefLinks(lexemeId, sources, concept, term, doReports);
 					}
 
 					if (doReports) {
@@ -518,7 +516,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private List<Content> extractContentAndRefs(Element rootContentNode, String lang, String term) throws Exception {
+	private List<Content> extractContentAndRefs(Element rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
 
 		List<Content> contentList = new ArrayList<>();
 		Iterator<Node> contentNodeIter = rootContentNode.nodeIterator();
@@ -543,7 +541,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				if (isListing) {
 					continue;
 				}
-				if (!isRefOn && isRefEnd) {
+				if (!isRefOn && isRefEnd && logWarrnings) {
 					logger.warn("Illegal ref end notation @ \"{}\" : {}", term, rootContentNode.asXML());
 				}
 				if (isRefOn && isRefEnd) {
@@ -567,9 +565,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				isRefOn = false;
 			} else if (contentNode instanceof DefaultElement) {
 				elemContentNode = (DefaultElement) contentNode;
-				valueStr = elemContentNode.getTextTrim();
-				valueStr = StringUtils.replaceChars(valueStr, '\n', ' ');
-				valueStr = StringUtils.trim(valueStr);
 				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
@@ -578,7 +573,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 						if (contentObj == null) {
 							contentObj = newContent(lang, "-");
 							contentList.add(contentObj);
-							logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceCodeOrName);
+							if (logWarrnings) {
+								logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceCodeOrName);
+							}
 						}
 						refObj = new Ref();
 						refObj.setMajorRef(sourceCodeOrName);
@@ -599,6 +596,23 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		contentObj.setLang(lang);
 		contentObj.setRefs(new ArrayList<>());
 		return contentObj;
+	}
+
+	private void saveSourceRefLinks(Long lexemeId, List<Content> sources, String concept, String term, boolean doReports) throws Exception {
+
+		for (Content sourceObj : sources) {
+			List<Ref> refs = sourceObj.getRefs();
+			for (Ref ref : refs) {
+				String minorRef = ref.getMinorRef();
+				String majorRef = ref.getMajorRef();
+				Long sourceId = getSource(majorRef);
+				if (sourceId == null) {
+					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
+					continue;
+				}
+				createLexemeRefLink(lexemeId, ReferenceType.SOURCE, sourceId, minorRef, majorRef);
+			}
+		}
 	}
 
 	private void saveDefinitionsAndRefLinks(Long meaningId, List<Content> definitions, String concept, String term, boolean doReports) throws Exception {
@@ -653,7 +667,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		int totalDefinitionCount = 0;
 
 		for (Element definitionNode : definitionNodes) {
-			definitions = extractContentAndRefs(definitionNode, lang, concept);
+			definitions = extractContentAndRefs(definitionNode, lang, concept, true);
 			saveDefinitionsAndRefLinks(meaningId, definitions, concept, "*", doReports);
 			totalDefinitionCount += definitions.size();
 			for (Content definitionObj : definitions) {
