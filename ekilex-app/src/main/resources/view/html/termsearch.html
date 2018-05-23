@@ -131,7 +131,7 @@
   </div>
 
   <th:block th:fragment="details" th:if="${meaning != null}">
-    <div th:data-id="${meaningId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 60%; overflow-y: auto;">
+    <div th:data-id="${meaningId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 74%; overflow-y: auto;">
       <button id="refresh-details" hidden th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
       <div style="border: 1px solid #CCC; padding: 5px;">
         <div>
@@ -380,232 +380,128 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>
-            <div th:unless="${not #lists.isEmpty(lexeme.governments)}"  style="margin-top: -0.5em;">
-              <hr />
-              <table>
-                <tr>
-                  <th class="lbl">Rektsioon
-                    <button type="button" class="btn badge badge-success" title="Lisa uus"
-                            th:data-id="${lexeme.lexemeId}"
-                            onclick="openAddDlg(this)"
-                            data-toggle="modal" data-target="#addNewGovernmentDlg">
-                      <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                  </th>
-                </tr>
-              </table>
+            <hr />
+            <div th:unless="${not #lists.isEmpty(lexeme.governments)}" class="mt-1">
+              <span class="lbl">Kasutusnäited, tõlked, seletused</span>
+              <button type="button" class="btn badge badge-success" title="Lisa uus"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openAddDlg(this)"
+                      data-toggle="modal" data-target="#addNewGovernmentUsageDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
             </div>
-            <div th:if="${not #lists.isEmpty(lexeme.governments)}" style="margin-top: -0.5em;">
-              <hr />
-              <table>
-                <tr th:each="government,governmentIter : ${lexeme.governments}">
-                  <td>
-                    <table>
-                      <tr>
-                        <th>Rektsioon
-                          <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                  th:data-id="${lexeme.lexemeId}"
-                                  onclick="openAddDlg(this)"
-                                  data-toggle="modal" data-target="#addNewGovernmentDlg">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                          </button>
-                        </th>
-                      </tr>
-                      <tr>
-                        <td class="hidden-buttons">
-                          <span th:name="${government.id} + '_government'"
-                            th:data-id="${government.id}"
-                            th:data-op-code="government"
-                            th:data-value="${government.value}"
-                            th:text="${government.value}"></span>
-                          <button type="button" class="btn badge badge-primary ml-2"
-                                  th:title="Muuda" th:data-target-elem="${government.id} + '_government'"
-                                  onclick="openEditDlg(this)"
-                                  data-toggle="modal" data-target="#editDlg">
-                            <i class="fa fa-edit" aria-hidden="true"></i>
-                          </button>
-                          <button type="button" class="btn badge badge-warning"
-                                  th:data-target-elem="${government.id} + '_government'"
-                                  data-toggle="delete-confirmation" data-placement="right">
-                            <i class="fa fa-remove" aria-hidden="true"></i>
-                          </button>
-                        </td>
-                      </tr>
-                      <tr th:unless="${government.meaningful}">
-                        <td>
-                          <i style="text-decoration: underline;">
-                            <span>Kasutusnäite tähendus</span>
-                          </i>
-                          <button type="button" class="btn badge badge-success ml-1" title="Lisa uus"
-                                  th:data-id="${government.id}"
-                                  onclick="openAddDlg(this)"
-                                  data-toggle="modal" data-target="#addNewUsageDlg">
-                            <i class="fa fa-plus" aria-hidden="true"></i>
-                          </button>
-                        </td>
-                      </tr>
-                      <tr th:if="${government.meaningful}">
-                        <td>
-                          <table th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
-                            <tr>
-                              <td>
-                                <i style="text-decoration: underline;">
-                                  <span>Kasutusnäite tähendus #</span>
-                                  <span th:text="${usageMeaningIter.count}"></span>
-                                </i>
-                                <button type="button" class="btn badge badge-success ml-1" title="Lisa uus"
-                                        th:data-id="${government.id}"
-                                        onclick="openAddDlg(this)"
-                                        data-toggle="modal" data-target="#addNewUsageDlg">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                              </td>
-                            </tr>
-                            <tr th:if="${not #lists.isEmpty(usageMeaning.usages)}">
-                              <td>
-                                <span class="lbl">Kasutusnäited</span>
-                              </td>
-                            </tr>
-                            <tr th:each="usage : ${usageMeaning.usages}">
-                              <td>
-                                <div class="hidden-buttons">
+            <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mt-1">
+              <span class="lbl">Kasutusnäited, tõlked, seletused</span>
+              <button type="button" class="btn badge badge-success" title="Lisa uus"
+                      th:data-id="${lexeme.governments.get(0).id}"
+                      onclick="openAddDlg(this)"
+                      data-toggle="modal" data-target="#addNewUsageDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <ul>
+                <th:block th:each="government,governmentIter : ${lexeme.governments}">
+                  <th:block th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
+                    <li th:each="usage : ${usageMeaning.usages}">
+                      <div class="hidden-buttons">
                                   <span th:name="${usage.id} + '_usage'"
                                         th:data-id="${usage.id}"
                                         th:data-op-code="usage"
                                         th:data-value="${usage.value}"
                                         th:utext="${usage.value}"></span>
-                                  <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
-                                  <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
-                                  <button type="button" class="btn badge badge-primary ml-2"
-                                          th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                          onclick="openEditDlg(this)"
-                                          data-toggle="modal" data-target="#editDlg">
-                                    <i class="fa fa-edit" aria-hidden="true"></i>
-                                  </button>
-                                  <button type="button" class="btn badge badge-warning"
-                                          th:data-target-elem="${usage.id} + '_usage'"
-                                          data-toggle="delete-confirmation" data-placement="right">
-                                    <i class="fa fa-remove" aria-hidden="true"></i>
-                                  </button>
-                                  <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                          th:data-id="${usageMeaning.id}"
-                                          onclick="openUsageMemberDlg(this)"
-                                          data-toggle="modal" data-target="#addNewUsageMemberDlg">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </button>
-                                </div>
-                                <div th:unless="${not #lists.isEmpty(usage.refLinks)}">
-                                  []
-                                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                          th:data-id="${usage.id}"
-                                          th:data-op-code="ffSourceRef"
-                                          onclick="openAddSourceRefDlg(this)"
-                                          data-toggle="modal" data-target="#addNewSourceRefDlg">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </button>
-                                </div>
-                                <div th:if="${not #lists.isEmpty(usage.refLinks)}" class="hidden-buttons">
-                                  <span th:each="refLink : ${usage.refLinks}">
-                                    [
-                                    <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
-                                       th:name="${refLink.id} + '_ff_ref_link'"
-                                       th:data-id="${refLink.id}"
-                                       th:data-op-code="ff_ref_link"
-                                       th:text="${refLink.value}"
-                                    ></a>
-                                    <span th:if="${refLink.name != null}">
-                                      <span th:text="${refLink.name}"></span>
-                                    </span>
-                                    <button type="button" class="btn badge badge-warning"
-                                            th:data-target-elem="${refLink.id} + '_ff_ref_link'"
-                                            data-toggle="delete-confirmation" data-placement="right">
-                                      <i class="fa fa-remove" aria-hidden="true"></i>
-                                    </button>
-                                    ]
-                                  </span>
-                                  <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                          th:data-id="${usage.id}"
-                                          th:data-op-code="ffSourceRef"
-                                          onclick="openAddSourceRefDlg(this)"
-                                          data-toggle="modal" data-target="#addNewSourceRefDlg">
-                                    <i class="fa fa-plus" aria-hidden="true"></i>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr th:if="${not #lists.isEmpty(usageMeaning.usageTranslations)}">
-                              <td>
-                                <span class="lbl">Kasutusnäite tõlked</span>
-                              </td>
-                            </tr>
-                            <tr th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                              <td class="hidden-buttons">
+                        <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                        <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                        <button type="button" class="btn badge badge-primary ml-2"
+                                th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
+                                onclick="openEditDlg(this)"
+                                data-toggle="modal" data-target="#editDlg">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-target-elem="${usage.id} + '_usage'"
+                                data-toggle="delete-confirmation" data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div th:unless="${not #lists.isEmpty(usage.refLinks)}">
+                        []
+                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                th:data-id="${usage.id}"
+                                th:data-op-code="ffSourceRef"
+                                onclick="openAddSourceRefDlg(this)"
+                                data-toggle="modal" data-target="#addNewSourceRefDlg">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div th:if="${not #lists.isEmpty(usage.refLinks)}" class="hidden-buttons">
+                          <span th:each="refLink : ${usage.refLinks}">
+                            [
+                            <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
+                               th:name="${refLink.id} + '_ff_ref_link'"
+                               th:data-id="${refLink.id}"
+                               th:data-op-code="ff_ref_link"
+                               th:text="${refLink.value}"
+                            ></a>
+                            <span th:if="${refLink.name != null}">
+                              <span th:text="${refLink.name}"></span>
+                            </span>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-target-elem="${refLink.id} + '_ff_ref_link'"
+                                    data-toggle="delete-confirmation" data-placement="right">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                            ]
+                          </span>
+                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                th:data-id="${usage.id}"
+                                th:data-op-code="ffSourceRef"
+                                onclick="openAddSourceRefDlg(this)"
+                                data-toggle="modal" data-target="#addNewSourceRefDlg">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </li>
+                    <li th:each="usageTranslation : ${usageMeaning.usageTranslations}">
+                      <td class="hidden-buttons">
                                 <span th:name="${usageTranslation.id} + '_usage_translation'"
                                       th:data-id="${usageTranslation.id}"
                                       th:data-op-code="usage_translation"
                                       th:text="${usageTranslation.value}"></span>
-                                <button type="button" class="btn badge badge-primary ml-2"
-                                        th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                        onclick="openEditDlg(this)"
-                                        data-toggle="modal" data-target="#editDlg">
-                                  <i class="fa fa-edit" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-warning"
-                                        th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                        data-toggle="delete-confirmation" data-placement="right">
-                                  <i class="fa fa-remove" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                        th:data-id="${usageMeaning.id}"
-                                        onclick="openUsageMemberDlg(this)"
-                                        data-toggle="modal" data-target="#addNewUsageMemberDlg">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                              </td>
-                            </tr>
-                            <tr th:if="${not #lists.isEmpty(usageMeaning.usageDefinitions)}">
-                              <td>
-                                <span class="lbl">Kasutusnäite seletused</span>
-                              </td>
-                            </tr>
-                            <tr th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                              <td class="hidden-buttons">
+                        <button type="button" class="btn badge badge-primary ml-2"
+                                th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                onclick="openEditDlg(this)"
+                                data-toggle="modal" data-target="#editDlg">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                data-toggle="delete-confirmation" data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </li>
+                    <li th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
+                      <td class="hidden-buttons">
                                 <span th:name="${usageDefinition.id} + '_usage_definition'"
                                       th:data-id="${usageDefinition.id}"
                                       th:data-op-code="usage_definition"
                                       th:data-value="${usageDefinition.value}"
                                       th:utext="${usageDefinition.value}"></span>
-                                <button type="button" class="btn badge badge-primary ml-2"
-                                        th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                        onclick="openEditDlg(this)"
-                                        data-toggle="modal" data-target="#editDlg">
-                                  <i class="fa fa-edit" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-warning"
-                                        th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                        data-toggle="delete-confirmation" data-placement="right">
-                                  <i class="fa fa-remove" aria-hidden="true"></i>
-                                </button>
-                                <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                        th:data-id="${usageMeaning.id}"
-                                        onclick="openUsageMemberDlg(this)"
-                                        data-toggle="modal" data-target="#addNewUsageMemberDlg">
-                                  <i class="fa fa-plus" aria-hidden="true"></i>
-                                </button>
-                              </td>
-                            </tr>
-                            <tr th:unless="${usageMeaningIter.last}">
-                              <td>
-                                <hr />
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
+                        <button type="button" class="btn badge badge-primary ml-2"
+                                th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                onclick="openEditDlg(this)"
+                                data-toggle="modal" data-target="#editDlg">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                data-toggle="delete-confirmation" data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </td>
+                    </li>
+                  </th:block>
+                </th:block>
+              </ul>
             </div>
             <div th:if="${not #lists.isEmpty(lexeme.freeforms)}">
               <hr />
@@ -649,14 +545,13 @@
 
   <div th:replace="common :: #editDlg"></div>
   <div th:replace="common :: #addNewDefinitionDlg"></div>
-  <div th:replace="common :: #addNewUsageMemberDlg"></div>
-  <div th:replace="common :: #addNewGovernmentDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
   <div th:replace="common :: #addNewSourceRefDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>
+  <div th:replace="common :: #addNewGovernmentUsageDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

@@ -65,7 +65,8 @@ function initialise() {
     });
 
     $('#addNewDefinitionDlg').find('[name=value]').attr("rows", 4);
-    initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
+    $('#addNewUsageDlg').find('[name=value]').attr("rows", 4);
+    $('#addNewGovernmentUsageDlg').find('[name=value]').attr("rows", 4);
     initNewWordDlg();
     initSelectDlg($('#meaningDomainDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'), false);
