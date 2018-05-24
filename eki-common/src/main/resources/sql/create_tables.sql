@@ -364,6 +364,7 @@ create table freeform
   classif_name text null,
   classif_code varchar(100) null,
   lang char(3) references lang(code) null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;
@@ -484,6 +485,7 @@ create table meaning_relation
   meaning1_id bigint references meaning(id) on delete cascade not null,
   meaning2_id bigint references meaning(id) on delete cascade not null,
   meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial,
   unique(meaning1_id, meaning2_id, meaning_rel_type_code)
 );
@@ -496,6 +498,7 @@ create table meaning_domain
   domain_code varchar(100) not null,
   domain_origin varchar(100) not null,
   order_by bigserial,
+  process_state_code varchar(100) references process_state(code) null,
   foreign key (domain_code, domain_origin) references domain (code, origin),
   unique(meaning_id, domain_code, domain_origin)
 );
@@ -507,6 +510,7 @@ create table meaning_freeform
   id bigserial primary key,
   meaning_id bigint references meaning(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(meaning_id, freeform_id)
 );
 alter sequence meaning_freeform_id_seq restart with 10000;
@@ -518,6 +522,7 @@ create table definition
   meaning_id bigint references meaning(id) not null,
   value text not null,
   lang char(3) references lang(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence definition_id_seq restart with 10000;
@@ -535,6 +540,7 @@ create table definition_freeform
   id bigserial primary key,
   definition_id bigint references definition(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(definition_id, freeform_id)
 );
 alter sequence definition_freeform_id_seq restart with 10000;
@@ -577,6 +583,7 @@ create table lexeme
   level2 integer default 0,
   level3 integer default 0,
   value_state_code varchar(100) references value_state(code) null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(word_id, meaning_id, dataset_code)
 );
 alter sequence lexeme_id_seq restart with 10000;
@@ -586,6 +593,7 @@ create table lexeme_register
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   register_code varchar(100) references register(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial,
   unique(lexeme_id, register_code)
 );
@@ -607,6 +615,7 @@ create table lexeme_deriv
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   deriv_code varchar(100) references deriv(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(lexeme_id, deriv_code)
 );
 alter sequence lexeme_deriv_id_seq restart with 10000;
@@ -617,6 +626,7 @@ create table lexeme_freeform
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(lexeme_id, freeform_id)
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
@@ -628,6 +638,7 @@ create table lex_relation
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial,
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
@@ -676,6 +687,7 @@ create table freeform_ref_link
   ref_id bigint null,
   name text null,
   value text null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence freeform_ref_link_id_seq restart with 10000;
@@ -688,6 +700,7 @@ create table definition_ref_link
   ref_id bigint null,
   name text null,
   value text null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence definition_ref_link_id_seq restart with 10000;
@@ -700,6 +713,7 @@ create table lexeme_ref_link
   ref_id bigint null,
   name text null,
   value text null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence lexeme_ref_link_id_seq restart with 10000;

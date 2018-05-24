@@ -456,6 +456,7 @@ process_state	avalik	-	-	-
 process_state	arhiveeritud	-	-	-
 process_state	töös	-	-	-
 process_state	läbi vaatamata	-	-	-
+process_state	kustutatud	-	-	-
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
 register	hrv	harvaesinev	est	descrip
