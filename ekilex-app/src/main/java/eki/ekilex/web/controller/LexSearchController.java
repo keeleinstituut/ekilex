@@ -102,7 +102,7 @@ public class LexSearchController extends AbstractSearchController {
 		return LEX_SEARCH_PAGE;
 	}
 
-	@GetMapping("/lexdetails/{wordId}")
+	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
 	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);

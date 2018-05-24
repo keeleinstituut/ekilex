@@ -367,6 +367,11 @@ public class TermSearchDbService implements SystemConstant {
 
 	public Record3<Long,String,Long[]> getMeaning(Long meaningId, List<String> datasets) {
 
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
 		return create
 				.select(
 						MEANING.ID.as("meaning_id"),
@@ -376,7 +381,7 @@ public class TermSearchDbService implements SystemConstant {
 				.where(
 						MEANING.ID.eq(meaningId)
 						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(datasetCondition)
 						)
 				.groupBy(MEANING.ID)
 				.fetchSingle();
@@ -413,12 +418,17 @@ public class TermSearchDbService implements SystemConstant {
 
 	public Record1<String> getMeaningFirstWord(Long meaningId, List<String> datasets) {
 
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
 		return create
 				.select(FORM.VALUE)
 				.from(FORM, PARADIGM, LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(datasetCondition)
 						.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.isTrue())

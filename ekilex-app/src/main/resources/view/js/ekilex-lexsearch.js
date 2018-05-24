@@ -2,7 +2,7 @@ function initialise() {
     $(document).on("click", ":button[name='detailsBtn']", function() {
         var id = $(this).data('id');
         var isRestoreScrollPos = this.hasAttribute('data-refresh');
-        $.get(applicationUrl + 'lexdetails/' + id).done(function(data) {
+        $.get(applicationUrl + 'worddetails/' + id).done(function(data) {
             var scrollPos = $('#details_div').scrollTop();
             $('#details_div').replaceWith(data);
             if (isRestoreScrollPos) {

@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Meaning;
@@ -85,7 +86,7 @@ public class TermSearchController extends AbstractSearchController {
 		return TERM_SEARCH_PAGE;
 	}
 
-	@GetMapping("/meaningdetails/{meaningId}")
+	@GetMapping(MEANING_DETAILS_URI + "/{meaningId}")
 	public String details(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting meaning {} details", meaningId);
@@ -96,7 +97,8 @@ public class TermSearchController extends AbstractSearchController {
 			selectedDatasets = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
 		}
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, languagesOrder);
+		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+		Meaning meaning = termSearchService.getMeaning(meaningId, selectedDatasets, langCodeOrder);
 		model.addAttribute("meaning", meaning);
 		model.addAttribute("meaningId", meaningId);
 
