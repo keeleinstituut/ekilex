@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
 
-    private static final long serialVersionUID = 519390437;
+    private static final long serialVersionUID = -634390726;
 
     /**
      * The reference instance of <code>public.meaning_freeform</code>
@@ -69,11 +69,6 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
      * The column <code>public.meaning_freeform.freeform_id</code>.
      */
     public final TableField<MeaningFreeformRecord, Long> FREEFORM_ID = createField("freeform_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
-     * The column <code>public.meaning_freeform.process_state_code</code>.
-     */
-    public final TableField<MeaningFreeformRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.meaning_freeform</code> table reference
@@ -149,7 +144,7 @@ public class MeaningFreeform extends TableImpl<MeaningFreeformRecord> {
      */
     @Override
     public List<ForeignKey<MeaningFreeformRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<MeaningFreeformRecord, ?>>asList(Keys.MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY, Keys.MEANING_FREEFORM__MEANING_FREEFORM_FREEFORM_ID_FKEY, Keys.MEANING_FREEFORM__MEANING_FREEFORM_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<MeaningFreeformRecord, ?>>asList(Keys.MEANING_FREEFORM__MEANING_FREEFORM_MEANING_ID_FKEY, Keys.MEANING_FREEFORM__MEANING_FREEFORM_FREEFORM_ID_FKEY);
     }
 
     /**

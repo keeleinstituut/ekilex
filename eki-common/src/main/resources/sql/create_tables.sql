@@ -510,7 +510,6 @@ create table meaning_freeform
   id bigserial primary key,
   meaning_id bigint references meaning(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
-  process_state_code varchar(100) references process_state(code) null,
   unique(meaning_id, freeform_id)
 );
 alter sequence meaning_freeform_id_seq restart with 10000;
@@ -540,7 +539,6 @@ create table definition_freeform
   id bigserial primary key,
   definition_id bigint references definition(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
-  process_state_code varchar(100) references process_state(code) null,
   unique(definition_id, freeform_id)
 );
 alter sequence definition_freeform_id_seq restart with 10000;
@@ -626,7 +624,6 @@ create table lexeme_freeform
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   freeform_id bigint references freeform(id) on delete cascade not null,
-  process_state_code varchar(100) references process_state(code) null,
   unique(lexeme_id, freeform_id)
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
