@@ -509,7 +509,12 @@ public class LexSearchDbService implements SystemConstant {
 			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
 
-	public Result<Record> findWordLexemes(Long wordId, List<String> selectedDatasets) {
+	public Result<Record> findWordLexemes(Long wordId, List<String> datasets) {
+
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
 
 		return create.select(wordLexemeSelectFields)
 			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
@@ -520,7 +525,7 @@ public class LexSearchDbService implements SystemConstant {
 					.and(PARADIGM.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-					.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
+					.and(datasetCondition))
 			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
 			.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 			.fetch();
@@ -544,6 +549,11 @@ public class LexSearchDbService implements SystemConstant {
 
 	public Result<Record4<Long,String,Integer,String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasets) {
 
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
 		return create
 				.select(
 						WORD.ID.as("word_id"),
@@ -559,7 +569,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.MEANING_ID.eq(meaningId))
-						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(datasetCondition)
 				)
 				.groupBy(WORD.ID, FORM.VALUE)
 				.orderBy(FORM.VALUE)

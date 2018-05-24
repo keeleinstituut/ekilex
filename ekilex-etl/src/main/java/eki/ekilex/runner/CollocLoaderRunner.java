@@ -678,7 +678,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			currentCollocMemberRecords = new ArrayList<>();
 			currentCollocMemberIds = new ArrayList<>();
-			currentCollocMemberIds.add(lexemeId);
 
 			for (CollocMember collocMember : collocMembersPermutation) {
 
@@ -692,7 +691,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 				Map<Integer, Word> homonymWordMap = wordMap.get(collocMemberWord);
 				if (homonymWordMap == null) {
-
 					if (collocMemberRefNum == null) {
 						appendToReport(doReports, REPORT_UNKNOWN_COLLOC_MEMBER, word, collocation, collocMemberWord);
 					} else {
@@ -702,25 +700,40 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				} else {
 					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
 						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, inboundPrimaryCollocMemberWeight, collocGroupOrder);
-						currentCollocMemberRecords.add(collocMemberRecord);
+						if (currentCollocMemberIds.contains(lexemeId)) {
+							repeatingCollocMemberCount.increment();
+							appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
+						} else {
+							currentCollocMemberIds.add(lexemeId);
+							currentCollocMemberRecords.add(collocMemberRecord);
+						}
 					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
 						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, inboundPrimaryCollocMemberWeight, collocGroupOrder);
-						currentCollocMemberRecords.add(collocMemberRecord);
+						if (currentCollocMemberIds.contains(lexemeId)) {
+							repeatingCollocMemberCount.increment();
+							appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
+						} else {
+							currentCollocMemberIds.add(lexemeId);
+							currentCollocMemberRecords.add(collocMemberRecord);
+						}
 					} else if (collocMemberRefNum == null) {
 						//TODO just guessing here. should be determined by more intelligent logic
 						if (homonymWordMap.size() == 1) {
 							Word collocWordObj = homonymWordMap.get(1);
-							Long collocWordId = collocWordObj.getId();
-							List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(collocWordId, collocMemberPosCode);
-							if (CollectionUtils.isEmpty(lexemeMeaningCandidates)) {
-								//none
-							} else if (lexemeMeaningCandidates.size() == 1) {
-								//success!
-								LexemeMeaning collocLexemeMeaning = lexemeMeaningCandidates.get(0);
-								collocLexemeId = collocLexemeMeaning.getLexemeId();
-								collocMemberGuessedHomonymMeaningCount.increment();
-							} else {
-								//too many
+							// can be null if even though single homonym exists, it is not the first one
+							if (collocWordObj != null) {
+								Long collocWordId = collocWordObj.getId();
+								List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(collocWordId, collocMemberPosCode);
+								if (CollectionUtils.isEmpty(lexemeMeaningCandidates)) {
+									//none
+								} else if (lexemeMeaningCandidates.size() == 1) {
+									//success!
+									LexemeMeaning collocLexemeMeaning = lexemeMeaningCandidates.get(0);
+									collocLexemeId = collocLexemeMeaning.getLexemeId();
+									collocMemberGuessedHomonymMeaningCount.increment();
+								} else {
+									//too many
+								}
 							}
 						}
 						collocMemberGuessingHomonymMeaningCount.increment();
@@ -910,6 +923,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		// definition
 		if (StringUtils.isBlank(existingCollocDefinition) && StringUtils.isBlank(collocDefinition)) {
 			//do nothing
+		} else if (StringUtils.isNotBlank(existingCollocDefinition) && StringUtils.isBlank(collocDefinition)) {
+			//do nothing
 		} else if (StringUtils.isBlank(existingCollocDefinition) && StringUtils.isNotBlank(collocDefinition)) {
 			existingCollocRecord.setDefinition(collocDefinition);
 			newCollocDefinition = collocDefinition;
@@ -919,6 +934,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 		// usages
 		if (CollectionUtils.isEmpty(existingCollocUsages) && CollectionUtils.isEmpty(collocUsages)) {
+			//do nothing
+		} else if (CollectionUtils.isNotEmpty(existingCollocUsages) && CollectionUtils.isEmpty(collocUsages)) {
 			//do nothing
 		} else if (CollectionUtils.isEmpty(existingCollocUsages) && CollectionUtils.isNotEmpty(collocUsages)) {
 			existingCollocRecord.setUsages(collocUsages);

@@ -36,7 +36,6 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Record1;
 import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;

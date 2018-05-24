@@ -4,20 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.ekilex.data.RefLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
@@ -26,6 +22,7 @@ import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.RefLink;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
@@ -96,12 +93,11 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<String> langCodeOrder) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
 

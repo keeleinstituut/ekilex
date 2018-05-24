@@ -22,17 +22,11 @@ public class CollocLoader {
 		try {
 			applicationContext.registerShutdownHook();
 
-			// /projects/eki/data/dictionaries/kol/kol-test_17-04-18.xml
+			// /projects/eki/data/dictionaries/kol/kol-test_15-05-18.xml
 
-			String dataXmlFilePath = "/projects/eki/data/dictionaries/kol/kol-test_17-04-18.xml";
-			String dataLang = "est";
-			boolean doReports = false;
-
-			/*
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Collocate data file location? (/absolute/path/to/file.xml)");
 			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
-			*/
 
 			runner.execute(dataXmlFilePath, dataLang, doReports);
 
