@@ -134,8 +134,8 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addGovernment(Long lexemeId, String government) {
-		updateDbService.addGovernment(lexemeId, government);
+	public Long addGovernment(Long lexemeId, String government) {
+		return updateDbService.addGovernment(lexemeId, government);
 	}
 
 	@Transactional

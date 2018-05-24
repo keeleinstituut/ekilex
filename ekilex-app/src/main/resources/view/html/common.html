@@ -162,6 +162,29 @@
   </div>
 </div>
 
+<div id="addNewGovernmentUsageDlg" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="language" value="est">
+          <input type="hidden" name="opCode" value="government_usage">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <textarea class="form-control" rows="2" name="value"></textarea>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <div id="addNewUsageMemberDlg" class="modal" role="dialog">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
