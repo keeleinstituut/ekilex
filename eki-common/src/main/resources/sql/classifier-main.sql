@@ -207,6 +207,7 @@ insert into process_state (code, datasets) values ('avalik', '{}');
 insert into process_state (code, datasets) values ('arhiveeritud', '{}');
 insert into process_state (code, datasets) values ('töös', '{}');
 insert into process_state (code, datasets) values ('läbi vaatamata', '{}');
+insert into process_state (code, datasets) values ('kustutatud', '{}');
 insert into register (code, datasets) values ('hlv', '{}');
 insert into register (code, datasets) values ('hrv', '{}');
 insert into register (code, datasets) values ('lastek', '{}');
