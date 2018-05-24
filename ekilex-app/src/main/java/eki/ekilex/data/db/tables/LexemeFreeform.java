@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
 
-    private static final long serialVersionUID = -1545660332;
+    private static final long serialVersionUID = 793422337;
 
     /**
      * The reference instance of <code>public.lexeme_freeform</code>
@@ -69,6 +69,11 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
      * The column <code>public.lexeme_freeform.freeform_id</code>.
      */
     public final TableField<LexemeFreeformRecord, Long> FREEFORM_ID = createField("freeform_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_freeform.process_state_code</code>.
+     */
+    public final TableField<LexemeFreeformRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.lexeme_freeform</code> table reference
@@ -144,7 +149,7 @@ public class LexemeFreeform extends TableImpl<LexemeFreeformRecord> {
      */
     @Override
     public List<ForeignKey<LexemeFreeformRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeFreeformRecord, ?>>asList(Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_FREEFORM_ID_FKEY);
+        return Arrays.<ForeignKey<LexemeFreeformRecord, ?>>asList(Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_LEXEME_ID_FKEY, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_FREEFORM_ID_FKEY, Keys.LEXEME_FREEFORM__LEXEME_FREEFORM_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

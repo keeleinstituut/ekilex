@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
 
-    private static final long serialVersionUID = 441181966;
+    private static final long serialVersionUID = -1170614815;
 
     /**
      * The reference instance of <code>public.definition_freeform</code>
@@ -69,6 +69,11 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
      * The column <code>public.definition_freeform.freeform_id</code>.
      */
     public final TableField<DefinitionFreeformRecord, Long> FREEFORM_ID = createField("freeform_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.definition_freeform.process_state_code</code>.
+     */
+    public final TableField<DefinitionFreeformRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.definition_freeform</code> table reference
@@ -144,7 +149,7 @@ public class DefinitionFreeform extends TableImpl<DefinitionFreeformRecord> {
      */
     @Override
     public List<ForeignKey<DefinitionFreeformRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionFreeformRecord, ?>>asList(Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY);
+        return Arrays.<ForeignKey<DefinitionFreeformRecord, ?>>asList(Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_DEFINITION_ID_FKEY, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_FREEFORM_ID_FKEY, Keys.DEFINITION_FREEFORM__DEFINITION_FREEFORM_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

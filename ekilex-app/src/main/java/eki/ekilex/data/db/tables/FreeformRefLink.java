@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FreeformRefLink extends TableImpl<FreeformRefLinkRecord> {
 
-    private static final long serialVersionUID = -830884240;
+    private static final long serialVersionUID = 1400505288;
 
     /**
      * The reference instance of <code>public.freeform_ref_link</code>
@@ -84,6 +84,11 @@ public class FreeformRefLink extends TableImpl<FreeformRefLinkRecord> {
      * The column <code>public.freeform_ref_link.value</code>.
      */
     public final TableField<FreeformRefLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.freeform_ref_link.process_state_code</code>.
+     */
+    public final TableField<FreeformRefLinkRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.freeform_ref_link.order_by</code>.
@@ -164,7 +169,7 @@ public class FreeformRefLink extends TableImpl<FreeformRefLinkRecord> {
      */
     @Override
     public List<ForeignKey<FreeformRefLinkRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FreeformRefLinkRecord, ?>>asList(Keys.FREEFORM_REF_LINK__FREEFORM_REF_LINK_FREEFORM_ID_FKEY);
+        return Arrays.<ForeignKey<FreeformRefLinkRecord, ?>>asList(Keys.FREEFORM_REF_LINK__FREEFORM_REF_LINK_FREEFORM_ID_FKEY, Keys.FREEFORM_REF_LINK__FREEFORM_REF_LINK_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

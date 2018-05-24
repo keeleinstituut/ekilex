@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 1433310358;
+    private static final long serialVersionUID = 500223608;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -122,6 +122,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, String> VALUE_STATE_CODE = createField("value_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
+     * The column <code>public.lexeme.process_state_code</code>.
+     */
+    public final TableField<LexemeRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * Create a <code>public.lexeme</code> table reference
      */
     public Lexeme() {
@@ -195,7 +200,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY, Keys.LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

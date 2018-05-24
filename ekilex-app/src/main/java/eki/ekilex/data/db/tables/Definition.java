@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = -1977622482;
+    private static final long serialVersionUID = -1713223796;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -74,6 +74,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
      * The column <code>public.definition.lang</code>.
      */
     public final TableField<DefinitionRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
+
+    /**
+     * The column <code>public.definition.process_state_code</code>.
+     */
+    public final TableField<DefinitionRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.definition.order_by</code>.
@@ -154,7 +159,7 @@ public class Definition extends TableImpl<DefinitionRecord> {
      */
     @Override
     public List<ForeignKey<DefinitionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY);
+        return Arrays.<ForeignKey<DefinitionRecord, ?>>asList(Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY, Keys.DEFINITION__DEFINITION_LANG_FKEY, Keys.DEFINITION__DEFINITION_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

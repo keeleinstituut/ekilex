@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRefLink extends TableImpl<LexemeRefLinkRecord> {
 
-    private static final long serialVersionUID = -1745628504;
+    private static final long serialVersionUID = -607846832;
 
     /**
      * The reference instance of <code>public.lexeme_ref_link</code>
@@ -84,6 +84,11 @@ public class LexemeRefLink extends TableImpl<LexemeRefLinkRecord> {
      * The column <code>public.lexeme_ref_link.value</code>.
      */
     public final TableField<LexemeRefLinkRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.lexeme_ref_link.process_state_code</code>.
+     */
+    public final TableField<LexemeRefLinkRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme_ref_link.order_by</code>.
@@ -164,7 +169,7 @@ public class LexemeRefLink extends TableImpl<LexemeRefLinkRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRefLinkRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRefLinkRecord, ?>>asList(Keys.LEXEME_REF_LINK__LEXEME_REF_LINK_LEXEME_ID_FKEY);
+        return Arrays.<ForeignKey<LexemeRefLinkRecord, ?>>asList(Keys.LEXEME_REF_LINK__LEXEME_REF_LINK_LEXEME_ID_FKEY, Keys.LEXEME_REF_LINK__LEXEME_REF_LINK_PROCESS_STATE_CODE_FKEY);
     }
 
     /**

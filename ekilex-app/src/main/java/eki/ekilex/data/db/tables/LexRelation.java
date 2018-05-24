@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelation extends TableImpl<LexRelationRecord> {
 
-    private static final long serialVersionUID = -1775497390;
+    private static final long serialVersionUID = 897155145;
 
     /**
      * The reference instance of <code>public.lex_relation</code>
@@ -74,6 +74,11 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
      * The column <code>public.lex_relation.lex_rel_type_code</code>.
      */
     public final TableField<LexRelationRecord, String> LEX_REL_TYPE_CODE = createField("lex_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.lex_relation.process_state_code</code>.
+     */
+    public final TableField<LexRelationRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lex_relation.order_by</code>.
@@ -154,7 +159,7 @@ public class LexRelation extends TableImpl<LexRelationRecord> {
      */
     @Override
     public List<ForeignKey<LexRelationRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexRelationRecord, ?>>asList(Keys.LEX_RELATION__LEX_RELATION_LEXEME1_ID_FKEY, Keys.LEX_RELATION__LEX_RELATION_LEXEME2_ID_FKEY, Keys.LEX_RELATION__LEX_RELATION_LEX_REL_TYPE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexRelationRecord, ?>>asList(Keys.LEX_RELATION__LEX_RELATION_LEXEME1_ID_FKEY, Keys.LEX_RELATION__LEX_RELATION_LEXEME2_ID_FKEY, Keys.LEX_RELATION__LEX_RELATION_LEX_REL_TYPE_CODE_FKEY, Keys.LEX_RELATION__LEX_RELATION_PROCESS_STATE_CODE_FKEY);
     }
 
     /**
