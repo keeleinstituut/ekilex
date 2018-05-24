@@ -131,7 +131,7 @@
   </div>
 
   <th:block th:fragment="details" th:if="${meaning != null}">
-    <div th:data-id="${meaningId}" class="float-left mt-4 ml-2" id="details_div" style="height: calc(100vh - 15em); width: 74%; overflow-y: auto;">
+    <div th:data-id="${meaningId}" class="float-left mt-4 ml-2 pb-4" id="details_div" style="height: calc(100vh - 15em); width: 74%; overflow-y: auto;">
       <button id="refresh-details" hidden th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
       <div style="border: 1px solid #CCC; padding: 5px;">
         <div>
@@ -280,7 +280,7 @@
           <p />
         </div>
         <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}" th:if="${termViewUtil.isSelectedLang(lexeme.wordLang,sessionBean.languagesOrder)}">
-          <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%">
+          <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%" class="mt-2">
             <div>
               <span th:text="${lexeme.word}" class="ttl"></span>
               <span th:text="${lexeme.homonymNumber}"></span>
@@ -302,6 +302,10 @@
             </div>
             <div th:if="${lexeme.classifiersExist}">
               <hr />
+              <div th:if="${lexeme.valueStateCode != null}">
+                <span class="lbl">Väärtusolek</span>
+                <span th:text="${lexeme.valueStateCode}"></span>
+              </div>
               <div th:if="${lexeme.genderCode != null}">
                 <span class="lbl">Sugu</span>
                 <span th:text="${lexeme.genderCode}"></span>
@@ -382,7 +386,7 @@
             </div>
             <hr />
             <div th:unless="${not #lists.isEmpty(lexeme.governments)}" class="mt-1">
-              <span class="lbl">Kasutusnäited, tõlked, seletused</span>
+              <span class="lbl">Kasutusnäited</span>
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       th:data-id="${lexeme.lexemeId}"
                       onclick="openAddDlg(this)"
@@ -391,7 +395,7 @@
               </button>
             </div>
             <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mt-1">
-              <span class="lbl">Kasutusnäited, tõlked, seletused</span>
+              <span class="lbl">Kasutusnäited</span>
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       th:data-id="${lexeme.governments.get(0).id}"
                       onclick="openAddDlg(this)"
@@ -460,45 +464,6 @@
                         </button>
                       </div>
                     </li>
-                    <li th:each="usageTranslation : ${usageMeaning.usageTranslations}">
-                      <td class="hidden-buttons">
-                                <span th:name="${usageTranslation.id} + '_usage_translation'"
-                                      th:data-id="${usageTranslation.id}"
-                                      th:data-op-code="usage_translation"
-                                      th:text="${usageTranslation.value}"></span>
-                        <button type="button" class="btn badge badge-primary ml-2"
-                                th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                onclick="openEditDlg(this)"
-                                data-toggle="modal" data-target="#editDlg">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                data-toggle="delete-confirmation" data-placement="right">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                      </td>
-                    </li>
-                    <li th:each="usageDefinition : ${usageMeaning.usageDefinitions}">
-                      <td class="hidden-buttons">
-                                <span th:name="${usageDefinition.id} + '_usage_definition'"
-                                      th:data-id="${usageDefinition.id}"
-                                      th:data-op-code="usage_definition"
-                                      th:data-value="${usageDefinition.value}"
-                                      th:utext="${usageDefinition.value}"></span>
-                        <button type="button" class="btn badge badge-primary ml-2"
-                                th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                onclick="openEditDlg(this)"
-                                data-toggle="modal" data-target="#editDlg">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                data-toggle="delete-confirmation" data-placement="right">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
-                      </td>
-                    </li>
                   </th:block>
                 </th:block>
               </ul>
@@ -519,10 +484,8 @@
               </table>
             </div>
           </div>
-          <div style="padding: 5px" th:unless="${lexemeIter.last}"></div>
         </th:block>
       </div>
-      <div style="padding: 10px"></div>
     </div>
     <script th:inline="javascript">
         $('[data-toggle=confirmation]').confirmation(
