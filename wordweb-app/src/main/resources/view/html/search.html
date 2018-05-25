@@ -346,7 +346,69 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <!--
+            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
+              <div class="col-12 morphology-panel">
+                <div class="morphology-section">
+                  <div>
+                    <h6>Sõnavormid</h6>
+                    <div th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+                      <div th:each="formPair : ${paradigm.compactForms}" class="row intro">
+                        <div class="col-5">
+                          <span th:if="${formPair.form1 != null}">
+                            <span th:text="${formPair.form1.form}" data-toggle="tooltip" th:title="${formPair.form1.morph.value + ' - ' + formPair.form1.displayForm}">tekk</span>
+                          </span>
+                          <!-- not yet
+                          <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
+                            <span class="icon icon-speaker"></span>
+                          </button>
+                           -->
+                        </div>
+                        <div class="col-5">
+                          <span th:if="${formPair.form2 != null}">
+                            <span th:text="${formPair.form2.form}" data-toggle="tooltip" th:title="${formPair.form2.morph.value + ' - ' + formPair.form2.displayForm}">tekid</span>
+                          </span>
+                          <!-- not yet
+                          <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
+                            <span class="icon icon-speaker"></span>
+                          </button>
+                           -->
+                        </div>
+                      </div>
+                      <hr th:unless="${paradigmIter.last}"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button class="more-btn">
+                <span class="icon icon-chevron-left"></span>
+              </button>
+              <!-- full morphology -->
+              <div class="morphology-section morphology-test">
+                <div th:each="paradigm : ${wordData.paradigms}">
+                  <hr />
+                  <div class="row" th:if="${not #lists.isEmpty(paradigm.forms)}">
+                    <table style="width: 100%">
+                      <tr th:each="form : ${paradigm.forms}">
+                        <td style="width: 40%">
+                          <span th:text="${form.morph.value}" th:if="${form.morph != null}"></span>
+                        </td>
+                        <td>
+                          <span th:text="${form.form}"></span>
+                        </td>
+                        <td>
+                          <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+                        </td>
+                        <td>
+                          <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+                        </td>
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- static proto code, to be removed later
             <div class="level-3-panel row">
               <div class="col-12 morphology-panel">
                 <div class="morphology-section">
@@ -415,6 +477,7 @@
               </button>
             </div>
              -->
+
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
               <div class="col-12">
                 <h6>Sõna seosed</h6>
@@ -426,31 +489,6 @@
                 </div>
               </div>
             </div>
-            <!-- esialgne morfoloogia -->
-            <div class="level-3-panel morphology-test row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
-              <div class="col" th:each="paradigm : ${wordData.paradigms}">
-                <h6>Sõnavormid</h6>
-                <div th:if="${not #lists.isEmpty(paradigm.forms)}">
-                  <table>
-                    <tr th:each="form : ${paradigm.forms}">
-                      <td>
-                        <span th:text="${form.morph.value}" th:if="${form.morph != null}"></span>
-                      </td>
-                      <td>
-                        <span th:text="${form.form}"></span>
-                      </td>
-                      <td>
-                        <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-                      </td>
-                      <td>
-                        <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-              </div>
-            </div>
-            <!-- end esialgne morfoloogia -->
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.imageFiles)}">
               <div class="col">
                 <img class="homonym-image" th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}"></img>

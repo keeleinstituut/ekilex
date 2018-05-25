@@ -14,6 +14,8 @@ public class Paradigm extends AbstractDataObject {
 
 	private List<Form> forms;
 
+	private List<FormPair> compactForms;
+
 	public Long getParadigmId() {
 		return paradigmId;
 	}
@@ -36,6 +38,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setForms(List<Form> forms) {
 		this.forms = forms;
+	}
+
+	public List<FormPair> getCompactForms() {
+		return compactForms;
+	}
+
+	public void setCompactForms(List<FormPair> compactForms) {
+		this.compactForms = compactForms;
 	}
 
 }

@@ -21,6 +21,7 @@ import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.FormPair;
 import eki.wordweb.data.Government;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -265,23 +266,69 @@ public class ConversionUtil {
 	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
 		List<Paradigm> paradigms = new ArrayList<>();
+		Map<String, Form> formMap;
+		List<FormPair> compactForms;
 		String classifierCode;
 		Classifier classifier;
 		for (Entry<Long, List<Form>> paradigmFormsEntry : paradigmFormsMap.entrySet()) {
 			Long paradigmId = paradigmFormsEntry.getKey();
 			List<Form> forms = paradigmFormsEntry.getValue();
+			formMap = new HashMap<>();
 			for (Form form : forms) {
 				classifierCode = form.getMorphCode();
 				classifier = getClassifier(ClassifierName.MORPH, classifierCode, displayLang);
 				form.setMorph(classifier);
+				formMap.put(classifierCode, form);
 			}
+			compactForms = composeCompactForms(formMap);
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
 			paradigm.setForms(forms);
+			paradigm.setCompactForms(compactForms);
 			paradigms.add(paradigm);
 		}
 		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
 		return paradigms;
+	}
+
+	private List<FormPair> composeCompactForms(Map<String, Form> formMap) {
+
+		final String[] orderedMorphPairCodes1 = new String[] {"SgN", "SgG", "SgP"};
+		final String[] orderedMorphPairCodes2 = new String[] {"PlN", "PlG", "PlP"};
+		final String[] unorderedMorphPairCodes = new String[] {"Sup", "Inf", "IndPrSg3", "PtsPtIps", "ID"};
+
+		List<FormPair> compactForms = new ArrayList<>();
+		FormPair formPair;
+		for (int orderedMorphPairIndex = 0; orderedMorphPairIndex < orderedMorphPairCodes1.length; orderedMorphPairIndex++) {
+			String morphCode1 = orderedMorphPairCodes1[orderedMorphPairIndex];
+			Form form1 = formMap.get(morphCode1);
+			String morphCode2 = orderedMorphPairCodes2[orderedMorphPairIndex];
+			Form form2 = formMap.get(morphCode2);
+			if ((form1 != null) || (form2 != null)) {
+				formPair = new FormPair();
+				formPair.setForm1(form1);
+				formPair.setForm2(form2);
+				compactForms.add(formPair);
+			}
+		}
+		formPair = null;
+		for (String morphCode : unorderedMorphPairCodes) {
+			Form form = formMap.get(morphCode);
+			if (form == null) {
+				continue;
+			}
+			if (formPair == null) {
+				formPair = new FormPair();
+			}
+			if (formPair.getForm1() == null) {
+				formPair.setForm1(form);
+				compactForms.add(formPair);
+			} else if (formPair.getForm2() == null) {
+				formPair.setForm2(form);
+				formPair = null;
+			}
+		}
+		return compactForms;
 	}
 
 	private CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
