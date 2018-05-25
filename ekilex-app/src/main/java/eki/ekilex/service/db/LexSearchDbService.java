@@ -27,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
+import eki.ekilex.constant.DbConstant;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -76,7 +77,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Service
-public class LexSearchDbService implements SystemConstant {
+public class LexSearchDbService implements SystemConstant, DbConstant {
 
 	private DSLContext create;
 
@@ -188,7 +189,10 @@ public class LexSearchDbService implements SystemConstant {
 				Lexeme l2 = LEXEME.as("l2");
 				Meaning m2 = MEANING.as("m2");
 				Definition d2 = DEFINITION.as("d2");
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(d2.MEANING_ID.eq(m2.ID));
+				Condition where2 = l2.WORD_ID.eq(word.ID)
+						.and(l2.MEANING_ID.eq(m2.ID))
+						.and(d2.MEANING_ID.eq(m2.ID))
+						.and(d2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();

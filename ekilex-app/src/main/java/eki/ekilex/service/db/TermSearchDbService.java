@@ -15,6 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.List;
 import java.util.Map;
 
+import eki.ekilex.constant.DbConstant;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -52,7 +53,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class TermSearchDbService implements SystemConstant {
+public class TermSearchDbService implements SystemConstant, DbConstant {
 
 	private DSLContext create;
 
@@ -172,7 +173,9 @@ public class TermSearchDbService implements SystemConstant {
 
 				Lexeme l1 = LEXEME.as("l1");
 				Definition d1 = DEFINITION.as("d1");
-				Condition where1 = d1.MEANING_ID.eq(m1.ID).and(l1.MEANING_ID.eq(m1.ID));
+				Condition where1 = d1.MEANING_ID.eq(m1.ID)
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.and(d1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));

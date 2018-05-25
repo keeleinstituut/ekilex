@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
+import eki.ekilex.constant.DbConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -44,7 +45,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
 @Component
-public class UpdateDbService {
+public class UpdateDbService implements DbConstant {
 
 	private DSLContext create;
 
@@ -297,7 +298,7 @@ public class UpdateDbService {
 	}
 
 	public void removeDefinition(Long id) {
-		create.delete(DEFINITION).where(DEFINITION.ID.eq(id)).execute();
+		create.update(DEFINITION).set(DEFINITION.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(DEFINITION.ID.eq(id)).execute();
 	}
 
 	public void removeLexemePos(Long lexemeId, String posCode) {

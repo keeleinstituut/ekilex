@@ -35,6 +35,7 @@ import static org.jooq.impl.DSL.selectDistinct;
 import java.sql.Timestamp;
 import java.util.Map;
 
+import eki.ekilex.constant.DbConstant;
 import org.jooq.DSLContext;
 import org.jooq.Record18;
 import org.jooq.Record2;
@@ -55,7 +56,7 @@ import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 
 @Component
-public class CommonDataDbService {
+public class CommonDataDbService implements DbConstant {
 
 	@Autowired
 	private DSLContext create;
@@ -193,7 +194,7 @@ public class CommonDataDbService {
 						)
 				.from(DEFINITION.leftOuterJoin(DEFINITION_REF_LINK)
 						.on(DEFINITION_REF_LINK.DEFINITION_ID.eq(DEFINITION.ID)).and(DEFINITION_REF_LINK.REF_TYPE.eq(ReferenceType.SOURCE.name())))
-				.where(DEFINITION.MEANING_ID.eq(meaningId))
+				.where(DEFINITION.MEANING_ID.eq(meaningId).and(DEFINITION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 				.orderBy(DEFINITION.ORDER_BY)
 				.fetch();
 	}
