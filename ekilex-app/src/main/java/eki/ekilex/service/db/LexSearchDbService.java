@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import eki.ekilex.constant.DbConstant;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -217,10 +218,13 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 								.and(l2ff.LEXEME_ID.eq(l2.ID))
 								.and(l2ff.FREEFORM_ID.eq(rect2.ID))
 								.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
+								.and(rect2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 								.and(um2.PARENT_ID.eq(rect2.ID))
 								.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
+								.and(um2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 								.and(u2.PARENT_ID.eq(um2.ID))
-								.and(u2.TYPE.eq(FreeformType.USAGE.name()));
+								.and(u2.TYPE.eq(FreeformType.USAGE.name())
+								.and(u2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
@@ -284,8 +288,12 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition = rl.DEFINITION_ID.eq(definitionIdField).and(s.ID.eq(rl.REF_ID))
-				.and(sf.SOURCE_ID.eq(s.ID)).and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
+		Condition sourceCondition =	rl.DEFINITION_ID.eq(definitionIdField)
+				.and(rl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(s.ID.eq(rl.REF_ID))
+				.and(sf.SOURCE_ID.eq(s.ID))
+				.and(ff.ID.eq(sf.FREEFORM_ID))
+				.and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
@@ -303,21 +311,21 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		}
 
 		Lexeme l = Lexeme.LEXEME.as("l");
-		LexemeFreeform lf = LexemeFreeform.LEXEME_FREEFORM.as("lf");
-		Freeform f = Freeform.FREEFORM.as("f");
-		FreeformRefLink rl = FreeformRefLink.FREEFORM_REF_LINK.as("rl");
+		LexemeRefLink lrl = LexemeRefLink.LEXEME_REF_LINK.as("lrl");
 		Source s = Source.SOURCE.as("s");
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition = l.WORD_ID.eq(wordIdField).and(lf.LEXEME_ID.eq(l.ID))
-				.and(f.ID.eq(lf.FREEFORM_ID)).and(f.TYPE.eq("SOURCE")).and(rl.FREEFORM_ID.eq(f.ID)).and(s.ID.eq(rl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
+		Condition sourceCondition = l.WORD_ID.eq(wordIdField)
+				.and(lrl.LEXEME_ID.eq(l.ID))
+				.and(lrl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(s.ID.eq(lrl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
 				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
 		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(l, lf, f, rl, s, sf, ff).where(sourceCondition)));
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(l, lrl, s, sf, ff).where(sourceCondition)));
 	}
 
 	private Condition applyLanguageFilter(List<SearchCriterion> searchCriterions, Field<String> languageField, Condition condition) {
@@ -605,6 +613,7 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 						)
 				.where(
 						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
+						.and(LEX_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))

@@ -204,10 +204,13 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
 						.and(l1ff.FREEFORM_ID.eq(rect1.ID))
 						.and(rect1.TYPE.eq(FreeformType.GOVERNMENT.name()))
+						.and(rect1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(um1.PARENT_ID.eq(rect1.ID))
 						.and(um1.TYPE.eq(FreeformType.USAGE_MEANING.name()))
+						.and(um1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(u1.PARENT_ID.eq(um1.ID))
-						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
+						.and(u1.TYPE.eq(FreeformType.USAGE.name())
+						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
