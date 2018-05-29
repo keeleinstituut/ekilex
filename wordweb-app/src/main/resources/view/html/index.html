@@ -1,15 +1,63 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,~{::links})">
-<th:block th:fragment="links">
+  <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-index.js}"></script>
 </th:block>
 </head>
-<body>
-  <div th:replace="common :: menu"></div>
-  <div style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
+<body class="home-page">
+  <!--   <div th:replace="common :: menu"></div> -->
+  <div class="header-container">
+    <div class="header-panel">
+      <div class="header-links">
+        <button>
+          <span class="icon icon-close"></span>
+        </button>
+        <a th:href="@{/}" class="menu-item selected ">
+          <span th:text="#{menu.search}">Otsing</span>
+        </a>
+        <a th:href="@{/}" class="menu-item ">
+          <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+        </a>
+        <a th:href="@{/}" class="menu-item ">
+          <span th:text="#{menu.games}">Keelemängud</span>
+        </a>
+        <a th:href="@{/}" class="menu-item ">
+          <span th:text="#{menu.info}">Portaalist</span>
+        </a>
+        <a th:href="@{/}" class="menu-item ">
+          <span th:text="#{menu.contacts}">Kontakt</span>
+        </a>
+      </div>
+      <button class="btn menu-btn">
+        <span class="icon icon-menu"></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="container-fluid home-page-content pb-4">
+    <div class="row">
+      <div class="col align-self-center">
+        <div class="row">
+          <div class="col-12 mb-1 mb-md-2">
+            <span class="icon icon-logo logo-main"></span>
+          </div>
+          <div class="col-12 mb-2 mb-md-3 mb-lg-4">
+            <p>Otsi sõnade tähendusi ja tõlkeid</p>
+          </div>
+          <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
+            <div th:replace="common :: search"></div>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+  <div class="container-fluid footer text-center">
+    <span class="icon-eki-logo"></span>
+  </div>
+<!--   <div style="position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%);">
     <div class="row" style="width: 1000px">
       <div class="col-12 search-panel">
         <div class="row">
@@ -23,11 +71,11 @@
       </div>
     </div>
   </div>
-  <script th:inline="javascript">
-  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
-  	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
-  	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
-  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-  </script>
+-->  <script th:inline="javascript">
+ var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+ var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+ var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
+ var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+</script>
 </body>
 </html>

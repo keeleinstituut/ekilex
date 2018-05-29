@@ -1,8 +1,18 @@
 // MOBILE
 ////////////////////////////////
-@media (min-width: 401px) and (min-height: 561px) and (max-width: 767px)  {
-	html{
-		font-size: calc( (4.2666666666666666666666666vw + 3.007518797vh) / 2 );
+// @media (min-width: 401px) and (min-height: 561px) and (max-width: 767px)  {
+// 	html{
+// 		font-size: calc( (4.2666666666666666666666666vw + 3.007518797vh) / 2 );
+// 	}
+// }
+@media (min-width: 401px) and (max-width: 767px) {
+	// html{
+	// 	font-size: 4vw;
+	// }
+	.home-page-content{
+		.logo-main{
+			font-size: 10.5vw;
+		}
 	}
 }
 
@@ -12,6 +22,9 @@
 
 html{
 	background-color: $white;
+}
+.menu-btn{
+	background-color: transparent;
 }
 .lang-btn{
 	position: fixed;

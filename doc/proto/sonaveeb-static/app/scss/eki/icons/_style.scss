@@ -3,9 +3,9 @@
 @font-face {
   font-family: 'material-icons';
   src:
-    url('#{$icomoon-font-path}/material-icons.ttf?gmj77c') format('truetype'),
-    url('#{$icomoon-font-path}/material-icons.woff?gmj77c') format('woff'),
-    url('#{$icomoon-font-path}/material-icons.svg?gmj77c#material-icons') format('svg');
+    url('#{$icomoon-font-path}/material-icons.ttf?z7bx2c') format('truetype'),
+    url('#{$icomoon-font-path}/material-icons.woff?z7bx2c') format('woff'),
+    url('#{$icomoon-font-path}/material-icons.svg?z7bx2c#material-icons') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -29,6 +29,11 @@
   @return unquote("\"") + $str + unquote("\"");
 }
 
+.icon-eki-logo {
+  &:before {
+    content: unicode($icon-eki-logo); 
+  }
+}
 .icon-logo {
   &:before {
     content: unicode($icon-logo); 
