@@ -1,10 +1,14 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
-import javax.persistence.Column;
 import java.util.function.Consumer;
 
+import javax.persistence.Column;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import eki.common.data.AbstractDataObject;
+
+@JsonIgnoreProperties({"displayMorphCode"})
 public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
@@ -14,9 +18,6 @@ public class Form extends AbstractDataObject {
 
 	@Column(name = "word")
 	private String value;
-
-	@Column(name = "lang")
-	private String lang;
 
 	@Column(name = "is_word")
 	private boolean isWord;
@@ -59,14 +60,6 @@ public class Form extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public String getLang() {
-		return lang;
-	}
-
-	public void setLang(String lang) {
-		this.lang = lang;
 	}
 
 	public boolean isWord() {

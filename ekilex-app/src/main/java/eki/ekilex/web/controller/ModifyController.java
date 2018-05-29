@@ -4,17 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.common.constant.FreeformType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Source;
+import eki.ekilex.data.SourceMember;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.SourceService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
 import org.slf4j.Logger;
@@ -60,6 +65,9 @@ public class ModifyController implements WebConstant {
 	@Autowired
 	private ConversionUtil conversionUtil;
 
+	@Autowired
+	private SourceService sourceService;
+
 	@ResponseBody
 	@PostMapping("/modify_item")
 	public String modifyItem(@RequestBody ModifyItemRequest itemData, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
@@ -94,6 +102,18 @@ public class ModifyController implements WebConstant {
 				break;
 			case "government" :
 				updateService.updateGovernment(itemData.getId(), itemData.getValue());
+				break;
+			case "lexeme_deriv" :
+				updateService.updateLexemeDeriv(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+				break;
+			case "lexeme_register" :
+				updateService.updateLexemeRegister(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
+				break;
+			case "lexeme_gender" :
+				updateService.updateWordGender(itemData.getId(), itemData.getValue());
+				break;
+			case "lexeme_grammar" :
+				updateService.updateGrammar(itemData.getId(), itemData.getValue());
 				break;
 		}
 
@@ -206,6 +226,27 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.removeGovernment(id);
 			break;
+		case "def_ref_link" :
+			updateService.removeDefinitionRefLink(id);
+			break;
+		case "ff_ref_link" :
+			updateService.removeFreeformRefLink(id);
+			break;
+		case "lex_ref_link" :
+			updateService.removeLexemeRefLink(id);
+			break;
+		case "lexeme_deriv" :
+			updateService.removeLexemeDeriv(id, valueToRemove);
+			break;
+		case "lexeme_register" :
+			updateService.removeLexemeRegister(id, valueToRemove);
+			break;
+		case "lexeme_gender" :
+			updateService.updateWordGender(id, null);
+			break;
+		case "lexeme_grammar" :
+			updateService.removeGrammar(id);
+			break;
 		}
 		return "OK";
 	}
@@ -225,6 +266,10 @@ public class ModifyController implements WebConstant {
 		case "USAGE_DEFINITION" :
 			updateService.addUsageMember(itemData.getId(), itemData.getOpCode(), itemData.getValue(), itemData.getLanguage());
 			break;
+		case "government_usage" :
+			Long governmentId = updateService.addGovernment(itemData.getId(), "-");
+			updateService.addUsageMember(governmentId, "USAGE_MEANING", itemData.getValue(), itemData.getLanguage());
+			break;
 		case "lexeme_frequency_group" :
 			updateService.updateLexemeFrequencyGroup(itemData.getId(), itemData.getValue());
 			break;
@@ -237,6 +282,36 @@ public class ModifyController implements WebConstant {
 			break;
 		case "government" :
 			updateService.addGovernment(itemData.getId(), itemData.getValue());
+			break;
+		case "defSourceRef" : {
+			Source source = sourceService.getSource(itemData.getId2());
+			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+			updateService.addDefinitionSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
+			break;
+			}
+		case "ffSourceRef" : {
+			Source source = sourceService.getSource(itemData.getId2());
+			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+			updateService.addFreeformSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
+			break;
+			}
+		case "lexSourceRef" : {
+			Source source = sourceService.getSource(itemData.getId2());
+			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+			updateService.addLexemeSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
+			break;
+			}
+		case "lexeme_deriv" :
+			updateService.addLexemeDeriv(itemData.getId(), itemData.getValue());
+			break;
+		case "lexeme_register" :
+			updateService.addLexemeRegister(itemData.getId(), itemData.getValue());
+			break;
+		case "lexeme_gender" :
+			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
+			break;
+		case "lexeme_grammar" :
+			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());
 			break;
 		}
 		return "{}";
@@ -257,14 +332,31 @@ public class ModifyController implements WebConstant {
 		if (words.getTotalCount() == 0) {
 			updateService.addWord(value, dataset, language,morphCode);
 		} else {
-			long wordsFromOtherDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).count();
-			if (wordsFromOtherDatasets != 0) {
-				attributes.addFlashAttribute("dataset", dataset);
-				attributes.addFlashAttribute("wordValue", value);
-				attributes.addFlashAttribute("returnPage", returnPage);
-				return "redirect:/wordselect";
-			}
+			attributes.addFlashAttribute("dataset", dataset);
+			attributes.addFlashAttribute("wordValue", value);
+			attributes.addFlashAttribute("language", language);
+			attributes.addFlashAttribute("morphCode", morphCode);
+			attributes.addFlashAttribute("returnPage", returnPage);
+			return "redirect:/wordselect";
 		}
+		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+			sessionBean.getSelectedDatasets().add(dataset);
+		}
+		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+	}
+
+	@PostMapping("/add_homonym")
+	public String addNewHomonym(
+			@RequestParam("dataset") String dataset,
+			@RequestParam("value") String value,
+			@RequestParam("language") String language,
+			@RequestParam("morphCode") String morphCode,
+			@RequestParam("returnPage") String returnPage,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		updateService.addWord(value, dataset, language, morphCode);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
 		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
 			sessionBean.getSelectedDatasets().add(dataset);
@@ -277,12 +369,15 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			@ModelAttribute(name = "dataset") String dataset,
 			@ModelAttribute(name = "wordValue") String wordValue,
+			@ModelAttribute(name = "language") String language,
+			@ModelAttribute(name = "morphCode") String morphCode,
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
-		allDatasets.remove(dataset);
 		WordsResult words = lexSearchService.findWords(wordValue, allDatasets, true);
-		model.addAttribute("words", words.getWords());
+		List<Word> wordsInDifferentDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).collect(Collectors.toList());
+		model.addAttribute("words", wordsInDifferentDatasets);
+		model.addAttribute("hasWordInSameDataset", words.getWords().size() != wordsInDifferentDatasets.size());
 		Map<Long, WordDetails> details = new HashMap<>();
 		Map<Long, Boolean> wordHasDefinitions = new HashMap<>();
 		for (Word word : words.getWords() ) {

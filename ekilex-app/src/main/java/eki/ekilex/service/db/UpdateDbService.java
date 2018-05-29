@@ -1,6 +1,8 @@
 package eki.ekilex.service.db;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
+import eki.ekilex.constant.DbConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
@@ -23,10 +25,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REF_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -38,7 +45,7 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
 @Component
-public class UpdateDbService {
+public class UpdateDbService implements DbConstant {
 
 	private DSLContext create;
 
@@ -123,10 +130,31 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateWordGender(Long wordId, String genderCode) {
+		create.update(WORD)
+				.set(WORD.GENDER_CODE, genderCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		create.update(LEXEME_POS)
 				.set(LEXEME_POS.POS_CODE, newPos)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(currentPos)))
+				.execute();
+	}
+
+	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
+		create.update(LEXEME_DERIV)
+				.set(LEXEME_DERIV.DERIV_CODE, newDeriv)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(currentDeriv)))
+				.execute();
+	}
+
+	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
+		create.update(LEXEME_REGISTER)
+				.set(LEXEME_REGISTER.REGISTER_CODE, newRegister)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(currentRegister)))
 				.execute();
 	}
 
@@ -148,10 +176,19 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public void updateGrammar(Long grammarId, String grammar) {
+		create.update(FREEFORM)
+				.set(FREEFORM.VALUE_TEXT, grammar)
+				.where(FREEFORM.ID.eq(grammarId))
+				.execute();
+	}
+
 	public void addLexemePos(Long lexemeId, String posCode) {
 		Record1<Long> lexemePos = create
 				.select(LEXEME_POS.ID).from(LEXEME_POS)
-				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)))
+				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_POS.POS_CODE.eq(posCode))
+						.and(LEXEME_POS.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 				.fetchOne();
 		if (lexemePos == null) {
 			create
@@ -161,10 +198,43 @@ public class UpdateDbService {
 		}
 	}
 
+	public void addLexemeDeriv(Long lexemeId, String derivCode) {
+		Record1<Long> lexemeDeriv = create
+				.select(LEXEME_DERIV.ID).from(LEXEME_DERIV)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode))
+						.and(LEXEME_DERIV.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.fetchOne();
+		if (lexemeDeriv == null) {
+			create
+				.insertInto(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID, LEXEME_DERIV.DERIV_CODE)
+				.values(lexemeId, derivCode)
+				.execute();
+		}
+	}
+
+	public void addLexemeRegister(Long lexemeId, String registerCode) {
+		Record1<Long> lexemeRegister = create
+				.select(LEXEME_REGISTER.ID).from(LEXEME_REGISTER)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode))
+						.and(LEXEME_REGISTER.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.fetchOne();
+		if (lexemeRegister == null) {
+			create
+				.insertInto(LEXEME_REGISTER, LEXEME_REGISTER.LEXEME_ID, LEXEME_REGISTER.REGISTER_CODE)
+				.values(lexemeId, registerCode)
+				.execute();
+		}
+	}
+
 	public void addMeaningDomain(Long meaningId, Classifier domain) {
 		Record1<Long> meaningDomain = create
 				.select(MEANING_DOMAIN.ID).from(MEANING_DOMAIN)
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())).and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin())))
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode()))
+						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
+						.and(MEANING_DOMAIN.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 				.fetchOne();
 		if (meaningDomain == null) {
 			create
@@ -175,8 +245,14 @@ public class UpdateDbService {
 	}
 
 	public void addWord(String word, String datasetCode, String language, String morphCode) {
-
-		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(1, language).returning(WORD.ID).fetchOne().getId();
+		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
+				.where(WORD.LANG.eq(language).and(FORM.IS_WORD.isTrue()).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
+		int homonymNumber = 1;
+		if (currentHomonymNumber.value1() != null) {
+			homonymNumber = currentHomonymNumber.value1() + 1;
+		}
+		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
 				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)
@@ -198,6 +274,17 @@ public class UpdateDbService {
 				.execute();
 	}
 
+	public Long addLexemeGrammar(Long lexemeId, String value) {
+
+		Long grammarFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
+				.values(FreeformType.GRAMMAR.name(), value).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, grammarFreeformId).execute();
+		return grammarFreeformId;
+	}
+
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
 
 		Long meaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
@@ -216,22 +303,40 @@ public class UpdateDbService {
 		childFreeforms.forEach(f -> {
 			removeFreeform(f.getId());
 		});
-		create.delete(FREEFORM).where(FREEFORM.ID.eq(id)).execute();
+		create.update(FREEFORM).set(FREEFORM.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(FREEFORM.ID.eq(id)).execute();
 	}
 
 	public void removeDefinition(Long id) {
-		create.delete(DEFINITION).where(DEFINITION.ID.eq(id)).execute();
+		create.update(DEFINITION).set(DEFINITION.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(DEFINITION.ID.eq(id)).execute();
 	}
 
 	public void removeLexemePos(Long lexemeId, String posCode) {
-		create.delete(LEXEME_POS)
+		create.update(LEXEME_POS)
+				.set(LEXEME_POS.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_POS.POS_CODE.eq(posCode)))
 				.execute();
 	}
 
+	public void removeLexemeDeriv(Long lexemeId, String derivCode) {
+		create.update(LEXEME_DERIV)
+				.set(LEXEME_DERIV.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
+				.execute();
+	}
+
+	public void removeLexemeRegister(Long lexemeId, String registerCode) {
+		create.update(LEXEME_REGISTER)
+				.set(LEXEME_REGISTER.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
+						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
+				.execute();
+	}
+
 	public void removeMeaningDomain(Long meaningId,  Classifier domain) {
-		create.delete(MEANING_DOMAIN)
+		create.update(MEANING_DOMAIN)
+				.set(MEANING_DOMAIN.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())))
@@ -240,6 +345,27 @@ public class UpdateDbService {
 
 	public void removeLexemeFreeform(Long freeformId) {
 		create.delete(LEXEME_FREEFORM).where(LEXEME_FREEFORM.FREEFORM_ID.eq(freeformId)).execute();
+	}
+
+	public void removeDefinitionRefLink(Long refLinkId) {
+		create.update(DEFINITION_REF_LINK)
+				.set(DEFINITION_REF_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(DEFINITION_REF_LINK.ID.eq(refLinkId))
+				.execute();
+	}
+
+	public void removeFreeformRefLink(Long refLinkId) {
+		create.update(FREEFORM_REF_LINK)
+				.set(FREEFORM_REF_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(FREEFORM_REF_LINK.ID.eq(refLinkId))
+				.execute();
+	}
+
+	public void removeLexemeRefLink(Long refLinkId) {
+		create.update(LEXEME_REF_LINK)
+				.set(LEXEME_REF_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(LEXEME_REF_LINK.ID.eq(refLinkId))
+				.execute();
 	}
 
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
@@ -272,6 +398,48 @@ public class UpdateDbService {
 				.getId();
 		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, governmentFreeformId).execute();
 		return governmentFreeformId;
+	}
+
+	public Long addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						DEFINITION_REF_LINK,
+						DEFINITION_REF_LINK.DEFINITION_ID,
+						DEFINITION_REF_LINK.REF_ID,
+						DEFINITION_REF_LINK.REF_TYPE,
+						DEFINITION_REF_LINK.VALUE,
+						DEFINITION_REF_LINK.NAME)
+				.values(definitionId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(DEFINITION_REF_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						FREEFORM_REF_LINK,
+						FREEFORM_REF_LINK.FREEFORM_ID,
+						FREEFORM_REF_LINK.REF_ID,
+						FREEFORM_REF_LINK.REF_TYPE,
+						FREEFORM_REF_LINK.VALUE,
+						FREEFORM_REF_LINK.NAME)
+				.values(freeformId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(FREEFORM_REF_LINK.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+		return create
+				.insertInto(
+						LEXEME_REF_LINK,
+						LEXEME_REF_LINK.LEXEME_ID,
+						LEXEME_REF_LINK.REF_ID,
+						LEXEME_REF_LINK.REF_TYPE,
+						LEXEME_REF_LINK.VALUE,
+						LEXEME_REF_LINK.NAME)
+				.values(lexemeId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(LEXEME_REF_LINK.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

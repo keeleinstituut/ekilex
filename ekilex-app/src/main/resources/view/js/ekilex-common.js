@@ -217,11 +217,19 @@ function openAddDlg(elem) {
 
 function openSelectDlg(elem) {
     var selectDlg = $($(elem).data('target'));
-    var targetElement = $('[name=' + $(elem).data('target-elem') + ']');
+    var targetElement = $(elem);
+    if ($(elem).data('target-elem')) {
+        targetElement = $('[name=' + $(elem).data('target-elem') + ']');
+    }
     var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
     selectDlg.find('[name=currentValue]').val(currentValue);
-    selectDlg.find('select').val(currentValue);
+    var selectElem = selectDlg.find('select');
+    if (currentValue === undefined) {
+        selectElem.val(selectElem.find('option').first().val());
+    } else {
+        selectElem.val(currentValue);
+    }
 }
 
 function initSelectDlg(selectDlg) {
@@ -258,7 +266,13 @@ function submitDialog(e, dlg, failMessage) {
     e.preventDefault();
     var theForm = dlg.find('form');
 
-    $.ajax({
+    submitForm(theForm, failMessage).always(function () {
+        dlg.modal('hide');
+    });
+}
+
+function submitForm(theForm, failMessage) {
+    return $.ajax({
         url: theForm.attr('action'),
         data: JSON.stringify(theForm.serializeJSON()),
         method: 'POST',
@@ -269,8 +283,6 @@ function submitDialog(e, dlg, failMessage) {
     }).fail(function (data) {
         console.log(data);
         alert(failMessage);
-    }).always(function () {
-        dlg.modal('hide');
     });
 }
 
@@ -286,42 +298,41 @@ function toggleValueGroup(dlg, groupName) {
     dlg.find('[data-id=' + groupName + ']').find('.value-select').trigger('change');
 }
 
-function openLexemeClassifiersDlg(elem) {
-    var theDlg = $($(elem).data('target'));
-    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
-    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
-}
-
 function openUsageMemberDlg(elem) {
     var theDlg = $($(elem).data('target'));
     theDlg.find('[name=id]').val($(elem).data('id'));
 }
 
-function initMultiValueAddDlg(theDlg) {
+function initMultiValueAddDlg(theDlg, resetElements) {
     theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
     theDlg.find('.value-select').off('change').on('change', function(e) {
         theDlg.find('[name=value]').val($(this).val());
     });
     theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        theDlg.find('select').each(function(indx, item) {
-            $(item).val($(item).find('option').first().val());
-        });
-        theDlg.find('textarea').each(function(indx, item) {
-            $(item).val(null);
-        });
-        toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
+        if (resetElements) {
+            theDlg.find('.form-control').each(function (indx, item) {
+                $(item).val(null);
+            });
+            theDlg.find('select').each(function (indx, item) {
+                $(item).val($(item).find('option').first().val());
+            });
+            toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
+        }
         alignAndFocus(e, theDlg);
     });
 }
 
-function decorateRefLinks(backUrl) {
+function decorateRefLinks() {
     var detailsDiv = $('#details_div');
-    var id = detailsDiv.data('id');
-
     detailsDiv.find('a').each(function(indx, item) {
-        if ($(item).attr('href').includes('_ref_link:')) {
-            $(item).attr('href', ($(item).attr('href') + "/" + backUrl + "/" + id));
+        var theLink = $(item);
+        if (theLink.attr('href').includes('_ref_link:')) {
+            theLink.attr('data-target', '#detailsDlg');
+            theLink.attr('data-toggle', 'modal');
+            theLink.on('click',function(e) {
+                openDetailsDiv(e.target);
+            } );
         }
     });
 }
@@ -339,5 +350,58 @@ function initNewWordDlg() {
         var firstSelectedDataset = $('[name=selectedDatasets]:checked').val();
         $('[name=dataset]').val(firstSelectedDataset);
         $('[name=morphCode]').val('??');
+    });
+}
+
+function openAddSourceRefDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=opCode]').val($(elem).data('op-code'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=sourceRefDlgContent]').html(null);
+
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var content = button.html();
+        button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+        var theForm = $(this).closest('form');
+        var url = theForm.attr('action') + '?' + theForm.serialize();
+        $.get(url).done(function(data) {
+            addDlg.find('[data-name=sourceRefDlgContent]').replaceWith(data);
+            addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
+                e.preventDefault();
+                var button = $(e.target);
+                var sourceName = button.closest('.form-group').find('.form-control').val();
+                addDlg.find('[name=id2]').val(button.data('source-id'));
+                addDlg.find('[name=value]').val(sourceName);
+                var theForm = button.closest('form');
+                submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+                    addDlg.modal('hide');
+                });
+            });
+        }).fail(function(data) {
+            console.log(data);
+            alert(failMessage);
+        }).always(function () {
+            button.html(content);
+        });
+    });
+
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        addDlg.find('.form-control').first().focus();
+    });
+}
+
+function openDetailsDiv(elem) {
+    var dlg = $($(elem).data('target'));
+    var url = $(elem).attr('href');
+
+    dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        dlg.find('.close').focus();
+        dlg.find('.modal-body').html(null);
+        $.get(url).done(function(data) {
+            dlg.find('.modal-body').html(data);
+        });
     });
 }

@@ -15,6 +15,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -42,7 +43,7 @@ public class LexSearchService implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 
 		languagesDatasetMap = new HashMap<>();
-		languagesDatasetMap.put("estest", new String[] {"ss1", "psv"});
+		languagesDatasetMap.put("estest", new String[] {"ss1", "psv", "kol"});
 		languagesDatasetMap.put("estrus", new String[] {"qq2"});
 		languagesDatasetMap.put("rusest", new String[] {"qq2"});
 	}
@@ -104,7 +105,8 @@ public class LexSearchService implements InitializingBean {
 		conversionUtil.populateWordRelationClassifiers(word, displayLang);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, sourceLang, destinLang, displayLang);
+		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();

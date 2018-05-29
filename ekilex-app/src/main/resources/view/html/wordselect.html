@@ -25,6 +25,21 @@
         <h5 class="card-title">Olemasoleva sõna valik</h5>
       </div>
 
+      <div class="card-body">
+        <form th:action="@{/add_homonym}" method="post">
+          <input hidden name="returnPage" th:value="${returnPage}">
+          <input hidden name="dataset" th:value="${dataset}">
+          <input hidden name="language" th:value="${language}">
+          <input hidden name="morphCode" th:value="${morphCode}">
+          <input hidden name="value" th:value="${wordValue}">
+
+          <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2">
+            <span th:text="${wordValue}" class="ttl"></span>
+            <button type="submit" class="btn btn-primary ml-4">Lisa uus homonüüm</button>
+            <span class="float-right"><b th:text="${dataset}"></b></span>
+          </div>
+        </form>
+      </div>
       <div class="card-body" th:if="${not #lists.isEmpty(words)}">
         <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" th:each="word : ${words}">
           <div>

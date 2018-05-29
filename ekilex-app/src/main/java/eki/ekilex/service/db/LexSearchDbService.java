@@ -27,6 +27,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
+import eki.ekilex.constant.DbConstant;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -76,7 +78,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Service
-public class LexSearchDbService implements SystemConstant {
+public class LexSearchDbService implements SystemConstant, DbConstant {
 
 	private DSLContext create;
 
@@ -188,7 +190,10 @@ public class LexSearchDbService implements SystemConstant {
 				Lexeme l2 = LEXEME.as("l2");
 				Meaning m2 = MEANING.as("m2");
 				Definition d2 = DEFINITION.as("d2");
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(d2.MEANING_ID.eq(m2.ID));
+				Condition where2 = l2.WORD_ID.eq(word.ID)
+						.and(l2.MEANING_ID.eq(m2.ID))
+						.and(d2.MEANING_ID.eq(m2.ID))
+						.and(d2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
@@ -213,10 +218,13 @@ public class LexSearchDbService implements SystemConstant {
 								.and(l2ff.LEXEME_ID.eq(l2.ID))
 								.and(l2ff.FREEFORM_ID.eq(rect2.ID))
 								.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
+								.and(rect2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 								.and(um2.PARENT_ID.eq(rect2.ID))
 								.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
+								.and(um2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 								.and(u2.PARENT_ID.eq(um2.ID))
-								.and(u2.TYPE.eq(FreeformType.USAGE.name()));
+								.and(u2.TYPE.eq(FreeformType.USAGE.name())
+								.and(u2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
@@ -280,8 +288,12 @@ public class LexSearchDbService implements SystemConstant {
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition = rl.DEFINITION_ID.eq(definitionIdField).and(s.ID.eq(rl.REF_ID))
-				.and(sf.SOURCE_ID.eq(s.ID)).and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
+		Condition sourceCondition =	rl.DEFINITION_ID.eq(definitionIdField)
+				.and(rl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(s.ID.eq(rl.REF_ID))
+				.and(sf.SOURCE_ID.eq(s.ID))
+				.and(ff.ID.eq(sf.FREEFORM_ID))
+				.and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
@@ -299,21 +311,21 @@ public class LexSearchDbService implements SystemConstant {
 		}
 
 		Lexeme l = Lexeme.LEXEME.as("l");
-		LexemeFreeform lf = LexemeFreeform.LEXEME_FREEFORM.as("lf");
-		Freeform f = Freeform.FREEFORM.as("f");
-		FreeformRefLink rl = FreeformRefLink.FREEFORM_REF_LINK.as("rl");
+		LexemeRefLink lrl = LexemeRefLink.LEXEME_REF_LINK.as("lrl");
 		Source s = Source.SOURCE.as("s");
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition = l.WORD_ID.eq(wordIdField).and(lf.LEXEME_ID.eq(l.ID))
-				.and(f.ID.eq(lf.FREEFORM_ID)).and(f.TYPE.eq("SOURCE")).and(rl.FREEFORM_ID.eq(f.ID)).and(s.ID.eq(rl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
+		Condition sourceCondition = l.WORD_ID.eq(wordIdField)
+				.and(lrl.LEXEME_ID.eq(l.ID))
+				.and(lrl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(s.ID.eq(lrl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
 				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
 		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(l, lf, f, rl, s, sf, ff).where(sourceCondition)));
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(l, lrl, s, sf, ff).where(sourceCondition)));
 	}
 
 	private Condition applyLanguageFilter(List<SearchCriterion> searchCriterions, Field<String> languageField, Condition condition) {
@@ -509,7 +521,12 @@ public class LexSearchDbService implements SystemConstant {
 			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
 
-	public Result<Record> findWordLexemes(Long wordId, List<String> selectedDatasets) {
+	public Result<Record> findWordLexemes(Long wordId, List<String> datasets) {
+
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
 
 		return create.select(wordLexemeSelectFields)
 			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
@@ -520,7 +537,7 @@ public class LexSearchDbService implements SystemConstant {
 					.and(PARADIGM.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-					.and(LEXEME.DATASET_CODE.in(selectedDatasets)))
+					.and(datasetCondition))
 			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
 			.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 			.fetch();
@@ -544,6 +561,11 @@ public class LexSearchDbService implements SystemConstant {
 
 	public Result<Record4<Long,String,Integer,String>> findMeaningWords(Long sourceWordId, Long meaningId, List<String> datasets) {
 
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
 		return create
 				.select(
 						WORD.ID.as("word_id"),
@@ -559,7 +581,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.MEANING_ID.eq(meaningId))
-						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(datasetCondition)
 				)
 				.groupBy(WORD.ID, FORM.VALUE)
 				.orderBy(FORM.VALUE)
@@ -591,6 +613,7 @@ public class LexSearchDbService implements SystemConstant {
 						)
 				.where(
 						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
+						.and(LEX_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
@@ -680,7 +703,7 @@ public class LexSearchDbService implements SystemConstant {
 		return create
 				.select(
 						pgr1.ID.as("pos_group_id"),
-						pgr1.NAME.as("pos_group_name"),
+						pgr1.POS_GROUP_CODE.as("pos_group_code"),
 						rgr1.ID.as("rel_group_id"),
 						rgr1.NAME.as("rel_group_name"),
 						rgr1.FREQUENCY.as("rel_group_frequency"),
@@ -708,7 +731,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue())
 						)
-				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, c.ORDER_BY, lc2.ORDER_BY)
+				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
 				.fetch();
 	}
 
@@ -745,7 +768,7 @@ public class LexSearchDbService implements SystemConstant {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.IS_WORD.isTrue())
 						)
-				.orderBy(c.ORDER_BY, lc2.ORDER_BY)
+				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetch();
 	}
 }

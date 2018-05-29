@@ -35,6 +35,7 @@ public interface TableName {
 	String SOURCE_FREEFORM = "source_freeform";
 	String FREEFORM_REF_LINK = "freeform_ref_link";
 	String DEFINITION_REF_LINK = "definition_ref_link";
+	String LEXEME_REF_LINK = "lexeme_ref_link";
 	String DATASET = "dataset";
 	String VIEW = "vievv";
 	String WORD_GUID = "word_guid";

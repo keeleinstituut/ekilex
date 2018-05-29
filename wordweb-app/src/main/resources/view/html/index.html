@@ -71,11 +71,13 @@
       </div>
     </div>
   </div>
--->  <script th:inline="javascript">
- var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
- var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
- var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
- var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-</script>
+-->
+  <script th:inline="javascript">
+  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+  	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+  	var currentPage = /*[[@{/}]]*/"/";
+  	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
+  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  </script>
 </body>
 </html>

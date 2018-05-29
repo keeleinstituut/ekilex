@@ -429,6 +429,13 @@ pos	adj + ID	indeclinable adjective	eng	descrip
 pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
 pos	pron + ID	indeclinable pronoun	eng	descrip
+pos_group	A	adjektiiv, omadussõnaga	est	descrip
+pos_group	D	adverb, määrsõnaga	est	descrip
+pos_group	H	prooprium, pärisnimega	est	descrip
+pos_group	K	prep-postp, kaassõnaga	est	descrip
+pos_group	N	numeraal, arvsõnaga	est	descrip
+pos_group	S	substantiiv, nimisõnaga	est	descrip
+pos_group	V	verb, tegusõnaga	est	descrip
 process_state	määramata	-	-	-
 process_state	koostamisel	-	-	-
 process_state	koostatud	-	-	-
@@ -449,6 +456,7 @@ process_state	avalik	-	-	-
 process_state	arhiveeritud	-	-	-
 process_state	töös	-	-	-
 process_state	läbi vaatamata	-	-	-
+process_state	kustutatud	-	-	-
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
 register	hrv	harvaesinev	est	descrip

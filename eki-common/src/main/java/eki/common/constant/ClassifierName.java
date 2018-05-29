@@ -21,7 +21,8 @@ public enum ClassifierName {
 	PROCESS_STATE(false),
 	USAGE_AUTHOR_TYPE(true),
 	USAGE_TYPE(true),
-	VALUE_STATE(true)
+	VALUE_STATE(true),
+	POS_GROUP(true)
 	;
 
 	private boolean hasLabel;

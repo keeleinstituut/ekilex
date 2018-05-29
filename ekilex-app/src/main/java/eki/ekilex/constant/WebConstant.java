@@ -12,6 +12,8 @@ public interface WebConstant {
 
 	String MAIN_URI = "/index";
 
+	String REST_SERVICES_URI = "/data";
+
 	String LEX_SEARCH_PAGE = "lexsearch";
 
 	String LEX_SEARCH_URI = "/lexsearch";
@@ -19,6 +21,10 @@ public interface WebConstant {
 	String TERM_SEARCH_PAGE = "termsearch";
 
 	String TERM_SEARCH_URI = "/termsearch";
+
+	String WORD_DETAILS_URI = "/worddetails";
+
+	String MEANING_DETAILS_URI = "/meaningdetails";
 
 	String AUTH_ERROR_URI = "/autherror";
 

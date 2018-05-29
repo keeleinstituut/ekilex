@@ -79,8 +79,23 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateWordGender(Long wordId, String genderCode) {
+		updateDbService.updateWordGender(wordId, genderCode);
+	}
+
+	@Transactional
 	public void updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		updateDbService.updateLexemePos(lexemeId, currentPos, newPos);
+	}
+
+	@Transactional
+	public void updateLexemeDeriv(Long lexemeId, String currentDeriv, String newDeriv) {
+		updateDbService.updateLexemeDeriv(lexemeId, currentDeriv, newDeriv);
+	}
+
+	@Transactional
+	public void updateLexemeRegister(Long lexemeId, String currentRegister, String newRegister) {
+		updateDbService.updateLexemeRegister(lexemeId, currentRegister, newRegister);
 	}
 
 	@Transactional
@@ -94,8 +109,23 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateGrammar(Long grammarId, String grammar) {
+		updateDbService.updateGrammar(grammarId, grammar);
+	}
+
+	@Transactional
 	public void addLexemePos(Long lexemeId, String posCode) {
 		updateDbService.addLexemePos(lexemeId, posCode);
+	}
+
+	@Transactional
+	public void addLexemeDeriv(Long lexemeId, String derivCode) {
+		updateDbService.addLexemeDeriv(lexemeId, derivCode);
+	}
+
+	@Transactional
+	public void addLexemeRegister(Long lexemeId, String registerCode) {
+		updateDbService.addLexemeRegister(lexemeId, registerCode);
 	}
 
 	@Transactional
@@ -104,8 +134,8 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addGovernment(Long lexemeId, String government) {
-		updateDbService.addGovernment(lexemeId, government);
+	public Long addGovernment(Long lexemeId, String government) {
+		return updateDbService.addGovernment(lexemeId, government);
 	}
 
 	@Transactional
@@ -116,6 +146,26 @@ public class UpdateService {
 	@Transactional
 	public void addWordToDataset(Long wordId, String datasetCode) {
 		updateDbService.addWordToDataset(wordId, datasetCode);
+	}
+
+	@Transactional
+	public void addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+		updateDbService.addDefinitionSourceRef(definitionId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
+	public void addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+		updateDbService.addFreeformSourceRef(freeformId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
+	public void addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+		updateDbService.addLexemeSourceRef(lexemeId, sourceId, sourceValue, sourceName);
+	}
+
+	@Transactional
+	public void addLexemeGrammar(Long lexemeId, String value) {
+		updateDbService.addLexemeGrammar(lexemeId, value);
 	}
 
 	@Transactional
@@ -155,6 +205,27 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void removeDefinitionRefLink(Long refLinkId) {
+		updateDbService.removeDefinitionRefLink(refLinkId);
+	}
+
+	@Transactional
+	public void removeFreeformRefLink(Long refLinkId) {
+		updateDbService.removeFreeformRefLink(refLinkId);
+	}
+
+	@Transactional
+	public void removeLexemeRefLink(Long refLinkId) {
+		updateDbService.removeLexemeRefLink(refLinkId);
+	}
+
+	@Transactional
+	public void removeGrammar(Long grammarId) {
+		updateDbService.removeLexemeFreeform(grammarId);
+		updateDbService.removeFreeform(grammarId);
+	}
+
+	@Transactional
 	public void addDefinition(Long meaningId, String value, String languageCode) {
 		updateDbService.addDefinition(meaningId, value, languageCode);
 	}
@@ -173,6 +244,20 @@ public class UpdateService {
 	public void removeLexemePos(Long lexemeId, String posCode) {
 		if (posCode != null) {
 			updateDbService.removeLexemePos(lexemeId, posCode);
+		}
+	}
+
+	@Transactional
+	public void removeLexemeDeriv(Long lexemeId, String derivCode) {
+		if (derivCode != null) {
+			updateDbService.removeLexemeDeriv(lexemeId, derivCode);
+		}
+	}
+
+	@Transactional
+	public void removeLexemeRegister(Long lexemeId, String registerCode) {
+		if (registerCode != null) {
+			updateDbService.removeLexemeRegister(lexemeId, registerCode);
 		}
 	}
 

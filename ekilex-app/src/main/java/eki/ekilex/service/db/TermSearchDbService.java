@@ -15,6 +15,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.util.List;
 import java.util.Map;
 
+import eki.ekilex.constant.DbConstant;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -52,7 +53,7 @@ import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class TermSearchDbService implements SystemConstant {
+public class TermSearchDbService implements SystemConstant, DbConstant {
 
 	private DSLContext create;
 
@@ -170,9 +171,15 @@ public class TermSearchDbService implements SystemConstant {
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
+				Lexeme l1 = LEXEME.as("l1");
 				Definition d1 = DEFINITION.as("d1");
-				Condition where1 = d1.MEANING_ID.eq(m1.ID);
+				Condition where1 = d1.MEANING_ID.eq(m1.ID)
+						.and(l1.MEANING_ID.eq(m1.ID))
+						.and(d1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
@@ -182,7 +189,7 @@ public class TermSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString();
 					where1 = where1.and(d1.LANG.eq(searchValueStr));
 				}
-				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
 
@@ -197,10 +204,13 @@ public class TermSearchDbService implements SystemConstant {
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
 						.and(l1ff.FREEFORM_ID.eq(rect1.ID))
 						.and(rect1.TYPE.eq(FreeformType.GOVERNMENT.name()))
+						.and(rect1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(um1.PARENT_ID.eq(rect1.ID))
 						.and(um1.TYPE.eq(FreeformType.USAGE_MEANING.name()))
+						.and(um1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
 						.and(u1.PARENT_ID.eq(um1.ID))
-						.and(u1.TYPE.eq(FreeformType.USAGE.name()));
+						.and(u1.TYPE.eq(FreeformType.USAGE.name())
+						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
@@ -213,7 +223,6 @@ public class TermSearchDbService implements SystemConstant {
 				for (SearchCriterion criterion : languageCriterions) {
 					where1 = where1.and(u1.LANG.eq(criterion.getSearchValue().toString()));
 				}
-
 				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, rect1, um1, u1).where(where1)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
@@ -231,7 +240,6 @@ public class TermSearchDbService implements SystemConstant {
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
 					where1 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where1);
 				}
-
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(m1ff, concept).where(where1)));
 			}
 		}
@@ -365,6 +373,11 @@ public class TermSearchDbService implements SystemConstant {
 
 	public Record3<Long,String,Long[]> getMeaning(Long meaningId, List<String> datasets) {
 
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
 		return create
 				.select(
 						MEANING.ID.as("meaning_id"),
@@ -374,7 +387,7 @@ public class TermSearchDbService implements SystemConstant {
 				.where(
 						MEANING.ID.eq(meaningId)
 						.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(datasetCondition)
 						)
 				.groupBy(MEANING.ID)
 				.fetchSingle();
@@ -411,12 +424,17 @@ public class TermSearchDbService implements SystemConstant {
 
 	public Record1<String> getMeaningFirstWord(Long meaningId, List<String> datasets) {
 
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
 		return create
 				.select(FORM.VALUE)
 				.from(FORM, PARADIGM, LEXEME)
 				.where(
 						LEXEME.MEANING_ID.eq(meaningId)
-						.and(LEXEME.DATASET_CODE.in(datasets))
+						.and(datasetCondition)
 						.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 						.and(FORM.IS_WORD.isTrue())

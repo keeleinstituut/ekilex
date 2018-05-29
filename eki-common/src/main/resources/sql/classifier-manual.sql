@@ -30,6 +30,7 @@ insert into label_type (code, value) values ('full', 'full');
 insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
 insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 insert into dataset (code, name) values ('ss1', 'Eesti keele (üheköiteline) sõnaraamat (2010-2018/2019)');
+insert into dataset (code, name) values ('kol',	'Kollokatsioonid');
 insert into dataset (code, name) values ('est', 'Esterm');
 insert into dataset (code, name) values ('aia',	'Aiandus (aiandusterminoloogia sõnastik)');
 insert into dataset (code, name) values ('avt',	'Akadeemilise väljendusoskuse terminid');
@@ -69,7 +70,6 @@ insert into dataset (code, name) values ('tee',	'Teenuste valdkonna terminibaas'
 insert into dataset (code, name) values ('tts',	'Tootmistehnika ja süsteemide terminibaas');
 insert into dataset (code, name) values ('usk',	'Uskumusolendite sõnastik');
 insert into dataset (code, name) values ('vlk',	'Veterinaarmeditsiin ja loomakasvatus');
-insert into dataset (code, name) values ('kol',	'Kollokatsioonid');
 insert into dataset (code, name) values ('ait',	'Aianduse terminibaas (2017)');
 insert into dataset (code, name) values ('õtb',	'Eesti-vene-eesti õigusterminoloogiabaas');
 insert into dataset (code, name) values ('fkm',	'Filmikunstimõisted');

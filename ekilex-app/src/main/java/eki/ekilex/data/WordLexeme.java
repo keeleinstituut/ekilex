@@ -82,11 +82,13 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Relation> meaningRelations;
 
-	private List<String> grammars;
+	private List<FreeForm> grammars;
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
 	private List<Collocation> secondaryCollocations;
+
+	private List<RefLink> refLinks;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -321,11 +323,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningRelations = meaningRelations;
 	}
 
-	public List<String> getGrammars() {
+	public List<FreeForm> getGrammars() {
 		return grammars;
 	}
 
-	public void setGrammars(List<String> grammars) {
+	public void setGrammars(List<FreeForm> grammars) {
 		this.grammars = grammars;
 	}
 
@@ -343,6 +345,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
 		this.secondaryCollocations = secondaryCollocations;
+	}
+
+	public List<RefLink> getRefLinks() {
+		return refLinks;
+	}
+
+	public void setRefLinks(List<RefLink> refLinks) {
+		this.refLinks = refLinks;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

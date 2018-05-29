@@ -43,6 +43,21 @@ public class LexSearchController extends AbstractSearchController {
 		return lexSearchService.getAllLexemePos();
 	}
 
+	@ModelAttribute("allLexemeRegisters")
+	public List<Classifier> getLexemeRegisters() {
+		return lexSearchService.getLexemeRegisters();
+	}
+
+	@ModelAttribute("allLexemeDerivs")
+	public List<Classifier> getLexemeDerivs() {
+		return lexSearchService.getLexemeDerivs();
+	}
+
+	@ModelAttribute("allLexemeGenders")
+	public List<Classifier> getLexemeGenders() {
+		return lexSearchService.getLexemeGenders();
+	}
+
 	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.GET)
 	public String initSearch(Model model) throws Exception {
 
@@ -87,7 +102,7 @@ public class LexSearchController extends AbstractSearchController {
 		return LEX_SEARCH_PAGE;
 	}
 
-	@GetMapping("/lexdetails/{wordId}")
+	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
 	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		logger.debug("Requesting details by word {}", wordId);

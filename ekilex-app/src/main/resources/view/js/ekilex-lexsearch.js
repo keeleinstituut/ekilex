@@ -2,7 +2,7 @@ function initialise() {
     $(document).on("click", ":button[name='detailsBtn']", function() {
         var id = $(this).data('id');
         var isRestoreScrollPos = this.hasAttribute('data-refresh');
-        $.get(applicationUrl + 'lexdetails/' + id).done(function(data) {
+        $.get(applicationUrl + 'worddetails/' + id).done(function(data) {
             var scrollPos = $('#details_div').scrollTop();
             $('#details_div').replaceWith(data);
             if (isRestoreScrollPos) {
@@ -46,9 +46,12 @@ function initialise() {
 
     initSelectDlg($('#lexemeFrequencyDlg'));
     initSelectDlg($('#lexemePosDlg'));
+    initSelectDlg($('#lexemeDerivDlg'));
+    initSelectDlg($('#lexemeRegisterDlg'));
+    initSelectDlg($('#lexemeGenderDlg'));
     initSelectDlg($('#meaningDomainDlg'));
-    initMultiValueAddDlg($('#lexemeClassifiersDlg'));
-    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
+    initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
+    initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
     initNewWordDlg();
 }
 
@@ -72,4 +75,11 @@ function openLexemeLevelDlg(elem) {
             console.log(data);
         });
     });
+}
+
+function openLexemeClassifiersDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
+    theDlg.find('[name=id3]').val($(elem).data('word-id'));
 }

@@ -1,7 +1,8 @@
-drop view if exists view_ww_lexeme;
-drop view if exists view_ww_meaning;
-drop view if exists view_ww_form;
 drop view if exists view_ww_word;
+drop view if exists view_ww_form;
+drop view if exists view_ww_meaning;
+drop view if exists view_ww_lexeme;
+drop view if exists view_ww_collocation;
 drop view if exists view_ww_classifier;
 drop view if exists view_ww_dataset;
 drop view if exists view_ww_word_relation;
@@ -11,12 +12,14 @@ drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
+drop type if exists type_colloc_member;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
 drop table if exists freeform_ref_link;
 drop table if exists definition_ref_link;
+drop table if exists lexeme_ref_link;
 drop table if exists lex_colloc;
 drop table if exists collocation_rel_group;--remove later
 drop table if exists collocation_pos_group;--remove later
@@ -74,6 +77,8 @@ drop table if exists morph_label;
 drop table if exists morph;
 drop table if exists pos_label;
 drop table if exists pos;
+drop table if exists pos_group_label;
+drop table if exists pos_group;
 drop table if exists gender_label;
 drop table if exists gender;
 drop table if exists register_label;

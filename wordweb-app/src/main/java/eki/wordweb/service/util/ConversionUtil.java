@@ -16,7 +16,12 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
+import eki.wordweb.data.Collocation;
+import eki.wordweb.data.CollocationPosGroup;
+import eki.wordweb.data.CollocationRelGroup;
+import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
+import eki.wordweb.data.FormPair;
 import eki.wordweb.data.Government;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -75,13 +80,17 @@ public class ConversionUtil {
 	}
 
 	public List<Lexeme> composeLexemes(
-			List<LexemeMeaningTuple> lexemeMeaningTuples, List<LexemeDetailsTuple> lexemeDetailsTuples,
+			List<LexemeMeaningTuple> lexemeMeaningTuples,
+			List<LexemeDetailsTuple> lexemeDetailsTuples,
+			List<CollocationTuple> collocTuples,
 			String sourceLang, String destinLang, String displayLang) {
 
 		List<Lexeme> lexemes = new ArrayList<>();
 		Map<Long, Lexeme> lexemeMap = new HashMap<>();
 		Map<Long, Government> governmentMap = new HashMap<>();
 		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
+		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
+		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
 		List<Long> meaningWordIds = null;
 
 		for (LexemeMeaningTuple tuple : lexemeMeaningTuples) {
@@ -109,6 +118,22 @@ public class ConversionUtil {
 			populateUsageMeaning(government, tuple, usageMeaningMap, displayLang);
 			populateRelatedLexemes(lexeme, tuple, displayLang);
 			populateRelatedMeanings(lexeme, tuple, displayLang);
+		}
+
+		for (CollocationTuple tuple : collocTuples) {
+
+			Long lexemeId = tuple.getLexemeId();
+			Lexeme lexeme = lexemeMap.get(lexemeId);
+
+			CollocationPosGroup collocPosGroup = populateCollocPosGroup(lexeme, tuple, collocPosGroupMap, displayLang);
+			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
+			Collocation collocation = populateCollocation(tuple);
+
+			if (collocPosGroup == null) {
+				lexeme.getSecondaryCollocations().add(collocation);
+			} else {
+				collocRelGroup.getCollocations().add(collocation);
+			}
 		}
 		return lexemes;
 	}
@@ -147,6 +172,8 @@ public class ConversionUtil {
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setOtherLangMatchWords(new ArrayList<>());
 		lexeme.setGovernments(new ArrayList<>());
+		lexeme.setCollocationPosGroups(new ArrayList<>());
+		lexeme.setSecondaryCollocations(new ArrayList<>());
 		return lexeme;
 	}
 
@@ -239,23 +266,112 @@ public class ConversionUtil {
 	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
 		List<Paradigm> paradigms = new ArrayList<>();
+		Map<String, Form> formMap;
+		List<FormPair> compactForms;
 		String classifierCode;
 		Classifier classifier;
 		for (Entry<Long, List<Form>> paradigmFormsEntry : paradigmFormsMap.entrySet()) {
 			Long paradigmId = paradigmFormsEntry.getKey();
 			List<Form> forms = paradigmFormsEntry.getValue();
+			formMap = new HashMap<>();
 			for (Form form : forms) {
 				classifierCode = form.getMorphCode();
 				classifier = getClassifier(ClassifierName.MORPH, classifierCode, displayLang);
 				form.setMorph(classifier);
+				formMap.put(classifierCode, form);
 			}
+			compactForms = composeCompactForms(formMap);
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
 			paradigm.setForms(forms);
+			paradigm.setCompactForms(compactForms);
 			paradigms.add(paradigm);
 		}
 		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
 		return paradigms;
+	}
+
+	private List<FormPair> composeCompactForms(Map<String, Form> formMap) {
+
+		final String[] orderedMorphPairCodes1 = new String[] {"SgN", "SgG", "SgP"};
+		final String[] orderedMorphPairCodes2 = new String[] {"PlN", "PlG", "PlP"};
+		final String[] unorderedMorphPairCodes = new String[] {"Sup", "Inf", "IndPrSg3", "PtsPtIps", "ID"};
+
+		List<FormPair> compactForms = new ArrayList<>();
+		FormPair formPair;
+		for (int orderedMorphPairIndex = 0; orderedMorphPairIndex < orderedMorphPairCodes1.length; orderedMorphPairIndex++) {
+			String morphCode1 = orderedMorphPairCodes1[orderedMorphPairIndex];
+			Form form1 = formMap.get(morphCode1);
+			String morphCode2 = orderedMorphPairCodes2[orderedMorphPairIndex];
+			Form form2 = formMap.get(morphCode2);
+			if ((form1 != null) || (form2 != null)) {
+				formPair = new FormPair();
+				formPair.setForm1(form1);
+				formPair.setForm2(form2);
+				compactForms.add(formPair);
+			}
+		}
+		formPair = null;
+		for (String morphCode : unorderedMorphPairCodes) {
+			Form form = formMap.get(morphCode);
+			if (form == null) {
+				continue;
+			}
+			if (formPair == null) {
+				formPair = new FormPair();
+			}
+			if (formPair.getForm1() == null) {
+				formPair.setForm1(form);
+				compactForms.add(formPair);
+			} else if (formPair.getForm2() == null) {
+				formPair.setForm2(form);
+				formPair = null;
+			}
+		}
+		return compactForms;
+	}
+
+	private CollocationPosGroup populateCollocPosGroup(Lexeme lexeme, CollocationTuple tuple, Map<Long, CollocationPosGroup> collocPosGroupMap, String displayLang) {
+		CollocationPosGroup collocPosGroup = null;
+		Long posGroupId = tuple.getPosGroupId();
+		if (posGroupId != null) {
+			collocPosGroup = collocPosGroupMap.get(posGroupId);
+			if (collocPosGroup == null) {
+				collocPosGroup = new CollocationPosGroup();
+				String classifierCode = tuple.getPosGroupCode();
+				Classifier classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
+				collocPosGroup.setPosGroup(classifier);
+				collocPosGroup.setRelationGroups(new ArrayList<>());
+				collocPosGroupMap.put(posGroupId, collocPosGroup);
+				lexeme.getCollocationPosGroups().add(collocPosGroup);
+			}
+		}
+		return collocPosGroup;
+	}
+
+	private CollocationRelGroup populateCollocRelGroup(CollocationPosGroup collocPosGroup, CollocationTuple tuple, Map<Long, CollocationRelGroup> collocRelGroupMap) {
+		CollocationRelGroup collocRelGroup = null;
+		Long relGroupId = tuple.getRelGroupId();
+		if (relGroupId != null) {
+			collocRelGroup = collocRelGroupMap.get(relGroupId);
+			if (collocRelGroup == null) {
+				collocRelGroup = new CollocationRelGroup();
+				collocRelGroup.setName(tuple.getRelGroupName());
+				collocRelGroup.setCollocations(new ArrayList<>());
+				collocRelGroupMap.put(relGroupId, collocRelGroup);
+				collocPosGroup.getRelationGroups().add(collocRelGroup);
+			}
+		}
+		return collocRelGroup;
+	}
+
+	private Collocation populateCollocation(CollocationTuple tuple) {
+		Collocation collocation = new Collocation();
+		collocation.setValue(tuple.getCollocValue());
+		collocation.setDefinition(tuple.getCollocDefinition());
+		collocation.setCollocUsages(tuple.getCollocUsages());
+		collocation.setCollocMembers(tuple.getCollocMembers());
+		return collocation;
 	}
 
 	public void populateWordRelationClassifiers(Word word, String displayLang) {

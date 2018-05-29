@@ -65,8 +65,11 @@ function initialise() {
     });
 
     $('#addNewDefinitionDlg').find('[name=value]').attr("rows", 4);
-    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
+    $('#addNewUsageDlg').find('[name=value]').attr("rows", 4);
+    $('#addNewGovernmentUsageDlg').find('[name=value]').attr("rows", 4);
     initNewWordDlg();
+    initSelectDlg($('#meaningDomainDlg'));
+    initMultiValueAddDlg($('#lexemeClassifiersDlg'), false);
 }
 
 function updateTermUserLangWrapup(clickable) {
@@ -88,4 +91,13 @@ function updateTermUserLangWrapup(clickable) {
 function refreshDetails() {
 	var refreshButton = $('#refresh-details');
     refreshButton.trigger('click');
+}
+
+function openLexemeClassifiersDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id2]').val($(elem).data('id'));
+    theDlg.find('[name=opCode]').val('meaning_domain').trigger('change');
+    theDlg.find('[name=opCode]').closest('.row').hide();
+    var domainSelect = theDlg.find('[data-id=meaning_domain]').find('select');
+    domainSelect.val(domainSelect.find('option').first().val());
 }

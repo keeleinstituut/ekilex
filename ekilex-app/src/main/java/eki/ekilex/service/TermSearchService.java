@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -13,10 +12,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
-import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
@@ -25,6 +22,7 @@ import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
+import eki.ekilex.data.RefLink;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
@@ -95,12 +93,11 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<ClassifierSelect> languagesOrder) {
+	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<String> langCodeOrder) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
 
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
 
@@ -140,7 +137,8 @@ public class TermSearchService implements SystemConstant {
 					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
 							.into(GovernmentUsageTranslationDefinitionTuple.class);
 			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
-			List<String> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(String.class);
+			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
+			List<RefLink> lexemeRefLinks = commonDataDbService.findLexemeRefLinks(lexemeId).into(RefLink.class);
 
 			for (Lexeme lexeme : lexemeWords) {
 
@@ -156,7 +154,6 @@ public class TermSearchService implements SystemConstant {
 				String dataset = lexeme.getDataset();
 				dataset = datasetNameMap.get(dataset);
 				String levels = composeLevels(lexeme);
-				List<String> sources = extractSources(lexemeFreeforms);
 
 				lexeme.setLevels(levels);
 				lexeme.setDataset(dataset);
@@ -167,7 +164,7 @@ public class TermSearchService implements SystemConstant {
 				lexeme.setGovernments(governments);
 				lexeme.setGrammars(lexemeGrammars);
 				lexeme.setClassifiersExist(classifiersExist);
-				lexeme.setSources(sources);
+				lexeme.setRefLinks(lexemeRefLinks);
 				lexemes.add(lexeme);
 			}
 		}
@@ -179,17 +176,6 @@ public class TermSearchService implements SystemConstant {
 			});
 
 		return meaning;
-	}
-
-	private List<String> extractSources(List<FreeForm> lexemeFreeforms) {
-		List<String> sources = Collections.emptyList();
-		if (CollectionUtils.isNotEmpty(lexemeFreeforms)) {
-			sources = lexemeFreeforms.stream()
-					.filter(freeform -> freeform.getType().equals(FreeformType.SOURCE))
-					.map(FreeForm::getValueText)
-					.collect(Collectors.toList());
-		}
-		return sources;
 	}
 
 	private String composeLevels(Lexeme lexeme) {

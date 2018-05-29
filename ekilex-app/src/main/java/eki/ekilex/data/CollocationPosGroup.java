@@ -8,16 +8,16 @@ public class CollocationPosGroup extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String name;
+	private String code;
 
 	private List<CollocationRelGroup> relationGroups;
 
-	public String getName() {
-		return name;
+	public String getCode() {
+		return code;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public List<CollocationRelGroup> getRelationGroups() {

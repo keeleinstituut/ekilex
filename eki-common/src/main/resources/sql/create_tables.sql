@@ -168,6 +168,22 @@ create table pos_label
   unique(code, lang, type)
 );
 
+-- kol pos grupp
+create table pos_group
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table pos_group_label
+(
+  code varchar(100) references pos_group(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 -- vormi märgend
 create table morph
 (
@@ -348,6 +364,7 @@ create table freeform
   classif_name text null,
   classif_code varchar(100) null,
   lang char(3) references lang(code) null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence freeform_id_seq restart with 10000;
@@ -468,6 +485,7 @@ create table meaning_relation
   meaning1_id bigint references meaning(id) on delete cascade not null,
   meaning2_id bigint references meaning(id) on delete cascade not null,
   meaning_rel_type_code varchar(100) references meaning_rel_type(code) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial,
   unique(meaning1_id, meaning2_id, meaning_rel_type_code)
 );
@@ -480,6 +498,7 @@ create table meaning_domain
   domain_code varchar(100) not null,
   domain_origin varchar(100) not null,
   order_by bigserial,
+  process_state_code varchar(100) references process_state(code) null,
   foreign key (domain_code, domain_origin) references domain (code, origin),
   unique(meaning_id, domain_code, domain_origin)
 );
@@ -502,6 +521,7 @@ create table definition
   meaning_id bigint references meaning(id) not null,
   value text not null,
   lang char(3) references lang(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence definition_id_seq restart with 10000;
@@ -531,8 +551,7 @@ create table collocation
   definition text,
   frequency numeric(14, 4),
   score numeric(14, 4),
-  usages text array,
-  order_by bigserial
+  usages text array
 );
 alter sequence collocation_id_seq restart with 10000;
 
@@ -562,6 +581,7 @@ create table lexeme
   level2 integer default 0,
   level3 integer default 0,
   value_state_code varchar(100) references value_state(code) null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(word_id, meaning_id, dataset_code)
 );
 alter sequence lexeme_id_seq restart with 10000;
@@ -571,6 +591,7 @@ create table lexeme_register
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   register_code varchar(100) references register(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial,
   unique(lexeme_id, register_code)
 );
@@ -592,6 +613,7 @@ create table lexeme_deriv
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   deriv_code varchar(100) references deriv(code) not null,
+  process_state_code varchar(100) references process_state(code) null,
   unique(lexeme_id, deriv_code)
 );
 alter sequence lexeme_deriv_id_seq restart with 10000;
@@ -613,6 +635,7 @@ create table lex_relation
   lexeme1_id bigint references lexeme(id) on delete cascade not null,
   lexeme2_id bigint references lexeme(id) on delete cascade not null,
   lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial,
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
@@ -623,7 +646,7 @@ create table lex_colloc_pos_group
 (
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
-  name text not null,
+  pos_group_code varchar(100) references pos_group(code) on delete cascade not null,
   order_by bigserial
 );
 alter sequence lex_colloc_pos_group_id_seq restart with 10000;
@@ -647,7 +670,8 @@ create table lex_colloc
   rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null,
   collocation_id bigint references collocation(id) on delete cascade not null,
   weight numeric(14, 4),
-  order_by bigserial,
+  member_order integer not null,
+  group_order integer,
   unique(lexeme_id, collocation_id)
 );
 alter sequence lex_colloc_id_seq restart with 10000;
@@ -660,6 +684,7 @@ create table freeform_ref_link
   ref_id bigint null,
   name text null,
   value text null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence freeform_ref_link_id_seq restart with 10000;
@@ -672,9 +697,23 @@ create table definition_ref_link
   ref_id bigint null,
   name text null,
   value text null,
+  process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
 alter sequence definition_ref_link_id_seq restart with 10000;
+
+create table lexeme_ref_link
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  ref_type varchar(100) not null,
+  ref_id bigint null,
+  name text null,
+  value text null,
+  process_state_code varchar(100) references process_state(code) null,
+  order_by bigserial
+);
+alter sequence lexeme_ref_link_id_seq restart with 10000;
 
 --- indexes
 
@@ -711,6 +750,7 @@ create index collocation_freeform_collocation_id_idx on collocation_freeform(col
 create index collocation_freeform_freeform_id_idx on collocation_freeform(freeform_id);
 create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
 create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
+create index lexeme_ref_link_lexeme_id_idx on lexeme_ref_link(lexeme_id);
 create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
 create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);

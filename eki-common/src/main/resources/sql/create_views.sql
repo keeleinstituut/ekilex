@@ -2,9 +2,10 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_author text, usage_translator text);
-create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
-create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
-create type type_meaning_relation as (meaning_id bigint,lexeme_id bigint,word_id bigint,word text,word_lang char(3),meaning_rel_type_code varchar(100));
+create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text);
+create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
+create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
+create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
 
 -- words
 create view view_ww_word 
@@ -271,6 +272,53 @@ create view view_ww_lexeme
     where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
     order by l.id;
 
+-- collocations
+create view view_ww_collocation 
+  as
+    select
+      l1.id as lexeme_id,
+      l1.word_id,
+      l1.dataset_code,
+      l1.level1,
+      l1.level2,
+      l1.level3,
+      pgr1.id as pos_group_id,
+      pgr1.pos_group_code,
+      pgr1.order_by as pos_group_order_by,
+      rgr1.id as rel_group_id,
+      rgr1.name as rel_group_name,
+      rgr1.order_by as rel_group_order_by,
+      lc1.group_order as colloc_group_order,
+      c.id as colloc_id,
+      c.value as colloc_value,
+      c.definition as colloc_definition,
+      c.usages as colloc_usages,
+      array_agg(row(l2.id, l2.word_id, f2.value)::type_colloc_member order by lc2.member_order) as colloc_members
+    from
+      collocation as c
+      inner join lex_colloc as lc1 on lc1.collocation_id = c.id
+      inner join lex_colloc as lc2 on lc2.collocation_id = c.id and lc2.lexeme_id <> lc1.lexeme_id
+      inner join lexeme as l1 on l1.id = lc1.lexeme_id
+      inner join lexeme as l2 on l2.id = lc2.lexeme_id
+      inner join paradigm as p2 on p2.word_id = l2.word_id
+      inner join form as f2 on f2.paradigm_id = p2.id and f2.is_word = true
+      left outer join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
+      left outer join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
+    group by
+      l1.id,
+      c.id,
+      pgr1.id,
+      rgr1.id,
+      lc1.id
+    order by
+      l1.level1,
+      l1.level2,
+      l1.level3,
+      pgr1.order_by,
+      rgr1.order_by,
+      lc1.group_order,
+      c.id;
+
 -- word relations
 create view view_ww_word_relation 
   as
@@ -423,6 +471,15 @@ create view view_ww_classifier
        value,
        lang
      from usage_type_label
+     where type = 'descrip'
+     union all
+     select
+       'POS_GROUP' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from pos_group_label
      where type = 'descrip'
      union all
      select
