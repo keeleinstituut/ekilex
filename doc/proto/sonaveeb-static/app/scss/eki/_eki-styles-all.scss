@@ -1,9 +1,12 @@
-// test
-@media (min-width: 401px) and (min-height: 561px) and (max-width: 767px)  {
-	html{
-		font-size: calc( (4.2666666666666666666666666vw + 3.007518797vh) / 2 );
-	}
-}
+// // test
+// @media (min-width: 401px) and (min-height: 561px) and (max-width: 767px)  {
+// 	html{
+// 		font-size: calc( (4.2666666666666666666666666vw + 3.007518797vh) / 2 );
+// 	}
+// }
+
+
+
 @media (max-width: 319px){
 	html:after{
 		content:"";
@@ -53,6 +56,39 @@ input{
 // .header-container{
 // 	background-color: $black;
 // }
+.home-page{
+	.header-container{
+		position: static;
+	}
+}
+.home-page-content{
+	background-color: $gray-100 !important;
+	// background-color: red !important;
+	height: calc(100vh - 100px);
+	// position: absolute;
+	z-index: -1;
+	text-align: center;
+	> .row:last-child{
+		height: 100%;
+		> *{
+			// background-color: pink;
+		}
+	}
+	.logo-main{
+		font-size: rem(40);
+	}
+}
+.footer{
+	position: absolute;
+	background-color: $black;
+	color: $gray-300;
+	min-height: 100px;
+	padding-top: $gutter;
+	font-size: rem(40);
+}
+.home-page-content > .row{
+	// background-color: yellow !important;
+}
 .header-container{
 	background-color: $gray-100;
 	position: fixed;
@@ -70,10 +106,31 @@ input{
 	background-color: $black;
 	position: fixed;
 	height: 100%;
-	width: calc(100% - 90px);
+	width: rem(300);
 	top:0;
 	right: 0;
 	z-index: $zindex-modal;
+	&:before{
+		content: '';
+		position: fixed;
+		height: 100%;
+		width: calc(100% - 300px);
+		top:0;
+		left:0;
+		z-index: -1;
+		background-color: $white;
+		opacity: 0.7;
+	}
+	a{
+		width: 100%;
+		display: block;
+		height: rem(45);
+		font-size: $h4-font-size;
+		font-family: $headings-font-family !important;
+		.selected{
+			background-color: $white;
+		}
+	}
 }
 .header-wrap{
 	background-color: $gray-100;
@@ -97,6 +154,11 @@ input{
 	position: absolute;
 	display: block;
 	padding: rem(10) $gutter;
+	background-color: transparent;
+	&, &:hover{
+		color: $black;
+		text-decoration: none;
+	}
 	.icon:before{
 		// display: block;
 		font-size: rem(35);

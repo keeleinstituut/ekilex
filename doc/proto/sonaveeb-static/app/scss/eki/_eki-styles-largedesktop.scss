@@ -4,7 +4,10 @@
 @include media-breakpoint-up(lg) {
 
 ////////////////////////////////
-
+.menu-btn{
+	background-color: $white;
+	box-shadow: $dropdown-box-shadow;
+}
 .homonym-list{
 	margin-left:-($gutter);
 	margin-right:-($gutter);

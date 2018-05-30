@@ -1,6 +1,14 @@
 // DESKTOP +
 ////////////////////////////////
 
+@media (min-width: 767px){
+	.home-page-content{
+		.logo-main{
+			font-size: calc(5vw);
+		}
+	}
+}
+
 @include media-breakpoint-up(md) {
 
 ////////////////////////////////
