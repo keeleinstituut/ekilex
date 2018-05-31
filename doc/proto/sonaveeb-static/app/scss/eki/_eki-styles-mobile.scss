@@ -26,13 +26,19 @@ html{
 .menu-btn{
 	background-color: transparent;
 }
-.lang-btn{
-	position: fixed;
-	top:0;
-	font-size: $supertiny-font-size;
-	width: 50%;
-	margin: 0 calc(25% - 15px ) ;
-	z-index: 1111;
+body{
+	.lang-btn{
+		font-size: $supertiny-font-size;
+	}	
+	&:not(.home-page){
+		.lang-btn{
+			position: fixed;
+			top:0;
+			width: 50%;
+			margin: 0 calc(25% - 15px ) ;
+			z-index: 1111;
+		}	
+	}
 }
 .dropdown-menu{
 	transform: translate3d(0px, 0px, 0px) !important;

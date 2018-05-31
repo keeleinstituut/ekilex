@@ -6537,6 +6537,15 @@ ul {
   background-color: transparent;
 }
 
+.logo, .logo:hover,
+.back,
+.back:hover,
+.menu-btn,
+.menu-btn:hover {
+  color: #001124;
+  text-decoration: none;
+}
+
 .logo .icon:before,
 .back .icon:before,
 .menu-btn .icon:before {
@@ -6962,10 +6971,12 @@ ul {
   .menu-btn {
     background-color: transparent;
   }
-  .lang-btn {
+  body .lang-btn {
+    font-size: 0.6875rem;
+  }
+  body:not(.home-page) .lang-btn {
     position: fixed;
     top: 0;
-    font-size: 0.6875rem;
     width: 50%;
     margin: 0 calc(25% - 15px);
     z-index: 1111;
@@ -7065,7 +7076,7 @@ ul {
   }
   .search-wrap {
     top: 4.375rem;
-    box-shadow: 0 0.625rem 0.625rem #F2F2F2;
+    box-shadow: 0 0 0.625rem 0.3125rem #F2F2F2;
   }
   .dropdown-menu.container {
     max-width: 31.25rem !important;
@@ -7078,6 +7089,7 @@ ul {
     background-color: #F2F2F2;
     overflow: hidden;
     height: 9.375rem;
+    padding-top: 0.3125rem;
   }
   .homonym-list {
     width: calc(100% + 2 * 1.25rem);
