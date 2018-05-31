@@ -40,12 +40,16 @@
       <div class="row header-wrap">
         <div class="col-12 header-panel">
           <a href="http://localhost:5577" class="logo">
-            <span class="icon icon-logo-s"></span>
+            <span class="icon icon-logo-s d-md-none"></span>
+            <span class="icon icon-logo  d-none  d-md-block"></span>
           </a>
           <a class="back">
             <span class="icon icon-back"></span>
           </a>
           <div class="header-links">
+            <button class="btn menu-btn float-right clear-both">
+              <span>Sulge</span> <span class="icon icon-close"></span>
+            </button>
             <a th:href="@{/}" class="menu-item selected ">
               <span th:text="#{menu.search}">Otsing</span>
             </a>

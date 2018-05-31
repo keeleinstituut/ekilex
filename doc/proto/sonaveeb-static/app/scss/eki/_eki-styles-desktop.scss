@@ -31,6 +31,20 @@
 .back{
 	display: none;
 }
+.menu-btn{
+	right: 0;
+}
+.home-page .menu-btn{
+	top:$gutter;
+	right:$gutter;
+	// background-color: $white;
+	// box-shadow: $dropdown-box-shadow;
+}
+.header-links{
+	.menu-btn{
+		background-color: transparent !important;
+	}
+}
 .homonym-panel{
 	background-color: $gray-100;
 	overflow: hidden;

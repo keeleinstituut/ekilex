@@ -4,10 +4,6 @@
 @include media-breakpoint-up(lg) {
 
 ////////////////////////////////
-.menu-btn{
-	background-color: $white;
-	box-shadow: $dropdown-box-shadow;
-}
 .homonym-list{
 	margin-left:-($gutter);
 	margin-right:-($gutter);
@@ -23,6 +19,17 @@
 	margin-left: auto !important;
 	margin-right: auto !important;
 }
+.search-panel{
+	.row{
+	    margin-right: -$gutter*2;
+    	margin-left: -$gutter*2;
+	}
+}
+
+// .header-panel{
+//     margin-right: -$gutter;
+// 	margin-left: -$gutter;
+// }
 .homonym-panel{
 	padding-left: 0;
 	padding-right: 0;
@@ -38,7 +45,7 @@
 		}
 	}
 }
-.search-panel{
+.home-page.search-panel{
 	padding-left: 0 !important;
 	padding-right: 0 !important;
 }

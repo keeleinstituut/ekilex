@@ -12,8 +12,8 @@
   <div class="header-container">
     <div class="header-panel">
       <div class="header-links">
-        <button>
-          <span class="icon icon-close"></span>
+        <button class="btn menu-btn float-right clear-both">
+          <span>Sulge</span> <span class="icon icon-close"></span>
         </button>
         <a th:href="@{/}" class="menu-item selected ">
           <span th:text="#{menu.search}">Otsing</span>
@@ -32,7 +32,7 @@
         </a>
       </div>
       <button class="btn menu-btn">
-        <span class="icon icon-menu"></span>
+        <span class="d-none d-md-block">Menüü</span> <span class="icon icon-menu"></span>
       </button>
     </div>
   </div>

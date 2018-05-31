@@ -6481,17 +6481,18 @@ ul {
   background-color: #001124;
   position: fixed;
   height: 100%;
-  width: 18.75rem;
+  width: 20rem;
   top: 0;
   right: 0;
   z-index: 1050;
+  padding: 7.5rem 1.25rem 0 1.25rem;
 }
 
 .header-links:before {
   content: '';
   position: fixed;
   height: 100%;
-  width: calc(100% - 300px);
+  width: calc(100% - 320px);
   top: 0;
   left: 0;
   z-index: -1;
@@ -6502,9 +6503,29 @@ ul {
 .header-links a {
   width: 100%;
   display: block;
-  height: 2.8125rem;
+  height: 3.4375rem;
   font-size: 1.375rem;
   font-family: "Montserrat" !important;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 700;
+  padding-left: 0.9375rem;
+  padding-right: 0.9375rem;
+  border-radius: 1.375rem;
+}
+
+.header-links a:hover {
+  text-decoration: none;
+}
+
+.header-links a:not(.selected):hover {
+  color: #fff !important;
+  background-color: #003F87 !important;
+}
+
+.header-links a.selected {
+  color: #fff;
+  background-color: #fff;
+  color: #0077FF;
 }
 
 .header-links a .selected {
@@ -6514,17 +6535,6 @@ ul {
 .header-wrap {
   background-color: #F2F2F2;
   height: 4.375rem;
-}
-
-.header-links a {
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 700;
-  padding-left: 0.9375rem;
-  padding-right: 0.9375rem;
-}
-
-.header-links a.selected {
-  color: #fff;
 }
 
 .logo,
@@ -6564,8 +6574,37 @@ ul {
 }
 
 .menu-btn {
-  right: 0;
   color: #0077FF;
+  display: flex;
+}
+
+.menu-btn, .menu-btn * {
+  transition: 0ms !important;
+}
+
+.menu-btn span {
+  display: block;
+  margin: auto;
+  padding: 0;
+}
+
+.menu-btn span:not(.icon) {
+  padding-right: 0.625rem;
+}
+
+.header-links a {
+  display: flex;
+  text-align: left;
+}
+
+.header-links a span {
+  display: block;
+  margin: auto 0;
+  padding: 0;
+}
+
+.header-links > .menu-btn {
+  color: white !important;
 }
 
 .search-wrap {
@@ -6970,6 +7009,8 @@ ul {
   }
   .menu-btn {
     background-color: transparent;
+    top: 0;
+    right: 0;
   }
   body .lang-btn {
     font-size: 0.6875rem;
@@ -7084,6 +7125,16 @@ ul {
   }
   .back {
     display: none;
+  }
+  .menu-btn {
+    right: 0;
+  }
+  .home-page .menu-btn {
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+  .header-links .menu-btn {
+    background-color: transparent !important;
   }
   .homonym-panel {
     background-color: #F2F2F2;
@@ -7319,10 +7370,6 @@ ul {
 }
 
 @media (min-width: 1200px) {
-  .menu-btn {
-    background-color: #fff;
-    box-shadow: 0 0.125rem 0.625rem rgba(0, 17, 36, 0.3);
-  }
   .homonym-list {
     margin-left: -1.25rem;
     margin-right: -1.25rem;
@@ -7337,6 +7384,10 @@ ul {
     max-width: 80vw !important;
     margin-left: auto !important;
     margin-right: auto !important;
+  }
+  .search-panel .row {
+    margin-right: -2.5rem;
+    margin-left: -2.5rem;
   }
   .homonym-panel {
     padding-left: 0;
@@ -7353,7 +7404,7 @@ ul {
   .homonym-list li:last-child a {
     padding-right: 0;
   }
-  .search-panel {
+  .home-page.search-panel {
     padding-left: 0 !important;
     padding-right: 0 !important;
   }

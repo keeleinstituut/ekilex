@@ -106,15 +106,16 @@ input{
 	background-color: $black;
 	position: fixed;
 	height: 100%;
-	width: rem(300);
+	width: rem(320);
 	top:0;
 	right: 0;
 	z-index: $zindex-modal;
+	padding: $gutter*6 $gutter 0 $gutter;
 	&:before{
 		content: '';
 		position: fixed;
 		height: 100%;
-		width: calc(100% - 300px);
+		width: calc(100% - 320px);
 		top:0;
 		left:0;
 		z-index: -1;
@@ -124,9 +125,26 @@ input{
 	a{
 		width: 100%;
 		display: block;
-		height: rem(45);
+		height: rem(55);
 		font-size: $h4-font-size;
 		font-family: $headings-font-family !important;
+		color: rgba($white, 0.8);
+		font-weight: $font-weight-bold;
+		padding-left: rem(15);
+		padding-right: rem(15);
+		border-radius: $border-radius;
+		&:hover{
+			text-decoration: none;
+		}
+		&:not(.selected):hover{
+			color:$white !important;		
+			background-color: $primary !important;
+		}
+		&.selected{
+			color: $white;
+			background-color: $white;
+			color: $teal;
+		}
 		.selected{
 			background-color: $white;
 		}
@@ -135,17 +153,6 @@ input{
 .header-wrap{
 	background-color: $gray-100;
 	height: rem(70);
-}
-.header-links{
-	a{
-		color: rgba($white, 0.8);
-		font-weight: $font-weight-bold;
-		padding-left: rem(15);
-		padding-right: rem(15);
-		&.selected{
-			color: $white;
-		}
-	}
 }
 .logo,
 .back,
@@ -175,9 +182,36 @@ input{
 	// display: none;
 }
 .menu-btn{
-	right:0;
+	&, & *{
+		transition: 0ms !important;
+	}
 	color: $teal;
+	display: flex;
+	span{
+	    display: block;
+    	margin: auto;
+    	padding:0
+	}
+	span:not(.icon){
+		padding-right: rem(10);
+	}
 }
+.header-links{
+	a{
+		display: flex;
+		text-align: left;
+		span{
+	    	display: block;
+    		margin: auto 0;
+    		padding:0
+
+		}		
+	}
+}
+.header-links > .menu-btn{
+		color:white !important;
+	}
+
 .search-wrap{
 	top: rem(70);
 	width: 100%;
