@@ -22,7 +22,7 @@
 }
 .search-wrap{
 	top: rem(70);
-	box-shadow: 0 rem(10) rem(10) $gray-100;
+	box-shadow: 0 0 rem(10) rem(5) $gray-100;
 }
 .dropdown-menu.container{
 	max-width: rem(500) !important;
@@ -35,6 +35,7 @@
 	background-color: $gray-100;
 	overflow: hidden;
 	height: rem(150);
+	padding-top: rem(5); 
 }
 .homonym-list{
     width: calc(100% + 2 * #{$gutter});
