@@ -14,7 +14,7 @@
 		</rollingPolicy>
 	</appender>
 
-	<springProfile name="prod">
+	<springProfile name="prod,test">
 		<root level="info">
 			<appender-ref ref="ekilexFileAppender" />
 		</root>
