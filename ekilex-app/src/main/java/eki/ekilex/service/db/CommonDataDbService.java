@@ -35,9 +35,8 @@ import static org.jooq.impl.DSL.selectDistinct;
 import java.sql.Timestamp;
 import java.util.Map;
 
-import eki.ekilex.constant.DbConstant;
 import org.jooq.DSLContext;
-import org.jooq.Record18;
+import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
@@ -49,6 +48,7 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
+import eki.ekilex.constant.DbConstant;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
@@ -137,7 +137,7 @@ public class CommonDataDbService implements DbConstant {
 				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name())))
+						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name())))
 				.fetch();
 	}
 
@@ -201,12 +201,31 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record18<Long,String,Long,Long,String,String,Long,String,String,Long,String,String,String,String,Long,String,String,String>>
-				findGovernmentUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<Long,String,String>> findGovernments(Long lexemeId) {
 
-	LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
-	Freeform g = FREEFORM.as("g");
-	Freeform um = FREEFORM.as("um");
+		LexemeFreeform glff = LEXEME_FREEFORM.as("glff");
+		Freeform g = FREEFORM.as("g");
+		Freeform gt = FREEFORM.as("gt");
+
+		return create
+				.select(
+						g.ID,
+						g.VALUE_TEXT.as("value"),
+						gt.CLASSIF_CODE.as("type_code")
+						)
+				.from(
+						glff.innerJoin(g).on(glff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())).and(g.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+						.leftOuterJoin(gt).on(gt.PARENT_ID.eq(g.ID).and(gt.TYPE.eq(FreeformType.GOVERNMENT_TYPE.name())))
+						)
+				.where(glff.LEXEME_ID.eq(lexemeId))
+				.orderBy(g.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record16<Long,String,String,String,String,Long,String,String,Long,String,String,String,String,Long,String,String>>
+				findUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+	LexemeFreeform ulff = LEXEME_FREEFORM.as("ulff");
 	Freeform u = FREEFORM.as("u");
 	Freeform ut = FREEFORM.as("ut");
 	Freeform ud = FREEFORM.as("ud");
@@ -222,12 +241,11 @@ public class CommonDataDbService implements DbConstant {
 
 	return create
 			.select(
-					g.ID.as("government_id"),
-					g.VALUE_TEXT.as("government_value"),
-					um.ID.as("usage_meaning_id"),
 					u.ID.as("usage_id"),
 					u.VALUE_TEXT.as("usage_value"),
 					u.LANG.as("usage_lang"),
+					utype.CLASSIF_CODE.as("usage_type_code"),
+					utypelbl.VALUE.as("usage_type_value"),
 					ut.ID.as("usage_translation_id"),
 					ut.VALUE_TEXT.as("usage_translation_value"),
 					ut.LANG.as("usage_translation_lang"),
@@ -238,15 +256,12 @@ public class CommonDataDbService implements DbConstant {
 					trans.NAME.as("usage_translator"),
 					usrcl.ID.as("usage_source_ref_link_id"),
 					usrcl.NAME.as("usage_source_ref_link_name"),
-					usrcl.VALUE.as("usage_source_ref_link_value"),
-					utypelbl.VALUE.as("usage_type")
+					usrcl.VALUE.as("usage_source_ref_link_value")
 					)
 			.from(
-					lff.innerJoin(g).on(lff.FREEFORM_ID.eq(g.ID).and(g.TYPE.eq(FreeformType.GOVERNMENT.name())).and(g.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(um).on(um.PARENT_ID.eq(g.ID).and(um.TYPE.eq(FreeformType.USAGE_MEANING.name())).and(um.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(u).on(u.PARENT_ID.eq(um.ID).and(u.TYPE.eq(FreeformType.USAGE.name())).and(u.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(ut).on(ut.PARENT_ID.eq(um.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())).and(ut.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(ud).on(ud.PARENT_ID.eq(um.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())).and(ud.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+					ulff.innerJoin(u).on(ulff.FREEFORM_ID.eq(u.ID).and(u.TYPE.eq(FreeformType.USAGE.name())).and(u.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+					.leftOuterJoin(ut).on(ut.PARENT_ID.eq(u.ID).and(ut.TYPE.eq(FreeformType.USAGE_TRANSLATION.name())).and(ut.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+					.leftOuterJoin(ud).on(ud.PARENT_ID.eq(u.ID).and(ud.TYPE.eq(FreeformType.USAGE_DEFINITION.name())).and(ud.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 					.leftOuterJoin(uauth).on(uauth.PARENT_ID.eq(u.ID).and(uauth.TYPE.eq(FreeformType.USAGE_AUTHOR.name())).and(uauth.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 					.leftOuterJoin(uauthl).on(uauthl.FREEFORM_ID.eq(uauth.ID).and(uauthl.REF_TYPE.eq(ReferenceType.PERSON.name())).and(uauthl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 					.leftOuterJoin(auth).on(auth.ID.eq(uauthl.REF_ID))
@@ -254,12 +269,11 @@ public class CommonDataDbService implements DbConstant {
 					.leftOuterJoin(utransl).on(utransl.FREEFORM_ID.eq(utrans.ID).and(utransl.REF_TYPE.eq(ReferenceType.PERSON.name())).and(utransl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 					.leftOuterJoin(trans).on(trans.ID.eq(utransl.REF_ID))
 					.leftOuterJoin(usrcl).on(usrcl.FREEFORM_ID.eq(u.ID).and(usrcl.REF_TYPE.eq(ReferenceType.SOURCE.name())).and(usrcl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(um.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())).and(utype.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-					.leftOuterJoin(utypelbl)
-					.on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode))))
+					.leftOuterJoin(utype).on(utype.PARENT_ID.eq(u.ID).and(utype.TYPE.eq(FreeformType.USAGE_TYPE.name())).and(utype.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+					.leftOuterJoin(utypelbl).on(utypelbl.CODE.eq(utype.CLASSIF_CODE).and(utypelbl.LANG.eq(classifierLabelLang).and(utypelbl.TYPE.eq(classifierLabelTypeCode))))
 					)
-			.where(lff.LEXEME_ID.eq(lexemeId))
-			.orderBy(g.ORDER_BY, um.ORDER_BY, u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, usrcl.ORDER_BY)
+			.where(ulff.LEXEME_ID.eq(lexemeId))
+			.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, usrcl.ORDER_BY)
 			.fetch();
 	}
 

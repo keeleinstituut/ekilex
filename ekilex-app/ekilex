@@ -1,0 +1,790 @@
+2018-06-09 18:21:12.341 -  INFO - LexSearchServiceTest.logStarting         : Starting LexSearchServiceTest on Kurjam with PID 100 (started by Martin in C:\devtools\eclipse\projects\tripledev\ekilex\ekilex-app)
+2018-06-09 18:21:12.349 - DEBUG - LexSearchServiceTest.logStarting         : Running with Spring Boot v2.0.2.RELEASE, Spring v5.0.6.RELEASE
+2018-06-09 18:21:12.353 -  INFO - LexSearchServiceTest.logStartupProfileInfo : No active profile set, falling back to default profiles: default
+2018-06-09 18:21:20.963 -  INFO - LexSearchServiceTest.logStarted          : Started LexSearchServiceTest in 9.156 seconds (JVM running for 11.086)
+2018-06-09 18:21:24.940 -  INFO - Constants.info                           : 
+                                      
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@  @@@@  @@  @@    @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@    @@  @@  @@@@  @@@@@@@@@@
+@@@@@@@@@@        @@  @  @  @@@@@@@@@@
+@@@@@@@@@@        @@        @@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@  @@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@  Thank you for using jOOQ 3.10.7
+                                      
+2018-06-09 18:21:24.992 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select concept.id
+        from 
+          lexeme as l2, 
+          meaning as m2, 
+          meaning_freeform as m2ff, 
+          freeform as concept
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = m2.id
+          and m2ff.meaning_id = m2.id
+          and m2ff.freeform_id = concept.id
+          and concept.type = 'CONCEPT_ID'
+          and lower(concept.value_text) = lower('123456')
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:25.097 - DEBUG - QueryStopWatchListener.end               : Query executed at 165 ms
+2018-06-09 18:21:28.418 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select u2.id
+        from 
+          lexeme as l2, 
+          lexeme_freeform as l2ff, 
+          freeform as u2
+        where (
+          l2.word_id = w.id
+          and l2ff.lexeme_id = l2.id
+          and l2ff.freeform_id = u2.id
+          and u2.type = 'USAGE'
+          and u2.process_state_code is distinct from 'kustutatud'
+          and lower(u2.value_text) like ('%' || 'haned' || '%') escape '!'
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:28.423 - DEBUG - QueryStopWatchListener.end               : Query executed at 13 ms
+2018-06-09 18:21:31.503 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select d2.id
+        from 
+          lexeme as l2, 
+          meaning as m2, 
+          definition as d2
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = m2.id
+          and d2.meaning_id = m2.id
+          and d2.process_state_code is distinct from 'kustutatud'
+          and lower(d2.value) like ('%' || 'esik' || '%') escape '!'
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:31.509 - DEBUG - QueryStopWatchListener.end               : Query executed at 8 ms
+2018-06-09 18:21:34.398 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and lower(f3.value) = lower('v‰‰ra')
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:34.405 - DEBUG - QueryStopWatchListener.end               : Query executed at 8 ms
+2018-06-09 18:21:34.409 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and lower(f3.value) = lower('halla')
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:34.419 - DEBUG - QueryStopWatchListener.end               : Query executed at 12 ms
+2018-06-09 18:21:34.423 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and lower(f3.value) = lower('halli')
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:34.429 - DEBUG - QueryStopWatchListener.end               : Query executed at 8 ms
+2018-06-09 18:21:37.704 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and f3.is_word = true
+          and lower(f3.value) = lower('hall')
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:37.713 - DEBUG - QueryStopWatchListener.end               : Query executed at 10 ms
+2018-06-09 18:21:37.724 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and f3.is_word = true
+          and lower(f3.value) like ('hall' || '%') escape '!'
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:37.734 - DEBUG - QueryStopWatchListener.end               : Query executed at 18 ms
+2018-06-09 18:21:37.741 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and f3.is_word = true
+          and lower(f3.value) like ('%' || 'hall') escape '!'
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:37.750 - DEBUG - QueryStopWatchListener.end               : Query executed at 11 ms
+2018-06-09 18:21:37.753 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and f3.is_word = true
+          and lower(f3.value) like ('%' || 'aha' || '%') escape '!'
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:37.765 - DEBUG - QueryStopWatchListener.end               : Query executed at 13 ms
+2018-06-09 18:21:37.769 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.word_id, 
+  ww.word, 
+  ww.homonym_nr, 
+  ww.lang, 
+  ww.dataset_codes
+from (
+  select 
+    w.word_id, 
+    w.word, 
+    w.homonym_nr, 
+    w.lang, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select 
+      w.id as word_id, 
+      cast(array_to_string(array_agg(distinct f.value), ',', '*') as varchar) as word, 
+      w.homonym_nr, 
+      w.lang
+    from word as w
+      join paradigm as p
+      on p.word_id = w.id
+      join form as f
+      on (
+        f.paradigm_id = p.id
+        and f.is_word = true
+      )
+    where (
+      1 = 1
+      and exists (
+        select l2.id
+        from 
+          lexeme as l2, 
+          lexeme as l3, 
+          paradigm as p3, 
+          form as f3, 
+          word as w3
+        where (
+          l2.word_id = w.id
+          and l2.meaning_id = l3.meaning_id
+          and w3.id = l3.word_id
+          and p3.word_id = w3.id
+          and f3.paradigm_id = p3.id
+          and f3.is_word = true
+          and lower(f3.value) like ('%' || 'ii' || '%') escape '!'
+          and lower(f3.value) like ('%' || 'll') escape '!'
+        )
+      )
+    )
+    group by w.id
+  ) as w
+  order by 
+    w.word, 
+    w.homonym_nr
+  
+) as ww
+limit 50
+2018-06-09 18:21:37.777 - DEBUG - QueryStopWatchListener.end               : Query executed at 10 ms
+2018-06-09 18:22:03.411 - DEBUG - QueryLoggerListener.renderEnd            : Executing query 
+select 
+  ww.meaning_id, 
+  ww.word_id, 
+  ww.word_lang, 
+  ww.homonym_nr, 
+  ww.word, 
+  ww.concept_id, 
+  ww.dataset_codes
+from (
+  select 
+    m.meaning_id, 
+    w.word_id, 
+    w.word_lang, 
+    w.homonym_nr, 
+    w.word, 
+    coalesce(
+      c.concept_id, 
+      '#'
+    ) as concept_id, 
+    (
+      select array_agg(distinct lexeme.dataset_code)
+      from lexeme
+      where lexeme.word_id = w.word_id
+      group by w.word_id
+    ) as dataset_codes
+  from (
+    select l1.meaning_id
+    from 
+      (
+        select form.paradigm_id
+        from form
+        where (
+          form.is_word = true
+          and form.value ilike 'hall%'
+        )
+      ) as f1, 
+      paradigm as p1, 
+      word as w1, 
+      lexeme as l1
+    where (
+      f1.paradigm_id = p1.id
+      and p1.word_id = w1.id
+      and l1.word_id = w1.id
+    )
+    group by l1.meaning_id
+    order by l1.meaning_id
+    limit 2147483647
+  ) as m
+    left outer join (
+      select 
+        l2.meaning_id, 
+        w2.id as word_id, 
+        w2.lang as word_lang, 
+        w2.homonym_nr, 
+        f2.value as word
+      from 
+        form as f2, 
+        paradigm as p2, 
+        word as w2, 
+        lexeme as l2
+      where (
+        f2.is_word = true
+        and f2.paradigm_id = p2.id
+        and p2.word_id = w2.id
+        and l2.word_id = w2.id
+      )
+    ) as w
+    on w.meaning_id = m.meaning_id
+    left outer join (
+      select 
+        meaning_freeform.meaning_id, 
+        freeform.value_text as concept_id
+      from 
+        meaning_freeform, 
+        freeform
+      where (
+        meaning_freeform.freeform_id = freeform.id
+        and freeform.type = 'CONCEPT_ID'
+      )
+    ) as c
+    on c.meaning_id = m.meaning_id
+) as ww
+2018-06-09 18:22:03.420 - DEBUG - QueryStopWatchListener.end               : Query executed at 12 ms

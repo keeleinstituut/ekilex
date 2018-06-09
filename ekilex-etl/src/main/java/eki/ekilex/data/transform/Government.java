@@ -1,7 +1,5 @@
 package eki.ekilex.data.transform;
 
-import java.util.List;
-
 import eki.common.data.AbstractDataObject;
 
 public class Government extends AbstractDataObject {
@@ -16,22 +14,12 @@ public class Government extends AbstractDataObject {
 
 	private String optional;
 
-	private List<UsageMeaning> usageMeanings;
-
 	public String getValue() {
 		return value;
 	}
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public List<UsageMeaning> getUsageMeanings() {
-		return usageMeanings;
-	}
-
-	public void setUsageMeanings(List<UsageMeaning> usageMeanings) {
-		this.usageMeanings = usageMeanings;
 	}
 
 	public String getType() {

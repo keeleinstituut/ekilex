@@ -1,7 +1,6 @@
 package eki.ekilex.data;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import javax.persistence.Column;
 
@@ -72,6 +71,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Government> governments;
 
+	private List<Usage> usages;
+
 	private List<Definition> definitions;
 
 	private List<FreeForm> meaningFreeforms;
@@ -91,13 +92,6 @@ public class WordLexeme extends AbstractDataObject {
 	private List<RefLink> refLinks;
 
 	private boolean lexemeOrMeaningClassifiersExist;
-
-	public WordLexeme() {
-	}
-
-	public WordLexeme(Consumer<WordLexeme> builder) {
-		builder.accept(this);
-	}
 
 	public String[] getWords() {
 		return words;
@@ -281,6 +275,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setGovernments(List<Government> governments) {
 		this.governments = governments;
+	}
+
+	public List<Usage> getUsages() {
+		return usages;
+	}
+
+	public void setUsages(List<Usage> usages) {
+		this.usages = usages;
 	}
 
 	public List<Definition> getDefinitions() {

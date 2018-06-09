@@ -1,5 +1,7 @@
 package eki.ekilex.runner;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Timestamp;
@@ -27,10 +29,10 @@ import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.XmlReader;
-
-import static java.util.stream.Collectors.toMap;
 
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
@@ -365,6 +367,47 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 		}
 		return lexemeId;
+	}
+
+	protected void createUsages(Long lexemeId, List<Usage> usages, String dataLang) throws Exception {
+
+		if (CollectionUtils.isEmpty(usages)) {
+			return;
+		}
+
+		for (Usage usage : usages) {
+			String usageValue = usage.getValue();
+			String usageType = usage.getUsageType();
+			String author = usage.getAuthor();
+			String authorTypeStr = usage.getAuthorType();
+			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usageValue, dataLang);
+			if (StringUtils.isNotBlank(usageType)) {
+				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usageType);
+			}
+			if (StringUtils.isNotBlank(author)) {
+				Long authorId = createOrSelectPerson(author);
+				FreeformType authorType;
+				if (StringUtils.isEmpty(authorTypeStr)) {
+					authorType = FreeformType.USAGE_AUTHOR;
+				} else {
+					authorType = FreeformType.USAGE_TRANSLATOR;
+				}
+				Long authorFreeformId = createFreeformTextOrDate(authorType, usageId, author, dataLang);
+				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId, null, null);
+			}
+			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
+				for (String usageDefinition : usage.getDefinitions()) {
+					createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageId, usageDefinition, dataLang);
+				}
+			}
+			if (CollectionUtils.isNotEmpty(usage.getUsageTranslations())) {
+				for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
+					String usageTranslationValue = usageTranslation.getValue();
+					String usageTranslationLang = usageTranslation.getLang();
+					createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageId, usageTranslationValue, usageTranslationLang);
+				}
+			}
+		}
 	}
 
 	protected Long createLexemeFreeform(Long lexemeId, FreeformType freeformType, Object value, String lang) throws Exception {

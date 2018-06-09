@@ -3,7 +3,6 @@ package eki.ekilex.runner;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +22,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,6 @@ import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
@@ -48,7 +47,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]";
 	private final String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
 	private final String defaultWordMorphCode = "SgN";
-	private final String defaultGovernmentValue = "-";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";
@@ -401,23 +399,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			writeToLogFile(data.reportingId, "Leiti rohkem kui üks vaste sõnale", data.word);
 		}
 		Long lexemeId;
-		if (existingWords.isEmpty()) {
+		if (CollectionUtils.isEmpty(existingWords)) {
 			logger.debug("No word found, adding word with objects : {}.", data.word);
 			lexemeId = createLexemeAndRelatedObjects(data, context).lexemeId;
-			if (!data.usageMeanings.isEmpty()) {
-				logger.debug("Usages found, adding them");
-				String governmentValue = data.government == null ? defaultGovernmentValue : data.government.getValue();
-				Long governmentId = createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue, dataLang);
-				for (UsageMeaning usageMeaning : data.usageMeanings) {
-					createUsageMeaning(governmentId, usageMeaning);
-				}
-				if (data.government != null && isNotEmpty(data.government.getType())) {
+			createUsages(lexemeId, data.usages, dataLang);
+			if (data.government != null) {
+				Long governmentId = createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, data.government.getValue(), dataLang);
+				if (isNotBlank(data.government.getType())) {
 					createFreeformClassifier(FreeformType.GOVERNMENT_TYPE, governmentId, data.government.getType());
 				}
 			}
 		} else {
 			lexemeId = findLexemeIdForWord(existingWords.get(0).id, data);
-			if (!data.usageMeanings.isEmpty()) {
+			if (CollectionUtils.isNotEmpty(data.usages)) {
 				logger.debug("Usages found for word, skipping them : {}.", data.word);
 				writeToLogFile(data.reportingId, "Leiti kasutusnäited olemasolevale ilmikule", data.word);
 			}
@@ -438,8 +432,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-// FIXME: value state, from where this is fetched ?
-//		lexeme.setValueState(lexemeType);
+		// FIXME: value state, from where this is fetched ?
+		//lexeme.setValueState(lexemeType);
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
@@ -663,7 +657,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
 			String processStateCode =  processStateCodes.get(meaningNumberGroupNode.attributeValue(asTyypAttr));
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
-			List<Element> meaingGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+			List<Element> meaningGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			List<String> compoundWords = extractCompoundWords(meaningNumberGroupNode);
 			List<LexemeToWordData> meaningReferences = extractMeaningReferences(meaningNumberGroupNode, reportingId);
 			List<LexemeToWordData> vormels = extractVormels(meaningNumberGroupNode);
@@ -685,9 +679,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element imageNameNode = (Element) meaningNumberGroupNode.selectSingleNode(imageNameExp);
 			String imageName = imageNameNode == null ? null : imageNameNode.getTextTrim();
 
-			for (Element meaningGroupNode : meaingGroupNodes) {
+			for (Element meaningGroupNode : meaningGroupNodes) {
 				List<Element> usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);
-				List<UsageMeaning> usages = extractUsages(usageGroupNodes);
+				List<Usage> usages = extractUsages(usageGroupNodes);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 
 				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
@@ -701,17 +695,17 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					if (definitions.size() > 1) {
 						writeToLogFile(reportingId, "Leitud rohkem kui üks seletus <x:d>", newWords.get(0).value);
 					}
-					if (isNotEmpty(learnerComment)) {
+					if (isNotBlank(learnerComment)) {
 						createMeaningFreeform(meaningId, FreeformType.LEARNER_COMMENT, learnerComment);
 					}
 				} else {
 					logger.debug("synonym meaning found : {}", newWords.get(0).value);
 				}
 
-				if (isNotEmpty(conceptId)) {
+				if (isNotBlank(conceptId)) {
 					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
 				}
-				if (isNotEmpty(imageName)) {
+				if (isNotBlank(imageName)) {
 					createMeaningFreeform(meaningId, FreeformType.IMAGE_FILE, imageName);
 				}
 				if (abbreviation != null) {
@@ -728,8 +722,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel2++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
-// FIXME: from where we get value state
-//					lexeme.setValueState(newWordData.lexemeType);
+					// FIXME: from where we get value state
+					//lexeme.setValueState(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
@@ -739,7 +733,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					if (lexemeId == null) {
 						lexemeDuplicateCount.increment();
 					} else {
-						saveGovernmentsAndUsages(meaningNumberGroupNode, lexemeId, usages);
+						createUsages(lexemeId, usages, dataLang);
+						saveGovernmentsAndUsages(meaningNumberGroupNode, lexemeId);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningNumberGroupNode, lexemeId, newWordData);
 						for (String compoundWord : compoundWords) {
@@ -878,14 +873,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				List<Element> usageNodes = definitionGroupNodeNode.selectNodes(usageExp);
 				for (Element usageNode : usageNodes) {
-					UsageMeaning usageMeaning = new UsageMeaning();
 					Usage usage = new Usage();
 					usage.setValue(usageNode.getTextTrim());
-					usageMeaning.getUsages().add(usage);
+					usage.setDefinitions(new ArrayList<>());
 					if (usageNode.hasMixedContent()) {
-						usageMeaning.getDefinitions().add(usageNode.selectSingleNode(usageDefinitionExp).getText());
+						Node usageDefinitionNode = usageNode.selectSingleNode(usageDefinitionExp);
+						String usageDefinition = usageDefinitionNode.getText();
+						usage.getDefinitions().add(usageDefinition);
 					}
-					data.usageMeanings.add(usageMeaning);
+					data.usages.add(usage);
 				}
 			}
 			compoundForms.addAll(forms);
@@ -933,17 +929,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> singleForms = new ArrayList<>();
 		List<Element> singleFormGroupNodes = node.selectNodes(singleFormGroupNodeExp);
 		for (Element singleFormGroupNode : singleFormGroupNodes) {
-			List<UsageMeaning> usageMeanings = new ArrayList<>();
+			List<Usage> usages = new ArrayList<>();
 			List<Element> formUsageNodes = singleFormGroupNode.selectNodes(usageExp);
 			for (Element usageNode : formUsageNodes) {
-				UsageMeaning usageMeaning = new UsageMeaning();
 				Usage usage = new Usage();
 				usage.setValue(usageNode.getTextTrim());
-				usageMeaning.getUsages().add(usage);
+				usage.setDefinitions(new ArrayList<>());
+				usages.add(usage);
 				if (usageNode.hasMixedContent()) {
-					usageMeaning.getDefinitions().add(usageNode.selectSingleNode(usageDefinitionExp).getText());
+					Node usageDefinitionNode = usageNode.selectSingleNode(usageDefinitionExp);
+					String usageDefinition = usageDefinitionNode.getText();
+					usage.getDefinitions().add(usageDefinition);
 				}
-				usageMeanings.add(usageMeaning);
 			}
 			List<Element> singleFormNodes = singleFormGroupNode.selectNodes(singleFormNodeExp);
 			for (Element singleFormNode : singleFormNodes) {
@@ -957,11 +954,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				if (formDefinitionNode != null) {
 					data.definition = formDefinitionNode.getTextTrim();
 				}
-				data.usageMeanings.addAll(usageMeanings);
+				data.usages.addAll(usages);
 				singleForms.add(data);
 			}
 		}
-
 		return singleForms;
 	}
 
@@ -987,11 +983,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				data.definition = vormelDefinitionNode.getTextTrim();
 			}
 			for (Element usageNode : vormelUsages) {
-				UsageMeaning usageMeaning = new UsageMeaning();
 				Usage usage = new Usage();
 				usage.setValue(usageNode.getTextTrim());
-				usageMeaning.getUsages().add(usage);
-				data.usageMeanings.add(usageMeaning);
+				data.usages.add(usage);
 			}
 			vormels.add(data);
 		}
@@ -1123,7 +1117,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element grammarNode : grammarNodes) {
 			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammarNode.getTextTrim(), dataLang);
 		}
-		if (isNotEmpty(wordData.grammar)) {
+		if (isNotBlank(wordData.grammar)) {
 			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, wordData.grammar, dataLang);
 		}
 	}
@@ -1157,76 +1151,59 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveGovernmentsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usages) throws Exception {
+	private void saveGovernmentsAndUsages(Element node, Long lexemeId) throws Exception {
 
 		final String governmentGroupExp = "x:rep/x:reg";
 		final String usageGroupExp = "x:ng";
 		final String governmentExp = "x:rek";
 		final String governmentPlacementAttr = "koht";
 
-		if (!usages.isEmpty()) {
-			Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
-			for (UsageMeaning usage : usages) {
-				createUsageMeaning(governmentId, usage);
-			}
-		}
 		List<Element> governmentGroups = node.selectNodes(governmentGroupExp);
 		for (Element governmentGroup : governmentGroups) {
 			String governmentPlacement = governmentGroup.attributeValue(governmentPlacementAttr);
 			List<Element> usageGroupNodes = governmentGroup.selectNodes(usageGroupExp);
-			List<UsageMeaning> governmentUsages = extractUsages(usageGroupNodes);
+			List<Usage> usages = extractUsages(usageGroupNodes);
+			createUsages(lexemeId, usages, dataLang);
 			List<Element> governmentNodes = governmentGroup.selectNodes(governmentExp);
 			for (Element governmentNode : governmentNodes) {
 				Government government = extractGovernment(governmentNode);
 				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government.getValue());
-				for (UsageMeaning usage : governmentUsages) {
-					createUsageMeaning(governmentId, usage);
-				}
-				if (isNotEmpty(government.getType())) {
+				if (isNotBlank(government.getType())) {
 					createFreeformClassifier(FreeformType.GOVERNMENT_TYPE, governmentId, government.getType());
 				}
-				if (isNotEmpty(governmentPlacement)) {
+				if (isNotBlank(governmentPlacement)) {
 					createFreeformTextOrDate(FreeformType.GOVERNMENT_PLACEMENT, governmentId, governmentPlacement, null);
 				}
-				if (isNotEmpty(government.getVariant())) {
+				if (isNotBlank(government.getVariant())) {
 					createFreeformTextOrDate(FreeformType.GOVERNMENT_VARIANT, governmentId, government.getVariant(), null);
 				}
-				if (isNotEmpty(government.getOptional())) {
+				if (isNotBlank(government.getOptional())) {
 					createFreeformTextOrDate(FreeformType.GOVERNMENT_OPTIONAL, governmentId, government.getOptional(), null);
 				}
 			}
 		}
 	}
 
-	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
-		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
-		for (Usage usage : usageMeaning.getUsages()) {
-			createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-		}
-		for (String definition : usageMeaning.getDefinitions()) {
-			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, definition, dataLang);
-		}
-	}
-
-	private List<UsageMeaning> extractUsages(List<Element> usageGroupNodes) {
+	private List<Usage> extractUsages(List<Element> usageGroupNodes) {
 
 		final String usageExp = "x:n";
 
-		List<UsageMeaning> usageMeanings = new ArrayList<>();
+		List<Usage> usages = new ArrayList<>();
 		for (Element usageGroupNode : usageGroupNodes) {
 			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
 			for (Element usageNode : usageNodes) {
-				UsageMeaning usageMeaning = new UsageMeaning();
-				Usage newUsage = new Usage();
-				newUsage.setValue(usageNode.getTextTrim());
-				usageMeaning.getUsages().add(newUsage);
+				Usage usage = new Usage();
+				usage.setValue(usageNode.getTextTrim());
+				usage.setDefinitions(new ArrayList<>());
+				usages.add(usage);
 				if (usageNode.hasMixedContent()) {
-					usageMeaning.getDefinitions().add(usageNode.selectSingleNode("x:nd").getText());
+					Node usageDefinitionNode = usageNode.selectSingleNode("x:nd");
+					String usageDefinition = usageDefinitionNode.getText();
+					usage.getDefinitions().add(usageDefinition);
 				}
-				usageMeanings.add(usageMeaning);
 			}
 		}
-		return usageMeanings;
+		return usages;
 	}
 
 	private void processArticleHeader(
@@ -1617,7 +1594,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String relationType;
 		Government government;
 		String definition;
-		List<UsageMeaning> usageMeanings = new ArrayList<>();
+		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String wordType;
 
@@ -1631,7 +1608,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.government = this.government;
 			newData.definition = this.definition;
 			newData.reportingId = this.reportingId;
-			newData.usageMeanings.addAll(this.usageMeanings);
+			newData.usages.addAll(this.usages);
 			newData.wordType = this.wordType;
 			return newData;
 		}

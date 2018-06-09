@@ -179,9 +179,9 @@ insert into lex_relation (id, lexeme1_id, lexeme2_id, lex_rel_type_code) values 
 
 insert into freeform (id, parent_id, type, value_text) values (1001, null, 'CONCEPT_ID', '123456');
 insert into freeform (id, parent_id, type, value_text) values (1002, null, 'GOVERNMENT', 'keda mida');
-insert into freeform (id, parent_id, type, value_text) values (1003, 1002, 'USAGE_MEANING', null);
-insert into freeform (id, parent_id, type, value_text) values (1004, 1003, 'USAGE', 'Hommikul oli hall maas');
-insert into freeform (id, parent_id, type, value_text) values (1005, 1003, 'USAGE', 'Haned lähevad, hallad taga');
+insert into freeform (id, parent_id, type, value_text) values (1003, null, 'USAGE', 'Hommikul oli hall maas');
+insert into freeform (id, parent_id, type, value_text) values (1004, null, 'USAGE', 'Haned lähevad, hallad taga');
 
 insert into meaning_freeform (id, meaning_id, freeform_id) values (1001, 2024, 1001);
-insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1002, 4001, 1002);
+insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1002, 4001, 1003);
+insert into lexeme_freeform (id, lexeme_id, freeform_id) values (1003, 4001, 1004);

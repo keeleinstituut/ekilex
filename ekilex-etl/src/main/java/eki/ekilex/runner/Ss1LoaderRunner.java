@@ -2,7 +2,7 @@ package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.removePattern;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -32,7 +33,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.ReferenceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Government;
@@ -40,7 +40,6 @@ import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
@@ -51,7 +50,6 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 	private final static String dataLang = "est";
 	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
 	private final static String defaultWordMorphCode = "SgN";
-	private final static String defaultGovernmentValue = "-";
 	private final static String latinLang = "lat";
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
@@ -506,7 +504,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			int lexemeLevel2 = 0;
 			for (Element meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
-				List<UsageMeaning> usages = extractUsages(meaningGroupNode);
+				List<Usage> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
@@ -560,7 +558,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
 						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningFormulas, meaningLatinTerms);
 
-				if (isNotEmpty(conceptId)) {
+				if (isNotBlank(conceptId)) {
 					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
 				}
 				List<String> registers = extractRegisters(meaningGroupNode);
@@ -572,8 +570,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexemeLevel3++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
-// FIXME: status here ??
-//					lexeme.setValueState(newWordData.lexemeType);
+					// FIXME: status here ??
+					//lexeme.setValueState(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
@@ -581,7 +579,8 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
-						saveGovernmentsAndUsages(meaningGroupNode, lexemeId, usages);
+						createUsages(lexemeId, usages, dataLang);
+						saveGovernments(meaningGroupNode, lexemeId);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers);
@@ -694,7 +693,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			String semanticType = semanticTypeNode.getTextTrim();
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
 			String semanticTypeGroup = semanticTypeNode.attributeValue(semanticTypeGroupAttr);
-			if (isNotEmpty(semanticTypeGroup)) {
+			if (isNotBlank(semanticTypeGroup)) {
 				createFreeformTextOrDate(FreeformType.SEMANTIC_TYPE_GROUP, meaningFreeformId, semanticTypeGroup, null);
 			}
 		}
@@ -806,45 +805,16 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveGovernmentsAndUsages(Element node, Long lexemeId, List<UsageMeaning> usageMeanings) throws Exception {
+	private void saveGovernments(Element node, Long lexemeId) throws Exception {
 
 		final String governmentExp = "s:rep/s:reg/s:rek/s:kn";
 
 		List<Element> governmentNodes = node.selectNodes(governmentExp);
-		if (governmentNodes.isEmpty()) {
-			if (!usageMeanings.isEmpty()) {
-				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
-				for (UsageMeaning usageMeaning : usageMeanings) {
-					createUsageMeaning(governmentId, usageMeaning);
-				}
-			}
-		} else {
+		if (CollectionUtils.isNotEmpty(governmentNodes)) {
 			for (Element governmentNode : governmentNodes) {
 				String governmentValue = governmentNode.getTextTrim();
-				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
-				for (UsageMeaning usageMeaning : usageMeanings) {
-					createUsageMeaning(governmentId, usageMeaning);
-				}
+				createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
 			}
-		}
-	}
-
-	private void createUsageMeaning(Long governmentId, UsageMeaning usageMeaning) throws Exception {
-		Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
-		if (isNotEmpty(usageMeaning.getUsageType())) {
-			createFreeformClassifier(FreeformType.USAGE_TYPE, usageMeaningId, usageMeaning.getUsageType());
-		}
-		for (Usage usage : usageMeaning.getUsages()) {
-			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-			if (isNotEmpty(usage.getAuthor())) {
-				Long authorId = createOrSelectPerson(usage.getAuthor());
-				FreeformType autorType = isNotEmpty(usage.getAuthorType()) ? FreeformType.USAGE_TRANSLATOR : FreeformType.USAGE_AUTHOR;
-				Long authorFreeformId = createFreeformTextOrDate(autorType, usageId, usage.getAuthor(), dataLang);
-				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId, null, null);
-			}
-		}
-		for (String definition : usageMeaning.getDefinitions()) {
-			createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageMeaningId, definition, dataLang);
 		}
 	}
 
@@ -1001,7 +971,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return asList("ab", "ap").contains(restrictedValue);
 	}
 
-	private List<UsageMeaning> extractUsages(Element node) {
+	private List<Usage> extractUsages(Element node) {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
@@ -1012,36 +982,33 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		final String quotationAuhorExp = "s:caut";
 		final String quotationAuhorTypeAttr = "aliik";
 
-		List<UsageMeaning> usageMeanings = new ArrayList<>();
+		List<Usage> usageMeanings = new ArrayList<>();
 		List<Element> usageNodes = node.selectNodes(usageExp);
 		for (Element usageNode : usageNodes) {
-			UsageMeaning usageMeaning = new UsageMeaning();
-			Usage newUsage = new Usage();
-			newUsage.setValue(usageNode.getTextTrim());
+			Usage usage = new Usage();
+			usage.setValue(usageNode.getTextTrim());
+			usage.setDefinitions(new ArrayList<>());
 			if (usageNode.hasMixedContent()) {
 				Element definitionNode = (Element) usageNode.selectSingleNode(deinitionExp);
 				if (definitionNode == null) {
 					definitionNode = (Element) usageNode.selectSingleNode(deinitionExp2);
 				}
 				if (definitionNode != null) {
-					usageMeaning.getDefinitions().add(definitionNode.getText());
+					usage.getDefinitions().add(definitionNode.getText());
 				}
 			}
-			usageMeaning.setUsageType(usageNode.attributeValue(usageTypeAttr));
-			usageMeaning.getUsages().add(newUsage);
-			usageMeanings.add(usageMeaning);
+			usage.setUsageType(usageNode.attributeValue(usageTypeAttr));
+			usageMeanings.add(usage);
 		}
 		List<Element> quotationGroupNodes = node.selectNodes(quotationGroupExp);
 		for (Element quotationGroupNode : quotationGroupNodes) {
-			UsageMeaning usageMeaning = new UsageMeaning();
-			Usage newUsage = new Usage();
+			Usage usage = new Usage();
 			Element quotationNode = (Element) quotationGroupNode.selectSingleNode(quotationExp);
 			Element quotationAutorNode = (Element) quotationGroupNode.selectSingleNode(quotationAuhorExp);
-			newUsage.setValue(quotationNode.getTextTrim());
-			newUsage.setAuthor(quotationAutorNode.getTextTrim());
-			newUsage.setAuthorType(quotationAutorNode.attributeValue(quotationAuhorTypeAttr));
-			usageMeaning.getUsages().add(newUsage);
-			usageMeanings.add(usageMeaning);
+			usage.setValue(quotationNode.getTextTrim());
+			usage.setAuthor(quotationAutorNode.getTextTrim());
+			usage.setAuthorType(quotationAutorNode.attributeValue(quotationAuhorTypeAttr));
+			usageMeanings.add(usage);
 		}
 		return usageMeanings;
 	}

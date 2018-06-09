@@ -1,22 +1,10 @@
 package eki.ekilex.runner;
 
-import eki.common.constant.ContentKey;
-import eki.common.constant.FreeformType;
-import eki.common.constant.ReferenceType;
-import eki.common.data.Count;
-import eki.common.data.PgVarcharArray;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.TermekiService;
-import org.apache.commons.lang3.StringUtils;
-import org.postgresql.jdbc.PgArray;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.stereotype.Component;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,10 +14,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
-import static java.util.Collections.emptyMap;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
+import org.postgresql.jdbc.PgArray;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.stereotype.Component;
+
+import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
+import eki.common.data.Count;
+import eki.common.data.PgVarcharArray;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.TermekiService;
 
 @Component
 @ConditionalOnBean(name = "dataSourceTermeki")
@@ -351,11 +352,9 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> examples = context.examples.stream().filter(f -> f.get("term_id").equals(termId)).collect(toList());
 		if (examples.isEmpty()) return;
 
-		Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 		for (Map<String, Object> example : examples) {
-			String language = unifyLang((String)example.get("lang"));
-			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, language);
-			Long usageId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, example.get("example"), language);
+			String lang = unifyLang((String)example.get("lang"));
+			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, example.get("example"), lang);
 			Integer sourceId = (Integer) example.get("source_id");
 			connectSourceToUsage(sourceId, usageId, context.sourceMapping);
 		}
@@ -363,17 +362,15 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 	private String intoGenderCode(String gender) {
 
-		String genderCode = gender;
-		if (genderCode != null) {
-			if (genderCode.startsWith("die")) {
-				genderCode = "f";
-			} else if (genderCode.startsWith("der")) {
-				genderCode = "n";
-			} else if (genderCode.startsWith("das")) {
-				genderCode = "m";
-			}
+		if (StringUtils.startsWith(gender, "die")) {
+			return "f";
+		} else if (StringUtils.startsWith(gender, "der")) {
+			return "n";
+		} else if (StringUtils.startsWith(gender, "das")) {
+			return "m";
+		} else {
+			return gender;
 		}
-		return genderCode;
 	}
 
 	private List<String> domainCodes(Map<String, Object> term, Context context, String dataset) {

@@ -216,10 +216,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					// usages
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
-						governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, defaultGovernmentValue);
 						for (Element usageNode : valueNodes) {
 							usages = extractContentAndRefs(usageNode, lang, term, true);
-							saveUsagesAndRefLinks(governmentId, usages, concept, term, doReports);
+							saveUsagesAndRefLinks(lexemeId, usages, concept, term, doReports);
 						}
 					}
 
@@ -636,15 +635,14 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void saveUsagesAndRefLinks(Long governmentId, List<Content> usages, String concept, String term, boolean doReports) throws Exception {
+	private void saveUsagesAndRefLinks(Long lexemeId, List<Content> usages, String concept, String term, boolean doReports) throws Exception {
 
 		for (Content usageObj : usages) {
 			String usage = usageObj.getValue();
 			String lang = usageObj.getLang();
 			List<Ref> refs = usageObj.getRefs();
-			Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
-			Long freeformId = createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage, lang);
-			usageObj.setId(freeformId);
+			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usage, lang);
+			usageObj.setId(usageId);
 			for (Ref ref : refs) {
 				String minorRef = ref.getMinorRef();
 				String majorRef = ref.getMajorRef();
@@ -653,7 +651,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
 					continue;
 				}
-				createFreeformRefLink(freeformId, ReferenceType.SOURCE, sourceId, minorRef, majorRef);
+				createFreeformRefLink(usageId, ReferenceType.SOURCE, sourceId, minorRef, majorRef);
 			}
 		}
 	}

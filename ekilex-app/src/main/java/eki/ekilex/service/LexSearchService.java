@@ -27,11 +27,12 @@ import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
-import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
+import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
 import eki.ekilex.data.WordLexeme;
@@ -114,15 +115,17 @@ public class LexSearchService implements SystemConstant {
 						List<Word> meaningWords = lexSearchDbService.findMeaningWords(lexeme.getWordId(), meaningId, selectedDatasets).into(Word.class);
 						List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
 						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples, null);
-						List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
-								commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-										.into(GovernmentUsageTranslationDefinitionTuple.class);
-						List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
+						List<Government> governments = commonDataDbService.findGovernments(lexemeId).into(Government.class);
+						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+								commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+										.into(UsageTranslationDefinitionTuple.class);
+						List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 
 						lexeme.setDataset(datasetName);
 						lexeme.setMeaningWords(meaningWords);
 						lexeme.setDefinitions(definitions);
 						lexeme.setGovernments(governments);
+						lexeme.setUsages(usages);
 					});
 					combineLevels(wordLexemes);
 					lexemes.addAll(wordLexemes);
@@ -197,10 +200,11 @@ public class LexSearchService implements SystemConstant {
 		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples, null);
 		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 		List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-		List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
-				commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-						.into(GovernmentUsageTranslationDefinitionTuple.class);
-		List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
+		List<Government> governments = commonDataDbService.findGovernments(lexemeId).into(Government.class);
+		List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+				commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+						.into(UsageTranslationDefinitionTuple.class);
+		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 		List<Relation> lexemeRelations = lexSearchDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
 		List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
@@ -219,6 +223,7 @@ public class LexSearchService implements SystemConstant {
 		lexeme.setMeaningFreeforms(meaningFreeforms);
 		lexeme.setLexemeFreeforms(lexemeFreeforms);
 		lexeme.setGovernments(governments);
+		lexeme.setUsages(usages);
 		lexeme.setLexemeRelations(lexemeRelations);
 		lexeme.setMeaningRelations(meaningRelations);
 		lexeme.setGrammars(lexemeGrammars);

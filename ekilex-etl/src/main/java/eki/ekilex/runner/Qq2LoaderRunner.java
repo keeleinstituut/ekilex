@@ -34,7 +34,6 @@ import eki.ekilex.data.transform.Grammar;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.UsageMeaning;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.MabService;
@@ -165,7 +164,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		List<Element> definitionNodes, wordMatchNodes, synonymLevel1Nodes, synonymLevel2Nodes, usageGroupNodes;
 		Element guidNode, wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
-		List<UsageMeaning> usageMeanings;
+		List<Usage> allUsages;
 		List<Word> newWords, wordMatches, allWordMatches;
 		List<Paradigm> paradigms;
 		List<Government> governments;
@@ -181,10 +180,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Count lexemeDuplicateCount = new Count();
 		Count missingUsageGroupCount = new Count();
 		Count missingMabIntegrationCaseCount = new Count();
-		Count ambiguousUsageTranslationMatchCount = new Count();
-		Count missingUsageTranslationMatchCount = new Count();
-		Count successfulUsageTranslationMatchCount = new Count();
-		Count singleUsageTranslationMatchCount = new Count();
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
@@ -252,8 +247,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				wordId = createWord(wordObj, paradigms, getDataset(), wordDuplicateCount);
 				newWords.add(wordObj);
 
-				// further references...
-
 				// governments...
 				governmentNodes = wordGroupNode.selectNodes(wordGovernmentExp);
 				extractGovernments(governmentNodes, wordId, wordIdGovernmentMap);
@@ -274,7 +267,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
 				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);//x:np/x:ng
-				usageMeanings = extractUsagesAndTranslations(usageGroupNodes);
+				allUsages = extractUsages(usageGroupNodes);
 				if (CollectionUtils.isEmpty(usageGroupNodes)) {
 					missingUsageGroupCount.increment();
 				}
@@ -293,8 +286,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 					// definitions #1
 					synonymLevel2Nodes = meaningNode.selectNodes(synonymExp);
-					saveDefinitions(synonymLevel1Nodes, meaningId, dataLang, getDataset());
-					saveDefinitions(synonymLevel2Nodes, meaningId, dataLang, getDataset());
+					createDefinitions(synonymLevel1Nodes, meaningId, dataLang, getDataset());
+					createDefinitions(synonymLevel2Nodes, meaningId, dataLang, getDataset());
 
 					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
 					wordMatches = new ArrayList<>();
@@ -319,7 +312,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 						// definitions #2
 						definitionNodes = wordMatchNode.selectNodes(definitionExp);
-						saveDefinitions(definitionNodes, meaningId, wordMatchLang, getDataset());
+						createDefinitions(definitionNodes, meaningId, wordMatchLang, getDataset());
 
 						// word match lexeme
 						lexemeObj = new Lexeme();
@@ -332,11 +325,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						} else {
 							// word match lexeme government
 							governmentNodes = wordMatchValueNode.selectNodes(wordMatchGovernmentExp);
-							saveGovernments(governmentNodes, lexemeId);
+							createGovernments(governmentNodes, lexemeId, wordMatchLang);
 						}
 					}
 
-					// new words lexemes+governments+grammar
+					// new words lexemes+governments+usages+grammar
 					for (Word newWord : newWords) {
 
 						newWordId = newWord.getId();
@@ -349,21 +342,17 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 						governments = wordIdGovernmentMap.get(newWordId);
 
-						// new word lexeme governments, usages, usage translations
-						createGovernmentsAndUsagesAndTranslations(
-								dataLang, lexemeId, wordMatches, governments, usageMeanings, isSingleMeaning, singleUsageTranslationMatchCount);
+						createGovernments(lexemeId, governments, dataLang);
 
-						// new word lexeme grammars
+						if (isSingleMeaning) {
+							createUsages(lexemeId, allUsages, dataLang);
+						} else {
+							List<Usage> matchingUsages = collectMatchingUsages(wordMatches, allUsages);
+							createUsages(lexemeId, matchingUsages, dataLang);
+						}
+
 						createGrammars(wordIdGrammarMap, lexemeId, newWordId, getDataset());
 					}
-				}
-
-				if (doReports) {
-					detectAndReportAtMeaning(
-							usageMeanings, newWords, allWordMatches, isSingleMeaning,
-							ambiguousUsageTranslationMatchCount,
-							missingUsageTranslationMatchCount,
-							successfulUsageTranslationMatchCount);
 				}
 			}
 
@@ -386,127 +375,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} word duplicates", wordDuplicateCount.getValue());
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount.getValue());
 		logger.debug("Found {} missing usage groups", missingUsageGroupCount.getValue());
-		logger.debug("Found {} single usage translation matches", singleUsageTranslationMatchCount.getValue());
-		if (doReports) {
-			logger.debug("Found {} ambiguous usage translation matches", ambiguousUsageTranslationMatchCount.getValue());
-			logger.debug("Found {} missing usage translation matches", missingUsageTranslationMatchCount.getValue());
-			logger.debug("Found {} successful usage translation matches", successfulUsageTranslationMatchCount.getValue());
-		}
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
-	}
-
-	//TODO test!!
-	private void detectAndReportAtMeaning(
-			List<UsageMeaning> usageMeanings,
-			List<Word> newWords,
-			List<Word> wordMatches,
-			boolean isSingleMeaning,
-			Count ambiguousUsageTranslationMatchCount,
-			Count missingUsageTranslationMatchCount,
-			Count successfulUsageTranslationMatchCount) throws Exception {
-
-		if (isSingleMeaning) {
-			return;
-		}
-
-		List<Usage> usages;
-		List<UsageTranslation> usageTranslations;
-		List<String> originalTokens, lemmatisedTokens;
-		StringBuffer logBuf;
-
-		List<String> newWordValues = newWords.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
-		List<String> wordMatchValues = wordMatches.stream().map(word -> word.getValue().toLowerCase()).collect(Collectors.toList());
-		List<String> usageTranslationValues, usageValues;
-
-		boolean containsMultiWordMatches = containsMultiWords(wordMatchValues);
-
-		for (UsageMeaning usageMeaning : usageMeanings) {
-
-			usages = usageMeaning.getUsages();
-			usageTranslations = usageMeaning.getUsageTranslations();
-			usageValues = usages.stream().map(usage -> usage.getValue()).collect(Collectors.toList());
-			usageTranslationValues = usageTranslations.stream().map(usageTranslation -> usageTranslation.getValue()).collect(Collectors.toList());
-
-			int usageWordMatchByOriginalTokenCount = 0;
-			int usageWordMatchByLemmatisationCount = 0;
-			int usageWordMatchByTokenSplitCount = 0;
-
-			for (UsageTranslation usageTranslation : usageTranslations) {
-				originalTokens = usageTranslation.getOriginalTokens();
-				lemmatisedTokens = usageTranslation.getLemmatisedTokens();
-				if (CollectionUtils.containsAny(originalTokens, wordMatchValues)) {
-					usageWordMatchByOriginalTokenCount++;
-				}
-				if (CollectionUtils.containsAny(lemmatisedTokens, wordMatchValues)) {
-					usageWordMatchByLemmatisationCount++;
-				}
-				if (containsMultiWordMatches) {
-					boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatchValues, originalTokens, lemmatisedTokens);
-					if (containsAnyMatchByWordSplit) {
-						usageWordMatchByTokenSplitCount++;
-					}
-				}
-			}
-			if (usageWordMatchByLemmatisationCount == 0) {
-				if (usageWordMatchByOriginalTokenCount > 0) {
-					successfulUsageTranslationMatchCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(newWordValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordMatchValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageTranslationValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("lemmatiseerimata sõnade võrdlus");
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
-				} else if (usageWordMatchByTokenSplitCount > 0) {
-					successfulUsageTranslationMatchCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(newWordValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordMatchValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageTranslationValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("mitmesõnalise vaste võrdlus");
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS, logRow);
-				} else {
-					missingUsageTranslationMatchCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(newWordValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordMatchValues);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(usageTranslationValues);
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_MISSING_USAGE_MEANING_MATCH, logRow);
-				}
-			} else if (usageWordMatchByLemmatisationCount == 1) {
-				successfulUsageTranslationMatchCount.increment();
-			} else if (usageWordMatchByLemmatisationCount > 1) {
-				ambiguousUsageTranslationMatchCount.increment();
-				logBuf = new StringBuffer();
-				logBuf.append(newWordValues);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(usageValues);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(wordMatchValues);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(usageTranslationValues);
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, logRow);
-			}
-		}
 	}
 
 	private void detectAndReportAtArticle(
@@ -655,7 +526,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return matchingParadigms;
 	}
 
-	//FIXME double morph ending bug
 	private List<Paradigm> composeCompoundWordParadigms(String[] wordComponents, int wordComponentCount, List<Paradigm> lastCompParadigms) {
 
 		List<Paradigm> compoundWordParadigms = new ArrayList<>();
@@ -684,7 +554,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return compoundWordParadigms;
 	}
 
-	private void saveDefinitions(List<Element> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {
+	private void createDefinitions(List<Element> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {
 
 		if (definitionValueNodes == null) {
 			return;
@@ -695,14 +565,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void saveGovernments(List<Element> governmentNodes, Long lexemeId) throws Exception {
+	private void createGovernments(List<Element> governmentNodes, Long lexemeId, String lang) throws Exception {
 
 		if (governmentNodes == null) {
 			return;
 		}
 		for (Element governmentNode : governmentNodes) {
 			String government = governmentNode.getTextTrim();
-			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, null);
+			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, lang);
 		}
 	}
 
@@ -749,14 +619,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<UsageMeaning> extractUsagesAndTranslations(List<Element> usageGroupNodes) {
+	private List<Usage> extractUsages(List<Element> usageGroupNodes) {
 
 		//x:np/x:ng
 
-		List<UsageMeaning> usageMeanings = new ArrayList<>();
+		List<Usage> usages = new ArrayList<>();
 
-		UsageMeaning usageMeaning;
-		List<Usage> usages;
 		Usage newUsage;
 		UsageTranslation usageTranslation;
 		List<UsageTranslation> usageTranslations;
@@ -812,12 +680,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			usageMeaning = new UsageMeaning();
-			usageMeaning.setUsages(usages);
-			usageMeaning.setUsageTranslations(usageTranslations);
-			usageMeanings.add(usageMeaning);
+			for (Usage usage : usages) {
+				usage.setUsageTranslations(usageTranslations);
+			}
 		}
-		return usageMeanings;
+		return usages;
 	}
 
 	private void createGrammars(Map<Long, List<Grammar>> wordIdGrammarMap, Long lexemeId, Long wordId, String dataset) throws Exception {
@@ -831,101 +698,51 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void createGovernmentsAndUsagesAndTranslations(
-			String dataLang, Long lexemeId,
-			List<Word> wordMatchObjs,
-			List<Government> governmentObjs,
-			List<UsageMeaning> allUsageMeanings,
-			boolean isSingleMeaning,
-			Count singleUsageTranslationMatchCount) throws Exception {
+	private void createGovernments(Long lexemeId, List<Government> governments, String dataLang) throws Exception {
 
-		if (CollectionUtils.isEmpty(allUsageMeanings)) {
+		if (CollectionUtils.isEmpty(governments)) {
 			return;
 		}
 
-		List<String> wordMatches = wordMatchObjs.stream().map(wordMatchObj -> wordMatchObj.getValue().toLowerCase()).collect(Collectors.toList());
-		boolean containsMultiWords = containsMultiWords(wordMatches);
-
-		if (CollectionUtils.isEmpty(governmentObjs)) {
-			Government governmentObj = new Government();
-			governmentObj.setValue(defaultGovernmentValue);
-			governmentObjs = new ArrayList<>();
-			governmentObjs.add(governmentObj);
+		for (Government government : governments) {
+			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government.getValue(), dataLang);
 		}
+	}
 
-		List<UsageTranslation> usageTranslations;
+	private List<Usage> collectMatchingUsages(List<Word> wordMatches, List<Usage> allUsages) {
 
-		// collect usage meanings, usages, translations
-		if (isSingleMeaning) {
-			for (Government governmentObj : governmentObjs) {
-				governmentObj.setUsageMeanings(allUsageMeanings);
-			}
-			singleUsageTranslationMatchCount.increment();
-		} else {
-			List<UsageMeaning> matchingUsageMeanings = new ArrayList<>();
-			List<Usage> matchingUsages;
-			List<String> originalTokens;
-			List<String> lemmatisedTokens;
-			UsageMeaning matchingUsageMeaning;
-			for (UsageMeaning usageMeaning : allUsageMeanings) {
-				usageTranslations = usageMeaning.getUsageTranslations();
-				matchingUsages = new ArrayList<>();
-				for (Usage usage : usageMeaning.getUsages()) {
-					boolean isUsageTranslationMatch = false;
-					for (UsageTranslation usageTranslation : usageTranslations) {
-						originalTokens = usageTranslation.getOriginalTokens();
-						lemmatisedTokens = usageTranslation.getLemmatisedTokens();
-						if (CollectionUtils.containsAny(originalTokens, wordMatches)) {
-							isUsageTranslationMatch = true;
-							break;
-						} else if (CollectionUtils.containsAny(lemmatisedTokens, wordMatches)) {
-							isUsageTranslationMatch = true;
-							break;
-						} else if (containsMultiWords) {
-							boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatches, originalTokens, lemmatisedTokens);
-							if (containsAnyMatchByWordSplit) {
-								isUsageTranslationMatch = true;
-								break;
-							}
-						}
-					}
-					if (isUsageTranslationMatch) {
-						matchingUsages.add(usage);
+		List<String> wordMatchValues = wordMatches.stream().map(wordMatchObj -> wordMatchObj.getValue().toLowerCase()).collect(Collectors.toList());
+		boolean containsMultiWords = containsMultiWords(wordMatchValues);
+
+		List<Usage> matchingUsages = new ArrayList<>();
+		List<String> originalTokens;
+		List<String> lemmatisedTokens;
+
+		for (Usage usage : allUsages) {
+			boolean isUsageTranslationMatch = false;
+			for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
+				originalTokens = usageTranslation.getOriginalTokens();
+				lemmatisedTokens = usageTranslation.getLemmatisedTokens();
+				if (CollectionUtils.containsAny(originalTokens, wordMatchValues)) {
+					isUsageTranslationMatch = true;
+					break;
+				} else if (CollectionUtils.containsAny(lemmatisedTokens, wordMatchValues)) {
+					isUsageTranslationMatch = true;
+					break;
+				} else if (containsMultiWords) {
+					boolean containsAnyMatchByWordSplit = containsAnyMatchByWordSplit(wordMatchValues, originalTokens, lemmatisedTokens);
+					if (containsAnyMatchByWordSplit) {
+						isUsageTranslationMatch = true;
+						break;
 					}
 				}
-				if (CollectionUtils.isNotEmpty(matchingUsages)) {
-					matchingUsageMeaning = new UsageMeaning();
-					matchingUsageMeaning.setUsages(matchingUsages);
-					matchingUsageMeanings.add(matchingUsageMeaning);
-				}
 			}
-			if (CollectionUtils.isNotEmpty(matchingUsageMeanings)) {
-				for (Government governmentObj : governmentObjs) {
-					governmentObj.setUsageMeanings(matchingUsageMeanings);
-				}
+			if (isUsageTranslationMatch) {
+				matchingUsages.add(usage);
 			}
 		}
 
-		// save governments, usage meanings, usages, usage translations
-		for (Government governmentObj : governmentObjs) {
-			List<UsageMeaning> usageMeanings = governmentObj.getUsageMeanings();
-			if (CollectionUtils.isEmpty(usageMeanings)) {
-				if (!StringUtils.equals(governmentObj.getValue(), defaultGovernmentValue)) {
-					createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentObj.getValue(), null);
-				}
-			} else {
-				Long governmentId = createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentObj.getValue());
-				for (UsageMeaning usageMeaning : usageMeanings) {
-					Long usageMeaningId = createFreeformTextOrDate(FreeformType.USAGE_MEANING, governmentId, null, null);
-					for (Usage usage : usageMeaning.getUsages()) {
-						createFreeformTextOrDate(FreeformType.USAGE, usageMeaningId, usage.getValue(), dataLang);
-					}
-					for (UsageTranslation usageTranslation : usageMeaning.getUsageTranslations()) {
-						createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageMeaningId, usageTranslation.getValue(), usageTranslation.getLang());
-					}
-				}
-			}
-		}
+		return matchingUsages;
 	}
 
 	private boolean containsMultiWords(List<String> words) {

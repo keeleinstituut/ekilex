@@ -4,18 +4,9 @@ import javax.persistence.Column;
 
 import eki.common.data.AbstractDataObject;
 
-public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObject {
+public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
-
-	@Column(name = "government_id")
-	private Long governmentId;
-
-	@Column(name = "government_value")
-	private String governmentValue;
-
-	@Column(name = "usage_meaning_id")
-	private Long usageMeaningId;
 
 	@Column(name = "usage_id")
 	private Long usageId;
@@ -25,6 +16,12 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 
 	@Column(name = "usage_lang")
 	private String usageLang;
+
+	@Column(name = "usage_type_code")
+	private String usageTypeCode;
+
+	@Column(name = "usage_type_value")
+	private String usageTypeValue;
 
 	@Column(name = "usage_translation_id")
 	private Long usageTranslationId;
@@ -59,33 +56,6 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 	@Column(name = "usage_source_ref_link_value")
 	private String usageSourceRefLinkValue;
 
-	@Column(name = "usage_type")
-	private String usageType;
-
-	public Long getGovernmentId() {
-		return governmentId;
-	}
-
-	public void setGovernmentId(Long governmentId) {
-		this.governmentId = governmentId;
-	}
-
-	public String getGovernmentValue() {
-		return governmentValue;
-	}
-
-	public void setGovernmentValue(String governmentValue) {
-		this.governmentValue = governmentValue;
-	}
-
-	public Long getUsageMeaningId() {
-		return usageMeaningId;
-	}
-
-	public void setUsageMeaningId(Long usageMeaningId) {
-		this.usageMeaningId = usageMeaningId;
-	}
-
 	public Long getUsageId() {
 		return usageId;
 	}
@@ -108,6 +78,22 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 
 	public void setUsageLang(String usageLang) {
 		this.usageLang = usageLang;
+	}
+
+	public String getUsageTypeCode() {
+		return usageTypeCode;
+	}
+
+	public void setUsageTypeCode(String usageTypeCode) {
+		this.usageTypeCode = usageTypeCode;
+	}
+
+	public String getUsageTypeValue() {
+		return usageTypeValue;
+	}
+
+	public void setUsageTypeValue(String usageTypeValue) {
+		this.usageTypeValue = usageTypeValue;
 	}
 
 	public Long getUsageTranslationId() {
@@ -196,14 +182,6 @@ public class GovernmentUsageTranslationDefinitionTuple extends AbstractDataObjec
 
 	public void setUsageSourceRefLinkValue(String usageSourceRefLinkValue) {
 		this.usageSourceRefLinkValue = usageSourceRefLinkValue;
-	}
-
-	public String getUsageType() {
-		return usageType;
-	}
-
-	public void setUsageType(String usageType) {
-		this.usageType = usageType;
 	}
 
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.Classifier;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,6 +15,7 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
@@ -25,14 +25,14 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
-import eki.ekilex.data.Government;
-import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.RefLink;
 import eki.ekilex.data.TermMeaning;
-import eki.ekilex.data.UsageMeaning;
-import eki.ekilex.data.UsageMember;
+import eki.ekilex.data.Usage;
+import eki.ekilex.data.UsageDefinition;
+import eki.ekilex.data.UsageTranslation;
+import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordTuple;
 
 @Component
@@ -226,93 +226,73 @@ public class ConversionUtil {
 		}
 	}
 
-	public List<Government> composeGovernments(List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples) {
+	public List<Usage> composeUsages(List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples) {
 
-		List<Government> governments = new ArrayList<>();
+		List<Usage> usages = new ArrayList<>();
 
-		Map<Long, Government> governmentMap = new HashMap<>();
-		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
-		Map<Long, UsageMember> usageMap = new HashMap<>();
-		Map<Long, UsageMember> usageTranslationMap = new HashMap<>();
-		Map<Long, UsageMember> usageDefinitionMap = new HashMap<>();
+		Map<Long, Usage> usageMap = new HashMap<>();
+		Map<Long, RefLink> usageSourceMap = new HashMap<>();
+		Map<Long, UsageTranslation> usageTranslationMap = new HashMap<>();
+		Map<Long, UsageDefinition> usageDefinitionMap = new HashMap<>();
 
-		for (GovernmentUsageTranslationDefinitionTuple tuple : governmentUsageTranslationDefinitionTuples) {
+		for (UsageTranslationDefinitionTuple tuple : usageTranslationDefinitionTuples) {
 
-			Long governmentId = tuple.getGovernmentId();
-			Long usageMeaningId = tuple.getUsageMeaningId();
 			Long usageId = tuple.getUsageId();
 			Long usageTranslationId = tuple.getUsageTranslationId();
 			Long usageDefinitionId = tuple.getUsageDefinitionId();
 			Long usageSourceRefLinkId = tuple.getUsageSourceRefLinkId();
 
-			Government government = governmentMap.get(governmentId);
-			if (government == null) {
-				government = new Government();
-				government.setId(governmentId);
-				government.setValue(tuple.getGovernmentValue());
-				government.setUsageMeanings(new ArrayList<>());
-				governmentMap.put(governmentId, government);
-				governments.add(government);
+			Usage usage = usageMap.get(usageId);
+			if (usage == null) {
+				usage = new Usage();
+				usage.setId(usageId);
+				usage.setValue(tuple.getUsageValue());
+				usage.setLang(tuple.getUsageLang());
+				usage.setTypeCode(tuple.getUsageTypeCode());
+				usage.setTypeValue(tuple.getUsageTypeValue());
+				usage.setAuthor(tuple.getUsageAuthor());
+				usage.setTranslator(tuple.getUsageTranslator());
+				usage.setTranslations(new ArrayList<>());
+				usage.setDefinitions(new ArrayList<>());
+				usage.setRefLinks(new ArrayList<>());
+				usageMap.put(usageId, usage);
+				usages.add(usage);
 			}
-			if (usageMeaningId == null) {
-				continue;
-			}
-			UsageMeaning usageMeaning = usageMeaningMap.get(usageMeaningId);
-			if (usageMeaning == null) {
-				usageMeaning = new UsageMeaning();
-				usageMeaning.setId(usageMeaningId);
-				usageMeaning.setUsages(new ArrayList<>());
-				usageMeaning.setUsageTranslations(new ArrayList<>());
-				usageMeaning.setUsageDefinitions(new ArrayList<>());
-				usageMeaningMap.put(usageMeaningId, usageMeaning);
-				government.getUsageMeanings().add(usageMeaning);
-			}
-			if (usageId != null) {
-				UsageMember usage = usageMap.get(usageId);
-				if (usage == null) {
-					usage = new UsageMember();
-					usage.setId(usageId);
-					usage.setType(tuple.getUsageType());
-					usage.setValue(tuple.getUsageValue());
-					usage.setLang(tuple.getUsageLang());
-					usage.setAuthor(tuple.getUsageAuthor());
-					usage.setTranslator(tuple.getUsageTranslator());
-					usage.setRefLinks(new ArrayList<>());
-					usageMap.put(usageId, usage);
-					usageMeaning.getUsages().add(usage);
-				}
-				if (usageSourceRefLinkId != null) {
-					RefLink usageSource = new RefLink();
+			if (usageSourceRefLinkId != null) {
+				RefLink usageSource = usageSourceMap.get(usageSourceRefLinkId);
+				if (usageSource == null) {
+					usageSource = new RefLink();
 					usageSource.setId(tuple.getUsageSourceRefLinkId());
 					usageSource.setName(tuple.getUsageSourceRefLinkName());
 					usageSource.setValue(tuple.getUsageSourceRefLinkValue());
+					usageSourceMap.put(usageSourceRefLinkId, usageSource);
 					usage.getRefLinks().add(usageSource);
 				}
 			}
 			if (usageTranslationId != null) {
-				UsageMember usageTranslation = usageTranslationMap.get(usageTranslationId);
+				UsageTranslation usageTranslation = usageTranslationMap.get(usageTranslationId);
 				if (usageTranslation == null) {
-					usageTranslation = new UsageMember();
+					usageTranslation = new UsageTranslation();
 					usageTranslation.setId(usageTranslationId);
 					usageTranslation.setValue(tuple.getUsageTranslationValue());
 					usageTranslation.setLang(tuple.getUsageTranslationLang());
 					usageTranslationMap.put(usageTranslationId, usageTranslation);
-					usageMeaning.getUsageTranslations().add(usageTranslation);
+					usage.getTranslations().add(usageTranslation);
 				}
 			}
 			if (usageDefinitionId != null) {
-				UsageMember usageDefinition = usageDefinitionMap.get(usageDefinitionId);
+				UsageDefinition usageDefinition = usageDefinitionMap.get(usageDefinitionId);
 				if (usageDefinition == null) {
-					usageDefinition = new UsageMember();
+					usageDefinition = new UsageDefinition();
 					usageDefinition.setId(usageDefinitionId);
 					usageDefinition.setValue(tuple.getUsageDefinitionValue());
 					usageDefinition.setLang(tuple.getUsageDefinitionLang());
 					usageDefinitionMap.put(usageDefinitionId, usageDefinition);
-					usageMeaning.getUsageDefinitions().add(usageDefinition);
+					usage.getDefinitions().add(usageDefinition);
 				}
 			}
 		}
-		return governments;
+		return usages;
 	}
 
 	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples, List<String> langCodeOrder) {

@@ -2,7 +2,7 @@ package eki.ekilex.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class Government extends AbstractDataObject {
+public class UsageTranslation extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -10,7 +10,7 @@ public class Government extends AbstractDataObject {
 
 	private String value;
 
-	private String typeCode;
+	private String lang;
 
 	public Long getId() {
 		return id;
@@ -28,12 +28,12 @@ public class Government extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public String getTypeCode() {
-		return typeCode;
+	public String getLang() {
+		return lang;
 	}
 
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 
 }

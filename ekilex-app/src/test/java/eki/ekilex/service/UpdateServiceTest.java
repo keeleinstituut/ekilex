@@ -194,11 +194,11 @@ public class UpdateServiceTest {
 	}
 
 	private WordLexeme createLexeme(Long id, Integer level1, Integer level2, Integer level3) {
-		return new WordLexeme(l -> {
-			l.setLexemeId(id);
-			l.setLevel1(level1);
-			l.setLevel2(level2);
-			l.setLevel3(level3);
-		});
+		WordLexeme wordLexeme = new WordLexeme();
+		wordLexeme.setLexemeId(id);
+		wordLexeme.setLevel1(level1);
+		wordLexeme.setLevel2(level2);
+		wordLexeme.setLevel3(level3);
+		return wordLexeme;
 	}
 }

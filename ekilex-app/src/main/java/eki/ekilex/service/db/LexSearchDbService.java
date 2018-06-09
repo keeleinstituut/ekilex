@@ -27,8 +27,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
-import eki.ekilex.constant.DbConstant;
-import eki.ekilex.data.db.tables.LexemeRefLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -50,6 +48,7 @@ import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
 import eki.common.constant.FreeformType;
+import eki.ekilex.constant.DbConstant;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
@@ -63,12 +62,12 @@ import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionRefLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformRefLink;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
@@ -209,22 +208,14 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 
 				Lexeme l2 = LEXEME.as("l2");
 				LexemeFreeform l2ff = LEXEME_FREEFORM.as("l2ff");
-				Freeform rect2 = FREEFORM.as("rect2");
-				Freeform um2 = FREEFORM.as("um2");
 				Freeform u2 = FREEFORM.as("u2");
 
 				Condition where2 =
 						l2.WORD_ID.eq(word.ID)
 								.and(l2ff.LEXEME_ID.eq(l2.ID))
-								.and(l2ff.FREEFORM_ID.eq(rect2.ID))
-								.and(rect2.TYPE.eq(FreeformType.GOVERNMENT.name()))
-								.and(rect2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-								.and(um2.PARENT_ID.eq(rect2.ID))
-								.and(um2.TYPE.eq(FreeformType.USAGE_MEANING.name()))
-								.and(um2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-								.and(u2.PARENT_ID.eq(um2.ID))
-								.and(u2.TYPE.eq(FreeformType.USAGE.name())
-								.and(u2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)));
+								.and(l2ff.FREEFORM_ID.eq(u2.ID))
+								.and(u2.TYPE.eq(FreeformType.USAGE.name()))
+								.and(u2.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
@@ -232,7 +223,7 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, u2.VALUE_TEXT, where2);
 				}
 				where2 = applyLanguageFilter(searchCriterions, u2.LANG, where2);
-				where = where.and(DSL.exists(DSL.select(u2.ID).from(l2, l2ff, rect2, um2, u2).where(where2)));
+				where = where.and(DSL.exists(DSL.select(u2.ID).from(l2, l2ff, u2).where(where2)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 

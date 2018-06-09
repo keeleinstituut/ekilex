@@ -1,5 +1,7 @@
 package eki.ekilex.data.transform;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class Usage extends AbstractDataObject {
@@ -11,6 +13,12 @@ public class Usage extends AbstractDataObject {
 	private String author;
 
 	private String authorType;
+
+	private List<UsageTranslation> usageTranslations;
+
+	private List<String> definitions;
+
+	private String usageType;
 
 	public String getValue() {
 		return value;
@@ -35,4 +43,29 @@ public class Usage extends AbstractDataObject {
 	public void setAuthorType(String authorType) {
 		this.authorType = authorType;
 	}
+
+	public List<UsageTranslation> getUsageTranslations() {
+		return usageTranslations;
+	}
+
+	public void setUsageTranslations(List<UsageTranslation> usageTranslations) {
+		this.usageTranslations = usageTranslations;
+	}
+
+	public List<String> getDefinitions() {
+		return definitions;
+	}
+
+	public void setDefinitions(List<String> definitions) {
+		this.definitions = definitions;
+	}
+
+	public String getUsageType() {
+		return usageType;
+	}
+
+	public void setUsageType(String usageType) {
+		this.usageType = usageType;
+	}
+
 }

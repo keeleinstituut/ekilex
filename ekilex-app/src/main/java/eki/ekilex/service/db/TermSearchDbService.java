@@ -195,22 +195,14 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 
 				Lexeme l1 = LEXEME.as("l1");
 				LexemeFreeform l1ff = LEXEME_FREEFORM.as("l1ff");
-				Freeform rect1 = FREEFORM.as("rect1");
-				Freeform um1 = FREEFORM.as("um1");
 				Freeform u1 = FREEFORM.as("u1");
 
 				Condition where1 =
 						l1.MEANING_ID.eq(m1.ID)
 						.and(l1ff.LEXEME_ID.eq(l1.ID))
-						.and(l1ff.FREEFORM_ID.eq(rect1.ID))
-						.and(rect1.TYPE.eq(FreeformType.GOVERNMENT.name()))
-						.and(rect1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-						.and(um1.PARENT_ID.eq(rect1.ID))
-						.and(um1.TYPE.eq(FreeformType.USAGE_MEANING.name()))
-						.and(um1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-						.and(u1.PARENT_ID.eq(um1.ID))
-						.and(u1.TYPE.eq(FreeformType.USAGE.name())
-						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)));
+						.and(l1ff.FREEFORM_ID.eq(u1.ID))
+						.and(u1.TYPE.eq(FreeformType.USAGE.name()))
+						.and(u1.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
@@ -223,7 +215,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				for (SearchCriterion criterion : languageCriterions) {
 					where1 = where1.and(u1.LANG.eq(criterion.getSearchValue().toString()));
 				}
-				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, rect1, um1, u1).where(where1)));
+				where = where.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 

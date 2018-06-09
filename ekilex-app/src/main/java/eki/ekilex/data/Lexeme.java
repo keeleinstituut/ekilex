@@ -60,7 +60,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Classifier> registers;
 
-	private List<Government> governments;
+	private List<Usage> usages;
 
 	private List<FreeForm> freeforms;
 
@@ -206,12 +206,12 @@ public class Lexeme extends AbstractDataObject {
 		this.registers = registers;
 	}
 
-	public List<Government> getGovernments() {
-		return governments;
+	public List<Usage> getUsages() {
+		return usages;
 	}
 
-	public void setGovernments(List<Government> governments) {
-		this.governments = governments;
+	public void setUsages(List<Usage> usages) {
+		this.usages = usages;
 	}
 
 	public List<FreeForm> getFreeforms() {

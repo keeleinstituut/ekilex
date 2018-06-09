@@ -385,87 +385,77 @@
               </button>
             </div>
             <hr />
-            <div th:unless="${not #lists.isEmpty(lexeme.governments)}" class="mt-1">
+            <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="mt-1">
               <span class="lbl">Kasutusnäited</span>
-              <button type="button" class="btn badge badge-success" title="Lisa uus"
-                      th:data-id="${lexeme.lexemeId}"
-                      onclick="openAddDlg(this)"
-                      data-toggle="modal" data-target="#addNewGovernmentUsageDlg">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-            </div>
-            <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mt-1">
-              <span class="lbl">Kasutusnäited</span>
+              <!-- TODO needs updating
               <button type="button" class="btn badge badge-success" title="Lisa uus"
                       th:data-id="${lexeme.governments.get(0).id}"
                       onclick="openAddDlg(this)"
                       data-toggle="modal" data-target="#addNewUsageDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
+               -->
               <ul>
-                <th:block th:each="government,governmentIter : ${lexeme.governments}">
-                  <th:block th:each="usageMeaning,usageMeaningIter : ${government.usageMeanings}">
-                    <li th:each="usage : ${usageMeaning.usages}">
-                      <div class="hidden-buttons">
-                                  <span th:name="${usage.id} + '_usage'"
-                                        th:data-id="${usage.id}"
-                                        th:data-op-code="usage"
-                                        th:data-value="${usage.value}"
-                                        th:utext="${usage.value}"></span>
-                        <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
-                        <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
-                        <button type="button" class="btn badge badge-primary ml-2"
-                                th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                onclick="openEditDlg(this)"
-                                data-toggle="modal" data-target="#editDlg">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
+                <li th:each="usage : ${lexeme.usages}">
+                  <div class="hidden-buttons">
+                              <span th:name="${usage.id} + '_usage'"
+                                    th:data-id="${usage.id}"
+                                    th:data-op-code="usage"
+                                    th:data-value="${usage.value}"
+                                    th:utext="${usage.value}"></span>
+                    <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
+                    <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
+                    <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                    <button type="button" class="btn badge badge-primary ml-2"
+                            th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
+                            onclick="openEditDlg(this)"
+                            data-toggle="modal" data-target="#editDlg">
+                      <i class="fa fa-edit" aria-hidden="true"></i>
+                    </button>
+                    <button type="button" class="btn badge badge-warning"
+                            th:data-target-elem="${usage.id} + '_usage'"
+                            data-toggle="delete-confirmation" data-placement="right">
+                      <i class="fa fa-remove" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div th:unless="${not #lists.isEmpty(usage.refLinks)}">
+                    []
+                    <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                            th:data-id="${usage.id}"
+                            th:data-op-code="ffSourceRef"
+                            onclick="openAddSourceRefDlg(this)"
+                            data-toggle="modal" data-target="#addNewSourceRefDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                  <div th:if="${not #lists.isEmpty(usage.refLinks)}" class="hidden-buttons">
+                      <span th:each="refLink : ${usage.refLinks}">
+                        [
+                        <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
+                           th:name="${refLink.id} + '_ff_ref_link'"
+                           th:data-id="${refLink.id}"
+                           th:data-op-code="ff_ref_link"
+                           th:text="${refLink.value}"
+                        ></a>
+                        <span th:if="${refLink.name != null}">
+                          <span th:text="${refLink.name}"></span>
+                        </span>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${usage.id} + '_usage'"
+                                th:data-target-elem="${refLink.id} + '_ff_ref_link'"
                                 data-toggle="delete-confirmation" data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
-                      </div>
-                      <div th:unless="${not #lists.isEmpty(usage.refLinks)}">
-                        []
-                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                th:data-id="${usage.id}"
-                                th:data-op-code="ffSourceRef"
-                                onclick="openAddSourceRefDlg(this)"
-                                data-toggle="modal" data-target="#addNewSourceRefDlg">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                      <div th:if="${not #lists.isEmpty(usage.refLinks)}" class="hidden-buttons">
-                          <span th:each="refLink : ${usage.refLinks}">
-                            [
-                            <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
-                               th:name="${refLink.id} + '_ff_ref_link'"
-                               th:data-id="${refLink.id}"
-                               th:data-op-code="ff_ref_link"
-                               th:text="${refLink.value}"
-                            ></a>
-                            <span th:if="${refLink.name != null}">
-                              <span th:text="${refLink.name}"></span>
-                            </span>
-                            <button type="button" class="btn badge badge-warning"
-                                    th:data-target-elem="${refLink.id} + '_ff_ref_link'"
-                                    data-toggle="delete-confirmation" data-placement="right">
-                              <i class="fa fa-remove" aria-hidden="true"></i>
-                            </button>
-                            ]
-                          </span>
-                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                                th:data-id="${usage.id}"
-                                th:data-op-code="ffSourceRef"
-                                onclick="openAddSourceRefDlg(this)"
-                                data-toggle="modal" data-target="#addNewSourceRefDlg">
-                          <i class="fa fa-plus" aria-hidden="true"></i>
-                        </button>
-                      </div>
-                    </li>
-                  </th:block>
-                </th:block>
+                        ]
+                      </span>
+                    <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                            th:data-id="${usage.id}"
+                            th:data-op-code="ffSourceRef"
+                            onclick="openAddSourceRefDlg(this)"
+                            data-toggle="modal" data-target="#addNewSourceRefDlg">
+                      <i class="fa fa-plus" aria-hidden="true"></i>
+                    </button>
+                  </div>
+                </li>
               </ul>
             </div>
             <div th:if="${not #lists.isEmpty(lexeme.freeforms)}">

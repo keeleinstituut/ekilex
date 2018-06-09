@@ -17,8 +17,6 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
-import eki.ekilex.data.Government;
-import eki.ekilex.data.GovernmentUsageTranslationDefinitionTuple;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
@@ -26,6 +24,8 @@ import eki.ekilex.data.RefLink;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.Usage;
+import eki.ekilex.data.UsageTranslationDefinitionTuple;
 import eki.ekilex.data.WordTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.TermSearchDbService;
@@ -133,10 +133,10 @@ public class TermSearchService implements SystemConstant {
 			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
-			List<GovernmentUsageTranslationDefinitionTuple> governmentUsageTranslationDefinitionTuples =
-					commonDataDbService.findGovernmentUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
-							.into(GovernmentUsageTranslationDefinitionTuple.class);
-			List<Government> governments = conversionUtil.composeGovernments(governmentUsageTranslationDefinitionTuples);
+			List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
+					commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
+							.into(UsageTranslationDefinitionTuple.class);
+			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
 			List<RefLink> lexemeRefLinks = commonDataDbService.findLexemeRefLinks(lexemeId).into(RefLink.class);
 
@@ -161,7 +161,7 @@ public class TermSearchService implements SystemConstant {
 				lexeme.setDerivs(lexemeDerivs);
 				lexeme.setRegisters(lexemeRegisters);
 				lexeme.setFreeforms(lexemeFreeforms);
-				lexeme.setGovernments(governments);
+				lexeme.setUsages(usages);
 				lexeme.setGrammars(lexemeGrammars);
 				lexeme.setClassifiersExist(classifiersExist);
 				lexeme.setRefLinks(lexemeRefLinks);

@@ -375,19 +375,16 @@ public class UpdateDbService implements DbConstant {
 				.returning(DEFINITION.ID).fetchOne().getId();
 	}
 
+	//FIXME obsolete entity. fix this
+	@Deprecated
 	public Long addUsageMeaning(Long governmentId) {
-		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID)
-				.values(FreeformType.USAGE_MEANING.name(), governmentId).returning()
-				.fetchOne().getId();
+		return null;
 	}
 
+	//FIXME obsolete entity. fix this
+	@Deprecated
 	public Long addUsageMeaningMember(Long usageMeaningId, String usageMemberType, String value, String languageCode) {
-		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
-				.values(usageMemberType, usageMeaningId, value, languageCode).returning(FREEFORM.ID)
-				.fetchOne()
-				.getId();
+		return null;
 	}
 
 	public Long addGovernment(Long lexemeId, String government) {
