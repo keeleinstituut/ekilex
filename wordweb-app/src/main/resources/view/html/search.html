@@ -80,14 +80,13 @@
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
                         <span th:text="${meaningWord.word}"></span>
-                        <span th:unless="${meaningWordIter.last}">, </span>
+                        <span th:unless="${meaningWordIter.last}">,</span>
                       </span>
                     </h6>
                   </div>
                   <div class="definition">
                     <span th:each="definition,definitionIter : ${lexeme.definitions}">
-                      <span th:text="${definition.value}"></span>
-                      <span th:unless="${definitionIter.last}">, </span>
+                      <span th:text="${definition.value + (definitionIter.last ? '' : ';')}"></span>
                     </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}">
