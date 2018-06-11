@@ -98,6 +98,22 @@
                   <div class="word-type" th:if="${not #lists.isEmpty(lexeme.poses)}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                   </div>
+                  <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
+                    <div class="col-3">
+                      <b>Register</b>
+                    </div>
+                    <div class="col-9">
+                      <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
+                    </div>
+                  </div>
+                  <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
+                    <div class="col-3">
+                      <b>Valdkond</b>
+                    </div>
+                    <div class="col-9">
+                      <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
+                    </div>
+                  </div>
                 </div>
                 <div class="col-lg-6 dependencies" th:if="${not #lists.isEmpty(lexeme.governments)}">
                   <!-- rektsioonid -->
@@ -198,14 +214,6 @@
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
                       </div>
                     </div>
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
-                      <div class="col-3">
-                        <b>Register</b>
-                      </div>
-                      <div class="col-9">
-                        <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
-                      </div>
-                    </div>
                     <!-- Kliendiga kokku lepitud: Tuletuskoodi ei näita
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.derivs)}">
                       <div class="col-3"><b>Tuletuskood</b></div>
@@ -213,14 +221,6 @@
                         <div th:each="deriv : ${lexeme.derivs}" th:text="${deriv.value}"></div>
                       </div>
                     </div>-->
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
-                      <div class="col-3">
-                        <b>Valdkond</b>
-                      </div>
-                      <div class="col-9">
-                        <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
-                      </div>
-                    </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
                       <div class="col-3">
                         <b>Grammatika</b>
