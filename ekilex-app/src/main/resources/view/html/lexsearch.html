@@ -457,18 +457,16 @@
             <div th:if="${not #lists.isEmpty(lexeme.usages)}">
               <hr />
               <table>
-                <!-- TODO needs updating
                 <tr>
                   <th class="lbl">Kasutusnäited, tõlked, seletused
                     <button type="button" class="btn badge badge-success" title="Lisa uus"
-                            th:data-id="${government.id}"
+                            th:data-id="${lexeme.lexemeId}"
                             onclick="openAddDlg(this)"
                             data-toggle="modal" data-target="#addNewUsageDlg">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </th>
                 </tr>
-                 -->
                 <tr>
                   <td>
                     <table th:each="usage,usageIter : ${lexeme.usages}" class="border">
@@ -493,14 +491,12 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
-                          <!-- TODO needs updating
                           <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                  th:data-id="${usageMeaning.id}"
+                                  th:data-id="${usage.id}"
                                   onclick="openUsageMemberDlg(this)"
                                   data-toggle="modal" data-target="#addNewUsageMemberDlg">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
-                           -->
                         </td>
                       </tr>
                       <tr th:each="usageTranslation : ${usage.translations}">
@@ -520,14 +516,12 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
-                          <!-- TODO needs updating
                           <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                  th:data-id="${usageMeaning.id}"
+                                  th:data-id="${usage.id}"
                                   onclick="openUsageMemberDlg(this)"
                                   data-toggle="modal" data-target="#addNewUsageMemberDlg">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
-                          -->
                         </td>
                       </tr>
                       <tr th:each="usageDefinition : ${usage.definitions}">
@@ -548,14 +542,12 @@
                                   data-toggle="delete-confirmation" data-placement="right">
                             <i class="fa fa-remove" aria-hidden="true"></i>
                           </button>
-                          <!-- TODO needs updating
                           <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                  th:data-id="${usageMeaning.id}"
+                                  th:data-id="${usage.id}"
                                   onclick="openUsageMemberDlg(this)"
                                   data-toggle="modal" data-target="#addNewUsageMemberDlg">
                             <i class="fa fa-plus" aria-hidden="true"></i>
                           </button>
-                          -->
                         </td>
                       </tr>
                     </table>

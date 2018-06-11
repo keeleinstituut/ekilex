@@ -1,6 +1,5 @@
 package eki.ekilex.service;
 
-import eki.common.constant.FreeformType;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
@@ -180,6 +179,7 @@ public class UpdateService {
 
 	@Transactional
 	public void removeUsage(Long id) {
+		updateDbService.removeLexemeFreeform(id);
 		updateDbService.removeFreeform(id);
 	}
 
@@ -231,13 +231,18 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addUsageMember(Long id, String usageMemberType, String value, String languageCode) {
-		if ("USAGE_MEANING".equals(usageMemberType)) {
-			Long usageMeaningId = updateDbService.addUsageMeaning(id);
-			updateDbService.addUsageMeaningMember(usageMeaningId, FreeformType.USAGE.name(), value, languageCode);
-		} else {
-			updateDbService.addUsageMeaningMember(id, usageMemberType, value, languageCode);
-		}
+	public void addUsage(Long lexemeId, String value, String languageCode) {
+		updateDbService.addUsage(lexemeId, value, languageCode);
+	}
+
+	@Transactional
+	public void addUsageTranslation(Long usageId, String value, String languageCode) {
+		updateDbService.addUsageTranslation(usageId, value, languageCode);
+	}
+
+	@Transactional
+	public void addUsageDefinition(Long usageId, String value, String languageCode) {
+		updateDbService.addUsageDefinition(usageId, value, languageCode);
 	}
 
 	@Transactional

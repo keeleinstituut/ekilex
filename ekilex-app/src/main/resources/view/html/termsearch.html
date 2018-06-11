@@ -385,16 +385,14 @@
               </button>
             </div>
             <hr />
+            <span class="lbl">Kasutusnäited</span>
+            <button type="button" class="btn badge badge-success" title="Lisa uus"
+                    th:data-id="${lexeme.lexemeId}"
+                    onclick="openAddDlg(this)"
+                    data-toggle="modal" data-target="#addNewUsageDlg">
+              <i class="fa fa-plus" aria-hidden="true"></i>
+            </button>
             <div th:if="${not #lists.isEmpty(lexeme.usages)}" class="mt-1">
-              <span class="lbl">Kasutusnäited</span>
-              <!-- TODO needs updating
-              <button type="button" class="btn badge badge-success" title="Lisa uus"
-                      th:data-id="${lexeme.governments.get(0).id}"
-                      onclick="openAddDlg(this)"
-                      data-toggle="modal" data-target="#addNewUsageDlg">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-               -->
               <ul>
                 <li th:each="usage : ${lexeme.usages}">
                   <div class="hidden-buttons">
@@ -504,7 +502,6 @@
   <div th:replace="common :: #detailsDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>
-  <div th:replace="common :: #addNewGovernmentUsageDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

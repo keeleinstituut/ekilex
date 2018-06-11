@@ -375,16 +375,30 @@ public class UpdateDbService implements DbConstant {
 				.returning(DEFINITION.ID).fetchOne().getId();
 	}
 
-	//FIXME obsolete entity. fix this
-	@Deprecated
-	public Long addUsageMeaning(Long governmentId) {
-		return null;
+	public Long addUsage(Long lexemeId, String value, String languageCode) {
+		Long usageFreeformId = create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
+				.values(FreeformType.USAGE.name(), value, languageCode).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, usageFreeformId).execute();
+		return usageFreeformId;
 	}
 
-	//FIXME obsolete entity. fix this
-	@Deprecated
-	public Long addUsageMeaningMember(Long usageMeaningId, String usageMemberType, String value, String languageCode) {
-		return null;
+	public Long addUsageTranslation(Long usageId, String value, String languageCode) {
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
+				.values(FreeformType.USAGE_TRANSLATION.name(), usageId, value, languageCode).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
+	}
+
+	public Long addUsageDefinition(Long usageId, String value, String languageCode) {
+		return create
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
+				.values(FreeformType.USAGE_DEFINITION.name(), usageId, value, languageCode).returning(FREEFORM.ID)
+				.fetchOne()
+				.getId();
 	}
 
 	public Long addGovernment(Long lexemeId, String government) {
