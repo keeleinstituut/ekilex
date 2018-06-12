@@ -38,7 +38,7 @@ public class SpeechSynthesisService {
 
 	private static final String SYNTH_COMMAND_STRING = "bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.1";
 
-	@Value("${server.servlet.contextPath:}")
+	@Value("${server.servlet.context-path:}")
 	private String contextPath;
 
 	@Value("${speech.synthesizer.path:}")
