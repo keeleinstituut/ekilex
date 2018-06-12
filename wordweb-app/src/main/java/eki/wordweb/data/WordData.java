@@ -51,15 +51,22 @@ public class WordData extends AbstractDataObject {
 	}
 
 	public String getVocalForm() {
-		String vocalForm = null;
+		Optional<Form> wordForm = getWordForm();
+		return wordForm.isPresent() ? wordForm.get().getVocalForm() : null;
+	}
+
+	public String getSoundFile() {
+		Optional<Form> wordForm = getWordForm();
+		return wordForm.isPresent() ? wordForm.get().getSoundFile() : null;
+	}
+
+	private Optional<Form> getWordForm() {
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			if (paradigms.get(0).getForms() != null) {
-				Optional<Form> wordForm = paradigms.get(0).getForms().stream().filter(f -> f.isWord()).findFirst();
-				if (wordForm.isPresent()) {
-					return wordForm.get().getVocalForm();
-				}
+				return paradigms.get(0).getForms().stream().filter(f -> f.isWord()).findFirst();
 			}
 		}
-		return vocalForm;
+		return Optional.empty();
 	}
+
 }

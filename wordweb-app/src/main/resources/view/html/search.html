@@ -63,7 +63,16 @@
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span th:text="${wordData.word.homonymNr}">1</span>
             </h3>
-            <button class="btn btn-speaker">
+            <button class="btn btn-speaker"
+                    th:if="${wordData.soundFile != null}"
+                    th:data-url-to-sound="@{'/files/sounds/' + ${wordData.soundFile}}"
+                    th:onclick="'generateVoiceAndPlay(this)'">
+              <span class="icon icon-speaker"></span>
+            </button>
+            <button class="btn btn-speaker"
+                    th:if="${wordData.soundFile == null}"
+                    th:data-words="${wordData.word.word}"
+                    th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
             <span th:text="${wordData.vocalForm}"></span>
