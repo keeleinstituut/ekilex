@@ -69,4 +69,9 @@ public class WordData extends AbstractDataObject {
 		return Optional.empty();
 	}
 
+	public boolean isUnchangingWord() {
+		Optional<Form> wordForm = getWordForm();
+		return wordForm.isPresent() && (wordForm.get().getMorphCode().equals("ID") || wordForm.get().getMorphCode().equals("??"));
+	}
+
 }
