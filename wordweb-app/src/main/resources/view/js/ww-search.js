@@ -14,6 +14,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		fetchCorpSentences(word);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
+		calculateAndSetStyles();
 	}).fail(function(data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
@@ -92,6 +93,7 @@ $(document).on("click", ".back", function(e) {
 		$(".homonym-panel").removeClass("d-none d-md-block");
 		$(".search-panel").removeClass("d-none d-md-block");
 		$('#form-words').css("margin-top", '0');
+		calculateAndSetStyles();
 	}
 });
 

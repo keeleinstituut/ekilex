@@ -23,9 +23,9 @@
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
-      <div class="col-12" style="max-width: 80vw; margin-left: auto; margin-right: auto; margin-top: 1.5em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+      <div class="col-12" style="max-width: 80vw; margin: auto; margin-bottom: 1em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
         <span>see on ka vorm sõnast</span>
-        <button class="btn btn-sm" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+        <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
       </div>
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
@@ -51,8 +51,6 @@
           </li>
         </ul>
       </div>
-      <!-- Sander: miks sellist asja (homonym-panel-empty) vaja on ?: -->
-      <!-- <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div> -->
     </div>
     <div class="word-details"></div>
     <div class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
