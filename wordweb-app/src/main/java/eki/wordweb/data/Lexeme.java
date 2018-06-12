@@ -63,6 +63,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Collocation> secondaryCollocations;
 
+	private String levels;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -279,4 +281,11 @@ public class Lexeme extends AbstractDataObject {
 		this.secondaryCollocations = secondaryCollocations;
 	}
 
+	public String getLevels() {
+		return levels;
+	}
+
+	public void setLevels(String levels) {
+		this.levels = levels;
+	}
 }

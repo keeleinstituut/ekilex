@@ -120,6 +120,44 @@ public class LexSearchService implements InitializingBean {
 		wordData.setLexemes(lexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
+		combineLevels(wordData.getLexemes());
 		return wordData;
 	}
+
+	private void combineLevels(List<Lexeme> lexemes) {
+
+		if (CollectionUtils.isEmpty(lexemes)) {
+			return;
+		}
+
+		lexemes.forEach(lexeme -> {
+			if (lexeme.getLevel1() == 0) {
+				lexeme.setLevels(null);
+				return;
+			}
+			String levels;
+			long nrOfLexemesWithSameLevel1 = lexemes.stream()
+					.filter(otherLexeme ->
+							otherLexeme.getLevel1().equals(lexeme.getLevel1())
+									&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
+					.count();
+			if (nrOfLexemesWithSameLevel1 == 1) {
+				levels = String.valueOf(lexeme.getLevel1());
+			} else {
+				long nrOfLexemesWithSameLevel2 = lexemes.stream()
+						.filter(otherLexeme ->
+								otherLexeme.getLevel1().equals(lexeme.getLevel1())
+										&& otherLexeme.getLevel2().equals(lexeme.getLevel2())
+										&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
+						.count();
+				if (nrOfLexemesWithSameLevel2 == 1) {
+					levels = lexeme.getLevel1() + "." + lexeme.getLevel2();
+				} else {
+					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + "." + lexeme.getLevel3();
+				}
+			}
+			lexeme.setLevels(levels);
+		});
+	}
+
 }

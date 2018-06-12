@@ -5,6 +5,18 @@
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
+  <style>
+    .lexeme-levels {
+      float: left;
+      margin-right: 1em;
+    }
+    @media (min-width: 768px) {
+      .lexeme-levels {
+        margin-right: 0em;
+        margin-left: -2em;
+      }
+    }
+  </style>
 </th:block>
 </head>
 <body>
@@ -84,6 +96,9 @@
             <div class="level-2-panel">
               <div class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexemes}">
                 <div class="col-lg-6 meaning">
+                  <div class="lexeme-levels">
+                    <span th:text="${lexeme.levels}"></span>
+                  </div>
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
