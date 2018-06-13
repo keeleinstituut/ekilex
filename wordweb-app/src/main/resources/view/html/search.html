@@ -5,6 +5,18 @@
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
+  <style>
+    .lexeme-levels {
+      float: left;
+      margin-right: 1em;
+    }
+    @media (min-width: 768px) {
+      .lexeme-levels {
+        margin-right: 0em;
+        margin-left: -2em;
+      }
+    }
+  </style>
 </th:block>
 </head>
 <body>
@@ -23,9 +35,9 @@
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
-      <div class="col-12" style="max-width: 80vw; margin-left: auto; margin-right: auto; margin-top: 1.5em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+      <div class="col-12" style="max-width: 80vw; margin: auto; margin-bottom: 1em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
         <span>see on ka vorm sõnast</span>
-        <button class="btn btn-sm" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+        <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
       </div>
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
@@ -51,8 +63,6 @@
           </li>
         </ul>
       </div>
-      <!-- Sander: miks sellist asja (homonym-panel-empty) vaja on ?: -->
-      <!-- <div class="col-12 homonym-panel-empty d-none" style="margin-bottom: 1.5em;"></div> -->
     </div>
     <div class="word-details"></div>
     <div class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
@@ -63,9 +73,19 @@
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span th:text="${wordData.word.homonymNr}">1</span>
             </h3>
-            <button class="btn btn-speaker">
+            <button class="btn btn-speaker"
+                    th:if="${wordData.soundFile != null}"
+                    th:data-url-to-sound="@{'/files/sounds/' + ${wordData.soundFile}}"
+                    th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
+            <button class="btn btn-speaker"
+                    th:if="${wordData.soundFile == null}"
+                    th:data-words="${wordData.word.word}"
+                    th:onclick="'generateVoiceAndPlay(this)'">
+              <span class="icon icon-speaker"></span>
+            </button>
+            <span th:text="${wordData.vocalForm}"></span>
             <button class="btn show-search d-md-none">
               <span class="icon icon-search"></span>
             </button>
@@ -76,18 +96,20 @@
             <div class="level-2-panel">
               <div class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexemes}">
                 <div class="col-lg-6 meaning">
+                  <div class="lexeme-levels">
+                    <span th:text="${lexeme.levels}"></span>
+                  </div>
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
                         <span th:text="${meaningWord.word}"></span>
-                        <span th:unless="${meaningWordIter.last}">, </span>
+                        <span th:unless="${meaningWordIter.last}">,</span>
                       </span>
                     </h6>
                   </div>
                   <div class="definition">
                     <span th:each="definition,definitionIter : ${lexeme.definitions}">
-                      <span th:text="${definition.value}"></span>
-                      <span th:unless="${definitionIter.last}">, </span>
+                      <span th:text="${definition.value + (definitionIter.last ? '' : ';')}"></span>
                     </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}">
@@ -97,6 +119,22 @@
                   </div>
                   <div class="word-type" th:if="${not #lists.isEmpty(lexeme.poses)}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                  </div>
+                  <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
+                    <div class="col-3">
+                      <b>Register</b>
+                    </div>
+                    <div class="col-9">
+                      <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
+                    </div>
+                  </div>
+                  <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
+                    <div class="col-3">
+                      <b>Valdkond</b>
+                    </div>
+                    <div class="col-9">
+                      <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
+                    </div>
                   </div>
                 </div>
                 <div class="col-lg-6 dependencies" th:if="${not #lists.isEmpty(lexeme.governments)}">
@@ -192,18 +230,10 @@
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
                       <div class="col-3">
-                        <b>Märkused</b>
+                        <b>Hea teada</b>
                       </div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
-                      </div>
-                    </div>
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
-                      <div class="col-3">
-                        <b>Register</b>
-                      </div>
-                      <div class="col-9">
-                        <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
                       </div>
                     </div>
                     <!-- Kliendiga kokku lepitud: Tuletuskoodi ei näita
@@ -213,14 +243,6 @@
                         <div th:each="deriv : ${lexeme.derivs}" th:text="${deriv.value}"></div>
                       </div>
                     </div>-->
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
-                      <div class="col-3">
-                        <b>Valdkond</b>
-                      </div>
-                      <div class="col-9">
-                        <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
-                      </div>
-                    </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
                       <div class="col-3">
                         <b>Grammatika</b>
@@ -346,7 +368,12 @@
           </div>
           <div class="col-md-5 col-lg-4 more-data">
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
-              <div class="col-12 morphology-panel">
+              <div class="col-12 morphology-panel" th:if="${wordData.unchangingWord}">
+                <div class="morphology-section">
+                  See sõna ei muutu
+                </div>
+              </div>
+              <div class="col-12 morphology-panel" th:unless="${wordData.unchangingWord}">
                 <div class="morphology-section">
                   <div>
                     <h6>Sõnavormid</h6>
@@ -378,11 +405,11 @@
                   </div>
                 </div>
               </div>
-              <button class="more-btn">
+              <button class="more-btn" th:unless="${wordData.unchangingWord}">
                 <span class="icon icon-chevron-left"></span>
               </button>
               <!-- full morphology -->
-              <div class="morphology-section morphology-test">
+              <div class="morphology-section morphology-test" th:unless="${wordData.unchangingWord}">
                 <div th:each="paradigm : ${wordData.paradigms}">
                   <hr />
                   <div class="row" th:if="${not #lists.isEmpty(paradigm.forms)}">

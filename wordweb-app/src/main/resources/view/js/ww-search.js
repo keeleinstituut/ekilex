@@ -5,6 +5,9 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 	var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
 	$.get(wordDetailsUrl).done(function(data) {
 		detailsDiv.replaceWith(data);
+		if (word.includes('/')) {
+            wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
+		}
 		var historyState = {
 			wordId: wordId,
 			word: word,
@@ -14,6 +17,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		fetchCorpSentences(word);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
+		calculateAndSetStyles();
 	}).fail(function(data) {
 		console.log(data);
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
@@ -29,7 +33,7 @@ function setHomonymNrVisibility() {
 
 function fetchCorpSentences(sentence) {
 	var corpDiv = $("#korp");
-	$.get(applicationUrl + 'korp/' + sentence).done(function(data) {
+	$.get(applicationUrl + 'korp/' + encodeURIComponent(sentence)).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
@@ -92,6 +96,7 @@ $(document).on("click", ".back", function(e) {
 		$(".homonym-panel").removeClass("d-none d-md-block");
 		$(".search-panel").removeClass("d-none d-md-block");
 		$('#form-words').css("margin-top", '0');
+		calculateAndSetStyles();
 	}
 });
 
@@ -123,4 +128,3 @@ $(document).on("click", "[name='word-form-btn']", function(e) {
 	$("input[name = 'searchWord']").val(word);
 	$('#search-btn').trigger('click');
 });
-

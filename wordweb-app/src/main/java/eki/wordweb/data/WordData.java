@@ -1,8 +1,10 @@
 package eki.wordweb.data;
 
 import java.util.List;
+import java.util.Optional;
 
 import eki.common.data.AbstractDataObject;
+import org.apache.commons.collections4.CollectionUtils;
 
 public class WordData extends AbstractDataObject {
 
@@ -47,4 +49,29 @@ public class WordData extends AbstractDataObject {
 	public void setImageFiles(List<String> imageFiles) {
 		this.imageFiles = imageFiles;
 	}
+
+	public String getVocalForm() {
+		Optional<Form> wordForm = getWordForm();
+		return wordForm.isPresent() ? wordForm.get().getVocalForm() : null;
+	}
+
+	public String getSoundFile() {
+		Optional<Form> wordForm = getWordForm();
+		return wordForm.isPresent() ? wordForm.get().getSoundFile() : null;
+	}
+
+	private Optional<Form> getWordForm() {
+		if (CollectionUtils.isNotEmpty(paradigms)) {
+			if (paradigms.get(0).getForms() != null) {
+				return paradigms.get(0).getForms().stream().filter(f -> f.isWord()).findFirst();
+			}
+		}
+		return Optional.empty();
+	}
+
+	public boolean isUnchangingWord() {
+		Optional<Form> wordForm = getWordForm();
+		return wordForm.isPresent() && (wordForm.get().getMorphCode().equals("ID") || wordForm.get().getMorphCode().equals("??"));
+	}
+
 }
