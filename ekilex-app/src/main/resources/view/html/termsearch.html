@@ -201,30 +201,30 @@
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </div>
-                <div th:unless="${not #lists.isEmpty(definition.refLinks)}">
+                <div th:unless="${not #lists.isEmpty(definition.sourceLinks)}">
                   []
                   <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                           th:data-id="${definition.id}"
-                          th:data-op-code="defSourceRef"
-                          onclick="openAddSourceRefDlg(this)"
-                          data-toggle="modal" data-target="#addNewSourceRefDlg">
+                          th:data-op-code="def_source_link"
+                          onclick="openAddSourceLinkDlg(this)"
+                          data-toggle="modal" data-target="#addNewSourceLinkDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
-                <div th:if="${not #lists.isEmpty(definition.refLinks)}" class="hidden-buttons">
-                  <span th:each="refLink : ${definition.refLinks}">
+                <div th:if="${not #lists.isEmpty(definition.sourceLinks)}" class="hidden-buttons">
+                  <span th:each="sourceLink : ${definition.sourceLinks}">
                     [
-                    <a th:href="@{'/def_ref_link:' + ${refLink.id}}"
-                       th:name="${refLink.id} + '_def_ref_link'"
-                       th:data-id="${refLink.id}"
-                       th:data-op-code="def_ref_link"
-                       th:text="${refLink.value}"
+                    <a th:href="@{'/def_source_link:' + ${sourceLink.id}}"
+                       th:name="${sourceLink.id} + '_def_source_link'"
+                       th:data-id="${sourceLink.id}"
+                       th:data-op-code="def_source_link"
+                       th:text="${sourceLink.value}"
                     ></a>
-                    <span th:if="${refLink.name != null}">
-                      <span th:text="${refLink.name}"></span>
+                    <span th:if="${sourceLink.name != null}">
+                      <span th:text="${sourceLink.name}"></span>
                     </span>
                     <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${refLink.id} + '_def_ref_link'"
+                            th:data-target-elem="${sourceLink.id} + '_def_source_link'"
                             data-toggle="delete-confirmation" data-placement="right">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
@@ -232,9 +232,9 @@
                   </span>
                   <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                           th:data-id="${definition.id}"
-                          th:data-op-code="defSourceRef"
-                          onclick="openAddSourceRefDlg(this)"
-                          data-toggle="modal" data-target="#addNewSourceRefDlg">
+                          th:data-op-code="def_source_link"
+                          onclick="openAddSourceLinkDlg(this)"
+                          data-toggle="modal" data-target="#addNewSourceLinkDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
                 </div>
@@ -358,19 +358,19 @@
             <div>
               <hr />
               <span class="lbl">Allikaviide</span>
-              <span th:each="refLink : ${lexeme.refLinks}" class="hidden-buttons">
+              <span th:each="sourceLink : ${lexeme.sourceLinks}" class="hidden-buttons">
                 [
-                <a th:href="@{'/lex_ref_link:' + ${refLink.id}}"
-                   th:name="${refLink.id} + '_lex_ref_link'"
-                   th:data-id="${refLink.id}"
-                   th:data-op-code="lex_ref_link"
-                   th:text="${refLink.value}"
+                <a th:href="@{'/lex_source_link:' + ${sourceLink.id}}"
+                   th:name="${sourceLink.id} + '_lex_source_link'"
+                   th:data-id="${sourceLink.id}"
+                   th:data-op-code="lex_source_link"
+                   th:text="${sourceLink.value}"
                 ></a>
-                <span th:if="${refLink.name != null}">
-                  <span th:text="${refLink.name}"></span>
+                <span th:if="${sourceLink.name != null}">
+                  <span th:text="${sourceLink.name}"></span>
                 </span>
                 <button type="button" class="btn badge badge-warning"
-                        th:data-target-elem="${refLink.id} + '_lex_ref_link'"
+                        th:data-target-elem="${sourceLink.id} + '_lex_source_link'"
                         data-toggle="delete-confirmation" data-placement="right">
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
@@ -378,9 +378,9 @@
               </span>
               <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                       th:data-id="${lexeme.lexemeId}"
-                      th:data-op-code="lexSourceRef"
-                      onclick="openAddSourceRefDlg(this)"
-                      data-toggle="modal" data-target="#addNewSourceRefDlg">
+                      th:data-op-code="lex_source_link"
+                      onclick="openAddSourceLinkDlg(this)"
+                      data-toggle="modal" data-target="#addNewSourceLinkDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
             </div>
@@ -402,8 +402,33 @@
                                     th:data-value="${usage.value}"
                                     th:utext="${usage.value}"></span>
                     <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
-                    <span th:if="${usage.author != null}" th:text="'(' + ${usage.author} + ')'"></span>
-                    <span th:if="${usage.translator != null}" th:text="'(' + #{usage.translator.label} + ': ' + ${usage.translator} + ')'"></span>
+                    <span th:if="${not #lists.isEmpty(usage.authors)}">
+                      (
+                      <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                        <span th:text="#{'enum.reference.type.' + ${sourceLink.type}} + ': '"></span>
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
+                           th:name="${sourceLink.id} + '_ff_source_link'"
+                           th:data-id="${sourceLink.id}"
+                           th:data-op-code="ff_source_link"
+                           th:text="${sourceLink.value}"
+                           th:if="${sourceLink.value != null}"
+                        ></a>
+                        <span th:if="${sourceLink.name != null}">
+                          <span th:text="${sourceLink.name}"></span>
+                        </span>
+                        <span th:unless="${sourceLinkIter.last}">, </span>
+                      </span>
+                      )
+                    </span>
+                    <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
+                      [
+                      <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
+                        <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                        <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
+                        <span th:unless="${sourceLinkIter.last}">, </span>
+                      </span>
+                      ]
+                    </span>
                     <button type="button" class="btn badge badge-primary ml-2"
                             th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                             onclick="openEditDlg(this)"
@@ -416,30 +441,30 @@
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </div>
-                  <div th:unless="${not #lists.isEmpty(usage.refLinks)}">
+                  <div th:unless="${not #lists.isEmpty(usage.sourceLinks)}">
                     []
                     <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                             th:data-id="${usage.id}"
-                            th:data-op-code="ffSourceRef"
-                            onclick="openAddSourceRefDlg(this)"
-                            data-toggle="modal" data-target="#addNewSourceRefDlg">
+                            th:data-op-code="ff_source_link"
+                            onclick="openAddSourceLinkDlg(this)"
+                            data-toggle="modal" data-target="#addNewSourceLinkDlg">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </div>
-                  <div th:if="${not #lists.isEmpty(usage.refLinks)}" class="hidden-buttons">
-                      <span th:each="refLink : ${usage.refLinks}">
+                  <div th:if="${not #lists.isEmpty(usage.sourceLinks)}" class="hidden-buttons">
+                      <span th:each="sourceLink : ${usage.sourceLinks}">
                         [
-                        <a th:href="@{'/ff_ref_link:' + ${refLink.id}}"
-                           th:name="${refLink.id} + '_ff_ref_link'"
-                           th:data-id="${refLink.id}"
-                           th:data-op-code="ff_ref_link"
-                           th:text="${refLink.value}"
+                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
+                           th:name="${sourceLink.id} + '_ff_source_link'"
+                           th:data-id="${sourceLink.id}"
+                           th:data-op-code="ff_source_link"
+                           th:text="${sourceLink.value}"
                         ></a>
-                        <span th:if="${refLink.name != null}">
-                          <span th:text="${refLink.name}"></span>
+                        <span th:if="${sourceLink.name != null}">
+                          <span th:text="${sourceLink.name}"></span>
                         </span>
                         <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${refLink.id} + '_ff_ref_link'"
+                                th:data-target-elem="${sourceLink.id} + '_ff_source_link'"
                                 data-toggle="delete-confirmation" data-placement="right">
                           <i class="fa fa-remove" aria-hidden="true"></i>
                         </button>
@@ -447,9 +472,9 @@
                       </span>
                     <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                             th:data-id="${usage.id}"
-                            th:data-op-code="ffSourceRef"
-                            onclick="openAddSourceRefDlg(this)"
-                            data-toggle="modal" data-target="#addNewSourceRefDlg">
+                            th:data-op-code="ff_source_link"
+                            onclick="openAddSourceLinkDlg(this)"
+                            data-toggle="modal" data-target="#addNewSourceLinkDlg">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
                   </div>
@@ -490,7 +515,7 @@
                 onConfirm: performDelete
             }
         );
-        decorateRefLinks();
+        decorateSourceLinks();
     </script>
   </th:block>
 
@@ -498,7 +523,7 @@
   <div th:replace="common :: #addNewDefinitionDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
-  <div th:replace="common :: #addNewSourceRefDlg"></div>
+  <div th:replace="common :: #addNewSourceLinkDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>

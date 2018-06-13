@@ -12,10 +12,9 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.common.constant.ContentKey;
 import eki.common.constant.ReferenceOwner;
-import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.RefLink;
 import eki.ekilex.data.Source;
+import eki.ekilex.data.SourceLink;
 import eki.ekilex.service.RefLinkService;
 import eki.ekilex.service.SourceService;
 
@@ -32,49 +31,42 @@ public class RefLinkController {
 	@Autowired
 	private SourceService sourceService;
 
-	@GetMapping("/" + ContentKey.FREEFORM_REF_LINK + ":{refLinkId}")
-	public String ffRefLink(
-			@PathVariable("refLinkId") String refLinkIdStr,
+	@GetMapping("/" + ContentKey.FREEFORM_SOURCE_LINK + ":{sourceLinkId}")
+	public String ffSourceLink(
+			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested freeform ref link \"{}\"", refLinkIdStr);
-		Long refLinkId = Long.valueOf(refLinkIdStr);
-		return handleRefLink(refLinkId, ReferenceOwner.FREEFORM, model);
+		logger.debug("Requested freeform ref link \"{}\"", sourceLinkIdStr);
+		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
+		return handleSourceLink(sourceLinkId, ReferenceOwner.FREEFORM, model);
 	}
 
-	@GetMapping("/" + ContentKey.DEFINITION_REF_LINK + ":{refLinkId}")
-	public String defRefLink(
-			@PathVariable("refLinkId") String refLinkIdStr,
+	@GetMapping("/" + ContentKey.DEFINITION_SOURCE_LINK + ":{sourceLinkId}")
+	public String defSourceLink(
+			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested definition ref link \"{}\"", refLinkIdStr);
-		Long refLinkId = Long.valueOf(refLinkIdStr);
-		return handleRefLink(refLinkId, ReferenceOwner.DEFINITION, model);
+		logger.debug("Requested definition ref link \"{}\"", sourceLinkIdStr);
+		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
+		return handleSourceLink(sourceLinkId, ReferenceOwner.DEFINITION, model);
 	}
 
-	@GetMapping("/" + ContentKey.LEXEME_REF_LINK + ":{refLinkId}")
-	public String lexRefLink(
-			@PathVariable("refLinkId") String refLinkIdStr,
+	@GetMapping("/" + ContentKey.LEXEME_SOURCE_LINK + ":{sourceLinkId}")
+	public String lexSourceLink(
+			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested lexeme ref link \"{}\"", refLinkIdStr);
-		Long refLinkId = Long.valueOf(refLinkIdStr);
-		return handleRefLink(refLinkId, ReferenceOwner.LEXEME, model);
+		logger.debug("Requested lexeme ref link \"{}\"", sourceLinkIdStr);
+		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
+		return handleSourceLink(sourceLinkId, ReferenceOwner.LEXEME, model);
 	}
 
-	private String handleRefLink(Long refLinkId, ReferenceOwner referenceOwner, Model model) {
+	private String handleSourceLink(Long sourceLinkId, ReferenceOwner referenceOwner, Model model) {
 
-		RefLink refLink = refLinkService.getRefLink(refLinkId, referenceOwner);
-
-		ReferenceType refType = refLink.getRefType();
-		Long refId = refLink.getRefId();
-
-		if (ReferenceType.SOURCE.equals(refType)) {
-			Source source = sourceService.getSource(refId);
-			model.addAttribute("source", source);
-		} else {
-			//TODO other type of handling...
-		}
+		SourceLink sourceLink = refLinkService.getSourceLink(sourceLinkId, referenceOwner);
+		Long sourceId = sourceLink.getSourceId();
+		Source source = sourceService.getSource(sourceId);
+		model.addAttribute("source", source);
 
 		return "sourceview :: details";
 	}

@@ -14,6 +14,8 @@ public class Usage extends AbstractDataObject {
 
 	private String authorType;
 
+	private String conceptId;
+
 	private List<UsageTranslation> usageTranslations;
 
 	private List<String> definitions;
@@ -42,6 +44,14 @@ public class Usage extends AbstractDataObject {
 
 	public void setAuthorType(String authorType) {
 		this.authorType = authorType;
+	}
+
+	public String getConceptId() {
+		return conceptId;
+	}
+
+	public void setConceptId(String conceptId) {
+		this.conceptId = conceptId;
 	}
 
 	public List<UsageTranslation> getUsageTranslations() {

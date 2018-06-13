@@ -1,5 +1,38 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
+import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_POS;
+import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.PARADIGM;
+import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.jooq.DSLContext;
+import org.jooq.Query;
+import org.jooq.Record1;
+import org.jooq.Record4;
+import org.jooq.Result;
+import org.jooq.impl.DSL;
+import org.springframework.stereotype.Component;
+
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.DbConstant;
@@ -11,38 +44,6 @@ import eki.ekilex.data.db.tables.records.FreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
-import org.jooq.DSLContext;
-import org.jooq.Query;
-import org.jooq.Record1;
-import org.jooq.Record4;
-import org.jooq.Result;
-import org.jooq.impl.DSL;
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_REF_LINK;
-import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FREEFORM_REF_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME;
-import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
-import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_POS;
-import static eki.ekilex.data.db.Tables.LEXEME_REF_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.MEANING;
-import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
-import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
-import static eki.ekilex.data.db.Tables.MEANING_RELATION;
-import static eki.ekilex.data.db.Tables.PARADIGM;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.WORD_RELATION;
-import static eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
 @Component
 public class UpdateDbService implements DbConstant {
@@ -348,23 +349,23 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public void removeDefinitionRefLink(Long refLinkId) {
-		create.update(DEFINITION_REF_LINK)
-				.set(DEFINITION_REF_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(DEFINITION_REF_LINK.ID.eq(refLinkId))
+		create.update(DEFINITION_SOURCE_LINK)
+				.set(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void removeFreeformRefLink(Long refLinkId) {
-		create.update(FREEFORM_REF_LINK)
-				.set(FREEFORM_REF_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(FREEFORM_REF_LINK.ID.eq(refLinkId))
+		create.update(FREEFORM_SOURCE_LINK)
+				.set(FREEFORM_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void removeLexemeRefLink(Long refLinkId) {
-		create.update(LEXEME_REF_LINK)
-				.set(LEXEME_REF_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_REF_LINK.ID.eq(refLinkId))
+		create.update(LEXEME_SOURCE_LINK)
+				.set(LEXEME_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
@@ -411,44 +412,44 @@ public class UpdateDbService implements DbConstant {
 		return governmentFreeformId;
 	}
 
-	public Long addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+	public Long addDefinitionSourceLink(Long definitionId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		return create
 				.insertInto(
-						DEFINITION_REF_LINK,
-						DEFINITION_REF_LINK.DEFINITION_ID,
-						DEFINITION_REF_LINK.REF_ID,
-						DEFINITION_REF_LINK.REF_TYPE,
-						DEFINITION_REF_LINK.VALUE,
-						DEFINITION_REF_LINK.NAME)
-				.values(definitionId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(DEFINITION_REF_LINK.ID)
+						DEFINITION_SOURCE_LINK,
+						DEFINITION_SOURCE_LINK.DEFINITION_ID,
+						DEFINITION_SOURCE_LINK.SOURCE_ID,
+						DEFINITION_SOURCE_LINK.TYPE,
+						DEFINITION_SOURCE_LINK.VALUE,
+						DEFINITION_SOURCE_LINK.NAME)
+				.values(definitionId, sourceId, refType.name(), sourceValue, sourceName).returning(DEFINITION_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public Long addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+	public Long addFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		return create
 				.insertInto(
-						FREEFORM_REF_LINK,
-						FREEFORM_REF_LINK.FREEFORM_ID,
-						FREEFORM_REF_LINK.REF_ID,
-						FREEFORM_REF_LINK.REF_TYPE,
-						FREEFORM_REF_LINK.VALUE,
-						FREEFORM_REF_LINK.NAME)
-				.values(freeformId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(FREEFORM_REF_LINK.ID)
+						FREEFORM_SOURCE_LINK,
+						FREEFORM_SOURCE_LINK.FREEFORM_ID,
+						FREEFORM_SOURCE_LINK.SOURCE_ID,
+						FREEFORM_SOURCE_LINK.TYPE,
+						FREEFORM_SOURCE_LINK.VALUE,
+						FREEFORM_SOURCE_LINK.NAME)
+				.values(freeformId, sourceId, refType.name(), sourceValue, sourceName).returning(FREEFORM_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public Long addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+	public Long addLexemeSourceLink(Long lexemeId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		return create
 				.insertInto(
-						LEXEME_REF_LINK,
-						LEXEME_REF_LINK.LEXEME_ID,
-						LEXEME_REF_LINK.REF_ID,
-						LEXEME_REF_LINK.REF_TYPE,
-						LEXEME_REF_LINK.VALUE,
-						LEXEME_REF_LINK.NAME)
-				.values(lexemeId, sourceId, ReferenceType.SOURCE.name(), sourceValue, sourceName).returning(LEXEME_REF_LINK.ID)
+						LEXEME_SOURCE_LINK,
+						LEXEME_SOURCE_LINK.LEXEME_ID,
+						LEXEME_SOURCE_LINK.SOURCE_ID,
+						LEXEME_SOURCE_LINK.TYPE,
+						LEXEME_SOURCE_LINK.VALUE,
+						LEXEME_SOURCE_LINK.NAME)
+				.values(lexemeId, sourceId, refType.name(), sourceValue, sourceName).returning(LEXEME_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
 	}

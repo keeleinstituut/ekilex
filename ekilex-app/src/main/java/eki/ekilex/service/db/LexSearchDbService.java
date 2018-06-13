@@ -21,6 +21,8 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -59,7 +61,7 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionRefLink;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexColloc;
@@ -67,7 +69,7 @@ import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeRefLink;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
@@ -274,14 +276,14 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 			return condition;
 		}
 
-		DefinitionRefLink rl = DefinitionRefLink.DEFINITION_REF_LINK.as("rl");
+		DefinitionSourceLink rl = DEFINITION_SOURCE_LINK.as("rl");
 		Source s = Source.SOURCE.as("s");
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
 		Condition sourceCondition =	rl.DEFINITION_ID.eq(definitionIdField)
 				.and(rl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(s.ID.eq(rl.REF_ID))
+				.and(s.ID.eq(rl.SOURCE_ID))
 				.and(sf.SOURCE_ID.eq(s.ID))
 				.and(ff.ID.eq(sf.FREEFORM_ID))
 				.and(ff.TYPE.eq(searchKey.name()));
@@ -302,7 +304,7 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		}
 
 		Lexeme l = Lexeme.LEXEME.as("l");
-		LexemeRefLink lrl = LexemeRefLink.LEXEME_REF_LINK.as("lrl");
+		LexemeSourceLink lrl = LEXEME_SOURCE_LINK.as("lrl");
 		Source s = Source.SOURCE.as("s");
 		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
 		Freeform ff = Freeform.FREEFORM.as("ff");
@@ -310,7 +312,7 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		Condition sourceCondition = l.WORD_ID.eq(wordIdField)
 				.and(lrl.LEXEME_ID.eq(l.ID))
 				.and(lrl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(s.ID.eq(lrl.REF_ID)).and(sf.SOURCE_ID.eq(s.ID))
+				.and(s.ID.eq(lrl.SOURCE_ID)).and(sf.SOURCE_ID.eq(s.ID))
 				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {

@@ -68,7 +68,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private boolean classifiersExist;
 
-	private List<RefLink> refLinks;
+	private List<SourceLink> sourceLinks;
 
 	public String getWord() {
 		return word;
@@ -246,11 +246,11 @@ public class Lexeme extends AbstractDataObject {
 		this.genderCode = genderCode;
 	}
 
-	public List<RefLink> getRefLinks() {
-		return refLinks;
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
 	}
 
-	public void setRefLinks(List<RefLink> refLinks) {
-		this.refLinks = refLinks;
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 }

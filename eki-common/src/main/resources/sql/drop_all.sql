@@ -17,9 +17,12 @@ drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
-drop table if exists freeform_ref_link;
-drop table if exists definition_ref_link;
-drop table if exists lexeme_ref_link;
+drop table if exists freeform_ref_link;--remove later
+drop table if exists definition_ref_link;--remove later
+drop table if exists lexeme_ref_link;--remove later
+drop table if exists freeform_source_link;
+drop table if exists definition_source_link;
+drop table if exists lexeme_source_link;
 drop table if exists lex_colloc;
 drop table if exists collocation_rel_group;--remove later
 drop table if exists collocation_pos_group;--remove later
@@ -101,4 +104,4 @@ drop table if exists label_type;
 drop table if exists dataset;
 drop table if exists lifecycle_log;
 drop table if exists eki_user;
-drop table if exists person;
+drop table if exists person;--remove later

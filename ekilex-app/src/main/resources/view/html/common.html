@@ -487,7 +487,7 @@
   </div>
 </div>
 
-<div id="addNewSourceRefDlg" class="modal" role="dialog">
+<div id="addNewSourceLinkDlg" class="modal" role="dialog">
   <div class="modal-dialog" role="document" style="max-width: 1000px;">
     <div class="modal-content">
       <div class="modal-body">
@@ -512,7 +512,7 @@
         <input type="hidden" name="opCode">
         <input type="hidden" name="id2">
         <input type="hidden" name="value">
-        <div class="modal-body" data-name="sourceRefDlgContent"></div>
+        <div class="modal-body" data-name="sourceLinkDlgContent"></div>
       </form>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
@@ -521,7 +521,7 @@
   </div>
 </div>
 
-<div class="modal-body" data-name="sourceRefDlgContent" th:fragment="sourceRefDlgContent">
+<div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="sourceLinkDlgContent">
   <th:block th:each="source,sourceIter : ${sourcesFoundBySearch}">
     <table class="w-100">
       <tr>

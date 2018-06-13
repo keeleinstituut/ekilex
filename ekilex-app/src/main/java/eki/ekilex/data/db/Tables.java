@@ -10,7 +10,7 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.DefinitionRefLink;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.DisplayMorph;
@@ -23,7 +23,7 @@ import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
 import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformRefLink;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.GovernmentType;
@@ -42,8 +42,8 @@ import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
-import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
@@ -55,7 +55,6 @@ import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
@@ -134,9 +133,9 @@ public class Tables {
     public static final DefinitionFreeform DEFINITION_FREEFORM = eki.ekilex.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
 
     /**
-     * The table <code>public.definition_ref_link</code>.
+     * The table <code>public.definition_source_link</code>.
      */
-    public static final DefinitionRefLink DEFINITION_REF_LINK = eki.ekilex.data.db.tables.DefinitionRefLink.DEFINITION_REF_LINK;
+    public static final DefinitionSourceLink DEFINITION_SOURCE_LINK = eki.ekilex.data.db.tables.DefinitionSourceLink.DEFINITION_SOURCE_LINK;
 
     /**
      * The table <code>public.deriv</code>.
@@ -199,9 +198,9 @@ public class Tables {
     public static final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
     /**
-     * The table <code>public.freeform_ref_link</code>.
+     * The table <code>public.freeform_source_link</code>.
      */
-    public static final FreeformRefLink FREEFORM_REF_LINK = eki.ekilex.data.db.tables.FreeformRefLink.FREEFORM_REF_LINK;
+    public static final FreeformSourceLink FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.FreeformSourceLink.FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.gender</code>.
@@ -294,14 +293,14 @@ public class Tables {
     public static final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 
     /**
-     * The table <code>public.lexeme_ref_link</code>.
-     */
-    public static final LexemeRefLink LEXEME_REF_LINK = eki.ekilex.data.db.tables.LexemeRefLink.LEXEME_REF_LINK;
-
-    /**
      * The table <code>public.lexeme_register</code>.
      */
     public static final LexemeRegister LEXEME_REGISTER = eki.ekilex.data.db.tables.LexemeRegister.LEXEME_REGISTER;
+
+    /**
+     * The table <code>public.lexeme_source_link</code>.
+     */
+    public static final LexemeSourceLink LEXEME_SOURCE_LINK = eki.ekilex.data.db.tables.LexemeSourceLink.LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.lifecycle_log</code>.
@@ -357,11 +356,6 @@ public class Tables {
      * The table <code>public.paradigm</code>.
      */
     public static final Paradigm PARADIGM = eki.ekilex.data.db.tables.Paradigm.PARADIGM;
-
-    /**
-     * The table <code>public.person</code>.
-     */
-    public static final Person PERSON = eki.ekilex.data.db.tables.Person.PERSON;
 
     /**
      * The table <code>public.pos</code>.

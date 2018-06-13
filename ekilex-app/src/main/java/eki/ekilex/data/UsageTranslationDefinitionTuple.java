@@ -2,6 +2,8 @@ package eki.ekilex.data;
 
 import javax.persistence.Column;
 
+import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
 public class UsageTranslationDefinitionTuple extends AbstractDataObject {
@@ -41,20 +43,26 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 	@Column(name = "usage_definition_lang")
 	private String usageDefinitionLang;
 
-	@Column(name = "usage_author")
-	private String usageAuthor;
+	@Column(name = "usage_source_link_id")
+	private Long usageSourceLinkId;
 
-	@Column(name = "usage_translator")
-	private String usageTranslator;
+	@Column(name = "usage_source_link_type")
+	private ReferenceType usageSourceLinkType;
 
-	@Column(name = "usage_source_ref_link_id")
-	private Long usageSourceRefLinkId;
+	@Column(name = "usage_source_link_name")
+	private String usageSourceLinkName;
 
-	@Column(name = "usage_source_ref_link_name")
-	private String usageSourceRefLinkName;
+	@Column(name = "usage_source_link_value")
+	private String usageSourceLinkValue;
 
-	@Column(name = "usage_source_ref_link_value")
-	private String usageSourceRefLinkValue;
+	@Column(name = "usage_source_id")
+	private Long usageSourceId;
+
+	@Column(name = "usage_source_type")
+	private SourceType usageSourceType;
+
+	@Column(name = "usage_source_name")
+	private String usageSourceName;
 
 	public Long getUsageId() {
 		return usageId;
@@ -144,44 +152,60 @@ public class UsageTranslationDefinitionTuple extends AbstractDataObject {
 		this.usageDefinitionLang = usageDefinitionLang;
 	}
 
-	public String getUsageAuthor() {
-		return usageAuthor;
+	public Long getUsageSourceLinkId() {
+		return usageSourceLinkId;
 	}
 
-	public void setUsageAuthor(String usageAuthor) {
-		this.usageAuthor = usageAuthor;
+	public void setUsageSourceLinkId(Long usageSourceLinkId) {
+		this.usageSourceLinkId = usageSourceLinkId;
 	}
 
-	public String getUsageTranslator() {
-		return usageTranslator;
+	public ReferenceType getUsageSourceLinkType() {
+		return usageSourceLinkType;
 	}
 
-	public void setUsageTranslator(String usageTranslator) {
-		this.usageTranslator = usageTranslator;
+	public void setUsageSourceLinkType(ReferenceType usageSourceLinkType) {
+		this.usageSourceLinkType = usageSourceLinkType;
 	}
 
-	public Long getUsageSourceRefLinkId() {
-		return usageSourceRefLinkId;
+	public String getUsageSourceLinkName() {
+		return usageSourceLinkName;
 	}
 
-	public void setUsageSourceRefLinkId(Long usageSourceRefLinkId) {
-		this.usageSourceRefLinkId = usageSourceRefLinkId;
+	public void setUsageSourceLinkName(String usageSourceLinkName) {
+		this.usageSourceLinkName = usageSourceLinkName;
 	}
 
-	public String getUsageSourceRefLinkName() {
-		return usageSourceRefLinkName;
+	public String getUsageSourceLinkValue() {
+		return usageSourceLinkValue;
 	}
 
-	public void setUsageSourceRefLinkName(String usageSourceRefLinkName) {
-		this.usageSourceRefLinkName = usageSourceRefLinkName;
+	public void setUsageSourceLinkValue(String usageSourceLinkValue) {
+		this.usageSourceLinkValue = usageSourceLinkValue;
 	}
 
-	public String getUsageSourceRefLinkValue() {
-		return usageSourceRefLinkValue;
+	public Long getUsageSourceId() {
+		return usageSourceId;
 	}
 
-	public void setUsageSourceRefLinkValue(String usageSourceRefLinkValue) {
-		this.usageSourceRefLinkValue = usageSourceRefLinkValue;
+	public void setUsageSourceId(Long usageSourceId) {
+		this.usageSourceId = usageSourceId;
+	}
+
+	public SourceType getUsageSourceType() {
+		return usageSourceType;
+	}
+
+	public void setUsageSourceType(SourceType usageSourceType) {
+		this.usageSourceType = usageSourceType;
+	}
+
+	public String getUsageSourceName() {
+		return usageSourceName;
+	}
+
+	public void setUsageSourceName(String usageSourceName) {
+		this.usageSourceName = usageSourceName;
 	}
 
 }

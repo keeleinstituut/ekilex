@@ -323,18 +323,18 @@ function initMultiValueAddDlg(theDlg, resetElements) {
     });
 }
 
-function decorateRefLinks() {
-    var detailsDiv = $('#details_div');
-    detailsDiv.find('a').each(function(indx, item) {
-        var theLink = $(item);
-        if (theLink.attr('href').includes('_ref_link:')) {
-            theLink.attr('data-target', '#detailsDlg');
-            theLink.attr('data-toggle', 'modal');
-            theLink.on('click',function(e) {
-                openDetailsDiv(e.target);
-            } );
-        }
-    });
+function decorateSourceLinks() {
+	var detailsDiv = $('#details_div');
+	detailsDiv.find('a').each(function(indx, item) {
+		var theLink = $(item);
+		if (theLink.attr('href').includes('_source_link:')) {
+			theLink.attr('data-target', '#detailsDlg');
+			theLink.attr('data-toggle', 'modal');
+			theLink.on('click', function(e) {
+				openDetailsDiv(e.target);
+			});
+		}
+	});
 }
 
 function initNewWordDlg() {
@@ -353,12 +353,12 @@ function initNewWordDlg() {
     });
 }
 
-function openAddSourceRefDlg(elem) {
+function openAddSourceLinkDlg(elem) {
     var addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('[name=opCode]').val($(elem).data('op-code'));
     addDlg.find('.form-control').val(null);
-    addDlg.find('[data-name=sourceRefDlgContent]').html(null);
+    addDlg.find('[data-name=sourceLinkDlgContent]').html(null);
 
     addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
@@ -368,7 +368,7 @@ function openAddSourceRefDlg(elem) {
         var theForm = $(this).closest('form');
         var url = theForm.attr('action') + '?' + theForm.serialize();
         $.get(url).done(function(data) {
-            addDlg.find('[data-name=sourceRefDlgContent]').replaceWith(data);
+            addDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
             addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
                 e.preventDefault();
                 var button = $(e.target);

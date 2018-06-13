@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements Record8<Long, String, Timestamp, String, Timestamp, String, String, String> {
 
-    private static final long serialVersionUID = 671432012;
+    private static final long serialVersionUID = -583172072;
 
     /**
      * Setter for <code>public.source.id</code>.
@@ -117,30 +117,30 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
     }
 
     /**
-     * Setter for <code>public.source.process_state_code</code>.
-     */
-    public void setProcessStateCode(String value) {
-        set(6, value);
-    }
-
-    /**
-     * Getter for <code>public.source.process_state_code</code>.
-     */
-    public String getProcessStateCode() {
-        return (String) get(6);
-    }
-
-    /**
      * Setter for <code>public.source.type</code>.
      */
     public void setType(String value) {
-        set(7, value);
+        set(6, value);
     }
 
     /**
      * Getter for <code>public.source.type</code>.
      */
     public String getType() {
+        return (String) get(6);
+    }
+
+    /**
+     * Setter for <code>public.source.process_state_code</code>.
+     */
+    public void setProcessStateCode(String value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.source.process_state_code</code>.
+     */
+    public String getProcessStateCode() {
         return (String) get(7);
     }
 
@@ -229,7 +229,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public Field<String> field7() {
-        return Source.SOURCE.PROCESS_STATE_CODE;
+        return Source.SOURCE.TYPE;
     }
 
     /**
@@ -237,7 +237,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public Field<String> field8() {
-        return Source.SOURCE.TYPE;
+        return Source.SOURCE.PROCESS_STATE_CODE;
     }
 
     /**
@@ -293,7 +293,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public String component7() {
-        return getProcessStateCode();
+        return getType();
     }
 
     /**
@@ -301,7 +301,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public String component8() {
-        return getType();
+        return getProcessStateCode();
     }
 
     /**
@@ -357,7 +357,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public String value7() {
-        return getProcessStateCode();
+        return getType();
     }
 
     /**
@@ -365,7 +365,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public String value8() {
-        return getType();
+        return getProcessStateCode();
     }
 
     /**
@@ -427,7 +427,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public SourceRecord value7(String value) {
-        setProcessStateCode(value);
+        setType(value);
         return this;
     }
 
@@ -436,7 +436,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public SourceRecord value8(String value) {
-        setType(value);
+        setProcessStateCode(value);
         return this;
     }
 
@@ -470,7 +470,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
     /**
      * Create a detached, initialised SourceRecord
      */
-    public SourceRecord(Long id, String concept, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String processStateCode, String type) {
+    public SourceRecord(Long id, String concept, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String type, String processStateCode) {
         super(Source.SOURCE);
 
         set(0, id);
@@ -479,7 +479,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
         set(3, createdBy);
         set(4, modifiedOn);
         set(5, modifiedBy);
-        set(6, processStateCode);
-        set(7, type);
+        set(6, type);
+        set(7, processStateCode);
     }
 }

@@ -8,9 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -25,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.SourceType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Source;
 
@@ -45,6 +44,12 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 	private final String createdOnExp = "transacGrp[transac/@type='origination']/date";
 	private final String modifiedByExp = "transacGrp/transac[@type='modification']";
 	private final String modifiedOnExp = "transacGrp[transac/@type='modification']/date";
+	/*
+	 * Such field has never been found.
+	 * Instead, source type is set programmatically.
+	 * If the field will be valued in the future, some sort of mapping must be implemented.
+	 */
+	@Deprecated
 	private final String sourceTypeExp = "descripGrp/descrip[@type='Tüüp']";
 	private final String termGroupExp = "languageGrp/termGrp";
 	private final String termValueExp = "term";
@@ -62,6 +67,8 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 	private final String sourceNoteExp = "descripGrp/descrip[@type='Märkus']";
 
 	private final String tlinkAttrExp = "Tlink";
+
+	private final String xrefTlinkSourceIsPerson = "EKSPERT";
 
 	private DateFormat defaultDateFormat;
 
@@ -98,7 +105,7 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		String valueStr;
 		Source sourceObj;
 		Long sourceId, sourceTermId;
-		FreeformType sourceType;
+		FreeformType sourceAttrType;
 
 		Count dataErrorCount = new Count();
 
@@ -120,13 +127,13 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 					continue;
 				}
 				if (sourceCodes.contains(valueStr)) {
-					sourceType = FreeformType.SOURCE_CODE;
+					sourceAttrType = FreeformType.SOURCE_CODE;
 				} else if (isProbablySourceCode(valueStr)) {
-					sourceType = FreeformType.SOURCE_CODE;
+					sourceAttrType = FreeformType.SOURCE_CODE;
 				} else {
-					sourceType = FreeformType.SOURCE_NAME;
+					sourceAttrType = FreeformType.SOURCE_NAME;
 				}
-				sourceTermId = createSourceFreeform(sourceId, sourceType, valueStr);
+				sourceTermId = createSourceFreeform(sourceId, sourceAttrType, valueStr);
 
 				extractAndSaveFreeforms(sourceTermId, termGroupNode, FreeformType.LTB_SOURCE, sourceLtbSourceExp);
 				extractAndSaveFreeforms(sourceTermId, termGroupNode, FreeformType.SOURCE_RT, sourceRtExp);
@@ -178,6 +185,7 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 			for (Element tlinkNode : tlinkNodes) {
 				Attribute tlinkAttr = tlinkNode.attribute(tlinkAttrExp);
 				String tlinkAttrValue = tlinkAttr.getValue();
+				//TODO missing handling of "EKSPERT" type sources
 				if (StringUtils.startsWith(tlinkAttrValue, "Allikas:")) {
 					String sourceCode = tlinkNode.getTextTrim();
 					if (!sourceCodes.contains(sourceCode)) {
@@ -202,10 +210,16 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		long valueLong;
 		Timestamp valueTs;
 
+		/*
+		 * TODO missing logic to determine about correct source type.
+		 * Info about source type is in one or many of the nesting term groups
+		 */
+		sourceObj.setType(SourceType.UNKNOWN);
+
 		valueNode = (Element) conceptGroupNode.selectSingleNode(conceptExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			sourceObj.setConcept(valueStr);
+			sourceObj.setConceptId(valueStr);
 		}
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
@@ -242,47 +256,18 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 			sourceObj.setModifiedOn(valueTs);
 		}
 
+		/* 
+		 * Currently suspended
+		 * Type now reserved for other logic
+		 * 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(sourceTypeExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
 			sourceObj.setType(valueStr);
 		}
+		*/
 
 		return sourceObj;
-	}
-
-	private Long createSource(Source sourceObj) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		String concept = sourceObj.getConcept();
-		tableRowParamMap.put("concept", concept);
-		Timestamp createdOn = sourceObj.getCreatedOn();
-		if (createdOn != null) {
-			tableRowParamMap.put("created_on", createdOn);
-		}
-		String createdBy = sourceObj.getCreatedBy();
-		if (StringUtils.isNotBlank(createdBy)) {
-			tableRowParamMap.put("created_by", createdBy);
-		}
-		Timestamp modifiedOn = sourceObj.getModifiedOn();
-		if (modifiedOn != null) {
-			tableRowParamMap.put("modified_on", modifiedOn);
-		}
-		String modifiedBy = sourceObj.getModifiedBy();
-		if (StringUtils.isNotBlank(modifiedBy)) {
-			tableRowParamMap.put("modified_by", modifiedBy);
-		}
-		String processStateCode = sourceObj.getProcessStateCode();
-		if (StringUtils.isNotBlank(processStateCode)) {
-			tableRowParamMap.put("process_state_code", processStateCode);
-		}
-		String type = sourceObj.getType();
-		if (StringUtils.isNotBlank(type)) {
-			tableRowParamMap.put("type", type);
-		}
-		Long sourceId = basicDbService.create(SOURCE, tableRowParamMap);
-		sourceObj.setSourceId(sourceId);
-		return sourceId;
 	}
 
 	private void extractAndSaveFreeforms(Long sourceTermId, Element termGroupNode, FreeformType freeformType, String sourceTermPropertyExp) throws Exception {

@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleLogType;
 import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.common.constant.TableName;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
@@ -29,6 +30,7 @@ import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Source;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
@@ -43,6 +45,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
+
+	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
@@ -70,6 +74,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private String sqlSelectLexemeFreeform;
 
+	private String sqlSourceByTypeAndName;
+
 	abstract void initialise() throws Exception;
 
 	@Override
@@ -88,6 +94,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE);
 		sqlSelectLexemeFreeform = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_SOURCE_BY_TYPE_AND_NAME);
+		sqlSourceByTypeAndName = getContent(resourceFileInputStream);
 	}
 
 	protected String getContent(InputStream resourceInputStream) throws Exception {
@@ -380,20 +389,26 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			String usageType = usage.getUsageType();
 			String author = usage.getAuthor();
 			String authorTypeStr = usage.getAuthorType();
+			String conceptId = usage.getConceptId();
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usageValue, dataLang);
 			if (StringUtils.isNotBlank(usageType)) {
 				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usageType);
 			}
+			if (StringUtils.isBlank(conceptId)) {
+				conceptId = "n/a";
+			}
 			if (StringUtils.isNotBlank(author)) {
-				Long authorId = createOrSelectPerson(author);
-				FreeformType authorType;
-				if (StringUtils.isEmpty(authorTypeStr)) {
-					authorType = FreeformType.USAGE_AUTHOR;
-				} else {
-					authorType = FreeformType.USAGE_TRANSLATOR;
+				Long authorId = getSource(SourceType.PERSON, conceptId, author);
+				if (authorId == null) {
+					authorId = createSource(SourceType.PERSON, conceptId, author);
 				}
-				Long authorFreeformId = createFreeformTextOrDate(authorType, usageId, author, dataLang);
-				createFreeformRefLink(authorFreeformId, ReferenceType.PERSON, authorId, null, null);
+				ReferenceType referenceType;
+				if (StringUtils.isEmpty(authorTypeStr)) {
+					referenceType = ReferenceType.AUTHOR;
+				} else {
+					referenceType = ReferenceType.TRANSLATOR;
+				}
+				createFreeformSourceLink(usageId, referenceType, authorId, null, null);
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
@@ -462,22 +477,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
-	protected Long createDefinitionRefLink(Long definitionId, ReferenceType refType, Long refId, String name, String value) throws Exception {
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("definition_id", definitionId);
-		tableRowParamMap.put("ref_type", refType.name());
-		tableRowParamMap.put("ref_id", refId);
-		if (StringUtils.isNotBlank(name)) {
-			tableRowParamMap.put("name", name);
-		}
-		if (StringUtils.isNotBlank(value)) {
-			tableRowParamMap.put("value", value);
-		}
-		Long refLinkId = basicDbService.create(DEFINITION_REF_LINK, tableRowParamMap);
-		return refLinkId;
-	}
-
 	protected Long createFreeformTextOrDate(FreeformType freeformType, Long parentId, Object value, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -521,35 +520,51 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.update(FREEFORM, criteriaParamMap, valueParamMap);
 	}
 
-	protected Long createFreeformRefLink(Long freeformId, ReferenceType refType, Long refId, String name, String value) throws Exception {
+	protected Long createFreeformSourceLink(Long freeformId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("freeform_id", freeformId);
-		tableRowParamMap.put("ref_type", refType.name());
-		tableRowParamMap.put("ref_id", refId);
+		tableRowParamMap.put("type", refType.name());
+		tableRowParamMap.put("source_id", sourceId);
 		if (StringUtils.isNotBlank(name)) {
 			tableRowParamMap.put("name", name);
 		}
 		if (StringUtils.isNotBlank(value)) {
 			tableRowParamMap.put("value", value);
 		}
-		Long refLinkId = basicDbService.create(FREEFORM_REF_LINK, tableRowParamMap);
+		Long refLinkId = basicDbService.create(FREEFORM_SOURCE_LINK, tableRowParamMap);
 		return refLinkId;
 	}
 
-	protected Long createLexemeRefLink(Long lexemeId, ReferenceType refType, Long refId, String name, String value) throws Exception {
+	protected Long createLexemeSourceLink(Long lexemeId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lexeme_id", lexemeId);
-		tableRowParamMap.put("ref_type", refType.name());
-		tableRowParamMap.put("ref_id", refId);
+		tableRowParamMap.put("type", refType.name());
+		tableRowParamMap.put("source_id", sourceId);
 		if (StringUtils.isNotBlank(name)) {
 			tableRowParamMap.put("name", name);
 		}
 		if (StringUtils.isNotBlank(value)) {
 			tableRowParamMap.put("value", value);
 		}
-		Long refLinkId = basicDbService.create(LEXEME_REF_LINK, tableRowParamMap);
+		Long refLinkId = basicDbService.create(LEXEME_SOURCE_LINK, tableRowParamMap);
+		return refLinkId;
+	}
+
+	protected Long createDefinitionSourceLink(Long definitionId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("definition_id", definitionId);
+		tableRowParamMap.put("type", refType.name());
+		tableRowParamMap.put("source_id", sourceId);
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
+		Long refLinkId = basicDbService.create(DEFINITION_SOURCE_LINK, tableRowParamMap);
 		return refLinkId;
 	}
 
@@ -599,6 +614,49 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.createIfNotExists(LEXEME_REGISTER, params);
 	}
 
+	protected Long createSource(Source source) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		String concept = source.getConceptId();
+		SourceType type = source.getType();
+		tableRowParamMap.put("concept", concept);
+		tableRowParamMap.put("type", type.name());
+		Timestamp createdOn = source.getCreatedOn();
+		if (createdOn != null) {
+			tableRowParamMap.put("created_on", createdOn);
+		}
+		String createdBy = source.getCreatedBy();
+		if (StringUtils.isNotBlank(createdBy)) {
+			tableRowParamMap.put("created_by", createdBy);
+		}
+		Timestamp modifiedOn = source.getModifiedOn();
+		if (modifiedOn != null) {
+			tableRowParamMap.put("modified_on", modifiedOn);
+		}
+		String modifiedBy = source.getModifiedBy();
+		if (StringUtils.isNotBlank(modifiedBy)) {
+			tableRowParamMap.put("modified_by", modifiedBy);
+		}
+		String processStateCode = source.getProcessStateCode();
+		if (StringUtils.isNotBlank(processStateCode)) {
+			tableRowParamMap.put("process_state_code", processStateCode);
+		}
+		Long sourceId = basicDbService.create(SOURCE, tableRowParamMap);
+		source.setSourceId(sourceId);
+		return sourceId;
+	}
+
+	protected Long createSource(SourceType sourceType, String conceptId, String sourceName) throws Exception {
+
+		Source source = new Source();
+		source.setType(sourceType);
+		source.setConceptId(conceptId);
+		Long sourceId = createSource(source);
+		createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, sourceName);
+
+		return sourceId;
+	}
+
 	protected Long createSourceFreeform(Long sourceId, FreeformType freeformType, Object value) throws Exception {
 
 		Long freeformId = createFreeformTextOrDate(freeformType, null, value, null);
@@ -609,6 +667,23 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(SOURCE_FREEFORM, tableRowParamMap);
 
 		return freeformId;
+	}
+
+	protected Long getSource(SourceType sourceType, String conceptId, String sourceName) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("sourceType", sourceType.name());
+		tableRowParamMap.put("conceptId", conceptId);
+		tableRowParamMap.put("sourceAttrType", FreeformType.SOURCE_NAME.name());
+		tableRowParamMap.put("sourceName", sourceName);
+		List<Map<String, Object>> sources = basicDbService.queryList(sqlSourceByTypeAndName, tableRowParamMap);
+
+		if (CollectionUtils.isEmpty(sources)) {
+			return null;
+		}
+		Map<String, Object> sourceRecord = sources.get(0);
+		Long sourceId = (Long) sourceRecord.get("id");
+		return sourceId;
 	}
 
 	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {
@@ -624,12 +699,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				.filter(cells -> "et".equals(cells[4]))
 				.filter(cells -> !"-".equals(cells[5]))
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
-	}
-
-	protected Long createOrSelectPerson(String name) throws Exception {
-		Map<String, Object> params = new HashMap<>();
-		params.put("name", name);
-		return basicDbService.createOrSelect(PERSON, params);
 	}
 
 	protected List<String> readFileLines(String sourcePath) throws Exception {

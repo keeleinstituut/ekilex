@@ -20,7 +20,7 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
-import eki.ekilex.data.RefLink;
+import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaning;
@@ -138,7 +138,7 @@ public class TermSearchService implements SystemConstant {
 							.into(UsageTranslationDefinitionTuple.class);
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
-			List<RefLink> lexemeRefLinks = commonDataDbService.findLexemeRefLinks(lexemeId).into(RefLink.class);
+			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
 
 			for (Lexeme lexeme : lexemeWords) {
 
@@ -164,7 +164,7 @@ public class TermSearchService implements SystemConstant {
 				lexeme.setUsages(usages);
 				lexeme.setGrammars(lexemeGrammars);
 				lexeme.setClassifiersExist(classifiersExist);
-				lexeme.setRefLinks(lexemeRefLinks);
+				lexeme.setSourceLinks(lexemeRefLinks);
 				lexemes.add(lexeme);
 			}
 		}

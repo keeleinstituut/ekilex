@@ -504,7 +504,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 			int lexemeLevel2 = 0;
 			for (Element meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
-				List<Usage> usages = extractUsages(meaningGroupNode);
+				List<Usage> usages = extractUsages(meaningGroupNode, conceptId);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
@@ -971,7 +971,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		return asList("ab", "ap").contains(restrictedValue);
 	}
 
-	private List<Usage> extractUsages(Element node) {
+	private List<Usage> extractUsages(Element node, String conceptId) {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
@@ -986,6 +986,7 @@ public class Ss1LoaderRunner extends AbstractLoaderRunner {
 		List<Element> usageNodes = node.selectNodes(usageExp);
 		for (Element usageNode : usageNodes) {
 			Usage usage = new Usage();
+			usage.setConceptId(conceptId);
 			usage.setValue(usageNode.getTextTrim());
 			usage.setDefinitions(new ArrayList<>());
 			if (usageNode.hasMixedContent()) {

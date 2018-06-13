@@ -5,7 +5,7 @@ import javax.persistence.Column;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
-public class RefLink extends AbstractDataObject {
+public class SourceLink extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -21,11 +21,11 @@ public class RefLink extends AbstractDataObject {
 	@Column(name = "owner_id")
 	private Long ownerId;
 
-	@Column(name = "ref_type")
-	private ReferenceType refType;
+	@Column(name = "type")
+	private ReferenceType type;
 
-	@Column(name = "ref_id")
-	private Long refId;
+	@Column(name = "source_id")
+	private Long sourceId;
 
 	public Long getId() {
 		return id;
@@ -59,20 +59,20 @@ public class RefLink extends AbstractDataObject {
 		this.ownerId = ownerId;
 	}
 
-	public ReferenceType getRefType() {
-		return refType;
+	public ReferenceType getType() {
+		return type;
 	}
 
-	public void setRefType(ReferenceType refType) {
-		this.refType = refType;
+	public void setType(ReferenceType type) {
+		this.type = type;
 	}
 
-	public Long getRefId() {
-		return refId;
+	public Long getSourceId() {
+		return sourceId;
 	}
 
-	public void setRefId(Long refId) {
-		this.refId = refId;
+	public void setSourceId(Long sourceId) {
+		this.sourceId = sourceId;
 	}
 
 }

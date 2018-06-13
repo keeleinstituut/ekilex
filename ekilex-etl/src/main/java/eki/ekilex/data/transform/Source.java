@@ -2,6 +2,7 @@ package eki.ekilex.data.transform;
 
 import java.sql.Timestamp;
 
+import eki.common.constant.SourceType;
 import eki.common.data.AbstractDataObject;
 
 public class Source extends AbstractDataObject {
@@ -10,7 +11,7 @@ public class Source extends AbstractDataObject {
 
 	private Long sourceId;
 
-	private String concept;
+	private String conceptId;
 
 	private Timestamp createdOn;
 
@@ -20,9 +21,9 @@ public class Source extends AbstractDataObject {
 
 	private String modifiedBy;
 
-	private String processStateCode;
+	private SourceType type;
 
-	private String type;
+	private String processStateCode;
 
 	public Long getSourceId() {
 		return sourceId;
@@ -32,12 +33,12 @@ public class Source extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public String getConcept() {
-		return concept;
+	public String getConceptId() {
+		return conceptId;
 	}
 
-	public void setConcept(String concept) {
-		this.concept = concept;
+	public void setConceptId(String conceptId) {
+		this.conceptId = conceptId;
 	}
 
 	public Timestamp getCreatedOn() {
@@ -72,20 +73,20 @@ public class Source extends AbstractDataObject {
 		this.modifiedBy = modifiedBy;
 	}
 
+	public SourceType getType() {
+		return type;
+	}
+
+	public void setType(SourceType type) {
+		this.type = type;
+	}
+
 	public String getProcessStateCode() {
 		return processStateCode;
 	}
 
 	public void setProcessStateCode(String processStateCode) {
 		this.processStateCode = processStateCode;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public void setType(String type) {
-		this.type = type;
 	}
 
 }

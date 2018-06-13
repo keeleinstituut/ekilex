@@ -15,6 +15,7 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Collocation;
@@ -27,7 +28,7 @@ import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
-import eki.ekilex.data.RefLink;
+import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
@@ -231,7 +232,7 @@ public class ConversionUtil {
 		List<Usage> usages = new ArrayList<>();
 
 		Map<Long, Usage> usageMap = new HashMap<>();
-		Map<Long, RefLink> usageSourceMap = new HashMap<>();
+		Map<Long, SourceLink> usageSourceMap = new HashMap<>();
 		Map<Long, UsageTranslation> usageTranslationMap = new HashMap<>();
 		Map<Long, UsageDefinition> usageDefinitionMap = new HashMap<>();
 
@@ -240,7 +241,7 @@ public class ConversionUtil {
 			Long usageId = tuple.getUsageId();
 			Long usageTranslationId = tuple.getUsageTranslationId();
 			Long usageDefinitionId = tuple.getUsageDefinitionId();
-			Long usageSourceRefLinkId = tuple.getUsageSourceRefLinkId();
+			Long usageSourceLinkId = tuple.getUsageSourceLinkId();
 
 			Usage usage = usageMap.get(usageId);
 			if (usage == null) {
@@ -250,23 +251,33 @@ public class ConversionUtil {
 				usage.setLang(tuple.getUsageLang());
 				usage.setTypeCode(tuple.getUsageTypeCode());
 				usage.setTypeValue(tuple.getUsageTypeValue());
-				usage.setAuthor(tuple.getUsageAuthor());
-				usage.setTranslator(tuple.getUsageTranslator());
 				usage.setTranslations(new ArrayList<>());
 				usage.setDefinitions(new ArrayList<>());
-				usage.setRefLinks(new ArrayList<>());
+				usage.setAuthors(new ArrayList<>());
+				usage.setSourceLinks(new ArrayList<>());
 				usageMap.put(usageId, usage);
 				usages.add(usage);
 			}
-			if (usageSourceRefLinkId != null) {
-				RefLink usageSource = usageSourceMap.get(usageSourceRefLinkId);
+			if (usageSourceLinkId != null) {
+				SourceLink usageSource = usageSourceMap.get(usageSourceLinkId);
 				if (usageSource == null) {
-					usageSource = new RefLink();
-					usageSource.setId(tuple.getUsageSourceRefLinkId());
-					usageSource.setName(tuple.getUsageSourceRefLinkName());
-					usageSource.setValue(tuple.getUsageSourceRefLinkValue());
-					usageSourceMap.put(usageSourceRefLinkId, usageSource);
-					usage.getRefLinks().add(usageSource);
+					usageSource = new SourceLink();
+					usageSource.setId(tuple.getUsageSourceLinkId());
+					usageSource.setType(tuple.getUsageSourceLinkType());
+					usageSource.setName(tuple.getUsageSourceLinkName());
+					if (StringUtils.isBlank(tuple.getUsageSourceLinkValue())) {
+						usageSource.setValue(tuple.getUsageSourceName());
+					} else {
+						usageSource.setValue(tuple.getUsageSourceLinkValue());						
+					}
+					usageSourceMap.put(usageSourceLinkId, usageSource);
+					if (ReferenceType.AUTHOR.equals(tuple.getUsageSourceLinkType())) {
+						usage.getAuthors().add(usageSource);
+					} else if (ReferenceType.TRANSLATOR.equals(tuple.getUsageSourceLinkType())) {
+						usage.getAuthors().add(usageSource);
+					} else {
+						usage.getSourceLinks().add(usageSource);						
+					}
 				}
 			}
 			if (usageTranslationId != null) {
@@ -303,7 +314,7 @@ public class ConversionUtil {
 		for (DefinitionRefTuple definitionRefTuple : definitionRefTuples) {
 
 			Long definitionId = definitionRefTuple.getDefinitionId();
-			Long refLinkId = definitionRefTuple.getRefLinkId();
+			Long sourceLinkId = definitionRefTuple.getSourceLinkId();
 			Definition definition = definitionMap.get(definitionId);
 			if (definition == null) {
 				String definitionValue = definitionRefTuple.getDefinitionValue();
@@ -314,18 +325,20 @@ public class ConversionUtil {
 				definition.setValue(definitionValue);
 				definition.setLang(definitionLang);
 				definition.setOrderBy(definitionOrderBy);
-				definition.setRefLinks(new ArrayList<>());
+				definition.setSourceLinks(new ArrayList<>());
 				definitionMap.put(definitionId, definition);
 				definitions.add(definition);
 			}
-			if (refLinkId != null) {
-				String refLinkName = definitionRefTuple.getRefLinkName();
-				String refLinkValue = definitionRefTuple.getRefLinkValue();
-				RefLink refLink = new RefLink();
-				refLink.setId(refLinkId);
-				refLink.setName(refLinkName);
-				refLink.setValue(refLinkValue);
-				definition.getRefLinks().add(refLink);
+			if (sourceLinkId != null) {
+				ReferenceType sourceLinkType = definitionRefTuple.getSourceLinkType();
+				String sourceLinkName = definitionRefTuple.getSourceLinkName();
+				String sourceLinkValue = definitionRefTuple.getSourceLinkValue();
+				SourceLink sourceLink = new SourceLink();
+				sourceLink.setId(sourceLinkId);
+				sourceLink.setType(sourceLinkType);
+				sourceLink.setName(sourceLinkName);
+				sourceLink.setValue(sourceLinkValue);
+				definition.getSourceLinks().add(sourceLink);
 			}
 		}
 

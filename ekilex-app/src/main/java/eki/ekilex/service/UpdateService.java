@@ -1,6 +1,7 @@
 package eki.ekilex.service;
 
 import eki.ekilex.data.ListData;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.UpdateDbService;
@@ -148,18 +149,24 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addDefinitionSourceRef(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
-		updateDbService.addDefinitionSourceRef(definitionId, sourceId, sourceValue, sourceName);
+	public void addDefinitionSourceLink(Long definitionId, Long sourceId, String sourceValue, String sourceName) {
+		//TODO ref type should also be set user
+		ReferenceType refType = ReferenceType.ANY;
+		updateDbService.addDefinitionSourceLink(definitionId, sourceId, refType, sourceValue, sourceName);
 	}
 
 	@Transactional
-	public void addFreeformSourceRef(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
-		updateDbService.addFreeformSourceRef(freeformId, sourceId, sourceValue, sourceName);
+	public void addFreeformSourceLink(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
+		//TODO ref type should also be set user
+		ReferenceType refType = ReferenceType.ANY;
+		updateDbService.addFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
 	}
 
 	@Transactional
-	public void addLexemeSourceRef(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
-		updateDbService.addLexemeSourceRef(lexemeId, sourceId, sourceValue, sourceName);
+	public void addLexemeSourceLink(Long lexemeId, Long sourceId, String sourceValue, String sourceName) {
+		//TODO ref type should also be set user
+		ReferenceType refType = ReferenceType.ANY;
+		updateDbService.addLexemeSourceLink(lexemeId, sourceId, refType, sourceValue, sourceName);
 	}
 
 	@Transactional

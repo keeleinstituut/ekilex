@@ -89,7 +89,7 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Collocation> secondaryCollocations;
 
-	private List<RefLink> refLinks;
+	private List<SourceLink> sourceLinks;
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
@@ -349,12 +349,12 @@ public class WordLexeme extends AbstractDataObject {
 		this.secondaryCollocations = secondaryCollocations;
 	}
 
-	public List<RefLink> getRefLinks() {
-		return refLinks;
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
 	}
 
-	public void setRefLinks(List<RefLink> refLinks) {
-		this.refLinks = refLinks;
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 	public boolean isLexemeOrMeaningClassifiersExist() {

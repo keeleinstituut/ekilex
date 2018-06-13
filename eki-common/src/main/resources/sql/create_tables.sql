@@ -1,11 +1,3 @@
-create table person
-(
-  id bigserial primary key,
-  name varchar(255) not null,
-  unique(name)
-);
-alter sequence person_id_seq restart with 10000;
-
 create table eki_user
 (
   id bigserial primary key,
@@ -378,8 +370,8 @@ create table source
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  process_state_code varchar(100) references process_state(code) null,
-  type varchar(100) null
+  type varchar(100) null,
+  process_state_code varchar(100) references process_state(code) null
 );
 alter sequence source_id_seq restart with 10000;
 
@@ -676,44 +668,44 @@ create table lex_colloc
 );
 alter sequence lex_colloc_id_seq restart with 10000;
 
-create table freeform_ref_link
+create table freeform_source_link
 (
   id bigserial primary key,
   freeform_id bigint references freeform(id) on delete cascade not null,
-  ref_type varchar(100) not null,
-  ref_id bigint null,
+  source_id bigint references source(id) on delete cascade not null,
+  type varchar(100) not null,
   name text null,
   value text null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
-alter sequence freeform_ref_link_id_seq restart with 10000;
+alter sequence freeform_source_link_id_seq restart with 10000;
 
-create table definition_ref_link
+create table definition_source_link
 (
   id bigserial primary key,
   definition_id bigint references definition(id) on delete cascade not null,
-  ref_type varchar(100) not null,
-  ref_id bigint null,
+  source_id bigint references source(id) on delete cascade not null,
+  type varchar(100) not null,
   name text null,
   value text null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
-alter sequence definition_ref_link_id_seq restart with 10000;
+alter sequence definition_source_link_id_seq restart with 10000;
 
-create table lexeme_ref_link
+create table lexeme_source_link
 (
   id bigserial primary key,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
-  ref_type varchar(100) not null,
-  ref_id bigint null,
+  source_id bigint references source(id) on delete cascade not null,
+  type varchar(100) not null,
   name text null,
   value text null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
-alter sequence lexeme_ref_link_id_seq restart with 10000;
+alter sequence lexeme_source_link_id_seq restart with 10000;
 
 --- indexes
 
@@ -748,9 +740,15 @@ create index definition_freeform_definition_id_idx on definition_freeform(defini
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
 create index collocation_freeform_collocation_id_idx on collocation_freeform(collocation_id);
 create index collocation_freeform_freeform_id_idx on collocation_freeform(freeform_id);
-create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
-create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
-create index lexeme_ref_link_lexeme_id_idx on lexeme_ref_link(lexeme_id);
+--create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
+--create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
+--create index lexeme_ref_link_lexeme_id_idx on lexeme_ref_link(lexeme_id);
+create index freeform_source_link_freeform_id_idx on freeform_source_link(freeform_id);
+create index freeform_source_link_source_id_idx on freeform_source_link(source_id);
+create index definition_source_link_definition_id_idx on definition_source_link(definition_id);
+create index definition_source_link_source_id_idx on definition_source_link(source_id);
+create index lexeme_source_link_lexeme_id_idx on lexeme_source_link(lexeme_id);
+create index lexeme_source_link_source_id_idx on lexeme_source_link(source_id);
 create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
 create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);

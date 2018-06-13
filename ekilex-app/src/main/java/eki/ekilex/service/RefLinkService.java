@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ReferenceOwner;
-import eki.ekilex.data.RefLink;
+import eki.ekilex.data.SourceLink;
 import eki.ekilex.service.db.RefLinkDbService;
 
 @Component
@@ -16,17 +16,17 @@ public class RefLinkService {
 	private RefLinkDbService refLinkDbService;
 
 	@Transactional
-	public RefLink getRefLink(Long refLinkId, ReferenceOwner referenceOwner) {
+	public SourceLink getSourceLink(Long refLinkId, ReferenceOwner referenceOwner) {
 
-		RefLink refLink = null;
+		SourceLink sourceLink = null;
 
 		if (ReferenceOwner.FREEFORM.equals(referenceOwner)) {
-			refLink = refLinkDbService.getFreeformRefLink(refLinkId).into(RefLink.class);
+			sourceLink = refLinkDbService.getFreeformSourceLink(refLinkId).into(SourceLink.class);
 		} else if (ReferenceOwner.DEFINITION.equals(referenceOwner)) {
-			refLink = refLinkDbService.getDefinitionRefLink(refLinkId).into(RefLink.class);
+			sourceLink = refLinkDbService.getDefinitionSourceLink(refLinkId).into(SourceLink.class);
 		} else if (ReferenceOwner.LEXEME.equals(referenceOwner)) {
-			refLink = refLinkDbService.getLexemeRefLink(refLinkId).into(RefLink.class);
+			sourceLink = refLinkDbService.getLexemeSourceLink(refLinkId).into(SourceLink.class);
 		}
-		return refLink;
+		return sourceLink;
 	}
 }

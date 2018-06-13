@@ -92,7 +92,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private final String defaultWordMorphCode = "??";
 	private final int defaultHomonymNr = 1;
-	private final String defaultGovernmentValue = "-";
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";

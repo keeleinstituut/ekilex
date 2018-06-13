@@ -18,17 +18,13 @@ public class Usage extends AbstractDataObject {
 
 	private String typeValue;
 
-	private String author;
-
-	private String authorType;
-
-	private String translator;
-
 	private List<UsageTranslation> translations;
 
 	private List<UsageDefinition> definitions;
 
-	private List<RefLink> refLinks;
+	private List<SourceLink> authors;
+
+	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
 		return id;
@@ -70,30 +66,6 @@ public class Usage extends AbstractDataObject {
 		this.typeValue = typeValue;
 	}
 
-	public String getAuthor() {
-		return author;
-	}
-
-	public void setAuthor(String author) {
-		this.author = author;
-	}
-
-	public String getAuthorType() {
-		return authorType;
-	}
-
-	public void setAuthorType(String authorType) {
-		this.authorType = authorType;
-	}
-
-	public String getTranslator() {
-		return translator;
-	}
-
-	public void setTranslator(String translator) {
-		this.translator = translator;
-	}
-
 	public List<UsageTranslation> getTranslations() {
 		return translations;
 	}
@@ -110,12 +82,20 @@ public class Usage extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<RefLink> getRefLinks() {
-		return refLinks;
+	public List<SourceLink> getAuthors() {
+		return authors;
 	}
 
-	public void setRefLinks(List<RefLink> refLinks) {
-		this.refLinks = refLinks;
+	public void setAuthors(List<SourceLink> authors) {
+		this.authors = authors;
+	}
+
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
+	}
+
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 }

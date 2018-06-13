@@ -3,7 +3,6 @@ package eki.common.constant;
 public interface TableName {
 
 	String EKI_USER = "eki_user";
-	String PERSON = "person";
 
 	// classifiers
 	String LANG = "lang";
@@ -33,9 +32,9 @@ public interface TableName {
 	String MEANING_FREEFORM = "meaning_freeform";
 	String DEFINITION_FREEFORM = "definition_freeform";
 	String SOURCE_FREEFORM = "source_freeform";
-	String FREEFORM_REF_LINK = "freeform_ref_link";
-	String DEFINITION_REF_LINK = "definition_ref_link";
-	String LEXEME_REF_LINK = "lexeme_ref_link";
+	String FREEFORM_SOURCE_LINK = "freeform_source_link";
+	String DEFINITION_SOURCE_LINK = "definition_source_link";
+	String LEXEME_SOURCE_LINK = "lexeme_source_link";
 	String DATASET = "dataset";
 	String VIEW = "vievv";
 	String WORD_GUID = "word_guid";

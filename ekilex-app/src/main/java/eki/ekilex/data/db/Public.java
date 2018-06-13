@@ -10,7 +10,7 @@ import eki.ekilex.data.db.tables.Dataset;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.DefinitionRefLink;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Deriv;
 import eki.ekilex.data.db.tables.DerivLabel;
 import eki.ekilex.data.db.tables.DisplayMorph;
@@ -23,7 +23,7 @@ import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
 import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
-import eki.ekilex.data.db.tables.FreeformRefLink;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.GovernmentType;
@@ -42,8 +42,8 @@ import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.LexemePos;
-import eki.ekilex.data.db.tables.LexemeRefLink;
 import eki.ekilex.data.db.tables.LexemeRegister;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
@@ -55,7 +55,6 @@ import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Person;
 import eki.ekilex.data.db.tables.Pos;
 import eki.ekilex.data.db.tables.PosGroup;
 import eki.ekilex.data.db.tables.PosGroupLabel;
@@ -121,7 +120,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1779032518;
+    private static final long serialVersionUID = -1712018187;
 
     /**
      * The reference instance of <code>public</code>
@@ -159,9 +158,9 @@ public class Public extends SchemaImpl {
     public final DefinitionFreeform DEFINITION_FREEFORM = eki.ekilex.data.db.tables.DefinitionFreeform.DEFINITION_FREEFORM;
 
     /**
-     * The table <code>public.definition_ref_link</code>.
+     * The table <code>public.definition_source_link</code>.
      */
-    public final DefinitionRefLink DEFINITION_REF_LINK = eki.ekilex.data.db.tables.DefinitionRefLink.DEFINITION_REF_LINK;
+    public final DefinitionSourceLink DEFINITION_SOURCE_LINK = eki.ekilex.data.db.tables.DefinitionSourceLink.DEFINITION_SOURCE_LINK;
 
     /**
      * The table <code>public.deriv</code>.
@@ -224,9 +223,9 @@ public class Public extends SchemaImpl {
     public final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
 
     /**
-     * The table <code>public.freeform_ref_link</code>.
+     * The table <code>public.freeform_source_link</code>.
      */
-    public final FreeformRefLink FREEFORM_REF_LINK = eki.ekilex.data.db.tables.FreeformRefLink.FREEFORM_REF_LINK;
+    public final FreeformSourceLink FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.FreeformSourceLink.FREEFORM_SOURCE_LINK;
 
     /**
      * The table <code>public.gender</code>.
@@ -319,14 +318,14 @@ public class Public extends SchemaImpl {
     public final LexemePos LEXEME_POS = eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 
     /**
-     * The table <code>public.lexeme_ref_link</code>.
-     */
-    public final LexemeRefLink LEXEME_REF_LINK = eki.ekilex.data.db.tables.LexemeRefLink.LEXEME_REF_LINK;
-
-    /**
      * The table <code>public.lexeme_register</code>.
      */
     public final LexemeRegister LEXEME_REGISTER = eki.ekilex.data.db.tables.LexemeRegister.LEXEME_REGISTER;
+
+    /**
+     * The table <code>public.lexeme_source_link</code>.
+     */
+    public final LexemeSourceLink LEXEME_SOURCE_LINK = eki.ekilex.data.db.tables.LexemeSourceLink.LEXEME_SOURCE_LINK;
 
     /**
      * The table <code>public.lifecycle_log</code>.
@@ -382,11 +381,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.paradigm</code>.
      */
     public final Paradigm PARADIGM = eki.ekilex.data.db.tables.Paradigm.PARADIGM;
-
-    /**
-     * The table <code>public.person</code>.
-     */
-    public final Person PERSON = eki.ekilex.data.db.tables.Person.PERSON;
 
     /**
      * The table <code>public.pos</code>.
@@ -568,16 +562,16 @@ public class Public extends SchemaImpl {
             Sequences.DEFINITION_FREEFORM_ID_SEQ,
             Sequences.DEFINITION_ID_SEQ,
             Sequences.DEFINITION_ORDER_BY_SEQ,
-            Sequences.DEFINITION_REF_LINK_ID_SEQ,
-            Sequences.DEFINITION_REF_LINK_ORDER_BY_SEQ,
+            Sequences.DEFINITION_SOURCE_LINK_ID_SEQ,
+            Sequences.DEFINITION_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
             Sequences.FORM_RELATION_ORDER_BY_SEQ,
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
-            Sequences.FREEFORM_REF_LINK_ID_SEQ,
-            Sequences.FREEFORM_REF_LINK_ORDER_BY_SEQ,
+            Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
+            Sequences.FREEFORM_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
@@ -590,10 +584,10 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
-            Sequences.LEXEME_REF_LINK_ID_SEQ,
-            Sequences.LEXEME_REF_LINK_ORDER_BY_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
             Sequences.LEXEME_REGISTER_ORDER_BY_SEQ,
+            Sequences.LEXEME_SOURCE_LINK_ID_SEQ,
+            Sequences.LEXEME_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_DOMAIN_ID_SEQ,
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
@@ -602,7 +596,6 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
-            Sequences.PERSON_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
@@ -626,7 +619,7 @@ public class Public extends SchemaImpl {
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
             DefinitionFreeform.DEFINITION_FREEFORM,
-            DefinitionRefLink.DEFINITION_REF_LINK,
+            DefinitionSourceLink.DEFINITION_SOURCE_LINK,
             Deriv.DERIV,
             DerivLabel.DERIV_LABEL,
             DisplayMorph.DISPLAY_MORPH,
@@ -639,7 +632,7 @@ public class Public extends SchemaImpl {
             FormRelTypeLabel.FORM_REL_TYPE_LABEL,
             FormRelation.FORM_RELATION,
             Freeform.FREEFORM,
-            FreeformRefLink.FREEFORM_REF_LINK,
+            FreeformSourceLink.FREEFORM_SOURCE_LINK,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
             GovernmentType.GOVERNMENT_TYPE,
@@ -658,8 +651,8 @@ public class Public extends SchemaImpl {
             LexemeFreeform.LEXEME_FREEFORM,
             LexemeFrequency.LEXEME_FREQUENCY,
             LexemePos.LEXEME_POS,
-            LexemeRefLink.LEXEME_REF_LINK,
             LexemeRegister.LEXEME_REGISTER,
+            LexemeSourceLink.LEXEME_SOURCE_LINK,
             LifecycleLog.LIFECYCLE_LOG,
             Meaning.MEANING,
             MeaningDomain.MEANING_DOMAIN,
@@ -671,7 +664,6 @@ public class Public extends SchemaImpl {
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,
-            Person.PERSON,
             Pos.POS,
             PosGroup.POS_GROUP,
             PosGroupLabel.POS_GROUP_LABEL,

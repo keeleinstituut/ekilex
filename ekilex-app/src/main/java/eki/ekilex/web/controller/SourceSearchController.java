@@ -2,8 +2,6 @@ package eki.ekilex.web.controller;
 
 import java.util.List;
 
-import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,7 +49,7 @@ public class SourceSearchController {
 		List<Source> sources = sourceService.findSourcesByNameOrCode(searchFilter);
 		model.addAttribute("sourcesFoundBySearch", sources);
 
-		return "common :: sourceRefDlgContent";
+		return "common :: sourceLinkDlgContent";
 	}
 
 }

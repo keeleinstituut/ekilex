@@ -2,9 +2,9 @@ package eki.common.constant;
 
 public interface ContentKey {
 
-	String FREEFORM_REF_LINK = "ff_ref_link";
+	String FREEFORM_SOURCE_LINK = "ff_source_link";
 
-	String DEFINITION_REF_LINK = "def_ref_link";
+	String DEFINITION_SOURCE_LINK = "def_source_link";
 
-	String LEXEME_REF_LINK = "lex_ref_link";
+	String LEXEME_SOURCE_LINK = "lex_source_link";
 }

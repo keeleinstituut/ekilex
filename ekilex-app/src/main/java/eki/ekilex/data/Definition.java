@@ -16,7 +16,7 @@ public class Definition extends AbstractDataObject {
 
 	private Long orderBy;
 
-	private List<RefLink> refLinks;
+	private List<SourceLink> sourceLinks;
 
 	public Long getId() {
 		return id;
@@ -50,12 +50,12 @@ public class Definition extends AbstractDataObject {
 		this.orderBy = orderBy;
 	}
 
-	public List<RefLink> getRefLinks() {
-		return refLinks;
+	public List<SourceLink> getSourceLinks() {
+		return sourceLinks;
 	}
 
-	public void setRefLinks(List<RefLink> refLinks) {
-		this.refLinks = refLinks;
+	public void setSourceLinks(List<SourceLink> sourceLinks) {
+		this.sourceLinks = sourceLinks;
 	}
 
 }

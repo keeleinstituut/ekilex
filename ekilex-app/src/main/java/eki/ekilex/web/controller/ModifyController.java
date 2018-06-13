@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
@@ -226,13 +227,13 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.removeGovernment(id);
 			break;
-		case "def_ref_link" :
+		case ContentKey.DEFINITION_SOURCE_LINK :
 			updateService.removeDefinitionRefLink(id);
 			break;
-		case "ff_ref_link" :
+		case ContentKey.FREEFORM_SOURCE_LINK :
 			updateService.removeFreeformRefLink(id);
 			break;
-		case "lex_ref_link" :
+		case ContentKey.LEXEME_SOURCE_LINK :
 			updateService.removeLexemeRefLink(id);
 			break;
 		case "lexeme_deriv" :
@@ -282,23 +283,23 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
-		case "defSourceRef" : {
-			Source source = sourceService.getSource(itemData.getId2());
-			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-			updateService.addDefinitionSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
-			break;
+		case ContentKey.DEFINITION_SOURCE_LINK : {
+				Source source = sourceService.getSource(itemData.getId2());
+				Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+				updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
+				break;
 			}
-		case "ffSourceRef" : {
-			Source source = sourceService.getSource(itemData.getId2());
-			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-			updateService.addFreeformSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
-			break;
+		case ContentKey.FREEFORM_SOURCE_LINK : {
+				Source source = sourceService.getSource(itemData.getId2());
+				Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+				updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
+				break;
 			}
-		case "lexSourceRef" : {
-			Source source = sourceService.getSource(itemData.getId2());
-			Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-			updateService.addLexemeSourceRef(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
-			break;
+		case ContentKey.LEXEME_SOURCE_LINK : {
+				Source source = sourceService.getSource(itemData.getId2());
+				Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+				updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
+				break;
 			}
 		case "lexeme_deriv" :
 			updateService.addLexemeDeriv(itemData.getId(), itemData.getValue());

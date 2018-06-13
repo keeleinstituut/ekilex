@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import javax.persistence.Column;
 
+import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 
 public class DefinitionRefTuple extends AbstractDataObject {
@@ -20,14 +21,17 @@ public class DefinitionRefTuple extends AbstractDataObject {
 	@Column(name = "definition_order_by")
 	private Long definitionOrderBy;
 
-	@Column(name = "ref_link_id")
-	private Long refLinkId;
+	@Column(name = "source_link_id")
+	private Long sourceLinkId;
 
-	@Column(name = "ref_link_name")
-	private String refLinkName;
+	@Column(name = "source_link_type")
+	private ReferenceType sourceLinkType;
 
-	@Column(name = "ref_link_value")
-	private String refLinkValue;
+	@Column(name = "source_link_name")
+	private String sourceLinkName;
+
+	@Column(name = "source_link_value")
+	private String sourceLinkValue;
 
 	public Long getDefinitionId() {
 		return definitionId;
@@ -61,28 +65,36 @@ public class DefinitionRefTuple extends AbstractDataObject {
 		this.definitionOrderBy = definitionOrderBy;
 	}
 
-	public Long getRefLinkId() {
-		return refLinkId;
+	public Long getSourceLinkId() {
+		return sourceLinkId;
 	}
 
-	public void setRefLinkId(Long refLinkId) {
-		this.refLinkId = refLinkId;
+	public void setSourceLinkId(Long sourceLinkId) {
+		this.sourceLinkId = sourceLinkId;
 	}
 
-	public String getRefLinkName() {
-		return refLinkName;
+	public ReferenceType getSourceLinkType() {
+		return sourceLinkType;
 	}
 
-	public void setRefLinkName(String refLinkName) {
-		this.refLinkName = refLinkName;
+	public void setSourceLinkType(ReferenceType sourceLinkType) {
+		this.sourceLinkType = sourceLinkType;
 	}
 
-	public String getRefLinkValue() {
-		return refLinkValue;
+	public String getSourceLinkName() {
+		return sourceLinkName;
 	}
 
-	public void setRefLinkValue(String refLinkValue) {
-		this.refLinkValue = refLinkValue;
+	public void setSourceLinkName(String sourceLinkName) {
+		this.sourceLinkName = sourceLinkName;
+	}
+
+	public String getSourceLinkValue() {
+		return sourceLinkValue;
+	}
+
+	public void setSourceLinkValue(String sourceLinkValue) {
+		this.sourceLinkValue = sourceLinkValue;
 	}
 
 }

@@ -44,7 +44,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
-	private final static String defaultGovernmentValue = "-";
 
 	private Map<String, String> posCodes;
 
@@ -463,7 +462,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
-			createDefinitionRefLink(definitionId, ReferenceType.SOURCE, ekilexSource.id, null, ekilexSource.name);
+			createDefinitionSourceLink(definitionId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 
@@ -471,7 +470,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
-			createLexemeRefLink(lexemeId, ReferenceType.SOURCE, ekilexSource.id, null, ekilexSource.name);
+			createLexemeSourceLink(lexemeId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 
@@ -479,7 +478,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
-			createFreeformRefLink(usageId, ReferenceType.SOURCE, ekilexSource.id, null, ekilexSource.name);
+			createFreeformSourceLink(usageId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
 

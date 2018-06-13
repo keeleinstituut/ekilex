@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Source extends TableImpl<SourceRecord> {
 
-    private static final long serialVersionUID = -1901150012;
+    private static final long serialVersionUID = -2068052348;
 
     /**
      * The reference instance of <code>public.source</code>
@@ -87,14 +87,14 @@ public class Source extends TableImpl<SourceRecord> {
     public final TableField<SourceRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.source.process_state_code</code>.
-     */
-    public final TableField<SourceRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.source.type</code>.
      */
     public final TableField<SourceRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.source.process_state_code</code>.
+     */
+    public final TableField<SourceRecord, String> PROCESS_STATE_CODE = createField("process_state_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.source</code> table reference
