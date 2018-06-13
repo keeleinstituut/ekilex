@@ -5,6 +5,9 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 	var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
 	$.get(wordDetailsUrl).done(function(data) {
 		detailsDiv.replaceWith(data);
+		if (word.includes('/')) {
+            wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
+		}
 		var historyState = {
 			wordId: wordId,
 			word: word,
@@ -30,7 +33,7 @@ function setHomonymNrVisibility() {
 
 function fetchCorpSentences(sentence) {
 	var corpDiv = $("#korp");
-	$.get(applicationUrl + 'korp/' + sentence).done(function(data) {
+	$.get(applicationUrl + 'korp/' + encodeURIComponent(sentence)).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
@@ -125,4 +128,3 @@ $(document).on("click", "[name='word-form-btn']", function(e) {
 	$("input[name = 'searchWord']").val(word);
 	$('#search-btn').trigger('click');
 });
-

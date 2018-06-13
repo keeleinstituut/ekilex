@@ -2,8 +2,6 @@ package eki.wordweb.web.controller;
 
 import static java.util.Collections.emptyList;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -30,6 +28,7 @@ import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CorporaService;
 import eki.wordweb.service.LexSearchService;
 import eki.wordweb.web.bean.SessionBean;
+import org.springframework.web.util.UriUtils;
 
 @ConditionalOnWebApplication
 @Controller
@@ -54,7 +53,7 @@ public class SearchController extends AbstractController {
 	public String searchWords(
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "sourceLang") String sourceLang,
-			@RequestParam(name = "destinLang") String destinLang) throws Exception {
+			@RequestParam(name = "destinLang") String destinLang) {
 
 		searchWord = StringUtils.trim(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
@@ -73,7 +72,7 @@ public class SearchController extends AbstractController {
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			Model model) throws Exception {
+			Model model) {
 
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr);
 
@@ -81,7 +80,6 @@ public class SearchController extends AbstractController {
 			return "redirect:" + searchFilter.getSearchUri();
 		}
 
-		searchWord = searchFilter.getSearchWord();
 		String sourceLang = searchFilter.getSourceLang();
 		String destinLang = searchFilter.getDestinLang();
 		Integer homonymNr = searchFilter.getHomonymNr();
@@ -128,7 +126,7 @@ public class SearchController extends AbstractController {
 		return SEARCH_PAGE + " :: korp";
 	}
 
-	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr) throws Exception {
+	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr) {
 
 		boolean isValid = true;
 		String[] languages = StringUtils.split(langPair, LANGUAGE_PAIR_SEPARATOR);
@@ -181,8 +179,8 @@ public class SearchController extends AbstractController {
 		return searchFilter;
 	}
 
-	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr) throws UnsupportedEncodingException {
-		String encodedSearchWord = URLEncoder.encode(searchWord, SystemConstant.UTF_8);
+	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr) {
+		String encodedSearchWord = UriUtils.encodePathSegment(searchWord, SystemConstant.UTF_8);
 		String searchUri = SEARCH_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + encodedSearchWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
