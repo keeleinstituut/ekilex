@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -14,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.ArrayUtils;
 
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
@@ -30,6 +32,8 @@ import eki.wordweb.service.util.ConversionUtil;
 
 @Component
 public class LexSearchService implements InitializingBean {
+
+	private static final String[] INDECLINABLE_WORD_FORM_CODES = new String[] {"ID", "??"};
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -115,11 +119,29 @@ public class LexSearchService implements InitializingBean {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
+		String firstAvailableVocalForm = null;
+		String firstAvailableSoundFile = null;
+		boolean isIndeclinableWord = false;
+		if (CollectionUtils.isNotEmpty(paradigms)) {
+			List<Form> firstForms = paradigms.get(0).getForms();
+			if (CollectionUtils.isNotEmpty(firstForms)) {
+				Optional<Form> firstFormOption = firstForms.stream().filter(form -> form.isWord()).findFirst();
+				if (firstFormOption.isPresent()) {
+					Form firstForm = firstFormOption.get();
+					firstAvailableVocalForm = firstForm.getVocalForm();
+					firstAvailableSoundFile = firstForm.getSoundFile();
+					isIndeclinableWord = ArrayUtils.contains(INDECLINABLE_WORD_FORM_CODES, firstForm.getMorphCode());
+				}
+			}
+		}
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);
 		wordData.setParadigms(paradigms);
 		wordData.setImageFiles(allImageFiles);
+		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
+		wordData.setFirstAvailableSoundFile(firstAvailableSoundFile);
+		wordData.setIndeclinableWord(isIndeclinableWord);
 		combineLevels(wordData.getLexemes());
 		return wordData;
 	}

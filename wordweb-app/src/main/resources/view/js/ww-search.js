@@ -33,7 +33,8 @@ function setHomonymNrVisibility() {
 
 function fetchCorpSentences(sentence) {
 	var corpDiv = $("#korp");
-	$.get(applicationUrl + 'korp/' + encodeURIComponent(sentence)).done(function(data) {
+	var corpSentencesUrl = applicationUrl + 'korp/' + encodeURIComponent(sentence);
+	$.get(corpSentencesUrl).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {
 		console.log(data);
