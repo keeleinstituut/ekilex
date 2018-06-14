@@ -9,11 +9,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ev2LoaderRunner extends AbstractLoaderRunner {
 
+	private static String dataLang = "est";
+
 	private static Logger logger = LoggerFactory.getLogger(Ev2LoaderRunner.class);
 
 	@Override
 	void initialise() throws Exception {
-
 	}
 
 	@Override
@@ -22,8 +23,7 @@ public class Ev2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(
-			String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, boolean doReports) throws Exception {
 
 		logger.debug("Loading EV2...");
 
@@ -33,4 +33,5 @@ public class Ev2LoaderRunner extends AbstractLoaderRunner {
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
+
 }
