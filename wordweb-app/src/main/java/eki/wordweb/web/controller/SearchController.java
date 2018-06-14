@@ -74,6 +74,7 @@ public class SearchController extends AbstractController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
+		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr);
 
 		if (!searchFilter.isValid()) {
