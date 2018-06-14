@@ -367,7 +367,7 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
+            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms) and not wordData.unknownForm}">
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
                 <div class="morphology-section">
                   See sõna ei muutu

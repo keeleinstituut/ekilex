@@ -33,7 +33,8 @@ import eki.wordweb.service.util.ConversionUtil;
 @Component
 public class LexSearchService implements InitializingBean {
 
-	private static final String[] INDECLINABLE_WORD_FORM_CODES = new String[] {"ID", "??"};
+	private static final String INDECLINABLE_WORD_FORM_CODE = "ID";
+	private static final String UNKNOWN_FORM_CODE = "??";
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -122,15 +123,17 @@ public class LexSearchService implements InitializingBean {
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
 		boolean isIndeclinableWord = false;
+		boolean isUnknownForm = false;
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			List<Form> firstForms = paradigms.get(0).getForms();
 			if (CollectionUtils.isNotEmpty(firstForms)) {
-				Optional<Form> firstFormOption = firstForms.stream().filter(form -> form.isWord()).findFirst();
+				Optional<Form> firstFormOption = firstForms.stream().filter(Form::isWord).findFirst();
 				if (firstFormOption.isPresent()) {
 					Form firstForm = firstFormOption.get();
 					firstAvailableVocalForm = firstForm.getVocalForm();
 					firstAvailableSoundFile = firstForm.getSoundFile();
-					isIndeclinableWord = ArrayUtils.contains(INDECLINABLE_WORD_FORM_CODES, firstForm.getMorphCode());
+					isIndeclinableWord = INDECLINABLE_WORD_FORM_CODE.equals(firstForm.getMorphCode());
+					isUnknownForm = UNKNOWN_FORM_CODE.equals(firstForm.getMorphCode());
 				}
 			}
 		}
@@ -142,6 +145,7 @@ public class LexSearchService implements InitializingBean {
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableSoundFile(firstAvailableSoundFile);
 		wordData.setIndeclinableWord(isIndeclinableWord);
+		wordData.setUnknownForm(isUnknownForm);
 		combineLevels(wordData.getLexemes());
 		return wordData;
 	}

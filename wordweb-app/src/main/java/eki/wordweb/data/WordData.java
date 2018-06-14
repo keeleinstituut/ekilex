@@ -22,6 +22,8 @@ public class WordData extends AbstractDataObject {
 
 	private boolean indeclinableWord;
 
+	private boolean unknownForm;
+
 	public Word getWord() {
 		return word;
 	}
@@ -78,4 +80,11 @@ public class WordData extends AbstractDataObject {
 		this.indeclinableWord = indeclinableWord;
 	}
 
+	public boolean isUnknownForm() {
+		return unknownForm;
+	}
+
+	public void setUnknownForm(boolean unknownForm) {
+		this.unknownForm = unknownForm;
+	}
 }
