@@ -283,24 +283,15 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
-		case ContentKey.DEFINITION_SOURCE_LINK : {
-				Source source = sourceService.getSource(itemData.getId2());
-				Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-				updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
-				break;
-			}
-		case ContentKey.FREEFORM_SOURCE_LINK : {
-				Source source = sourceService.getSource(itemData.getId2());
-				Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-				updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
-				break;
-			}
-		case ContentKey.LEXEME_SOURCE_LINK : {
-				Source source = sourceService.getSource(itemData.getId2());
-				Optional<SourceMember> code = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-				updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), code.get().getValueText(), itemData.getValue());
-				break;
-			}
+		case ContentKey.DEFINITION_SOURCE_LINK :
+			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), findSourceCodeOrName(itemData.getId2()), itemData.getValue());
+			break;
+		case ContentKey.FREEFORM_SOURCE_LINK :
+			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), findSourceCodeOrName(itemData.getId2()), itemData.getValue());
+			break;
+		case ContentKey.LEXEME_SOURCE_LINK :
+			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), findSourceCodeOrName(itemData.getId2()), itemData.getValue());
+			break;
 		case "lexeme_deriv" :
 			updateService.addLexemeDeriv(itemData.getId(), itemData.getValue());
 			break;
@@ -315,6 +306,15 @@ public class ModifyController implements WebConstant {
 			break;
 		}
 		return "{}";
+	}
+
+	private String findSourceCodeOrName(Long sourceId) {
+		Source source = sourceService.getSource(sourceId);
+		Optional<SourceMember> codeMember = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
+		if (!codeMember.isPresent()) {
+			codeMember = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_NAME.equals(s.getType())).findFirst();
+		}
+		return codeMember.isPresent() ? codeMember.get().getValueText() : "---";
 	}
 
 	@PostMapping("/add_word")
