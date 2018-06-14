@@ -416,7 +416,7 @@
             </div>
             <div th:if="${not #lists.isEmpty(lexeme.governments)}">
               <hr />
-              <table th:each="government,governmentIter : ${lexeme.governments}">
+              <table>
                 <tr>
                   <th class="lbl">Rektsioon
                     <button type="button" class="btn badge badge-success" title="Lisa uus"
@@ -427,7 +427,7 @@
                     </button>
                   </th>
                 </tr>
-                <tr>
+                <tr th:each="government : ${lexeme.governments}">
                   <td class="hidden-buttons">
                     <span th:name="${government.id} + '_government'"
                           th:data-id="${government.id}"
@@ -445,11 +445,6 @@
                             data-toggle="delete-confirmation" data-placement="right">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
-                  </td>
-                </tr>
-                <tr th:unless="${governmentIter.last}">
-                  <td>
-                    <hr />
                   </td>
                 </tr>
               </table>
