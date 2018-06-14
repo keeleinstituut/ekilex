@@ -12,6 +12,7 @@ drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
+drop type if exists type_source_link;
 drop type if exists type_colloc_member;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
@@ -24,7 +25,8 @@ drop type if exists type_meaning_relation;
 create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_author text, usage_translator text);
+create type type_source_link as (source_link_id bigint, source_id bigint, source_link_type varchar(100), source_name text);
+create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors type_source_link array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text);
 create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
@@ -101,13 +103,8 @@ dblink(
 	advice_notes text array,
 	public_notes text array,
 	grammars text array,
-	government_id bigint,
-	government text,
-	usage_meaning_id bigint,
-	usage_meaning_type_code varchar(100),
-	usages type_usage array,
-	usage_translations text array,
-	usage_definitions text array
+	governments text array,
+	usages type_usage array
 );
 
 create materialized view mview_ww_collocation as

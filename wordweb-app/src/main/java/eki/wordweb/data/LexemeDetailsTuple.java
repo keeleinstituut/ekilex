@@ -18,19 +18,9 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	private List<String> grammars;
 
-	private Long governmentId;
-
-	private String government;
-
-	private Long usageMeaningId;
-
-	private String usageMeaningTypeCode;
+	private List<String> governments;
 
 	private List<TypeUsage> usages;
-
-	private List<String> usageTranslations;
-
-	private List<String> usageDefinitions;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -76,36 +66,12 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 		this.grammars = grammars;
 	}
 
-	public Long getGovernmentId() {
-		return governmentId;
+	public List<String> getGovernments() {
+		return governments;
 	}
 
-	public void setGovernmentId(Long governmentId) {
-		this.governmentId = governmentId;
-	}
-
-	public String getGovernment() {
-		return government;
-	}
-
-	public void setGovernment(String government) {
-		this.government = government;
-	}
-
-	public Long getUsageMeaningId() {
-		return usageMeaningId;
-	}
-
-	public void setUsageMeaningId(Long usageMeaningId) {
-		this.usageMeaningId = usageMeaningId;
-	}
-
-	public String getUsageMeaningTypeCode() {
-		return usageMeaningTypeCode;
-	}
-
-	public void setUsageMeaningTypeCode(String usageMeaningTypeCode) {
-		this.usageMeaningTypeCode = usageMeaningTypeCode;
+	public void setGovernments(List<String> governments) {
+		this.governments = governments;
 	}
 
 	public List<TypeUsage> getUsages() {
@@ -114,22 +80,6 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	public void setUsages(List<TypeUsage> usages) {
 		this.usages = usages;
-	}
-
-	public List<String> getUsageTranslations() {
-		return usageTranslations;
-	}
-
-	public void setUsageTranslations(List<String> usageTranslations) {
-		this.usageTranslations = usageTranslations;
-	}
-
-	public List<String> getUsageDefinitions() {
-		return usageDefinitions;
-	}
-
-	public void setUsageDefinitions(List<String> usageDefinitions) {
-		this.usageDefinitions = usageDefinitions;
 	}
 
 	public List<TypeLexemeRelation> getRelatedLexemes() {

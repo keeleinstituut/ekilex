@@ -22,7 +22,6 @@ import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.FormPair;
-import eki.wordweb.data.Government;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -31,9 +30,9 @@ import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
+import eki.wordweb.data.TypeUsage;
 import eki.wordweb.data.TypeWord;
 import eki.wordweb.data.TypeWordRelation;
-import eki.wordweb.data.UsageMeaning;
 import eki.wordweb.data.Word;
 import eki.wordweb.service.db.CommonDataDbService;
 
@@ -87,8 +86,6 @@ public class ConversionUtil {
 
 		List<Lexeme> lexemes = new ArrayList<>();
 		Map<Long, Lexeme> lexemeMap = new HashMap<>();
-		Map<Long, Government> governmentMap = new HashMap<>();
-		Map<Long, UsageMeaning> usageMeaningMap = new HashMap<>();
 		Map<Long, CollocationPosGroup> collocPosGroupMap = new HashMap<>();
 		Map<Long, CollocationRelGroup> collocRelGroupMap = new HashMap<>();
 		List<Long> meaningWordIds = null;
@@ -113,9 +110,9 @@ public class ConversionUtil {
 			lexeme.setAdviceNotes(tuple.getAdviceNotes());
 			lexeme.setPublicNotes(tuple.getPublicNotes());
 			lexeme.setGrammars(tuple.getGrammars());
+			lexeme.setGovernments(tuple.getGovernments());
 
-			Government government = populateGovernment(lexeme, tuple, governmentMap);
-			populateUsageMeaning(government, tuple, usageMeaningMap, displayLang);
+			populateUsages(lexeme, tuple, displayLang);
 			populateRelatedLexemes(lexeme, tuple, displayLang);
 			populateRelatedMeanings(lexeme, tuple, displayLang);
 		}
@@ -172,6 +169,7 @@ public class ConversionUtil {
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setOtherLangMatchWords(new ArrayList<>());
 		lexeme.setGovernments(new ArrayList<>());
+		lexeme.setUsages(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
 		lexeme.setSecondaryCollocations(new ArrayList<>());
 		return lexeme;
@@ -196,37 +194,19 @@ public class ConversionUtil {
 		}
 	}
 
-	private Government populateGovernment(Lexeme lexeme, LexemeDetailsTuple tuple, Map<Long, Government> governmentMap) {
-		Long governmentId = tuple.getGovernmentId();
-		Government government = governmentMap.get(governmentId);
-		if (government == null) {
-			government = new Government();
-			government.setGovernmentId(governmentId);
-			government.setGovernment(tuple.getGovernment());
-			government.setUsageMeanings(new ArrayList<>());
-			governmentMap.put(governmentId, government);
-			lexeme.getGovernments().add(government);
-		}
-		return government;
-	}
+	private void populateUsages(Lexeme lexeme, LexemeDetailsTuple tuple, String displayLang) {
 
-	private void populateUsageMeaning(Government government, LexemeDetailsTuple tuple, Map<Long, UsageMeaning> usageMeaningMap, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
-		Long usageMeaningId = tuple.getUsageMeaningId();
-		UsageMeaning usageMeaning = usageMeaningMap.get(usageMeaningId);
-		if (usageMeaning == null) {
-			usageMeaning = new UsageMeaning();
-			usageMeaning.setUsageMeaningId(usageMeaningId);
-			classifierCode = tuple.getUsageMeaningTypeCode();
-			classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, displayLang);
-			usageMeaning.setUsageMeaningType(classifier);
-			usageMeaning.setUsages(tuple.getUsages());
-			usageMeaning.setUsageTranslations(tuple.getUsageTranslations());
-			usageMeaning.setUsageDefinitions(tuple.getUsageDefinitions());
-			usageMeaningMap.put(usageMeaningId, usageMeaning);
-			government.getUsageMeanings().add(usageMeaning);
+		List<TypeUsage> usages = tuple.getUsages();
+		if (CollectionUtils.isNotEmpty(usages)) {
+			for (TypeUsage usage : usages) {
+				classifierCode = usage.getUsageTypeCode();
+				classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, displayLang);
+				usage.setUsageType(classifier);
+			}
 		}
+		lexeme.setUsages(usages);
 	}
 
 	private void populateRelatedLexemes(Lexeme lexeme, LexemeDetailsTuple tuple, String displayLang) {

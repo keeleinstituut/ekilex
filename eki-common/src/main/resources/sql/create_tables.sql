@@ -711,6 +711,7 @@ alter sequence lexeme_source_link_id_seq restart with 10000;
 
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
+create index form_isword_idx on form(is_word);
 create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
