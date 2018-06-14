@@ -15,7 +15,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.thymeleaf.util.ArrayUtils;
 
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
@@ -132,8 +131,8 @@ public class LexSearchService implements InitializingBean {
 					Form firstForm = firstFormOption.get();
 					firstAvailableVocalForm = firstForm.getVocalForm();
 					firstAvailableSoundFile = firstForm.getSoundFile();
-					isIndeclinableWord = INDECLINABLE_WORD_FORM_CODE.equals(firstForm.getMorphCode());
-					isUnknownForm = UNKNOWN_FORM_CODE.equals(firstForm.getMorphCode());
+					isIndeclinableWord = StringUtils.equals(INDECLINABLE_WORD_FORM_CODE, firstForm.getMorphCode());
+					isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstForm.getMorphCode());
 				}
 			}
 		}
