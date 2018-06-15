@@ -23,13 +23,17 @@ public class Lexeme extends AbstractDataObject {
 
 	private Integer level3;
 
+	private String levels;
+
 	private List<String> adviceNotes;
 
 	private List<String> publicNotes;
 
 	private List<String> grammars;
 
-	private List<Government> governments;
+	private List<String> governments;
+
+	private List<TypeUsage> usages;
 
 	private List<Classifier> registers;
 
@@ -62,8 +66,6 @@ public class Lexeme extends AbstractDataObject {
 	private List<CollocationPosGroup> collocationPosGroups;
 
 	private List<Collocation> secondaryCollocations;
-
-	private String levels;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -121,6 +123,14 @@ public class Lexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
+	public String getLevels() {
+		return levels;
+	}
+
+	public void setLevels(String levels) {
+		this.levels = levels;
+	}
+
 	public List<String> getAdviceNotes() {
 		return adviceNotes;
 	}
@@ -145,12 +155,20 @@ public class Lexeme extends AbstractDataObject {
 		this.grammars = grammars;
 	}
 
-	public List<Government> getGovernments() {
+	public List<String> getGovernments() {
 		return governments;
 	}
 
-	public void setGovernments(List<Government> governments) {
+	public void setGovernments(List<String> governments) {
 		this.governments = governments;
+	}
+
+	public List<TypeUsage> getUsages() {
+		return usages;
+	}
+
+	public void setUsages(List<TypeUsage> usages) {
+		this.usages = usages;
 	}
 
 	public List<Classifier> getRegisters() {
@@ -281,11 +299,4 @@ public class Lexeme extends AbstractDataObject {
 		this.secondaryCollocations = secondaryCollocations;
 	}
 
-	public String getLevels() {
-		return levels;
-	}
-
-	public void setLevels(String levels) {
-		this.levels = levels;
-	}
 }

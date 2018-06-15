@@ -283,15 +283,21 @@ public class ModifyController implements WebConstant {
 		case "government" :
 			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
-		case ContentKey.DEFINITION_SOURCE_LINK :
-			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), findSourceCodeOrName(itemData.getId2()), itemData.getValue());
+		case ContentKey.DEFINITION_SOURCE_LINK : {
+			String sourceCodeOrName = findSourceCodeOrName(itemData.getId2());
+			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceCodeOrName, itemData.getValue());
 			break;
-		case ContentKey.FREEFORM_SOURCE_LINK :
-			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), findSourceCodeOrName(itemData.getId2()), itemData.getValue());
+		}
+		case ContentKey.FREEFORM_SOURCE_LINK : {
+			String sourceCodeOrName = findSourceCodeOrName(itemData.getId2());
+			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), sourceCodeOrName, itemData.getValue());
 			break;
-		case ContentKey.LEXEME_SOURCE_LINK :
-			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), findSourceCodeOrName(itemData.getId2()), itemData.getValue());
+		}
+		case ContentKey.LEXEME_SOURCE_LINK : {
+			String sourceCodeOrName = findSourceCodeOrName(itemData.getId2());
+			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceCodeOrName, itemData.getValue());
 			break;
+		}
 		case "lexeme_deriv" :
 			updateService.addLexemeDeriv(itemData.getId(), itemData.getValue());
 			break;

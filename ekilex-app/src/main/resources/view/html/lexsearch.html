@@ -416,7 +416,7 @@
             </div>
             <div th:if="${not #lists.isEmpty(lexeme.governments)}">
               <hr />
-              <table th:each="government,governmentIter : ${lexeme.governments}">
+              <table>
                 <tr>
                   <th class="lbl">Rektsioon
                     <button type="button" class="btn badge badge-success" title="Lisa uus"
@@ -427,7 +427,7 @@
                     </button>
                   </th>
                 </tr>
-                <tr>
+                <tr th:each="government : ${lexeme.governments}">
                   <td class="hidden-buttons">
                     <span th:name="${government.id} + '_government'"
                           th:data-id="${government.id}"
@@ -445,11 +445,6 @@
                             data-toggle="delete-confirmation" data-placement="right">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
-                  </td>
-                </tr>
-                <tr th:unless="${governmentIter.last}">
-                  <td>
-                    <hr />
                   </td>
                 </tr>
               </table>
@@ -498,9 +493,16 @@
                           </span>
                           <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
                             [
-                            <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
-                              <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                              <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
+                            <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}">
+                              <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
+                                 th:name="${sourceLink.id} + '_ff_source_link'"
+                                 th:data-id="${sourceLink.id}"
+                                 th:data-op-code="ff_source_link"
+                                 th:text="${sourceLink.value}"
+                                 th:if="${sourceLink.value != null}">
+                                <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
+                                <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
+                              </a>
                               <span th:unless="${sourceLinkIter.last}">, </span>
                             </span>
                             ]

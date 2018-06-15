@@ -1,7 +1,8 @@
 create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_author text, usage_translator text);
+create type type_source_link as (source_link_id bigint, source_id bigint, source_link_type varchar(100), source_name text);
+create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors type_source_link array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
@@ -205,13 +206,8 @@ create view view_ww_lexeme
            anote.advice_notes,
            pnote.public_notes,
            gramm.grammars,
-           gov.government_id,
-           gov.government,
-           gov.usage_meaning_id,
-           gov.usage_meaning_type_code,
-           gov.usages,
-           gov.usage_translations,
-           gov.usage_definitions
+           gov.governments,
+           usg.usages
     from lexeme l
       left outer join (select lf.lexeme_id,
                               array_agg(ff.value_text order by ff.order_by) advice_notes
@@ -235,40 +231,50 @@ create view view_ww_lexeme
                        and   ff.type = 'GRAMMAR'
                        group by lf.lexeme_id) gramm on gramm.lexeme_id = l.id
       left outer join (select lf.lexeme_id,
-                              gov.id government_id,
-                              gov.value_text government,
-                              umn.id usage_meaning_id,
-                              umnt.classif_code usage_meaning_type_code,
-                              usge.usages,
-                              utrl.usage_translations,
-                              udef.usage_definitions
-                       from lexeme_freeform lf
-                         inner join freeform gov on lf.freeform_id = gov.id and gov.type = 'GOVERNMENT'
-                         left outer join freeform umn on umn.parent_id = gov.id and umn.type = 'USAGE_MEANING'
-                         left outer join freeform umnt on umnt.parent_id = umn.id and umnt.type = 'USAGE_TYPE'
-                         left outer join (select usm.parent_id usage_meaning_id,
-                                                 array_agg(row (usm.usage,usm.usage_author,usm.usage_translator)::type_usage order by usm.order_by) usages
-                                          from (select usm.parent_id,
-                                                       usm.value_text usage,
-                                                       usmau.value_text usage_author,
-                                                       usmtr.value_text usage_translator,
-                                                       usm.order_by
-                                                from freeform usm
-                                                  -- usage author context will be coming from ref link
-                                                  left outer join freeform usmau on usmau.parent_id = usm.id and usmau.type = 'USAGE_AUTHOR'
-                                                  left outer join freeform usmtr on usmtr.parent_id = usm.id and usmtr.type = 'USAGE_TRANSLATOR'
-                                                where usm.type = 'USAGE') usm
-                                          group by usm.parent_id) usge on usge.usage_meaning_id = umn.id
-                         left outer join (select usm.parent_id usage_meaning_id,
-                                                 array_agg(usm.value_text order by usm.order_by) usage_translations
-                                          from freeform usm
-                                          where usm.type = 'USAGE_TRANSLATION'
-                                          group by usm.parent_id) utrl on utrl.usage_meaning_id = umn.id
-                         left outer join (select usm.parent_id usage_meaning_id,
-                                                 array_agg(usm.value_text order by usm.order_by) usage_definitions
-                                          from freeform usm
-                                          where usm.type = 'USAGE_DEFINITION'
-                                          group by usm.parent_id) udef on udef.usage_meaning_id = umn.id) gov on gov.lexeme_id = l.id
+                              array_agg(ff.value_text order by ff.order_by) governments
+                       from lexeme_freeform lf,
+                            freeform ff
+                       where lf.freeform_id = ff.id
+                       and   ff.type = 'GOVERNMENT'
+                       group by lf.lexeme_id) gov on gov.lexeme_id = l.id
+      left outer join (select u.lexeme_id,
+                              array_agg(row (u.usage,u.usage_lang,u.usage_type_code,u.usage_translations,u.usage_definitions,u.usage_authors)::type_usage order by u.order_by) usages
+                       from (select lf.lexeme_id,
+                                    u.value_text usage,
+                                    u.lang usage_lang,
+                                    u.order_by,
+                                    utp.classif_code usage_type_code,
+                                    ut.usage_translations,
+                                    ud.usage_definitions,
+                                    ua.usage_authors
+                             from lexeme_freeform lf
+                               inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE'
+                               left outer join freeform utp on utp.parent_id = u.id and utp.type = 'USAGE_TYPE'
+                               left outer join (select ut.parent_id usage_id,
+                                                       array_agg(ut.value_text order by ut.order_by) usage_translations
+                                                from freeform ut
+                                                where ut.type = 'USAGE_TRANSLATION'
+                                                group by ut.parent_id) ut on ut.usage_id = u.id
+                               left outer join (select ud.parent_id usage_id,
+                                                       array_agg(ud.value_text order by ud.order_by) usage_definitions
+                                                from freeform ud
+                                                where ud.type = 'USAGE_DEFINITION'
+                                                group by ud.parent_id) ud on ud.usage_id = u.id
+                               left outer join (select uasl.freeform_id usage_id,
+                                                       array_agg(row (uasl.id,uasl.source_id,uasl.type,uas.person_name)::type_source_link order by uasl.order_by) usage_authors
+                                                from freeform_source_link uasl
+                                                  inner join (select s.id,
+                                                                     array_to_string(array_agg(ff.value_text),', ','*') person_name
+                                                              from source s,
+                                                                   source_freeform sff,
+                                                                   freeform ff
+                                                              where s.type = 'PERSON'
+                                                              and   sff.source_id = s.id
+                                                              and   sff.freeform_id = ff.id
+                                                              and   ff.type = 'SOURCE_NAME'
+                                                              group by s.id) uas on uas.id = uasl.source_id
+                                                group by uasl.freeform_id) ua on ua.usage_id = u.id) u
+                       group by u.lexeme_id) usg on usg.lexeme_id = l.id
     where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
     order by l.id;
 
