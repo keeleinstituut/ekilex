@@ -35,10 +35,7 @@ public class Ev2Loader {
 				MabService mabService = applicationContext.getBean(MabService.class);
 				mabService.loadParadigms(mabFilePath, dataLang, isAddReporting);
 			}
-			logger.info("Processing EV2-1...");
-			runner.execute(ev21DataXmlFilePath, isAddReporting);
-			logger.info("Processing EV2-2...");
-			runner.execute(ev22DataXmlFilePath, isAddReporting);
+			runner.execute(ev21DataXmlFilePath, ev22DataXmlFilePath, isAddReporting);
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
