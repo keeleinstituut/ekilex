@@ -9,7 +9,6 @@ import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
 import eki.wordweb.data.db.udt.TypeLexemeRelation;
 import eki.wordweb.data.db.udt.TypeMeaningRelation;
-import eki.wordweb.data.db.udt.TypeSourceLink;
 import eki.wordweb.data.db.udt.TypeUsage;
 import eki.wordweb.data.db.udt.TypeWord;
 import eki.wordweb.data.db.udt.TypeWordRelation;
@@ -54,11 +53,6 @@ public class UDTs {
      * The type <code>public.type_meaning_relation</code>
      */
     public static TypeMeaningRelation TYPE_MEANING_RELATION = eki.wordweb.data.db.udt.TypeMeaningRelation.TYPE_MEANING_RELATION;
-
-    /**
-     * The type <code>public.type_source_link</code>
-     */
-    public static TypeSourceLink TYPE_SOURCE_LINK = eki.wordweb.data.db.udt.TypeSourceLink.TYPE_SOURCE_LINK;
 
     /**
      * The type <code>public.type_usage</code>

@@ -2,6 +2,8 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import javax.persistence.Column;
+
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -9,19 +11,27 @@ public class TypeUsage extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "usage")
 	private String usage;
 
+	@Column(name = "usage_lang")
 	private String usageLang;
 
+	@Column(name = "usage_type_code")
 	private String usageTypeCode;
 
 	private Classifier usageType;
 
+	@Column(name = "usage_translations")
 	private List<String> usageTranslations;
 
+	@Column(name = "usage_definitions")
 	private List<String> usageDefinitions;
 
-	private List<TypeSourceLink> usageAuthors;
+	@Column(name = "usage_authors")
+	private List<String> usageAuthorsRaw;
+
+	private List<SourceLink> usageAuthors;
 
 	public String getUsage() {
 		return usage;
@@ -71,11 +81,19 @@ public class TypeUsage extends AbstractDataObject {
 		this.usageDefinitions = usageDefinitions;
 	}
 
-	public List<TypeSourceLink> getUsageAuthors() {
+	public List<String> getUsageAuthorsRaw() {
+		return usageAuthorsRaw;
+	}
+
+	public void setUsageAuthorsRaw(List<String> usageAuthorsRaw) {
+		this.usageAuthorsRaw = usageAuthorsRaw;
+	}
+
+	public List<SourceLink> getUsageAuthors() {
 		return usageAuthors;
 	}
 
-	public void setUsageAuthors(List<TypeSourceLink> usageAuthors) {
+	public void setUsageAuthors(List<SourceLink> usageAuthors) {
 		this.usageAuthors = usageAuthors;
 	}
 
