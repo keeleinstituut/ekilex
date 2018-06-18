@@ -12,7 +12,7 @@ drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
-drop type if exists type_source_link;
+drop type if exists type_source_link;--remove later
 drop type if exists type_colloc_member;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;

@@ -26,6 +26,7 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
@@ -38,6 +39,8 @@ import eki.wordweb.service.db.CommonDataDbService;
 
 @Component
 public class ConversionUtil {
+
+	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
@@ -204,6 +207,19 @@ public class ConversionUtil {
 				classifierCode = usage.getUsageTypeCode();
 				classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, displayLang);
 				usage.setUsageType(classifier);
+				usage.setUsageAuthors(new ArrayList<>());
+				List<String> usageAuthorsRaw = usage.getUsageAuthorsRaw();
+				if (CollectionUtils.isNotEmpty(usageAuthorsRaw)) {
+					for (String usageAuthorRaw : usageAuthorsRaw) {
+						String[] usageAuthorElements = StringUtils.split(usageAuthorRaw, RAW_VALUE_ELEMENTS_SEPARATOR);
+						String type = usageAuthorElements[0];
+						String name = usageAuthorElements[1];
+						SourceLink usageAuthor = new SourceLink();
+						usageAuthor.setType(type);
+						usageAuthor.setName(name);
+						usage.getUsageAuthors().add(usageAuthor);
+					}
+				}
 			}
 		}
 		lexeme.setUsages(usages);

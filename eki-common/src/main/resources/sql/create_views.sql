@@ -1,8 +1,7 @@
 create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_source_link as (source_link_id bigint, source_id bigint, source_link_type varchar(100), source_name text);
-create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors type_source_link array);
+create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
@@ -261,7 +260,7 @@ create view view_ww_lexeme
                                                 where ud.type = 'USAGE_DEFINITION'
                                                 group by ud.parent_id) ud on ud.usage_id = u.id
                                left outer join (select uasl.freeform_id usage_id,
-                                                       array_agg(row (uasl.id,uasl.source_id,uasl.type,uas.person_name)::type_source_link order by uasl.order_by) usage_authors
+                                                       array_agg((uasl.type || '|' || uas.person_name) order by uasl.order_by) usage_authors
                                                 from freeform_source_link uasl
                                                   inner join (select s.id,
                                                                      array_to_string(array_agg(ff.value_text),', ','*') person_name
