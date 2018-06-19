@@ -441,8 +441,10 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		//				lexeme.setValueState(wordData.lexemeType);
 		lexeme.setFrequencyGroup(wordData.frequencyGroup);
 		Long lexemeId = createLexeme(lexeme, getDataset());
-		if (wordData.government != null) {
-			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, wordData.government, null);
+		if (!wordData.governments.isEmpty()) {
+			for (String government : wordData.governments) {
+				createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, null);
+			}
 		}
 		return newWord.id;
 	}
@@ -1033,7 +1035,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			if (subWordNode.hasMixedContent()) {
 				Element governmentNode = (Element) subWordNode.selectSingleNode(governmentExp);
 				if (governmentNode != null) {
-					subWord.government = governmentNode.getTextTrim();
+					subWord.governments.add(governmentNode.getTextTrim());
 				}
 			}
 			subWord.frequencyGroup = frequencyGroup;

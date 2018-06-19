@@ -104,7 +104,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 		final String wordGroupExp = "x:mg";
 		final String wordPosCodeExp = "x:sl";
-		final String wordGrammarPosCodesExp = "x:grg/x:sl";
+		final String wordGrammarPosCodesExp = "x:grk/x:sl";
 
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
@@ -122,11 +122,21 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
 			wordData.posCodes.addAll(posCodes);
 
+			List<String> governments = extractGovernments(wordGroupNode);
+			if (!governments.isEmpty()) {
+				wordData.governments.addAll(governments);
+			}
+
 			newWords.add(wordData);
 		}
 	}
 
 	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) {
+	}
+
+	private List<String> extractGovernments(Element node) {
+		final String wordGovernmentExp = "x:grk/x:r";
+		return extractValuesAsStrings(node, wordGovernmentExp);
 	}
 
 }

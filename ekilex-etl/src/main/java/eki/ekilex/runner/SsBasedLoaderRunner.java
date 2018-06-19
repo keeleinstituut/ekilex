@@ -158,7 +158,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected List<String> extractGrammar(Element node) {
-		String grammarValueExp = xpathExpressions().get("reportingId");
+		String grammarValueExp = xpathExpressions().get("grammarValue");
 		return extractValuesAsStrings(node, grammarValueExp);
 	}
 
@@ -250,7 +250,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String frequencyGroup;
 		List<String> grammars = new ArrayList<>();
 		Long meaningId;
-		String government;
+		List<String> governments = new ArrayList<>();
 		String displayMorph;
 	}
 
