@@ -163,6 +163,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			List<String> meaningGovernments = extractGovernments(meaningNumberGroupNode);
 			List<String> meaningGrammars = extractGrammar(meaningNumberGroupNode);
 			List<Element> meaningGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+			List<Usage> usages = extractUsages(meaningNumberGroupNode);
 
 			int lexemeLevel2 = 0;
 			for (Element meaningGroupNode : meaningGroupNodes) {
@@ -204,7 +205,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms);
 
 				processDomains(meaningGroupNode, meaningId);
-				List<Usage> usages = extractUsages(meaningGroupNode);
 
 				int lexemeLevel3 = 1;
 				for (WordData newWordData : newWords) {
@@ -300,7 +300,22 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private List<Usage> extractUsages(Element node) {
-		return new ArrayList<>();
+
+		final String usageGroupExp = "x:np";
+		final String usageExp = "x:ng/x:n";
+
+		List<Usage> usages = new ArrayList<>();
+		List<Element> usageGroupNodes = node.selectNodes(usageGroupExp);
+		for (Element usageGroupNode : usageGroupNodes) {
+			if (isRestricted(usageGroupNode)) continue;
+			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
+			for (Element usageNode : usageNodes) {
+				Usage usage = new Usage();
+				usage.setValue(usageNode.getTextTrim());
+				usages.add(usage);
+			}
+		}
+		return usages;
 	}
 
 	private List<String> extractDefinitions(Element node) {
