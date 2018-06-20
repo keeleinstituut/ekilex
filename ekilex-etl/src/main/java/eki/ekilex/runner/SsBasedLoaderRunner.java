@@ -3,11 +3,13 @@ package eki.ekilex.runner;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Government;
+import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.MabService;
 import eki.ekilex.service.ReportComposer;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,12 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.removePattern;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
@@ -32,6 +37,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
 
+	protected final static String ARTICLES_REPORT_NAME = "keywords";
+	protected final static String DESCRIPTIONS_REPORT_NAME = "keywords_descriptions";
+	protected final static String MEANINGS_REPORT_NAME = "keywords_meanings";
+
 	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
 
 	protected ReportComposer reportComposer;
@@ -41,11 +50,185 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected Map<String, String> wordTypes;
 	protected Map<String, String> displayMorpCodes;
 	protected Map<String, String> frequencyGroupCodes;
+	protected Map<String, String> posCodes;
+	protected Map<String, String> processStateCodes;
+	protected Map<String, String> registerCodes;
 
 	protected abstract Map<String,String> xpathExpressions();
 
 	@Autowired
 	private MabService mabService;
+
+	@Override
+	void initialise() throws Exception {
+		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
+		frequencyGroupCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MSAGTYYP);
+		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
+		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
+		registerCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP);
+	}
+
+	protected void saveRegisters(Long lexemeId, List<String> lexemeRegisterCodes, String reportingId) throws Exception {
+		for (String registerCode : lexemeRegisterCodes) {
+			String ekilexRegisterCode = registerCodes.get(registerCode);
+			if (ekilexRegisterCode == null) {
+				writeToLogFile(reportingId, "Tundmatu registri kood", registerCode);
+			}
+			else {
+				createLexemeRegister(lexemeId, ekilexRegisterCode);
+			}
+		}
+	}
+
+	protected WordToMeaningData findExistingMeaning(Context context, WordData newWord, int level1, List<LexemeToWordData> connectedWords,
+			List<String> definitions) {
+
+		List<String> connectedWordValues = connectedWords.stream().map(w -> w.word).collect(toList());
+		List<WordToMeaningData> existingMeanings = context.meanings.stream()
+				.filter(cachedMeaning -> newWord.value.equals(cachedMeaning.word) &&
+						newWord.homonymNr == cachedMeaning.homonymNr &&
+						level1 == cachedMeaning.lexemeLevel1 &&
+						connectedWordValues.contains(cachedMeaning.meaningWord))
+				.collect(toList());
+		Optional<WordToMeaningData> existingMeaning;
+		if (existingMeanings.size() == 1) {
+			return existingMeanings.get(0);
+		} else {
+			existingMeaning = existingMeanings.stream().filter(meaning -> meaning.meaningDefinitions.containsAll(definitions)).findFirst();
+		}
+		if (!existingMeaning.isPresent() && !connectedWords.isEmpty()) {
+			LexemeToWordData connectedWord = connectedWords.get(0);
+			existingMeaning = context.meanings.stream()
+					.filter(cachedMeaning -> connectedWord.word.equals(cachedMeaning.meaningWord) &&
+							connectedWord.homonymNr == cachedMeaning.meaningHomonymNr &&
+							connectedWord.lexemeLevel1 == cachedMeaning.meaningLevel1)
+					.findFirst();
+		}
+		return existingMeaning.orElse(null);
+	}
+
+	protected boolean validateMeaning(WordToMeaningData meaningData, List<String> definitions, String reportingId) throws Exception {
+
+		if (meaningData.meaningDefinitions.isEmpty() || definitions.isEmpty()) {
+			return true;
+		}
+		String definition = definitions.isEmpty() ? null : definitions.get(0);
+		String meaningDefinition = meaningData.meaningDefinitions.isEmpty() ? null : meaningData.meaningDefinitions.get(0);
+		if (Objects.equals(meaningDefinition, definition)) {
+			return true;
+		}
+		//		logger.debug("meanings do not match for word {} | {} | {}", reportingId, definition, meaningDefinition);
+		writeToLogFile(MEANINGS_REPORT_NAME, reportingId, "Tähenduse seletused on erinevad", definition + " : " + meaningDefinition);
+		return false;
+	}
+
+	protected void processLatinTerms(Context context) throws Exception {
+
+		logger.debug("Found {} latin terms <s:ld>.", context.latinTermins.size());
+		logger.debug("Processing started.");
+		reportingPaused = true;
+
+		Count newLatinTermWordCount = processLexemeToWord(context, context.latinTermins, null, "Ei leitud ladina terminit, loome uue", latinLang);
+
+		reportingPaused = false;
+		logger.debug("Latin terms created {}", newLatinTermWordCount.getValue());
+		logger.debug("Latin term import done.");
+	}
+
+	protected Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultWordType, String logMessage, String lang) throws Exception {
+		Count newWordCount = new Count();
+		for (LexemeToWordData itemData : items) {
+			boolean isImported = context.importedWords.stream().anyMatch(w -> itemData.word.equals(w.value));
+			if (!isImported) {
+				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType);
+				context.importedWords.add(newWord);
+				newWordCount.increment();
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(newWord.id);
+				lexeme.setMeaningId(itemData.meaningId);
+				lexeme.setLevel1(itemData.lexemeLevel1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
+				//FIXME lexeme status ??
+				//lexeme.setValueState(itemData.wordType == null ? defaultLexemeType : itemData.wordType);
+				createLexeme(lexeme, getDataset());
+				if (!reportingPaused) {
+					logger.debug("new word created : {}", itemData.word);
+				}
+				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
+			}
+		}
+		return newWordCount;
+	}
+
+	protected void processDomains(Element node, Long meaningId) throws Exception {
+
+		final String domainOrigin = "bolan";
+		final String domainExp = xpathExpressions().get("domain");
+
+		List<String> domainCodes = extractValuesAsStrings(node, domainExp);
+		for (String domainCode : domainCodes) {
+			Map<String, Object> params = new HashMap<>();
+			params.put("meaning_id", meaningId);
+			params.put("domain_code", domainCode);
+			params.put("domain_origin", domainOrigin);
+			basicDbService.createIfNotExists(MEANING_DOMAIN, params);
+		}
+	}
+
+	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType) throws Exception {
+
+		WordData createdWord = new WordData();
+		createdWord.value = wordValue;
+		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
+		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
+		word.setDisplayMorph(displayMorph);
+		createdWord.id = createWord(word, null, null, null);
+		return createdWord;
+	}
+
+	protected List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
+
+		final String lexemeLevel1Attr = "t";
+		final String homonymNrAttr = "i";
+		final String wordTypeAttr = "liik";
+		final int defaultLexemeLevel1 = 1;
+
+		List<LexemeToWordData> metadataList = new ArrayList<>();
+		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
+		for (Element metadataNode : metadataNodes) {
+			if (isRestricted(metadataNode)) continue;
+			LexemeToWordData lexemeMetadata = new LexemeToWordData();
+			lexemeMetadata.displayForm = metadataNode.getTextTrim();
+			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
+			lexemeMetadata.reportingId = reportingId;
+			String lexemeLevel1AttrValue = metadataNode.attributeValue(lexemeLevel1Attr);
+			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
+				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
+			} else {
+				lexemeMetadata.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
+			}
+			String homonymNrAttrValue = metadataNode.attributeValue(homonymNrAttr);
+			if (StringUtils.isNotBlank(homonymNrAttrValue)) {
+				lexemeMetadata.homonymNr = Integer.parseInt(homonymNrAttrValue);
+			}
+			if (relationTypeAttr != null) {
+				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
+			}
+			String wordTypeAttrValue = metadataNode.attributeValue(wordTypeAttr);
+			if (StringUtils.isNotBlank(wordTypeAttrValue)) {
+				lexemeMetadata.wordType = wordTypes.get(wordTypeAttrValue);
+				if (lexemeMetadata.wordType == null) {
+					logger.debug("unknown lexeme type {}", wordTypeAttrValue);
+					writeToLogFile(reportingId, "Tundmatu märksõnaliik", wordTypeAttrValue);
+				}
+			}
+			metadataList.add(lexemeMetadata);
+		}
+		return metadataList;
+	}
 
 	protected List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) throws Exception {
 
@@ -186,6 +369,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return reportingId;
 	}
 
+	protected String extractGuid(Element node, String articleGuidExp) {
+		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
+		return guidNode != null ? StringUtils.lowerCase(guidNode.getTextTrim()) : null;
+	}
 
 	protected List<String> extractValuesAsStrings(Element node, String valueExp) {
 
@@ -232,6 +419,24 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		if (reportComposer != null) {
 			reportComposer.setActiveStream(reportName);
 		}
+	}
+
+	protected List<WordToMeaningData> convertToMeaningData(List<LexemeToWordData> items, WordData meaningWord, int level1, List<String> definitions) {
+
+		List<WordToMeaningData> meanings = new ArrayList<>();
+		for (LexemeToWordData item : items) {
+			WordToMeaningData meaning = new WordToMeaningData();
+			meaning.meaningId = item.meaningId;
+			meaning.meaningWord = meaningWord.value;
+			meaning.meaningHomonymNr = meaningWord.homonymNr;
+			meaning.meaningLevel1 = level1;
+			meaning.meaningDefinitions.addAll(definitions);
+			meaning.word = item.word;
+			meaning.homonymNr = item.homonymNr;
+			meaning.lexemeLevel1 = item.lexemeLevel1;
+			meanings.add(meaning);
+		}
+		return meanings;
 	}
 
 	protected class CommentData {
