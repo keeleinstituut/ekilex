@@ -2,8 +2,13 @@ package eki.ekilex.runner;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.FreeformType;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -12,8 +17,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -23,13 +33,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(Ev2LoaderRunner.class);
 
 	@Override
-	void initialise() throws Exception {
-		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
-		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
-		frequencyGroupCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MSAGTYYP);
-	}
-
-	@Override
 	protected Map<String, String> xpathExpressions() {
 		Map<String, String> experssions = new HashMap<>();
 		experssions.put("reportingId", "x:P/x:mg/x:m"); // use first word as id for reporting
@@ -37,6 +40,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		experssions.put("wordDisplayMorph", "x:vk");
 		experssions.put("wordVocalForm", "x:hld");
 		experssions.put("grammarValue", "x:gki");
+		experssions.put("domain", "x:dg/x:v");
 		return experssions;
 	}
 
@@ -53,6 +57,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Loading EV2...");
 
 		reportingEnabled = doReports;
+		if (reportingEnabled) {
+			reportComposer = new ReportComposer("EV2 import", ARTICLES_REPORT_NAME, DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME);
+		}
+
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 		Document dataDoc2 = xmlReader.readDocument(dataXmlFilePath2);
 		Element rootElement = dataDoc.getRootElement();
@@ -77,6 +85,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		logger.debug("total {} articles iterated", articleCounter);
+		processLatinTerms(context);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
@@ -87,16 +96,23 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
+		final String articleGuidExp = "x:G";
 
 		String reportingId = extractReporingId(articleNode);
+		String guid = extractGuid(articleNode, articleGuidExp);
 		List<WordData> newWords = new ArrayList<>();
 
 		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-		processArticleHeader(reportingId, headerNode, newWords, context, null);
+		processArticleHeader(reportingId, headerNode, newWords, context, guid);
 
 		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 		if (contentNode != null) {
-			processArticleContent(reportingId, contentNode, newWords, context);
+			try {
+				processArticleContent(reportingId, contentNode, newWords, context);
+			} catch (Exception e) {
+				logger.debug("KEYWORD : {}", reportingId);
+				throw e;
+			}
 		}
 		context.importedWords.addAll(newWords);
 	}
@@ -131,7 +147,175 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) {
+	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
+
+		final String meaningNumberGroupExp = "x:tp";
+		final String meaningPosCodeExp = "x:sl";
+		final String meaningPosCode2Exp = "x:grk/x:sl";
+		final String meaningGroupExp = "x:tg";
+
+		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		int lexemeLevel1 = 0;
+		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
+			lexemeLevel1++;
+			List<PosData> meaningPosCodes = extractPosCodes(meaningNumberGroupNode, meaningPosCodeExp);
+			meaningPosCodes.addAll(extractPosCodes(meaningNumberGroupNode, meaningPosCode2Exp));
+			List<String> meaningGovernments = extractGovernments(meaningNumberGroupNode);
+			List<String> meaningGrammars = extractGrammar(meaningNumberGroupNode);
+			List<Element> meaningGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+
+			int lexemeLevel2 = 0;
+			for (Element meaningGroupNode : meaningGroupNodes) {
+				lexemeLevel2++;
+				List<PosData> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
+				List<String> lexemeGrammars = extractGrammar(meaningGroupNode);
+				List<String> registers = extractRegisters(meaningGroupNode);
+
+				Long meaningId;
+				List<String> definitionsToAdd = new ArrayList<>();
+				List<String> definitionsToCache = new ArrayList<>();
+				List<String> definitions = extractDefinitions(meaningGroupNode);
+				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
+				List<LexemeToWordData> connectedWords =
+						Stream.of(
+								meaningLatinTerms.stream()
+						).flatMap(i -> i).collect(toList());
+				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
+				if (meaningData == null) {
+					Meaning meaning = new Meaning();
+					meaningId = createMeaning(meaning);
+					definitionsToAdd.addAll(definitions);
+					definitionsToCache.addAll(definitions);
+				} else {
+					meaningId = meaningData.meaningId;
+					validateMeaning(meaningData, definitions, reportingId);
+					definitionsToAdd = definitions.stream().filter(def -> !meaningData.meaningDefinitions.contains(def)).collect(toList());
+					meaningData.meaningDefinitions.addAll(definitionsToAdd);
+					definitionsToCache.addAll(meaningData.meaningDefinitions);
+				}
+				if (!definitionsToAdd.isEmpty()) {
+					for (String definition : definitionsToAdd) {
+						createDefinition(meaningId, definition, dataLang, getDataset());
+					}
+					if (definitionsToAdd.size() > 1) {
+						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
+					}
+				}
+				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms);
+
+				processDomains(meaningGroupNode, meaningId);
+				List<Usage> usages = extractUsages(meaningGroupNode);
+
+				int lexemeLevel3 = 1;
+				for (WordData newWordData : newWords) {
+					Lexeme lexeme = new Lexeme();
+					lexeme.setWordId(newWordData.id);
+					lexeme.setMeaningId(meaningId);
+					lexeme.setLevel1(lexemeLevel1);
+					lexeme.setLevel2(lexemeLevel2);
+					lexeme.setLevel3(lexemeLevel3);
+					Long lexemeId = createLexeme(lexeme, getDataset());
+					if (lexemeId != null) {
+						createUsages(lexemeId, usages, dataLang);
+						saveGovernments(newWordData, meaningGovernments, lexemeId);
+						savePosAndDeriv(newWordData, meaningPosCodes, lexemePosCodes, lexemeId, reportingId);
+						saveGrammars(newWordData, meaningGrammars, lexemeGrammars, lexemeId);
+						saveRegisters(lexemeId, registers, reportingId);
+					}
+				}
+			}
+		}
+	}
+
+	private void cacheMeaningRelatedData(
+			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
+			List<LexemeToWordData> latinTerms
+	) {
+		latinTerms.forEach(data -> data.meaningId = meaningId);
+		context.latinTermins.addAll(latinTerms);
+
+		context.meanings.stream()
+				.filter(m -> Objects.equals(m.meaningId, meaningId))
+				.forEach(m -> {m.meaningDefinitions.clear(); m.meaningDefinitions.addAll(definitions);});
+		List<WordData> words = new ArrayList<>();
+		words.add(keyword);
+		words.forEach(word -> {
+			context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
+		});
+	}
+
+	private void savePosAndDeriv(WordData newWordData, List<PosData> meaningPosCodes, List<PosData> lexemePosCodes, Long lexemeId, String reportingId) {
+
+		Set<PosData> combinedPosCodes = new HashSet<>();
+		try {
+			combinedPosCodes.addAll(lexemePosCodes);
+			if (combinedPosCodes.isEmpty()) {
+				combinedPosCodes.addAll(meaningPosCodes);
+			}
+			if (combinedPosCodes.isEmpty()) {
+				combinedPosCodes.addAll(newWordData.posCodes);
+			}
+			if (combinedPosCodes.size() > 1) {
+				String posCodesStr = combinedPosCodes.stream().map(p -> p.code).collect(Collectors.joining(","));
+				//					logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
+				writeToLogFile(reportingId, "Leiti rohkem kui üks sõnaliik <x:sl>", posCodesStr);
+			}
+			for (PosData posCode : combinedPosCodes) {
+				if (posCodes.containsKey(posCode.code)) {
+					Map<String, Object> params = new HashMap<>();
+					params.put("lexeme_id", lexemeId);
+					params.put("pos_code", posCodes.get(posCode.code));
+					params.put("process_state_code", processStateCodes.get(posCode.processStateCode));
+					basicDbService.create(LEXEME_POS, params);
+				}
+			}
+		} catch (Exception e) {
+			logger.debug("lexemeId {} : newWord : {}, {}, {}",
+					lexemeId, newWordData.value, newWordData.id, combinedPosCodes.stream().map(p -> p.code).collect(Collectors.joining(",")));
+			logger.error("ERROR", e);
+		}
+	}
+
+	private void saveGrammars(WordData newWordData, List<String> meaningGrammars, List<String> lexemeGrammars, Long lexemeId) throws Exception {
+
+		Set<String> grammars = new HashSet<>();
+		grammars.addAll(lexemeGrammars);
+		grammars.addAll(meaningGrammars);
+		grammars.addAll(newWordData.grammars);
+		for (String grammar : grammars) {
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammar, dataLang);
+		}
+	}
+
+	private void saveGovernments(WordData wordData, List<String> meaningGovernments, Long lexemeId) throws Exception {
+
+		Set<String> governments = new HashSet<>();
+		governments.addAll(meaningGovernments);
+		if (governments.isEmpty()) {
+			governments.addAll(wordData.governments);
+		}
+		for (String government : governments) {
+			createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
+		}
+	}
+
+	private List<Usage> extractUsages(Element node) {
+		return new ArrayList<>();
+	}
+
+	private List<String> extractDefinitions(Element node) {
+		final String definitionValueExp = "x:dg/x:d";
+		return extractValuesAsStrings(node, definitionValueExp);
+	}
+
+	private List<String> extractRegisters(Element node) {
+		final String registerValueExp = "x:dg/x:s";
+		return extractValuesAsStrings(node, registerValueExp);
+	}
+
+	private List<LexemeToWordData> extractLatinTerms(Element node, String reportingId) throws Exception {
+		final String latinTermExp = "x:dg/x:ld";
+		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
 	}
 
 	private List<String> extractGovernments(Element node) {
