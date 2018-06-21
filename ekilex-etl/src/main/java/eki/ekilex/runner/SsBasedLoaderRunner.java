@@ -139,32 +139,29 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected Count processLexemeToWord(Context context, List<LexemeToWordData> items, String defaultWordType, String logMessage, String lang) throws Exception {
 		Count newWordCount = new Count();
 		for (LexemeToWordData itemData : items) {
-			boolean isImported = context.importedWords.stream().anyMatch(w -> itemData.word.equals(w.value));
-			if (!isImported) {
+			Long wordId;
+			Optional<WordData> existingWord = context.importedWords.stream().filter(w -> itemData.word.equals(w.value)).findFirst();
+			if (!existingWord.isPresent()) {
 				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
 				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
-				Lexeme lexeme = new Lexeme();
-				lexeme.setWordId(newWord.id);
-				lexeme.setMeaningId(itemData.meaningId);
-				lexeme.setLevel1(itemData.lexemeLevel1);
-				lexeme.setLevel2(1);
-				lexeme.setLevel3(1);
-				//FIXME lexeme status ??
-				//lexeme.setValueState(itemData.wordType == null ? defaultLexemeType : itemData.wordType);
-				Long lexemeId = createLexeme(lexeme, getDataset());
-				if (StringUtils.isNotBlank(itemData.government)) {
-					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, itemData.government);
-				}
-				if (StringUtils.isNotBlank(itemData.register)) {
-					saveRegisters(lexemeId, asList(itemData.register), itemData.word);
-				}
+				wordId = newWord.id;
 				if (!reportingPaused) {
 					logger.debug("new word created : {}", itemData.word);
 				}
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
+			} else {
+				wordId = existingWord.get().id;
+				logger.debug("using existing word : {}", itemData.word);
 			}
+			Lexeme lexeme = new Lexeme();
+			lexeme.setWordId(wordId);
+			lexeme.setMeaningId(itemData.meaningId);
+			lexeme.setLevel1(itemData.lexemeLevel1);
+			lexeme.setLevel2(1);
+			lexeme.setLevel3(1);
+			createLexeme(lexeme, getDataset());
 		}
 		return newWordCount;
 	}
