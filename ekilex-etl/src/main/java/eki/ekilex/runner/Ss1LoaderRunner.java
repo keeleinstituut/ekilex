@@ -509,7 +509,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				}
 				List<String> registers = extractRegisters(meaningGroupNode);
 				processSemanticData(meaningGroupNode, meaningId);
-				processDomains(meaningGroupNode, meaningId);
+				processDomains(meaningGroupNode, meaningId, null);
 
 				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {

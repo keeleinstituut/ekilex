@@ -3,12 +3,14 @@ package eki.ekilex.runner;
 import javax.transaction.Transactional;
 
 import eki.common.constant.FreeformType;
+import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.Word;
 import eki.ekilex.service.ReportComposer;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -31,6 +33,8 @@ import static java.util.stream.Collectors.toList;
 public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(Ev2LoaderRunner.class);
+
+	private final static String russianLang = "rus";
 
 	@Override
 	protected Map<String, String> xpathExpressions() {
@@ -86,9 +90,22 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		logger.debug("total {} articles iterated", articleCounter);
 		processLatinTerms(context);
+		processRussianWords(context);
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
+	}
+
+	private void processRussianWords(Context context) throws Exception {
+		logger.debug("Found {} words in Russian <x:xp/x:xg/x:x>.", context.secondLanguageWords.size());
+		logger.debug("Processing started.");
+		reportingPaused = true;
+
+		Count newWordCount = processLexemeToWord(context, context.secondLanguageWords, null, "Sõna ei leitud, loome uue", russianLang);
+
+		reportingPaused = false;
+		logger.debug("Russian words created {}", newWordCount.getValue());
+		logger.debug("Russian words import done.");
 	}
 
 	@Transactional
@@ -177,9 +194,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> definitionsToCache = new ArrayList<>();
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
+				List<String> additionalDomains = new ArrayList<>();
+				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, reportingId);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
-								meaningLatinTerms.stream()
+								meaningLatinTerms.stream(),
+								meaningRussianWords.stream()
 						).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
 				if (meaningData == null) {
@@ -202,9 +222,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
-				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms);
+				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms, meaningRussianWords);
 
-				processDomains(meaningGroupNode, meaningId);
+				processDomains(meaningGroupNode, meaningId, additionalDomains);
 
 				int lexemeLevel3 = 1;
 				for (WordData newWordData : newWords) {
@@ -229,10 +249,14 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void cacheMeaningRelatedData(
 			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
-			List<LexemeToWordData> latinTerms
+			List<LexemeToWordData> latinTerms,
+			List<LexemeToWordData> russianWords
 	) {
 		latinTerms.forEach(data -> data.meaningId = meaningId);
 		context.latinTermins.addAll(latinTerms);
+
+		russianWords.forEach(data -> data.meaningId = meaningId);
+		context.secondLanguageWords.addAll(russianWords);
 
 		context.meanings.stream()
 				.filter(m -> Objects.equals(m.meaningId, meaningId))
@@ -241,6 +265,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		words.add(keyword);
 		words.forEach(word -> {
 			context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
+			context.meanings.addAll(convertToMeaningData(russianWords, word, level1, definitions));
 		});
 	}
 
@@ -336,6 +361,41 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private List<String> extractGovernments(Element node) {
 		final String wordGovernmentExp = "x:grk/x:r";
 		return extractValuesAsStrings(node, wordGovernmentExp);
+	}
+
+	private List<LexemeToWordData> extractRussianWords(Element node, List<String> additionalDomains, String reportingId) {
+
+		final String wordGroupExp = "x:xp/x:xg";
+		final String wordExp = "x:x";
+		final String registerExp = "x:s";
+		final String governmentExp = "x:vrek";
+		final String domainExp = "x:v";
+
+		List<LexemeToWordData> dataList = new ArrayList<>();
+		List<Element> wordGroupNodes = node.selectNodes(wordGroupExp);
+		for (Element wordGroupNode : wordGroupNodes) {
+			String word = extractAsString(wordGroupNode, wordExp);
+			LexemeToWordData lexemeData = new LexemeToWordData();
+			lexemeData.word = cleanUp(word);
+
+			if (StringUtils.isBlank(lexemeData.word)) continue;
+
+			lexemeData.displayForm = word;
+			lexemeData.reportingId = reportingId;
+			lexemeData.register = extractAsString(wordGroupNode, registerExp);
+			lexemeData.government = extractAsString(wordGroupNode, governmentExp);
+			String domainCode = extractAsString(wordGroupNode, domainExp);
+			if (domainCode != null) {
+				additionalDomains.add(domainCode);
+			}
+			dataList.add(lexemeData);
+		}
+		return dataList;
+	}
+
+	private String extractAsString(Element node, String xpathExp) {
+		Element wordNode = (Element) node.selectSingleNode(xpathExp);
+		return wordNode == null ? null : wordNode.getTextTrim();
 	}
 
 }

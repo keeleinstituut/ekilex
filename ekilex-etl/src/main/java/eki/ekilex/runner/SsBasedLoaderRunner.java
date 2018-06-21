@@ -1,8 +1,8 @@
 package eki.ekilex.runner;
 
+import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
-import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
@@ -153,7 +153,13 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				lexeme.setLevel3(1);
 				//FIXME lexeme status ??
 				//lexeme.setValueState(itemData.wordType == null ? defaultLexemeType : itemData.wordType);
-				createLexeme(lexeme, getDataset());
+				Long lexemeId = createLexeme(lexeme, getDataset());
+				if (StringUtils.isNotBlank(itemData.government)) {
+					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, itemData.government);
+				}
+				if (StringUtils.isNotBlank(itemData.register)) {
+					saveRegisters(lexemeId, asList(itemData.register), itemData.word);
+				}
 				if (!reportingPaused) {
 					logger.debug("new word created : {}", itemData.word);
 				}
@@ -163,12 +169,15 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return newWordCount;
 	}
 
-	protected void processDomains(Element node, Long meaningId) throws Exception {
+	protected void processDomains(Element node, Long meaningId, List<String> additionalDomains) throws Exception {
 
 		final String domainOrigin = "bolan";
 		final String domainExp = xpathExpressions().get("domain");
 
 		List<String> domainCodes = extractValuesAsStrings(node, domainExp);
+		if (additionalDomains != null) {
+			domainCodes.addAll(additionalDomains);
+		}
 		for (String domainCode : domainCodes) {
 			Map<String, Object> params = new HashMap<>();
 			params.put("meaning_id", meaningId);
@@ -497,11 +506,12 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
-		Government government;
+		String government;
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String wordType;
 		Long meaningId;
+		String register;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -516,6 +526,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.usages.addAll(this.usages);
 			newData.wordType = this.wordType;
 			newData.meaningId = this.meaningId;
+			newData.register = this.register;
 			return newData;
 		}
 	}
@@ -535,6 +546,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
+		List<LexemeToWordData> secondLanguageWords = new ArrayList<>();
 	}
 
 }
