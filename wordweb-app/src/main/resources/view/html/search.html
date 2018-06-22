@@ -150,8 +150,8 @@
                 </div>
                 <div class="col-lg-12 meaning-meta">
                   <div class="synonyms">
-                    <span th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
-                      <span>Sama mis</span>
+                    <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
+                      <span>sama mis</span>
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.synonymWords}">
                         <a th:id="${'word-search-link-syn-' + meaningWordIter.count}" href="" class="synonym">
                           <span th:text="${meaningWord.word}"></span>
@@ -339,11 +339,13 @@
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
                 <div class="morphology-section">
+                  <h6>Sõnavormid</h6>
                   Andmed puuduvad
                 </div>
               </div>
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
                 <div class="morphology-section">
+                  <h6>Sõnavormid</h6>
                   See sõna ei muutu
                 </div>
               </div>
