@@ -81,11 +81,11 @@
             </button>
             <button class="btn btn-speaker"
                     th:if="${wordData.firstAvailableSoundFile == null}"
-                    th:data-words="${wordData.word.word}"
+                    th:data-words="${wordData.firstAvailableVocalForm != null ? wordData.firstAvailableVocalForm : wordData.word.word}"
                     th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
-            <span th:text="${wordData.firstAvailableVocalForm}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
+            <span th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
             <button class="btn show-search d-md-none">
               <span class="icon icon-search"></span>
             </button>
@@ -420,76 +420,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- static proto code, to be removed later
-            <div class="level-3-panel row">
-              <div class="col-12 morphology-panel">
-                <div class="morphology-section">
-                  <div class="intro">
-                    <h6>Käänamine</h6>
-                    <div class="row label-md">
-                      <div class="col-6">Ainsus</div>
-                      <div class="col-6">Mitmus</div>
-                    </div>
-                    <div class="row intro">
-                      <div class="col-12 label">nimetav</div>
-                      <div class="col">
-                        <div>tekk</div>
-                        <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
-                          <span class="icon icon-speaker"></span>
-                        </button>
-                      </div>
-                      <div class="col">
-                        <div>tekid</div>
-                        <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
-                          <span class="icon icon-speaker"></span>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="row intro">
-                      <div class="col-12 label">omastav</div>
-                      <div class="col">
-                        <div>teki</div>
-                      </div>
-                      <div class="col">
-                        <div>tekkide</div>
-                      </div>
-                    </div>
-                    <div class="row intro">
-                      <div class="col-12 label">osastav</div>
-                      <div class="col">
-                        <div>tekki</div>
-                      </div>
-                      <div class="col">
-                        <div>tekke</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 label">[kääne]</div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 label">[kääne]</div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <button class="more-btn">
-                <span class="icon icon-chevron-left"></span>
-              </button>
-            </div>
-             -->
 
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
               <div class="col-12">
