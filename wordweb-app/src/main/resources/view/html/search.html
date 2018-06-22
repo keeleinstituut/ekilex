@@ -354,13 +354,18 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms) and not wordData.unknownForm}">
+            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
+              <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
+                <div class="morphology-section">
+                  Andmed puuduvad
+                </div>
+              </div>
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
                 <div class="morphology-section">
                   See sõna ei muutu
                 </div>
               </div>
-              <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord}">
+              <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <div class="morphology-section">
                   <div>
                     <h6>Sõnavormid</h6>
@@ -392,11 +397,11 @@
                   </div>
                 </div>
               </div>
-              <button class="more-btn" th:unless="${wordData.indeclinableWord}">
+              <button class="more-btn" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <span class="icon icon-chevron-left"></span>
               </button>
               <!-- full morphology -->
-              <div class="morphology-section morphology-test" th:unless="${wordData.indeclinableWord}">
+              <div class="morphology-section morphology-test" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <div th:each="paradigm : ${wordData.paradigms}">
                   <hr />
                   <div class="row" th:if="${not #lists.isEmpty(paradigm.forms)}">
