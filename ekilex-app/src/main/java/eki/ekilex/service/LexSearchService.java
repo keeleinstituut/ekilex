@@ -276,9 +276,11 @@ public class LexSearchService implements SystemConstant {
 								&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
 						.count();
 				if (nrOfLexemesWithSameLevel2 == 1) {
-					levels = lexeme.getLevel1() + "." + lexeme.getLevel2();
+					int level2 = lexeme.getLevel2() - 1;
+					levels = lexeme.getLevel1() + (level2 == 0 ? "" : "." + level2);
 				} else {
-					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + "." + lexeme.getLevel3();
+					int level3 = lexeme.getLevel3() - 1;
+					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + (level3 == 0 ? "" : "." + level3);
 				}
 			}
 			lexeme.setLevels(levels);
