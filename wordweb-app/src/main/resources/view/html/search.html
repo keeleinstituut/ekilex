@@ -81,11 +81,11 @@
             </button>
             <button class="btn btn-speaker"
                     th:if="${wordData.firstAvailableSoundFile == null}"
-                    th:data-words="${wordData.word.word}"
+                    th:data-words="${wordData.firstAvailableVocalForm != null ? wordData.firstAvailableVocalForm : wordData.word.word}"
                     th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
-            <span th:text="${wordData.firstAvailableVocalForm}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
+            <span th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
             <button class="btn show-search d-md-none">
               <span class="icon icon-search"></span>
             </button>
@@ -108,6 +108,8 @@
                     </h6>
                   </div>
                   <div class="definition">
+                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ',' : '')}"></i>
+                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ',')}"></i>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}">
                       <span th:text="${definition.value + (definitionIter.last ? '' : ';')}"></span>
                     </span>
@@ -119,22 +121,6 @@
                   </div>
                   <div class="word-type" th:if="${not #lists.isEmpty(lexeme.poses)}">
                     <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
-                  </div>
-                  <div class="row" th:if="${not #lists.isEmpty(lexeme.registers)}">
-                    <div class="col-3">
-                      <b>Register</b>
-                    </div>
-                    <div class="col-9">
-                      <div th:each="register : ${lexeme.registers}" th:text="${register.value}"></div>
-                    </div>
-                  </div>
-                  <div class="row" th:if="${not #lists.isEmpty(lexeme.domains)}">
-                    <div class="col-3">
-                      <b>Valdkond</b>
-                    </div>
-                    <div class="col-9">
-                      <div th:each="domain : ${lexeme.domains}" th:text="${domain.value}"></div>
-                    </div>
                   </div>
                 </div>
                 <div class="col-lg-6 dependencies">
@@ -164,38 +150,34 @@
                 </div>
                 <div class="col-lg-12 meaning-meta">
                   <div class="synonyms">
-                    <span th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
+                    <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
+                      <span>sama mis</span>
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.synonymWords}">
                         <a th:id="${'word-search-link-syn-' + meaningWordIter.count}" href="" class="synonym">
                           <span th:text="${meaningWord.word}"></span>
                         </a>
-                        <span th:unless="${meaningWordIter.last}">, </span>
+                        <span th:unless="${meaningWordIter.last}">,</span>
                       </span>
                     </span>
                   </div>
                   <div class="additional-meta">
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes) or not #lists.isEmpty(lexeme.relatedMeanings)}">
-                      <div class="col-3">
-                        <b>Seosed</b>
-                      </div>
-                    </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                       <div class="col-9">
                         <div th:each="relation, relationIter : ${lexeme.relatedLexemes}">
+                          <span th:text="${relation.lexRelType.value}"></span>
                           <a th:id="${'word-search-link-lex-rel-' + relationIter.count}" href="">
                             <span th:text="${relation.word}"></span>
                           </a>
-                          <span th:text="${'(' + relation.lexRelType.value + ')'}"></span>
                         </div>
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
                       <div class="col-9">
                         <div th:each="relation, relationIter : ${lexeme.relatedMeanings}">
+                          <span th:text="${relation.meaningRelType.value}"></span>
                           <a th:id="${'word-search-link-meaning-rel-' + relationIter.count}" href="">
                             <span th:text="${relation.word}"></span>
                           </a>
-                          <span th:text="${'(' + relation.meaningRelType.value + ')'}"></span>
                         </div>
                       </div>
                     </div>
@@ -354,13 +336,20 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms) and not wordData.unknownForm}">
+            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
+              <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
+                <div class="morphology-section">
+                  <h6>Sõnavormid</h6>
+                  Andmed puuduvad
+                </div>
+              </div>
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
                 <div class="morphology-section">
+                  <h6>Sõnavormid</h6>
                   See sõna ei muutu
                 </div>
               </div>
-              <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord}">
+              <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <div class="morphology-section">
                   <div>
                     <h6>Sõnavormid</h6>
@@ -392,11 +381,11 @@
                   </div>
                 </div>
               </div>
-              <button class="more-btn" th:unless="${wordData.indeclinableWord}">
+              <button class="more-btn" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <span class="icon icon-chevron-left"></span>
               </button>
               <!-- full morphology -->
-              <div class="morphology-section morphology-test" th:unless="${wordData.indeclinableWord}">
+              <div class="morphology-section morphology-test" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <div th:each="paradigm : ${wordData.paradigms}">
                   <hr />
                   <div class="row" th:if="${not #lists.isEmpty(paradigm.forms)}">
@@ -420,76 +409,6 @@
                 </div>
               </div>
             </div>
-
-            <!-- static proto code, to be removed later
-            <div class="level-3-panel row">
-              <div class="col-12 morphology-panel">
-                <div class="morphology-section">
-                  <div class="intro">
-                    <h6>Käänamine</h6>
-                    <div class="row label-md">
-                      <div class="col-6">Ainsus</div>
-                      <div class="col-6">Mitmus</div>
-                    </div>
-                    <div class="row intro">
-                      <div class="col-12 label">nimetav</div>
-                      <div class="col">
-                        <div>tekk</div>
-                        <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
-                          <span class="icon icon-speaker"></span>
-                        </button>
-                      </div>
-                      <div class="col">
-                        <div>tekid</div>
-                        <button class="btn btn-speaker" data-toggle="tooltip" title="[hääldusmärgid]">
-                          <span class="icon icon-speaker"></span>
-                        </button>
-                      </div>
-                    </div>
-                    <div class="row intro">
-                      <div class="col-12 label">omastav</div>
-                      <div class="col">
-                        <div>teki</div>
-                      </div>
-                      <div class="col">
-                        <div>tekkide</div>
-                      </div>
-                    </div>
-                    <div class="row intro">
-                      <div class="col-12 label">osastav</div>
-                      <div class="col">
-                        <div>tekki</div>
-                      </div>
-                      <div class="col">
-                        <div>tekke</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 label">[kääne]</div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-12 label">[kääne]</div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                    <div class="col">
-                      <div>[sõna]</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <button class="more-btn">
-                <span class="icon icon-chevron-left"></span>
-              </button>
-            </div>
-             -->
 
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
               <div class="col-12">
