@@ -32,7 +32,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
 
-    private static final long serialVersionUID = 277471703;
+    private static final long serialVersionUID = 1599765723;
 
     /**
      * The reference instance of <code>public.view_ww_lexeme</code>
@@ -78,39 +78,14 @@ public class ViewWwLexeme extends TableImpl<ViewWwLexemeRecord> {
     public final TableField<ViewWwLexemeRecord, String[]> GRAMMARS = createField("grammars", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
-     * The column <code>public.view_ww_lexeme.government_id</code>.
+     * The column <code>public.view_ww_lexeme.governments</code>.
      */
-    public final TableField<ViewWwLexemeRecord, Long> GOVERNMENT_ID = createField("government_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.government</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, String> GOVERNMENT = createField("government", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.usage_meaning_id</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, Long> USAGE_MEANING_ID = createField("usage_meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.usage_meaning_type_code</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, String> USAGE_MEANING_TYPE_CODE = createField("usage_meaning_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwLexemeRecord, String[]> GOVERNMENTS = createField("governments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_lexeme.usages</code>.
      */
     public final TableField<ViewWwLexemeRecord, TypeUsageRecord[]> USAGES = createField("usages", eki.ekilex.data.db.udt.TypeUsage.TYPE_USAGE.getDataType().getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.usage_translations</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, String[]> USAGE_TRANSLATIONS = createField("usage_translations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
-
-    /**
-     * The column <code>public.view_ww_lexeme.usage_definitions</code>.
-     */
-    public final TableField<ViewWwLexemeRecord, String[]> USAGE_DEFINITIONS = createField("usage_definitions", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.view_ww_lexeme</code> table reference

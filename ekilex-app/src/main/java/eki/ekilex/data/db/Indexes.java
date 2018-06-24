@@ -124,6 +124,7 @@ public class Indexes {
     public static final Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Indexes0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
     public static final Index EKI_USER_NAME_KEY = Indexes0.EKI_USER_NAME_KEY;
     public static final Index EKI_USER_PKEY = Indexes0.EKI_USER_PKEY;
+    public static final Index FORM_ISWORD_IDX = Indexes0.FORM_ISWORD_IDX;
     public static final Index FORM_PARADIGM_ID_IDX = Indexes0.FORM_PARADIGM_ID_IDX;
     public static final Index FORM_PKEY = Indexes0.FORM_PKEY;
     public static final Index FORM_VALUE_IDX = Indexes0.FORM_VALUE_IDX;
@@ -263,6 +264,7 @@ public class Indexes {
         public static Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Internal.createIndex("domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL, new OrderField[] { DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE }, true);
         public static Index EKI_USER_NAME_KEY = Internal.createIndex("eki_user_name_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.NAME }, true);
         public static Index EKI_USER_PKEY = Internal.createIndex("eki_user_pkey", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, true);
+        public static Index FORM_ISWORD_IDX = Internal.createIndex("form_isword_idx", Form.FORM, new OrderField[] { Form.FORM.IS_WORD }, false);
         public static Index FORM_PARADIGM_ID_IDX = Internal.createIndex("form_paradigm_id_idx", Form.FORM, new OrderField[] { Form.FORM.PARADIGM_ID }, false);
         public static Index FORM_PKEY = Internal.createIndex("form_pkey", Form.FORM, new OrderField[] { Form.FORM.ID }, true);
         public static Index FORM_VALUE_IDX = Internal.createIndex("form_value_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE }, false);

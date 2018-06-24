@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.transaction.Transactional;
 
@@ -17,7 +16,7 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import eki.common.test.TestEnvInitialiser;
-import eki.ekilex.data.WordTuple;
+import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.service.db.TermSearchDbService;
 
 @RunWith(SpringRunner.class)
@@ -46,8 +45,8 @@ public class TermSearchServiceTest {
 		String resultLang = null;
 		boolean fetchAll = true;
 
-		Map<Long, List<WordTuple>> termMeaningsMap = termSearchDbService.findMeaningsAsMap(wordWithMetaCharacters, datasets, resultLang, fetchAll);
+		List<TermMeaningWordTuple> termMeanings = termSearchDbService.findMeanings(wordWithMetaCharacters, datasets, resultLang, fetchAll);
 
-		assertEquals("Incorrect count of matches", 20, termMeaningsMap.size());
+		assertEquals("Incorrect count of matches", 20, termMeanings.size());
 	}
 }

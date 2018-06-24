@@ -20,13 +20,13 @@ import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
-import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.Relation;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.WordTuple;
 import eki.ekilex.service.db.CommonDataDbService;
 import eki.ekilex.service.db.TermSearchDbService;
 import eki.ekilex.service.util.ConversionUtil;
@@ -44,15 +44,17 @@ public class TermSearchService implements SystemConstant {
 	private ConversionUtil conversionUtil;
 
 	@Transactional
-	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
+	public MeaningsResult findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
 
-		Map<Long, List<WordTuple>> termMeaningsMap;
-		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
-			termMeaningsMap = Collections.emptyMap();
+		//TODO get meaning and words count
+
+		List<TermMeaning> termMeanings;
+		if (StringUtils.isBlank(searchFilter)) {
+			termMeanings = Collections.emptyList();
 		} else {
-			termMeaningsMap = termSearchDbService.findMeaningsAsMap(searchFilter, datasets, resultLang, fetchAll);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, datasets, resultLang, fetchAll);
+			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 		}
-		List<TermMeaning> termMeanings = conversionUtil.convert(termMeaningsMap);
 		int meaningCount = termMeanings.size();
 		if (!fetchAll && meaningCount == MAX_RESULTS_LIMIT) {
 			meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
@@ -66,15 +68,17 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public MeaningsResult findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
+	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
 
-		Map<Long, List<WordTuple>> termMeaningsMap;
-		if (StringUtils.isBlank(searchFilter)) {
-			termMeaningsMap = Collections.emptyMap();
+		//TODO get meaning and words count
+
+		List<TermMeaning> termMeanings;
+		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+			termMeanings = Collections.emptyList();
 		} else {
-			termMeaningsMap = termSearchDbService.findMeaningsAsMap(searchFilter, datasets, resultLang, fetchAll);
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, datasets, resultLang, fetchAll);
+			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 		}
-		List<TermMeaning> termMeanings = conversionUtil.convert(termMeaningsMap);
 		int meaningCount = termMeanings.size();
 		if (!fetchAll && meaningCount == MAX_RESULTS_LIMIT) {
 			meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);

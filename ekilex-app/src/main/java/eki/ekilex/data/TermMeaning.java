@@ -10,7 +10,11 @@ public class TermMeaning extends AbstractDataObject {
 
 	private Long meaningId;
 
-	private List<WordTuple> wordTuples;
+	private String conceptId;
+
+	private TermMeaningWord mainWord;
+
+	private List<TermMeaningWord> otherWords;
 
 	public Long getMeaningId() {
 		return meaningId;
@@ -20,12 +24,28 @@ public class TermMeaning extends AbstractDataObject {
 		this.meaningId = meaningId;
 	}
 
-	public List<WordTuple> getWordTuples() {
-		return wordTuples;
+	public String getConceptId() {
+		return conceptId;
 	}
 
-	public void setWordTuples(List<WordTuple> wordTuples) {
-		this.wordTuples = wordTuples;
+	public void setConceptId(String conceptId) {
+		this.conceptId = conceptId;
+	}
+
+	public TermMeaningWord getMainWord() {
+		return mainWord;
+	}
+
+	public void setMainWord(TermMeaningWord mainWord) {
+		this.mainWord = mainWord;
+	}
+
+	public List<TermMeaningWord> getOtherWords() {
+		return otherWords;
+	}
+
+	public void setOtherWords(List<TermMeaningWord> otherWords) {
+		this.otherWords = otherWords;
 	}
 
 }

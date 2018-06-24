@@ -5,7 +5,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -30,26 +29,85 @@ import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
+import eki.ekilex.data.TermMeaningWord;
+import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-import eki.ekilex.data.WordTuple;
 
 @Component
 public class ConversionUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
 
-	public List<TermMeaning> convert(Map<Long, List<WordTuple>> termMeaningsMap) {
-		List<TermMeaning> termMeanings = termMeaningsMap.entrySet().stream()
-				.map(meaningMapEntry -> {
-					TermMeaning termMeaning = new TermMeaning();
-					termMeaning.setMeaningId(meaningMapEntry.getKey());
-					termMeaning.setWordTuples(meaningMapEntry.getValue());
-					return termMeaning;
-				}).sorted(Comparator.comparing(TermMeaning::getMeaningId))
-				.collect(Collectors.toList());
+	public List<TermMeaning> composeTermMeanings(List<TermMeaningWordTuple> termMeaningWordTuples) {
+		
+		List<TermMeaning> termMeanings = new ArrayList<>();
+
+		Map<Long, TermMeaning> termMeaningMap = new HashMap<>();
+		Map<Long, TermMeaningWord> termMeaningMainWordMap = new HashMap<>();
+		Map<Long, TermMeaningWord> termMeaningOtherWordMap = new HashMap<>();
+
+		TermMeaningWord termMeaningMainWord;
+
+		for (TermMeaningWordTuple tuple : termMeaningWordTuples) {
+
+			Long meaningId = tuple.getMeaningId();
+			TermMeaning termMeaning = termMeaningMap.get(meaningId);
+			if (termMeaning == null) {
+				termMeaning = new TermMeaning();
+				termMeaning.setMeaningId(meaningId);
+				termMeaning.setConceptId(tuple.getConceptId());
+				termMeaning.setMainWord(null);
+				termMeaning.setOtherWords(new ArrayList<>());
+				termMeanings.add(termMeaning);
+				termMeaningMap.put(meaningId, termMeaning);
+			}
+
+			Long mainWordId = tuple.getMainWordId();
+			if (mainWordId != null) {
+				termMeaningMainWord = termMeaningMainWordMap.get(mainWordId);
+				if (termMeaningMainWord == null) {
+					termMeaningMainWord = new TermMeaningWord();
+					termMeaningMainWord.setMeaningId(meaningId);
+					termMeaningMainWord.setWordId(tuple.getMainWordId());
+					termMeaningMainWord.setWord(tuple.getMainWord());
+					termMeaningMainWord.setHomonymNr(tuple.getMainWordHomonymNr());
+					termMeaningMainWord.setWordLang(tuple.getMainWordLang());
+					termMeaningMainWord.setDatasetCodesWrapup(tuple.getMainWordDatasetCodesWrapup());
+					termMeaningMainWordMap.put(mainWordId, termMeaningMainWord);
+				}
+				termMeaning.setMainWord(termMeaningMainWord);
+			}
+
+			Long otherWordId = tuple.getOtherWordId();
+			if (otherWordId != null) {
+				TermMeaningWord termMeaningOtherWord = termMeaningOtherWordMap.get(otherWordId);
+				if (termMeaningOtherWord == null) {
+					termMeaningOtherWord = new TermMeaningWord();
+					termMeaningOtherWord.setMeaningId(meaningId);
+					termMeaningOtherWord.setWordId(tuple.getOtherWordId());
+					termMeaningOtherWord.setWord(tuple.getOtherWord());
+					termMeaningOtherWord.setHomonymNr(tuple.getOtherWordHomonymNr());
+					termMeaningOtherWord.setWordLang(tuple.getOtherWordLang());
+					termMeaningOtherWord.setOrderBy(tuple.getOtherWordOrderBy());
+					termMeaningOtherWord.setDatasetCodesWrapup(tuple.getOtherWordDatasetCodesWrapup());
+					termMeaningOtherWordMap.put(otherWordId, termMeaningOtherWord);
+				}
+				List<TermMeaningWord> termMeaningOtherWords = termMeaning.getOtherWords();
+				if (!termMeaningOtherWords.contains(termMeaningOtherWord)) {
+					termMeaningOtherWords.add(termMeaningOtherWord);
+				}
+			}
+		}
+
+		for (TermMeaning termMeaning : termMeanings) {
+			if ((termMeaning.getMainWord() == null) && StringUtils.isBlank(termMeaning.getConceptId())) {
+				termMeaning.setConceptId("#");
+			}
+			termMeaning.getOtherWords().sort(Comparator.comparing(TermMeaningWord::getOrderBy));
+		}
 		return termMeanings;
 	}
 

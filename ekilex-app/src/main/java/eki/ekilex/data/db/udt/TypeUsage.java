@@ -27,7 +27,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeUsage extends UDTImpl<TypeUsageRecord> {
 
-    private static final long serialVersionUID = 1235099576;
+    private static final long serialVersionUID = 634917456;
 
     /**
      * The reference instance of <code>public.type_usage</code>
@@ -48,14 +48,29 @@ public class TypeUsage extends UDTImpl<TypeUsageRecord> {
     public static final UDTField<TypeUsageRecord, String> USAGE = createField("usage", org.jooq.impl.SQLDataType.CLOB, TYPE_USAGE, "");
 
     /**
-     * The attribute <code>public.type_usage.usage_author</code>.
+     * The attribute <code>public.type_usage.usage_lang</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_AUTHOR = createField("usage_author", org.jooq.impl.SQLDataType.CLOB, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> USAGE_LANG = createField("usage_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_USAGE, "");
 
     /**
-     * The attribute <code>public.type_usage.usage_translator</code>.
+     * The attribute <code>public.type_usage.usage_type_code</code>.
      */
-    public static final UDTField<TypeUsageRecord, String> USAGE_TRANSLATOR = createField("usage_translator", org.jooq.impl.SQLDataType.CLOB, TYPE_USAGE, "");
+    public static final UDTField<TypeUsageRecord, String> USAGE_TYPE_CODE = createField("usage_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_USAGE, "");
+
+    /**
+     * The attribute <code>public.type_usage.usage_translations</code>.
+     */
+    public static final UDTField<TypeUsageRecord, String[]> USAGE_TRANSLATIONS = createField("usage_translations", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
+
+    /**
+     * The attribute <code>public.type_usage.usage_definitions</code>.
+     */
+    public static final UDTField<TypeUsageRecord, String[]> USAGE_DEFINITIONS = createField("usage_definitions", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
+
+    /**
+     * The attribute <code>public.type_usage.usage_authors</code>.
+     */
+    public static final UDTField<TypeUsageRecord, String[]> USAGE_AUTHORS = createField("usage_authors", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_USAGE, "");
 
     /**
      * No further instances allowed

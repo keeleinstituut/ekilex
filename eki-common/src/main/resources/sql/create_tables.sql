@@ -574,6 +574,7 @@ create table lexeme
   level3 integer default 0,
   value_state_code varchar(100) references value_state(code) null,
   process_state_code varchar(100) references process_state(code) null,
+  order_by bigserial,
   unique(word_id, meaning_id, dataset_code)
 );
 alter sequence lexeme_id_seq restart with 10000;

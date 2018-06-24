@@ -53,6 +53,14 @@ function initialise() {
 		refreshDetails();
 	});
 
+	$(document).on('change', '#meaning-other-words-visible-check', function() {
+		if (this.checked) {
+			$(".other-words").fadeIn();
+		} else {
+			$(".other-words").fadeOut();
+		}
+	});
+
 	var detailsButtons = $('#results').find('[name="detailsBtn"]');
 	if (detailsButtons.length === 1) {
 		detailsButtons.trigger('click');

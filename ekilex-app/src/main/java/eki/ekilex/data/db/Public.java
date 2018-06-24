@@ -120,7 +120,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1712018187;
+    private static final long serialVersionUID = -528582182;
 
     /**
      * The reference instance of <code>public</code>
@@ -582,6 +582,7 @@ public class Public extends SchemaImpl {
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
             Sequences.LEXEME_ID_SEQ,
+            Sequences.LEXEME_ORDER_BY_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
             Sequences.LEXEME_REGISTER_ID_SEQ,
