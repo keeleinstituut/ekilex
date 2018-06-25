@@ -1,6 +1,5 @@
 package eki.ekilex.runner;
 
-import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
