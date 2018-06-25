@@ -163,21 +163,27 @@
                   <div class="additional-meta">
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedLexemes)}">
                       <div class="col-9">
-                        <div th:each="relation, relationIter : ${lexeme.relatedLexemes}">
-                          <span th:text="${relation.lexRelType.value}"></span>
-                          <a th:id="${'word-search-link-lex-rel-' + relationIter.count}" href="">
-                            <span th:text="${relation.word}"></span>
-                          </a>
+                        <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
+                          <span th:text="${relationType.value}"></span>
+                          <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
+                            <a th:id="${'word-search-link-lex-rel-' + (relationTypeIter.count * 10) + relationIter.count}" href="">
+                              <span th:text="${relation.word}"></span>
+                            </a>
+                            <span th:unless="${relationIter.last}">,</span>
+                          </th:block>
                         </div>
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
                       <div class="col-9">
-                        <div th:each="relation, relationIter : ${lexeme.relatedMeanings}">
-                          <span th:text="${relation.meaningRelType.value}"></span>
-                          <a th:id="${'word-search-link-meaning-rel-' + relationIter.count}" href="">
-                            <span th:text="${relation.word}"></span>
-                          </a>
+                        <div th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
+                          <span th:text="#{|meaning.relation.type.${relationType.code}|}"></span>
+                          <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
+                            <a th:id="${'word-search-link-meaning-rel-' + (relationTypeIter.count * 10) + relationIter.count}" href="">
+                              <span th:text="${relation.word}"></span>
+                            </a>
+                            <span th:unless="${relationIter.last}">,</span>
+                          </th:block>
                         </div>
                       </div>
                     </div>
