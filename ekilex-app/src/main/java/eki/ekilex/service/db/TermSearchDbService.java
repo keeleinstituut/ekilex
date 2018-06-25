@@ -64,13 +64,21 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
-		return execute(m1, meaningCondition, resultLang, fetchAll);
+		return executeFetch(m1, meaningCondition, resultLang, fetchAll);
 	}
 
-	//TODO implement
 	public int countMeanings(String searchFilter, List<String> datasets) {
 
-		return 123;
+		Meaning m1 = MEANING.as("m1");
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		return executeCountMeanings(m1, meaningCondition);
+	}
+
+	public int countWords(String searchFilter, List<String> datasets, String resultLang) {
+
+		Meaning m1 = MEANING.as("m1");
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		return executeCountWords(m1, meaningCondition, resultLang);
 	}
 
 	private Condition composeMeaningCondition(Meaning m1, String searchFilter, List<String> datasets) {
@@ -107,13 +115,21 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 
 		Meaning m1 = MEANING.as("m1");
 		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
-		return execute(m1, meaningCondition, resultLang, fetchAll);
+		return executeFetch(m1, meaningCondition, resultLang, fetchAll);
 	}
 
-	//TODO implement
-	public int countMeanings(SearchFilter searchFilter, List<String> datasets) {
+	public int countMeanings(SearchFilter searchFilter, List<String> datasets) throws Exception {
 
-		return 234;
+		Meaning m1 = MEANING.as("m1");
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		return executeCountMeanings(m1, meaningCondition);
+	}
+
+	public int countWords(SearchFilter searchFilter, List<String> datasets, String resultLang) throws Exception {
+
+		Meaning m1 = MEANING.as("m1");
+		Condition meaningCondition = composeMeaningCondition(m1, searchFilter, datasets);
+		return executeCountWords(m1, meaningCondition, resultLang);
 	}
 
 	private Condition composeMeaningCondition(Meaning m1, SearchFilter searchFilter, List<String> datasets) throws Exception {
@@ -259,7 +275,47 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 		return meaningCondition;
 	}
 
-	private List<TermMeaningWordTuple> execute(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll) {
+	private int executeCountMeanings(Meaning m1, Condition meaningCondition) {
+
+		Table<Record1<Long>> m = DSL
+				.select(m1.ID.as("meaning_id"))
+				.from(m1)
+				.where(meaningCondition)
+				.asTable("m");
+
+		int count = create.fetchCount(DSL.selectDistinct(m.field("meaning_id")).from(m));
+		return count;
+	}
+
+	private int executeCountWords(Meaning m1, Condition meaningCondition, String resultLang) {
+
+		Lexeme l1 = LEXEME.as("l1");
+		Word w1 = WORD.as("w1");
+
+		Table<Record1<Long>> m = DSL
+				.select(m1.ID.as("meaning_id"))
+				.from(m1)
+				.where(meaningCondition)
+				.asTable("m");
+
+
+		Condition where3 = l1.WORD_ID.eq(w1.ID);
+		if (StringUtils.isNotBlank(resultLang)) {
+			where3 = where3.and(w1.LANG.eq(resultLang));
+		}
+		Table<Record2<Long, Long>> w = DSL
+				.select(l1.MEANING_ID, l1.WORD_ID)
+				.from(w1, l1)
+				.where(where3)
+				.asTable("w");
+
+		int count = create
+				.fetchCount(DSL.selectDistinct(w.field("word_id"))
+						.from(m.innerJoin(w).on(w.field("meaning_id", Long.class).eq(m.field("meaning_id", Long.class)))));
+		return count;
+	}
+
+	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll) {
 
 		int limit = MAX_RESULTS_LIMIT;
 		if (fetchAll) {
@@ -337,6 +393,11 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
+		Condition where4 = l2.WORD_ID.eq(w2.ID).and(p2.WORD_ID.eq(w2.ID)).and(f2.PARADIGM_ID.eq(p2.ID)).and(f2.IS_WORD.isTrue());
+		if (StringUtils.isNotBlank(resultLang)) {
+			where4 = where4.and(w2.LANG.eq(resultLang));
+		}
+
 		Table<Record6<Long, Long, String, Integer, String, Long>> mow = DSL
 				.select(
 						l2.MEANING_ID,
@@ -346,11 +407,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 						w2.LANG.as("word_lang"),
 						l2.ORDER_BY)
 				.from(l2, w2, p2, f2)
-				.where(
-						l2.WORD_ID.eq(w2.ID)
-								.and(p2.WORD_ID.eq(w2.ID))
-								.and(f2.PARADIGM_ID.eq(p2.ID))
-								.and(f2.IS_WORD.isTrue()))
+				.where(where4)
 				.asTable("mow");
 
 		Lexeme l = LEXEME.as("l");

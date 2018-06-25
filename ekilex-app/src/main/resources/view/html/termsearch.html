@@ -98,7 +98,9 @@
     <div class="mt-4 float-left w-25" th:if="${searchResult.resultExist}" style="height: calc(100vh - 15em); overflow-y: auto;">
       <div>
         <a href="javascript:void(0);" id="show-all-btn">
-          <span th:text="${'Tulemusi : ' + searchResult.resultCount}"></span>
+          <span th:text="${'Mõisteid : ' + searchResult.meaningCount}"></span>
+          &nbsp;|&nbsp;
+          <span th:text="${'Termineid : ' + searchResult.wordCount}"></span>
         </a>
       </div>
       <hr />
