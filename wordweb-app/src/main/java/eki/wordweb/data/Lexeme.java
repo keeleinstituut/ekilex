@@ -1,6 +1,9 @@
 package eki.wordweb.data;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
@@ -297,6 +300,18 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
 		this.secondaryCollocations = secondaryCollocations;
+	}
+
+	public Map<Classifier, List<TypeLexemeRelation>> getRelatedLexemesByType() {
+		return relatedLexemes == null ?
+				Collections.emptyMap() :
+				relatedLexemes.stream().collect(Collectors.groupingBy(TypeLexemeRelation::getLexRelType));
+	}
+
+	public Map<Classifier, List<TypeMeaningRelation>> getRelatedMeaningsByType() {
+		return relatedMeanings == null ?
+				Collections.emptyMap() :
+				relatedMeanings.stream().collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType));
 	}
 
 }
