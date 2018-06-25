@@ -3,7 +3,6 @@ package eki.ekilex.runner;
 import javax.transaction.Transactional;
 
 import eki.common.constant.FreeformType;
-import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;

@@ -153,7 +153,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
 			} else {
 				wordId = existingWord.get().id;
-				logger.debug("using existing word : {}", itemData.word);
 			}
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
