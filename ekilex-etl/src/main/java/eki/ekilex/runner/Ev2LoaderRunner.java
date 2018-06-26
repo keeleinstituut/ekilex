@@ -178,6 +178,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String meaningGroupExp = "x:tg";
 		final String meaningDefinitionExp = "x:dg/x:d";
 		final String registerExp = "x:dg/x:s";
+		final String latinTermExp = "x:dg/x:ld";
 
 		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		int lexemeLevel1 = 0;
@@ -201,7 +202,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> definitionsToAdd = new ArrayList<>();
 				List<String> definitionsToCache = new ArrayList<>();
 				List<String> definitions = extractValuesAsStrings(meaningGroupNode, meaningDefinitionExp);
-				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, reportingId);
 				List<LexemeToWordData> connectedWords =
@@ -284,6 +285,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String definitionExp = "x:nd";
 		final String translationGroupExp = "x:qng";
 		final String translationValueExp = "x:qn";
+		final String latinTermExp = "x:ld";
 
 		List<Element> usageBlockNodes = node.selectNodes(usageBlockExp);
 		for (Element usageBlockNode : usageBlockNodes) {
@@ -293,18 +295,24 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> wordValues = extractValuesAsStrings(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
 					if (!isUsage(wordValue)) {
+						int level1 = 1;
 						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang);
 						List<Element> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
-						int level1 = 1;
 						for (Element meaningGroupNode: meaningGroupNodes) {
-							List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
-							List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
-							List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionExp);
 							Long meaningId = createMeaning(new Meaning());
+
+							List<LexemeToWordData> latinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
+							latinTerms.forEach(term -> term.meaningId = meaningId);
+							context.latinTermins.addAll(latinTerms);
+
+							List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
 							processDomains(null, meaningId, domains);
+
+							List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionExp);
 							for (String definition : definitions) {
 								createDefinition(meaningId, definition, dataLang, getDataset());
 							}
+
 							Lexeme lexeme = new Lexeme();
 							lexeme.setWordId(wordData.id);
 							lexeme.setMeaningId(meaningId);
@@ -313,9 +321,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							lexeme.setLevel3(1);
 							Long lexemeId = createLexeme(lexeme, getDataset());
 							if (lexemeId != null) {
+								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
 							}
 							level1++;
+
 							List<Element> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for(Element transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
@@ -477,8 +487,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return translations;
 	}
 
-	private List<LexemeToWordData> extractLatinTerms(Element node, String reportingId) throws Exception {
-		final String latinTermExp = "x:dg/x:ld";
+	private List<LexemeToWordData> extractLatinTerms(Element node, String latinTermExp, String reportingId) throws Exception {
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
 	}
 

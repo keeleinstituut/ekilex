@@ -389,8 +389,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		lexeme.setLevel1(1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-		// FIXME: status needed ???
-		//				lexeme.setValueState(wordData.lexemeType);
 		lexeme.setFrequencyGroup(wordData.frequencyGroup);
 		Long lexemeId = createLexeme(lexeme, getDataset());
 		if (!wordData.governments.isEmpty()) {

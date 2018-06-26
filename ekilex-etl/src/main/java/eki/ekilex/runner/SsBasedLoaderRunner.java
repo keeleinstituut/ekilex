@@ -139,6 +139,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Count newWordCount = new Count();
 		for (LexemeToWordData itemData : items) {
 			Long wordId;
+			int level1 = 1;
 			Optional<WordData> existingWord = context.importedWords.stream().filter(w -> itemData.word.equals(w.value)).findFirst();
 			if (!existingWord.isPresent()) {
 				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
@@ -152,11 +153,13 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
 			} else {
 				wordId = existingWord.get().id;
+				existingWord.get().level1++;
+				level1 = existingWord.get().level1;
 			}
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(itemData.meaningId);
-			lexeme.setLevel1(itemData.lexemeLevel1);
+			lexeme.setLevel1(itemData.lexemeLevel1 == 0 ? level1 : itemData.lexemeLevel1);
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
 			createLexeme(lexeme, getDataset());
@@ -198,7 +201,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
 		final String wordTypeAttr = "liik";
-		final int defaultLexemeLevel1 = 1;
+		final int defaultLexemeLevel1 = 0;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
 		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
@@ -542,7 +545,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
-		List<LexemeToWordData> secondLanguageWords = new ArrayList<>();
 	}
 
 }
