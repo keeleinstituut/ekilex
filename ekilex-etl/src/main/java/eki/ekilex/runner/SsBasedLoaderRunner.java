@@ -36,6 +36,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
 
+	protected final static String LEXEME_RELATION_SUB_WORD = "mm";
+
 	protected final static String ARTICLES_REPORT_NAME = "keywords";
 	protected final static String DESCRIPTIONS_REPORT_NAME = "keywords_descriptions";
 	protected final static String MEANINGS_REPORT_NAME = "keywords_meanings";

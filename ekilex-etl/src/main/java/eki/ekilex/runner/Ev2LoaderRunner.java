@@ -270,6 +270,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			List<Usage> usages = extractUsages(meaningNumberGroupNode);
 
 			int lexemeLevel2 = 0;
+			List<Long> mainLexemeIds = new ArrayList<>();
 			for (Element meaningGroupNode : meaningGroupNodes) {
 				lexemeLevel2++;
 				List<PosData> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
@@ -326,6 +327,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						savePosAndDeriv(newWordData, meaningPosCodes, lexemePosCodes, lexemeId, reportingId);
 						saveGrammars(newWordData, meaningGrammars, lexemeGrammars, lexemeId);
 						saveRegisters(lexemeId, registers, reportingId);
+						mainLexemeIds.add(lexemeId);
 					}
 				}
 				for (LexemeToWordData russianWord : meaningRussianWords) {
@@ -348,11 +350,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					}
 				}
 			}
-			processWordsInUsageGroups(context, meaningNumberGroupNode, reportingId);
+			processWordsInUsageGroups(context, meaningNumberGroupNode, mainLexemeIds, reportingId);
 		}
 	}
 
-	private void processWordsInUsageGroups(Context context, Element node, String reportingId) throws Exception {
+	private void processWordsInUsageGroups(Context context, Element node, List<Long> mainLexemeIds, String reportingId) throws Exception {
 
 		final String usageBlockExp = "x:np";
 		final String usageGroupExp = "x:ng";
@@ -401,6 +403,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							if (lexemeId != null) {
 								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
+								for (Long mainLexemeId : mainLexemeIds) {
+									createLexemeRelation(mainLexemeId, lexemeId, LEXEME_RELATION_SUB_WORD);
+								}
 							}
 							level1++;
 

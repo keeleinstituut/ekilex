@@ -44,7 +44,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
-	private final static String LEXEME_RELATION_SUB_WORD = "mm";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
