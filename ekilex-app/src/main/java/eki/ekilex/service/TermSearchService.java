@@ -46,8 +46,6 @@ public class TermSearchService implements SystemConstant {
 	@Transactional
 	public MeaningsResult findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
 
-		//TODO get meaning and words count
-
 		List<TermMeaning> termMeanings;
 		if (StringUtils.isBlank(searchFilter)) {
 			termMeanings = Collections.emptyList();
@@ -55,22 +53,19 @@ public class TermSearchService implements SystemConstant {
 			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, datasets, resultLang, fetchAll);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 		}
-		int meaningCount = termMeanings.size();
-		if (!fetchAll && meaningCount == MAX_RESULTS_LIMIT) {
-			meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
-		}
+		int meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
+		int wordCount = termSearchDbService.countWords(searchFilter, datasets, resultLang);
 		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
+		meaningsResult.setMeaningCount(meaningCount);
+		meaningsResult.setWordCount(wordCount);
 		meaningsResult.setTermMeanings(termMeanings);
-		meaningsResult.setResultCount(meaningCount);
 		meaningsResult.setResultExist(resultExist);
 		return meaningsResult;
 	}
 
 	@Transactional
 	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
-
-		//TODO get meaning and words count
 
 		List<TermMeaning> termMeanings;
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
@@ -79,14 +74,13 @@ public class TermSearchService implements SystemConstant {
 			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, datasets, resultLang, fetchAll);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
 		}
-		int meaningCount = termMeanings.size();
-		if (!fetchAll && meaningCount == MAX_RESULTS_LIMIT) {
-			meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
-		}
+		int meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
+		int wordCount = termSearchDbService.countWords(searchFilter, datasets, resultLang);
 		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
+		meaningsResult.setMeaningCount(meaningCount);
+		meaningsResult.setWordCount(wordCount);
 		meaningsResult.setTermMeanings(termMeanings);
-		meaningsResult.setResultCount(meaningCount);
 		meaningsResult.setResultExist(resultExist);
 		return meaningsResult;
 	}
