@@ -169,7 +169,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String domainOrigin = "bolan";
 		final String domainExp = xpathExpressions().get("domain");
 
-		List<String> domainCodes = extractValuesAsStrings(node, domainExp);
+		List<String> domainCodes = node == null ? new ArrayList<>() : extractValuesAsStrings(node, domainExp);
 		if (additionalDomains != null) {
 			domainCodes.addAll(additionalDomains);
 		}
@@ -461,6 +461,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Long meaningId;
 		List<String> governments = new ArrayList<>();
 		String displayMorph;
+		int level1 = 1;
 	}
 
 	protected class PosData {
