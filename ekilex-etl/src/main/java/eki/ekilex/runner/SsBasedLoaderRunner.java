@@ -1,19 +1,9 @@
 package eki.ekilex.runner;
 
-import eki.common.constant.FreeformType;
-import eki.common.data.Count;
-import eki.ekilex.data.transform.Form;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.MabService;
-import eki.ekilex.service.ReportComposer;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.removePattern;
+import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,14 +15,26 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.removePattern;
-import static org.apache.commons.lang3.StringUtils.replaceChars;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import eki.common.data.Count;
+import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.MabService;
+import eki.ekilex.service.ReportComposer;
 
 public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
-	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´–+=";
+	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
+
+	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=";
 	protected final static String defaultWordMorphCode = "??";
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
@@ -40,8 +42,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String ARTICLES_REPORT_NAME = "keywords";
 	protected final static String DESCRIPTIONS_REPORT_NAME = "keywords_descriptions";
 	protected final static String MEANINGS_REPORT_NAME = "keywords_meanings";
-
-	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
 
 	protected ReportComposer reportComposer;
 	protected boolean reportingEnabled;
@@ -190,7 +190,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
 		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
 		word.setDisplayMorph(displayMorph);
-		createdWord.id = createWord(word, null, null, null);
+		createdWord.id = createOrSelectWord(word, null, null, null);
 		return createdWord;
 	}
 

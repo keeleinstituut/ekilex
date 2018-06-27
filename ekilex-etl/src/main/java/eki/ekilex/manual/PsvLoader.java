@@ -35,11 +35,10 @@ public class PsvLoader {
 				guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
 			}
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
-			String dataLang = "est";
 
 			if (isAddForms) {
 				MabService mabService = applicationContext.getBean(MabService.class);
-				mabService.loadParadigms(mabFilePath, dataLang, isAddReporting);
+				mabService.loadParadigms(mabFilePath, isAddReporting);
 			}
 			if (isCombineDatasets) {
 				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);

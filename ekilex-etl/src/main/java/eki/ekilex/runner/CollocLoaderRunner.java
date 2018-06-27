@@ -72,6 +72,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	@Deprecated
 	private static final String REPORT_COLLOC_PAIR_UNMATCH = "colloc_pair_unmatch";
 
+	private final String dataLang = "est";
+
 	private final String guidExp = "x:G";
 	private final String articleHeaderExp = "x:P";
 	private final String wordGroupExp = "x:mg";
@@ -161,7 +163,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, boolean doReports) throws Exception {
 
 		logger.debug("Starting loading collocates...");
 
@@ -174,7 +176,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					REPORT_UNKNOWN_COLLOC_MEMBER, REPORT_ILLEGAL_LEMPOSVK_REF, REPORT_DIFFERENT_COLLOC_DEFINITION);
 		}
 
-		dataLang = unifyLang(dataLang);
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		Element rootElement = dataDoc.getRootElement();
@@ -1009,7 +1010,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		homonymNr++;
 		Word wordObj = new Word(word, dataLang, homonymNr, morphCode, guid);
 		wordObj.setDisplayMorph(wordDisplayMorph);
-		Long wordId = createWord(wordObj, null, dataset, null);
+		Long wordId = createOrSelectWord(wordObj, null, dataset, null);
 		wordObj.setId(wordId);
 		return wordObj;
 	}

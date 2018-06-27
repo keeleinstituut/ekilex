@@ -9,11 +9,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,6 +30,7 @@ import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Form;
+import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
 import eki.ekilex.data.transform.Paradigm;
@@ -38,11 +42,15 @@ import eki.ekilex.service.XmlReader;
 
 public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
 
+	private static Logger logger = LoggerFactory.getLogger(AbstractLoaderRunner.class);
+
 	abstract String getDataset();
 
-	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
-
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
+
+	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
+
+	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
 
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
 
@@ -70,6 +78,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private String sqlSelectWordByFormAndHomonym;
 
+	private String sqlSelectWordByDatasetAndGuid;
+
 	private String sqlSelectWordMaxHomonym;
 
 	private String sqlSelectLexemeFreeform;
@@ -86,11 +96,14 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
-		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
-
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
 		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_DATASET_AND_GUID);
+		sqlSelectWordByDatasetAndGuid = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
+		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE);
 		sqlSelectLexemeFreeform = getContent(resourceFileInputStream);
@@ -118,7 +131,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return lang;
 	}
 
-	protected Long createWord(Word word, List<Paradigm> paradigms, String dataset, Count wordDuplicateCount) throws Exception {
+	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
 
 		String wordValue = word.getValue();
 		String wordLang = word.getLang();
@@ -146,8 +159,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
-			if (wordDuplicateCount != null) {
-				wordDuplicateCount.increment();
+			if (reusedWordCount != null) {
+				reusedWordCount.increment();
 			}
 		}
 		word.setId(wordId);
@@ -172,13 +185,61 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return wordId;
 	}
 
-	protected Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
+	protected Long createOrSelectWord(
+			Word word, List<Paradigm> paradigms, String dataset, Map<String, List<Guid>> ssGuidMap,
+			Count ssWordCount, Count reusedWordCount) throws Exception {
+
+		if (MapUtils.isEmpty(ssGuidMap)) {
+			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+		}
+
+		String wordValue = word.getValue();
+		String guid = word.getGuid();
+
+		List<Guid> mappedGuids = ssGuidMap.get(guid);
+		if (CollectionUtils.isEmpty(mappedGuids)) {
+			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+		}
+
+		for (Guid ssGuidObj : mappedGuids) {
+
+			String ssWordValue = ssGuidObj.getWord();
+			String ssGuid = ssGuidObj.getValue();
+			String ssDataset = "ss1";
+	
+			if (StringUtils.equalsIgnoreCase(wordValue, ssWordValue)) {
+				Map<String, Object> tableRowValueMap = getWord(wordValue, ssGuid, ssDataset);
+				if (tableRowValueMap == null) {
+					return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+				}
+				ssWordCount.increment();
+				Long wordId = (Long) tableRowValueMap.get("id");
+				word.setId(wordId);
+				return wordId;
+			}
+		}
+		List<String> mappedWordValues = mappedGuids.stream().map(Guid::getWord).collect(Collectors.toList());
+		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordValue, mappedWordValues);
+		return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+	}
+
+	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("homonymNr", homonymNr);
 		tableRowParamMap.put("lang", lang);
 		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByFormAndHomonym, tableRowParamMap);
+		return tableRowValueMap;
+	}
+
+	private Map<String, Object> getWord(String word, String guid, String dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("guid", guid);
+		tableRowParamMap.put("dataset", dataset);
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByDatasetAndGuid, tableRowParamMap);
 		return tableRowValueMap;
 	}
 

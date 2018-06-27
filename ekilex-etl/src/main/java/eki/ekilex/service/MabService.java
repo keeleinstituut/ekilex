@@ -26,8 +26,8 @@ public class MabService {
 	@Autowired
 	private MabLoaderRunner mabLoader;
 
-	public void loadParadigms(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
-		MabData mabData = mabLoader.execute(dataXmlFilePath, dataLang, doReports);
+	public void loadParadigms(String dataXmlFilePath, boolean doReports) throws Exception {
+		MabData mabData = mabLoader.execute(dataXmlFilePath, doReports);
 		wordParadigmsMap = mabData.getWordParadigmsMap();
 		formWordsMap = mabData.getFormWordsMap();
 	}

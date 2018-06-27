@@ -31,6 +31,7 @@ import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Government;
 import eki.ekilex.data.transform.Grammar;
+import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
@@ -98,9 +99,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String[] textCleanupEnitites = new String[] {"&ema;v&eml;", "&v;"};
 	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 	private final String usageTranslationLangRus = "rus";
+	private final String dataLang = "est";
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "qq2";
 	}
 
@@ -130,8 +132,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(
-			String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
 
 		logger.debug("Loading QQ2...");
 
@@ -148,7 +149,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 
 		boolean isAddForms = mabService.isMabLoaded();
-		dataLang = unifyLang(dataLang);
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		Element rootElement = dataDoc.getRootElement();
@@ -174,8 +174,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String[] wordComponents;
 		Word wordObj;
 		Lexeme lexemeObj;
+		List<Long> wordIds;
 
-		Count wordDuplicateCount = new Count();
+		Count reusedWordCount = new Count();
+		Count ssWordCount = new Count();
 		Count lexemeDuplicateCount = new Count();
 		Count missingUsageGroupCount = new Count();
 		Count missingMabIntegrationCaseCount = new Count();
@@ -201,6 +203,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 			word = null;
+			wordIds = new ArrayList<>();
 
 			for (Element wordGroupNode : wordGroupNodes) {
 
@@ -243,8 +246,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// save word+paradigm+form
 				wordObj = new Word(word, dataLang, wordFormsStr, wordComponents, wordDisplayForm, wordVocalForm, homonymNr, destinMorphCode, guid, null);
-				wordId = createWord(wordObj, paradigms, getDataset(), wordDuplicateCount);
-				newWords.add(wordObj);
+				wordId = createOrSelectWord(wordObj, paradigms, getDataset(), ssGuidMap, ssWordCount, reusedWordCount);
+				if (!wordIds.contains(wordId)) {
+					wordIds.add(wordId);
+					newWords.add(wordObj);
+				}
 
 				// governments...
 				governmentNodes = wordGroupNode.selectNodes(wordGovernmentExp);
@@ -305,7 +311,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						}
 
 						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, defaultWordMorphCode, null, null);
-						wordId = createWord(wordObj, null, null, wordDuplicateCount);
+						wordId = createOrSelectWord(wordObj, null, getDataset(), reusedWordCount);
 						wordMatches.add(wordObj);
 						allWordMatches.add(wordObj);
 
@@ -371,7 +377,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			reportComposer.end();
 		}
 
-		logger.debug("Found {} word duplicates", wordDuplicateCount.getValue());
+		logger.debug("Found {} reused words", reusedWordCount.getValue());
+		logger.debug("Found {} ss words", ssWordCount.getValue());
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount.getValue());
 		logger.debug("Found {} missing usage groups", missingUsageGroupCount.getValue());
 

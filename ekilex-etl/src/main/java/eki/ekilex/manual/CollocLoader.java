@@ -25,10 +25,9 @@ public class CollocLoader {
 			// /projects/eki/data/dictionaries/kol/kol-test_15-05-18.xml
 
 			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Collocate data file location? (/absolute/path/to/file.xml)");
-			String dataLang = ConsolePromptUtil.promptStringValue("Dictionary language? (est/rus/eng/lat/...)");
 			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
 
-			runner.execute(dataXmlFilePath, dataLang, doReports);
+			runner.execute(dataXmlFilePath, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

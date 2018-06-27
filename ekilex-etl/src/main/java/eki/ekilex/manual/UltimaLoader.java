@@ -22,7 +22,7 @@ import eki.ekilex.runner.Ss1LoaderRunner;
 import eki.ekilex.service.MabService;
 import eki.ekilex.service.WordMatcherService;
 
-public class UltimaLoader {
+public class UltimaLoader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(UltimaLoader.class);
 
@@ -52,7 +52,6 @@ public class UltimaLoader {
 			loaderConf.load(loaderConfResource.getInputStream());
 
 			String dataFilePath, mapFilePath;
-			final String dataLang = "est";
 			String doReportsStr = loaderConf.getProperty("doreports");
 			final boolean doReports = Boolean.valueOf(doReportsStr);
 
@@ -64,16 +63,18 @@ public class UltimaLoader {
 			// mab
 			dataFilePath = loaderConf.getProperty("mab.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				mabService.loadParadigms(dataFilePath, dataLang, doReports);
+				mabService.loadParadigms(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("mab");
 			}
 
 			// qq2
+			/*
 			dataFilePath = loaderConf.getProperty("qq2.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				qq2Runner.execute(dataFilePath, dataLang, doReports);
+				qq2Runner.execute(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("qq2");
 			}
+			*/
 
 			// est src + est
 			dataFilePath = loaderConf.getProperty("est.data.file");
@@ -108,7 +109,7 @@ public class UltimaLoader {
 			// kol
 			dataFilePath = loaderConf.getProperty("kol.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				kolRunner.execute(dataFilePath, dataLang, doReports);
+				kolRunner.execute(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("kol");
 			}
 
@@ -127,4 +128,10 @@ public class UltimaLoader {
 			applicationContext.close();
 		}
 	}
+
+	@Override
+	void execute() {
+		
+	}
+	
 }

@@ -448,7 +448,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		createdWord.wordType = wordType;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode, null, wordType);
-		createdWord.id = createWord(word, null, null, null);
+		createdWord.id = createOrSelectWord(word, null, null, null);
 		return createdWord;
 	}
 
@@ -1275,7 +1275,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid, context);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createWord(word, paradigms, getDataset(), wordDuplicateCount);
+				wordData.id = createOrSelectWord(word, paradigms, getDataset(), wordDuplicateCount);
 			}
 
 			addSoundFileNamesToForms(wordData.id, wordGroupNode);

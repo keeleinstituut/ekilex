@@ -28,11 +28,10 @@ public class Ss1Loader {
 				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
 			}
 			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
-			String dataLang = "est";
 
 			if (isAddForms) {
 				MabService mabService = applicationContext.getBean(MabService.class);
-				mabService.loadParadigms(mabFilePath, dataLang, isAddReporting);
+				mabService.loadParadigms(mabFilePath, isAddReporting);
 			}
 			runner.execute(dataXmlFilePath, isAddReporting);
 

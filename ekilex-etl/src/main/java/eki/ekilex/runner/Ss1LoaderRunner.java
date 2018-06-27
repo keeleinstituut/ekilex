@@ -38,6 +38,8 @@ import eki.ekilex.service.ReportComposer;
 @Component
 public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
+	private static Logger logger = LoggerFactory.getLogger(Ss1LoaderRunner.class);
+
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 	private final static String sqlWordLexemesByMeaningAndDataset =
 			"select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset and l.meaning_id = :meaningId";
@@ -59,8 +61,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private final static String ABBREVIATIONS_REPORT_NAME = "abbreviations";
 	private final static String COHYPONYMS_REPORT_NAME = "cohyponyms";
 	private final static String TOKENS_REPORT_NAME = "tokens";
-
-	private static Logger logger = LoggerFactory.getLogger(Ss1LoaderRunner.class);
 
 	private String wordTypeAbbreviation;
 	private String wordTypeToken;
@@ -752,7 +752,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createWord(word, paradigms, getDataset(), context.wordDuplicateCount);
+				wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.wordDuplicateCount);
 			}
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);

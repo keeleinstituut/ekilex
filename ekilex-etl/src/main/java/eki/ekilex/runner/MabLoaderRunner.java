@@ -32,6 +32,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_ENRICHED_WORDS = "enriched_words";
 
+	private final String dataLang = "est";
+
 	private ReportComposer reportComposer;
 
 	@Override
@@ -44,7 +46,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public MabData execute(String dataXmlFilePath, String dataLang, boolean doReports) throws Exception {
+	public MabData execute(String dataXmlFilePath, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
 
