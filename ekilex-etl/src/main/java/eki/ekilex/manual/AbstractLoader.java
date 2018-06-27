@@ -1,6 +1,7 @@
 package eki.ekilex.manual;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,15 @@ public abstract class AbstractLoader implements SystemConstant {
 
 	protected void initDefault() throws Exception {
 		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
+		initMain();
+	}
+
+	protected void initWithTermeki() throws Exception {
+		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml", "db-termeki-config.xml");
+		initMain();
+	}
+
+	private void initMain() throws IOException {
 		applicationContext.registerShutdownHook();
 		Resource loaderConfResource = applicationContext.getResource("ultima-loader.properties");
 		loaderConf = new Properties();
@@ -85,7 +95,7 @@ public abstract class AbstractLoader implements SystemConstant {
 				if (StringUtils.isBlank(resourceFileLine)) {
 					continue;
 				}
-				String[] ssGuidMapRowCells = StringUtils.split(resourceFileLine, '\t');
+				String[] ssGuidMapRowCells = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
 				if (ssGuidMapRowCells.length != 4) {
 					throw new DataLoadingException("Invalid guid map line \"" + resourceFileLine + "\"");
 				}

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 import eki.common.constant.TableName;
 import eki.common.service.db.BasicDbService;
 
+@Deprecated
 @Service
 public class WordMatcherService implements TableName {
 

@@ -26,7 +26,6 @@ public class Qq2Loader extends AbstractLoader {
 			Qq2LoaderRunner datasetRunner = getComponent(Qq2LoaderRunner.class);
 			MabService mabService = getComponent(MabService.class);
 			String datasetCode = datasetRunner.getDataset();
-
 			boolean doReports = doReports();
 
 			// mab
@@ -36,7 +35,6 @@ public class Qq2Loader extends AbstractLoader {
 			// qq2
 			String qqFilePath = getMandatoryConfProperty("qq2.data.file");
 			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
-
 			datasetRunner.execute(qqFilePath, ssGuidMap, doReports);
 
 		} catch (Exception e) {

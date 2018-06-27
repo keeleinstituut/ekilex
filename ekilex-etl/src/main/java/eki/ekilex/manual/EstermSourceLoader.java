@@ -2,37 +2,33 @@ package eki.ekilex.manual;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import eki.common.util.ConsolePromptUtil;
 import eki.ekilex.runner.EstermSourceLoaderRunner;
 
-public class EstermSourceLoader {
+public class EstermSourceLoader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(EstermSourceLoader.class);
 
 	public static void main(String[] args) {
+		new EstermSourceLoader().execute();
+	}
 
-		ConfigurableApplicationContext applicationContext = null;
-
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
-		EstermSourceLoaderRunner runner = applicationContext.getBean(EstermSourceLoaderRunner.class);
-
+	@Override
+	void execute() {
 		try {
-			applicationContext.registerShutdownHook();
+			initDefault();
 
-			//  /projects/eki/data/dictionaries/est/esterm.xml
-			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Esterm type dictionary data file location? (/absolute/path/to/file.xml)");
-			//boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
-			boolean doReports = false;
+			EstermSourceLoaderRunner datasetRunner = getComponent(EstermSourceLoaderRunner.class);
 
-			runner.execute(dataXmlFilePath, doReports);
+			boolean doReports = doReports();
+			String estFilePath = getMandatoryConfProperty("est.data.file");
+			datasetRunner.execute(estFilePath, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
-			applicationContext.close();
+			shutdown();
 		}
 	}
+
 }

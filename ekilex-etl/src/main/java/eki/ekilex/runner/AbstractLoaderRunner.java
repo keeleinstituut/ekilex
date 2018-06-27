@@ -126,6 +126,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	}
 
 	protected String unifyLang(String lang) {
+		if (StringUtils.isBlank(lang)) {
+			return null;
+		}
 		Locale locale = new Locale(lang);
 		lang = locale.getISO3Language();
 		return lang;
@@ -220,6 +223,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		}
 		List<String> mappedWordValues = mappedGuids.stream().map(Guid::getWord).collect(Collectors.toList());
 		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordValue, mappedWordValues);
+
 		return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 	}
 

@@ -1,55 +1,47 @@
 package eki.ekilex.manual;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import eki.common.util.ConsolePromptUtil;
+import eki.ekilex.data.transform.Guid;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.service.MabService;
-import eki.ekilex.service.WordMatcherService;
 
-public class PsvLoader {
+public class PsvLoader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoader.class);
 
 	public static void main(String[] args) {
+		new PsvLoader().execute();
+	}
 
-		ConfigurableApplicationContext applicationContext;
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
-		PsvLoaderRunner runner = applicationContext.getBean(PsvLoaderRunner.class);
-
+	@Override
+	void execute() {
 		try {
-			applicationContext.registerShutdownHook();
+			initDefault();
 
-			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("PSV data file location? (/absolute/path/to/file.xml)");
-			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
-			String mabFilePath = null;
-			if (isAddForms) {
-				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
-			}
-			boolean isCombineDatasets = ConsolePromptUtil.promptBooleanValue("Combining PSV with QQ2 datset? (y/n)");
-			String guidMappingFilePath = null;
-			if (isCombineDatasets) {
-				guidMappingFilePath = ConsolePromptUtil.promptDataFilePath("GUID mapping file location? (/absolute/path/to/file.dat)");
-			}
-			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
+			PsvLoaderRunner datasetRunner = getComponent(PsvLoaderRunner.class);
+			MabService mabService = getComponent(MabService.class);
+			String datasetCode = datasetRunner.getDataset();
+			boolean doReports = doReports();
 
-			if (isAddForms) {
-				MabService mabService = applicationContext.getBean(MabService.class);
-				mabService.loadParadigms(mabFilePath, isAddReporting);
-			}
-			if (isCombineDatasets) {
-				WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);
-				wordMatcherService.load(guidMappingFilePath);
-			}
-			runner.execute(dataXmlFilePath, isAddReporting);
+			// mab
+			String mabFilePath = getMandatoryConfProperty("mab.data.file");
+			mabService.loadParadigms(mabFilePath, doReports);
+
+			// ps
+			String psFilePath = getMandatoryConfProperty("psv.data.file");
+			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			datasetRunner.execute(psFilePath, ssGuidMap, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
-			applicationContext.close();
+			shutdown();
 		}
 	}
+
 }

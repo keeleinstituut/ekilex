@@ -2,16 +2,13 @@ package eki.ekilex.manual;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 
-import eki.ekilex.runner.TermekiRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.io.Resource;
 
+import eki.ekilex.data.transform.Guid;
 import eki.ekilex.runner.CollocLoaderRunner;
 import eki.ekilex.runner.DbReInitialiserRunner;
 import eki.ekilex.runner.EstermLoaderRunner;
@@ -19,41 +16,39 @@ import eki.ekilex.runner.EstermSourceLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
+import eki.ekilex.runner.TermekiRunner;
 import eki.ekilex.service.MabService;
-import eki.ekilex.service.WordMatcherService;
 
 public class UltimaLoader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(UltimaLoader.class);
 
 	public static void main(String[] args) {
+		new UltimaLoader().execute();
+	}
 
-		ConfigurableApplicationContext applicationContext = null;
+	@Override
+	void execute() {
 
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml", "db-termeki-config.xml");
-		Resource loaderConfResource = applicationContext.getResource("ultima-loader.properties");
-
-		DbReInitialiserRunner initRunner = applicationContext.getBean(DbReInitialiserRunner.class);
-		MabService mabService = applicationContext.getBean(MabService.class);
-		Qq2LoaderRunner qq2Runner = applicationContext.getBean(Qq2LoaderRunner.class);
-		EstermSourceLoaderRunner estSrcRunner = applicationContext.getBean(EstermSourceLoaderRunner.class);
-		EstermLoaderRunner estRunner = applicationContext.getBean(EstermLoaderRunner.class);
-		TermekiRunner termekiRunner = applicationContext.getBean(TermekiRunner.class);
-		PsvLoaderRunner psvRunner = applicationContext.getBean(PsvLoaderRunner.class);
-		Ss1LoaderRunner ss1Runner = applicationContext.getBean(Ss1LoaderRunner.class);
-		CollocLoaderRunner kolRunner = applicationContext.getBean(CollocLoaderRunner.class);
-		WordMatcherService wordMatcherService = applicationContext.getBean(WordMatcherService.class);
 		List<String> successfullyLoadedDatasets = new ArrayList<>();
 
 		try {
-			applicationContext.registerShutdownHook();
+			initWithTermeki();
 
-			Properties loaderConf = new Properties();
-			loaderConf.load(loaderConfResource.getInputStream());
+			DbReInitialiserRunner initRunner = getComponent(DbReInitialiserRunner.class);
+			MabService mabService = getComponent(MabService.class);
+			Ss1LoaderRunner ss1Runner = getComponent(Ss1LoaderRunner.class);
+			Qq2LoaderRunner qq2Runner = getComponent(Qq2LoaderRunner.class);
+			EstermSourceLoaderRunner estSrcRunner = getComponent(EstermSourceLoaderRunner.class);
+			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
+			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
+			PsvLoaderRunner psvRunner = getComponent(PsvLoaderRunner.class);
+			CollocLoaderRunner kolRunner = getComponent(CollocLoaderRunner.class);
 
-			String dataFilePath, mapFilePath;
-			String doReportsStr = loaderConf.getProperty("doreports");
-			final boolean doReports = Boolean.valueOf(doReportsStr);
+			String dataFilePath, dataset;
+			Map<String, List<Guid>> ssGuidMap;
+
+			boolean doReports = doReports();
 
 			logger.info("Starting to clear database and load all datasets specified in ultima-loader.properties file");
 
@@ -61,23 +56,48 @@ public class UltimaLoader extends AbstractLoader {
 			initRunner.execute();
 
 			// mab
-			dataFilePath = loaderConf.getProperty("mab.data.file");
+			dataFilePath = getConfProperty("mab.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				mabService.loadParadigms(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("mab");
 			}
 
-			// qq2
-			/*
-			dataFilePath = loaderConf.getProperty("qq2.data.file");
+			// ss1
+			dataFilePath = getConfProperty("ss1.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				qq2Runner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("qq2");
+				ss1Runner.execute(dataFilePath, doReports);
+				successfullyLoadedDatasets.add("ss1");
 			}
-			*/
+
+			// qq2
+			dataFilePath = getConfProperty("qq2.data.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				dataset = qq2Runner.getDataset();
+				ssGuidMap = getSsGuidMapFor(dataset);
+				qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
+				successfullyLoadedDatasets.add(dataset);
+			}
+
+			// psv
+			dataFilePath = getConfProperty("psv.data.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				dataset = qq2Runner.getDataset();
+				ssGuidMap = getSsGuidMapFor(dataset);
+				psvRunner.execute(dataFilePath, ssGuidMap, doReports);
+				successfullyLoadedDatasets.add("psv");
+			}
+
+			// kol
+			dataFilePath = getConfProperty("kol.data.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				dataset = kolRunner.getDataset();
+				ssGuidMap = getSsGuidMapFor(dataset);
+				kolRunner.execute(dataFilePath, ssGuidMap, doReports);
+				successfullyLoadedDatasets.add("kol");
+			}
 
 			// est src + est
-			dataFilePath = loaderConf.getProperty("est.data.file");
+			dataFilePath = getConfProperty("est.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				estSrcRunner.execute(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("est src");
@@ -85,36 +105,8 @@ public class UltimaLoader extends AbstractLoader {
 				successfullyLoadedDatasets.add("est");
 			}
 
-			// psv guid matcher
-			mapFilePath = loaderConf.getProperty("psv.map.file");
-			if (StringUtils.isNotBlank(mapFilePath)) {
-				wordMatcherService.load(mapFilePath);
-				successfullyLoadedDatasets.add("psv guid");
-			}
-
-			// psv
-			dataFilePath = loaderConf.getProperty("psv.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				psvRunner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("psv");
-			}
-
-			// ss1
-			dataFilePath = loaderConf.getProperty("ss1.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				ss1Runner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("ss1");
-			}
-
-			// kol
-			dataFilePath = loaderConf.getProperty("kol.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				kolRunner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("kol");
-			}
-
 			// termeki
-			dataFilePath = loaderConf.getProperty("termeki.data.file");
+			dataFilePath = getConfProperty("termeki.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				termekiRunner.batchLoad(dataFilePath);
 				successfullyLoadedDatasets.add("termeki");
@@ -125,13 +117,8 @@ public class UltimaLoader extends AbstractLoader {
 			logger.error("Unexpected behaviour of the system", e);
 			logger.info("Successfully loaded datasets: {}", successfullyLoadedDatasets);
 		} finally {
-			applicationContext.close();
+			shutdown();
 		}
 	}
 
-	@Override
-	void execute() {
-		
-	}
-	
 }
