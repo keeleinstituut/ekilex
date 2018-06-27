@@ -39,6 +39,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
 
+	protected final static String LEXEME_RELATION_SUB_WORD = "mm";
+
 	protected final static String ARTICLES_REPORT_NAME = "keywords";
 	protected final static String DESCRIPTIONS_REPORT_NAME = "keywords_descriptions";
 	protected final static String MEANINGS_REPORT_NAME = "keywords_meanings";
@@ -54,7 +56,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected Map<String, String> processStateCodes;
 	protected Map<String, String> registerCodes;
 
-	protected abstract Map<String,String> xpathExpressions();
+	protected abstract Map<String, String> xpathExpressions();
 
 	@Autowired
 	private MabService mabService;
@@ -74,8 +76,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			String ekilexRegisterCode = registerCodes.get(registerCode);
 			if (ekilexRegisterCode == null) {
 				writeToLogFile(reportingId, "Tundmatu registri kood", registerCode);
-			}
-			else {
+			} else {
 				createLexemeRegister(lexemeId, ekilexRegisterCode);
 			}
 		}
@@ -140,6 +141,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Count newWordCount = new Count();
 		for (LexemeToWordData itemData : items) {
 			Long wordId;
+			int level1 = 1;
 			Optional<WordData> existingWord = context.importedWords.stream().filter(w -> itemData.word.equals(w.value)).findFirst();
 			if (!existingWord.isPresent()) {
 				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
@@ -153,11 +155,13 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
 			} else {
 				wordId = existingWord.get().id;
+				existingWord.get().level1++;
+				level1 = existingWord.get().level1;
 			}
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);
 			lexeme.setMeaningId(itemData.meaningId);
-			lexeme.setLevel1(itemData.lexemeLevel1);
+			lexeme.setLevel1(itemData.lexemeLevel1 == 0 ? level1 : itemData.lexemeLevel1);
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
 			createLexeme(lexeme, getDataset());
@@ -170,7 +174,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String domainOrigin = "bolan";
 		final String domainExp = xpathExpressions().get("domain");
 
-		List<String> domainCodes = extractValuesAsStrings(node, domainExp);
+		List<String> domainCodes = node == null ? new ArrayList<>() : extractValuesAsStrings(node, domainExp);
 		if (additionalDomains != null) {
 			domainCodes.addAll(additionalDomains);
 		}
@@ -199,12 +203,14 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
 		final String wordTypeAttr = "liik";
-		final int defaultLexemeLevel1 = 1;
+		final int defaultLexemeLevel1 = 0;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
 		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
 		for (Element metadataNode : metadataNodes) {
-			if (isRestricted(metadataNode)) continue;
+			if (isRestricted(metadataNode)) {
+				continue;
+			}
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			lexemeMetadata.displayForm = metadataNode.getTextTrim();
 			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
@@ -292,7 +298,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Element formsNode = (Element) node.selectSingleNode(formsNodeExp);
 		if (formsNode != null) {
 			formEndings.addAll(Arrays.stream(formsNode.getTextTrim().split(","))
-					.map(v -> v.substring(v.indexOf("-")+1).trim())
+					.map(v -> v.substring(v.indexOf("-") + 1).trim())
 					.collect(Collectors.toList()));
 		}
 
@@ -462,6 +468,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Long meaningId;
 		List<String> governments = new ArrayList<>();
 		String displayMorph;
+		int level1 = 1;
 	}
 
 	protected class PosData {
@@ -542,7 +549,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
-		List<LexemeToWordData> secondLanguageWords = new ArrayList<>();
 	}
 
 }

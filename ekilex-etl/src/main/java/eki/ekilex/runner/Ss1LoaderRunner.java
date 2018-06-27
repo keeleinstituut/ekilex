@@ -46,7 +46,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
-	private final static String LEXEME_RELATION_SUB_WORD = "mm";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
@@ -389,8 +388,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		lexeme.setLevel1(1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-		// FIXME: status needed ???
-		//				lexeme.setValueState(wordData.lexemeType);
 		lexeme.setFrequencyGroup(wordData.frequencyGroup);
 		Long lexemeId = createLexeme(lexeme, getDataset());
 		if (!wordData.governments.isEmpty()) {
