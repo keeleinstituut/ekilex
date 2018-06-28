@@ -144,7 +144,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		processAntonyms(context);
 		processCohyponyms(context);
 
-		logger.debug("Found {} word duplicates", context.wordDuplicateCount);
+		logger.debug("Found {} word duplicates", context.reusedWordCount);
 
 		if (reportComposer != null) {
 			reportComposer.end();
@@ -749,7 +749,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.wordDuplicateCount);
+				wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.reusedWordCount);
 			}
 
 			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
