@@ -23,6 +23,7 @@ import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.SourceService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -333,21 +334,23 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
-		WordsResult words = lexSearchService.findWords(value, allDatasets, true);
-		if (words.getTotalCount() == 0) {
-			updateService.addWord(value, dataset, language,morphCode);
-		} else {
-			attributes.addFlashAttribute("dataset", dataset);
-			attributes.addFlashAttribute("wordValue", value);
-			attributes.addFlashAttribute("language", language);
-			attributes.addFlashAttribute("morphCode", morphCode);
-			attributes.addFlashAttribute("returnPage", returnPage);
-			return "redirect:/wordselect";
-		}
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
-		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
-			sessionBean.getSelectedDatasets().add(dataset);
+		if (StringUtils.isNotBlank(value)) {
+			List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+			WordsResult words = lexSearchService.findWords(value, allDatasets, true);
+			if (words.getTotalCount() == 0) {
+				updateService.addWord(value, dataset, language,morphCode);
+			} else {
+				attributes.addFlashAttribute("dataset", dataset);
+				attributes.addFlashAttribute("wordValue", value);
+				attributes.addFlashAttribute("language", language);
+				attributes.addFlashAttribute("morphCode", morphCode);
+				attributes.addFlashAttribute("returnPage", returnPage);
+				return "redirect:/wordselect";
+			}
+			attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+			if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+				sessionBean.getSelectedDatasets().add(dataset);
+			}
 		}
 		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
 	}
@@ -362,10 +365,12 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		updateService.addWord(value, dataset, language, morphCode);
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
-		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
-			sessionBean.getSelectedDatasets().add(dataset);
+		if (StringUtils.isNotBlank(value)) {
+			updateService.addWord(value, dataset, language, morphCode);
+			attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
+			if (!sessionBean.getSelectedDatasets().contains(dataset)) {
+				sessionBean.getSelectedDatasets().add(dataset);
+			}
 		}
 		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
 	}
