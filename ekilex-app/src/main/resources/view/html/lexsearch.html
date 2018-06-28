@@ -31,9 +31,9 @@
         <div class="card shadow" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
           <div class="card-body p-2">
             <a href="javascript:void(0);" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
-            <table id="results" class="table table-sm table-striped">
+            <table id="results" class="table table-striped mb-0">
               <tr th:each="word : ${wordsFoundBySearch}">
-                <td class="w-100">
+                <td class="p-0">
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="detailsBtn">
                     <span th:text="${word.value}" class="ttl">vorm 1</span>
                     <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
@@ -616,14 +616,13 @@
                 </table>
               </div>
             </div>
-            <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-              <hr />
+            <div class="card-body pt-0" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
               <span class="lbl">Kollokatsioonid</span>
               <th:block th:each="collocPosGr : ${lexeme.collocationPosGroups}">
-                <div style="border: 1px solid #CCC; padding: 5px">
+                <div class="border rounded p-2">
                   <p th:text="${collocPosGr.code}"></p>
                   <th:block th:each="collocRelGr : ${collocPosGr.relationGroups}">
-                    <div style="border: 1px solid #CCC; padding: 5px">
+                    <div class="border rounded p-2">
                       <p>
                         <span th:text="${collocRelGr.name}"></span>
                         <span th:if="${collocRelGr.frequency != null}">
@@ -682,9 +681,9 @@
                 <div style="padding: 5px"></div>
               </th:block>
             </div>
-            <div class="pt-2" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
+            <div class="card-body pt-0" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
               <span class="lbl">Kasutatud kollokatsioonides</span>
-              <div style="border: 1px solid #CCC; padding: 5px">
+              <div class="border rounded p-2">
                 <table>
                   <tr th:each="colloc : ${lexeme.secondaryCollocations}">
                     <td style="padding: 0px 5px 0px 5px">

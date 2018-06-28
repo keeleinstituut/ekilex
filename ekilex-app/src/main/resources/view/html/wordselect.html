@@ -29,7 +29,7 @@
           <input hidden name="morphCode" th:value="${morphCode}">
           <input hidden name="value" th:value="${wordValue}">
 
-          <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2">
+          <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${wordValue}" class="ttl"></span>
             <button type="submit" class="btn btn-primary ml-4">Lisa uus homonüüm</button>
             <span class="float-right"><b th:text="${dataset}"></b></span>
@@ -37,7 +37,7 @@
         </form>
       </div>
       <div class="card-body" th:if="${not #lists.isEmpty(words)}">
-        <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" th:each="word : ${words}">
+        <div style="width: 95%" class="border rounded p-2 mb-2" th:each="word : ${words}">
           <div>
             <span th:text="${word.value}" class="ttl"></span>
             <span th:text="${word.homonymNumber}" class="ttl"></span>

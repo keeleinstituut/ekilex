@@ -23,7 +23,7 @@
       </div>
 
       <div class="card-body">
-        <div style="border: 1px solid #CCC; padding: 5px; width: 95%">
+        <div style="width: 95%" class="border rounded p-2">
           <th:block th:replace=":: lexeme_deatails(${sourceLexeme}, ${sourceLexeme})"></th:block>
         </div>
       </div>
@@ -51,7 +51,7 @@
       </div>
 
       <div class="card-body" th:if="${not #lists.isEmpty(lexemes)}">
-        <div style="border: 1px solid #CCC; padding: 5px; width: 95%" class="mb-2" name="meaning" th:each="lexeme : ${lexemes}">
+        <div style="width: 95%" class="border rounded mb-2 p-2" name="meaning" th:each="lexeme : ${lexemes}">
           <th:block th:replace=":: lexeme_deatails(${lexeme}, ${sourceLexeme})"></th:block>
         </div>
       </div>
