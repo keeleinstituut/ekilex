@@ -16,9 +16,9 @@
         <form th:action="@{/termsearch}" method="post">
           <th:block th:replace="search :: search_form('term_search')"></th:block>
           <th:block>
-            <div class="form-row">
+            <div class="form-row pt-2 align-items-center">
               <div class="col-auto">
-                <div class="row">
+                <div class="row align-items-center">
                   <label class="col-auto col-form-label">Tulemused:</label>
                   <div class="col-auto">
                     <select name="resultLang" class="form-control">
@@ -31,7 +31,7 @@
                     </select>
                   </div>
                   <div class="col-auto">
-                    <label class="switch">
+                    <label class="switch mb-0">
                       <input id="meaning-other-words-visible-check" type="checkbox" checked="checked"/>
                       <span class="slider round"></span>
                     </label>
@@ -42,7 +42,7 @@
                 &nbsp;
               </div>
               <div class="col-auto">
-                <div class="row">
+                <div class="row align-items-center">
                   <label class="col-auto col-form-label">Ilmikute keeled:</label>
                   <div class="col-auto">
                     <div>
@@ -88,56 +88,60 @@
       </button>
     </div>
 
-    <div class="mt-4 float-left w-25" th:if="${searchResult.resultExist}" style="height: calc(100vh - 15em); overflow-y: auto;">
-      <div>
-        <a href="javascript:void(0);" id="show-all-btn">
-          <span th:text="${'Mõisteid : ' + searchResult.meaningCount}"></span>
-          &nbsp;|&nbsp;
-          <span th:text="${'Termineid : ' + searchResult.wordCount}"></span>
-        </a>
-      </div>
-      <hr />
-      <div id="results" class="w-100">
-        <div th:each="termMeaning,termMeaningIter : ${searchResult.termMeanings}" style="border-bottom: 1px solid #ddd">
-          <div>
-            <button type="button" class="btn btn-link pt-0" th:data-id="${termMeaning.meaningId}" name="detailsBtn">
-              <span th:if="${termMeaning.mainWord != null}">
-                <span th:text="${termMeaning.mainWord.word}" class="ttl">EuropeAid</span>
-                <span th:text="${termMeaning.mainWord.homonymNr}" th:if="${termMeaning.mainWord.homonymNr > 0}"></span>
-                (
-                <span th:text="${termMeaning.mainWord.wordLang}"></span>
-                )
-              </span>
-              <span th:if="${termMeaning.mainWord == null}">
-                <span th:text="${termMeaning.conceptId}" class="ttl">23648236</span>
-              </span>
-            </button>
-            <div style="position:relative; top: -10px; padding-left: 10px" th:if="${termMeaning.mainWord != null}">
-              <small>
-                <span th:text="${termMeaning.mainWord.datasetCodesWrapup}"></span>
-              </small>
+    <div class="row no-gutters mt-2">
+      <div class="col-3 pr-2" style="height: calc(100vh - 14rem); overflow-y: auto;">
+        <div class="card shadow" th:if="${searchResult.resultExist}">
+          <div class="card-body p-2">
+            <div>
+              <a href="javascript:void(0);" id="show-all-btn">
+                <span th:text="${'Mõisteid : ' + searchResult.meaningCount}"></span>
+                &nbsp;|&nbsp;
+                <span th:text="${'Termineid : ' + searchResult.wordCount}"></span>
+              </a>
             </div>
-            <div th:if="${not #lists.isEmpty(termMeaning.otherWords)}" class="other-words">
-              <ul>
-                <li th:each="otherWord : ${termMeaning.otherWords}">
-                  <span th:text="${otherWord.word}"></span>
-                  <span th:text="${otherWord.homonymNr}"></span>
-                  (<span th:text="${otherWord.wordLang}"></span>)
-                </li>
-              </ul>
+            <hr />
+            <div id="results" class="w-100">
+              <div th:each="termMeaning,termMeaningIter : ${searchResult.termMeanings}" th:class="${termMeaningIter.last} ? '' : 'border-bottom'">
+                <div>
+                  <button type="button" class="btn btn-link pt-0" th:data-id="${termMeaning.meaningId}" name="detailsBtn">
+                    <th:block th:if="${termMeaning.mainWord != null}">
+                      <span th:text="${termMeaning.mainWord.word}" class="ttl">EuropeAid</span>
+                      <span th:text="${termMeaning.mainWord.homonymNr}" th:if="${termMeaning.mainWord.homonymNr > 0}"></span>
+                      <span th:text="${'(' + termMeaning.mainWord.wordLang + ')'}"></span>
+                    </th:block>
+                    <span th:if="${termMeaning.mainWord == null}" th:text="${termMeaning.conceptId}" class="ttl">23648236</span>
+                  </button>
+                  <div style="position:relative; top: -10px; padding-left: 10px" th:if="${termMeaning.mainWord != null}">
+                    <small>
+                      <span th:text="${termMeaning.mainWord.datasetCodesWrapup}"></span>
+                    </small>
+                  </div>
+                  <div th:if="${not #lists.isEmpty(termMeaning.otherWords)}" class="other-words">
+                    <ul>
+                      <li th:each="otherWord : ${termMeaning.otherWords}">
+                        <span th:text="${otherWord.word}"></span>
+                        <span th:text="${otherWord.homonymNr}"></span>
+                        <span th:text="${'(' + otherWord.wordLang + ')'}"></span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+      <div class="col-9" style="height: calc(100vh - 14rem); overflow-y: auto;">
+        <div id="details_div"></div>
+      </div>
     </div>
-    <div id="details_div"></div>
   </div>
 
   <th:block th:fragment="details" th:if="${meaning != null}">
-    <div th:data-id="${meaningId}" class="float-left mt-4 ml-2 pb-4" id="details_div" style="height: calc(100vh - 15em); width: 74%; overflow-y: auto;">
+    <div th:data-id="${meaningId}" id="details_div">
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
-      <div style="border: 1px solid #CCC; padding: 5px;">
-        <div>
+      <div class="card mb-2 shadow">
+        <div class="card-body">
           <div th:if="${meaning.processStateCode != null}">
             <span class="lbl">Olek</span>
             <span th:text="${meaning.processStateCode}"></span>
@@ -280,10 +284,11 @@
               </tr>
             </table>
           </div>
-          <p />
         </div>
-        <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}" th:if="${termViewUtil.isSelectedLang(lexeme.wordLang,sessionBean.languagesOrder)}">
-          <div style="border: 1px solid rgba(200,200,200,0.4); padding: 5px; width: 100%" class="mt-2">
+      </div>
+      <th:block th:each="lexeme,lexemeIter : ${meaning.lexemes}" th:if="${termViewUtil.isSelectedLang(lexeme.wordLang,sessionBean.languagesOrder)}">
+        <div class="card mb-2 shadow">
+          <div class="card-body">
             <div>
               <span th:text="${lexeme.word}" class="ttl"></span>
               <span th:text="${lexeme.homonymNumber}"></span>
@@ -423,22 +428,6 @@
                       </span>
                       )
                     </span>
-                    <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
-                      [
-                      <span th:each="sourceLink,sourceLinkIter : ${usage.sourceLinks}">
-                        <a th:href="@{'/ff_source_link:' + ${sourceLink.id}}"
-                           th:name="${sourceLink.id} + '_ff_source_link'"
-                           th:data-id="${sourceLink.id}"
-                           th:data-op-code="ff_source_link"
-                           th:text="${sourceLink.value}"
-                           th:if="${sourceLink.value != null}">
-                          <span th:text="${sourceLink.name}" th:if="${sourceLink.name != null}"></span>
-                          <span th:text="${sourceLink.value}" th:if="${sourceLink.value != null}"></span>
-                        </a>
-                        <span th:unless="${sourceLinkIter.last}">, </span>
-                      </span>
-                      ]
-                    </span>
                     <button type="button" class="btn badge badge-primary ml-2"
                             th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                             onclick="openEditDlg(this)"
@@ -507,8 +496,8 @@
               </table>
             </div>
           </div>
-        </th:block>
-      </div>
+        </div>
+      </th:block>
     </div>
     <script th:inline="javascript">
         $('[data-toggle=confirmation]').confirmation(
