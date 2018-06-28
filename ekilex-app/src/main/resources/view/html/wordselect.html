@@ -5,22 +5,18 @@
   <th:block th:fragment="links">
   </th:block>
 </head>
-<body style="height: 100vh">
+<body class="body-with-navbar">
+
+  <th:block th:replace="common :: nav_bar"></th:block>
+
   <div class="container-fluid">
-    <div class="d-flex flex-row">
-      <p class="card-text">
-        <a th:href="@{/}">
-          <span th:text="${appData.appName + ' ' + appData.appVersion}"></span>
-        </a>
-      </p>
-    </div>
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
         <a class="btn btn-sm btn-secondary text-light" th:href="@{${returnPage} == 'LEX_SEARCH' ? '/lexsearch' : '/termsearch'}">Tagasi</a>
       </p>
     </div>
 
-    <div class="card mt-4">
+    <div class="card mt-4 shadow">
       <div class="card-header">
         <h5 class="card-title">Olemasoleva sõna valik</h5>
       </div>
