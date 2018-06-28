@@ -536,7 +536,7 @@
 
 <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="sourceLinkDlgContent">
   <th:block th:each="source,sourceIter : ${sourcesFoundBySearch}">
-    <table class="w-100">
+    <table class="w-100 border mb-2">
       <tr>
         <td style="width: 50px; text-align: center; vertical-align: top; background-color: #fafafa">
           <b>
@@ -545,21 +545,6 @@
         </td>
         <td>
           <table class="w-100">
-            <tr colspan="2">
-              <div class="form-row">
-                <div class="col-12">
-                  <div class="form-group row">
-                    <label class="col-auto col-form-label">Siseviide</label>
-                    <div class="col-8">
-                      <input type="text" class="form-control">
-                    </div>
-                    <div class="col-2">
-                      <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </tr>
             <tr>
               <td style="width: 30%">
                 <table class="w-100">
@@ -610,6 +595,23 @@
                   </p>
                   <hr th:unless="${sourceHeadingIter.last}"/>
                 </th:block>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <div class="form-row">
+                  <div class="col-12">
+                    <div class="form-group row">
+                      <label class="col-auto col-form-label">Siseviide</label>
+                      <div class="col-8">
+                        <input type="text" class="form-control">
+                      </div>
+                      <div class="col-2">
+                        <button type="button" class="btn btn-primary" th:data-source-id="${source.sourceId}">Vali</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </td>
             </tr>
           </table>
