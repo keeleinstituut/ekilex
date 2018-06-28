@@ -52,6 +52,9 @@ public class UltimaLoader extends AbstractLoader {
 
 			logger.info("Starting to clear database and load all datasets specified in ultima-loader.properties file");
 
+			long t1, t2;
+			t1 = System.currentTimeMillis();
+
 			// db init
 			initRunner.execute();
 
@@ -81,7 +84,7 @@ public class UltimaLoader extends AbstractLoader {
 			// psv
 			dataFilePath = getConfProperty("psv.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				dataset = qq2Runner.getDataset();
+				dataset = psvRunner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
 				psvRunner.execute(dataFilePath, ssGuidMap, doReports);
 				successfullyLoadedDatasets.add("psv");
@@ -112,7 +115,11 @@ public class UltimaLoader extends AbstractLoader {
 				successfullyLoadedDatasets.add("termeki");
 			}
 
+			t2 = System.currentTimeMillis();
+			float fullLoadTimeMin = ((float)(t2 - t1)) / 60000f;
 			logger.info("----DONE LOADING DATASETS!!----");
+			logger.info("Full load took {} min", fullLoadTimeMin);
+
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 			logger.info("Successfully loaded datasets: {}", successfullyLoadedDatasets);

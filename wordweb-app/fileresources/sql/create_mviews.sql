@@ -167,7 +167,8 @@ dblink(
 	code varchar(10),
 	name text,
 	description text,
-	lang char(3)
+	lang char(3),
+	order_by bigint
 );
 
 create materialized view mview_ww_classifier as

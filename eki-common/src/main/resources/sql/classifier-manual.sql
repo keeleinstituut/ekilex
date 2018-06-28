@@ -27,10 +27,10 @@ insert into label_type (code, value) values ('descrip', 'descrip');
 insert into label_type (code, value) values ('descrip2', 'descrip2');
 insert into label_type (code, value) values ('full', 'full');
 
-insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
-insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 insert into dataset (code, name) values ('ss1', 'Eesti keele (üheköiteline) sõnaraamat (2010-2018/2019)');
+insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 insert into dataset (code, name) values ('kol',	'Kollokatsioonid');
+insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
 insert into dataset (code, name) values ('ev2',	'Eesti-vene');
 insert into dataset (code, name) values ('est', 'Esterm');
 insert into dataset (code, name) values ('aia',	'Aiandus (aiandusterminoloogia sõnastik)');

@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGuid extends TableImpl<WordGuidRecord> {
 
-    private static final long serialVersionUID = 1752611635;
+    private static final long serialVersionUID = -1035410894;
 
     /**
      * The reference instance of <code>public.word_guid</code>
@@ -117,7 +117,7 @@ public class WordGuid extends TableImpl<WordGuidRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_GUID_PKEY, Indexes.WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY, Indexes.WORD_GUID_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.WORD_GUID_DATASET_CODE_IDX, Indexes.WORD_GUID_GUID_IDX, Indexes.WORD_GUID_PKEY, Indexes.WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY, Indexes.WORD_GUID_WORD_ID_IDX);
     }
 
     /**

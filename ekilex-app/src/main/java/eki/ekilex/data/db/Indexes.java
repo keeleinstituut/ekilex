@@ -223,6 +223,8 @@ public class Indexes {
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
     public static final Index WORD_PKEY = Indexes0.WORD_PKEY;
+    public static final Index WORD_GUID_DATASET_CODE_IDX = Indexes0.WORD_GUID_DATASET_CODE_IDX;
+    public static final Index WORD_GUID_GUID_IDX = Indexes0.WORD_GUID_GUID_IDX;
     public static final Index WORD_GUID_PKEY = Indexes0.WORD_GUID_PKEY;
     public static final Index WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY = Indexes0.WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY;
     public static final Index WORD_GUID_WORD_ID_IDX = Indexes0.WORD_GUID_WORD_ID_IDX;
@@ -363,6 +365,8 @@ public class Indexes {
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
         public static Index WORD_PKEY = Internal.createIndex("word_pkey", Word.WORD, new OrderField[] { Word.WORD.ID }, true);
+        public static Index WORD_GUID_DATASET_CODE_IDX = Internal.createIndex("word_guid_dataset_code_idx", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.DATASET_CODE }, false);
+        public static Index WORD_GUID_GUID_IDX = Internal.createIndex("word_guid_guid_idx", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.GUID }, false);
         public static Index WORD_GUID_PKEY = Internal.createIndex("word_guid_pkey", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.ID }, true);
         public static Index WORD_GUID_WORD_ID_GUID_DATASET_CODE_KEY = Internal.createIndex("word_guid_word_id_guid_dataset_code_key", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.WORD_ID, WordGuid.WORD_GUID.GUID, WordGuid.WORD_GUID.DATASET_CODE }, true);
         public static Index WORD_GUID_WORD_ID_IDX = Internal.createIndex("word_guid_word_id_idx", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.WORD_ID }, false);

@@ -340,7 +340,8 @@ create table dataset
   code varchar(10) primary key,
   name text not null,
   description text,
-  is_public boolean default true
+  is_public boolean default true,
+  order_by bigserial
 );
 
 -- vabavorm
