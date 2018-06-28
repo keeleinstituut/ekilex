@@ -1,38 +1,40 @@
 package eki.ekilex.manual;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import eki.common.util.ConsolePromptUtil;
+import eki.ekilex.data.transform.Guid;
 import eki.ekilex.runner.CollocLoaderRunner;
 
-public class CollocLoader {
+public class CollocLoader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(CollocLoader.class);
 
 	public static void main(String[] args) {
+		new CollocLoader().execute();
+	}
 
-		ConfigurableApplicationContext applicationContext = null;
-
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
-		CollocLoaderRunner runner = applicationContext.getBean(CollocLoaderRunner.class);
-
+	@Override
+	void execute() {
 		try {
-			applicationContext.registerShutdownHook();
+			initDefault();
 
-			// /projects/eki/data/dictionaries/kol/kol-test_15-05-18.xml
+			CollocLoaderRunner datasetRunner = getComponent(CollocLoaderRunner.class);
+			String datasetCode = datasetRunner.getDataset();
 
-			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("Collocate data file location? (/absolute/path/to/file.xml)");
-			boolean doReports = ConsolePromptUtil.promptBooleanValue("Compose reports? (y/n)");
-
-			runner.execute(dataXmlFilePath, doReports);
+			boolean doReports = doReports();
+			String kolFilePath = getMandatoryConfProperty("kol.data.file");
+			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			datasetRunner.execute(kolFilePath, ssGuidMap, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
-			applicationContext.close();
+			shutdown();
 		}
 	}
+
 }

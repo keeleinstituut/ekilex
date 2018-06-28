@@ -1,44 +1,41 @@
 package eki.ekilex.manual;
 
-import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.runner.Ss1LoaderRunner;
-import eki.ekilex.service.MabService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Ss1Loader {
+import eki.ekilex.runner.Ss1LoaderRunner;
+import eki.ekilex.service.MabService;
+
+public class Ss1Loader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(Ss1Loader.class);
 
 	public static void main(String[] args) {
+		new Ss1Loader().execute();
+	}
 
-		ConfigurableApplicationContext applicationContext;
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
-		Ss1LoaderRunner runner = applicationContext.getBean(Ss1LoaderRunner.class);
-
+	@Override
+	void execute() {
 		try {
-			applicationContext.registerShutdownHook();
+			initDefault();
 
-			String dataXmlFilePath = ConsolePromptUtil.promptDataFilePath("SS1 data file location? (/absolute/path/to/file.xml)");
-			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
-			String mabFilePath = null;
-			if (isAddForms) {
-				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
-			}
-			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
+			Ss1LoaderRunner datasetRunner = getComponent(Ss1LoaderRunner.class);
+			MabService mabService = getComponent(MabService.class);
+			boolean doReports = doReports();
 
-			if (isAddForms) {
-				MabService mabService = applicationContext.getBean(MabService.class);
-				mabService.loadParadigms(mabFilePath, isAddReporting);
-			}
-			runner.execute(dataXmlFilePath, isAddReporting);
+			// mab
+			String mabFilePath = getMandatoryConfProperty("mab.data.file");
+			mabService.loadParadigms(mabFilePath, doReports);
+
+			// ss
+			String ssFilePath = getMandatoryConfProperty("ss1.data.file");
+			datasetRunner.execute(ssFilePath, doReports);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
-			applicationContext.close();
+			shutdown();
 		}
 	}
+
 }
