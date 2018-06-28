@@ -508,17 +508,13 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				processSemanticData(meaningGroupNode, meaningId);
 				processDomains(meaningGroupNode, meaningId, null);
 
-				int lexemeLevel3 = 0;
 				for (WordData newWordData : newWords) {
-					lexemeLevel3++;
 					Lexeme lexeme = new Lexeme();
 					lexeme.setWordId(newWordData.id);
-					// FIXME: status here ??
-					//lexeme.setValueState(newWordData.lexemeType);
 					lexeme.setMeaningId(meaningId);
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
-					lexeme.setLevel3(lexemeLevel3);
+					lexeme.setLevel3(1);
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {

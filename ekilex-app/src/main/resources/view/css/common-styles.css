@@ -99,3 +99,18 @@ input:checked+.slider:before {
 .slider.round:before {
 	border-radius: 50%;
 }
+
+.body-with-navbar {
+	height: 100vh;
+	padding-top: 4rem;
+	background: #eaeaea;
+}
+
+.body-with-navbar .card {
+	border-radius: 0.5rem;
+}
+
+.body-with-navbar hr {
+	margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}

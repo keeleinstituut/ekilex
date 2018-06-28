@@ -1,27 +1,20 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(~{::title},~{::links})">
-<title th:text="#{source.view.title}">Allikas</title>
-<th:block th:fragment="links">
-</th:block>
+  <title th:text="#{source.view.title}">Allikas</title>
+  <th:block th:fragment="links">
+  </th:block>
 </head>
-<body>
-  <div class="container-fluid">
-    <div class="d-flex flex-row">
-      <p class="card-text">
-        <a th:href="@{/}">
-          <span th:text="${appData.appName + ' ' + appData.appVersion}"></span>
-        </a>
-      </p>
-    </div>
 
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
         <a class="btn btn-sm btn-secondary text-light" th:href="@{${backUrl}}">Tagasi</a>
       </p>
     </div>
 
-    <div style="padding: 5px"></div>
     <div class="float-left w-75" th:if="${source != null}">
       <th:block>
         <div style="border: 1px solid #CCC; padding: 5px;">
@@ -80,7 +73,6 @@
             </tr>
           </table>
         </div>
-        <div style="padding: 5px"></div>
       </th:block>
     </div>
   </div>

@@ -38,6 +38,19 @@
   <link rel="stylesheet" th:href="@{/view/css/common-styles.css}"/>
 </th:block>
 
+<th:block th:fragment="nav_bar">
+  <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary">
+    <a class="navbar-brand" th:href="@{/}" th:title="${appData.appName + ' ' + appData.appVersion}">Ekilex</a>
+    <div class="navbar-nav" th:if="${activeItem}">
+      <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</span></a>
+      <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+    </div>
+    <div class="navbar-nav ml-auto">
+      <button class="btn btn-info" title="See on kasutaja" type="button">Kusti Tähetark</button>
+    </div>
+  </nav>
+</th:block>
+
 <!-- debugging aid -->
 <div th:fragment="dump_vars" class="m-4">
   <h4>Dump of all variables in Thymeleaf context</h4>
