@@ -143,11 +143,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		long articleCount = rootElement.content().stream().filter(o -> o instanceof Element).count();
 		logger.debug("Extracted {} articles", articleCount);
 
-		Count ssWordCount = new Count();
-		Count wordDuplicateCount = new Count();
-		Count lexemeDuplicateCount = new Count();
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
+
 		Context context = new Context();
 
 		writeToLogFile("Artiklite töötlus", "", "");
@@ -158,11 +156,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 			Element reportingIdNode = (Element) articleNode.selectSingleNode(reportingIdExp);
 			String reportingId = reportingIdNode != null ? reportingIdNode.getTextTrim() : "";
-			processArticleHeader(guid, reportingId, headerNode, newWords, ssGuidMap, context, ssWordCount, wordDuplicateCount);
+			processArticleHeader(guid, reportingId, headerNode, newWords, ssGuidMap, context);
 
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
-				processArticleContent(reportingId, contentNode, newWords, lexemeDuplicateCount, context);
+				processArticleContent(reportingId, contentNode, newWords, context);
 			}
 
 			articleCounter++;
@@ -187,9 +185,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processWordComparatives(context);
 		processWordSuperlatives(context);
 
-		logger.debug("Found {} ss words", ssWordCount.getValue());
-		logger.debug("Found {} word duplicates", wordDuplicateCount.getValue());
-		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount.getValue());
+		logger.debug("Found {} ss words", context.ssWordCount.getValue());
+		logger.debug("Found {} word duplicates", context.reusedWordCount.getValue());
+		logger.debug("Found {} lexeme duplicates", context.lexemeDuplicateCount.getValue());
 
 		if (reportComposer != null) {
 			reportComposer.end();
@@ -631,8 +629,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return wordId;
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Count lexemeDuplicateCount,
-			Context context) throws Exception {
+	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -731,7 +728,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId == null) {
-						lexemeDuplicateCount.increment();
+						context.lexemeDuplicateCount.increment();
 					} else {
 						createUsages(lexemeId, usages, dataLang);
 						saveGovernmentsAndUsages(meaningNumberGroupNode, lexemeId);
@@ -1212,9 +1209,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode,
 			List<WordData> newWords,
 			Map<String, List<Guid>> ssGuidMap,
-			Context context,
-			Count ssWordCount,
-			Count wordDuplicateCount) throws Exception {
+			Context context) throws Exception {
 
 		final String referenceFormExp = "x:mvt";
 
@@ -1224,7 +1219,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (isReferenceForm) {
 			processAsForm(reportingId, headerNode, referenceFormNodes, context.referenceForms);
 		} else {
-			processAsWord(guid, reportingId, headerNode, newWords, ssGuidMap, context, ssWordCount, wordDuplicateCount);
+			processAsWord(guid, reportingId, headerNode, newWords, ssGuidMap, context);
 		}
 	}
 
@@ -1258,9 +1253,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element headerNode,
 			List<WordData> newWords,
 			Map<String, List<Guid>> ssGuidMap,
-			Context context,
-			Count ssWordCount,
-			Count wordDuplicateCount) throws Exception {
+			Context context) throws Exception {
 
 		final String wordGroupExp = "x:mg";
 		final String wordPosCodeExp = "x:sl";
@@ -1279,7 +1272,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid, context);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, ssWordCount, wordDuplicateCount);
+				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
 			addSoundFileNamesToForms(wordData.id, wordGroupNode);
@@ -1614,6 +1607,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private class Context {
+		Count ssWordCount = new Count();
+		Count reusedWordCount = new Count();
+		Count lexemeDuplicateCount = new Count();
 		List<SynonymData> synonyms = new ArrayList<>();
 		List<WordToMeaningData> antonyms = new ArrayList<>();
 		List<WordData> importedWords = new ArrayList<>();

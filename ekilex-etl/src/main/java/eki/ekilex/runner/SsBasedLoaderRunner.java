@@ -535,11 +535,12 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected class Context {
+		Count ssWordCount = new Count();
+		Count reusedWordCount = new Count();
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		List<WordData> subWords = new ArrayList<>();
 		List<WordData> derivativeWords = new ArrayList<>();
-		Count wordDuplicateCount = new Count();
 		List<LexemeToWordData> synonyms = new ArrayList<>();
 		List<WordToMeaningData> antonyms = new ArrayList<>();
 		List<LexemeToWordData> abbreviations = new ArrayList<>();

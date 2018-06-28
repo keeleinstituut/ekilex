@@ -408,9 +408,11 @@ create view view_ww_dataset
        code,
        name,
        description,
-       'est' as lang
+       'est' as lang,
+       order_by
      from dataset
      where code in ('qq2', 'psv', 'ss1', 'kol')
+     order by order_by
     );
 
 create view view_ww_classifier

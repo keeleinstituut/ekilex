@@ -8,6 +8,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordOrForm;
+import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
@@ -123,6 +125,7 @@ public class LexSearchDbService {
 		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");
 		MviewWwMeaning m2 = MVIEW_WW_MEANING.as("m2");
 		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
+		MviewWwDataset m1ds = MVIEW_WW_DATASET.as("m1ds");
 
 		return create
 				.select(
@@ -147,13 +150,14 @@ public class LexSearchDbService {
 						w2.LANG.as("meaning_word_lang")
 						)
 				.from(m1
+						.innerJoin(m1ds).on(m1ds.CODE.eq(m1.DATASET_CODE))
 						.leftOuterJoin(m2).on(m2.MEANING_ID.eq(m1.MEANING_ID).and(m2.WORD_ID.ne(m1.WORD_ID)))
 						.leftOuterJoin(w2).on(w2.WORD_ID.eq(m2.WORD_ID))
 						)
 				.where(
 						m1.WORD_ID.eq(wordId)
 						.and(m1.DATASET_CODE.in(datasets)))
-				.orderBy(m1.DATASET_CODE, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, w2.WORD_ID)
+				.orderBy(m1ds.ORDER_BY, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, w2.WORD)
 				.fetch()
 				.into(LexemeMeaningTuple.class);
 	}

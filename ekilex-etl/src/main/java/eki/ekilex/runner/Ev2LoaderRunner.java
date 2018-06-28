@@ -1,22 +1,8 @@
 package eki.ekilex.runner;
 
-import javax.transaction.Transactional;
-
-import eki.common.constant.FreeformType;
-import eki.ekilex.data.transform.Lexeme;
-import eki.ekilex.data.transform.Meaning;
-import eki.ekilex.data.transform.Paradigm;
-import eki.ekilex.data.transform.Usage;
-import eki.ekilex.data.transform.UsageTranslation;
-import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.ReportComposer;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -30,9 +16,25 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.replaceChars;
+import javax.transaction.Transactional;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.dom4j.Document;
+import org.dom4j.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
+
+import eki.common.constant.FreeformType;
+import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Lexeme;
+import eki.ekilex.data.transform.Meaning;
+import eki.ekilex.data.transform.Paradigm;
+import eki.ekilex.data.transform.Usage;
+import eki.ekilex.data.transform.UsageTranslation;
+import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
 
 @Component
 public class Ev2LoaderRunner extends SsBasedLoaderRunner {
@@ -68,12 +70,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "ev2";
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataXmlFilePath2, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -100,7 +102,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 		long articleCounter = 0;
 		for (Element articleNode : articleNodes) {
-			processArticle(articleNode, context);
+			processArticle(articleNode, ssGuidMap, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				long progressPercent = articleCounter / progressIndicator;
@@ -110,12 +112,18 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("total {} articles iterated", articleCounter);
 		processLatinTerms(context);
 
+		logger.debug("Found {} reused words", context.reusedWordCount.getValue());
+		logger.debug("Found {} ss words", context.ssWordCount.getValue());
+
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
 	@Transactional
-	void processArticle(Element articleNode, Context context) throws Exception {
+	void processArticle(
+			Element articleNode,
+			Map<String, List<Guid>> ssGuidMap,
+			Context context) throws Exception {
 
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
@@ -127,7 +135,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		List<WordData> newWords = new ArrayList<>();
 
 		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-		processArticleHeader(reportingId, headerNode, newWords, context, guid);
+		processArticleHeader(headerNode, guid, reportingId, newWords, ssGuidMap, context);
 		try {
 			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode != null) {
@@ -217,7 +225,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
+	private void processArticleHeader(
+			Element headerNode,
+			String guid,
+			String reportingId,
+			List<WordData> newWords,
+			Map<String, List<Guid>> ssGuidMap,
+			Context context) throws Exception {
 
 		final String wordGroupExp = "x:mg";
 		final String wordPosCodeExp = "x:sl";
@@ -231,7 +245,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.wordDuplicateCount);
+				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
 			List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);

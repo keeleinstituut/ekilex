@@ -70,7 +70,7 @@ public class CommonDataDbService implements DbConstant {
 	}
 
 	public Result<Record2<String, String>> getDatasets() {
-		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).fetch();
+		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).orderBy(DATASET.ORDER_BY).fetch();
 	}
 
 	public Map<String, String> getLanguagesMap() {

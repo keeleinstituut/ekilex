@@ -1,44 +1,47 @@
 package eki.ekilex.manual;
 
-import eki.common.util.ConsolePromptUtil;
-import eki.ekilex.runner.Ev2LoaderRunner;
-import eki.ekilex.service.MabService;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class Ev2Loader {
+import eki.ekilex.data.transform.Guid;
+import eki.ekilex.runner.Ev2LoaderRunner;
+import eki.ekilex.service.MabService;
+
+public class Ev2Loader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(Ev2Loader.class);
 
 	public static void main(String[] args) {
+		new Ev2Loader().execute();
+	}
 
-		ConfigurableApplicationContext applicationContext;
-		applicationContext = new ClassPathXmlApplicationContext("service-config.xml", "db-config.xml");
-		Ev2LoaderRunner runner = applicationContext.getBean(Ev2LoaderRunner.class);
-
+	@Override
+	void execute() {
 		try {
-			applicationContext.registerShutdownHook();
+			initDefault();
 
-			String ev21DataXmlFilePath = ConsolePromptUtil.promptDataFilePath("EV2-1 data file location? (/absolute/path/to/file.xml)");
-			String ev22DataXmlFilePath = ConsolePromptUtil.promptDataFilePath("EV2-2 data file location? (/absolute/path/to/file.xml)");
-			boolean isAddForms = ConsolePromptUtil.promptBooleanValue("Add forms? (y/n)");
-			String mabFilePath = null;
-			if (isAddForms) {
-				mabFilePath = ConsolePromptUtil.promptDataFilePath("MAB data file location? (/absolute/path/to/file.xml)");
-			}
-			boolean isAddReporting = ConsolePromptUtil.promptBooleanValue("Generate import report files? (y/n)");
+			Ev2LoaderRunner datasetRunner = getComponent(Ev2LoaderRunner.class);
+			MabService mabService = getComponent(MabService.class);
+			String datasetCode = datasetRunner.getDataset();
+			boolean doReports = doReports();
 
-			if (isAddForms) {
-				MabService mabService = applicationContext.getBean(MabService.class);
-				mabService.loadParadigms(mabFilePath, isAddReporting);
-			}
-			runner.execute(ev21DataXmlFilePath, ev22DataXmlFilePath, isAddReporting);
+			// mab
+			String mabFilePath = getMandatoryConfProperty("mab.data.file");
+			mabService.loadParadigms(mabFilePath, doReports);
+
+			// ev2
+			String evFilePath1 = getMandatoryConfProperty("ev2.data.file.1");
+			String evFilePath2 = getMandatoryConfProperty("ev2.data.file.2");
+			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			datasetRunner.execute(evFilePath1, evFilePath2, ssGuidMap, doReports);
+
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 		} finally {
-			applicationContext.close();
+			shutdown();
 		}
 	}
 

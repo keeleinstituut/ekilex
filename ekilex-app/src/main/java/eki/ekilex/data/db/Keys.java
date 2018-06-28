@@ -175,6 +175,7 @@ public class Keys {
 
     public static final Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Identities0.IDENTITY_COLLOCATION;
     public static final Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Identities0.IDENTITY_COLLOCATION_FREEFORM;
+    public static final Identity<DatasetRecord, Long> IDENTITY_DATASET = Identities0.IDENTITY_DATASET;
     public static final Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Identities0.IDENTITY_DEFINITION;
     public static final Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Identities0.IDENTITY_DEFINITION_FREEFORM;
     public static final Identity<DefinitionSourceLinkRecord, Long> IDENTITY_DEFINITION_SOURCE_LINK = Identities0.IDENTITY_DEFINITION_SOURCE_LINK;
@@ -439,6 +440,7 @@ public class Keys {
     private static class Identities0 {
         public static Identity<CollocationRecord, Long> IDENTITY_COLLOCATION = Internal.createIdentity(Collocation.COLLOCATION, Collocation.COLLOCATION.ID);
         public static Identity<CollocationFreeformRecord, Long> IDENTITY_COLLOCATION_FREEFORM = Internal.createIdentity(CollocationFreeform.COLLOCATION_FREEFORM, CollocationFreeform.COLLOCATION_FREEFORM.ID);
+        public static Identity<DatasetRecord, Long> IDENTITY_DATASET = Internal.createIdentity(Dataset.DATASET, Dataset.DATASET.ORDER_BY);
         public static Identity<DefinitionRecord, Long> IDENTITY_DEFINITION = Internal.createIdentity(Definition.DEFINITION, Definition.DEFINITION.ID);
         public static Identity<DefinitionFreeformRecord, Long> IDENTITY_DEFINITION_FREEFORM = Internal.createIdentity(DefinitionFreeform.DEFINITION_FREEFORM, DefinitionFreeform.DEFINITION_FREEFORM.ID);
         public static Identity<DefinitionSourceLinkRecord, Long> IDENTITY_DEFINITION_SOURCE_LINK = Internal.createIdentity(DefinitionSourceLink.DEFINITION_SOURCE_LINK, DefinitionSourceLink.DEFINITION_SOURCE_LINK.ID);

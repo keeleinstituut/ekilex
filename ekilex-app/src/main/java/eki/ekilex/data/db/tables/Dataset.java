@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Schema;
@@ -38,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Dataset extends TableImpl<DatasetRecord> {
 
-    private static final long serialVersionUID = 437886446;
+    private static final long serialVersionUID = 1662833762;
 
     /**
      * The reference instance of <code>public.dataset</code>
@@ -72,6 +73,11 @@ public class Dataset extends TableImpl<DatasetRecord> {
      * The column <code>public.dataset.is_public</code>.
      */
     public final TableField<DatasetRecord, Boolean> IS_PUBLIC = createField("is_public", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.dataset.order_by</code>.
+     */
+    public final TableField<DatasetRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('dataset_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.dataset</code> table reference
@@ -116,6 +122,14 @@ public class Dataset extends TableImpl<DatasetRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.DATASET_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DatasetRecord, Long> getIdentity() {
+        return Keys.IDENTITY_DATASET;
     }
 
     /**

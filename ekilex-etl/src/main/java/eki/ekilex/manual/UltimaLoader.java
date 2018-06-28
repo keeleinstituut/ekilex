@@ -13,6 +13,7 @@ import eki.ekilex.runner.CollocLoaderRunner;
 import eki.ekilex.runner.DbReInitialiserRunner;
 import eki.ekilex.runner.EstermLoaderRunner;
 import eki.ekilex.runner.EstermSourceLoaderRunner;
+import eki.ekilex.runner.Ev2LoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
@@ -38,12 +39,13 @@ public class UltimaLoader extends AbstractLoader {
 			DbReInitialiserRunner initRunner = getComponent(DbReInitialiserRunner.class);
 			MabService mabService = getComponent(MabService.class);
 			Ss1LoaderRunner ss1Runner = getComponent(Ss1LoaderRunner.class);
+			PsvLoaderRunner psvRunner = getComponent(PsvLoaderRunner.class);
+			CollocLoaderRunner kolRunner = getComponent(CollocLoaderRunner.class);
 			Qq2LoaderRunner qq2Runner = getComponent(Qq2LoaderRunner.class);
+			Ev2LoaderRunner ev2Runner = getComponent(Ev2LoaderRunner.class);
 			EstermSourceLoaderRunner estSrcRunner = getComponent(EstermSourceLoaderRunner.class);
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
-			PsvLoaderRunner psvRunner = getComponent(PsvLoaderRunner.class);
-			CollocLoaderRunner kolRunner = getComponent(CollocLoaderRunner.class);
 
 			String dataFilePath, dataset;
 			Map<String, List<Guid>> ssGuidMap;
@@ -51,6 +53,9 @@ public class UltimaLoader extends AbstractLoader {
 			boolean doReports = doReports();
 
 			logger.info("Starting to clear database and load all datasets specified in ultima-loader.properties file");
+
+			long t1, t2;
+			t1 = System.currentTimeMillis();
 
 			// db init
 			initRunner.execute();
@@ -69,19 +74,10 @@ public class UltimaLoader extends AbstractLoader {
 				successfullyLoadedDatasets.add("ss1");
 			}
 
-			// qq2
-			dataFilePath = getConfProperty("qq2.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				dataset = qq2Runner.getDataset();
-				ssGuidMap = getSsGuidMapFor(dataset);
-				qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
-				successfullyLoadedDatasets.add(dataset);
-			}
-
 			// psv
 			dataFilePath = getConfProperty("psv.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				dataset = qq2Runner.getDataset();
+				dataset = psvRunner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
 				psvRunner.execute(dataFilePath, ssGuidMap, doReports);
 				successfullyLoadedDatasets.add("psv");
@@ -94,6 +90,24 @@ public class UltimaLoader extends AbstractLoader {
 				ssGuidMap = getSsGuidMapFor(dataset);
 				kolRunner.execute(dataFilePath, ssGuidMap, doReports);
 				successfullyLoadedDatasets.add("kol");
+			}
+
+			// qq2
+			dataFilePath = getConfProperty("qq2.data.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				dataset = qq2Runner.getDataset();
+				ssGuidMap = getSsGuidMapFor(dataset);
+				qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
+				successfullyLoadedDatasets.add(dataset);
+			}
+
+			// ev2
+			dataFilePath = getConfProperty("qq2.data.file");
+			String dataFilePath2 = getConfProperty("qq2.data.file");
+			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
+				dataset = ev2Runner.getDataset();
+				ssGuidMap = getSsGuidMapFor(dataset);
+				ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, doReports);
 			}
 
 			// est src + est
@@ -112,7 +126,11 @@ public class UltimaLoader extends AbstractLoader {
 				successfullyLoadedDatasets.add("termeki");
 			}
 
+			t2 = System.currentTimeMillis();
+			float fullLoadTimeMin = ((float)(t2 - t1)) / 60000f;
 			logger.info("----DONE LOADING DATASETS!!----");
+			logger.info("Full load took {} min", fullLoadTimeMin);
+
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);
 			logger.info("Successfully loaded datasets: {}", successfullyLoadedDatasets);
