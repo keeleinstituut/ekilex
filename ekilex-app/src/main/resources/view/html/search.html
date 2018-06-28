@@ -10,11 +10,11 @@
 <th:block th:fragment="search_form(searchPageName)">
   <div class="form-row">
     <div class="col-12">
-      <div class="form-group row">
+      <div class="row">
         <input type="hidden" id="searchMode" name="searchMode" th:value="${searchMode}">
         <input type="hidden" id="fetchAll" name="fetchAll" value="false">
         <div class="col-1">
-          <button type="button" class="btn btn-outline-primary" id="searchModeBtn"
+          <button type="button" class="btn btn-sm btn-secondary" id="searchModeBtn"
                   th:text="${searchMode == 'SIMPLE'} ? #{'search.mode.DETAIL'} : #{'search.mode.SIMPLE'}">search toggle</button>
         </div>
         <div class="col-4" th:if="${allDatasets}" th:insert="~{::dataset_select}"></div>
@@ -29,11 +29,10 @@
 </th:block>
 
 <th:block th:fragment="simple_search">
-  <div class="form-row" name="simpleSearchFilter" th:hidden="${searchMode != 'SIMPLE'}">
+  <div class="form-row pt-2" name="simpleSearchFilter" th:hidden="${searchMode != 'SIMPLE'}">
     <div class="col-12">
-      <div class="form-group row">
-        <label class="col-auto col-form-label">Otsing</label>
-        <div class="col-5">
+      <div class="row align-items-center">
+        <div class="col-3">
           <input type="text" class="form-control" name="simpleSearchFilter" th:value="${simpleSearchFilter}" placeholder="sisesta otsitav vorm">
         </div>
         <div class="col-2">
@@ -45,7 +44,7 @@
 </th:block>
 
 <th:block th:fragment="detail_search(searchPageName)">
-  <div class="form-row" name="detailSearchFilter" th:hidden="${searchMode != 'DETAIL'}">
+  <div class="form-row align-items-center" name="detailSearchFilter" th:hidden="${searchMode != 'DETAIL'}">
     <div class="col-10">
       <div class="row border rounded p-2 m-2" th:each="group, stat : ${detailSearchFilter.criteriaGroups}" name="detailGroup" th:data-index="${stat.index}">
         <div class="col-3 pr-0">
@@ -194,12 +193,12 @@
 </th:block>
 
 <th:block th:fragment="dataset_select">
-  <button class="btn btn-outline-primary" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
+  <button class="btn btn-sm btn-secondary" type="button" data-toggle="collapse" data-target="#dataset_select" aria-expanded="false" aria-controls="dataset_select">
     Sõnastiku valik
   </button>
   <div id="dataset_select" class="collapse">
-    <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
-    <button class="btn btn-secondary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
+    <button class="btn btn-primary btn-sm mt-2" type="button" onclick="selectDatasets(true)">Vali kõik</button>
+    <button class="btn btn-primary btn-sm mt-2" type="button" onclick="selectDatasets(false)">Eemalda valikud</button>
     <div class="form-check mt-2" th:each="dataset : ${allDatasets}">
       <input class="form-check-input" type="checkbox" th:value="${dataset.code}" th:name="selectedDatasets" th:checked="${#lists.contains(sessionBean.selectedDatasets, dataset.code)}">
       <label class="form-check-label" th:text="${dataset.name}">Default checkbox</label>
