@@ -1,13 +1,16 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.COLLOCATION;
+import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
 import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
@@ -21,8 +24,6 @@ import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -522,7 +523,7 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		}
 
 		return create.select(wordLexemeSelectFields)
-			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
+			.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
 			.where(
 					WORD.ID.eq(wordId)
 					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
@@ -530,9 +531,10 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 					.and(PARADIGM.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+					.and(LEXEME.DATASET_CODE.eq(DATASET.CODE))
 					.and(datasetCondition))
-			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
-			.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
+			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID, DATASET.CODE)
+			.orderBy(WORD.ID, DATASET.ORDER_BY, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 			.fetch();
 	}
 
