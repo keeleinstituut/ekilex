@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
 
-    private static final long serialVersionUID = 1562753738;
+    private static final long serialVersionUID = -1097565164;
 
     /**
      * The reference instance of <code>public.view_ww_dataset</code>
@@ -66,6 +66,11 @@ public class ViewWwDataset extends TableImpl<ViewWwDatasetRecord> {
      */
     @java.lang.Deprecated
     public final TableField<ViewWwDatasetRecord, Object> LANG = createField("lang", org.jooq.impl.DefaultDataType.getDefaultDataType("unknown"), this, "");
+
+    /**
+     * The column <code>public.view_ww_dataset.order_by</code>.
+     */
+    public final TableField<ViewWwDatasetRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.view_ww_dataset</code> table reference
