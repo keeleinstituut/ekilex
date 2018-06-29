@@ -34,14 +34,14 @@ from (select w.id as word_id,
         join form as f on f.paradigm_id = p.id and f.is_word = true
       where exists (select ld.id
                     from lexeme as ld
-                    where (ld.word_id = w.id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
+                    where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
       group by w.id) as w
   inner join (select mc.word_id,
                      count(mc.meaning_id) meaning_count
               from (select l.word_id,
                            l.meaning_id
                     from lexeme l
-                    where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+                    where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
                     group by l.word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
@@ -57,7 +57,7 @@ from (select w.id as word_id,
                               form f2,
                               paradigm p2,
                               word w2
-                         where l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+                         where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
                          and   l1.meaning_id = l2.meaning_id
                          and   l1.word_id != w2.id
                          and   l2.word_id = w2.id
@@ -120,7 +120,7 @@ create view view_ww_form
           and fw.is_word = true
           and exists (select ld.id
                         from lexeme as ld
-                        where (ld.word_id = w.id and ld.dataset_code in ('qq2', 'psv', 'ss1', 'kol')))
+                        where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
     order by ff.id;
 
 -- lexeme meanings
@@ -191,7 +191,7 @@ create view view_ww_meaning
                        where mf.freeform_id = ff.id
                        and   ff.type = 'LEARNER_COMMENT'
                        group by mf.meaning_id) m_lcm on m_lcm.meaning_id = l.meaning_id
-    where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+    where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
     order by l.word_id,
              l.meaning_id,
              l.id;
@@ -274,7 +274,7 @@ create view view_ww_lexeme
                                                               group by s.id) uas on uas.id = uasl.source_id
                                                 group by uasl.freeform_id) ua on ua.usage_id = u.id) u
                        group by u.lexeme_id) usg on usg.lexeme_id = l.id
-    where l.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+    where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
     order by l.id;
 
 -- collocations
@@ -347,11 +347,11 @@ create view view_ww_word_relation
                   and   exists (select l2.id
                                 from lexeme l2
                                 where l2.word_id = w2.id
-                                and   l2.dataset_code in ('qq2', 'psv', 'ss1', 'kol'))) w2 on w2.word1_id = w1.id
+                                and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))) w2 on w2.word1_id = w1.id
     where exists (select l1.id
                   from lexeme l1
                   where l1.word_id = w1.id
-                  and   l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol'))
+                  and   l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))
     group by w1.id;
 
 -- lexeme relations
@@ -395,8 +395,8 @@ create view view_ww_meaning_relation
           and   f2.paradigm_id = p2.id
           and   p2.word_id = w2.id
           and   l2.word_id = w2.id
-          and   l2.dataset_code in ('qq2', 'psv', 'ss1', 'kol')) m2
-    where l1.dataset_code in ('qq2', 'psv', 'ss1', 'kol')
+          and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) m2
+    where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
     and   r.meaning1_id = l1.meaning_id
     and   r.meaning2_id = m2.meaning_id
     group by l1.id;
@@ -411,7 +411,7 @@ create view view_ww_dataset
        'est' as lang,
        order_by
      from dataset
-     where code in ('qq2', 'psv', 'ss1', 'kol')
+     where code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
      order by order_by
     );
 

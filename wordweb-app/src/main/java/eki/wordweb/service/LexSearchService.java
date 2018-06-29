@@ -48,7 +48,7 @@ public class LexSearchService implements InitializingBean {
 
 		languagesDatasetMap = new HashMap<>();
 		languagesDatasetMap.put("estest", new String[] {"ss1", "psv", "kol"});
-		languagesDatasetMap.put("estrus", new String[] {"qq2"});
+		languagesDatasetMap.put("estrus", new String[] {"qq2", "ev2"});
 		languagesDatasetMap.put("rusest", new String[] {"qq2"});
 	}
 
