@@ -460,6 +460,10 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 			condition = condition.and(searchField.lower().endsWith(searchValueStr));
 		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
 			condition = condition.and(searchField.lower().contains(searchValueStr));
+		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
+			condition = condition.and(DSL.field("to_tsvector('simple',{0}) @@ to_tsquery('simple',{1})",
+					Boolean.class,
+					searchField, DSL.inline(searchValueStr)));
 		} else {
 			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
 		}
