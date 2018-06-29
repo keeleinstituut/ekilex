@@ -102,8 +102,8 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			// ev2
-			dataFilePath = getConfProperty("qq2.data.file");
-			String dataFilePath2 = getConfProperty("qq2.data.file");
+			dataFilePath = getConfProperty("ev2.data.file.1");
+			String dataFilePath2 = getConfProperty("ev2.data.file.2");
 			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
 				dataset = ev2Runner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
