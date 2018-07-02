@@ -15,6 +15,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
 import org.slf4j.Logger;
@@ -141,8 +142,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Count newWordCount = new Count();
 		for (LexemeToWordData itemData : items) {
 			Long wordId;
-			int level1 = 1;
-			Optional<WordData> existingWord = context.importedWords.stream().filter(w -> itemData.word.equals(w.value)).findFirst();
+			int level1 = itemData.lexemeLevel1;
+			boolean addLexeme = true;
+			Optional<WordData> existingWord = context.importedWords.stream()
+					.filter(w -> itemData.word.equals(w.value) && lang.equals(w.language))
+					.findFirst();
 			if (!existingWord.isPresent()) {
 				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
 				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType);
@@ -154,19 +158,34 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 				}
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
 			} else {
+//				logger.debug("word found ; {}", existingWord.get().value);
 				wordId = existingWord.get().id;
-				existingWord.get().level1++;
-				level1 = existingWord.get().level1;
+				if (hasLexemeForMeaning(wordId, itemData.meaningId)) {
+					addLexeme = false;
+				} else {
+					existingWord.get().level1++;
+					level1 = existingWord.get().level1;
+				}
 			}
-			Lexeme lexeme = new Lexeme();
-			lexeme.setWordId(wordId);
-			lexeme.setMeaningId(itemData.meaningId);
-			lexeme.setLevel1(itemData.lexemeLevel1 == 0 ? level1 : itemData.lexemeLevel1);
-			lexeme.setLevel2(1);
-			lexeme.setLevel3(1);
-			createLexeme(lexeme, getDataset());
+			if (addLexeme) {
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(wordId);
+				lexeme.setMeaningId(itemData.meaningId);
+				lexeme.setLevel1(level1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
+				createLexeme(lexeme, getDataset());
+			}
 		}
 		return newWordCount;
+	}
+
+	private boolean hasLexemeForMeaning(Long wordId, Long meaningId) throws Exception {
+		Map<String, Object> params = new HashMap<>();
+		params.put("word_id", wordId);
+		params.put("meaning_id", meaningId);
+		Map<String, Object> result = basicDbService.select(LEXEME, params);
+		return MapUtils.isNotEmpty(result);
 	}
 
 	protected void processDomains(Element node, Long meaningId, List<String> additionalDomains) throws Exception {
@@ -194,7 +213,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
 		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
 		word.setDisplayMorph(displayMorph);
-		createdWord.id = createOrSelectWord(word, null, null, null);
+		createdWord.id = createOrSelectWord(word, null, getDataset(), null);
+		createdWord.language = lang;
 		return createdWord;
 	}
 
@@ -203,7 +223,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
 		final String wordTypeAttr = "liik";
-		final int defaultLexemeLevel1 = 0;
+		final int defaultLexemeLevel1 = 1;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
 		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
@@ -324,6 +344,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String wordDisplayForm = wordNode.getTextTrim();
 		String wordValue = cleanUp(wordDisplayForm);
 		wordData.value = wordValue;
+		wordData.language = dataLang;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 
 		String wordVocalForm = null;
@@ -469,6 +490,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<String> governments = new ArrayList<>();
 		String displayMorph;
 		int level1 = 1;
+		String language;
 	}
 
 	protected class PosData {
