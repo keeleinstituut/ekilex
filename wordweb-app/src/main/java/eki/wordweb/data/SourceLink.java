@@ -10,6 +10,8 @@ public class SourceLink extends AbstractDataObject {
 
 	private String name;
 
+	private boolean translator;
+
 	public String getType() {
 		return type;
 	}
@@ -24,6 +26,14 @@ public class SourceLink extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public boolean isTranslator() {
+		return translator;
+	}
+
+	public void setTranslator(boolean translator) {
+		this.translator = translator;
 	}
 
 }

@@ -134,7 +134,10 @@
                       <span class="example-text example-item" th:text="${usage.usage}"></span>
                       <span th:if="${not #lists.isEmpty(usage.usageAuthors)}">
                         <span th:each="usageAuthor : ${usage.usageAuthors}">
-                          <span class="example-text" th:text="${usageAuthor.name}"></span>
+                          <span class="example-text">
+                            <span th:if="${usageAuthor.translator}" th:text=#{reference.type.translator}>Tõlkija</span>
+                            <span th:text="${usageAuthor.name}"></span>
+                          </span>
                         </span>
                       </span>
                       <button class="btn btn-speaker">

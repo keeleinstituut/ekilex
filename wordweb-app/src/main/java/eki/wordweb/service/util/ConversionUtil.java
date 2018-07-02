@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.data.Collocation;
 import eki.wordweb.data.CollocationPosGroup;
@@ -214,9 +215,11 @@ public class ConversionUtil {
 						String[] usageAuthorElements = StringUtils.split(usageAuthorRaw, RAW_VALUE_ELEMENTS_SEPARATOR);
 						String type = usageAuthorElements[0];
 						String name = usageAuthorElements[1];
+						boolean isTranslator = StringUtils.equalsIgnoreCase(ReferenceType.TRANSLATOR.name(), type);
 						SourceLink usageAuthor = new SourceLink();
 						usageAuthor.setType(type);
 						usageAuthor.setName(name);
+						usageAuthor.setTranslator(isTranslator);
 						usage.getUsageAuthors().add(usageAuthor);
 					}
 				}
