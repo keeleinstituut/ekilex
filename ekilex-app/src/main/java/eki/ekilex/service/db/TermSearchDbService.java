@@ -53,6 +53,8 @@ import eki.ekilex.data.db.tables.Word;
 @Component
 public class TermSearchDbService implements SystemConstant, DbConstant {
 
+	private static final String NUMERIC_VALUE_PATTERN = "^([0-9]+[.]?[0-9]*|[.][0-9]+)$";
+
 	private DSLContext create;
 
 	@Autowired
@@ -344,9 +346,16 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				.asTable("w");
 
 		Table<Record2<Long, String>> c = DSL
-				.select(mff.MEANING_ID, ff.VALUE_TEXT.as("concept_id"))
+				.select(
+						mff.MEANING_ID,
+						ff.VALUE_TEXT.as("concept_id")
+						)
 				.from(mff, ff)
-				.where(mff.FREEFORM_ID.eq(ff.ID).and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name())))
+				.where(
+						mff.FREEFORM_ID.eq(ff.ID)
+						.and(ff.TYPE.eq(FreeformType.CONCEPT_ID.name()))
+						.and(ff.VALUE_TEXT.likeRegex(NUMERIC_VALUE_PATTERN))
+						)
 				.asTable("c");
 
 		Table<Record3<Long, Long, Long>> mw = DSL
