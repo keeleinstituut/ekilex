@@ -313,8 +313,10 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		Condition sourceCondition = l.WORD_ID.eq(wordIdField)
 				.and(lrl.LEXEME_ID.eq(l.ID))
 				.and(lrl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(s.ID.eq(lrl.SOURCE_ID)).and(sf.SOURCE_ID.eq(s.ID))
-				.and(ff.ID.eq(sf.FREEFORM_ID)).and(ff.TYPE.eq(searchKey.name()));
+				.and(lrl.SOURCE_ID.eq(s.ID))
+				.and(sf.SOURCE_ID.eq(s.ID))
+				.and(sf.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
@@ -335,8 +337,9 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 
 	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) {
 
+		searchValueStr = StringUtils.lowerCase(searchValueStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
-			condition = condition.and(searchField.equalIgnoreCase(searchValueStr));
+			condition = condition.and(searchField.lower().equal(searchValueStr));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
 			condition = condition.and(searchField.lower().startsWith(searchValueStr));
 		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {

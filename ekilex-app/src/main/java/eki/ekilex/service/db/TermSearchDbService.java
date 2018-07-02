@@ -1,10 +1,12 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
@@ -41,13 +43,17 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
+import eki.ekilex.data.db.tables.Source;
+import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
@@ -173,6 +179,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
+
 				for (SearchCriterion criterion : valueCriterions) {
 					SearchOperand searchOperand = criterion.getSearchOperand();
 					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
@@ -182,6 +189,9 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 					String searchValueStr = criterion.getSearchValue().toString();
 					where1 = where1.and(w1.LANG.eq(searchValueStr));
 				}
+				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriterions, l1.ID, where1);
+				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriterions, l1.ID, where1);
+
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
@@ -229,6 +239,9 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 					String searchValueStr = criterion.getSearchValue().toString();
 					where1 = where1.and(d1.LANG.eq(searchValueStr));
 				}
+				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriterions, d1.ID, where1);
+				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_CODE, searchCriterions, d1.ID, where1);
+
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 
 			} else if (SearchEntity.USAGE.equals(searchEntity)) {
@@ -459,10 +472,67 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 		return result.into(TermMeaningWordTuple.class);
 	}
 
-	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) throws Exception {
+	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> lexemeIdField, Condition condition) {
 
+		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		if (sourceCriterions.isEmpty()) {
+			return condition;
+		}
+
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		Source s = Source.SOURCE.as("s");
+		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
+		Freeform ff = Freeform.FREEFORM.as("ff");
+
+		Condition sourceCondition =
+				lsl.LEXEME_ID.eq(lexemeIdField)
+				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(lsl.SOURCE_ID.eq(s.ID))
+				.and(sf.SOURCE_ID.eq(s.ID))
+				.and(sf.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(searchKey.name()));
+
+		for (SearchCriterion criterion : sourceCriterions) {
+			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+		}
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sf, ff).where(sourceCondition)));
+	}
+
+	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
+
+		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		if (sourceCriterions.isEmpty()) {
+			return condition;
+		}
+
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Source s = Source.SOURCE.as("s");
+		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
+		Freeform ff = Freeform.FREEFORM.as("ff");
+
+		Condition sourceCondition =
+				dsl.DEFINITION_ID.eq(definitionIdField)
+				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(dsl.SOURCE_ID.eq(s.ID))
+				.and(sf.SOURCE_ID.eq(s.ID))
+				.and(sf.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(searchKey.name()));
+
+		for (SearchCriterion criterion : sourceCriterions) {
+			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+		}
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sf, ff).where(sourceCondition)));
+	}
+
+	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) {
+
+		searchValueStr = StringUtils.lowerCase(searchValueStr);
 		if (SearchOperand.EQUALS.equals(searchOperand)) {
-			condition = condition.and(searchField.equalIgnoreCase(searchValueStr));
+			condition = condition.and(searchField.lower().equal(searchValueStr));
 		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
 			condition = condition.and(searchField.lower().startsWith(searchValueStr));
 		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
