@@ -24,15 +24,15 @@ function displayDetailGroupButtons() {
 }
 
 function displaySimpleSearch() {
-    $('[name="simpleSearchFilter"]').prop('hidden', false);
-    $('[name="detailSearchFilter"]').prop('hidden', true);
+    $("#simple_search_filter").prop('hidden', false);
+    $("#detail_search_filter").prop('hidden', true);
     $('#searchMode').val('SIMPLE');
     $('#searchModeBtn').text('Detailotsing');
 }
 
 function displayDetailSearch() {
-    $('[name="simpleSearchFilter"]').prop('hidden', true);
-    $('[name="detailSearchFilter"]').prop('hidden', false);
+    $("#simple_search_filter").prop('hidden', true);
+    $("#detail_search_filter").prop('hidden', false);
     $('#searchMode').val('DETAIL');
     $('#searchModeBtn').text('Lihtotsing');
 }
@@ -51,50 +51,81 @@ function initaliseSearchForm() {
 }
 
 function initialiseDeatailSearch() {
+
     displayDetailConditionButtons();
     displayDetailGroupButtons();
+
     $(document).on("click", ":button[name='removeDetailConditionBtn']", function() {
         $(this).closest('[name="detailCondition"]').remove();
         displayDetailConditionButtons();
     });
+
     $(document).on("click", ":button[name='removeDetailGroupBtn']", function() {
         $(this).closest('[name="detailGroup"]').remove();
         displayDetailGroupButtons();
     });
-    $(document).on("change", "select[name$='searchKey']", function() {
-        var searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
-        var operandTemplate = $('#searchOperandTemplates').find('[name="' + $(this).val() + '"]');
-        searchOperandElement.find('option').remove();
-        searchOperandElement.append(operandTemplate.html());
-        searchOperandElement.val(searchOperandElement.find('option').first().val());
 
-        var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-        var templateElement = $('#searchValueTemplates').find('[name="' + $(this).val() + '"]');
-        var copyOfValueTemplate = $(templateElement.html());
-        copyOfValueTemplate.attr('name' ,searchValueElement.attr('name'));
-        searchValueElement.closest('div').attr('class', templateElement.attr('class'));
-        searchValueElement.replaceWith(copyOfValueTemplate);
-    });
     $(document).on("change", "select[name$='entity']", function() {
+
+    	var searchEntityVal = $(this).val();
         var detailGroupElement = $(this).closest('[name="detailGroup"]');
         while (detailGroupElement.find('[name="detailCondition"]').length > 1) {
             detailGroupElement.find('[name="detailCondition"]').last().remove();
         }
         var conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
         var searchKeyElement = conditionElement.find('[name$="searchKey"]');
-        var keyTemplate = $('#searchKeyTemplates').find('[name="' + $(this).val() + '"]');
+        var keyTemplate = $('#searchKeyTemplates').find('[name="' + searchEntityVal + '"]');
         searchKeyElement.find('option').remove();
         searchKeyElement.append(keyTemplate.html());
         searchKeyElement.val(searchKeyElement.find('option').first().val());
         initCondition(conditionElement);
     });
+
+    $(document).on("change", "select[name$='searchKey']", function() {
+
+    	var searchKeyVal = $(this).val();
+        var searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
+        var operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]');
+        searchOperandElement.find('option').remove();
+        searchOperandElement.append(operandTemplate.html());
+        searchOperandElement.val(searchOperandElement.find('option').first().val());
+
+        // TODO should lookup by search key + operand
+        var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
+        var templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
+        var copyOfValueTemplate = $(templateElement.html());
+        copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
+        searchValueElement.closest('div').attr('class', templateElement.attr('class'));
+        searchValueElement.replaceWith(copyOfValueTemplate);
+    });
+
+    $(document).on("change", "select[name$='searchOperand']", function() {
+
+    	var searchOperandVal = $(this).val();
+    	var searchKeyElement = $(this).closest('[name="detailCondition"]').find('[name$="searchKey"] option:selected');
+    	var searchKeyVal = searchKeyElement.val();
+
+    	var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
+    	if (searchOperandVal == 'DOES_NOT_EXIST') {
+    		searchValueElement.empty();
+    		searchValueElement.prop('hidden', true);
+    	} else {
+    		var templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
+            var copyOfValueTemplate = $(templateElement.html());
+            copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
+            searchValueElement.closest('div').attr('class', templateElement.attr('class'));
+            searchValueElement.replaceWith(copyOfValueTemplate);
+    	}
+    });
+
     $(document).on("click", ":button[name='addDetailConditionBtn']", function() {
         var detailGroupElement = $(this).closest('[name="detailGroup"]');
         var addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
         initCondition(addedConditionElement);
     });
+
     $(document).on("click", ":button[name='addDetailGroupBtn']", function() {
-        var detailSearchElement = $(this).closest('[name="detailSearchFilter"]');
+        var detailSearchElement = $("#detail_search_filter");
         var addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
         initConditionGroup(addedGroupElement);
     });
@@ -341,7 +372,7 @@ function initNewWordDlg() {
     var newWordDlg = $('#newWordDlg');
     newWordDlg.on('shown.bs.modal', function() {
         newWordDlg.find('.form-control').first().focus();
-        var searchValue = $('input[name=simpleSearchFilter]').val() || '';
+        var searchValue = $("input[name='simpleSearchFilter']").val() || '';
         if (!searchValue.includes('*') && !searchValue.includes('?')) {
             newWordDlg.find('[name=value]').val(searchValue);
         } else {

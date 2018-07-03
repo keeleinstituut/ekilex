@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
@@ -8,6 +9,7 @@ import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
+import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -38,11 +40,13 @@ import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.db.tables.Definition;
+import eki.ekilex.data.db.tables.DefinitionFreeform;
 import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
@@ -50,6 +54,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
+import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Source;
@@ -67,6 +72,8 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 	public TermSearchDbService(DSLContext context) {
 		create = context;
 	}
+
+	// simple search
 
 	public List<TermMeaningWordTuple> findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
 
@@ -119,6 +126,8 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 		return meaningCondition;
 	}
 
+	// detail search
+
 	public List<TermMeaningWordTuple> findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
 
 		Meaning m1 = MEANING.as("m1");
@@ -144,25 +153,22 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 
 		List<SearchCriterionGroup> criteriaGroups = searchFilter.getCriteriaGroups();
 
-		Condition meaningCondition = DSL.trueCondition();
+		Condition meaningCondition;
+		if (CollectionUtils.isEmpty(datasets)) {
+			meaningCondition = DSL.trueCondition();
+		} else {
+			// could be optimised - create condition only if no criteria uses lexemes
+			Lexeme m1ds = LEXEME.as("m1ds");
+			meaningCondition = DSL.exists(DSL.select(m1ds.ID).from(m1ds).where(m1ds.MEANING_ID.eq(m1.ID).and(m1ds.DATASET_CODE.in(datasets))));
+		}
 
 		for (SearchCriterionGroup searchCriterionGroup : criteriaGroups) {
 
-			List<SearchCriterion> searchCriterions = searchCriterionGroup.getSearchCriteria();
-			if (CollectionUtils.isEmpty(searchCriterions)) {
+			List<SearchCriterion> searchCriteria = searchCriterionGroup.getSearchCriteria();
+			if (CollectionUtils.isEmpty(searchCriteria)) {
 				continue;
 			}
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
-
-			List<SearchCriterion> valueCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.VALUE) && c.getSearchValue() != null)
-					.collect(toList());
-			List<SearchCriterion> languageCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.LANGUAGE) && c.getSearchValue() != null && isNotBlank(c.getSearchValue().toString()))
-					.collect(toList());
-			List<SearchCriterion> idCriterions = searchCriterions.stream()
-					.filter(c -> c.getSearchKey().equals(SearchKey.ID) && c.getSearchValue() != null)
-					.collect(toList());
 
 			if (SearchEntity.WORD.equals(searchEntity)) {
 
@@ -180,22 +186,16 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
 
-				for (SearchCriterion criterion : valueCriterions) {
-					SearchOperand searchOperand = criterion.getSearchOperand();
-					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
-					where1 = applySearchValueFilter(searchValueStr, searchOperand, f1.VALUE, where1);
-				}
-				for (SearchCriterion criterion : languageCriterions) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = where1.and(w1.LANG.eq(searchValueStr));
-				}
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriterions, l1.ID, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriterions, l1.ID, where1);
+				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
+				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, l1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
+				// not actually used
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
 				Word w1 = WORD.as("w1");
@@ -208,16 +208,33 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
-				for (SearchCriterion criterion : valueCriterions) {
-					SearchOperand searchOperand = criterion.getSearchOperand();
-					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
-					where1 = applySearchValueFilter(searchValueStr, searchOperand, f1.VALUE, where1);
-				}
-				for (SearchCriterion criterion : languageCriterions) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = where1.and(w1.LANG.eq(searchValueStr));
-				}
+				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
+				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
+
+			} else if (SearchEntity.MEANING.equals(searchEntity)) {
+
+				//TODO implement SearchOperand.DOES_NOT_EXIST in query and display
+
+				Lexeme l1 = LEXEME.as("l1");
+				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
+
+				Condition where1 =
+						m1d.MEANING_ID.eq(m1.ID)
+						.and(l1.MEANING_ID.eq(m1.ID));
+
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				List<SearchCriterion> domainCriteria = searchCriteria.stream()
+						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN) && crit.getSearchValue() != null)
+						.collect(toList());
+				for (SearchCriterion criterion : domainCriteria) {
+					Classifier domain = (Classifier) criterion.getSearchValue();
+					where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+				}
+				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(m1d.ID).from(l1, m1d).where(where1)));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
@@ -230,17 +247,10 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
-				for (SearchCriterion criterion : valueCriterions) {
-					SearchOperand searchOperand = criterion.getSearchOperand();
-					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
-					where1 = applySearchValueFilter(searchValueStr, searchOperand, d1.VALUE, where1);
-				}
-				for (SearchCriterion criterion : languageCriterions) {
-					String searchValueStr = criterion.getSearchValue().toString();
-					where1 = where1.and(d1.LANG.eq(searchValueStr));
-				}
-				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriterions, d1.ID, where1);
-				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_CODE, searchCriterions, d1.ID, where1);
+				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
+				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
+				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
+				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, d1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 
@@ -259,34 +269,58 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
-				for (SearchCriterion criterion : valueCriterions) {
-					SearchOperand searchOperand = criterion.getSearchOperand();
-					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
-					where1 = applySearchValueFilter(searchValueStr, searchOperand, u1.VALUE_TEXT, where1);
-				}
-				for (SearchCriterion criterion : languageCriterions) {
-					where1 = where1.and(u1.LANG.eq(criterion.getSearchValue().toString()));
-				}
+				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
+				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
+
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
+
+			} else if (SearchEntity.NOTE.equals(searchEntity)) {
+
+				// notes
+				Freeform nff3 = FREEFORM.as("nff3");
+				Condition where3 = nff3.TYPE.in(FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name());
+				where3 = applyValueFilter(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3);
+				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
+
+				// notes owner #1
+				MeaningFreeform mff2 = MEANING_FREEFORM.as("mff2");
+
+				// notes owner #2
+				Definition d3 = DEFINITION.as("d3");
+				DefinitionFreeform dff3 = DEFINITION_FREEFORM.as("dff3");
+				Table<Record2<Long, Long>> dff2 = DSL.select(d3.MEANING_ID, dff3.FREEFORM_ID).from(d3, dff3).where(dff3.DEFINITION_ID.eq(d3.ID)).asTable("dff2");
+
+				// notes owner #3
+				Lexeme l3 = LEXEME.as("l3");
+				LexemeFreeform lff3 = LEXEME_FREEFORM.as("lff3");
+				Table<Record2<Long, Long>> lff2 = DSL.select(l3.MEANING_ID, lff3.FREEFORM_ID).from(l3, lff3).where(lff3.LEXEME_ID.eq(l3.ID)).asTable("lff2");
+
+				// notes owners joined
+				Table<Record1<Long>> n1 = DSL
+					.select(DSL.coalesce(mff2.MEANING_ID, DSL.coalesce(dff2.field("meaning_id"), lff2.field("meaning_id"))).as("meaning_id"))
+					.from(n2
+							.leftOuterJoin(mff2).on(mff2.FREEFORM_ID.eq(n2.field("freeform_id", Long.class)))
+							.leftOuterJoin(dff2).on(dff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
+							.leftOuterJoin(lff2).on(lff2.field("freeform_id", Long.class).eq(n2.field("freeform_id", Long.class)))
+							)
+					.asTable("n1");
+
+				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(n1.field("meaning_id")).from(n1).where(n1.field("meaning_id", Long.class).eq(m1.ID))));
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
 				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
-				Freeform concept = FREEFORM.as("concept");
+				Freeform c = FREEFORM.as("c");
 
 				Condition where1 = m1ff.MEANING_ID.eq(m1.ID)
-						.and(m1ff.FREEFORM_ID.eq(concept.ID))
-						.and(concept.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+						.and(m1ff.FREEFORM_ID.eq(c.ID))
+						.and(c.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
-				for (SearchCriterion criterion : idCriterions) {
-					SearchOperand searchOperand = criterion.getSearchOperand();
-					String searchValueStr = criterion.getSearchValue().toString().toLowerCase();
-					where1 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where1);
-				}
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(concept.ID).from(m1ff, concept).where(where1)));
+				where1 = applyValueFilter(SearchKey.ID, searchCriteria, c.VALUE_TEXT, where1);
+
+				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(c.ID).from(m1ff, c).where(where1)));
 			}
 		}
-
 		return meaningCondition;
 	}
 
@@ -329,6 +363,103 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 						.from(m.innerJoin(w).on(w.field("meaning_id", Long.class).eq(m.field("meaning_id", Long.class)))));
 		return count;
 	}
+
+	private Condition applyValueFilter(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition) {
+
+		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
+				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
+				.collect(toList());
+
+		if (filteredCriteria.isEmpty()) {
+			return condition;
+		}
+
+		for (SearchCriterion criterion : filteredCriteria) {
+			SearchOperand searchOperand = criterion.getSearchOperand();
+			String searchValueStr = criterion.getSearchValue().toString();
+			condition = applySearchValueFilter(searchValueStr, searchOperand, valueField, condition);
+		}
+		return condition;
+	}
+
+	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> lexemeIdField, Condition condition) {
+
+		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		if (sourceCriterions.isEmpty()) {
+			return condition;
+		}
+
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
+		Source s = Source.SOURCE.as("s");
+		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
+		Freeform ff = Freeform.FREEFORM.as("ff");
+
+		Condition sourceCondition =
+				lsl.LEXEME_ID.eq(lexemeIdField)
+				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(lsl.SOURCE_ID.eq(s.ID))
+				.and(sff.SOURCE_ID.eq(s.ID))
+				.and(sff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(searchKey.name()));
+
+		for (SearchCriterion criterion : sourceCriterions) {
+			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+		}
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
+	}
+
+	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
+
+		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		if (sourceCriterions.isEmpty()) {
+			return condition;
+		}
+
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Source s = Source.SOURCE.as("s");
+		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
+		Freeform ff = Freeform.FREEFORM.as("ff");
+
+		Condition sourceCondition =
+				dsl.DEFINITION_ID.eq(definitionIdField)
+				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(dsl.SOURCE_ID.eq(s.ID))
+				.and(sff.SOURCE_ID.eq(s.ID))
+				.and(sff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(searchKey.name()));
+
+		for (SearchCriterion criterion : sourceCriterions) {
+			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+		}
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
+	}
+
+	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> valueField, Condition condition) {
+
+		searchValueStr = StringUtils.lowerCase(searchValueStr);
+		if (SearchOperand.EQUALS.equals(searchOperand)) {
+			condition = condition.and(valueField.lower().equal(searchValueStr));
+		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
+			condition = condition.and(valueField.lower().startsWith(searchValueStr));
+		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
+			condition = condition.and(valueField.lower().endsWith(searchValueStr));
+		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
+			condition = condition.and(valueField.lower().contains(searchValueStr));
+		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
+			condition = condition.and(DSL.field("to_tsvector('simple',{0}) @@ to_tsquery('simple',{1})",
+					Boolean.class,
+					valueField, DSL.inline(searchValueStr)));
+		} else {
+			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
+		}
+		return condition;
+	}
+
+	// common search
 
 	private List<TermMeaningWordTuple> executeFetch(Meaning m1, Condition meaningCondition, String resultLang, boolean fetchAll) {
 
@@ -472,82 +603,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 		return result.into(TermMeaningWordTuple.class);
 	}
 
-	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> lexemeIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriterions.isEmpty()) {
-			return condition;
-		}
-
-		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =
-				lsl.LEXEME_ID.eq(lexemeIdField)
-				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(lsl.SOURCE_ID.eq(s.ID))
-				.and(sf.SOURCE_ID.eq(s.ID))
-				.and(sf.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sf, ff).where(sourceCondition)));
-	}
-
-	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriterions.isEmpty()) {
-			return condition;
-		}
-
-		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =
-				dsl.DEFINITION_ID.eq(definitionIdField)
-				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(dsl.SOURCE_ID.eq(s.ID))
-				.and(sf.SOURCE_ID.eq(s.ID))
-				.and(sf.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sf, ff).where(sourceCondition)));
-	}
-
-	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> searchField, Condition condition) {
-
-		searchValueStr = StringUtils.lowerCase(searchValueStr);
-		if (SearchOperand.EQUALS.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().equal(searchValueStr));
-		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().startsWith(searchValueStr));
-		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().endsWith(searchValueStr));
-		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
-			condition = condition.and(searchField.lower().contains(searchValueStr));
-		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
-			condition = condition.and(DSL.field("to_tsvector('simple',{0}) @@ to_tsquery('simple',{1})",
-					Boolean.class,
-					searchField, DSL.inline(searchValueStr)));
-		} else {
-			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
-		}
-		return condition;
-	}
+	// getters
 
 	public Record3<Long, String, Long[]> getMeaning(Long meaningId, List<String> datasets) {
 

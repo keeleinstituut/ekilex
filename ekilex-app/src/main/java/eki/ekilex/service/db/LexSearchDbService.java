@@ -187,6 +187,20 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 				where2 = applyLanguageFilter(searchCriterions, w3.LANG, where2);
 				where = where.and(DSL.exists(DSL.select(l2.ID).from(l2, l3, p3, f3, w3).where(where2)));
 
+			} else if (SearchEntity.MEANING.equals(searchEntity)) {
+
+				Lexeme l2 = LEXEME.as("l2");
+				Meaning m2 = MEANING.as("m2");
+				MeaningDomain md = MEANING_DOMAIN.as("md");
+
+				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(md.MEANING_ID.eq(m2.ID));
+
+				for (SearchCriterion criterion : domainCriterions) {
+					Classifier domain = (Classifier) criterion.getSearchValue();
+					where2 = where2.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+				}
+				where = where.and(DSL.exists(DSL.select(m2.ID).from(l2, m2, md).where(where2)));
+
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
 				Lexeme l2 = LEXEME.as("l2");
@@ -230,6 +244,7 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
+				// not actually used
 				Lexeme l2 = LEXEME.as("l2");
 				Meaning m2 = MEANING.as("m2");
 				MeaningFreeform m2ff = MEANING_FREEFORM.as("m2ff");
@@ -244,21 +259,6 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 					where2 = applySearchValueFilter(searchValueStr, searchOperand, concept.VALUE_TEXT, where2);
 				}
 				where = where.and(DSL.exists(DSL.select(concept.ID).from(l2, m2, m2ff, concept).where(where2)));
-
-			} else if (SearchEntity.MEANING.equals(searchEntity)) {
-
-				Lexeme l2 = LEXEME.as("l2");
-				Meaning m2 = MEANING.as("m2");
-				MeaningDomain md = MEANING_DOMAIN.as("md");
-
-				Condition where2 = l2.WORD_ID.eq(word.ID).and(l2.MEANING_ID.eq(m2.ID)).and(md.MEANING_ID.eq(m2.ID));
-
-				for (SearchCriterion criterion : domainCriterions) {
-					Classifier domain = (Classifier) criterion.getSearchValue();
-					where2 = where2.and(md.DOMAIN_CODE.eq(domain.getCode())).and(md.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-				}
-				where = where.and(DSL.exists(DSL.select(m2.ID).from(l2, m2, md).where(where2)));
-
 			}
 		}
 		return where;
@@ -266,33 +266,6 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 
 	private boolean hasValueOrLanguageCriteria(List<SearchCriterion> searchCriterions) {
 		return searchCriterions.stream().anyMatch(crit -> crit.getSearchKey().equals(SearchKey.VALUE) || crit.getSearchKey().equals(SearchKey.LANGUAGE));
-	}
-
-	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriterions.isEmpty()) {
-			return condition;
-		}
-
-		DefinitionSourceLink rl = DEFINITION_SOURCE_LINK.as("rl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =	rl.DEFINITION_ID.eq(definitionIdField)
-				.and(rl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(s.ID.eq(rl.SOURCE_ID))
-				.and(sf.SOURCE_ID.eq(s.ID))
-				.and(ff.ID.eq(sf.FREEFORM_ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(rl, s, sf, ff).where(sourceCondition)));
 	}
 
 	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> wordIdField, Condition condition) {
@@ -305,23 +278,52 @@ public class LexSearchDbService implements SystemConstant, DbConstant {
 		}
 
 		Lexeme l = Lexeme.LEXEME.as("l");
-		LexemeSourceLink lrl = LEXEME_SOURCE_LINK.as("lrl");
+		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
 		Source s = Source.SOURCE.as("s");
-		SourceFreeform sf = SourceFreeform.SOURCE_FREEFORM.as("sf");
+		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
 		Freeform ff = Freeform.FREEFORM.as("ff");
 
-		Condition sourceCondition = l.WORD_ID.eq(wordIdField)
-				.and(lrl.LEXEME_ID.eq(l.ID))
-				.and(lrl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(lrl.SOURCE_ID.eq(s.ID))
-				.and(sf.SOURCE_ID.eq(s.ID))
-				.and(sf.FREEFORM_ID.eq(ff.ID))
+		Condition sourceCondition =
+				l.WORD_ID.eq(wordIdField)
+				.and(lsl.LEXEME_ID.eq(l.ID))
+				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(lsl.SOURCE_ID.eq(s.ID))
+				.and(sff.SOURCE_ID.eq(s.ID))
+				.and(sff.FREEFORM_ID.eq(ff.ID))
 				.and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
 			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
 		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(l, lrl, s, sf, ff).where(sourceCondition)));
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(l, lsl, s, sff, ff).where(sourceCondition)));
+	}
+
+	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
+
+		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
+				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
+				.collect(toList());
+		if (sourceCriterions.isEmpty()) {
+			return condition;
+		}
+
+		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
+		Source s = Source.SOURCE.as("s");
+		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
+		Freeform ff = Freeform.FREEFORM.as("ff");
+
+		Condition sourceCondition =
+				dsl.DEFINITION_ID.eq(definitionIdField)
+				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+				.and(dsl.SOURCE_ID.eq(s.ID))
+				.and(sff.SOURCE_ID.eq(s.ID))
+				.and(sff.FREEFORM_ID.eq(ff.ID))
+				.and(ff.TYPE.eq(searchKey.name()));
+
+		for (SearchCriterion criterion : sourceCriterions) {
+			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+		}
+		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
 
 	private Condition applyLanguageFilter(List<SearchCriterion> searchCriterions, Field<String> languageField, Condition condition) {

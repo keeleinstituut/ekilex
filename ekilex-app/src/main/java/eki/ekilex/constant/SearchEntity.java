@@ -5,11 +5,13 @@ import java.util.List;
 import static java.util.Arrays.asList;
 
 public enum SearchEntity {
+
 	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	MEANING(new SearchKey[] {SearchKey.DOMAIN}),
+	NOTE(new SearchKey[] {SearchKey.VALUE}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID})
 	;
 
@@ -23,11 +25,11 @@ public enum SearchEntity {
 		return keys;
 	}
 
-	public static List<SearchEntity> lexEntities() {
-		return asList(WORD, FORM, DEFINITION, USAGE, MEANING);
+	public static List<SearchEntity> getLexEntities() {
+		return asList(WORD, FORM, MEANING, DEFINITION, USAGE);
 	}
 
-	public static List<SearchEntity> termEntities() {
-		return asList(WORD, FORM, DEFINITION, USAGE, CONCEPT_ID);
+	public static List<SearchEntity> getTermEntities() {
+		return asList(WORD, MEANING, DEFINITION, USAGE, NOTE, CONCEPT_ID);
 	}
 }

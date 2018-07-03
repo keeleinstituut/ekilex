@@ -67,8 +67,6 @@ public class TermSearchController extends AbstractSearchController {
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		System.out.println("----> " + detailSearchFilter.getCriteriaGroups());
-
 		cleanup(selectedDatasets, resultLang, simpleSearchFilter, detailSearchFilter, sessionBean, model);
 
 		if (StringUtils.isBlank(searchMode)) {

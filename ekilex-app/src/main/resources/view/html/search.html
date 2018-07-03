@@ -29,7 +29,7 @@
 </th:block>
 
 <th:block th:fragment="simple_search">
-  <div class="form-row pt-2" name="simpleSearchFilter" th:hidden="${searchMode != 'SIMPLE'}">
+  <div class="form-row pt-2" id="simple_search_filter" th:hidden="${searchMode != 'SIMPLE'}">
     <div class="col-12">
       <div class="row align-items-center">
         <div class="col-3">
@@ -44,17 +44,23 @@
 </th:block>
 
 <th:block th:fragment="detail_search(searchPageName)">
-  <div class="form-row align-items-center" name="detailSearchFilter" th:hidden="${searchMode != 'DETAIL'}">
+  <div class="form-row align-items-center" id="detail_search_filter" th:hidden="${searchMode != 'DETAIL'}">
     <div class="col-10">
-      <div class="row border rounded p-2 m-2" th:each="group, stat : ${detailSearchFilter.criteriaGroups}" name="detailGroup" th:data-index="${stat.index}">
+      <div class="row border rounded p-2 m-2" th:each="group, critGroupStat : ${detailSearchFilter.criteriaGroups}" name="detailGroup" th:data-index="${critGroupStat.index}">
         <div class="col-3 pr-0">
           <div class="row">
             <div class="col-8">
-              <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].entity'">
-                <option th:each="entity : ${searchPageName == 'lex_search' ? T(eki.ekilex.constant.SearchEntity).lexEntities() : T(eki.ekilex.constant.SearchEntity).termEntities()}"
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].entity'">
+                <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}"
                         th:value="${entity}"
                         th:selected="${group.entity == entity}"
-                        th:text="#{|search.entity.${entity.name()}|}">entityName</option>
+                        th:text="#{|search.entity.${entity.name()}|}"
+                        th:if="${searchPageName == 'lex_search'}">entityName</option>
+                <option th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}"
+                        th:value="${entity}"
+                        th:selected="${group.entity == entity}"
+                        th:text="#{|search.entity.${entity.name()}|}"
+                        th:if="${searchPageName == 'term_search'}">entityName</option>
               </select>
             </div>
           <div class="col-4 pl-0">
@@ -68,9 +74,9 @@
           </div>
         </div>
         <div class="col-9 pl-0">
-          <div class="row mb-2" th:each="criteria, criteriaStat: ${group.searchCriteria}" name="detailCondition" th:data-index="${criteriaStat.index}">
+          <div class="row mb-2" th:each="criteria, critStat: ${group.searchCriteria}" name="detailCondition" th:data-index="${critStat.index}">
             <div class="col-2">
-              <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchKey'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchKey'">
                 <option th:each="key : ${group.entity.keys}"
                         th:value="${key}"
                         th:selected="${criteria.searchKey == key}"
@@ -78,7 +84,7 @@
               </select>
             </div>
             <div class="col-2">
-              <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchOperand'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchOperand'">
                 <option th:each="operand : ${criteria.searchKey.getOperands()}"
                         th:value="${operand}"
                         th:selected="${criteria.searchOperand == operand}"
@@ -86,7 +92,7 @@
               </select>
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'LANGUAGE'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 <option value="">Kõik keeled</option>
                 <option th:each="language : ${allLanguages}"
                         th:value="${language.code}"
@@ -95,7 +101,7 @@
               </select>
             </div>
             <div class="col-6" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
                 <option value="">Kõik valdkonnad</option>
                 <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}"
@@ -106,16 +112,16 @@
               </select>
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'VALUE'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'ID'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_CODE'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
-              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${stat.index} + '].searchCriteria[' + ${criteriaStat.index} + '].searchValue'">
+              <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
             <div class="col-2">
               <button type="button" class="btn btn-success btn-sm mt-1" name="addDetailConditionBtn">
@@ -129,22 +135,29 @@
         </div>
       </div>
 
+      <div id="searchKeyTemplates" hidden>
+        <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}" th:if="${searchPageName == 'lex_search'}">
+          <div th:name="${entity}">
+            <option th:each="key : ${entity.getKeys()}"
+                    th:value="${key}"
+                    th:text="#{|search.key.${key.name()}|}">searchKey</option>
+          </div>
+        </div>
+        <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}" th:if="${searchPageName == 'term_search'}">
+          <div th:name="${entity}">
+            <option th:each="key : ${entity.getKeys()}"
+                    th:value="${key}"
+                    th:text="#{|search.key.${key.name()}|}">searchKey</option>
+          </div>
+        </div>
+      </div>
+
       <div id="searchOperandTemplates" hidden>
         <div th:each="key : ${T(eki.ekilex.constant.SearchKey).values()}">
           <div th:name="${key}">
             <option th:each="operand : ${key.getOperands()}"
                     th:value="${operand}"
                     th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
-          </div>
-        </div>
-      </div>
-
-      <div id="searchKeyTemplates" hidden>
-        <div th:each="entity : ${searchPageName == 'lex_search' ? T(eki.ekilex.constant.SearchEntity).lexEntities() : T(eki.ekilex.constant.SearchEntity).termEntities()}">
-          <div th:name="${entity}">
-            <option th:each="key : ${entity.getKeys()}"
-                    th:value="${key}"
-                    th:text="#{|search.key.${key.name()}|}">searchKey</option>
           </div>
         </div>
       </div>
