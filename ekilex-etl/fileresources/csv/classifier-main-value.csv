@@ -35,36 +35,20 @@ deriv	as	abstraktne substantiiv	est	descrip
 deriv	posit	positiiv, algvõrre	est	descrip2
 deriv	as	abstract substantive	eng	descrip
 deriv	posit	positive degree	eng	descrip
-display_morph	mitm	pluural, mitmus	est	descrip
-display_morph	mitm	plural	eng	descrip
-display_morph	ains	singular, ainsus	est	descrip
-display_morph	ains	singular	eng	descrip
-display_morph	om	singular genitiiv, ainsuse omastav	est	descrip
-display_morph	om	singular genitive	eng	descrip
-display_morph	os	singular partitiiv, ainsuse osastav	est	descrip
-display_morph	os	singular partitive	eng	descrip
 display_morph	keskv	komparatiiv, keskvõrre	est	descrip
 display_morph	keskv	comparative (degree)	eng	descrip
 display_morph	üliv	superlatiiv, ülivõrre	est	descrip
 display_morph	üliv	superlative (degree)	eng	descrip
-display_morph	kesks	partitsiip, kesksõna	est	descrip
-display_morph	kesks	participle	eng	descrip
-display_morph	ger	gerundiiv, des-vorm	est	descrip
-display_morph	impers	impersonaal, umbisikuline tegumood	est	descrip
-display_morph	impers	impersonal	eng	descrip
-display_morph	partits	partitsiip, kesksõna	est	descrip
-display_morph	partits	participle	eng	descrip
+display_morph	ips	impersonaal, umbisikuline tegumood	est	descrip
+display_morph	ips	impersonal	eng	descrip
+display_morph	ipf	lihtminevik	est	descrip
+display_morph	pts	partitsiip, kesksõna	est	descrip
+display_morph	pts	participle	eng	descrip
 display_morph	pl	pluural, mitmus	est	descrip
 display_morph	pl	plural	eng	descrip
 display_morph	sg	singular, ainsus	est	descrip
 display_morph	sg	singular	eng	descrip
-display_morph	sg gen	singular genitiiv, ainsuse omastav	est	descrip
-display_morph	sg gen	singular genitiv	eng	descrip
-display_morph	ssv	seisundivorm	est	descrip
-display_morph	adess	adessiiv, alalütlev	est	descrip
-display_morph	adess	adessiiv, alalütlev	eng	descrip
-display_morph	nom	nimetav, nominatiiv	est	descrip
-display_morph	nom	nominative	eng	descrip
+deriv	ssv	seisundivorm	est	descrip
 form_rel_type	mvt	viitemärksõna	est	full
 gender	f	feminine	eng	descrip
 gender	f	naissugu	est	descrip
@@ -94,7 +78,7 @@ lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lex_rel_type	lyh	lühend	est	full
 lex_rel_type	mm	allmärksõna	est	full
-lexeme_frequency	1	1 - 3000	est	descrip
+lexeme_frequency	1	jaan.00	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
 lexeme_frequency	4	4 - pole sagedussõnastikus	est	descrip
@@ -181,12 +165,12 @@ morph	SgN	------0N	est	ekimorfo
 morph	SgG	------0G	est	ekimorfo
 morph	SgP	------0P	est	ekimorfo
 morph	SgAdt	------0D	est	ekimorfo
-morph	SgIll	------01	est	ekimorfo
-morph	SgIn	------02	est	ekimorfo
-morph	SgEl	------03	est	ekimorfo
-morph	SgAll	------04	est	ekimorfo
-morph	SgAd	------05	est	ekimorfo
-morph	SgAbl	------06	est	ekimorfo
+morph	SgIll	1	est	ekimorfo
+morph	SgIn	2	est	ekimorfo
+morph	SgEl	3	est	ekimorfo
+morph	SgAll	4	est	ekimorfo
+morph	SgAd	5	est	ekimorfo
+morph	SgAbl	6	est	ekimorfo
 morph	SgTr	------0T	est	ekimorfo
 morph	SgTer	------0R	est	ekimorfo
 morph	SgEs	------0E	est	ekimorfo
@@ -195,12 +179,12 @@ morph	SgKom	------0K	est	ekimorfo
 morph	PlN	------1N	est	ekimorfo
 morph	PlG	------1G	est	ekimorfo
 morph	PlP	------1P	est	ekimorfo
-morph	PlIll	------11	est	ekimorfo
-morph	PlIn	------12	est	ekimorfo
-morph	PlEl	------13	est	ekimorfo
-morph	PlAll	------14	est	ekimorfo
-morph	PlAd	------15	est	ekimorfo
-morph	PlAbl	------16	est	ekimorfo
+morph	PlIll	11	est	ekimorfo
+morph	PlIn	12	est	ekimorfo
+morph	PlEl	13	est	ekimorfo
+morph	PlAll	14	est	ekimorfo
+morph	PlAd	15	est	ekimorfo
+morph	PlAbl	16	est	ekimorfo
 morph	PlTr	------1T	est	ekimorfo
 morph	PlTer	------1R	est	ekimorfo
 morph	PlEs	------1E	est	ekimorfo
@@ -408,7 +392,6 @@ pos	v	verb, tegusõna	est	descrip
 pos	v	verb	eng	descrip
 pos	x	X	est	capital
 pos	adj	adj	lat	abbrev
-pos	adj + ID	indekl adj	lat	abbrev
 pos	adv	adv	lat	abbrev
 pos	adjg	adjg, ag	lat	abbrev
 pos	interj	interj	lat	abbrev
@@ -417,18 +400,13 @@ pos	postp	postp	lat	abbrev
 pos	prep	prep	lat	abbrev
 pos	num	num	lat	abbrev
 pos	pron	pron	lat	abbrev
-pos	pron + ID	indekl pron	lat	abbrev
 pos	s	s	lat	abbrev
 pos	v	v	lat	abbrev
-pos	adj + ID	käändumatu omadussõna	est	descrip
 pos	postp	postpositsioon, tagasõna	est	descrip
 pos	prep	prepositsioon, eessõna	est	descrip
-pos	pron + ID	käändumatu asesõna	est	descrip
 pos	x	erivormiline sõna	est	descrip
-pos	adj + ID	indeclinable adjective	eng	descrip
 pos	postp	postposition	eng	descrip
 pos	prep	preposition	eng	descrip
-pos	pron + ID	indeclinable pronoun	eng	descrip
 pos_group	A	adjektiiv, omadussõnaga	est	descrip
 pos_group	D	adverb, määrsõnaga	est	descrip
 pos_group	H	prooprium, pärisnimega	est	descrip
@@ -457,14 +435,18 @@ process_state	arhiveeritud	-	-	-
 process_state	töös	-	-	-
 process_state	läbi vaatamata	-	-	-
 process_state	kustutatud	-	-	-
+register	eevn	eestivene	est	descrip
 register	hlv	halvustav, solvav	est	descrip
 register	hlv	offensive	eng	descrip
+register	hellitl	hellitlev	est	descrip
 register	hrv	harvaesinev	est	descrip
 register	hrv	rare	eng	descrip
+register	kõrgst	kõrgstiil	est	descrip
 register	lastek	lastekeelne	est	descrip
 register	lastek	child language	eng	descrip
 register	luulek	luulekeelne	est	descrip
 register	luulek	poetic	eng	descrip
+register	madalk	madalkeelne	est	descrip
 register	murd	murdekeelne	est	descrip
 register	murd	dialect, regional	eng	descrip
 register	nlj	naljatlev	est	descrip
@@ -473,9 +455,11 @@ register	piltl	piltlik	est	descrip
 register	piltl	figurative	eng	descrip
 register	släng	släng	est	descrip
 register	släng	slang	eng	descrip
-register	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	est	descrip
-register	vabakeel	informal, journalistic	eng	descrip
-register	van	vanamoeliselt, vananemas	est	descrip
+register	uudis	uudissõna, neologism	est	descrip
+register	uudis	neologism	eng	descrip
+register	kõnek	kõnekeelne, vabakeelne, mitteformaalne	est	descrip
+register	kõnek	informal, journalistic	eng	descrip
+register	van	vananenud, vananemas	est	descrip
 register	van	archaic	eng	descrip
 register	vulg	vulgaarne	est	descrip
 register	vulg	vulgar	eng	descrip
