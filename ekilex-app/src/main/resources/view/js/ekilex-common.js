@@ -52,6 +52,8 @@ function initaliseSearchForm() {
 
 function initialiseDeatailSearch() {
 
+	//TODO should hide NOT_EXISTS value fields on load
+
     displayDetailConditionButtons();
     displayDetailGroupButtons();
 
@@ -90,7 +92,7 @@ function initialiseDeatailSearch() {
         searchOperandElement.append(operandTemplate.html());
         searchOperandElement.val(searchOperandElement.find('option').first().val());
 
-        // TODO should lookup by search key + operand
+        // should lookup by search key + operand
         var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
         var templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
         var copyOfValueTemplate = $(templateElement.html());
@@ -106,7 +108,7 @@ function initialiseDeatailSearch() {
     	var searchKeyVal = searchKeyElement.val();
 
     	var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-    	if (searchOperandVal == 'DOES_NOT_EXIST') {
+    	if (searchOperandVal == 'NOT_EXISTS') {
     		searchValueElement.empty();
     		searchValueElement.prop('hidden', true);
     	} else {

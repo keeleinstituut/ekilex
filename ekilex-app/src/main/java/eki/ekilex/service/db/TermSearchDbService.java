@@ -217,24 +217,33 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 
 				//TODO implement SearchOperand.DOES_NOT_EXIST in query and display
 
-				Lexeme l1 = LEXEME.as("l1");
+				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
+						.filter(crit -> 
+								crit.getSearchKey().equals(SearchKey.DOMAIN)
+								&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
+								&& (crit.getSearchValue() != null))
+						.collect(toList());
+
+				boolean isNotExistsFilter = searchCriteria.stream()
+						.anyMatch(crit ->
+								crit.getSearchKey().equals(SearchKey.DOMAIN)
+								&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
+
 				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
 
-				Condition where1 =
-						m1d.MEANING_ID.eq(m1.ID)
-						.and(l1.MEANING_ID.eq(m1.ID));
+				if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
+					Condition where1 = m1d.MEANING_ID.eq(m1.ID);
+					for (SearchCriterion criterion : domainCriteriaWithExists) {
+						Classifier domain = (Classifier) criterion.getSearchValue();
+						where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+					}
+					meaningCondition = meaningCondition.and(DSL.exists(DSL.select(m1d.ID).from(m1d).where(where1)));
+				}
 
-				if (CollectionUtils.isNotEmpty(datasets)) {
-					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				if (isNotExistsFilter) {
+					Condition where1 = m1d.MEANING_ID.eq(m1.ID);
+					meaningCondition = meaningCondition.and(DSL.notExists(DSL.select(m1d.ID).from(m1d).where(where1)));
 				}
-				List<SearchCriterion> domainCriteria = searchCriteria.stream()
-						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN) && crit.getSearchValue() != null)
-						.collect(toList());
-				for (SearchCriterion criterion : domainCriteria) {
-					Classifier domain = (Classifier) criterion.getSearchValue();
-					where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
-				}
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(m1d.ID).from(l1, m1d).where(where1)));
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 
