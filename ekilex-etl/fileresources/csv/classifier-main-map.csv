@@ -585,7 +585,7 @@ s_tyyp	s_tyyp	van	archaic	en	register	van
 s_tyyp	s_tyyp	vulg	vulgaarne	et	register	vulg
 s_tyyp	s_tyyp	vulg	vulgar	en	register	vulg
 sa_tyyp	sa_tyyp	s	sarja liige	et	-	-
-sag_tyyp	sagedusrühm	1	jaan.00	et	lexeme_frequency	1
+sag_tyyp	sagedusrühm	1	1 - 3000	et	lexeme_frequency	1
 sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	lexeme_frequency	2
 sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	lexeme_frequency	3
 sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	lexeme_frequency	4
@@ -1274,12 +1274,12 @@ vn_tyyp	muutevormi nimi	SgN	------0N	et	morph	SgN
 vn_tyyp	muutevormi nimi	SgG	------0G	et	morph	SgG
 vn_tyyp	muutevormi nimi	SgP	------0P	et	morph	SgP
 vn_tyyp	muutevormi nimi	SgAdt	------0D	et	morph	SgAdt
-vn_tyyp	muutevormi nimi	SgIll	1	et	morph	SgIll
-vn_tyyp	muutevormi nimi	SgIn	2	et	morph	SgIn
-vn_tyyp	muutevormi nimi	SgEl	3	et	morph	SgEl
-vn_tyyp	muutevormi nimi	SgAll	4	et	morph	SgAll
-vn_tyyp	muutevormi nimi	SgAd	5	et	morph	SgAd
-vn_tyyp	muutevormi nimi	SgAbl	6	et	morph	SgAbl
+vn_tyyp	muutevormi nimi	SgIll	------01	et	morph	SgIll
+vn_tyyp	muutevormi nimi	SgIn	------02	et	morph	SgIn
+vn_tyyp	muutevormi nimi	SgEl	------03	et	morph	SgEl
+vn_tyyp	muutevormi nimi	SgAll	------04	et	morph	SgAll
+vn_tyyp	muutevormi nimi	SgAd	------05	et	morph	SgAd
+vn_tyyp	muutevormi nimi	SgAbl	------06	et	morph	SgAbl
 vn_tyyp	muutevormi nimi	SgTr	------0T	et	morph	SgTr
 vn_tyyp	muutevormi nimi	SgTer	------0R	et	morph	SgTer
 vn_tyyp	muutevormi nimi	SgEs	------0E	et	morph	SgEs
@@ -1288,12 +1288,12 @@ vn_tyyp	muutevormi nimi	SgKom	------0K	et	morph	SgKom
 vn_tyyp	muutevormi nimi	PlN	------1N	et	morph	PlN
 vn_tyyp	muutevormi nimi	PlG	------1G	et	morph	PlG
 vn_tyyp	muutevormi nimi	PlP	------1P	et	morph	PlP
-vn_tyyp	muutevormi nimi	PlIll	11	et	morph	PlIll
-vn_tyyp	muutevormi nimi	PlIn	12	et	morph	PlIn
-vn_tyyp	muutevormi nimi	PlEl	13	et	morph	PlEl
-vn_tyyp	muutevormi nimi	PlAll	14	et	morph	PlAll
-vn_tyyp	muutevormi nimi	PlAd	15	et	morph	PlAd
-vn_tyyp	muutevormi nimi	PlAbl	16	et	morph	PlAbl
+vn_tyyp	muutevormi nimi	PlIll	------11	et	morph	PlIll
+vn_tyyp	muutevormi nimi	PlIn	------12	et	morph	PlIn
+vn_tyyp	muutevormi nimi	PlEl	------13	et	morph	PlEl
+vn_tyyp	muutevormi nimi	PlAll	------14	et	morph	PlAll
+vn_tyyp	muutevormi nimi	PlAd	------15	et	morph	PlAd
+vn_tyyp	muutevormi nimi	PlAbl	------16	et	morph	PlAbl
 vn_tyyp	muutevormi nimi	PlTr	------1T	et	morph	PlTr
 vn_tyyp	muutevormi nimi	PlTer	------1R	et	morph	PlTer
 vn_tyyp	muutevormi nimi	PlEs	------1E	et	morph	PlEs

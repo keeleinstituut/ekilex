@@ -78,7 +78,7 @@ lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lex_rel_type	lyh	lühend	est	full
 lex_rel_type	mm	allmärksõna	est	full
-lexeme_frequency	1	jaan.00	est	descrip
+lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
 lexeme_frequency	4	4 - pole sagedussõnastikus	est	descrip
@@ -165,12 +165,12 @@ morph	SgN	------0N	est	ekimorfo
 morph	SgG	------0G	est	ekimorfo
 morph	SgP	------0P	est	ekimorfo
 morph	SgAdt	------0D	est	ekimorfo
-morph	SgIll	1	est	ekimorfo
-morph	SgIn	2	est	ekimorfo
-morph	SgEl	3	est	ekimorfo
-morph	SgAll	4	est	ekimorfo
-morph	SgAd	5	est	ekimorfo
-morph	SgAbl	6	est	ekimorfo
+morph	SgIll	------01	est	ekimorfo
+morph	SgIn	------02	est	ekimorfo
+morph	SgEl	------03	est	ekimorfo
+morph	SgAll	------04	est	ekimorfo
+morph	SgAd	------05	est	ekimorfo
+morph	SgAbl	------06	est	ekimorfo
 morph	SgTr	------0T	est	ekimorfo
 morph	SgTer	------0R	est	ekimorfo
 morph	SgEs	------0E	est	ekimorfo
@@ -179,12 +179,12 @@ morph	SgKom	------0K	est	ekimorfo
 morph	PlN	------1N	est	ekimorfo
 morph	PlG	------1G	est	ekimorfo
 morph	PlP	------1P	est	ekimorfo
-morph	PlIll	11	est	ekimorfo
-morph	PlIn	12	est	ekimorfo
-morph	PlEl	13	est	ekimorfo
-morph	PlAll	14	est	ekimorfo
-morph	PlAd	15	est	ekimorfo
-morph	PlAbl	16	est	ekimorfo
+morph	PlIll	------11	est	ekimorfo
+morph	PlIn	------12	est	ekimorfo
+morph	PlEl	------13	est	ekimorfo
+morph	PlAll	------14	est	ekimorfo
+morph	PlAd	------15	est	ekimorfo
+morph	PlAbl	------16	est	ekimorfo
 morph	PlTr	------1T	est	ekimorfo
 morph	PlTer	------1R	est	ekimorfo
 morph	PlEs	------1E	est	ekimorfo
@@ -521,3 +521,217 @@ word_type	ametinimetus	ametinimetus	est	descrip
 word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	descrip
 word_type	õigusakti pealkiri	õigusakti pealkiri	est	descrip
 word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip
+deriv	komp	keskvõrre	est	wordweb
+deriv	tgn	tegijanimi	est	wordweb
+deriv	tn	teonimi	est	wordweb
+deriv	posit	algvõrre	est	wordweb
+deriv	adv	määrsõna	est	wordweb
+deriv	superl	ülivõrre	est	wordweb
+deriv	dem	vähendussõna	est	wordweb
+value_state	eelistermin	eelistermin	est	wordweb
+value_state	endine	endine	est	wordweb
+value_state	rööptermin	rööptermin	est	wordweb
+value_state	väldi	väldi	est	wordweb
+word_type	l	lühend	est	wordweb
+word_type	km	kaubamärk	est	wordweb
+word_type	k	kohanimi	est	wordweb
+word_type	lz	lühend	est	wordweb
+pos	prop	nimi	est	wordweb
+pos	adjg	omastavaline täiend	est	wordweb
+word_type	th	tähis	est	wordweb
+word_type	ametinimetus	ametinimetus	est	wordweb
+word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb
+word_type	õigusakti pealkiri	õigusakti pealkiri	est	wordweb
+word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	wordweb
+word_type	termin	termin	est	wordweb
+word_type	tõlkeprobleem	tõlkeprobleem	est	wordweb
+lexeme_frequency	F0	*****	est	wordweb
+lexeme_frequency	F1	****	est	wordweb
+lexeme_frequency	F2	***	est	wordweb
+lexeme_frequency	F3	**	est	wordweb
+lexeme_frequency	F4	*	est	wordweb
+lexeme_frequency	F5	(*)	est	wordweb
+usage_type	y	sõnaühend	est	wordweb
+usage_type	Vs	vanasõna	est	wordweb
+register	eevn	eestivene	est	wordweb
+register	hellitl	hellitlev	est	wordweb
+register	hlv	halvustav	est	wordweb
+register	hrv	harvaesinev	est	wordweb
+register	kõrgst	kõrgstiil	est	wordweb
+register	lastek	lastekeelne	est	wordweb
+register	madalk	madalkeelne	est	wordweb
+register	luulek	luulekeelne	est	wordweb
+register	murd	murdes	est	wordweb
+register	nlj	naljatlev	est	wordweb
+register	piltl	piltlik	est	wordweb
+register	släng	släng	est	wordweb
+register	uudis	uudissõna	est	wordweb
+register	van	vananenud	est	wordweb
+register	vulg	vulgaarne	est	wordweb
+register	kõnek	kõnekeelne	est	wordweb
+lexeme_frequency	1	*****	est	wordweb
+lexeme_frequency	2	*****	est	wordweb
+lexeme_frequency	3	****	est	wordweb
+lexeme_frequency	4	*	est	wordweb
+lexeme_frequency	L2	*****	est	wordweb
+lexeme_frequency	L3	****	est	wordweb
+lexeme_frequency	L4	*****	est	wordweb
+pos	prep	eessõna	est	wordweb
+pos	ord	järgarvsõna	est	wordweb
+pos	prop	nimi	est	wordweb
+pos	postp	tagasõna	est	wordweb
+pos	num	arvsõna	est	wordweb
+pos	pron	asesõna	est	wordweb
+pos	adj	omadussõna	est	wordweb
+pos	adjg	täiendsõna	est	wordweb
+pos	s	nimisõna	est	wordweb
+pos	adj	omadussõna	est	wordweb
+pos	adv	määrsõna	est	wordweb
+pos	v	tegusõna	est	wordweb
+pos	interj	hüüdsõna	est	wordweb
+pos	adp	kaassõna	est	wordweb
+pos	konj	sidesõna	est	wordweb
+pos	pron	asesõna	est	wordweb
+deriv	dem	vähendussõna	est	wordweb
+deriv	tgn	tegijanimi	est	wordweb
+deriv	tn	teonimi	est	wordweb
+deriv	ssv	seisundivorm	est	wordweb
+display_morph	Ipf	lihtminevik	est	wordweb
+display_morph	Sg	ainsus	est	wordweb
+display_morph	Pl	mitmus	est	wordweb
+display_morph	Ips	umbisikuline tegumood	est	wordweb
+display_morph	Pts	kesksõna	est	wordweb
+morph	SgAll	ainsuse alaleütlev	est	wordweb
+morph	SgAbl	ainsuse alaltütlev	est	wordweb
+morph	SgAd	ainsuse alalütlev	est	wordweb
+morph	SgAb	ainsuse ilmaütlev	est	wordweb
+morph	SgKom	ainsuse kaasaütlev	est	wordweb
+morph	SgAdt	ainsuse lühike sisseütlev	est	wordweb
+morph	SgN	ainsuse nimetav	est	wordweb
+morph	SgEs	ainsuse olev	est	wordweb
+morph	SgG	ainsuse omastav	est	wordweb
+morph	SgP	ainsuse osastav	est	wordweb
+morph	SgTer	ainsuse rajav	est	wordweb
+morph	SgTr	ainsuse saav	est	wordweb
+morph	SgEl	ainsuse seestütlev	est	wordweb
+morph	SgIn	ainsuse seesütlev	est	wordweb
+morph	SgIll	ainsuse sisseütlev	est	wordweb
+morph	Inf	da-tegevusnimi	est	wordweb
+morph	Neg	eitus (ei)	est	wordweb
+morph	ImpPrSg2	käskiva kõneviisi oleviku ainsuse 2.p.	est	wordweb
+morph	ImpPrSg2N	käskiva kõneviisi oleviku ainsuse 2.p. eitus (ära)	est	wordweb
+morph	ImpPrPs	käskiva kõneviisi oleviku isikuline tegumood	est	wordweb
+morph	ImpPrN	käskiva kõneviisi oleviku isikulise tegumoe eitus (ärgu)	est	wordweb
+morph	ImpPrPl1	käskiva kõneviisi oleviku mitmuse 1.p.	est	wordweb
+morph	ImpPrPl1N	käskiva kõneviisi oleviku mitmuse 1.p. eitus (ärgem)	est	wordweb
+morph	ImpPrPl2	käskiva kõneviisi oleviku mitmuse 2.p.	est	wordweb
+morph	ImpPrPl2N	käskiva kõneviisi oleviku mitmuse 2.p. eitus (ärge)	est	wordweb
+morph	ImpPrIps	käskiva kõneviisi oleviku umbisikuline tegumood	est	wordweb
+morph	KvtPtPs	kaudse kõneviisi mineviku isikuline tegumood	est	wordweb
+morph	KvtPtIps	kaudse kõneviisi mineviku umbisikuline tegumood	est	wordweb
+morph	KvtPrPs	kaudse kõneviisi oleviku isikuline tegumood	est	wordweb
+morph	KvtPrIps	kaudse kõneviisi oleviku umbisikuline tegumood	est	wordweb
+morph	IndIpfSg1	kindla kõneviisi lihtmineviku ainsuse 1.p.	est	wordweb
+morph	IndIpfSg2	kindla kõneviisi lihtmineviku ainsuse 2.p.	est	wordweb
+morph	IndIpfSg3	kindla kõneviisi lihtmineviku ainsuse 3.p.	est	wordweb
+morph	IndIpfPl1	kindla kõneviisi lihtmineviku mitmuse 1.p.	est	wordweb
+morph	IndIpfPl2	kindla kõneviisi lihtmineviku mitmuse 2.p.	est	wordweb
+morph	IndIpfPl3	kindla kõneviisi lihtmineviku mitmuse 3.p.	est	wordweb
+morph	IndIpfIps	kindla kõneviisi lihtmineviku umbisikuline tegumood	est	wordweb
+morph	IndPrSg1	kindla kõneviisi oleviku ainsuse 1.pööre	est	wordweb
+morph	IndPrSg2	kindla kõneviisi oleviku ainsuse 2.p.	est	wordweb
+morph	IndPrSg3	kindla kõneviisi oleviku ainsuse 3.p.	est	wordweb
+morph	IndPrPs_	kindla kõneviisi oleviku isikuline tegumood (eitusega)	est	wordweb
+morph	IndPrPl1	kindla kõneviisi oleviku mitmuse 1.p.	est	wordweb
+morph	IndPrPl2	kindla kõneviisi oleviku mitmuse 2.p.	est	wordweb
+morph	IndPrPl3	kindla kõneviisi oleviku mitmuse 3.p.	est	wordweb
+morph	IndPrIps	kindla kõneviisi oleviku umbisikuline tegumood	est	wordweb
+morph	IndPrIps_	kindla kõneviisi oleviku umbisikuline tegumood (eitusega)	est	wordweb
+morph	??	määramatu vorm	est	wordweb
+morph	SupTr	maks-vorm	est	wordweb
+morph	SupEl	mast-vorm	est	wordweb
+morph	SupIn	mas-vorm	est	wordweb
+morph	SupAb	mata-vorm	est	wordweb
+morph	SupIps	ma-tegevusnime umbisikuline tegumood	est	wordweb
+morph	Sup	ma-tegevusnimi	est	wordweb
+morph	PlAll	mitmuse alaleütlev	est	wordweb
+morph	PlAbl	mitmuse alaltütlev	est	wordweb
+morph	PlAd	mitmuse alalütlev	est	wordweb
+morph	PlAb	mitmuse ilmaütlev	est	wordweb
+morph	PlKom	mitmuse kaasaütlev	est	wordweb
+morph	PlAdt	mitmuse lühike sisseütlev	est	wordweb
+morph	PlN	mitmuse nimetav	est	wordweb
+morph	PlEs	mitmuse olev	est	wordweb
+morph	PlG	mitmuse omastav	est	wordweb
+morph	PlP	mitmuse osastav	est	wordweb
+morph	PlTer	mitmuse rajav	est	wordweb
+morph	PlTr	mitmuse saav	est	wordweb
+morph	PlEl	mitmuse seestütlev	est	wordweb
+morph	PlIn	mitmuse seesütlev	est	wordweb
+morph	PlIll	mitmuse sisseütlev	est	wordweb
+morph	ID	muutumatu	est	wordweb
+morph	PtsPtPs	nud-kesksõna	est	wordweb
+morph	IndPrIpsN	polda	est	wordweb
+morph	IndIpfIpsN	poldud	est	wordweb
+morph	IndPrPsN	pole	est	wordweb
+morph	KndPrPsN	poleks	est	wordweb
+morph	KvtPrPsN	polevat	est	wordweb
+morph	IndIpfPsN	polnud	est	wordweb
+morph	KndPtPsN	polnuks	est	wordweb
+morph	KvtPtPsN	polnuvat	est	wordweb
+morph	PtsPrIps	tav-kesksõna	est	wordweb
+morph	KndPtSg1	tingiva kõneviisi mineviku ainsuse 1.p.	est	wordweb
+morph	KndPtSg2	tingiva kõneviisi mineviku ainsuse 2.p.	est	wordweb
+morph	KndPtPs	tingiva kõneviisi mineviku isikuline tegumood	est	wordweb
+morph	KndPtPl1	tingiva kõneviisi mineviku mitmuse 1.p.	est	wordweb
+morph	KndPtPl2	tingiva kõneviisi mineviku mitmuse 2.p.	est	wordweb
+morph	KndPtPl3	tingiva kõneviisi mineviku mitmuse 3.p.	est	wordweb
+morph	KndPtIps	tingiva kõneviisi mineviku umbisikuline tegumood	est	wordweb
+morph	KndPrSg1	tingiva kõneviisi oleviku ainsuse 1.p.	est	wordweb
+morph	KndPrSg2	tingiva kõneviisi oleviku ainsuse 2.p.	est	wordweb
+morph	KndPrPs	tingiva kõneviisi oleviku isikuline tegumood	est	wordweb
+morph	KndPrPl1	tingiva kõneviisi oleviku mitmuse 1.p.	est	wordweb
+morph	KndPrPl2	tingiva kõneviisi oleviku mitmuse 2.p.	est	wordweb
+morph	KndPrPl3	tingiva kõneviisi oleviku mitmuse 3.p.	est	wordweb
+morph	KndPrIps	tingiva kõneviisi oleviku umbisikuline tegumood	est	wordweb
+morph	PtsPtIps	tud-kesksõna	est	wordweb
+morph	PtsPrPs	v-kesksõna	est	wordweb
+lex_rel_type	yvt:NB	ära aja segi	est	wordweb
+lex_rel_type	yvt:vt ka	vaata ka	est	wordweb
+lex_rel_type	yvt:vrd	võrdle	est	wordweb
+deriv	komp	keskvõrre	est	wordweb
+deriv	as	nimisõna	est	wordweb
+gender	n	kesksugu	est	wordweb
+gender	m	meessugu	est	wordweb
+gender	o	muu	est	wordweb
+gender	f	naissugu	est	wordweb
+lex_rel_type	comp	liitsõna	est	wordweb
+lex_rel_type	lyh	lühend	est	wordweb
+lex_rel_type	head	põhisõna	est	wordweb
+lex_rel_type	pyh	ühend	est	wordweb
+lex_rel_type	yvr	üksikvorm	est	wordweb
+lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
+lex_rel_type	yhvt	vaata ka	est	wordweb
+lex_rel_type	vor	suhtlus, vestlus	est	wordweb
+lex_rel_type	tvt:vrd	võrdle	est	wordweb
+meaning_rel_type	cohyponym	kaashüponüüm	est	wordweb
+meaning_rel_type	ant	vastand	est	wordweb
+process_state	ajakohastamisel	ajakohastamisel	est	wordweb
+process_state	ajakohastatud	ajakohastatud	est	wordweb
+process_state	arhiveeritud	arhiveeritud	est	wordweb
+process_state	koostamisel	koostamisel	est	wordweb
+process_state	koostatud	koostatud	est	wordweb
+process_state	lahenduseta	lahenduseta	est	wordweb
+process_state	peatoimetamisel	peatoimetamisel	est	wordweb
+process_state	peatoimetatud	peatoimetatud	est	wordweb
+process_state	saadetud konsulteerimisele	saadetud konsulteerimisele	est	wordweb
+process_state	tagasi lükatud	tagasi lükatud	est	wordweb
+process_state	toimetamisel	toimetamisel	est	wordweb
+process_state	toimetatud	toimetatud	est	wordweb
+process_state	valmis	valmis	est	wordweb
+word_rel_type	posit	algvõrre	est	wordweb
+word_rel_type	komp	keskvõrre	est	wordweb
+word_rel_type	deriv	tuletis	est	wordweb
+word_rel_type	deriv_base	tuletusalus	est	wordweb
+word_rel_type	superl	ülivõrre	est	wordweb
+word_type	valem	valem	est	wordweb
