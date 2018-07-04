@@ -35,11 +35,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
-import eki.ekilex.constant.DbConstant;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
@@ -62,7 +60,7 @@ import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
-public class TermSearchDbService implements SystemConstant, DbConstant {
+public class TermSearchDbService extends AbstractSearchDbService {
 
 	private static final String NUMERIC_VALUE_PATTERN = "^([0-9]+[.]?[0-9]*|[.][0-9]+)$";
 
@@ -170,7 +168,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 			}
 			SearchEntity searchEntity = searchCriterionGroup.getEntity();
 
-			if (SearchEntity.WORD.equals(searchEntity)) {
+			if (SearchEntity.HEADWORD.equals(searchEntity)) {
 
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
@@ -186,8 +184,8 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
 
-				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
-				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, l1.ID, where1);
 
@@ -195,7 +193,8 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 
 			} else if (SearchEntity.FORM.equals(searchEntity)) {
 
-				// not actually used
+				// this type of search is not actually available
+
 				Form f1 = FORM.as("f1");
 				Paradigm p1 = PARADIGM.as("p1");
 				Word w1 = WORD.as("w1");
@@ -208,14 +207,12 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
-				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
-				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
-
-				//TODO implement SearchOperand.DOES_NOT_EXIST in query and display
 
 				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
 						.filter(crit -> 
@@ -256,8 +253,8 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
-				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
-				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
 				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, d1.ID, where1);
 
@@ -278,8 +275,8 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
-				where1 = applyValueFilter(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
-				where1 = applyValueFilter(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
 
@@ -288,7 +285,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				// notes
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.in(FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name());
-				where3 = applyValueFilter(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3);
+				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3);
 				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
 
 				// notes owner #1
@@ -319,15 +316,15 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 			} else if (SearchEntity.CONCEPT_ID.equals(searchEntity)) {
 
 				MeaningFreeform m1ff = MEANING_FREEFORM.as("m1ff");
-				Freeform c = FREEFORM.as("c");
+				Freeform c1 = FREEFORM.as("c1");
 
 				Condition where1 = m1ff.MEANING_ID.eq(m1.ID)
-						.and(m1ff.FREEFORM_ID.eq(c.ID))
-						.and(c.TYPE.eq(FreeformType.CONCEPT_ID.name()));
+						.and(m1ff.FREEFORM_ID.eq(c1.ID))
+						.and(c1.TYPE.eq(FreeformType.CONCEPT_ID.name()));
 
-				where1 = applyValueFilter(SearchKey.ID, searchCriteria, c.VALUE_TEXT, where1);
+				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
 
-				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(c.ID).from(m1ff, c).where(where1)));
+				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(c1.ID).from(m1ff, c1).where(where1)));
 			}
 		}
 		return meaningCondition;
@@ -373,24 +370,6 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 		return count;
 	}
 
-	private Condition applyValueFilter(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<String> valueField, Condition condition) {
-
-		List<SearchCriterion> filteredCriteria = searchCriteria.stream()
-				.filter(c -> c.getSearchKey().equals(searchKey) && c.getSearchValue() != null)
-				.collect(toList());
-
-		if (filteredCriteria.isEmpty()) {
-			return condition;
-		}
-
-		for (SearchCriterion criterion : filteredCriteria) {
-			SearchOperand searchOperand = criterion.getSearchOperand();
-			String searchValueStr = criterion.getSearchValue().toString();
-			condition = applySearchValueFilter(searchValueStr, searchOperand, valueField, condition);
-		}
-		return condition;
-	}
-
 	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> lexemeIdField, Condition condition) {
 
 		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
@@ -414,7 +393,7 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				.and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
 	}
@@ -442,30 +421,9 @@ public class TermSearchDbService implements SystemConstant, DbConstant {
 				.and(ff.TYPE.eq(searchKey.name()));
 
 		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applySearchValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
+			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
 		}
 		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
-	}
-
-	private Condition applySearchValueFilter(String searchValueStr, SearchOperand searchOperand, Field<?> valueField, Condition condition) {
-
-		searchValueStr = StringUtils.lowerCase(searchValueStr);
-		if (SearchOperand.EQUALS.equals(searchOperand)) {
-			condition = condition.and(valueField.lower().equal(searchValueStr));
-		} else if (SearchOperand.STARTS_WITH.equals(searchOperand)) {
-			condition = condition.and(valueField.lower().startsWith(searchValueStr));
-		} else if (SearchOperand.ENDS_WITH.equals(searchOperand)) {
-			condition = condition.and(valueField.lower().endsWith(searchValueStr));
-		} else if (SearchOperand.CONTAINS.equals(searchOperand)) {
-			condition = condition.and(valueField.lower().contains(searchValueStr));
-		} else if (SearchOperand.CONTAINS_WORD.equals(searchOperand)) {
-			condition = condition.and(DSL.field("to_tsvector('simple',{0}) @@ to_tsquery('simple',{1})",
-					Boolean.class,
-					valueField, DSL.inline(searchValueStr)));
-		} else {
-			throw new IllegalArgumentException("Unsupported operand " + searchOperand);
-		}
-		return condition;
 	}
 
 	// common search

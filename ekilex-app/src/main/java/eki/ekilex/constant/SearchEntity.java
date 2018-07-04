@@ -6,7 +6,8 @@ import static java.util.Arrays.asList;
 
 public enum SearchEntity {
 
-	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
+	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
+	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
 	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_CODE, SearchKey.SOURCE_NAME}),
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
@@ -26,10 +27,10 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getLexEntities() {
-		return asList(WORD, FORM, MEANING, DEFINITION, USAGE);
+		return asList(HEADWORD, WORD, FORM, MEANING, DEFINITION, USAGE);
 	}
 
 	public static List<SearchEntity> getTermEntities() {
-		return asList(WORD, MEANING, DEFINITION, USAGE, NOTE, CONCEPT_ID);
+		return asList(HEADWORD, MEANING, DEFINITION, USAGE, NOTE, CONCEPT_ID);
 	}
 }

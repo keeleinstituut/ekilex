@@ -170,7 +170,7 @@ public abstract class AbstractSearchController implements WebConstant {
 		defaultCriterion.setSearchKey(SearchKey.VALUE);
 		defaultCriterion.setSearchOperand(SearchKey.VALUE.getOperands()[0]);
 		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
-		searchGroup.setEntity(SearchEntity.WORD);
+		searchGroup.setEntity(SearchEntity.HEADWORD);
 		searchGroup.setSearchCriteria(asList(defaultCriterion));
 		detailSearch.setCriteriaGroups(asList(searchGroup));
 		return detailSearch;
