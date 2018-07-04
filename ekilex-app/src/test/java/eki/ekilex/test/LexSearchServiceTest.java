@@ -45,6 +45,38 @@ public class LexSearchServiceTest {
 	}
 
 	@Test
+	public void testSearchByHeadword() throws Exception {
+
+		SearchFilter searchFilter = new SearchFilter();
+		SearchCriterionGroup wordGroup = new SearchCriterionGroup();
+		wordGroup.setEntity(SearchEntity.HEADWORD);
+		wordGroup.setSearchCriteria(new ArrayList<>());
+		searchFilter.setCriteriaGroups(asList(wordGroup));
+
+		List<String> datasets = new ArrayList<>();
+		SearchCriterion searchCriterion;
+		SearchKey searchKey;
+		SearchOperand searchOperand;
+		Object searchValue;
+		List<Word> words;
+
+		wordGroup.getSearchCriteria().clear();
+		searchKey = SearchKey.VALUE;
+		searchOperand = SearchOperand.EQUALS;
+		searchValue = new String("hall");
+
+		searchCriterion = new SearchCriterion();
+		searchCriterion.setSearchKey(searchKey);
+		searchCriterion.setSearchOperand(searchOperand);
+		searchCriterion.setSearchValue(searchValue);
+		wordGroup.getSearchCriteria().add(searchCriterion);
+
+		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
+
+		assertEquals("Incorrect count of matches", 2, words.size());
+	}
+
+	@Test
 	public void testSearchByWord() throws Exception {
 
 		SearchFilter searchFilter = new SearchFilter();
@@ -201,13 +233,9 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 2, words.size());
+		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
 		assertEquals("Incorrect match", "hall", word.getValue());
-		assertEquals("Incorrect match", new Integer(1), word.getHomonymNumber());
-		word = words.get(1);
-		assertEquals("Incorrect match", "заморозки", word.getValue());
-		assertEquals("Incorrect match", new Integer(1), word.getHomonymNumber());
 
 		// case #3
 		formGroup.getSearchCriteria().clear();
@@ -223,7 +251,7 @@ public class LexSearchServiceTest {
 
 		words = lexSearchDbService.findWords(searchFilter, datasets, false).into(Word.class);
 
-		assertEquals("Incorrect count of matches", 3, words.size());
+		assertEquals("Incorrect count of matches", 1, words.size());
 		word = words.get(0);
 		assertEquals("Incorrect match", "hall", word.getValue());
 		assertEquals("Incorrect match", new Integer(2), word.getHomonymNumber());
