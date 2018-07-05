@@ -101,7 +101,8 @@
               </select>
             </div>
             <div class="col-6" th:if="${criteria.searchKey.name() == 'DOMAIN'}">
-              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
+              <select class="form-control" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'"
+                      th:hidden="${criteria.searchOperand.name() == 'NOT_EXISTS'}">
                 <option value="">Kõik valdkonnad</option>
                 <optgroup th:each="origin : ${domains}" th:label="${origin.getKey()}">
                   <option th:each="domain : ${origin.getValue()}"
