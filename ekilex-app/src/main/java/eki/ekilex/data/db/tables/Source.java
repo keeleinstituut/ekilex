@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Source extends TableImpl<SourceRecord> {
 
-    private static final long serialVersionUID = -2068052348;
+    private static final long serialVersionUID = 1513979372;
 
     /**
      * The reference instance of <code>public.source</code>
@@ -62,9 +62,9 @@ public class Source extends TableImpl<SourceRecord> {
     public final TableField<SourceRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('source_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.source.concept</code>.
+     * The column <code>public.source.ext_source_id</code>.
      */
-    public final TableField<SourceRecord, String> CONCEPT = createField("concept", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<SourceRecord, String> EXT_SOURCE_ID = createField("ext_source_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.source.created_on</code>.
@@ -138,7 +138,7 @@ public class Source extends TableImpl<SourceRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SOURCE_PKEY);
+        return Arrays.<Index>asList(Indexes.SOURCE_EXT_SOURCE_ID_IDX, Indexes.SOURCE_PKEY, Indexes.SOURCE_TYPE_IDX);
     }
 
     /**

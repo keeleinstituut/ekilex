@@ -1,28 +1,14 @@
 package eki.ekilex.web.controller;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import eki.common.constant.ContentKey;
-import eki.common.constant.FreeformType;
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.AddItemRequest;
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Dataset;
-import eki.ekilex.data.Source;
-import eki.ekilex.data.SourceMember;
-import eki.ekilex.data.Word;
-import eki.ekilex.data.WordDetails;
-import eki.ekilex.data.WordsResult;
-import eki.ekilex.service.CommonDataService;
-import eki.ekilex.service.LexSearchService;
-import eki.ekilex.service.SourceService;
-import eki.ekilex.service.UpdateService;
-import eki.ekilex.service.util.ConversionUtil;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,15 +24,27 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-
-import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.ModifyListRequest;
-import eki.ekilex.data.ListData;
-import eki.ekilex.data.ModifyItemRequest;
-import eki.ekilex.web.bean.SessionBean;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import static java.util.Arrays.asList;
+import eki.common.constant.ContentKey;
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.AddItemRequest;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.Dataset;
+import eki.ekilex.data.ListData;
+import eki.ekilex.data.ModifyItemRequest;
+import eki.ekilex.data.ModifyListRequest;
+import eki.ekilex.data.Source;
+import eki.ekilex.data.Word;
+import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordsResult;
+import eki.ekilex.service.CommonDataService;
+import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.SourceService;
+import eki.ekilex.service.UpdateService;
+import eki.ekilex.service.util.ConversionUtil;
+import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
 @Controller
@@ -285,18 +283,18 @@ public class ModifyController implements WebConstant {
 			updateService.addGovernment(itemData.getId(), itemData.getValue());
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK : {
-			String sourceCodeOrName = findSourceCodeOrName(itemData.getId2());
-			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceCodeOrName, itemData.getValue());
+			String sourceName = findSourceName(itemData.getId2());
+			updateService.addDefinitionSourceLink(itemData.getId(), itemData.getId2(), sourceName, itemData.getValue());
 			break;
 		}
 		case ContentKey.FREEFORM_SOURCE_LINK : {
-			String sourceCodeOrName = findSourceCodeOrName(itemData.getId2());
-			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), sourceCodeOrName, itemData.getValue());
+			String sourceName = findSourceName(itemData.getId2());
+			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), sourceName, itemData.getValue());
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK : {
-			String sourceCodeOrName = findSourceCodeOrName(itemData.getId2());
-			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceCodeOrName, itemData.getValue());
+			String sourceName = findSourceName(itemData.getId2());
+			updateService.addLexemeSourceLink(itemData.getId(), itemData.getId2(), sourceName, itemData.getValue());
 			break;
 		}
 		case "lexeme_deriv" :
@@ -315,13 +313,14 @@ public class ModifyController implements WebConstant {
 		return "{}";
 	}
 
-	private String findSourceCodeOrName(Long sourceId) {
+	private String findSourceName(Long sourceId) {
 		Source source = sourceService.getSource(sourceId);
-		Optional<SourceMember> codeMember = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_CODE.equals(s.getType())).findFirst();
-		if (!codeMember.isPresent()) {
-			codeMember = source.getSourceHeadings().stream().filter(s -> FreeformType.SOURCE_NAME.equals(s.getType())).findFirst();
+		List<String> sourceNames = source.getSourceNames();
+		if (CollectionUtils.isNotEmpty(sourceNames)) {
+			String firstAvailableSourceName = sourceNames.get(0);
+			return firstAvailableSourceName;
 		}
-		return codeMember.isPresent() ? codeMember.get().getValueText() : "---";
+		return "---";
 	}
 
 	@PostMapping("/add_word")

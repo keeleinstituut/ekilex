@@ -262,7 +262,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		if (CollectionUtils.isNotEmpty(definitionNodes)) {
 			List<Element> notesSourceNodes = sourceNode.selectNodes("descripGrp/descrip[@type='Märkus']/xref[contains(@Tlink,'Allikas')]");
 
-			List<String> definitionSourceCodes = new ArrayList<>();
+			List<String> definitionSourceNames = new ArrayList<>();
 
 			for (Element definitionNode : definitionNodes) {
 
@@ -297,8 +297,8 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 						if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 							String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
 							if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-								String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-								definitionSourceCodes.add(sourceCodeOrName);
+								String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+								definitionSourceNames.add(sourceName);
 							}
 						}
 					}
@@ -307,14 +307,14 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 			for (Element noteSourceNode : notesSourceNodes) {
 				String tlinkAttrValue = noteSourceNode.attributeValue(xrefTlinkAttr);
-				String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-				if (definitionSourceCodes.contains(sourceCodeOrName)) {
-					int sourceCodeOccCount = Collections.frequency(definitionSourceCodes, sourceCodeOrName);
+				String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+				if (definitionSourceNames.contains(sourceName)) {
+					int sourceCodeOccCount = Collections.frequency(definitionSourceNames, sourceName);
 					if (sourceCodeOccCount > 1) {
-						appendToReport(true, REPORT_DEFINITIONS_NOTES_MISMATCH, concept, term, sourceCodeOrName, "mitu selle märkuse allikaviitega seletust");
+						appendToReport(true, REPORT_DEFINITIONS_NOTES_MISMATCH, concept, term, sourceName, "mitu selle märkuse allikaviitega seletust");
 					}
 				} else {
-					appendToReport(true, REPORT_DEFINITIONS_NOTES_MISMATCH, concept, term, sourceCodeOrName, "pole selle märkuse allikaviitega seletust");
+					appendToReport(true, REPORT_DEFINITIONS_NOTES_MISMATCH, concept, term, sourceName, "pole selle märkuse allikaviitega seletust");
 				}
 			}
 		}

@@ -366,7 +366,7 @@ alter sequence freeform_id_seq restart with 10000;
 create table source
 (
   id bigserial primary key,
-  concept varchar(100) not null,
+  ext_source_id varchar(100) not null,
   created_on timestamp null,
   created_by varchar(100) null,
   modified_on timestamp null,
@@ -735,6 +735,8 @@ create index form_relation_form2_id_idx on form_relation(form2_id);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_type_idx on freeform(type);
+create index source_ext_source_id_idx on source(ext_source_id);
+create index source_type_idx on source(type);
 create index source_freeform_source_id_idx on source_freeform(source_id);
 create index source_freeform_freeform_id_idx on source_freeform(freeform_id);
 create index meaning_freeform_meaning_id_idx on meaning_freeform(meaning_id);

@@ -11,7 +11,7 @@ public class Source extends AbstractDataObject {
 
 	private Long sourceId;
 
-	private String concept;
+	private String extSourceId;
 
 	private Timestamp createdOn;
 
@@ -25,7 +25,9 @@ public class Source extends AbstractDataObject {
 
 	private String type;
 
-	private List<SourceMember> sourceHeadings;
+	private List<String> sourceNames;
+
+	private List<SourceProperty> sourceProperties;
 
 	public Long getSourceId() {
 		return sourceId;
@@ -35,12 +37,12 @@ public class Source extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public String getConcept() {
-		return concept;
+	public String getExtSourceId() {
+		return extSourceId;
 	}
 
-	public void setConcept(String concept) {
-		this.concept = concept;
+	public void setExtSourceId(String extSourceId) {
+		this.extSourceId = extSourceId;
 	}
 
 	public Timestamp getCreatedOn() {
@@ -91,12 +93,20 @@ public class Source extends AbstractDataObject {
 		this.type = type;
 	}
 
-	public List<SourceMember> getSourceHeadings() {
-		return sourceHeadings;
+	public List<String> getSourceNames() {
+		return sourceNames;
 	}
 
-	public void setSourceHeadings(List<SourceMember> sourceHeadings) {
-		this.sourceHeadings = sourceHeadings;
+	public void setSourceNames(List<String> sourceNames) {
+		this.sourceNames = sourceNames;
+	}
+
+	public List<SourceProperty> getSourceProperties() {
+		return sourceProperties;
+	}
+
+	public void setSourceProperties(List<SourceProperty> sourceProperties) {
+		this.sourceProperties = sourceProperties;
 	}
 
 }

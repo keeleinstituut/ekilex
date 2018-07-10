@@ -1,12 +1,11 @@
 package eki.ekilex.data;
 
 import java.sql.Timestamp;
-import java.util.List;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
-public class SourceMember extends AbstractDataObject {
+public class SourceProperty extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -19,8 +18,6 @@ public class SourceMember extends AbstractDataObject {
 	private Timestamp valueDate;
 
 	private boolean valueMatch;
-
-	private List<SourceMember> children;
 
 	public Long getId() {
 		return id;
@@ -60,14 +57,6 @@ public class SourceMember extends AbstractDataObject {
 
 	public void setValueMatch(boolean valueMatch) {
 		this.valueMatch = valueMatch;
-	}
-
-	public List<SourceMember> getChildren() {
-		return children;
-	}
-
-	public void setChildren(List<SourceMember> children) {
-		this.children = children;
 	}
 
 }

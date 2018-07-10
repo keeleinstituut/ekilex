@@ -823,7 +823,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<Element> usageNodes = node.selectNodes(usageExp);
 		for (Element usageNode : usageNodes) {
 			Usage usage = new Usage();
-			usage.setConceptId(conceptId);
+			usage.setExtSourceId(conceptId);//disputable mitigation
 			usage.setValue(usageNode.getTextTrim());
 			usage.setDefinitions(new ArrayList<>());
 			if (usageNode.hasMixedContent()) {

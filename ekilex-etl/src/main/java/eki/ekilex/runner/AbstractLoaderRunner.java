@@ -454,18 +454,18 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			String usageType = usage.getUsageType();
 			String author = usage.getAuthor();
 			String authorTypeStr = usage.getAuthorType();
-			String conceptId = usage.getConceptId();
+			String extSourceId = usage.getExtSourceId();
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usageValue, dataLang);
 			if (StringUtils.isNotBlank(usageType)) {
 				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usageType);
 			}
-			if (StringUtils.isBlank(conceptId)) {
-				conceptId = "n/a";
+			if (StringUtils.isBlank(extSourceId)) {
+				extSourceId = "n/a";
 			}
 			if (StringUtils.isNotBlank(author)) {
-				Long authorId = getSource(SourceType.PERSON, conceptId, author);
+				Long authorId = getSource(SourceType.PERSON, extSourceId, author);
 				if (authorId == null) {
-					authorId = createSource(SourceType.PERSON, conceptId, author);
+					authorId = createSource(SourceType.PERSON, extSourceId, author);
 				}
 				ReferenceType referenceType;
 				if (StringUtils.isEmpty(authorTypeStr)) {
@@ -682,9 +682,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected Long createSource(Source source) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		String concept = source.getConceptId();
+		String concept = source.getExtSourceId();
 		SourceType type = source.getType();
-		tableRowParamMap.put("concept", concept);
+		tableRowParamMap.put("ext_source_id", concept);
 		tableRowParamMap.put("type", type.name());
 		Timestamp createdOn = source.getCreatedOn();
 		if (createdOn != null) {
@@ -711,11 +711,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return sourceId;
 	}
 
-	protected Long createSource(SourceType sourceType, String conceptId, String sourceName) throws Exception {
+	protected Long createSource(SourceType sourceType, String extSourceId, String sourceName) throws Exception {
 
 		Source source = new Source();
 		source.setType(sourceType);
-		source.setConceptId(conceptId);
+		source.setExtSourceId(extSourceId);
 		Long sourceId = createSource(source);
 		createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, sourceName);
 
@@ -734,12 +734,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return freeformId;
 	}
 
-	protected Long getSource(SourceType sourceType, String conceptId, String sourceName) throws Exception {
+	protected Long getSource(SourceType sourceType, String extSourceId, String sourceName) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("sourceType", sourceType.name());
-		tableRowParamMap.put("conceptId", conceptId);
-		tableRowParamMap.put("sourceAttrType", FreeformType.SOURCE_NAME.name());
+		tableRowParamMap.put("extSourceId", extSourceId);
+		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
 		tableRowParamMap.put("sourceName", sourceName);
 		List<Map<String, Object>> sources = basicDbService.queryList(sqlSourceByTypeAndName, tableRowParamMap);
 

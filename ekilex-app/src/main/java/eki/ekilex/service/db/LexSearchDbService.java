@@ -152,7 +152,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, l1.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
 
@@ -179,7 +178,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f2.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w2.LANG, where1);
 				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, l1.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1)));
 
@@ -243,7 +241,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
 				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
-				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, d1.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(d1.ID).from(l1, m1, d1).where(where1)));
 

@@ -13,7 +13,7 @@
         <h5 class="card-title">Allikate otsing</h5>
       </div>
       <div class="card-body">
-        <form th:action="@{/sourcesearch}">
+        <form th:action="@{/sourcesearch}" method="post">
           <div class="form-row">
             <div class="col-12">
               <div class="form-group row">
@@ -30,8 +30,12 @@
         </form>
       </div>
     </div>
-    <div class="float-left w-75 mb-4" th:if="${sourcesFoundBySearch != null}">
-      <th:block th:each="source,sourceIter : ${sourcesFoundBySearch}">
+    <div class="float-left w-75 mb-4" th:if="${sources != null}">
+      <div class="mt-2">
+        <span>Tulemusi</span>
+        <span th:text="${sourceCount}">123</span>
+      </div>
+      <th:block th:each="source,sourceIter : ${sources}">
         <div class="card shadow mt-2">
           <div class="card-body">
             <table style="width: 100%">
@@ -44,8 +48,16 @@
                 <td style="width: 30%">
                   <table>
                     <tr>
-                      <th>concept</th>
-                      <td th:text="${source.concept}"></td>
+                      <th>source id</th>
+                      <td th:text="${source.sourceId}"></td>
+                    </tr>
+                    <tr>
+                      <th>external source id</th>
+                      <td th:text="${source.extSourceId}"></td>
+                    </tr>
+                    <tr>
+                      <th>type</th>
+                      <td th:text="${source.type}"></td>
                     </tr>
                     <tr>
                       <th>created on</th>
@@ -67,28 +79,16 @@
                       <th>process state</th>
                       <td th:text="${source.processStateCode}"></td>
                     </tr>
-                    <tr>
-                      <th>type</th>
-                      <td th:text="${source.type}"></td>
-                    </tr>
                   </table>
                 </td>
                 <td>
-                  <th:block th:each="sourceHeading,sourceHeadingIter : ${source.sourceHeadings}">
+                  <th:block th:each="sourceProperty : ${source.sourceProperties}">
                     <p>
-                      <span th:text="${sourceHeading.type}"></span>
-                      -
-                      <i style="text-decoration: underline;">
-                        <span th:text="${sourceHeading.valueText}" th:style="${sourceHeading.valueMatch ? 'background-color: #eaffea' : ''}"></span>
-                      </i>
-                    </p>
-                    <p th:each="sourceProperty : ${sourceHeading.children}">
                       <span th:text="${sourceProperty.type}"></span>
                       -
                       <span th:text="${sourceProperty.valueText}" th:if="${sourceProperty.valueText != null}" th:style="${sourceProperty.valueMatch ? 'background-color: #eaffea' : ''}"></span>
                       <span th:text="${#dates.format(sourceProperty.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${sourceProperty.valueDate != null}"></span>
                     </p>
-                    <hr th:unless="${sourceHeadingIter.last}"/>
                   </th:block>
                 </td>
               </tr>

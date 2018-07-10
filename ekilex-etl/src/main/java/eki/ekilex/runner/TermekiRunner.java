@@ -226,7 +226,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 	private Long createSource(String termekiId) throws Exception {
 		Map<String, Object> params = new HashMap<>();
-		params.put("concept", termekiId);
+		params.put("ext_source_id", termekiId);
 		return basicDbService.create(SOURCE, params);
 	}
 

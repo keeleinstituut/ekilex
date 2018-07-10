@@ -1,14 +1,23 @@
 package eki.ekilex.constant;
 
+import eki.common.constant.FreeformType;
 import eki.common.constant.TableName;
 
 public interface EstermLoaderConstant extends TableName {
 
 	String SQL_SELECT_COUNT_DOMAIN_BY_CODE_AND_ORIGIN = "select count(code) cnt from " + DOMAIN + " where code = :code and origin = :origin";
 
-	String SQL_SELECT_SOURCE_BY_CODE_OR_NAME =
-			"select s.id from " + SOURCE + " s, " + SOURCE_FREEFORM + " sf "
-			+ "where sf.source_id = s.id and exists (select sn.id from " + FREEFORM + " sn where sf.freeform_id = sn.id and sn.value_text = :sourceCodeOrName)";
+	String SQL_SELECT_SOURCE_BY_NAME =
+			"select "
+			+ "s.id "
+			+ "from " + SOURCE + " s, " + SOURCE_FREEFORM + " sff "
+			+ "where sff.source_id = s.id and exists ("
+			+ "select sp.id "
+			+ "from " + FREEFORM + " sp "
+			+ "where "
+			+ "sff.freeform_id = sp.id "
+			+ "and sp.type = '" + FreeformType.SOURCE_NAME.name() + "' "
+			+ "and sp.value_text = :sourceName)";
 
 	String REPORT_DEFINITIONS_NOTES_MESS = "definitions_notes_mess";
 

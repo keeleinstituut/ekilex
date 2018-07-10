@@ -9,6 +9,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
@@ -27,27 +28,33 @@ public class SourceSearchController {
 	private SourceService sourceService;
 
 	@GetMapping("/sourcesearch")
-	public String sourceSearch(
-			@RequestParam(required = false) String searchFilter,
-			Model model) {
+	public String initSearch() {
+
+		return "sourcesearch";
+	}
+
+	@PostMapping("/sourcesearch")
+	public String search(@RequestParam String searchFilter, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
-		List<Source> sources = sourceService.findSourcesByNameOrCode(searchFilter);
-		model.addAttribute("sourcesFoundBySearch", sources);
-		
+		List<Source> sources = sourceService.findSourcesByName(searchFilter);
+		model.addAttribute("searchFilter", searchFilter);
+		model.addAttribute("sources", sources);
+		model.addAttribute("sourceCount", sources.size());
+
 		return "sourcesearch";
 	}
 
 	@GetMapping("/sourcesearchajax")
-	public String sourceSearchAjax(
-			@RequestParam(required = false) String searchFilter,
-			Model model) {
+	public String sourceSearchAjax(@RequestParam String searchFilter, Model model) {
 
 		logger.debug("Searching by : \"{}\"", searchFilter);
 
-		List<Source> sources = sourceService.findSourcesByNameOrCode(searchFilter);
-		model.addAttribute("sourcesFoundBySearch", sources);
+		List<Source> sources = sourceService.findSourcesByName(searchFilter);
+		model.addAttribute("searchFilter", searchFilter);
+		model.addAttribute("sources", sources);
+		model.addAttribute("sourceCount", sources.size());
 
 		return "common :: sourceLinkDlgContent";
 	}

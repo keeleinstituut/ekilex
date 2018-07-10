@@ -1,22 +1,21 @@
 package eki.ekilex.data;
 
 import java.sql.Timestamp;
-import java.util.function.Consumer;
 
 import javax.persistence.Column;
 
 import eki.common.constant.FreeformType;
 import eki.common.data.AbstractDataObject;
 
-public class SourceHeadingPropertyTuple extends AbstractDataObject {
+public class SourcePropertyTuple extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "source_id")
 	private Long sourceId;
 
-	@Column(name = "concept")
-	private String concept;
+	@Column(name = "ext_source_id")
+	private String extSourceId;
 
 	@Column(name = "created_on")
 	private Timestamp createdOn;
@@ -36,18 +35,6 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 	@Column(name = "type")
 	private String type;
 
-	@Column(name = "source_heading_id")
-	private Long sourceHeadingId;
-
-	@Column(name = "source_heading_type")
-	private FreeformType sourceHeadingType;
-
-	@Column(name = "source_heading_value")
-	private String sourceHeadingValue;
-
-	@Column(name = "is_source_heading_match")
-	private boolean sourceHeadingMatch;
-
 	@Column(name = "source_property_id")
 	private Long sourcePropertyId;
 
@@ -63,13 +50,6 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 	@Column(name = "is_source_property_match")
 	private boolean sourcePropertyMatch;
 
-	public SourceHeadingPropertyTuple() {
-	}
-
-	public SourceHeadingPropertyTuple(Consumer<SourceHeadingPropertyTuple> builder) {
-		builder.accept(this);
-	}
-
 	public Long getSourceId() {
 		return sourceId;
 	}
@@ -78,12 +58,12 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public String getConcept() {
-		return concept;
+	public String getExtSourceId() {
+		return extSourceId;
 	}
 
-	public void setConcept(String concept) {
-		this.concept = concept;
+	public void setExtSourceId(String extSourceId) {
+		this.extSourceId = extSourceId;
 	}
 
 	public Timestamp getCreatedOn() {
@@ -132,38 +112,6 @@ public class SourceHeadingPropertyTuple extends AbstractDataObject {
 
 	public void setType(String type) {
 		this.type = type;
-	}
-
-	public Long getSourceHeadingId() {
-		return sourceHeadingId;
-	}
-
-	public void setSourceHeadingId(Long sourceHeadingId) {
-		this.sourceHeadingId = sourceHeadingId;
-	}
-
-	public FreeformType getSourceHeadingType() {
-		return sourceHeadingType;
-	}
-
-	public void setSourceHeadingType(FreeformType sourceHeadingType) {
-		this.sourceHeadingType = sourceHeadingType;
-	}
-
-	public String getSourceHeadingValue() {
-		return sourceHeadingValue;
-	}
-
-	public void setSourceHeadingValue(String sourceHeadingValue) {
-		this.sourceHeadingValue = sourceHeadingValue;
-	}
-
-	public boolean isSourceHeadingMatch() {
-		return sourceHeadingMatch;
-	}
-
-	public void setSourceHeadingMatch(boolean sourceHeadingMatch) {
-		this.sourceHeadingMatch = sourceHeadingMatch;
 	}
 
 	public Long getSourcePropertyId() {

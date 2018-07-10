@@ -187,7 +187,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
 				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, l1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
@@ -256,7 +255,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
 				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
-				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_CODE, searchCriteria, d1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 

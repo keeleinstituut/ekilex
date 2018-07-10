@@ -101,7 +101,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		logger.debug("Starting loading Esterm...");
 
-		final String defaultGovernmentValue = "-";
 		final String defaultWordMorphCode = "??";
 
 		long t1, t2;
@@ -568,16 +567,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
 						isRefOn = true;
-						String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
 						if (contentObj == null) {
 							contentObj = newContent(lang, "-");
 							contentList.add(contentObj);
 							if (logWarrnings) {
-								logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceCodeOrName);
+								logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceName);
 							}
 						}
 						refObj = new Ref();
-						refObj.setMajorRef(sourceCodeOrName);
+						refObj.setMajorRef(sourceName);
 						refObj.setType(ReferenceType.ANY);
 						contentObj.getRefs().add(refObj);
 					} else {
@@ -943,8 +942,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-						String sourceCodeOrName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
-						Long sourceId = getSource(sourceCodeOrName);
+						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
+						Long sourceId = getSource(sourceName);
 						if (sourceId == null) {
 							contentBuf.append(valueStr);
 						} else {
@@ -974,17 +973,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return valueStr;
 	}
 
-	private Long getSource(String sourceCodeOrName) throws Exception {
+	private Long getSource(String sourceName) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("sourceCodeOrName", sourceCodeOrName);
-		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_CODE_OR_NAME, tableRowParamMap);
+		tableRowParamMap.put("sourceName", sourceName);
+		List<Map<String, Object>> results = basicDbService.queryList(SQL_SELECT_SOURCE_BY_NAME, tableRowParamMap);
 		if (CollectionUtils.isEmpty(results)) {
-			//logger.warn("Could not find matching source \"{}\"", sourceCodeOrName);
 			return null;
 		}
 		if (results.size() > 1) {
-			logger.warn("Several sources match the \"{}\"", sourceCodeOrName);
+			logger.warn("Several sources match the \"{}\"", sourceName);
 		}
 		Map<String, Object> result = results.get(0);
 		Long sourceId = Long.valueOf(result.get("id").toString());

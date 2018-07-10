@@ -17,8 +17,8 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.Source;
-import eki.ekilex.data.SourceHeadingPropertyTuple;
-import eki.ekilex.data.SourceMember;
+import eki.ekilex.data.SourcePropertyTuple;
+import eki.ekilex.data.SourceProperty;
 import eki.ekilex.service.db.SourceDbService;
 
 @Component
@@ -32,12 +32,12 @@ public class SourceService {
 	@Transactional
 	public Source getSource(Long sourceId) {
 
-		List<SourceHeadingPropertyTuple> sourceHeadingPropertyTuples = sourceDbService.getSource(sourceId).into(SourceHeadingPropertyTuple.class);
-		if (CollectionUtils.isEmpty(sourceHeadingPropertyTuples)) {
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.getSource(sourceId);
+		if (CollectionUtils.isEmpty(sourcePropertyTuples)) {
 			logger.warn("No source found for id {}", sourceId);
 			return null;
 		}
-		List<Source> sources = convert(sourceHeadingPropertyTuples);
+		List<Source> sources = convert(sourcePropertyTuples);
 		if (sources.size() > 1) {
 			logger.error("Single source query for id {} returned several. Fix this!", sourceId);
 		}
@@ -47,91 +47,73 @@ public class SourceService {
 	}
 
 	@Transactional
-	public List<Source> findSourcesByNameOrCode(String searchFilter) {
+	public List<Source> findSourcesByName(String searchFilter) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		List<SourceHeadingPropertyTuple> sourceHeadingPropertyTuples = sourceDbService.findSources(searchFilter).into(SourceHeadingPropertyTuple.class);
-		List<Source> sources = convert(sourceHeadingPropertyTuples);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.findSourcesByName(searchFilter);
+		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;
 	}
 
-	private List<Source> convert(List<SourceHeadingPropertyTuple> sourceHeadingPropertyTuples) {
+	private List<Source> convert(List<SourcePropertyTuple> sourcePropertyTuples) {
 
 		List<Source> sources = new ArrayList<>();
 		Map<Long, Source> sourceMap = new HashMap<>();
-		Map<Long, SourceMember> sourceHeadingMap = new HashMap<>();
+		Map<Long, SourceProperty> sourcePropertyMap = new HashMap<>();
 
-		for (SourceHeadingPropertyTuple tuple : sourceHeadingPropertyTuples) {
+		for (SourcePropertyTuple tuple : sourcePropertyTuples) {
 
 			Long sourceId = tuple.getSourceId();
-			Long sourceHeadingId = tuple.getSourceHeadingId();
-			FreeformType sourceHeadingType = tuple.getSourceHeadingType();
-			String sourceHeadingValue = tuple.getSourceHeadingValue();
-			boolean sourceHeadingMatch = tuple.isSourceHeadingMatch();
 			Long sourcePropertyId = tuple.getSourcePropertyId();
 			FreeformType sourcePropertyType = tuple.getSourcePropertyType();
 			String sourcePropertyValueText = tuple.getSourcePropertyValueText();
 			Timestamp sourcePropertyValueDate = tuple.getSourcePropertyValueDate();
 			boolean sourcePropertyMatch = tuple.isSourcePropertyMatch();
 
-			List<SourceMember> sourceHeadings;
-			List<SourceMember> sourceProperties;
-
 			Source source = sourceMap.get(sourceId);
 			if (source == null) {
-				String concept = tuple.getConcept();
+				String extSourceId = tuple.getExtSourceId();
 				Timestamp createdOn = tuple.getCreatedOn();
 				String createdBy = tuple.getCreatedBy();
 				Timestamp modifiedOn = tuple.getModifiedOn();
 				String modifiedBy = tuple.getModifiedBy();
 				String processStateCode = tuple.getProcessStateCode();
 				String type = tuple.getType();
-				sourceHeadings = new ArrayList<>();
 				source = new Source();
 				source.setSourceId(sourceId);
-				source.setConcept(concept);
+				source.setExtSourceId(extSourceId);
 				source.setCreatedOn(createdOn);
 				source.setCreatedBy(createdBy);
 				source.setModifiedOn(modifiedOn);
 				source.setModifiedBy(modifiedBy);
 				source.setProcessStateCode(processStateCode);
 				source.setType(type);
-				source.setSourceHeadings(sourceHeadings);
+				source.setSourceNames(new ArrayList<>());
+				source.setSourceProperties(new ArrayList<>());
 				sourceMap.put(sourceId, source);
 				sources.add(source);
-			} else {
-				sourceHeadings = source.getSourceHeadings();
 			}
 
-			SourceMember sourceHeading = sourceHeadingMap.get(sourceHeadingId);
-			if (sourceHeading == null) {
-				sourceProperties = new ArrayList<>();
-				sourceHeading = new SourceMember();
-				sourceHeading.setId(sourceHeadingId);
-				sourceHeading.setType(sourceHeadingType);
-				sourceHeading.setValueText(sourceHeadingValue);
-				sourceHeading.setValueMatch(sourceHeadingMatch);
-				sourceHeading.setChildren(sourceProperties);
-				sourceHeadingMap.put(sourceHeadingId, sourceHeading);
-				sourceHeadings.add(sourceHeading);
-			} else {
-				sourceProperties = sourceHeading.getChildren();
+			SourceProperty sourceProperty = sourcePropertyMap.get(sourcePropertyId);
+
+			if (sourceProperty == null) {
+				sourceProperty = new SourceProperty();
+				sourceProperty.setId(sourcePropertyId);
+				sourceProperty.setType(sourcePropertyType);
+				sourceProperty.setValueText(sourcePropertyValueText);
+				sourceProperty.setValueDate(sourcePropertyValueDate);
+				sourceProperty.setValueMatch(sourcePropertyMatch);
+				sourcePropertyMap.put(sourcePropertyId, sourceProperty);
 			}
 
-			if (sourcePropertyId == null) {
-				continue;
+			if (FreeformType.SOURCE_NAME.equals(sourcePropertyType)) {
+				source.getSourceNames().add(sourcePropertyValueText);
 			}
 
-			SourceMember sourceProperty = new SourceMember();
-			sourceProperty.setId(sourcePropertyId);
-			sourceProperty.setType(sourcePropertyType);
-			sourceProperty.setValueText(sourcePropertyValueText);
-			sourceProperty.setValueDate(sourcePropertyValueDate);
-			sourceProperty.setValueMatch(sourcePropertyMatch);
-			sourceProperties.add(sourceProperty);
+			source.getSourceProperties().add(sourceProperty);
 		}
 		return sources;
 	}

@@ -11,7 +11,7 @@ public class Source extends AbstractDataObject {
 
 	private Long sourceId;
 
-	private String conceptId;
+	private String extSourceId;
 
 	private Timestamp createdOn;
 
@@ -33,12 +33,12 @@ public class Source extends AbstractDataObject {
 		this.sourceId = sourceId;
 	}
 
-	public String getConceptId() {
-		return conceptId;
+	public String getExtSourceId() {
+		return extSourceId;
 	}
 
-	public void setConceptId(String conceptId) {
-		this.conceptId = conceptId;
+	public void setExtSourceId(String extSourceId) {
+		this.extSourceId = extSourceId;
 	}
 
 	public Timestamp getCreatedOn() {

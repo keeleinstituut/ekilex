@@ -30,7 +30,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements Record8<Long, String, Timestamp, String, Timestamp, String, String, String> {
 
-    private static final long serialVersionUID = -583172072;
+    private static final long serialVersionUID = -1417717054;
 
     /**
      * Setter for <code>public.source.id</code>.
@@ -47,16 +47,16 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
     }
 
     /**
-     * Setter for <code>public.source.concept</code>.
+     * Setter for <code>public.source.ext_source_id</code>.
      */
-    public void setConcept(String value) {
+    public void setExtSourceId(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.source.concept</code>.
+     * Getter for <code>public.source.ext_source_id</code>.
      */
-    public String getConcept() {
+    public String getExtSourceId() {
         return (String) get(1);
     }
 
@@ -189,7 +189,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public Field<String> field2() {
-        return Source.SOURCE.CONCEPT;
+        return Source.SOURCE.EXT_SOURCE_ID;
     }
 
     /**
@@ -253,7 +253,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public String component2() {
-        return getConcept();
+        return getExtSourceId();
     }
 
     /**
@@ -317,7 +317,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public String value2() {
-        return getConcept();
+        return getExtSourceId();
     }
 
     /**
@@ -382,7 +382,7 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
      */
     @Override
     public SourceRecord value2(String value) {
-        setConcept(value);
+        setExtSourceId(value);
         return this;
     }
 
@@ -470,11 +470,11 @@ public class SourceRecord extends UpdatableRecordImpl<SourceRecord> implements R
     /**
      * Create a detached, initialised SourceRecord
      */
-    public SourceRecord(Long id, String concept, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String type, String processStateCode) {
+    public SourceRecord(Long id, String extSourceId, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String type, String processStateCode) {
         super(Source.SOURCE);
 
         set(0, id);
-        set(1, concept);
+        set(1, extSourceId);
         set(2, createdOn);
         set(3, createdBy);
         set(4, modifiedOn);
