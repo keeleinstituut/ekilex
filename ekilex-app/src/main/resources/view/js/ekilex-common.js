@@ -51,9 +51,6 @@ function initaliseSearchForm() {
 }
 
 function initialiseDeatailSearch() {
-
-	//TODO should hide NOT_EXISTS value fields on load
-
     displayDetailConditionButtons();
     displayDetailGroupButtons();
 

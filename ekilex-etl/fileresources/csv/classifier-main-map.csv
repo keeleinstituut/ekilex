@@ -12,14 +12,14 @@ as_tyyp	as_tyyp	ap	paradigmasse jääb, kirjes ei näita	et	-	-
 as_tyyp	as_tyyp	ab	andmebaasi vorm(id)	et	process_state	läbi vaatamata
 att_tyyp	att_tyyp	all	alltähendus	et	-	-
 att_tyyp	att_tyyp	all	sense extension	en	-	-
-dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	-	-
-dk_tyyp	dk_tyyp	komp	comparative	en	-	-
-dk_tyyp	dk_tyyp	partits	partitsiip, kesksõna	et	-	-
-dk_tyyp	dk_tyyp	partits	participle	en	-	-
-dk_tyyp	dk_tyyp	superl	superlatiiv, ülivõrre	et	-	-
-dk_tyyp	dk_tyyp	superl	superlative	en	-	-
-dk_tyyp	dk_tyyp	tgn	substantive suffix -ja = actor	en	-	-
-dk_tyyp	dk_tyyp	tn	substantive suffix -mine = act, process	en	-	-
+dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	deriv	as
+dk_tyyp	dk_tyyp	komp	comparative	en	deriv	komp
+dk_tyyp	dk_tyyp	partits	partitsiip, kesksõna	et	display_morph	pts
+dk_tyyp	dk_tyyp	partits	participle	en	display_morph	pts
+dk_tyyp	dk_tyyp	superl	superlatiiv, ülivõrre	et	deriv	superl
+dk_tyyp	dk_tyyp	superl	superlative	en	deriv	superl
+dk_tyyp	dk_tyyp	tgn	substantive suffix -ja = actor	en	deriv	tgn
+dk_tyyp	dk_tyyp	tn	substantive suffix -mine = act, process	en	deriv	tn
 dk_tyyp	dk_tyyp	adv	adverb (-lt)	et	deriv	adv
 dk_tyyp	dk_tyyp	dem	KE/KENE	et	deriv	dem
 dk_tyyp	dk_tyyp	dem	diminutive	en	deriv	dem
@@ -65,7 +65,7 @@ es_tyyp	es_tyyp	gen	genereeritud sünonüüm	et	-	-
 etl_tyyp	etl_tyyp	lo	liitsõna osa	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	abhaasi	abhaasi keel	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	abhaasi	Abkhaz	en	-	-
-etymkeel_tyyp	etymkeel_tyyp	afrikaansi	afrikaansi keel	et	-	-
+etymkeel_tyyp	etymkeel_tyyp	afrikaani	afrikaani keel	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	alamsaksa	alamsaksa keel	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	alamsaksa	Low German	en	-	-
 etymkeel_tyyp	etymkeel_tyyp	albaania	albaania keel	et	-	-
@@ -448,7 +448,7 @@ liik_tyyp	liik_tyyp	f	fras-väljend (väljendite plokis)	et	word_type	f
 liik_tyyp	liik_tyyp	f	(idiomatic) phrase (grp)	en	word_type	f
 liik_tyyp	liik_tyyp	mf	märksõna-väljend (iseseisev)	et	word_type	mf
 liik_tyyp	liik_tyyp	mf	multiword unit (in the alphabet)	en	word_type	mf
-liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	word_type	g
+liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	pos	adjg
 liik_tyyp	liik_tyyp	lz	tsitaatsõna lühend	et	word_type	lz
 liik_tyyp	liik_tyyp	lz	abbreviation for alien word	en	word_type	lz
 liik_tyyp	liik_tyyp	n	number (nt 24/7)	et	word_type	n
@@ -465,8 +465,8 @@ liik_tyyp	liik_tyyp	k	kohanimi	et	word_type	k
 liik_tyyp	liik_tyyp	k	place name	en	word_type	k
 liik_tyyp	liik_tyyp	l	lühend	et	word_type	l
 liik_tyyp	liik_tyyp	l	abbreviation	en	word_type	l
-liik_tyyp	liik_tyyp	p	pärisnimi	et	word_type	p
-liik_tyyp	liik_tyyp	p	proper name	en	word_type	p
+liik_tyyp	liik_tyyp	p	pärisnimi	et	pos	prop
+liik_tyyp	liik_tyyp	p	proper name	en	pos	prop
 liik_tyyp	liik_tyyp	z	tsitaatsõna	et	word_type	z
 liik_tyyp	liik_tyyp	z	loanword (alien)	en	word_type	z
 liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	word_type	mvv
@@ -551,14 +551,21 @@ rliik_tyyp	rliik_tyyp	yld	üldrektsioon	et	government_type	yld
 rliik_tyyp	rliik_tyyp	inf	infinitiivirektsioon	et	government_type	inf
 rliik_tyyp	rliik_tyyp	kla	lausungirektsioon	et	government_type	kla
 rliik_tyyp	rliik_tyyp	subj	subjektirektsioon	et	government_type	subj
+s_tyyp	s_tyyp	EST	eestivene	et	register	eevn
+s_tyyp	s_tyyp	dem	deminutiiv	et	register	hellitl
+s_tyyp	s_tyyp	hellitl	hellitlev	et	register	hellitl
 s_tyyp	s_tyyp	hlv	halvustav, solvav	et	register	hlv
 s_tyyp	s_tyyp	hlv	offensive	en	register	hlv
 s_tyyp	s_tyyp	hrv	harvaesinev	et	register	hrv
 s_tyyp	s_tyyp	hrv	rare	en	register	hrv
+s_tyyp	s_tyyp	kõrgst	kõrgstiil	et	register	kõrgst
+s_tyyp	s_tyyp	liter	literatuurne	et	register	kõrgst
+s_tyyp	s_tyyp	lstk	lastekeelne	et	register	lastek
 s_tyyp	s_tyyp	lastek	lastekeelne	et	register	lastek
 s_tyyp	s_tyyp	lastek	child language	en	register	lastek
 s_tyyp	s_tyyp	luulek	luulekeelne	et	register	luulek
 s_tyyp	s_tyyp	luulek	poetic	en	register	luulek
+s_tyyp	s_tyyp	madalk	madalkeelne	et	register	madalk
 s_tyyp	s_tyyp	murd	murdekeelne	et	register	murd
 s_tyyp	s_tyyp	murd	dialect, regional	en	register	murd
 s_tyyp	s_tyyp	nlj	naljatlev	et	register	nlj
@@ -567,9 +574,12 @@ s_tyyp	s_tyyp	piltl	piltlik	et	register	piltl
 s_tyyp	s_tyyp	piltl	figurative	en	register	piltl
 s_tyyp	s_tyyp	släng	släng	et	register	släng
 s_tyyp	s_tyyp	släng	slang	en	register	släng
-s_tyyp	s_tyyp	vabakeel	vabakeelne, mitteformaalne (kõnekeelne)	et	register	vabakeel
-s_tyyp	s_tyyp	vabakeel	informal, journalistic	en	register	vabakeel
-s_tyyp	s_tyyp	kõnek	kõnek	et	register	vabakeel
+s_tyyp	s_tyyp	vabakeel	kõnekeelne, vabakeelne, mitteformaalne	et	register	kõnek
+s_tyyp	s_tyyp	vabakeel	informal, journalistic	en	register	kõnek
+s_tyyp	s_tyyp	kõnek	kõnek	et	register	kõnek
+s_tyyp	s_tyyp	rhvk	rahvakeelne	et	register	kõnek
+s_tyyp	s_tyyp	iroon	irooniline	et	register	kõnek
+s_tyyp	s_tyyp	uudis	uudissõna	et	register	uudis
 s_tyyp	s_tyyp	van	vanamoeliselt, vananemas	et	register	van
 s_tyyp	s_tyyp	van	archaic	en	register	van
 s_tyyp	s_tyyp	vulg	vulgaarne	et	register	vulg
@@ -586,10 +596,10 @@ sl_tyyp	sl_tyyp	adj	adjektiiv, omadussõna	et	pos	adj
 sl_tyyp	sl_tyyp	adj	adjective	en	pos	adj
 sl_tyyp	sl_tyyp	adv	adverb, määrsõna	et	pos	adv
 sl_tyyp	sl_tyyp	adv	adverb	en	pos	adv
-sl_tyyp	sl_tyyp	indekl adj	käändumatu omadussõna	et	pos	adj + ID
-sl_tyyp	sl_tyyp	indekl adj	indeclinable adjective	en	pos	adj + ID
-sl_tyyp	sl_tyyp	indekl pron	käändumatu asesõna	et	pos	pron + ID
-sl_tyyp	sl_tyyp	indekl pron	indeclinable pronoun	en	pos	pron + ID
+sl_tyyp	sl_tyyp	indekl adj	käändumatu omadussõna	et	pos	adj
+sl_tyyp	sl_tyyp	indekl adj	indeclinable adjective	en	pos	adj
+sl_tyyp	sl_tyyp	indekl pron	käändumatu asesõna	et	pos	pron
+sl_tyyp	sl_tyyp	indekl pron	indeclinable pronoun	en	pos	pron
 sl_tyyp	sl_tyyp	interj	interjektsioon, hüüdsõna	et	pos	interj
 sl_tyyp	sl_tyyp	interj	interjection	en	pos	interj
 sl_tyyp	sl_tyyp	konj	konjunktsioon, sidesõna	et	pos	konj
@@ -639,8 +649,9 @@ sl_tyyp	sõnaliik	V	V	et	pos	v
 sl_tyyp	sõnaliik	V	verb, tegusõna	et	pos	v
 sl_tyyp	sõnaliik	V	verb	en	pos	v
 sl_tyyp	sõnaliik	x	X	et	pos	x
+sl_tyyp	sõnaliik	X	X	et	pos	x
 sl_tyyp	sõnaliik	adj	adj	et	pos	adj
-sl_tyyp	sõnaliik	adj + ID	indekl adj	et	pos	adj + ID
+sl_tyyp	sõnaliik	adj	indekl adj	et	pos	adj
 sl_tyyp	sõnaliik	adv	adv	et	pos	adv
 sl_tyyp	sõnaliik	adjg	adjg, ag	et	pos	adjg
 sl_tyyp	sõnaliik	interj	interj	et	pos	interj
@@ -649,19 +660,19 @@ sl_tyyp	sõnaliik	postp	postp	et	pos	postp
 sl_tyyp	sõnaliik	prep	prep	et	pos	prep
 sl_tyyp	sõnaliik	num	num	et	pos	num
 sl_tyyp	sõnaliik	pron	pron	et	pos	pron
-sl_tyyp	sõnaliik	pron + ID	indekl pron	et	pos	pron + ID
+sl_tyyp	sõnaliik	pron	indekl pron	et	pos	pron
 sl_tyyp	sõnaliik	s	s	et	pos	s
 sl_tyyp	sõnaliik	v	v	et	pos	v
-sl_tyyp	sõnaliik	adj + ID	käändumatu omadussõna	et	pos	adj + ID
+sl_tyyp	sõnaliik	adj	käändumatu omadussõna	et	pos	adj
 sl_tyyp	sõnaliik	postp	postpositsioon, tagasõna	et	pos	postp
 sl_tyyp	sõnaliik	prep	prepositsioon, eessõna	et	pos	prep
-sl_tyyp	sõnaliik	pron + ID	käändumatu asesõna	et	pos	pron + ID
+sl_tyyp	sõnaliik	pron	käändumatu asesõna	et	pos	pron
 sl_tyyp	sõnaliik	x	erivormiline sõna	et	pos	x
-sl_tyyp	sõnaliik	adj + ID	indeclinable adjective	en	pos	adj + ID
+sl_tyyp	sõnaliik	adj	indeclinable adjective	en	pos	adj
 sl_tyyp	sõnaliik	adp	postposition, preposition	en	pos	adp
 sl_tyyp	sõnaliik	postp	postposition	en	pos	postp
 sl_tyyp	sõnaliik	prep	preposition	en	pos	prep
-sl_tyyp	sõnaliik	pron + ID	indeclinable pronoun	en	pos	pron + ID
+sl_tyyp	sõnaliik	pron	indeclinable pronoun	en	pos	pron
 slg_tyyp	slg_tyyp	slg	sulud ümber	et	-	-
 spm_tyyp	spm_tyyp	abstr/konkr-ese	abstr/konkr meetodil/tehikaga saadud/loodud ese	et	-	-
 spm_tyyp	spm_tyyp	abstr/konkr-ese	abstr/concr-artefact	en	-	-
@@ -1126,72 +1137,72 @@ vk_tyyp	vk_tyyp	algvõrre	algvõrre	et	-	-
 vk_tyyp	vk_tyyp	algvõrre	positive degree	en	-	-
 vk_tyyp	vk_tyyp	as	abstraktne substantiiv	et	-	-
 vk_tyyp	vk_tyyp	as	abstract substantive	en	-	-
-vk_tyyp	vk_tyyp	dem	deminutiiv, vähendussõna	et	-	-
-vk_tyyp	vk_tyyp	dem	diminutive	en	-	-
-vk_tyyp	vk_tyyp	gen	genitiiv, omastav	et	-	-
-vk_tyyp	vk_tyyp	gen	genitive	en	-	-
-vk_tyyp	vk_tyyp	illat	illatiiv, sisseütlev	et	-	-
-vk_tyyp	vk_tyyp	illat	illative	en	-	-
-vk_tyyp	vk_tyyp	imperf	imperfekt, lihtminevik	et	-	-
-vk_tyyp	vk_tyyp	imperf	imperfect	en	-	-
-vk_tyyp	vk_tyyp	indekl	käändumatu	et	-	-
-vk_tyyp	vk_tyyp	indekl	indeclinable	en	-	-
-vk_tyyp	vk_tyyp	iness	inessiiv, seesütlev	et	-	-
-vk_tyyp	vk_tyyp	iness	inessive	en	-	-
-vk_tyyp	vk_tyyp	part	partitiiv, osastav	et	-	-
-vk_tyyp	vk_tyyp	part	partitive	en	-	-
-vk_tyyp	vk_tyyp	pl elat	pluurali elatiiv, mitmuse seestütlev	et	-	-
-vk_tyyp	vk_tyyp	pl elat	plural elative	en	-	-
-vk_tyyp	vk_tyyp	pl gen	pluurali genitiiv, mitmuse omastav	et	-	-
-vk_tyyp	vk_tyyp	pl gen	plural genitive	en	-	-
-vk_tyyp	vk_tyyp	pl illat	pluurali illatiiv, mitmuse sisseütlev	et	-	-
-vk_tyyp	vk_tyyp	pl illat	plural illative	en	-	-
-vk_tyyp	vk_tyyp	pl iness	pluurali inessiiv, mitmuse seesütlev	et	-	-
-vk_tyyp	vk_tyyp	pl iness	plural inessive	en	-	-
-vk_tyyp	vk_tyyp	pl nom	pluurali nominatiiv, mitmuse nimetav	et	-	-
-vk_tyyp	vk_tyyp	pl nom	plural nominative	en	-	-
-vk_tyyp	vk_tyyp	pl part	pluurali partitiiv, mitmuse osastav	et	-	-
-vk_tyyp	vk_tyyp	pl part	plural partitive	en	-	-
-vk_tyyp	vk_tyyp	pl term	pluurali terminatiiv, mitmuse rajav	et	-	-
-vk_tyyp	vk_tyyp	pl term	plural terminative	en	-	-
-vk_tyyp	vk_tyyp	sg gen	ainsuse omastav	et	-	-
-vk_tyyp	vk_tyyp	tgn	tegijanimi	et	-	-
-vk_tyyp	vk_tyyp	tgn	substantive suffix -ja = actor	en	-	-
-vk_tyyp	vk_tyyp	tn	teonimi	et	-	-
-vk_tyyp	vk_tyyp	tn	substantive suffix -mine = act, process	en	-	-
-vk_tyyp	vk_tyyp	nom	nimetav, nominatiiv	et	display_morph	nom
-vk_tyyp	vk_tyyp	nom	nominative	en	display_morph	nom
-vk_tyyp	vk_tyyp	adess	adessiiv, alalütlev	et	display_morph	adess
+vk_tyyp	vk_tyyp	dem	deminutiiv, vähendussõna	et	deriv	dem
+vk_tyyp	vk_tyyp	dem	diminutive	en	deriv	dem
+vk_tyyp	vk_tyyp	gen	genitiiv, omastav	et	morph	SgG
+vk_tyyp	vk_tyyp	gen	genitive	en	morph	SgG
+vk_tyyp	vk_tyyp	illat	illatiiv, sisseütlev	et	morph	SgAd
+vk_tyyp	vk_tyyp	illat	illative	en	morph	SgAd
+vk_tyyp	vk_tyyp	imperf	imperfekt, lihtminevik	et	display_morph	ipf
+vk_tyyp	vk_tyyp	imperf	imperfect	en	display_morph	ipf
+vk_tyyp	vk_tyyp	indekl	käändumatu	et	morph	ID
+vk_tyyp	vk_tyyp	indekl	indeclinable	en	morph	ID
+vk_tyyp	vk_tyyp	iness	inessiiv, seesütlev	et	morph	SgIn
+vk_tyyp	vk_tyyp	iness	inessive	en	morph	SgIn
+vk_tyyp	vk_tyyp	part	partitiiv, osastav	et	morph	SgP
+vk_tyyp	vk_tyyp	part	partitive	en	morph	SgP
+vk_tyyp	vk_tyyp	pl elat	pluurali elatiiv, mitmuse seestütlev	et	morph	PlEl
+vk_tyyp	vk_tyyp	pl elat	plural elative	en	morph	PlEl
+vk_tyyp	vk_tyyp	pl gen	pluurali genitiiv, mitmuse omastav	et	morph	PlG
+vk_tyyp	vk_tyyp	pl gen	plural genitive	en	morph	PlG
+vk_tyyp	vk_tyyp	pl illat	pluurali illatiiv, mitmuse sisseütlev	et	morph	PlIll
+vk_tyyp	vk_tyyp	pl illat	plural illative	en	morph	PlIll
+vk_tyyp	vk_tyyp	pl iness	pluurali inessiiv, mitmuse seesütlev	et	morph	PlIn
+vk_tyyp	vk_tyyp	pl iness	plural inessive	en	morph	PlIn
+vk_tyyp	vk_tyyp	pl nom	pluurali nominatiiv, mitmuse nimetav	et	morph	PlN
+vk_tyyp	vk_tyyp	pl nom	plural nominative	en	morph	PlN
+vk_tyyp	vk_tyyp	pl part	pluurali partitiiv, mitmuse osastav	et	morph	PlP
+vk_tyyp	vk_tyyp	pl part	plural partitive	en	morph	PlP
+vk_tyyp	vk_tyyp	pl term	pluurali terminatiiv, mitmuse rajav	et	morph	PlTer
+vk_tyyp	vk_tyyp	pl term	plural terminative	en	morph	PlTer
+vk_tyyp	vk_tyyp	sg gen	ainsuse omastav	et	morph	SgG
+vk_tyyp	vk_tyyp	tgn	tegijanimi	et	deriv	tgn
+vk_tyyp	vk_tyyp	tgn	substantive suffix -ja = actor	en	deriv	tgn
+vk_tyyp	vk_tyyp	tn	teonimi	et	deriv	tn
+vk_tyyp	vk_tyyp	tn	substantive suffix -mine = act, process	en	deriv	tn
+vk_tyyp	vk_tyyp	nom	nimetav, nominatiiv	et	morph	SgN
+vk_tyyp	vk_tyyp	nom	nominative	en	morph	SgN
+vk_tyyp	vk_tyyp	adess	adessiiv, alalütlev	et	morph	SgAd
 vk_tyyp	vk_tyyp	komp	komparatiiv, keskvõrre	et	display_morph	keskv
 vk_tyyp	vk_tyyp	komp	comparative	en	display_morph	keskv
 vk_tyyp	vk_tyyp	superl	superlatiiv, ülivõrre	et	display_morph	üliv
 vk_tyyp	vk_tyyp	superl	superlative	en	display_morph	üliv
-vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_morph	mitm
-vk_tyyp	vk_tyyp	mitm	plural	en	display_morph	mitm
-vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_morph	ains
-vk_tyyp	vk_tyyp	ains	singular	en	display_morph	ains
-vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	display_morph	om
-vk_tyyp	vk_tyyp	om	singular genitive	en	display_morph	om
-vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	display_morph	os
-vk_tyyp	vk_tyyp	os	singular partitive	en	display_morph	os
+vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_morph	pl
+vk_tyyp	vk_tyyp	mitm	plural	en	display_morph	pl
+vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_morph	sg
+vk_tyyp	vk_tyyp	ains	singular	en	display_morph	sg
+vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	morph	SgG
+vk_tyyp	vk_tyyp	om	singular genitive	en	morph	SgG
+vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	morph	SgP
+vk_tyyp	vk_tyyp	os	singular partitive	en	morph	SgP
 vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	display_morph	keskv
 vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	display_morph	keskv
 vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	display_morph	üliv
 vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	display_morph	üliv
-vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_morph	kesks
-vk_tyyp	vk_tyyp	kesks	participle	en	display_morph	kesks
-vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	display_morph	ger
-vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_morph	impers
-vk_tyyp	vormikood	impers	impersonal	en	display_morph	impers
+vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_morph	pts
+vk_tyyp	vk_tyyp	kesks	participle	en	display_morph	pts
+vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	morph	Ger
+vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_morph	ips
+vk_tyyp	vormikood	impers	impersonal	en	display_morph	ips
 vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	display_morph	partits
 vk_tyyp	vormikood	partits	participle	en	display_morph	partits
 vk_tyyp	vormikood	pl	pluural, mitmus	et	display_morph	pl
 vk_tyyp	vormikood	pl	plural	en	display_morph	pl
 vk_tyyp	vormikood	sg	singular, ainsus	et	display_morph	sg
 vk_tyyp	vormikood	sg	singular	en	display_morph	sg
-vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	display_morph	sg gen
-vk_tyyp	vormikood	sg gen	singular genitiv	en	display_morph	sg gen
-vk_tyyp	vormikood	ssv	seisundivorm	et	display_morph	ssv
+vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	morph	SgG
+vk_tyyp	vormikood	sg gen	singular genitiv	en	morph	SgG
+vk_tyyp	vormikood	ssv	seisundivorm	et	deriv	ssv
 vn_tyyp	muutevormi nimi	ID	muutumatu	et	morph	ID
 vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	morph	SgN
 vn_tyyp	muutevormi nimi	SgN	SgN	en	morph	SgN
