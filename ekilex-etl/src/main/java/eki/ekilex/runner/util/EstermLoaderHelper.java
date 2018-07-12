@@ -70,11 +70,22 @@ public class EstermLoaderHelper {
 		return true;
 	}
 
-	public String collectSmallRef(String value) {
+	public String collectMinorRef(String value) {
 		if (!isRefEnd(value)) {
 			return null;
 		}
-		String smallRef = StringUtils.substringBefore(value, REF_END_SYM);
-		return smallRef;
+		String minorRef = StringUtils.substringBefore(value, REF_END_SYM);
+		return minorRef;
+	}
+
+	public String cleanupResidue(String value) {
+		value = StringUtils.trim(value);
+		if (StringUtils.endsWith(value, LISTING_SYM)) {
+			value = StringUtils.substringBeforeLast(value, LISTING_SYM);
+		}
+		if (StringUtils.startsWith(value, LISTING_SYM)) {
+			value = StringUtils.substringAfter(value, LISTING_SYM);
+		}
+		return value;
 	}
 }

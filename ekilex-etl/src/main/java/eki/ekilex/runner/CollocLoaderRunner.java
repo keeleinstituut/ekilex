@@ -272,6 +272,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				Integer level1 = Integer.valueOf(level1Str);
 				levelMeaningMap = meaningMap.get(wordId);
 				LexemeMeaning lexemeMeaning = levelMeaningMap.get(level1);
+				if (lexemeMeaning == null) {
+					logger.warn("No lexeme/meaning match headword \"{}\" homonym nr \"{}\" meaning nr \"{}\". Probable homonym mapping mismatch", word, wordHomonymNum, level1);
+					appendToReport(doReports, REPORT_ILLEGAL_DATA, word, "?", "?", "x:tp", "x:tnr=" + level1Str, "sellel homonüümil puudub selline tähendus");
+					continue;
+				}
 				Long lexemeId = lexemeMeaning.getLexemeId();
 				Long meaningId = lexemeMeaning.getMeaningId();
 
@@ -483,7 +488,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String domainCode = meaningDomainNode.getTextTrim();
 			if (domainCodes.contains(domainCode)) {
 				logger.warn("Domain reference duplicate: \"{}\"", domainCode);
-				appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, "x:relg", domainCode, "korduv valdkond");
+				appendToReport(doReports, REPORT_ILLEGAL_DATA, newWord, "?", "?", "x:relg", domainCode, "korduv valdkond");
 				continue;
 			}
 			domainCodes.add(domainCode);
@@ -1015,7 +1020,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return createWord(word, morphCode, null, null, null, null, null);
 	}
 
-	//TODO integrate
 	private Word createWord(
 			String word, String morphCode, String guid, String wordDisplayMorph,
 			Map<String, List<Guid>> ssGuidMap, Count ssWordCount, Count reusedWordCount) throws Exception {

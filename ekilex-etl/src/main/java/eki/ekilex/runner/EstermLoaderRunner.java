@@ -534,6 +534,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				valueStr = StringUtils.trim(valueStr);
 				boolean isListing = loaderHelper.isListing(valueStr);
 				boolean isRefEnd = loaderHelper.isRefEnd(valueStr);
+				boolean isValued = StringUtils.isNotEmpty(valueStr);
 				String content = loaderHelper.getContent(valueStr);
 				boolean contentExists = StringUtils.isNotBlank(content);
 				if (isListing) {
@@ -542,10 +543,15 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				if (!isRefOn && isRefEnd && logWarrnings) {
 					logger.warn("Illegal ref end notation @ \"{}\" : {}", term, rootContentNode.asXML());
 				}
-				if (isRefOn && isRefEnd) {
-					String smallRef = loaderHelper.collectSmallRef(valueStr);
-					if (StringUtils.isNotBlank(smallRef)) {
-						refObj.setMinorRef(smallRef);
+				if (isRefOn && isValued) {
+					String minorRef;
+					if (isRefEnd) {
+						minorRef = loaderHelper.collectMinorRef(valueStr);
+					} else {
+						minorRef = loaderHelper.cleanupResidue(valueStr);
+					}
+					if (StringUtils.isNotBlank(minorRef)) {
+						refObj.setMinorRef(minorRef);
 					}
 				}
 				if (contentExists) {
@@ -566,7 +572,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				if (StringUtils.equalsIgnoreCase(xrefExp, elemContentNode.getName())) {
 					String tlinkAttrValue = elemContentNode.attributeValue(xrefTlinkAttr);
 					if (StringUtils.startsWith(tlinkAttrValue, xrefTlinkSourcePrefix)) {
-						isRefOn = true;
 						String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
 						if (contentObj == null) {
 							contentObj = newContent(lang, "-");
@@ -575,9 +580,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 								logger.warn("Source reference for empty content @ \"{}\"-\"{}\"", term, sourceName);
 							}
 						}
+						isRefOn = true;
 						refObj = new Ref();
 						refObj.setMajorRef(sourceName);
-						refObj.setType(ReferenceType.ANY);
+						refObj.setType(ReferenceType.ANY);//TODO any logic to define this?
 						contentObj.getRefs().add(refObj);
 					} else {
 						throw new DataLoadingException("Handling of " + tlinkAttrValue + " not supported!");
@@ -602,15 +608,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		for (Content sourceObj : sources) {
 			List<Ref> refs = sourceObj.getRefs();
 			for (Ref ref : refs) {
-				String minorRef = ref.getMinorRef();
-				String majorRef = ref.getMajorRef();
-				ReferenceType refType = ref.getType();
-				Long sourceId = getSource(majorRef);
-				if (sourceId == null) {
-					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
-					continue;
-				}
-				createLexemeSourceLink(lexemeId, refType, sourceId, minorRef, majorRef);
+				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, concept, term, doReports);
 			}
 		}
 	}
@@ -624,15 +622,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			Long definitionId = createDefinition(meaningId, definition, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
-				String minorRef = ref.getMinorRef();
-				String majorRef = ref.getMajorRef();
-				ReferenceType refType = ref.getType();
-				Long sourceId = getSource(majorRef);
-				if (sourceId == null) {
-					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
-					continue;
-				}
-				createDefinitionSourceLink(definitionId, refType, sourceId, minorRef, majorRef);	
+				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term, doReports);
 			}
 		}
 	}
@@ -646,16 +636,38 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usage, lang);
 			usageObj.setId(usageId);
 			for (Ref ref : refs) {
-				String minorRef = ref.getMinorRef();
-				String majorRef = ref.getMajorRef();
-				ReferenceType refType = ref.getType();
-				Long sourceId = getSource(majorRef);
-				if (sourceId == null) {
-					reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
-					continue;
-				}
-				createFreeformSourceLink(usageId, refType, sourceId, minorRef, majorRef);
+				createSourceLink(SourceOwner.USAGE, usageId, ref, concept, term, doReports);
 			}
+		}
+	}
+
+	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String concept, String term, boolean doReports) throws Exception {
+
+		String minorRef = ref.getMinorRef();
+		String majorRef = ref.getMajorRef();
+		ReferenceType refType = ref.getType();
+		Long sourceId = getSource(majorRef);
+		if (sourceId == null) {
+			reportHelper.appendToReport(doReports, REPORT_MISSING_SOURCE_REFS, concept, term, majorRef);
+			return;
+		}
+		if (StringUtils.equalsIgnoreCase(refTypeExpert, majorRef)) {
+			majorRef = minorRef;
+			minorRef = null;
+		}
+		if (StringUtils.equalsIgnoreCase(refTypeQuery, majorRef)) {
+			majorRef = minorRef;
+			minorRef = null;
+		}
+		if (StringUtils.isBlank(majorRef)) {
+			majorRef = "?";
+		}
+		if (SourceOwner.LEXEME.equals(sourceOwner)) {
+			createLexemeSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
+		} else if (SourceOwner.DEFINITION.equals(sourceOwner)) {
+			createDefinitionSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
+		} else if (SourceOwner.USAGE.equals(sourceOwner)) {
+			createFreeformSourceLink(ownerId, refType, sourceId, minorRef, majorRef);
 		}
 	}
 
@@ -1067,6 +1079,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		public void setType(ReferenceType type) {
 			this.type = type;
 		}
+	}
 
+	enum SourceOwner {
+		LEXEME, DEFINITION, USAGE
 	}
 }

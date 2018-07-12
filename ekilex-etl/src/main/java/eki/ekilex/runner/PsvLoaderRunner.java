@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Government;
@@ -106,9 +107,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	void initialise() throws Exception {
 
-		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
+		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP, ClassifierName.WORD_TYPE.name());
 		wordTypeAbbreviation = wordTypes.get("l");
-		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP);
+		derivCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_DKTYYP, ClassifierName.DERIV.name());
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);
 	}

@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.ClassifierName;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
@@ -64,8 +65,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	@Override
 	void initialise() throws Exception {
-		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP);
-		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP);
+		wordTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_LIIKTYYP, ClassifierName.WORD_TYPE.name());
+		displayMorpCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_VKTYYP, ClassifierName.DISPLAY_MORPH.name());
 		frequencyGroupCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MSAGTYYP);
 		posCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		processStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ASTYYP);

@@ -462,6 +462,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
+			//TODO define proper ref type
 			createDefinitionSourceLink(definitionId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
@@ -470,6 +471,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
+			//TODO define proper ref type
 			createLexemeSourceLink(lexemeId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}
@@ -478,6 +480,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		if (sourceMapping.containsKey(sourceId)) {
 			SourceData ekilexSource = sourceMapping.get(sourceId);
+			//TODO define proper ref type
 			createFreeformSourceLink(usageId, ReferenceType.ANY, ekilexSource.id, null, ekilexSource.name);
 		}
 	}

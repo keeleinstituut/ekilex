@@ -77,7 +77,9 @@ public interface EstermLoaderConstant extends TableName {
 	String xrefTlinkAttr = "Tlink";
 
 	String xrefTlinkSourcePrefix = "Allikas:";
-	String xrefTlinkSourceIsPerson = "EKSPERT";
+
+	String refTypeExpert = "EKSPERT";
+	String refTypeQuery = "PÄRING";
 
 	String originLenoch = "lenoch";
 	String originLtb = "ltb";
