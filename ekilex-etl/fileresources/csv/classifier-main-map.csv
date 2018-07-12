@@ -14,8 +14,6 @@ att_tyyp	att_tyyp	all	alltähendus	et	-	-
 att_tyyp	att_tyyp	all	sense extension	en	-	-
 dk_tyyp	dk_tyyp	as	abstraktsubstantiiv	et	deriv	as
 dk_tyyp	dk_tyyp	komp	comparative	en	deriv	komp
-dk_tyyp	dk_tyyp	partits	partitsiip, kesksõna	et	display_morph	pts
-dk_tyyp	dk_tyyp	partits	participle	en	display_morph	pts
 dk_tyyp	dk_tyyp	superl	superlatiiv, ülivõrre	et	deriv	superl
 dk_tyyp	dk_tyyp	superl	superlative	en	deriv	superl
 dk_tyyp	dk_tyyp	tgn	substantive suffix -ja = actor	en	deriv	tgn
@@ -56,6 +54,8 @@ dk_tyyp	dk_tyyp	as	abstraktne substantiiv	et	deriv	as
 dk_tyyp	dk_tyyp	posit	positiiv, algvõrre	et	deriv	posit
 dk_tyyp	dk_tyyp	as	abstract substantive	en	deriv	as
 dk_tyyp	dk_tyyp	posit	positive degree	en	deriv	posit
+dk_tyyp	dk_tyyp	partits	partitsiip, kesksõna	et	display_morph	pts
+dk_tyyp	dk_tyyp	partits	participle	en	display_morph	pts
 entry class	Entry Class	määramata	määramata	et	process_state	määramata
 entry class	Entry Class	töös	töös	et	process_state	töös
 entry class	Entry Class	avalik	avalik	et	process_state	avalik
@@ -444,11 +444,13 @@ kr_tyyp	kr_tyyp	uurali	Uralic	en	-	-
 kr_tyyp	kr_tyyp	vanavene	vanavene	et	-	-
 ky_tyyp	ky_tyyp	ky	küsitav	et	-	-
 liik_tyyp	märksõna liik	vpk	Eesti viipekeele märksõna	et	-	-
+liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	pos	adjg
+liik_tyyp	liik_tyyp	p	pärisnimi	et	pos	prop
+liik_tyyp	liik_tyyp	p	proper name	en	pos	prop
 liik_tyyp	liik_tyyp	f	fras-väljend (väljendite plokis)	et	word_type	f
 liik_tyyp	liik_tyyp	f	(idiomatic) phrase (grp)	en	word_type	f
 liik_tyyp	liik_tyyp	mf	märksõna-väljend (iseseisev)	et	word_type	mf
 liik_tyyp	liik_tyyp	mf	multiword unit (in the alphabet)	en	word_type	mf
-liik_tyyp	liik_tyyp	g	omastavaline täiend, genitiivne täiend	et	pos	adjg
 liik_tyyp	liik_tyyp	lz	tsitaatsõna lühend	et	word_type	lz
 liik_tyyp	liik_tyyp	lz	abbreviation for alien word	en	word_type	lz
 liik_tyyp	liik_tyyp	n	number (nt 24/7)	et	word_type	n
@@ -465,8 +467,6 @@ liik_tyyp	liik_tyyp	k	kohanimi	et	word_type	k
 liik_tyyp	liik_tyyp	k	place name	en	word_type	k
 liik_tyyp	liik_tyyp	l	lühend	et	word_type	l
 liik_tyyp	liik_tyyp	l	abbreviation	en	word_type	l
-liik_tyyp	liik_tyyp	p	pärisnimi	et	pos	prop
-liik_tyyp	liik_tyyp	p	proper name	en	pos	prop
 liik_tyyp	liik_tyyp	z	tsitaatsõna	et	word_type	z
 liik_tyyp	liik_tyyp	z	loanword (alien)	en	word_type	z
 liik_tyyp	märksõna liik	mvv	viiteartikli märksõna	et	word_type	mvv
@@ -1139,12 +1139,39 @@ vk_tyyp	vk_tyyp	as	abstraktne substantiiv	et	-	-
 vk_tyyp	vk_tyyp	as	abstract substantive	en	-	-
 vk_tyyp	vk_tyyp	dem	deminutiiv, vähendussõna	et	deriv	dem
 vk_tyyp	vk_tyyp	dem	diminutive	en	deriv	dem
+vk_tyyp	vk_tyyp	tgn	tegijanimi	et	deriv	tgn
+vk_tyyp	vk_tyyp	tgn	substantive suffix -ja = actor	en	deriv	tgn
+vk_tyyp	vk_tyyp	tn	teonimi	et	deriv	tn
+vk_tyyp	vk_tyyp	tn	substantive suffix -mine = act, process	en	deriv	tn
+vk_tyyp	vormikood	ssv	seisundivorm	et	deriv	ssv
+vk_tyyp	vk_tyyp	imperf	imperfekt, lihtminevik	et	display_morph	ipf
+vk_tyyp	vk_tyyp	imperf	imperfect	en	display_morph	ipf
+vk_tyyp	vk_tyyp	komp	komparatiiv, keskvõrre	et	display_morph	keskv
+vk_tyyp	vk_tyyp	komp	comparative	en	display_morph	keskv
+vk_tyyp	vk_tyyp	superl	superlatiiv, ülivõrre	et	display_morph	üliv
+vk_tyyp	vk_tyyp	superl	superlative	en	display_morph	üliv
+vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_morph	pl
+vk_tyyp	vk_tyyp	mitm	plural	en	display_morph	pl
+vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_morph	sg
+vk_tyyp	vk_tyyp	ains	singular	en	display_morph	sg
+vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	display_morph	keskv
+vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	display_morph	keskv
+vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	display_morph	üliv
+vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	display_morph	üliv
+vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_morph	pts
+vk_tyyp	vk_tyyp	kesks	participle	en	display_morph	pts
+vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_morph	ips
+vk_tyyp	vormikood	impers	impersonal	en	display_morph	ips
+vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	display_morph	pts
+vk_tyyp	vormikood	partits	participle	en	display_morph	pts
+vk_tyyp	vormikood	pl	pluural, mitmus	et	display_morph	pl
+vk_tyyp	vormikood	pl	plural	en	display_morph	pl
+vk_tyyp	vormikood	sg	singular, ainsus	et	display_morph	sg
+vk_tyyp	vormikood	sg	singular	en	display_morph	sg
 vk_tyyp	vk_tyyp	gen	genitiiv, omastav	et	morph	SgG
 vk_tyyp	vk_tyyp	gen	genitive	en	morph	SgG
 vk_tyyp	vk_tyyp	illat	illatiiv, sisseütlev	et	morph	SgAd
 vk_tyyp	vk_tyyp	illat	illative	en	morph	SgAd
-vk_tyyp	vk_tyyp	imperf	imperfekt, lihtminevik	et	display_morph	ipf
-vk_tyyp	vk_tyyp	imperf	imperfect	en	display_morph	ipf
 vk_tyyp	vk_tyyp	indekl	käändumatu	et	morph	ID
 vk_tyyp	vk_tyyp	indekl	indeclinable	en	morph	ID
 vk_tyyp	vk_tyyp	iness	inessiiv, seesütlev	et	morph	SgIn
@@ -1166,43 +1193,16 @@ vk_tyyp	vk_tyyp	pl part	plural partitive	en	morph	PlP
 vk_tyyp	vk_tyyp	pl term	pluurali terminatiiv, mitmuse rajav	et	morph	PlTer
 vk_tyyp	vk_tyyp	pl term	plural terminative	en	morph	PlTer
 vk_tyyp	vk_tyyp	sg gen	ainsuse omastav	et	morph	SgG
-vk_tyyp	vk_tyyp	tgn	tegijanimi	et	deriv	tgn
-vk_tyyp	vk_tyyp	tgn	substantive suffix -ja = actor	en	deriv	tgn
-vk_tyyp	vk_tyyp	tn	teonimi	et	deriv	tn
-vk_tyyp	vk_tyyp	tn	substantive suffix -mine = act, process	en	deriv	tn
 vk_tyyp	vk_tyyp	nom	nimetav, nominatiiv	et	morph	SgN
 vk_tyyp	vk_tyyp	nom	nominative	en	morph	SgN
 vk_tyyp	vk_tyyp	adess	adessiiv, alalütlev	et	morph	SgAd
-vk_tyyp	vk_tyyp	komp	komparatiiv, keskvõrre	et	display_morph	keskv
-vk_tyyp	vk_tyyp	komp	comparative	en	display_morph	keskv
-vk_tyyp	vk_tyyp	superl	superlatiiv, ülivõrre	et	display_morph	üliv
-vk_tyyp	vk_tyyp	superl	superlative	en	display_morph	üliv
-vk_tyyp	vk_tyyp	mitm	pluural, mitmus	et	display_morph	pl
-vk_tyyp	vk_tyyp	mitm	plural	en	display_morph	pl
-vk_tyyp	vk_tyyp	ains	singular, ainsus	et	display_morph	sg
-vk_tyyp	vk_tyyp	ains	singular	en	display_morph	sg
 vk_tyyp	vk_tyyp	om	singular genitiiv, ainsuse omastav	et	morph	SgG
 vk_tyyp	vk_tyyp	om	singular genitive	en	morph	SgG
 vk_tyyp	vk_tyyp	os	singular partitiiv, ainsuse osastav	et	morph	SgP
 vk_tyyp	vk_tyyp	os	singular partitive	en	morph	SgP
-vk_tyyp	vk_tyyp	keskv	komparatiiv, keskvõrre	et	display_morph	keskv
-vk_tyyp	vk_tyyp	keskv	comparative (degree)	en	display_morph	keskv
-vk_tyyp	vk_tyyp	üliv	superlatiiv, ülivõrre	et	display_morph	üliv
-vk_tyyp	vk_tyyp	üliv	superlative (degree)	en	display_morph	üliv
-vk_tyyp	vk_tyyp	kesks	partitsiip, kesksõna	et	display_morph	pts
-vk_tyyp	vk_tyyp	kesks	participle	en	display_morph	pts
 vk_tyyp	vormikood	ger	gerundiiv, des-vorm	et	morph	Ger
-vk_tyyp	vormikood	impers	impersonaal, umbisikuline tegumood	et	display_morph	ips
-vk_tyyp	vormikood	impers	impersonal	en	display_morph	ips
-vk_tyyp	vormikood	partits	partitsiip, kesksõna	et	display_morph	partits
-vk_tyyp	vormikood	partits	participle	en	display_morph	partits
-vk_tyyp	vormikood	pl	pluural, mitmus	et	display_morph	pl
-vk_tyyp	vormikood	pl	plural	en	display_morph	pl
-vk_tyyp	vormikood	sg	singular, ainsus	et	display_morph	sg
-vk_tyyp	vormikood	sg	singular	en	display_morph	sg
 vk_tyyp	vormikood	sg gen	singular genitiiv, ainsuse omastav	et	morph	SgG
 vk_tyyp	vormikood	sg gen	singular genitiv	en	morph	SgG
-vk_tyyp	vormikood	ssv	seisundivorm	et	deriv	ssv
 vn_tyyp	muutevormi nimi	ID	muutumatu	et	morph	ID
 vn_tyyp	muutevormi nimi	SgN	ainsuse nimetav	et	morph	SgN
 vn_tyyp	muutevormi nimi	SgN	SgN	en	morph	SgN

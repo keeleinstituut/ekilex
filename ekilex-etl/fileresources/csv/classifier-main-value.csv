@@ -35,6 +35,16 @@ deriv	as	abstraktne substantiiv	est	descrip
 deriv	posit	positiiv, algvõrre	est	descrip2
 deriv	as	abstract substantive	eng	descrip
 deriv	posit	positive degree	eng	descrip
+deriv	ssv	seisundivorm	est	descrip
+deriv	komp	keskvõrre	est	wordweb
+deriv	tgn	tegijanimi	est	wordweb
+deriv	tn	teonimi	est	wordweb
+deriv	posit	algvõrre	est	wordweb
+deriv	adv	määrsõna	est	wordweb
+deriv	superl	ülivõrre	est	wordweb
+deriv	dem	vähendussõna	est	wordweb
+deriv	ssv	seisundivorm	est	wordweb
+deriv	as	nimisõna	est	wordweb
 display_morph	keskv	komparatiiv, keskvõrre	est	descrip
 display_morph	keskv	comparative (degree)	eng	descrip
 display_morph	üliv	superlatiiv, ülivõrre	est	descrip
@@ -48,7 +58,11 @@ display_morph	pl	pluural, mitmus	est	descrip
 display_morph	pl	plural	eng	descrip
 display_morph	sg	singular, ainsus	est	descrip
 display_morph	sg	singular	eng	descrip
-deriv	ssv	seisundivorm	est	descrip
+display_morph	Ipf	lihtminevik	est	wordweb
+display_morph	Sg	ainsus	est	wordweb
+display_morph	Pl	mitmus	est	wordweb
+display_morph	Ips	umbisikuline tegumood	est	wordweb
+display_morph	Pts	kesksõna	est	wordweb
 form_rel_type	mvt	viitemärksõna	est	full
 gender	f	feminine	eng	descrip
 gender	f	naissugu	est	descrip
@@ -58,6 +72,10 @@ gender	o	other	eng	descrip
 gender	o	muu	est	descrip
 gender	m	masculine	eng	descrip
 gender	m	meessugu	est	descrip
+gender	n	kesksugu	est	wordweb
+gender	m	meessugu	est	wordweb
+gender	o	muu	est	wordweb
+gender	f	naissugu	est	wordweb
 government_type	obj	objektirektsioon	est	full
 government_type	kn	käänderektsioon	est	full
 government_type	ks	kaassõnarektsioon	est	full
@@ -78,6 +96,18 @@ lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lex_rel_type	lyh	lühend	est	full
 lex_rel_type	mm	allmärksõna	est	full
+lex_rel_type	yvt:NB	ära aja segi	est	wordweb
+lex_rel_type	yvt:vt ka	vaata ka	est	wordweb
+lex_rel_type	yvt:vrd	võrdle	est	wordweb
+lex_rel_type	comp	liitsõna	est	wordweb
+lex_rel_type	lyh	lühend	est	wordweb
+lex_rel_type	head	põhisõna	est	wordweb
+lex_rel_type	pyh	ühend	est	wordweb
+lex_rel_type	yvr	üksikvorm	est	wordweb
+lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
+lex_rel_type	yhvt	vaata ka	est	wordweb
+lex_rel_type	vor	suhtlus, vestlus	est	wordweb
+lex_rel_type	tvt:vrd	võrdle	est	wordweb
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
@@ -91,8 +121,23 @@ lexeme_frequency	F5	F5 - 40 001 kuni 50 000	est	descrip
 lexeme_frequency	L2	L2 - 3000-6000 (lisatud)	est	descrip
 lexeme_frequency	L3	L3 - 6000-10000 (lisatud)	est	descrip
 lexeme_frequency	L4	L4 - pole sagedussõnastikus (lisatud)	est	descrip
+lexeme_frequency	F0	*****	est	wordweb
+lexeme_frequency	F1	****	est	wordweb
+lexeme_frequency	F2	***	est	wordweb
+lexeme_frequency	F3	**	est	wordweb
+lexeme_frequency	F4	*	est	wordweb
+lexeme_frequency	F5	(*)	est	wordweb
+lexeme_frequency	1	*****	est	wordweb
+lexeme_frequency	2	*****	est	wordweb
+lexeme_frequency	3	****	est	wordweb
+lexeme_frequency	4	*	est	wordweb
+lexeme_frequency	L2	*****	est	wordweb
+lexeme_frequency	L3	****	est	wordweb
+lexeme_frequency	L4	*****	est	wordweb
 meaning_rel_type	ant	antonüüm	est	descrip
 meaning_rel_type	cohyponym	kaashüponüüm	est	descrip
+meaning_rel_type	cohyponym	kaashüponüüm	est	wordweb
+meaning_rel_type	ant	vastand	est	wordweb
 morph	ID	muutumatu	est	descrip2
 morph	SgN	ainsuse nimetav	est	descrip2
 morph	SgN	SgN	eng	descrip2
@@ -354,253 +399,6 @@ morph	KvtPrPsN	polevat	est	descrip
 morph	KvtPtPsN	polnuvat	est	descrip
 morph	KndPrPsN	poleks	est	descrip
 morph	KndPtPsN	polnuks	est	descrip
-pos	adj	A	est	capital
-pos	adj	adjektiiv, omadussõna	est	descrip
-pos	adj	adjective	eng	descrip
-pos	adv	D	est	capital
-pos	adv	adverb, määrsõna	est	descrip
-pos	adv	adverb	eng	descrip
-pos	adjg	G	est	capital
-pos	adjg	genitiivatribuut, omastavaline täiend	est	descrip
-pos	adjg	attribute in genitive	eng	descrip
-pos	prop	H	est	capital
-pos	prop	prooprium, pärisnimi	est	descrip
-pos	prop	proper noun	eng	descrip
-pos	interj	I	est	capital
-pos	interj	interjektsioon, hüüdsõna	est	descrip
-pos	interj	interjection	eng	descrip
-pos	konj	J	est	capital
-pos	konj	konjunktsioon, sidesõna	est	descrip
-pos	konj	conjunction	eng	descrip
-pos	adp	K	est	capital
-pos	adp	adpositsioon, kaassõna	est	descrip
-pos	adp	postposition, preposition	eng	descrip
-pos	num	N	est	capital
-pos	num	numeraal, arvsõna	est	descrip
-pos	num	cardinal, numeral	eng	descrip
-pos	ord	O	est	capital
-pos	ord	ordinaal, järgarvsõna	est	descrip
-pos	ord	ordinal	eng	descrip
-pos	pron	P	est	capital
-pos	pron	pronoomen, asesõna	est	descrip
-pos	pron	pronoun	eng	descrip
-pos	s	S	est	capital
-pos	s	substantiiv, nimisõna	est	descrip
-pos	s	substantive	eng	descrip
-pos	v	V	est	capital
-pos	v	verb, tegusõna	est	descrip
-pos	v	verb	eng	descrip
-pos	x	X	est	capital
-pos	adj	adj	lat	abbrev
-pos	adv	adv	lat	abbrev
-pos	adjg	adjg, ag	lat	abbrev
-pos	interj	interj	lat	abbrev
-pos	konj	konj	lat	abbrev
-pos	postp	postp	lat	abbrev
-pos	prep	prep	lat	abbrev
-pos	num	num	lat	abbrev
-pos	pron	pron	lat	abbrev
-pos	s	s	lat	abbrev
-pos	v	v	lat	abbrev
-pos	postp	postpositsioon, tagasõna	est	descrip
-pos	prep	prepositsioon, eessõna	est	descrip
-pos	x	erivormiline sõna	est	descrip
-pos	postp	postposition	eng	descrip
-pos	prep	preposition	eng	descrip
-pos_group	A	adjektiiv, omadussõnaga	est	descrip
-pos_group	D	adverb, määrsõnaga	est	descrip
-pos_group	H	prooprium, pärisnimega	est	descrip
-pos_group	K	prep-postp, kaassõnaga	est	descrip
-pos_group	N	numeraal, arvsõnaga	est	descrip
-pos_group	S	substantiiv, nimisõnaga	est	descrip
-pos_group	V	verb, tegusõnaga	est	descrip
-process_state	määramata	-	-	-
-process_state	koostamisel	-	-	-
-process_state	koostatud	-	-	-
-process_state	ajakohastamisel	-	-	-
-process_state	ajakohastatud	-	-	-
-process_state	vajab konsulteerimist	-	-	-
-process_state	saadetud konsulteerimisele	-	-	-
-process_state	konsulteerimisel	-	-	-
-process_state	heaks kiidetud	-	-	-
-process_state	tagasi lükatud	-	-	-
-process_state	lahenduseta	-	-	-
-process_state	toimetamisel	-	-	-
-process_state	toimetatud	-	-	-
-process_state	peatoimetamisel	-	-	-
-process_state	peatoimetatud	-	-	-
-process_state	valmis	-	-	-
-process_state	avalik	-	-	-
-process_state	arhiveeritud	-	-	-
-process_state	töös	-	-	-
-process_state	läbi vaatamata	-	-	-
-process_state	kustutatud	-	-	-
-register	eevn	eestivene	est	descrip
-register	hlv	halvustav, solvav	est	descrip
-register	hlv	offensive	eng	descrip
-register	hellitl	hellitlev	est	descrip
-register	hrv	harvaesinev	est	descrip
-register	hrv	rare	eng	descrip
-register	kõrgst	kõrgstiil	est	descrip
-register	lastek	lastekeelne	est	descrip
-register	lastek	child language	eng	descrip
-register	luulek	luulekeelne	est	descrip
-register	luulek	poetic	eng	descrip
-register	madalk	madalkeelne	est	descrip
-register	murd	murdekeelne	est	descrip
-register	murd	dialect, regional	eng	descrip
-register	nlj	naljatlev	est	descrip
-register	nlj	humorous	eng	descrip
-register	piltl	piltlik	est	descrip
-register	piltl	figurative	eng	descrip
-register	släng	släng	est	descrip
-register	släng	slang	eng	descrip
-register	uudis	uudissõna, neologism	est	descrip
-register	uudis	neologism	eng	descrip
-register	kõnek	kõnekeelne, vabakeelne, mitteformaalne	est	descrip
-register	kõnek	informal, journalistic	eng	descrip
-register	van	vananenud, vananemas	est	descrip
-register	van	archaic	eng	descrip
-register	vulg	vulgaarne	est	descrip
-register	vulg	vulgar	eng	descrip
-usage_type	ls	liitsõna	est	descrip
-usage_type	ls	compound	eng	descrip
-usage_type	Vs	vanasõna	est	descrip
-usage_type	Vs	proverb	eng	descrip
-usage_type	y	sõnaühend	est	descrip
-value_state	eelistermin	eelistermin	est	descrip
-value_state	eelistermin	preferred	eng	descrip
-value_state	rööptermin	rööptermin	est	descrip
-value_state	rööptermin	admitted	eng	descrip
-value_state	variant	variant	est	descrip
-value_state	variant	variant	eng	descrip
-value_state	väldi	väldi	est	descrip
-value_state	väldi	deprecated	eng	descrip
-value_state	endine	endine	est	descrip
-value_state	endine	superseded	eng	descrip
-word_rel_type	posit	algvõrre	est	full
-word_rel_type	deriv_base	tuletusalus	est	full
-word_rel_type	komp	keskvõrre	est	full
-word_rel_type	superl	ülivõrre	est	full
-word_rel_type	deriv	tuletis	est	full
-word_type	k	kohanimi	est	descrip
-word_type	k	place name	eng	descrip
-word_type	l	lühend	est	descrip
-word_type	l	abbreviation	eng	descrip
-word_type	p	pärisnimi	est	descrip
-word_type	p	proper name	eng	descrip
-word_type	z	tsitaatsõna	est	descrip
-word_type	z	loanword (alien)	eng	descrip
-word_type	mvv	viiteartikli märksõna	est	descrip
-word_type	yv	ühendverb	est	descrip
-word_type	vv	väljendverb	est	descrip
-word_type	av	ahelverb	est	descrip
-word_type	tv	tugiverb	est	descrip
-word_type	vlj	väljend	est	descrip
-word_type	ys	ühendsidesõna (nii et)	est	descrip
-word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
-word_type	f	fras-väljend (väljendite plokis)	est	descrip
-word_type	f	(idiomatic) phrase (grp)	eng	descrip
-word_type	mf	märksõna-väljend (iseseisev)	est	descrip
-word_type	mf	multiword unit (in the alphabet)	eng	descrip
-word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
-word_type	lz	tsitaatsõna lühend	est	descrip
-word_type	lz	abbreviation for alien word	eng	descrip
-word_type	n	number (nt 24/7)	est	descrip
-word_type	n	number	eng	descrip
-word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
-word_type	pf	combining form	eng	descrip
-word_type	s	sarja liige	est	descrip
-word_type	s	serial member	eng	descrip
-word_type	km	kaubamärk	est	descrip
-word_type	th	tähis	est	descrip
-word_type	valem	valem	est	descrip
-word_type	termin	termin	est	descrip
-word_type	tõlkeprobleem	tõlkeprobleem	est	descrip
-word_type	ametinimetus	ametinimetus	est	descrip
-word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	descrip
-word_type	õigusakti pealkiri	õigusakti pealkiri	est	descrip
-word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip
-deriv	komp	keskvõrre	est	wordweb
-deriv	tgn	tegijanimi	est	wordweb
-deriv	tn	teonimi	est	wordweb
-deriv	posit	algvõrre	est	wordweb
-deriv	adv	määrsõna	est	wordweb
-deriv	superl	ülivõrre	est	wordweb
-deriv	dem	vähendussõna	est	wordweb
-value_state	eelistermin	eelistermin	est	wordweb
-value_state	endine	endine	est	wordweb
-value_state	rööptermin	rööptermin	est	wordweb
-value_state	väldi	väldi	est	wordweb
-word_type	l	lühend	est	wordweb
-word_type	km	kaubamärk	est	wordweb
-word_type	k	kohanimi	est	wordweb
-word_type	lz	lühend	est	wordweb
-pos	prop	nimi	est	wordweb
-pos	adjg	omastavaline täiend	est	wordweb
-word_type	th	tähis	est	wordweb
-word_type	ametinimetus	ametinimetus	est	wordweb
-word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb
-word_type	õigusakti pealkiri	õigusakti pealkiri	est	wordweb
-word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	wordweb
-word_type	termin	termin	est	wordweb
-word_type	tõlkeprobleem	tõlkeprobleem	est	wordweb
-lexeme_frequency	F0	*****	est	wordweb
-lexeme_frequency	F1	****	est	wordweb
-lexeme_frequency	F2	***	est	wordweb
-lexeme_frequency	F3	**	est	wordweb
-lexeme_frequency	F4	*	est	wordweb
-lexeme_frequency	F5	(*)	est	wordweb
-usage_type	y	sõnaühend	est	wordweb
-usage_type	Vs	vanasõna	est	wordweb
-register	eevn	eestivene	est	wordweb
-register	hellitl	hellitlev	est	wordweb
-register	hlv	halvustav	est	wordweb
-register	hrv	harvaesinev	est	wordweb
-register	kõrgst	kõrgstiil	est	wordweb
-register	lastek	lastekeelne	est	wordweb
-register	madalk	madalkeelne	est	wordweb
-register	luulek	luulekeelne	est	wordweb
-register	murd	murdes	est	wordweb
-register	nlj	naljatlev	est	wordweb
-register	piltl	piltlik	est	wordweb
-register	släng	släng	est	wordweb
-register	uudis	uudissõna	est	wordweb
-register	van	vananenud	est	wordweb
-register	vulg	vulgaarne	est	wordweb
-register	kõnek	kõnekeelne	est	wordweb
-lexeme_frequency	1	*****	est	wordweb
-lexeme_frequency	2	*****	est	wordweb
-lexeme_frequency	3	****	est	wordweb
-lexeme_frequency	4	*	est	wordweb
-lexeme_frequency	L2	*****	est	wordweb
-lexeme_frequency	L3	****	est	wordweb
-lexeme_frequency	L4	*****	est	wordweb
-pos	prep	eessõna	est	wordweb
-pos	ord	järgarvsõna	est	wordweb
-pos	prop	nimi	est	wordweb
-pos	postp	tagasõna	est	wordweb
-pos	num	arvsõna	est	wordweb
-pos	pron	asesõna	est	wordweb
-pos	adj	omadussõna	est	wordweb
-pos	adjg	täiendsõna	est	wordweb
-pos	s	nimisõna	est	wordweb
-pos	adj	omadussõna	est	wordweb
-pos	adv	määrsõna	est	wordweb
-pos	v	tegusõna	est	wordweb
-pos	interj	hüüdsõna	est	wordweb
-pos	adp	kaassõna	est	wordweb
-pos	konj	sidesõna	est	wordweb
-pos	pron	asesõna	est	wordweb
-deriv	dem	vähendussõna	est	wordweb
-deriv	tgn	tegijanimi	est	wordweb
-deriv	tn	teonimi	est	wordweb
-deriv	ssv	seisundivorm	est	wordweb
-display_morph	Ipf	lihtminevik	est	wordweb
-display_morph	Sg	ainsus	est	wordweb
-display_morph	Pl	mitmus	est	wordweb
-display_morph	Ips	umbisikuline tegumood	est	wordweb
-display_morph	Pts	kesksõna	est	wordweb
 morph	SgAll	ainsuse alaleütlev	est	wordweb
 morph	SgAbl	ainsuse alaltütlev	est	wordweb
 morph	SgAd	ainsuse alalütlev	est	wordweb
@@ -696,42 +494,223 @@ morph	KndPrPl3	tingiva kõneviisi oleviku mitmuse 3.p.	est	wordweb
 morph	KndPrIps	tingiva kõneviisi oleviku umbisikuline tegumood	est	wordweb
 morph	PtsPtIps	tud-kesksõna	est	wordweb
 morph	PtsPrPs	v-kesksõna	est	wordweb
-lex_rel_type	yvt:NB	ära aja segi	est	wordweb
-lex_rel_type	yvt:vt ka	vaata ka	est	wordweb
-lex_rel_type	yvt:vrd	võrdle	est	wordweb
-deriv	komp	keskvõrre	est	wordweb
-deriv	as	nimisõna	est	wordweb
-gender	n	kesksugu	est	wordweb
-gender	m	meessugu	est	wordweb
-gender	o	muu	est	wordweb
-gender	f	naissugu	est	wordweb
-lex_rel_type	comp	liitsõna	est	wordweb
-lex_rel_type	lyh	lühend	est	wordweb
-lex_rel_type	head	põhisõna	est	wordweb
-lex_rel_type	pyh	ühend	est	wordweb
-lex_rel_type	yvr	üksikvorm	est	wordweb
-lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
-lex_rel_type	yhvt	vaata ka	est	wordweb
-lex_rel_type	vor	suhtlus, vestlus	est	wordweb
-lex_rel_type	tvt:vrd	võrdle	est	wordweb
-meaning_rel_type	cohyponym	kaashüponüüm	est	wordweb
-meaning_rel_type	ant	vastand	est	wordweb
-process_state	ajakohastamisel	ajakohastamisel	est	wordweb
-process_state	ajakohastatud	ajakohastatud	est	wordweb
-process_state	arhiveeritud	arhiveeritud	est	wordweb
-process_state	koostamisel	koostamisel	est	wordweb
-process_state	koostatud	koostatud	est	wordweb
-process_state	lahenduseta	lahenduseta	est	wordweb
-process_state	peatoimetamisel	peatoimetamisel	est	wordweb
-process_state	peatoimetatud	peatoimetatud	est	wordweb
-process_state	saadetud konsulteerimisele	saadetud konsulteerimisele	est	wordweb
-process_state	tagasi lükatud	tagasi lükatud	est	wordweb
-process_state	toimetamisel	toimetamisel	est	wordweb
-process_state	toimetatud	toimetatud	est	wordweb
-process_state	valmis	valmis	est	wordweb
+pos	adj	A	est	capital
+pos	adj	adjektiiv, omadussõna	est	descrip
+pos	adj	adjective	eng	descrip
+pos	adv	D	est	capital
+pos	adv	adverb, määrsõna	est	descrip
+pos	adv	adverb	eng	descrip
+pos	adjg	G	est	capital
+pos	adjg	genitiivatribuut, omastavaline täiend	est	descrip
+pos	adjg	attribute in genitive	eng	descrip
+pos	prop	H	est	capital
+pos	prop	prooprium, pärisnimi	est	descrip
+pos	prop	proper noun	eng	descrip
+pos	interj	I	est	capital
+pos	interj	interjektsioon, hüüdsõna	est	descrip
+pos	interj	interjection	eng	descrip
+pos	konj	J	est	capital
+pos	konj	konjunktsioon, sidesõna	est	descrip
+pos	konj	conjunction	eng	descrip
+pos	adp	K	est	capital
+pos	adp	adpositsioon, kaassõna	est	descrip
+pos	adp	postposition, preposition	eng	descrip
+pos	num	N	est	capital
+pos	num	numeraal, arvsõna	est	descrip
+pos	num	cardinal, numeral	eng	descrip
+pos	ord	O	est	capital
+pos	ord	ordinaal, järgarvsõna	est	descrip
+pos	ord	ordinal	eng	descrip
+pos	pron	P	est	capital
+pos	pron	pronoomen, asesõna	est	descrip
+pos	pron	pronoun	eng	descrip
+pos	s	S	est	capital
+pos	s	substantiiv, nimisõna	est	descrip
+pos	s	substantive	eng	descrip
+pos	v	V	est	capital
+pos	v	verb, tegusõna	est	descrip
+pos	v	verb	eng	descrip
+pos	x	X	est	capital
+pos	adj	adj	lat	abbrev
+pos	adv	adv	lat	abbrev
+pos	adjg	adjg, ag	lat	abbrev
+pos	interj	interj	lat	abbrev
+pos	konj	konj	lat	abbrev
+pos	postp	postp	lat	abbrev
+pos	prep	prep	lat	abbrev
+pos	num	num	lat	abbrev
+pos	pron	pron	lat	abbrev
+pos	s	s	lat	abbrev
+pos	v	v	lat	abbrev
+pos	postp	postpositsioon, tagasõna	est	descrip
+pos	prep	prepositsioon, eessõna	est	descrip
+pos	x	erivormiline sõna	est	descrip
+pos	postp	postposition	eng	descrip
+pos	prep	preposition	eng	descrip
+pos	prop	nimi	est	wordweb
+pos	prep	eessõna	est	wordweb
+pos	ord	järgarvsõna	est	wordweb
+pos	postp	tagasõna	est	wordweb
+pos	num	arvsõna	est	wordweb
+pos	pron	asesõna	est	wordweb
+pos	adj	omadussõna	est	wordweb
+pos	adjg	täiendsõna	est	wordweb
+pos	s	nimisõna	est	wordweb
+pos	adv	määrsõna	est	wordweb
+pos	v	tegusõna	est	wordweb
+pos	interj	hüüdsõna	est	wordweb
+pos	adp	kaassõna	est	wordweb
+pos	konj	sidesõna	est	wordweb
+pos_group	A	adjektiiv, omadussõnaga	est	descrip
+pos_group	D	adverb, määrsõnaga	est	descrip
+pos_group	H	prooprium, pärisnimega	est	descrip
+pos_group	K	prep-postp, kaassõnaga	est	descrip
+pos_group	N	numeraal, arvsõnaga	est	descrip
+pos_group	S	substantiiv, nimisõnaga	est	descrip
+pos_group	V	verb, tegusõnaga	est	descrip
+process_state	määramata	-	-	-
+process_state	koostamisel	-	-	-
+process_state	koostatud	-	-	-
+process_state	ajakohastamisel	-	-	-
+process_state	ajakohastatud	-	-	-
+process_state	vajab konsulteerimist	-	-	-
+process_state	saadetud konsulteerimisele	-	-	-
+process_state	konsulteerimisel	-	-	-
+process_state	heaks kiidetud	-	-	-
+process_state	tagasi lükatud	-	-	-
+process_state	lahenduseta	-	-	-
+process_state	toimetamisel	-	-	-
+process_state	toimetatud	-	-	-
+process_state	peatoimetamisel	-	-	-
+process_state	peatoimetatud	-	-	-
+process_state	valmis	-	-	-
+process_state	avalik	-	-	-
+process_state	arhiveeritud	-	-	-
+process_state	töös	-	-	-
+process_state	läbi vaatamata	-	-	-
+process_state	kustutatud	-	-	-
+register	eevn	eestivene	est	descrip
+register	hlv	halvustav, solvav	est	descrip
+register	hlv	offensive	eng	descrip
+register	hellitl	hellitlev	est	descrip
+register	hrv	harvaesinev	est	descrip
+register	hrv	rare	eng	descrip
+register	kõrgst	kõrgstiil	est	descrip
+register	lastek	lastekeelne	est	descrip
+register	lastek	child language	eng	descrip
+register	luulek	luulekeelne	est	descrip
+register	luulek	poetic	eng	descrip
+register	madalk	madalkeelne	est	descrip
+register	murd	murdekeelne	est	descrip
+register	murd	dialect, regional	eng	descrip
+register	nlj	naljatlev	est	descrip
+register	nlj	humorous	eng	descrip
+register	piltl	piltlik	est	descrip
+register	piltl	figurative	eng	descrip
+register	släng	släng	est	descrip
+register	släng	slang	eng	descrip
+register	uudis	uudissõna, neologism	est	descrip
+register	uudis	neologism	eng	descrip
+register	kõnek	kõnekeelne, vabakeelne, mitteformaalne	est	descrip
+register	kõnek	informal, journalistic	eng	descrip
+register	van	vananenud, vananemas	est	descrip
+register	van	archaic	eng	descrip
+register	vulg	vulgaarne	est	descrip
+register	vulg	vulgar	eng	descrip
+register	eevn	eestivene	est	wordweb
+register	hellitl	hellitlev	est	wordweb
+register	hlv	halvustav	est	wordweb
+register	hrv	harvaesinev	est	wordweb
+register	kõrgst	kõrgstiil	est	wordweb
+register	lastek	lastekeelne	est	wordweb
+register	madalk	madalkeelne	est	wordweb
+register	luulek	luulekeelne	est	wordweb
+register	murd	murdes	est	wordweb
+register	nlj	naljatlev	est	wordweb
+register	piltl	piltlik	est	wordweb
+register	släng	släng	est	wordweb
+register	uudis	uudissõna	est	wordweb
+register	van	vananenud	est	wordweb
+register	vulg	vulgaarne	est	wordweb
+register	kõnek	kõnekeelne	est	wordweb
+usage_type	ls	liitsõna	est	descrip
+usage_type	ls	compound	eng	descrip
+usage_type	Vs	vanasõna	est	descrip
+usage_type	Vs	proverb	eng	descrip
+usage_type	y	sõnaühend	est	descrip
+usage_type	y	sõnaühend	est	wordweb
+usage_type	Vs	vanasõna	est	wordweb
+value_state	eelistermin	eelistermin	est	descrip
+value_state	eelistermin	preferred	eng	descrip
+value_state	rööptermin	rööptermin	est	descrip
+value_state	rööptermin	admitted	eng	descrip
+value_state	variant	variant	est	descrip
+value_state	variant	variant	eng	descrip
+value_state	väldi	väldi	est	descrip
+value_state	väldi	deprecated	eng	descrip
+value_state	endine	endine	est	descrip
+value_state	endine	superseded	eng	descrip
+value_state	eelistermin	eelistermin	est	wordweb
+value_state	endine	endine	est	wordweb
+value_state	rööptermin	rööptermin	est	wordweb
+value_state	väldi	väldi	est	wordweb
+word_rel_type	posit	algvõrre	est	full
+word_rel_type	deriv_base	tuletusalus	est	full
+word_rel_type	komp	keskvõrre	est	full
+word_rel_type	superl	ülivõrre	est	full
+word_rel_type	deriv	tuletis	est	full
 word_rel_type	posit	algvõrre	est	wordweb
 word_rel_type	komp	keskvõrre	est	wordweb
 word_rel_type	deriv	tuletis	est	wordweb
 word_rel_type	deriv_base	tuletusalus	est	wordweb
 word_rel_type	superl	ülivõrre	est	wordweb
+word_type	k	kohanimi	est	descrip
+word_type	k	place name	eng	descrip
+word_type	l	lühend	est	descrip
+word_type	l	abbreviation	eng	descrip
+word_type	p	pärisnimi	est	descrip
+word_type	p	proper name	eng	descrip
+word_type	z	tsitaatsõna	est	descrip
+word_type	z	loanword (alien)	eng	descrip
+word_type	mvv	viiteartikli märksõna	est	descrip
+word_type	yv	ühendverb	est	descrip
+word_type	vv	väljendverb	est	descrip
+word_type	av	ahelverb	est	descrip
+word_type	tv	tugiverb	est	descrip
+word_type	vlj	väljend	est	descrip
+word_type	ys	ühendsidesõna (nii et)	est	descrip
+word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
+word_type	f	fras-väljend (väljendite plokis)	est	descrip
+word_type	f	(idiomatic) phrase (grp)	eng	descrip
+word_type	mf	märksõna-väljend (iseseisev)	est	descrip
+word_type	mf	multiword unit (in the alphabet)	eng	descrip
+word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
+word_type	lz	tsitaatsõna lühend	est	descrip
+word_type	lz	abbreviation for alien word	eng	descrip
+word_type	n	number (nt 24/7)	est	descrip
+word_type	n	number	eng	descrip
+word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
+word_type	pf	combining form	eng	descrip
+word_type	s	sarja liige	est	descrip
+word_type	s	serial member	eng	descrip
+word_type	km	kaubamärk	est	descrip
+word_type	th	tähis	est	descrip
+word_type	valem	valem	est	descrip
+word_type	termin	termin	est	descrip
+word_type	tõlkeprobleem	tõlkeprobleem	est	descrip
+word_type	ametinimetus	ametinimetus	est	descrip
+word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	descrip
+word_type	õigusakti pealkiri	õigusakti pealkiri	est	descrip
+word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip
+word_type	l	lühend	est	wordweb
+word_type	km	kaubamärk	est	wordweb
+word_type	k	kohanimi	est	wordweb
+word_type	lz	lühend	est	wordweb
+word_type	th	tähis	est	wordweb
+word_type	ametinimetus	ametinimetus	est	wordweb
+word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb
+word_type	õigusakti pealkiri	õigusakti pealkiri	est	wordweb
+word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	wordweb
+word_type	termin	termin	est	wordweb
+word_type	tõlkeprobleem	tõlkeprobleem	est	wordweb
 word_type	valem	valem	est	wordweb
