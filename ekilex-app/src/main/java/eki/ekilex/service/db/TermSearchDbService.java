@@ -2,19 +2,16 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
 
@@ -45,18 +42,14 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.TermMeaningWordTuple;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Component
@@ -64,12 +57,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 	private static final String NUMERIC_VALUE_PATTERN = "^([0-9]+[.]?[0-9]*|[.][0-9]+)$";
 
-	private DSLContext create;
-
 	@Autowired
-	public TermSearchDbService(DSLContext context) {
-		create = context;
-	}
+	private DSLContext create;
 
 	// simple search
 
@@ -186,7 +175,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(w1.ID).from(f1, p1, w1, l1).where(where1)));
 
@@ -254,7 +244,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				}
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
-				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
+				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
+				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(d1.ID).from(d1, l1).where(where1)));
 
@@ -275,6 +266,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				}
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
+				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
+				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
 
@@ -283,7 +276,11 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				// notes
 				Freeform nff3 = FREEFORM.as("nff3");
 				Condition where3 = nff3.TYPE.in(FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name());
+
 				where3 = applyValueFilters(SearchKey.VALUE, searchCriteria, nff3.VALUE_TEXT, where3);
+				where3 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, nff3.ID, where3);
+				where3 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, nff3.ID, where3);
+
 				Table<Record1<Long>> n2 = DSL.select(nff3.ID.as("freeform_id")).from(nff3).where(where3).asTable("n2");
 
 				// notes owner #1
@@ -366,62 +363,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchCount(DSL.selectDistinct(w.field("word_id"))
 						.from(m.innerJoin(w).on(w.field("meaning_id", Long.class).eq(m.field("meaning_id", Long.class)))));
 		return count;
-	}
-
-	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> lexemeIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriterions.isEmpty()) {
-			return condition;
-		}
-
-		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =
-				lsl.LEXEME_ID.eq(lexemeIdField)
-				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(lsl.SOURCE_ID.eq(s.ID))
-				.and(sff.SOURCE_ID.eq(s.ID))
-				.and(sff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
-	}
-
-	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriterions, Field<Long> definitionIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriterions = searchCriterions.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriterions.isEmpty()) {
-			return condition;
-		}
-
-		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =
-				dsl.DEFINITION_ID.eq(definitionIdField)
-				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(dsl.SOURCE_ID.eq(s.ID))
-				.and(sff.SOURCE_ID.eq(s.ID))
-				.and(sff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriterions) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
 
 	// common search

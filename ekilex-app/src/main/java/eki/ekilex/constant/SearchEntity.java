@@ -6,13 +6,13 @@ import static java.util.Arrays.asList;
 
 public enum SearchEntity {
 
-	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_NAME}),
-	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
+	HEADWORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
+	WORD(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	FORM(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
-	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_NAME}),
-	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE}),
+	DEFINITION(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
+	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	MEANING(new SearchKey[] {SearchKey.DOMAIN}),
-	NOTE(new SearchKey[] {SearchKey.VALUE}),
+	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	CONCEPT_ID(new SearchKey[] {SearchKey.ID})
 	;
 

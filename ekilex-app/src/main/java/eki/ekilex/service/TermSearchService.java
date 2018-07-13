@@ -47,14 +47,26 @@ public class TermSearchService implements SystemConstant {
 	public MeaningsResult findMeanings(String searchFilter, List<String> datasets, String resultLang, boolean fetchAll) {
 
 		List<TermMeaning> termMeanings;
+		List<String> filteringDatasets;
+		int meaningCount;
+		int wordCount;
 		if (StringUtils.isBlank(searchFilter)) {
 			termMeanings = Collections.emptyList();
+			meaningCount = 0;
+			wordCount = 0;
 		} else {
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, datasets, resultLang, fetchAll);
+			int availableDatasetsCount = commonDataDbService.getDatasets().size();
+			int selectedDatasetsCount = datasets.size();
+			if (availableDatasetsCount == selectedDatasetsCount) {
+				filteringDatasets = null;
+			} else {
+				filteringDatasets = new ArrayList<>(datasets);
+			}
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, filteringDatasets, resultLang, fetchAll);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
+			meaningCount = termSearchDbService.countMeanings(searchFilter, filteringDatasets);
+			wordCount = termSearchDbService.countWords(searchFilter, filteringDatasets, resultLang);
 		}
-		int meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
-		int wordCount = termSearchDbService.countWords(searchFilter, datasets, resultLang);
 		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
 		meaningsResult.setMeaningCount(meaningCount);
@@ -68,14 +80,26 @@ public class TermSearchService implements SystemConstant {
 	public MeaningsResult findMeanings(SearchFilter searchFilter, List<String> datasets, String resultLang, boolean fetchAll) throws Exception {
 
 		List<TermMeaning> termMeanings;
+		List<String> filteringDatasets;
+		int meaningCount;
+		int wordCount;
 		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
 			termMeanings = Collections.emptyList();
+			meaningCount = 0;
+			wordCount = 0;
 		} else {
-			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, datasets, resultLang, fetchAll);
+			int availableDatasetsCount = commonDataDbService.getDatasets().size();
+			int selectedDatasetsCount = datasets.size();
+			if (availableDatasetsCount == selectedDatasetsCount) {
+				filteringDatasets = null;
+			} else {
+				filteringDatasets = new ArrayList<>(datasets);
+			}
+			List<TermMeaningWordTuple> termMeaningWordTuples = termSearchDbService.findMeanings(searchFilter, filteringDatasets, resultLang, fetchAll);
 			termMeanings = conversionUtil.composeTermMeanings(termMeaningWordTuples);
+			meaningCount = termSearchDbService.countMeanings(searchFilter, filteringDatasets);
+			wordCount = termSearchDbService.countWords(searchFilter, filteringDatasets, resultLang);
 		}
-		int meaningCount = termSearchDbService.countMeanings(searchFilter, datasets);
-		int wordCount = termSearchDbService.countWords(searchFilter, datasets, resultLang);
 		boolean resultExist = meaningCount > 0;
 		MeaningsResult meaningsResult = new MeaningsResult();
 		meaningsResult.setMeaningCount(meaningCount);

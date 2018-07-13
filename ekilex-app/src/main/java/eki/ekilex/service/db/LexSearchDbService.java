@@ -3,14 +3,12 @@ package eki.ekilex.service.db;
 import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FORM_RELATION;
 import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
@@ -59,7 +57,6 @@ import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.Definition;
-import eki.ekilex.data.db.tables.DefinitionSourceLink;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexColloc;
@@ -67,13 +64,10 @@ import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeSourceLink;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
-import eki.ekilex.data.db.tables.Source;
-import eki.ekilex.data.db.tables.SourceFreeform;
 import eki.ekilex.data.db.tables.Word;
 
 @Service
@@ -151,7 +145,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w1.LANG, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, p1, f1).where(where1)));
 
@@ -177,7 +172,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, f2.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, w2.LANG, where1);
-				where1 = applyLexemeSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, l1.ID, where1);
+				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_REF, searchCriteria, l2.ID, where1);
+				where1 = applyLexemeSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, l2.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(l1.ID).from(l1, l2, p2, f2, w2).where(where1)));
 
@@ -240,7 +236,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, d1.LANG, where1);
-				where1 = applyDefinitionSourceFilter(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
+				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_REF, searchCriteria, d1.ID, where1);
+				where1 = applyDefinitionSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, d1.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(d1.ID).from(l1, m1, d1).where(where1)));
 
@@ -263,6 +260,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, u1.VALUE_TEXT, where1);
 				where1 = applyValueFilters(SearchKey.LANGUAGE, searchCriteria, u1.LANG, where1);
+				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_NAME, searchCriteria, u1.ID, where1);
+				where1 = applyFreeformSourceFilters(SearchKey.SOURCE_REF, searchCriteria, u1.ID, where1);
 
 				wordCondition = wordCondition.and(DSL.exists(DSL.select(u1.ID).from(l1, l1ff, u1).where(where1)));
 
@@ -291,62 +290,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 			}
 		}
 		return wordCondition;
-	}
-
-	private Condition applyLexemeSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> lexemeIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && crit.getSearchValue() != null && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriteria.isEmpty()) {
-			return condition;
-		}
-
-		LexemeSourceLink lsl = LEXEME_SOURCE_LINK.as("lsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =
-				lsl.LEXEME_ID.eq(lexemeIdField)
-				.and(lsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(lsl.SOURCE_ID.eq(s.ID))
-				.and(sff.SOURCE_ID.eq(s.ID))
-				.and(sff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(lsl, s, sff, ff).where(sourceCondition)));
-	}
-
-	private Condition applyDefinitionSourceFilter(SearchKey searchKey, List<SearchCriterion> searchCriteria, Field<Long> definitionIdField, Condition condition) {
-
-		List<SearchCriterion> sourceCriteria = searchCriteria.stream()
-				.filter(crit -> crit.getSearchKey().equals(searchKey) && (crit.getSearchValue() != null) && isNotBlank(crit.getSearchValue().toString()))
-				.collect(toList());
-		if (sourceCriteria.isEmpty()) {
-			return condition;
-		}
-
-		DefinitionSourceLink dsl = DEFINITION_SOURCE_LINK.as("dsl");
-		Source s = Source.SOURCE.as("s");
-		SourceFreeform sff = SourceFreeform.SOURCE_FREEFORM.as("sff");
-		Freeform ff = Freeform.FREEFORM.as("ff");
-
-		Condition sourceCondition =
-				dsl.DEFINITION_ID.eq(definitionIdField)
-				.and(dsl.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(dsl.SOURCE_ID.eq(s.ID))
-				.and(sff.SOURCE_ID.eq(s.ID))
-				.and(sff.FREEFORM_ID.eq(ff.ID))
-				.and(ff.TYPE.eq(searchKey.name()));
-
-		for (SearchCriterion criterion : sourceCriteria) {
-			sourceCondition = applyValueFilter(criterion.getSearchValue().toString(), criterion.getSearchOperand(), ff.VALUE_TEXT, sourceCondition);
-		}
-		return condition.and(DSL.exists(DSL.select(ff.ID).from(dsl, s, sff, ff).where(sourceCondition)));
 	}
 
 	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {

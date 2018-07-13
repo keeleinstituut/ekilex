@@ -118,7 +118,7 @@
             <div class="col-3" th:if="${criteria.searchKey.name() == 'ID'}">
               <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
-            <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_CODE'}">
+            <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_REF'}">
               <input type="text" class="form-control" th:value="${criteria.searchValue}" th:name="'criteriaGroups[' + ${critGroupStat.index} + '].searchCriteria[' + ${critStat.index} + '].searchValue'">
             </div>
             <div class="col-3" th:if="${criteria.searchKey.name() == 'SOURCE_NAME'}">
@@ -170,7 +170,7 @@
         <div name="ID" class="col-3">
           <input type="text" class="form-control">
         </div>
-        <div name="SOURCE_CODE" class="col-3">
+        <div name="SOURCE_REF" class="col-3">
           <input type="text" class="form-control">
         </div>
         <div name="SOURCE_NAME" class="col-3">

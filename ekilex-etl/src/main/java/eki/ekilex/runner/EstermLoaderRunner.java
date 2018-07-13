@@ -581,9 +581,17 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 							}
 						}
 						isRefOn = true;
+						ReferenceType refType;
+						if (StringUtils.equalsIgnoreCase(refTypeExpert, sourceName)) {
+							refType = ReferenceType.EXPERT;
+						} else if (StringUtils.equalsIgnoreCase(refTypeQuery, sourceName)) {
+							refType = ReferenceType.QUERY;
+						} else {
+							refType = ReferenceType.ANY;
+						}
 						refObj = new Ref();
 						refObj.setMajorRef(sourceName);
-						refObj.setType(ReferenceType.ANY);//TODO any logic to define this?
+						refObj.setType(refType);
 						contentObj.getRefs().add(refObj);
 					} else {
 						throw new DataLoadingException("Handling of " + tlinkAttrValue + " not supported!");

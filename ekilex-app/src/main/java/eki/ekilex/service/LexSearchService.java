@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -58,12 +59,27 @@ public class LexSearchService implements SystemConstant {
 	private ConversionUtil conversionUtil;
 
 	@Transactional
-	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
+	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
 
-		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
-		int wordCount = words.size();
-		if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
-			wordCount = lexSearchDbService.countWords(searchFilter, datasets);
+		List<Word> words;
+		List<String> filteringDatasets;
+		int wordCount;
+		if (StringUtils.isBlank(searchFilter)) {
+			words = Collections.emptyList();
+			wordCount = 0;
+		} else {
+			int availableDatasetsCount = commonDataDbService.getDatasets().size();
+			int selectedDatasetsCount = datasets.size();
+			if (availableDatasetsCount == selectedDatasetsCount) {
+				filteringDatasets = null;
+			} else {
+				filteringDatasets = new ArrayList<>(datasets);
+			}
+			words = lexSearchDbService.findWords(searchFilter, filteringDatasets, fetchAll).into(Word.class);
+			wordCount = words.size();
+			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+				wordCount = lexSearchDbService.countWords(searchFilter, filteringDatasets);
+			}
 		}
 		WordsResult result = new WordsResult();
 		result.setWords(words);
@@ -72,12 +88,27 @@ public class LexSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public WordsResult findWords(String searchFilter, List<String> datasets, boolean fetchAll) {
+	public WordsResult findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
 
-		List<Word> words = lexSearchDbService.findWords(searchFilter, datasets, fetchAll).into(Word.class);
-		int wordCount = words.size();
-		if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
-			wordCount = lexSearchDbService.countWords(searchFilter, datasets);
+		List<Word> words;
+		List<String> filteringDatasets;
+		int wordCount;
+		if (CollectionUtils.isEmpty(searchFilter.getCriteriaGroups())) {
+			words = Collections.emptyList();
+			wordCount = 0;
+		} else {
+			int availableDatasetsCount = commonDataDbService.getDatasets().size();
+			int selectedDatasetsCount = datasets.size();
+			if (availableDatasetsCount == selectedDatasetsCount) {
+				filteringDatasets = null;
+			} else {
+				filteringDatasets = new ArrayList<>(datasets);
+			}
+			words = lexSearchDbService.findWords(searchFilter, filteringDatasets, fetchAll).into(Word.class);
+			wordCount = words.size();
+			if (!fetchAll && wordCount == MAX_RESULTS_LIMIT) {
+				wordCount = lexSearchDbService.countWords(searchFilter, filteringDatasets);
+			}
 		}
 		WordsResult result = new WordsResult();
 		result.setWords(words);
