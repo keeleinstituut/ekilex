@@ -196,27 +196,27 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String name = (String)source.get("source_name");
 			if (StringUtils.isNotBlank(name)) {
 				Long sourceId = createSource(source.get("source_id").toString());
-				Long sourceFreeformId = createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, name);
+				createSourceFreeform(sourceId, FreeformType.SOURCE_NAME, name);
 				String author = (String) source.get("author");
 				if (StringUtils.isNotBlank(author)) {
-					createFreeformTextOrDate(FreeformType.SOURCE_AUTHOR, sourceFreeformId, author, null);
+					createSourceFreeform(sourceId, FreeformType.SOURCE_AUTHOR, author);
 				}
 				String isbn = (String) source.get("isbn");
 				if (StringUtils.isNotBlank(isbn)) {
-					createFreeformTextOrDate(FreeformType.SOURCE_ISBN, sourceFreeformId, isbn, null);
+					createSourceFreeform(sourceId, FreeformType.SOURCE_ISBN, isbn);
 				}
 				String www = (String) source.get("source_link");
 				if (StringUtils.isNotBlank(www)) {
-					createFreeformTextOrDate(FreeformType.SOURCE_WWW, sourceFreeformId, www, null);
+					createSourceFreeform(sourceId, FreeformType.SOURCE_WWW, www);
 				}
 				String publisher = (String) source.get("publisher");
 				if (StringUtils.isNotBlank(publisher)) {
-					createFreeformTextOrDate(FreeformType.SOURCE_PUBLISHER, sourceFreeformId, publisher, null);
+					createSourceFreeform(sourceId, FreeformType.SOURCE_PUBLISHER, publisher);
 				}
 				Date publishDate = (Date) source.get("publish_date");
 				if (publishDate != null) {
 					Timestamp publishedTs = new Timestamp(publishDate.getTime());
-					createFreeformTextOrDate(FreeformType.SOURCE_PUBLICATION_YEAR, sourceFreeformId, publishedTs, null);
+					createSourceFreeform(sourceId, FreeformType.SOURCE_PUBLICATION_YEAR, publishedTs);
 				}
 				termekiSourceToEkilexSourceMap.put((Integer)source.get("source_id"), new SourceData(sourceId, name));
 			}
