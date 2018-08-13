@@ -67,7 +67,7 @@ drop table if exists form_rel_type;
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
 --drop table if exists meaning_type_label;
-drop table if exists meaning_type;
+drop table if exists meaning_type;--remove later
 --drop table if exists meaning_state_label;
 drop table if exists meaning_state;-- remove later
 drop table if exists process_state;

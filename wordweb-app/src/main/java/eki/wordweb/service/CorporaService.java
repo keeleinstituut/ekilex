@@ -58,7 +58,7 @@ public class CorporaService {
 				.toUri();
 		String responseAsString = doGetRequest(url);
 		if (responseAsString != null) {
-			logger.debug(responseAsString);
+			//logger.debug(responseAsString);
 			JsonParser jsonParser = JsonParserFactory.getJsonParser();
 			response = jsonParser.parseMap(responseAsString);
 		}

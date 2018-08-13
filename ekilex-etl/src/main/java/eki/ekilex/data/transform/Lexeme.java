@@ -30,7 +30,9 @@ public class Lexeme extends AbstractDataObject {
 
 	private String frequencyGroup;
 
-	private String valueState;
+	private String valueStateCode;
+
+	private String processStateCode;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -120,11 +122,20 @@ public class Lexeme extends AbstractDataObject {
 		this.frequencyGroup = frequencyGroup;
 	}
 
-	public String getValueState() {
-		return valueState;
+	public String getValueStateCode() {
+		return valueStateCode;
 	}
 
-	public void setValueState(String valueState) {
-		this.valueState = valueState;
+	public void setValueStateCode(String valueStateCode) {
+		this.valueStateCode = valueStateCode;
 	}
+
+	public String getProcessStateCode() {
+		return processStateCode;
+	}
+
+	public void setProcessStateCode(String processStateCode) {
+		this.processStateCode = processStateCode;
+	}
+
 }

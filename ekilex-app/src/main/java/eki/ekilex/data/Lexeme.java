@@ -10,6 +10,9 @@ public class Lexeme extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "word_id")
+	private Long wordId;
+
 	@Column(name = "word")
 	private String word;
 
@@ -19,11 +22,14 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "word_lang")
 	private String wordLang;
 
+	@Column(name = "word_type_code")
+	private String wordTypeCode;
+
+	@Column(name = "word_gender_code")
+	private String wordGenderCode;
+
 	@Column(name = "word_display_morph_code")
 	private String wordDisplayMorphCode;
-
-	@Column(name = "word_id")
-	private Long wordId;
 
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
@@ -46,13 +52,13 @@ public class Lexeme extends AbstractDataObject {
 	private String levels;
 
 	@Column(name = "lexeme_frequency_group_code")
-	private String frequencyGroupCode;
-
-	@Column(name = "gender_code")
-	private String genderCode;
+	private String lexemeFrequencyGroupCode;
 
 	@Column(name = "lexeme_value_state_code")
-	private String valueStateCode;
+	private String lexemeValueStateCode;
+
+	@Column(name = "lexeme_process_state_code")
+	private String lexemeProcessStateCode;
 
 	private List<Classifier> pos;
 
@@ -66,9 +72,17 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<FreeForm> grammars;
 
+	private List<SourceLink> sourceLinks;
+
 	private boolean classifiersExist;
 
-	private List<SourceLink> sourceLinks;
+	public Long getWordId() {
+		return wordId;
+	}
+
+	public void setWordId(Long wordId) {
+		this.wordId = wordId;
+	}
 
 	public String getWord() {
 		return word;
@@ -94,20 +108,28 @@ public class Lexeme extends AbstractDataObject {
 		this.wordLang = wordLang;
 	}
 
+	public String getWordTypeCode() {
+		return wordTypeCode;
+	}
+
+	public void setWordTypeCode(String wordTypeCode) {
+		this.wordTypeCode = wordTypeCode;
+	}
+
+	public String getWordGenderCode() {
+		return wordGenderCode;
+	}
+
+	public void setWordGenderCode(String wordGenderCode) {
+		this.wordGenderCode = wordGenderCode;
+	}
+
 	public String getWordDisplayMorphCode() {
 		return wordDisplayMorphCode;
 	}
 
 	public void setWordDisplayMorphCode(String wordDisplayMorphCode) {
 		this.wordDisplayMorphCode = wordDisplayMorphCode;
-	}
-
-	public Long getWordId() {
-		return wordId;
-	}
-
-	public void setWordId(Long wordId) {
-		this.wordId = wordId;
 	}
 
 	public Long getLexemeId() {
@@ -166,20 +188,28 @@ public class Lexeme extends AbstractDataObject {
 		this.levels = levels;
 	}
 
-	public String getFrequencyGroupCode() {
-		return frequencyGroupCode;
+	public String getLexemeFrequencyGroupCode() {
+		return lexemeFrequencyGroupCode;
 	}
 
-	public void setFrequencyGroupCode(String frequencyGroupCode) {
-		this.frequencyGroupCode = frequencyGroupCode;
+	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
+		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
 	}
 
-	public String getValueStateCode() {
-		return valueStateCode;
+	public String getLexemeValueStateCode() {
+		return lexemeValueStateCode;
 	}
 
-	public void setValueStateCode(String valueStateCode) {
-		this.valueStateCode = valueStateCode;
+	public void setLexemeValueStateCode(String lexemeValueStateCode) {
+		this.lexemeValueStateCode = lexemeValueStateCode;
+	}
+
+	public String getLexemeProcessStateCode() {
+		return lexemeProcessStateCode;
+	}
+
+	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
+		this.lexemeProcessStateCode = lexemeProcessStateCode;
 	}
 
 	public List<Classifier> getPos() {
@@ -222,28 +252,12 @@ public class Lexeme extends AbstractDataObject {
 		this.freeforms = freeforms;
 	}
 
-	public boolean isClassifiersExist() {
-		return classifiersExist;
-	}
-
-	public void setClassifiersExist(boolean classifiersExist) {
-		this.classifiersExist = classifiersExist;
-	}
-
 	public List<FreeForm> getGrammars() {
 		return grammars;
 	}
 
 	public void setGrammars(List<FreeForm> grammars) {
 		this.grammars = grammars;
-	}
-
-	public String getGenderCode() {
-		return genderCode;
-	}
-
-	public void setGenderCode(String genderCode) {
-		this.genderCode = genderCode;
 	}
 
 	public List<SourceLink> getSourceLinks() {
@@ -253,4 +267,13 @@ public class Lexeme extends AbstractDataObject {
 	public void setSourceLinks(List<SourceLink> sourceLinks) {
 		this.sourceLinks = sourceLinks;
 	}
+
+	public boolean isClassifiersExist() {
+		return classifiersExist;
+	}
+
+	public void setClassifiersExist(boolean classifiersExist) {
+		this.classifiersExist = classifiersExist;
+	}
+
 }

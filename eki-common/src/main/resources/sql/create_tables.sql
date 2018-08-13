@@ -231,14 +231,6 @@ create table process_state
   datasets varchar(10) array not null
 );
 
--- tähenduse liik
-create table meaning_type
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null
-);
--- missing meaning_type_label
-
 -- seose liik
 create table lex_rel_type
 (
@@ -663,6 +655,7 @@ create table lex_colloc
   lexeme_id bigint references lexeme(id) on delete cascade not null,
   rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null,
   collocation_id bigint references collocation(id) on delete cascade not null,
+  member_form text not null,
   weight numeric(14, 4),
   member_order integer not null,
   group_order integer,

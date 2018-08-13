@@ -33,18 +33,14 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 	private Map<String, String> processStateCodes;
 
-	private Map<String, String> meaningTypeCodes;
-
 	private Map<String, String> valueStateCodes;
 
 	public void setup(
 			ReportComposer reportComposer,
 			Map<String, String> processStateCodes,
-			Map<String, String> meaningTypeCodes,
 			Map<String, String> valueStateCodes) {
 		this.reportComposer = reportComposer;
 		this.processStateCodes = processStateCodes;
-		this.meaningTypeCodes = meaningTypeCodes;
 		this.valueStateCodes = valueStateCodes;
 	}
 
@@ -68,15 +64,6 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 			if (!processStateCodes.containsKey(valueStr)) {
 				dataErrorCount.increment();
 				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu staatus: " + valueStr);
-			}
-		}
-
-		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningTypeExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			if (!meaningTypeCodes.containsKey(valueStr)) {
-				dataErrorCount.increment();
-				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "tundmatu mõistetüüp: " + valueStr);
 			}
 		}
 

@@ -65,11 +65,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 	private DateFormat reviewDateFormat;
 
-	private Map<String, String> processStateCodes;
+	private Map<String, String> meaningAndLexemeProcessStateCodes;
 
-	private Map<String, String> meaningTypeCodes;
-
-	private Map<String, String> valueStateCodes;
+	private Map<String, String> lexemeValueStateCodes;
 
 	private Map<String, String> wordTypeCodes;
 
@@ -85,15 +83,32 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		ltbDateFormat = new SimpleDateFormat(LTB_TIMESTAMP_PATTERN);
 		reviewDateFormat = new SimpleDateFormat(REVIEW_TIMESTAMP_PATTERN);
 
-		processStateCodes = new HashMap<>();
 		Map<String, String> tempCodes;
+
+		// meaning/lexeme process state
+		meaningAndLexemeProcessStateCodes = new HashMap<>();
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_ENTRY_CLASS, ClassifierName.PROCESS_STATE.name());
-		processStateCodes.putAll(tempCodes);
+		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
 		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_STAATUS, ClassifierName.PROCESS_STATE.name());
-		processStateCodes.putAll(tempCodes);
-		meaningTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP);
-		valueStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.VALUE_STATE.name());
-		wordTypeCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.WORD_TYPE.name());
+		meaningAndLexemeProcessStateCodes.putAll(tempCodes);
+
+		// word type
+		wordTypeCodes = new HashMap<>();
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_MÕISTETÜÜP, ClassifierName.WORD_TYPE.name());
+		wordTypeCodes.putAll(tempCodes);
+		tempCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.WORD_TYPE.name());
+		wordTypeCodes.putAll(tempCodes);
+
+		// lexeme value state
+		lexemeValueStateCodes = loadClassifierMappingsFor(EKI_CLASSIFIER_KEELENDITÜÜP, ClassifierName.VALUE_STATE.name());
+
+		//EKI_CLASSIFIER_MÕISTETÜÜP -> word_type
+		//EKI_CLASSIFIER_ENTRY_CLASS -> meaning process_state or lexeme process_state of all lexemes of the meaning
+		//EKI_CLASSIFIER_STAATUS -> meaning process_state or lexeme process_state of all lexemes of the meaning
+		//EKI_CLASSIFIER_KEELENDITÜÜP -> lexeme value_state, word_type
+		// count staatus & entry class conflicts
+		// entry class overrides
+		// mõistetüüp & keelenditüüp conflicts?
 	}
 
 	@Transactional
@@ -112,7 +127,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
 					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
 					REPORT_MISSING_VALUE);
-			reportHelper.setup(reportComposer, processStateCodes, meaningTypeCodes, valueStateCodes);
+			reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -123,9 +138,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		Element valueNode;
 		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
-		Long wordId, meaningId, lexemeId, governmentId;
+		Long wordId, meaningId, lexemeId;
 		List<Content> definitions, usages, sources;
-		String valueStr, concept, term;
+		String valueStr, concept, term, processStateCode, wordTypeCode;
 		String lang;
 		int homonymNr;
 		Word wordObj;
@@ -134,6 +149,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		Count dataErrorCount = new Count();
 		Count definitionsWithSameNotesCount = new Count();
+		Count processStateConflictCount = new Count();
+		Count wordTypeConflictCount = new Count();
 
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
@@ -159,6 +176,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			saveDomains(concept, domainNodes, meaningId, originLenoch);
 			domainNodes = conceptGroupNode.selectNodes(subdomainExp);
 			saveDomains(concept, domainNodes, meaningId, originLtb);
+
+			processStateCode = extractProcessState(conceptGroupNode, processStateConflictCount);
+			wordTypeCode = extractWordType(conceptGroupNode);
 
 			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 
@@ -190,20 +210,21 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
-					wordObj = new Word(term, lang, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
+					wordObj = new Word(term, lang, null, null, null, null, homonymNr, defaultWordMorphCode, null, wordTypeCode);
 					wordId = createOrSelectWord(wordObj, null, null, null);
 
 					//lexeme
 					lexemeObj = new Lexeme();
 					lexemeObj.setWordId(wordId);
 					lexemeObj.setMeaningId(meaningId);
+					lexemeObj.setProcessStateCode(processStateCode);
 					lexemeId = createLexeme(lexemeObj, getDataset());
 
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
 
-					extractAndUpdateWordProperties(wordId, termGroupNode);
+					extractAndUpdateWordProperties(wordId, wordTypeCode, termGroupNode, wordTypeConflictCount);
 
 					// definitions
 					valueNodes = termGroupNode.selectNodes(definitionExp);
@@ -257,6 +278,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			logger.debug("Found {} data errors", dataErrorCount.getValue());
 		}
 		logger.debug("Found {} definitions with same notes", definitionsWithSameNotesCount.getValue());
+		logger.debug("Found {} conflicting process state settings", processStateConflictCount.getValue());
+		logger.debug("Found {} conflicting word type settings", wordTypeConflictCount.getValue());
 
 		t2 = System.currentTimeMillis();
 		logger.debug("Done loading in {} ms", (t2 - t1));
@@ -277,19 +300,18 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return true;
 	}
 
-	private void extractAndApplyMeaningProperties(Element conceptGroupNode, Meaning meaningObj) throws Exception {
+	private String extractProcessState(Element conceptGroupNode, Count processStateConflictCount) {
 
 		Element valueNode;
-		String valueStr, mappedValueStr;
-		long valueLong;
-		Timestamp valueTs;
+		String valueStr;
+		String entryClass = null;
+		String staatus = null;
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (processStateCodes.containsKey(valueStr)) {
-				mappedValueStr = processStateCodes.get(valueStr);
-				meaningObj.setProcessStateCode(valueStr);
+			if (meaningAndLexemeProcessStateCodes.containsKey(valueStr)) {
+				entryClass = meaningAndLexemeProcessStateCodes.get(valueStr);
 			} else {
 				logger.warn("Incorrect process state reference @ 'entry class': \"{}\"", valueStr);
 			}
@@ -298,25 +320,50 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		valueNode = (Element) conceptGroupNode.selectSingleNode(processStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (processStateCodes.containsKey(valueStr)) {
-				mappedValueStr = processStateCodes.get(valueStr);
-				meaningObj.setProcessStateCode(mappedValueStr);
+			if (meaningAndLexemeProcessStateCodes.containsKey(valueStr)) {
+				staatus = meaningAndLexemeProcessStateCodes.get(valueStr);
 			} else {
 				logger.warn("Incorrect process state reference @ 'status': \"{}\"", valueStr);
 			}
 		}
 
+		if (StringUtils.isNotBlank(entryClass) && StringUtils.isNotBlank(staatus)) {
+			logger.warn("Conflicting process states: \"{}\" vs \"{}\"", entryClass, staatus);
+			processStateConflictCount.increment();
+		}
+		if (StringUtils.isNotBlank(entryClass)) {
+			return entryClass;
+		}
+		if (StringUtils.isNotBlank(staatus)) {
+			return staatus;
+		}
+		return null;
+	}
+
+	private String extractWordType(Element conceptGroupNode) {
+
+		Element valueNode;
+		String valueStr;
+		String wordType = null;
+
 		valueNode = (Element) conceptGroupNode.selectSingleNode(meaningTypeExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (meaningTypeCodes.containsKey(valueStr)) {
-				mappedValueStr = meaningTypeCodes.get(valueStr);
-				//FIXME what happened to meaning type mappings?
-				//meaningObj.setMeaningTypeCode(mappedValueStr);
+			if (wordTypeCodes.containsKey(valueStr)) {
+				wordType = wordTypeCodes.get(valueStr);
 			} else {
-				logger.warn("Incorrect meaning type reference: \"{}\"", valueStr);
+				logger.warn("Incorrect word type reference: \"{}\"", valueStr);
 			}
 		}
+		return wordType;
+	}
+
+	private void extractAndApplyMeaningProperties(Element conceptGroupNode, Meaning meaningObj) throws Exception {
+
+		Element valueNode;
+		String valueStr;
+		long valueLong;
+		Timestamp valueTs;
 
 		valueNode = (Element) conceptGroupNode.selectSingleNode(createdByExp);
 		if (valueNode != null) {
@@ -751,13 +798,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		valueNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
-			if (valueStateCodes.containsKey(valueStr)) {
-				mappedValueStr = valueStateCodes.get(valueStr);
+			if (lexemeValueStateCodes.containsKey(valueStr)) {
+				mappedValueStr = lexemeValueStateCodes.get(valueStr);
 				valueParamMap.put("value_state_code", mappedValueStr);
 			} else if (wordTypeCodes.containsKey(valueStr)) {
-				//word type then, handled elsewhere
+				// ok then
 			} else {
-				logger.warn("Incorrect value state reference: \"{}\"", valueStr);
+				logger.warn("Incorrect lexeme value state or word type reference: \"{}\"", valueStr);
 			}
 		}
 
@@ -766,7 +813,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void extractAndUpdateWordProperties(Long wordId, Element termGroupNode) throws Exception {
+	private void extractAndUpdateWordProperties(Long wordId, String wordTypeCode, Element termGroupNode, Count wordTypeConflictCount) throws Exception {
 
 		Element valueNode;
 		String valueStr, mappedValueStr;
@@ -780,8 +827,13 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		if (valueNode != null) {
 			valueStr = valueNode.getTextTrim();
 			if (wordTypeCodes.containsKey(valueStr)) {
-				mappedValueStr = wordTypeCodes.get(valueStr);
-				valueParamMap.put("type_code", mappedValueStr);
+				if (StringUtils.isNotBlank(wordTypeCode)) {
+					logger.warn("Word type already assigned: \"{}\" ignoring: \"{}\"", wordTypeCode, valueStr);
+					wordTypeConflictCount.increment();
+				} else {
+					mappedValueStr = wordTypeCodes.get(valueStr);
+					valueParamMap.put("type_code", mappedValueStr);
+				}
 			}
 		}
 

@@ -165,9 +165,11 @@ public class TermSearchService implements SystemConstant {
 			for (Lexeme lexeme : lexemeWords) {
 
 				boolean classifiersExist =
-						StringUtils.isNotBlank(lexeme.getValueStateCode())
-						|| StringUtils.isNotBlank(lexeme.getGenderCode())
-						|| StringUtils.isNotBlank(lexeme.getFrequencyGroupCode())
+						StringUtils.isNotBlank(lexeme.getWordGenderCode())
+						|| StringUtils.isNotBlank(lexeme.getWordTypeCode())
+						|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
+						|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
+						|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
 						|| CollectionUtils.isNotEmpty(lexemePos)
 						|| CollectionUtils.isNotEmpty(lexemeDerivs)
 						|| CollectionUtils.isNotEmpty(lexemeRegisters)

@@ -22,6 +22,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
+import org.jooq.Record15;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record6;
@@ -532,21 +533,24 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Result<Record13<String, Integer, String, Long, String, Long, Long, String, Integer, Integer, Integer, String, String>> getLexemeWords(Long lexemeId) {
+	public Result<Record15<Long,String,Integer,String,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String>> getLexemeWords(Long lexemeId) {
 
 		return create
 				.select(
+						WORD.ID.as("word_id"),
 						FORM.VALUE.as("word"),
 						WORD.HOMONYM_NR,
 						WORD.LANG.as("word_lang"),
-						WORD.ID.as("word_id"),
-						WORD.GENDER_CODE.as("gender_code"),
+						WORD.TYPE_CODE.as("word_type_code"),
+						WORD.GENDER_CODE.as("word_gender_code"),
 						LEXEME.ID.as("lexeme_id"),
 						LEXEME.MEANING_ID,
 						LEXEME.DATASET_CODE.as("dataset"),
 						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
 						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-						LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"))
+						LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+						LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code")
+						)
 				.from(FORM, PARADIGM, WORD, LEXEME)
 				.where(
 						LEXEME.ID.eq(lexemeId)
