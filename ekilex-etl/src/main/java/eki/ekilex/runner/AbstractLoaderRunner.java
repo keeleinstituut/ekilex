@@ -166,6 +166,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				reusedWordCount.increment();
 			}
 		}
+
 		word.setId(wordId);
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			for (Paradigm paradigm : paradigms) {
@@ -397,7 +398,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Integer lexemeLevel2 = lexeme.getLevel2();
 		Integer lexemeLevel3 = lexeme.getLevel3();
 		String frequencyGroup = lexeme.getFrequencyGroup();
-		String valueState = lexeme.getValueState();
+		String valueStateCode = lexeme.getValueStateCode();
+		String processStateCode = lexeme.getProcessStateCode();
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
@@ -433,8 +435,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			if (StringUtils.isNotBlank(frequencyGroup)) {
 				valueParamMap.put("frequency_group", frequencyGroup);
 			}
-			if (StringUtils.isNotBlank(valueState)) {
-				valueParamMap.put("value_state_code", valueState);
+			if (StringUtils.isNotBlank(valueStateCode)) {
+				valueParamMap.put("value_state_code", valueStateCode);
+			}
+			if (StringUtils.isNotBlank(processStateCode)) {
+				valueParamMap.put("process_state_code", processStateCode);
 			}
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
