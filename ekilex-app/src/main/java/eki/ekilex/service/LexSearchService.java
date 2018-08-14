@@ -145,7 +145,7 @@ public class LexSearchService implements SystemConstant {
 						String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
 						List<Word> meaningWords = lexSearchDbService.findMeaningWords(lexeme.getWordId(), meaningId, selectedDatasets).into(Word.class);
 						List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
-						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples, null);
+						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 						List<Government> governments = commonDataDbService.findGovernments(lexemeId).into(Government.class);
 						List<UsageTranslationDefinitionTuple> usageTranslationDefinitionTuples =
 								commonDataDbService.findUsageTranslationDefinitionTuples(lexemeId, classifierLabelLang, classifierLabelTypeDescrip)
@@ -228,7 +228,7 @@ public class LexSearchService implements SystemConstant {
 		List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 		List<Classifier> meaningDomains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
 		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples, null);
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
 		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 		List<FreeForm> lexemeFreeforms = commonDataDbService.findLexemeFreeforms(lexemeId).into(FreeForm.class);
 		List<Government> governments = commonDataDbService.findGovernments(lexemeId).into(Government.class);

@@ -14,10 +14,13 @@ import org.springframework.stereotype.Component;
 
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Lexeme;
+import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.Relation;
@@ -115,42 +118,26 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<String> langCodeOrder) {
+	public Meaning getMeaning(Long meaningId, List<String> selectedDatasets, List<ClassifierSelect> languagesOrder) {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
-
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
-		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
 
+		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
 		List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
-		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples, langCodeOrder);
+		List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+		List<DefinitionLangGroup> definitionLangGroups = conversionUtil.composeMeaningDefinitionLangGroups(definitions, languagesOrder);
 		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
 		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
-		List<Lexeme> lexemes = new ArrayList<>();
-
-		boolean contentExists =
-				StringUtils.isNotBlank(meaning.getProcessStateCode())
-				|| CollectionUtils.isNotEmpty(definitions)
-				|| CollectionUtils.isNotEmpty(domains)
-				|| CollectionUtils.isNotEmpty(meaningFreeforms)
-				|| CollectionUtils.isNotEmpty(meaningRelations)
-				;
-
-		meaning.setDefinitions(definitions);
-		meaning.setDomains(domains);
-		meaning.setFreeforms(meaningFreeforms);
-		meaning.setLexemes(lexemes);
-		meaning.setRelations(meaningRelations);
-		meaning.setContentExists(contentExists);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
+		List<Lexeme> lexemes = new ArrayList<>();
 
 		for (Long lexemeId : lexemeIds) {
 
-			// lexeme is duplicated if many form.is_word-s different by value
-			List<Lexeme> lexemeWords = termSearchDbService.getLexemeWords(lexemeId).into(Lexeme.class);
+			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId).into(Lexeme.class);
 			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
@@ -162,42 +149,50 @@ public class TermSearchService implements SystemConstant {
 			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
 
-			for (Lexeme lexeme : lexemeWords) {
+			boolean classifiersExist =
+					StringUtils.isNotBlank(lexeme.getWordGenderCode())
+					|| StringUtils.isNotBlank(lexeme.getWordTypeCode())
+					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
+					|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
+					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
+					|| CollectionUtils.isNotEmpty(lexemePos)
+					|| CollectionUtils.isNotEmpty(lexemeDerivs)
+					|| CollectionUtils.isNotEmpty(lexemeRegisters)
+					|| CollectionUtils.isNotEmpty(lexemeGrammars);
 
-				boolean classifiersExist =
-						StringUtils.isNotBlank(lexeme.getWordGenderCode())
-						|| StringUtils.isNotBlank(lexeme.getWordTypeCode())
-						|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
-						|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
-						|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
-						|| CollectionUtils.isNotEmpty(lexemePos)
-						|| CollectionUtils.isNotEmpty(lexemeDerivs)
-						|| CollectionUtils.isNotEmpty(lexemeRegisters)
-						|| CollectionUtils.isNotEmpty(lexemeGrammars);
+			String dataset = lexeme.getDataset();
+			dataset = datasetNameMap.get(dataset);
+			String levels = composeLevels(lexeme);
 
-				String dataset = lexeme.getDataset();
-				dataset = datasetNameMap.get(dataset);
-				String levels = composeLevels(lexeme);
-
-				lexeme.setLevels(levels);
-				lexeme.setDataset(dataset);
-				lexeme.setPos(lexemePos);
-				lexeme.setDerivs(lexemeDerivs);
-				lexeme.setRegisters(lexemeRegisters);
-				lexeme.setFreeforms(lexemeFreeforms);
-				lexeme.setUsages(usages);
-				lexeme.setGrammars(lexemeGrammars);
-				lexeme.setClassifiersExist(classifiersExist);
-				lexeme.setSourceLinks(lexemeRefLinks);
-				lexemes.add(lexeme);
-			}
+			lexeme.setLevels(levels);
+			lexeme.setDataset(dataset);
+			lexeme.setPos(lexemePos);
+			lexeme.setDerivs(lexemeDerivs);
+			lexeme.setRegisters(lexemeRegisters);
+			lexeme.setFreeforms(lexemeFreeforms);
+			lexeme.setUsages(usages);
+			lexeme.setGrammars(lexemeGrammars);
+			lexeme.setClassifiersExist(classifiersExist);
+			lexeme.setSourceLinks(lexemeRefLinks);
+			lexemes.add(lexeme);
 		}
 
-		lexemes.sort((Lexeme lexeme1, Lexeme lexeme2) -> {
-			int lexeme1LangOrder = langCodeOrder.indexOf(lexeme1.getWordLang());
-			int lexeme2LangOrder = langCodeOrder.indexOf(lexeme2.getWordLang());
-			return lexeme1LangOrder - lexeme2LangOrder;
-			});
+		List<LexemeLangGroup> lexemeLangGroups = conversionUtil.composeLexemeLangGroups(lexemes, languagesOrder);
+
+		boolean contentExists =
+				StringUtils.isNotBlank(meaning.getProcessStateCode())
+				|| CollectionUtils.isNotEmpty(definitions)
+				|| CollectionUtils.isNotEmpty(domains)
+				|| CollectionUtils.isNotEmpty(meaningFreeforms)
+				|| CollectionUtils.isNotEmpty(meaningRelations)
+				;
+
+		meaning.setDefinitionLangGroups(definitionLangGroups);
+		meaning.setDomains(domains);
+		meaning.setFreeforms(meaningFreeforms);
+		meaning.setLexemeLangGroups(lexemeLangGroups);
+		meaning.setRelations(meaningRelations);
+		meaning.setContentExists(contentExists);
 
 		return meaning;
 	}

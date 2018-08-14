@@ -15,6 +15,7 @@ function initialise() {
 		});
 	});
 
+	/*
 	$(document).on('click', '.order-up', function() {
 		var clickable = $(this);
 		var orderingData = changeItemOrdering(clickable, -1);
@@ -32,12 +33,14 @@ function initialise() {
 			refreshDetails();
         });
 	});
+	*/
 
 	$(document).on('click', '#show-all-btn', function() {
 		$('#fetchAll').val(true);
 		$('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
 	});
 
+	/*
 	$(document).on('click', '[name="term_user_lang_check"]', function() {
 		var clickable = $(this);
 		var opCode = clickable.closest("[data-op-code]").attr("data-op-code");
@@ -51,6 +54,18 @@ function initialise() {
 		updateTermUserLangWrapup(clickable);
 		postJson(applicationUrl + 'modify_item', itemData);
 		refreshDetails();
+	});
+	*/
+
+	$(document).on('click', '[name="lang-collapse-btn"]', function() {
+		var lang = $(this).attr("data-lang");
+		var itemData = {
+			opCode : "term_user_lang",
+			code : lang
+		};
+		postJson(applicationUrl + 'modify_item', itemData).done(function(data) {
+			refreshDetails();
+        });
 	});
 
 	$(document).on('change', '#meaning-other-words-visible-check', function() {

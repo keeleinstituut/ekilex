@@ -23,6 +23,7 @@ import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.WordDetails;
@@ -127,10 +128,22 @@ public class DataController implements SystemConstant, WebConstant {
 		Long meaningId = Long.valueOf(meaningIdStr);
 		List<String> datasets = parseDatasets(datasetsStr);
 		List<Classifier> allLanguages = commonDataService.getLanguages();
-		List<String> langCodeOrder = allLanguages.stream().map(Classifier::getCode).collect(Collectors.toList());
-		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, langCodeOrder);
+		List<ClassifierSelect> languagesOrder = convert(allLanguages);
+		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder);
 		return meaning;
 	}
+
+	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {
+		List<ClassifierSelect> languagesOrder = allLanguages.stream().map(language -> {
+			ClassifierSelect languageSelect = new ClassifierSelect();
+			languageSelect.setCode(language.getCode());
+			languageSelect.setValue(language.getValue());
+			languageSelect.setSelected(true);
+			return languageSelect;
+		}).collect(Collectors.toList());
+		return languagesOrder;
+	}
+
 
 	private List<String> parseDatasets(String datasetsStr) {
 		List<String> datasets = Collections.emptyList();

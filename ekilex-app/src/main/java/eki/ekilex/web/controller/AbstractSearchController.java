@@ -92,14 +92,13 @@ public abstract class AbstractSearchController implements WebConstant {
 	}
 
 	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {
-		List<ClassifierSelect> languagesOrder = new ArrayList<>();
-		for (Classifier language : allLanguages) {
+		List<ClassifierSelect> languagesOrder = allLanguages.stream().map(language -> {
 			ClassifierSelect languageSelect = new ClassifierSelect();
 			languageSelect.setCode(language.getCode());
 			languageSelect.setValue(language.getValue());
 			languageSelect.setSelected(true);
-			languagesOrder.add(languageSelect);
-		}
+			return languageSelect;
+		}).collect(Collectors.toList());
 		return languagesOrder;
 	}
 

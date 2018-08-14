@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,15 +17,19 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.CollocMember;
 import eki.ekilex.data.Collocation;
 import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationRelGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
+import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.Form;
 import eki.ekilex.data.FormRelation;
+import eki.ekilex.data.Lexeme;
+import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
 import eki.ekilex.data.SourceLink;
@@ -364,7 +369,40 @@ public class ConversionUtil {
 		return usages;
 	}
 
-	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples, List<String> langCodeOrder) {
+	public List<LexemeLangGroup> composeLexemeLangGroups(List<Lexeme> lexemes, List<ClassifierSelect> languagesOrder) {
+
+		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<LexemeLangGroup> lexemeLangGroups = new ArrayList<>();
+		Map<String, LexemeLangGroup> lexemeLangGroupMap = new HashMap<>();
+
+		for (Lexeme lexeme : lexemes) {
+			String lang = lexeme.getWordLang();
+			LexemeLangGroup lexemeLangGroup = lexemeLangGroupMap.get(lang);
+			if (lexemeLangGroup == null) {
+				boolean isSelected = selectedLangCodes.contains(lang);
+				lexemeLangGroup = new LexemeLangGroup();
+				lexemeLangGroup.setLang(lang);
+				lexemeLangGroup.setSelected(isSelected);
+				lexemeLangGroup.setLexemes(new ArrayList<>());
+				lexemeLangGroupMap.put(lang, lexemeLangGroup);
+				lexemeLangGroups.add(lexemeLangGroup);
+			}
+			lexemeLangGroup.getLexemes().add(lexeme);
+		}
+
+		lexemeLangGroups.sort((LexemeLangGroup gr1, LexemeLangGroup gr2) -> {
+			String lang1 = gr1.getLang();
+			String lang2 = gr2.getLang();
+			int langOrder1 = langCodeOrder.indexOf(lang1);
+			int langOrder2 = langCodeOrder.indexOf(lang2);
+			return langOrder1 - langOrder2;
+		});
+
+		return lexemeLangGroups;
+	}
+
+	public List<Definition> composeMeaningDefinitions(List<DefinitionRefTuple> definitionRefTuples) {
 
 		List<Definition> definitions = new ArrayList<>();
 		Map<Long, Definition> definitionMap = new HashMap<>();
@@ -400,18 +438,40 @@ public class ConversionUtil {
 			}
 		}
 
-		definitions.sort((Definition definition1, Definition definition2) -> {
-			String definition1LangCode = definition1.getLang();
-			String definition2LangCode = definition2.getLang();
-			if (CollectionUtils.isEmpty(langCodeOrder)) {
-				return StringUtils.compare(definition1LangCode, definition2LangCode);
+		return definitions;
+	}
+
+	public List<DefinitionLangGroup> composeMeaningDefinitionLangGroups(List<Definition> definitions, List<ClassifierSelect> languagesOrder) {
+
+		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
+		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
+		List<DefinitionLangGroup> definitionLangGroups = new ArrayList<>();
+		Map<String, DefinitionLangGroup> definitionLangGroupMap = new HashMap<>();
+
+		for (Definition definition : definitions) {
+			String lang = definition.getLang();
+			DefinitionLangGroup definitionLangGroup = definitionLangGroupMap.get(lang);
+			if (definitionLangGroup == null) {
+				boolean isSelected = selectedLangCodes.contains(lang);
+				definitionLangGroup = new DefinitionLangGroup();
+				definitionLangGroup.setLang(lang);
+				definitionLangGroup.setSelected(isSelected);
+				definitionLangGroup.setDefinitions(new ArrayList<>());
+				definitionLangGroupMap.put(lang, definitionLangGroup);
+				definitionLangGroups.add(definitionLangGroup);
 			}
-			int definition1LangOrder = langCodeOrder.indexOf(definition1LangCode);
-			int definition2LangOrder = langCodeOrder.indexOf(definition2LangCode);
-			return definition1LangOrder - definition2LangOrder;
+			definitionLangGroup.getDefinitions().add(definition);
+		}
+
+		definitionLangGroups.sort((DefinitionLangGroup gr1, DefinitionLangGroup gr2) -> {
+			String lang1 = gr1.getLang();
+			String lang2 = gr2.getLang();
+			int langOrder1 = langCodeOrder.indexOf(lang1);
+			int langOrder2 = langCodeOrder.indexOf(lang2);
+			return langOrder1 - langOrder2;
 		});
 
-		return definitions;
+		return definitionLangGroups;
 	}
 
 	public List<CollocationPosGroup> composeCollocPosGroups(List<CollocationTuple> collocTuples) {

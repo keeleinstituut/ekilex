@@ -2,7 +2,6 @@ package eki.ekilex.web.controller;
 
 import static java.util.Arrays.asList;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,33 +153,14 @@ public class ModifyController implements WebConstant {
 			case "word_relation" :
 				updateService.updateWordRelationOrdering(items);
 				break;
-			case "term_user_lang" :
-				updateLanguagesOrder(items, sessionBean);
-				break;
 		}
 		return "{}";
 	}
 
 	private void updateLanguageSelection(ModifyItemRequest itemData, SessionBean sessionBean) {
-		Integer itemIndex = itemData.getIndex();
-		boolean itemSelected = itemData.isSelected();
 		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		ClassifierSelect language = languagesOrder.get(itemIndex);
-		language.setSelected(itemSelected);
-	}
-
-	private void updateLanguagesOrder(List<ListData> items, SessionBean sessionBean) {
-
-		List<ClassifierSelect> languagesOrder = sessionBean.getLanguagesOrder();
-		List<String> langCodeOrder = languagesOrder.stream().map(Classifier::getCode).collect(Collectors.toList());
-		List<ClassifierSelect> newLanguagesOrder = new ArrayList<>();
-		for (ListData item : items) {
-			String langCode = item.getCode();
-			int langOrderIndex = langCodeOrder.indexOf(langCode);
-			ClassifierSelect lang = languagesOrder.get(langOrderIndex);
-			newLanguagesOrder.add(lang);
-		}
-		sessionBean.setLanguagesOrder(newLanguagesOrder);
+		ClassifierSelect langSelect = languagesOrder.stream().filter(classif -> StringUtils.equals(classif.getCode(), itemData.getCode())).findFirst().get();
+		langSelect.setSelected(!langSelect.isSelected());
 	}
 
 	@ResponseBody

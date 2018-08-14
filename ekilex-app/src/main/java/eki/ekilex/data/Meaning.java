@@ -19,11 +19,11 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "lexeme_ids")
 	private List<Long> lexemeIds;
 
-	private List<Lexeme> lexemes;
+	private List<LexemeLangGroup> lexemeLangGroups;
 
 	private List<Classifier> domains;
 
-	private List<Definition> definitions;
+	private List<DefinitionLangGroup> definitionLangGroups;
 
 	private List<FreeForm> freeforms;
 
@@ -55,12 +55,12 @@ public class Meaning extends AbstractDataObject {
 		this.lexemeIds = lexemeIds;
 	}
 
-	public List<Lexeme> getLexemes() {
-		return lexemes;
+	public List<LexemeLangGroup> getLexemeLangGroups() {
+		return lexemeLangGroups;
 	}
 
-	public void setLexemes(List<Lexeme> lexemes) {
-		this.lexemes = lexemes;
+	public void setLexemeLangGroups(List<LexemeLangGroup> lexemeLangGroups) {
+		this.lexemeLangGroups = lexemeLangGroups;
 	}
 
 	public List<Classifier> getDomains() {
@@ -71,12 +71,12 @@ public class Meaning extends AbstractDataObject {
 		this.domains = domains;
 	}
 
-	public List<Definition> getDefinitions() {
-		return definitions;
+	public List<DefinitionLangGroup> getDefinitionLangGroups() {
+		return definitionLangGroups;
 	}
 
-	public void setDefinitions(List<Definition> definitions) {
-		this.definitions = definitions;
+	public void setDefinitionLangGroups(List<DefinitionLangGroup> definitionLangGroups) {
+		this.definitionLangGroups = definitionLangGroups;
 	}
 
 	public List<FreeForm> getFreeforms() {

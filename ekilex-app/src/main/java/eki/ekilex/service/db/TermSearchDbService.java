@@ -533,34 +533,41 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Result<Record15<Long,String,Integer,String,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String>> getLexemeWords(Long lexemeId) {
+	public Record15<Long,String,Integer,String,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String> getLexeme(Long lexemeId) {
+
+		Lexeme l = LEXEME.as("l");
+		Word w = WORD.as("w");
+		Paradigm p = PARADIGM.as("p");
+		Form f = FORM.as("f");
 
 		return create
 				.select(
-						WORD.ID.as("word_id"),
-						FORM.VALUE.as("word"),
-						WORD.HOMONYM_NR,
-						WORD.LANG.as("word_lang"),
-						WORD.TYPE_CODE.as("word_type_code"),
-						WORD.GENDER_CODE.as("word_gender_code"),
-						LEXEME.ID.as("lexeme_id"),
-						LEXEME.MEANING_ID,
-						LEXEME.DATASET_CODE.as("dataset"),
-						LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3,
-						LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
-						LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code")
+						w.ID.as("word_id"),
+						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word"),
+						w.HOMONYM_NR,
+						w.LANG.as("word_lang"),
+						w.TYPE_CODE.as("word_type_code"),
+						w.GENDER_CODE.as("word_gender_code"),
+						l.ID.as("lexeme_id"),
+						l.MEANING_ID,
+						l.DATASET_CODE.as("dataset"),
+						l.LEVEL1,
+						l.LEVEL2,
+						l.LEVEL3,
+						l.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
+						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
+						l.PROCESS_STATE_CODE.as("lexeme_process_state_code")
 						)
-				.from(FORM, PARADIGM, WORD, LEXEME)
+				.from(f, p, w, l)
 				.where(
-						LEXEME.ID.eq(lexemeId)
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.IS_WORD.eq(Boolean.TRUE)))
-				.groupBy(LEXEME.ID, WORD.ID, FORM.VALUE)
-				.orderBy(WORD.ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
-				.fetch();
+						l.ID.eq(lexemeId)
+								.and(l.WORD_ID.eq(w.ID))
+								.and(p.WORD_ID.eq(w.ID))
+								.and(f.PARADIGM_ID.eq(p.ID))
+								.and(f.IS_WORD.eq(Boolean.TRUE)))
+				.groupBy(l.ID, w.ID)
+				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2, l.LEVEL3)
+				.fetchSingle();
 	}
 
 	public Record1<String> getMeaningFirstWord(Long meaningId, List<String> datasets) {
