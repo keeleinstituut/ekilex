@@ -15,47 +15,10 @@ function initialise() {
 		});
 	});
 
-	/*
-	$(document).on('click', '.order-up', function() {
-		var clickable = $(this);
-		var orderingData = changeItemOrdering(clickable, -1);
-		updateTermUserLangWrapup(clickable);
-		postJson(applicationUrl + 'modify_ordering', orderingData).done(function(data) {
-			refreshDetails();
-		});
-	});
-
-	$(document).on('click', '.order-down', function() {
-		var clickable = $(this);
-		var orderingData = changeItemOrdering(clickable, 1);
-		updateTermUserLangWrapup(clickable);
-		postJson(applicationUrl + 'modify_ordering', orderingData).done(function(data) {
-			refreshDetails();
-        });
-	});
-	*/
-
 	$(document).on('click', '#show-all-btn', function() {
 		$('#fetchAll').val(true);
 		$('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
 	});
-
-	/*
-	$(document).on('click', '[name="term_user_lang_check"]', function() {
-		var clickable = $(this);
-		var opCode = clickable.closest("[data-op-code]").attr("data-op-code");
-		var index = clickable.closest("[data-index]").attr("data-index");
-		var selected = clickable.is(":checked");
-		var itemData = {
-			opCode : opCode,
-			selected : selected,
-			index : index
-		};
-		updateTermUserLangWrapup(clickable);
-		postJson(applicationUrl + 'modify_item', itemData);
-		refreshDetails();
-	});
-	*/
 
 	$(document).on('click', '[name="lang-collapse-btn"]', function() {
 		var lang = $(this).attr("data-lang");
