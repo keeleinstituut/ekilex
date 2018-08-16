@@ -51,7 +51,6 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -336,11 +335,6 @@ public class Tables {
      * The table <code>public.meaning_relation</code>.
      */
     public static final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
-
-    /**
-     * The table <code>public.meaning_type</code>.
-     */
-    public static final MeaningType MEANING_TYPE = eki.ekilex.data.db.tables.MeaningType.MEANING_TYPE;
 
     /**
      * The table <code>public.morph</code>.

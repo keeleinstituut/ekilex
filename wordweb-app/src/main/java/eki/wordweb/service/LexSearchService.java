@@ -110,7 +110,7 @@ public class LexSearchService implements InitializingBean {
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
 		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(lexemeMeaningTuples, lexemeDetailsTuples, collocTuples, sourceLang, destinLang, displayLang);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(wordId, lexemeMeaningTuples, lexemeDetailsTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();

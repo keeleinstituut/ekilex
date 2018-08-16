@@ -3,7 +3,9 @@ package eki.ekilex.security;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
 public class EkilexPasswordEncoder implements PasswordEncoder, InitializingBean {
 
 	private BCryptPasswordEncoder passwordEncoder;

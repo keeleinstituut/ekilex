@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(_,_)">
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title" th:text="#{index.title}">Tere</h5>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-warning" role="alert" th:if="${loginerror}">
+          <span th:text="${loginerror}"></span>
+        </div>
+        <form th:action="@{/dologin}" method="post">
+          <div>
+            <div class="row mt-2">
+              <span class="col-1">E-posti aadress</span>
+              <span>
+                <input type="text" name="email" />
+              </span>
+            </div>
+            <div class="row mt-2">
+              <span class="col-1">Salasõna</span>
+              <span>
+                <input type="password" name="password" />
+              </span>
+            </div>
+            <div class="row mt-2">
+              <span class="col-1"></span>
+              <input type="submit" value="Sisene" />
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

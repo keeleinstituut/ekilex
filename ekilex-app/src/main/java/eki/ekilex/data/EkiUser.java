@@ -1,31 +1,28 @@
 package eki.ekilex.data;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.security.Principal;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.web.authentication.WebAuthenticationDetails;
 
-public class EkiUser implements Authentication, Serializable {
+public class EkiUser implements Principal, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] HIDDEN_FIELD_NAMES = new String[] {"password", "details", "authenticated"};
+	private static final String[] HIDDEN_FIELD_NAMES = new String[] {"password"};
 
 	private Long id;
 
 	private String name;
 
+	private String email;
+
 	private String password;
 
-	private WebAuthenticationDetails details;
-
-	private boolean authenticated;
+	private String[] roles;
 
 	public Long getId() {
 		return id;
@@ -33,6 +30,22 @@ public class EkiUser implements Authentication, Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getPassword() {
@@ -43,47 +56,12 @@ public class EkiUser implements Authentication, Serializable {
 		this.password = password;
 	}
 
-	@Override
-	public String getName() {
-		return name;
+	public String[] getRoles() {
+		return roles;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
-	}
-
-	@Override
-	public Object getCredentials() {
-		return password;
-	}
-
-	@Override
-	public Object getDetails() {
-		return details;
-	}
-
-	public void setDetails(WebAuthenticationDetails details) {
-		this.details = details;
-	}
-
-	@Override
-	public Object getPrincipal() {
-		return this;
-	}
-
-	@Override
-	public boolean isAuthenticated() {
-		return authenticated;
-	}
-
-	@Override
-	public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-		this.authenticated = isAuthenticated;
+	public void setRoles(String[] roles) {
+		this.roles = roles;
 	}
 
 	@Override
@@ -109,6 +87,8 @@ public class EkiUser implements Authentication, Serializable {
 		sbuf.append(id);
 		sbuf.append(", ");
 		sbuf.append(name);
+		sbuf.append(", ");
+		sbuf.append(email);
 		sbuf.append(']');
 		return sbuf.toString();
 	}

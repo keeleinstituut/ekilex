@@ -46,7 +46,11 @@
       <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
     </div>
     <div class="navbar-nav ml-auto">
-      <button class="btn btn-info" title="See on kasutaja" type="button">Kusti Tähetark</button>
+      <form th:action="@{/dologout}" method="post" th:if="${user != null}">
+        <button type="submit" class="btn btn-info">
+          <span th:text="${user.name}">Kusti Tähetark</span>
+        </button>
+      </form>
     </div>
   </nav>
 </th:block>

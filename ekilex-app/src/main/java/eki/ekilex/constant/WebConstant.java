@@ -6,6 +6,10 @@ public interface WebConstant {
 
 	String LOGOUT_URI = "/dologout";
 
+	String LOGIN_PAGE_URI = "/login";
+
+	String LOGIN_ERROR_URI = "/loginerror";
+
 	String LOGIN_PAGE = "login";
 
 	String MAIN_PAGE = "index";
@@ -42,7 +46,7 @@ public interface WebConstant {
 
 	String MARKDOWN_RENDERER_KEY = "markdown";
 
-	String USER_MODEL_KEY = "user";
+	String USER_KEY = "user";
 
 	String SEARCH_WORD_KEY = "searchWord";
 

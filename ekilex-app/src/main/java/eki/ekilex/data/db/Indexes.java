@@ -51,7 +51,6 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -199,7 +198,6 @@ public class Indexes {
     public static final Index MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = Indexes0.MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY;
     public static final Index MEANING_RELATION_MEANING2_ID_IDX = Indexes0.MEANING_RELATION_MEANING2_ID_IDX;
     public static final Index MEANING_RELATION_PKEY = Indexes0.MEANING_RELATION_PKEY;
-    public static final Index MEANING_TYPE_PKEY = Indexes0.MEANING_TYPE_PKEY;
     public static final Index MORPH_PKEY = Indexes0.MORPH_PKEY;
     public static final Index MORPH_LABEL_CODE_LANG_TYPE_KEY = Indexes0.MORPH_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index PARADIGM_PKEY = Indexes0.PARADIGM_PKEY;
@@ -343,7 +341,6 @@ public class Indexes {
         public static Index MEANING_RELATION_MEANING1_ID_MEANING2_ID_MEANING_REL_TYPE_C_KEY = Internal.createIndex("meaning_relation_meaning1_id_meaning2_id_meaning_rel_type_c_key", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING1_ID, MeaningRelation.MEANING_RELATION.MEANING2_ID, MeaningRelation.MEANING_RELATION.MEANING_REL_TYPE_CODE }, true);
         public static Index MEANING_RELATION_MEANING2_ID_IDX = Internal.createIndex("meaning_relation_meaning2_id_idx", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.MEANING2_ID }, false);
         public static Index MEANING_RELATION_PKEY = Internal.createIndex("meaning_relation_pkey", MeaningRelation.MEANING_RELATION, new OrderField[] { MeaningRelation.MEANING_RELATION.ID }, true);
-        public static Index MEANING_TYPE_PKEY = Internal.createIndex("meaning_type_pkey", MeaningType.MEANING_TYPE, new OrderField[] { MeaningType.MEANING_TYPE.CODE }, true);
         public static Index MORPH_PKEY = Internal.createIndex("morph_pkey", Morph.MORPH, new OrderField[] { Morph.MORPH.CODE }, true);
         public static Index MORPH_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("morph_label_code_lang_type_key", MorphLabel.MORPH_LABEL, new OrderField[] { MorphLabel.MORPH_LABEL.CODE, MorphLabel.MORPH_LABEL.LANG, MorphLabel.MORPH_LABEL.TYPE }, true);
         public static Index PARADIGM_PKEY = Internal.createIndex("paradigm_pkey", Paradigm.PARADIGM, new OrderField[] { Paradigm.PARADIGM.ID }, true);

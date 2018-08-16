@@ -51,7 +51,6 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
-import eki.ekilex.data.db.tables.MeaningType;
 import eki.ekilex.data.db.tables.Morph;
 import eki.ekilex.data.db.tables.MorphLabel;
 import eki.ekilex.data.db.tables.Paradigm;
@@ -120,7 +119,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 131797123;
+    private static final long serialVersionUID = -1809987697;
 
     /**
      * The reference instance of <code>public</code>
@@ -361,11 +360,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_relation</code>.
      */
     public final MeaningRelation MEANING_RELATION = eki.ekilex.data.db.tables.MeaningRelation.MEANING_RELATION;
-
-    /**
-     * The table <code>public.meaning_type</code>.
-     */
-    public final MeaningType MEANING_TYPE = eki.ekilex.data.db.tables.MeaningType.MEANING_TYPE;
 
     /**
      * The table <code>public.morph</code>.
@@ -662,7 +656,6 @@ public class Public extends SchemaImpl {
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,
-            MeaningType.MEANING_TYPE,
             Morph.MORPH,
             MorphLabel.MORPH_LABEL,
             Paradigm.PARADIGM,

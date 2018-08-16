@@ -18,6 +18,7 @@ import eki.common.constant.ClassifierName;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.data.Collocation;
+import eki.wordweb.data.CollocationMemGroup;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
@@ -28,6 +29,7 @@ import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SourceLink;
+import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.TypeDefinition;
 import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
@@ -83,6 +85,7 @@ public class ConversionUtil {
 	}
 
 	public List<Lexeme> composeLexemes(
+			Long wordId,
 			List<LexemeMeaningTuple> lexemeMeaningTuples,
 			List<LexemeDetailsTuple> lexemeDetailsTuples,
 			List<CollocationTuple> collocTuples,
@@ -134,6 +137,47 @@ public class ConversionUtil {
 				lexeme.getSecondaryCollocations().add(collocation);
 			} else {
 				collocRelGroup.getCollocations().add(collocation);
+			}
+		}
+
+		//TODO prototyping
+		for (CollocationRelGroup collocRelGroup : collocRelGroupMap.values()) {
+			List<CollocationMemGroup> collocMemGroups = new ArrayList<>();
+			collocRelGroup.setMemberGroups(collocMemGroups);
+			Map<String, CollocationMemGroup> wordCollocMemGroupMap = new HashMap<>();
+			List<Collocation> collocations = collocRelGroup.getCollocations();
+			for (Collocation colloc : collocations) {
+				List<TypeCollocMember> collocMembers = colloc.getCollocMembers();
+				int collocMembersCount = collocMembers.size();
+				int firstCollocMemberIndex = 0;
+				int lastCollocMemberIndex = collocMembersCount - 1;
+				for (int collocMemberIndex = firstCollocMemberIndex; collocMemberIndex < collocMembersCount; collocMemberIndex++) {
+					TypeCollocMember collocMember = collocMembers.get(collocMemberIndex);
+					if (wordId.equals(collocMember.getWordId())) {
+						String collocMemberForm = collocMember.getForm();
+						CollocationMemGroup collocMemGroup = wordCollocMemGroupMap.get(collocMemberForm);
+						if (collocMemGroup == null) {
+							collocMemGroup = new CollocationMemGroup();
+							collocMemGroup.setWordId(wordId);
+							collocMemGroup.setForm(collocMemberForm);
+							collocMemGroup.setFirstWordCollocations(new ArrayList<>());
+							collocMemGroup.setLastWordCollocations(new ArrayList<>());
+							collocMemGroup.setMiddleWordCollocations(new ArrayList<>());
+							wordCollocMemGroupMap.put(collocMemberForm, collocMemGroup);
+							collocMemGroups.add(collocMemGroup);
+						}
+						if (collocMemberIndex == firstCollocMemberIndex) {
+							collocMemGroup.getFirstWordCollocations().add(colloc);
+							
+						} else if (collocMemberIndex == lastCollocMemberIndex) {
+							collocMemGroup.getLastWordCollocations().add(colloc);
+						} else {
+							System.out.println("---> headword is in the middle: " + collocMembers.toString());
+							collocMemGroup.getMiddleWordCollocations().add(colloc);
+						}
+						break;
+					}
+				}
 			}
 		}
 		return lexemes;

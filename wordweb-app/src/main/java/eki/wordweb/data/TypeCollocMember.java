@@ -12,6 +12,8 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private String word;
 
+	private String form;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -34,6 +36,14 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setWord(String word) {
 		this.word = word;
+	}
+
+	public String getForm() {
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.form = form;
 	}
 
 }

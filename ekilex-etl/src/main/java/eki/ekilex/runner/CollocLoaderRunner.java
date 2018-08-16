@@ -714,7 +714,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					}
 				} else {
 					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, inboundPrimaryCollocMemberWeight, collocGroupOrder);
+						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, collocMemberForm, inboundPrimaryCollocMemberWeight, collocGroupOrder);
 						if (currentCollocMemberIds.contains(lexemeId)) {
 							repeatingCollocMemberCount.increment();
 							appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
@@ -723,7 +723,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							currentCollocMemberRecords.add(collocMemberRecord);
 						}
 					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, inboundPrimaryCollocMemberWeight, collocGroupOrder);
+						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, collocMemberForm, inboundPrimaryCollocMemberWeight, collocGroupOrder);
 						if (currentCollocMemberIds.contains(lexemeId)) {
 							repeatingCollocMemberCount.increment();
 							appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
@@ -782,11 +782,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						repeatingCollocMemberCount.increment();
 						appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
 					} else if (StringUtils.equals(collocMemberName, colWordCollocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(collocLexemeId, null, outboundPrimaryCollocMemberWeight, null);
+						collocMemberRecord = new CollocMemberRecord(collocLexemeId, null, collocMemberForm, outboundPrimaryCollocMemberWeight, null);
 						currentCollocMemberRecords.add(collocMemberRecord);
 						currentCollocMemberIds.add(collocLexemeId);
 					} else if (ArrayUtils.contains(secondaryCollocMemberNames, collocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(collocLexemeId, null, outboundSecondaryCollocMemberWeight, null);
+						collocMemberRecord = new CollocMemberRecord(collocLexemeId, null, collocMemberForm, outboundSecondaryCollocMemberWeight, null);
 						currentCollocMemberRecords.add(collocMemberRecord);
 						currentCollocMemberIds.add(collocLexemeId);
 					} else {
@@ -916,10 +916,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		for (CollocMemberRecord collocMemberRecord : collocMemberRecords) {
 			Long lexemeId = collocMemberRecord.getLexemeId();
 			Long relGroupId = collocMemberRecord.getRelGroupId();
+			String memberForm = collocMemberRecord.getMemberForm();
 			Float weight = collocMemberRecord.getWeight();
 			Integer groupOrder = collocMemberRecord.getGroupOrder();
 			memberOrder++;
-			createLexemeCollocation(collocationId, lexemeId, relGroupId, weight, memberOrder, groupOrder);
+			createLexemeCollocation(collocationId, lexemeId, relGroupId, memberForm, weight, memberOrder, groupOrder);
 		}
 		return collocationId;
 	}
@@ -1101,7 +1102,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocationId;
 	}
 
-	private Long createLexemeCollocation(Long collocId, Long lexemeId, Long relGroupId, Float weight, Integer memberOrder, Integer groupOrder) throws Exception {
+	private Long createLexemeCollocation(Long collocId, Long lexemeId, Long relGroupId, String memberForm, Float weight, Integer memberOrder, Integer groupOrder) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("collocation_id", collocId);
@@ -1109,6 +1110,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		if (relGroupId != null) {
 			tableRowParamMap.put("rel_group_id", relGroupId);
 		}
+		tableRowParamMap.put("member_form", memberForm);
 		tableRowParamMap.put("weight", weight);
 		tableRowParamMap.put("member_order", memberOrder);
 		if (groupOrder != null) {
@@ -1290,13 +1292,16 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		private Long relGroupId;
 
+		private String memberForm;
+
 		private Float weight;
 
 		private Integer groupOrder;
 
-		public CollocMemberRecord(Long lexemeId, Long relGroupId, Float weight, Integer groupOrder) {
+		public CollocMemberRecord(Long lexemeId, Long relGroupId, String memberForm, Float weight, Integer groupOrder) {
 			this.lexemeId = lexemeId;
 			this.relGroupId = relGroupId;
+			this.memberForm = memberForm;
 			this.weight = weight;
 			this.groupOrder = groupOrder;
 		}
@@ -1315,6 +1320,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		public void setRelGroupId(Long relGroupId) {
 			this.relGroupId = relGroupId;
+		}
+
+		public String getMemberForm() {
+			return memberForm;
+		}
+
+		public void setMemberForm(String memberForm) {
+			this.memberForm = memberForm;
 		}
 
 		public Float getWeight() {

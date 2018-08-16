@@ -1,25 +1,34 @@
 package eki.ekilex.service.db;
 
-import java.util.HashMap;
-import java.util.Map;
+import static eki.ekilex.data.db.Tables.EKI_USER;
 
+import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.TableName;
 import eki.common.service.db.AbstractDbService;
 import eki.ekilex.data.EkiUser;
-import eki.ekilex.service.db.mapper.EkiUserRowMapper;
 
 @Component
-public class UserDbService extends AbstractDbService implements TableName {
+public class UserDbService extends AbstractDbService {
 
-	public EkiUser getUserByName(String name) throws Exception {
+	private DSLContext create;
 
-		String sqlQueryStr = "select id, name, password from " + EKI_USER + " where name = :name";
-		Map<String, Object> paramMap = new HashMap<>();
-		paramMap.put("name", name);
-		EkiUserRowMapper rowMapper = new EkiUserRowMapper();
-		EkiUser user = getSingleResult(sqlQueryStr, paramMap, rowMapper);
-		return user;
+	public UserDbService(DSLContext context) {
+		create = context;
+	}
+
+	public EkiUser getUserByEmail(String email) {
+
+		return create
+				.select(
+						EKI_USER.ID,
+						EKI_USER.NAME,
+						EKI_USER.EMAIL,
+						EKI_USER.PASSWORD,
+						EKI_USER.ROLES)
+				.from(EKI_USER)
+				.where(EKI_USER.EMAIL.eq(email))
+				.fetchSingle()
+				.into(EkiUser.class);
 	}
 }

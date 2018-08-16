@@ -43,7 +43,7 @@ public class EkilexApplication {
 	@Bean
 	public TomcatServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-		tomcat.getSession().setTimeout(Duration.parse("PT"+sessionTimeout));
+		tomcat.getSession().setTimeout(Duration.parse("PT" + sessionTimeout));
 		if (ajpEnabled) {
 			Connector ajpConnector = new Connector("AJP/1.3");
 			ajpConnector.setPort(ajpPort);

@@ -49,8 +49,7 @@
 
     <div class="mt-4 float-left" th:if="${(!searchResult.resultExist) && (simpleSearchFilter != null)}">
       <span th:text="#{term.not.found}">Not found.</span>
-      <button type="button" class="btn btn-success mt-2"
-              data-toggle="modal" data-target="#newWordDlg">
+      <button type="button" class="btn btn-success mt-2" data-toggle="modal" data-target="#newWordDlg">
         Lisa uus
       </button>
     </div>

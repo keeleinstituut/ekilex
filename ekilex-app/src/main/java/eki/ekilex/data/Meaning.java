@@ -19,11 +19,11 @@ public class Meaning extends AbstractDataObject {
 	@Column(name = "lexeme_ids")
 	private List<Long> lexemeIds;
 
+	private List<DefinitionLangGroup> definitionLangGroups;
+
 	private List<LexemeLangGroup> lexemeLangGroups;
 
 	private List<Classifier> domains;
-
-	private List<DefinitionLangGroup> definitionLangGroups;
 
 	private List<FreeForm> freeforms;
 
@@ -55,6 +55,14 @@ public class Meaning extends AbstractDataObject {
 		this.lexemeIds = lexemeIds;
 	}
 
+	public List<DefinitionLangGroup> getDefinitionLangGroups() {
+		return definitionLangGroups;
+	}
+
+	public void setDefinitionLangGroups(List<DefinitionLangGroup> definitionLangGroups) {
+		this.definitionLangGroups = definitionLangGroups;
+	}
+
 	public List<LexemeLangGroup> getLexemeLangGroups() {
 		return lexemeLangGroups;
 	}
@@ -71,20 +79,20 @@ public class Meaning extends AbstractDataObject {
 		this.domains = domains;
 	}
 
-	public List<DefinitionLangGroup> getDefinitionLangGroups() {
-		return definitionLangGroups;
-	}
-
-	public void setDefinitionLangGroups(List<DefinitionLangGroup> definitionLangGroups) {
-		this.definitionLangGroups = definitionLangGroups;
-	}
-
 	public List<FreeForm> getFreeforms() {
 		return freeforms;
 	}
 
 	public void setFreeforms(List<FreeForm> freeforms) {
 		this.freeforms = freeforms;
+	}
+
+	public List<Relation> getRelations() {
+		return relations;
+	}
+
+	public void setRelations(List<Relation> relations) {
+		this.relations = relations;
 	}
 
 	public boolean isContentExists() {
@@ -95,11 +103,4 @@ public class Meaning extends AbstractDataObject {
 		this.contentExists = contentExists;
 	}
 
-	public List<Relation> getRelations() {
-		return relations;
-	}
-
-	public void setRelations(List<Relation> relations) {
-		this.relations = relations;
-	}
 }

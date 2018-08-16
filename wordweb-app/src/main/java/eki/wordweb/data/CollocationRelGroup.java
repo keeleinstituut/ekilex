@@ -12,6 +12,8 @@ public class CollocationRelGroup extends AbstractDataObject {
 
 	private List<Collocation> collocations;
 
+	private List<CollocationMemGroup> memberGroups;
+
 	public String getName() {
 		return name;
 	}
@@ -26,6 +28,14 @@ public class CollocationRelGroup extends AbstractDataObject {
 
 	public void setCollocations(List<Collocation> collocations) {
 		this.collocations = collocations;
+	}
+
+	public List<CollocationMemGroup> getMemberGroups() {
+		return memberGroups;
+	}
+
+	public void setMemberGroups(List<CollocationMemGroup> memberGroups) {
+		this.memberGroups = memberGroups;
 	}
 
 }

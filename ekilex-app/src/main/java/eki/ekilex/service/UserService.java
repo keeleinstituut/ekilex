@@ -19,8 +19,8 @@ public class UserService {
 	private UserDbService userDbService;
 
 	@Transactional
-	public EkiUser getUserByName(String name) throws Exception {
-		EkiUser user = userDbService.getUserByName(name);
+	public EkiUser getUserByEmail(String name) throws Exception {
+		EkiUser user = userDbService.getUserByEmail(name);
 		return user;
 	}
 }

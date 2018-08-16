@@ -6,7 +6,7 @@ public class ManualPasswordEncoder {
 
 	public static void main(String[] args) {
 		try {
-			String password = "Malle";
+			String password = "?????";
 
 			BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 			String encodedPassword = passwordEncoder.encode(password);

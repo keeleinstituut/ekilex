@@ -233,12 +233,54 @@
                       <div class="col-auto">
                         <b>Kollokatsioonid</b>
                       </div>
-                      <div class="col-auto">
+                      <div style="width: 100%">
                         <div th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}">
                           <b>
                             <span th:text="${collocPosGr.posGroup.value}"></span>
                           </b>
                           <div th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
+                            <div th:each="collocMemGr : ${collocRelGr.memberGroups}">
+                              <div th:if="${not #lists.isEmpty(collocMemGr.firstWordCollocations)}">
+                                <table style="width: 100%;">
+                                  <tr>
+                                    <td style="width: 20%">
+                                      <span th:text="${collocMemGr.form}" style="border: 1px solid Gray; padding: 0px 4px 0px 4px"></span>
+                                    </td>
+                                    <td style="text-align:left">
+                                      <span th:each="colloc : ${collocMemGr.firstWordCollocations}">
+                                        <span th:each="collocMem : ${colloc.collocMembers}"
+                                              th:unless="${collocMemGr.wordId == collocMem.wordId}"
+                                              style="border: 1px solid LightGray; padding: 0px 4px 0px 4px">
+                                          <span th:text="${collocMem.form}"></span>
+                                        </span>
+                                        &nbsp;
+                                      </span>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </div>
+                              <div th:if="${not #lists.isEmpty(collocMemGr.lastWordCollocations)}">
+                                <table style="width: 100%;">
+                                  <tr>
+                                    <td style="text-align:right">
+                                      <span th:each="colloc : ${collocMemGr.lastWordCollocations}">
+                                        <span th:each="collocMem : ${colloc.collocMembers}"
+                                              th:unless="${collocMemGr.wordId == collocMem.wordId}"
+                                              style="border: 1px solid LightGray; padding: 0px 4px 0px 4px">
+                                          <span th:text="${collocMem.form}"></span>
+                                        </span>
+                                        &nbsp;
+                                      </span>
+                                    </td>
+                                    <td style="width: 20%">
+                                      <span th:text="${collocMemGr.form}" style="border: 1px solid Gray; padding: 0px 4px 0px 4px"></span>
+                                    </td>
+                                  </tr>
+                                </table>
+                              </div>
+                            </div>
+                            
+                            <!-- 
                             <table style="width: 100%">
                               <tr th:each="colloc,collocIter : ${collocRelGr.collocations}">
                                 <td style="width: 30%">
@@ -278,6 +320,7 @@
                                 </td>
                               </tr>
                             </table>
+                             -->
                           </div>
                         </div>
                       </div>

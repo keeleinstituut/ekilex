@@ -27,7 +27,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
 
-    private static final long serialVersionUID = 1823533341;
+    private static final long serialVersionUID = -1582737096;
 
     /**
      * The reference instance of <code>public.type_colloc_member</code>
@@ -56,6 +56,11 @@ public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
      * The attribute <code>public.type_colloc_member.word</code>.
      */
     public static final UDTField<TypeCollocMemberRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
+
+    /**
+     * The attribute <code>public.type_colloc_member.form</code>.
+     */
+    public static final UDTField<TypeCollocMemberRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
 
     /**
      * No further instances allowed
