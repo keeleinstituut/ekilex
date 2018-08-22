@@ -14,6 +14,16 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private String form;
 
+	private Integer homonymNr;
+
+	private Float weight;
+
+	private boolean headword;
+
+	private boolean primary;
+
+	private boolean context;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -44,6 +54,46 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setForm(String form) {
 		this.form = form;
+	}
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
+	public Float getWeight() {
+		return weight;
+	}
+
+	public void setWeight(Float weight) {
+		this.weight = weight;
+	}
+
+	public boolean isHeadword() {
+		return headword;
+	}
+
+	public void setHeadword(boolean headword) {
+		this.headword = headword;
+	}
+
+	public boolean isPrimary() {
+		return primary;
+	}
+
+	public void setPrimary(boolean primary) {
+		this.primary = primary;
+	}
+
+	public boolean isContext() {
+		return context;
+	}
+
+	public void setContext(boolean context) {
+		this.context = context;
 	}
 
 }

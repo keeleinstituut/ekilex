@@ -16,6 +16,8 @@ public class Collocation extends AbstractDataObject {
 
 	private List<TypeCollocMember> collocMembers;
 
+	private boolean containsOtherWords;
+
 	public String getValue() {
 		return value;
 	}
@@ -46,6 +48,14 @@ public class Collocation extends AbstractDataObject {
 
 	public void setCollocMembers(List<TypeCollocMember> collocMembers) {
 		this.collocMembers = collocMembers;
+	}
+
+	public boolean isContainsOtherWords() {
+		return containsOtherWords;
+	}
+
+	public void setContainsOtherWords(boolean containsOtherWords) {
+		this.containsOtherWords = containsOtherWords;
 	}
 
 }

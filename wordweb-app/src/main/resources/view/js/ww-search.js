@@ -41,13 +41,6 @@ function fetchCorpSentences(sentence) {
 	})
 }
 
-$(document).on("click", "a[id^='word-search-link']", function(e) {
-	e.preventDefault();
-	var newWord = $.trim($(this).text());
-	$("input[name='searchWord']").val(newWord);
-	$("#search-btn").click();
-});
-
 $(document).on("click", ".more-btn", function() {
 	$(this).parent().toggleClass("expand");
 	$(this).parent().find(".additional-meta, .dictionary-source, .dependence:not(:first-child), .dependence:first-child .example-item:not(:first-child) , .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");

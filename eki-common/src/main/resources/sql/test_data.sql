@@ -1,5 +1,4 @@
-insert into eki_user (name, email, password, roles) values ('Admin', 'admin@nowhere.com', '$2a$10$0vHSMiAskGFqIFuNQ7EsBeBL/S/DDq9cBwt4k2g4huy6CcP68RzH6', '{master_user}');
-insert into eki_user (name, email, password, roles) values ('Kusti Tähetark', 'kusti@nowhere.com', '$2a$10$QiFB9sSu3MLCcjaoZCuMsuFeidw2L7brYrY/l4xDII7ARZY7iUlKG', '{basic_user}');
+insert into eki_user (name, email, password, roles) values ('Test Test', 'test@test.com', '$2a$10$d5ZhfCgg2S2Fp4FUTGPpCOGarlPIE4Nt/pqxXmPuN0rBN5MonHxlm', '{super_user}');
 
 insert into dataset (code, name) values ('eos', 'Õigekeelsussõnaraamat ÕS 2013');
 insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat');

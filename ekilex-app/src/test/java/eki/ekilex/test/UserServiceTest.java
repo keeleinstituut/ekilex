@@ -38,8 +38,8 @@ public class UserServiceTest {
 	@Test
 	public void testGetUserByName() throws Exception {
 
-		final String name = "Kusti Tähetark";
-		final String email = "kusti@nowhere.com";
+		final String name = "Test Test";
+		final String email = "test@test.com";
 		EkiUser user = userService.getUserByEmail(email);
 
 		assertNotNull("Incorrect test result", user);

@@ -12,7 +12,7 @@ public class CollocationRelGroup extends AbstractDataObject {
 
 	private List<Collocation> collocations;
 
-	private List<CollocationMemGroup> memberGroups;
+	private List<DisplayColloc> displayCollocs;
 
 	public String getName() {
 		return name;
@@ -30,12 +30,12 @@ public class CollocationRelGroup extends AbstractDataObject {
 		this.collocations = collocations;
 	}
 
-	public List<CollocationMemGroup> getMemberGroups() {
-		return memberGroups;
+	public List<DisplayColloc> getDisplayCollocs() {
+		return displayCollocs;
 	}
 
-	public void setMemberGroups(List<CollocationMemGroup> memberGroups) {
-		this.memberGroups = memberGroups;
+	public void setDisplayCollocs(List<DisplayColloc> displayCollocs) {
+		this.displayCollocs = displayCollocs;
 	}
 
 }

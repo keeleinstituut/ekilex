@@ -7,6 +7,8 @@ package eki.wordweb.data.db.udt;
 import eki.wordweb.data.db.Public;
 import eki.wordweb.data.db.udt.records.TypeCollocMemberRecord;
 
+import java.math.BigDecimal;
+
 import javax.annotation.Generated;
 
 import org.jooq.Schema;
@@ -27,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
 
-    private static final long serialVersionUID = -1528398206;
+    private static final long serialVersionUID = -1217989617;
 
     /**
      * The reference instance of <code>public.type_colloc_member</code>
@@ -61,6 +63,16 @@ public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
      * The attribute <code>public.type_colloc_member.form</code>.
      */
     public static final UDTField<TypeCollocMemberRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
+
+    /**
+     * The attribute <code>public.type_colloc_member.homonym_nr</code>.
+     */
+    public static final UDTField<TypeCollocMemberRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER, TYPE_COLLOC_MEMBER, "");
+
+    /**
+     * The attribute <code>public.type_colloc_member.weight</code>.
+     */
+    public static final UDTField<TypeCollocMemberRecord, BigDecimal> WEIGHT = createField("weight", org.jooq.impl.SQLDataType.NUMERIC(14, 4), TYPE_COLLOC_MEMBER, "");
 
     /**
      * No further instances allowed

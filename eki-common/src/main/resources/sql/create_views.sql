@@ -2,7 +2,7 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
-create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text);
+create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, weight numeric(14,4));
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -298,15 +298,26 @@ create view view_ww_collocation
       c.value as colloc_value,
       c.definition as colloc_definition,
       c.usages as colloc_usages,
-      array_agg(row(l2.id, l2.word_id, f2.value, lc2.member_form)::type_colloc_member order by lc2.member_order) as colloc_members
+      array_agg(row(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lw2.homonym_nr, lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members
     from
       collocation as c
       inner join lex_colloc as lc1 on lc1.collocation_id = c.id
       inner join lex_colloc as lc2 on lc2.collocation_id = c.id
       inner join lexeme as l1 on l1.id = lc1.lexeme_id
-      inner join lexeme as l2 on l2.id = lc2.lexeme_id
-      inner join paradigm as p2 on p2.word_id = l2.word_id
-      inner join form as f2 on f2.paradigm_id = p2.id and f2.is_word = true
+      inner join (
+              select distinct 
+                     l2.id lexeme_id,
+                     l2.word_id,
+                     f2.value word,
+                     w2.homonym_nr
+              from lexeme as l2,
+                   word as w2,
+                   paradigm as p2,
+                   form as f2
+              where l2.word_id = w2.id
+              and   p2.word_id = w2.id
+              and   f2.paradigm_id = p2.id
+              and   f2.is_word = true) lw2 on lw2.lexeme_id = lc2.lexeme_id
       left outer join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
       left outer join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
     group by

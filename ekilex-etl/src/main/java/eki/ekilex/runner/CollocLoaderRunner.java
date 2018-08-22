@@ -123,6 +123,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String[] textCleanupEnitites = new String[] {"&ba;", "&bl;"};
 	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 
+	private final Float inboundPrimaryCollocMemberWeight = 1F;
+	private final Float outboundPrimaryCollocMemberWeight = 0.8F;
+	private final Float outboundSecondaryCollocMemberWeight = 0.5F;
+
 	private ReportComposer reportComposer;
 
 	@Deprecated
@@ -631,10 +635,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count reusedCollocationCount = countersMap.get("reusedCollocationCount");
 		Count updatedCollocCount = countersMap.get("updatedCollocCount");
 		Count updatedCollocMemberCount = countersMap.get("updatedCollocMemberCount");
-
-		final Float inboundPrimaryCollocMemberWeight = 1F;
-		final Float outboundPrimaryCollocMemberWeight = 0.8F;
-		final Float outboundSecondaryCollocMemberWeight = 0.5F;
 
 		String word = collocGroup.getWord();
 		Long lexemeId = collocGroup.getLexemeId();
