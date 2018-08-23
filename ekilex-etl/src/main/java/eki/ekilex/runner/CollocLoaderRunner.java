@@ -699,6 +699,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				String collocMemberName = collocMember.getName();
 				String collocMemberWord = collocMember.getWord();
 				String collocMemberForm = collocMember.getForm();
+				String collocMemberConjunct = collocMember.getConjunct();
 				String collocMemberPosCode = collocMember.getPosCode();
 				RefNum collocMemberRefNum = collocMember.getRefNum();
 
@@ -714,7 +715,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					}
 				} else {
 					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, collocMemberForm, inboundPrimaryCollocMemberWeight, collocGroupOrder);
+						collocMemberRecord = new CollocMemberRecord(
+								lexemeId, collocRelGroupId, collocMemberForm, collocMemberConjunct, inboundPrimaryCollocMemberWeight, collocGroupOrder);
 						if (currentCollocMemberIds.contains(lexemeId)) {
 							repeatingCollocMemberCount.increment();
 							appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
@@ -723,7 +725,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							currentCollocMemberRecords.add(collocMemberRecord);
 						}
 					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(lexemeId, collocRelGroupId, collocMemberForm, inboundPrimaryCollocMemberWeight, collocGroupOrder);
+						collocMemberRecord = new CollocMemberRecord(
+								lexemeId, collocRelGroupId, collocMemberForm, collocMemberConjunct, inboundPrimaryCollocMemberWeight, collocGroupOrder);
 						if (currentCollocMemberIds.contains(lexemeId)) {
 							repeatingCollocMemberCount.increment();
 							appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
@@ -782,11 +785,13 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						repeatingCollocMemberCount.increment();
 						appendToReport(doReports, REPORT_REPEATING_COLLOC_MEMBER, word, collocation, collocMemberForm);
 					} else if (StringUtils.equals(collocMemberName, colWordCollocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(collocLexemeId, null, collocMemberForm, outboundPrimaryCollocMemberWeight, null);
+						collocMemberRecord = new CollocMemberRecord(
+								collocLexemeId, null, collocMemberForm, collocMemberConjunct, outboundPrimaryCollocMemberWeight, null);
 						currentCollocMemberRecords.add(collocMemberRecord);
 						currentCollocMemberIds.add(collocLexemeId);
 					} else if (ArrayUtils.contains(secondaryCollocMemberNames, collocMemberName)) {
-						collocMemberRecord = new CollocMemberRecord(collocLexemeId, null, collocMemberForm, outboundSecondaryCollocMemberWeight, null);
+						collocMemberRecord = new CollocMemberRecord(
+								collocLexemeId, null, collocMemberForm, collocMemberConjunct, outboundSecondaryCollocMemberWeight, null);
 						currentCollocMemberRecords.add(collocMemberRecord);
 						currentCollocMemberIds.add(collocLexemeId);
 					} else {
@@ -914,13 +919,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Long collocationId = createCollocation(collocation, definition, frequency, score, collocUsages);
 		Integer memberOrder = 0;
 		for (CollocMemberRecord collocMemberRecord : collocMemberRecords) {
-			Long lexemeId = collocMemberRecord.getLexemeId();
-			Long relGroupId = collocMemberRecord.getRelGroupId();
-			String memberForm = collocMemberRecord.getMemberForm();
-			Float weight = collocMemberRecord.getWeight();
-			Integer groupOrder = collocMemberRecord.getGroupOrder();
 			memberOrder++;
-			createLexemeCollocation(collocationId, lexemeId, relGroupId, memberForm, weight, memberOrder, groupOrder);
+			createLexemeCollocation(collocationId, memberOrder, collocMemberRecord);
 		}
 		return collocationId;
 	}
@@ -1102,15 +1102,25 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocationId;
 	}
 
-	private Long createLexemeCollocation(Long collocId, Long lexemeId, Long relGroupId, String memberForm, Float weight, Integer memberOrder, Integer groupOrder) throws Exception {
+	private Long createLexemeCollocation(Long collocationId, Integer memberOrder, CollocMemberRecord collocMemberRecord) throws Exception {
+
+		Long lexemeId = collocMemberRecord.getLexemeId();
+		Long relGroupId = collocMemberRecord.getRelGroupId();
+		String memberForm = collocMemberRecord.getMemberForm();
+		String conjunct = collocMemberRecord.getConjunct();
+		Float weight = collocMemberRecord.getWeight();
+		Integer groupOrder = collocMemberRecord.getGroupOrder();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("collocation_id", collocId);
+		tableRowParamMap.put("collocation_id", collocationId);
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		if (relGroupId != null) {
 			tableRowParamMap.put("rel_group_id", relGroupId);
 		}
 		tableRowParamMap.put("member_form", memberForm);
+		if (StringUtils.isNotBlank(conjunct)) {
+			tableRowParamMap.put("conjunct", conjunct);
+		}
 		tableRowParamMap.put("weight", weight);
 		tableRowParamMap.put("member_order", memberOrder);
 		if (groupOrder != null) {
@@ -1294,14 +1304,17 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		private String memberForm;
 
+		private String conjunct;
+
 		private Float weight;
 
 		private Integer groupOrder;
 
-		public CollocMemberRecord(Long lexemeId, Long relGroupId, String memberForm, Float weight, Integer groupOrder) {
+		public CollocMemberRecord(Long lexemeId, Long relGroupId, String memberForm, String conjunct, Float weight, Integer groupOrder) {
 			this.lexemeId = lexemeId;
 			this.relGroupId = relGroupId;
 			this.memberForm = memberForm;
+			this.conjunct = conjunct;
 			this.weight = weight;
 			this.groupOrder = groupOrder;
 		}
@@ -1328,6 +1341,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		public void setMemberForm(String memberForm) {
 			this.memberForm = memberForm;
+		}
+
+		public String getConjunct() {
+			return conjunct;
+		}
+
+		public void setConjunct(String conjunct) {
+			this.conjunct = conjunct;
 		}
 
 		public Float getWeight() {

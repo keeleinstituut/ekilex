@@ -3,7 +3,7 @@ package eki.wordweb.web.util;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.tomcat.util.buf.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eki.wordweb.constant.WebConstant;
@@ -33,6 +33,11 @@ public class ViewUtil implements WebConstant {
 		htmlBuf.append("<span>");
 		for (int collocMemberIndex = 0; collocMemberIndex < collocMemberCount; collocMemberIndex++) {
 			collocMember = collocMembers.get(collocMemberIndex);
+			String conjunct = collocMember.getConjunct();
+			if (StringUtils.isNotBlank(conjunct)) {
+				htmlBuf.append(conjunct);
+				htmlBuf.append("&nbsp;");
+			}
 			if (collocMember.isHeadword()) {
 				htmlBuf.append("<span class='text-info'>");
 				htmlBuf.append(collocMember.getForm());
@@ -41,7 +46,7 @@ public class ViewUtil implements WebConstant {
 				htmlBuf.append(collocMember.getForm());
 			}
 			if (collocMemberIndex < collocMemberCount - 1) {
-				htmlBuf.append(" ");
+				htmlBuf.append("&nbsp;");
 			}
 		}
 		htmlBuf.append("</span>");
@@ -64,6 +69,11 @@ public class ViewUtil implements WebConstant {
 		htmlBuf.append("<span>");
 		for (int collocMemberIndex = 0; collocMemberIndex < collocMemberCount; collocMemberIndex++) {
 			collocMember = collocMembers.get(collocMemberIndex);
+			String conjunct = collocMember.getConjunct();
+			if (StringUtils.isNotBlank(conjunct)) {
+				htmlBuf.append(conjunct);
+				htmlBuf.append("&nbsp;");
+			}
 			if (collocMember.isHeadword()) {
 				htmlBuf.append("<span class='text-info'>");
 				htmlBuf.append(collocMember.getForm());
@@ -76,7 +86,7 @@ public class ViewUtil implements WebConstant {
 				htmlBuf.append(collocMember.getForm());
 			}
 			if (collocMemberIndex < collocMemberCount - 1) {
-				htmlBuf.append(" ");
+				htmlBuf.append("&nbsp;");
 			}
 		}
 		htmlBuf.append("</span>");

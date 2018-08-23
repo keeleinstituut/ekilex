@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexColloc extends TableImpl<LexCollocRecord> {
 
-    private static final long serialVersionUID = -829296446;
+    private static final long serialVersionUID = 126331546;
 
     /**
      * The reference instance of <code>public.lex_colloc</code>
@@ -80,6 +80,11 @@ public class LexColloc extends TableImpl<LexCollocRecord> {
      * The column <code>public.lex_colloc.member_form</code>.
      */
     public final TableField<LexCollocRecord, String> MEMBER_FORM = createField("member_form", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lex_colloc.conjunct</code>.
+     */
+    public final TableField<LexCollocRecord, String> CONJUNCT = createField("conjunct", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lex_colloc.weight</code>.

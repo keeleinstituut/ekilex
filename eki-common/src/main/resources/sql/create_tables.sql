@@ -658,6 +658,7 @@ create table lex_colloc
   rel_group_id bigint references lex_colloc_rel_group(id) on delete cascade null,
   collocation_id bigint references collocation(id) on delete cascade not null,
   member_form text not null,
+  conjunct varchar(100) null,
   weight numeric(14, 4),
   member_order integer not null,
   group_order integer,

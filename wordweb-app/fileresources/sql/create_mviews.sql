@@ -26,7 +26,7 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
-create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, weight numeric(14,4));
+create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, conjunct varchar(100), homonym_nr integer, weight numeric(14,4));
 create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint,lexeme_id bigint,word_id bigint,word text,word_lang char(3),meaning_rel_type_code varchar(100));

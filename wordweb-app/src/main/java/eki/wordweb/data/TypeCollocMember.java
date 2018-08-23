@@ -14,6 +14,8 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private String form;
 
+	private String conjunct;
+
 	private Integer homonymNr;
 
 	private Float weight;
@@ -54,6 +56,14 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setForm(String form) {
 		this.form = form;
+	}
+
+	public String getConjunct() {
+		return conjunct;
+	}
+
+	public void setConjunct(String conjunct) {
+		this.conjunct = conjunct;
 	}
 
 	public Integer getHomonymNr() {

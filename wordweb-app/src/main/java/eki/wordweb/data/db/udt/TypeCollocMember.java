@@ -29,7 +29,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
 
-    private static final long serialVersionUID = -1217989617;
+    private static final long serialVersionUID = -910332595;
 
     /**
      * The reference instance of <code>public.type_colloc_member</code>
@@ -63,6 +63,11 @@ public class TypeCollocMember extends UDTImpl<TypeCollocMemberRecord> {
      * The attribute <code>public.type_colloc_member.form</code>.
      */
     public static final UDTField<TypeCollocMemberRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, TYPE_COLLOC_MEMBER, "");
+
+    /**
+     * The attribute <code>public.type_colloc_member.conjunct</code>.
+     */
+    public static final UDTField<TypeCollocMemberRecord, String> CONJUNCT = createField("conjunct", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_COLLOC_MEMBER, "");
 
     /**
      * The attribute <code>public.type_colloc_member.homonym_nr</code>.

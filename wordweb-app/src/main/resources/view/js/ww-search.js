@@ -83,6 +83,10 @@ $(document).on("click", "a[id^='word-details-link']", function(e) {
 	fetchDetails(wordId, word, wordSelectUrl);
 });
 
+$(document).on("click", "button[id^='colloc-usages-btn']", function(e) {
+	$("[id^='colloc-usages-area']").fadeToggle();
+});
+
 // demo js for interactions between the mobile and desktop modes
 $(document).on("click", ".back", function(e) {
 	if ($(".homonym-panel").hasClass("d-none")) {

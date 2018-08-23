@@ -10,6 +10,8 @@ public class CollocationRelGroup extends AbstractDataObject {
 
 	private String name;
 
+	private List<String> allUsages;
+
 	private List<Collocation> collocations;
 
 	private List<DisplayColloc> displayCollocs;
@@ -20,6 +22,14 @@ public class CollocationRelGroup extends AbstractDataObject {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public List<String> getAllUsages() {
+		return allUsages;
+	}
+
+	public void setAllUsages(List<String> allUsages) {
+		this.allUsages = allUsages;
 	}
 
 	public List<Collocation> getCollocations() {

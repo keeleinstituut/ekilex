@@ -153,8 +153,7 @@ public class ConversionUtil {
 
 		List<Collocation> collocations;
 		List<TypeCollocMember> collocMembers;
-		Map<String, DisplayColloc> collocMemGroupMap;
-		List<DisplayColloc> displayCollocs;
+		Map<String, DisplayColloc> collocMemberGroupMap;
 		DisplayColloc displayColloc;
 		List<String> collocPrimaryMemberForms;
 		List<String> collocContextMemberForms;
@@ -163,10 +162,13 @@ public class ConversionUtil {
 
 		for (CollocationRelGroup collocRelGroup : allCollocRelGroups) {
 			collocations = collocRelGroup.getCollocations();
-			displayCollocs = new ArrayList<>();
-			collocRelGroup.setDisplayCollocs(displayCollocs);
-			collocMemGroupMap = new HashMap<>();
+			collocRelGroup.setAllUsages(new ArrayList<>());
+			collocRelGroup.setDisplayCollocs(new ArrayList<>());
+			collocMemberGroupMap = new HashMap<>();
 			for (Collocation colloc : collocations) {
+				if (CollectionUtils.isNotEmpty(colloc.getCollocUsages())) {
+					collocRelGroup.getAllUsages().addAll(colloc.getCollocUsages());
+				}
 				collocMembers = colloc.getCollocMembers();
 				collocPrimaryMembers = new ArrayList<>();
 				collocContextMembers = new ArrayList<>();
@@ -192,14 +194,14 @@ public class ConversionUtil {
 				collocPrimaryMemberForms = collocPrimaryMembers.stream().map(TypeCollocMember::getForm).collect(Collectors.toList());
 				collocContextMemberForms = collocContextMembers.stream().map(TypeCollocMember::getForm).collect(Collectors.toList());
 				String collocPrimaryMemberWrapup = StringUtils.join(collocPrimaryMemberForms, '-');
-				displayColloc = collocMemGroupMap.get(collocPrimaryMemberWrapup);
+				displayColloc = collocMemberGroupMap.get(collocPrimaryMemberWrapup);
 				if (displayColloc == null) {
 					displayColloc = new DisplayColloc();
 					displayColloc.setCollocMembers(collocPrimaryMembers);
 					displayColloc.setPreContext(new ArrayList<>());
 					displayColloc.setPostContext(new ArrayList<>());
-					collocMemGroupMap.put(collocPrimaryMemberWrapup, displayColloc);
-					displayCollocs.add(displayColloc);
+					collocMemberGroupMap.put(collocPrimaryMemberWrapup, displayColloc);
+					collocRelGroup.getDisplayCollocs().add(displayColloc);
 				}
 				if (isPreContext) {
 					displayColloc.getPreContext().addAll(collocContextMemberForms);
