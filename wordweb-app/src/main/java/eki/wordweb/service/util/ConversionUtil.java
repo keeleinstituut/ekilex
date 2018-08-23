@@ -435,6 +435,7 @@ public class ConversionUtil {
 				collocPosGroup = new CollocationPosGroup();
 				String classifierCode = tuple.getPosGroupCode();
 				Classifier classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
+				collocPosGroup.setPosGroupId(posGroupId);
 				collocPosGroup.setPosGroup(classifier);
 				collocPosGroup.setRelationGroups(new ArrayList<>());
 				collocPosGroupMap.put(posGroupId, collocPosGroup);
@@ -451,6 +452,7 @@ public class ConversionUtil {
 			collocRelGroup = collocRelGroupMap.get(relGroupId);
 			if (collocRelGroup == null) {
 				collocRelGroup = new CollocationRelGroup();
+				collocRelGroup.setRelGroupId(relGroupId);
 				collocRelGroup.setName(tuple.getRelGroupName());
 				collocRelGroup.setCollocations(new ArrayList<>());
 				collocRelGroupMap.put(relGroupId, collocRelGroup);

@@ -9,9 +9,19 @@ public class CollocationPosGroup extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long posGroupId;
+
 	private Classifier posGroup;
 
 	private List<CollocationRelGroup> relationGroups;
+
+	public Long getPosGroupId() {
+		return posGroupId;
+	}
+
+	public void setPosGroupId(Long posGroupId) {
+		this.posGroupId = posGroupId;
+	}
 
 	public Classifier getPosGroup() {
 		return posGroup;

@@ -83,8 +83,8 @@ $(document).on("click", "a[id^='word-details-link']", function(e) {
 	fetchDetails(wordId, word, wordSelectUrl);
 });
 
-$(document).on("click", "button[id^='colloc-usages-btn']", function(e) {
-	$("[id^='colloc-usages-area']").fadeToggle();
+$(document).on("click", "button[name^='colloc-usages-btn']", function(e) {
+	$(this).closest("[id^='collocs-area']").find("[id^='colloc-usages-area']").fadeToggle();
 });
 
 // demo js for interactions between the mobile and desktop modes

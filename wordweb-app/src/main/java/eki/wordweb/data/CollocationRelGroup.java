@@ -8,6 +8,8 @@ public class CollocationRelGroup extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Long relGroupId;
+
 	private String name;
 
 	private List<String> allUsages;
@@ -15,6 +17,14 @@ public class CollocationRelGroup extends AbstractDataObject {
 	private List<Collocation> collocations;
 
 	private List<DisplayColloc> displayCollocs;
+
+	public Long getRelGroupId() {
+		return relGroupId;
+	}
+
+	public void setRelGroupId(Long relGroupId) {
+		this.relGroupId = relGroupId;
+	}
 
 	public String getName() {
 		return name;
