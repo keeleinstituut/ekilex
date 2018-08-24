@@ -47,15 +47,16 @@ public class LexSearchService implements InitializingBean {
 	public void afterPropertiesSet() throws Exception {
 
 		languagesDatasetMap = new HashMap<>();
-		languagesDatasetMap.put("estest", new String[] {"ss1", "psv", "kol"});
-		languagesDatasetMap.put("estrus", new String[] {"qq2", "ev2"});
-		languagesDatasetMap.put("rusest", new String[] {"qq2"});
+		languagesDatasetMap.put("estest-adv", new String[] {"ss1", "psv", "kol"});
+		languagesDatasetMap.put("estest-beg", new String[] {"psv"});
+		languagesDatasetMap.put("estrus-adv", new String[] {"qq2", "ev2"});
+		languagesDatasetMap.put("rusest-adv", new String[] {"qq2"});
 	}
 
 	@Transactional
-	public WordsData findWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr) {
+	public WordsData findWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, boolean isBeginner) {
 
-		String languagesDatasetKey = sourceLang + destinLang;
+		String languagesDatasetKey = getDatasetMapKey(sourceLang, destinLang, isBeginner);
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, datasets);
 		conversionUtil.filterLanguageValues(allWords, destinLang);
@@ -68,10 +69,11 @@ public class LexSearchService implements InitializingBean {
 		return new WordsData(allWords, Collections.emptyList());
 	}
 
+	//TODO integrate beginner filter
 	@Transactional
 	public Map<String, List<String>> findWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
 
-		String languagesDatasetKey = sourceLang + destinLang;
+		String languagesDatasetKey = getDatasetMapKey(sourceLang, destinLang, false);
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, datasets, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
@@ -101,9 +103,9 @@ public class LexSearchService implements InitializingBean {
 	}
 
 	@Transactional
-	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang) {
+	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang, boolean isBeginner) {
 
-		String languagesDatasetKey = sourceLang + destinLang;
+		String languagesDatasetKey = getDatasetMapKey(sourceLang, destinLang, isBeginner);
 		String[] datasets = languagesDatasetMap.get(languagesDatasetKey);
 		Word word = lexSearchDbService.getWord(wordId);
 		conversionUtil.populateWordRelationClassifiers(word, displayLang);
@@ -187,4 +189,13 @@ public class LexSearchService implements InitializingBean {
 		});
 	}
 
+	private String getDatasetMapKey(String sourceLang, String destinLang, boolean isBeginner) {
+		String datasetKey = sourceLang + destinLang;
+		if (isBeginner && StringUtils.equals("estest", datasetKey)) {
+			datasetKey = datasetKey + "-beg";
+		} else {
+			datasetKey = datasetKey + "-adv";
+		}
+		return datasetKey;
+	}
 }

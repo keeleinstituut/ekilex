@@ -14,6 +14,8 @@ public class SearchFilter extends AbstractDataObject {
 
 	private Integer homonymNr;
 
+	private boolean beginner;
+
 	private String searchUri;
 
 	private boolean valid;
@@ -48,6 +50,14 @@ public class SearchFilter extends AbstractDataObject {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public boolean isBeginner() {
+		return beginner;
+	}
+
+	public void setBeginner(boolean beginner) {
+		this.beginner = beginner;
 	}
 
 	public String getSearchUri() {

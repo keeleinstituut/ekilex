@@ -25,11 +25,11 @@
     <div class="row search-wrap">
       <div class="col-12 search-panel">
         <div class="row">
+          <div class="col-md-5 col-lg-5">
+            <div th:replace="common :: search"></div>
+          </div>
           <div class="col-md-6">
             <div th:replace="common :: lang-filter"></div>
-          </div>
-          <div class="col-md-6 col-lg-5 order-md-first">
-            <div th:replace="common :: search"></div>
           </div>
         </div>
       </div>
@@ -456,6 +456,7 @@
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+  	//var beginner = /*[[${sessionBean.beginner}]]*/false;
   	var currentPage = /*[[@{/search}]]*/"/search";
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';

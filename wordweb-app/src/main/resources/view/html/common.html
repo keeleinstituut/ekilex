@@ -74,35 +74,6 @@
     </div>
   </th:block>
 
-  <!-- lang filter -->
-  <th:block th:fragment="lang-filter">
-    <div class="search-lang dropdown">
-      <button id="lang-selector-btn" class="btn btn-light lang-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <span id="source-lang-lbl">eesti</span>
-        <span class="icon icon-arrow-right"></span>
-        <span id="destin-lang-lbl">vene</span>
-      </button>
-      <form class="dropdown-menu p-4 container">
-        <div class="row">
-          <div class="col-6">
-            <button name="source-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
-            <button name="source-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
-          </div>
-          <div class="col-6">
-            <button name="destin-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
-            <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
-          </div>
-        </div>
-        <div class="dropdown-divider"></div>
-        <div class="row">
-          <div class="col-12">
-            <button id="lang-sel-complete-btn" class="btn btn-light" type="button">Jätka</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </th:block>
-
   <!-- search -->
   <th:block th:fragment="search">
     <div class="search-main">
@@ -111,6 +82,7 @@
           <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" placeholder="Kirjuta mõni sõna" />
           <input type="hidden" name="sourceLang" value="" />
           <input type="hidden" name="destinLang" value="" />
+          <input type="hidden" name="isBeginner" th:value="${sessionBean.beginner}" />
         </div>
         <div class="extra-buttons">
           <button id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
@@ -125,6 +97,46 @@
           <span class="icon icon-search"></span>
         </button>
       </form>
+    </div>
+  </th:block>
+
+  <!-- lang filter -->
+  <th:block th:fragment="lang-filter">
+    <div class="row">
+      <div class="col-5">
+        <div class="search-lang dropdown">
+          <button id="lang-selector-btn" class="btn btn-light lang-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <span id="source-lang-lbl">eesti</span>
+            <span class="icon icon-arrow-right"></span>
+            <span id="destin-lang-lbl">vene</span>
+          </button>
+          <form class="dropdown-menu p-4 container">
+            <div class="row">
+              <div class="col-6">
+                <button name="source-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
+                <button name="source-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
+              </div>
+              <div class="col-6">
+                <button name="destin-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
+                <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
+              </div>
+            </div>
+            <div class="dropdown-divider"></div>
+            <div class="row">
+              <div class="col-12">
+                <button id="lang-sel-complete-btn" class="btn btn-light" type="button">Jätka</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="col-3">
+        <label class="checkcontainer" id="beginner-switch">
+          <span>Õppijale</span>
+          <input id="beginner-chk" type="checkbox" th:checked="${sessionBean.beginner}">
+          <span class="checkmark"></span>
+        </label>
+      </div>
     </div>
   </th:block>
 

@@ -53,7 +53,15 @@ public class SearchController extends AbstractController {
 	public String searchWords(
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "sourceLang") String sourceLang,
-			@RequestParam(name = "destinLang") String destinLang) {
+			@RequestParam(name = "destinLang") String destinLang,
+			@RequestParam(name = "isBeginner") Boolean isBeginner,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+
+		//TODO should probably append to rest url
+		if (isBeginner == null) {
+			isBeginner = Boolean.FALSE;
+		}
+		sessionBean.setBeginner(isBeginner);
 
 		searchWord = StringUtils.trim(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
@@ -75,7 +83,8 @@ public class SearchController extends AbstractController {
 			Model model) {
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
-		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr);
+		boolean isBeginner = sessionBean.isBeginner();
+		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, isBeginner);
 
 		if (!searchFilter.isValid()) {
 			return "redirect:" + searchFilter.getSearchUri();
@@ -84,10 +93,12 @@ public class SearchController extends AbstractController {
 		String sourceLang = searchFilter.getSourceLang();
 		String destinLang = searchFilter.getDestinLang();
 		Integer homonymNr = searchFilter.getHomonymNr();
+		isBeginner = searchFilter.isBeginner();
 		sessionBean.setSourceLang(sourceLang);
 		sessionBean.setDestinLang(destinLang);
+		sessionBean.setBeginner(isBeginner);
 
-		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr);
+		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr, isBeginner);
 		populateModel(searchWord, wordsData, model);
 
 		return SEARCH_PAGE;
@@ -112,7 +123,8 @@ public class SearchController extends AbstractController {
 
 		String sourceLang = sessionBean.getSourceLang();
 		String destinLang = sessionBean.getDestinLang();
-		WordData wordData = lexSearchService.getWordData(wordId, sourceLang, destinLang, DISPLAY_LANG);
+		boolean isBeginner = sessionBean.isBeginner();
+		WordData wordData = lexSearchService.getWordData(wordId, sourceLang, destinLang, DISPLAY_LANG, isBeginner);
 		model.addAttribute("wordData", wordData);
 
 		return SEARCH_PAGE + " :: worddetails";
@@ -127,7 +139,7 @@ public class SearchController extends AbstractController {
 		return SEARCH_PAGE + " :: korp";
 	}
 
-	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr) {
+	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr, boolean isBeginner) {
 
 		boolean isValid = true;
 		String[] languages = StringUtils.split(langPair, LANGUAGE_PAIR_SEPARATOR);
@@ -167,6 +179,11 @@ public class SearchController extends AbstractController {
 			isValid = isValid & true;
 		}
 
+		if (!StringUtils.equals(sourceLang, DEFAULT_SOURCE_LANG)
+				|| !StringUtils.equals(destinLang, DEFAULT_DESTIN_LANG)) {
+			isBeginner = false;
+		}
+
 		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, homonymNr);
 
 		SearchFilter searchFilter = new SearchFilter();
@@ -174,6 +191,7 @@ public class SearchController extends AbstractController {
 		searchFilter.setSourceLang(sourceLang);
 		searchFilter.setDestinLang(destinLang);
 		searchFilter.setHomonymNr(homonymNr);
+		searchFilter.setBeginner(isBeginner);
 		searchFilter.setSearchUri(searchUri);
 		searchFilter.setValid(isValid);
 

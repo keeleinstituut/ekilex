@@ -121,6 +121,11 @@ function empowerLanguageSelection() {
 	destinLang = $("button[name = 'destin-lang-btn'].active").val();
 	$("input[name = 'sourceLang']").val(sourceLang);
 	$("input[name = 'destinLang']").val(destinLang);
+	if ((sourceLang == destinLang) && (destinLang == 'est')) {
+		$("#beginner-switch").show();		
+	} else {
+		$("#beginner-switch").hide();
+	}
 }
 
 function calculateAndSetStyles() {
@@ -370,6 +375,11 @@ $(document).on("click", "button[id='lang-sel-complete-btn']", function(e) {
 	if ($("input[name='searchWord']").val()) {
 		$("#search-btn").click();
 	}
+});
+
+$(document).on("change", "#beginner-switch", function(e) {
+	var beginner = $("#beginner-chk").prop("checked");
+	$("input[name='isBeginner']").val(beginner);
 });
 
 $(document).on("click", "#start-rec-btn", function(e) {

@@ -83,7 +83,7 @@ $(document).on("click", "a[id^='word-details-link']", function(e) {
 	fetchDetails(wordId, word, wordSelectUrl);
 });
 
-$(document).on("click", "button[name^='colloc-usages-btn']", function(e) {
+$(document).on("click", "button[name='colloc-usages-btn']", function(e) {
 	$(this).closest("[id^='collocs-area']").find("[id^='colloc-usages-area']").fadeToggle();
 });
 

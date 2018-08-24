@@ -10,6 +10,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private String destinLang;
 
+	private boolean beginner;
+
 	public String getSourceLang() {
 		return sourceLang;
 	}
@@ -24,6 +26,14 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setDestinLang(String destinLang) {
 		this.destinLang = destinLang;
+	}
+
+	public boolean isBeginner() {
+		return beginner;
+	}
+
+	public void setBeginner(boolean beginner) {
+		this.beginner = beginner;
 	}
 
 }
