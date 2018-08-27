@@ -480,7 +480,7 @@ create view view_ww_classifier
        value,
        lang
      from domain_label
-     where type = 'wordweb'
+     where type = 'descrip'
      union all
      select
        'USAGE_TYPE' as name,
