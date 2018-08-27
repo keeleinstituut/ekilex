@@ -80,8 +80,8 @@
       <form th:action="@{/search}" th:method="post">
         <div>
           <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" placeholder="Kirjuta mõni sõna" />
-          <input type="hidden" name="sourceLang" value="" />
-          <input type="hidden" name="destinLang" value="" />
+          <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
+          <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
           <input type="hidden" name="isBeginner" th:value="${sessionBean.beginner}" />
         </div>
         <div class="extra-buttons">
@@ -121,12 +121,14 @@
                 <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
               </div>
             </div>
+            <!-- 
             <div class="dropdown-divider"></div>
             <div class="row">
               <div class="col-12">
                 <button id="lang-sel-complete-btn" class="btn btn-light" type="button">Jätka</button>
               </div>
             </div>
+             -->
           </form>
         </div>
       </div>

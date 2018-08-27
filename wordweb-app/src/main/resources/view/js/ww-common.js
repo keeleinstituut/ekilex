@@ -347,27 +347,47 @@ $(document).on("blur", "input[name='searchWord']", function(e) {
 });
 
 $(document).on("click", "button[name='source-lang-btn']", function(e) {
-	var tempSourceLang = $(this).val();
-	var tempDestinLang = $("button[name='destin-lang-btn'].active").val();
+	var prevSourceLang = $("button[name='source-lang-btn'].active").val();
+	var currSourceLang = $(this).val();
+	if (currSourceLang == prevSourceLang) {
+		return;
+	}
+	var currDestinLang = $("button[name='destin-lang-btn'].active").val();
 	clearLanguageSelection('source-lang-btn');
 	$(this).addClass("active");
-	if ((tempSourceLang == tempDestinLang) && (tempSourceLang == "rus")) {
+	if ((currSourceLang == currDestinLang) && (currSourceLang == "rus")) {
 		clearLanguageSelection('destin-lang-btn');
 		$("button[name='destin-lang-btn'][value='est']").addClass("active");
 	}
 	empowerLanguageSelection();
+	var tempSearchWord = $("input[name='searchWord']").val();
+	if (tempSearchWord) {
+		$("#search-btn").click();		
+	} else {
+		$("#lang-selector-btn").click();
+	}
 });
 
 $(document).on("click", "button[name='destin-lang-btn']", function(e) {
-	var tempSourceLang = $("button[name='source-lang-btn'].active").val();
-	var tempDestinLang = $(this).val();
+	var currSourceLang = $("button[name='source-lang-btn'].active").val();
+	var prevDestinLang = $("button[name='destin-lang-btn'].active").val();
+	var currDestinLang = $(this).val();
+	if (currDestinLang == prevDestinLang) {
+		return;
+	}
 	clearLanguageSelection('destin-lang-btn');
 	$(this).addClass("active");
-	if ((tempSourceLang == tempDestinLang) && (tempDestinLang == "rus")) {
+	if ((currSourceLang == currDestinLang) && (currDestinLang == "rus")) {
 		clearLanguageSelection('source-lang-btn');
 		$("button[name='source-lang-btn'][value='est']").addClass("active");
 	}
 	empowerLanguageSelection();
+	var tempSearchWord = $("input[name='searchWord']").val();
+	if (tempSearchWord) {
+		$("#search-btn").click();		
+	} else {
+		$("#lang-selector-btn").click();
+	}
 });
 
 $(document).on("click", "button[id='lang-sel-complete-btn']", function(e) {
@@ -378,8 +398,12 @@ $(document).on("click", "button[id='lang-sel-complete-btn']", function(e) {
 });
 
 $(document).on("change", "#beginner-switch", function(e) {
-	var beginner = $("#beginner-chk").prop("checked");
-	$("input[name='isBeginner']").val(beginner);
+	var isBeginner = $("#beginner-chk").prop("checked");
+	$("input[name='isBeginner']").val(isBeginner);
+	var tempSearchWord = $("input[name='searchWord']").val();
+	if (tempSearchWord) {
+		$("#search-btn").click();		
+	}
 });
 
 $(document).on("click", "#start-rec-btn", function(e) {
