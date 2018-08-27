@@ -435,7 +435,7 @@ create view view_ww_classifier
        value,
        lang
      from morph_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'DISPLAY_MORPH' as name,
@@ -444,7 +444,7 @@ create view view_ww_classifier
        value,
        lang
      from display_morph_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'POS' as name,
@@ -453,7 +453,7 @@ create view view_ww_classifier
        value,
        lang
      from pos_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'REGISTER' as name,
@@ -462,7 +462,7 @@ create view view_ww_classifier
        value,
        lang
      from register_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'DERIV' as name,
@@ -471,7 +471,7 @@ create view view_ww_classifier
        value,
        lang
      from deriv_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'DOMAIN' as name,
@@ -480,7 +480,7 @@ create view view_ww_classifier
        value,
        lang
      from domain_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'USAGE_TYPE' as name,
@@ -489,7 +489,7 @@ create view view_ww_classifier
        value,
        lang
      from usage_type_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'POS_GROUP' as name,
@@ -498,7 +498,7 @@ create view view_ww_classifier
        value,
        lang
      from pos_group_label
-     where type = 'descrip'
+     where type = 'wordweb'
      union all
      select
        'WORD_REL_TYPE' as name,
@@ -507,7 +507,7 @@ create view view_ww_classifier
        value,
        lang
      from word_rel_type_label
-     where type = 'full'
+     where type = 'wordweb'
      union all
      select
        'LEX_REL_TYPE' as name,
@@ -516,7 +516,7 @@ create view view_ww_classifier
        value,
        lang
      from lex_rel_type_label
-     where type = 'full'
+     where type = 'wordweb'
      union all
      select
        'MEANING_REL_TYPE' as name,
@@ -525,5 +525,5 @@ create view view_ww_classifier
        value,
        lang
      from meaning_rel_type_label
-     where type = 'descrip'
+     where type = 'wordweb'
     );

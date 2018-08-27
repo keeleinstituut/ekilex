@@ -568,6 +568,13 @@ pos_group	K	prep-postp, kaassõnaga	est	descrip
 pos_group	N	numeraal, arvsõnaga	est	descrip
 pos_group	S	substantiiv, nimisõnaga	est	descrip
 pos_group	V	verb, tegusõnaga	est	descrip
+pos_group	A	omadussõnaga	est	wordweb
+pos_group	D	määrsõnaga	est	wordweb
+pos_group	H	pärisnimega	est	wordweb
+pos_group	K	kaassõnaga	est	wordweb
+pos_group	N	arvsõnaga	est	wordweb
+pos_group	S	nimisõnaga	est	wordweb
+pos_group	V	tegusõnaga	est	wordweb
 process_state	määramata	-	-	-
 process_state	koostamisel	-	-	-
 process_state	koostatud	-	-	-

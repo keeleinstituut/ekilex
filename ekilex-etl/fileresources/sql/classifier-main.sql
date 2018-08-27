@@ -804,6 +804,13 @@ insert into pos_group_label (code, value, lang, type) values ('K', 'prep-postp, 
 insert into pos_group_label (code, value, lang, type) values ('N', 'numeraal, arvsõnaga', 'est', 'descrip');
 insert into pos_group_label (code, value, lang, type) values ('S', 'substantiiv, nimisõnaga', 'est', 'descrip');
 insert into pos_group_label (code, value, lang, type) values ('V', 'verb, tegusõnaga', 'est', 'descrip');
+insert into pos_group_label (code, value, lang, type) values ('A', 'omadussõnaga', 'est', 'wordweb');
+insert into pos_group_label (code, value, lang, type) values ('D', 'määrsõnaga', 'est', 'wordweb');
+insert into pos_group_label (code, value, lang, type) values ('H', 'pärisnimega', 'est', 'wordweb');
+insert into pos_group_label (code, value, lang, type) values ('K', 'kaassõnaga', 'est', 'wordweb');
+insert into pos_group_label (code, value, lang, type) values ('N', 'arvsõnaga', 'est', 'wordweb');
+insert into pos_group_label (code, value, lang, type) values ('S', 'nimisõnaga', 'est', 'wordweb');
+insert into pos_group_label (code, value, lang, type) values ('V', 'tegusõnaga', 'est', 'wordweb');
 insert into register_label (code, value, lang, type) values ('eevn', 'eestivene', 'est', 'descrip');
 insert into register_label (code, value, lang, type) values ('hlv', 'halvustav, solvav', 'est', 'descrip');
 insert into register_label (code, value, lang, type) values ('hlv', 'offensive', 'eng', 'descrip');
