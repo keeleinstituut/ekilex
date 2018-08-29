@@ -3,34 +3,13 @@
 <head th:replace="common :: common_header(_,~{::links})">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ww-common.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-index.js}"></script>
 </th:block>
 </head>
 <body class="home-page">
   <div class="header-container">
     <div class="header-panel">
-      <div class="header-links">
-        <button class="btn menu-btn float-right clear-both">
-          <span>Sulge</span>
-          <span class="icon icon-close"></span>
-        </button>
-        <a th:href="@{/}" class="menu-item selected ">
-          <span th:text="#{menu.search}">Otsing</span>
-        </a>
-        <a th:href="@{/}" class="menu-item ">
-          <span th:text="#{menu.learn}">Õpi eesti keelt</span>
-        </a>
-        <a th:href="@{/}" class="menu-item ">
-          <span th:text="#{menu.games}">Keelemängud</span>
-        </a>
-        <a th:href="@{/}" class="menu-item ">
-          <span th:text="#{menu.info}">Portaalist</span>
-        </a>
-        <a th:href="@{/}" class="menu-item ">
-          <span th:text="#{menu.contacts}">Kontakt</span>
-        </a>
-      </div>
+      <div th:replace="common :: menu-links"></div>
       <button class="btn menu-btn">
         <span class="d-none d-md-block">Menüü</span>
         <span class="icon icon-menu"></span>

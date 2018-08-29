@@ -32,6 +32,7 @@
     <script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-common.js}"></script>
   </th:block>
 
   <!-- menu -->
@@ -46,31 +47,35 @@
           <a class="back">
             <span class="icon icon-back"></span>
           </a>
-          <div class="header-links">
-            <button class="btn menu-btn float-right clear-both">
-              <span>Sulge</span> <span class="icon icon-close"></span>
-            </button>
-            <a th:href="@{/}" class="menu-item selected ">
-              <span th:text="#{menu.search}">Otsing</span>
-            </a>
-            <a th:href="@{/}" class="menu-item ">
-              <span th:text="#{menu.learn}">Õpi eesti keelt</span>
-            </a>
-            <a th:href="@{/}" class="menu-item ">
-              <span th:text="#{menu.games}">Keelemängud</span>
-            </a>
-            <a th:href="@{/}" class="menu-item ">
-              <span th:text="#{menu.info}">Portaalist</span>
-            </a>
-            <a th:href="@{/}" class="menu-item ">
-              <span th:text="#{menu.contacts}">Kontakt</span>
-            </a>
-          </div>
+          <div th:replace=":: menu-links"></div>
           <button class="btn menu-btn">
             <span class="icon icon-menu"></span>
           </button>
         </div>
       </div>
+    </div>
+  </th:block>
+
+  <th:block th:fragment="menu-links">
+    <div class="header-links">
+      <button class="btn menu-btn float-right clear-both">
+        <span>Sulge</span> <span class="icon icon-close"></span>
+      </button>
+      <a th:href="@{/}" class="menu-item selected ">
+        <span th:text="#{menu.search}">Otsing</span>
+      </a>
+      <a th:href="@{/learn}" class="menu-item ">
+        <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+      </a>
+      <a th:href="@{/}" class="menu-item ">
+        <span th:text="#{menu.games}">Keelemängud</span>
+      </a>
+      <a th:href="@{/}" class="menu-item ">
+        <span th:text="#{menu.info}">Portaalist</span>
+      </a>
+      <a th:href="@{/}" class="menu-item ">
+        <span th:text="#{menu.contacts}">Kontakt</span>
+      </a>
     </div>
   </th:block>
 
