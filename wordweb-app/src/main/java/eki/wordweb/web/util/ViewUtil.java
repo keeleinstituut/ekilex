@@ -57,7 +57,7 @@ public class ViewUtil implements WebConstant {
 					if (collocMemberIndex < collocMemberCount - 1) {
 						htmlBuf.append(", ");
 					}
-					htmlBuf.append("<i>");
+					htmlBuf.append("</i>");
 					collocMemberIndex++;
 				}
 			}

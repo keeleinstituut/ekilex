@@ -154,7 +154,7 @@ public class ConversionUtil {
 
 		List<Collocation> collocations;
 		List<TypeCollocMember> collocMembers;
-		List<CollocMemberGroup> memberGroupOrder;
+		List<CollocMemberGroup> existingMemberGroupOrder;
 		List<String> collocMemberForms;
 		Map<String, DisplayColloc> collocMemberGroupMap;
 		DisplayColloc displayColloc;
@@ -183,6 +183,7 @@ public class ConversionUtil {
 				}
 				CollocMemberGroup recentCollocMemberGroup = null;
 				CollocMemberGroup currentCollocMemberGroup;
+				List<CollocMemberGroup> currentMemberGroupOrder = new ArrayList<>();
 				for (TypeCollocMember collocMember : collocMembers) {
 					boolean isHeadword = collocMember.getWordId().equals(wordId);
 					boolean isPrimary = !isHeadword && collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
@@ -196,16 +197,15 @@ public class ConversionUtil {
 						currentCollocMemberGroup = CollocMemberGroup.CONTEXT;
 					}
 					collocMemberForms = displayColloc.getCollocMemberForms();
-					memberGroupOrder = displayColloc.getMemberGroupOrder();
-					if (CollectionUtils.isEmpty(memberGroupOrder)) {
+					if (CollectionUtils.isEmpty(currentMemberGroupOrder)) {
 						recentCollocMemberGroup = currentCollocMemberGroup;
-						memberGroupOrder.add(currentCollocMemberGroup);
+						currentMemberGroupOrder.add(currentCollocMemberGroup);
 					} else {
-						recentCollocMemberGroup = memberGroupOrder.get(memberGroupOrder.size() - 1);
+						recentCollocMemberGroup = currentMemberGroupOrder.get(currentMemberGroupOrder.size() - 1);
 					}
 					if (!recentCollocMemberGroup.equals(currentCollocMemberGroup)) {
-						if (!memberGroupOrder.contains(currentCollocMemberGroup)) {
-							memberGroupOrder.add(currentCollocMemberGroup);
+						if (!currentMemberGroupOrder.contains(currentCollocMemberGroup)) {
+							currentMemberGroupOrder.add(currentCollocMemberGroup);
 						}
 					}
 					if (CollocMemberGroup.HEADWORD.equals(currentCollocMemberGroup)) {
@@ -223,6 +223,15 @@ public class ConversionUtil {
 							displayColloc.getContextMembers().add(collocMember);
 							collocMemberForms.add(collocMember.getForm());
 						}
+					}
+				}
+				if (CollectionUtils.isEmpty(displayColloc.getMemberGroupOrder())) {
+					displayColloc.setMemberGroupOrder(currentMemberGroupOrder);
+				}
+				existingMemberGroupOrder = displayColloc.getMemberGroupOrder();
+				if (!StringUtils.equals(currentMemberGroupOrder.toString(), existingMemberGroupOrder.toString())) {
+					if (currentMemberGroupOrder.size() > existingMemberGroupOrder.size()) {
+						displayColloc.setMemberGroupOrder(currentMemberGroupOrder);
 					}
 				}
 			}
