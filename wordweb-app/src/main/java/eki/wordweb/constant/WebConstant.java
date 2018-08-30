@@ -6,9 +6,13 @@ public interface WebConstant {
 
 	String SEARCH_PAGE = "search";
 
+	String LEARN_PAGE = "learn";
+
 	String HOME_URI = "/";
 
 	String SEARCH_URI = "/search";
+
+	String LEARN_URI = "/learn";
 
 	String ERROR_PAGE = "error";
 

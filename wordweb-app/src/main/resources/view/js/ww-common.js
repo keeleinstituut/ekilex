@@ -422,3 +422,6 @@ $(document).on("click", "#stop-rec-btn", function(e) {
 	});
 });
 
+function setActiveMenuItem(itemName) {
+	$('.menu-item[data-item-name='+itemName+']').addClass('selected');
+}
