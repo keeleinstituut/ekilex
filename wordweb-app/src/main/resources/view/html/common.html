@@ -61,19 +61,19 @@
       <button class="btn menu-btn float-right clear-both">
         <span>Sulge</span> <span class="icon icon-close"></span>
       </button>
-      <a th:href="@{/}" class="menu-item selected ">
+      <a th:href="@{/search}" class="menu-item" data-item-name="search">
         <span th:text="#{menu.search}">Otsing</span>
       </a>
-      <a th:href="@{/learn}" class="menu-item ">
+      <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
         <span th:text="#{menu.learn}">Õpi eesti keelt</span>
       </a>
-      <a th:href="@{/}" class="menu-item ">
+      <a th:href="@{/}" class="menu-item">
         <span th:text="#{menu.games}">Keelemängud</span>
       </a>
-      <a th:href="@{/}" class="menu-item ">
+      <a th:href="@{/}" class="menu-item">
         <span th:text="#{menu.info}">Portaalist</span>
       </a>
-      <a th:href="@{/}" class="menu-item ">
+      <a th:href="@{/}" class="menu-item">
         <span th:text="#{menu.contacts}">Kontakt</span>
       </a>
     </div>
