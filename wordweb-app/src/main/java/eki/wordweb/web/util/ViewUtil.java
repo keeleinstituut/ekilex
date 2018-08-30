@@ -2,10 +2,10 @@ package eki.wordweb.web.util;
 
 import java.util.List;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Collocation;
 import eki.wordweb.data.DisplayColloc;
@@ -15,47 +15,53 @@ import eki.wordweb.data.TypeCollocMember;
 public class ViewUtil implements WebConstant {
 
 	public String getTooltipHtml(DisplayColloc colloc) {
-		List<String> preContext = colloc.getPreContext();
-		List<String> postContext = colloc.getPostContext();
-		List<TypeCollocMember> collocMembers = colloc.getCollocMembers();
-		int collocMemberCount = collocMembers.size();
-		TypeCollocMember collocMember;
-		String wrapup;
+
+		List<CollocMemberGroup> memberGroupOrder = colloc.getMemberGroupOrder();
+		List<TypeCollocMember> collocMembers;
 		StringBuffer htmlBuf = new StringBuffer();
-		htmlBuf.append("<span>");
-		if (CollectionUtils.isNotEmpty(preContext)) {
-			wrapup = StringUtils.join(preContext, ',');
-			htmlBuf.append("<i>");
-			htmlBuf.append(wrapup);
-			htmlBuf.append("</i>");
-			htmlBuf.append("&nbsp;");
-		}
-		htmlBuf.append("<span>");
-		for (int collocMemberIndex = 0; collocMemberIndex < collocMemberCount; collocMemberIndex++) {
-			collocMember = collocMembers.get(collocMemberIndex);
-			String conjunct = collocMember.getConjunct();
-			if (StringUtils.isNotBlank(conjunct)) {
-				htmlBuf.append(conjunct);
-				htmlBuf.append("&nbsp;");
-			}
-			if (collocMember.isHeadword()) {
+		htmlBuf.append("<span style='white-space:nowrap;'>");
+		for (CollocMemberGroup collocMemGr : memberGroupOrder) {
+			if (CollocMemberGroup.HEADWORD.equals(collocMemGr)) {
+				TypeCollocMember collocMember = colloc.getHeadwordMember();
+				String conjunct = collocMember.getConjunct();
+				if (StringUtils.isNotBlank(conjunct)) {
+					htmlBuf.append(conjunct);
+					htmlBuf.append("&nbsp;");
+				}
 				htmlBuf.append("<span class='text-info'>");
 				htmlBuf.append(collocMember.getForm());
 				htmlBuf.append("</span>");
-			} else {
-				htmlBuf.append(collocMember.getForm());
+			} else if (CollocMemberGroup.PRIMARY.equals(collocMemGr)) {
+				collocMembers = colloc.getPrimaryMembers();
+				int collocMemberCount = collocMembers.size();
+				int collocMemberIndex = 0;
+				for (TypeCollocMember collocMember : collocMembers) {
+					String conjunct = collocMember.getConjunct();
+					if (StringUtils.isNotBlank(conjunct)) {
+						htmlBuf.append(conjunct);
+						htmlBuf.append("&nbsp;");
+					}
+					htmlBuf.append(collocMember.getForm());
+					if (collocMemberIndex < collocMemberCount - 1) {
+						htmlBuf.append("&nbsp;");
+					}
+					collocMemberIndex++;
+				}
+			} else if (CollocMemberGroup.CONTEXT.equals(collocMemGr)) {
+				collocMembers = colloc.getContextMembers();
+				int collocMemberCount = collocMembers.size();
+				int collocMemberIndex = 0;
+				for (TypeCollocMember collocMember : collocMembers) {
+					htmlBuf.append("<i>");
+					htmlBuf.append(collocMember.getForm());
+					if (collocMemberIndex < collocMemberCount - 1) {
+						htmlBuf.append(", ");
+					}
+					htmlBuf.append("<i>");
+					collocMemberIndex++;
+				}
 			}
-			if (collocMemberIndex < collocMemberCount - 1) {
-				htmlBuf.append("&nbsp;");
-			}
-		}
-		htmlBuf.append("</span>");
-		if (CollectionUtils.isNotEmpty(postContext)) {
-			wrapup = StringUtils.join(postContext, ',');
 			htmlBuf.append("&nbsp;");
-			htmlBuf.append("<i>");
-			htmlBuf.append(wrapup);
-			htmlBuf.append("</i>");
 		}
 		htmlBuf.append("</span>");
 		return htmlBuf.toString();
@@ -66,7 +72,7 @@ public class ViewUtil implements WebConstant {
 		int collocMemberCount = collocMembers.size();
 		TypeCollocMember collocMember;
 		StringBuffer htmlBuf = new StringBuffer();
-		htmlBuf.append("<span>");
+		htmlBuf.append("<span style='white-space:nowrap;'>");
 		for (int collocMemberIndex = 0; collocMemberIndex < collocMemberCount; collocMemberIndex++) {
 			collocMember = collocMembers.get(collocMemberIndex);
 			String conjunct = collocMember.getConjunct();

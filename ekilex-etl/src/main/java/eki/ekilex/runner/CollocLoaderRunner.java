@@ -46,8 +46,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_ILLEGAL_DATA = "illegal_data";
 
-	private static final String REPORT_MISSING_DATA = "missing_data";
-
 	private static final String REPORT_UNKNOWN_CLASSIF = "unknown_classifier";
 
 	private static final String REPORT_REPEATING_COLLOC_MEMBER = "repeating_colloc_member";
@@ -58,20 +56,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_DIFFERENT_COLLOC_DEFINITION = "different_colloc_definition";
 
-	@Deprecated
-	private static final String REPORT_AMBIGUOUS_HOMONYM_MATCH = "ambiguous_homonym_match";
-
-	@Deprecated
-	private static final String REPORT_AMBIGUOUS_WORD_MATCH = "ambiguous_word_match";
-
-	@Deprecated
-	private static final String REPORT_AMBIGUOUS_LEXEME_MATCH = "ambiguous_lexeme_match";
-
-	@Deprecated
-	private static final String REPORT_UNKNOWN_WORD = "unknown_word";
-
-	@Deprecated
-	private static final String REPORT_COLLOC_PAIR_UNMATCH = "colloc_pair_unmatch";
+	private static final String REPORT_FAILING_HOMONYM_GUESS = "failing_homonym_guess";
 
 	private final String dataLang = "est";
 
@@ -139,7 +124,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> registerConversionMap;
 
-	private Map<String, String> morphConversionMap;
+	private Map<String, String> posMorphConversionMap;
 
 	@Override
 	public String getDataset() {
@@ -161,10 +146,23 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		posConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_SLTYYP);
 		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP, ClassifierName.REGISTER.name());
 
-		morphConversionMap = new HashMap<>();
-		morphConversionMap.put("SgN", "SgN");
-		morphConversionMap.put("Sup", "Sup");
-		morphConversionMap.put("#", "ID");
+		posMorphConversionMap = new HashMap<>();
+		posMorphConversionMap.put("prop", "SgN");
+		posMorphConversionMap.put("ord", "SgN");
+		posMorphConversionMap.put("num", "SgN");
+		posMorphConversionMap.put("adj", "SgN");
+		posMorphConversionMap.put("pron", "SgN");
+		posMorphConversionMap.put("s", "SgN");
+		posMorphConversionMap.put("v", "Sup");
+		posMorphConversionMap.put("adjg", "ID");
+		posMorphConversionMap.put("postp", "ID");
+		posMorphConversionMap.put("prep", "ID");
+		posMorphConversionMap.put("x", "ID");
+		posMorphConversionMap.put("adv", "ID");
+		posMorphConversionMap.put("interj", "ID");
+		posMorphConversionMap.put("adp", "ID");
+		posMorphConversionMap.put("konj", "ID");
+		posMorphConversionMap.put("#", "ID");
 	}
 
 	@Transactional
@@ -177,8 +175,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		if (doReports) {
 			reportComposer = new ReportComposer("kol loader report",
-					REPORT_ILLEGAL_DATA, REPORT_MISSING_DATA, REPORT_UNKNOWN_CLASSIF, REPORT_REPEATING_COLLOC_MEMBER,
-					REPORT_UNKNOWN_COLLOC_MEMBER, REPORT_ILLEGAL_LEMPOSVK_REF, REPORT_DIFFERENT_COLLOC_DEFINITION);
+					REPORT_ILLEGAL_DATA, REPORT_UNKNOWN_CLASSIF, REPORT_REPEATING_COLLOC_MEMBER, REPORT_UNKNOWN_COLLOC_MEMBER,
+					REPORT_ILLEGAL_LEMPOSVK_REF, REPORT_DIFFERENT_COLLOC_DEFINITION, REPORT_FAILING_HOMONYM_GUESS);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -204,6 +202,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocMemberOverloadGroupCount = new Count();
 		Count collocMemberGuessingHomonymMeaningCount = new Count();
 		Count collocMemberGuessedHomonymMeaningCount = new Count();
+		Count collocMemberSuggestedHomonymMeaningCount = new Count();
 		Count collocMemberCreatedHomonymMeaningCount = new Count();
 		Count collocMemberCreatedMoreThanOneHomonymCount = new Count();
 		Count collocateCount = new Count();
@@ -221,6 +220,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		countersMap.put("collocMemberOverloadGroupCount", collocMemberOverloadGroupCount);
 		countersMap.put("collocMemberGuessingHomonymMeaningCount", collocMemberGuessingHomonymMeaningCount);
 		countersMap.put("collocMemberGuessedHomonymMeaningCount", collocMemberGuessedHomonymMeaningCount);
+		countersMap.put("collocMemberSuggestedHomonymMeaningCount", collocMemberSuggestedHomonymMeaningCount);
 		countersMap.put("collocMemberCreatedHomonymMeaningCount", collocMemberCreatedHomonymMeaningCount);
 		countersMap.put("collocMemberCreatedMoreThanOneHomonymCount", collocMemberCreatedMoreThanOneHomonymCount);
 		countersMap.put("collocateCount", collocateCount);
@@ -313,9 +313,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 						Float collocRelGroupFreq = null;
 						collocRelGroupFreqNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupFreqExp);
-						if (collocRelGroupFreqNode == null) {
-							appendToReport(doReports, REPORT_MISSING_DATA, word, collocPosGroupCode, collocRelGroupName, "x:relg", "[" + collocRelGroupNum + "]", "puudub sagedus");
-						} else {
+						if (collocRelGroupFreqNode != null) {
 							try {
 								collocRelGroupFreq = Float.parseFloat(collocRelGroupFreqNode.getTextTrim());
 							} catch (Exception e) {
@@ -325,9 +323,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 						Float collocRelGroupScore = null;
 						collocRelGroupScoreNode = (Element) collocRelGroupNode.selectSingleNode(collocRelGroupScoreExp);
-						if (collocRelGroupScoreNode == null) {
-							appendToReport(doReports, REPORT_MISSING_DATA, word, collocPosGroupCode, collocRelGroupName, "x:relg", "[" + collocRelGroupNum + "]", "puudub skoor");
-						} else {
+						if (collocRelGroupScoreNode != null) {
 							try {
 								collocRelGroupScore = Float.parseFloat(collocRelGroupScoreNode.getTextTrim());
 							} catch (Exception e) {
@@ -372,6 +368,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} overloaded colloc members groups", collocMemberOverloadGroupCount.getValue());
 		logger.debug("Found {} colloc member homonym/meaning guess attempts", collocMemberGuessingHomonymMeaningCount.getValue());
 		logger.debug("Found {} successfully guessed colloc member homonym/meaning", collocMemberGuessedHomonymMeaningCount.getValue());
+		logger.debug("Found {} suggested on guessing colloc member homonym/meaning", collocMemberSuggestedHomonymMeaningCount.getValue());
 		logger.debug("Found {} created missing colloc member homonym/meaning", collocMemberCreatedHomonymMeaningCount.getValue());
 		logger.debug("Found {} created missing more than one colloc member homonym", collocMemberCreatedMoreThanOneHomonymCount.getValue());
 		logger.debug("Found {} collocates", collocateCount.getValue());
@@ -568,16 +565,20 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private List<CollocMember> composeCollocMembers(String collocMemberName, String form, String conjunct, String lemmaDataStr) {
 
 		List<CollocMember> collocMembers = new ArrayList<>();
+		List<String> alreadyRegisteredCollocMembers = new ArrayList<>();
 		String[] lemmaDataCandidatesArr = StringUtils.split(lemmaDataStr, lemmaDataDelim);
 		CollocMember collocMember;
 		for (String lemmaDataCandidateStr : lemmaDataCandidatesArr) {
 			String[] lemmaDataCandidateCells = StringUtils.split(lemmaDataCandidateStr, lemmaDataCellDelim);
 			String word = lemmaDataCandidateCells[0];
 			word = StringUtils.remove(word, compundWordCompDelim);//deal with compound words later
+			if (alreadyRegisteredCollocMembers.contains(word)) {
+				continue;
+			}
+			alreadyRegisteredCollocMembers.add(word);
 			String posCode = lemmaDataCandidateCells[1];
 			posCode = posConversionMap.get(posCode);
-			String morphCode = lemmaDataCandidateCells[2];
-			morphCode = morphConversionMap.get(morphCode);
+			String morphCode = posMorphConversionMap.get(posCode);
 			if (StringUtils.isBlank(morphCode)) {
 				morphCode = defaultWordMorphCode;
 			}
@@ -628,6 +629,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocMemberOverloadGroupCount = countersMap.get("collocMemberOverloadGroupCount");
 		Count collocMemberGuessingHomonymMeaningCount = countersMap.get("collocMemberGuessingHomonymMeaningCount");
 		Count collocMemberGuessedHomonymMeaningCount = countersMap.get("collocMemberGuessedHomonymMeaningCount");
+		Count collocMemberSuggestedHomonymMeaningCount = countersMap.get("collocMemberSuggestedHomonymMeaningCount");
 		Count collocMemberCreatedHomonymMeaningCount = countersMap.get("collocMemberCreatedHomonymMeaningCount");
 		Count collocMemberCreatedMoreThanOneHomonymCount = countersMap.get("collocMemberCreatedMoreThanOneHomonymCount");
 		Count collocateCount = countersMap.get("collocateCount");
@@ -656,9 +658,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		Float frequency = null;
 		Element collocFreqNode = (Element) collocGroupNode.selectSingleNode(collocFreqExp);
-		if (collocFreqNode == null) {
-			appendToReport(doReports, REPORT_MISSING_DATA, word, collocPosGroupCode, collocRelGroupName, "x:colg", "[" + collocGroupOrder + "]", "puudub sagedus");
-		} else {
+		if (collocFreqNode != null) {
 			try {
 				frequency = Float.parseFloat(collocFreqNode.getTextTrim());
 			} catch (Exception e) {
@@ -668,9 +668,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		Float score = null;
 		Element collocScoreNode = (Element) collocGroupNode.selectSingleNode(collocScoreExp);
-		if (collocScoreNode == null) {
-			appendToReport(doReports, REPORT_MISSING_DATA, word, collocPosGroupCode, collocRelGroupName, "x:colg", "[" + collocGroupOrder + "]", "puudub skoor");
-		} else {
+		if (collocScoreNode != null) {
 			try {
 				score = Float.parseFloat(collocScoreNode.getTextTrim());
 			} catch (Exception e) {
@@ -742,8 +740,12 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							if (collocWordObj != null) {
 								Long collocWordId = collocWordObj.getId();
 								List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(collocWordId, collocMemberPosCode);
+								if (CollectionUtils.isEmpty(lexemeMeaningCandidates) && StringUtils.isNotBlank(collocMemberPosCode)) {
+									lexemeMeaningCandidates = getLexemeMeanings(collocWordId, null);
+								}
 								if (CollectionUtils.isEmpty(lexemeMeaningCandidates)) {
 									//none
+									appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "homonüüme on üks, kuid sellel puudub tähendus");
 								} else if (lexemeMeaningCandidates.size() == 1) {
 									//success!
 									LexemeMeaning collocLexemeMeaning = lexemeMeaningCandidates.get(0);
@@ -751,8 +753,17 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 									collocMemberGuessedHomonymMeaningCount.increment();
 								} else {
 									//too many
+									appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "homonüüme on üks, kuid sellel on mitu tähendust");
+									// with Arvi's permission:
+									LexemeMeaning collocLexemeMeaning = lexemeMeaningCandidates.get(0);
+									collocLexemeId = collocLexemeMeaning.getLexemeId();
+									collocMemberSuggestedHomonymMeaningCount.increment();
 								}
+							} else {
+								appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "homonüüme on üks, kuid see pole esimene");
 							}
+						} else {
+							appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "rohkem kui üks homonüüm");
 						}
 						collocMemberGuessingHomonymMeaningCount.increment();
 					} else {
@@ -770,8 +781,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							Map<Integer, LexemeMeaning> levelMeaningMap = meaningMap.get(collocWordId);
 							LexemeMeaning collocLexemeMeaning = levelMeaningMap.get(collocMemberMeaningNr);
 							if (collocLexemeMeaning == null) {
-								logger.debug("No lexeme/meaning match word \"{}\" homonym nr \"{}\" meaning nr \"{}\"",
-										collocMemberWord, collocMemberHomonymNr, collocMemberMeaningNr);
 								appendToReport(doReports, REPORT_ILLEGAL_LEMPOSVK_REF, word, collocation, collocMemberWord, "i=" + collocMemberHomonymNr, "tnr=" + collocMemberMeaningNr);
 							} else {
 								collocLexemeId = collocLexemeMeaning.getLexemeId();
@@ -1191,7 +1200,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		reportComposer.append(reportName, logRow);
 	}
 
-	class CollocMember {
+	class CollocMember extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
 
 		private String name;
 
@@ -1432,7 +1443,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	class LexemeMeaning {
+	class LexemeMeaning extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
 
 		private Long lexemeId;
 

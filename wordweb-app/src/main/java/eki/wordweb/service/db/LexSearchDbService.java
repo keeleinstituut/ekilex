@@ -13,6 +13,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -40,6 +41,7 @@ public class LexSearchDbService {
 
 	public List<Word> findWords(String searchFilter, String lang, String[] datasets) {
 
+		String searchFilterLower = StringUtils.lowerCase(searchFilter);
 		return create
 				.select(
 						MVIEW_WW_WORD.WORD_ID,
@@ -59,7 +61,7 @@ public class LexSearchDbService {
 						.and(DSL.exists(DSL.select(MVIEW_WW_FORM.WORD_ID)
 												.from(MVIEW_WW_FORM)
 												.where(MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
-														.and(MVIEW_WW_FORM.FORM.equalIgnoreCase(searchFilter))))))
+														.and(MVIEW_WW_FORM.FORM.lower().eq(searchFilterLower))))))
 				.orderBy(MVIEW_WW_WORD.LANG, MVIEW_WW_WORD.HOMONYM_NR)
 				.fetch()
 				.into(Word.class);
@@ -68,11 +70,13 @@ public class LexSearchDbService {
 	@SuppressWarnings("unchecked")
 	public Map<String, List<WordOrForm>> findWordsByPrefix(String wordPrefix, String lang, String[] datasets, int maxWordCount) {
 
+		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
 		Field<String> iswtf = DSL.field(DSL.value("prefWords")).as("group");
 		Field<String> iswff = DSL.field(DSL.value("formWords")).as("group");
 		Condition wdc = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
 		Condition fdc = DSL.condition("{0} && {1}", MVIEW_WW_FORM.DATASET_CODES, DSL.val(datasets));
-		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefix + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
+		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
+		Condition flc = MVIEW_WW_FORM.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_FORM.IS_WORD.isFalse()).and(MVIEW_WW_FORM.LANG.eq(lang));
 
 		Table<Record2<String, String>> woft = DSL
 			.selectDistinct(MVIEW_WW_WORD.WORD.as("value"), iswtf)
@@ -83,11 +87,7 @@ public class LexSearchDbService {
 			.unionAll(DSL
 			.selectDistinct(MVIEW_WW_FORM.WORD.as("value"), iswff)
 			.from(MVIEW_WW_FORM)
-			.where(
-					MVIEW_WW_FORM.FORM.lower().eq(wordPrefix)
-					.and(MVIEW_WW_FORM.IS_WORD.isFalse())
-					.and(MVIEW_WW_FORM.LANG.eq(lang))
-					.and(fdc))
+			.where(flc.and(fdc))
 			.orderBy(MVIEW_WW_FORM.WORD)
 			.limit(maxWordCount))
 			.asTable("woft");
