@@ -1,14 +1,506 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="common :: common_header(~{::title},_)">
+<head th:replace="common :: common_header(~{::title},~{::links})">
   <title>Õpi eesti keelt</title>
+
+  <th:block th:fragment="links">
+  <style>
+    .learn-container {
+      margin-top: 4.375rem;
+      text-align: left;
+    }
+    .col-num {
+      font-weight: bold;
+      color: rgb(0,157,181);
+      text-align: right;
+      padding-right: 1rem;
+      width: 4rem;
+    }
+    .col-bold {
+      font-weight: bold;
+      color: rgb(0,157,181);
+      padding-left: 1rem;
+      width: 4rem;
+    }
+    .col-text {
+      width: 30%;
+    }
+  </style>
+  </th:block>
 </head>
 
 <body>
   <div th:replace="common :: menu"></div>
-  <div class="container-fluid home-page-content pb-4">
+  <div class="container-fluid home-page-content">
+    <div class="row learn-container">
+      <div class="col-3">
+        <ul>
+          <li><a href="#arvud">Arvud</a></li>
+          <li><a href="#margid">Märgid</a></li>
+          <li><a href="#aeg">Aeg</a></li>
+          <li><a href="#luhendid">Lühendid</a></li>
+          <li><a href="#kirjavahemargid">Kirjavahemärgid</a></li>
+          <li><a href="#kirjutamine">Kirjutamine</a></li>
+          <li><a href="#kiri" class="pl-4">Kiri</a></li>
+          <li><a href="#ekiri" class="pl-4">E-kiri</a></li>
+          <li><a href="#postkaart" class="pl-4">Postkaart</a></li>
+          <li><a href="#kutse" class="pl-4">Kutse</a></li>
+          <li><a href="#kavaldus" class="pl-4">Kaastunde avaldamine</a></li>
+          <li><a href="#sonum" class="pl-4">Sõnum</a></li>
+          <li><a href="#avaldus" class="pl-4">Avaldus</a></li>
+          <li><a href="#volitus" class="pl-4">Volitus</a></li>
+          <li><a href="#cv" class="pl-4">CV</a></li>
+          <li><a href="#kaaskiri" class="pl-4">Kaaskiri</a></li>
+          <li><a href="#kasulikke">Kasulikke väljendeid</a></li>
+        </ul>
+      </div>
+      <div class="col-9" style="height: calc(100vh - 5.5rem); overflow-y: auto;">
+        <div class="pb-4">
+          <a name="arvud"></a>
+          <h3>Arvud</h3>
+
+          <div class="row"><div class="col-num">0</div><div class="col-text">null</div><div class="col-num">26</div><div>kakskümmend kuus</div></div>
+          <div class="row"><div class="col-num">1</div><div class="col-text">üks</div><div class="col-num">27</div><div>kakskümmend seitse</div></div>
+          <div class="row"><div class="col-num">2</div><div class="col-text">kaks</div><div class="col-num">28</div><div>kakskümmend kaheksa</div></div>
+          <div class="row"><div class="col-num">3</div><div class="col-text">kolm</div><div class="col-num">29</div><div>kakskümmend üheksa</div></div>
+          <div class="row"><div class="col-num">4</div><div class="col-text">neli</div><div class="col-num">30</div><div>kolmkümmend</div></div>
+          <div class="row"><div class="col-num">5</div><div class="col-text">viis</div><div class="col-num">40</div><div>nelikümmend</div></div>
+          <div class="row"><div class="col-num">6</div><div class="col-text">kuus</div><div class="col-num">50</div><div>viiskümmend</div></div>
+          <div class="row"><div class="col-num">7</div><div class="col-text">seitse</div><div class="col-num">60</div><div>kuuskümmend</div></div>
+          <div class="row"><div class="col-num">8</div><div class="col-text">kaheksa</div><div class="col-num">70</div><div>seitsekümmend</div></div>
+          <div class="row"><div class="col-num">9</div><div class="col-text">üheksa</div><div class="col-num">80</div><div>kaheksakümmend</div></div>
+          <div class="row"><div class="col-num">10</div><div class="col-text">kümme</div><div class="col-num">90</div><div>üheksakümmend</div></div>
+          <div class="row"><div class="col-num">11</div><div class="col-text">üksteist</div><div class="col-num">100</div><div>sada</div></div>
+          <div class="row"><div class="col-num">12</div><div class="col-text">kaksteist</div><div class="col-num">101</div><div>sada üks</div></div>
+          <div class="row"><div class="col-num">13</div><div class="col-text">kolmteist</div><div class="col-num">102</div><div>sada kaks</div></div>
+          <div class="row"><div class="col-num">14</div><div class="col-text">neliteist</div><div class="col-num">200</div><div>kakssada</div></div>
+          <div class="row"><div class="col-num">15</div><div class="col-text">viisteist</div><div class="col-num">300</div><div>kolmsada</div></div>
+          <div class="row"><div class="col-num">16</div><div class="col-text">kuusteist</div><div class="col-num">400</div><div>nelisada</div></div>
+          <div class="row"><div class="col-num">17</div><div class="col-text">seitseteist</div><div class="col-num">500</div><div>viissada</div></div>
+          <div class="row"><div class="col-num">18</div><div class="col-text">kaheksateist</div><div class="col-num">600</div><div>kuussada</div></div>
+          <div class="row"><div class="col-num">19</div><div class="col-text">üheksateist</div><div class="col-num">700</div><div>seitsesada</div></div>
+          <div class="row"><div class="col-num">20</div><div class="col-text">kakskümmend</div><div class="col-num">800</div><div>kaheksasada</div></div>
+          <div class="row"><div class="col-num">21</div><div class="col-text">kakskümmend üks</div><div class="col-num">900</div><div>üheksasada</div></div>
+          <div class="row"><div class="col-num">22</div><div class="col-text">kakskümmend kaks</div><div class="col-num">1000</div><div>tuhat</div></div>
+          <div class="row"><div class="col-num">23</div><div class="col-text">kakskümmend kolm</div><div class="col-num">1110</div><div>tuhat ükssada kümme</div></div>
+          <div class="row"><div class="col-num">24</div><div class="col-text">kakskümmend neli</div><div class="col-num">2000</div><div>kaks tuhat</div></div>
+          <div class="row"><div class="col-num">25</div><div class="col-text">kakskümmend viis</div></div>
+
+          <div class="row mt-4"><div class="col-num" style="width: 10rem;">10 000</div><div class="col-text">kümme tuhat</div></div>
+          <div class="row"><div class="col-num" style="width: 10rem;">50 000</div><div class="col-text">viiskümmend tuhat</div></div>
+          <div class="row"><div class="col-num" style="width: 10rem;">100 000</div><div class="col-text">sada tuhat</div></div>
+          <div class="row"><div class="col-num" style="width: 10rem;">1 000 000</div><div class="col-text">miljon</div></div>
+          <div class="row"><div class="col-num" style="width: 10rem;">1 000 000 000</div><div class="col-text">miljard</div></div>
+
+          <div class="mt-3">
+            <h4>Mitmes? Mitmenda? Mitmendat?</h4>
+
+            <div class="row"><div class="col-num">1.</div><div>esimene, esimese, esimest</div></div>
+            <div class="row"><div class="col-num">2.</div><div>teine, teise, teist</div></div>
+            <div class="row"><div class="col-num">3.</div><div>kolmas, kolmanda, kolmandat</div></div>
+            <div class="row"><div class="col-num">4.</div><div>neljas, neljanda, neljandat</div></div>
+            <div class="row"><div class="col-num">5.</div><div>viies, viienda, viiendat</div></div>
+            <div class="row"><div class="col-num">6.</div><div>kuues, kuuenda, kuuendat</div></div>
+            <div class="row"><div class="col-num">7.</div><div>seitsmes, seitsmenda, seitsmendat</div></div>
+            <div class="row"><div class="col-num">8.</div><div>kaheksas, kaheksanda, kaheksandat</div></div>
+            <div class="row"><div class="col-num">9.</div><div>üheksas, üheksanda, üheksandat</div></div>
+            <div class="row"><div class="col-num">10.</div><div>kümnes, kümnenda, kümnendat</div></div>
+            <div class="row"><div class="col-num">11.</div><div>üheteistkümnes, üheteistkümnenda, üheteistkümnendat</div></div>
+            <div class="row"><div class="col-num">12.</div><div>kaheteistkümnes, kaheteistkümnenda, kaheteistkümnendat</div></div>
+            <div class="row"><div class="col-num">13.</div><div>kolmeteistkümnes, kolmeteistkümnenda, kolmeteistkümnendat</div></div>
+            <div class="row"><div class="col-num">20.</div><div>kahekümnes, kahekümnenda, kahekümnendat</div></div>
+            <div class="row"><div class="col-num">21.</div><div>kahekümne esimene, kahekümne esimese, kahekümne esimest</div></div>
+            <div class="row"><div class="col-num">22.</div><div>kahekümne teine, kahekümne teise, kahekümne teist</div></div>
+            <div class="row"><div class="col-num">30.</div><div>kolmekümnes, kolmekümnenda, kolmekümnendat</div></div>
+            <div class="row"><div class="col-num">100.</div><div>sajas, sajanda, sajandat</div></div>
+            <div class="row"><div class="col-num">200.</div><div>kahesajas, kahesajanda, kahesajandat</div></div>
+            <div class="row"><div class="col-num">1000.</div><div>tuhandes, tuhandenda, tuhandendat</div></div>
+            <div class="row"><div class="col-num">2000.</div><div>kahetuhandes, kahetuhandenda, kahetuhandendat</div></div>
+          </div>
+          <div class="mt-3">
+            <div class="row"><div class="col-num">1/2</div><div>pool</div></div>
+            <div class="row"><div class="col-num">1/3</div><div>(üks) kolmandik</div></div>
+            <div class="row"><div class="col-num">1/4</div><div>(üks) neljandik, veerand</div></div>
+            <div class="row"><div class="col-num">1/5</div><div>(üks) viiendik</div></div>
+            <div class="row"><div class="col-num">3/4</div><div>kolm neljandikku, kolmveerand</div></div>
+            <div class="row"><div class="col-num">1 1/2</div><div>poolteist</div></div>
+          </div>
+          <div class="mt-3">
+            <h4>Kui vana sa oled?</h4>
+            <div>
+              Ma olen kuusteist / kuusteist aastat vana / kuueteistaastane (= 16). Ma olen kolmkümmend kuus / kolmkümmend kuus aastat vana / kolmekümne kuue aastane (= 36). Laps on aastane/üheaastane (= 1).
+            </div>
+          </div>
+          <div class="mt-3">
+            <h4>Mis on su telefoninumber?</h4>
+            <div>
+              Minu telefoninumber on 5654 3210 (loe nii: viis-kuus viis-neli kolm-kaks üks-null).
+            </div>
+          </div>
+        </div>
+        <div class="pb-4">
+          <a name="margid"></a>
+          <h3>Märgid</h3>
+          <div class="row"><div class="col-num">%</div><div style="width: 10%;">protsent</div><div style="width: 10%">45%</div><div>nelikümmend viis protsenti</div></div>
+          <div class="row"><div class="col-num">°</div><div style="width: 10%;">kraad</div><div style="width: 10%">22°</div><div>kakskümmend kaks kraadi</div></div>
+          <div class="row"><div class="col-num">+</div><div style="width: 10%;">pluss</div><div style="width: 10%">6 + 2= 8</div><div>kuus pluss kaks on kaheksa</div></div>
+          <div class="row"><div class="col-num">–</div><div style="width: 10%;">miinus</div><div style="width: 10%">6 – 2= 4</div><div>kuus miinus kaks on neli</div></div>
+          <div class="row"><div class="col-num">×</div><div style="width: 10%;">korda</div><div style="width: 10%">6 × 3 = 18</div><div>kuus korda kolm on kaheksateist</div></div>
+          <div class="row"><div class="col-num">·</div><div style="width: 10%;">korda</div><div style="width: 10%">6 · 3 = 18</div><div>kuus korda kolm on kaheksateist</div></div>
+          <div class="row"><div class="col-num">:</div><div style="width: 10%;">jagada</div><div style="width: 10%">24 : 4 = 6</div><div>kakskümmend neli jagada neljaga on kuus</div></div>
+          <div class="row"><div class="col-num">/</div><div style="width: 10%;">jagada</div><div style="width: 10%">24 / 4 = 6</div><div>kakskümmend neli jagada neljaga on kuus</div></div>
+        </div>
+
+        <div class="pb-4">
+          <a name="aeg"></a>
+          <h3>Aeg</h3>
+          <h4>Mis kell on? Kui palju kell on?</h4>
+          <p>Eestis märgitakse aega kella järgi numbrite 0–24 abil. Kui on hommik, siis kirjutame nii: Kell on 7 (= seitse). Kui on õhtu, siis kirjutame nii: Kell on 19 (= seitse).</p>
+          <p>
+            <b>Kell on 10.05</b> Kell on viis minutit kümme läbi / kell on kümme ja viis minutit / kell on kümme null viis.<br>
+            <b>Kell on 10.20</b> Kell on kakskümmend minutit kümme läbi / kell on kümme ja kakskümmend minutit / kell on kümme kakskümmend.<br>
+            <b>Kell on 10.40</b> Kell on kahekümne minuti pärast üksteist / kell on kümme nelikümmend.
+          </p>
+          <p>
+            <b>Mis kell? Mis ajal?</b> Hommikul kell seitse. Öösel kell üks. Kella ühe paiku. Mis kellaks? Mis ajaks? Kella kümneks.<br>
+            <b>Mis kell? Mis kella ajal? Mis kell sa jõuad?</b> – Kahe-kolme ajal.<br>
+            <b>Mis kellast mis kellani?</b> Vastuvõtt on (kella) kaheksast kaheteistkümneni.
+          </p>
+          <h4>Aastaajad, kuud ja nädalapäevad</h4>
+          <p>
+            <b>aastaajad</b><br>
+            <span class="pr-4">kevad</span>
+            <span class="pr-4">suvi</span>
+            <span class="pr-4">sügis</span>
+            <span class="pr-4">talv</span>
+          </p>
+          <p>
+            <b>kuud</b><br>
+            <span class="pr-4">jaanuar</span>
+            <span class="pr-4">veebruar</span>
+            <span class="pr-4">märts</span>
+            <span class="pr-4">aprill</span>
+            <span class="pr-4">mai</span>
+            <span class="pr-4">juuni</span>
+            <span class="pr-4">juuli</span>
+            <span class="pr-4">august</span>
+            <span class="pr-4">september</span>
+            <span class="pr-4">oktoober</span>
+            <span class="pr-4">november</span>
+            <span class="pr-4">detsember</span>
+          </p>
+          <p>
+            <b>nädalapäevad</b><br>
+            <span class="pr-4">esmaspäev</span>
+            <span class="pr-4">teisipäev</span>
+            <span class="pr-4">kolmapäev</span>
+            <span class="pr-4">neljapäev</span>
+            <span class="pr-4">reede</span>
+            <span class="pr-4">laupäev</span>
+            <span class="pr-4">pühapäev</span>
+          </p>
+          <p>
+            <b>NB!</b> Info esitamisel kasutatakse nädalapäeva asemel tihti lühendit (E – esmaspäev, T – teisipäev,
+            K – kolmapäev, N – neljapäev, R – reede, L – laupäev, P – pühapäev)
+          </p>
+
+          <h4>Kuidas kirjutada kuupäevi</h4>
+          <div class="row"><div style="width: 30%; margin-left: 1rem;">20.05.1995</div><div>02.08.2013</div></div>
+          <div class="row"><div style="width: 30%; margin-left: 1rem;">20. mai 1995</div><div>2. august 2013</div></div>
+          <div class="row"><div style="width: 30%; margin-left: 1rem;">20. mail 1995. a</div><div>2. augustil 2013. a</div></div>
+          <div class="row"><div style="width: 30%; margin-left: 1rem;">20. V 1995</div><div>2. VIII 2013</div></div>
+          <div class="row"><div style="width: 30%; margin-left: 1rem;">20.5.95</div><div>2.8.2013</div></div>
+          <div class="row"><div style="width: 30%; margin-left: 1rem;">12.5.–20.5.1995</div><div>21.05.–23.05.2013</div></div>
+
+          <h4 class="mt-3">Kuidas kirjutada ajavahemikke</h4>
+          <p>
+            Ajavahemike vahele kirjutame tavaliselt pika kriipsu –, mis asendab sõna kuni, näiteks:
+            <ul>
+              <li>• konverents toimub 15.–19. oktoobril / 15.–19. oktoobrini / 15. oktoobrist (kuni) 19. oktoobrini</li>
+              <li>• kontor on kinni 24.–27.12 ja 31.12–05.01</li>
+              <li>• olen puhkusel 01.10.–14.10.2014</li>
+              <li>• postkontor on lahti T–L 9.30–18.00, pood on lahti iga päev 9–23</li>
+              <li>• uuring tehti 2010.–2013. aastal</li>
+            </ul>
+          </p>
+          <p>
+            Kui ajalised üksused on järjest, kirjutame arvude vahele lühikese kriipsu - või sõna ja, näiteks:
+            <ul>
+              <li>• konverents toimub 18.-19. oktoobril / 18. ja 19. oktoobril</li>
+              <li>• kontor on kinni 23.-24.02 / 23. ja 24.12</li>
+              <li>• küsitlus tehti 2012.-2013. aastal / 2012. ja 2013. aastal</li>
+            </ul>
+          </p>
+          <h4>Mis aasta(te)l?</h4>
+          <ul>
+            <li>• 2014. aastal (loe: kahe tuhande neljateistkümnendal aastal)</li>
+            <li>• 2011. a (loe: kahe tuhande üheteistkümnendal aastal)</li>
+            <li>• aastal 2013 (loe: aastal kaks tuhat kolmteist)</li>
+            <li>• aastad 1908–1918, 1908–18 (loe: aastad tuhat üheksasada kaheksa kuni tuhat üheksasada kaheksateist)</li>
+            <li>• aastail 1992–1999, 1992–99 (loe: aastail tuhat üheksasada üheksakümmend kaks kuni tuhat üheksasada üheksakümmend üheksa)</li>
+            <li>• 1940.–1970. aastad (loe: tuhande üheksasaja neljakümnendad kuni seitsmekümnendad aastad)</li>
+            <li>• 1960.–1980. aastatel (loe: tuhande üheksasaja kuuekümnendatel kuni kaheksakümnendatel aastatel)</li>
+            <li>• 1920ndail (loe: tuhande üheksasaja kahekümnendail)</li>
+            <li>• 1930. aastail (loe: tuhande üheksasaja kolmekümnendail aastail)</li>
+          </ul>
+          <h4>Mis kuupäev täna on? Mitmes täna on?</h4>
+          <p>
+            Täna on 02.01.2014 (loe: teine jaanuar kaks tuhat neliteist). Täna on 21.10 (loe: kahekümne esimene oktoober).
+          </p>
+          <h4>Millal?</h4>
+          <ul>
+            <li>• Üleeile, eile, täna, homme, ülehomme.</li>
+            <li>• Kaks nädalat tagasi, eelmisel nädalal, sel nädalal, järgmisel nädalal, tuleval nädalal, kahe nädala pärast.</li>
+            <li>• Hommikul, päeval, õhtul, öösel. Hommikul vara, õhtul hilja.</li>
+            <li>• Kohtume esmaspäeval, reedel, laupäeval.</li>
+            <li>• Puhkan veebruaris, mais, augustis, novembris; kevadel, suvel, sügisel, talvel.</li>
+          </ul>
+          <h4>Mis ajaks?</h4>
+          <ul>
+            <li>• Hommikuks, lõunaks, õhtuks.</li>
+            <li>• Tänaseks, homseks, ülehomseks.</li>
+            <li>• Juuniks, juuliks, augustiks.</li>
+          </ul>
+          <h4>Kui tihti? Kui sageli?</h4>
+          <ul>
+            <li>• Kolm korda päevas.</li>
+            <li>• Iga päev.</li>
+          </ul>
+          <h4>Kui kaua?</h4>
+          <ul>
+            <li>• Terve päev / terve päeva.</li>
+            <li>• Kogu päev / kogu päeva.</li>
+            <li>• Mitu päeva.</li>
+            <li>• Paar nädalat.</li>
+            <li>• Mõni kuu / mõned kuud.</li>
+          </ul>
+        </div>
+
+        <div class="pb-4">
+          <a name="luhendid"></a>
+          <h3>Lühendid</h3>
+          <div class="row"><div class="col-bold">a</div><div style="width: 30%">aasta</div><div class="col-bold">mm</div><div>millimeeter</div></div>
+          <div class="row"><div class="col-bold">AS</div><div style="width: 30%">aktsiaselts</div><div class="col-bold">mnt</div><div>maantee</div></div>
+          <div class="row"><div class="col-bold">aü</div><div style="width: 30%">ametiühing</div><div class="col-bold">nr</div><div>number</div></div>
+          <div class="row"><div class="col-bold">cm</div><div style="width: 30%">sentimeeter</div><div class="col-bold">nt</div><div>näiteks</div></div>
+          <div class="row"><div class="col-bold">dr</div><div style="width: 30%">doktor</div><div class="col-bold">Oü</div><div>osaühing</div></div>
+          <div class="row"><div class="col-bold">g</div><div style="width: 30%">gramm</div><div class="col-bold">pr</div><div>proua</div></div>
+          <div class="row"><div class="col-bold">ha</div><div style="width: 30%">hektar</div><div class="col-bold">prl</div><div>preili</div></div>
+          <div class="row"><div class="col-bold">hr</div><div style="width: 30%">härra</div><div class="col-bold">prof</div><div>professor</div></div>
+          <div class="row"><div class="col-bold">jne</div><div style="width: 30%">ja nii edasi</div><div class="col-bold">pst</div><div>puiestee</div></div>
+          <div class="row"><div class="col-bold">jt</div><div style="width: 30%">ja teised</div><div class="col-bold">ptk</div><div>peatükk</div></div>
+          <div class="row"><div class="col-bold">k.a</div><div style="width: 30%">kaasa arvatud</div><div class="col-bold">t</div><div>tonn; tund</div></div>
+          <div class="row"><div class="col-bold">kg</div><div style="width: 30%">kilogramm</div><div class="col-bold">tel</div><div>telefoninumber</div></div>
+          <div class="row"><div class="col-bold">km</div><div style="width: 30%">kilomeeter</div><div class="col-bold">tn</div><div>tänav</div></div>
+          <div class="row"><div class="col-bold">l</div><div style="width: 30%">liiter</div><div class="col-bold">SA</div><div>sihtasutus</div></div>
+          <div class="row"><div class="col-bold">lk</div><div style="width: 30%">lehekülg</div><div class="col-bold">saj</div><div>sajand</div></div>
+          <div class="row"><div class="col-bold">lp</div><div style="width: 30%">lugupeetud</div><div class="col-bold">sh</div><div>sealhulgas</div></div>
+          <div class="row"><div class="col-bold">m</div><div style="width: 30%">meeter</div><div class="col-bold">u</div><div>umbes</div></div>
+          <div class="row"><div class="col-bold">m2</div><div style="width: 30%">ruutmeeter</div><div class="col-bold">v.a</div><div>välja arvatud</div></div>
+          <div class="row"><div class="col-bold">min</div><div style="width: 30%">minut</div><div class="col-bold">vms</div><div>või muud sellist, või muu selline</div></div>
+        </div>
+
+        <div class="pb-4">
+          <a name="kirjavahemargid"></a>
+          <h3>Kirjavahemärgid</h3>
+          <div class="row">
+            <div class="col-1 border">
+              .
+            </div>
+            <div class="col-5 border">
+              • lause lõpus<br>
+              • lühendite sees<br>
+              • numbrite järel, kellaaja või kuupäeva sees<br>
+            </div>
+            <div class="col-5 border">
+              • Ma lähen jalutama.<br>
+              • v.a, k.a<br>
+              • Täna on 24. oktoober.<br>
+              • Kell on 21.43.<br>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              ?
+            </div>
+            <div class="col-5 border">
+              • küsimuse lõpus
+            </div>
+            <div class="col-5 border">
+              • Mis su nimi on? Kus sa elad?
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              !
+            </div>
+            <div class="col-5 border">
+              • sellise lause lõpus, mis väljendab käsku, keeldu, soovi või üllatust
+            </div>
+            <div class="col-5 border">
+              • Tule siia! Ära tee! Stopp! Oi, kui tore!
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              ,
+            </div>
+            <div class="col-5 border">
+              • loetelus<br>
+              • lause osade vahel, tavaliselt sidesõnade aga, et, kui, kuid, sest, siis ees
+            </div>
+            <div class="col-5 border">
+              • Ostsin poest leiba, saia, juustu ja piima.<br>
+              • Kui Arno isaga kooli jõudis, olid tunnid juba alanud. Ma tean, et sa valetad. Poiss on väike, aga tubli. Hilinesin, sest magasin sisse.
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              :
+            </div>
+            <div class="col-5 border">
+              • kui järgneb loetelu või selgitus<br>
+              • numbrite vahel<br>
+              • tekstis näitab, et järgnevad kellegi suuliselt öeldud sõnad
+            </div>
+            <div class="col-5 border">
+              • Lõunasöök oli lihtne: kartulid kastmega.<br>
+              • Eesti võitis 5 : 2.<br>
+              • Laps ütles: "Ma tahan magada."
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              ;
+            </div>
+            <div class="col-5 border">
+              • kui järgnevad loetelu rühmad<br>
+              • lause osade vahel
+            </div>
+            <div class="col-5 border">
+              • Poest sai osta kõike: saia, leiba ja muid toiduaineid; pliiatseid, paberit ja muid kontoritarbeid; pluuse, pükse ja muid riideid.<br>
+              • Ilm oli külm, tuuline ja märg; kõik sportlased olid väsinud, janus.
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              -
+            </div>
+            <div class="col-5 border">
+              • ühendab sõnu<br>
+              • liitsõnades, mille üks osa on näiteks täht või number<br>
+              • sõnades, kus muidu jääks kolm või neli ühesugust tähte kõrvuti<br>
+              • liitsõnades korduva osa asemel
+            </div>
+            <div class="col-5 border">
+              • edasi-tagasi, enam-vähem, võib-olla; Tallinna-Tartu liin; inglise-eesti sõnaraamat<br>
+              • 75-aastane, 20-kraadine; IT-osakond<br>
+              • iga-aastane, maa-ala<br>
+              • puu- ja juurviljad, era- ja kortermajad
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              -
+            </div>
+            <div class="col-5 border">
+              • loetelu järel<br>
+              • numbrite vahel sõna kuni asemel<br>
+              • tekstis eristab kahe eri inimese öeldud lauseid
+            </div>
+            <div class="col-5 border">
+              • Rahulik, nõudlik ja vähese jutuga – selline peabki üks ülemus olema.<br>
+              • 10–15 aastat, 9.00–17.30<br>
+              • Mis su nimi on? – Minu nimi on Karl.
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              ""
+            </div>
+            <div class="col-5 border">
+              • tekstis tähistavad kellegi suuliselt öeldud sõnu<br>
+              • tekstis tähistavad teoste, dokumentide, sarjade, ürituste pealkirju
+            </div>
+            <div class="col-5 border">
+              • "Ma olen väsinud," ütles Mari. Mari ütles: "Ma olen väsinud."<br>
+              • Oskar Lutsu kuulsaim romaan on "Kevade".
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-1 border">
+              '
+            </div>
+            <div class="col-5 border">
+              • võõrkeelse nime käänamisel
+            </div>
+            <div class="col-5 border">
+              • Ta elab Seattle’is. Käisin suvel Versailles’ lossis.
+            </div>
+          </div>
+        </div>
+        <div class="pb-4">
+          <a name="kirjutamine"></a>
+          <h3>Kirjutamine</h3>
+
+          <a name="kiri"></a>
+          <h4>Kiri</h4>
+          <h4>Kuidas kirjutada ümbrikule aadressi</h4>
+          <div class="row">
+            <div class="col-4">
+              Lp Martin Must<br>
+              Estonia pst 21–46<br>
+              10141 Tallinn<br>
+            </div>
+            <div class="col-4">
+              Lp Karl Süda<br>
+              Tamme tee 15<br>
+              Aaviku küla<br>
+              Rae vald<br>
+              75305 Harjumaa<br>
+            </div>
+            <div class="col-4">
+              Peeter Põõsas<br>
+              Sepa 58–6<br>
+              EE-50113 Tartu<br>
+              Eesti<br>
+            </div>
+            <p class="ml-4">
+              <b>NB!</b> Kui sa kirjutad tekstis aadressi ühele reale, kasuta komasid, näiteks: Estonia pst 21–46, 10141 Tallinn.
+            </p>
+          </div>
+          <a name="ekiri"></a>
+          <h4>E-kiri</h4>
+          <a name="postkaart"></a>
+          <h4>Postkaart</h4>
+          <a name="kutse"></a>
+          <h4>Kutse</h4>
+          <a name="kavaldus"></a>
+          <h4>Kaastunde avaldamine</h4>
+          <a name="sonum"></a>
+          <h4>Sõnum</h4>
+          <a name="avaldus"></a>
+          <h4>Avaldus</h4>
+          <a name="volitus"></a>
+          <h4>Volitus</h4>
+          <a name="cv"></a>
+          <h4>CV</h4>
+          <a name="kaaskiri"></a>
+          <h4>Kaaskiri</h4>
+        </div>
+        <div class="pb-4">
+          <a name="kasulikke"></a>
+          <h3>Kasulikke väljendeid</h3>
+        </div>
+      </div>
+    </div>
   </div>
+  <script th:inline="javascript">
+      var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+      var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+      setActiveMenuItem('learn');
+  </script>
 </body>
 
 </html>
