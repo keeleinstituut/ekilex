@@ -18,6 +18,8 @@ drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
+drop table if exists lexeme_group_member;
+drop table if exists lexeme_group;
 drop table if exists freeform_ref_link;--remove later
 drop table if exists definition_ref_link;--remove later
 drop table if exists lexeme_ref_link;--remove later

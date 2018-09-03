@@ -705,6 +705,22 @@ create table lexeme_source_link
 );
 alter sequence lexeme_source_link_id_seq restart with 10000;
 
+create table lexeme_group
+(
+  id bigserial primary key,
+  type varchar(100) not null
+);
+alter sequence lexeme_group_id_seq restart with 10000;
+
+create table lexeme_group_member
+(
+  id bigserial primary key,
+  lexeme_group_id bigint references lexeme_group(id) on delete cascade not null,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  unique(lexeme_group_id, lexeme_id)
+);
+alter sequence lexeme_group_member_id_seq restart with 10000;
+
 --- indexes
 
 create index form_value_idx on form(value);
