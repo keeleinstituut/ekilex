@@ -717,6 +717,7 @@ create table lexeme_group_member
   id bigserial primary key,
   lexeme_group_id bigint references lexeme_group(id) on delete cascade not null,
   lexeme_id bigint references lexeme(id) on delete cascade not null,
+  order_by bigserial,
   unique(lexeme_group_id, lexeme_id)
 );
 alter sequence lexeme_group_member_id_seq restart with 10000;

@@ -159,6 +159,11 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_GROUP_MEMBER_ID_SEQ = new SequenceImpl<Long>("lexeme_group_member_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.lexeme_group_member_order_by_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_GROUP_MEMBER_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_group_member_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.lexeme_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_ID_SEQ = new SequenceImpl<Long>("lexeme_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

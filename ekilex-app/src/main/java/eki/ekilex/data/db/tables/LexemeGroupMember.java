@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeGroupMember extends TableImpl<LexemeGroupMemberRecord> {
 
-    private static final long serialVersionUID = -1504183179;
+    private static final long serialVersionUID = 594240177;
 
     /**
      * The reference instance of <code>public.lexeme_group_member</code>
@@ -69,6 +69,11 @@ public class LexemeGroupMember extends TableImpl<LexemeGroupMemberRecord> {
      * The column <code>public.lexeme_group_member.lexeme_id</code>.
      */
     public final TableField<LexemeGroupMemberRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_group_member.order_by</code>.
+     */
+    public final TableField<LexemeGroupMemberRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_group_member_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lexeme_group_member</code> table reference
