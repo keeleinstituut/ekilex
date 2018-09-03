@@ -41,6 +41,8 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemeGroup;
+import eki.ekilex.data.db.tables.LexemeGroupMember;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -174,6 +176,9 @@ public class Indexes {
     public static final Index LEXEME_FREEFORM_LEXEME_ID_IDX = Indexes0.LEXEME_FREEFORM_LEXEME_ID_IDX;
     public static final Index LEXEME_FREEFORM_PKEY = Indexes0.LEXEME_FREEFORM_PKEY;
     public static final Index LEXEME_FREQUENCY_PKEY = Indexes0.LEXEME_FREQUENCY_PKEY;
+    public static final Index LEXEME_GROUP_PKEY = Indexes0.LEXEME_GROUP_PKEY;
+    public static final Index LEXEME_GROUP_MEMBER_LEXEME_GROUP_ID_LEXEME_ID_KEY = Indexes0.LEXEME_GROUP_MEMBER_LEXEME_GROUP_ID_LEXEME_ID_KEY;
+    public static final Index LEXEME_GROUP_MEMBER_PKEY = Indexes0.LEXEME_GROUP_MEMBER_PKEY;
     public static final Index LEXEME_POS_LEXEME_ID_IDX = Indexes0.LEXEME_POS_LEXEME_ID_IDX;
     public static final Index LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Indexes0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
     public static final Index LEXEME_POS_PKEY = Indexes0.LEXEME_POS_PKEY;
@@ -317,6 +322,9 @@ public class Indexes {
         public static Index LEXEME_FREEFORM_LEXEME_ID_IDX = Internal.createIndex("lexeme_freeform_lexeme_id_idx", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID }, false);
         public static Index LEXEME_FREEFORM_PKEY = Internal.createIndex("lexeme_freeform_pkey", LexemeFreeform.LEXEME_FREEFORM, new OrderField[] { LexemeFreeform.LEXEME_FREEFORM.ID }, true);
         public static Index LEXEME_FREQUENCY_PKEY = Internal.createIndex("lexeme_frequency_pkey", LexemeFrequency.LEXEME_FREQUENCY, new OrderField[] { LexemeFrequency.LEXEME_FREQUENCY.CODE }, true);
+        public static Index LEXEME_GROUP_PKEY = Internal.createIndex("lexeme_group_pkey", LexemeGroup.LEXEME_GROUP, new OrderField[] { LexemeGroup.LEXEME_GROUP.ID }, true);
+        public static Index LEXEME_GROUP_MEMBER_LEXEME_GROUP_ID_LEXEME_ID_KEY = Internal.createIndex("lexeme_group_member_lexeme_group_id_lexeme_id_key", LexemeGroupMember.LEXEME_GROUP_MEMBER, new OrderField[] { LexemeGroupMember.LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID, LexemeGroupMember.LEXEME_GROUP_MEMBER.LEXEME_ID }, true);
+        public static Index LEXEME_GROUP_MEMBER_PKEY = Internal.createIndex("lexeme_group_member_pkey", LexemeGroupMember.LEXEME_GROUP_MEMBER, new OrderField[] { LexemeGroupMember.LEXEME_GROUP_MEMBER.ID }, true);
         public static Index LEXEME_POS_LEXEME_ID_IDX = Internal.createIndex("lexeme_pos_lexeme_id_idx", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.LEXEME_ID }, false);
         public static Index LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Internal.createIndex("lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE }, true);
         public static Index LEXEME_POS_PKEY = Internal.createIndex("lexeme_pos_pkey", LexemePos.LEXEME_POS, new OrderField[] { LexemePos.LEXEME_POS.ID }, true);
