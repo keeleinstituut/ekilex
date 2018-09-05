@@ -1,5 +1,6 @@
 package eki.ekilex.runner;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -18,6 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import eki.common.constant.LexemeGroupType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -171,9 +173,39 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 		if (contentNode != null) {
-			processArticleContent(reportingId, contentNode, newWords, context, comments);
+			List<Lexeme> createdLexemes = new ArrayList<>();
+			processArticleContent(reportingId, contentNode, newWords, context, comments, createdLexemes);
+			processVariants(headerNode, newWords, createdLexemes);
 		}
 		context.importedWords.addAll(newWords);
+	}
+
+	private void processVariants(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+		if (isVariant(headerNode, newWords)) {
+			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
+			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
+				Long lexemeGroup = createLexemeGroup(LexemeGroupType.VARIANTS);
+				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
+					createLexemeGroupMember(lexemeGroup, lexeme.getLexemeId());
+				}
+			}
+		}
+	}
+
+	/*
+		If in article header we have more than one word and word type is not series, then they are variants.
+	 */
+	private boolean isVariant(Element headerNode, List<WordData> newWords) {
+		return newWords.size() > 1 && !isSeries(headerNode);
+	}
+
+	private boolean isSeries(Element headerNode) {
+
+		final String wordLinkExp = "s:mvtg/s:mvt";
+		final String wordLinkTypeAttr = "s:mvtl";
+		final String wordLinkSeriesType = "srj";
+
+		return headerNode.selectNodes(wordLinkExp).stream().anyMatch(e -> Objects.equals(((Element)e).attributeValue(wordLinkTypeAttr), wordLinkSeriesType));
 	}
 
 	private void processFormulas(Context context) throws Exception {
@@ -425,7 +457,12 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private void processArticleContent(
-			String reportingId, Element contentNode, List<WordData> newWords, Context context, List<CommentData> comments) throws Exception {
+			String reportingId,
+			Element contentNode,
+			List<WordData> newWords,
+			Context context,
+			List<CommentData> comments,
+			List<Lexeme> createdLexemes) throws Exception {
 
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -518,6 +555,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
+						lexeme.setLexemeId(lexemeId);
+						createdLexemes.add(lexeme);
 						createUsages(lexemeId, usages, dataLang);
 						saveGovernments(meaningGroupNode, lexemeId);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
@@ -531,6 +570,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 							abbreviationData.lexemeId = lexemeId;
 							context.abbreviations.add(abbreviationData);
 						}
+					} else {
+						// null is returned in case we already have lexeme for word and meaning, this is bad data in xml, so we need to log it
+						writeToLogFile(MEANINGS_REPORT_NAME, newWordData.value, "Mõiste ja märksõna jaoks on juba ilmik olemas", definitions.get(0));
 					}
 				}
 			}

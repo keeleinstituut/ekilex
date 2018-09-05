@@ -11,6 +11,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eki.common.constant.LexemeGroupType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
@@ -775,6 +776,21 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
+	}
+
+	protected Long createLexemeGroup(LexemeGroupType groupType) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("type", groupType.name());
+		return basicDbService.create(LEXEME_GROUP, params);
+	}
+
+	protected Long createLexemeGroupMember(Long groupId, Long lexemeId) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("lexeme_group_id", groupId);
+		params.put("lexeme_id", lexemeId);
+		return basicDbService.create(LEXEME_GROUP_MEMBER, params);
 	}
 
 }

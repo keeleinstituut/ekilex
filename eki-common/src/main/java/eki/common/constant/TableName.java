@@ -48,6 +48,8 @@ public interface TableName {
 	String LEX_COLLOC_REL_GROUP = "lex_colloc_rel_group";
 	String COLLOCATION = "collocation";
 	String COLLOCATION_FREEFORM = "collocation_freeform";
+	String LEXEME_GROUP = "lexeme_group";
+	String LEXEME_GROUP_MEMBER = "lexeme_group_member";
 
 	// classifier binds
 	String MEANING_DOMAIN = "meaning_domain";
