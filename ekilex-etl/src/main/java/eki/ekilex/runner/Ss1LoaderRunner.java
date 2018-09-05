@@ -202,7 +202,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private boolean isSeries(Element headerNode) {
 
 		final String wordLinkExp = "s:mvtg/s:mvt";
-		final String wordLinkTypeAttr = "s:mvtl";
+		final String wordLinkTypeAttr = "mvtl";
 		final String wordLinkSeriesType = "srj";
 
 		return headerNode.selectNodes(wordLinkExp).stream().anyMatch(e -> Objects.equals(((Element)e).attributeValue(wordLinkTypeAttr), wordLinkSeriesType));
