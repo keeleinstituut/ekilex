@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LifecycleLog extends TableImpl<LifecycleLogRecord> {
 
-    private static final long serialVersionUID = -108012937;
+    private static final long serialVersionUID = 84161880;
 
     /**
      * The reference instance of <code>public.lifecycle_log</code>
@@ -61,29 +61,49 @@ public class LifecycleLog extends TableImpl<LifecycleLogRecord> {
     public final TableField<LifecycleLogRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lifecycle_log_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.lifecycle_log.owner_id</code>.
+     * The column <code>public.lifecycle_log.entity_id</code>.
      */
-    public final TableField<LifecycleLogRecord, Long> OWNER_ID = createField("owner_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<LifecycleLogRecord, Long> ENTITY_ID = createField("entity_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.lifecycle_log.owner_name</code>.
+     * The column <code>public.lifecycle_log.entity_name</code>.
      */
-    public final TableField<LifecycleLogRecord, String> OWNER_NAME = createField("owner_name", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LifecycleLogRecord, String> ENTITY_NAME = createField("entity_name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
-     * The column <code>public.lifecycle_log.type</code>.
+     * The column <code>public.lifecycle_log.entity_prop</code>.
      */
-    public final TableField<LifecycleLogRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LifecycleLogRecord, String> ENTITY_PROP = createField("entity_prop", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lifecycle_log.event_type</code>.
+     */
+    public final TableField<LifecycleLogRecord, String> EVENT_TYPE = createField("event_type", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * The column <code>public.lifecycle_log.event_by</code>.
      */
-    public final TableField<LifecycleLogRecord, String> EVENT_BY = createField("event_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<LifecycleLogRecord, String> EVENT_BY = createField("event_by", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lifecycle_log.event_on</code>.
      */
-    public final TableField<LifecycleLogRecord, Timestamp> EVENT_ON = createField("event_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
+    public final TableField<LifecycleLogRecord, Timestamp> EVENT_ON = createField("event_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.lifecycle_log.source_name</code>.
+     */
+    public final TableField<LifecycleLogRecord, String> SOURCE_NAME = createField("source_name", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.lifecycle_log.recent</code>.
+     */
+    public final TableField<LifecycleLogRecord, String> RECENT = createField("recent", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.lifecycle_log.entry</code>.
+     */
+    public final TableField<LifecycleLogRecord, String> ENTRY = createField("entry", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * Create a <code>public.lifecycle_log</code> table reference

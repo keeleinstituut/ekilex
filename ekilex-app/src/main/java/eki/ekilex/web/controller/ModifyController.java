@@ -182,50 +182,50 @@ public class ModifyController implements WebConstant {
 		logger.debug("Delete operation : {} : for id {}, value {}", opCode, id, valueToRemove);
 		switch (opCode) {
 		case "usage" :
-			updateService.removeUsage(id);
+			updateService.deleteUsage(id);
 			break;
 		case "usage_translation" :
-			updateService.removeUsageTranslation(id);
+			updateService.deleteUsageTranslation(id);
 			break;
 		case "usage_definition" :
-			updateService.removeUsageDefinition(id);
+			updateService.deleteUsageDefinition(id);
 			break;
 		case "definition" :
-			updateService.removeDefinition(id);
+			updateService.deleteDefinition(id);
 			break;
 		case "lexeme_frequency_group" :
 			updateService.updateLexemeFrequencyGroup(id, null);
 			break;
 		case "lexeme_pos" :
-			updateService.removeLexemePos(id, valueToRemove);
+			updateService.deleteLexemePos(id, valueToRemove);
 			break;
 		case "meaning_domain" :
 			Classifier meaningDomain = conversionUtil.classifierFromIdString(valueToRemove);
-			updateService.removeMeaningDomain(id, meaningDomain);
+			updateService.deleteMeaningDomain(id, meaningDomain);
 			break;
 		case "government" :
-			updateService.removeGovernment(id);
+			updateService.deleteGovernment(id);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK :
-			updateService.removeDefinitionRefLink(id);
+			updateService.deleteDefinitionRefLink(id);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK :
-			updateService.removeFreeformRefLink(id);
+			updateService.deleteFreeformRefLink(id);
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK :
-			updateService.removeLexemeRefLink(id);
+			updateService.deleteLexemeRefLink(id);
 			break;
 		case "lexeme_deriv" :
-			updateService.removeLexemeDeriv(id, valueToRemove);
+			updateService.deleteLexemeDeriv(id, valueToRemove);
 			break;
 		case "lexeme_register" :
-			updateService.removeLexemeRegister(id, valueToRemove);
+			updateService.deleteLexemeRegister(id, valueToRemove);
 			break;
 		case "lexeme_gender" :
 			updateService.updateWordGender(id, null);
 			break;
 		case "lexeme_grammar" :
-			updateService.removeGrammar(id);
+			updateService.deleteGrammar(id);
 			break;
 		}
 		return "OK";

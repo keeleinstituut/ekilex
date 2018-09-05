@@ -733,10 +733,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							currentCollocMemberRecords.add(collocMemberRecord);
 						}
 					} else if (collocMemberRefNum == null) {
-						//TODO just guessing here. should be determined by more intelligent logic
+						//just guessing here. should be determined by more intelligent logic
 						if (homonymWordMap.size() == 1) {
 							Word collocWordObj = homonymWordMap.get(1);
-							// can be null if even though single homonym exists, it is not the first one
 							if (collocWordObj != null) {
 								Long collocWordId = collocWordObj.getId();
 								List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(collocWordId, collocMemberPosCode);

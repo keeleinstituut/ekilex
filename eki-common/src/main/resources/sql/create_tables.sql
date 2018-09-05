@@ -320,11 +320,15 @@ create table usage_type_label
 create table lifecycle_log
 (
   id bigserial primary key,
-  owner_id bigint not null,
-  owner_name varchar(100) not null,
-  type varchar(100) not null,
-  event_by varchar(100) null,
-  event_on timestamp null
+  entity_id bigint not null,
+  entity_name text not null,
+  entity_prop text not null,
+  event_type varchar(100) not null,
+  event_by text not null,
+  event_on timestamp not null default statement_timestamp(),
+  source_name text null,
+  recent text null,
+  entry text null
 );
 alter sequence lifecycle_log_id_seq restart with 10000;
 
@@ -415,6 +419,14 @@ create table word_relation
 );
 alter sequence word_relation_id_seq restart with 10000;
 
+create table word_lifecycle_log
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
+);
+alter sequence word_lifecycle_log_id_seq restart with 10000;
+
 -- paradigma
 create table paradigm
 (
@@ -490,6 +502,14 @@ create table meaning_domain
   unique(meaning_id, domain_code, domain_origin)
 );
 alter sequence meaning_domain_id_seq restart with 10000;
+
+create table meaning_lifecycle_log
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
+);
+alter sequence meaning_lifecycle_log_id_seq restart with 10000;
 
 -- tähenduse vabavorm
 create table meaning_freeform
@@ -616,6 +636,14 @@ create table lexeme_freeform
 );
 alter sequence lexeme_freeform_id_seq restart with 10000;
 
+create table lexeme_lifecycle_log
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  lifecycle_log_id bigint references lifecycle_log(id) on delete cascade not null
+);
+alter sequence lexeme_lifecycle_log_id_seq restart with 10000;
+
 -- ilmiku seos
 create table lex_relation
 (
@@ -666,6 +694,7 @@ create table lex_colloc
 );
 alter sequence lex_colloc_id_seq restart with 10000;
 
+-- allikaviited
 create table freeform_source_link
 (
   id bigserial primary key,
@@ -743,9 +772,6 @@ create index definition_freeform_definition_id_idx on definition_freeform(defini
 create index definition_freeform_freeform_id_idx on definition_freeform(freeform_id);
 create index collocation_freeform_collocation_id_idx on collocation_freeform(collocation_id);
 create index collocation_freeform_freeform_id_idx on collocation_freeform(freeform_id);
---create index freeform_ref_link_freeform_id_idx on freeform_ref_link(freeform_id);
---create index definition_ref_link_definition_id_idx on definition_ref_link(definition_id);
---create index lexeme_ref_link_lexeme_id_idx on lexeme_ref_link(lexeme_id);
 create index freeform_source_link_freeform_id_idx on freeform_source_link(freeform_id);
 create index freeform_source_link_source_id_idx on freeform_source_link(source_id);
 create index definition_source_link_definition_id_idx on definition_source_link(definition_id);
@@ -761,6 +787,12 @@ create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
 create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);
 create index meaning_domain_lexeme_id_idx on meaning_domain(meaning_id);
+create index word_lifecycle_log_word_id_idx on word_lifecycle_log(word_id);
+create index word_lifecycle_log_log_id_idx on word_lifecycle_log(lifecycle_log_id);
+create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meaning_id);
+create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
+create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
+create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
