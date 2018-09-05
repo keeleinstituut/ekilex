@@ -596,7 +596,7 @@
                   </tr>
                 </table>
               </div>
-              <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+              <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations) || not #lists.isEmpty(lexeme.lexemeGroups)}">
                 <hr />
                 <span class="lbl">Ilmiku seosed</span>
                 <table class="orderable" th:data-op-code="lexeme_relation">
@@ -614,6 +614,19 @@
                     </td>
                   </tr>
                 </table>
+                <table th:each="lexemeGroup : ${lexeme.lexemeGroups}">
+                  <tr th:each="relation, itemStat : ${lexemeGroup.members}">
+                    <td style="vertical-align: text-top; padding-right: 1em">
+                      <button type="button" class="btn btn-link pb-0 pt-0" th:data-id="${relation.wordId}" name="detailsBtn">
+                        <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
+                      </button>
+                    </td>
+                    <td>
+                      <span th:text="${relation.relationTypeLabel}"></span>
+                    </td>
+                  </tr>
+                </table>
+
               </div>
             </div>
             <div class="card-body pt-0" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">

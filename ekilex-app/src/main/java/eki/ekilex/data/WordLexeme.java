@@ -93,6 +93,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private boolean lexemeOrMeaningClassifiersExist;
 
+	private List<LexemeGroup> lexemeGroups;
+
 	public String[] getWords() {
 		return words;
 	}
@@ -363,6 +365,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
+	}
+
+	public List<LexemeGroup> getLexemeGroups() {
+		return lexemeGroups;
+	}
+
+	public void setLexemeGroups(List<LexemeGroup> lexemeGroups) {
+		this.lexemeGroups = lexemeGroups;
 	}
 
 }

@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.LexemeGroup;
 import eki.ekilex.data.SourceLink;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -244,6 +245,8 @@ public class LexSearchService implements SystemConstant {
 		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.findSecondaryCollocationTuples(lexemeId).into(CollocationTuple.class);
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
+		List<Relation> lexemeGroupMembers = lexSearchDbService.findLexemeGroupMembers(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+		List<LexemeGroup> lexemeGroups = conversionUtil.toLexemeGroups(lexemeGroupMembers);
 
 		lexeme.setLexemePos(lexemePos);
 		lexeme.setLexemeDerivs(lexemeDerivs);
@@ -262,6 +265,7 @@ public class LexSearchService implements SystemConstant {
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setVocalForms(vocalForms);
 		lexeme.setSourceLinks(lexemeSourceLinks);
+		lexeme.setLexemeGroups(lexemeGroups);
 
 		boolean lexemeOrMeaningClassifiersExist =
 				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())

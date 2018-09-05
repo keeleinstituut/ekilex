@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.LexemeGroup;
+import eki.ekilex.data.Relation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -40,6 +42,8 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Component
 public class ConversionUtil {
@@ -520,6 +524,20 @@ public class ConversionUtil {
 			addCollocMember(collocTuple, collocation);
 		}
 		return collocations;
+	}
+
+	public List<LexemeGroup> toLexemeGroups(List<Relation> groupMembers) {
+
+		List<LexemeGroup> groups = new ArrayList<>();
+		Map<Long, List<Relation>> memberGroups = groupMembers.stream().collect(groupingBy(Relation::getGroupId));
+		for (Long groupId : memberGroups.keySet()) {
+			LexemeGroup lexemeGroup = new LexemeGroup();
+			lexemeGroup.setId(groupId);
+			lexemeGroup.setMembers(memberGroups.get(groupId));
+			lexemeGroup.setGroupTypeLabel(lexemeGroup.getMembers().get(0).getRelationTypeLabel());
+			groups.add(lexemeGroup);
+		}
+		return groups;
 	}
 
 	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {
