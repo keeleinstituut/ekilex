@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import eki.common.constant.LexemeGroupType;
+import eki.common.constant.LexemeRelationGroupType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -184,9 +184,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (isVariant(headerNode, newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
-				Long lexemeGroup = createLexemeGroup(LexemeGroupType.VARIANTS);
+				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.VARIANTS);
 				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
-					createLexemeGroupMember(lexemeGroup, lexeme.getLexemeId());
+					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
 				}
 			}
 		}

@@ -28,7 +28,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> implements Record2<Long, String> {
 
-    private static final long serialVersionUID = 1633112486;
+    private static final long serialVersionUID = -2111475113;
 
     /**
      * Setter for <code>public.lexeme_group.id</code>.
@@ -45,16 +45,16 @@ public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> im
     }
 
     /**
-     * Setter for <code>public.lexeme_group.type</code>.
+     * Setter for <code>public.lexeme_group.lex_rel_type_code</code>.
      */
-    public void setType(String value) {
+    public void setLexRelTypeCode(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>public.lexeme_group.type</code>.
+     * Getter for <code>public.lexeme_group.lex_rel_type_code</code>.
      */
-    public String getType() {
+    public String getLexRelTypeCode() {
         return (String) get(1);
     }
 
@@ -103,7 +103,7 @@ public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> im
      */
     @Override
     public Field<String> field2() {
-        return LexemeGroup.LEXEME_GROUP.TYPE;
+        return LexemeGroup.LEXEME_GROUP.LEX_REL_TYPE_CODE;
     }
 
     /**
@@ -119,7 +119,7 @@ public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> im
      */
     @Override
     public String component2() {
-        return getType();
+        return getLexRelTypeCode();
     }
 
     /**
@@ -135,7 +135,7 @@ public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> im
      */
     @Override
     public String value2() {
-        return getType();
+        return getLexRelTypeCode();
     }
 
     /**
@@ -152,7 +152,7 @@ public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> im
      */
     @Override
     public LexemeGroupRecord value2(String value) {
-        setType(value);
+        setLexRelTypeCode(value);
         return this;
     }
 
@@ -180,10 +180,10 @@ public class LexemeGroupRecord extends UpdatableRecordImpl<LexemeGroupRecord> im
     /**
      * Create a detached, initialised LexemeGroupRecord
      */
-    public LexemeGroupRecord(Long id, String type) {
+    public LexemeGroupRecord(Long id, String lexRelTypeCode) {
         super(LexemeGroup.LEXEME_GROUP);
 
         set(0, id);
-        set(1, type);
+        set(1, lexRelTypeCode);
     }
 }

@@ -708,7 +708,7 @@ alter sequence lexeme_source_link_id_seq restart with 10000;
 create table lexeme_group
 (
   id bigserial primary key,
-  type varchar(100) not null
+  lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null
 );
 alter sequence lexeme_group_id_seq restart with 10000;
 

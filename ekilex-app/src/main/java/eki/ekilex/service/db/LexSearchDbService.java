@@ -718,17 +718,16 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
-						LEXEME_GROUP.TYPE.as("rel_type_label"),
+						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
 						LEXEME_GROUP_MEMBER.ORDER_BY.as("order_by"),
 						LEXEME_GROUP.ID.as("group_id")
 				)
 				.from(
-//						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
-//								LEX_RELATION.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
-//										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-//												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						LEXEME_GROUP.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
+								LEXEME_GROUP.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
+										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
 						LEXEME_GROUP_MEMBER,
-						LEXEME_GROUP,
 						LEXEME,
 						WORD,
 						PARADIGM,

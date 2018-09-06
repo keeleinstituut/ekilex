@@ -15,6 +15,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.ForeignKey;
 import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
@@ -39,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeGroup extends TableImpl<LexemeGroupRecord> {
 
-    private static final long serialVersionUID = -1242455413;
+    private static final long serialVersionUID = -54913141;
 
     /**
      * The reference instance of <code>public.lexeme_group</code>
@@ -60,9 +61,9 @@ public class LexemeGroup extends TableImpl<LexemeGroupRecord> {
     public final TableField<LexemeGroupRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_group_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.lexeme_group.type</code>.
+     * The column <code>public.lexeme_group.lex_rel_type_code</code>.
      */
-    public final TableField<LexemeGroupRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeGroupRecord, String> LEX_REL_TYPE_CODE = createField("lex_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
      * Create a <code>public.lexeme_group</code> table reference
@@ -131,6 +132,14 @@ public class LexemeGroup extends TableImpl<LexemeGroupRecord> {
     @Override
     public List<UniqueKey<LexemeGroupRecord>> getKeys() {
         return Arrays.<UniqueKey<LexemeGroupRecord>>asList(Keys.LEXEME_GROUP_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ForeignKey<LexemeGroupRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<LexemeGroupRecord, ?>>asList(Keys.LEXEME_GROUP__LEXEME_GROUP_LEX_REL_TYPE_CODE_FKEY);
     }
 
     /**

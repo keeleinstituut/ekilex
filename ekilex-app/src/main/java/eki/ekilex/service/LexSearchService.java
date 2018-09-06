@@ -245,7 +245,7 @@ public class LexSearchService implements SystemConstant {
 		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.findSecondaryCollocationTuples(lexemeId).into(CollocationTuple.class);
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
-		List<Relation> lexemeGroupMembers = lexSearchDbService.findLexemeGroupMembers(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+		List<Relation> lexemeGroupMembers = lexSearchDbService.findLexemeGroupMembers(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<LexemeGroup> lexemeGroups = conversionUtil.toLexemeGroups(lexemeGroupMembers);
 
 		lexeme.setLexemePos(lexemePos);
