@@ -242,7 +242,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			WordData wordData = new WordData();
 			wordData.reportingId = reportingId;
 
-			Word word = extractWordData(wordGroupNode, wordData, guid);
+			Word word = extractWordData(wordGroupNode, wordData, guid, 0);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
 				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);

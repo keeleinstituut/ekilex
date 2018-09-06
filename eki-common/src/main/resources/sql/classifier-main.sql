@@ -372,8 +372,8 @@ insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vt ka', 'v
 insert into lex_rel_type_label (code, value, lang, type) values ('yhvt', 'vaata ka', 'est', 'wordweb');
 insert into lex_rel_type_label (code, value, lang, type) values ('vor', 'suhtlus, vestlus', 'est', 'wordweb');
 insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vrd', 'võrdle', 'est', 'wordweb');
-insert into lex_rel_type_label (code, value, lang, type) values ('SERIES', 'seerja', 'est', 'full');
-insert into lex_rel_type_label (code, value, lang, type) values ('VARIANTS', 'varjant', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('SERIES', 'sari', 'est', 'full');
+insert into lex_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'full');
 insert into meaning_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'kaashüponüüm', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'kaashüponüüm', 'est', 'wordweb');

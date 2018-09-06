@@ -326,7 +326,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return formEndings;
 	}
 
-	protected Word extractWordData(Element wordGroupNode, WordData wordData, String guid) throws Exception {
+	protected Word extractWordData(Element wordGroupNode, WordData wordData, String guid, int index) throws Exception {
 
 		String wordExp = xpathExpressions().get("word");//		final String wordExp = "s:m";
 		String wordDisplayMorphExp = xpathExpressions().get("wordDisplayMorph");//	final String wordDisplayMorphExp = "s:vk";
@@ -335,7 +335,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String wordTypeAttr = "liik";
 		String wordFrequencyGroupExp = xpathExpressions().get("wordFrequencyGroup"); //final String wordFrequencyGroupExp = "s:msag";
 
-		Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
+		Element wordNode = (Element) wordGroupNode.selectNodes(wordExp).get(index);
 		if (wordNode.attributeValue(homonymNrAttr) != null) {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
 		}
@@ -349,9 +349,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 
 		String wordVocalForm = null;
-		Element vocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
-		if (vocalFormNode != null) {
-			wordVocalForm = vocalFormNode.getTextTrim();
+		if (index == 0) {
+			Element vocalFormNode = (Element) wordGroupNode.selectSingleNode(wordVocalFormExp);
+			if (vocalFormNode != null) {
+				wordVocalForm = vocalFormNode.getTextTrim();
+			}
 		}
 
 		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, guid, wordData.wordType);
@@ -359,7 +361,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
 			word.setDisplayMorph(displayMorpCodes.get(wordDisplayMorphNode.getTextTrim()));
-			if (displayMorpCodes.get(wordDisplayMorphNode.getTextTrim()) == null) {
+			if (displayMorpCodes.get(wordDisplayMorphNode.getTextTrim()) == null && index == 0) {
 				logger.warn("Unknown display morph code : {} : {}", wordDisplayMorphNode.getTextTrim(), wordValue);
 			}
 		}

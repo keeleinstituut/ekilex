@@ -108,7 +108,7 @@ lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
 lex_rel_type	yhvt	vaata ka	est	wordweb
 lex_rel_type	vor	suhtlus, vestlus	est	wordweb
 lex_rel_type	tvt:vrd	võrdle	est	wordweb
-lex_rel_type	SERIES	sarjad	est	full
+lex_rel_type	SERIES	sari	est	full
 lex_rel_type	VARIANTS	variandid	est	full
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip

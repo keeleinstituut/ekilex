@@ -176,8 +176,21 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			List<Lexeme> createdLexemes = new ArrayList<>();
 			processArticleContent(reportingId, contentNode, newWords, context, comments, createdLexemes);
 			processVariants(headerNode, newWords, createdLexemes);
+			processSeries(headerNode, newWords, createdLexemes);
 		}
 		context.importedWords.addAll(newWords);
+	}
+
+	private void processSeries(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+		if (isSeries(newWords)) {
+			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
+			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
+				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
+				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
+					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
+				}
+			}
+		}
 	}
 
 	private void processVariants(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
@@ -196,17 +209,22 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		If in article header we have more than one word and word type is not series, then they are variants.
 	 */
 	private boolean isVariant(Element headerNode, List<WordData> newWords) {
-		return newWords.size() > 1 && !isSeries(headerNode);
+		return newWords.size() > 1 && !isSeries(newWords);
 	}
 
-	private boolean isSeries(Element headerNode) {
-
-		final String wordLinkExp = "s:mvtg/s:mvt";
-		final String wordLinkTypeAttr = "mvtl";
-		final String wordLinkSeriesType = "srj";
-
-		return headerNode.selectNodes(wordLinkExp).stream().anyMatch(e -> Objects.equals(((Element)e).attributeValue(wordLinkTypeAttr), wordLinkSeriesType));
+	private boolean isSeries(List<WordData> newWords) {
+		final String wordTypeSeries = "s";
+		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
 	}
+
+//	private boolean isSeries(Element headerNode) {
+//
+//		final String wordLinkExp = "s:mvtg/s:mvt";
+//		final String wordLinkTypeAttr = "mvtl";
+//		final String wordLinkSeriesType = "srj";
+//
+//		return headerNode.selectNodes(wordLinkExp).stream().anyMatch(e -> Objects.equals(((Element)e).attributeValue(wordLinkTypeAttr), wordLinkSeriesType));
+//	}
 
 	private void processFormulas(Context context) throws Exception {
 
@@ -778,27 +796,33 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String wordGroupExp = "s:mg";
 		final String wordPosCodeExp = "s:sl";
 		final String wordGrammarPosCodesExp = "s:grg/s:sl";
+		String wordExp = xpathExpressions().get("word");//		final String wordExp = "s:m";
 
 		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Element wordGroupNode : wordGroupNodes) {
-			WordData wordData = new WordData();
-			wordData.reportingId = reportingId;
+			int numberOfWordsInGroup = wordGroupNode.selectNodes(wordExp).size();
 
-			Word word = extractWordData(wordGroupNode, wordData, guid);
-			if (word != null) {
-				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.reusedWordCount);
+			for (int index = 0; index < numberOfWordsInGroup; index++) {
+				WordData wordData = new WordData();
+				wordData.reportingId = reportingId;
+				Word word = extractWordData(wordGroupNode, wordData, guid, index);
+				if (word != null) {
+					List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
+					wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.reusedWordCount);
+				}
+
+				if (index == 0) {
+					List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
+					context.basicWords.addAll(basicWordsOfTheWord);
+				}
+
+				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
+				wordData.posCodes.addAll(posCodes);
+				posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
+				wordData.posCodes.addAll(posCodes);
+
+				newWords.add(wordData);
 			}
-
-			List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
-			context.basicWords.addAll(basicWordsOfTheWord);
-
-			List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
-			wordData.posCodes.addAll(posCodes);
-			posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
-			wordData.posCodes.addAll(posCodes);
-
-			newWords.add(wordData);
 		}
 	}
 
