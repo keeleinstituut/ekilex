@@ -11,6 +11,9 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "id")
 	private Long id;
 
+	@Column(name = "group_id")
+	private Long groupId;
+
 	@Column(name = "lexeme_id")
 	private Long lexemeId;
 
@@ -35,15 +38,20 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "order_by")
 	private Long orderBy;
 
-	@Column(name = "group_id")
-	private Long groupId;
-
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getGroupId() {
+		return groupId;
+	}
+
+	public void setGroupId(Long groupId) {
+		this.groupId = groupId;
 	}
 
 	public Long getLexemeId() {
@@ -108,14 +116,6 @@ public class Relation extends AbstractDataObject {
 
 	public void setOrderBy(Long orderBy) {
 		this.orderBy = orderBy;
-	}
-
-	public Long getGroupId() {
-		return groupId;
-	}
-
-	public void setGroupId(Long groupId) {
-		this.groupId = groupId;
 	}
 
 }

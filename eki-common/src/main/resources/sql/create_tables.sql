@@ -657,6 +657,24 @@ create table lex_relation
 );
 alter sequence lex_relation_id_seq restart with 10000;
 
+-- ilmiku sari
+create table lexeme_group
+(
+  id bigserial primary key,
+  lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null
+);
+alter sequence lexeme_group_id_seq restart with 10000;
+
+create table lexeme_group_member
+(
+  id bigserial primary key,
+  lexeme_group_id bigint references lexeme_group(id) on delete cascade not null,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  order_by bigserial,
+  unique(lexeme_group_id, lexeme_id)
+);
+alter sequence lexeme_group_member_id_seq restart with 10000;
+
 -- ilmiku kollokatsiooni grupid
 create table lex_colloc_pos_group
 (
@@ -734,23 +752,6 @@ create table lexeme_source_link
 );
 alter sequence lexeme_source_link_id_seq restart with 10000;
 
-create table lexeme_group
-(
-  id bigserial primary key,
-  lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null
-);
-alter sequence lexeme_group_id_seq restart with 10000;
-
-create table lexeme_group_member
-(
-  id bigserial primary key,
-  lexeme_group_id bigint references lexeme_group(id) on delete cascade not null,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  order_by bigserial,
-  unique(lexeme_group_id, lexeme_id)
-);
-alter sequence lexeme_group_member_id_seq restart with 10000;
-
 --- indexes
 
 create index form_value_idx on form(value);
@@ -810,6 +811,7 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
+-- TODO lexeme group indexes!
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));

@@ -478,6 +478,20 @@ public class ConversionUtil {
 		return definitionLangGroups;
 	}
 
+	public List<LexemeGroup> composeLexemeGroups(List<Relation> groupMembers) {
+
+		List<LexemeGroup> groups = new ArrayList<>();
+		Map<Long, List<Relation>> memberGroups = groupMembers.stream().collect(groupingBy(Relation::getGroupId));
+		for (Long groupId : memberGroups.keySet()) {
+			LexemeGroup lexemeGroup = new LexemeGroup();
+			lexemeGroup.setId(groupId);
+			lexemeGroup.setMembers(memberGroups.get(groupId));
+			lexemeGroup.setGroupTypeLabel(lexemeGroup.getMembers().get(0).getRelationTypeLabel());
+			groups.add(lexemeGroup);
+		}
+		return groups;
+	}
+
 	public List<CollocationPosGroup> composeCollocPosGroups(List<CollocationTuple> collocTuples) {
 
 		List<CollocationPosGroup> collocationPosGroups = new ArrayList<>();
@@ -524,20 +538,6 @@ public class ConversionUtil {
 			addCollocMember(collocTuple, collocation);
 		}
 		return collocations;
-	}
-
-	public List<LexemeGroup> toLexemeGroups(List<Relation> groupMembers) {
-
-		List<LexemeGroup> groups = new ArrayList<>();
-		Map<Long, List<Relation>> memberGroups = groupMembers.stream().collect(groupingBy(Relation::getGroupId));
-		for (Long groupId : memberGroups.keySet()) {
-			LexemeGroup lexemeGroup = new LexemeGroup();
-			lexemeGroup.setId(groupId);
-			lexemeGroup.setMembers(memberGroups.get(groupId));
-			lexemeGroup.setGroupTypeLabel(lexemeGroup.getMembers().get(0).getRelationTypeLabel());
-			groups.add(lexemeGroup);
-		}
-		return groups;
 	}
 
 	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {

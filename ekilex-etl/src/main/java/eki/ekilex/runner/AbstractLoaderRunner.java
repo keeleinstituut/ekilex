@@ -662,6 +662,21 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
 	}
 
+	protected Long createLexemeRelationGroup(LexemeRelationGroupType groupType) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("lex_rel_type_code", groupType.name());
+		return basicDbService.create(LEXEME_RELATION_GROUP, params);
+	}
+
+	protected Long createLexemeRelationGroupMember(Long groupId, Long lexemeId) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("lexeme_group_id", groupId);
+		params.put("lexeme_id", lexemeId);
+		return basicDbService.create(LEXEME_RELATION_GROUP_MEMBER, params);
+	}
+
 	protected void createWordRelation(Long wordId1, Long wordId2, String relationType) throws Exception {
 
 		Map<String, Object> relationParams = new HashMap<>();
@@ -779,21 +794,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
-	}
-
-	protected Long createLexemeRelationGroup(LexemeRelationGroupType groupType) throws Exception {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("lex_rel_type_code", groupType.name());
-		return basicDbService.create(LEXEME_RELATION_GROUP, params);
-	}
-
-	protected Long createLexemeRelationGroupMember(Long groupId, Long lexemeId) throws Exception {
-
-		Map<String, Object> params = new HashMap<>();
-		params.put("lexeme_group_id", groupId);
-		params.put("lexeme_id", lexemeId);
-		return basicDbService.create(LEXEME_RELATION_GROUP_MEMBER, params);
 	}
 
 }

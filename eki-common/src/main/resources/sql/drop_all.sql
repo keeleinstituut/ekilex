@@ -17,8 +17,6 @@ drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
-drop table if exists lexeme_group_member;
-drop table if exists lexeme_group;
 drop table if exists freeform_source_link;
 drop table if exists definition_source_link;
 drop table if exists lexeme_source_link;
@@ -26,6 +24,8 @@ drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
+drop table if exists lexeme_group_member;
+drop table if exists lexeme_group;
 drop table if exists lexeme_lifecycle_log;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;

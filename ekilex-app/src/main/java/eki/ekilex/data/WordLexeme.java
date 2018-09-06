@@ -71,19 +71,21 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Government> governments;
 
+	private List<FreeForm> grammars;
+
 	private List<Usage> usages;
 
 	private List<Definition> definitions;
 
 	private List<FreeForm> meaningFreeforms;
 
-	private List<FreeForm> lexemeFreeforms;
-
-	private List<Relation> lexemeRelations;
-
 	private List<Relation> meaningRelations;
 
-	private List<FreeForm> grammars;
+	private List<FreeForm> lexemeFreeforms;
+
+	private List<LexemeGroup> lexemeGroups;
+
+	private List<Relation> lexemeRelations;
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
@@ -92,8 +94,6 @@ public class WordLexeme extends AbstractDataObject {
 	private List<SourceLink> sourceLinks;
 
 	private boolean lexemeOrMeaningClassifiersExist;
-
-	private List<LexemeGroup> lexemeGroups;
 
 	public String[] getWords() {
 		return words;
@@ -279,6 +279,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.governments = governments;
 	}
 
+	public List<FreeForm> getGrammars() {
+		return grammars;
+	}
+
+	public void setGrammars(List<FreeForm> grammars) {
+		this.grammars = grammars;
+	}
+
 	public List<Usage> getUsages() {
 		return usages;
 	}
@@ -303,22 +311,6 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningFreeforms = meaningFreeforms;
 	}
 
-	public List<FreeForm> getLexemeFreeforms() {
-		return lexemeFreeforms;
-	}
-
-	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
-		this.lexemeFreeforms = lexemeFreeforms;
-	}
-
-	public List<Relation> getLexemeRelations() {
-		return lexemeRelations;
-	}
-
-	public void setLexemeRelations(List<Relation> lexemeRelations) {
-		this.lexemeRelations = lexemeRelations;
-	}
-
 	public List<Relation> getMeaningRelations() {
 		return meaningRelations;
 	}
@@ -327,12 +319,28 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningRelations = meaningRelations;
 	}
 
-	public List<FreeForm> getGrammars() {
-		return grammars;
+	public List<FreeForm> getLexemeFreeforms() {
+		return lexemeFreeforms;
 	}
 
-	public void setGrammars(List<FreeForm> grammars) {
-		this.grammars = grammars;
+	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
+		this.lexemeFreeforms = lexemeFreeforms;
+	}
+
+	public List<LexemeGroup> getLexemeGroups() {
+		return lexemeGroups;
+	}
+
+	public void setLexemeGroups(List<LexemeGroup> lexemeGroups) {
+		this.lexemeGroups = lexemeGroups;
+	}
+
+	public List<Relation> getLexemeRelations() {
+		return lexemeRelations;
+	}
+
+	public void setLexemeRelations(List<Relation> lexemeRelations) {
+		this.lexemeRelations = lexemeRelations;
 	}
 
 	public List<CollocationPosGroup> getCollocationPosGroups() {
@@ -365,14 +373,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
-	}
-
-	public List<LexemeGroup> getLexemeGroups() {
-		return lexemeGroups;
-	}
-
-	public void setLexemeGroups(List<LexemeGroup> lexemeGroups) {
-		this.lexemeGroups = lexemeGroups;
 	}
 
 }

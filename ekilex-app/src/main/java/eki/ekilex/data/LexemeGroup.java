@@ -6,6 +6,8 @@ import java.util.List;
 
 public class LexemeGroup extends AbstractDataObject {
 
+	private static final long serialVersionUID = 1L;
+
 	private Long id;
 
 	private String groupTypeLabel;

@@ -560,6 +560,45 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
+	//TODO inefficient
+	public Result<Record9<Long,Long,Long,Long,String,String,String,Long,Long>> findLexemeGroupMembers(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(
+						LEXEME_GROUP_MEMBER.ID.as("id"),
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						LEXEME_GROUP_MEMBER.ORDER_BY.as("order_by"),
+						LEXEME_GROUP.ID.as("group_id")
+				)
+				.from(
+						LEXEME_GROUP.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
+								LEXEME_GROUP.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
+										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						LEXEME_GROUP_MEMBER,
+						LEXEME,
+						WORD,
+						PARADIGM,
+						FORM
+				)
+				.where( LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID.in(
+						create.selectDistinct(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID).from(LEXEME_GROUP_MEMBER).where(LEXEME_GROUP_MEMBER.LEXEME_ID.eq(lexemeId)))
+								.and(LEXEME_GROUP.ID.eq(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID))
+								.and(LEXEME.ID.eq(LEXEME_GROUP_MEMBER.LEXEME_ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.IS_WORD.eq(Boolean.TRUE))
+				)
+				.orderBy(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID)
+				.fetch();
+	}
+
 	public Result<Record6<Long,String,Long,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
@@ -705,44 +744,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f2.IS_WORD.isTrue())
 						)
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
-				.fetch();
-	}
-
-	public Result<Record9<Long,Long,Long,Long,String,String,String,Long,Long>> findLexemeGroupMembers(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						LEXEME_GROUP_MEMBER.ID.as("id"),
-						LEXEME.ID.as("lexeme_id"),
-						WORD.ID.as("word_id"),
-						FORM.ID.as("form_id"),
-						FORM.VALUE.as("word"),
-						WORD.LANG.as("word_lang"),
-						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						LEXEME_GROUP_MEMBER.ORDER_BY.as("order_by"),
-						LEXEME_GROUP.ID.as("group_id")
-				)
-				.from(
-						LEXEME_GROUP.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
-								LEXEME_GROUP.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
-										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						LEXEME_GROUP_MEMBER,
-						LEXEME,
-						WORD,
-						PARADIGM,
-						FORM
-				)
-				.where( LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID.in(
-						create.selectDistinct(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID).from(LEXEME_GROUP_MEMBER).where(LEXEME_GROUP_MEMBER.LEXEME_ID.eq(lexemeId)))
-								.and(LEXEME_GROUP.ID.eq(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID))
-								.and(LEXEME.ID.eq(LEXEME_GROUP_MEMBER.LEXEME_ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.IS_WORD.eq(Boolean.TRUE))
-				)
-				.orderBy(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID)
 				.fetch();
 	}
 
