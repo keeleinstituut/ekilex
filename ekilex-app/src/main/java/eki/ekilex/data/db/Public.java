@@ -41,8 +41,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
-import eki.ekilex.data.db.tables.LexemeGroup;
-import eki.ekilex.data.db.tables.LexemeGroupMember;
+import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -50,6 +49,7 @@ import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -81,6 +81,7 @@ import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -121,7 +122,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -413632540;
+    private static final long serialVersionUID = 1940986140;
 
     /**
      * The reference instance of <code>public</code>
@@ -314,14 +315,9 @@ public class Public extends SchemaImpl {
     public final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
 
     /**
-     * The table <code>public.lexeme_group</code>.
+     * The table <code>public.lexeme_lifecycle_log</code>.
      */
-    public final LexemeGroup LEXEME_GROUP = eki.ekilex.data.db.tables.LexemeGroup.LEXEME_GROUP;
-
-    /**
-     * The table <code>public.lexeme_group_member</code>.
-     */
-    public final LexemeGroupMember LEXEME_GROUP_MEMBER = eki.ekilex.data.db.tables.LexemeGroupMember.LEXEME_GROUP_MEMBER;
+    public final LexemeLifecycleLog LEXEME_LIFECYCLE_LOG = eki.ekilex.data.db.tables.LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.lexeme_pos</code>.
@@ -357,6 +353,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_freeform</code>.
      */
     public final MeaningFreeform MEANING_FREEFORM = eki.ekilex.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
+
+    /**
+     * The table <code>public.meaning_lifecycle_log</code>.
+     */
+    public final MeaningLifecycleLog MEANING_LIFECYCLE_LOG = eki.ekilex.data.db.tables.MeaningLifecycleLog.MEANING_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.meaning_rel_type</code>.
@@ -514,6 +515,11 @@ public class Public extends SchemaImpl {
     public final WordGuid WORD_GUID = eki.ekilex.data.db.tables.WordGuid.WORD_GUID;
 
     /**
+     * The table <code>public.word_lifecycle_log</code>.
+     */
+    public final WordLifecycleLog WORD_LIFECYCLE_LOG = eki.ekilex.data.db.tables.WordLifecycleLog.WORD_LIFECYCLE_LOG;
+
+    /**
      * The table <code>public.word_rel_type</code>.
      */
     public final WordRelType WORD_REL_TYPE = eki.ekilex.data.db.tables.WordRelType.WORD_REL_TYPE;
@@ -588,10 +594,8 @@ public class Public extends SchemaImpl {
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
-            Sequences.LEXEME_GROUP_ID_SEQ,
-            Sequences.LEXEME_GROUP_MEMBER_ID_SEQ,
-            Sequences.LEXEME_GROUP_MEMBER_ORDER_BY_SEQ,
             Sequences.LEXEME_ID_SEQ,
+            Sequences.LEXEME_LIFECYCLE_LOG_ID_SEQ,
             Sequences.LEXEME_ORDER_BY_SEQ,
             Sequences.LEXEME_POS_ID_SEQ,
             Sequences.LEXEME_POS_ORDER_BY_SEQ,
@@ -604,6 +608,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_DOMAIN_ORDER_BY_SEQ,
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
+            Sequences.MEANING_LIFECYCLE_LOG_ID_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
@@ -611,6 +616,7 @@ public class Public extends SchemaImpl {
             Sequences.SOURCE_ID_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
+            Sequences.WORD_LIFECYCLE_LOG_ID_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
             Sequences.WORD_RELATION_ORDER_BY_SEQ);
     }
@@ -661,8 +667,7 @@ public class Public extends SchemaImpl {
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
             LexemeFrequency.LEXEME_FREQUENCY,
-            LexemeGroup.LEXEME_GROUP,
-            LexemeGroupMember.LEXEME_GROUP_MEMBER,
+            LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,
             LexemeSourceLink.LEXEME_SOURCE_LINK,
@@ -670,6 +675,7 @@ public class Public extends SchemaImpl {
             Meaning.MEANING,
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
+            MeaningLifecycleLog.MEANING_LIFECYCLE_LOG,
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,
@@ -701,6 +707,7 @@ public class Public extends SchemaImpl {
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             Word.WORD,
             WordGuid.WORD_GUID,
+            WordLifecycleLog.WORD_LIFECYCLE_LOG,
             WordRelType.WORD_REL_TYPE,
             WordRelTypeLabel.WORD_REL_TYPE_LABEL,
             WordRelation.WORD_RELATION,

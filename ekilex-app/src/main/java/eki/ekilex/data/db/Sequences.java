@@ -169,6 +169,11 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_ID_SEQ = new SequenceImpl<Long>("lexeme_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.lexeme_lifecycle_log_id_seq</code>
+     */
+    public static final Sequence<Long> LEXEME_LIFECYCLE_LOG_ID_SEQ = new SequenceImpl<Long>("lexeme_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.lexeme_order_by_seq</code>
      */
     public static final Sequence<Long> LEXEME_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -229,6 +234,11 @@ public class Sequences {
     public static final Sequence<Long> MEANING_ID_SEQ = new SequenceImpl<Long>("meaning_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.meaning_lifecycle_log_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_LIFECYCLE_LOG_ID_SEQ = new SequenceImpl<Long>("meaning_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.meaning_relation_id_seq</code>
      */
     public static final Sequence<Long> MEANING_RELATION_ID_SEQ = new SequenceImpl<Long>("meaning_relation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -262,6 +272,11 @@ public class Sequences {
      * The sequence <code>public.word_id_seq</code>
      */
     public static final Sequence<Long> WORD_ID_SEQ = new SequenceImpl<Long>("word_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_lifecycle_log_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_LIFECYCLE_LOG_ID_SEQ = new SequenceImpl<Long>("word_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.word_relation_id_seq</code>

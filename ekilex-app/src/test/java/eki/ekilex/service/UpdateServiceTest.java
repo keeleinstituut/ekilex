@@ -1,21 +1,39 @@
 package eki.ekilex.service;
 
-import eki.ekilex.data.WordLexeme;
-import org.junit.Before;
-import org.junit.Test;
+import static com.google.common.truth.Truth.assertThat;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.common.truth.Truth.assertThat;
+import javax.transaction.Transactional;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringRunner;
+
+import eki.common.test.TestEnvInitialiser;
+import eki.ekilex.data.WordLexeme;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@TestPropertySource(locations = "classpath:test-ekilex-app.properties")
+@Transactional
 public class UpdateServiceTest {
 
+	@Autowired
+	private TestEnvInitialiser testEnvInitialiser;
+
+	@Autowired
 	private UpdateService updateService;
 
 	@Before
-	public void beforeTest() {
-		updateService = new UpdateService(null);
+	public void beforeTest() throws Exception {
+
+		testEnvInitialiser.initDatabase();
 	}
 
 	@Test
@@ -26,7 +44,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 2, 1, 1));
 		lexemes.add(createLexeme(4L, 3, 1, 1));
 
-		updateService.changeLevels(lexemes, 3L, "up");
+		updateService.recalculateLevels(3L, lexemes, "up");
 
 		assertThat(lexemes.get(0).getLevel1()).isEqualTo(2);
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(2);
@@ -40,7 +58,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(1L, 1, 1, 1));
 		lexemes.add(createLexeme(2L, 1, 2, 1));
 
-		updateService.changeLevels(lexemes, 2L, "up");
+		updateService.recalculateLevels(2L, lexemes, "up");
 
 		assertThat(lexemes.get(0).getLevel2()).isEqualTo(2);
 		assertThat(lexemes.get(1).getLevel2()).isEqualTo(1);
@@ -54,7 +72,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 2, 1, 1));
 		lexemes.add(createLexeme(4L, 2, 2, 1));
 
-		updateService.changeLevels(lexemes, 3L, "up");
+		updateService.recalculateLevels(3L, lexemes, "up");
 
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(1);
 		assertThat(lexemes.get(2).getLevel1()).isEqualTo(2);
@@ -68,7 +86,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 2, 2, 1));
 		lexemes.add(createLexeme(4L, 3, 1, 1));
 
-		updateService.changeLevels(lexemes, 1L, "down");
+		updateService.recalculateLevels(1L, lexemes, "down");
 
 		assertThat(lexemes.get(0).getLevel1()).isEqualTo(2);
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(1);
@@ -81,7 +99,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(1L, 1, 1, 1));
 		lexemes.add(createLexeme(2L, 1, 2, 1));
 
-		updateService.changeLevels(lexemes, 1L, "down");
+		updateService.recalculateLevels(1L, lexemes, "down");
 
 		assertThat(lexemes.get(0).getLevel2()).isEqualTo(2);
 		assertThat(lexemes.get(1).getLevel2()).isEqualTo(1);
@@ -95,7 +113,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 2, 1, 1));
 		lexemes.add(createLexeme(4L, 2, 2, 1));
 
-		updateService.changeLevels(lexemes, 2L, "down");
+		updateService.recalculateLevels(2L, lexemes, "down");
 
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(1);
 		assertThat(lexemes.get(2).getLevel1()).isEqualTo(2);
@@ -108,7 +126,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(2L, 2, 1, 1));
 		lexemes.add(createLexeme(2L, 2, 2, 1));
 
-		updateService.changeLevels(lexemes, 1L, "pop");
+		updateService.recalculateLevels(1L, lexemes, "pop");
 
 		assertThat(lexemes.get(0).getLevel1()).isEqualTo(1);
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(2);
@@ -123,7 +141,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 2, 2, 1));
 		lexemes.add(createLexeme(4L, 2, 2, 2));
 
-		updateService.changeLevels(lexemes, 2L, "pop");
+		updateService.recalculateLevels(2L, lexemes, "pop");
 
 		assertThat(lexemes.get(0).getLevel1()).isEqualTo(1);
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(3);
@@ -143,7 +161,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 1, 2, 2));
 		lexemes.add(createLexeme(4L, 1, 2, 3));
 
-		updateService.changeLevels(lexemes, 3L, "pop");
+		updateService.recalculateLevels(3L, lexemes, "pop");
 
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(1);
 		assertThat(lexemes.get(1).getLevel2()).isEqualTo(2);
@@ -163,7 +181,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(2L, 2, 1, 1));
 		lexemes.add(createLexeme(3L, 3, 1, 1));
 
-		updateService.changeLevels(lexemes, 1L, "push");
+		updateService.recalculateLevels(1L, lexemes, "push");
 
 		assertThat(lexemes.get(0).getLevel1()).isEqualTo(1);
 		assertThat(lexemes.get(0).getLevel2()).isEqualTo(2);
@@ -180,7 +198,7 @@ public class UpdateServiceTest {
 		lexemes.add(createLexeme(3L, 2, 2, 1));
 		lexemes.add(createLexeme(4L, 2, 3, 1));
 
-		updateService.changeLevels(lexemes, 2L, "push");
+		updateService.recalculateLevels(2L, lexemes, "push");
 
 		assertThat(lexemes.get(1).getLevel1()).isEqualTo(2);
 		assertThat(lexemes.get(1).getLevel2()).isEqualTo(1);

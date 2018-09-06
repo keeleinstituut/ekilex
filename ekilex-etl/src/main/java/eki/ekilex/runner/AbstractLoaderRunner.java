@@ -22,7 +22,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleLogType;
+import eki.common.constant.LifecycleEventType;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.TableName;
@@ -639,8 +639,10 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return refLinkId;
 	}
 
-	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleLogType type, String eventBy, Timestamp eventOn) throws Exception {
+	//TODO needs upgrading
+	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleEventType type, String eventBy, Timestamp eventOn) throws Exception {
 
+		/*
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("owner_id", ownerId);
 		tableRowParamMap.put("owner_name", ownerName);
@@ -648,6 +650,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("event_by", eventBy);
 		tableRowParamMap.put("event_on", eventOn);
 		basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
+		*/
 	}
 
 	protected void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) throws Exception {

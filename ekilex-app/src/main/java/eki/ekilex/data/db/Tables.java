@@ -41,8 +41,7 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
-import eki.ekilex.data.db.tables.LexemeGroup;
-import eki.ekilex.data.db.tables.LexemeGroupMember;
+import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
 import eki.ekilex.data.db.tables.LexemeSourceLink;
@@ -50,6 +49,7 @@ import eki.ekilex.data.db.tables.LifecycleLog;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
+import eki.ekilex.data.db.tables.MeaningLifecycleLog;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -81,6 +81,7 @@ import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordGuid;
+import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
@@ -289,14 +290,9 @@ public class Tables {
     public static final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
 
     /**
-     * The table <code>public.lexeme_group</code>.
+     * The table <code>public.lexeme_lifecycle_log</code>.
      */
-    public static final LexemeGroup LEXEME_GROUP = eki.ekilex.data.db.tables.LexemeGroup.LEXEME_GROUP;
-
-    /**
-     * The table <code>public.lexeme_group_member</code>.
-     */
-    public static final LexemeGroupMember LEXEME_GROUP_MEMBER = eki.ekilex.data.db.tables.LexemeGroupMember.LEXEME_GROUP_MEMBER;
+    public static final LexemeLifecycleLog LEXEME_LIFECYCLE_LOG = eki.ekilex.data.db.tables.LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.lexeme_pos</code>.
@@ -332,6 +328,11 @@ public class Tables {
      * The table <code>public.meaning_freeform</code>.
      */
     public static final MeaningFreeform MEANING_FREEFORM = eki.ekilex.data.db.tables.MeaningFreeform.MEANING_FREEFORM;
+
+    /**
+     * The table <code>public.meaning_lifecycle_log</code>.
+     */
+    public static final MeaningLifecycleLog MEANING_LIFECYCLE_LOG = eki.ekilex.data.db.tables.MeaningLifecycleLog.MEANING_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.meaning_rel_type</code>.
@@ -487,6 +488,11 @@ public class Tables {
      * The table <code>public.word_guid</code>.
      */
     public static final WordGuid WORD_GUID = eki.ekilex.data.db.tables.WordGuid.WORD_GUID;
+
+    /**
+     * The table <code>public.word_lifecycle_log</code>.
+     */
+    public static final WordLifecycleLog WORD_LIFECYCLE_LOG = eki.ekilex.data.db.tables.WordLifecycleLog.WORD_LIFECYCLE_LOG;
 
     /**
      * The table <code>public.word_rel_type</code>.
