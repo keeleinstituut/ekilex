@@ -1,22 +1,32 @@
 package eki.ekilex.service.db.util;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.WORD;
-import static eki.ekilex.data.db.Tables.LEXEME;
+import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
+import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.FREEFORM;
+import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
+import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Record2;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.db.tables.Freeform;
+import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.MeaningFreeform;
 
 @Component
 public class LifecycleLogDbServiceHelper {
@@ -83,6 +93,18 @@ public class LifecycleLogDbServiceHelper {
 		return result;
 	}
 
+	public Map<String, Object> getLexemeSourceLinkData(DSLContext create, Long entityId) {
+		Map<String, Object> result = create
+				.select(
+						LEXEME_SOURCE_LINK.LEXEME_ID,
+						LEXEME_SOURCE_LINK.VALUE
+						)
+				.from(LEXEME_SOURCE_LINK)
+				.where(LEXEME_SOURCE_LINK.ID.eq(entityId))
+				.fetchSingleMap();
+		return result;
+	}
+
 	public Map<String, Object> getDefinitionData(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
 				.select(
@@ -92,6 +114,46 @@ public class LifecycleLogDbServiceHelper {
 						)
 				.from(DEFINITION)
 				.where(DEFINITION.ID.eq(entityId))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getDefinitionSourceLinkData(DSLContext create, Long entityId) {
+		Map<String, Object> result = create
+				.select(
+						DEFINITION.MEANING_ID,
+						DEFINITION_SOURCE_LINK.VALUE
+						)
+				.from(DEFINITION, DEFINITION_SOURCE_LINK)
+				.where(DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID).and(DEFINITION_SOURCE_LINK.ID.eq(entityId)))
+				.fetchSingleMap();
+		return result;
+	}
+
+	public Map<String, Object> getFreeformSourceLinkData(DSLContext create, Long entityId) {
+		Freeform ff = FREEFORM.as("ff");
+		LexemeFreeform lff = LEXEME_FREEFORM.as("lff");
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		FreeformSourceLink ffsl = FREEFORM_SOURCE_LINK.as("ffsl");
+		Table<Record2<Long, Long>> dff = DSL
+				.select(DEFINITION.MEANING_ID, DEFINITION_FREEFORM.FREEFORM_ID)
+				.from(DEFINITION, DEFINITION_FREEFORM)
+				.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(DEFINITION.ID))
+				.asTable("dff");
+		Map<String, Object> result = create
+				.select(
+						ffsl.VALUE,
+						lff.LEXEME_ID,
+						dff.field("meaning_id", Long.class).as("definition_meaning_id"),
+						mff.MEANING_ID
+						)
+				.from(ffsl
+						.innerJoin(ff).on(ff.ID.eq(ffsl.FREEFORM_ID))
+						.leftOuterJoin(lff).on(lff.FREEFORM_ID.eq(ffsl.FREEFORM_ID))
+						.leftOuterJoin(dff).on(dff.field("freeform_id", Long.class).eq(ff.ID))
+						.leftOuterJoin(mff).on(mff.FREEFORM_ID.eq(ff.ID))
+						)
+				.where(ffsl.ID.eq(entityId))
 				.fetchSingleMap();
 		return result;
 	}

@@ -207,13 +207,13 @@ public class ModifyController implements WebConstant {
 			updateService.deleteGovernment(id);
 			break;
 		case ContentKey.DEFINITION_SOURCE_LINK :
-			updateService.deleteDefinitionRefLink(id);
+			updateService.deleteDefinitionSourceLink(id);
 			break;
 		case ContentKey.FREEFORM_SOURCE_LINK :
-			updateService.deleteFreeformRefLink(id);
+			updateService.deleteFreeformSourceLink(id);
 			break;
 		case ContentKey.LEXEME_SOURCE_LINK :
-			updateService.deleteLexemeRefLink(id);
+			updateService.deleteLexemeSourceLink(id);
 			break;
 		case "lexeme_deriv" :
 			updateService.deleteLexemeDeriv(id, valueToRemove);

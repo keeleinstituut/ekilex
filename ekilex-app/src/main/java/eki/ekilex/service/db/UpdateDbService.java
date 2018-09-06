@@ -294,20 +294,24 @@ public class UpdateDbService implements DbConstant {
 		return wordId;
 	}
 
-	public void addWordToDataset(Long wordId, String datasetCode) {
+	public Long addWordToDataset(Long wordId, String datasetCode) {
 
 		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
-		create
+		Long lexemeId = create
 				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.values(meaningId, wordId, datasetCode, 1, 1, 1)
-				.execute();
+				.returning(LEXEME.ID)
+				.fetchOne()
+				.getId();
+		return lexemeId;
 	}
 
 	public Long addLexemeGrammar(Long lexemeId, String value) {
 
 		Long grammarFreeformId = create
 				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT)
-				.values(FreeformType.GRAMMAR.name(), value).returning(FREEFORM.ID)
+				.values(FreeformType.GRAMMAR.name(), value)
+				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
 		create.insertInto(LEXEME_FREEFORM, LEXEME_FREEFORM.LEXEME_ID, LEXEME_FREEFORM.FREEFORM_ID).values(lexemeId, grammarFreeformId).execute();
@@ -339,37 +343,49 @@ public class UpdateDbService implements DbConstant {
 		create.update(DEFINITION).set(DEFINITION.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(DEFINITION.ID.eq(id)).execute();
 	}
 
-	public void deleteLexemePos(Long lexemeId, String posCode) {
-		create.update(LEXEME_POS)
+	public Long deleteLexemePos(Long lexemeId, String posCode) {
+		Long lexemePosId = create.update(LEXEME_POS)
 				.set(LEXEME_POS.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_POS.POS_CODE.eq(posCode)))
-				.execute();
+				.returning(LEXEME_POS.ID)
+				.fetchOne()
+				.getId();
+		return lexemePosId;
 	}
 
-	public void deleteLexemeDeriv(Long lexemeId, String derivCode) {
-		create.update(LEXEME_DERIV)
+	public Long deleteLexemeDeriv(Long lexemeId, String derivCode) {
+		Long lexemeDerivId = create.update(LEXEME_DERIV)
 				.set(LEXEME_DERIV.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
-				.execute();
+				.returning(LEXEME_DERIV.ID)
+				.fetchOne()
+				.getId();
+		return lexemeDerivId;
 	}
 
-	public void deleteLexemeRegister(Long lexemeId, String registerCode) {
-		create.update(LEXEME_REGISTER)
+	public Long deleteLexemeRegister(Long lexemeId, String registerCode) {
+		Long lexemeRegisterId = create.update(LEXEME_REGISTER)
 				.set(LEXEME_REGISTER.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
 						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
-				.execute();
+				.returning(LEXEME_REGISTER.ID)
+				.fetchOne()
+				.getId();
+		return lexemeRegisterId;
 	}
 
-	public void deleteMeaningDomain(Long meaningId,  Classifier domain) {
-		create.update(MEANING_DOMAIN)
+	public Long deleteMeaningDomain(Long meaningId,  Classifier domain) {
+		Long meaningDomainId = create.update(MEANING_DOMAIN)
 				.set(MEANING_DOMAIN.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
 						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())))
-				.execute();
+				.returning(MEANING_DOMAIN.ID)
+				.fetchOne()
+				.getId();
+		return meaningDomainId;
 	}
 
 	public void deleteDefinitionRefLink(Long refLinkId) {

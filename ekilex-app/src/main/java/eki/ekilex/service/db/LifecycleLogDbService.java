@@ -1,12 +1,9 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.DEFINITION;
-import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
-import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
@@ -55,7 +52,10 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
 				recent = (String) entityData.get("value_text");
 				if (StringUtils.equals(recent, entry)) {
-					return;
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
@@ -66,7 +66,10 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.USAGE_TRANSLATION);
 				recent = (String) entityData.get("value_text");
 				if (StringUtils.equals(recent, entry)) {
-					return;
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
@@ -77,7 +80,10 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.USAGE_DEFINITION);
 				recent = (String) entityData.get("value_text");
 				if (StringUtils.equals(recent, entry)) {
-					return;
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
@@ -88,7 +94,10 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.GOVERNMENT);
 				recent = (String) entityData.get("value_text");
 				if (StringUtils.equals(recent, entry)) {
-					return;
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
@@ -99,7 +108,10 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.GRAMMAR);
 				recent = (String) entityData.get("value_text");
 				if (StringUtils.equals(recent, entry)) {
-					return;
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
 				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
@@ -110,18 +122,12 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getDefinitionData(create, entityId);
 				recent = (String) entityData.get("value");
 				if (StringUtils.equals(recent, entry)) {
-					return;
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
 				}
 				Long meaningId = (Long) entityData.get("meaning_id");
-				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
-				createMeaningLifecycleLog(meaningId, lifecycleLogId);
-			} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
-				//TODO unify create and delete
-				Long meaningId = create
-						.select(DEFINITION.MEANING_ID)
-						.from(DEFINITION, DEFINITION_SOURCE_LINK)
-						.where(DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID).and(DEFINITION_SOURCE_LINK.ID.eq(entityId)))
-						.fetchSingleInto(Long.class);
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
@@ -155,14 +161,9 @@ public class LifecycleLogDbService {
 						.fetchSingleInto(Long.class);
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
-			} else if (LifecycleProperty.SOURCE_LINK.equals(property)) {
-				Long lexemeId = create
-						.select(LEXEME_SOURCE_LINK.LEXEME_ID)
-						.from(LEXEME_SOURCE_LINK)
-						.where(LEXEME_SOURCE_LINK.ID.eq(entityId))
-						.fetchSingleInto(Long.class);
+			} else if (LifecycleProperty.DATASET.equals(property)) {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
-				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
@@ -176,19 +177,58 @@ public class LifecycleLogDbService {
 			}
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {
-				Long meaningDomainId = create
-						.select(MEANING_DOMAIN.ID)
+				Long meaningId = create
+						.select(MEANING_DOMAIN.MEANING_ID)
 						.from(MEANING_DOMAIN)
-						.where(MEANING_DOMAIN.DOMAIN_CODE.eq(recent).and(MEANING_DOMAIN.MEANING_ID.eq(entityId)))
+						.where(MEANING_DOMAIN.ID.eq(entityId))
 						.fetchSingleInto(Long.class);
-				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, meaningDomainId, recent, entry);
-				createMeaningLifecycleLog(entityId, lifecycleLogId);
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
-		} else if (LifecycleEntity.UNKNOWN_FREEFORM.equals(entity)) {
+		} else if (LifecycleEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
-				//TODO how to determine log owner?
+				Map<String, Object> entityData = helper.getLexemeSourceLinkData(create, entityId);
+				recent = (String) entityData.get("value");
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			}
+		} else if (LifecycleEntity.DEFINITION_SOURCE_LINK.equals(entity)) {
+			if (LifecycleProperty.VALUE.equals(property)) {
+				Map<String, Object> entityData = helper.getDefinitionSourceLinkData(create, entityId);
+				recent = (String) entityData.get("value");
+				Long meaningId = (Long) entityData.get("meaning_id");
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			}
+		} else if (LifecycleEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
+			if (LifecycleProperty.VALUE.equals(property)) {
+				Map<String, Object> entityData = helper.getFreeformSourceLinkData(create, entityId);
+				//TODO why null value for authors?
+				recent = (String) entityData.get("value");
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				if (lexemeId != null) {
+					createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+					return;
+				}
+				Long meaningId = (Long) entityData.get("meaning_id");
+				if (meaningId != null) {
+					createMeaningLifecycleLog(meaningId, lifecycleLogId);
+					return;
+				}
+				meaningId = (Long) entityData.get("definition_meaning_id");
+				if (meaningId != null) {
+					createMeaningLifecycleLog(meaningId, lifecycleLogId);
+					return;
+				}
+				
 			}
 		}
+	}
+
+	private boolean isUpdate(LifecycleEventType eventType) {
+		return LifecycleEventType.UPDATE.equals(eventType);
 	}
 
 	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, ListData item) {
@@ -201,7 +241,7 @@ public class LifecycleLogDbService {
 				String definitionValue = (String) entityData.get("value");
 				Long meaningId = (Long) entityData.get("meaning_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (newOrderby.equals(prevOrderBy)) {
+				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = String.valueOf(prevOrderBy) + ") " + definitionValue;
@@ -215,7 +255,7 @@ public class LifecycleLogDbService {
 				String relTypeCode = (String) entityData.get("lex_rel_type_code");
 				Long lexemeId = (Long) entityData.get("lexeme1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (newOrderby.equals(prevOrderBy)) {
+				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = String.valueOf(prevOrderBy) + ") " + relTypeCode;
@@ -229,7 +269,7 @@ public class LifecycleLogDbService {
 				String relTypeCode = (String) entityData.get("meaning_rel_type_code");
 				Long meaningId = (Long) entityData.get("meaning1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (newOrderby.equals(prevOrderBy)) {
+				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = String.valueOf(prevOrderBy) + ") " + relTypeCode;
@@ -243,7 +283,7 @@ public class LifecycleLogDbService {
 				String relTypeCode = (String) entityData.get("word_rel_type_code");
 				Long wordId = (Long) entityData.get("word1_id");
 				Long prevOrderBy = (Long) entityData.get("order_by");
-				if (newOrderby.equals(prevOrderBy)) {
+				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
 				String recent = String.valueOf(prevOrderBy) + ") " + relTypeCode;

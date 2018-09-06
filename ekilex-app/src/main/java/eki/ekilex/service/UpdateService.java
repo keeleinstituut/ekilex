@@ -9,6 +9,8 @@ import eki.ekilex.data.Classifier;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.db.LifecycleLogDbService;
 import eki.ekilex.service.db.UpdateDbService;
+
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -155,10 +157,10 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
 	}
 
-	//TODO lifecycle log
 	@Transactional
 	public void addWordToDataset(Long wordId, String datasetCode) {
-		updateDbService.addWordToDataset(wordId, datasetCode);
+		Long lexemeId = updateDbService.addWordToDataset(wordId, datasetCode);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
 	}
 
 	@Transactional
@@ -221,13 +223,12 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, value);
 	}
 
-	//TODO lifecycle log - unable to determine log owner
 	@Transactional
 	public void addFreeformSourceLink(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = updateDbService.addFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.UNKNOWN_FREEFORM, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
 
 	@Transactional
@@ -235,7 +236,7 @@ public class UpdateService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = updateDbService.addLexemeSourceLink(lexemeId, sourceId, refType, sourceValue, sourceName);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
 
 	@Transactional
@@ -243,7 +244,7 @@ public class UpdateService {
 		//TODO ref type should also be set user
 		ReferenceType refType = ReferenceType.ANY;
 		Long sourceLinkId = updateDbService.addDefinitionSourceLink(definitionId, sourceId, refType, sourceValue, sourceName);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId, sourceValue);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}
 
 	//TODO lifecycle log
@@ -296,54 +297,53 @@ public class UpdateService {
 		updateDbService.deleteDefinition(id);
 	}
 
-	//TODO lifecycle log
 	@Transactional
-	public void deleteDefinitionRefLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.SOURCE_LINK, sourceLinkId);
+	public void deleteDefinitionSourceLink(Long sourceLinkId) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId);
 		updateDbService.deleteDefinitionRefLink(sourceLinkId);
 	}
 
-	//TODO lifecycle log
 	@Transactional
-	public void deleteFreeformRefLink(Long refLinkId) {
-		updateDbService.deleteFreeformRefLink(refLinkId);
+	public void deleteFreeformSourceLink(Long sourceLinkId) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId);
+		updateDbService.deleteFreeformRefLink(sourceLinkId);
 	}
 
-	//TODO lifecycle log
 	@Transactional
-	public void deleteLexemeRefLink(Long refLinkId) {
-		updateDbService.deleteLexemeRefLink(refLinkId);
+	public void deleteLexemeSourceLink(Long sourceLinkId) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId);
+		updateDbService.deleteLexemeRefLink(sourceLinkId);
 	}
 
-	//TODO lifecycle log
 	@Transactional
 	public void deleteLexemePos(Long lexemeId, String posCode) {
-		if (posCode != null) {
-			updateDbService.deleteLexemePos(lexemeId, posCode);
+		if (StringUtils.isNotBlank(posCode)) {
+			Long lexemePosId = updateDbService.deleteLexemePos(lexemeId, posCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
 		}
 	}
 
-	//TODO lifecycle log
 	@Transactional
 	public void deleteLexemeDeriv(Long lexemeId, String derivCode) {
-		if (derivCode != null) {
-			updateDbService.deleteLexemeDeriv(lexemeId, derivCode);
+		if (StringUtils.isNotBlank(derivCode)) {
+			Long lexemeDerivId = updateDbService.deleteLexemeDeriv(lexemeId, derivCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
 		}
 	}
 
-	//TODO lifecycle log
 	@Transactional
 	public void deleteLexemeRegister(Long lexemeId, String registerCode) {
-		if (registerCode != null) {
-			updateDbService.deleteLexemeRegister(lexemeId, registerCode);
+		if (StringUtils.isNotBlank(registerCode)) {
+			Long lexemeRegisterId = updateDbService.deleteLexemeRegister(lexemeId, registerCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
 		}
 	}
 
-	//TODO lifecycle log
 	@Transactional
 	public void deleteMeaningDomain(Long meaningId,  Classifier domain) {
 		if (domain != null) {
-			updateDbService.deleteMeaningDomain(meaningId, domain);
+			Long meaningDomainId = updateDbService.deleteMeaningDomain(meaningId, domain);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
 		}
 	}
 
