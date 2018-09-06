@@ -41,6 +41,8 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemeGroup;
+import eki.ekilex.data.db.tables.LexemeGroupMember;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
@@ -122,7 +124,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1940986140;
+    private static final long serialVersionUID = 1277976021;
 
     /**
      * The reference instance of <code>public</code>
@@ -313,6 +315,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.lexeme_frequency</code>.
      */
     public final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
+
+    /**
+     * The table <code>public.lexeme_group</code>.
+     */
+    public final LexemeGroup LEXEME_GROUP = eki.ekilex.data.db.tables.LexemeGroup.LEXEME_GROUP;
+
+    /**
+     * The table <code>public.lexeme_group_member</code>.
+     */
+    public final LexemeGroupMember LEXEME_GROUP_MEMBER = eki.ekilex.data.db.tables.LexemeGroupMember.LEXEME_GROUP_MEMBER;
 
     /**
      * The table <code>public.lexeme_lifecycle_log</code>.
@@ -594,6 +606,9 @@ public class Public extends SchemaImpl {
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
+            Sequences.LEXEME_GROUP_ID_SEQ,
+            Sequences.LEXEME_GROUP_MEMBER_ID_SEQ,
+            Sequences.LEXEME_GROUP_MEMBER_ORDER_BY_SEQ,
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_LIFECYCLE_LOG_ID_SEQ,
             Sequences.LEXEME_ORDER_BY_SEQ,
@@ -667,6 +682,8 @@ public class Public extends SchemaImpl {
             LexemeDeriv.LEXEME_DERIV,
             LexemeFreeform.LEXEME_FREEFORM,
             LexemeFrequency.LEXEME_FREQUENCY,
+            LexemeGroup.LEXEME_GROUP,
+            LexemeGroupMember.LEXEME_GROUP_MEMBER,
             LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG,
             LexemePos.LEXEME_POS,
             LexemeRegister.LEXEME_REGISTER,

@@ -41,6 +41,8 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
+import eki.ekilex.data.db.tables.LexemeGroup;
+import eki.ekilex.data.db.tables.LexemeGroupMember;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
@@ -288,6 +290,16 @@ public class Tables {
      * The table <code>public.lexeme_frequency</code>.
      */
     public static final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
+
+    /**
+     * The table <code>public.lexeme_group</code>.
+     */
+    public static final LexemeGroup LEXEME_GROUP = eki.ekilex.data.db.tables.LexemeGroup.LEXEME_GROUP;
+
+    /**
+     * The table <code>public.lexeme_group_member</code>.
+     */
+    public static final LexemeGroupMember LEXEME_GROUP_MEMBER = eki.ekilex.data.db.tables.LexemeGroupMember.LEXEME_GROUP_MEMBER;
 
     /**
      * The table <code>public.lexeme_lifecycle_log</code>.
