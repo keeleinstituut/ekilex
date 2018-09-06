@@ -9,6 +9,7 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +23,7 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleProperty;
 import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.LifecycleLog;
 import eki.ekilex.data.ListData;
 import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 
@@ -35,6 +37,14 @@ public class LifecycleLogDbService {
 	public LifecycleLogDbService(DSLContext context, LifecycleLogDbServiceHelper helper) {
 		this.create = context;
 		this.helper = helper;
+	}
+
+	public List<LifecycleLog> getLogForWord(Long wordId) {
+		return null;
+	}
+
+	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
+		return null;
 	}
 
 	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId) {
@@ -189,6 +199,12 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeSourceLinkData(create, entityId);
 				recent = (String) entityData.get("value");
+				if (StringUtils.equals(recent, entry)) {
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
+				}
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
@@ -197,6 +213,12 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getDefinitionSourceLinkData(create, entityId);
 				recent = (String) entityData.get("value");
+				if (StringUtils.equals(recent, entry)) {
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
+				}
 				Long meaningId = (Long) entityData.get("meaning_id");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
@@ -206,6 +228,12 @@ public class LifecycleLogDbService {
 				Map<String, Object> entityData = helper.getFreeformSourceLinkData(create, entityId);
 				//TODO why null value for authors?
 				recent = (String) entityData.get("value");
+				if (StringUtils.equals(recent, entry)) {
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
+				}
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				Long lexemeId = (Long) entityData.get("lexeme_id");
 				if (lexemeId != null) {
