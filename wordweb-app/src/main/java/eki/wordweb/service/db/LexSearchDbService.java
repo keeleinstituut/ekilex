@@ -76,7 +76,7 @@ public class LexSearchDbService {
 		Condition wdc = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
 		Condition fdc = DSL.condition("{0} && {1}", MVIEW_WW_FORM.DATASET_CODES, DSL.val(datasets));
 		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
-		Condition flc = MVIEW_WW_FORM.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_FORM.IS_WORD.isFalse()).and(MVIEW_WW_FORM.LANG.eq(lang));
+		Condition flc = MVIEW_WW_FORM.FORM.lower().eq(wordPrefixLower).and(MVIEW_WW_FORM.IS_WORD.isFalse()).and(MVIEW_WW_FORM.LANG.eq(lang));
 
 		Table<Record2<String, String>> woft = DSL
 			.selectDistinct(MVIEW_WW_WORD.WORD.as("value"), iswtf)
