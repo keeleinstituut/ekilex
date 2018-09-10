@@ -175,13 +175,13 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (contentNode != null) {
 			List<Lexeme> createdLexemes = new ArrayList<>();
 			processArticleContent(reportingId, contentNode, newWords, context, comments, createdLexemes);
-			processVariants(headerNode, newWords, createdLexemes);
-			processSeries(headerNode, newWords, createdLexemes);
+			processVariants(newWords, createdLexemes);
+			processSeries(newWords, createdLexemes);
 		}
 		context.importedWords.addAll(newWords);
 	}
 
-	private void processSeries(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+	private void processSeries(List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
 		if (isSeries(newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
@@ -193,8 +193,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processVariants(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
-		if (isVariant(headerNode, newWords)) {
+	private void processVariants(List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+		if (isVariant(newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
 				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.VARIANTS);
@@ -208,7 +208,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	/*
 		If in article header we have more than one word and word type is not series, then they are variants.
 	 */
-	private boolean isVariant(Element headerNode, List<WordData> newWords) {
+	private boolean isVariant(List<WordData> newWords) {
 		return newWords.size() > 1 && !isSeries(newWords);
 	}
 
@@ -216,15 +216,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String wordTypeSeries = "s";
 		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
 	}
-
-//	private boolean isSeries(Element headerNode) {
-//
-//		final String wordLinkExp = "s:mvtg/s:mvt";
-//		final String wordLinkTypeAttr = "mvtl";
-//		final String wordLinkSeriesType = "srj";
-//
-//		return headerNode.selectNodes(wordLinkExp).stream().anyMatch(e -> Objects.equals(((Element)e).attributeValue(wordLinkTypeAttr), wordLinkSeriesType));
-//	}
 
 	private void processFormulas(Context context) throws Exception {
 
