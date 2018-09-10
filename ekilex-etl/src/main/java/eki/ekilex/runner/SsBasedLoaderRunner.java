@@ -559,6 +559,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	protected class WordSeries {
+		Long groupId;
+		List<WordData> words = new ArrayList<>();
+	}
+
 	protected class Context {
 		Count ssWordCount = new Count();
 		Count reusedWordCount = new Count();
@@ -575,6 +580,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
+		List<WordSeries> series = new ArrayList<>();
 	}
 
 }
