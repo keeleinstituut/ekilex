@@ -24,6 +24,7 @@
     <link rel="stylesheet" th:href="@{/view/css/bootstrap.css}" />
     <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
     <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
   </th:block>
 
   <!-- Bootstrap core JS -->
@@ -108,7 +109,6 @@
   <!-- lang filter -->
   <th:block th:fragment="lang-filter">
     <div class="row">
-      <div class="col-5">
         <div class="search-lang dropdown">
           <button id="lang-selector-btn" class="btn btn-light lang-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <span id="source-lang-lbl">eesti</span>
@@ -126,24 +126,26 @@
                 <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
               </div>
             </div>
-            <!-- 
-            <div class="dropdown-divider"></div>
-            <div class="row">
-              <div class="col-12">
-                <button id="lang-sel-complete-btn" class="btn btn-light" type="button">Jätka</button>
-              </div>
-            </div>
-             -->
           </form>
         </div>
-      </div>
-      <div class="col-3">
-        <label class="checkcontainer" id="beginner-switch">
-          <span>Õppijale</span>
-          <input id="beginner-chk" type="checkbox" th:checked="${sessionBean.beginner}">
-          <span class="checkmark"></span>
-        </label>
-      </div>
+        <div id="detail-toggle-container">
+          <div class="inner-container">
+            <div class="toggle">
+              <p>Lihtne</p>
+            </div>
+            <div class="toggle">
+              <p>Detailne</p>
+            </div>
+          </div>
+          <div class="inner-container" id="toggle-container">
+            <div class="toggle">
+              <p>Lihtne</p>
+            </div>
+            <div class="toggle">
+              <p>Detailne</p>
+            </div>
+          </div>
+        </div>
     </div>
   </th:block>
 

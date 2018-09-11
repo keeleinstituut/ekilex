@@ -1,0 +1,49 @@
+#detail-toggle-container {
+    width: 160px;
+    height: 32px;
+    margin: auto;
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    user-select: none;
+    cursor: pointer;
+}
+
+.inner-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: inherit;
+    height: inherit;
+    text-transform: uppercase;
+    font-size: .7em;
+    letter-spacing: .1em;
+}
+
+.inner-container:first-child {
+    background: #e9e9e9;
+    color: #a9a9a9;
+}
+
+.inner-container:nth-child(2) {
+    background: dodgerblue;
+    color: white;
+    clip-path: inset(0 50% 0 0);
+    transition: .3s cubic-bezier(0,0,0,1);
+}
+
+.toggle {
+    width: 50%;
+    position: absolute;
+    height: inherit;
+    display: flex;
+    box-sizing: border-box;
+}
+
+.toggle p {
+    margin: auto;
+}
+
+.toggle:nth-child(1) {
+    right: 0;
+}
