@@ -175,26 +175,89 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (contentNode != null) {
 			List<Lexeme> createdLexemes = new ArrayList<>();
 			processArticleContent(reportingId, contentNode, newWords, context, comments, createdLexemes);
-			processVariants(headerNode, newWords, createdLexemes);
-			processSeries(headerNode, newWords, createdLexemes);
+			processVariants(newWords, createdLexemes);
+			processSeries(context, headerNode, newWords, createdLexemes);
 		}
 		context.importedWords.addAll(newWords);
 	}
 
-	private void processSeries(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+	private void processSeries(Context context, Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+
+		List<Long> seriesGroupIds = new ArrayList<>();
+		// if series words are inside word groups xml tags, i.e. there is more than one word tag inside word group and its type is series
+		// create groups and add lexeme id's to them
 		if (isSeries(newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
 				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
+				seriesGroupIds.add(lexemeGroup);
 				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
 					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
 				}
 			}
 		}
+
+		// check do we have series data in word links xml group
+		List<WordData> seriesWordData = extractSeriesWords(headerNode);
+		if (seriesWordData.isEmpty()) {
+			return;
+		}
+
+		long numberOfMeanings = createdLexemes.stream().map(Lexeme::getMeaningId).distinct().count();
+		if (numberOfMeanings != 1) {
+			// if there is more than one meaning we can't match correct lexemes to each other so exit here
+			return;
+		}
+
+		seriesWordData.addAll(newWords);
+
+		if (seriesGroupIds.isEmpty()) {
+			// no group was create, so its ordinary word article
+			List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
+			// no series groups, so its first word in series, create group add word lexeme and store it for later use
+			if (seriesForWords.isEmpty()) {
+				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
+				for (Lexeme lexeme : createdLexemes) {
+					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
+				}
+				WordSeries series = new WordSeries();
+				series.groupId = lexemeGroup;
+				series.words.addAll(seriesWordData);
+				context.series.add(series);
+			} else {
+				// series groups found, so its next word in group, add it to group
+				for (WordSeries series : seriesForWords) {
+					for (Lexeme lexeme : createdLexemes) {
+						createLexemeRelationGroupMember(series.groupId, lexeme.getLexemeId());
+					}
+				}
+			}
+		} else {
+			// series group was created, so we have series data in word  xml group and also in word link xml group,
+			// word data from word link xml group is not in this article, store group data for later use
+			for (Long groupId : seriesGroupIds) {
+				WordSeries series = new WordSeries();
+				series.groupId = groupId;
+				series.words.addAll(seriesWordData);
+				context.series.add(series);
+			}
+		}
 	}
 
-	private void processVariants(Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
-		if (isVariant(headerNode, newWords)) {
+	private List<WordSeries> findSeriesForWords(Context context, List<WordData> words) {
+		return context.series.stream()
+				.filter(series ->
+					words.stream().allMatch(word ->
+							series.words.stream().anyMatch(seriesWord ->
+									seriesWord.value.equals(word.value) && seriesWord.homonymNr == word.homonymNr
+							)
+					)
+				)
+				.collect(toList());
+	}
+
+	private void processVariants(List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+		if (isVariant(newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
 				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.VARIANTS);
@@ -208,7 +271,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	/*
 		If in article header we have more than one word and word type is not series, then they are variants.
 	 */
-	private boolean isVariant(Element headerNode, List<WordData> newWords) {
+	private boolean isVariant(List<WordData> newWords) {
 		return newWords.size() > 1 && !isSeries(newWords);
 	}
 
@@ -217,14 +280,27 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
 	}
 
-//	private boolean isSeries(Element headerNode) {
-//
-//		final String wordLinkExp = "s:mvtg/s:mvt";
-//		final String wordLinkTypeAttr = "mvtl";
-//		final String wordLinkSeriesType = "srj";
-//
-//		return headerNode.selectNodes(wordLinkExp).stream().anyMatch(e -> Objects.equals(((Element)e).attributeValue(wordLinkTypeAttr), wordLinkSeriesType));
-//	}
+	private List<WordData> extractSeriesWords(Element headerNode) {
+
+		final String wordLinkExp = "s:mvtg/s:mvt";
+		final String wordLinkTypeAttr = "mvtl";
+		final String wordLinkSeriesType = "srj";
+		final String homonymNrAttr = "i";
+
+		List<WordData> seriesWords = new ArrayList<>();
+		List<Element> seriesWordNodes = headerNode.selectNodes(wordLinkExp);
+		for (Element seriesWordNode : seriesWordNodes) {
+			if (Objects.equals(seriesWordNode.attributeValue(wordLinkTypeAttr), wordLinkSeriesType)) {
+				WordData seriesWord = new WordData();
+				seriesWord.value = cleanUp(seriesWordNode.getTextTrim());
+				if (seriesWordNode.attributeValue(homonymNrAttr) != null) {
+					seriesWord.homonymNr = Integer.parseInt(seriesWordNode.attributeValue(homonymNrAttr));
+				}
+				seriesWords.add(seriesWord);
+			}
+		}
+		return seriesWords;
+	}
 
 	private void processFormulas(Context context) throws Exception {
 
@@ -780,7 +856,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private void saveGovernments(Element node, Long lexemeId) throws Exception {
 
-		final String governmentExp = "s:rep/s:reg/s:rek/s:kn";
+		final String governmentExp = "s:grg/s:r";
 
 		List<Element> governmentNodes = node.selectNodes(governmentExp);
 		if (CollectionUtils.isNotEmpty(governmentNodes)) {
