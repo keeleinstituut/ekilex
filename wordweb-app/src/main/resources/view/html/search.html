@@ -15,6 +15,15 @@
         margin-left: -2em;
       }
     }
+    .robo-icon {
+      width: 32px;
+      margin-top: -2px;
+      opacity: 0.5;
+      position: absolute;
+    }
+    .example-item:hover .robo-icon{
+      opacity: 1;
+    }
   </style>
 </th:block>
 </head>
@@ -134,7 +143,8 @@
                         </span>
                       </span>
                       <button class="btn btn-speaker">
-                        <span class="icon icon-speaker"></span>
+                        <!--<span class="icon icon-speaker"></span>-->
+                        <img class="robo-icon" th:src="@{/view/images/icons/robot.svg}">
                       </button>
                       <span th:if="${not #lists.isEmpty(usage.usageTranslations)}">
                         <span th:each="usageTranslation : ${usage.usageTranslations}">
