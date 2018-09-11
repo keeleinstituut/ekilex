@@ -856,7 +856,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private void saveGovernments(Element node, Long lexemeId) throws Exception {
 
-		final String governmentExp = "s:rep/s:reg/s:rek/s:kn";
+		final String governmentExp = "s:grg/s:r";
 
 		List<Element> governmentNodes = node.selectNodes(governmentExp);
 		if (CollectionUtils.isNotEmpty(governmentNodes)) {
