@@ -78,12 +78,6 @@
                     th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
-            <button class="btn btn-speaker"
-                    th:if="${wordData.firstAvailableSoundFile == null}"
-                    th:data-words="${wordData.firstAvailableVocalForm != null ? wordData.firstAvailableVocalForm : wordData.word.word}"
-                    th:onclick="'generateVoiceAndPlay(this)'">
-              <span class="icon icon-speaker"></span>
-            </button>
             <span th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
             <button class="btn show-search d-md-none">
               <span class="icon icon-search"></span>
