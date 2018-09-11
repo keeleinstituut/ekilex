@@ -24,10 +24,22 @@ function initialise() {
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 
-    $(document).on('click', '#show-all-btn', function() {
+    $(document).on('click', '#show-all-btn', function(e) {
+    	e.preventDefault();
         $('#fetchAll').val(true);
         $('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
     });
+
+	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
 
     var detailButtons = $('#results').find('[name="detailsBtn"]');
     if (detailButtons.length === 1) {
@@ -53,6 +65,7 @@ function initialise() {
     initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
     initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
     initNewWordDlg();
+
 }
 
 function openLexemeLevelDlg(elem) {

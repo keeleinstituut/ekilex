@@ -30,7 +30,7 @@
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
         <div class="card shadow" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
           <div class="card-body p-2">
-            <a href="javascript:void(0);" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
+            <a href="/" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
             <table id="results" class="table table-striped mb-0">
               <tr th:each="word : ${wordsFoundBySearch}">
                 <td class="p-0">
@@ -795,6 +795,23 @@
                         </td>
                       </tr>
                     </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="pb-3">
+              <a th:href="@{'/wordlifecyclelog:' + ${wordId}}"
+                 data-toggle="modal"
+                 data-target="#wordLifecycleLogDlg"
+                 class="btn btn-light ml-3"
+              >Tegevuste logi</a>
+              <div id="wordLifecycleLogDlg" class="modal" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"></div>
                   </div>
                 </div>
               </div>

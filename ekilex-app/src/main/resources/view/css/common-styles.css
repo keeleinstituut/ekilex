@@ -23,6 +23,11 @@ td {
 	color: #000;
 }
 
+.stxt {
+	font-style: italic;
+	color: #666;
+}
+
 .modal-backdrop.show {
 	opacity: 0.1;
 }
