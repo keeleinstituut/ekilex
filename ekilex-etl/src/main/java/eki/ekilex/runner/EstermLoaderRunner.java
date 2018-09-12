@@ -27,7 +27,6 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.ContentKey;
 import eki.common.constant.FreeformType;
-import eki.common.constant.LifecycleEventType;
 import eki.common.constant.ReferenceType;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
@@ -467,7 +466,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(meaningId, MEANING, LifecycleEventType.CREATE, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.CREATE, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
@@ -485,7 +485,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(meaningId, MEANING, LifecycleEventType.UPDATE, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.UPDATE, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(ltbCreatedByExp);
@@ -503,7 +504,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(meaningId, MEANING, LifecycleEventType.LTB_CREATED, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.LTB_CREATED, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(ltbEõkkModifiedByExp);
@@ -521,7 +523,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(meaningId, MEANING, LifecycleEventType.LTB_MODIFIED, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.LTB_MODIFIED, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(etEnReviewedByExp);
@@ -539,7 +542,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(meaningId, MEANING, LifecycleEventType.ET_EN_REVIEWED, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.ET_EN_REVIEWED, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) conceptGroupNode.selectSingleNode(enEtReviewedByExp);
@@ -557,7 +561,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(meaningId, MEANING, LifecycleEventType.EN_ET_REVIEWED, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(meaningId, MEANING, LifecycleEventType.EN_ET_REVIEWED, valueStr1, valueTs);
 		}
 	}
 
@@ -865,7 +870,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.CREATE, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.CREATE, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(modifiedByExp);
@@ -883,7 +889,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.UPDATE, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.UPDATE, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(eõkkCreatedByExp);
@@ -901,7 +908,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.EÕKK_CREATED, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.EÕKK_CREATED, valueStr1, valueTs);
 		}
 
 		valueNode1 = (Element) termGroupNode.selectSingleNode(ltbEõkkModifiedByExp);
@@ -919,7 +927,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			valueTs = null;
 		}
 		if (StringUtils.isNotBlank(valueStr1) && (valueTs != null)) {
-			createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.EÕKK_MODIFIED, valueStr1, valueTs);
+			//TODO log
+			//createLifecycleLog(lexemeId, LEXEME, LifecycleEventType.EÕKK_MODIFIED, valueStr1, valueTs);
 		}
 
 		valueNodes = termGroupNode.selectNodes(noteExp);

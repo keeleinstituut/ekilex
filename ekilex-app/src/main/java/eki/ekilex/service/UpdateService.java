@@ -1,22 +1,23 @@
 package eki.ekilex.service;
 
-import eki.ekilex.data.ListData;
-import eki.common.constant.LifecycleEventType;
-import eki.common.constant.LifecycleEntity;
-import eki.common.constant.LifecycleProperty;
-import eki.common.constant.ReferenceType;
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.db.LifecycleLogDbService;
-import eki.ekilex.service.db.UpdateDbService;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.transaction.Transactional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleProperty;
+import eki.common.constant.ReferenceType;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ListData;
+import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.db.LifecycleLogDbService;
+import eki.ekilex.service.db.UpdateDbService;
 
 @Service
 public class UpdateService {
@@ -100,7 +101,6 @@ public class UpdateService {
 		}
 	}
 
-	//TODO lifecycle log
 	@Transactional
 	public void updateLexemeLevels(Long lexemeId, String action) {
 
@@ -109,6 +109,8 @@ public class UpdateService {
 		List<WordLexeme> lexemes = updateDbService.findWordLexemes(lexemeId).into(WordLexeme.class);
 		recalculateLevels(lexemeId, lexemes, action);
 		for (WordLexeme lexeme: lexemes) {
+			String logEntry = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
+			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.LEVEL, lexeme.getLexemeId(), logEntry);
 			updateDbService.updateLexemeLevels(lexeme.getLexemeId(), lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
 		}
 	}

@@ -12,6 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import eki.common.constant.LexemeRelationGroupType;
+import eki.common.constant.LifecycleEntity;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
@@ -23,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleLogOwner;
+import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.TableName;
@@ -153,7 +157,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Long wordId;
 
 		if (tableRowValueMap == null) {
-			wordId = createWord(wordMorphCode, homonymNr, wordLang, wordDisplayMorph, genderCode, typeCode);
+			wordId = createWord(wordValue, wordMorphCode, homonymNr, wordLang, wordDisplayMorph, genderCode, typeCode);
 			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
 				createWordGuid(wordId, dataset, guid);
 			}
@@ -280,7 +284,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return paradigmId;
 	}
 
-	private Long createWord(final String morphCode, final int homonymNr, String lang, String displayMorph, String genderCode, String typeCode) throws Exception {
+	private Long createWord(String word, final String morphCode, final int homonymNr, String lang, String displayMorph, String genderCode, String typeCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lang", lang);
@@ -290,6 +294,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("gender_code", genderCode);
 		tableRowParamMap.put("type_code", typeCode);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
+		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
 		return wordId;
 	}
 
@@ -359,7 +364,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("domain_code", domainCode);
 		tableRowParamMap.put("domain_origin", domainOrigin);
-		basicDbService.create(MEANING_DOMAIN, tableRowParamMap);
+		Long meaningDomainId = basicDbService.create(MEANING_DOMAIN, tableRowParamMap);
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
 	}
 
 	protected Long createDefinition(Long meaningId, String definition, String lang, String dataset) throws Exception {
@@ -369,6 +375,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("value", definition);
 		tableRowParamMap.put("lang", lang);
 		Long definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, definition);
 		if (definitionId != null) {
 			tableRowParamMap.clear();
 			tableRowParamMap.put("definition_id", definitionId);
@@ -376,15 +383,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
 		}
 		return definitionId;
-	}
-
-	protected void updateDefinitionValue(Long definitionId, String value) throws Exception {
-
-		Map<String, Object> criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("id", definitionId);
-		Map<String, Object> valueParamMap = new HashMap<>();
-		valueParamMap.put("value", value);
-		basicDbService.update(DEFINITION, criteriaParamMap, valueParamMap);
 	}
 
 	protected Long createLexeme(Lexeme lexeme, String dataset) throws Exception {
@@ -479,18 +477,21 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				} else {
 					referenceType = ReferenceType.TRANSLATOR;
 				}
-				createFreeformSourceLink(usageId, referenceType, authorId, null, null);
+				Long freeformSourceLinkId = createFreeformSourceLink(usageId, referenceType, authorId, null, author);
+				createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, freeformSourceLinkId, author);
 			}
 			if (CollectionUtils.isNotEmpty(usage.getDefinitions())) {
 				for (String usageDefinition : usage.getDefinitions()) {
-					createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageId, usageDefinition, dataLang);
+					Long usageDefinitionId = createFreeformTextOrDate(FreeformType.USAGE_DEFINITION, usageId, usageDefinition, dataLang);
+					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, usageDefinitionId, usageDefinition);
 				}
 			}
 			if (CollectionUtils.isNotEmpty(usage.getUsageTranslations())) {
 				for (UsageTranslation usageTranslation : usage.getUsageTranslations()) {
 					String usageTranslationValue = usageTranslation.getValue();
 					String usageTranslationLang = usageTranslation.getLang();
-					createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageId, usageTranslationValue, usageTranslationLang);
+					Long usageTranslationId = createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageId, usageTranslationValue, usageTranslationLang);
+					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, usageTranslationValue);
 				}
 			}
 		}
@@ -504,6 +505,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(LEXEME_FREEFORM, tableRowParamMap);
+
+		try {
+			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.VALUE, freeformId, value.toString());
+		} catch (Exception e) {}
 
 		return freeformId;
 	}
@@ -532,6 +538,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("freeform_id", freeformId);
 		basicDbService.create(MEANING_FREEFORM, tableRowParamMap);
+
+		try {
+			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.VALUE, freeformId, value.toString());
+		} catch (Exception e) {}
 
 		return freeformId;
 	}
@@ -619,8 +630,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(value)) {
 			tableRowParamMap.put("value", value);
 		}
-		Long refLinkId = basicDbService.create(LEXEME_SOURCE_LINK, tableRowParamMap);
-		return refLinkId;
+		Long sourceLinkId = basicDbService.create(LEXEME_SOURCE_LINK, tableRowParamMap);
+
+		createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, value);
+
+		return sourceLinkId;
 	}
 
 	protected Long createDefinitionSourceLink(Long definitionId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
@@ -639,27 +653,17 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return refLinkId;
 	}
 
-	//TODO needs upgrading
-	protected void createLifecycleLog(Long ownerId, String ownerName, LifecycleEventType type, String eventBy, Timestamp eventOn) throws Exception {
-
-		/*
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("owner_id", ownerId);
-		tableRowParamMap.put("owner_name", ownerName);
-		tableRowParamMap.put("type", type.name());
-		tableRowParamMap.put("event_by", eventBy);
-		tableRowParamMap.put("event_on", eventOn);
-		basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
-		*/
-	}
-
 	protected void createLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) throws Exception {
 
 		Map<String, Object> relationParams = new HashMap<>();
 		relationParams.put("lexeme1_id", lexemeId1);
 		relationParams.put("lexeme2_id", lexemeId2);
 		relationParams.put("lex_rel_type_code", relationType);
-		basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+		Long lexemeRelationId = basicDbService.createIfNotExists(LEXEME_RELATION, relationParams);
+
+		if (lexemeRelationId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId1, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
+		}
 	}
 
 	protected Long createLexemeRelationGroup(LexemeRelationGroupType groupType) throws Exception {
@@ -683,7 +687,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		relationParams.put("word1_id", wordId1);
 		relationParams.put("word2_id", wordId2);
 		relationParams.put("word_rel_type_code", relationType);
-		basicDbService.createIfNotExists(WORD_RELATION, relationParams);
+		Long wordRelationId = basicDbService.createIfNotExists(WORD_RELATION, relationParams);
+
+		if (wordRelationId != null) {
+			createLifecycleLog(LifecycleLogOwner.WORD, wordId1, LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, wordRelationId, relationType);
+		}
 	}
 
 	protected void createMeaningRelation(Long meaningId1, Long meaningId2, String relationType) throws Exception {
@@ -692,7 +700,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		relationParams.put("meaning1_id", meaningId1);
 		relationParams.put("meaning2_id", meaningId2);
 		relationParams.put("meaning_rel_type_code", relationType);
-		basicDbService.createIfNotExists(MEANING_RELATION, relationParams);
+		Long meaningRelationId = basicDbService.createIfNotExists(MEANING_RELATION, relationParams);
+
+		if (meaningRelationId != null) {
+			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId1, LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
+		}
 	}
 
 	protected void createLexemeRegister(Long lexemeId, String registerCode) throws Exception {
@@ -700,7 +712,11 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> params = new HashMap<>();
 		params.put("lexeme_id", lexemeId);
 		params.put("register_code", registerCode);
-		basicDbService.createIfNotExists(LEXEME_REGISTER, params);
+		Long lexemeRegisterId = basicDbService.createIfNotExists(LEXEME_REGISTER, params);
+
+		if (lexemeRegisterId != null) {
+			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+		}
 	}
 
 	protected Long createSource(Source source) throws Exception {
@@ -773,6 +789,71 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> sourceRecord = sources.get(0);
 		Long sourceId = (Long) sourceRecord.get("id");
 		return sourceId;
+	}
+
+	protected void createLifecycleLog(
+			LifecycleLogOwner logOwner, Long ownerId, LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId, String entry) throws Exception {
+
+		String eventBy = "Ekileks " + getDataset() + "-laadur";
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("entity_id", entityId);
+		tableRowParamMap.put("entity_name", entity.name());
+		tableRowParamMap.put("entity_prop", property.name());
+		tableRowParamMap.put("event_type", eventType.name());
+		tableRowParamMap.put("event_by", eventBy);
+		tableRowParamMap.put("entry", entry);
+		Long lifecycleLogId = basicDbService.create(LIFECYCLE_LOG, tableRowParamMap);
+
+		if (LifecycleLogOwner.LEXEME.equals(logOwner)) {
+			createLexemeLifecycleLog(ownerId, lifecycleLogId);
+		} else if (LifecycleLogOwner.MEANING.equals(logOwner)) {
+			createMeaningLifecycleLog(ownerId, lifecycleLogId);
+		} else if (LifecycleLogOwner.WORD.equals(logOwner)) {
+			createWordLifecycleLog(ownerId, lifecycleLogId);
+		}
+		/* FIXME remove later
+		if (LifecycleEntity.DEFINITION.equals(entity)) {
+		} else if (LifecycleEntity.DEFINITION_SOURCE_LINK.equals(entity)) {
+		} else if (LifecycleEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
+		} else if (LifecycleEntity.GOVERNMENT.equals(entity)) {
+		} else if (LifecycleEntity.GRAMMAR.equals(entity)) {
+		} else if (LifecycleEntity.LEXEME.equals(entity)) {
+		} else if (LifecycleEntity.LEXEME_RELATION.equals(entity)) {
+		} else if (LifecycleEntity.LEXEME_SOURCE_LINK.equals(entity)) {
+		} else if (LifecycleEntity.MEANING.equals(entity)) {
+		} else if (LifecycleEntity.MEANING_RELATION.equals(entity)) {
+		} else if (LifecycleEntity.USAGE.equals(entity)) {
+		} else if (LifecycleEntity.USAGE_DEFINITION.equals(entity)) {
+		} else if (LifecycleEntity.USAGE_TRANSLATION.equals(entity)) {
+		} else if (LifecycleEntity.WORD.equals(entity)) {
+		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
+		}
+		*/
+	}
+
+	private void createMeaningLifecycleLog(Long meaningId, Long lifecycleLogId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
+		basicDbService.create(MEANING_LIFECYCLE_LOG, tableRowParamMap);
+	}
+
+	private void createWordLifecycleLog(Long wordId, Long lifecycleLogId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
+		basicDbService.create(WORD_LIFECYCLE_LOG, tableRowParamMap);
+	}
+
+	private void createLexemeLifecycleLog(Long lexemeId, Long lifecycleLogId) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("lexeme_id", lexemeId);
+		tableRowParamMap.put("lifecycle_log_id", lifecycleLogId);
+		basicDbService.create(LEXEME_LIFECYCLE_LOG, tableRowParamMap);
 	}
 
 	protected Map<String, String> loadClassifierMappingsFor(String ekiClassifierName) throws Exception {

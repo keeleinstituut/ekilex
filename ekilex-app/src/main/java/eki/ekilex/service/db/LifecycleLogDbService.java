@@ -238,6 +238,16 @@ public class LifecycleLogDbService {
 						.fetchSingleInto(Long.class);
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			} else if (LifecycleProperty.LEVEL.equals(property)) {
+				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+				recent = StringUtils.joinWith(".", entityData.get("level1"), entityData.get("level2"), entityData.get("level3"));
+				if (StringUtils.equals(recent, entry)) {
+					if (isUpdate(eventType)) {
+						return;
+					}
+				}
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.DATASET.equals(property)) {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
