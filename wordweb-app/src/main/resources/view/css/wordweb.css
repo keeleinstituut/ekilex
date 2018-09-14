@@ -1,7 +1,6 @@
 #detail-toggle-container {
     width: 160px;
     height: 32px;
-    margin: auto;
     position: relative;
     border-radius: 6px;
     overflow: hidden;
@@ -46,4 +45,12 @@
 
 .toggle:nth-child(1) {
     right: 0;
+}
+
+@media (max-width: 767.98px) {
+    body:not(.home-page) #detail-toggle-container {
+        position: fixed;
+        top: 12px;
+        z-index: 1111;
+    }
 }
