@@ -21,9 +21,9 @@ import eki.ekilex.service.SourceService;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class RefLinkController {
+public class SourceLinkController {
 
-	private static final Logger logger = LoggerFactory.getLogger(RefLinkController.class);
+	private static final Logger logger = LoggerFactory.getLogger(SourceLinkController.class);
 
 	@Autowired
 	private RefLinkService refLinkService;
@@ -36,7 +36,7 @@ public class RefLinkController {
 			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested freeform ref link \"{}\"", sourceLinkIdStr);
+		logger.debug("Requested freeform source link \"{}\"", sourceLinkIdStr);
 		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
 		return handleSourceLink(sourceLinkId, ReferenceOwner.FREEFORM, model);
 	}
@@ -46,7 +46,7 @@ public class RefLinkController {
 			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested definition ref link \"{}\"", sourceLinkIdStr);
+		logger.debug("Requested definition source link \"{}\"", sourceLinkIdStr);
 		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
 		return handleSourceLink(sourceLinkId, ReferenceOwner.DEFINITION, model);
 	}
@@ -56,7 +56,7 @@ public class RefLinkController {
 			@PathVariable("sourceLinkId") String sourceLinkIdStr,
 			Model model) {
 
-		logger.debug("Requested lexeme ref link \"{}\"", sourceLinkIdStr);
+		logger.debug("Requested lexeme source link \"{}\"", sourceLinkIdStr);
 		Long sourceLinkId = Long.valueOf(sourceLinkIdStr);
 		return handleSourceLink(sourceLinkId, ReferenceOwner.LEXEME, model);
 	}

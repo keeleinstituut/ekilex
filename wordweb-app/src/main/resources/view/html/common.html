@@ -26,7 +26,6 @@
     <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
     <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
   </th:block>
-
   <!-- Bootstrap core JS -->
   <th:block th:fragment="js">
     <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
@@ -35,7 +34,6 @@
     <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
     <script type="text/javascript" th:src="@{/view/js/ww-common.js}"></script>
   </th:block>
-
   <!-- menu -->
   <th:block th:fragment="menu">
     <div class="container-fluid header-container">
@@ -56,11 +54,11 @@
       </div>
     </div>
   </th:block>
-
   <th:block th:fragment="menu-links">
     <div class="header-links">
       <button class="btn menu-btn float-right clear-both">
-        <span>Sulge</span> <span class="icon icon-close"></span>
+        <span>Sulge</span>
+        <span class="icon icon-close"></span>
       </button>
       <a th:href="@{/search}" class="menu-item" data-item-name="search">
         <span th:text="#{menu.search}">Otsing</span>
@@ -79,7 +77,6 @@
       </a>
     </div>
   </th:block>
-
   <!-- search -->
   <th:block th:fragment="search">
     <div class="search-main">
@@ -105,7 +102,6 @@
       </form>
     </div>
   </th:block>
-
   <!-- lang filter -->
   <th:block th:fragment="lang-filter">
     <div class="row">
@@ -148,7 +144,6 @@
         </div>
     </div>
   </th:block>
-
   <!-- debugging aid -->
   <div th:fragment="dump_vars" class="m-4">
     <h4>Dump of all variables in Thymeleaf context</h4>

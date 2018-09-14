@@ -1,5 +1,6 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
@@ -9,11 +10,15 @@ import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
+import org.jooq.Record8;
+import org.jooq.Table;
+import org.jooq.impl.DSL;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -40,7 +45,69 @@ public class LifecycleLogDbService {
 	}
 
 	public List<LifecycleLog> getLogForWord(Long wordId) {
-		return null;
+		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = DSL
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.from(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
+						.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+						)
+				.unionAll(DSL
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.from(WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						WORD_LIFECYCLE_LOG.WORD_ID.eq(wordId)
+						.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+						))
+				.unionAll(DSL
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.from(LEXEME, MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						LEXEME.WORD_ID.eq(wordId)
+						.and(LEXEME.MEANING_ID.eq(MEANING_LIFECYCLE_LOG.MEANING_ID))
+						.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+						))
+				.asTable("ll");
+		List<LifecycleLog> results = create
+				.select(
+						ll.field("entity_id", Long.class),
+						ll.field("entity_name", String.class),
+						ll.field("entity_prop", String.class),
+						ll.field("event_type", String.class),
+						ll.field("event_by", String.class),
+						ll.field("event_on", Timestamp.class),
+						ll.field("recent", String.class),
+						ll.field("entry", String.class)
+						)
+				.from(ll)
+				.orderBy(ll.field("event_on").desc())
+				.fetchInto(LifecycleLog.class);
+		return results;
 	}
 
 	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
@@ -171,6 +238,16 @@ public class LifecycleLogDbService {
 						.fetchSingleInto(Long.class);
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			} else if (LifecycleProperty.LEVEL.equals(property)) {
+				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+				recent = StringUtils.joinWith(".", entityData.get("level1"), entityData.get("level2"), entityData.get("level3"));
+				if (StringUtils.equals(recent, entry)) {
+					if (isUpdate(eventType)) {
+						return;
+					}
+				}
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.DATASET.equals(property)) {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);

@@ -426,7 +426,6 @@ function openAddSourceLinkDlg(elem) {
 function openDetailsDiv(elem) {
     var dlg = $($(elem).data('target'));
     var url = $(elem).attr('href');
-
     dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         dlg.find('.close').focus();
         dlg.find('.modal-body').html(null);
