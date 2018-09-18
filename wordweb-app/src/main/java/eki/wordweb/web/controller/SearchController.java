@@ -60,7 +60,6 @@ public class SearchController extends AbstractController {
 			@RequestParam(name = "isBeginner") Boolean isBeginner,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		//TODO should probably append to rest url
 		if (isBeginner == null) {
 			isBeginner = Boolean.FALSE;
 		}
@@ -104,6 +103,13 @@ public class SearchController extends AbstractController {
 		sessionBean.setBeginner(isBeginner);
 
 		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr, isBeginner);
+		if (isBeginner && wordsData.getFullMatchWords().isEmpty()) {
+			wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr, false);
+			if (!wordsData.getFullMatchWords().isEmpty()) {
+				sessionBean.setBeginner(false);
+				model.addAttribute("switchedToDetailMode", true);
+			}
+		}
 		populateModel(searchWord, wordsData, model);
 
 		return SEARCH_PAGE;

@@ -4,30 +4,6 @@
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
-  <style>
-    .lexeme-levels {
-      float: left;
-      margin-right: 1em;
-    }
-    .message-wrap {
-      margin-top: 9.5em;
-    }
-    @media (min-width: 768px) {
-      .lexeme-levels {
-        margin-right: 0em;
-        margin-left: -2em;
-      }
-    }
-    .robo-icon {
-      width: 32px;
-      margin-top: -2px;
-      opacity: 0.5;
-      position: absolute;
-    }
-    .example-item:hover .robo-icon{
-      opacity: 1;
-    }
-  </style>
 </th:block>
 </head>
 <body>
@@ -42,12 +18,15 @@
           <div class="col-md-6 pr-0">
             <div th:replace="common :: lang-filter"></div>
           </div>
+          <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
+              <span>Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
+          </div>
         </div>
       </div>
     </div>
     <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="col offset-1">
-          <span>Ei leidnud midagi</span>
+        <span>Ei leidnud midagi</span>
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
@@ -471,6 +450,7 @@
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
     setActiveMenuItem('search');
     initDetailToggle();
+    $('#switched-to-details').delay(4000).hide(300);
   </script>
 </body>
 </html>

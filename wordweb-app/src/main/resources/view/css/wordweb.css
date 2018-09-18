@@ -47,10 +47,38 @@
     right: 0;
 }
 
+.lexeme-levels {
+    float: left;
+    margin-right: 1em;
+}
+
 @media (max-width: 767.98px) {
     body:not(.home-page) #detail-toggle-container {
         position: fixed;
         top: 12px;
         z-index: 1111;
     }
+    .lexeme-levels {
+        margin-right: 0em;
+        margin-left: -2em;
+    }
+}
+
+.message-wrap {
+    margin-top: 9.5em;
+}
+.details-message {
+    top: -1.5em;
+    right: 2em;
+    position: absolute;
+}
+
+.robo-icon {
+    width: 32px;
+    margin-top: -2px;
+    opacity: 0.5;
+    position: absolute;
+}
+.example-item:hover .robo-icon{
+    opacity: 1;
 }
