@@ -9,6 +9,9 @@
       float: left;
       margin-right: 1em;
     }
+    .message-wrap {
+      margin-top: 9.5em;
+    }
     @media (min-width: 768px) {
       .lexeme-levels {
         margin-right: 0em;
@@ -40,6 +43,11 @@
             <div th:replace="common :: lang-filter"></div>
           </div>
         </div>
+      </div>
+    </div>
+    <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
+      <div class="col offset-1">
+          <span>Ei leidnud midagi</span>
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
