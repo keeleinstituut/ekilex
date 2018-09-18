@@ -18,6 +18,7 @@
           <div class="col-md-6 pr-0">
             <div th:replace="common :: lang-filter"></div>
           </div>
+          <!-- TODO: let client to decide waht message option they like, option 1 -->
           <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
               <span>Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
           </div>
@@ -30,9 +31,16 @@
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
-      <div class="col-12" style="max-width: 80vw; margin: auto; margin-bottom: 1em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
-        <span>see on ka vorm sõnast</span>
-        <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+      <!-- TODO: let client to decide waht message option they like, option 2 -->
+      <div class="col-12" style="max-width: 80vw; margin: auto; margin-bottom: 1em;" id="form-words"
+           th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
+        <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+          <span>see on ka vorm sõnast</span>
+          <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+        </div>
+        <div th:if="${switchedToDetailMode}">
+          <span>Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
+        </div>
       </div>
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
