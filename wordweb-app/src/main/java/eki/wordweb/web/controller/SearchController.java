@@ -4,6 +4,7 @@ import static java.util.Collections.emptyList;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +35,8 @@ import org.springframework.web.util.UriUtils;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class SearchController extends AbstractController {
+
+	private static String IS_BEGINNER = "simple";
 
 	@Autowired
 	private LexSearchService lexSearchService;
@@ -67,23 +70,25 @@ public class SearchController extends AbstractController {
 		if (StringUtils.isBlank(searchWord)) {
 			return "redirect:" + SEARCH_PAGE;
 		}
-		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, null);
+		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, null, isBeginner);
 
 		return "redirect:" + searchUri;
 	}
 
 	@GetMapping({
+		SEARCH_URI + "/{langPair}/{searchWord}/{homonymNr}/{isSimple}",
 		SEARCH_URI + "/{langPair}/{searchWord}/{homonymNr}",
 		SEARCH_URI + "/{langPair}/{searchWord}"})
 	public String searchWordsByUri(
 			@PathVariable(name = "langPair") String langPair,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			@PathVariable(name = "isSimple", required = false) String isSimple,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
-		boolean isBeginner = sessionBean.isBeginner();
+		boolean isBeginner = isSimple != null ? Objects.equals(isSimple, IS_BEGINNER) : sessionBean.isBeginner();
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, isBeginner);
 
 		if (!searchFilter.isValid()) {
@@ -184,7 +189,7 @@ public class SearchController extends AbstractController {
 			isBeginner = false;
 		}
 
-		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, homonymNr);
+		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, homonymNr, isBeginner);
 
 		SearchFilter searchFilter = new SearchFilter();
 		searchFilter.setSearchWord(searchWord);
@@ -198,12 +203,17 @@ public class SearchController extends AbstractController {
 		return searchFilter;
 	}
 
-	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr) {
+	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr, boolean isBeginner) {
+
 		String encodedSearchWord = UriUtils.encodePathSegment(searchWord, SystemConstant.UTF_8);
 		String searchUri = SEARCH_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + encodedSearchWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
 		}
+		if (isBeginner) {
+			searchUri += "/" + IS_BEGINNER;
+		}
 		return searchUri;
 	}
+
 }
