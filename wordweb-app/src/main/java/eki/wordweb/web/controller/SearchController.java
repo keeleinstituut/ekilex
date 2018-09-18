@@ -36,7 +36,8 @@ import org.springframework.web.util.UriUtils;
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class SearchController extends AbstractController {
 
-	private static String IS_BEGINNER = "simple";
+	private static String BEGINNER_MODE = "simple";
+	private static String DETAIL_MODE = "detail";
 
 	@Autowired
 	private LexSearchService lexSearchService;
@@ -75,19 +76,18 @@ public class SearchController extends AbstractController {
 	}
 
 	@GetMapping({
-		SEARCH_URI + "/{langPair}/{searchWord}/{homonymNr}/{isSimple}",
-		SEARCH_URI + "/{langPair}/{searchWord}/{homonymNr}",
-		SEARCH_URI + "/{langPair}/{searchWord}"})
+		SEARCH_URI + "/{langPair}/{searchMode}/{searchWord}/{homonymNr}",
+		SEARCH_URI + "/{langPair}/{searchMode}/{searchWord}"})
 	public String searchWordsByUri(
 			@PathVariable(name = "langPair") String langPair,
+			@PathVariable(name = "searchMode") String searchMode,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
-			@PathVariable(name = "isSimple", required = false) String isSimple,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
-		boolean isBeginner = isSimple != null ? Objects.equals(isSimple, IS_BEGINNER) : sessionBean.isBeginner();
+		boolean isBeginner = Objects.equals(searchMode, BEGINNER_MODE);
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, isBeginner);
 
 		if (!searchFilter.isValid()) {
@@ -212,12 +212,10 @@ public class SearchController extends AbstractController {
 	private String composeSearchUri(String searchWord, String sourceLang, String destinLang, Integer homonymNr, boolean isBeginner) {
 
 		String encodedSearchWord = UriUtils.encodePathSegment(searchWord, SystemConstant.UTF_8);
-		String searchUri = SEARCH_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + encodedSearchWord;
+		String searchMode = isBeginner ? BEGINNER_MODE : DETAIL_MODE;
+		String searchUri = SEARCH_URI + "/" + sourceLang + LANGUAGE_PAIR_SEPARATOR + destinLang + "/" + searchMode + "/" + encodedSearchWord;
 		if (homonymNr != null) {
 			searchUri += "/" + homonymNr;
-		}
-		if (isBeginner) {
-			searchUri += "/" + IS_BEGINNER;
 		}
 		return searchUri;
 	}
