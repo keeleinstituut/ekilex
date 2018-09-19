@@ -50,7 +50,9 @@ public class LexSearchService implements InitializingBean {
 		languagesDatasetMap.put("estest-adv", new String[] {"ss1", "psv", "kol"});
 		languagesDatasetMap.put("estest-beg", new String[] {"psv"});
 		languagesDatasetMap.put("estrus-adv", new String[] {"qq2", "ev2"});
-		languagesDatasetMap.put("rusest-adv", new String[] {"qq2"});
+		languagesDatasetMap.put("estrus-beg", new String[] {"qq2"});
+		languagesDatasetMap.put("rusest-adv", new String[] {"qq2", "ev2"});
+		languagesDatasetMap.put("rusest-beg", new String[] {"qq2"});
 	}
 
 	@Transactional
@@ -191,7 +193,7 @@ public class LexSearchService implements InitializingBean {
 
 	private String getDatasetMapKey(String sourceLang, String destinLang, boolean isBeginner) {
 		String datasetKey = sourceLang + destinLang;
-		if (isBeginner && StringUtils.equals("estest", datasetKey)) {
+		if (isBeginner) {
 			datasetKey = datasetKey + "-beg";
 		} else {
 			datasetKey = datasetKey + "-adv";
