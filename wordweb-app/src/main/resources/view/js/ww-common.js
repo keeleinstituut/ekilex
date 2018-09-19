@@ -37,8 +37,7 @@ $(document).ready(function() {
         	if (group == "formWord") {
         		var li = $("<li>");
         		li.addClass("list-group-item list-group-item-info");
-        		//TODO add localised message label.word.is.form.of
-        		li.text("see on ka vorm sõnadest");
+        		li.text(messages.this_is_form);
             	ul.append(li);
         	}
         	$.each(items, function (index, item) {
@@ -121,11 +120,6 @@ function empowerLanguageSelection() {
 	destinLang = $("button[name = 'destin-lang-btn'].active").val();
 	$("input[name = 'sourceLang']").val(sourceLang);
 	$("input[name = 'destinLang']").val(destinLang);
-	if ((sourceLang == destinLang) && (destinLang == 'est')) {
-		$("#detail-toggle-container").show();
-	} else {
-		$("#detail-toggle-container").hide();
-	}
 }
 
 function calculateAndSetStyles() {
@@ -194,8 +188,7 @@ function generateVoiceAndPlay(e) {
 		playSound(urlToSound);
 	}).fail(function() {
 		elem.html(content);
-		// TODO: localization, label.sound.generation.failure
-		alert("Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.");
+		alert(messages.sound_generation_failure);
 	})
 }
 

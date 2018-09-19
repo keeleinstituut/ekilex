@@ -190,11 +190,6 @@ public class SearchController extends AbstractController {
 			isValid = isValid & true;
 		}
 
-		if (!StringUtils.equals(sourceLang, DEFAULT_SOURCE_LANG)
-				|| !StringUtils.equals(destinLang, DEFAULT_DESTIN_LANG)) {
-			isBeginner = false;
-		}
-
 		String searchUri = composeSearchUri(searchWord, sourceLang, destinLang, homonymNr, isBeginner);
 
 		SearchFilter searchFilter = new SearchFilter();
