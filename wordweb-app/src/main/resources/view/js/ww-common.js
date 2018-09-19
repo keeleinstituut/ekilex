@@ -121,11 +121,6 @@ function empowerLanguageSelection() {
 	destinLang = $("button[name = 'destin-lang-btn'].active").val();
 	$("input[name = 'sourceLang']").val(sourceLang);
 	$("input[name = 'destinLang']").val(destinLang);
-	if ((sourceLang == destinLang) && (destinLang == 'est')) {
-		$("#detail-toggle-container").show();
-	} else {
-		$("#detail-toggle-container").hide();
-	}
 }
 
 function calculateAndSetStyles() {
