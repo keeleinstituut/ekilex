@@ -37,7 +37,7 @@ $(document).ready(function() {
         	if (group == "formWord") {
         		var li = $("<li>");
         		li.addClass("list-group-item list-group-item-info");
-        		//TODO add localised message
+        		//TODO add localised message label.word.is.form.of
         		li.text("see on ka vorm sõnadest");
             	ul.append(li);
         	}
@@ -194,7 +194,7 @@ function generateVoiceAndPlay(e) {
 		playSound(urlToSound);
 	}).fail(function() {
 		elem.html(content);
-		console.log(data);
+		// TODO: localization, label.sound.generation.failure
 		alert("Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.");
 	})
 }
@@ -318,7 +318,6 @@ function sendToWebSocket(audioBlob) {
 
 $(document).on("click", ".menu-btn", function(e) {
 	$(".header-container").toggleClass("show-header");
-	// $(".header-links").toggleClass("d-none d-md-block");
 });
 
 $(document).on("click", "#clear-search-btn", function(e) {

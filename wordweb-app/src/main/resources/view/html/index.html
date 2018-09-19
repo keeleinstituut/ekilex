@@ -11,7 +11,7 @@
     <div class="header-panel">
       <div th:replace="common :: menu-links"></div>
       <button class="btn menu-btn">
-        <span class="d-none d-md-block">Menüü</span>
+        <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
         <span class="icon icon-menu"></span>
       </button>
     </div>
@@ -26,7 +26,7 @@
         </div>
         <div class="row">
           <div class="col-12 mb-2 mb-md-3 mb-lg-4">
-            <p>Otsi sõnade tähendusi ja tõlkeid</p>
+            <p th:text="#{index.title}">Otsi sõnade tähendusi ja tõlkeid</p>
           </div>
         </div>
         <div class="row">

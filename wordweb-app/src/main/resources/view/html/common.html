@@ -57,7 +57,7 @@
   <th:block th:fragment="menu-links">
     <div class="header-links">
       <button class="btn menu-btn float-right clear-both">
-        <span>Sulge</span>
+        <span th:text="#{menu.close}">Sulge</span>
         <span class="icon icon-close"></span>
       </button>
       <a th:href="@{/search}" class="menu-item" data-item-name="search">
@@ -82,7 +82,7 @@
     <div class="search-main">
       <form th:action="@{/search}" th:method="post">
         <div>
-          <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" placeholder="Kirjuta mõni sõna" />
+          <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}"/>
           <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
           <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
           <input type="hidden" name="isBeginner" th:value="${sessionBean.beginner}" />
@@ -91,7 +91,7 @@
           <button id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
             <span class="icon icon-close"></span>
           </button>
-          <button type="button" id="start-rec-btn" class="btn btn-light speak-btn">
+          <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:title="#{button.label.start.rec}">
             <span class="icon icon-mic"></span>
           </button>
           <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
@@ -115,12 +115,12 @@
             <form class="dropdown-menu p-4 container">
               <div class="row">
                 <div class="col-6">
-                  <button name="source-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
-                  <button name="source-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
+                  <button name="source-lang-btn" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
+                  <button name="source-lang-btn" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
                 </div>
                 <div class="col-6">
-                  <button name="destin-lang-btn" value="est" class="dropdown-item" type="button">eesti keel</button>
-                  <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button">vene keel</button>
+                  <button name="destin-lang-btn" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
+                  <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
                 </div>
               </div>
             </form>
@@ -130,18 +130,18 @@
         <div id="detail-toggle-container">
           <div class="inner-container">
             <div class="toggle">
-              <p>Lihtne</p>
+              <p th:text="#{button.label.simple}">Lihtne</p>
             </div>
             <div class="toggle">
-              <p>Detailne</p>
+              <p th:text="#{button.label.detail}">Detailne</p>
             </div>
           </div>
           <div class="inner-container" id="toggle-container">
             <div class="toggle">
-              <p>Lihtne</p>
+              <p th:text="#{button.label.simple}">Lihtne</p>
             </div>
             <div class="toggle">
-              <p>Detailne</p>
+              <p th:text="#{button.label.detail}">Detailne</p>
             </div>
           </div>
         </div>
