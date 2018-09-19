@@ -20,6 +20,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		calculateAndSetStyles();
 	}).fail(function(data) {
 		console.log(data);
+		// TODO: localization label.detail.search.failure
 		alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
 	})
 }

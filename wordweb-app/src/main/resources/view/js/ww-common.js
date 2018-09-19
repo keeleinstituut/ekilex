@@ -37,7 +37,7 @@ $(document).ready(function() {
         	if (group == "formWord") {
         		var li = $("<li>");
         		li.addClass("list-group-item list-group-item-info");
-        		//TODO add localised message
+        		//TODO add localised message label.word.is.form.of
         		li.text("see on ka vorm sõnadest");
             	ul.append(li);
         	}
@@ -122,9 +122,9 @@ function empowerLanguageSelection() {
 	$("input[name = 'sourceLang']").val(sourceLang);
 	$("input[name = 'destinLang']").val(destinLang);
 	if ((sourceLang == destinLang) && (destinLang == 'est')) {
-		$("#beginner-switch").show();		
+		$("#detail-toggle-container").show();
 	} else {
-		$("#beginner-switch").hide();
+		$("#detail-toggle-container").hide();
 	}
 }
 
@@ -194,7 +194,7 @@ function generateVoiceAndPlay(e) {
 		playSound(urlToSound);
 	}).fail(function() {
 		elem.html(content);
-		console.log(data);
+		// TODO: localization, label.sound.generation.failure
 		alert("Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.");
 	})
 }
@@ -318,7 +318,6 @@ function sendToWebSocket(audioBlob) {
 
 $(document).on("click", ".menu-btn", function(e) {
 	$(".header-container").toggleClass("show-header");
-	// $(".header-links").toggleClass("d-none d-md-block");
 });
 
 $(document).on("click", "#clear-search-btn", function(e) {
@@ -397,15 +396,6 @@ $(document).on("click", "button[id='lang-sel-complete-btn']", function(e) {
 	}
 });
 
-$(document).on("change", "#beginner-switch", function(e) {
-	var isBeginner = $("#beginner-chk").prop("checked");
-	$("input[name='isBeginner']").val(isBeginner);
-	var tempSearchWord = $("input[name='searchWord']").val();
-	if (tempSearchWord) {
-		$("#search-btn").click();		
-	}
-});
-
 $(document).on("click", "#start-rec-btn", function(e) {
 	$('#start-rec-btn').prop('hidden', 'hidden');
 	$('#stop-rec-btn').prop('hidden', null);
@@ -425,3 +415,28 @@ $(document).on("click", "#stop-rec-btn", function(e) {
 function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name='+itemName+']').addClass('selected');
 }
+
+function toggleDetails(toggleToRight) {
+    var toggleContainer = document.getElementById('toggle-container');
+    if (toggleToRight) {
+        toggleContainer.style.clipPath = 'inset(0 0 0 50%)';
+    } else {
+        toggleContainer.style.clipPath = 'inset(0 50% 0 0)';
+    }
+}
+
+function initDetailToggle() {
+    var isSimple = $("input[name='isBeginner']").val() === "true";
+    toggleDetails(isSimple);
+}
+
+$(document).on("click", "#detail-toggle-container", function (e) {
+	var isSimple = $("input[name='isBeginner']").val() === "true";
+	isSimple = !isSimple;
+	toggleDetails(isSimple);
+    $("input[name='isBeginner']").val(isSimple);
+    var tempSearchWord = $("input[name='searchWord']").val();
+    if (tempSearchWord) {
+        $("#search-btn").click();
+    }
+});
