@@ -18,6 +18,7 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -82,6 +83,7 @@ import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
@@ -124,7 +126,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1277976021;
+    private static final long serialVersionUID = 802893081;
 
     /**
      * The reference instance of <code>public</code>
@@ -200,6 +202,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.eki_user</code>.
      */
     public final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
+
+    /**
+     * The table <code>public.etymology_type</code>.
+     */
+    public final EtymologyType ETYMOLOGY_TYPE = eki.ekilex.data.db.tables.EtymologyType.ETYMOLOGY_TYPE;
 
     /**
      * The table <code>public.form</code>.
@@ -522,6 +529,11 @@ public class Public extends SchemaImpl {
     public final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
 
     /**
+     * The table <code>public.word_etymology</code>.
+     */
+    public final WordEtymology WORD_ETYMOLOGY = eki.ekilex.data.db.tables.WordEtymology.WORD_ETYMOLOGY;
+
+    /**
      * The table <code>public.word_guid</code>.
      */
     public final WordGuid WORD_GUID = eki.ekilex.data.db.tables.WordGuid.WORD_GUID;
@@ -629,6 +641,7 @@ public class Public extends SchemaImpl {
             Sequences.PARADIGM_ID_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
+            Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
             Sequences.WORD_LIFECYCLE_LOG_ID_SEQ,
@@ -659,6 +672,7 @@ public class Public extends SchemaImpl {
             Domain.DOMAIN,
             DomainLabel.DOMAIN_LABEL,
             EkiUser.EKI_USER,
+            EtymologyType.ETYMOLOGY_TYPE,
             Form.FORM,
             FormRelType.FORM_REL_TYPE,
             FormRelTypeLabel.FORM_REL_TYPE_LABEL,
@@ -723,6 +737,7 @@ public class Public extends SchemaImpl {
             ViewWwWord.VIEW_WW_WORD,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             Word.WORD,
+            WordEtymology.WORD_ETYMOLOGY,
             WordGuid.WORD_GUID,
             WordLifecycleLog.WORD_LIFECYCLE_LOG,
             WordRelType.WORD_REL_TYPE,

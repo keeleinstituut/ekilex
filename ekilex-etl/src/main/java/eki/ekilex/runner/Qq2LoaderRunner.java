@@ -152,7 +152,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		Element rootElement = dataDoc.getRootElement();
-		long articleCount = rootElement.content().stream().filter(node -> node instanceof Element).count();
+		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+		long articleCount = articleNodes.size();
 		logger.debug("Extracted {} articles", articleCount);
 
 		Map<Long, List<Government>> wordIdGovernmentMap = new HashMap<>();
@@ -184,8 +185,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
-
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 
 		for (Element articleNode : articleNodes) {
 

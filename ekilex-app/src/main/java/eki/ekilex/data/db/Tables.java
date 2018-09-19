@@ -18,6 +18,7 @@ import eki.ekilex.data.db.tables.DisplayMorphLabel;
 import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
+import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -82,6 +83,7 @@ import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordEtymology;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
@@ -175,6 +177,11 @@ public class Tables {
      * The table <code>public.eki_user</code>.
      */
     public static final EkiUser EKI_USER = eki.ekilex.data.db.tables.EkiUser.EKI_USER;
+
+    /**
+     * The table <code>public.etymology_type</code>.
+     */
+    public static final EtymologyType ETYMOLOGY_TYPE = eki.ekilex.data.db.tables.EtymologyType.ETYMOLOGY_TYPE;
 
     /**
      * The table <code>public.form</code>.
@@ -495,6 +502,11 @@ public class Tables {
      * The table <code>public.word</code>.
      */
     public static final Word WORD = eki.ekilex.data.db.tables.Word.WORD;
+
+    /**
+     * The table <code>public.word_etymology</code>.
+     */
+    public static final WordEtymology WORD_ETYMOLOGY = eki.ekilex.data.db.tables.WordEtymology.WORD_ETYMOLOGY;
 
     /**
      * The table <code>public.word_guid</code>.

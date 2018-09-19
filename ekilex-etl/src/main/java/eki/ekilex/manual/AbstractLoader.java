@@ -100,8 +100,8 @@ public abstract class AbstractLoader implements SystemConstant {
 					throw new DataLoadingException("Invalid guid map line \"" + resourceFileLine + "\"");
 				}
 				String sourceDataset = correctDatasetCode(ssGuidMapRowCells[0]);
-				String sourceGuid = ssGuidMapRowCells[1];
-				String targetGuid = ssGuidMapRowCells[2];
+				String sourceGuid = ssGuidMapRowCells[1].toLowerCase();
+				String targetGuid = ssGuidMapRowCells[2].toLowerCase();
 				String word = ssGuidMapRowCells[3];
 				if (StringUtils.equals(sourceDataset, filteringDataset)) {
 					mappedGuids = ssGuidMap.get(sourceGuid);

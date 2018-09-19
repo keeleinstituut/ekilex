@@ -73,6 +73,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIFIER_VKTYYP = "vk_tyyp";
 	protected static final String EKI_CLASSIFIER_MSAGTYYP = "msag_tyyp";
 	protected static final String EKI_CLASSIFIER_STYYP = "s_tyyp";
+	protected static final String EKI_CLASSIFIER_ETYMPLTYYP = "etympl_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
 	@Autowired
@@ -81,15 +82,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	@Autowired
 	protected BasicDbService basicDbService;
 
-	private String sqlSelectWordByFormAndHomonym;
+	protected String sqlSelectWordByFormAndHomonym;
 
-	private String sqlSelectWordByDatasetAndGuid;
+	protected String sqlSelectWordByDatasetAndGuid;
 
-	private String sqlSelectWordMaxHomonym;
+	protected String sqlSelectWordMaxHomonym;
 
-	private String sqlSelectLexemeFreeform;
+	protected String sqlSelectLexemeFreeform;
 
-	private String sqlSourceByTypeAndName;
+	protected String sqlSourceByTypeAndName;
 
 	abstract void initialise() throws Exception;
 
@@ -245,6 +246,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private Map<String, Object> getWord(String word, String guid, String dataset) throws Exception {
 
+		guid = guid.toLowerCase();
+
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("guid", guid);
@@ -299,6 +302,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	}
 
 	private void createWordGuid(Long wordId, String dataset, String guid) throws Exception {
+
+		guid = guid.toLowerCase();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);

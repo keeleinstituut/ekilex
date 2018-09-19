@@ -37,6 +37,7 @@ public interface TableName {
 	String LEXEME_SOURCE_LINK = "lexeme_source_link";
 	String DATASET = "dataset";
 	String VIEW = "vievv";
+	String WORD_ETYMOLOGY = "word_etymology";
 	String WORD_GUID = "word_guid";
 	String LEXEME_RELATION = "lex_relation";
 	String FORM_RELATION = "form_relation";

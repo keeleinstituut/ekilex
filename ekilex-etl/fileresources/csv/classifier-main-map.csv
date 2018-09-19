@@ -353,19 +353,19 @@ etymkeel_tyyp	etymkeel_tyyp	vepsa	vepsa keel	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	vepsa	Vepsian	en	-	-
 etymkeel_tyyp	etymkeel_tyyp	vietnami	vietnami keel	et	-	-
 etymkeel_tyyp	etymkeel_tyyp	vietnami	Vietnamese	en	-	-
-etympl_tyyp	etympl_tyyp	kirjakeele sõna	kirjakeeles loodud sõna	et	-	-
-etympl_tyyp	etympl_tyyp	kõlasõna	kõlasõna	et	-	-
-etympl_tyyp	etympl_tyyp	laensõna	laensõna	et	-	-
-etympl_tyyp	etympl_tyyp	laensõna	loanword	en	-	-
-etympl_tyyp	etympl_tyyp	laenväljend	laenatud väljend	et	-	-
-etympl_tyyp	etympl_tyyp	laenväljend	borrowed expression	en	-	-
-etympl_tyyp	etympl_tyyp	pooltõlkelaen	pooltõlkelaen, laenu ja tõlkelaenu ristand	et	-	-
-etympl_tyyp	etympl_tyyp	tehissõna	tehissõna (kirjakeele all-liik)	et	-	-
-etympl_tyyp	etympl_tyyp	tehissõna	artificial word	en	-	-
-etympl_tyyp	etympl_tyyp	tootenimi	tootenimi, kaubamärk	et	-	-
-etympl_tyyp	etympl_tyyp	tootenimi	trade name, trade mark, brand	en	-	-
-etympl_tyyp	etympl_tyyp	tõlkelaen	tõlkelaen	et	-	-
-etympl_tyyp	etympl_tyyp	tõlkelaen	loan translation	en	-	-
+etympl_tyyp	etympl_tyyp	kirjakeele sõna	kirjakeeles loodud sõna	et	etymology_type	kirjakeele sõna
+etympl_tyyp	etympl_tyyp	kõlasõna	kõlasõna	et	etymology_type	kõlasõna
+etympl_tyyp	etympl_tyyp	laensõna	laensõna	et	etymology_type	laensõna
+etympl_tyyp	etympl_tyyp	laensõna	loanword	en	etymology_type	laensõna
+etympl_tyyp	etympl_tyyp	laenväljend	laenatud väljend	et	etymology_type	laenväljend
+etympl_tyyp	etympl_tyyp	laenväljend	borrowed expression	en	etymology_type	laenväljend
+etympl_tyyp	etympl_tyyp	pooltõlkelaen	pooltõlkelaen, laenu ja tõlkelaenu ristand	et	etymology_type	pooltõlkelaen
+etympl_tyyp	etympl_tyyp	tehissõna	tehissõna (kirjakeele all-liik)	et	etymology_type	tehissõna
+etympl_tyyp	etympl_tyyp	tehissõna	artificial word	en	etymology_type	tehissõna
+etympl_tyyp	etympl_tyyp	tootenimi	tootenimi, kaubamärk	et	etymology_type	tootenimi
+etympl_tyyp	etympl_tyyp	tootenimi	trade name, trade mark, brand	en	etymology_type	tootenimi
+etympl_tyyp	etympl_tyyp	tõlkelaen	tõlkelaen	et	etymology_type	tõlkelaen
+etympl_tyyp	etympl_tyyp	tõlkelaen	loan translation	en	etymology_type	tõlkelaen
 fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-
 fak_tyyp	fakultatiivne	fak	nothing	en	-	-
 gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-

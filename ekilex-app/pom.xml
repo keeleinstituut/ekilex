@@ -39,6 +39,9 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<executable>true</executable>
+				</configuration>
 			</plugin>
 			<!-- used for reading values from properties file, so we can give them to jooq-codegen plugin -->
 			<plugin>

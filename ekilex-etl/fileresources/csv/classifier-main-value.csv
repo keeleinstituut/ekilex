@@ -63,6 +63,14 @@ display_morph	Sg	ainsus	est	wordweb
 display_morph	Pl	mitmus	est	wordweb
 display_morph	Ips	umbisikuline tegumood	est	wordweb
 display_morph	Pts	kesksõna	est	wordweb
+etymology_type	kirjakeele sõna	-	-	-
+etymology_type	kõlasõna	-	-	-
+etymology_type	laensõna	-	-	-
+etymology_type	laenväljend	-	-	-
+etymology_type	pooltõlkelaen	-	-	-
+etymology_type	tehissõna	-	-	-
+etymology_type	tootenimi	-	-	-
+etymology_type	tõlkelaen	-	-	-
 form_rel_type	mvt	viitemärksõna	est	full
 gender	f	feminine	eng	descrip
 gender	f	naissugu	est	descrip

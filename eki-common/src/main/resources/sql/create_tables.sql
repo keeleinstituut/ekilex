@@ -312,6 +312,12 @@ create table usage_type_label
   unique(code, lang, type)
 );
 
+create table etymology_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
 ---------------------------
 -- dünaamiline andmestik --
 ---------------------------
@@ -418,6 +424,18 @@ create table word_relation
   unique(word1_id, word2_id, word_rel_type_code)
 );
 alter sequence word_relation_id_seq restart with 10000;
+
+create table word_etymology
+(
+  id bigserial primary key,
+  word1_id bigint references word(id) on delete cascade not null,
+  word2_id bigint references word(id) on delete cascade not null,
+  etymology_type_code varchar(100) references etymology_type(code),
+  comments text array null,
+  is_questionable boolean not null default false,
+  is_compound boolean not null default false,
+  unique(word1_id, word2_id)
+);
 
 create table word_lifecycle_log
 (
@@ -761,6 +779,9 @@ create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
+create index word_etym_word1_id_idx on word_etymology(word1_id);
+create index word_etym_word2_id_idx on word_etymology(word2_id);
+create index word_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_guid_word_id_idx on word_guid(word_id);
 create index word_guid_dataset_code_idx on word_guid(dataset_code);
 create index word_guid_guid_idx on word_guid(guid);

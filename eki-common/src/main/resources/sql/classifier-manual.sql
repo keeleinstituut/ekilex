@@ -19,6 +19,7 @@ insert into lang (code, value) values ('pan', 'Panjabi');
 insert into lang (code, value) values ('ell', 'Greek');
 insert into lang (code, value) values ('spa', 'Spanish');
 insert into lang (code, value) values ('dan', 'Danish');
+insert into lang (code, value) values ('---', 'N/A');
 
 insert into label_type (code, value) values ('capital', 'capital');
 insert into label_type (code, value) values ('abbrev', 'abbrev');
@@ -31,6 +32,7 @@ insert into label_type (code, value) values ('wordweb', 'wordweb');
 insert into dataset (code, name) values ('ss1', 'Eesti keele (üheköiteline) sõnaraamat (2010-2018/2019)');
 insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
 insert into dataset (code, name) values ('kol',	'Kollokatsioonid');
+insert into dataset (code, name) values ('ety',	'Etümoloogia');
 insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
 insert into dataset (code, name) values ('ev2',	'Eesti-vene');
 insert into dataset (code, name) values ('est', 'Esterm');

@@ -264,6 +264,11 @@ public class Sequences {
     public static final Sequence<Long> SOURCE_ID_SEQ = new SequenceImpl<Long>("source_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.word_etymology_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_ETYMOLOGY_ID_SEQ = new SequenceImpl<Long>("word_etymology_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.word_guid_id_seq</code>
      */
     public static final Sequence<Long> WORD_GUID_ID_SEQ = new SequenceImpl<Long>("word_guid_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
