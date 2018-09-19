@@ -219,7 +219,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							String word = etymWordNode.getTextTrim();
 							int homonymNr = getWordMaxHomonymNr(word, missingLangCode);//TODO collect lang by mapped iso 
 							homonymNr++;
-							Long wordId = createWord(word, defaultWordMorphCode, homonymNr, missingLangCode);//TODO collect lang by mapped iso
+							Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, missingLangCode);//TODO collect lang by mapped iso
 							Long lexemeId = createLexeme(wordId, meaningId);
 							for (String etymRegisterCode : etymRegisterCodes) {
 								createLexemeRegister(lexemeId, etymRegisterCode);
@@ -237,7 +237,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								String word = etymEstWordNode.getTextTrim();
 								int homonymNr = getWordMaxHomonymNr(word, langEst);
 								homonymNr++;
-								Long wordId = createWord(word, defaultWordMorphCode, homonymNr, langEst);
+								Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, langEst);
 								createLexeme(wordId, meaningId);
 							}
 						}
@@ -310,13 +310,27 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		return wordEtymId;
 	}
 
-	private Long createWord(String word, String morphCode, int homonymNr, String lang) throws Exception {
+	private Long createWordParadigmForm(String word, String morphCode, int homonymNr, String lang) throws Exception {
 
-		Map<String, Object> tableRowParamMap = new HashMap<>();
+		Map<String, Object> tableRowParamMap;
+
+		tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("homonym_nr", homonymNr);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
+
+		tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
+
+		tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("paradigm_id", paradigmId);
+		tableRowParamMap.put("morph_code", morphCode);
+		tableRowParamMap.put("value", word);
+		tableRowParamMap.put("is_word", Boolean.TRUE);
+		basicDbService.create(FORM, tableRowParamMap);
+
 		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
 		return wordId;
 	}

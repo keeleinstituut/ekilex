@@ -37,6 +37,7 @@ import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.Usage;
 import eki.ekilex.data.Word;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordEtym;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.db.CommonDataDbService;
@@ -176,6 +177,7 @@ public class LexSearchService implements SystemConstant {
 		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);
 		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+		List<WordEtym> wordEtymology = lexSearchDbService.findWordEtymology(wordId).into(WordEtym.class);
 
 		lexemes.forEach(lexeme -> populateLexeme(selectedDatasets, datasetNameMap, lexeme));
 		combineLevels(lexemes);
@@ -184,6 +186,7 @@ public class LexSearchService implements SystemConstant {
 			d.setParadigms(paradigms);
 			d.setLexemes(lexemes);
 			d.setWordRelations(wordRelations);
+			d.setWordEtymology(wordEtymology);
 		});
 	}
 

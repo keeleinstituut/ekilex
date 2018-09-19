@@ -18,6 +18,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.List;
@@ -95,6 +96,14 @@ public class UpdateDbService implements DbConstant {
 			.update(WORD_RELATION)
 			.set(WORD_RELATION.ORDER_BY, item.getOrderby())
 			.where(WORD_RELATION.ID.eq(item.getId()))
+			.execute();
+	}
+
+	public void updateWordEtymologyOrderby(ListData item) {
+		create
+			.update(WORD_ETYMOLOGY)
+			.set(WORD_ETYMOLOGY.ORDER_BY, item.getOrderby())
+			.where(WORD_ETYMOLOGY.ID.eq(item.getId()))
 			.execute();
 	}
 

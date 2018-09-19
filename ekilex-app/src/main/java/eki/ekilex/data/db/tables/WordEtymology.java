@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymology extends TableImpl<WordEtymologyRecord> {
 
-    private static final long serialVersionUID = 1861554726;
+    private static final long serialVersionUID = 467175782;
 
     /**
      * The reference instance of <code>public.word_etymology</code>
@@ -89,6 +89,11 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
      * The column <code>public.word_etymology.is_compound</code>.
      */
     public final TableField<WordEtymologyRecord, Boolean> IS_COMPOUND = createField("is_compound", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false).defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>public.word_etymology.order_by</code>.
+     */
+    public final TableField<WordEtymologyRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_etymology_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.word_etymology</code> table reference

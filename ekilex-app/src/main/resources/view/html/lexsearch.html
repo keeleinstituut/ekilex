@@ -762,6 +762,34 @@
               </table>
               <hr />
             </div>
+            <div class="card-body pb-0" th:if="${not #lists.isEmpty(details.wordEtymology)}">
+              <span class="lbl">Keelendi etümoloogia</span>
+              <table class="orderable" th:data-op-code="word_etymology">
+                <tr th:each="wordEtym, itemStat : ${details.wordEtymology}" th:data-id="${wordEtym.wordEtymologyId}" th:data-orderby="${wordEtym.orderBy}">
+                  <td>
+                    <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
+                  </td>
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <button type="button" class="btn btn-link" th:data-id="${wordEtym.wordId}" name="detailsBtn">
+                      <span>
+                        <span th:text="${wordEtym.word + ' ( ' + wordEtym.wordLang + ' )'}"></span>
+                        <span th:if="${wordEtym.questionable}">?</span>
+                        <span th:if="${wordEtym.compound}">+</span>
+                      </span>
+                    </button>
+                    <div th:if="${not #lists.isEmpty(wordEtym.comments)}">
+                      <div th:each="comment : ${wordEtym.comments}">
+                        <i th:text="${comment}"></i>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span th:text="${wordEtym.etymologyTypeCode}"></span>
+                  </td>
+                </tr>
+              </table>
+              <hr />
+            </div>
             <div class="pb-3" th:if="${not #lists.isEmpty(details.paradigms)}">
               <div th:each="paradigm : ${details.paradigms}" th:if="${paradigm.formsExist}" class="pt-2">
                 <button class="btn btn-info ml-3" type="button" data-toggle="collapse" th:data-target="${'#paradigmArea_' + paradigm.paradigmId}">

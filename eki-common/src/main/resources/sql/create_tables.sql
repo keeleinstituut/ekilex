@@ -434,8 +434,10 @@ create table word_etymology
   comments text array null,
   is_questionable boolean not null default false,
   is_compound boolean not null default false,
+  order_by bigserial,
   unique(word1_id, word2_id)
 );
+alter sequence word_etymology_id_seq restart with 10000;
 
 create table word_lifecycle_log
 (

@@ -153,6 +153,9 @@ public class ModifyController implements WebConstant {
 			case "word_relation" :
 				updateService.updateWordRelationOrdering(items);
 				break;
+			case "word_etymology" :
+				updateService.updateWordEtymologyOrdering(items);
+				break;
 		}
 		return "{}";
 	}

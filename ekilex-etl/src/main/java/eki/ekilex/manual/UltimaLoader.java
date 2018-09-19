@@ -13,6 +13,7 @@ import eki.ekilex.runner.CollocLoaderRunner;
 import eki.ekilex.runner.DbReInitialiserRunner;
 import eki.ekilex.runner.EstermLoaderRunner;
 import eki.ekilex.runner.EstermSourceLoaderRunner;
+import eki.ekilex.runner.EtymologyLoaderRunner;
 import eki.ekilex.runner.Ev2LoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
@@ -43,6 +44,7 @@ public class UltimaLoader extends AbstractLoader {
 			CollocLoaderRunner kolRunner = getComponent(CollocLoaderRunner.class);
 			Qq2LoaderRunner qq2Runner = getComponent(Qq2LoaderRunner.class);
 			Ev2LoaderRunner ev2Runner = getComponent(Ev2LoaderRunner.class);
+			EtymologyLoaderRunner etyRunner = getComponent(EtymologyLoaderRunner.class);
 			EstermSourceLoaderRunner estSrcRunner = getComponent(EstermSourceLoaderRunner.class);
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
@@ -108,6 +110,13 @@ public class UltimaLoader extends AbstractLoader {
 				dataset = ev2Runner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
 				ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, doReports);
+			}
+
+			// ety
+			dataFilePath = getConfProperty("ss1.data.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				etyRunner.execute(dataFilePath, doReports);
+				successfullyLoadedDatasets.add("ety");
 			}
 
 			// est src + est

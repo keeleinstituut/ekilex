@@ -102,6 +102,14 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateWordEtymologyOrdering(List<ListData> items) {
+		for (ListData item : items) {
+			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD_ETYMOLOGY, LifecycleProperty.ORDER_BY, item);
+			updateDbService.updateWordEtymologyOrderby(item);			
+		}
+	}
+
+	@Transactional
 	public void updateLexemeLevels(Long lexemeId, String action) {
 
 		if (lexemeId == null) return;

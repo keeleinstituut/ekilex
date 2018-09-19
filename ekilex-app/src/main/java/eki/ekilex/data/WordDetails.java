@@ -15,6 +15,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<Relation> wordRelations;
 
+	private List<WordEtym> wordEtymology;
+
 	public WordDetails() {
 	}
 
@@ -45,4 +47,13 @@ public class WordDetails extends AbstractDataObject {
 	public void setWordRelations(List<Relation> wordRelations) {
 		this.wordRelations = wordRelations;
 	}
+
+	public List<WordEtym> getWordEtymology() {
+		return wordEtymology;
+	}
+
+	public void setWordEtymology(List<WordEtym> wordEtymology) {
+		this.wordEtymology = wordEtymology;
+	}
+
 }

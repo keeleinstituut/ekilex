@@ -3,8 +3,6 @@ package eki.ekilex.web.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.WordsResult;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,15 +14,16 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.web.bean.SessionBean;
 
@@ -58,7 +57,7 @@ public class LexSearchController extends AbstractSearchController {
 		return lexSearchService.getLexemeGenders();
 	}
 
-	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.GET)
+	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 
 		if (model.containsAttribute(SEARCH_WORD_KEY)) {
@@ -72,7 +71,7 @@ public class LexSearchController extends AbstractSearchController {
 		return LEX_SEARCH_PAGE;
 	}
 
-	@RequestMapping(value = LEX_SEARCH_URI, method = RequestMethod.POST)
+	@PostMapping(value = LEX_SEARCH_URI)
 	public String search(
 			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "searchMode", required = false) String searchMode,

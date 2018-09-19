@@ -22,6 +22,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static java.util.stream.Collectors.toList;
@@ -64,13 +65,17 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
+import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeGroup;
+import eki.ekilex.data.db.tables.LexemeGroupMember;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
+import eki.ekilex.data.db.tables.WordEtymology;
 
 @Service
 public class LexSearchDbService extends AbstractSearchDbService {
@@ -560,42 +565,52 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	//TODO inefficient
-	public Result<Record9<Long,Long,Long,Long,String,String,String,Long,Long>> findLexemeGroupMembers(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findLexemeGroupMembers(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		LexemeGroupMember lgrm1 = LEXEME_GROUP_MEMBER.as("lgrm1");
+		LexemeGroupMember lgrm2 = LEXEME_GROUP_MEMBER.as("lgrm2");
+		LexemeGroup lgr = LEXEME_GROUP.as("lgr");
+		Word w2 = WORD.as("w2");
+		Lexeme l2 = LEXEME.as("l2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
+		LexRelTypeLabel lrtl = LEX_REL_TYPE_LABEL.as("lrtl");
 
 		return create
 				.select(
-						LEXEME_GROUP_MEMBER.ID.as("id"),
-						LEXEME.ID.as("lexeme_id"),
-						WORD.ID.as("word_id"),
-						FORM.ID.as("form_id"),
-						FORM.VALUE.as("word"),
-						WORD.LANG.as("word_lang"),
-						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						LEXEME_GROUP_MEMBER.ORDER_BY.as("order_by"),
-						LEXEME_GROUP.ID.as("group_id")
+						lgrm2.ID.as("id"),
+						lgr.ID.as("group_id"),
+						l2.ID.as("lexeme_id"),
+						w2.ID.as("word_id"),
+						f2.ID.as("form_id"),
+						f2.VALUE.as("word"),
+						w2.LANG.as("word_lang"),
+						lrtl.VALUE.as("rel_type_label"),
+						lgrm2.ORDER_BY.as("order_by")
 				)
 				.from(
-						LEXEME_GROUP.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
-								LEXEME_GROUP.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
-										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						LEXEME_GROUP_MEMBER,
-						LEXEME,
-						WORD,
-						PARADIGM,
-						FORM
+						lgr.leftOuterJoin(lrtl).on(
+								lgr.LEX_REL_TYPE_CODE.eq(lrtl.CODE)
+								.and(lrtl.LANG.eq(classifierLabelLang)
+								.and(lrtl.TYPE.eq(classifierLabelTypeCode)))),
+						lgrm1,
+						lgrm2,
+						l2,
+						w2,
+						p2,
+						f2
 				)
-				.where( LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID.in(
-						create.selectDistinct(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID).from(LEXEME_GROUP_MEMBER).where(LEXEME_GROUP_MEMBER.LEXEME_ID.eq(lexemeId)))
-								.and(LEXEME_GROUP.ID.eq(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID))
-								.and(LEXEME.ID.eq(LEXEME_GROUP_MEMBER.LEXEME_ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.IS_WORD.eq(Boolean.TRUE))
+				.where(
+						lgrm1.LEXEME_ID.eq(lexemeId)
+						.and(lgrm1.LEXEME_GROUP_ID.eq(lgr.ID))
+						.and(lgrm2.LEXEME_GROUP_ID.eq(lgr.ID))
+						.and(lgrm2.LEXEME_ID.eq(l2.ID))
+						.and(l2.WORD_ID.eq(w2.ID))
+						.and(p2.WORD_ID.eq(w2.ID))
+						.and(f2.PARADIGM_ID.eq(p2.ID))
+						.and(f2.IS_WORD.isTrue())
 				)
-				.orderBy(LEXEME_GROUP_MEMBER.LEXEME_GROUP_ID)
+				.orderBy(lgrm1.LEXEME_GROUP_ID)
 				.fetch();
 	}
 
@@ -627,6 +642,37 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(FORM.IS_WORD.eq(Boolean.TRUE))
 						)
 				.orderBy(WORD_RELATION.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record9<Long,Long,String,String,String,String[],Boolean,Boolean,Long>> findWordEtymology(Long wordId) {
+
+		WordEtymology we = WORD_ETYMOLOGY.as("we");
+		Word w2 = WORD.as("w2");
+		Paradigm p2 = PARADIGM.as("p2");
+		Form f2 = FORM.as("f2");
+
+		return create
+				.select(
+						we.ID.as("word_etymology_id"),
+						w2.ID.as("word_id"),
+						f2.VALUE.as("word"),
+						w2.LANG.as("word_lang"),
+						we.ETYMOLOGY_TYPE_CODE,
+						we.COMMENTS,
+						we.IS_QUESTIONABLE,
+						we.IS_COMPOUND,
+						we.ORDER_BY
+						)
+				.from(we, w2, p2, f2)
+				.where(
+						we.WORD1_ID.eq(wordId)
+						.and(we.WORD2_ID.eq(w2.ID))
+						.and(p2.WORD_ID.eq(w2.ID))
+						.and(f2.PARADIGM_ID.eq(p2.ID))
+						.and(f2.IS_WORD.isTrue())
+						)
+				.orderBy(we.ID)
 				.fetch();
 	}
 
