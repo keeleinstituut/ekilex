@@ -19,7 +19,7 @@ public class HomeController extends AbstractController {
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
 
-		populateModel("", new WordsData(emptyList(), emptyList()), model);
+		populateModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
 
 		return HOME_PAGE;
 	}

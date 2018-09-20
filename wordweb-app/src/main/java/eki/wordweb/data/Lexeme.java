@@ -1,9 +1,7 @@
 package eki.wordweb.data;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
@@ -64,7 +62,11 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
+	private Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType;
+
 	private List<TypeMeaningRelation> relatedMeanings;
+
+	private Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType;
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
@@ -278,12 +280,28 @@ public class Lexeme extends AbstractDataObject {
 		this.relatedLexemes = relatedLexemes;
 	}
 
+	public Map<Classifier, List<TypeLexemeRelation>> getRelatedLexemesByType() {
+		return relatedLexemesByType;
+	}
+
+	public void setRelatedLexemesByType(Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType) {
+		this.relatedLexemesByType = relatedLexemesByType;
+	}
+
 	public List<TypeMeaningRelation> getRelatedMeanings() {
 		return relatedMeanings;
 	}
 
 	public void setRelatedMeanings(List<TypeMeaningRelation> relatedMeanings) {
 		this.relatedMeanings = relatedMeanings;
+	}
+
+	public Map<Classifier, List<TypeMeaningRelation>> getRelatedMeaningsByType() {
+		return relatedMeaningsByType;
+	}
+
+	public void setRelatedMeaningsByType(Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType) {
+		this.relatedMeaningsByType = relatedMeaningsByType;
 	}
 
 	public List<CollocationPosGroup> getCollocationPosGroups() {
@@ -300,18 +318,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
 		this.secondaryCollocations = secondaryCollocations;
-	}
-
-	public Map<Classifier, List<TypeLexemeRelation>> getRelatedLexemesByType() {
-		return relatedLexemes == null ?
-				Collections.emptyMap() :
-				relatedLexemes.stream().collect(Collectors.groupingBy(TypeLexemeRelation::getLexRelType));
-	}
-
-	public Map<Classifier, List<TypeMeaningRelation>> getRelatedMeaningsByType() {
-		return relatedMeanings == null ?
-				Collections.emptyMap() :
-				relatedMeanings.stream().collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType));
 	}
 
 }

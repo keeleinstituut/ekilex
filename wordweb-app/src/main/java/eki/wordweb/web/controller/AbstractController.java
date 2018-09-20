@@ -4,12 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ui.Model;
 
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.web.bean.SessionBean;
 
-public abstract class AbstractController implements WebConstant {
+public abstract class AbstractController implements WebConstant, SystemConstant {
 
 	protected static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 10;
 
@@ -43,6 +44,9 @@ public abstract class AbstractController implements WebConstant {
 		if (StringUtils.equals(sessionBean.getSourceLang(), "rus")
 				&& StringUtils.equals(sessionBean.getDestinLang(), "rus")) {
 			sessionBean.setSourceLang(DEFAULT_SOURCE_LANG);
+		}
+		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
+			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
 		}
 
 		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);

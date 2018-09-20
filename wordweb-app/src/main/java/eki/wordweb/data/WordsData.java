@@ -8,9 +8,12 @@ public class WordsData {
 
 	private final List<String> formMatchWords;
 
-	public WordsData(List<Word> fullMatchWords, List<String> formMatchWords) {
+	private final String searchMode;
+
+	public WordsData(List<Word> fullMatchWords, List<String> formMatchWords, String searchMode) {
 		this.fullMatchWords = fullMatchWords;
 		this.formMatchWords = formMatchWords;
+		this.searchMode = searchMode;
 	}
 
 	public List<Word> getFullMatchWords() {
@@ -19,6 +22,10 @@ public class WordsData {
 
 	public List<String> getFormMatchWords() {
 		return formMatchWords;
+	}
+
+	public String getSearchMode() {
+		return searchMode;
 	}
 
 }

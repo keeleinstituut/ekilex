@@ -90,7 +90,7 @@
           <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}"/>
           <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
           <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
-          <input type="hidden" name="isBeginner" th:value="${sessionBean.beginner}" />
+          <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
         </div>
         <div class="extra-buttons">
           <button id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">

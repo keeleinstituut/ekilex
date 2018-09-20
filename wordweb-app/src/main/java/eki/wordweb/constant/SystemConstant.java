@@ -2,7 +2,11 @@ package eki.wordweb.constant;
 
 public interface SystemConstant {
 
-	public static final String UTF_8 = "UTF-8";
+	String UTF_8 = "UTF-8";
 
-	public static final String POM_PATH = "eki.wordweb/wordweb";
+	String POM_PATH = "eki.wordweb/wordweb";
+
+	String SEARCH_MODE_SIMPLE = "simple";
+
+	String SEARCH_MODE_DETAIL = "detail";
 }

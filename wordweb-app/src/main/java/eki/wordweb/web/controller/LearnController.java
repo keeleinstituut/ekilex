@@ -17,7 +17,7 @@ public class LearnController extends AbstractController {
 
 	@GetMapping(LEARN_URI)
 	public String learn(Model model) {
-		populateModel("", new WordsData(emptyList(), emptyList()), model);
+		populateModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
 		return LEARN_PAGE;
 	}
 

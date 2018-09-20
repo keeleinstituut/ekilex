@@ -378,6 +378,10 @@ public class ConversionUtil {
 			}
 		}
 		lexeme.setRelatedLexemes(relatedLexemes);
+		if (CollectionUtils.isNotEmpty(relatedLexemes)) {
+			Map<Classifier, List<TypeLexemeRelation>> relatedLexemesByType = relatedLexemes.stream().collect(Collectors.groupingBy(TypeLexemeRelation::getLexRelType));
+			lexeme.setRelatedLexemesByType(relatedLexemesByType);
+		}
 	}
 
 	private void populateRelatedMeanings(Lexeme lexeme, LexemeDetailsTuple tuple, String displayLang) {
@@ -395,6 +399,10 @@ public class ConversionUtil {
 			}
 		}
 		lexeme.setRelatedMeanings(relatedMeanings);
+		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
+			Map<Classifier, List<TypeMeaningRelation>> relatedMeaningsByType = relatedMeanings.stream().collect(Collectors.groupingBy(TypeMeaningRelation::getMeaningRelType));
+			lexeme.setRelatedMeaningsByType(relatedMeaningsByType);
+		}
 	}
 
 	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {

@@ -49,11 +49,7 @@
               <input type="hidden" name="word-id" th:value="${word.wordId}" />
               <input type="hidden" name="word-value" th:value="${word.word}" />
               <input type="hidden" name="word-selected" th:value="${word.selected}" />
-              <input type="hidden" name="word-select-url"
-                     th:value="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} +
-                     '/' + (${sessionBean.beginner} ? 'simple' : 'detail') +
-                     '/' + ${word.word} +
-                     '/' + ${word.homonymNr}}"/>
+              <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}"/>
               <a th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
                 <span class="homonym-item-wrap">
                   <span class="homonym-header">
@@ -142,7 +138,6 @@
                         </span>
                       </span>
                       <button class="btn btn-speaker">
-                        <!--<span class="icon icon-speaker"></span>-->
                         <img class="robo-icon" th:src="@{/view/images/icons/robot.svg}">
                       </button>
                       <span th:if="${not #lists.isEmpty(usage.usageTranslations)}">
@@ -158,7 +153,7 @@
                     <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
                       <span th:text="#{label.same.as}">sama mis</span>
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.synonymWords}">
-                        <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} + '/' + ${meaningWord.word}}" class="synonym">
+                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym">
                           <span th:text="${meaningWord.word}"></span>
                         </a>
                         <span th:unless="${meaningWordIter.last}">,</span>
@@ -171,7 +166,7 @@
                         <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                           <span th:text="${relationType.value}"></span>
                           <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
-                            <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} + '/' + ${relation.word}}">
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
                               <span th:text="${relation.word}"></span>
                             </a>
                             <span th:unless="${relationIter.last}">,</span>
@@ -182,9 +177,9 @@
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.relatedMeanings)}">
                       <div class="col-9">
                         <div th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
-                          <span th:text="#{|meaning.relation.type.${relationType.code}|}"></span>
+                          <span th:text="${relationType.value}"></span>
                           <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                            <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} + '/' + ${relation.word}}">
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
                               <span th:text="${relation.word}"></span>
                             </a>
                             <span th:unless="${relationIter.last}">,</span>
@@ -216,13 +211,6 @@
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
                       </div>
                     </div>
-                    <!-- Kliendiga kokku lepitud: Tuletuskoodi ei näita
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.derivs)}">
-                      <div class="col-3"><b>Tuletuskood</b></div>
-                      <div class="col-9">
-                        <div th:each="deriv : ${lexeme.derivs}" th:text="${deriv.value}"></div>
-                      </div>
-                    </div>-->
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
                       <div class="col-3">
                         <b th:text="#{label.grammar}">Grammatika</b>
@@ -261,10 +249,7 @@
                                         <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                           <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                             <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                            <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} +
-                                              '/' + (${sessionBean.beginner} ? 'simple' : 'detail') +
-                                              '/' + ${collocMem.word} +
-                                              '/' + ${collocMem.homonymNr}}">
+                                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
                                               <span th:text="${collocMem.form}" class="text-muted"></span>
                                             </a>
                                           </span>
@@ -272,10 +257,7 @@
                                         <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
                                           <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                             <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                            <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} +
-                                              '/' + (${sessionBean.beginner} ? 'simple' : 'detail') +
-                                              '/' + ${collocMem.word} +
-                                              '/' + ${collocMem.homonymNr}}">
+                                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
                                               <i><span th:text="${collocMem.form}" class="text-muted"></span><span th:unless="${collocMemIter.last}">,</span></i>
                                             </a>
                                           </span>
@@ -284,10 +266,7 @@
                                     </span>
                                     <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
                                       <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                        <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} +
-                                          '/' + (${sessionBean.beginner} ? 'simple' : 'detail') +
-                                          '/' + ${collocMem.word} +
-                                          '/' + ${collocMem.homonymNr}}">
+                                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
                                           <span th:text="${collocMem.form}" class="text-muted"></span>
                                         </a>
                                         <span th:unless="${collocMemIter.last}">&nbsp;</span>
@@ -318,10 +297,7 @@
                               <span class="colloc-member">
                                 <span data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(colloc)}">
                                   <span th:each="collocMem,collocMemIter : ${colloc.filteredCollocMembers}">
-                                    <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} +
-                                      '/' + (${sessionBean.beginner} ? 'simple' : 'detail') +
-                                      '/' + ${collocMem.word} +
-                                      '/' + ${collocMem.homonymNr}}">
+                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
                                       <span th:text="${collocMem.form}" class="text-muted"></span>
                                     </a>
                                   </span>
@@ -332,20 +308,6 @@
                         </div>
                       </div>
                     </div>
-                    <!-- Kliendiga kokku lepitud: Tuletuskoodi ei näita
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.systematicPolysemyPatterns)}">
-                      <div class="col-3"><b>süst-polüseemia mall</b></div>
-                      <div class="col-9">
-                        <div th:each="patter : ${lexeme.systematicPolysemyPatterns}" th:text="${patter}"></div>
-                      </div>
-                    </div>-->
-                    <!-- Kliendiga kokku lepitud: Tuletuskoodi ei näita
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.semanticTypes)}">
-                      <div class="col-3"><b>Semantiline tüüp</b></div>
-                      <div class="col-9">
-                        <div th:each="semanticType : ${lexeme.semanticTypes}" th:text="${semanticType}"></div>
-                      </div>
-                    </div>-->
                   </div>
                 </div>
                 <div class="col-lg-12 dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</div>
@@ -434,7 +396,7 @@
               <div class="col-12">
                 <h6 th:text="#{label.word.connetions}">Sõna seosed</h6>
                 <div style="margin-bottom: 0.5em;" th:each="relation, relationIter : ${wordData.word.relatedWords}">
-                  <a th:href="@{'/search/' + ${sessionBean.sourceLang} + '-' + ${sessionBean.destinLang} + '/' + ${relation.word}}">
+                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
                     <span th:text="${relation.word}"></span>
                   </a>
                   <span th:text="${'(' + relation.wordRelType.value + ')'}"></span>
@@ -468,7 +430,6 @@
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
-  	// var beginner = /*[[${sessionBean.beginner}]]*/false;
   	var currentPage = /*[[@{/search}]]*/"/search";
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';

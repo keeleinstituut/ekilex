@@ -10,6 +10,7 @@ import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Collocation;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.TypeCollocMember;
+import eki.wordweb.web.bean.SessionBean;
 
 @Component
 public class ViewUtil implements WebConstant {
@@ -97,5 +98,21 @@ public class ViewUtil implements WebConstant {
 		}
 		htmlBuf.append("</span>");
 		return htmlBuf.toString();
+	}
+
+	public String getSearchUri(SessionBean sessionBean, String word, Integer homonymNr) {
+		String sourceLang = sessionBean.getSourceLang();
+		String destinLang = sessionBean.getDestinLang();
+		String searchMode = sessionBean.getSearchMode();
+		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word + "/" + homonymNr;
+		return uri;
+	}
+
+	public String getSearchUri(SessionBean sessionBean, String word) {
+		String sourceLang = sessionBean.getSourceLang();
+		String destinLang = sessionBean.getDestinLang();
+		String searchMode = sessionBean.getSearchMode();
+		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word;
+		return uri;
 	}
 }

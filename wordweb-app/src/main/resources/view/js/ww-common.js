@@ -419,15 +419,23 @@ function toggleDetails(toggleToRight) {
 }
 
 function initDetailToggle() {
-    var isSimple = $("input[name='isBeginner']").val() === "true";
-    toggleDetails(isSimple);
+	var searchMode = $("input[name='searchMode']").val();
+	if (searchMode === "simple") {
+		toggleDetails(true);
+	} else if (searchMode === "detail") {
+		toggleDetails(false);
+	}
 }
 
 $(document).on("click", "#detail-toggle-container", function (e) {
-	var isSimple = $("input[name='isBeginner']").val() === "true";
-	isSimple = !isSimple;
-	toggleDetails(isSimple);
-    $("input[name='isBeginner']").val(isSimple);
+	var searchMode = $("input[name='searchMode']").val();
+	if (searchMode === "simple") {
+		$("input[name='searchMode']").val("detail");
+		toggleDetails(false);
+	} else if (searchMode === "detail") {
+		$("input[name='searchMode']").val("simple");
+		toggleDetails(true);
+	}
     var tempSearchWord = $("input[name='searchWord']").val();
     if (tempSearchWord) {
         $("#search-btn").click();
