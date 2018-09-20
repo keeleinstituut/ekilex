@@ -504,7 +504,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, wordData.wordType);
 		newWord.homonymNr = wordData.homonymNr;
 		context.importedWords.add(newWord);
-		logger.debug("new word created : {}", wordData.value);
 
 		Long meaningId = wordData.meaningId == null ? createMeaning() : wordData.meaningId;
 

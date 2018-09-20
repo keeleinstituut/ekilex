@@ -218,7 +218,14 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			String ssDataset = "ss1";
 	
 			if (StringUtils.equalsIgnoreCase(wordValue, ssWordValue)) {
-				Map<String, Object> tableRowValueMap = getWord(wordValue, ssGuid, ssDataset);
+				List<Map<String, Object>> tableRowValueMaps = getWord(wordValue, ssGuid, ssDataset);
+				Map<String, Object> tableRowValueMap = null;
+				if (CollectionUtils.size(tableRowValueMaps) == 1) {
+					tableRowValueMap = tableRowValueMaps.get(0);
+				} else if (CollectionUtils.size(tableRowValueMaps) > 1) {
+					tableRowValueMap = tableRowValueMaps.get(0);
+					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", ssDataset, wordValue, ssGuid);
+				}
 				if (tableRowValueMap == null) {
 					return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 				}
@@ -244,7 +251,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMap;
 	}
 
-	private Map<String, Object> getWord(String word, String guid, String dataset) throws Exception {
+	private List<Map<String, Object>> getWord(String word, String guid, String dataset) throws Exception {
 
 		guid = guid.toLowerCase();
 
@@ -252,8 +259,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("guid", guid);
 		tableRowParamMap.put("dataset", dataset);
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByDatasetAndGuid, tableRowParamMap);
-		return tableRowValueMap;
+		List<Map<String, Object>> tableRowValueMaps = basicDbService.queryList(sqlSelectWordByDatasetAndGuid, tableRowParamMap);
+		return tableRowValueMaps;
 	}
 
 	private void createForm(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, boolean isWord) throws Exception {
@@ -817,24 +824,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		} else if (LifecycleLogOwner.WORD.equals(logOwner)) {
 			createWordLifecycleLog(ownerId, lifecycleLogId);
 		}
-		/* FIXME remove later
-		if (LifecycleEntity.DEFINITION.equals(entity)) {
-		} else if (LifecycleEntity.DEFINITION_SOURCE_LINK.equals(entity)) {
-		} else if (LifecycleEntity.FREEFORM_SOURCE_LINK.equals(entity)) {
-		} else if (LifecycleEntity.GOVERNMENT.equals(entity)) {
-		} else if (LifecycleEntity.GRAMMAR.equals(entity)) {
-		} else if (LifecycleEntity.LEXEME.equals(entity)) {
-		} else if (LifecycleEntity.LEXEME_RELATION.equals(entity)) {
-		} else if (LifecycleEntity.LEXEME_SOURCE_LINK.equals(entity)) {
-		} else if (LifecycleEntity.MEANING.equals(entity)) {
-		} else if (LifecycleEntity.MEANING_RELATION.equals(entity)) {
-		} else if (LifecycleEntity.USAGE.equals(entity)) {
-		} else if (LifecycleEntity.USAGE_DEFINITION.equals(entity)) {
-		} else if (LifecycleEntity.USAGE_TRANSLATION.equals(entity)) {
-		} else if (LifecycleEntity.WORD.equals(entity)) {
-		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
-		}
-		*/
 	}
 
 	private void createMeaningLifecycleLog(Long meaningId, Long lifecycleLogId) throws Exception {

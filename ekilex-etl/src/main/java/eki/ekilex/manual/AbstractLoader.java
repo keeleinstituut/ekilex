@@ -112,7 +112,9 @@ public abstract class AbstractLoader implements SystemConstant {
 					guidObj = new Guid();
 					guidObj.setValue(targetGuid);
 					guidObj.setWord(word);
-					mappedGuids.add(guidObj);
+					if (!mappedGuids.contains(guidObj)) {
+						mappedGuids.add(guidObj);
+					}
 				}
 			}
 		}

@@ -253,7 +253,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				.filter(w -> wordValue.equals(w.value))
 				.collect(Collectors.toList());
 		if (existingWords.isEmpty()) {
-			logger.debug("Creating word and lexeme {}", wordValue);
 			LexemeToWordData newLexemeData = new LexemeToWordData();
 			newLexemeData.word = wordValue;
 			wordId = createLexemeAndRelatedObjects(newLexemeData, context).wordId;
