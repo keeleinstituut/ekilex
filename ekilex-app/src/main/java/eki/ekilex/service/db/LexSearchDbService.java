@@ -9,8 +9,6 @@ import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_GROUP;
-import static eki.ekilex.data.db.Tables.LEXEME_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
@@ -68,8 +66,6 @@ import eki.ekilex.data.db.tables.LexCollocRelGroup;
 import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
-import eki.ekilex.data.db.tables.LexemeGroup;
-import eki.ekilex.data.db.tables.LexemeGroupMember;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
@@ -565,54 +561,54 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findLexemeGroupMembers(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		LexemeGroupMember lgrm1 = LEXEME_GROUP_MEMBER.as("lgrm1");
-		LexemeGroupMember lgrm2 = LEXEME_GROUP_MEMBER.as("lgrm2");
-		LexemeGroup lgr = LEXEME_GROUP.as("lgr");
-		Word w2 = WORD.as("w2");
-		Lexeme l2 = LEXEME.as("l2");
-		Paradigm p2 = PARADIGM.as("p2");
-		Form f2 = FORM.as("f2");
-		LexRelTypeLabel lrtl = LEX_REL_TYPE_LABEL.as("lrtl");
-
-		return create
-				.select(
-						lgrm2.ID.as("id"),
-						lgr.ID.as("group_id"),
-						l2.ID.as("lexeme_id"),
-						w2.ID.as("word_id"),
-						f2.ID.as("form_id"),
-						f2.VALUE.as("word"),
-						w2.LANG.as("word_lang"),
-						lrtl.VALUE.as("rel_type_label"),
-						lgrm2.ORDER_BY.as("order_by")
-				)
-				.from(
-						lgr.leftOuterJoin(lrtl).on(
-								lgr.LEX_REL_TYPE_CODE.eq(lrtl.CODE)
-								.and(lrtl.LANG.eq(classifierLabelLang)
-								.and(lrtl.TYPE.eq(classifierLabelTypeCode)))),
-						lgrm1,
-						lgrm2,
-						l2,
-						w2,
-						p2,
-						f2
-				)
-				.where(
-						lgrm1.LEXEME_ID.eq(lexemeId)
-						.and(lgrm1.LEXEME_GROUP_ID.eq(lgr.ID))
-						.and(lgrm2.LEXEME_GROUP_ID.eq(lgr.ID))
-						.and(lgrm2.LEXEME_ID.eq(l2.ID))
-						.and(l2.WORD_ID.eq(w2.ID))
-						.and(p2.WORD_ID.eq(w2.ID))
-						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
-				)
-				.orderBy(lgrm1.LEXEME_GROUP_ID)
-				.fetch();
-	}
+//	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findLexemeGroupMembers(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+//
+//		LexemeGroupMember lgrm1 = LEXEME_GROUP_MEMBER.as("lgrm1");
+//		LexemeGroupMember lgrm2 = LEXEME_GROUP_MEMBER.as("lgrm2");
+//		LexemeGroup lgr = LEXEME_GROUP.as("lgr");
+//		Word w2 = WORD.as("w2");
+//		Lexeme l2 = LEXEME.as("l2");
+//		Paradigm p2 = PARADIGM.as("p2");
+//		Form f2 = FORM.as("f2");
+//		LexRelTypeLabel lrtl = LEX_REL_TYPE_LABEL.as("lrtl");
+//
+//		return create
+//				.select(
+//						lgrm2.ID.as("id"),
+//						lgr.ID.as("group_id"),
+//						l2.ID.as("lexeme_id"),
+//						w2.ID.as("word_id"),
+//						f2.ID.as("form_id"),
+//						f2.VALUE.as("word"),
+//						w2.LANG.as("word_lang"),
+//						lrtl.VALUE.as("rel_type_label"),
+//						lgrm2.ORDER_BY.as("order_by")
+//				)
+//				.from(
+//						lgr.leftOuterJoin(lrtl).on(
+//								lgr.LEX_REL_TYPE_CODE.eq(lrtl.CODE)
+//								.and(lrtl.LANG.eq(classifierLabelLang)
+//								.and(lrtl.TYPE.eq(classifierLabelTypeCode)))),
+//						lgrm1,
+//						lgrm2,
+//						l2,
+//						w2,
+//						p2,
+//						f2
+//				)
+//				.where(
+//						lgrm1.LEXEME_ID.eq(lexemeId)
+//						.and(lgrm1.LEXEME_GROUP_ID.eq(lgr.ID))
+//						.and(lgrm2.LEXEME_GROUP_ID.eq(lgr.ID))
+//						.and(lgrm2.LEXEME_ID.eq(l2.ID))
+//						.and(l2.WORD_ID.eq(w2.ID))
+//						.and(p2.WORD_ID.eq(w2.ID))
+//						.and(f2.PARADIGM_ID.eq(p2.ID))
+//						.and(f2.IS_WORD.isTrue())
+//				)
+//				.orderBy(lgrm1.LEXEME_GROUP_ID)
+//				.fetch();
+//	}
 
 	public Result<Record6<Long,String,Long,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 

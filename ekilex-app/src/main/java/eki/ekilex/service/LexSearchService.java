@@ -248,8 +248,8 @@ public class LexSearchService implements SystemConstant {
 		List<CollocationTuple> secondaryCollocTuples = lexSearchDbService.findSecondaryCollocationTuples(lexemeId).into(CollocationTuple.class);
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
-		List<Relation> lexemeGroupMembers = lexSearchDbService.findLexemeGroupMembers(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
-		List<LexemeGroup> lexemeGroups = conversionUtil.composeLexemeGroups(lexemeGroupMembers);
+//		List<Relation> lexemeGroupMembers = lexSearchDbService.findLexemeGroupMembers(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
+//		List<LexemeGroup> lexemeGroups = conversionUtil.composeLexemeGroups(lexemeGroupMembers);
 
 		lexeme.setLexemePos(lexemePos);
 		lexeme.setLexemeDerivs(lexemeDerivs);
@@ -268,7 +268,7 @@ public class LexSearchService implements SystemConstant {
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setVocalForms(vocalForms);
 		lexeme.setSourceLinks(lexemeSourceLinks);
-		lexeme.setLexemeGroups(lexemeGroups);
+//		lexeme.setLexemeGroups(lexemeGroups);
 
 		boolean lexemeOrMeaningClassifiersExist =
 				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())

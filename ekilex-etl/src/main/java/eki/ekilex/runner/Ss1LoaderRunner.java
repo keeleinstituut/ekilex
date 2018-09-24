@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import eki.common.constant.LexemeRelationGroupType;
+import eki.common.constant.WordRelationGroupType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -189,10 +189,10 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (isSeries(newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
-				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
-				seriesGroupIds.add(lexemeGroup);
+				Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+				seriesGroupIds.add(wordGroup);
 				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
-					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
+					createWordRelationGroupMember(wordGroup, lexeme.getLexemeId());
 				}
 			}
 		}
@@ -216,19 +216,19 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
 			// no series groups, so its first word in series, create group add word lexeme and store it for later use
 			if (seriesForWords.isEmpty()) {
-				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
+				Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
 				for (Lexeme lexeme : createdLexemes) {
-					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
+					createWordRelationGroupMember(wordGroup, lexeme.getLexemeId());
 				}
 				WordSeries series = new WordSeries();
-				series.groupId = lexemeGroup;
+				series.groupId = wordGroup;
 				series.words.addAll(seriesWordData);
 				context.series.add(series);
 			} else {
 				// series groups found, so its next word in group, add it to group
 				for (WordSeries series : seriesForWords) {
 					for (Lexeme lexeme : createdLexemes) {
-						createLexemeRelationGroupMember(series.groupId, lexeme.getLexemeId());
+						createWordRelationGroupMember(series.groupId, lexeme.getLexemeId());
 					}
 				}
 			}
@@ -260,9 +260,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (isVariant(newWords)) {
 			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
 			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
-				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.VARIANTS);
+				Long lexemeGroup = createWordRelationGroup(WordRelationGroupType.VARIANTS);
 				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
-					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
+					createWordRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
 				}
 			}
 		}

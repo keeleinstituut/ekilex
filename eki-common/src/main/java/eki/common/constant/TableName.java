@@ -48,8 +48,8 @@ public interface TableName {
 	String LEX_COLLOC_REL_GROUP = "lex_colloc_rel_group";
 	String COLLOCATION = "collocation";
 	String COLLOCATION_FREEFORM = "collocation_freeform";
-	String LEXEME_RELATION_GROUP = "lexeme_group";
-	String LEXEME_RELATION_GROUP_MEMBER = "lexeme_group_member";
+	String WORD_RELATION_GROUP = "word_group";
+	String WORD_RELATION_GROUP_MEMBER = "word_group_member";
 	String LIFECYCLE_LOG = "lifecycle_log";
 	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";

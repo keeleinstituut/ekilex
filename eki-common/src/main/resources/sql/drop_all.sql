@@ -24,8 +24,10 @@ drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
+-- TODO: to be removed after next full import (24.09.2018)
 drop table if exists lexeme_group_member;
 drop table if exists lexeme_group;
+--
 drop table if exists lexeme_lifecycle_log;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
@@ -48,6 +50,8 @@ drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
 drop table if exists word_etymology;
 drop table if exists word_guid;
+drop table if exists word_group_member;
+drop table if exists word_group;
 drop table if exists word_relation;
 drop table if exists word;
 drop table if exists source_freeform;

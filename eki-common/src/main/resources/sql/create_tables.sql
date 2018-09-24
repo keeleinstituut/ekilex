@@ -425,6 +425,24 @@ create table word_relation
 );
 alter sequence word_relation_id_seq restart with 10000;
 
+-- keelendi sari
+create table word_group
+(
+  id bigserial primary key,
+  word_rel_type_code varchar(100) references word_rel_type(code) on delete cascade not null
+);
+alter sequence word_group_id_seq restart with 10000;
+
+create table word_group_member
+(
+  id bigserial primary key,
+  word_group_id bigint references word_group(id) on delete cascade not null,
+  word_id bigint references word(id) on delete cascade not null,
+  order_by bigserial,
+  unique(word_group_id, word_id)
+);
+alter sequence word_group_member_id_seq restart with 10000;
+
 create table word_etymology
 (
   id bigserial primary key,
@@ -676,24 +694,6 @@ create table lex_relation
   unique(lexeme1_id, lexeme2_id, lex_rel_type_code)
 );
 alter sequence lex_relation_id_seq restart with 10000;
-
--- ilmiku sari
-create table lexeme_group
-(
-  id bigserial primary key,
-  lex_rel_type_code varchar(100) references lex_rel_type(code) on delete cascade not null
-);
-alter sequence lexeme_group_id_seq restart with 10000;
-
-create table lexeme_group_member
-(
-  id bigserial primary key,
-  lexeme_group_id bigint references lexeme_group(id) on delete cascade not null,
-  lexeme_id bigint references lexeme(id) on delete cascade not null,
-  order_by bigserial,
-  unique(lexeme_group_id, lexeme_id)
-);
-alter sequence lexeme_group_member_id_seq restart with 10000;
 
 -- ilmiku kollokatsiooni grupid
 create table lex_colloc_pos_group

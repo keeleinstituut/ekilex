@@ -42,8 +42,6 @@ import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeDeriv;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.LexemeFrequency;
-import eki.ekilex.data.db.tables.LexemeGroup;
-import eki.ekilex.data.db.tables.LexemeGroupMember;
 import eki.ekilex.data.db.tables.LexemeLifecycleLog;
 import eki.ekilex.data.db.tables.LexemePos;
 import eki.ekilex.data.db.tables.LexemeRegister;
@@ -84,6 +82,8 @@ import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
+import eki.ekilex.data.db.tables.WordGroup;
+import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
 import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
@@ -299,16 +299,6 @@ public class Tables {
     public static final LexemeFrequency LEXEME_FREQUENCY = eki.ekilex.data.db.tables.LexemeFrequency.LEXEME_FREQUENCY;
 
     /**
-     * The table <code>public.lexeme_group</code>.
-     */
-    public static final LexemeGroup LEXEME_GROUP = eki.ekilex.data.db.tables.LexemeGroup.LEXEME_GROUP;
-
-    /**
-     * The table <code>public.lexeme_group_member</code>.
-     */
-    public static final LexemeGroupMember LEXEME_GROUP_MEMBER = eki.ekilex.data.db.tables.LexemeGroupMember.LEXEME_GROUP_MEMBER;
-
-    /**
      * The table <code>public.lexeme_lifecycle_log</code>.
      */
     public static final LexemeLifecycleLog LEXEME_LIFECYCLE_LOG = eki.ekilex.data.db.tables.LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG;
@@ -507,6 +497,16 @@ public class Tables {
      * The table <code>public.word_etymology</code>.
      */
     public static final WordEtymology WORD_ETYMOLOGY = eki.ekilex.data.db.tables.WordEtymology.WORD_ETYMOLOGY;
+
+    /**
+     * The table <code>public.word_group</code>.
+     */
+    public static final WordGroup WORD_GROUP = eki.ekilex.data.db.tables.WordGroup.WORD_GROUP;
+
+    /**
+     * The table <code>public.word_group_member</code>.
+     */
+    public static final WordGroupMember WORD_GROUP_MEMBER = eki.ekilex.data.db.tables.WordGroupMember.WORD_GROUP_MEMBER;
 
     /**
      * The table <code>public.word_guid</code>.
