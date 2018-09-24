@@ -83,8 +83,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<FreeForm> lexemeFreeforms;
 
-	private List<LexemeGroup> lexemeGroups;
-
 	private List<Relation> lexemeRelations;
 
 	private List<CollocationPosGroup> collocationPosGroups;
@@ -325,14 +323,6 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
 		this.lexemeFreeforms = lexemeFreeforms;
-	}
-
-	public List<LexemeGroup> getLexemeGroups() {
-		return lexemeGroups;
-	}
-
-	public void setLexemeGroups(List<LexemeGroup> lexemeGroups) {
-		this.lexemeGroups = lexemeGroups;
 	}
 
 	public List<Relation> getLexemeRelations() {

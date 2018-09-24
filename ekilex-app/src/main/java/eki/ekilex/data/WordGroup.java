@@ -4,7 +4,7 @@ import eki.common.data.AbstractDataObject;
 
 import java.util.List;
 
-public class LexemeGroup extends AbstractDataObject {
+public class WordGroup extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
