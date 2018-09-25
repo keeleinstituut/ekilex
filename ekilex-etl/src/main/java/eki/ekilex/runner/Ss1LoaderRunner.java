@@ -528,7 +528,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					params.put("wordId", wordId);
 					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					for (Map<String, Object> lexeme : lexemes) {
-						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
+						createLexemeRelation((Long) lexeme.get("id"), (Long) secondaryWordLexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
 					}
 				}
 			}
