@@ -336,12 +336,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					lexeme.setLevel3(lexemeLevel3);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
-						createUsages(lexemeId, usages, dataLang);
+						// FIXME: add usages and subword relations only to first lexeme on the second level
+						// this is temporary solution, till EKI provides better one
+						if (lexemeLevel2 == 1) {
+							createUsages(lexemeId, usages, dataLang);
+							mainLexemeIds.add(lexemeId);
+						}
 						saveGovernments(newWordData, meaningGovernments, lexemeId);
 						savePosAndDeriv(newWordData, meaningPosCodes, lexemePosCodes, lexemeId, reportingId);
 						saveGrammars(newWordData, meaningGrammars, lexemeGrammars, lexemeId);
 						saveRegisters(lexemeId, registers, reportingId);
-						mainLexemeIds.add(lexemeId);
 					}
 				}
 				for (LexemeToWordData russianWord : meaningRussianWords) {
