@@ -52,7 +52,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 	@Override
 	String getDataset() {
-		return null;
+		return "termeki";
 	}
 
 	@Override

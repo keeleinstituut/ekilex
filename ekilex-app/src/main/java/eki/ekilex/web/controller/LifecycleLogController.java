@@ -31,8 +31,19 @@ public class LifecycleLogController {
 
 		logger.debug("Requested lifecycle log for word \"{}\"", wordIdStr);
 		Long wordId = Long.valueOf(wordIdStr);
-		List<LifecycleLog> wordLog = lifecycleLogService.getLogForWord(wordId);
-		model.addAttribute("wordLog", wordLog);
+		List<LifecycleLog> lifecycleLog = lifecycleLogService.getLogForWord(wordId);
+		model.addAttribute("lifecycleLog", lifecycleLog);
+
+		return "lifecyclelogview :: details";
+	}
+
+	@GetMapping("/meaninglifecyclelog:{meaningId}")
+	public String meaningLifecycleLogLink(@PathVariable("meaningId") String meaningIdStr, Model model) {
+
+		logger.debug("Requested lifecycle log for meaning \"{}\"", meaningIdStr);
+		Long meaningId = Long.valueOf(meaningIdStr);
+		List<LifecycleLog> lifecycleLog = lifecycleLogService.getLogForMeaning(meaningId);
+		model.addAttribute("lifecycleLog", lifecycleLog);
 
 		return "lifecyclelogview :: details";
 	}

@@ -111,7 +111,69 @@ public class LifecycleLogDbService {
 	}
 
 	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
-		return null;
+		Table<Record8<Long, String, String, String, String, Timestamp, String, String>> ll = DSL
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.from(LEXEME, LEXEME_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(LEXEME.ID))
+						.and(LEXEME_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+						)
+				.unionAll(DSL
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.from(LEXEME, WORD_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+						.and(WORD_LIFECYCLE_LOG.WORD_ID.eq(LEXEME.WORD_ID))
+						.and(WORD_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+						))
+				.unionAll(DSL
+				.select(
+						LIFECYCLE_LOG.ENTITY_ID,
+						LIFECYCLE_LOG.ENTITY_NAME,
+						LIFECYCLE_LOG.ENTITY_PROP,
+						LIFECYCLE_LOG.EVENT_TYPE,
+						LIFECYCLE_LOG.EVENT_BY,
+						LIFECYCLE_LOG.EVENT_ON,
+						LIFECYCLE_LOG.RECENT,
+						LIFECYCLE_LOG.ENTRY)
+				.from(MEANING_LIFECYCLE_LOG, LIFECYCLE_LOG)
+				.where(
+						MEANING_LIFECYCLE_LOG.MEANING_ID.eq(meaningId)
+						.and(MEANING_LIFECYCLE_LOG.LIFECYCLE_LOG_ID.eq(LIFECYCLE_LOG.ID))
+						))
+				.asTable("ll");
+		List<LifecycleLog> results = create
+				.select(
+						ll.field("entity_id", Long.class),
+						ll.field("entity_name", String.class),
+						ll.field("entity_prop", String.class),
+						ll.field("event_type", String.class),
+						ll.field("event_by", String.class),
+						ll.field("event_on", Timestamp.class),
+						ll.field("recent", String.class),
+						ll.field("entry", String.class)
+						)
+				.from(ll)
+				.orderBy(ll.field("event_on").desc())
+				.fetchInto(LifecycleLog.class);
+		return results;
 	}
 
 	public void addLog(LifecycleEventType eventType, LifecycleEntity entity, LifecycleProperty property, Long entityId) {
