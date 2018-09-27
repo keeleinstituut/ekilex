@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import eki.ekilex.runner.VoiceFileUpdaterRunner;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +49,7 @@ public class UltimaLoader extends AbstractLoader {
 			EstermSourceLoaderRunner estSrcRunner = getComponent(EstermSourceLoaderRunner.class);
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
+			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
 
 			String dataFilePath, dataset;
 			Map<String, List<Guid>> ssGuidMap;
@@ -133,6 +135,13 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				termekiRunner.batchLoad(dataFilePath);
 				successfullyLoadedDatasets.add("termeki");
+			}
+
+			// sound file names updater
+			dataFilePath = getConfProperty("voice.index.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				voiceFileUpdaterRunner.update(dataFilePath);
+				successfullyLoadedDatasets.add("voice");
 			}
 
 			t2 = System.currentTimeMillis();
