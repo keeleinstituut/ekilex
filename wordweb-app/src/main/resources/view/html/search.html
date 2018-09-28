@@ -417,10 +417,13 @@
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
       <h6 th:text="#{label.korp.examples}">Veebilauseid</h6>
-      <div style="margin-bottom: 0.5em;" th:each="sentence : ${sentences}">
+      <div class="mb-2" th:each="sentence : ${sentences}">
         <span th:text="${sentence.getLeftPart()}"></span>
         <b th:text="${sentence.getMiddlePart()}"></b>
         <span th:text="${sentence.getRightPart()}"></span>
+      </div>
+      <div class="mb-2" style="margin-bottom: 0.5em;">
+        <a th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="${sentence}" target="_blank"></a>
       </div>
     </div>
     <button class="more-btn">

@@ -132,6 +132,7 @@ public class SearchController extends AbstractController {
 
 		List<CorporaSentence> textCorpus = corporaService.fetchSentences(sentence);
 		model.addAttribute("sentences", textCorpus);
+		model.addAttribute("sentence", sentence);
 
 		return SEARCH_PAGE + " :: korp";
 	}
