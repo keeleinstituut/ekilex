@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
+import static java.lang.Math.abs;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
@@ -32,9 +34,10 @@ public class CorporaService {
 	@Value("${corpora.service.url:}")
 	private String serviceUrl;
 
+	private Random seedGenerator = new Random();
+
 	@Cacheable(value = "corpora")
 	public List<CorporaSentence> fetchSentences(String sentence) {
-
 		Map<String, Object> response = fetch(sentence);
 		return parseResponse(response);
 	}
@@ -54,11 +57,12 @@ public class CorporaService {
 				.queryParam("cqp", parseSentenceToQueryString(sentence))
 				.queryParam("defaultcontext", "1+sentence")
 				.queryParam("show", "pos")
+				.queryParam("sort", "random")
+				.queryParam("random_seed", abs(seedGenerator.nextInt()))
 				.build()
 				.toUri();
 		String responseAsString = doGetRequest(url);
 		if (responseAsString != null) {
-			//logger.debug(responseAsString);
 			JsonParser jsonParser = JsonParserFactory.getJsonParser();
 			response = jsonParser.parseMap(responseAsString);
 		}
