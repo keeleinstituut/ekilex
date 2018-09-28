@@ -212,9 +212,7 @@
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <div class="col-3">
-                        <b th:text="#{label.grammar}">Grammatika</b>
-                      </div>
+                      <div class="col-3"></div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
                       </div>
