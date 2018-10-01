@@ -1,21 +1,19 @@
 package eki.wordweb;
 
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+
 import org.apache.catalina.connector.Connector;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 
 @SpringBootApplication(scanBasePackages = {"eki.common","eki.wordweb"})
 @EnableCaching
@@ -60,11 +58,6 @@ public class WordwebApplication {
 			tomcat.addAdditionalTomcatConnectors(ajpConnector);
 		}
 		return tomcat;
-	}
-
-	@CacheEvict(allEntries = true, value = {"corpora"})
-	@Scheduled(fixedDelay = 5 * 60 * 1000,  initialDelay = 5000)
-	public void corporaCacheEvict() {
 	}
 
 }

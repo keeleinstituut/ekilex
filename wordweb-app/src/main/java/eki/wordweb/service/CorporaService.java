@@ -1,5 +1,6 @@
 package eki.wordweb.service;
 
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CorporaSentence;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ import static java.lang.Math.abs;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
-public class CorporaService {
+public class CorporaService implements SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(CorporaService.class);
 
@@ -36,7 +37,7 @@ public class CorporaService {
 
 	private Random seedGenerator = new Random();
 
-	@Cacheable(value = "corpora")
+	@Cacheable(value = CACHE_KEY_CORPORA)
 	public List<CorporaSentence> fetchSentences(String sentence) {
 		Map<String, Object> response = fetch(sentence);
 		return parseResponse(response);

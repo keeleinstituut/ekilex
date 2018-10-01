@@ -19,15 +19,16 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Classifier;
+import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.TypeDomain;
 
 @Component
-public class CommonDataDbService {
+public class CommonDataDbService implements SystemConstant {
 
 	@Autowired
 	private DSLContext create;
 
-	@Cacheable(value = "dataset", key = "{#code, #lang}")
+	@Cacheable(value = CACHE_KEY_DATASET, key = "{#code, #lang}")
 	public String getDatasetName(String code, String lang) {
 
 		if (StringUtils.isBlank(code)) {
@@ -46,7 +47,7 @@ public class CommonDataDbService {
 		return result.into(String.class);
 	}
 
-	@Cacheable(value = "classif", key = "{#name, #origin, #code, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String origin, String code, String lang) {
 
 		if (StringUtils.isBlank(code)) {
@@ -76,12 +77,12 @@ public class CommonDataDbService {
 		return result.into(Classifier.class);
 	}
 
-	@Cacheable(value = "classif", key = "{#name, #code, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String code, String lang) {
 		return getClassifier(name, null, code, lang);
 	}
 
-	@Cacheable(value = "classif", key = "{#name, #origin, #codes, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #origin, #codes, #lang}")
 	public List<Classifier> getClassifiers(ClassifierName name, String origin, List<String> codes, String lang) {
 
 		if (CollectionUtils.isEmpty(codes)) {
@@ -107,12 +108,12 @@ public class CommonDataDbService {
 				.fetch().into(Classifier.class);
 	}
 
-	@Cacheable(value = "classif", key = "{#name, #codes, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
 	public List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
 		return getClassifiers(name, null, codes, lang);
 	}
 
-	@Cacheable(value = "classif", key = "{#name, #codes, #lang}")
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #codes, #lang}")
 	public List<Classifier> getClassifiersWithOrigin(ClassifierName name, List<TypeDomain> codes, String lang) {
 		if (CollectionUtils.isEmpty(codes)) {
 			return Collections.emptyList();

@@ -30,6 +30,4 @@ public class VmabLoader extends AbstractLoader {
 			shutdown();
 		}
 	}
-
-
 }
