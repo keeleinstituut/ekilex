@@ -1,7 +1,10 @@
 package eki.wordweb.web.interceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import eki.common.data.AppData;
+import eki.common.web.AppDataHolder;
+import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.constant.WebConstant;
+import eki.wordweb.web.util.ViewUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -10,11 +13,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
-import eki.common.data.AppData;
-import eki.common.web.AppDataHolder;
-import eki.wordweb.constant.SystemConstant;
-import eki.wordweb.constant.WebConstant;
-import eki.wordweb.web.util.ViewUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @ConditionalOnWebApplication
 @Component
@@ -43,9 +43,6 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 		if (!modelMap.containsKey(VIEW_UTIL_MODEL_KEY)) {
 			modelMap.addAttribute(VIEW_UTIL_MODEL_KEY, viewUtil);
-		}
-		if (!modelMap.containsKey(VIEW_UTIL_MODEL_KEY)) {
-			
 		}
 	}
 }
