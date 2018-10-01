@@ -146,7 +146,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			int level1 = itemData.lexemeLevel1;
 			boolean addLexeme = true;
 			Optional<WordData> existingWord = context.importedWords.stream()
-					.filter(w -> itemData.word.equals(w.value) && lang.equals(w.language))
+					.filter(w -> itemData.word.equals(w.value) && lang.equals(w.language) && itemData.homonymNr == w.homonymNr)
 					.findFirst();
 			if (!existingWord.isPresent()) {
 				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
