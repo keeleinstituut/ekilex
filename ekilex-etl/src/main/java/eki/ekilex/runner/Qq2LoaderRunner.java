@@ -96,8 +96,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
 	private final char wordComponentSeparator = '+';
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
-	private final String[] textCleanupEnitites = new String[] {"&ema;v&eml;", "&v;"};
-	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 	private final String usageTranslationLangRus = "rus";
 	private final String dataLang = "est";
 
@@ -302,7 +300,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
-						wordMatch = StringUtils.replaceEach(wordMatch, textCleanupEnitites, textCleanupEnityReplacements);
 						wordMatch = StringUtils.replaceChars(wordMatch, wordDisplayFormCleanupChars, "");
 
 						if (StringUtils.isBlank(wordMatch)) {
@@ -660,7 +657,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
 					usageTranslationValue = usageTranslationValueNode.getTextTrim();
-					usageTranslationValue = StringUtils.replaceEach(usageTranslationValue, textCleanupEnitites, textCleanupEnityReplacements);
 					lemmatisedTokens = new ArrayList<>();
 					usageTranslationParts = StringUtils.split(usageTranslationValue, ' ');
 					originalTokens = new ArrayList<>(Arrays.asList(usageTranslationParts));

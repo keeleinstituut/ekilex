@@ -105,8 +105,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String[] secondaryCollocMemberNames = new String[] {"cnte", "cce", "ccj", "cnt"};
 	private final String[] collocMemberNames = new String[] {
 			prevWordCollocMemberName, nextWordCollocMemberName, colWordCollocMemberName, "cnte", "cce", "ccj", "cnt"};
-	private final String[] textCleanupEnitites = new String[] {"&ba;", "&bl;"};
-	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 
 	private final Float inboundPrimaryCollocMemberWeight = 1F;
 	private final Float outboundPrimaryCollocMemberWeight = 0.8F;
@@ -608,7 +606,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<String> collocUsages = new ArrayList<>();
 		for (Element collocUsageNode : collocUsageNodes) {
 			String collocUsage = collocUsageNode.getTextTrim();
-			collocUsage = StringUtils.replaceEach(collocUsage, textCleanupEnitites, textCleanupEnityReplacements);
 			collocUsages.add(collocUsage);
 		}
 		return collocUsages;
