@@ -596,7 +596,7 @@
                   </tr>
                 </table>
               </div>
-              <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations) || not #lists.isEmpty(lexeme.lexemeGroups)}">
+              <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                 <hr />
                 <span class="lbl">Ilmiku seosed</span>
                 <table class="orderable" th:data-op-code="lexeme_relation">
@@ -611,21 +611,6 @@
                     </td>
                     <td>
                       <span th:text="${relation.relationTypeLabel}"></span>
-                    </td>
-                  </tr>
-                </table>
-                <table>
-                  <tr th:each="lexemeGroup : ${lexeme.lexemeGroups}">
-                    <td style="vertical-align: text-top; padding-right: 1em">
-                      <th:block th:each="relation, itemStat : ${lexemeGroup.members}">
-                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}" name="detailsBtn">
-                          <span th:text="${relation.word}"></span>
-                        </button>
-                        <span th:unless="${itemStat.last}">,</span>
-                      </th:block>
-                    </td>
-                    <td>
-                      <span th:text="${lexemeGroup.groupTypeLabel}"></span>
                     </td>
                   </tr>
                 </table>
@@ -743,7 +728,7 @@
         </div>
         <div class="col-4">
           <div class="card shadow mb-2">
-            <div class="card-body pb-0" th:if="${not #lists.isEmpty(details.wordRelations)}">
+            <div class="card-body pb-0" th:if="${not #lists.isEmpty(details.wordRelations) || not #lists.isEmpty(details.wordGroups)}">
               <span class="lbl">Keelendi seosed</span>
               <table class="orderable" th:data-op-code="word_relation">
                 <tr th:each="relation, itemStat : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
@@ -757,6 +742,21 @@
                   </td>
                   <td>
                     <span th:text="${relation.relationTypeLabel}"></span>
+                  </td>
+                </tr>
+              </table>
+              <table>
+                <tr th:each="wordGroup : ${details.wordGroups}">
+                  <td style="vertical-align: text-top; padding-right: 1em">
+                    <th:block th:each="relation, itemStat : ${wordGroup.members}">
+                      <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}" name="detailsBtn">
+                        <span th:text="${relation.word}"></span>
+                      </button>
+                      <span th:unless="${itemStat.last}">,</span>
+                    </th:block>
+                  </td>
+                  <td>
+                    <span th:text="${wordGroup.groupTypeLabel}"></span>
                   </td>
                 </tr>
               </table>

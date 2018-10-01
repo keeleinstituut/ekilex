@@ -1,6 +1,5 @@
 package eki.ekilex.runner;
 
-import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -19,7 +18,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import eki.common.constant.LexemeRelationGroupType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -29,6 +27,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Meaning;
@@ -173,27 +172,23 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 		if (contentNode != null) {
-			List<Lexeme> createdLexemes = new ArrayList<>();
-			processArticleContent(reportingId, contentNode, newWords, context, comments, createdLexemes);
-			processVariants(newWords, createdLexemes);
-			processSeries(context, headerNode, newWords, createdLexemes);
+			processArticleContent(reportingId, contentNode, newWords, context, comments);
+			processVariants(newWords);
+			processSeries(context, headerNode, newWords);
 		}
 		context.importedWords.addAll(newWords);
 	}
 
-	private void processSeries(Context context, Element headerNode, List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+	private void processSeries(Context context, Element headerNode, List<WordData> newWords) throws Exception {
 
 		List<Long> seriesGroupIds = new ArrayList<>();
 		// if series words are inside word groups xml tags, i.e. there is more than one word tag inside word group and its type is series
-		// create groups and add lexeme id's to them
+		// create group and add word id's to it
 		if (isSeries(newWords)) {
-			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
-			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
-				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
-				seriesGroupIds.add(lexemeGroup);
-				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
-					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
-				}
+			Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+			seriesGroupIds.add(wordGroup);
+			for (WordData wordData : newWords) {
+				createWordRelationGroupMember(wordGroup, wordData.id);
 			}
 		}
 
@@ -203,32 +198,26 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			return;
 		}
 
-		long numberOfMeanings = createdLexemes.stream().map(Lexeme::getMeaningId).distinct().count();
-		if (numberOfMeanings != 1) {
-			// if there is more than one meaning we can't match correct lexemes to each other so exit here
-			return;
-		}
-
 		seriesWordData.addAll(newWords);
 
 		if (seriesGroupIds.isEmpty()) {
 			// no group was create, so its ordinary word article
 			List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
-			// no series groups, so its first word in series, create group add word lexeme and store it for later use
+			// no series groups, so its first word in series, create group add words and store it for later use
 			if (seriesForWords.isEmpty()) {
-				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.SERIES);
-				for (Lexeme lexeme : createdLexemes) {
-					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
+				Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+				for (WordData wordData : newWords) {
+					createWordRelationGroupMember(wordGroup, wordData.id);
 				}
 				WordSeries series = new WordSeries();
-				series.groupId = lexemeGroup;
+				series.groupId = wordGroup;
 				series.words.addAll(seriesWordData);
 				context.series.add(series);
 			} else {
 				// series groups found, so its next word in group, add it to group
 				for (WordSeries series : seriesForWords) {
-					for (Lexeme lexeme : createdLexemes) {
-						createLexemeRelationGroupMember(series.groupId, lexeme.getLexemeId());
+					for (WordData wordData : newWords) {
+						createWordRelationGroupMember(series.groupId, wordData.id);
 					}
 				}
 			}
@@ -256,14 +245,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				.collect(toList());
 	}
 
-	private void processVariants(List<WordData> newWords, List<Lexeme> createdLexemes) throws Exception {
+	private void processVariants(List<WordData> newWords) throws Exception {
 		if (isVariant(newWords)) {
-			Map<Long, List<Lexeme>> lexemesGroupedByMeaning = createdLexemes.stream().collect(groupingBy(Lexeme::getMeaningId));
-			for (Long meaningId : lexemesGroupedByMeaning.keySet()) {
-				Long lexemeGroup = createLexemeRelationGroup(LexemeRelationGroupType.VARIANTS);
-				for (Lexeme lexeme : lexemesGroupedByMeaning.get(meaningId)) {
-					createLexemeRelationGroupMember(lexemeGroup, lexeme.getLexemeId());
-				}
+			Long wordGroup = createWordRelationGroup(WordRelationGroupType.VARIANTS);
+			for (WordData wordData : newWords) {
+				createWordRelationGroupMember(wordGroup, wordData.id);
 			}
 		}
 	}
@@ -541,7 +527,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					params.put("wordId", wordId);
 					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
 					for (Map<String, Object> lexeme : lexemes) {
-						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
+						createLexemeRelation((Long) lexeme.get("id"), (Long) secondaryWordLexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
 					}
 				}
 			}
@@ -554,8 +540,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Element contentNode,
 			List<WordData> newWords,
 			Context context,
-			List<CommentData> comments,
-			List<Lexeme> createdLexemes) throws Exception {
+			List<CommentData> comments) throws Exception {
 
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
@@ -649,7 +634,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
 						lexeme.setLexemeId(lexemeId);
-						createdLexemes.add(lexeme);
 						createUsages(lexemeId, usages, dataLang);
 						saveGovernments(meaningGroupNode, lexemeId);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);

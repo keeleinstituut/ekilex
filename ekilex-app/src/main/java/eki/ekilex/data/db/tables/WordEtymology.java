@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymology extends TableImpl<WordEtymologyRecord> {
 
-    private static final long serialVersionUID = 467175782;
+    private static final long serialVersionUID = 131570636;
 
     /**
      * The reference instance of <code>public.word_etymology</code>
@@ -137,7 +137,7 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_ETYMOLOGY_PKEY, Indexes.WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY);
+        return Arrays.<Index>asList(Indexes.WORD_ETYM_TYPE_CODE_IDX, Indexes.WORD_ETYM_WORD1_ID_IDX, Indexes.WORD_ETYM_WORD2_ID_IDX, Indexes.WORD_ETYMOLOGY_PKEY, Indexes.WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY);
     }
 
     /**

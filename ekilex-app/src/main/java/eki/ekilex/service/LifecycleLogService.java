@@ -20,4 +20,9 @@ public class LifecycleLogService {
 	public List<LifecycleLog> getLogForWord(Long wordId) {
 		return lifecycleLogDbService.getLogForWord(wordId);
 	}
+
+	@Transactional
+	public List<LifecycleLog> getLogForMeaning(Long meaningId) {
+		return lifecycleLogDbService.getLogForMeaning(meaningId);
+	}
 }

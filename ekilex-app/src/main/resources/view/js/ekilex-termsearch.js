@@ -39,6 +39,17 @@ function initialise() {
 		}
 	});
 
+	$(document).on('show.bs.modal', '#meaningLifecycleLogDlg', function(e) {
+		var dlg = $(this);
+		var link = $(e.relatedTarget);
+		var url = link.attr('href');
+		dlg.find('.close').focus();
+		dlg.find('.modal-body').html(null);
+		$.get(url).done(function(data) {
+			dlg.find('.modal-body').html(data);
+		});
+	});
+
 	var detailsButtons = $('#results').find('[name="detailsBtn"]');
 	if (detailsButtons.length === 1) {
 		detailsButtons.trigger('click');

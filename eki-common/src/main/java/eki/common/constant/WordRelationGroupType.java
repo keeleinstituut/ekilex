@@ -1,6 +1,6 @@
 package eki.common.constant;
 
-public enum LexemeRelationGroupType {
+public enum WordRelationGroupType {
 	SERIES,
 	VARIANTS
 }

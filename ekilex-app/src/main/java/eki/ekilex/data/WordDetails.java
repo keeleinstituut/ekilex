@@ -17,6 +17,8 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordEtym> wordEtymology;
 
+	private List<WordGroup> wordGroups;
+
 	public WordDetails() {
 	}
 
@@ -56,4 +58,11 @@ public class WordDetails extends AbstractDataObject {
 		this.wordEtymology = wordEtymology;
 	}
 
+	public List<WordGroup> getWordGroups() {
+		return wordGroups;
+	}
+
+	public void setWordGroups(List<WordGroup> wordGroups) {
+		this.wordGroups = wordGroups;
+	}
 }

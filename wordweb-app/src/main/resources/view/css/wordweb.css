@@ -74,11 +74,11 @@
 }
 
 .robo-icon {
-    width: 32px;
-    margin-top: -2px;
+    width: 26px;
     opacity: 0.5;
-    position: absolute;
+    padding-bottom: 6px;
 }
+
 .example-item:hover .robo-icon{
     opacity: 1;
 }

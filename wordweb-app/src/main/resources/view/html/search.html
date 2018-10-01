@@ -127,25 +127,23 @@
                     </div>
                   </div>
                   <div th:if="${not #lists.isEmpty(lexeme.usages)}">
-                    <span class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
-                      <span class="example-text example-item" th:text="${usage.usage}"></span>
-                      <span th:if="${not #lists.isEmpty(usage.usageAuthors)}">
-                        <span th:each="usageAuthor : ${usage.usageAuthors}">
-                          <span class="example-text">
-                            <span th:if="${usageAuthor.translator}" th:text=#{reference.type.translator}>Tõlkija</span>
-                            <span th:text="${usageAuthor.name}"></span>
-                          </span>
-                        </span>
-                      </span>
+                    <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
+                      <span class="example-text" th:text="${usage.usage}"></span>
+                      <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
+                        <th:block class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
+                          <span th:if="${usageAuthor.translator}" th:text=#{reference.type.translator}>Tõlkija</span>
+                          <span th:text="${usageAuthor.name}"></span>
+                        </th:block>
+                      </th:block>
                       <button class="btn btn-speaker">
                         <img class="robo-icon" th:src="@{/view/images/icons/robot.svg}">
                       </button>
-                      <span th:if="${not #lists.isEmpty(usage.usageTranslations)}">
-                        <span th:each="usageTranslation : ${usage.usageTranslations}">
+                      <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
+                        <th:block th:each="usageTranslation : ${usage.usageTranslations}">
                           <span class="example-text" th:text="${usageTranslation}"></span>
-                        </span>
-                      </span>
-                    </span>
+                        </th:block>
+                      </th:block>
+                    </div>
                   </div>
                 </div>
                 <div class="col-lg-12 meaning-meta">
@@ -212,9 +210,7 @@
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <div class="col-3">
-                        <b th:text="#{label.grammar}">Grammatika</b>
-                      </div>
+                      <div class="col-3"></div>
                       <div class="col-9">
                         <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
                       </div>
@@ -417,10 +413,13 @@
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
       <h6 th:text="#{label.korp.examples}">Veebilauseid</h6>
-      <div style="margin-bottom: 0.5em;" th:each="sentence : ${sentences}">
+      <div class="mb-2" th:each="sentence : ${sentences}">
         <span th:text="${sentence.getLeftPart()}"></span>
         <b th:text="${sentence.getMiddlePart()}"></b>
         <span th:text="${sentence.getRightPart()}"></span>
+      </div>
+      <div class="mb-2" style="margin-bottom: 0.5em;">
+        <a th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="${sentence}" target="_blank"></a>
       </div>
     </div>
     <button class="more-btn">

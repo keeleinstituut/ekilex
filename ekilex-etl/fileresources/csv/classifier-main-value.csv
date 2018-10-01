@@ -116,8 +116,6 @@ lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
 lex_rel_type	yhvt	vaata ka	est	wordweb
 lex_rel_type	vor	suhtlus, vestlus	est	wordweb
 lex_rel_type	tvt:vrd	võrdle	est	wordweb
-lex_rel_type	SERIES	sari	est	full
-lex_rel_type	VARIANTS	variandid	est	full
 lexeme_frequency	1	1 - 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
@@ -676,11 +674,15 @@ word_rel_type	deriv_base	tuletusalus	est	full
 word_rel_type	komp	keskvõrre	est	full
 word_rel_type	superl	ülivõrre	est	full
 word_rel_type	deriv	tuletis	est	full
+word_rel_type	SERIES	sari	est	full
+word_rel_type	VARIANTS	variandid	est	full
 word_rel_type	posit	algvõrre	est	wordweb
 word_rel_type	komp	keskvõrre	est	wordweb
 word_rel_type	deriv	tuletis	est	wordweb
 word_rel_type	deriv_base	tuletusalus	est	wordweb
 word_rel_type	superl	ülivõrre	est	wordweb
+word_rel_type	SERIES	sari	est	wordweb
+word_rel_type	VARIANTS	variandid	est	wordweb
 word_type	k	kohanimi	est	descrip
 word_type	k	place name	eng	descrip
 word_type	l	lühend	est	descrip

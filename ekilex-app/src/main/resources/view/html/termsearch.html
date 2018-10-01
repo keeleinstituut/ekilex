@@ -108,155 +108,176 @@
       <button id="refresh-details" hidden="hidden" th:data-id="${meaningId}" name="detailsBtn" data-refresh></button>
       <div class="card mb-2 shadow" style="border-style: dotted; border-width: 4px; border-color: #aaa">
         <div class="card-body">
-          <div th:if="${meaning.processStateCode != null}">
-            <span class="lbl">Protsessi olek</span>
-            <span th:text="${meaning.processStateCode}"></span>
-          </div>
-          <div>
-            <span class="lbl">Valdkonnad</span>
-            <span th:each="classif,classifIter : ${meaning.domains}" class="hidden-buttons" th:if="${not #lists.isEmpty(meaning.domains)}">
-              <span
-                th:data-id="${meaningId}"
-                th:data-op-code="meaning_domain"
-                th:data-value="${classif.toIdString()}"
-                th:name="${classifIter.index} + '_meaning_domain'"
-                th:text="${classif.code}"></span>
-              <th:block th:unless="${classif.code == classif.value}">
-                -
-                <span th:text="${classif.value}"></span>
-              </th:block>
-              <button type="button" class="btn badge badge-primary"
-                      th:title="Muuda"
-                      onclick="openSelectDlg(this)"
-                      data-toggle="modal" data-target="#meaningDomainDlg"
-                      th:data-target-elem="${classifIter.index} + '_meaning_domain'">
-                <i class="fa fa-caret-down" aria-hidden="true"></i>
-              </button>
-              <button type="button" class="btn badge badge-warning"
-                      th:data-target-elem="${classifIter.index} + '_meaning_domain'"
-                      data-toggle="delete-confirmation" data-placement="right">
-                <i class="fa fa-remove" aria-hidden="true"></i>
-              </button>
-              <span th:unless="${classifIter.last}">,</span>
-            </span>
-            <button type="button" class="btn badge badge-success" title="Lisa uus"
+          <div class="row">
+            <div class="col-10">
+              <div th:if="${meaning.processStateCode != null}">
+                <span class="lbl">Protsessi olek</span>
+                <span th:text="${meaning.processStateCode}"></span>
+              </div>
+              <div>
+                <span class="lbl">Valdkonnad</span>
+                <span th:each="classif,classifIter : ${meaning.domains}" class="hidden-buttons" th:if="${not #lists.isEmpty(meaning.domains)}">
+                  <span
                     th:data-id="${meaningId}"
-                    onclick="openLexemeClassifiersDlg(this)"
-                    data-toggle="modal" data-target="#lexemeClassifiersDlg">
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div>
-            <span class="lbl">Seletused</span>
-            <button type="button" class="btn badge badge-success" title="Lisa uus"
-                    th:data-id="${meaningId}"
-                    onclick="openAddDlg(this)"
-                    data-toggle="modal" data-target="#addNewDefinitionDlg">
-              <i class="fa fa-plus" aria-hidden="true"></i>
-            </button>
-            <div th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
-              <div class="ml-2">
-                <span th:text="${definitionLangGroup.lang}" class="mr-2"></span>
-                <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary" th:data-lang="${definitionLangGroup.lang}">
-                  <span th:class="${definitionLangGroup.selected ? 'fa fa-arrow-down' : 'fa fa-arrow-right'}"></span>
+                    th:data-op-code="meaning_domain"
+                    th:data-value="${classif.toIdString()}"
+                    th:name="${classifIter.index} + '_meaning_domain'"
+                    th:text="${classif.code}"></span>
+                  <th:block th:unless="${classif.code == classif.value}">
+                    -
+                    <span th:text="${classif.value}"></span>
+                  </th:block>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="Muuda"
+                          onclick="openSelectDlg(this)"
+                          data-toggle="modal" data-target="#meaningDomainDlg"
+                          th:data-target-elem="${classifIter.index} + '_meaning_domain'">
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-target-elem="${classifIter.index} + '_meaning_domain'"
+                          data-toggle="delete-confirmation" data-placement="right">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+                  <span th:unless="${classifIter.last}">,</span>
+                </span>
+                <button type="button" class="btn badge badge-success" title="Lisa uus"
+                        th:data-id="${meaningId}"
+                        onclick="openLexemeClassifiersDlg(this)"
+                        data-toggle="modal" data-target="#lexemeClassifiersDlg">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
-              <ul th:if="${definitionLangGroup.selected}">
-                <li th:each="definition : ${definitionLangGroup.definitions}">
-                  <div class="hidden-buttons">
-                    <span th:name="${definition.id} + '_definition'"
-                          th:data-id="${definition.id}"
-                          th:data-op-code="definition"
-                          th:data-value="${definition.value}"
-                          th:utext="${definition.value}"></span>
-                    <button type="button" class="btn badge badge-primary ml-2"
-                            th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
-                            onclick="openEditDlg(this)"
-                            data-toggle="modal" data-target="#editDlg">
-                      <i class="fa fa-edit" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${definition.id} + '_definition'"
-                            data-toggle="delete-confirmation" data-placement="right">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
+              <div>
+                <span class="lbl">Seletused</span>
+                <button type="button" class="btn badge badge-success" title="Lisa uus"
+                        th:data-id="${meaningId}"
+                        onclick="openAddDlg(this)"
+                        data-toggle="modal" data-target="#addNewDefinitionDlg">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <div th:each="definitionLangGroup : ${meaning.definitionLangGroups}">
+                  <div class="ml-2">
+                    <span th:text="${definitionLangGroup.lang}" class="mr-2"></span>
+                    <button name="lang-collapse-btn" type="button" class="btn badge badge-secondary" th:data-lang="${definitionLangGroup.lang}">
+                      <span th:class="${definitionLangGroup.selected ? 'fa fa-arrow-down' : 'fa fa-arrow-right'}"></span>
                     </button>
                   </div>
-                  <div th:unless="${not #lists.isEmpty(definition.sourceLinks)}">
-                    []
-                    <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                            th:data-id="${definition.id}"
-                            th:data-op-code="def_source_link"
-                            onclick="openAddSourceLinkDlg(this)"
-                            data-toggle="modal" data-target="#addNewSourceLinkDlg">
-                      <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                  <div th:if="${not #lists.isEmpty(definition.sourceLinks)}" class="hidden-buttons">
-                    <span th:each="sourceLink : ${definition.sourceLinks}">
-                      [
-                      <a th:href="@{'/def_source_link:' + ${sourceLink.id}}"
-                         th:name="${sourceLink.id} + '_def_source_link'"
-                         th:data-id="${sourceLink.id}"
-                         th:data-op-code="def_source_link"
-                         th:text="${sourceLink.value}"
-                      ></a>
-                      <span th:if="${sourceLink.name != null}">
-                        <span th:text="${sourceLink.name}"></span>
-                      </span>
-                      <button type="button" class="btn badge badge-warning"
-                              th:data-target-elem="${sourceLink.id} + '_def_source_link'"
-                              data-toggle="delete-confirmation" data-placement="right">
-                        <i class="fa fa-remove" aria-hidden="true"></i>
+                  <ul th:if="${definitionLangGroup.selected}">
+                    <li th:each="definition : ${definitionLangGroup.definitions}">
+                      <div class="hidden-buttons">
+                        <span th:name="${definition.id} + '_definition'"
+                              th:data-id="${definition.id}"
+                              th:data-op-code="definition"
+                              th:data-value="${definition.value}"
+                              th:utext="${definition.value}"></span>
+                        <button type="button" class="btn badge badge-primary ml-2"
+                                th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                                onclick="openEditDlg(this)"
+                                data-toggle="modal" data-target="#editDlg">
+                          <i class="fa fa-edit" aria-hidden="true"></i>
+                        </button>
+                        <button type="button" class="btn badge badge-warning"
+                                th:data-target-elem="${definition.id} + '_definition'"
+                                data-toggle="delete-confirmation" data-placement="right">
+                          <i class="fa fa-remove" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div th:unless="${not #lists.isEmpty(definition.sourceLinks)}">
+                        []
+                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                th:data-id="${definition.id}"
+                                th:data-op-code="def_source_link"
+                                onclick="openAddSourceLinkDlg(this)"
+                                data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                      <div th:if="${not #lists.isEmpty(definition.sourceLinks)}" class="hidden-buttons">
+                        <span th:each="sourceLink : ${definition.sourceLinks}">
+                          [
+                          <a th:href="@{'/def_source_link:' + ${sourceLink.id}}"
+                             th:name="${sourceLink.id} + '_def_source_link'"
+                             th:data-id="${sourceLink.id}"
+                             th:data-op-code="def_source_link"
+                             th:text="${sourceLink.value}"
+                          ></a>
+                          <span th:if="${sourceLink.name != null}">
+                            <span th:text="${sourceLink.name}"></span>
+                          </span>
+                          <button type="button" class="btn badge badge-warning"
+                                  th:data-target-elem="${sourceLink.id} + '_def_source_link'"
+                                  data-toggle="delete-confirmation" data-placement="right">
+                            <i class="fa fa-remove" aria-hidden="true"></i>
+                          </button>
+                          ]
+                        </span>
+                        <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
+                                th:data-id="${definition.id}"
+                                th:data-op-code="def_source_link"
+                                onclick="openAddSourceLinkDlg(this)"
+                                data-toggle="modal" data-target="#addNewSourceLinkDlg">
+                          <i class="fa fa-plus" aria-hidden="true"></i>
+                        </button>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
+                <span class="lbl">Tähenduse atribuudid</span>
+                <table>
+                  <tr th:each="freeform : ${meaning.freeforms}">
+                    <td style="vertical-align: text-top; padding-right: 1em">
+                      <span th:text="${freeform.type}"></span>
+                    </td>
+                    <td th:unless="${freeform.type.toString() == 'IMAGE_FILE'}">
+                      <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
+                      <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
+                    </td>
+                    <td th:if="${freeform.type.toString() == 'IMAGE_FILE'}">
+                      <img th:src="@{'/files/images/' + ${freeform.valueText}}"></img>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div th:if="${not #lists.isEmpty(meaning.relations)}">
+                <hr />
+                <span class="lbl">Tähenduse seosed</span>
+                <table>
+                  <tr th:each="relation : ${meaning.relations}">
+                    <td style="vertical-align: text-top; padding-right: 1em">
+                      <button type="button" class="btn btn-link pt-0" th:data-id="${relation.wordId}" name="detailsBtn">
+                        <span th:text="${relation.word}"></span>
+                        (
+                        <span th:text="${relation.wordLang}"></span>
+                        )
                       </button>
-                      ]
-                    </span>
-                    <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
-                            th:data-id="${definition.id}"
-                            th:data-op-code="def_source_link"
-                            onclick="openAddSourceLinkDlg(this)"
-                            data-toggle="modal" data-target="#addNewSourceLinkDlg">
-                      <i class="fa fa-plus" aria-hidden="true"></i>
-                    </button>
-                  </div>
-                </li>
-              </ul>
+                    </td>
+                    <td>
+                      <span th:text="${relation.relationTypeLabel}"></span>
+                    </td>
+                  </tr>
+                </table>
+              </div>
             </div>
-          </div>
-          <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
-            <span class="lbl">Tähenduse atribuudid</span>
-            <table>
-              <tr th:each="freeform : ${meaning.freeforms}">
-                <td style="vertical-align: text-top; padding-right: 1em">
-                  <span th:text="${freeform.type}"></span>
-                </td>
-                <td th:unless="${freeform.type.toString() == 'IMAGE_FILE'}">
-                  <span th:utext="${markdown.toHtml(freeform.valueText)}" th:if="${freeform.valueText != null}"></span>
-                  <span th:text="${#dates.format(freeform.valueDate, 'dd.MM.yyyy HH:mm')}" th:if="${freeform.valueDate != null}"></span>
-                </td>
-                <td th:if="${freeform.type.toString() == 'IMAGE_FILE'}">
-                  <img th:src="@{'/files/images/' + ${freeform.valueText}}"></img>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div th:if="${not #lists.isEmpty(meaning.relations)}">
-            <hr />
-            <span class="lbl">Tähenduse seosed</span>
-            <table>
-              <tr th:each="relation : ${meaning.relations}">
-                <td style="vertical-align: text-top; padding-right: 1em">
-                  <button type="button" class="btn btn-link pt-0" th:data-id="${relation.wordId}" name="detailsBtn">
-                    <span th:text="${relation.word}"></span>
-                    (
-                    <span th:text="${relation.wordLang}"></span>
-                    )
-                  </button>
-                </td>
-                <td>
-                  <span th:text="${relation.relationTypeLabel}"></span>
-                </td>
-              </tr>
-            </table>
+            <div class="col-1">
+              <a th:href="@{'/meaninglifecyclelog:' + ${meaningId}}"
+                 data-toggle="modal"
+                 data-target="#meaningLifecycleLogDlg"
+                 class="btn btn-light ml-3"
+              >Tegevuste logi</a>
+              <div id="meaningLifecycleLogDlg" class="modal" role="dialog">
+                <div class="modal-dialog modal-lg" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

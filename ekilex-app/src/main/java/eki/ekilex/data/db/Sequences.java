@@ -149,21 +149,6 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_FREEFORM_ID_SEQ = new SequenceImpl<Long>("lexeme_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.lexeme_group_id_seq</code>
-     */
-    public static final Sequence<Long> LEXEME_GROUP_ID_SEQ = new SequenceImpl<Long>("lexeme_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.lexeme_group_member_id_seq</code>
-     */
-    public static final Sequence<Long> LEXEME_GROUP_MEMBER_ID_SEQ = new SequenceImpl<Long>("lexeme_group_member_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.lexeme_group_member_order_by_seq</code>
-     */
-    public static final Sequence<Long> LEXEME_GROUP_MEMBER_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_group_member_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
      * The sequence <code>public.lexeme_id_seq</code>
      */
     public static final Sequence<Long> LEXEME_ID_SEQ = new SequenceImpl<Long>("lexeme_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -272,6 +257,21 @@ public class Sequences {
      * The sequence <code>public.word_etymology_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_ETYMOLOGY_ORDER_BY_SEQ = new SequenceImpl<Long>("word_etymology_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_group_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_GROUP_ID_SEQ = new SequenceImpl<Long>("word_group_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_group_member_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_GROUP_MEMBER_ID_SEQ = new SequenceImpl<Long>("word_group_member_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_group_member_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_GROUP_MEMBER_ORDER_BY_SEQ = new SequenceImpl<Long>("word_group_member_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.word_guid_id_seq</code>

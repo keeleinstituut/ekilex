@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.LexemeGroup;
+import eki.ekilex.data.WordGroup;
 import eki.ekilex.data.Relation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -478,16 +478,16 @@ public class ConversionUtil {
 		return definitionLangGroups;
 	}
 
-	public List<LexemeGroup> composeLexemeGroups(List<Relation> groupMembers) {
+	public List<WordGroup> composeWordGroups(List<Relation> groupMembers) {
 
-		List<LexemeGroup> groups = new ArrayList<>();
+		List<WordGroup> groups = new ArrayList<>();
 		Map<Long, List<Relation>> memberGroups = groupMembers.stream().collect(groupingBy(Relation::getGroupId));
 		for (Long groupId : memberGroups.keySet()) {
-			LexemeGroup lexemeGroup = new LexemeGroup();
-			lexemeGroup.setId(groupId);
-			lexemeGroup.setMembers(memberGroups.get(groupId));
-			lexemeGroup.setGroupTypeLabel(lexemeGroup.getMembers().get(0).getRelationTypeLabel());
-			groups.add(lexemeGroup);
+			WordGroup wordGroup = new WordGroup();
+			wordGroup.setId(groupId);
+			wordGroup.setMembers(memberGroups.get(groupId));
+			wordGroup.setGroupTypeLabel(wordGroup.getMembers().get(0).getRelationTypeLabel());
+			groups.add(wordGroup);
 		}
 		return groups;
 	}
