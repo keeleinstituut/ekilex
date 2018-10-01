@@ -1,6 +1,12 @@
 var windowWidthTreshold = 769;
+var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
+
+	var sessionTimeoutMs = (sessionTimeoutSec - sessionTimeoutBufferSec) * 1000;
+	setTimeout(function() {
+		window.location = applicationUrl;
+	}, sessionTimeoutMs);
 
 	initLanguageFilter();
 	initialiseRecording(speechRecognitionServiceUrl);

@@ -15,6 +15,7 @@
 <th:block th:replace="${links}" />
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
+	var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
 	var messages = {
 	    'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
       'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
