@@ -30,8 +30,6 @@ import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
-import static org.jooq.impl.DSL.row;
-import static org.jooq.impl.DSL.selectDistinct;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -129,9 +127,11 @@ public class CommonDataDbService implements DbConstant {
 		return create
 				.select(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
-				.where(row(DOMAIN_LABEL.CODE, DOMAIN_LABEL.ORIGIN)
-						.in(selectDistinct(MEANING_DOMAIN.DOMAIN_CODE, MEANING_DOMAIN.DOMAIN_ORIGIN)
-								.from(MEANING_DOMAIN)))
+				.whereExists(DSL
+						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
+						.from(MEANING_DOMAIN)
+						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
+								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
 				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
 				.fetch();
 	}

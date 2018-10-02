@@ -593,13 +593,13 @@ public class ConversionUtil {
 	}
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
-		return (lexeme.getDefinitions() == null || lexeme.getDefinitions().isEmpty()) &&
-				(lexeme.getSecondaryCollocations() == null | lexeme.getSecondaryCollocations().isEmpty()) &&
-				(lexeme.getCollocationPosGroups() == null || lexeme.getCollocationPosGroups().isEmpty()) &&
-				(lexeme.getDomains() == null || lexeme.getDomains().isEmpty()) &&
-				(lexeme.getGovernments() == null || lexeme.getGovernments().isEmpty()) &&
-				(lexeme.getUsages() == null || lexeme.getUsages().isEmpty()) &&
-				(lexeme.getRegisters() == null || lexeme.getRegisters().isEmpty());
+		return CollectionUtils.isEmpty(lexeme.getDefinitions()) &&
+				CollectionUtils.isEmpty(lexeme.getSecondaryCollocations()) &&
+				CollectionUtils.isEmpty(lexeme.getCollocationPosGroups()) &&
+				CollectionUtils.isEmpty(lexeme.getDomains()) &&
+				CollectionUtils.isEmpty(lexeme.getGovernments()) &&
+				CollectionUtils.isEmpty(lexeme.getUsages()) &&
+				CollectionUtils.isEmpty(lexeme.getRegisters());
 	}
 
 }

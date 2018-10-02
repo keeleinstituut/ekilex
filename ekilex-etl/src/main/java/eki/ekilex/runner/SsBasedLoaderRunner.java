@@ -416,6 +416,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		for (Element valueNode : valueNodes) {
 			if (!isRestricted(valueNode)) {
 				String value = valueNode.getTextTrim();
+				value = cleanEkiEntityMarkup(value);
 				values.add(value);
 			}
 		}
@@ -430,7 +431,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected String cleanUp(String value) {
-		String cleanedWord = replaceChars(value, formStrCleanupChars, "");
+		String cleanedWord = cleanEkiEntityMarkup(value);
+		cleanedWord = replaceChars(cleanedWord, formStrCleanupChars, "");
 		return cleanedWord;
 	}
 

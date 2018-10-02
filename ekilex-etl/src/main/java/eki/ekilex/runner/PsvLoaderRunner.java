@@ -1190,12 +1190,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);
 			for (Element usageNode : usageNodes) {
 				Usage usage = new Usage();
-				usage.setValue(usageNode.getTextTrim());
+				String usageValue = usageNode.getTextTrim();
+				usageValue = cleanEkiEntityMarkup(usageValue);
+				usage.setValue(usageValue);
 				usage.setDefinitions(new ArrayList<>());
 				usages.add(usage);
 				if (usageNode.hasMixedContent()) {
 					Node usageDefinitionNode = usageNode.selectSingleNode("x:nd");
 					String usageDefinition = usageDefinitionNode.getText();
+					usageDefinition = cleanEkiEntityMarkup(usageDefinition);
 					usage.getDefinitions().add(usageDefinition);
 				}
 			}
@@ -1233,12 +1236,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Element wordGroupNode : wordGroupNodes) {
 			Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 			String formValue = wordNode.getTextTrim();
+			formValue = cleanEkiEntityMarkup(formValue);
 			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
 			for (Element referenceFormNode : referenceFormNodes) {
 				ReferenceFormData referenceFormData = new ReferenceFormData();
+				String wordValue = referenceFormNode.getTextTrim();
+				wordValue = cleanEkiEntityMarkup(wordValue);
 				referenceFormData.formValue = formValue;
 				referenceFormData.reportingId = reportingId;
-				referenceFormData.wordValue = referenceFormNode.getTextTrim();
+				referenceFormData.wordValue = wordValue;
 				if (referenceFormNode.attributeValue(homonymNrAttr) != null) {
 					referenceFormData.wordHomonymNr = Integer.parseInt(referenceFormNode.attributeValue(homonymNrAttr));
 				}
@@ -1292,19 +1298,29 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
 
 			Element grammarNode = (Element) wordGroupNode.selectSingleNode(wordGrammarExp);
-			wordData.grammar = grammarNode == null ? null : grammarNode.getTextTrim();
+			wordData.grammar = grammarNode == null ? null : cleanEkiEntityMarkup(grammarNode.getTextTrim());
 
 			Element frequencyNode = (Element) wordGroupNode.selectSingleNode(wordFrequencyGroupExp);
 			wordData.frequencyGroup = frequencyNode == null ? null : frequencyNode.getTextTrim();
 
 			List<Element> wordComparativeNodes = wordGroupNode.selectNodes(wordComparativeExp);
 			wordData.comparatives = wordComparativeNodes.stream()
-					.map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, ""))
+					.map(n -> {
+						String value = n.getTextTrim();
+						value = cleanEkiEntityMarkup(value);
+						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
+						return value;
+						})
 					.collect(Collectors.toList());
 
 			List<Element> wordSuperlativeNodes = wordGroupNode.selectNodes(wordSuperlativeExp);
 			wordData.superlatives = wordSuperlativeNodes.stream()
-					.map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, ""))
+					.map(n -> {
+						String value = n.getTextTrim();
+						value = cleanEkiEntityMarkup(value);
+						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
+						return value;
+						})
 					.collect(Collectors.toList());
 
 			newWords.add(wordData);
@@ -1323,7 +1339,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
 			if (soundFileNode != null) {
 				Element formValueNode = (Element) morphValueGroupNode.selectSingleNode(formValueExp);
-				String formValue = StringUtils.replaceChars(formValueNode.getTextTrim(), formStrCleanupChars, "");
+				String formValue = formValueNode.getTextTrim();
+				formValue = cleanEkiEntityMarkup(formValue);
+				formValue = StringUtils.replaceChars(formValue, formStrCleanupChars, "");
 				SoundFileData data = new SoundFileData();
 				data.soundFile = soundFileNode.getTextTrim();
 				data.formValue = formValue;
@@ -1348,8 +1366,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Element> basicWordNodes = node.selectNodes(basicWordExp);
 		for (Element basicWordNode : basicWordNodes) {
 			WordData basicWord = new WordData();
+			String basicWordValue = basicWordNode.getTextTrim();
+			basicWordValue = cleanEkiEntityMarkup(basicWordValue);
 			basicWord.id = wordId;
-			basicWord.value = basicWordNode.getTextTrim();
+			basicWord.value = basicWordValue;
 			basicWord.reportingId = reportingId;
 			if (basicWordNode.attributeValue(homonymNrAttr) != null) {
 				basicWord.homonymNr = Integer.parseInt(basicWordNode.attributeValue(homonymNrAttr));
@@ -1371,7 +1391,14 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (formsNodes.isEmpty()) {
 			return Collections.emptyList();
 		}
-		List<String> formValues = formsNodes.stream().map(n -> StringUtils.replaceChars(n.getTextTrim(), formStrCleanupChars, "")).collect(Collectors.toList());
+		List<String> formValues = formsNodes.stream()
+				.map(n -> {
+					String value = n.getTextTrim();
+					value = cleanEkiEntityMarkup(value);
+					value = StringUtils.replaceChars(value, formStrCleanupChars, "");
+					return value;
+					})
+				.collect(Collectors.toList());
 		List<String> mabFormValues;
 		Collection<String> formValuesIntersection;
 		int bestFormValuesMatchCount = -1;
@@ -1404,6 +1431,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 		String wordValue = wordNode.getTextTrim();
 		String wordDisplayForm = wordValue;
+		wordValue = cleanEkiEntityMarkup(wordValue);
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		wordData.value = wordValue;
 
@@ -1462,7 +1490,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Element> formGroupNodes = wordGroupNode.selectNodes(formGroupExp);
 		for (Element formGroup : formGroupNodes) {
 			Element formElement = (Element) formGroup.selectSingleNode(formExp);
-			String formValue = StringUtils.replaceChars(formElement.getTextTrim(), wordDisplayFormStripChars, "");
+			String formValue = formElement.getTextTrim();
+			formValue = cleanEkiEntityMarkup(formValue);
+			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
 			if (word.equals(formValue)) {
 				return formGroup.attributeValue(morphCodeAttributeExp);
 			}
@@ -1477,7 +1507,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<String> forms = new ArrayList<>();
 		List<Element> formNodes = wordGroupNode.selectNodes(formValueExp);
 		for (Element formNode : formNodes) {
-			String formValue = StringUtils.replaceChars(formNode.getTextTrim(), wordDisplayFormStripChars, "");
+			String formValue = formNode.getTextTrim();
+			formValue = cleanEkiEntityMarkup(formValue);
+			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
 			forms.add(formValue);
 		}
 		return forms;
@@ -1491,6 +1523,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Element> definitionValueNodes = node.selectNodes(definitionValueExp);
 		for (Element definitionValueNode : definitionValueNodes) {
 			String definition = definitionValueNode.getTextTrim();
+			definition = cleanEkiEntityMarkup(definition);
 			definitions.add(definition);
 		}
 		return definitions;

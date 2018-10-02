@@ -20,6 +20,8 @@ import eki.wordweb.web.bean.SessionBean;
 @Component
 public class ViewUtil implements WebConstant, InitializingBean {
 
+	//TODO this is not viable solution
+	@Deprecated
 	private List<HtmlEntityDescription> htmlEntityDescriptions;
 
 	@Override
@@ -166,8 +168,13 @@ public class ViewUtil implements WebConstant, InitializingBean {
 		return htmlBuf.toString();
 	}
 
+	//TODO this is not viable solution
+	@Deprecated
 	public String getFormattedEntityHtml(String text) {
 
+		if (StringUtils.isBlank(text)) {
+			return text;
+		}
 		String html = new String(text);
 		StringBuffer htmlBuf;
 		int textLength;
