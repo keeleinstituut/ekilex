@@ -32,6 +32,8 @@ public class Word extends AbstractDataObject {
 
 	private String wordTypeCode;
 
+	private String aspectTypeCode;
+
 	public Word() {
 	}
 
@@ -158,5 +160,13 @@ public class Word extends AbstractDataObject {
 
 	public void setWordTypeCode(String wordTypeCode) {
 		this.wordTypeCode = wordTypeCode;
+	}
+
+	public String getAspectTypeCode() {
+		return aspectTypeCode;
+	}
+
+	public void setAspectTypeCode(String aspectTypeCode) {
+		this.aspectTypeCode = aspectTypeCode;
 	}
 }

@@ -170,12 +170,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		String guid = word.getGuid();
 		String genderCode = word.getGenderCode();
 		String typeCode = word.getWordTypeCode();
+		String aspectCode = word.getAspectTypeCode();
 
 		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
 
 		if (tableRowValueMap == null) {
-			wordId = createWord(wordValue, wordMorphCode, homonymNr, wordLang, wordDisplayMorph, genderCode, typeCode);
+			wordId = createWord(wordValue, wordMorphCode, homonymNr, wordLang, wordDisplayMorph, genderCode, typeCode, aspectCode);
 			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
 				createWordGuid(wordId, dataset, guid);
 			}
@@ -311,7 +312,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return paradigmId;
 	}
 
-	private Long createWord(String word, final String morphCode, final int homonymNr, String lang, String displayMorph, String genderCode, String typeCode) throws Exception {
+	private Long createWord(String word, final String morphCode, final int homonymNr, String lang, String displayMorph, String genderCode, String typeCode, String aspectCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lang", lang);
@@ -320,6 +321,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("display_morph_code", displayMorph);
 		tableRowParamMap.put("gender_code", genderCode);
 		tableRowParamMap.put("type_code", typeCode);
+		tableRowParamMap.put("aspect_code", aspectCode);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
 		return wordId;

@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.AspectType;
+import eki.ekilex.data.db.tables.AspectTypeLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
@@ -106,6 +108,8 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
+    public static final Index ASPECT_TYPE_PKEY = Indexes0.ASPECT_TYPE_PKEY;
+    public static final Index ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX;
@@ -267,6 +271,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
+        public static Index ASPECT_TYPE_PKEY = Internal.createIndex("aspect_type_pkey", AspectType.ASPECT_TYPE, new OrderField[] { AspectType.ASPECT_TYPE.CODE }, true);
+        public static Index ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("aspect_type_label_code_lang_type_key", AspectTypeLabel.ASPECT_TYPE_LABEL, new OrderField[] { AspectTypeLabel.ASPECT_TYPE_LABEL.CODE, AspectTypeLabel.ASPECT_TYPE_LABEL.LANG, AspectTypeLabel.ASPECT_TYPE_LABEL.TYPE }, true);
         public static Index COLLOCATION_PKEY = Internal.createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createIndex("collocation_freeform_collocation_id_freeform_id_key", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, true);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Internal.createIndex("collocation_freeform_collocation_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, false);

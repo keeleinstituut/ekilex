@@ -36,7 +36,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
 
-	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=";
+	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=*";
 	protected final static String defaultWordMorphCode = "??";
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
@@ -150,7 +150,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 					.findFirst();
 			if (!existingWord.isPresent()) {
 				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
-				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType);
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType, null);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
 				wordId = newWord.id;
@@ -207,13 +207,14 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType) throws Exception {
+	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType, String aspectType) throws Exception {
 
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
 		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
 		word.setDisplayMorph(displayMorph);
+		word.setAspectTypeCode(aspectType);
 		createdWord.id = createOrSelectWord(word, null, getDataset(), null);
 		createdWord.language = lang;
 		return createdWord;
@@ -541,6 +542,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String wordType;
 		Long meaningId;
 		String register;
+		String aspect;
+		Long wordId;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -556,6 +559,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.wordType = this.wordType;
 			newData.meaningId = this.meaningId;
 			newData.register = this.register;
+			newData.aspect = this.aspect;
+			newData.wordId = this.wordId;
 			return newData;
 		}
 	}

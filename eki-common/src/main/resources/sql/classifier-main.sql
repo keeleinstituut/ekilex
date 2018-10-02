@@ -1,3 +1,6 @@
+insert into aspect_type (code, datasets) values ('sov', '{}');
+insert into aspect_type (code, datasets) values ('nesov', '{}');
+insert into aspect_type (code, datasets) values ('sov/nesov', '{}');
 insert into deriv (code, datasets) values ('adv', '{}');
 insert into deriv (code, datasets) values ('dem', '{}');
 insert into deriv (code, datasets) values ('komp', '{}');
@@ -242,6 +245,7 @@ insert into word_rel_type (code, datasets) values ('superl', '{}');
 insert into word_rel_type (code, datasets) values ('deriv', '{}');
 insert into word_rel_type (code, datasets) values ('SERIES', '{}');
 insert into word_rel_type (code, datasets) values ('VARIANTS', '{}');
+insert into word_rel_type (code, datasets) values ('ASPECTS', '{}');
 insert into word_type (code, datasets) values ('k', '{}');
 insert into word_type (code, datasets) values ('l', '{}');
 insert into word_type (code, datasets) values ('p', '{}');
@@ -271,6 +275,9 @@ insert into word_type (code, datasets) values ('organisatsiooni, asutuse nimi', 
 insert into word_type (code, datasets) values ('õigusakti pealkiri', '{}');
 insert into word_type (code, datasets) values ('dokumendi pealkiri', '{}');
 
+insert into aspect_type_label (code, value, lang, type) values ('sov', 'совершенный', 'est', 'descrip');
+insert into aspect_type_label (code, value, lang, type) values ('nesov', 'не совершенный', 'est', 'descrip');
+insert into aspect_type_label (code, value, lang, type) values ('sov/nesov', 'совершенный/не совершенный', 'est', 'descrip');
 insert into deriv_label (code, value, lang, type) values ('adv', 'adverb (-lt)', 'est', 'descrip');
 insert into deriv_label (code, value, lang, type) values ('dem', 'KE/KENE', 'est', 'ekimorfo');
 insert into deriv_label (code, value, lang, type) values ('dem', 'diminutive', 'eng', 'descrip');
@@ -893,6 +900,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('superl', 'ül
 insert into word_rel_type_label (code, value, lang, type) values ('deriv', 'tuletis', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sari', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'full');
+insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'full');
 insert into word_rel_type_label (code, value, lang, type) values ('posit', 'algvõrre', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('komp', 'keskvõrre', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('deriv', 'tuletis', 'est', 'wordweb');
@@ -900,6 +908,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('deriv_base', 
 insert into word_rel_type_label (code, value, lang, type) values ('superl', 'ülivõrre', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sari', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('k', 'kohanimi', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('k', 'place name', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('l', 'lühend', 'est', 'descrip');
