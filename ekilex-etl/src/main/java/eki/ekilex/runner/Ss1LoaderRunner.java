@@ -487,7 +487,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private Long createWordWithLexeme(Context context, WordData wordData) throws Exception {
 
-		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, wordData.wordType);
+		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, wordData.wordType, null);
 		newWord.homonymNr = wordData.homonymNr;
 		context.importedWords.add(newWord);
 
