@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.AspectType;
+import eki.ekilex.data.db.tables.AspectTypeLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
@@ -81,6 +83,8 @@ import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
+import eki.ekilex.data.db.tables.records.AspectTypeLabelRecord;
+import eki.ekilex.data.db.tables.records.AspectTypeRecord;
 import eki.ekilex.data.db.tables.records.CollocationFreeformRecord;
 import eki.ekilex.data.db.tables.records.CollocationRecord;
 import eki.ekilex.data.db.tables.records.DatasetRecord;
@@ -228,6 +232,8 @@ public class Keys {
     // UNIQUE and PRIMARY KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final UniqueKey<AspectTypeRecord> ASPECT_TYPE_PKEY = UniqueKeys0.ASPECT_TYPE_PKEY;
+    public static final UniqueKey<AspectTypeLabelRecord> ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = UniqueKeys0.COLLOCATION_PKEY;
     public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = UniqueKeys0.COLLOCATION_FREEFORM_PKEY;
     public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = UniqueKeys0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
@@ -329,6 +335,9 @@ public class Keys {
     // FOREIGN KEY definitions
     // -------------------------------------------------------------------------
 
+    public static final ForeignKey<AspectTypeLabelRecord, AspectTypeRecord> ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_CODE_FKEY = ForeignKeys0.ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_CODE_FKEY;
+    public static final ForeignKey<AspectTypeLabelRecord, LangRecord> ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_LANG_FKEY = ForeignKeys0.ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_LANG_FKEY;
+    public static final ForeignKey<AspectTypeLabelRecord, LabelTypeRecord> ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_TYPE_FKEY = ForeignKeys0.ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_TYPE_FKEY;
     public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY;
     public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = ForeignKeys0.COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY;
     public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = ForeignKeys0.DEFINITION__DEFINITION_MEANING_ID_FKEY;
@@ -451,6 +460,7 @@ public class Keys {
     public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = ForeignKeys0.WORD__WORD_DISPLAY_MORPH_CODE_FKEY;
     public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = ForeignKeys0.WORD__WORD_GENDER_CODE_FKEY;
     public static final ForeignKey<WordRecord, WordTypeRecord> WORD__WORD_TYPE_CODE_FKEY = ForeignKeys0.WORD__WORD_TYPE_CODE_FKEY;
+    public static final ForeignKey<WordRecord, AspectTypeRecord> WORD__WORD_ASPECT_CODE_FKEY = ForeignKeys0.WORD__WORD_ASPECT_CODE_FKEY;
     public static final ForeignKey<WordEtymologyRecord, WordRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD1_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD1_ID_FKEY;
     public static final ForeignKey<WordEtymologyRecord, WordRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD2_ID_FKEY = ForeignKeys0.WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD2_ID_FKEY;
     public static final ForeignKey<WordEtymologyRecord, EtymologyTypeRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY = ForeignKeys0.WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY;
@@ -517,6 +527,8 @@ public class Keys {
     }
 
     private static class UniqueKeys0 {
+        public static final UniqueKey<AspectTypeRecord> ASPECT_TYPE_PKEY = Internal.createUniqueKey(AspectType.ASPECT_TYPE, "aspect_type_pkey", AspectType.ASPECT_TYPE.CODE);
+        public static final UniqueKey<AspectTypeLabelRecord> ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(AspectTypeLabel.ASPECT_TYPE_LABEL, "aspect_type_label_code_lang_type_key", AspectTypeLabel.ASPECT_TYPE_LABEL.CODE, AspectTypeLabel.ASPECT_TYPE_LABEL.LANG, AspectTypeLabel.ASPECT_TYPE_LABEL.TYPE);
         public static final UniqueKey<CollocationRecord> COLLOCATION_PKEY = Internal.createUniqueKey(Collocation.COLLOCATION, "collocation_pkey", Collocation.COLLOCATION.ID);
         public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_PKEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_pkey", CollocationFreeform.COLLOCATION_FREEFORM.ID);
         public static final UniqueKey<CollocationFreeformRecord> COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform_collocation_id_freeform_id_key", CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID);
@@ -616,6 +628,9 @@ public class Keys {
     }
 
     private static class ForeignKeys0 {
+        public static final ForeignKey<AspectTypeLabelRecord, AspectTypeRecord> ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.ASPECT_TYPE_PKEY, AspectTypeLabel.ASPECT_TYPE_LABEL, "aspect_type_label__aspect_type_label_code_fkey", AspectTypeLabel.ASPECT_TYPE_LABEL.CODE);
+        public static final ForeignKey<AspectTypeLabelRecord, LangRecord> ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANG_PKEY, AspectTypeLabel.ASPECT_TYPE_LABEL, "aspect_type_label__aspect_type_label_lang_fkey", AspectTypeLabel.ASPECT_TYPE_LABEL.LANG);
+        public static final ForeignKey<AspectTypeLabelRecord, LabelTypeRecord> ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, AspectTypeLabel.ASPECT_TYPE_LABEL, "aspect_type_label__aspect_type_label_type_fkey", AspectTypeLabel.ASPECT_TYPE_LABEL.TYPE);
         public static final ForeignKey<CollocationFreeformRecord, CollocationRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_COLLOCATION_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.COLLOCATION_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform__collocation_freeform_collocation_id_fkey", CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID);
         public static final ForeignKey<CollocationFreeformRecord, FreeformRecord> COLLOCATION_FREEFORM__COLLOCATION_FREEFORM_FREEFORM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, CollocationFreeform.COLLOCATION_FREEFORM, "collocation_freeform__collocation_freeform_freeform_id_fkey", CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID);
         public static final ForeignKey<DefinitionRecord, MeaningRecord> DEFINITION__DEFINITION_MEANING_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MEANING_PKEY, Definition.DEFINITION, "definition__definition_meaning_id_fkey", Definition.DEFINITION.MEANING_ID);
@@ -738,6 +753,7 @@ public class Keys {
         public static final ForeignKey<WordRecord, DisplayMorphRecord> WORD__WORD_DISPLAY_MORPH_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DISPLAY_MORPH_PKEY, Word.WORD, "word__word_display_morph_code_fkey", Word.WORD.DISPLAY_MORPH_CODE);
         public static final ForeignKey<WordRecord, GenderRecord> WORD__WORD_GENDER_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.GENDER_PKEY, Word.WORD, "word__word_gender_code_fkey", Word.WORD.GENDER_CODE);
         public static final ForeignKey<WordRecord, WordTypeRecord> WORD__WORD_TYPE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_TYPE_PKEY, Word.WORD, "word__word_type_code_fkey", Word.WORD.TYPE_CODE);
+        public static final ForeignKey<WordRecord, AspectTypeRecord> WORD__WORD_ASPECT_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.ASPECT_TYPE_PKEY, Word.WORD, "word__word_aspect_code_fkey", Word.WORD.ASPECT_CODE);
         public static final ForeignKey<WordEtymologyRecord, WordRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD1_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordEtymology.WORD_ETYMOLOGY, "word_etymology__word_etymology_word1_id_fkey", WordEtymology.WORD_ETYMOLOGY.WORD1_ID);
         public static final ForeignKey<WordEtymologyRecord, WordRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_WORD2_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.WORD_PKEY, WordEtymology.WORD_ETYMOLOGY, "word_etymology__word_etymology_word2_id_fkey", WordEtymology.WORD_ETYMOLOGY.WORD2_ID);
         public static final ForeignKey<WordEtymologyRecord, EtymologyTypeRecord> WORD_ETYMOLOGY__WORD_ETYMOLOGY_ETYMOLOGY_TYPE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.ETYMOLOGY_TYPE_PKEY, WordEtymology.WORD_ETYMOLOGY, "word_etymology__word_etymology_etymology_type_code_fkey", WordEtymology.WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE);

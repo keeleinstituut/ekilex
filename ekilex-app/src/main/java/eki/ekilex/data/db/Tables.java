@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.AspectType;
+import eki.ekilex.data.db.tables.AspectTypeLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
@@ -107,6 +109,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.aspect_type</code>.
+     */
+    public static final AspectType ASPECT_TYPE = eki.ekilex.data.db.tables.AspectType.ASPECT_TYPE;
+
+    /**
+     * The table <code>public.aspect_type_label</code>.
+     */
+    public static final AspectTypeLabel ASPECT_TYPE_LABEL = eki.ekilex.data.db.tables.AspectTypeLabel.ASPECT_TYPE_LABEL;
 
     /**
      * The table <code>public.collocation</code>.

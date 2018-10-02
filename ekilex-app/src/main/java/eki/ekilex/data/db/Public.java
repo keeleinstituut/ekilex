@@ -4,6 +4,8 @@
 package eki.ekilex.data.db;
 
 
+import eki.ekilex.data.db.tables.AspectType;
+import eki.ekilex.data.db.tables.AspectTypeLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
@@ -126,12 +128,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -584102188;
+    private static final long serialVersionUID = 1965596368;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.aspect_type</code>.
+     */
+    public final AspectType ASPECT_TYPE = eki.ekilex.data.db.tables.AspectType.ASPECT_TYPE;
+
+    /**
+     * The table <code>public.aspect_type_label</code>.
+     */
+    public final AspectTypeLabel ASPECT_TYPE_LABEL = eki.ekilex.data.db.tables.AspectTypeLabel.ASPECT_TYPE_LABEL;
 
     /**
      * The table <code>public.collocation</code>.
@@ -659,6 +671,8 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            AspectType.ASPECT_TYPE,
+            AspectTypeLabel.ASPECT_TYPE_LABEL,
             Collocation.COLLOCATION,
             CollocationFreeform.COLLOCATION_FREEFORM,
             Dataset.DATASET,
