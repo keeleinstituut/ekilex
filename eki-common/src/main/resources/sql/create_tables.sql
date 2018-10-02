@@ -123,6 +123,22 @@ create table word_type_label
   unique(code, lang, type)
 );
 
+-- aspekt
+create table aspect_type
+(
+  code varchar(100) primary key,
+  datasets varchar(10) array not null
+);
+
+create table aspect_type_label
+(
+  code varchar(100) references aspect_type(code) on delete cascade not null,
+  value text not null,
+  lang char(3) references lang(code) not null,
+  type varchar(10) references label_type(code) not null,
+  unique(code, lang, type)
+);
+
 -- ilmiku sagedusrühm
 create table lexeme_frequency
 (
@@ -399,7 +415,8 @@ create table word
   homonym_nr integer default 1,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
-  type_code varchar(100) references word_type(code) null
+  type_code varchar(100) references word_type(code) null,
+  aspect_code varchar(100) references aspect_type(code) null
 );
 alter sequence word_id_seq restart with 10000;
 

@@ -23,7 +23,8 @@ public enum ClassifierName {
 	USAGE_AUTHOR_TYPE(true),
 	USAGE_TYPE(true),
 	VALUE_STATE(true),
-	POS_GROUP(true)
+	POS_GROUP(true),
+	ASPECT_TYPE(true)
 	;
 
 	private boolean hasLabel;

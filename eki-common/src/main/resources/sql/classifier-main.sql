@@ -1,3 +1,6 @@
+insert into aspect_type (code, datasets) values ('sov', '{}');
+insert into aspect_type (code, datasets) values ('nesov', '{}');
+insert into aspect_type (code, datasets) values ('sov/nesov', '{}');
 insert into deriv (code, datasets) values ('adv', '{}');
 insert into deriv (code, datasets) values ('dem', '{}');
 insert into deriv (code, datasets) values ('komp', '{}');
@@ -271,6 +274,9 @@ insert into word_type (code, datasets) values ('organisatsiooni, asutuse nimi', 
 insert into word_type (code, datasets) values ('õigusakti pealkiri', '{}');
 insert into word_type (code, datasets) values ('dokumendi pealkiri', '{}');
 
+insert into aspect_type_label (code, value, lang, type) values ('sov', 'совершенный', 'est', 'descrip');
+insert into aspect_type_label (code, value, lang, type) values ('nesov', 'не совершенный', 'est', 'descrip');
+insert into aspect_type_label (code, value, lang, type) values ('sov/nesov', 'совершенный/не совершенный', 'est', 'descrip');
 insert into deriv_label (code, value, lang, type) values ('adv', 'adverb (-lt)', 'est', 'descrip');
 insert into deriv_label (code, value, lang, type) values ('dem', 'KE/KENE', 'est', 'ekimorfo');
 insert into deriv_label (code, value, lang, type) values ('dem', 'diminutive', 'eng', 'descrip');

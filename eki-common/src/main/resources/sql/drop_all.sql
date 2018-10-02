@@ -71,6 +71,8 @@ drop table if exists lex_rel_type;
 drop table if exists process_state;
 drop table if exists word_type_label;
 drop table if exists word_type;
+drop table if exists aspect_type_label;
+drop table if exists aspect_type;
 drop table if exists deriv_label;
 drop table if exists deriv;
 drop table if exists display_morph_label;
