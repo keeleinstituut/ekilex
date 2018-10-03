@@ -152,6 +152,9 @@
                       </th:block>
                     </div>
                   </div>
+                  <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
+                      <img class="homonym-image" th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
+                  </div>
                 </div>
                 <div class="col-lg-12 meaning-meta">
                   <div class="synonyms">
@@ -406,11 +409,6 @@
                   </a>
                   <span th:text="${'(' + relation.wordRelType.value + ')'}"></span>
                 </div>
-              </div>
-            </div>
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.imageFiles)}">
-              <div class="col">
-                <img class="homonym-image" th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
               </div>
             </div>
             <div id="korp" th:text="#{label.korp.search}">Otsin veebilauseid...</div>
