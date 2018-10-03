@@ -208,14 +208,15 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType, String aspectType) throws Exception {
 
-		WordData createdWord = new WordData();
-		createdWord.value = wordValue;
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
 		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
 		word.setDisplayMorph(displayMorph);
 		word.setAspectTypeCode(aspectType);
-		createdWord.id = createOrSelectWord(word, null, getDataset(), null);
+		WordData createdWord = new WordData();
+		createdWord.value = wordValue;
+		createdWord.displayForm = displayForm;
 		createdWord.language = lang;
+		createdWord.id = createOrSelectWord(word, null, getDataset(), null);
 		return createdWord;
 	}
 
@@ -495,6 +496,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String displayMorph;
 		int level1 = 1;
 		String language;
+		String displayForm;
 	}
 
 	protected class PosData {

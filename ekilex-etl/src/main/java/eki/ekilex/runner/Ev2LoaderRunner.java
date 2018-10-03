@@ -301,7 +301,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> definitions = extractValuesAsStrings(meaningGroupNode, meaningDefinitionExp);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
-				List<List<String>> aspectGroups = new ArrayList<>();
+				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
 				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
@@ -359,33 +359,31 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<String>> aspectGroups, Long meaningId) throws Exception {
-		List<WordData> createdRussianWords = new ArrayList<>();
-		for (LexemeToWordData russianWord : meaningRussianWords) {
-			WordData russianWordData = findOrCreateWord(context, russianWord.word, russianWord.displayForm, russianLang, russianWord.aspect);
-			createdRussianWords.add(russianWordData);
+	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<LexemeToWordData>> aspectGroups, Long meaningId) throws Exception {
+		for (LexemeToWordData russianWordData : meaningRussianWords) {
+			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, russianLang, russianWordData.aspect);
+			russianWordData.wordId = russianWord.id;
 			Lexeme lexeme = new Lexeme();
-			lexeme.setWordId(russianWordData.id);
+			lexeme.setWordId(russianWord.id);
 			lexeme.setMeaningId(meaningId);
-			lexeme.setLevel1(russianWordData.level1);
-			russianWordData.level1++;
+			lexeme.setLevel1(russianWord.level1);
+			russianWord.level1++;
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
 			Long lexemeId = createLexeme(lexeme, getDataset());
 			if (lexemeId != null) {
-				if (StringUtils.isNotBlank(russianWord.government)) {
-					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, russianWord.government);
+				if (StringUtils.isNotBlank(russianWordData.government)) {
+					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, russianWordData.government);
 				}
-				if (StringUtils.isNotBlank(russianWord.register)) {
-					saveRegisters(lexemeId, asList(russianWord.register), russianWord.word);
+				if (StringUtils.isNotBlank(russianWordData.register)) {
+					saveRegisters(lexemeId, asList(russianWordData.register), russianWordData.word);
 				}
 			}
 		}
-		for (List<String> aspectGroup : aspectGroups) {
+		for (List<LexemeToWordData> aspectGroup : aspectGroups) {
 			Long wordGroup = createWordRelationGroup(WordRelationGroupType.ASPECTS);
-			for (String word : aspectGroup) {
-				Long wordId = createdRussianWords.stream().filter(wordData -> wordData.value.equals(word)).findFirst().get().id;
-				createWordRelationGroupMember(wordGroup, wordId);
+			for (LexemeToWordData wordData : aspectGroup) {
+				createWordRelationGroupMember(wordGroup, wordData.wordId);
 			}
 		}
 	}
@@ -472,7 +470,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect) throws Exception {
-		Optional<WordData> word = context.importedWords.stream().filter(w -> wordValue.equals(w.value)).findFirst();
+		Optional<WordData> word = context.importedWords.stream()
+				.filter(w -> Objects.equals(w.value, wordValue) && Objects.equals(w.displayForm, wordDisplayForm)).findFirst();
 		if (word.isPresent()) {
 			return word.get();
 		} else {
@@ -615,7 +614,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return extractValuesAsStrings(node, wordGovernmentExp);
 	}
 
-	private List<LexemeToWordData> extractRussianWords(Element node, List<String> additionalDomains, List<List<String>> aspectGroups, String reportingId) {
+	private List<LexemeToWordData> extractRussianWords(Element node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId) {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -642,22 +641,24 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
 			}
-			if (StringUtils.isNotBlank(aspectWord)) {
+			boolean wordHasAspect = StringUtils.isNotBlank(aspectWord);
+			if (wordHasAspect) {
 				wordData.aspect = calculateAspectType(word);
 			}
 			dataList.add(wordData);
 
-			if (StringUtils.isBlank(aspectWord)) continue;
-			LexemeToWordData aspectData = new LexemeToWordData();
-			aspectData.aspect = calculateAspectType(aspectWord);
-			aspectData.word = cleanUp(aspectWord);
-			aspectData.displayForm = aspectWord;
-			aspectData.reportingId = reportingId;
-			dataList.add(aspectData);
-			List<String> aspectGroup = new ArrayList<>();
-			aspectGroup.add(wordData.word);
-			aspectGroup.add(aspectData.word);
-			aspectGroups.add(aspectGroup);
+			if (wordHasAspect) {
+				LexemeToWordData aspectData = new LexemeToWordData();
+				aspectData.aspect = calculateAspectType(aspectWord);
+				aspectData.word = cleanUp(aspectWord);
+				aspectData.displayForm = aspectWord;
+				aspectData.reportingId = reportingId;
+				dataList.add(aspectData);
+				List<LexemeToWordData> aspectGroup = new ArrayList<>();
+				aspectGroup.add(wordData);
+				aspectGroup.add(aspectData);
+				aspectGroups.add(aspectGroup);
+			}
 		}
 		return dataList;
 	}

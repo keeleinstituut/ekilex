@@ -62,9 +62,11 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, datasets);
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
-			searchMode = SEARCH_MODE_DETAIL;
-			datasets = getDatasets(sourceLang, destinLang, searchMode);
+			datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
 			allWords = lexSearchDbService.findWords(searchWord, sourceLang, datasets);
+			if (CollectionUtils.isNotEmpty(allWords)) {
+				searchMode = SEARCH_MODE_DETAIL;
+			}
 		}
 		conversionUtil.filterLanguageValues(allWords, destinLang);
 		conversionUtil.selectHomonym(allWords, homonymNr);
