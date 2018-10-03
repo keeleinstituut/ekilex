@@ -615,7 +615,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return extractValuesAsStrings(node, wordGovernmentExp);
 	}
 
-	private List<LexemeToWordData> extractRussianWords(Element node, List<String> additionalDomains, List<List<String>> aspectGroups, String reportingId) {
+	private List<LexemeToWordData> extractRussianWords(Element node, List<String> additionalDomains, List<List<String>> aspectGroups, String reportingId)
+			throws Exception {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -642,24 +643,38 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
 			}
-			if (StringUtils.isNotBlank(aspectWord)) {
+			boolean wordHasAspect = hasAspect(word, aspectWord);
+			if (wordHasAspect) {
 				wordData.aspect = calculateAspectType(word);
+			} else {
+				if (cleanedWordsAreSame(word, aspectWord)) {
+					writeToLogFile(ARTICLES_REPORT_NAME, reportingId, "Aspektide sõnad on samad", word + " : " + aspectWord);
+				}
 			}
 			dataList.add(wordData);
 
-			if (StringUtils.isBlank(aspectWord)) continue;
-			LexemeToWordData aspectData = new LexemeToWordData();
-			aspectData.aspect = calculateAspectType(aspectWord);
-			aspectData.word = cleanUp(aspectWord);
-			aspectData.displayForm = aspectWord;
-			aspectData.reportingId = reportingId;
-			dataList.add(aspectData);
-			List<String> aspectGroup = new ArrayList<>();
-			aspectGroup.add(wordData.word);
-			aspectGroup.add(aspectData.word);
-			aspectGroups.add(aspectGroup);
+			if (wordHasAspect) {
+				LexemeToWordData aspectData = new LexemeToWordData();
+				aspectData.aspect = calculateAspectType(aspectWord);
+				aspectData.word = cleanUp(aspectWord);
+				aspectData.displayForm = aspectWord;
+				aspectData.reportingId = reportingId;
+				dataList.add(aspectData);
+				List<String> aspectGroup = new ArrayList<>();
+				aspectGroup.add(wordData.word);
+				aspectGroup.add(aspectData.word);
+				aspectGroups.add(aspectGroup);
+			}
 		}
 		return dataList;
+	}
+
+	private boolean hasAspect(String word, String aspectWord) {
+		return StringUtils.isNotBlank(aspectWord) && !cleanedWordsAreSame(word, aspectWord);
+	}
+
+	private boolean cleanedWordsAreSame(String word, String aspectWord) {
+		return Objects.equals(cleanUp(word),cleanUp(aspectWord));
 	}
 
 	private String calculateAspectType(String word) {
