@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.removePattern;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.util.ArrayList;

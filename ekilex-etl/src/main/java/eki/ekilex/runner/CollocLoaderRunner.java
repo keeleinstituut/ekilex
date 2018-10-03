@@ -45,17 +45,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private static final String SQL_SELECT_LEXEME_MEANING_BY_WORD_AND_NO_POS_PATH = "sql/select_lexeme_meaning_by_word_and_no_pos.sql";
 
 	private static final String REPORT_ILLEGAL_DATA = "illegal_data";
-
 	private static final String REPORT_UNKNOWN_CLASSIF = "unknown_classifier";
-
 	private static final String REPORT_REPEATING_COLLOC_MEMBER = "repeating_colloc_member";
-
 	private static final String REPORT_UNKNOWN_COLLOC_MEMBER = "unknown_colloc_member";
-
 	private static final String REPORT_ILLEGAL_LEMPOSVK_REF = "illegal_lemposvk_ref";
-
 	private static final String REPORT_DIFFERENT_COLLOC_DEFINITION = "different_colloc_definition";
-
 	private static final String REPORT_FAILING_HOMONYM_GUESS = "failing_homonym_guess";
 
 	private final String dataLang = "est";
@@ -839,10 +833,12 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 					collocBuf.append(collocMemberForm);
 					collocBuf.append(' ');
 					collocBuf.append(conjunct);
+					collocBuf.append(' ');
 				} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
 					collocBuf.append(conjunct);
 					collocBuf.append(' ');
 					collocBuf.append(collocMemberForm);
+					collocBuf.append(' ');
 				} else {
 					//illegal case
 				}
@@ -1194,7 +1190,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return lexemeMeanings;
 	}
 
-	private void appendToReport(boolean doReports, String reportName, String ... reportCells) throws Exception {
+	private void appendToReport(boolean doReports, String reportName, Object ... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}

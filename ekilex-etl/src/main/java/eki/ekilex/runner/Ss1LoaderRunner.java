@@ -947,9 +947,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<Usage> usageMeanings = new ArrayList<>();
 		List<Element> usageNodes = node.selectNodes(usageExp);
 		for (Element usageNode : usageNodes) {
+			String usageValue = usageNode.getTextTrim();
+			usageValue = cleanEkiEntityMarkup(usageValue);
 			Usage usage = new Usage();
 			usage.setExtSourceId(conceptId);//disputable mitigation
-			usage.setValue(usageNode.getTextTrim());
+			usage.setValue(usageValue);
 			usage.setDefinitions(new ArrayList<>());
 			if (usageNode.hasMixedContent()) {
 				Element definitionNode = (Element) usageNode.selectSingleNode(deinitionExp);
@@ -957,7 +959,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					definitionNode = (Element) usageNode.selectSingleNode(deinitionExp2);
 				}
 				if (definitionNode != null) {
-					usage.getDefinitions().add(definitionNode.getText());
+					String usageDefinitionValue = definitionNode.getText();
+					usageDefinitionValue = cleanEkiEntityMarkup(usageDefinitionValue);
+					usage.getDefinitions().add(usageDefinitionValue);
 				}
 			}
 			usage.setUsageType(usageNode.attributeValue(usageTypeAttr));

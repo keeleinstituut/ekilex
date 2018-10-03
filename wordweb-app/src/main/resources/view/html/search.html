@@ -246,8 +246,9 @@
                                     <span th:if="${displayCollocIter.first}">
                                       <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
                                         <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
-                                          <span th:if="${displayColloc.headwordMember.conjunct != null}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                          <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.preConjunct}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
                                           <span class="text-info" th:text="${displayColloc.headwordMember.form}"></span>
+                                          <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.postConjunct}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
                                         </span>
                                         <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                           <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
