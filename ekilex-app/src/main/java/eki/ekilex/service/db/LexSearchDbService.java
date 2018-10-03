@@ -31,9 +31,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import java.math.BigDecimal;
 import java.util.List;
 
-import eki.ekilex.data.db.tables.WordGroup;
-import eki.ekilex.data.db.tables.WordGroupMember;
-import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.Condition;
@@ -68,7 +65,6 @@ import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
-import eki.ekilex.data.db.tables.LexRelTypeLabel;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
 import eki.ekilex.data.db.tables.Meaning;
@@ -77,6 +73,9 @@ import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.Paradigm;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
+import eki.ekilex.data.db.tables.WordGroup;
+import eki.ekilex.data.db.tables.WordGroupMember;
+import eki.ekilex.data.db.tables.WordRelTypeLabel;
 
 @Service
 public class LexSearchDbService extends AbstractSearchDbService {

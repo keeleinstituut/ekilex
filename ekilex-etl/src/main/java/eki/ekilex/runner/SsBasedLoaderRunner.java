@@ -417,6 +417,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		for (Element valueNode : valueNodes) {
 			if (!isRestricted(valueNode)) {
 				String value = valueNode.getTextTrim();
+				value = cleanEkiEntityMarkup(value);
 				values.add(value);
 			}
 		}
@@ -431,9 +432,9 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected String cleanUp(String value) {
-		String cleanedWord = replaceChars(value, formStrCleanupChars, "");
-		// FIXME: quick fix for removing subscript tags, better solution would be to use some markup for mathematical and chemical formulas
-		return removePattern(cleanedWord, "[&]\\w+[;]");
+		String cleanedWord = cleanEkiEntityMarkup(value);
+		cleanedWord = replaceChars(cleanedWord, formStrCleanupChars, "");
+		return cleanedWord;
 	}
 
 	protected void writeToLogFile(String reportingId, String message, String values) throws Exception {

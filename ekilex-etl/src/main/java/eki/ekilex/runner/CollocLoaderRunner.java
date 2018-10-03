@@ -105,8 +105,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final String[] secondaryCollocMemberNames = new String[] {"cnte", "cce", "ccj", "cnt"};
 	private final String[] collocMemberNames = new String[] {
 			prevWordCollocMemberName, nextWordCollocMemberName, colWordCollocMemberName, "cnte", "cce", "ccj", "cnt"};
-	private final String[] textCleanupEnitites = new String[] {"&ba;", "&bl;"};
-	private final String[] textCleanupEnityReplacements = new String[] {"", ""};
 
 	private final Float inboundPrimaryCollocMemberWeight = 1F;
 	private final Float outboundPrimaryCollocMemberWeight = 0.8F;
@@ -263,6 +261,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
 			}
 			word = wordNode.getTextTrim();
+			word = cleanEkiEntityMarkup(word);
 			wordObj = wordMap.get(word).get(wordHomonymNum);
 			Long wordId = wordObj.getId();
 			String wordPosCode = wordPosNode.getTextTrim();
@@ -426,6 +425,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				wordHomonymNum = Integer.valueOf(wordHomonymNumAttr.getValue());
 			}
 			word = wordNode.getTextTrim();
+			word = cleanEkiEntityMarkup(word);
 			wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(displayMorphExp);
 			if (wordDisplayMorphNode == null) {
 				wordDisplayMorph = null;
@@ -501,6 +501,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Element> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes(meaningDefinitionExp);
 		for (Element meaningDefinitionNode : meaningDefinitionNodes) {
 			String definition = meaningDefinitionNode.getTextTrim();
+			definition = cleanEkiEntityMarkup(definition);
 			createDefinition(meaningId, definition, dataLang, getDataset());
 		}
 	}
@@ -509,6 +510,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Element> lexemeGrammarNodes = meaningBlockNode.selectNodes(lexemeGrammarExp);
 		for (Element lexemeGrammarNode : lexemeGrammarNodes) {
 			String grammar = lexemeGrammarNode.getTextTrim();
+			grammar = cleanEkiEntityMarkup(grammar);
 			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, grammar, dataLang);
 		}
 	}
@@ -529,6 +531,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				if (ArrayUtils.contains(collocMemberNames, collocMemberName)) {
 
 					String form = collocMemberNode.getTextTrim();
+					form = cleanEkiEntityMarkup(form);
 					String conjunct = collocMemberNode.attributeValue(collocConjunctAttr);
 					String lemmaDataStr = collocMemberNode.attributeValue(lemmaDataAttr);
 					conjunct = StringUtils.replace(conjunct, "v", "või");
@@ -608,7 +611,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<String> collocUsages = new ArrayList<>();
 		for (Element collocUsageNode : collocUsageNodes) {
 			String collocUsage = collocUsageNode.getTextTrim();
-			collocUsage = StringUtils.replaceEach(collocUsage, textCleanupEnitites, textCleanupEnityReplacements);
+			collocUsage = cleanEkiEntityMarkup(collocUsage);
 			collocUsages.add(collocUsage);
 		}
 		return collocUsages;

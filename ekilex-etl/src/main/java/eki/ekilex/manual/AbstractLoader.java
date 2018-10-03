@@ -103,6 +103,7 @@ public abstract class AbstractLoader implements SystemConstant {
 				String sourceGuid = ssGuidMapRowCells[1].toLowerCase();
 				String targetGuid = ssGuidMapRowCells[2].toLowerCase();
 				String word = ssGuidMapRowCells[3];
+				word = StringUtils.removePattern(word, "[&]\\w+[;]");
 				if (StringUtils.equals(sourceDataset, filteringDataset)) {
 					mappedGuids = ssGuidMap.get(sourceGuid);
 					if (mappedGuids == null) {

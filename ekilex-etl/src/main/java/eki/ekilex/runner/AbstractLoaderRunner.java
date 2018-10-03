@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import eki.common.constant.WordRelationGroupType;
@@ -92,6 +94,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected String sqlSourceByTypeAndName;
 
+	private Pattern ekiEntityPatternV;
+
 	abstract void initialise() throws Exception;
 
 	@Override
@@ -116,6 +120,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_SOURCE_BY_TYPE_AND_NAME);
 		sqlSourceByTypeAndName = getContent(resourceFileInputStream);
+
+		ekiEntityPatternV = Pattern.compile("(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|v|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)");
 	}
 
 	protected String getContent(InputStream resourceInputStream) throws Exception {
@@ -138,6 +144,17 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Locale locale = new Locale(lang);
 		lang = locale.getISO3Language();
 		return lang;
+	}
+
+	protected String cleanEkiEntityMarkup(String value) {
+		if (StringUtils.isBlank(value)) {
+			return value;
+		}
+		Matcher matcher = ekiEntityPatternV.matcher(value);
+		if (matcher.find()) {
+			value = matcher.replaceAll(matcher.group(2));
+		}
+		return StringUtils.removePattern(value, "[&]\\w+[;]");
 	}
 
 	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
