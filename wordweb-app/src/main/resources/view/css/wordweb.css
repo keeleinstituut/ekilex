@@ -82,3 +82,13 @@
 .example-item:hover .robo-icon{
     opacity: 1;
 }
+
+.collocations-section {
+    clear: both;
+    display: block;
+}
+
+.level-3-panel:not(.expand) .collocations-section {
+    display: none;
+    opacity: 0;
+}
