@@ -111,8 +111,8 @@
                     </h6>
                   </div>
                   <div class="definition">
-                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ',' : '')}"></i>
-                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ',')}"></i>
+                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i>
+                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}"
                           th:text="${definition.value + (definitionIter.last ? '' : ';')}">
                     </span>
@@ -136,18 +136,16 @@
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
                       <span class="example-text" th:text="${usage.usage}"></span>
                       <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
-                        <th:block class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
-                          <span th:if="${usageAuthor.translator}" th:text=#{reference.type.translator}>Tõlkija</span>
+                        <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
+                          <span th:if="${usageAuthor.translator}" th:text="#{reference.type.translator}">Tõlkija</span>
                           <span th:text="${usageAuthor.name}"></span>
-                        </th:block>
+                        </div>
                       </th:block>
                       <button class="btn btn-speaker">
                         <img class="robo-icon" th:src="@{/view/images/icons/robot.svg}">
                       </button>
                       <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
-                        <th:block th:each="usageTranslation : ${usage.usageTranslations}">
-                          <span class="example-text" th:text="${usageTranslation}"></span>
-                        </th:block>
+                        <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:text="${usageTranslation}"></span>
                       </th:block>
                     </div>
                   </div>
@@ -200,7 +198,7 @@
                       <div class="col-3">
                         <b th:text="#{label.learner.comment}">Õppekommentaar</b>
                       </div>
-                      <div class="col-9">
+                      <div class="col-12">
                         <div th:each="note : ${lexeme.learnerComments}" th:text="${note}"></div>
                       </div>
                     </div>
@@ -213,8 +211,7 @@
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <div class="col-3"></div>
-                      <div class="col-9">
+                      <div class="col-12">
                         <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
                       </div>
                     </div>
@@ -222,7 +219,7 @@
                 </div>
                 <div class="col-lg-12 collocations-section">
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
-                    <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}" style="width: 700px !important">
+                    <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                       <div class="row">
                           <span class="col">
                             <b th:text="#{label.collocations}">Kollokatsioonid</b>
@@ -289,7 +286,7 @@
                         </div>
                       </div>
                     </div>
-                    <div th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}" style="width: 700px !important">
+                    <div th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
                       <div class="row">
                         <b class="col" th:text="#{label.used.in.collocations}">Kasutatud kollokatsioonides</b>
                       </div>
