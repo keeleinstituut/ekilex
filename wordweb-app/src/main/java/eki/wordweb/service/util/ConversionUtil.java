@@ -58,6 +58,7 @@ public class ConversionUtil {
 				List<String> meaningWordValues = meaningWords.stream()
 						.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
 						.map(meaningWord -> meaningWord.getValue())
+						.distinct()
 						.collect(Collectors.toList());
 				String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
 				word.setMeaningWordsWrapup(meaningWordsWrapup);
@@ -164,23 +165,21 @@ public class ConversionUtil {
 	private void transformSecondaryCollocationsForDisplay(Long wordId, List<Lexeme> lexemes, List<String> existingCollocationValues) {
 
 		List<Collocation> collocations;
-		List<CollocationRelGroup> secondaryCollocGroups;
+		//List<CollocationRelGroup> secondaryCollocGroups;
+		List<TypeCollocMember> collocMembers;
 
 		for (Lexeme lexeme : lexemes) {
 
 			collocations = lexeme.getSecondaryCollocations();
-			secondaryCollocGroups = arrangeCollocationsIntoGroups(wordId, collocations);
-			lexeme.setSecondaryCollocGroups(secondaryCollocGroups);
+			List<Collocation> uniqueCollocations = new ArrayList<>();
 
-			for (CollocationRelGroup collocGroup : secondaryCollocGroups) {
-				transformCollocationsForDisplay(wordId, collocGroup, existingCollocationValues);
-			}
-
-			/*
 			for (Collocation colloc : collocations) {
-				if (existingCollocationValues.contains(colloc.getValue())) {
+				String collocValue = colloc.getValue();
+				if (existingCollocationValues.contains(collocValue)) {
 					continue;
 				}
+				existingCollocationValues.add(collocValue);
+				uniqueCollocations.add(colloc);
 				collocMembers = colloc.getCollocMembers();
 				boolean containsOtherWords = collocMembers.stream().anyMatch(collocMember -> !collocMember.getWordId().equals(wordId));
 				List<TypeCollocMember> filteredCollocMembers = collocMembers.stream().filter(collocMember -> {
@@ -198,10 +197,22 @@ public class ConversionUtil {
 					collocMember.setContext(isContext);
 				}
 			}
+			lexeme.setSecondaryCollocations(uniqueCollocations);
+
+			/*
+			 * FIXME nope, doesn't work
+			 * 
+			secondaryCollocGroups = arrangeCollocationsIntoGroups(wordId, collocations);
+			lexeme.setSecondaryCollocGroups(secondaryCollocGroups);
+
+			for (CollocationRelGroup collocGroup : secondaryCollocGroups) {
+				transformCollocationsForDisplay(wordId, collocGroup, existingCollocationValues);
+			}
 			*/
 		}
 	}
 
+	//TODO probably not the solution
 	private List<CollocationRelGroup> arrangeCollocationsIntoGroups(Long wordId, List<Collocation> collocations) {
 
 		List<CollocationRelGroup> secondaryCollocGroups = new ArrayList<>();

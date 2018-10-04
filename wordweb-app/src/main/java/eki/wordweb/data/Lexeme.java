@@ -72,6 +72,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Collocation> secondaryCollocations;
 
+	//TODO probably not the solution
 	private List<CollocationRelGroup> secondaryCollocGroups;
 
 	private boolean emptyLexeme;

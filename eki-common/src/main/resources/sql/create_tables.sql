@@ -804,6 +804,8 @@ create index word_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_guid_word_id_idx on word_guid(word_id);
 create index word_guid_dataset_code_idx on word_guid(dataset_code);
 create index word_guid_guid_idx on word_guid(guid);
+create index word_group_member_group_id_idx on word_group_member(word_group_id);
+create index word_group_member_word_id_idx on word_group_member(word_id);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);
@@ -851,7 +853,6 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
--- TODO lexeme group indexes!
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));

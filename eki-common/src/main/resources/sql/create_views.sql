@@ -46,43 +46,44 @@ from (select w.id as word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(row(mw.meaning_word_value, mw.meaning_word_lang)::type_word order by mw.order_by) meaning_words
-                   from (select distinct
-                                l1.word_id,
+                          array_agg(row(mw.meaning_word_value, mw.meaning_word_lang)::type_word order by mw.ds_order_by, mw.level1, mw.level2, mw.level3) meaning_words
+                   from (select l1.word_id,
                                 f2.value meaning_word_value,
                                 w2.lang meaning_word_lang,
-                                (l2.dataset_code || '_' || l2.level1 || '_' || l2.level2 || '_' || l2.level3 || '_' || w2.id) order_by
+                                ds2.order_by ds_order_by,
+                                l2.level1,
+                                l2.level2,
+                                l2.level3
                          from lexeme l1,
                               lexeme l2,
                               form f2,
                               paradigm p2,
-                              word w2
+                              word w2,
+                              dataset ds2
                          where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
                          and   l1.meaning_id = l2.meaning_id
                          and   l1.word_id != w2.id
                          and   l2.word_id = w2.id
+                         and   l2.dataset_code = ds2.code
                          and   p2.word_id = w2.id
                          and   f2.paradigm_id = p2.id
                          and   f2.is_word = true) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.value,wd.lang)::type_definition order by wd.dataset_code, wd.level1, wd.level2, wd.level3, wd.order_by) definitions
+                          array_agg(row(wd.value,wd.lang)::type_definition order by wd.ds_order_by, wd.level1, wd.level2, wd.level3, wd.d_order_by) definitions
                    from (select l.word_id,
-                                l.dataset_code,
+                                d.value,
+                                d.lang,
+                                ds.order_by ds_order_by,
                                 l.level1,
                                 l.level2,
                                 l.level3,
-                                d.value,
-                                d.lang,
-                                d.order_by
+                                d.order_by d_order_by
                          from lexeme l,
-                              definition d
+                              definition d,
+                              dataset ds
                          where l.meaning_id = d.meaning_id
-                         order by l.dataset_code,
-                                  l.level1,
-                                  l.level2,
-                                  l.level3,
-                                  d.order_by) wd
+                         and   l.dataset_code = ds.code) wd
                    group by wd.word_id) wd on wd.word_id = w.word_id;
 
 -- word forms

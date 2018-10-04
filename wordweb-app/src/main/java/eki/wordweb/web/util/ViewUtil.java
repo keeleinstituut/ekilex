@@ -135,6 +135,7 @@ public class ViewUtil implements WebConstant, InitializingBean {
 		return htmlBuf.toString();
 	}
 
+	@Deprecated
 	public String getTooltipHtml(Collocation colloc) {
 		List<TypeCollocMember> collocMembers = colloc.getCollocMembers();
 		int collocMemberCount = collocMembers.size();
