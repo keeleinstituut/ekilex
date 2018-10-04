@@ -93,23 +93,22 @@ public class ViewUtil implements WebConstant, InitializingBean {
 			if (CollocMemberGroup.HEADWORD.equals(collocMemGr)) {
 				TypeCollocMember collocMember = colloc.getHeadwordMember();
 				String conjunct = collocMember.getConjunct();
-				if (StringUtils.isNotBlank(conjunct)) {
+				if (StringUtils.isNotBlank(conjunct) && colloc.isPreConjunct()) {
 					htmlBuf.append(conjunct);
 					htmlBuf.append("&nbsp;");
 				}
 				htmlBuf.append("<span class='text-info'>");
 				htmlBuf.append(collocMember.getForm());
 				htmlBuf.append("</span>");
+				if (StringUtils.isNotBlank(conjunct) && colloc.isPostConjunct()) {
+					htmlBuf.append("&nbsp;");
+					htmlBuf.append(conjunct);
+				}
 			} else if (CollocMemberGroup.PRIMARY.equals(collocMemGr)) {
 				collocMembers = colloc.getPrimaryMembers();
 				int collocMemberCount = collocMembers.size();
 				int collocMemberIndex = 0;
 				for (TypeCollocMember collocMember : collocMembers) {
-					String conjunct = collocMember.getConjunct();
-					if (StringUtils.isNotBlank(conjunct)) {
-						htmlBuf.append(conjunct);
-						htmlBuf.append("&nbsp;");
-					}
 					htmlBuf.append(collocMember.getForm());
 					if (collocMemberIndex < collocMemberCount - 1) {
 						htmlBuf.append("&nbsp;");

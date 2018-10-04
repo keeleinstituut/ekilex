@@ -72,6 +72,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Collocation> secondaryCollocations;
 
+	private List<CollocationRelGroup> secondaryCollocGroups;
+
 	private boolean emptyLexeme;
 
 	public Long getLexemeId() {
@@ -320,6 +322,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
 		this.secondaryCollocations = secondaryCollocations;
+	}
+
+	public List<CollocationRelGroup> getSecondaryCollocGroups() {
+		return secondaryCollocGroups;
+	}
+
+	public void setSecondaryCollocGroups(List<CollocationRelGroup> secondaryCollocGroups) {
+		this.secondaryCollocGroups = secondaryCollocGroups;
 	}
 
 	public boolean isEmptyLexeme() {

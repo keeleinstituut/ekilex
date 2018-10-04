@@ -756,9 +756,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 									collocMemberSuggestedHomonymMeaningCount.increment();
 								}
 							} else {
+								//TODO create not-word
 								appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "homonüüme on üks, kuid see pole esimene");
 							}
 						} else {
+							//TODO create not-word
 							appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "rohkem kui üks homonüüm");
 						}
 						collocMemberGuessingHomonymMeaningCount.increment();
