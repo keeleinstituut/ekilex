@@ -105,21 +105,20 @@
                   </div>
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
-                      <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
-                        <span th:text="${meaningWord.word}"></span>
-                        <span th:unless="${meaningWordIter.last}">,</span>
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}"
+                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : ',')}">
                       </span>
                     </h6>
                   </div>
                   <div class="definition">
-                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ',' : '')}"></i>
-                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ',')}"></i>
-                    <span th:each="definition,definitionIter : ${lexeme.definitions}">
-                      <span th:text="${definition.value + (definitionIter.last ? '' : ';')}"></span>
+                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i>
+                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
+                    <span th:each="definition,definitionIter : ${lexeme.definitions}"
+                          th:text="${definition.value + (definitionIter.last ? '' : ';')}">
                     </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
-                      <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}">
-                        <span th:text="${meaningWord.word}"></span><span th:unless="${meaningWordIter.last}">; </span>
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}"
+                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : ';')}">
                       </span>
                     </div>
                   </div>
@@ -128,29 +127,30 @@
                   </div>
                 </div>
                 <div class="col-lg-6 dependencies">
-                  <div th:if="${not #lists.isEmpty(lexeme.governments)}">
-                    <div class="dependence" th:each="government : ${lexeme.governments}">
-                      <span class="question" th:text="${government}"></span>
-                    </div>
+                  <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-2 small">
+                      <i th:each="government, iter : ${lexeme.governments}"
+                         th:text="${government + (iter.last ? '' : ', ')}">
+                      </i>
                   </div>
                   <div th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
                       <span class="example-text" th:text="${usage.usage}"></span>
                       <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
-                        <th:block class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
-                          <span th:if="${usageAuthor.translator}" th:text=#{reference.type.translator}>Tõlkija</span>
+                        <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
+                          <span th:if="${usageAuthor.translator}" th:text="#{reference.type.translator}">Tõlkija</span>
                           <span th:text="${usageAuthor.name}"></span>
-                        </th:block>
+                        </div>
                       </th:block>
                       <button class="btn btn-speaker">
                         <img class="robo-icon" th:src="@{/view/images/icons/robot.svg}">
                       </button>
                       <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
-                        <th:block th:each="usageTranslation : ${usage.usageTranslations}">
-                          <span class="example-text" th:text="${usageTranslation}"></span>
-                        </th:block>
+                        <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:text="${usageTranslation}"></span>
                       </th:block>
                     </div>
+                  </div>
+                  <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
+                      <img class="homonym-image" th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
                   </div>
                 </div>
                 <div class="col-lg-12 meaning-meta">
@@ -158,10 +158,8 @@
                     <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.synonymWords)}">
                       <span th:text="#{label.same.as}">sama mis</span>
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.synonymWords}">
-                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym">
-                          <span th:text="${meaningWord.word}"></span>
-                        </a>
-                        <span th:unless="${meaningWordIter.last}">,</span>
+                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym"
+                           th:text="${meaningWord.word + (meaningWordIter.last ? '' : ',')}"></a>
                       </span>
                     </span>
                   </div>
@@ -171,10 +169,8 @@
                         <div th:each="relationType, relationTypeIter : ${lexeme.relatedLexemesByType.keySet()}">
                           <span th:text="${relationType.value}"></span>
                           <th:block th:each="relation, relationIter : ${lexeme.relatedLexemesByType.get(relationType)}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
-                              <span th:text="${relation.word}"></span>
-                            </a>
-                            <span th:unless="${relationIter.last}">,</span>
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}"
+                               th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
                           </th:block>
                         </div>
                       </div>
@@ -184,10 +180,8 @@
                         <div th:each="relationType, relationTypeIter : ${lexeme.relatedMeaningsByType.keySet()}">
                           <span th:text="${relationType.value}"></span>
                           <th:block th:each="relation, relationIter : ${lexeme.relatedMeaningsByType.get(relationType)}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
-                              <span th:text="${relation.word}"></span>
-                            </a>
-                            <span th:unless="${relationIter.last}">,</span>
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}"
+                               th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
                           </th:block>
                         </div>
                       </div>
@@ -204,7 +198,7 @@
                       <div class="col-3">
                         <b th:text="#{label.learner.comment}">Õppekommentaar</b>
                       </div>
-                      <div class="col-9">
+                      <div class="col-12">
                         <div th:each="note : ${lexeme.learnerComments}" th:text="${note}"></div>
                       </div>
                     </div>
@@ -217,30 +211,32 @@
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <div class="col-3"></div>
-                      <div class="col-9">
+                      <div class="col-12">
                         <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
                       </div>
                     </div>
-                    <div th:id="${'collocs-area-' + lexeme.lexemeId}">
-                      <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}" style="width: 700px !important">
-                        <div class="row">
+                  </div>
+                </div>
+                <div class="col-lg-12 collocations-section">
+                  <div th:id="${'collocs-area-' + lexeme.lexemeId}">
+                    <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
+                      <div class="row">
                           <span class="col">
                             <b th:text="#{label.collocations}">Kollokatsioonid</b>
                             &nbsp;
                             <button name="colloc-usages-btn" type="button" class="btn btn-light btn-sm" th:text="#{button.label.usages}">Kasutusnäited</button>
                           </span>
-                        </div>
-                        <div class="row">&nbsp;</div>
-                        <div style="width: 100%">
-                          <div th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}" style="width: 100%">
-                            <div class="row">
-                              <i class="col">
-                                <span th:text="${collocPosGr.posGroup.value}"></span>
-                              </i>
-                            </div>
-                            <div style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
-                              <div class="row" style="padding: 5px;">
+                      </div>
+                      <div class="row">&nbsp;</div>
+                      <div style="width: 100%">
+                        <div th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}" style="width: 100%">
+                          <div class="row">
+                            <i class="col">
+                              <span th:text="${collocPosGr.posGroup.value}"></span>
+                            </i>
+                          </div>
+                          <div style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
+                            <div class="row" style="padding: 5px;">
                                 <span th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
                                   <span class="colloc-member">
                                     <span th:if="${displayCollocIter.first}">
@@ -278,26 +274,26 @@
                                     </span>
                                   </span>
                                 </span>
+                            </div>
+                            <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}"
+                                 th:if="${not #lists.isEmpty(collocRelGr.allUsages)}"
+                                 class="row" style="display: none">
+                              <div style="padding: 0px 20px; width: 100%" th:each="collocUsage : ${collocRelGr.allUsages}">
+                                <span class="font-weight-light" th:text="${collocUsage}"></span>
                               </div>
-                              <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}"
-                                   th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" 
-                                   class="row" style="display: none">
-                                <div style="padding: 0px 20px; width: 100%" th:each="collocUsage : ${collocRelGr.allUsages}">
-                                  <span class="font-weight-light" th:text="${collocUsage}"></span>
-                                </div>
-                                <div>&nbsp;</div>
-                              </div>
+                              <div>&nbsp;</div>
                             </div>
                           </div>
                         </div>
                       </div>
-                      <div th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}" style="width: 700px !important">
-                        <div class="row">
-                          <b class="col" th:text="#{label.used.in.collocations}">Kasutatud kollokatsioonides</b>
-                        </div>
-                        <div style="padding: 0px 10px;">
-                          <div class="row" style="padding: 5px;">
-                            <div th:each="colloc,collocIter : ${lexeme.secondaryCollocations}" style="padding: 2px;">
+                    </div>
+                    <div th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
+                      <div class="row">
+                        <b class="col" th:text="#{label.used.in.collocations}">Kasutatud kollokatsioonides</b>
+                      </div>
+                      <div style="padding: 0px 10px;">
+                        <div class="row" style="padding: 5px;">
+                          <div th:each="colloc,collocIter : ${lexeme.secondaryCollocations}" style="padding: 2px;">
                               <span class="colloc-member">
                                 <span data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(colloc)}">
                                   <span th:each="collocMem,collocMemIter : ${colloc.filteredCollocMembers}">
@@ -307,7 +303,6 @@
                                   </span>
                                 </span>
                               </span>
-                            </div>
                           </div>
                         </div>
                       </div>
@@ -407,11 +402,6 @@
                   </a>
                   <span th:text="${'(' + relation.wordRelType.value + ')'}"></span>
                 </div>
-              </div>
-            </div>
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.imageFiles)}">
-              <div class="col">
-                <img class="homonym-image" th:each="imageFile : ${wordData.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
               </div>
             </div>
             <div id="korp" th:text="#{label.korp.search}">Otsin veebilauseid...</div>

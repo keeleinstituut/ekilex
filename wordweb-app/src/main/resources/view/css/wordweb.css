@@ -17,18 +17,13 @@
     text-transform: uppercase;
     font-size: .7em;
     letter-spacing: .1em;
-}
-
-.inner-container:first-child {
     background: #e9e9e9;
     color: #a9a9a9;
 }
 
-.inner-container:nth-child(2) {
+.inner-container .active {
     background: dodgerblue;
     color: white;
-    clip-path: inset(0 50% 0 0);
-    transition: .3s cubic-bezier(0,0,0,1);
 }
 
 .toggle {
@@ -43,7 +38,7 @@
     margin: auto;
 }
 
-.toggle:nth-child(1) {
+.toggle:nth-child(2) {
     right: 0;
 }
 
@@ -81,4 +76,14 @@
 
 .example-item:hover .robo-icon{
     opacity: 1;
+}
+
+.collocations-section {
+    clear: both;
+    display: block;
+}
+
+.level-3-panel:not(.expand) .collocations-section {
+    display: none;
+    opacity: 0;
 }

@@ -654,6 +654,8 @@ public class ConversionUtil {
 				CollectionUtils.isEmpty(lexeme.getDomains()) &&
 				CollectionUtils.isEmpty(lexeme.getGovernments()) &&
 				CollectionUtils.isEmpty(lexeme.getUsages()) &&
+				CollectionUtils.isEmpty(lexeme.getOtherLangMatchWords()) &&
+				CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords()) &&
 				CollectionUtils.isEmpty(lexeme.getRegisters());
 	}
 
