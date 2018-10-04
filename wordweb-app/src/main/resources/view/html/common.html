@@ -135,19 +135,11 @@
       <div class="col pl-1 pr-0">
         <div id="detail-toggle-container">
           <div class="inner-container">
-            <div class="toggle">
-              <p th:text="#{button.label.simple}">Lihtne</p>
-            </div>
-            <div class="toggle">
+            <div class="toggle" id="toggle-detail" th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
               <p th:text="#{button.label.detail}">Detailne</p>
             </div>
-          </div>
-          <div class="inner-container" id="toggle-container">
-            <div class="toggle">
+            <div class="toggle" id="toggle-simple" th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
               <p th:text="#{button.label.simple}">Lihtne</p>
-            </div>
-            <div class="toggle">
-              <p th:text="#{button.label.detail}">Detailne</p>
             </div>
           </div>
         </div>

@@ -415,35 +415,28 @@ function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name='+itemName+']').addClass('selected');
 }
 
-function toggleDetails(toggleToRight) {
-    var toggleContainer = document.getElementById('toggle-container');
-    if (toggleToRight) {
-        toggleContainer.style.clipPath = 'inset(0 0 0 50%)';
-    } else {
-        toggleContainer.style.clipPath = 'inset(0 50% 0 0)';
-    }
-}
-
-function initDetailToggle() {
+$(document).on("click", "#toggle-simple", function (e) {
 	var searchMode = $("input[name='searchMode']").val();
-	if (searchMode === "simple") {
-		toggleDetails(true);
-	} else if (searchMode === "detail") {
-		toggleDetails(false);
-	}
-}
-
-$(document).on("click", "#detail-toggle-container", function (e) {
-	var searchMode = $("input[name='searchMode']").val();
-	if (searchMode === "simple") {
-		$("input[name='searchMode']").val("detail");
-		toggleDetails(false);
-	} else if (searchMode === "detail") {
+	if (searchMode === "detail") {
 		$("input[name='searchMode']").val("simple");
-		toggleDetails(true);
+		$(this).addClass("active");
+		$("#toggle-detail").removeClass("active");
+		var tempSearchWord = $("input[name='searchWord']").val();
+		if (tempSearchWord) {
+			$("#search-btn").click();
+		}
 	}
-    var tempSearchWord = $("input[name='searchWord']").val();
-    if (tempSearchWord) {
-        $("#search-btn").click();
+});
+
+$(document).on("click", "#toggle-detail", function (e) {
+    var searchMode = $("input[name='searchMode']").val();
+    if (searchMode === "simple") {
+        $("input[name='searchMode']").val("detail");
+        $(this).addClass("active");
+        $("#toggle-simple").removeClass("active");
+        var tempSearchWord = $("input[name='searchWord']").val();
+        if (tempSearchWord) {
+            $("#search-btn").click();
+        }
     }
 });
