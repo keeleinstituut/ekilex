@@ -904,7 +904,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'as
 insert into word_rel_type_label (code, value, lang, type) values ('posit', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('komp', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('deriv', 'saab moodustada', 'est', 'wordweb');
-insert into word_rel_type_label (code, value, lang, type) values ('deriv_base', 'saab moodustada', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('deriv_base', 'moodustatud sõnast', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('superl', 'võrdlus', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'sari', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'wordweb');
