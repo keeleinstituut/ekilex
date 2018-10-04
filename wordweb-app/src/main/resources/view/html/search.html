@@ -396,11 +396,9 @@
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
               <div class="col-12">
                 <h6 th:text="#{label.word.connetions}">Sõna seosed</h6>
-                <div style="margin-bottom: 0.5em;" th:each="relation, relationIter : ${wordData.word.relatedWords}">
-                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}">
-                    <span th:text="${relation.word}"></span>
-                  </a>
-                  <span th:text="${'(' + relation.wordRelType.value + ')'}"></span>
+                <div class="mb-1" th:each="relation, relationIter : ${wordData.word.relatedWords}">
+                  <span th:text="${#strings.capitalize(relation.wordRelType.value) + ' :'}"></span>
+                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word}"></a>
                 </div>
               </div>
             </div>
