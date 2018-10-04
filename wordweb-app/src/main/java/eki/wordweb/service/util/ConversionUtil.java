@@ -237,6 +237,12 @@ public class ConversionUtil {
 						displayColloc.setMemberGroupOrder(currentMemberGroupOrder);
 					}
 				}
+				existingMemberGroupOrder = displayColloc.getMemberGroupOrder();
+				if (existingMemberGroupOrder.indexOf(CollocMemberGroup.HEADWORD) < existingMemberGroupOrder.indexOf(CollocMemberGroup.PRIMARY)) {
+					displayColloc.setPostConjunct(true);
+				} else if (existingMemberGroupOrder.indexOf(CollocMemberGroup.HEADWORD) > existingMemberGroupOrder.indexOf(CollocMemberGroup.PRIMARY)) {
+					displayColloc.setPreConjunct(true);
+				}
 			}
 		}
 	}
