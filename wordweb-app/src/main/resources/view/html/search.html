@@ -99,26 +99,28 @@
                   <div th:if="${lexeme.emptyLexeme}">
                     <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole. Seni vaata</span>
                     <a th:href="@{${viewUtil.getSearchUri(sessionBean, wordData.word.relatedWords.get(0).word)}}"
-                       th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
-                      <span th:text="${wordData.word.relatedWords.get(0).word}"></span>
+                       th:if="${not #lists.isEmpty(wordData.word.relatedWords)}"
+                       th:text="${wordData.word.relatedWords.get(0).word}">
                     </a>
                   </div>
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}"
-                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : ',')}">
+                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : ', ')}">
                       </span>
                     </h6>
+                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and sessionBean.sourceLang == 'est' and sessionBean.destinLang != 'est'}"
+                          th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
                   </div>
                   <div class="definition">
                     <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i>
                     <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}"
-                          th:text="${definition.value + (definitionIter.last ? '' : ';')}">
+                          th:text="${definition.value + (definitionIter.last ? '' : '; ')}">
                     </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}"
-                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : ';')}">
+                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}">
                       </span>
                     </div>
                   </div>
