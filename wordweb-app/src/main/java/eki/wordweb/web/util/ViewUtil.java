@@ -236,4 +236,12 @@ public class ViewUtil implements WebConstant, InitializingBean {
 		return uri;
 	}
 
+	public String getSearchUriForDestinationLanguage(SessionBean sessionBean, String word) {
+		String sourceLang = sessionBean.getDestinLang();
+		String destinLang = sessionBean.getSourceLang();
+		String searchMode = sessionBean.getSearchMode();
+		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word;
+		return uri;
+	}
+
 }

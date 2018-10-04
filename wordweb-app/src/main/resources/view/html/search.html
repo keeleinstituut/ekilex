@@ -105,12 +105,17 @@
                   </div>
                   <div class="matches">
                     <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
-                      <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}"
-                            th:text="${meaningWord.word + (meaningWordIter.last ? '' : ', ')}">
-                      </span>
+                      <th:block th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}"
+                           th:text="${meaningWord.word}"
+                           style="color: black;">
+                        </a>
+                        <span th:unless="${meaningWordIter.last}" style="margin-left: -4px">,</span>
+                      </th:block>
                     </h6>
                     <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and sessionBean.sourceLang == 'est' and sessionBean.destinLang != 'est'}"
-                          th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
+                          th:text="#{label.no.translation}">Täpset tõlkevastet pole
+                    </span>
                   </div>
                   <div class="definition">
                     <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i>
@@ -197,7 +202,7 @@
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.learnerComments)}">
-                      <div class="col-3">
+                      <div class="col-6">
                         <b th:text="#{label.learner.comment}">Õppekommentaar</b>
                       </div>
                       <div class="col-12">
@@ -205,10 +210,10 @@
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
-                      <div class="col-3">
+                      <div class="col-6">
                         <b th:text="#{label.public.note}">Hea teada</b>
                       </div>
-                      <div class="col-9">
+                      <div class="col-12">
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
                       </div>
                     </div>
