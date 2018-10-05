@@ -12,7 +12,7 @@
 <th:block th:replace=" :: js"></th:block>
 <link href="https://fonts.googleapis.com/css?family=Montserrat:800&amp;subset=cyrillic-ext,latin-ext" rel="stylesheet">
 <!--/* Per-page placeholder for additional links */-->
-<th:block th:replace="${links}" />
+<th:block th:replace="${links}"></th:block>
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
 	var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
@@ -49,9 +49,9 @@
             <span class="icon icon-logo-s d-md-none"></span>
             <span class="icon icon-logo  d-none  d-md-block"></span>
           </a>
-          <a class="back">
+          <div class="back">
             <span class="icon icon-back"></span>
-          </a>
+          </div>
           <div th:replace=":: menu-links"></div>
           <button class="btn menu-btn">
             <span class="icon icon-menu"></span>
