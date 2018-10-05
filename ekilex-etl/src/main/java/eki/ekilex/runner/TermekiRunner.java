@@ -499,12 +499,12 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 		List<String> datasets = Arrays.asList((String[])((PgArray)domain.get("datasets")).getArray());
 		if (!datasets.contains(dataset)) {
-			List<String> updatedDataset = new ArrayList<>(datasets);
-			updatedDataset.add(dataset);
+			List<String> updatedDatasets = new ArrayList<>(datasets);
+			updatedDatasets.add(dataset);
 			Map<String, Object> tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("code", domain.get("code"));
 			tableRowParamMap.put("origin", domain.get("origin"));
-			tableRowParamMap.put("datasets", new PgVarcharArray(updatedDataset.toArray(new String[updatedDataset.size()])));
+			tableRowParamMap.put("datasets", new PgVarcharArray(updatedDatasets));
 			basicDbService.executeScript(SQL_UPDATE_DOMAIN_DATSETS, tableRowParamMap);
 		}
 	}

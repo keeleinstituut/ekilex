@@ -295,14 +295,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 			tableRowParamMap.put("etymology_type_code", etymTypeCode);
 		}
 		if (CollectionUtils.isNotEmpty(comments)) {
-			List<String> maskedComments = new ArrayList<>();
-			for (String comment : comments) {
-				String maskedComment = StringUtils.replace(comment, "\"", "\\\"");
-				maskedComment = StringUtils.replace(maskedComment, "'", "\\'");
-				maskedComments.add(maskedComment);
-			}
-			String[] maskedCommentsArr = maskedComments.toArray(new String[0]);
-			tableRowParamMap.put("comments", new PgVarcharArray(maskedCommentsArr));
+			tableRowParamMap.put("comments", new PgVarcharArray(comments));
 		}
 		tableRowParamMap.put("is_questionable", isQuestionable);
 		tableRowParamMap.put("is_compound", isCompound);

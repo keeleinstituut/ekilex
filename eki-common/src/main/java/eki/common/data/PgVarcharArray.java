@@ -31,6 +31,13 @@ public class PgVarcharArray implements java.sql.Array {
 		} else if (ArrayUtils.isEmpty(stringArray)) {
 			return "{}";
 		}
+		for (int stringLineIndex = 0; stringLineIndex < stringArray.length; stringLineIndex++) {
+			String stringLine = stringArray[stringLineIndex];
+			String maskedLine = StringUtils.replace(stringLine, "\"", "\\\"");
+			maskedLine = StringUtils.replace(maskedLine, "'", "\\'");
+			maskedLine = StringUtils.replace(maskedLine, ",", "\\,");
+			stringArray[stringLineIndex] = maskedLine;
+		}
 		StringBuffer buf = new StringBuffer();
 		buf.append("{");
 		buf.append(StringUtils.join(stringArray, ", "));
