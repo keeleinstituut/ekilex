@@ -11,19 +11,25 @@ import org.apache.commons.lang3.StringUtils;
 
 public class PgVarcharArray implements java.sql.Array {
 
+	private static final String NULL = "NULL";
+
 	private final String[] stringArray;
 	private final String stringValue;
 
 	public PgVarcharArray(List<String> stringList) {
-		this(stringList == null ? null : (String[])stringList.toArray());
+		if (stringList == null) {
+			this.stringArray = null;
+		} else {
+			String[] tempArray = new String[stringList.size()];
+			this.stringArray = stringList.toArray(tempArray);	
+		}
+		this.stringValue = convertToPgFormat(stringArray);
 	}
 
 	public PgVarcharArray(String[] stringArray) {
 		this.stringArray = stringArray;
 		this.stringValue = convertToPgFormat(stringArray);
 	}
-
-	private static final String NULL = "NULL";
 
 	private String convertToPgFormat(String[] stringArray) {
 		if (stringArray == null) {
