@@ -87,3 +87,8 @@
     display: none;
     opacity: 0;
 }
+
+.homonym-item,
+.back {
+    cursor: pointer;
+}
