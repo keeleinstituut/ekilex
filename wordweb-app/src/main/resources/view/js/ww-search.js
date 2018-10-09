@@ -1,4 +1,4 @@
-var windowWidthTreshold = 769;
+var windowWidthTreshold = 768;
 
 function fetchDetails(wordId, word, wordSelectUrl) {
 	var detailsDiv = $('.word-details');
@@ -103,13 +103,13 @@ $(document).on("click", ".homonym-item", function(e) {
 	$(".homonym-item:first").removeClass("animation-target").dequeue();
 	$(this).addClass("selected last-selected");
 	calculateAndSetStyles();
-	if ($(window).width() > windowWidthTreshold) {
+	if ($(window).width() >= windowWidthTreshold) {
 		$('.homonym-list').animate({
 				scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
 			},
 			200);
 	}
-	if ($(window).width() > windowWidthTreshold) {
+	if ($(window).width() >= windowWidthTreshold) {
 		$('.homonym-list').animate({
 				scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
 			},

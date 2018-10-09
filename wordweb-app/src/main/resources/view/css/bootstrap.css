@@ -3058,7 +3058,6 @@ input[type="button"].btn-block {
 .dropdown-item {
   display: block;
   width: 100%;
-  padding: 0.25rem 1.5rem;
   clear: both;
   font-weight: 400;
   color: #212529;
@@ -7093,15 +7092,6 @@ ul {
   }
   body .lang-btn {
     font-size: 0.6875rem;
-  }
-  body:not(.home-page) .lang-btn {
-    position: fixed;
-    top: 0;
-    margin: 0 calc(25% - 15px);
-    z-index: 1111;
-  }
-  .dropdown-menu {
-    transform: translate3d(0px, 0px, 0px) !important;
   }
   .homonym-wrap {
     overflow: hidden;
