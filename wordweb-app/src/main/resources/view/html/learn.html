@@ -1101,6 +1101,10 @@
       var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
       var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
       setActiveMenuItem('learn');
+
+      $(document).on("click", ".back", function(e) {
+          window.location = applicationUrl;
+      });
   </script>
 </body>
 
