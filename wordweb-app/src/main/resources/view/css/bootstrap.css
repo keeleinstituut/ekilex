@@ -7453,10 +7453,6 @@ ul {
     margin-left: auto !important;
     margin-right: auto !important;
   }
-  .search-panel .row {
-    margin-right: -2.5rem;
-    margin-left: -2.5rem;
-  }
   .homonym-panel {
     padding-left: 0;
     padding-right: 0;
@@ -7471,10 +7467,6 @@ ul {
   }
   .homonym-list li:last-child a {
     padding-right: 0;
-  }
-  .home-page.search-panel {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
   }
   .dependencies {
     margin-top: -0.25rem;
