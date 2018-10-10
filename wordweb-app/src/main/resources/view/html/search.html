@@ -244,43 +244,44 @@
                           </div>
                           <div style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
                             <div class="row" style="padding: 5px;">
-                                <span th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
-                                  <span class="colloc-member">
-                                    <span th:if="${displayCollocIter.first}">
-                                      <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
-                                        <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
-                                          <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.preConjunct}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
-                                          <span class="text-info" th:text="${displayColloc.headwordMember.form}"></span>
-                                          <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.postConjunct}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
-                                        </span>
-                                        <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
-                                          <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                            <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
-                                              <span th:text="${collocMem.form}" class="text-muted"></span>
-                                            </a>
-                                          </span>
-                                        </span>
-                                        <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
-                                          <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
-                                            <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
-                                              <i><span th:text="${collocMem.form}" class="text-muted"></span><span th:unless="${collocMemIter.last}">,</span></i>
-                                            </a>
-                                          </span>
+                              <span th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
+                                <span class="colloc-member">
+                                  <span th:if="${displayCollocIter.first}">
+                                    <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
+                                      <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
+                                        <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                        <span class="text-info" th:text="${displayColloc.headwordMember.form}"></span>
+                                        <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="text-muted" th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                      </span>
+                                      <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
+                                        <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
+                                          <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="text-muted" th:text="${collocMem.conjunct}"></span>
+                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                            <span th:text="${collocMem.form}" class="text-muted"></span>
+                                          </a>
+                                          <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="text-muted" th:text="${collocMem.conjunct}"></span>
                                         </span>
                                       </span>
-                                    </span>
-                                    <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
-                                      <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
-                                          <span th:text="${collocMem.form}" class="text-muted"></span>
-                                        </a>
-                                        <span th:unless="${collocMemIter.last}">&nbsp;</span>
+                                      <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
+                                        <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
+                                          <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
+                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                            <i><span th:text="${collocMem.form}" class="text-muted"></span><span th:unless="${collocMemIter.last}">,</span></i>
+                                          </a>
+                                        </span>
                                       </span>
                                     </span>
                                   </span>
+                                  <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
+                                    <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
+                                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                        <span th:text="${collocMem.form}" class="text-muted"></span>
+                                      </a>
+                                      <span th:unless="${collocMemIter.last}">&nbsp;</span>
+                                    </span>
+                                  </span>
                                 </span>
+                              </span>
                             </div>
                             <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}"
                                  th:if="${not #lists.isEmpty(collocRelGr.allUsages)}"
@@ -294,23 +295,24 @@
                         </div>
                       </div>
                     </div>
-                    <div th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
+                    <div th:if="${not #lists.isEmpty(lexeme.secondaryDisplayCollocs)}">
                       <div class="row">
                         <b class="col" th:text="#{label.used.in.collocations}">Kasutatud kollokatsioonides</b>
                       </div>
                       <div style="padding: 0px 10px;">
                         <div class="row" style="padding: 5px;">
-                          <div th:each="colloc,collocIter : ${lexeme.secondaryCollocations}" style="padding: 2px;">
-                              <span class="colloc-member">
-                                <span data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(colloc)}">
-                                  <span th:each="collocMem,collocMemIter : ${colloc.filteredCollocMembers}">
-                                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
-                                      <span th:text="${collocMem.form}" class="text-muted"></span>
-                                    </a>
-                                  </span>
+                          <span th:each="displayColloc,displayCollocIter : ${lexeme.secondaryDisplayCollocs}" style="padding: 2px;">
+                            <span class="colloc-member">
+                              <span data-toggle="tooltip" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
+                                <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
+                                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                    <span th:text="${collocMem.form}" class="text-muted"></span>
+                                  </a>
+                                  <span th:unless="${collocMemIter.last}">&nbsp;</span>
                                 </span>
                               </span>
-                          </div>
+                            </span>
+                          </span>
                         </div>
                       </div>
                     </div>

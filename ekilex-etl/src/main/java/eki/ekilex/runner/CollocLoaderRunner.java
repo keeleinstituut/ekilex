@@ -703,6 +703,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				Map<Integer, Word> homonymWordMap = wordMap.get(collocMemberWord);
 				if (homonymWordMap == null) {
 					if (collocMemberRefNum == null) {
+						//TODO create not-word
 						appendToReport(doReports, REPORT_UNKNOWN_COLLOC_MEMBER, word, collocation, collocMemberWord);
 					} else {
 						collocLexemeId = createMissingCollocMember(collocMember, wordMap, meaningMap);
@@ -1175,6 +1176,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		String sql;
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("wordId", wordId);
+		tableRowParamMap.put("dataset", getDataset());
 		if (StringUtils.isBlank(posCode)) {
 			sql = sqlSelectLexemeMeaningByWordAndNoPos;
 		} else {
@@ -1460,16 +1462,24 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			return lexemeId;
 		}
 
-		public void setLexemeId(Long lexemeId) {
-			this.lexemeId = lexemeId;
-		}
-
 		public Long getMeaningId() {
 			return meaningId;
 		}
+	}
 
-		public void setMeaningId(Long meaningId) {
-			this.meaningId = meaningId;
+	class NonWord extends LexemeMeaning {
+
+		private static final long serialVersionUID = 1L;
+
+		private Long wordId;
+
+		public NonWord(Long wordId, Long lexemeId, Long meaningId) {
+			super(lexemeId, meaningId);
+			this.wordId = wordId;
+		}
+
+		public Long getWordId() {
+			return wordId;
 		}
 	}
 

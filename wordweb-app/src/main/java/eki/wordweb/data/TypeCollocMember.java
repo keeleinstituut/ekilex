@@ -26,6 +26,10 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private boolean context;
 
+	private boolean preConjunct;
+
+	private boolean postConjunct;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -104,6 +108,22 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setContext(boolean context) {
 		this.context = context;
+	}
+
+	public boolean isPreConjunct() {
+		return preConjunct;
+	}
+
+	public void setPreConjunct(boolean preConjunct) {
+		this.preConjunct = preConjunct;
+	}
+
+	public boolean isPostConjunct() {
+		return postConjunct;
+	}
+
+	public void setPostConjunct(boolean postConjunct) {
+		this.postConjunct = postConjunct;
 	}
 
 }

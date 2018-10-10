@@ -144,107 +144,49 @@ public class ConversionUtil {
 			}
 		}
 
-		List<CollocationRelGroup> allCollocRelGroups = new ArrayList<>(collocRelGroupMap.values());
-		List<String> existingCollocationValues = new ArrayList<>();
-		transformCollocationRelGroupsForDisplay(wordId, allCollocRelGroups, existingCollocationValues);
-		transformSecondaryCollocationsForDisplay(wordId, lexemes, existingCollocationValues);
-		lexemes.forEach(lexeme -> {
-			lexeme.setEmptyLexeme(isEmptyLexeme(lexeme));
-		});
+		for (Lexeme lexeme : lexemes) {
+			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
+			lexeme.setEmptyLexeme(isEmptyLexeme);
+			if (isEmptyLexeme) {
+				continue;
+			}
+			List<String> existingCollocationValues = new ArrayList<>();
+			transformCollocationPosGroupsForDisplay(wordId, lexeme, existingCollocationValues);
+			transformSecondaryCollocationsForDisplay(wordId, lexeme, existingCollocationValues);
+		}
 
 		return lexemes;
 	}
 
-	private void transformCollocationRelGroupsForDisplay(Long wordId, List<CollocationRelGroup> allCollocRelGroups, List<String> existingCollocationValues) {
-
-		for (CollocationRelGroup collocRelGroup : allCollocRelGroups) {
-			transformCollocationsForDisplay(wordId, collocRelGroup, existingCollocationValues);
-		}
-	}
-
-	private void transformSecondaryCollocationsForDisplay(Long wordId, List<Lexeme> lexemes, List<String> existingCollocationValues) {
+	private void transformCollocationPosGroupsForDisplay(Long wordId, Lexeme lexeme, List<String> existingCollocationValues) {
 
 		List<Collocation> collocations;
-		//List<CollocationRelGroup> secondaryCollocGroups;
-		List<TypeCollocMember> collocMembers;
-
-		for (Lexeme lexeme : lexemes) {
-
-			collocations = lexeme.getSecondaryCollocations();
-			List<Collocation> uniqueCollocations = new ArrayList<>();
-
-			for (Collocation colloc : collocations) {
-				String collocValue = colloc.getValue();
-				if (existingCollocationValues.contains(collocValue)) {
-					continue;
-				}
-				existingCollocationValues.add(collocValue);
-				uniqueCollocations.add(colloc);
-				collocMembers = colloc.getCollocMembers();
-				boolean containsOtherWords = collocMembers.stream().anyMatch(collocMember -> !collocMember.getWordId().equals(wordId));
-				List<TypeCollocMember> filteredCollocMembers = collocMembers.stream().filter(collocMember -> {
-					boolean isHeadword = collocMember.getWordId().equals(wordId);
-					boolean isPrimary = !isHeadword && collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
-					return (!containsOtherWords && isHeadword) || isPrimary;
-				}).collect(Collectors.toList());
-				colloc.setFilteredCollocMembers(filteredCollocMembers);
-				for (TypeCollocMember collocMember : collocMembers) {
-					boolean isHeadword = collocMember.getWordId().equals(wordId);
-					boolean isPrimary = !isHeadword && collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
-					boolean isContext = collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) == 0;
-					collocMember.setHeadword(isHeadword);
-					collocMember.setPrimary(isPrimary);
-					collocMember.setContext(isContext);
-				}
+		List<DisplayColloc> displayCollocs;
+		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
+		for (CollocationPosGroup collocationPosGroup : collocationPosGroups) {
+			List<CollocationRelGroup> collocationRelGroups = collocationPosGroup.getRelationGroups();
+			for (CollocationRelGroup collocationRelGroup : collocationRelGroups) {
+				displayCollocs = new ArrayList<>();
+				collocationRelGroup.setDisplayCollocs(displayCollocs);
+				List<String> allUsages = new ArrayList<>();
+				collocationRelGroup.setAllUsages(allUsages);
+				collocations = collocationRelGroup.getCollocations();
+				transformCollocationsForDisplay(wordId, collocations, displayCollocs, allUsages, existingCollocationValues);
 			}
-			lexeme.setSecondaryCollocations(uniqueCollocations);
-
-			/*
-			 * FIXME nope, doesn't work
-			 * 
-			secondaryCollocGroups = arrangeCollocationsIntoGroups(wordId, collocations);
-			lexeme.setSecondaryCollocGroups(secondaryCollocGroups);
-
-			for (CollocationRelGroup collocGroup : secondaryCollocGroups) {
-				transformCollocationsForDisplay(wordId, collocGroup, existingCollocationValues);
-			}
-			*/
 		}
 	}
 
-	//TODO probably not the solution
-	private List<CollocationRelGroup> arrangeCollocationsIntoGroups(Long wordId, List<Collocation> collocations) {
+	private void transformSecondaryCollocationsForDisplay(Long wordId, Lexeme lexeme, List<String> existingCollocationValues) {
 
-		List<CollocationRelGroup> secondaryCollocGroups = new ArrayList<>();
-		Map<String, CollocationRelGroup> headwordFormCollocationGroupMap = new HashMap<>();
-		for (Collocation colloc : collocations) {
-			List<TypeCollocMember> collocMembers = colloc.getCollocMembers();
-			boolean containsOtherWords = collocMembers.stream().anyMatch(collocMember -> !collocMember.getWordId().equals(wordId));
-			if (!containsOtherWords) {
-				continue;
-			}
-			TypeCollocMember headwordCollocMember = collocMembers.stream().filter(collocMember -> collocMember.getWordId().equals(wordId)).findFirst().get();
-			String headwordForm = headwordCollocMember.getForm();
-			CollocationRelGroup collocationGroup = headwordFormCollocationGroupMap.get(headwordForm);
-			if (collocationGroup == null) {
-				collocationGroup = new CollocationRelGroup();
-				collocationGroup.setCollocations(new ArrayList<>());
-				secondaryCollocGroups.add(collocationGroup);
-				headwordFormCollocationGroupMap.put(headwordForm, collocationGroup);
-			}
-			collocationGroup.getCollocations().add(colloc);
-		}
-		return secondaryCollocGroups;
-	}
-
-	private void transformCollocationsForDisplay(Long wordId, CollocationRelGroup collocRelGroup, List<String> existingCollocationValues) {
-
-		List<Collocation> collocations = collocRelGroup.getCollocations();
+		List<Collocation> collocations = lexeme.getSecondaryCollocations();
 		List<DisplayColloc> displayCollocs = new ArrayList<>();
-		collocRelGroup.setDisplayCollocs(displayCollocs);
-		List<String> allUsages = new ArrayList<>();
-		collocRelGroup.setAllUsages(allUsages);
-	
+		lexeme.setSecondaryDisplayCollocs(displayCollocs);
+		transformCollocationsForDisplay(wordId, collocations, displayCollocs, null, existingCollocationValues);
+	}
+
+	private void transformCollocationsForDisplay(
+			Long wordId, List<Collocation> collocations, List<DisplayColloc> displayCollocs, List<String> allUsages, List<String> existingCollocationValues) {
+
 		List<TypeCollocMember> collocMembers;
 		List<CollocMemberGroup> existingMemberGroupOrder;
 		List<String> collocMemberForms;
@@ -275,16 +217,21 @@ public class ConversionUtil {
 			}
 			CollocMemberGroup recentCollocMemberGroup = null;
 			CollocMemberGroup currentCollocMemberGroup;
+			boolean headwordOrPrimaryMemberOccurred = false;
 			List<CollocMemberGroup> currentMemberGroupOrder = new ArrayList<>();
 			for (TypeCollocMember collocMember : collocMembers) {
+				String conjunct = collocMember.getConjunct();
+				Float weight = collocMember.getWeight();
 				boolean isHeadword = collocMember.getWordId().equals(wordId);
-				boolean isPrimary = !isHeadword && collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
-				boolean isContext = collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) == 0;
+				boolean isPrimary = !isHeadword && weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
+				boolean isContext = weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) == 0;
 				currentCollocMemberGroup = null;
 				if (isHeadword) {
 					currentCollocMemberGroup = CollocMemberGroup.HEADWORD;
+					headwordOrPrimaryMemberOccurred = true;
 				} else if (isPrimary) {
 					currentCollocMemberGroup = CollocMemberGroup.PRIMARY;
+					headwordOrPrimaryMemberOccurred = true;
 				} else if (isContext) {
 					currentCollocMemberGroup = CollocMemberGroup.CONTEXT;
 				}
@@ -316,6 +263,13 @@ public class ConversionUtil {
 						collocMemberForms.add(collocMember.getForm());
 					}
 				}
+				if (StringUtils.isNotBlank(conjunct)) {
+					if (headwordOrPrimaryMemberOccurred) {
+						collocMember.setPreConjunct(true);
+					} else {
+						collocMember.setPostConjunct(true);
+					}
+				}
 			}
 			if (CollectionUtils.isEmpty(displayColloc.getMemberGroupOrder())) {
 				displayColloc.setMemberGroupOrder(currentMemberGroupOrder);
@@ -326,19 +280,21 @@ public class ConversionUtil {
 					displayColloc.setMemberGroupOrder(currentMemberGroupOrder);
 				}
 			}
-			existingMemberGroupOrder = displayColloc.getMemberGroupOrder();
-			if (existingMemberGroupOrder.indexOf(CollocMemberGroup.HEADWORD) < existingMemberGroupOrder.indexOf(CollocMemberGroup.PRIMARY)) {
-				displayColloc.setPostConjunct(true);
-			} else if (existingMemberGroupOrder.indexOf(CollocMemberGroup.HEADWORD) > existingMemberGroupOrder.indexOf(CollocMemberGroup.PRIMARY)) {
-				displayColloc.setPreConjunct(true);
-			}
 		}
 	}
 
 	private String composeCollocMemberGroupKey(List<TypeCollocMember> collocMembers) {
 		List<String> headwordAndPrimaryMemberForms = collocMembers.stream()
 				.filter(collocMember -> collocMember.getWeight().compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0)
-				.map(TypeCollocMember::getForm).collect(Collectors.toList());
+				.map(collocMember -> {
+					String memberKey = "";
+					if (StringUtils.isNotBlank(collocMember.getConjunct())) {
+						memberKey = collocMember.getConjunct() + "|";
+					}
+					memberKey += collocMember.getForm();
+					return memberKey;
+				})
+				.collect(Collectors.toList());
 		String collocMemberGroupKey = StringUtils.join(headwordAndPrimaryMemberForms, '-');
 		return collocMemberGroupKey;
 	}

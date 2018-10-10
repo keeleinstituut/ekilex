@@ -72,8 +72,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<Collocation> secondaryCollocations;
 
-	//TODO probably not the solution
-	private List<CollocationRelGroup> secondaryCollocGroups;
+	private List<DisplayColloc> secondaryDisplayCollocs;
 
 	private boolean emptyLexeme;
 
@@ -325,12 +324,12 @@ public class Lexeme extends AbstractDataObject {
 		this.secondaryCollocations = secondaryCollocations;
 	}
 
-	public List<CollocationRelGroup> getSecondaryCollocGroups() {
-		return secondaryCollocGroups;
+	public List<DisplayColloc> getSecondaryDisplayCollocs() {
+		return secondaryDisplayCollocs;
 	}
 
-	public void setSecondaryCollocGroups(List<CollocationRelGroup> secondaryCollocGroups) {
-		this.secondaryCollocGroups = secondaryCollocGroups;
+	public void setSecondaryDisplayCollocs(List<DisplayColloc> secondaryDisplayCollocs) {
+		this.secondaryDisplayCollocs = secondaryDisplayCollocs;
 	}
 
 	public boolean isEmptyLexeme() {

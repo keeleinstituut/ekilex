@@ -19,10 +19,6 @@ public class DisplayColloc extends AbstractDataObject {
 
 	private List<String> collocMemberForms;
 
-	private boolean preConjunct;
-
-	private boolean postConjunct;
-
 	public List<CollocMemberGroup> getMemberGroupOrder() {
 		return memberGroupOrder;
 	}
@@ -61,22 +57,6 @@ public class DisplayColloc extends AbstractDataObject {
 
 	public void setCollocMemberForms(List<String> collocMemberForms) {
 		this.collocMemberForms = collocMemberForms;
-	}
-
-	public boolean isPreConjunct() {
-		return preConjunct;
-	}
-
-	public void setPreConjunct(boolean preConjunct) {
-		this.preConjunct = preConjunct;
-	}
-
-	public boolean isPostConjunct() {
-		return postConjunct;
-	}
-
-	public void setPostConjunct(boolean postConjunct) {
-		this.postConjunct = postConjunct;
 	}
 
 }
