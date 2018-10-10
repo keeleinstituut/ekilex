@@ -1,4 +1,4 @@
-var windowWidthTreshold = 769;
+var windowWidthTreshold = 768;
 var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
@@ -11,7 +11,7 @@ $(document).ready(function() {
 	initLanguageFilter();
 	initialiseRecording(speechRecognitionServiceUrl);
 
-	var isWideWindow = $(window).width() > windowWidthTreshold;
+	var isWideWindow = $(window).width() >= windowWidthTreshold;
 	var isSingleHomonym = $(".homonym-item").length == 1;
 	if (isWideWindow || isSingleHomonym) {
 		var selectedHomonymItem = $(".homonym-item").filter(function() {
@@ -129,7 +129,7 @@ function empowerLanguageSelection() {
 }
 
 function calculateAndSetStyles() {
-	var isWideWindow = $(window).width() > windowWidthTreshold;
+	var isWideWindow = $(window).width() >= windowWidthTreshold;
 	var isSingleHomonym = $(".homonym-item").length == 1;
 	var isMultiHomonym = $(".homonym-item").length > 1;
 	if (isWideWindow) {

@@ -8,23 +8,23 @@
 </head>
 <body>
   <div th:replace="common :: menu"></div>
-  <div class="container-fluid homonym-page">
-    <div class="row search-wrap">
-      <div class="col-12 search-panel">
-        <div class="row">
-          <div class="col-md-5 col-lg-5">
-            <div th:replace="common :: search"></div>
-          </div>
-          <div class="col-md-6 pr-0">
-            <div th:replace="common :: lang-filter"></div>
-          </div>
-          <!-- TODO: let client to decide waht message option they like, option 1 -->
-          <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
-              <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
-          </div>
+  <div class="container-fluid search-wrap">
+    <div class="search-panel">
+      <div class="row">
+        <div class="col-12 col-md-6">
+          <div th:replace="common :: search"></div>
+        </div>
+        <div class="col-12 col-md-6 p-0" id="language-detail-panel">
+          <div th:replace="common :: lang-filter"></div>
+        </div>
+        <!-- TODO: let client to decide waht message option they like, option 1 -->
+        <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
+          <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
         </div>
       </div>
     </div>
+  </div>
+  <div class="container-fluid homonym-page">
     <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="col offset-1">
         <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
@@ -83,9 +83,6 @@
               <span class="icon icon-speaker"></span>
             </button>
             <span th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
-            <button class="btn show-search d-md-none">
-              <span class="icon icon-search"></span>
-            </button>
           </div>
         </div>
         <div class="row">
@@ -93,7 +90,7 @@
             <div class="level-2-panel">
               <div class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexemes}">
                 <div class="col-lg-6 meaning">
-                  <div class="lexeme-levels" th:unless="${lexeme.emptyLexeme}">
+                  <div class="float-left mr-2" th:unless="${lexeme.emptyLexeme}">
                     <span th:text="${lexeme.levels}"></span>
                   </div>
                   <div th:if="${lexeme.emptyLexeme}">
