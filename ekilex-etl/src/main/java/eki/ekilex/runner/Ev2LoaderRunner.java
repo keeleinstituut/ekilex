@@ -481,7 +481,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private String cleanRussianUsage(String usageValue) {
+	private String cleanRussianTranslation(String usageValue) {
 		return replaceChars(usageValue, "\"", "");
 	}
 
@@ -594,10 +594,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String usageTranslationExp = "x:qnp/x:qng/x:qn";
 
 		List<UsageTranslation> translations = new ArrayList<>();
-		List<Element> usageTranslationNodes = node.selectNodes(usageTranslationExp);
-		for (Element usageTranslationNode : usageTranslationNodes) {
+		List<String> translationValues = extractValuesAsStrings(node, usageTranslationExp);
+		for (String translationValue : translationValues) {
 			UsageTranslation translation = new UsageTranslation();
-			translation.setValue(cleanRussianUsage(usageTranslationNode.getTextTrim()));
+			translation.setValue(cleanRussianTranslation(translationValue));
 			translation.setLang(russianLang);
 			translations.add(translation);
 		}
@@ -674,7 +674,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private String extractAsString(Element node, String xpathExp) {
 		Element wordNode = (Element) node.selectSingleNode(xpathExp);
-		return wordNode == null ? null : wordNode.getTextTrim();
+		return wordNode == null ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
 	}
 
 	private boolean isNotWordInSs1(String word) {
