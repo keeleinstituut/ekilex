@@ -322,7 +322,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("paradigm_id", paradigmId);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("value", word);
-		tableRowParamMap.put("mode", FormMode.WORD);
+		tableRowParamMap.put("mode", FormMode.WORD.name());
 		basicDbService.create(FORM, tableRowParamMap);
 
 		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
