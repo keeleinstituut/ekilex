@@ -23,6 +23,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -76,7 +77,7 @@ public class LexSearchDbService {
 		Condition wdc = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
 		Condition fdc = DSL.condition("{0} && {1}", MVIEW_WW_FORM.DATASET_CODES, DSL.val(datasets));
 		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
-		Condition flc = MVIEW_WW_FORM.FORM.lower().eq(wordPrefixLower).and(MVIEW_WW_FORM.IS_WORD.isFalse()).and(MVIEW_WW_FORM.LANG.eq(lang));
+		Condition flc = MVIEW_WW_FORM.FORM.lower().eq(wordPrefixLower).and(MVIEW_WW_FORM.MODE.eq(FormMode.FORM.name())).and(MVIEW_WW_FORM.LANG.eq(lang));
 
 		Table<Record2<String, String>> woft = DSL
 			.selectDistinct(MVIEW_WW_WORD.WORD.as("value"), iswtf)
@@ -238,7 +239,7 @@ public class LexSearchDbService {
 						MVIEW_WW_FORM.DISPLAY_FORM,
 						MVIEW_WW_FORM.VOCAL_FORM,
 						MVIEW_WW_FORM.SOUND_FILE,
-						MVIEW_WW_FORM.IS_WORD
+						MVIEW_WW_FORM.MODE
 						)
 				.from(MVIEW_WW_FORM)
 				.where(MVIEW_WW_FORM.WORD_ID.eq(wordId))

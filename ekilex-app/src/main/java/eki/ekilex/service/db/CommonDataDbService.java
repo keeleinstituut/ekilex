@@ -47,6 +47,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
 import eki.ekilex.constant.DbConstant;
@@ -326,7 +327,7 @@ public class CommonDataDbService implements DbConstant {
 								.and(LEXEME.WORD_ID.eq(WORD.ID))
 								.and(PARADIGM.WORD_ID.eq(WORD.ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.IS_WORD.eq(Boolean.TRUE))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
 				)
 				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetch();
@@ -403,7 +404,7 @@ public class CommonDataDbService implements DbConstant {
 		return create.select(PARADIGM.WORD_ID, FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG).from(PARADIGM, FORM, WORD)
 				.where(PARADIGM.WORD_ID.eq(wordId)
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.IS_WORD.isTrue())
+						.and(FORM.MODE.eq(FormMode.WORD.name()))
 						.and(WORD.ID.eq(wordId)))
 				.fetchOne();
 	}

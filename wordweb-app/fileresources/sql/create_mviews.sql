@@ -26,7 +26,7 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
-create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, conjunct varchar(100), homonym_nr integer, weight numeric(14,4));
+create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint,lexeme_id bigint,word_id bigint,word text,word_lang char(3),meaning_rel_type_code varchar(100));
@@ -58,13 +58,13 @@ dblink(
 	lang char(3),
 	paradigm_id bigint,
 	form_id bigint,
+	mode varchar(100),
 	form text,
 	morph_code varchar(100),
 	components varchar(100) array,
 	display_form varchar(255),
 	vocal_form varchar(255),
 	sound_file varchar(255),
-	is_word boolean,
 	dataset_codes varchar(100) array
 );
 
@@ -194,6 +194,7 @@ create index mview_ww_form_word_idx on mview_ww_form (word);
 create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));
 create index mview_ww_form_value_idx on mview_ww_form (form);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
+create index mview_ww_form_mode_idx on mview_ww_form (mode);
 create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);

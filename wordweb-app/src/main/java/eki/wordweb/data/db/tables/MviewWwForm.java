@@ -36,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 507907032;
+    private static final long serialVersionUID = -1688445296;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -77,6 +77,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, Long> FORM_ID = createField("form_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.mview_ww_form.mode</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> MODE = createField("mode", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * The column <code>public.mview_ww_form.form</code>.
      */
     public final TableField<MviewWwFormRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, this, "");
@@ -105,11 +110,6 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      * The column <code>public.mview_ww_form.sound_file</code>.
      */
     public final TableField<MviewWwFormRecord, String> SOUND_FILE = createField("sound_file", org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.mview_ww_form.is_word</code>.
-     */
-    public final TableField<MviewWwFormRecord, Boolean> IS_WORD = createField("is_word", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.mview_ww_form.dataset_codes</code>.
@@ -158,7 +158,7 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX, Indexes.MVIEW_WW_FORM_WORD_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_FORM_MODE_IDX, Indexes.MVIEW_WW_FORM_VALUE_IDX, Indexes.MVIEW_WW_FORM_WORD_ID_IDX, Indexes.MVIEW_WW_FORM_WORD_IDX);
     }
 
     /**

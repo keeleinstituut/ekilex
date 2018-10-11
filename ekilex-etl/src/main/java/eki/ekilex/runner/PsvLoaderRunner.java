@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Government;
@@ -489,7 +490,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				Map<String, Object> params = new HashMap<>();
 				params.put("word_id", word.get().id);
 				List<Map<String, Object>> forms = basicDbService.queryList(sqlFormsOfTheWord, params);
-				List<Map<String, Object>> wordForms = forms.stream().filter(f -> (boolean) f.get("is_word")).collect(Collectors.toList());
+				List<Map<String, Object>> wordForms = forms.stream().filter(f -> {
+					String mode = (String) f.get("mode");
+					return StringUtils.equals(mode, FormMode.WORD.name());
+				}).collect(Collectors.toList());
 				if (wordForms.size() > 1) {
 					logger.debug("More than one word form found for word : {}, id : {}", referenceForm.wordValue, word.get().id);
 					continue;

@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
+
 import javax.transaction.Transactional;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +19,7 @@ public class VoiceFileUpdaterRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(VoiceFileUpdaterRunner.class);
 
 	// TODO: check over with client is this matching logic ok
-	private final static String sqlFindWords = "select * from " + FORM + " where lower(value) = :word and is_word = true and sound_file is null";
+	private final static String sqlFindWords = "select * from " + FORM + " where lower(value) = :word and mode = '" + FormMode.WORD.name() + "' and sound_file is null";
 	private final static String sqlUpdateSoundFileNames = "update " + FORM + " set sound_file = :soundFileName where id in (:formIds)";
 
 	@Override

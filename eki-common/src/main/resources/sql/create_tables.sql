@@ -499,12 +499,12 @@ create table form
   id bigserial primary key,
   paradigm_id bigint references paradigm(id) on delete cascade not null,
   morph_code varchar(100) references morph(code) not null,
+  mode varchar(100) not null,
   value text not null,
   components varchar(100) array null,
   display_form varchar(255) null,
   vocal_form varchar(255) null,
-  sound_file varchar(255) null,
-  is_word boolean default false
+  sound_file varchar(255) null
 );
 alter sequence form_id_seq restart with 10000;
 
@@ -793,7 +793,8 @@ alter sequence lexeme_source_link_id_seq restart with 10000;
 
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
-create index form_isword_idx on form(is_word);
+create index form_mode_idx on form(mode);
+create index form_value_mode_idx on form(value, mode);
 create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);

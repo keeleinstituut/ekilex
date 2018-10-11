@@ -109,7 +109,7 @@ public class BasicDbService extends AbstractDbService {
 
 	public Long create(String tableName) throws Exception {
 
-		String sql = String.format("insert into %s (id) values (default) returning id", tableName);
+		String sql = "insert into " + tableName + " (id) values (default) returning id";
 		Long id = jdbcTemplate.queryForObject(sql, Collections.emptyMap(), Long.class);
 		return id;
 	}

@@ -2,6 +2,7 @@ package eki.wordweb.data;
 
 import java.util.List;
 
+import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -12,6 +13,8 @@ public class Form extends AbstractDataObject {
 	private Long paradigmId;
 
 	private Long formId;
+
+	private FormMode mode;
 
 	private String form;
 
@@ -27,8 +30,6 @@ public class Form extends AbstractDataObject {
 
 	private String soundFile;
 
-	private boolean isWord;
-
 	public Long getParadigmId() {
 		return paradigmId;
 	}
@@ -43,6 +44,14 @@ public class Form extends AbstractDataObject {
 
 	public void setFormId(Long formId) {
 		this.formId = formId;
+	}
+
+	public FormMode getMode() {
+		return mode;
+	}
+
+	public void setMode(FormMode mode) {
+		this.mode = mode;
 	}
 
 	public String getForm() {
@@ -99,14 +108,6 @@ public class Form extends AbstractDataObject {
 
 	public void setSoundFile(String soundFile) {
 		this.soundFile = soundFile;
-	}
-
-	public boolean isWord() {
-		return isWord;
-	}
-
-	public void setWord(boolean isWord) {
-		this.isWord = isWord;
 	}
 
 }

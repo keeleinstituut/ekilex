@@ -14,9 +14,11 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private String form;
 
-	private String conjunct;
-
 	private Integer homonymNr;
+
+	private boolean wordExists;
+
+	private String conjunct;
 
 	private Float weight;
 
@@ -62,20 +64,28 @@ public class TypeCollocMember extends AbstractDataObject {
 		this.form = form;
 	}
 
-	public String getConjunct() {
-		return conjunct;
-	}
-
-	public void setConjunct(String conjunct) {
-		this.conjunct = conjunct;
-	}
-
 	public Integer getHomonymNr() {
 		return homonymNr;
 	}
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public boolean isWordExists() {
+		return wordExists;
+	}
+
+	public void setWordExists(boolean wordExists) {
+		this.wordExists = wordExists;
+	}
+
+	public String getConjunct() {
+		return conjunct;
+	}
+
+	public void setConjunct(String conjunct) {
+		this.conjunct = conjunct;
 	}
 
 	public Float getWeight() {

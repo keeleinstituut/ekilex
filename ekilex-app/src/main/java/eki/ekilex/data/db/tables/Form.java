@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = -1918936492;
+    private static final long serialVersionUID = 1747883694;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -71,6 +71,11 @@ public class Form extends TableImpl<FormRecord> {
     public final TableField<FormRecord, String> MORPH_CODE = createField("morph_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
+     * The column <code>public.form.mode</code>.
+     */
+    public final TableField<FormRecord, String> MODE = createField("mode", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>public.form.value</code>.
      */
     public final TableField<FormRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
@@ -94,11 +99,6 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.sound_file</code>.
      */
     public final TableField<FormRecord, String> SOUND_FILE = createField("sound_file", org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.form.is_word</code>.
-     */
-    public final TableField<FormRecord, Boolean> IS_WORD = createField("is_word", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * Create a <code>public.form</code> table reference
@@ -142,7 +142,7 @@ public class Form extends TableImpl<FormRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_ISWORD_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_PKEY, Indexes.FORM_VALUE_IDX);
+        return Arrays.<Index>asList(Indexes.FORM_MODE_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_PKEY, Indexes.FORM_VALUE_IDX, Indexes.FORM_VALUE_MODE_IDX);
     }
 
     /**

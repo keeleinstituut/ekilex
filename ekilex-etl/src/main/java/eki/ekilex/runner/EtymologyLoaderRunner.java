@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
+import eki.common.constant.FormMode;
 import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
@@ -321,7 +322,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("paradigm_id", paradigmId);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("value", word);
-		tableRowParamMap.put("is_word", Boolean.TRUE);
+		tableRowParamMap.put("mode", FormMode.WORD);
 		basicDbService.create(FORM, tableRowParamMap);
 
 		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);

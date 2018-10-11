@@ -17,6 +17,7 @@ import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
@@ -158,7 +159,7 @@ public class ConversionUtil {
 			Form form = new Form();
 			form.setId(tuple.getFormId());
 			form.setValue(tuple.getForm());
-			form.setWord(tuple.isWord());
+			form.setMode(tuple.getMode());
 			form.setComponents(tuple.getComponents());
 			form.setDisplayForm(tuple.getDisplayForm());
 			form.setVocalForm(tuple.getVocalForm());
@@ -189,9 +190,9 @@ public class ConversionUtil {
 		}
 		if (paradigms.size() == 1) {
 			Paradigm paradigm = paradigms.get(0);
-			String title = getFirstAvailableTitle(paradigm, false);
+			String title = getFirstAvailableTitle(paradigm, FormMode.FORM);
 			if (StringUtils.isBlank(title)) {
-				title = getFirstAvailableTitle(paradigm, true);
+				title = getFirstAvailableTitle(paradigm, FormMode.WORD);
 			}
 			String inflectionTypeNr = paradigm.getInflectionTypeNr();
 			if (StringUtils.isNotBlank(inflectionTypeNr)) {
@@ -213,11 +214,11 @@ public class ConversionUtil {
 		}
 	}
 
-	private String getFirstAvailableTitle(Paradigm paradigm, boolean isWord) {
+	private String getFirstAvailableTitle(Paradigm paradigm, FormMode mode) {
 
 		List<Form> forms = paradigm.getForms();
 		for (Form form : forms) {
-			if (form.isWord() == isWord) {
+			if (form.getMode().equals(mode)) {
 				String title = form.getDisplayForm();
 				if (StringUtils.isBlank(title)) {
 					title = form.getValue();

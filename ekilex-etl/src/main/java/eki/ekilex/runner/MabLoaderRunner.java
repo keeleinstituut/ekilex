@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.MabData;
@@ -147,6 +148,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				forms = new ArrayList<>();
 				formValues = new ArrayList<>();
 				boolean isWord = true;
+				FormMode mode = FormMode.WORD;
 
 				for (Element formGroupNode : formGroupNodes) {
 
@@ -169,7 +171,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						formObj.setValue(form);
 						formObj.setDisplayForm(displayForm);
 						formObj.setMorphCode(destinMorphCode);
-						formObj.setWord(isWord);
+						formObj.setMode(mode);
 
 						forms.add(formObj);
 						formValues.add(form);
@@ -177,6 +179,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 					// TODO ask - first is the word?
 					if (isWord) {
 						isWord = false;
+						mode = FormMode.FORM;
 					}
 				}
 

@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
@@ -182,7 +183,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
 				Long paradigmId = createParadigm(wordId, null, false);
-				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
+				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
 			}
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
@@ -198,13 +199,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				// mab forms
 				List<Form> forms = paradigm.getForms();
 				if (CollectionUtils.isEmpty(forms)) {
-					createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, true);
+					createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
 				} else {
 					for (Form form : forms) {
-						if (form.isWord()) {
-							createForm(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.isWord());
+						if (form.getMode().equals(FormMode.WORD)) {
+							createForm(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.getMode());
 						} else {
-							createForm(form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), paradigmId, form.isWord());
+							createForm(form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), paradigmId, form.getMode());
 						}
 					}					
 				}
@@ -281,11 +282,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMaps;
 	}
 
-	private void createForm(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, boolean isWord) throws Exception {
+	private void createForm(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, FormMode mode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("paradigm_id", paradigmId);
 		tableRowParamMap.put("morph_code", morphCode);
+		tableRowParamMap.put("mode", mode.name());
 		tableRowParamMap.put("value", form);
 		if (wordComponents != null) {
 			tableRowParamMap.put("components", new PgVarcharArray(wordComponents));
@@ -296,7 +298,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(wordVocalForm)) {
 			tableRowParamMap.put("vocal_form", wordVocalForm);
 		}
-		tableRowParamMap.put("is_word", isWord);
 		basicDbService.create(FORM, tableRowParamMap);
 	}
 
@@ -343,8 +344,16 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("lang", lang);
+		tableRowParamMap.put("mode", FormMode.WORD.name());
 		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordMaxHomonym, tableRowParamMap);
-		int homonymNr = (int) tableRowValueMap.get("max_homonym_nr");
+		if (MapUtils.isEmpty(tableRowValueMap)) {
+			return 0;
+		}
+		Object result = tableRowValueMap.get("max_homonym_nr");
+		if (result == null) {
+			return 0;
+		}
+		int homonymNr = (int) result;
 		return homonymNr;
 	}
 

@@ -51,6 +51,7 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Service;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -144,7 +145,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l1.WORD_ID.eq(w1.ID)
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(f1.IS_WORD.isTrue());
+						.and(f1.MODE.eq(FormMode.WORD.name()));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
@@ -170,7 +171,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(w2.ID.eq(l2.WORD_ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue());
+						.and(f2.MODE.eq(FormMode.WORD.name()));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
@@ -337,7 +338,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class);
 
-		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.IS_WORD.isTrue()));
+		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
 
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			Lexeme ld = LEXEME.as("ld");
@@ -387,7 +388,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 	private int count(Word word, Paradigm paradigm, Form form, Condition where, List<String> datasets) {
 
-		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.IS_WORD.isTrue()))).on(paradigm.WORD_ID.eq(word.ID));
+		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.MODE.eq(FormMode.WORD.name())))).on(paradigm.WORD_ID.eq(word.ID));
 
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			Lexeme ld = LEXEME.as("ld");
@@ -416,7 +417,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return create.fetchCount(ww);
 	}
 
-	public Result<Record10<Long,String,Long,String,Boolean,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record10<Long,String,Long,String,String,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
 				.select(
@@ -424,7 +425,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						PARADIGM.INFLECTION_TYPE_NR,
 						FORM.ID.as("form_id"),
 						FORM.VALUE.as("form"),
-						FORM.IS_WORD,
+						FORM.MODE,
 						FORM.COMPONENTS,
 						FORM.DISPLAY_FORM,
 						FORM.VOCAL_FORM,
@@ -473,7 +474,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 			.where(
 					WORD.ID.eq(wordId)
 					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-					.and(FORM.IS_WORD.isTrue())
+					.and(FORM.MODE.eq(FormMode.WORD.name()))
 					.and(PARADIGM.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.WORD_ID.eq(WORD.ID))
 					.and(LEXEME.MEANING_ID.eq(MEANING.ID))
@@ -493,7 +494,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 					.and(WORD.ID.eq(LEXEME.WORD_ID))
 					.and(PARADIGM.WORD_ID.eq(WORD.ID))
 					.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-					.and(FORM.IS_WORD.isTrue())
+					.and(FORM.MODE.eq(FormMode.WORD.name()))
 					.and(LEXEME.MEANING_ID.eq(MEANING.ID)))
 			.groupBy(WORD.ID, LEXEME.ID, MEANING.ID)
 			.orderBy(WORD.ID)
@@ -517,7 +518,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.from(LEXEME, WORD, PARADIGM, FORM)
 				.where(
 						FORM.PARADIGM_ID.eq(PARADIGM.ID)
-						.and(FORM.IS_WORD.isTrue())
+						.and(FORM.MODE.eq(FormMode.WORD.name()))
 						.and(WORD.ID.ne(sourceWordId))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
@@ -559,7 +560,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(LEXEME.WORD_ID.eq(WORD.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						.and(FORM.MODE.eq(FormMode.WORD.name()))
 						)
 				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
@@ -604,7 +605,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(w2.ID.eq(wgrm2.WORD_ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
+						.and(f2.MODE.eq(FormMode.WORD.name()))
 				)
 				.orderBy(wgrm1.WORD_GROUP_ID)
 				.fetch();
@@ -635,7 +636,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(WORD_RELATION.WORD2_ID.eq(WORD.ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.IS_WORD.eq(Boolean.TRUE))
+						.and(FORM.MODE.eq(FormMode.WORD.name()))
 						)
 				.orderBy(WORD_RELATION.ORDER_BY)
 				.fetch();
@@ -666,7 +667,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(we.WORD2_ID.eq(w2.ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
+						.and(f2.MODE.eq(FormMode.WORD.name()))
 						)
 				.orderBy(we.ID)
 				.fetch();
@@ -746,7 +747,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
 						.and(l2.WORD_ID.eq(p2.WORD_ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
+						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						)
 				.orderBy(pgr1.ORDER_BY, rgr1.ORDER_BY, lc1.GROUP_ORDER, c.ID, lc2.MEMBER_ORDER)
 				.fetch();
@@ -783,7 +784,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(lc2.LEXEME_ID.ne(lc1.LEXEME_ID))
 						.and(l2.WORD_ID.eq(p2.WORD_ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.IS_WORD.isTrue())
+						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name()))
 						)
 				.orderBy(c.ID, lc2.MEMBER_ORDER)
 				.fetch();
