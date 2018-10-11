@@ -39,10 +39,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(CollocLoaderRunner.class);
 
-	@Deprecated
 	private static final String SQL_SELECT_LEXEME_MEANING_BY_WORD_AND_POS_PATH = "sql/select_lexeme_meaning_by_word_and_pos.sql";
 
-	@Deprecated
 	private static final String SQL_SELECT_LEXEME_MEANING_BY_WORD_AND_NO_POS_PATH = "sql/select_lexeme_meaning_by_word_and_no_pos.sql";
 
 	private static final String REPORT_ILLEGAL_DATA = "illegal_data";
@@ -108,10 +106,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private ReportComposer reportComposer;
 
-	@Deprecated
 	private String sqlSelectLexemeMeaningByWordAndPos;
 
-	@Deprecated
 	private String sqlSelectLexemeMeaningByWordAndNoPos;
 
 	private Map<String, String> posConversionMap;
@@ -199,7 +195,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocMemberSuggestedHomonymMeaningCount = new Count();
 		Count collocMemberCreatedHomonymMeaningCount = new Count();
 		Count collocMemberCreatedMoreThanOneHomonymCount = new Count();
-		Count collocMemberCreatedDummyHomonymCount = new Count();
+		Count collocMemberUniqueDummyHomonymCount = new Count();
 		Count collocMemberDummyHomonymCount = new Count();
 		Count collocateCount = new Count();
 		Count collocationCount = new Count();
@@ -219,7 +215,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		countersMap.put("collocMemberSuggestedHomonymMeaningCount", collocMemberSuggestedHomonymMeaningCount);
 		countersMap.put("collocMemberCreatedHomonymMeaningCount", collocMemberCreatedHomonymMeaningCount);
 		countersMap.put("collocMemberCreatedMoreThanOneHomonymCount", collocMemberCreatedMoreThanOneHomonymCount);
-		countersMap.put("collocMemberCreatedDummyHomonymCount", collocMemberCreatedDummyHomonymCount);
+		countersMap.put("collocMemberUniqueDummyHomonymCount", collocMemberUniqueDummyHomonymCount);
 		countersMap.put("collocMemberDummyHomonymCount", collocMemberDummyHomonymCount);
 		countersMap.put("collocateCount", collocateCount);
 		countersMap.put("collocationCount", collocationCount);
@@ -372,8 +368,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} created missing colloc member homonym/meaning", collocMemberCreatedHomonymMeaningCount.getValue());
 		logger.debug("Found {} created missing more than one colloc member homonym", collocMemberCreatedMoreThanOneHomonymCount.getValue());
 		logger.debug("Found {} dummy colloc members", collocMemberDummyHomonymCount.getValue());
-		logger.debug("Found {} created dummy homonyms", collocMemberCreatedDummyHomonymCount.getValue());
-		logger.debug("Found {} validate created dummy homonyms", dummyWordMap.size());
+		logger.debug("Found {} unique dummy homonyms", collocMemberUniqueDummyHomonymCount.getValue());
 		logger.debug("Found {} collocates", collocateCount.getValue());
 		logger.debug("Found {} collocations", collocationCount.getValue());
 		logger.debug("Found {} reused collocations", reusedCollocationCount.getValue());
@@ -640,7 +635,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocMemberSuggestedHomonymMeaningCount = countersMap.get("collocMemberSuggestedHomonymMeaningCount");
 		Count collocMemberCreatedHomonymMeaningCount = countersMap.get("collocMemberCreatedHomonymMeaningCount");
 		Count collocMemberCreatedMoreThanOneHomonymCount = countersMap.get("collocMemberCreatedMoreThanOneHomonymCount");
-		Count collocMemberCreatedDummyHomonymCount = countersMap.get("collocMemberCreatedDummyHomonymCount");
+		Count collocMemberUniqueDummyHomonymCount = countersMap.get("collocMemberUniqueDummyHomonymCount");
 		Count collocMemberDummyHomonymCount = countersMap.get("collocMemberDummyHomonymCount");
 		Count collocateCount = countersMap.get("collocateCount");
 		Count collocationCount = countersMap.get("collocationCount");
@@ -729,7 +724,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				}
 				if (homonymWordMap == null) {
 					if (collocMemberRefNum == null) {
-						UnknownWord unknownWord = handleUnknownWord(collocMemberWord, dummyWordMap, collocMemberCreatedDummyHomonymCount);
+						UnknownWord unknownWord = handleUnknownWord(collocMemberWord, dummyWordMap, collocMemberUniqueDummyHomonymCount);
 						collocLexemeId = unknownWord.getLexemeId();
 						collocMemberDummyHomonymCount.increment();
 						appendToReport(doReports, REPORT_UNKNOWN_COLLOC_MEMBER, word, collocation, collocMemberWord);
@@ -767,10 +762,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 								appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "homonüüme on üks, kuid see pole esimene");
 							}
 							Long collocWordId = collocWordObj.getId();
-							List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(collocWordId, collocMemberPosCode);
-							if (CollectionUtils.isEmpty(lexemeMeaningCandidates) && StringUtils.isNotBlank(collocMemberPosCode)) {
-								lexemeMeaningCandidates = getLexemeMeanings(collocWordId, null);
-							}
+							List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeaningCandidates(collocWordId, collocMemberPosCode);
 							if (CollectionUtils.isEmpty(lexemeMeaningCandidates)) {
 								//none
 								appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "homonüüme on üks, kuid sellel puudub tähendus");
@@ -788,7 +780,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 								collocMemberSuggestedHomonymMeaningCount.increment();
 							}
 						} else {
-							UnknownWord unknownWord = handleUnknownWord(collocMemberWord, dummyWordMap, collocMemberCreatedDummyHomonymCount);
+							UnknownWord unknownWord = handleUnknownWord(collocMemberWord, dummyWordMap, collocMemberUniqueDummyHomonymCount);
 							collocLexemeId = unknownWord.getLexemeId();
 							collocMemberDummyHomonymCount.increment();
 							appendToReport(doReports, REPORT_FAILING_HOMONYM_GUESS, word, collocation, collocMemberForm, "rohkem kui üks homonüüm");
@@ -809,7 +801,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							Map<Integer, LexemeMeaning> levelMeaningMap = meaningMap.get(collocWordId);
 							LexemeMeaning collocLexemeMeaning = levelMeaningMap.get(collocMemberMeaningNr);
 							if (collocLexemeMeaning == null) {
-								UnknownWord unknownWord = handleUnknownWord(collocMemberWord, dummyWordMap, collocMemberCreatedDummyHomonymCount);
+								UnknownWord unknownWord = handleUnknownWord(collocMemberWord, dummyWordMap, collocMemberUniqueDummyHomonymCount);
 								collocLexemeId = unknownWord.getLexemeId();
 								collocMemberDummyHomonymCount.increment();
 								appendToReport(doReports, REPORT_ILLEGAL_LEMPOSVK_REF, word, collocation, collocMemberWord, "i=" + collocMemberHomonymNr, "tnr=" + collocMemberMeaningNr);
@@ -925,11 +917,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private UnknownWord handleUnknownWord(String word, Map<String, UnknownWord> dummyWordMap, Count collocMemberCreatedDummyHomonymCount) throws Exception {
+	private UnknownWord handleUnknownWord(String word, Map<String, UnknownWord> dummyWordMap, Count collocMemberUniqueDummyHomonymCount) throws Exception {
 
 		UnknownWord unknownWord = dummyWordMap.get(word);
 		if (unknownWord == null) {
-			collocMemberCreatedDummyHomonymCount.increment();
+			collocMemberUniqueDummyHomonymCount.increment();
 			Map<String, Object> tableRowParamMap;
 			Long wordId = basicDbService.create(WORD);
 			tableRowParamMap = new HashMap<>();
@@ -1121,10 +1113,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 	private LexemeMeaning createOrSelectLexemeMeaning(Long wordId, Integer level1, String posCode) throws Exception {
 
-		List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(wordId, posCode);
-		if (CollectionUtils.isEmpty(lexemeMeaningCandidates) && StringUtils.isNotBlank(posCode)) {
-			lexemeMeaningCandidates = getLexemeMeanings(wordId, null);
-		}
+		List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeaningCandidates(wordId, posCode);
 		if (CollectionUtils.size(lexemeMeaningCandidates) == 1) {
 			LexemeMeaning lexemeMeaningCandidate = lexemeMeaningCandidates.get(0);
 			return lexemeMeaningCandidate;
@@ -1242,6 +1231,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			valueParamMap.put("group_order", groupOrder);
 		}
 		basicDbService.update(LEX_COLLOC, criteriaParamMap, valueParamMap);
+	}
+
+	private List<LexemeMeaning> getLexemeMeaningCandidates(Long wordId, String posCode) throws Exception {
+
+		List<LexemeMeaning> lexemeMeaningCandidates = getLexemeMeanings(wordId, posCode);
+		if (CollectionUtils.isEmpty(lexemeMeaningCandidates) && StringUtils.isNotBlank(posCode)) {
+			lexemeMeaningCandidates = getLexemeMeanings(wordId, null);
+		}
+		return lexemeMeaningCandidates;
 	}
 
 	private List<LexemeMeaning> getLexemeMeanings(Long wordId, String posCode) throws Exception {
