@@ -413,11 +413,25 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang, null);
 						List<Element> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
 						for (Element meaningGroupNode: meaningGroupNodes) {
-							Long meaningId = createMeaning(new Meaning());
+							Map<String, Object> lexemeForWord = findExistingLexemeForWord(wordData.id, level1);
+							boolean useExistingLexeme = (lexemeForWord != null);
+							Long meaningId;
+							if (useExistingLexeme) {
+								meaningId = (Long)lexemeForWord.get("meaning_id");
+							} else {
+								meaningId = createMeaning(new Meaning());
+							}
 
 							List<LexemeToWordData> latinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 							latinTerms.forEach(term -> term.meaningId = meaningId);
-							context.latinTermins.addAll(latinTerms);
+							if (useExistingLexeme) {
+								boolean latinTermExists = context.latinTermins.stream().anyMatch(latinTerm -> latinTerm.meaningId.equals(meaningId));
+								if (!latinTermExists) {
+									context.latinTermins.addAll(latinTerms);
+								}
+							} else {
+								context.latinTermins.addAll(latinTerms);
+							}
 
 							List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
 							processDomains(null, meaningId, domains);
@@ -425,15 +439,23 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionExp);
 							for (String definition : definitions) {
 								createDefinition(meaningId, definition, dataLang, getDataset());
+								if (useExistingLexeme) {
+									writeToLogFile(reportingId, "lisan definitsiooni olemasolevale mõistele", wordData.value + " : " + definition);
+								}
 							}
 
-							Lexeme lexeme = new Lexeme();
-							lexeme.setWordId(wordData.id);
-							lexeme.setMeaningId(meaningId);
-							lexeme.setLevel1(level1);
-							lexeme.setLevel2(1);
-							lexeme.setLevel3(1);
-							Long lexemeId = createLexeme(lexeme, getDataset());
+							Long lexemeId;
+							if (useExistingLexeme) {
+								lexemeId = (Long)lexemeForWord.get("id");
+							} else {
+								Lexeme lexeme = new Lexeme();
+								lexeme.setWordId(wordData.id);
+								lexeme.setMeaningId(meaningId);
+								lexeme.setLevel1(level1);
+								lexeme.setLevel2(1);
+								lexeme.setLevel3(1);
+								lexemeId = createLexeme(lexeme, getDataset());
+							}
 							if (lexemeId != null) {
 								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
@@ -448,14 +470,23 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
 								WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, russianLang, null);
 								List<String> russianRegisters = extractValuesAsStrings(transalationGroupNode, registersExp);
-								Lexeme russianLexeme = new Lexeme();
-								russianLexeme.setWordId(russianWordData.id);
-								russianLexeme.setMeaningId(meaningId);
-								russianLexeme.setLevel1(russianWordData.level1);
-								russianWordData.level1++;
-								russianLexeme.setLevel2(1);
-								russianLexeme.setLevel3(1);
-								Long russianLexemeId = createLexeme(russianLexeme, getDataset());
+								boolean createNewRussianLexeme = true;
+								Long russianLexemeId = null;
+								if (useExistingLexeme) {
+									createNewRussianLexeme = findExistingLexemeForWordAndMeaning(russianWordData.id, meaningId) == null;
+									if (createNewRussianLexeme) {
+										writeToLogFile(reportingId, "lisan vene vaste olemasolevale mõistele", wordData.value + " : " + russianWordData.value);
+									}
+								}
+								if (createNewRussianLexeme) {
+									Lexeme russianLexeme = new Lexeme();
+									russianLexeme.setWordId(russianWordData.id);
+									russianLexeme.setMeaningId(meaningId);
+									russianLexeme.setLevel1(1);
+									russianLexeme.setLevel2(1);
+									russianLexeme.setLevel3(1);
+									russianLexemeId = createLexeme(russianLexeme, getDataset());
+								}
 								if (russianLexemeId != null) {
 									saveRegisters(russianLexemeId, russianRegisters, reportingId);
 								}
@@ -684,6 +715,26 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		paramMap.put("dataset", "ss1");
 		List<Map<String, Object>> words = basicDbService.queryList(sqlSelectWordByDataset, paramMap);
 		return CollectionUtils.isEmpty(words);
+	}
+
+	private Map<String, Object> findExistingLexemeForWord(Long wordId, int level1) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("word_id", wordId);
+		params.put("level1", level1);
+		params.put("dataset_code", getDataset());
+		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
+		return lexemes.size() == 1 ? lexemes.get(0) : null;
+	}
+
+	private Map<String, Object> findExistingLexemeForWordAndMeaning(Long wordId, Long meaningId) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("word_id", wordId);
+		params.put("level1", 1);
+		params.put("meaning_id", meaningId);
+		params.put("dataset_code", getDataset());
+		return basicDbService.select(LEXEME, params);
 	}
 
 }
