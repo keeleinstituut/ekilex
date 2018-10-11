@@ -2,6 +2,7 @@ package eki.ekilex.data;
 
 import javax.persistence.Column;
 
+import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
 public class ParadigmFormTuple extends AbstractDataObject {
@@ -20,8 +21,8 @@ public class ParadigmFormTuple extends AbstractDataObject {
 	@Column(name = "form")
 	private String form;
 
-	@Column(name = "is_word")
-	private boolean isWord;
+	@Column(name = "mode")
+	private FormMode mode;
 
 	@Column(name = "components")
 	private String[] components;
@@ -70,12 +71,12 @@ public class ParadigmFormTuple extends AbstractDataObject {
 		this.form = form;
 	}
 
-	public boolean isWord() {
-		return isWord;
+	public FormMode getMode() {
+		return mode;
 	}
 
-	public void setWord(boolean isWord) {
-		this.isWord = isWord;
+	public void setMode(FormMode mode) {
+		this.mode = mode;
 	}
 
 	public String[] getComponents() {

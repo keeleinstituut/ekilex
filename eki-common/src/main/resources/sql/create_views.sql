@@ -2,7 +2,7 @@ create type type_word as (value text, lang char(3));
 create type type_definition as (value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
-create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, conjunct varchar(100), homonym_nr integer, weight numeric(14,4));
+create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -31,7 +31,7 @@ from (select w.id as word_id,
              w.display_morph_code
       from word as w
         join paradigm as p on p.word_id = w.id
-        join form as f on f.paradigm_id = p.id and f.is_word = true
+        join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
       where exists (select ld.id
                     from lexeme as ld
                     where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
@@ -67,7 +67,7 @@ from (select w.id as word_id,
                          and   l2.dataset_code = ds2.code
                          and   p2.word_id = w2.id
                          and   f2.paradigm_id = p2.id
-                         and   f2.is_word = true) mw
+                         and   f2.mode = 'WORD') mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row(wd.value,wd.lang)::type_definition order by wd.ds_order_by, wd.level1, wd.level2, wd.level3, wd.d_order_by) definitions
@@ -95,13 +95,13 @@ create view view_ww_form
       w.lang,
       p.id paradigm_id,
       ff.id form_id,
+      ff.mode,
       ff.value form,
       ff.morph_code,
       ff.components,
       ff.display_form,
       ff.vocal_form,
       ff.sound_file,
-      ff.is_word,
       (select
         array_agg(ld.dataset_code) 
       from
@@ -118,7 +118,7 @@ create view view_ww_form
     where p.word_id = w.id
           and ff.paradigm_id = p.id
           and fw.paradigm_id = p.id
-          and fw.is_word = true
+          and fw.mode = 'WORD'
           and exists (select ld.id
                         from lexeme as ld
                         where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
@@ -299,7 +299,7 @@ create view view_ww_collocation
       c.value as colloc_value,
       c.definition as colloc_definition,
       c.usages as colloc_usages,
-      array_agg(row(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lc2.conjunct, lw2.homonym_nr, lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members
+      array_agg(row(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lw2.homonym_nr, lw2.word_exists, lc2.conjunct, lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members
     from
       collocation as c
       inner join lex_colloc as lc1 on lc1.collocation_id = c.id
@@ -310,7 +310,8 @@ create view view_ww_collocation
                      l2.id lexeme_id,
                      l2.word_id,
                      f2.value word,
-                     w2.homonym_nr
+                     w2.homonym_nr,
+                     (f2.mode = 'WORD') word_exists
               from lexeme as l2,
                    word as w2,
                    paradigm as p2,
@@ -318,7 +319,7 @@ create view view_ww_collocation
               where l2.word_id = w2.id
               and   p2.word_id = w2.id
               and   f2.paradigm_id = p2.id
-              and   f2.is_word = true) lw2 on lw2.lexeme_id = lc2.lexeme_id
+              and   f2.mode in ('WORD', 'UNKNOWN')) lw2 on lw2.lexeme_id = lc2.lexeme_id
       left outer join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
       left outer join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
     group by
@@ -355,7 +356,7 @@ create view view_ww_word_relation
                   where r.word2_id = w2.id
                   and   p2.word_id = w2.id
                   and   f2.paradigm_id = p2.id
-                  and   f2.is_word = true
+                  and   f2.mode = 'WORD'
                   and   exists (select l2.id
                                 from lexeme l2
                                 where l2.word_id = w2.id
@@ -380,7 +381,7 @@ create view view_ww_lexeme_relation
                        word w2,
                        paradigm p2,
                        form f2
-                  where f2.is_word = true
+                  where f2.mode = 'WORD'
                   and   f2.paradigm_id = p2.id
                   and   p2.word_id = w2.id
                   and   l2.word_id = w2.id) l2 on l2.related_lexeme_id = r.lexeme2_id
@@ -403,7 +404,7 @@ create view view_ww_meaning_relation
                word w2,
                paradigm p2,
                form f2
-          where f2.is_word = true
+          where f2.mode = 'WORD'
           and   f2.paradigm_id = p2.id
           and   p2.word_id = w2.id
           and   l2.word_id = w2.id

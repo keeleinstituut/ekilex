@@ -93,14 +93,14 @@ public class ViewUtil implements WebConstant, InitializingBean {
 			if (CollocMemberGroup.HEADWORD.equals(collocMemGr)) {
 				TypeCollocMember collocMember = colloc.getHeadwordMember();
 				String conjunct = collocMember.getConjunct();
-				if (StringUtils.isNotBlank(conjunct) && colloc.isPreConjunct()) {
+				if (StringUtils.isNotBlank(conjunct) && collocMember.isPreConjunct()) {
 					htmlBuf.append(conjunct);
 					htmlBuf.append("&nbsp;");
 				}
 				htmlBuf.append("<span class='text-info'>");
 				htmlBuf.append(collocMember.getForm());
 				htmlBuf.append("</span>");
-				if (StringUtils.isNotBlank(conjunct) && colloc.isPostConjunct()) {
+				if (StringUtils.isNotBlank(conjunct) && collocMember.isPostConjunct()) {
 					htmlBuf.append("&nbsp;");
 					htmlBuf.append(conjunct);
 				}
@@ -109,7 +109,16 @@ public class ViewUtil implements WebConstant, InitializingBean {
 				int collocMemberCount = collocMembers.size();
 				int collocMemberIndex = 0;
 				for (TypeCollocMember collocMember : collocMembers) {
+					String conjunct = collocMember.getConjunct();
+					if (StringUtils.isNotBlank(conjunct) && collocMember.isPreConjunct()) {
+						htmlBuf.append(conjunct);
+						htmlBuf.append("&nbsp;");
+					}
 					htmlBuf.append(collocMember.getForm());
+					if (StringUtils.isNotBlank(conjunct) && collocMember.isPostConjunct()) {
+						htmlBuf.append("&nbsp;");
+						htmlBuf.append(conjunct);
+					}
 					if (collocMemberIndex < collocMemberCount - 1) {
 						htmlBuf.append("&nbsp;");
 					}

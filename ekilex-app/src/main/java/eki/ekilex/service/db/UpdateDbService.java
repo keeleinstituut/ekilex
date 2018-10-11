@@ -32,6 +32,7 @@ import org.jooq.Result;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.DbConstant;
@@ -283,7 +284,7 @@ public class UpdateDbService implements DbConstant {
 
 	public Long addWord(String word, String datasetCode, String language, String morphCode) {
 		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
-				.where(WORD.LANG.eq(language).and(FORM.IS_WORD.isTrue()).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+				.where(WORD.LANG.eq(language).and(FORM.MODE.eq(FormMode.WORD.name())).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
 		int homonymNumber = 1;
 		if (currentHomonymNumber.value1() != null) {
@@ -292,8 +293,8 @@ public class UpdateDbService implements DbConstant {
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
-				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.IS_WORD, FORM.MORPH_CODE)
-				.values(paradigmId, word, word, true, morphCode)
+				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.MODE, FORM.MORPH_CODE)
+				.values(paradigmId, word, word, FormMode.WORD.name(), morphCode)
 				.execute();
 		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		create

@@ -16,6 +16,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
@@ -134,7 +135,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			List<Form> firstForms = paradigms.get(0).getForms();
 			if (CollectionUtils.isNotEmpty(firstForms)) {
-				Optional<Form> firstFormOption = firstForms.stream().filter(Form::isWord).findFirst();
+				Optional<Form> firstFormOption = firstForms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst();
 				if (firstFormOption.isPresent()) {
 					Form firstForm = firstFormOption.get();
 					firstAvailableVocalForm = firstForm.getVocalForm();

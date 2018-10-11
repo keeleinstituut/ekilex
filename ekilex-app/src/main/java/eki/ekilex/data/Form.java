@@ -6,6 +6,7 @@ import javax.persistence.Column;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
 @JsonIgnoreProperties({"displayMorphCode"})
@@ -19,8 +20,8 @@ public class Form extends AbstractDataObject {
 	@Column(name = "word")
 	private String value;
 
-	@Column(name = "is_word")
-	private boolean isWord;
+	@Column(name = "mode")
+	private FormMode mode;
 
 	@Column(name = "components")
 	private String[] components;
@@ -62,12 +63,12 @@ public class Form extends AbstractDataObject {
 		this.value = value;
 	}
 
-	public boolean isWord() {
-		return isWord;
+	public FormMode getMode() {
+		return mode;
 	}
 
-	public void setWord(boolean isWord) {
-		this.isWord = isWord;
+	public void setMode(FormMode mode) {
+		this.mode = mode;
 	}
 
 	public String[] getComponents() {

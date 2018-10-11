@@ -31,7 +31,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = -1835402025;
+    private static final long serialVersionUID = 1455392055;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -72,6 +72,11 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
     public final TableField<ViewWwFormRecord, Long> FORM_ID = createField("form_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
+     * The column <code>public.view_ww_form.mode</code>.
+     */
+    public final TableField<ViewWwFormRecord, String> MODE = createField("mode", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * The column <code>public.view_ww_form.form</code>.
      */
     public final TableField<ViewWwFormRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, this, "");
@@ -100,11 +105,6 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
      * The column <code>public.view_ww_form.sound_file</code>.
      */
     public final TableField<ViewWwFormRecord, String> SOUND_FILE = createField("sound_file", org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
-
-    /**
-     * The column <code>public.view_ww_form.is_word</code>.
-     */
-    public final TableField<ViewWwFormRecord, Boolean> IS_WORD = createField("is_word", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.view_ww_form.dataset_codes</code>.

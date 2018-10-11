@@ -42,6 +42,7 @@ public class Indexes {
     public static final Index MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX = Indexes0.MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX;
     public static final Index MVIEW_WW_COLLOCATION_LEXEME_ID_IDX = Indexes0.MVIEW_WW_COLLOCATION_LEXEME_ID_IDX;
     public static final Index MVIEW_WW_COLLOCATION_WORD_ID_IDX = Indexes0.MVIEW_WW_COLLOCATION_WORD_ID_IDX;
+    public static final Index MVIEW_WW_FORM_MODE_IDX = Indexes0.MVIEW_WW_FORM_MODE_IDX;
     public static final Index MVIEW_WW_FORM_VALUE_IDX = Indexes0.MVIEW_WW_FORM_VALUE_IDX;
     public static final Index MVIEW_WW_FORM_WORD_ID_IDX = Indexes0.MVIEW_WW_FORM_WORD_ID_IDX;
     public static final Index MVIEW_WW_FORM_WORD_IDX = Indexes0.MVIEW_WW_FORM_WORD_IDX;
@@ -69,6 +70,7 @@ public class Indexes {
         public static Index MVIEW_WW_CLASSIFIER_NAME_ORIGIN_CODE_LANG_IDX = Internal.createIndex("mview_ww_classifier_name_origin_code_lang_idx", MviewWwClassifier.MVIEW_WW_CLASSIFIER, new OrderField[] { MviewWwClassifier.MVIEW_WW_CLASSIFIER.NAME, MviewWwClassifier.MVIEW_WW_CLASSIFIER.ORIGIN, MviewWwClassifier.MVIEW_WW_CLASSIFIER.CODE, MviewWwClassifier.MVIEW_WW_CLASSIFIER.LANG }, false);
         public static Index MVIEW_WW_COLLOCATION_LEXEME_ID_IDX = Internal.createIndex("mview_ww_collocation_lexeme_id_idx", MviewWwCollocation.MVIEW_WW_COLLOCATION, new OrderField[] { MviewWwCollocation.MVIEW_WW_COLLOCATION.LEXEME_ID }, false);
         public static Index MVIEW_WW_COLLOCATION_WORD_ID_IDX = Internal.createIndex("mview_ww_collocation_word_id_idx", MviewWwCollocation.MVIEW_WW_COLLOCATION, new OrderField[] { MviewWwCollocation.MVIEW_WW_COLLOCATION.WORD_ID }, false);
+        public static Index MVIEW_WW_FORM_MODE_IDX = Internal.createIndex("mview_ww_form_mode_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.MODE }, false);
         public static Index MVIEW_WW_FORM_VALUE_IDX = Internal.createIndex("mview_ww_form_value_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.FORM }, false);
         public static Index MVIEW_WW_FORM_WORD_ID_IDX = Internal.createIndex("mview_ww_form_word_id_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.WORD_ID }, false);
         public static Index MVIEW_WW_FORM_WORD_IDX = Internal.createIndex("mview_ww_form_word_idx", MviewWwForm.MVIEW_WW_FORM, new OrderField[] { MviewWwForm.MVIEW_WW_FORM.WORD }, false);

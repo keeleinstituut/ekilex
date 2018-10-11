@@ -32,6 +32,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
@@ -92,7 +93,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Word w1 = WORD.as("w1");
 		Paradigm p1 = PARADIGM.as("p1");
 
-		Condition where1 = FORM.IS_WORD.isTrue();
+		Condition where1 = FORM.MODE.eq(FormMode.WORD.name());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
 			where1 = where1.and(FORM.VALUE.lower().like(maskedSearchFilter));
 		} else {
@@ -164,7 +165,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Paradigm p1 = PARADIGM.as("p1");
 				Word w1 = WORD.as("w1");
 				Lexeme l1 = LEXEME.as("l1");
-				Condition where1 = f1.IS_WORD.isTrue()
+				Condition where1 = f1.MODE.eq(FormMode.WORD.name())
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(l1.WORD_ID.eq(w1.ID))
@@ -435,7 +436,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.from(mw
 						.leftOuterJoin(mwv).on(mwv.ID.eq(mw.field("word_id", Long.class)))
 						.leftOuterJoin(mwp).on(mwp.WORD_ID.eq(mwv.ID))
-						.leftOuterJoin(mwf).on(mwf.PARADIGM_ID.eq(mwp.ID).and(mwf.IS_WORD.isTrue())))
+						.leftOuterJoin(mwf).on(mwf.PARADIGM_ID.eq(mwp.ID).and(mwf.MODE.eq(FormMode.WORD.name()))))
 				.groupBy(
 						mw.field("meaning_id"),
 						mw.field("concept_id"),
@@ -453,7 +454,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Paradigm p2 = PARADIGM.as("p2");
 		Form f2 = FORM.as("f2");
 
-		Condition where4 = l2.WORD_ID.eq(w2.ID).and(p2.WORD_ID.eq(w2.ID)).and(f2.PARADIGM_ID.eq(p2.ID)).and(f2.IS_WORD.isTrue());
+		Condition where4 = l2.WORD_ID.eq(w2.ID).and(p2.WORD_ID.eq(w2.ID)).and(f2.PARADIGM_ID.eq(p2.ID)).and(f2.MODE.eq(FormMode.WORD.name()));
 		if (StringUtils.isNotBlank(resultLang)) {
 			where4 = where4.and(w2.LANG.eq(resultLang));
 		}
@@ -564,7 +565,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(l.WORD_ID.eq(w.ID))
 								.and(p.WORD_ID.eq(w.ID))
 								.and(f.PARADIGM_ID.eq(p.ID))
-								.and(f.IS_WORD.eq(Boolean.TRUE)))
+								.and(f.MODE.eq(FormMode.WORD.name())))
 				.groupBy(l.ID, w.ID)
 				.orderBy(w.ID, l.DATASET_CODE, l.LEVEL1, l.LEVEL2, l.LEVEL3)
 				.fetchSingle();
@@ -585,7 +586,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 								.and(datasetCondition)
 								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.IS_WORD.isTrue()))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
 				.limit(1)
 				.fetchSingle();

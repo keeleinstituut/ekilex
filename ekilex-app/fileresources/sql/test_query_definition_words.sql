@@ -20,7 +20,7 @@ from (select count(l.word_id) word_count,
            lexeme l
       where f.paradigm_id = p.id
       and   p.word_id = w.id
-      and   f.is_word = true
+      and   f.mode = 'WORD'
       and   l.word_id = w.id
       and   l.meaning_id = m.id
       and   d.meaning_id = m.id) d_w

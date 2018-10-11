@@ -547,7 +547,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				compoundForm.setValue(compoundFormValue);
 				compoundForm.setDisplayForm(compoundDisplayForm);
 				compoundForm.setMorphCode(mabForm.getMorphCode());
-				compoundForm.setWord(mabForm.isWord());
+				compoundForm.setMode(mabForm.getMode());
 				compoundForms.add(compoundForm);
 			}
 			Paradigm compoundWordParadigm = new Paradigm();

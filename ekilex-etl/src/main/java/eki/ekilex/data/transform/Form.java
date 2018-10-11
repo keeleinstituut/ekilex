@@ -1,5 +1,6 @@
 package eki.ekilex.data.transform;
 
+import eki.common.constant.FormMode;
 import eki.common.data.AbstractDataObject;
 
 public class Form extends AbstractDataObject {
@@ -12,7 +13,7 @@ public class Form extends AbstractDataObject {
 
 	private String morphCode;
 
-	private boolean isWord;
+	private FormMode mode;
 
 	public String getValue() {
 		return value;
@@ -38,12 +39,12 @@ public class Form extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
-	public boolean isWord() {
-		return isWord;
+	public FormMode getMode() {
+		return mode;
 	}
 
-	public void setWord(boolean isWord) {
-		this.isWord = isWord;
+	public void setMode(FormMode mode) {
+		this.mode = mode;
 	}
 
 }

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.TableName;
 import eki.common.service.db.BasicDbService;
 
@@ -30,10 +31,10 @@ public class WordMatcherService implements TableName {
 
 	private final static String sqlWordByGuidAndValue =
 			"select w.* from " + WORD + " w join " + PARADIGM + " p on p.word_id = w.id join " + FORM + " f on f.paradigm_id = p.id join " + WORD_GUID + " g on g.word_id = w.id "
-					+ "where g.guid = :guid and f.value = :wordValue and f.is_word = true";
+					+ "where g.guid = :guid and f.value = :wordValue and f.mode = '" + FormMode.WORD.name() + "'";
 	private final static String sqlSelectWordsByValue =
 			"select w.*, p.id as paradigm_id from " + WORD + " w join " + PARADIGM + " p on p.word_id = w.id join " + FORM + " f on f.paradigm_id = p.id "
-					+ "where f.value = :wordValue and f.is_word = true";
+					+ "where f.value = :wordValue and f.mode = '" + FormMode.WORD.name() + "'";
 
 	@Autowired
 	protected BasicDbService basicDbService;

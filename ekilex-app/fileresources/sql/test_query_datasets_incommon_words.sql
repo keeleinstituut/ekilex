@@ -7,7 +7,7 @@ from word w,
   lexeme l1
 where f.paradigm_id = p.id
 and   p.word_id = w.id
-and   f.is_word = true
+and   f.mode = 'WORD'
 and   l1.word_id = w.id
 and   l1.dataset_code = :dataset1
 and   not exists (select l2.word_id

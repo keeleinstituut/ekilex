@@ -21,5 +21,5 @@ where
 			form f
 		where p.word_id = w.id
 		and f.paradigm_id = p.id
-		and f.is_word = true
+		and f.mode = 'WORD'
 		and f.value = :word)

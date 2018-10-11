@@ -12,7 +12,7 @@ from (select w.id word_id,
            lexeme l
       where f.paradigm_id = p.id
       and   p.word_id = w.id
-      and   f.is_word = true
+      and   f.mode = 'WORD'
       and   l.word_id = w.id
       and   l.meaning_id = m.id) w_1,
      (select f.value word,
@@ -25,7 +25,7 @@ from (select w.id word_id,
            lexeme l
       where f.paradigm_id = p.id
       and   p.word_id = w.id
-      and   f.is_word = true
+      and   f.mode = 'WORD'
       and   l.word_id = w.id
       and   l.meaning_id = m.id) w_2
 where w_1.meaning_id = w_2.meaning_id

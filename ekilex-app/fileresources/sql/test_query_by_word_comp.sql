@@ -7,5 +7,5 @@ from (select f.paradigm_id,
              f.components,
              unnest(f.components) component
       from form f
-      where f.is_word = true) f
+      where f.mode = 'WORD') f
 where f.component like :compPrefix;

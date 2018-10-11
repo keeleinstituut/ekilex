@@ -14,9 +14,11 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	private String form;
 
-	private String conjunct;
-
 	private Integer homonymNr;
+
+	private boolean wordExists;
+
+	private String conjunct;
 
 	private Float weight;
 
@@ -25,6 +27,10 @@ public class TypeCollocMember extends AbstractDataObject {
 	private boolean primary;
 
 	private boolean context;
+
+	private boolean preConjunct;
+
+	private boolean postConjunct;
 
 	public Long getLexemeId() {
 		return lexemeId;
@@ -58,20 +64,28 @@ public class TypeCollocMember extends AbstractDataObject {
 		this.form = form;
 	}
 
-	public String getConjunct() {
-		return conjunct;
-	}
-
-	public void setConjunct(String conjunct) {
-		this.conjunct = conjunct;
-	}
-
 	public Integer getHomonymNr() {
 		return homonymNr;
 	}
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public boolean isWordExists() {
+		return wordExists;
+	}
+
+	public void setWordExists(boolean wordExists) {
+		this.wordExists = wordExists;
+	}
+
+	public String getConjunct() {
+		return conjunct;
+	}
+
+	public void setConjunct(String conjunct) {
+		this.conjunct = conjunct;
 	}
 
 	public Float getWeight() {
@@ -104,6 +118,22 @@ public class TypeCollocMember extends AbstractDataObject {
 
 	public void setContext(boolean context) {
 		this.context = context;
+	}
+
+	public boolean isPreConjunct() {
+		return preConjunct;
+	}
+
+	public void setPreConjunct(boolean preConjunct) {
+		this.preConjunct = preConjunct;
+	}
+
+	public boolean isPostConjunct() {
+		return postConjunct;
+	}
+
+	public void setPostConjunct(boolean postConjunct) {
+		this.postConjunct = postConjunct;
 	}
 
 }

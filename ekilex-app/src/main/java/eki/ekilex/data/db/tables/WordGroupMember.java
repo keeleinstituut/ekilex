@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordGroupMember extends TableImpl<WordGroupMemberRecord> {
 
-    private static final long serialVersionUID = 1564815451;
+    private static final long serialVersionUID = -1873612786;
 
     /**
      * The reference instance of <code>public.word_group_member</code>
@@ -117,7 +117,7 @@ public class WordGroupMember extends TableImpl<WordGroupMemberRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_GROUP_MEMBER_PKEY, Indexes.WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY);
+        return Arrays.<Index>asList(Indexes.WORD_GROUP_MEMBER_GROUP_ID_IDX, Indexes.WORD_GROUP_MEMBER_PKEY, Indexes.WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY, Indexes.WORD_GROUP_MEMBER_WORD_ID_IDX);
     }
 
     /**

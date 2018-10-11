@@ -17,7 +17,7 @@ from (select w.id word_id,
            form f
       where f.paradigm_id = p.id
       and   p.word_id = w.id
-      and   f.is_word = true) w
+      and   f.mode = 'WORD') w
   inner join morph wm on w.morph_code = wm.code
   inner join morph_label wml on wml.code = wm.code and wml.lang = :labelLang and wml.type = :labelType
   inner join lexeme l on l.word_id = w.word_id

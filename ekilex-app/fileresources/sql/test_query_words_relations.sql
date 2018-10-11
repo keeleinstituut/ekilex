@@ -17,7 +17,7 @@ from (select w1.word word,
                  lexeme l
             where p.word_id = w.id
             and   f.paradigm_id = p.id
-            and   f.is_word = true
+            and   f.mode = 'WORD'
             and   l.word_id = w.id
             order by w.id) w1
         left outer join lex_relation lr on lr.lexeme1_id = w1.lexeme1_id
@@ -30,7 +30,7 @@ from (select w1.word word,
                               lexeme l
                          where p.word_id = w.id
                          and   f.paradigm_id = p.id
-                         and   f.is_word = true
+                         and   f.mode = 'WORD'
                          and   l.word_id = w.id) w2 on lr.lexeme2_id = w2.lexeme2_id
         left outer join lex_rel_type_label lrtl on lrtl.code = lr.lex_rel_type_code and lrtl.lang = :defaultLabelLang and lrtl.type = :defaultLabelType
       order by w1.word) w_r

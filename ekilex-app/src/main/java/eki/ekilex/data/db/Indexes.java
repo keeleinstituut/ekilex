@@ -135,10 +135,11 @@ public class Indexes {
     public static final Index EKI_USER_NAME_KEY = Indexes0.EKI_USER_NAME_KEY;
     public static final Index EKI_USER_PKEY = Indexes0.EKI_USER_PKEY;
     public static final Index ETYMOLOGY_TYPE_PKEY = Indexes0.ETYMOLOGY_TYPE_PKEY;
-    public static final Index FORM_ISWORD_IDX = Indexes0.FORM_ISWORD_IDX;
+    public static final Index FORM_MODE_IDX = Indexes0.FORM_MODE_IDX;
     public static final Index FORM_PARADIGM_ID_IDX = Indexes0.FORM_PARADIGM_ID_IDX;
     public static final Index FORM_PKEY = Indexes0.FORM_PKEY;
     public static final Index FORM_VALUE_IDX = Indexes0.FORM_VALUE_IDX;
+    public static final Index FORM_VALUE_MODE_IDX = Indexes0.FORM_VALUE_MODE_IDX;
     public static final Index FORM_REL_TYPE_PKEY = Indexes0.FORM_REL_TYPE_PKEY;
     public static final Index FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY = Indexes0.FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY;
@@ -247,8 +248,10 @@ public class Indexes {
     public static final Index WORD_ETYMOLOGY_PKEY = Indexes0.WORD_ETYMOLOGY_PKEY;
     public static final Index WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY = Indexes0.WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY;
     public static final Index WORD_GROUP_PKEY = Indexes0.WORD_GROUP_PKEY;
+    public static final Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Indexes0.WORD_GROUP_MEMBER_GROUP_ID_IDX;
     public static final Index WORD_GROUP_MEMBER_PKEY = Indexes0.WORD_GROUP_MEMBER_PKEY;
     public static final Index WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY = Indexes0.WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY;
+    public static final Index WORD_GROUP_MEMBER_WORD_ID_IDX = Indexes0.WORD_GROUP_MEMBER_WORD_ID_IDX;
     public static final Index WORD_GUID_DATASET_CODE_IDX = Indexes0.WORD_GUID_DATASET_CODE_IDX;
     public static final Index WORD_GUID_GUID_IDX = Indexes0.WORD_GUID_GUID_IDX;
     public static final Index WORD_GUID_PKEY = Indexes0.WORD_GUID_PKEY;
@@ -298,10 +301,11 @@ public class Indexes {
         public static Index EKI_USER_NAME_KEY = Internal.createIndex("eki_user_name_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.NAME }, true);
         public static Index EKI_USER_PKEY = Internal.createIndex("eki_user_pkey", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, true);
         public static Index ETYMOLOGY_TYPE_PKEY = Internal.createIndex("etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE, new OrderField[] { EtymologyType.ETYMOLOGY_TYPE.CODE }, true);
-        public static Index FORM_ISWORD_IDX = Internal.createIndex("form_isword_idx", Form.FORM, new OrderField[] { Form.FORM.IS_WORD }, false);
+        public static Index FORM_MODE_IDX = Internal.createIndex("form_mode_idx", Form.FORM, new OrderField[] { Form.FORM.MODE }, false);
         public static Index FORM_PARADIGM_ID_IDX = Internal.createIndex("form_paradigm_id_idx", Form.FORM, new OrderField[] { Form.FORM.PARADIGM_ID }, false);
         public static Index FORM_PKEY = Internal.createIndex("form_pkey", Form.FORM, new OrderField[] { Form.FORM.ID }, true);
         public static Index FORM_VALUE_IDX = Internal.createIndex("form_value_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE }, false);
+        public static Index FORM_VALUE_MODE_IDX = Internal.createIndex("form_value_mode_idx", Form.FORM, new OrderField[] { Form.FORM.VALUE, Form.FORM.MODE }, false);
         public static Index FORM_REL_TYPE_PKEY = Internal.createIndex("form_rel_type_pkey", FormRelType.FORM_REL_TYPE, new OrderField[] { FormRelType.FORM_REL_TYPE.CODE }, true);
         public static Index FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("form_rel_type_label_code_lang_type_key", FormRelTypeLabel.FORM_REL_TYPE_LABEL, new OrderField[] { FormRelTypeLabel.FORM_REL_TYPE_LABEL.CODE, FormRelTypeLabel.FORM_REL_TYPE_LABEL.LANG, FormRelTypeLabel.FORM_REL_TYPE_LABEL.TYPE }, true);
         public static Index FORM_RELATION_FORM1_ID_FORM2_ID_FORM_REL_TYPE_CODE_KEY = Internal.createIndex("form_relation_form1_id_form2_id_form_rel_type_code_key", FormRelation.FORM_RELATION, new OrderField[] { FormRelation.FORM_RELATION.FORM1_ID, FormRelation.FORM_RELATION.FORM2_ID, FormRelation.FORM_RELATION.FORM_REL_TYPE_CODE }, true);
@@ -410,8 +414,10 @@ public class Indexes {
         public static Index WORD_ETYMOLOGY_PKEY = Internal.createIndex("word_etymology_pkey", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.ID }, true);
         public static Index WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY = Internal.createIndex("word_etymology_word1_id_word2_id_key", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.WORD1_ID, WordEtymology.WORD_ETYMOLOGY.WORD2_ID }, true);
         public static Index WORD_GROUP_PKEY = Internal.createIndex("word_group_pkey", WordGroup.WORD_GROUP, new OrderField[] { WordGroup.WORD_GROUP.ID }, true);
+        public static Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Internal.createIndex("word_group_member_group_id_idx", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID }, false);
         public static Index WORD_GROUP_MEMBER_PKEY = Internal.createIndex("word_group_member_pkey", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.ID }, true);
         public static Index WORD_GROUP_MEMBER_WORD_GROUP_ID_WORD_ID_KEY = Internal.createIndex("word_group_member_word_group_id_word_id_key", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID, WordGroupMember.WORD_GROUP_MEMBER.WORD_ID }, true);
+        public static Index WORD_GROUP_MEMBER_WORD_ID_IDX = Internal.createIndex("word_group_member_word_id_idx", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_ID }, false);
         public static Index WORD_GUID_DATASET_CODE_IDX = Internal.createIndex("word_guid_dataset_code_idx", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.DATASET_CODE }, false);
         public static Index WORD_GUID_GUID_IDX = Internal.createIndex("word_guid_guid_idx", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.GUID }, false);
         public static Index WORD_GUID_PKEY = Internal.createIndex("word_guid_pkey", WordGuid.WORD_GUID, new OrderField[] { WordGuid.WORD_GUID.ID }, true);

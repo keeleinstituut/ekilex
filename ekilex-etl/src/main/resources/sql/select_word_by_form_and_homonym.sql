@@ -13,6 +13,6 @@ where
 			form f
 		where
 		    f.value = :word
-			and f.is_word = true
+			and f.mode = 'WORD'
 			and f.paradigm_id = p.id
 			and p.word_id = w.id)

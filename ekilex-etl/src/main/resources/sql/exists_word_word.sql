@@ -8,5 +8,5 @@ and exists (
 		p1.word_id = w.id
 		and f1.paradigm_id = p1.id
 		and f1.value = :word
-		and f1.is_word = true
+		and f1.mode = 'WORD'
 )
