@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import eki.wordweb.constant.CollocMemberGroup;
 import eki.wordweb.constant.WebConstant;
-import eki.wordweb.data.Collocation;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.HtmlEntityDescription;
 import eki.wordweb.data.TypeCollocMember;
@@ -139,39 +138,6 @@ public class ViewUtil implements WebConstant, InitializingBean {
 				}
 			}
 			htmlBuf.append("&nbsp;");
-		}
-		htmlBuf.append("</span>");
-		return htmlBuf.toString();
-	}
-
-	@Deprecated
-	public String getTooltipHtml(Collocation colloc) {
-		List<TypeCollocMember> collocMembers = colloc.getCollocMembers();
-		int collocMemberCount = collocMembers.size();
-		TypeCollocMember collocMember;
-		StringBuffer htmlBuf = new StringBuffer();
-		htmlBuf.append("<span style='white-space:nowrap;'>");
-		for (int collocMemberIndex = 0; collocMemberIndex < collocMemberCount; collocMemberIndex++) {
-			collocMember = collocMembers.get(collocMemberIndex);
-			String conjunct = collocMember.getConjunct();
-			if (StringUtils.isNotBlank(conjunct)) {
-				htmlBuf.append(conjunct);
-				htmlBuf.append("&nbsp;");
-			}
-			if (collocMember.isHeadword()) {
-				htmlBuf.append("<span class='text-info'>");
-				htmlBuf.append(collocMember.getForm());
-				htmlBuf.append("</span>");
-			} else if (collocMember.isContext()) {
-				htmlBuf.append("<i>");
-				htmlBuf.append(collocMember.getForm());
-				htmlBuf.append("</i>");
-			} else {
-				htmlBuf.append(collocMember.getForm());
-			}
-			if (collocMemberIndex < collocMemberCount - 1) {
-				htmlBuf.append("&nbsp;");
-			}
 		}
 		htmlBuf.append("</span>");
 		return htmlBuf.toString();

@@ -225,6 +225,13 @@ public class ConversionUtil {
 				boolean isHeadword = collocMember.getWordId().equals(wordId);
 				boolean isPrimary = !isHeadword && weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) > 0;
 				boolean isContext = weight.compareTo(COLLOC_MEMBER_CONTEXT_WEIGHT) == 0;
+				if (StringUtils.isNotBlank(conjunct)) {
+					if (headwordOrPrimaryMemberOccurred) {
+						collocMember.setPreConjunct(true);
+					} else {
+						collocMember.setPostConjunct(true);
+					}
+				}
 				currentCollocMemberGroup = null;
 				if (isHeadword) {
 					currentCollocMemberGroup = CollocMemberGroup.HEADWORD;
@@ -261,13 +268,6 @@ public class ConversionUtil {
 					if (!collocMemberForms.contains(collocMember.getForm())) {
 						displayColloc.getContextMembers().add(collocMember);
 						collocMemberForms.add(collocMember.getForm());
-					}
-				}
-				if (StringUtils.isNotBlank(conjunct)) {
-					if (headwordOrPrimaryMemberOccurred) {
-						collocMember.setPreConjunct(true);
-					} else {
-						collocMember.setPostConjunct(true);
 					}
 				}
 			}
