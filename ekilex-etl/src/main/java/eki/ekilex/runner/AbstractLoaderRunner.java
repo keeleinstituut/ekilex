@@ -67,7 +67,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
-	private static final char[] RESERVED_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
+	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
+
+	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
 
 	protected static final String EKI_CLASSIFIER_STAATUS = "staatus";
 	protected static final String EKI_CLASSIFIER_MÕISTETÜÜP = "mõistetüüp";
@@ -161,9 +163,12 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return StringUtils.removePattern(value, "[&]\\w+[;]");
 	}
 
-	protected String removeAccents(String value) {
+	protected String removeAccents(String value, String lang) {
 		if (StringUtils.isBlank(value)) {
-			return value;
+			return null;
+		}
+		if (ArrayUtils.contains(DISCLOSED_DIACRITIC_LANGS, lang)) {
+			return null;
 		}
 		boolean isAlreadyClean = Normalizer.isNormalized(value, Normalizer.Form.NFD);
 		if (isAlreadyClean) {
@@ -175,7 +180,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		String charAsStr;
 		char primaryChar;
 		for (char c : chars) {
-			boolean isReservedChar = ArrayUtils.contains(RESERVED_CHARS, c);
+			boolean isReservedChar = ArrayUtils.contains(RESERVED_DIACRITIC_CHARS, c);
 			if (isReservedChar) {
 				cleanValueBuf.append(c);
 			} else {
@@ -221,7 +226,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
 				Long paradigmId = createParadigm(wordId, null, false);
-				createFormWithAsWord(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
+				createFormWithAsWord(paradigmId, wordValue, wordLang, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, FormMode.WORD);
 			}
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
@@ -237,13 +242,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				// mab forms
 				List<Form> forms = paradigm.getForms();
 				if (CollectionUtils.isEmpty(forms)) {
-					createFormWithAsWord(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
+					createFormWithAsWord(paradigmId, wordValue, wordLang, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, FormMode.WORD);
 				} else {
 					for (Form form : forms) {
 						if (form.getMode().equals(FormMode.WORD)) {
-							createFormWithAsWord(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.getMode());
+							createFormWithAsWord(paradigmId, wordValue, wordLang, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), form.getMode());
 						} else {
-							createForm(form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), paradigmId, form.getMode());
+							createForm(paradigmId, form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), form.getMode());
 						}
 					}
 				}
@@ -320,18 +325,18 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMaps;
 	}
 
-	private void createFormWithAsWord(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, FormMode mode) throws Exception {
+	private void createFormWithAsWord(Long paradigmId, String form, String lang, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, FormMode mode) throws Exception {
 
-		createForm(form, wordComponents, wordDisplayForm, wordVocalForm, morphCode, paradigmId, mode);
+		createForm(paradigmId, form, wordComponents, wordDisplayForm, wordVocalForm, morphCode, mode);
 		if (mode.equals(FormMode.WORD)) {
-			String asWordValue = removeAccents(form);
+			String asWordValue = removeAccents(form, lang);
 			if (StringUtils.isNotBlank(asWordValue)) {
-				createForm(asWordValue, null, null, null, morphCode, paradigmId, FormMode.AS_WORD);
+				createForm(paradigmId, asWordValue, null, null, null, morphCode, FormMode.AS_WORD);
 			}
 		}
 	}
 
-	private void createForm(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, FormMode mode) throws Exception {
+	private void createForm(Long paradigmId, String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, FormMode mode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("paradigm_id", paradigmId);

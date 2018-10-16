@@ -69,7 +69,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				searchMode = SEARCH_MODE_DETAIL;
 			}
 		}
-		conversionUtil.filterLanguageValues(allWords, destinLang);
+		conversionUtil.filterIrrelevantValues(allWords, destinLang);
 		conversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {

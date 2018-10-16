@@ -1,5 +1,5 @@
-create type type_word as (value text, lang char(3));
-create type type_definition as (value text, lang char(3));
+create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3));
+create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
@@ -46,23 +46,33 @@ from (select w.id as word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(row(mw.meaning_word_value, mw.meaning_word_lang)::type_word order by mw.ds_order_by, mw.level1, mw.level2, mw.level3) meaning_words
+                          array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang)::type_word order by mw.hw_ds_order_by,mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_ds_order_by,mw.mw_lex_level1,mw.mw_lex_level2,mw.mw_lex_level3,mw.mw_lex_order_by) meaning_words
                    from (select l1.word_id,
-                                f2.value meaning_word_value,
-                                w2.lang meaning_word_lang,
-                                ds2.order_by ds_order_by,
-                                l2.level1,
-                                l2.level2,
-                                l2.level3
+                                l1.id hw_lex_id,
+                                l1.meaning_id hw_meaning_id,
+                                ds1.order_by hw_ds_order_by,
+                                l1.level1 hw_lex_level1,
+                                l1.level2 hw_lex_level2,
+                                l1.level3 hw_lex_level3,
+                                l1.order_by hw_lex_order_by,
+                                f2.value mw_value,
+                                w2.lang mw_lang,
+                                ds2.order_by mw_ds_order_by,
+                                l2.level1 mw_lex_level1,
+                                l2.level2 mw_lex_level2,
+                                l2.level3 mw_lex_level3,
+                                l2.order_by mw_lex_order_by
                          from lexeme l1,
                               lexeme l2,
                               form f2,
                               paradigm p2,
                               word w2,
+                              dataset ds1,
                               dataset ds2
                          where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
                          and   l1.meaning_id = l2.meaning_id
                          and   l1.word_id != w2.id
+                         and   l1.dataset_code = ds1.code
                          and   l2.word_id = w2.id
                          and   l2.dataset_code = ds2.code
                          and   p2.word_id = w2.id
@@ -70,8 +80,10 @@ from (select w.id as word_id,
                          and   f2.mode = 'WORD') mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row(wd.value,wd.lang)::type_definition order by wd.ds_order_by, wd.level1, wd.level2, wd.level3, wd.d_order_by) definitions
+                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.lang)::type_definition order by wd.ds_order_by,wd.level1,wd.level2,wd.level3,wd.d_order_by) definitions
                    from (select l.word_id,
+                                l.id lexeme_id,
+                                l.meaning_id,
                                 d.value,
                                 d.lang,
                                 ds.order_by ds_order_by,
@@ -85,6 +97,24 @@ from (select w.id as word_id,
                          where l.meaning_id = d.meaning_id
                          and   l.dataset_code = ds.code) wd
                    group by wd.word_id) wd on wd.word_id = w.word_id;
+
+create view view_ww_as_word 
+  as
+    select w.id word_id,
+           f1.value word,
+           f2.value as_word
+    from word w,
+         paradigm p,
+         form f1,
+         form f2
+    where p.word_id = w.id
+    and   f1.paradigm_id = p.id
+    and   f2.paradigm_id = p.id
+    and   f1.mode = 'WORD'
+    and   f2.mode = 'AS_WORD'
+    and   exists (select ld.id
+                  from lexeme as ld
+                  where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')));
 
 -- word forms
 create view view_ww_form
@@ -131,9 +161,11 @@ create view view_ww_meaning
            l.meaning_id,
            l.id lexeme_id,
            l.dataset_code,
+           ds.order_by ds_order_by,
            l.level1,
            l.level2,
            l.level3,
+           l.order_by lex_order_by,
            l_reg.register_codes,
            l_pos.pos_codes,
            l_der.deriv_codes,
@@ -144,6 +176,7 @@ create view view_ww_meaning
            m_lcm.learner_comments,
            d.definitions
     from lexeme l
+      inner join dataset ds on ds.code = l.dataset_code
       left outer join (select l_reg.lexeme_id,
                               array_agg(l_reg.register_code order by l_reg.order_by) register_codes
                        from lexeme_register l_reg
@@ -160,10 +193,12 @@ create view view_ww_meaning
                               array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
                        from meaning_domain m_dom
                        group by m_dom.meaning_id) m_dom on m_dom.meaning_id = l.meaning_id
-      left outer join (select d.meaning_id,
-                              array_agg(row (d.value,d.lang)::type_definition order by d.order_by) definitions
-                       from definition d
-                       group by d.meaning_id) d on d.meaning_id = l.meaning_id
+      left outer join (select l.id lexeme_id,
+                              array_agg(row (l.id, l.meaning_id, d.value,d.lang)::type_definition order by d.order_by) definitions
+                       from lexeme l,
+                            definition d
+                       where l.meaning_id = d.meaning_id
+                       group by l.id) d on d.lexeme_id = l.id
       left outer join (select mf.meaning_id,
                               array_agg(ff.value_text order by ff.order_by) image_files
                        from meaning_freeform mf,

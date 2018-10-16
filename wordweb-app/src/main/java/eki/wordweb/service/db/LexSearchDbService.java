@@ -7,8 +7,8 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_AS_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_DATASET;
 
 import java.util.List;
 import java.util.Map;
@@ -30,7 +30,6 @@ import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordOrForm;
-import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
@@ -77,6 +76,7 @@ public class LexSearchDbService {
 		Condition wdc = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
 		Condition fdc = DSL.condition("{0} && {1}", MVIEW_WW_FORM.DATASET_CODES, DSL.val(datasets));
 		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
+		Condition awlc = MVIEW_WW_AS_WORD.AS_WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang).and(MVIEW_WW_AS_WORD.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)));
 		Condition flc = MVIEW_WW_FORM.FORM.lower().eq(wordPrefixLower).and(MVIEW_WW_FORM.MODE.eq(FormMode.FORM.name())).and(MVIEW_WW_FORM.LANG.eq(lang));
 
 		Table<Record2<String, String>> woft = DSL
@@ -86,6 +86,12 @@ public class LexSearchDbService {
 			.orderBy(MVIEW_WW_WORD.WORD)
 			.limit(maxWordCount)
 			.unionAll(DSL
+			.selectDistinct(MVIEW_WW_WORD.WORD.as("value"), iswtf)
+			.from(MVIEW_WW_WORD, MVIEW_WW_AS_WORD)
+			.where(awlc.and(wdc))
+			.orderBy(MVIEW_WW_WORD.WORD)
+			.limit(maxWordCount))
+			.unionAll(DSL
 			.selectDistinct(MVIEW_WW_FORM.WORD.as("value"), iswff)
 			.from(MVIEW_WW_FORM)
 			.where(flc.and(fdc))
@@ -94,7 +100,8 @@ public class LexSearchDbService {
 			.asTable("woft");
 
 		return (Map<String, List<WordOrForm>>) create
-				.selectFrom(woft)
+				.selectDistinct(woft.field("value"), woft.field("group"))
+				.from(woft)
 				.fetchGroups("group", WordOrForm.class);
 	}
 
@@ -126,7 +133,6 @@ public class LexSearchDbService {
 		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");
 		MviewWwMeaning m2 = MVIEW_WW_MEANING.as("m2");
 		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
-		MviewWwDataset m1ds = MVIEW_WW_DATASET.as("m1ds");
 
 		return create
 				.select(
@@ -151,14 +157,13 @@ public class LexSearchDbService {
 						w2.LANG.as("meaning_word_lang")
 						)
 				.from(m1
-						.innerJoin(m1ds).on(m1ds.CODE.eq(m1.DATASET_CODE))
 						.leftOuterJoin(m2).on(m2.MEANING_ID.eq(m1.MEANING_ID).and(m2.WORD_ID.ne(m1.WORD_ID)))
 						.leftOuterJoin(w2).on(w2.WORD_ID.eq(m2.WORD_ID))
 						)
 				.where(
 						m1.WORD_ID.eq(wordId)
 						.and(m1.DATASET_CODE.in(datasets)))
-				.orderBy(m1ds.ORDER_BY, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, w2.WORD)
+				.orderBy(m1.DS_ORDER_BY, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, m1.LEX_ORDER_BY, m2.DS_ORDER_BY, m2.LEVEL1, m2.LEVEL2, m2.LEVEL3, m2.LEX_ORDER_BY)
 				.fetch()
 				.into(LexemeMeaningTuple.class);
 	}
@@ -242,7 +247,7 @@ public class LexSearchDbService {
 						MVIEW_WW_FORM.SOUND_FILE
 						)
 				.from(MVIEW_WW_FORM)
-				.where(MVIEW_WW_FORM.WORD_ID.eq(wordId))
+				.where(MVIEW_WW_FORM.WORD_ID.eq(wordId).and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name())))
 				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.FORM_ID)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}

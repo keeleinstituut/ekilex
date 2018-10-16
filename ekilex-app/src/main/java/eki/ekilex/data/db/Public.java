@@ -72,6 +72,7 @@ import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
+import eki.ekilex.data.db.tables.ViewWwAsWord;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
@@ -128,7 +129,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1965596368;
+    private static final long serialVersionUID = 1823249824;
 
     /**
      * The reference instance of <code>public</code>
@@ -476,6 +477,11 @@ public class Public extends SchemaImpl {
     public final ValueStateLabel VALUE_STATE_LABEL = eki.ekilex.data.db.tables.ValueStateLabel.VALUE_STATE_LABEL;
 
     /**
+     * The table <code>public.view_ww_as_word</code>.
+     */
+    public final ViewWwAsWord VIEW_WW_AS_WORD = eki.ekilex.data.db.tables.ViewWwAsWord.VIEW_WW_AS_WORD;
+
+    /**
      * The table <code>public.view_ww_classifier</code>.
      */
     public final ViewWwClassifier VIEW_WW_CLASSIFIER = eki.ekilex.data.db.tables.ViewWwClassifier.VIEW_WW_CLASSIFIER;
@@ -739,6 +745,7 @@ public class Public extends SchemaImpl {
             UsageTypeLabel.USAGE_TYPE_LABEL,
             ValueState.VALUE_STATE,
             ValueStateLabel.VALUE_STATE_LABEL,
+            ViewWwAsWord.VIEW_WW_AS_WORD,
             ViewWwClassifier.VIEW_WW_CLASSIFIER,
             ViewWwCollocation.VIEW_WW_COLLOCATION,
             ViewWwDataset.VIEW_WW_DATASET,

@@ -4,6 +4,7 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.tables.MviewWwAsWord;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
@@ -48,12 +49,17 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1454699784;
+    private static final long serialVersionUID = -1967320106;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.mview_ww_as_word</code>.
+     */
+    public final MviewWwAsWord MVIEW_WW_AS_WORD = eki.wordweb.data.db.tables.MviewWwAsWord.MVIEW_WW_AS_WORD;
 
     /**
      * The table <code>public.mview_ww_classifier</code>.
@@ -130,6 +136,7 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            MviewWwAsWord.MVIEW_WW_AS_WORD,
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
             MviewWwCollocation.MVIEW_WW_COLLOCATION,
             MviewWwDataset.MVIEW_WW_DATASET,

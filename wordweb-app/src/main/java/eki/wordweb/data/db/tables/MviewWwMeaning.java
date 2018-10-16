@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
 
-    private static final long serialVersionUID = -43844088;
+    private static final long serialVersionUID = 1703470220;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning</code>
@@ -74,6 +74,11 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
     public final TableField<MviewWwMeaningRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
+     * The column <code>public.mview_ww_meaning.ds_order_by</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, Long> DS_ORDER_BY = createField("ds_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
      * The column <code>public.mview_ww_meaning.level1</code>.
      */
     public final TableField<MviewWwMeaningRecord, Integer> LEVEL1 = createField("level1", org.jooq.impl.SQLDataType.INTEGER, this, "");
@@ -87,6 +92,11 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      * The column <code>public.mview_ww_meaning.level3</code>.
      */
     public final TableField<MviewWwMeaningRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_meaning.lex_order_by</code>.
+     */
+    public final TableField<MviewWwMeaningRecord, Long> LEX_ORDER_BY = createField("lex_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning.register_codes</code>.
@@ -175,7 +185,7 @@ public class MviewWwMeaning extends TableImpl<MviewWwMeaningRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX, Indexes.MVIEW_WW_MEANING_WORD_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_DATASET_CODE_IDX, Indexes.MVIEW_WW_MEANING_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_MEANING_ID_IDX, Indexes.MVIEW_WW_MEANING_WORD_ID_IDX);
     }
 
     /**

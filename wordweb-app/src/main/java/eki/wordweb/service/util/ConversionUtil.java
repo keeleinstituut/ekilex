@@ -51,11 +51,13 @@ public class ConversionUtil {
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public void filterLanguageValues(List<Word> words, final String destinLang) {
+	public void filterIrrelevantValues(List<Word> words, final String destinLang) {
 		for (Word word : words) {
 			List<TypeWord> meaningWords = word.getMeaningWords();
 			if (CollectionUtils.isNotEmpty(meaningWords)) {
+				Long lexemeId = meaningWords.get(0).getLexemeId();
 				List<String> meaningWordValues = meaningWords.stream()
+						.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
 						.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
 						.map(meaningWord -> meaningWord.getValue())
 						.distinct()
@@ -65,7 +67,9 @@ public class ConversionUtil {
 			}
 			List<TypeDefinition> definitions = word.getDefinitions();
 			if (CollectionUtils.isNotEmpty(definitions)) {
+				Long lexemeId = definitions.get(0).getLexemeId();
 				List<String> definitionValues = definitions.stream()
+						.filter(definition -> definition.getLexemeId().equals(lexemeId))
 						.filter(definition -> StringUtils.equals(definition.getLang(), destinLang))
 						.map(definition -> definition.getValue())
 						.collect(Collectors.toList());

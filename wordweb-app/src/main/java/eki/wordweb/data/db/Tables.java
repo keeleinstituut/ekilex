@@ -4,6 +4,7 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.tables.MviewWwAsWord;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
 import eki.wordweb.data.db.tables.MviewWwDataset;
@@ -30,6 +31,11 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.mview_ww_as_word</code>.
+     */
+    public static final MviewWwAsWord MVIEW_WW_AS_WORD = eki.wordweb.data.db.tables.MviewWwAsWord.MVIEW_WW_AS_WORD;
 
     /**
      * The table <code>public.mview_ww_classifier</code>.

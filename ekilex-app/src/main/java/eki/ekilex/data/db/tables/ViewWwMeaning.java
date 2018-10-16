@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
 
-    private static final long serialVersionUID = 1881080624;
+    private static final long serialVersionUID = 975633162;
 
     /**
      * The reference instance of <code>public.view_ww_meaning</code>
@@ -69,6 +69,11 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
     public final TableField<ViewWwMeaningRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
 
     /**
+     * The column <code>public.view_ww_meaning.ds_order_by</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, Long> DS_ORDER_BY = createField("ds_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
      * The column <code>public.view_ww_meaning.level1</code>.
      */
     public final TableField<ViewWwMeaningRecord, Integer> LEVEL1 = createField("level1", org.jooq.impl.SQLDataType.INTEGER, this, "");
@@ -82,6 +87,11 @@ public class ViewWwMeaning extends TableImpl<ViewWwMeaningRecord> {
      * The column <code>public.view_ww_meaning.level3</code>.
      */
     public final TableField<ViewWwMeaningRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.view_ww_meaning.lex_order_by</code>.
+     */
+    public final TableField<ViewWwMeaningRecord, Long> LEX_ORDER_BY = createField("lex_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.view_ww_meaning.register_codes</code>.

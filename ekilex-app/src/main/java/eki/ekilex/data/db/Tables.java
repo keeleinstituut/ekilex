@@ -72,6 +72,7 @@ import eki.ekilex.data.db.tables.UsageType;
 import eki.ekilex.data.db.tables.UsageTypeLabel;
 import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
+import eki.ekilex.data.db.tables.ViewWwAsWord;
 import eki.ekilex.data.db.tables.ViewWwClassifier;
 import eki.ekilex.data.db.tables.ViewWwCollocation;
 import eki.ekilex.data.db.tables.ViewWwDataset;
@@ -449,6 +450,11 @@ public class Tables {
      * The table <code>public.value_state_label</code>.
      */
     public static final ValueStateLabel VALUE_STATE_LABEL = eki.ekilex.data.db.tables.ValueStateLabel.VALUE_STATE_LABEL;
+
+    /**
+     * The table <code>public.view_ww_as_word</code>.
+     */
+    public static final ViewWwAsWord VIEW_WW_AS_WORD = eki.ekilex.data.db.tables.ViewWwAsWord.VIEW_WW_AS_WORD;
 
     /**
      * The table <code>public.view_ww_classifier</code>.

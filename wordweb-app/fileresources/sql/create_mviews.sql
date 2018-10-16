@@ -1,4 +1,5 @@
 drop materialized view if exists mview_ww_word;
+drop materialized view if exists mview_ww_as_word;
 drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
@@ -22,14 +23,14 @@ drop type if exists type_meaning_relation;
 -- CREATE EXTENSION dblink;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
-create type type_word as (value text, lang char(3));
-create type type_definition as (value text, lang char(3));
+create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3));
+create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, lang char(3));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
-create type type_word_relation as (word_id bigint,word text,word_lang char(3),word_rel_type_code varchar(100));
-create type type_lexeme_relation as (lexeme_id bigint,word_id bigint,word text,word_lang char(3),lex_rel_type_code varchar(100));
-create type type_meaning_relation as (meaning_id bigint,lexeme_id bigint,word_id bigint,word text,word_lang char(3),meaning_rel_type_code varchar(100));
+create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
+create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
+create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
 
 create materialized view mview_ww_word as
 select * from 
@@ -46,6 +47,16 @@ dblink(
 	meaning_count integer,
 	meaning_words type_word array,
 	definitions type_definition array
+);
+
+create materialized view mview_ww_as_word as
+select * from 
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_as_word') as as_word(
+	word_id bigint,
+	word text,
+	as_word text
 );
 
 create materialized view mview_ww_form as
@@ -77,9 +88,11 @@ dblink(
 	meaning_id bigint,
 	lexeme_id bigint,
 	dataset_code varchar(10),
+	ds_order_by bigint,
 	level1 integer,
 	level2 integer,
 	level3 integer,
+	lex_order_by bigint,
 	register_codes varchar(100) array,
 	pos_codes varchar(100) array,
 	deriv_codes varchar(100) array,
@@ -189,20 +202,28 @@ create index mview_ww_word_value_lower_idx on mview_ww_word (lower(word));
 create index mview_ww_word_value_prefix_idx on mview_ww_word (word text_pattern_ops);
 create index mview_ww_word_value_lower_prefix_idx on mview_ww_word (lower(word) text_pattern_ops);
 create index mview_ww_word_lang_idx on mview_ww_word (lang);
+create index mview_ww_as_word_word_id_idx on mview_ww_as_word (word_id);
+create index mview_ww_as_word_value_idx on mview_ww_as_word (as_word);
+create index mview_ww_as_word_value_lower_idx on mview_ww_as_word (lower(as_word));
+create index mview_ww_as_word_value_prefix_idx on mview_ww_as_word (as_word text_pattern_ops);
+create index mview_ww_as_word_value_lower_prefix_idx on mview_ww_as_word (lower(as_word) text_pattern_ops);
 create index mview_ww_form_word_id_idx on mview_ww_form (word_id);
 create index mview_ww_form_word_idx on mview_ww_form (word);
 create index mview_ww_form_word_lower_idx on mview_ww_form (lower(word));
 create index mview_ww_form_value_idx on mview_ww_form (form);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
 create index mview_ww_form_mode_idx on mview_ww_form (mode);
+create index mview_ww_form_lang_idx on mview_ww_form (lang);
 create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);
+create index mview_ww_meaning_dataset_code_idx on mview_ww_meaning (dataset_code);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
 create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
+create index mview_ww_collocation_dataset_code_idx on mview_ww_collocation (dataset_code);
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
 create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);
