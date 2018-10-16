@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Timestamp;
+import java.text.Normalizer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -13,12 +14,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import eki.common.constant.WordRelationGroupType;
-import eki.common.constant.LifecycleEntity;
-
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +26,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
 import eki.common.constant.TableName;
+import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.common.service.db.BasicDbService;
@@ -65,6 +66,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
+
+	private static final char[] RESERVED_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
 
 	protected static final String EKI_CLASSIFIER_STAATUS = "staatus";
 	protected static final String EKI_CLASSIFIER_MÕISTETÜÜP = "mõistetüüp";
@@ -158,6 +161,41 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return StringUtils.removePattern(value, "[&]\\w+[;]");
 	}
 
+	protected String removeAccents(String value) {
+		if (StringUtils.isBlank(value)) {
+			return value;
+		}
+		boolean isAlreadyClean = Normalizer.isNormalized(value, Normalizer.Form.NFD);
+		if (isAlreadyClean) {
+			return null;
+		}
+		StringBuffer cleanValueBuf = new StringBuffer();
+		char[] chars = value.toCharArray();
+		String decomposedChars;
+		String charAsStr;
+		char primaryChar;
+		for (char c : chars) {
+			boolean isReservedChar = ArrayUtils.contains(RESERVED_CHARS, c);
+			if (isReservedChar) {
+				cleanValueBuf.append(c);
+			} else {
+				charAsStr = Character.toString(c);
+				decomposedChars = Normalizer.normalize(charAsStr, Normalizer.Form.NFD);
+				if (decomposedChars.length() > 1) {
+					primaryChar = decomposedChars.charAt(0);
+					cleanValueBuf.append(primaryChar);
+				} else {
+					cleanValueBuf.append(c);
+				}
+			}
+		}
+		String cleanValue = cleanValueBuf.toString();
+		if (StringUtils.equals(value, cleanValue)) {
+			return null;
+		}
+		return cleanValue;
+	}
+
 	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
 
 		String wordValue = word.getValue();
@@ -183,7 +221,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
 				Long paradigmId = createParadigm(wordId, null, false);
-				createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
+				createFormWithAsWord(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
 			}
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
@@ -199,15 +237,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				// mab forms
 				List<Form> forms = paradigm.getForms();
 				if (CollectionUtils.isEmpty(forms)) {
-					createForm(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
+					createFormWithAsWord(wordValue, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, paradigmId, FormMode.WORD);
 				} else {
 					for (Form form : forms) {
 						if (form.getMode().equals(FormMode.WORD)) {
-							createForm(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.getMode());
+							createFormWithAsWord(wordValue, null, wordDisplayForm, wordVocalForm, form.getMorphCode(), paradigmId, form.getMode());
 						} else {
 							createForm(form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), paradigmId, form.getMode());
 						}
-					}					
+					}
 				}
 			}
 		}
@@ -235,7 +273,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			String ssWordValue = ssGuidObj.getWord();
 			String ssGuid = ssGuidObj.getValue();
 			String ssDataset = "ss1";
-	
+
 			if (StringUtils.equalsIgnoreCase(wordValue, ssWordValue)) {
 				List<Map<String, Object>> tableRowValueMaps = getWord(wordValue, ssGuid, ssDataset);
 				Map<String, Object> tableRowValueMap = null;
@@ -280,6 +318,17 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		tableRowParamMap.put("dataset", dataset);
 		List<Map<String, Object>> tableRowValueMaps = basicDbService.queryList(sqlSelectWordByDatasetAndGuid, tableRowParamMap);
 		return tableRowValueMaps;
+	}
+
+	private void createFormWithAsWord(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, FormMode mode) throws Exception {
+
+		createForm(form, wordComponents, wordDisplayForm, wordVocalForm, morphCode, paradigmId, mode);
+		if (mode.equals(FormMode.WORD)) {
+			String asWordValue = removeAccents(form);
+			if (StringUtils.isNotBlank(asWordValue)) {
+				createForm(asWordValue, null, null, null, morphCode, paradigmId, FormMode.AS_WORD);
+			}
+		}
 	}
 
 	private void createForm(String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, Long paradigmId, FormMode mode) throws Exception {
@@ -531,7 +580,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 					String usageTranslationValue = usageTranslation.getValue();
 					String usageTranslationLang = usageTranslation.getLang();
 					Long usageTranslationId = createFreeformTextOrDate(FreeformType.USAGE_TRANSLATION, usageId, usageTranslationValue, usageTranslationLang);
-					createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, usageTranslationValue);
+					createLifecycleLog(
+							LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, usageTranslationId, usageTranslationValue);
 				}
 			}
 		}
@@ -549,7 +599,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		try {
 			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
 			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId, LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.VALUE, freeformId, value.toString());
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 		return freeformId;
 	}
@@ -582,7 +633,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		try {
 			LifecycleEntity lifecycleEntity = LifecycleEntity.valueOf(freeformType.name());
 			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, lifecycleEntity, LifecycleProperty.VALUE, freeformId, value.toString());
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 		return freeformId;
 	}
