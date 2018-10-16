@@ -97,10 +97,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Condition wordCondition = createCondition(w1, searchCriteriaGroups, datasets);
 
-		return execute(w1, p, f, wordCondition, datasets, fetchAll);
+		return execute(w1, p, wordCondition, datasets, fetchAll);
 	}
 
 	private boolean hasNoSerachCriteria(List<SearchCriterionGroup> searchCriteriaGroups) {
@@ -118,10 +117,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Word w1 = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
-		Form f = FORM.as("f");
 		Condition wordCondition = createCondition(w1, searchFilter.getCriteriaGroups(), datasets);
 
-		return count(w1, p, f, wordCondition, datasets);
+		return count(w1, p, wordCondition, datasets);
 	}
 
 	private Condition createCondition(Word w1, List<SearchCriterionGroup> searchCriteriaGroups, List<String> datasets) {
@@ -145,7 +143,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						l1.WORD_ID.eq(w1.ID)
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(f1.PARADIGM_ID.eq(p1.ID))
-						.and(f1.MODE.eq(FormMode.WORD.name()));
+						.and(f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
@@ -171,7 +169,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(w2.ID.eq(l2.WORD_ID))
 						.and(p2.WORD_ID.eq(w2.ID))
 						.and(f2.PARADIGM_ID.eq(p2.ID))
-						.and(f2.MODE.eq(FormMode.WORD.name()));
+						.and(f2.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
@@ -304,41 +302,41 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Form form = FORM.as("f");
-		Condition where = createCondition(wordWithMetaCharacters, form);
+		Condition where = createCondition(wordWithMetaCharacters, paradigm);
 
-		return execute(word, paradigm, form, where, datasets, fetchAll);
+		return execute(word, paradigm, where, datasets, fetchAll);
 	}
 
 	public int countWords(String searchFilter, List<String> datasets) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
-		Form form = FORM.as("f");
-		Condition where = createCondition(searchFilter, form);
+		Condition where = createCondition(searchFilter, paradigm);
 
-		return count(word, paradigm, form, where, datasets);
+		return count(word, paradigm, where, datasets);
 	}
 
-	private Condition createCondition(String wordWithMetaCharacters, Form form) {
+	private Condition createCondition(String wordWithMetaCharacters, Paradigm paradigm) {
 
-		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_");
+		String theFilter = wordWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
-		Condition where = DSL.trueCondition();
-
+		Form form = FORM.as("f2");
+		Condition where2 = form.PARADIGM_ID.eq(paradigm.ID);
+		where2 = where2.and(form.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name()));
 		if (StringUtils.containsAny(theFilter, '%', '_')) {
-			where = where.and(form.VALUE.likeIgnoreCase(theFilter));
+			where2 = where2.and(form.VALUE.lower().like(theFilter));
 		} else {
-			where = where.and(form.VALUE.equalIgnoreCase(theFilter));
+			where2 = where2.and(form.VALUE.lower().eq(theFilter));
 		}
+		Condition where = DSL.exists(DSL.select(form.ID).from(form).where(where2));
 		return where;
 	}
 
-	private Result<Record> execute(Word w1, Paradigm p1, Form f1, Condition where, List<String> datasets, boolean fetchAll) {
+	private Result<Record> execute(Word w1, Paradigm p1, Condition where, List<String> datasets, boolean fetchAll) {
 
-		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')").cast(String.class);
-
+		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
+		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
 
 		if (CollectionUtils.isNotEmpty(datasets)) {
 			Lexeme ld = LEXEME.as("ld");
@@ -386,8 +384,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		}
 	}
 
-	private int count(Word word, Paradigm paradigm, Form form, Condition where, List<String> datasets) {
+	private int count(Word word, Paradigm paradigm, Condition where, List<String> datasets) {
 
+		Form form = FORM.as("f");
 		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.MODE.eq(FormMode.WORD.name())))).on(paradigm.WORD_ID.eq(word.ID));
 
 		if (CollectionUtils.isNotEmpty(datasets)) {

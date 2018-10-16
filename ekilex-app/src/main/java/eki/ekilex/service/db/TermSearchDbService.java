@@ -93,7 +93,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 		Word w1 = WORD.as("w1");
 		Paradigm p1 = PARADIGM.as("p1");
 
-		Condition where1 = FORM.MODE.eq(FormMode.WORD.name());
+		Condition where1 = FORM.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name());
 		if (StringUtils.containsAny(maskedSearchFilter, '%', '_')) {
 			where1 = where1.and(FORM.VALUE.lower().like(maskedSearchFilter));
 		} else {
@@ -165,7 +165,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				Paradigm p1 = PARADIGM.as("p1");
 				Word w1 = WORD.as("w1");
 				Lexeme l1 = LEXEME.as("l1");
-				Condition where1 = f1.MODE.eq(FormMode.WORD.name())
+				Condition where1 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
 						.and(f1.PARADIGM_ID.eq(p1.ID))
 						.and(p1.WORD_ID.eq(w1.ID))
 						.and(l1.WORD_ID.eq(w1.ID))
