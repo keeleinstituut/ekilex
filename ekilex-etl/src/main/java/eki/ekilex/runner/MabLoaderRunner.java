@@ -33,6 +33,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_ENRICHED_WORDS = "enriched_words";
 
+	private static final String DISCLOSED_MORPH_CODE = "Rpl";
+
 	private final String dataLang = "est";
 
 	private ReportComposer reportComposer;
@@ -155,6 +157,9 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 					morphValueNode = (Element) formGroupNode.selectSingleNode(morphValueExp);
 					sourceMorphCode = morphValueNode.getTextTrim();
 					destinMorphCode = morphValueCodeMap.get(sourceMorphCode);
+					if (StringUtils.equals(destinMorphCode, DISCLOSED_MORPH_CODE)) {
+						continue;
+					}
 
 					formNodes = formGroupNode.selectNodes(formExp);
 
