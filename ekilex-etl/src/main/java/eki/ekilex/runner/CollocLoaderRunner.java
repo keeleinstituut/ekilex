@@ -711,15 +711,15 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				Map<Integer, Word> homonymWordMap = wordMap.get(collocMemberWord);
 				if (homonymWordMap == null) {
 					if (StringUtils.equals(collocMemberName, prevWordCollocMemberName)) {
+						appendToReport(doReports, REPORT_INCORRECT_LEMPOSVK_LEMMA, word, collocation, collocMemberWord);
 						collocMember.setWord(word);
 						collocMemberWord = word;
 						homonymWordMap = wordMap.get(word);
-						appendToReport(doReports, REPORT_INCORRECT_LEMPOSVK_LEMMA, word, collocation, collocMemberWord);
 					} else if (StringUtils.equals(collocMemberName, nextWordCollocMemberName)) {
+						appendToReport(doReports, REPORT_INCORRECT_LEMPOSVK_LEMMA, word, collocation, collocMemberWord);
 						collocMember.setWord(word);
 						collocMemberWord = word;
 						homonymWordMap = wordMap.get(word);
-						appendToReport(doReports, REPORT_INCORRECT_LEMPOSVK_LEMMA, word, collocation, collocMemberWord);
 					}					
 				}
 				if (homonymWordMap == null) {
