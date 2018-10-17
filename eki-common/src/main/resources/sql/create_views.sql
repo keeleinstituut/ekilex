@@ -46,7 +46,7 @@ from (select w.id as word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang)::type_word order by mw.hw_ds_order_by,mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_ds_order_by,mw.mw_lex_level1,mw.mw_lex_level2,mw.mw_lex_level3,mw.mw_lex_order_by) meaning_words
+                          array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang)::type_word order by mw.hw_ds_order_by,mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_ds_order_by,mw.mw_lex_order_by) meaning_words
                    from (select l1.word_id,
                                 l1.id hw_lex_id,
                                 l1.meaning_id hw_meaning_id,
@@ -58,9 +58,6 @@ from (select w.id as word_id,
                                 f2.value mw_value,
                                 w2.lang mw_lang,
                                 ds2.order_by mw_ds_order_by,
-                                l2.level1 mw_lex_level1,
-                                l2.level2 mw_lex_level2,
-                                l2.level3 mw_lex_level3,
                                 l2.order_by mw_lex_order_by
                          from lexeme l1,
                               lexeme l2,

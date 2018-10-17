@@ -163,7 +163,7 @@ public class LexSearchDbService {
 				.where(
 						m1.WORD_ID.eq(wordId)
 						.and(m1.DATASET_CODE.in(datasets)))
-				.orderBy(m1.DS_ORDER_BY, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, m1.LEX_ORDER_BY, m2.DS_ORDER_BY, m2.LEVEL1, m2.LEVEL2, m2.LEVEL3, m2.LEX_ORDER_BY)
+				.orderBy(m1.DS_ORDER_BY, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, m1.LEX_ORDER_BY, m2.DS_ORDER_BY, m2.LEX_ORDER_BY)
 				.fetch()
 				.into(LexemeMeaningTuple.class);
 	}
