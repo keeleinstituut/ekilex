@@ -425,7 +425,7 @@ create view view_ww_word_relation
                        group by wg.word_id,
                                 wg.word_group_id,
                                 wg.word_rel_type_code) wg on wg.word_id = w.id
-    where (wr.related_words is not null and wg.word_group_members is not null)
+    where (wr.related_words is not null or wg.word_group_members is not null)
     and   exists (select l.id
                   from lexeme l
                   where l.word_id = w.id
