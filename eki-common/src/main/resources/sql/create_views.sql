@@ -372,32 +372,74 @@ create view view_ww_collocation
 -- word relations
 create view view_ww_word_relation 
   as
-    select w1.id word_id,
-           array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
-    from word w1
-      inner join (select r.word1_id,
-                         r.word2_id related_word_id,
-                         r.word_rel_type_code,
-                         r.order_by word_rel_order_by,
-                         f2.value related_word,
-                         w2.lang related_word_lang
-                  from word_relation r,
-                       word w2,
-                       paradigm p2,
-                       form f2
-                  where r.word2_id = w2.id
-                  and   p2.word_id = w2.id
-                  and   f2.paradigm_id = p2.id
-                  and   f2.mode = 'WORD'
-                  and   exists (select l2.id
-                                from lexeme l2
-                                where l2.word_id = w2.id
-                                and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))) w2 on w2.word1_id = w1.id
-    where exists (select l1.id
-                  from lexeme l1
-                  where l1.word_id = w1.id
-                  and   l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))
-    group by w1.id;
+    select w.id word_id,
+           wr.related_words,
+           wg.word_group_id,
+           wg.word_rel_type_code,
+           wg.word_group_members
+    from word w
+      left outer join (select w1.id word_id,
+                              array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
+                       from word w1
+                         inner join (select r.word1_id,
+                                            r.word2_id related_word_id,
+                                            r.word_rel_type_code,
+                                            r.order_by word_rel_order_by,
+                                            f2.value related_word,
+                                            w2.lang related_word_lang
+                                     from word_relation r,
+                                          word w2,
+                                          paradigm p2,
+                                          form f2
+                                     where r.word2_id = w2.id
+                                     and   p2.word_id = w2.id
+                                     and   f2.paradigm_id = p2.id
+                                     and   f2.mode = 'WORD'
+                                     and   exists (select l2.id
+                                                   from lexeme l2
+                                                   where l2.word_id = w2.id
+                                                   and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))) w2 on w2.word1_id = w1.id
+                       group by w1.id) wr on wr.word_id = w.id
+      left outer join (select wg.word_id,
+                              wg.word_group_id,
+                              wg.word_rel_type_code,
+                              array_agg(row (wg.group_member_word_id,wg.group_member_word,group_member_word_lang,wg.word_rel_type_code)::type_word_relation order by wg.group_member_order_by) word_group_members
+                       from (select distinct 
+                                    w1.id word_id,
+                                    wg.id word_group_id,
+                                    wg.word_rel_type_code,
+                                    w2.id group_member_word_id,
+                                    f2.value group_member_word,
+                                    w2.lang group_member_word_lang,
+                                    wgm2.order_by group_member_order_by
+                             from word w1,
+                                  word w2,
+                                  paradigm p2,
+                                  form f2,
+                                  word_group wg,
+                                  word_group_member wgm1,
+                                  word_group_member wgm2
+                             where wgm1.word_group_id = wg.id
+                             and   wgm2.word_group_id = wg.id
+                             and   wgm1.word_id = w1.id
+                             and   wgm2.word_id = w2.id
+                             and   w1.id != w2.id
+                             and   p2.word_id = w2.id
+                             and   f2.paradigm_id = p2.id
+                             and   f2.mode = 'WORD'
+                             and   exists (select l2.id
+                                           from lexeme l2
+                                           where l2.word_id = w2.id
+                                           and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))) wg
+                       group by wg.word_id,
+                                wg.word_group_id,
+                                wg.word_rel_type_code) wg on wg.word_id = w.id
+    where (wr.related_words is not null and wg.word_group_members is not null)
+    and   exists (select l.id
+                  from lexeme l
+                  where l.word_id = w.id
+                  and   l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'));
+
 
 -- lexeme relations
 create view view_ww_lexeme_relation 

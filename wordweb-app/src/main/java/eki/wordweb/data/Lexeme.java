@@ -54,7 +54,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeDefinition> definitions;
 
-	private List<Word> synonymWords;
+	private List<Word> meaningWords;
 
 	private List<Word> destinLangMatchWords;
 
@@ -252,12 +252,12 @@ public class Lexeme extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<Word> getSynonymWords() {
-		return synonymWords;
+	public List<Word> getMeaningWords() {
+		return meaningWords;
 	}
 
-	public void setSynonymWords(List<Word> synonymWords) {
-		this.synonymWords = synonymWords;
+	public void setMeaningWords(List<Word> meaningWords) {
+		this.meaningWords = meaningWords;
 	}
 
 	public List<Word> getDestinLangMatchWords() {

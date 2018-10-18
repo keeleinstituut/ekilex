@@ -30,6 +30,7 @@ import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordOrForm;
+import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
@@ -118,14 +119,28 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
-						MVIEW_WW_WORD.DEFINITIONS,
-						MVIEW_WW_WORD_RELATION.RELATED_WORDS
+						MVIEW_WW_WORD.DEFINITIONS
 						)
-				.from(MVIEW_WW_WORD
-						.leftOuterJoin(MVIEW_WW_WORD_RELATION).on(MVIEW_WW_WORD_RELATION.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)))
+				.from(MVIEW_WW_WORD)
 				.where(MVIEW_WW_WORD.WORD_ID.eq(wordId))
 				.fetchOne()
 				.into(Word.class);
+	}
+
+	public List<WordRelationTuple> findWordRelationTuples(Long wordId) {
+
+		return create
+				.select(
+						MVIEW_WW_WORD_RELATION.WORD_ID,
+						MVIEW_WW_WORD_RELATION.RELATED_WORDS,
+						MVIEW_WW_WORD_RELATION.WORD_GROUP_ID,
+						MVIEW_WW_WORD_RELATION.WORD_REL_TYPE_CODE,
+						MVIEW_WW_WORD_RELATION.WORD_GROUP_MEMBERS
+						)
+				.from(MVIEW_WW_WORD_RELATION)
+				.where(MVIEW_WW_WORD_RELATION.WORD_ID.eq(wordId))
+				.fetch()
+				.into(WordRelationTuple.class);
 	}
 
 	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId, String[] datasets) {

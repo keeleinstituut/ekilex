@@ -79,7 +79,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Transactional
-	public void execute(String dataXmlFilePath, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
+	public void execute(String dataXmlFilePath1, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -90,22 +90,25 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			reportComposer = new ReportComposer("EV2 import", ARTICLES_REPORT_NAME, DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME);
 		}
 
-		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
-		Document dataDoc2 = xmlReader.readDocument(dataXmlFilePath2);
-		Element rootElement = dataDoc.getRootElement();
-		Element rootElement2 = dataDoc2.getRootElement();
-
+		String[] dataXmlFilePaths = new String[] {dataXmlFilePath1, dataXmlFilePath2};
+		Document dataDoc;
+		Element rootElement;
+		List<Element> allArticleNodes = new ArrayList<>();
+		List<Element> articleNodes;
+		for (String dataXmlFilePath : dataXmlFilePaths) {
+			dataDoc = xmlReader.readDocument(dataXmlFilePath);
+			rootElement = dataDoc.getRootElement();
+			articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+			allArticleNodes.addAll(articleNodes);
+		}
+		long articleCount = allArticleNodes.size();
 		writeToLogFile("Artiklite töötlus", "", "");
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
-		articleNodes.addAll((List<Element>) rootElement2.content().stream().filter(o -> o instanceof Element).collect(toList()));
-
-		long articleCount = articleNodes.size();
 		logger.debug("{} articles found", articleCount);
 
 		Context context = new Context();
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 		long articleCounter = 0;
-		for (Element articleNode : articleNodes) {
+		for (Element articleNode : allArticleNodes) {
 			processArticle(articleNode, ssGuidMap, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {

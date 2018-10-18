@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
 
-    private static final long serialVersionUID = 517497358;
+    private static final long serialVersionUID = -1016291149;
 
     /**
      * The reference instance of <code>public.mview_ww_word_relation</code>
@@ -61,6 +61,21 @@ public class MviewWwWordRelation extends TableImpl<MviewWwWordRelationRecord> {
      * The column <code>public.mview_ww_word_relation.related_words</code>.
      */
     public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> RELATED_WORDS = createField("related_words", eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_relation.word_group_id</code>.
+     */
+    public final TableField<MviewWwWordRelationRecord, Long> WORD_GROUP_ID = createField("word_group_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_relation.word_rel_type_code</code>.
+     */
+    public final TableField<MviewWwWordRelationRecord, String> WORD_REL_TYPE_CODE = createField("word_rel_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_word_relation.word_group_members</code>.
+     */
+    public final TableField<MviewWwWordRelationRecord, TypeWordRelationRecord[]> WORD_GROUP_MEMBERS = createField("word_group_members", eki.wordweb.data.db.udt.TypeWordRelation.TYPE_WORD_RELATION.getDataType().getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.mview_ww_word_relation</code> table reference

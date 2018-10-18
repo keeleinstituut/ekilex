@@ -27,6 +27,7 @@ import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordOrForm;
+import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ConversionUtil;
@@ -115,11 +116,12 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		Word word = lexSearchDbService.getWord(wordId);
-		conversionUtil.populateWordRelationClassifiers(word, displayLang);
+		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
+		conversionUtil.composeWordRelations(word, wordRelationTuples, displayLang);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
 		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(wordId, lexemeMeaningTuples, lexemeDetailsTuples, collocTuples, sourceLang, destinLang, displayLang);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeMeaningTuples, lexemeDetailsTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();

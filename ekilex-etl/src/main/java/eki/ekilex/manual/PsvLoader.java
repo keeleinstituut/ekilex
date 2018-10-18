@@ -29,8 +29,9 @@ public class PsvLoader extends AbstractLoader {
 			boolean doReports = doReports();
 
 			// mab
-			String mabFilePath = getMandatoryConfProperty("mab.data.file");
-			mabService.loadParadigms(mabFilePath, doReports);
+			String mabFilePath1 = getConfProperty("mab.data.file.1");
+			String mabFilePath2 = getConfProperty("mab.data.file.2");
+			mabService.loadParadigms(mabFilePath1, mabFilePath2, doReports);
 
 			// ps
 			String psFilePath = getMandatoryConfProperty("psv.data.file");

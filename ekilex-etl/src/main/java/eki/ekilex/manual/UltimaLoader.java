@@ -51,7 +51,7 @@ public class UltimaLoader extends AbstractLoader {
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
 			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
 
-			String dataFilePath, dataset;
+			String dataFilePath, dataFilePath2, dataset;
 			Map<String, List<Guid>> ssGuidMap;
 
 			boolean doReports = doReports();
@@ -65,9 +65,10 @@ public class UltimaLoader extends AbstractLoader {
 			initRunner.execute();
 
 			// mab
-			dataFilePath = getConfProperty("mab.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				mabService.loadParadigms(dataFilePath, doReports);
+			dataFilePath = getConfProperty("mab.data.file.1");
+			dataFilePath2 = getConfProperty("mab.data.file.2");
+			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
+				mabService.loadParadigms(dataFilePath, dataFilePath2, doReports);
 				successfullyLoadedDatasets.add("mab");
 			}
 
@@ -107,7 +108,7 @@ public class UltimaLoader extends AbstractLoader {
 
 			// ev2
 			dataFilePath = getConfProperty("ev2.data.file.1");
-			String dataFilePath2 = getConfProperty("ev2.data.file.2");
+			dataFilePath2 = getConfProperty("ev2.data.file.2");
 			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
 				dataset = ev2Runner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);

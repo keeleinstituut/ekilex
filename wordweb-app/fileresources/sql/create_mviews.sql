@@ -150,7 +150,10 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_relation') as word_relation(
 	word_id bigint,
-	related_words type_word_relation array
+	related_words type_word_relation array,
+	word_group_id bigint,
+	word_rel_type_code varchar(100),
+	word_group_members type_word_relation array
 );
 
 create materialized view mview_ww_lexeme_relation as

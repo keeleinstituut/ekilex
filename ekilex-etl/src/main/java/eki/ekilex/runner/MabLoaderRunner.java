@@ -49,7 +49,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public MabData execute(String dataXmlFilePath, boolean doReports) throws Exception {
+	public MabData execute(String dataXmlFilePath1, String dataXmlFilePath2, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
 
@@ -78,13 +78,18 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		// morph value to code conversion map
 		Map<String, String> morphValueCodeMap = composeMorphValueCodeMap(dataLang);
-
-		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
-
-		Element rootElement = dataDoc.getRootElement();
-
-		long articleCount = rootElement.content().stream().filter(node -> node instanceof Element).count();
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+		String[] dataXmlFilePaths = new String[] {dataXmlFilePath1, dataXmlFilePath2};
+		Document dataDoc;
+		Element rootElement;
+		List<Element> allArticleNodes = new ArrayList<>();
+		List<Element> articleNodes;
+		for (String dataXmlFilePath : dataXmlFilePaths) {
+			dataDoc = xmlReader.readDocument(dataXmlFilePath);
+			rootElement = dataDoc.getRootElement();
+			articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+			allArticleNodes.addAll(articleNodes);
+		}
+		int articleCount = allArticleNodes.size();
 		logger.debug("Extracted {} articles", articleCount);
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
@@ -104,7 +109,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
-		for (Element articleNode : articleNodes) {
+		for (Element articleNode : allArticleNodes) {
 
 			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode == null) {

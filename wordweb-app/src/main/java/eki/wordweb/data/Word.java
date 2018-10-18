@@ -34,6 +34,10 @@ public class Word extends AbstractDataObject {
 
 	private List<TypeWordRelation> relatedWords;
 
+	private List<WordGroup> wordGroups;
+
+	private boolean wordRelationsExist;
+
 	private boolean selected;
 
 	public Long getWordId() {
@@ -138,6 +142,22 @@ public class Word extends AbstractDataObject {
 
 	public void setRelatedWords(List<TypeWordRelation> relatedWords) {
 		this.relatedWords = relatedWords;
+	}
+
+	public List<WordGroup> getWordGroups() {
+		return wordGroups;
+	}
+
+	public void setWordGroups(List<WordGroup> wordGroups) {
+		this.wordGroups = wordGroups;
+	}
+
+	public boolean isWordRelationsExist() {
+		return wordRelationsExist;
+	}
+
+	public void setWordRelationsExist(boolean wordRelationsExist) {
+		this.wordRelationsExist = wordRelationsExist;
 	}
 
 	public boolean isSelected() {
