@@ -57,26 +57,32 @@ public class ConversionUtil {
 		for (Word word : words) {
 			List<TypeWord> meaningWords = word.getMeaningWords();
 			if (CollectionUtils.isNotEmpty(meaningWords)) {
-				Long lexemeId = meaningWords.get(0).getLexemeId();
-				List<String> meaningWordValues = meaningWords.stream()
-						.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
-						.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
-						.map(meaningWord -> meaningWord.getValue())
-						.distinct()
-						.collect(Collectors.toList());
-				String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
-				word.setMeaningWordsWrapup(meaningWordsWrapup);
+				TypeWord firstMeaningWord = meaningWords.get(0);
+				if (StringUtils.isNotBlank(firstMeaningWord.getValue())) {
+					Long lexemeId = firstMeaningWord.getLexemeId();
+					List<String> meaningWordValues = meaningWords.stream()
+							.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
+							.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
+							.map(meaningWord -> meaningWord.getValue())
+							.distinct()
+							.collect(Collectors.toList());
+					String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+					word.setMeaningWordsWrapup(meaningWordsWrapup);
+				}
 			}
 			List<TypeDefinition> definitions = word.getDefinitions();
 			if (CollectionUtils.isNotEmpty(definitions)) {
-				Long lexemeId = definitions.get(0).getLexemeId();
-				List<String> definitionValues = definitions.stream()
-						.filter(definition -> definition.getLexemeId().equals(lexemeId))
-						.filter(definition -> StringUtils.equals(definition.getLang(), destinLang))
-						.map(definition -> definition.getValue())
-						.collect(Collectors.toList());
-				String definitionsWrapup = StringUtils.join(definitionValues, ", ");
-				word.setDefinitionsWrapup(definitionsWrapup);
+				TypeDefinition firstDefinition = definitions.get(0);
+				if (StringUtils.isNotBlank(firstDefinition.getValue())) {
+					Long lexemeId = firstDefinition.getLexemeId();
+					List<String> definitionValues = definitions.stream()
+							.filter(definition -> definition.getLexemeId().equals(lexemeId))
+							.filter(definition -> StringUtils.equals(definition.getLang(), destinLang))
+							.map(definition -> definition.getValue())
+							.collect(Collectors.toList());
+					String definitionsWrapup = StringUtils.join(definitionValues, ", ");
+					word.setDefinitionsWrapup(definitionsWrapup);
+				}
 			}
 		}
 	}

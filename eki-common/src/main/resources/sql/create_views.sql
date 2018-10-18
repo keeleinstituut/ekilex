@@ -59,22 +59,14 @@ from (select w.id as word_id,
                                 w2.lang mw_lang,
                                 ds2.order_by mw_ds_order_by,
                                 l2.order_by mw_lex_order_by
-                         from lexeme l1,
-                              lexeme l2,
-                              form f2,
-                              paradigm p2,
-                              word w2,
-                              dataset ds1,
-                              dataset ds2
-                         where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
-                         and   l1.meaning_id = l2.meaning_id
-                         and   l1.word_id != w2.id
-                         and   l1.dataset_code = ds1.code
-                         and   l2.word_id = w2.id
-                         and   l2.dataset_code = ds2.code
-                         and   p2.word_id = w2.id
-                         and   f2.paradigm_id = p2.id
-                         and   f2.mode = 'WORD') mw
+                         from lexeme l1
+                              inner join dataset ds1 on ds1.code = l1.dataset_code
+                              left outer join lexeme l2 on l2.meaning_id = l1.meaning_id and l2.word_id != l1.word_id
+                              left outer join dataset ds2 on ds2.code = l2.dataset_code
+                              left outer join word w2 on w2.id = l2.word_id
+                              left outer join paradigm p2 on p2.word_id = w2.id
+                              left outer join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
+                         where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.lang)::type_definition order by wd.ds_order_by,wd.level1,wd.level2,wd.level3,wd.d_order_by) definitions
@@ -88,11 +80,10 @@ from (select w.id as word_id,
                                 l.level2,
                                 l.level3,
                                 d.order_by d_order_by
-                         from lexeme l,
-                              definition d,
-                              dataset ds
-                         where l.meaning_id = d.meaning_id
-                         and   l.dataset_code = ds.code) wd
+                         from lexeme l
+                              inner join dataset ds on ds.code = l.dataset_code
+                              left outer join definition d on d.meaning_id = l.meaning_id
+                         where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) wd
                    group by wd.word_id) wd on wd.word_id = w.word_id;
 
 create view view_ww_as_word 
