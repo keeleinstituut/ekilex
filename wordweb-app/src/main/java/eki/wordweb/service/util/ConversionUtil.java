@@ -531,10 +531,12 @@ public class ConversionUtil {
 		Classifier classifier;
 		for (WordRelationTuple tuple : wordRelationTuples) {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
-			for (TypeWordRelation wordRelation : relatedWords) {
-				classifierCode = wordRelation.getWordRelTypeCode();
-				classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
-				wordRelation.setWordRelType(classifier);
+			if (CollectionUtils.isNotEmpty(relatedWords)) {
+				for (TypeWordRelation wordRelation : relatedWords) {
+					classifierCode = wordRelation.getWordRelTypeCode();
+					classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
+					wordRelation.setWordRelType(classifier);
+				}
 			}
 			word.setRelatedWords(relatedWords);
 			if (CollectionUtils.isNotEmpty(tuple.getWordGroupMembers())) {
