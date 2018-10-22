@@ -14,6 +14,8 @@ public class TypeWord extends AbstractDataObject {
 
 	private String lang;
 
+	private String datasetCode;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -44,6 +46,14 @@ public class TypeWord extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String getDatasetCode() {
+		return datasetCode;
+	}
+
+	public void setDatasetCode(String datasetCode) {
+		this.datasetCode = datasetCode;
 	}
 
 }

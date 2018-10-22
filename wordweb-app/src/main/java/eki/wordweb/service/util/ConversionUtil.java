@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -53,21 +54,26 @@ public class ConversionUtil {
 	@Autowired
 	private CommonDataDbService commonDataDbService;
 
-	public void filterIrrelevantValues(List<Word> words, final String destinLang) {
+	public void filterIrrelevantValues(List<Word> words, String destinLang, String[] datasets) {
 		for (Word word : words) {
 			List<TypeWord> meaningWords = word.getMeaningWords();
 			if (CollectionUtils.isNotEmpty(meaningWords)) {
-				TypeWord firstMeaningWord = meaningWords.get(0);
-				if (StringUtils.isNotBlank(firstMeaningWord.getValue())) {
-					Long lexemeId = firstMeaningWord.getLexemeId();
-					List<String> meaningWordValues = meaningWords.stream()
-							.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
-							.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
-							.map(meaningWord -> meaningWord.getValue())
-							.distinct()
-							.collect(Collectors.toList());
-					String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
-					word.setMeaningWordsWrapup(meaningWordsWrapup);
+				List<TypeWord> primaryMeaningWords = meaningWords.stream()
+						.filter(meaningWord -> ArrayUtils.contains(datasets, meaningWord.getDatasetCode()))
+						.collect(Collectors.toList());
+				if (CollectionUtils.isNotEmpty(primaryMeaningWords)) {
+					TypeWord firstMeaningWord = primaryMeaningWords.get(0);
+					if (StringUtils.isNotBlank(firstMeaningWord.getValue())) {
+						Long lexemeId = firstMeaningWord.getLexemeId();
+						List<String> meaningWordValues = primaryMeaningWords.stream()
+								.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
+								.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
+								.map(meaningWord -> meaningWord.getValue())
+								.distinct()
+								.collect(Collectors.toList());
+						String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
+						word.setMeaningWordsWrapup(meaningWordsWrapup);
+					}
 				}
 			}
 			List<TypeDefinition> definitions = word.getDefinitions();
