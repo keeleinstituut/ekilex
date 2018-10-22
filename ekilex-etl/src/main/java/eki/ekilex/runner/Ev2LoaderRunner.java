@@ -462,9 +462,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							if (lexemeId != null) {
 								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
-								for (Long mainLexemeId : mainLexemeIds) {
-									createLexemeRelation(mainLexemeId, lexemeId, LEXEME_RELATION_SUB_WORD);
-								}
 							}
 							level1++;
 
