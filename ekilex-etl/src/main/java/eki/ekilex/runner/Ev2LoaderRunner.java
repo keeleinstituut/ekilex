@@ -291,7 +291,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			List<Usage> usages = extractUsages(meaningNumberGroupNode);
 
 			int lexemeLevel2 = 0;
-			List<Long> mainLexemeIds = new ArrayList<>();
 			for (Element meaningGroupNode : meaningGroupNodes) {
 				lexemeLevel2++;
 				List<PosData> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
@@ -348,7 +347,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						// this is temporary solution, till EKI provides better one
 						if (lexemeLevel2 == 1) {
 							createUsages(lexemeId, usages, dataLang);
-							mainLexemeIds.add(lexemeId);
 						}
 						saveGovernments(newWordData, meaningGovernments, lexemeId);
 						savePosAndDeriv(newWordData, meaningPosCodes, lexemePosCodes, lexemeId, reportingId);
@@ -358,7 +356,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				}
 				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId);
 			}
-			processWordsInUsageGroups(context, meaningNumberGroupNode, mainLexemeIds, reportingId);
+			processWordsInUsageGroups(context, meaningNumberGroupNode, reportingId);
 		}
 	}
 
@@ -394,7 +392,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processWordsInUsageGroups(Context context, Element node, List<Long> mainLexemeIds, String reportingId) throws Exception {
+	private void processWordsInUsageGroups(Context context, Element node, String reportingId) throws Exception {
 
 		final String usageBlockExp = "x:np";
 		final String usageGroupExp = "x:ng";
