@@ -384,9 +384,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		for (List<LexemeToWordData> aspectGroup : aspectGroups) {
-			Long wordGroup = createWordRelationGroup(WordRelationGroupType.ASPECTS);
-			for (LexemeToWordData wordData : aspectGroup) {
-				createWordRelationGroupMember(wordGroup, wordData.wordId);
+			List<Long> memberIds = aspectGroup.stream().map(w -> w.wordId).collect(toList());
+			if (hasNoWordRelationGroupWithMembers(WordRelationGroupType.ASPECTS, memberIds)) {
+				Long wordGroup = createWordRelationGroup(WordRelationGroupType.ASPECTS);
+				for (LexemeToWordData wordData : aspectGroup) {
+					createWordRelationGroupMember(wordGroup, wordData.wordId);
+				}
 			}
 		}
 	}
