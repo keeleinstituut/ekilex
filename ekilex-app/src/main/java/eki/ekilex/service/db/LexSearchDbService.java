@@ -576,7 +576,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		WordRelTypeLabel wrtl = WORD_REL_TYPE_LABEL.as("wrtl");
 
 		return create
-				.select(
+				.selectDistinct(
 						wgrm2.ID.as("id"),
 						wgr.ID.as("group_id"),
 						w2.ID.as("word_id"),
@@ -613,7 +613,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 	public Result<Record6<Long,String,Long,String,String,Long>> findWordRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(
+				.selectDistinct(
 						WORD_RELATION.ID.as("id"),
 						FORM.VALUE.as("word"),
 						WORD.ID.as("word_id"),
