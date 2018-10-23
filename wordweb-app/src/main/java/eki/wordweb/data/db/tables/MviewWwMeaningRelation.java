@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationRecord> {
 
-    private static final long serialVersionUID = 1162818869;
+    private static final long serialVersionUID = 1190653347;
 
     /**
      * The reference instance of <code>public.mview_ww_meaning_relation</code>
@@ -51,11 +51,6 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
     public Class<MviewWwMeaningRelationRecord> getRecordType() {
         return MviewWwMeaningRelationRecord.class;
     }
-
-    /**
-     * The column <code>public.mview_ww_meaning_relation.lexeme_id</code>.
-     */
-    public final TableField<MviewWwMeaningRelationRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * The column <code>public.mview_ww_meaning_relation.meaning_id</code>.
@@ -109,7 +104,7 @@ public class MviewWwMeaningRelation extends TableImpl<MviewWwMeaningRelationReco
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_RELATION_LEXEME_ID_IDX, Indexes.MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX);
+        return Arrays.<Index>asList(Indexes.MVIEW_WW_MEANING_RELATION_MEANING_ID_IDX);
     }
 
     /**

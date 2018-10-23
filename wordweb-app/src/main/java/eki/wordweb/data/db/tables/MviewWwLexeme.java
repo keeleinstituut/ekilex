@@ -37,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
 
-    private static final long serialVersionUID = -101317815;
+    private static final long serialVersionUID = -1639426010;
 
     /**
      * The reference instance of <code>public.mview_ww_lexeme</code>
@@ -66,6 +66,51 @@ public class MviewWwLexeme extends TableImpl<MviewWwLexemeRecord> {
      * The column <code>public.mview_ww_lexeme.meaning_id</code>.
      */
     public final TableField<MviewWwLexemeRecord, Long> MEANING_ID = createField("meaning_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.dataset_code</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String> DATASET_CODE = createField("dataset_code", org.jooq.impl.SQLDataType.VARCHAR(10), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.ds_order_by</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Long> DS_ORDER_BY = createField("ds_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.level1</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Integer> LEVEL1 = createField("level1", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.level2</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Integer> LEVEL2 = createField("level2", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.level3</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Integer> LEVEL3 = createField("level3", org.jooq.impl.SQLDataType.INTEGER, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.lex_order_by</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, Long> LEX_ORDER_BY = createField("lex_order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.register_codes</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String[]> REGISTER_CODES = createField("register_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.pos_codes</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String[]> POS_CODES = createField("pos_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_lexeme.deriv_codes</code>.
+     */
+    public final TableField<MviewWwLexemeRecord, String[]> DERIV_CODES = createField("deriv_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_lexeme.advice_notes</code>.

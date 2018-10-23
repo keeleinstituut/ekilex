@@ -54,11 +54,11 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeDefinition> definitions;
 
-	private List<Word> meaningWords;
+	private List<MeaningWord> meaningWords;
 
-	private List<Word> destinLangMatchWords;
+	private List<MeaningWord> destinLangMatchWords;
 
-	private List<Word> otherLangMatchWords;
+	private List<MeaningWord> otherLangMatchWords;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -252,27 +252,27 @@ public class Lexeme extends AbstractDataObject {
 		this.definitions = definitions;
 	}
 
-	public List<Word> getMeaningWords() {
+	public List<MeaningWord> getMeaningWords() {
 		return meaningWords;
 	}
 
-	public void setMeaningWords(List<Word> meaningWords) {
+	public void setMeaningWords(List<MeaningWord> meaningWords) {
 		this.meaningWords = meaningWords;
 	}
 
-	public List<Word> getDestinLangMatchWords() {
+	public List<MeaningWord> getDestinLangMatchWords() {
 		return destinLangMatchWords;
 	}
 
-	public void setDestinLangMatchWords(List<Word> destinLangMatchWords) {
+	public void setDestinLangMatchWords(List<MeaningWord> destinLangMatchWords) {
 		this.destinLangMatchWords = destinLangMatchWords;
 	}
 
-	public List<Word> getOtherLangMatchWords() {
+	public List<MeaningWord> getOtherLangMatchWords() {
 		return otherLangMatchWords;
 	}
 
-	public void setOtherLangMatchWords(List<Word> otherLangMatchWords) {
+	public void setOtherLangMatchWords(List<MeaningWord> otherLangMatchWords) {
 		this.otherLangMatchWords = otherLangMatchWords;
 	}
 

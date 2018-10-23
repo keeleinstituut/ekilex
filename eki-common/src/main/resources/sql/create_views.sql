@@ -16,6 +16,7 @@ select w.word_id,
        w.lang,
        w.morph_code,
        w.display_morph_code,
+       w.aspect_code,
        (select array_agg(distinct ld.dataset_code)
         from lexeme ld
         where ld.word_id = w.word_id
@@ -28,7 +29,8 @@ from (select w.id as word_id,
              w.homonym_nr,
              w.lang,
              w.morph_code,
-             w.display_morph_code
+             w.display_morph_code,
+             w.aspect_code
       from word as w
         join paradigm as p on p.word_id = w.id
         join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
@@ -146,9 +148,61 @@ create view view_ww_form
 -- lexeme meanings
 create view view_ww_meaning 
   as
-    select l.word_id,
+    select m.id meaning_id,
+           m_dom.domain_codes,
+           m_img.image_files,
+           m_spp.systematic_polysemy_patterns,
+           m_smt.semantic_types,
+           m_lcm.learner_comments,
+           d.definitions
+    from meaning m
+      left outer join (select m_dom.meaning_id,
+                              array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
+                       from meaning_domain m_dom
+                       group by m_dom.meaning_id) m_dom on m_dom.meaning_id = m.id
+      left outer join (select d.meaning_id,
+                              array_agg(row (null, d.meaning_id, d.value,d.lang)::type_definition order by d.order_by) definitions
+                       from definition d
+                       group by d.meaning_id) d on d.meaning_id = m.id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) image_files
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'IMAGE_FILE'
+                       group by mf.meaning_id) m_img on m_img.meaning_id = m.id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'SYSTEMATIC_POLYSEMY_PATTERN'
+                       group by mf.meaning_id) m_spp on m_spp.meaning_id = m.id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) semantic_types
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'SEMANTIC_TYPE'
+                       group by mf.meaning_id) m_smt on m_smt.meaning_id = m.id
+      left outer join (select mf.meaning_id,
+                              array_agg(ff.value_text order by ff.order_by) learner_comments
+                       from meaning_freeform mf,
+                            freeform ff
+                       where mf.freeform_id = ff.id
+                       and   ff.type = 'LEARNER_COMMENT'
+                       group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
+    where exists (select ld.id
+                        from lexeme as ld
+                        where (ld.meaning_id = m.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
+    order by m.id;
+
+-- lexeme details
+create view view_ww_lexeme 
+  as
+    select l.id lexeme_id,
+           l.word_id,
            l.meaning_id,
-           l.id lexeme_id,
            l.dataset_code,
            ds.order_by ds_order_by,
            l.level1,
@@ -158,12 +212,11 @@ create view view_ww_meaning
            l_reg.register_codes,
            l_pos.pos_codes,
            l_der.deriv_codes,
-           m_dom.domain_codes,
-           m_img.image_files,
-           m_spp.systematic_polysemy_patterns,
-           m_smt.semantic_types,
-           m_lcm.learner_comments,
-           d.definitions
+           anote.advice_notes,
+           pnote.public_notes,
+           gramm.grammars,
+           gov.governments,
+           usg.usages
     from lexeme l
       inner join dataset ds on ds.code = l.dataset_code
       left outer join (select l_reg.lexeme_id,
@@ -178,61 +231,6 @@ create view view_ww_meaning
                               array_agg(l_der.deriv_code) deriv_codes
                        from lexeme_deriv l_der
                        group by l_der.lexeme_id) l_der on l_der.lexeme_id = l.id
-      left outer join (select m_dom.meaning_id,
-                              array_agg(row (m_dom.domain_origin,m_dom.domain_code)::type_domain order by m_dom.order_by) domain_codes
-                       from meaning_domain m_dom
-                       group by m_dom.meaning_id) m_dom on m_dom.meaning_id = l.meaning_id
-      left outer join (select l.id lexeme_id,
-                              array_agg(row (l.id, l.meaning_id, d.value,d.lang)::type_definition order by d.order_by) definitions
-                       from lexeme l,
-                            definition d
-                       where l.meaning_id = d.meaning_id
-                       group by l.id) d on d.lexeme_id = l.id
-      left outer join (select mf.meaning_id,
-                              array_agg(ff.value_text order by ff.order_by) image_files
-                       from meaning_freeform mf,
-                            freeform ff
-                       where mf.freeform_id = ff.id
-                       and   ff.type = 'IMAGE_FILE'
-                       group by mf.meaning_id) m_img on m_img.meaning_id = l.meaning_id
-      left outer join (select mf.meaning_id,
-                              array_agg(ff.value_text order by ff.order_by) systematic_polysemy_patterns
-                       from meaning_freeform mf,
-                            freeform ff
-                       where mf.freeform_id = ff.id
-                       and   ff.type = 'SYSTEMATIC_POLYSEMY_PATTERN'
-                       group by mf.meaning_id) m_spp on m_spp.meaning_id = l.meaning_id
-      left outer join (select mf.meaning_id,
-                              array_agg(ff.value_text order by ff.order_by) semantic_types
-                       from meaning_freeform mf,
-                            freeform ff
-                       where mf.freeform_id = ff.id
-                       and   ff.type = 'SEMANTIC_TYPE'
-                       group by mf.meaning_id) m_smt on m_smt.meaning_id = l.meaning_id
-      left outer join (select mf.meaning_id,
-                              array_agg(ff.value_text order by ff.order_by) learner_comments
-                       from meaning_freeform mf,
-                            freeform ff
-                       where mf.freeform_id = ff.id
-                       and   ff.type = 'LEARNER_COMMENT'
-                       group by mf.meaning_id) m_lcm on m_lcm.meaning_id = l.meaning_id
-    where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
-    order by l.word_id,
-             l.meaning_id,
-             l.id;
-
--- lexeme details
-create view view_ww_lexeme 
-  as
-    select l.id lexeme_id,
-           l.word_id,
-           l.meaning_id,
-           anote.advice_notes,
-           pnote.public_notes,
-           gramm.grammars,
-           gov.governments,
-           usg.usages
-    from lexeme l
       left outer join (select lf.lexeme_id,
                               array_agg(ff.value_text order by ff.order_by) advice_notes
                        from lexeme_freeform lf,
@@ -456,11 +454,10 @@ create view view_ww_lexeme_relation
 -- meaning relations
 create view view_ww_meaning_relation 
   as
-    select l1.id lexeme_id,
-           l1.meaning_id,
+    select m1.id meaning_id,
            array_agg(row (m2.meaning_id,m2.lexeme_id,m2.word_id,m2.word,m2.word_lang,r.meaning_rel_type_code)::type_meaning_relation order by r.order_by) related_meanings
-    from meaning_relation r,
-         lexeme l1,
+    from meaning m1,
+         meaning_relation r,
          (select distinct l2.meaning_id,
                  l2.id lexeme_id,
                  l2.word_id,
@@ -475,10 +472,12 @@ create view view_ww_meaning_relation
           and   p2.word_id = w2.id
           and   l2.word_id = w2.id
           and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) m2
-    where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
-    and   r.meaning1_id = l1.meaning_id
+    where r.meaning1_id = m1.id
     and   r.meaning2_id = m2.meaning_id
-    group by l1.id;
+    and   exists (select ld.id
+                        from lexeme as ld
+                        where (ld.meaning_id = m1.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
+    group by m1.id;
 
 -- datasets, classifiers
 create view view_ww_dataset
@@ -512,6 +511,15 @@ create view view_ww_classifier
        value,
        lang
      from display_morph_label
+     where type = 'wordweb'
+     union all
+     select
+       'ASPECT_TYPE' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from aspect_type_label
      where type = 'wordweb'
      union all
      select

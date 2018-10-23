@@ -3,6 +3,7 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.data.Classifier;
 
 public class Word extends AbstractDataObject {
 
@@ -19,6 +20,10 @@ public class Word extends AbstractDataObject {
 	private String morphCode;
 
 	private String displayMorphCode;
+
+	private String aspectCode;
+
+	private Classifier aspect;
 
 	private List<String> datasetCodes;
 
@@ -86,6 +91,22 @@ public class Word extends AbstractDataObject {
 
 	public void setDisplayMorphCode(String displayMorphCode) {
 		this.displayMorphCode = displayMorphCode;
+	}
+
+	public String getAspectCode() {
+		return aspectCode;
+	}
+
+	public void setAspectCode(String aspectCode) {
+		this.aspectCode = aspectCode;
+	}
+
+	public Classifier getAspect() {
+		return aspect;
+	}
+
+	public void setAspect(Classifier aspect) {
+		this.aspect = aspect;
 	}
 
 	public List<String> getDatasetCodes() {

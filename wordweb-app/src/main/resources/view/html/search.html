@@ -100,18 +100,12 @@
                        th:text="${wordData.word.relatedWords.get(0).word}">
                     </a>
                   </div>
-                  <div class="matches">
-                    <h6 th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
-                      <th:block th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}">
-                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}"
-                           th:text="${meaningWord.word}"
-                           style="color: black;">
-                        </a>
-                        <span th:unless="${meaningWordIter.last}" style="margin-left: -4px">,</span>
-                      </th:block>
-                    </h6>
-                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and sessionBean.sourceLang == 'est' and sessionBean.destinLang != 'est'}"
-                          th:text="#{label.no.translation}">Täpset tõlkevastet pole
+                  <div>
+                    <span th:if="${not #lists.isEmpty(lexeme.poses)}">
+                      <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                    </span>
+                    <span th:if="${not #lists.isEmpty(lexeme.grammars)}">
+                      <span th:each="grammar : ${lexeme.grammars}" th:text="${grammar}"></span>
                     </span>
                   </div>
                   <div class="definition">
@@ -126,8 +120,39 @@
                       </span>
                     </div>
                   </div>
-                  <div class="word-type" th:if="${not #lists.isEmpty(lexeme.poses)}">
-                    <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
+                  <div class="matches">
+                    <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
+                      <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}"
+                            style="display: inline-block; white-space: nowrap;">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}"
+                           th:text="${meaningWord.word}"
+                           style="color: black; font-family: 'Montserrat';">
+                        </a>
+                        <span th:if="${meaningWord.additionalDataExists}" style="font-style: italic; color: #777777;">
+                          [
+                          <span th:if="${not #lists.isEmpty(meaningWord.governments)}">
+                            <span th:each="government : ${meaningWord.governments}">
+                              <span th:text="${government}"></span>
+                            </span>
+                          </span>
+                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">
+                            <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
+                            <span th:each="register : ${meaningWord.registers}">
+                              <span th:text="${register.value}"></span>
+                            </span>
+                          </span>
+                          <span th:if="${meaningWord.aspect != null}">
+                            <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
+                            <span th:text="${meaningWord.aspect.value}"></span>
+                          </span>
+                          ]
+                        </span>
+                        <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
+                      </span>
+                    </div>
+                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and (sessionBean.sourceLang != sessionBean.destinLang)}"
+                          th:text="#{label.no.translation}">Täpset tõlkevastet pole
+                    </span>
                   </div>
                 </div>
                 <div class="col-lg-6 dependencies">
@@ -212,11 +237,6 @@
                       </div>
                       <div class="col-12">
                         <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
-                      </div>
-                    </div>
-                    <div class="row" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <div class="col-12">
-                        <div th:each="note : ${lexeme.grammars}" th:text="${note}"></div>
                       </div>
                     </div>
                   </div>

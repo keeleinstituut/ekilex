@@ -31,7 +31,10 @@ import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.db.tables.MviewWwLexeme;
+import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
+import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 
 @Component
@@ -51,6 +54,7 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.LANG,
 						MVIEW_WW_WORD.MORPH_CODE,
 						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
+						MVIEW_WW_WORD.ASPECT_CODE,
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
@@ -116,6 +120,7 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.LANG,
 						MVIEW_WW_WORD.MORPH_CODE,
 						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
+						MVIEW_WW_WORD.ASPECT_CODE,
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
@@ -143,76 +148,87 @@ public class LexSearchDbService {
 				.into(WordRelationTuple.class);
 	}
 
-	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId, String[] datasets) {
-
-		MviewWwMeaning m1 = MVIEW_WW_MEANING.as("m1");
-		MviewWwMeaning m2 = MVIEW_WW_MEANING.as("m2");
-		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
-
-		return create
-				.select(
-						m1.LEXEME_ID,
-						m1.MEANING_ID,
-						m1.DATASET_CODE,
-						m1.LEVEL1,
-						m1.LEVEL2,
-						m1.LEVEL3,
-						m1.REGISTER_CODES,
-						m1.POS_CODES,
-						m1.DERIV_CODES,
-						m1.DOMAIN_CODES,
-						m1.IMAGE_FILES,
-						m1.SYSTEMATIC_POLYSEMY_PATTERNS,
-						m1.SEMANTIC_TYPES,
-						m1.LEARNER_COMMENTS,
-						m1.DEFINITIONS,
-						m2.WORD_ID.as("meaning_word_id"),
-						w2.WORD.as("meaning_word"),
-						w2.HOMONYM_NR.as("meaning_word_homonym_nr"),
-						w2.LANG.as("meaning_word_lang")
-						)
-				.from(m1
-						.leftOuterJoin(m2).on(m2.MEANING_ID.eq(m1.MEANING_ID).and(m2.WORD_ID.ne(m1.WORD_ID)))
-						.leftOuterJoin(w2).on(w2.WORD_ID.eq(m2.WORD_ID))
-						)
-				.where(
-						m1.WORD_ID.eq(wordId)
-						.and(m1.DATASET_CODE.in(datasets)))
-				.orderBy(m1.DS_ORDER_BY, m1.LEVEL1, m1.LEVEL2, m1.LEVEL3, m1.LEX_ORDER_BY, m2.DS_ORDER_BY, m2.LEX_ORDER_BY)
-				.fetch()
-				.into(LexemeMeaningTuple.class);
-	}
-
 	public List<LexemeDetailsTuple> findLexemeDetailsTuples(Long wordId, String[] datasets) {
 
+		MviewWwLexeme l1 = MVIEW_WW_LEXEME.as("l1");
+		MviewWwLexeme l2 = MVIEW_WW_LEXEME.as("l2");
+		MviewWwWord w2 = MVIEW_WW_WORD.as("w2");
+		MviewWwLexemeRelation lr = MVIEW_WW_LEXEME_RELATION.as("lr");
+
 		return create
 				.select(
-						MVIEW_WW_LEXEME.LEXEME_ID,
-						MVIEW_WW_LEXEME.MEANING_ID,
-						MVIEW_WW_LEXEME.ADVICE_NOTES,
-						MVIEW_WW_LEXEME.PUBLIC_NOTES,
-						MVIEW_WW_LEXEME.GRAMMARS,
-						MVIEW_WW_LEXEME.GOVERNMENTS,
-						MVIEW_WW_LEXEME.USAGES,
-						MVIEW_WW_LEXEME_RELATION.RELATED_LEXEMES,
-						MVIEW_WW_MEANING_RELATION.RELATED_MEANINGS
+						l1.LEXEME_ID,
+						l1.WORD_ID,
+						l1.MEANING_ID,
+						l1.DATASET_CODE,
+						l1.DS_ORDER_BY,
+						l1.LEVEL1,
+						l1.LEVEL2,
+						l1.LEVEL3,
+						l1.LEX_ORDER_BY,
+						l1.REGISTER_CODES,
+						l1.POS_CODES,
+						l1.DERIV_CODES,
+						l1.ADVICE_NOTES,
+						l1.PUBLIC_NOTES,
+						l1.GRAMMARS,
+						l1.GOVERNMENTS,
+						l1.USAGES,
+						l2.GOVERNMENTS.as("meaning_lexeme_governments"),
+						l2.REGISTER_CODES.as("meaning_lexeme_register_codes"),
+						w2.WORD_ID.as("meaning_word_id"),
+						w2.WORD.as("meaning_word"),
+						w2.HOMONYM_NR.as("meaning_word_homonym_nr"),
+						w2.ASPECT_CODE.as("meaning_word_aspect_code"),
+						w2.LANG.as("meaning_word_lang"),
+						lr.RELATED_LEXEMES
 						)
-				.from(MVIEW_WW_LEXEME
-						.leftOuterJoin(MVIEW_WW_LEXEME_RELATION).on(MVIEW_WW_LEXEME_RELATION.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID))
-						.leftOuterJoin(MVIEW_WW_MEANING_RELATION).on(MVIEW_WW_MEANING_RELATION.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID)))
+				.from(l1
+						.leftOuterJoin(l2).on(l2.MEANING_ID.eq(l1.MEANING_ID).and(l2.LEXEME_ID.ne(l1.LEXEME_ID)).and(l2.DATASET_CODE.in(datasets)))
+						.leftOuterJoin(w2).on(l2.WORD_ID.eq(w2.WORD_ID))
+						.leftOuterJoin(lr).on(lr.LEXEME_ID.eq(l1.LEXEME_ID)))
 				.where(
-						MVIEW_WW_LEXEME.WORD_ID.eq(wordId)
-						.and(DSL.exists(DSL
-								.select(MVIEW_WW_MEANING.LEXEME_ID)
-								.from(MVIEW_WW_MEANING)
-								.where(
-										MVIEW_WW_MEANING.LEXEME_ID.eq(MVIEW_WW_LEXEME.LEXEME_ID))
-										.and(MVIEW_WW_MEANING.DATASET_CODE.in(datasets)))
-										)
+						l1.WORD_ID.eq(wordId)
+						.and(l1.DATASET_CODE.in(datasets))
 						)
-				.orderBy(MVIEW_WW_LEXEME.LEXEME_ID)
+				.orderBy(
+						l1.DS_ORDER_BY,
+						l1.LEVEL1,
+						l1.LEVEL2,
+						l1.LEVEL3,
+						l1.LEX_ORDER_BY,
+						l2.DS_ORDER_BY,
+						l2.LEX_ORDER_BY)
 				.fetch()
 				.into(LexemeDetailsTuple.class);
+	}
+
+	public List<LexemeMeaningTuple> findLexemeMeaningTuples(Long wordId, String[] datasets) {
+	
+		MviewWwLexeme l = MVIEW_WW_LEXEME.as("l");
+		MviewWwMeaning m = MVIEW_WW_MEANING.as("m");
+		MviewWwMeaningRelation mr = MVIEW_WW_MEANING_RELATION.as("mr");
+	
+		return create
+				.select(
+						l.LEXEME_ID,
+						m.MEANING_ID,
+						m.DOMAIN_CODES,
+						m.IMAGE_FILES,
+						m.SYSTEMATIC_POLYSEMY_PATTERNS,
+						m.SEMANTIC_TYPES,
+						m.LEARNER_COMMENTS,
+						m.DEFINITIONS,
+						mr.RELATED_MEANINGS
+						)
+				.from(
+						l.innerJoin(m).on(m.MEANING_ID.eq(l.MEANING_ID))
+						.leftOuterJoin(mr).on(mr.MEANING_ID.eq(m.MEANING_ID))
+						)
+				.where(l.WORD_ID.eq(wordId).and(l.DATASET_CODE.in(datasets)))
+				.orderBy(m.MEANING_ID, l.LEXEME_ID)
+				.fetch()
+				.into(LexemeMeaningTuple.class);
 	}
 
 	public List<CollocationTuple> findCollocations(Long wordId, String[] datasets) {

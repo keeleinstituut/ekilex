@@ -43,6 +43,7 @@ dblink(
 	lang char(3),
 	morph_code varchar(100),
 	display_morph_code varchar(100),
+	aspect_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
 	meaning_words type_word array,
@@ -84,18 +85,7 @@ select * from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning') as meaning(
-	word_id bigint,
 	meaning_id bigint,
-	lexeme_id bigint,
-	dataset_code varchar(10),
-	ds_order_by bigint,
-	level1 integer,
-	level2 integer,
-	level3 integer,
-	lex_order_by bigint,
-	register_codes varchar(100) array,
-	pos_codes varchar(100) array,
-	deriv_codes varchar(100) array,
 	domain_codes type_domain array,
 	image_files text array,
 	systematic_polysemy_patterns text array,
@@ -112,6 +102,15 @@ dblink(
 	lexeme_id bigint,
 	word_id bigint,
 	meaning_id bigint,
+	dataset_code varchar(10),
+	ds_order_by bigint,
+	level1 integer,
+	level2 integer,
+	level3 integer,
+	lex_order_by bigint,
+	register_codes varchar(100) array,
+	pos_codes varchar(100) array,
+	deriv_codes varchar(100) array,
 	advice_notes text array,
 	public_notes text array,
 	grammars text array,
@@ -170,7 +169,6 @@ select * from
 dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_meaning_relation') as meaning_relation(
-	lexeme_id bigint,
 	meaning_id bigint,
 	related_meanings type_meaning_relation array
 );
@@ -217,10 +215,7 @@ create index mview_ww_form_value_idx on mview_ww_form (form);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
 create index mview_ww_form_mode_idx on mview_ww_form (mode);
 create index mview_ww_form_lang_idx on mview_ww_form (lang);
-create index mview_ww_meaning_word_id_idx on mview_ww_meaning (word_id);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
-create index mview_ww_meaning_lexeme_id_idx on mview_ww_meaning (lexeme_id);
-create index mview_ww_meaning_dataset_code_idx on mview_ww_meaning (dataset_code);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
 create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
@@ -230,6 +225,5 @@ create index mview_ww_collocation_dataset_code_idx on mview_ww_collocation (data
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
 create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);
-create index mview_ww_meaning_relation_lexeme_id_idx on mview_ww_meaning_relation (lexeme_id);
 create index mview_ww_classifier_name_code_lang_idx on mview_ww_classifier (name, code, lang);
 create index mview_ww_classifier_name_origin_code_lang_idx on mview_ww_classifier (name, origin, code, lang);

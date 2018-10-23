@@ -118,10 +118,10 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		Word word = lexSearchDbService.getWord(wordId);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
 		conversionUtil.composeWordRelations(word, wordRelationTuples, displayLang);
-		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
+		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
-		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeMeaningTuples, lexemeDetailsTuples, collocTuples, sourceLang, destinLang, displayLang);
+		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
