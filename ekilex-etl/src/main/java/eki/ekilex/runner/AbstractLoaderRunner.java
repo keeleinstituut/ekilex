@@ -65,6 +65,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 
+	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
+
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
 	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
@@ -100,6 +102,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	protected String sqlSourceByTypeAndName;
 
+	protected String sqlWordGroupWithMembers;
+
 	private Pattern ekiEntityPatternV;
 
 	abstract void initialise() throws Exception;
@@ -126,6 +130,9 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_SOURCE_BY_TYPE_AND_NAME);
 		sqlSourceByTypeAndName = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_GROUP_WITH_MEMBERS);
+		sqlWordGroupWithMembers = getContent(resourceFileInputStream);
 
 		ekiEntityPatternV = Pattern.compile("(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|v|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)");
 	}
@@ -761,6 +768,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (lexemeRelationId != null) {
 			createLifecycleLog(LifecycleLogOwner.LEXEME, lexemeId1, LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
 		}
+	}
+
+	protected boolean hasNoWordRelationGroupWithMembers(WordRelationGroupType groupType, List<Long> memberIds) throws Exception {
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("word_rel_type_code", groupType.name());
+		params.put("memberIds", memberIds);
+		params.put("nrOfMembers", memberIds.size());
+		return MapUtils.isEmpty(basicDbService.queryForMap(sqlWordGroupWithMembers, params));
 	}
 
 	protected Long createWordRelationGroup(WordRelationGroupType groupType) throws Exception {
