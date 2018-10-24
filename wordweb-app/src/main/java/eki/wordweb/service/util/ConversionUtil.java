@@ -40,7 +40,6 @@ import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationTuple;
-import eki.wordweb.service.db.CommonDataDbService;
 
 @Component
 public class ConversionUtil {
@@ -51,9 +50,6 @@ public class ConversionUtil {
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
-
-	@Autowired
-	private CommonDataDbService commonDataDbService;
 
 	public void filterIrrelevantValues(List<Word> words, String destinLang, String[] datasets) {
 		for (Word word : words) {
@@ -95,7 +91,6 @@ public class ConversionUtil {
 	}
 
 	public void selectHomonym(List<Word> words, Integer homonymNr) {
-
 		if (homonymNr == null) {
 			return;
 		}
@@ -197,9 +192,6 @@ public class ConversionUtil {
 		lexeme.setLevel1(tuple.getLevel1());
 		lexeme.setLevel2(tuple.getLevel2());
 		lexeme.setLevel3(tuple.getLevel3());
-		String datasetCode = tuple.getDatasetCode();
-		String datasetName = getDatasetName(datasetCode, displayLang);
-		lexeme.setDatasetName(datasetName);
 		lexeme.setMeaningWords(new ArrayList<>());
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setOtherLangMatchWords(new ArrayList<>());
@@ -600,16 +592,6 @@ public class ConversionUtil {
 			}
 		}
 		return compactForms;
-	}
-
-	private String getDatasetName(String code, String lang) {
-		String name = commonDataDbService.getDatasetName(code, lang);
-		if (StringUtils.isBlank(name)) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
-			name = code;
-		}
-		return name;
 	}
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
