@@ -606,7 +606,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f2.PARADIGM_ID.eq(p2.ID))
 						.and(f2.MODE.eq(FormMode.WORD.name()))
 				)
-				.orderBy(wgrm1.WORD_GROUP_ID)
+				.orderBy(wgrm2.ORDER_BY)
 				.fetch();
 	}
 
