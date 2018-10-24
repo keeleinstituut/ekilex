@@ -13,7 +13,6 @@ drop type if exists type_word;
 drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
-drop type if exists type_source_link;--remove later
 drop type if exists type_colloc_member;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
@@ -24,7 +23,7 @@ drop type if exists type_meaning_relation;
 -- SELECT dblink_connect('host=localhost user=ekilex password=3kil3x dbname=ekilex');
 
 create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), dataset_code varchar(10));
-create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, lang char(3));
+create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), dataset_code varchar(10));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));

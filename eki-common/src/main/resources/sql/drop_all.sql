@@ -25,10 +25,6 @@ drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
--- TODO: to be removed after next full import (24.09.2018)
-drop table if exists lexeme_group_member;
-drop table if exists lexeme_group;
---
 drop table if exists lexeme_lifecycle_log;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;

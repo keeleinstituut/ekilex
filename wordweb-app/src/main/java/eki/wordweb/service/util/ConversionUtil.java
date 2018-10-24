@@ -75,16 +75,20 @@ public class ConversionUtil {
 			}
 			List<TypeDefinition> definitions = word.getDefinitions();
 			if (CollectionUtils.isNotEmpty(definitions)) {
-				TypeDefinition firstDefinition = definitions.get(0);
-				if (StringUtils.isNotBlank(firstDefinition.getValue())) {
-					Long lexemeId = firstDefinition.getLexemeId();
-					List<String> definitionValues = definitions.stream()
-							.filter(definition -> definition.getLexemeId().equals(lexemeId))
-							.filter(definition -> StringUtils.equals(definition.getLang(), destinLang))
-							.map(definition -> definition.getValue())
-							.collect(Collectors.toList());
-					String definitionsWrapup = StringUtils.join(definitionValues, ", ");
-					word.setDefinitionsWrapup(definitionsWrapup);
+				List<TypeDefinition> primaryDefinitions = definitions.stream()
+						.filter(definition -> ArrayUtils.contains(datasets, definition.getDatasetCode()))
+						.collect(Collectors.toList());
+				if (CollectionUtils.isNotEmpty(primaryDefinitions)) {
+					TypeDefinition firstDefinition = primaryDefinitions.get(0);
+					if (StringUtils.isNotBlank(firstDefinition.getValue())) {
+						Long lexemeId = firstDefinition.getLexemeId();
+						List<String> definitionValues = primaryDefinitions.stream()
+								.filter(definition -> definition.getLexemeId().equals(lexemeId))
+								.map(definition -> definition.getValue())
+								.collect(Collectors.toList());
+						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
+						word.setDefinitionsWrapup(definitionsWrapup);
+					}
 				}
 			}
 		}
