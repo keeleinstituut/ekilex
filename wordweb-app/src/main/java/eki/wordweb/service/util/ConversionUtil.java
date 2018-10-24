@@ -91,6 +91,7 @@ public class ConversionUtil {
 	}
 
 	public void selectHomonym(List<Word> words, Integer homonymNr) {
+
 		if (homonymNr == null) {
 			return;
 		}
