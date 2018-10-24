@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 
-<head th:replace="common :: common_header(~{::title},~{::links})">
+<head th:replace="common-app :: common_header(~{::title},~{::links})">
   <title>Õpi eesti keelt</title>
 
   <th:block th:fragment="links">
@@ -46,7 +46,7 @@
 </head>
 
 <body>
-  <div th:replace="common :: menu"></div>
+  <div th:replace="common-app :: menu"></div>
   <div class="container-fluid home-page-content">
     <div class="row learn-container">
       <div class="col-12 col-md-3">

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(~{::title},_)">
+<head th:replace="common-app :: common_header(~{::title},_)">
 <title>Viga</title>
 </head>
 <body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">

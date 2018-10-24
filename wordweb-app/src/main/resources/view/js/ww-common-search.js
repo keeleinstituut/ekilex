@@ -1,12 +1,6 @@
 var windowWidthTreshold = 768;
-var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
-
-	var sessionTimeoutMs = (sessionTimeoutSec - sessionTimeoutBufferSec) * 1000;
-	setTimeout(function() {
-		window.location = applicationUrl;
-	}, sessionTimeoutMs);
 
 	initLanguageFilter();
 	initialiseRecording(speechRecognitionServiceUrl);
@@ -97,8 +91,6 @@ $(document).ready(function() {
 	};
 
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
-
-	$('[data-toggle="tooltip"]').tooltip();
 });
 
 $(window).resize(function() {
@@ -315,10 +307,6 @@ function sendToWebSocket(audioBlob) {
 	}
 }
 
-$(document).on("click", ".menu-btn", function(e) {
-	$(".header-container").toggleClass("show-header");
-});
-
 $(document).on("click", "#clear-search-btn", function(e) {
 	window.location = currentPage;
 });
@@ -410,10 +398,6 @@ $(document).on("click", "#stop-rec-btn", function(e) {
 		sendToWebSocket(audioBlob);
 	});
 });
-
-function setActiveMenuItem(itemName) {
-	$('.menu-item[data-item-name='+itemName+']').addClass('selected');
-}
 
 $(document).on("click", "#toggle-simple", function (e) {
 	var searchMode = $("input[name='searchMode']").val();

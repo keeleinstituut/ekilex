@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(_,~{::links})">
+<head th:replace="common-app :: common_header(_,~{::links})">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-index.js}"></script>
 </th:block>
 </head>
 <body class="home-page">
   <div class="header-container">
-    <div th:replace="common :: menu-links"></div>
+    <div th:replace="common-app :: menu-links"></div>
     <button class="btn menu-btn">
       <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
       <span class="icon icon-menu"></span>
@@ -29,12 +30,12 @@
         </div>
         <div class="row">
           <div class="col-12 mb-2">
-            <div th:replace="common :: lang-filter"></div>
+            <div th:replace="common-search :: lang-filter"></div>
           </div>
         </div>
         <div class="row">
           <div class="col-sm-10 col-md-8 col-lg-6 offset-sm-1 offset-md-2 offset-lg-3">
-            <div th:replace="common :: search"></div>
+            <div th:replace="common-search :: search"></div>
           </div>
         </div>
       </div>

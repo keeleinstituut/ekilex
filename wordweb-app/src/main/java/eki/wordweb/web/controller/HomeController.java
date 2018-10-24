@@ -18,10 +18,17 @@ public class HomeController extends AbstractController {
 
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
-
 		populateModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
-
 		return HOME_PAGE;
 	}
 
+	@GetMapping(LEARN_URI)
+	public String learn(Model model) {
+		return LEARN_PAGE;
+	}
+
+	@GetMapping("games")
+	public String games(Model model) {
+		return "games";
+	}
 }

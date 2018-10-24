@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(_,~{::links})">
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="home-page">
+  <div class="header-container">
+    <div th:replace="common-app :: menu-links"></div>
+    <button class="btn menu-btn">
+      <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
+      <span class="icon icon-menu"></span>
+    </button>
+  </div>
+  <div class="container-fluid search-wrap">
+    <h5>Mängude avaleht</h5>
+  </div>
+  <script th:inline="javascript">
+  	var currentPage = /*[[@{/search}]]*/"/games";
+    setActiveMenuItem('games');
+  </script>
+</body>
+</html>

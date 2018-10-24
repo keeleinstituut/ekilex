@@ -1,21 +1,22 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(_,~{::links})">
+<head th:replace="common-app :: common_header(_,~{::links})">
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
 </th:block>
 </head>
 <body>
-  <div th:replace="common :: menu"></div>
+  <div th:replace="common-app :: menu"></div>
   <div class="container-fluid search-wrap">
     <div class="search-panel">
       <div class="row">
         <div class="col-12 col-md-6">
-          <div th:replace="common :: search"></div>
+          <div th:replace="common-search :: search"></div>
         </div>
         <div class="col-12 col-md-6 p-0" id="language-detail-panel">
-          <div th:replace="common :: lang-filter"></div>
+          <div th:replace="common-search :: lang-filter"></div>
         </div>
         <!-- TODO: let client to decide waht message option they like, option 1 -->
         <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
