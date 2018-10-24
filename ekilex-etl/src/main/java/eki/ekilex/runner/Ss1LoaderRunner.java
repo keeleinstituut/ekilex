@@ -53,6 +53,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private final static String WORD_RELATION_DERIVATIVE = "deriv";
 	private final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
+	private final static String WORD_RELATION_UNION = "ühend";
 
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SUBWORDS_REPORT_NAME = "subkeywords";
@@ -134,7 +135,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 		logger.debug("total {} articles iterated", articleCounter);
 
-		processBasicWords(context);
+		processUnionWords(context);
 		processSubWords(context);
 		processDerivativeWords(context);
 		processSynonymsNotFoundInImportFile(context);
@@ -509,30 +510,20 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return newWord.id;
 	}
 
-	void processBasicWords(Context context) throws Exception {
+	void processUnionWords(Context context) throws Exception {
 
-		logger.debug("Found {} basic words <s:ps>.", context.basicWords.size());
+		logger.debug("Found {} union words <s:ps>.", context.unionWords.size());
 		logger.debug("Processing started.");
 		setActivateReport(BASIC_WORDS_REPORT_NAME);
-		writeToLogFile("Märksõna põhisõna seoste töötlus <s:ps>", "", "");
+		writeToLogFile("Märksõna ühendite töötlus <s:ps>", "", "");
 
-		for (WordData basicWord : context.basicWords) {
-			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, context.importedWords, basicWord.reportingId);
+		for (WordData unionWord : context.unionWords) {
+			Long wordId = getWordIdFor(unionWord.value, unionWord.homonymNr, context.importedWords, unionWord.reportingId);
 			if (wordId != null) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("wordId", basicWord.id);
-				params.put("dataset", getDataset());
-				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
-				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
-					params.put("wordId", wordId);
-					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
-					for (Map<String, Object> lexeme : lexemes) {
-						createLexemeRelation((Long) lexeme.get("id"), (Long) secondaryWordLexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
-					}
-				}
+				createWordRelation(wordId, unionWord.id, WORD_RELATION_UNION);
 			}
 		}
-		logger.debug("Basic words processing done.");
+		logger.debug("Union words processing done.");
 	}
 
 	private void processArticleContent(
@@ -871,8 +862,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				}
 
 				if (index == 0) {
-					List<WordData> basicWordsOfTheWord = extractBasicWords(wordGroupNode, wordData.id, reportingId);
-					context.basicWords.addAll(basicWordsOfTheWord);
+					List<WordData> unionWordsOfTheWord = extractUnionWords(wordGroupNode, wordData.id, reportingId);
+					context.unionWords.addAll(unionWordsOfTheWord);
 				}
 
 				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
@@ -1057,24 +1048,24 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return subWords;
 	}
 
-	private List<WordData> extractBasicWords(Element node, Long wordId, String reportingId) {
+	private List<WordData> extractUnionWords(Element node, Long wordId, String reportingId) {
 
-		final String basicWordExp = "s:ps";
+		final String unionWordExp = "s:ps";
 		final String homonymNrAttr = "i";
 
-		List<WordData> basicWords = new ArrayList<>();
-		List<Element> basicWordNodes = node.selectNodes(basicWordExp);
-		for (Element basicWordNode : basicWordNodes) {
-			WordData basicWord = new WordData();
-			basicWord.id = wordId;
-			basicWord.value = cleanUp(basicWordNode.getTextTrim());
-			basicWord.reportingId = reportingId;
-			if (basicWordNode.attributeValue(homonymNrAttr) != null) {
-				basicWord.homonymNr = Integer.parseInt(basicWordNode.attributeValue(homonymNrAttr));
+		List<WordData> unionWords = new ArrayList<>();
+		List<Element> unionWordNodes = node.selectNodes(unionWordExp);
+		for (Element unionWordNode : unionWordNodes) {
+			WordData unionWord = new WordData();
+			unionWord.id = wordId;
+			unionWord.value = cleanUp(unionWordNode.getTextTrim());
+			unionWord.reportingId = reportingId;
+			if (unionWordNode.attributeValue(homonymNrAttr) != null) {
+				unionWord.homonymNr = Integer.parseInt(unionWordNode.attributeValue(homonymNrAttr));
 			}
-			basicWords.add(basicWord);
+			unionWords.add(unionWord);
 		}
-		return basicWords;
+		return unionWords;
 	}
 
 	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
