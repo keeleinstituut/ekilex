@@ -43,10 +43,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(Ev2LoaderRunner.class);
 
 	private final static String SQL_SELECT_WORD_BY_DATASET = "sql/select_word_by_dataset.sql";
-	private final static String russianLang = "rus";
-	private final static String ASPECT_TYPE_SOV = "sov";
-	private final static String ASPECT_TYPE_NESOV = "nesov";
-	private final static String ASPECT_TYPE_SOV_NESOV = "sov/nesov";
+	private final static String LANG_RUS = "rus";
+	private final static String ASPECT_TYPE_SOV = "сов";
+	private final static String ASPECT_TYPE_NESOV = "несов";
+	private final static String ASPECT_TYPE_SOV_NESOV = "сов/несов";
 
 	private String sqlSelectWordByDataset;
 
@@ -211,7 +211,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					List<Element> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 					for(Element transalationGroupNode : translationGroupNodes) {
 						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-						WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, russianLang, null);
+						WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, LANG_RUS, null);
 						List<String> russianRegisters = extractValuesAsStrings(transalationGroupNode, registersExp);
 						Lexeme russianLexeme = new Lexeme();
 						russianLexeme.setWordId(russianWordData.id);
@@ -362,7 +362,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<LexemeToWordData>> aspectGroups, Long meaningId) throws Exception {
 		for (LexemeToWordData russianWordData : meaningRussianWords) {
-			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, russianLang, russianWordData.aspect);
+			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect);
 			russianWordData.wordId = russianWord.id;
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(russianWord.id);
@@ -469,7 +469,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							List<Element> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for(Element transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-								WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, russianLang, null);
+								WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, LANG_RUS, null);
 								List<String> russianRegisters = extractValuesAsStrings(transalationGroupNode, registersExp);
 								boolean createNewRussianLexeme = true;
 								Long russianLexemeId = null;
@@ -630,7 +630,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		for (String translationValue : translationValues) {
 			UsageTranslation translation = new UsageTranslation();
 			translation.setValue(cleanRussianTranslation(translationValue));
-			translation.setLang(russianLang);
+			translation.setLang(LANG_RUS);
 			translations.add(translation);
 		}
 
