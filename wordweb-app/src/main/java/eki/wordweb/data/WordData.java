@@ -20,6 +20,8 @@ public class WordData extends AbstractDataObject {
 
 	private String firstAvailableSoundFile;
 
+	private boolean abbreviationWord;
+
 	private boolean indeclinableWord;
 
 	private boolean unknownForm;
@@ -70,6 +72,14 @@ public class WordData extends AbstractDataObject {
 
 	public void setFirstAvailableSoundFile(String firstAvailableSoundFile) {
 		this.firstAvailableSoundFile = firstAvailableSoundFile;
+	}
+
+	public boolean isAbbreviationWord() {
+		return abbreviationWord;
+	}
+
+	public void setAbbreviationWord(boolean abbreviationWord) {
+		this.abbreviationWord = abbreviationWord;
 	}
 
 	public boolean isIndeclinableWord() {

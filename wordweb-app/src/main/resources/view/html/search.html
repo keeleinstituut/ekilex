@@ -75,6 +75,7 @@
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span th:text="${wordData.word.homonymNr}">1</span>
+              <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
             </h3>
             <button class="btn btn-speaker"
                     th:if="${wordData.firstAvailableSoundFile != null}"

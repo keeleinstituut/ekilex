@@ -1,7 +1,6 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -15,7 +14,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import eki.common.constant.ClassifierName;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
@@ -34,7 +32,6 @@ import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.TypeDefinition;
-import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeUsage;
@@ -51,6 +48,9 @@ public class ConversionUtil {
 	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	private static final Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
+
+	@Autowired
+	private ClassifierUtil classifierUtil;
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
@@ -190,8 +190,6 @@ public class ConversionUtil {
 	}
 
 	private Lexeme composeLexeme(Long lexemeId, LexemeDetailsTuple tuple, String displayLang) {
-		List<Classifier> classifiers;
-		List<String> classifierCodes;
 		Lexeme lexeme = new Lexeme();
 		lexeme.setLexemeId(lexemeId);
 		lexeme.setMeaningId(tuple.getMeaningId());
@@ -202,15 +200,6 @@ public class ConversionUtil {
 		String datasetCode = tuple.getDatasetCode();
 		String datasetName = getDatasetName(datasetCode, displayLang);
 		lexeme.setDatasetName(datasetName);
-		classifierCodes = tuple.getRegisterCodes();
-		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
-		lexeme.setRegisters(classifiers);
-		classifierCodes = tuple.getPosCodes();
-		classifiers = getClassifiers(ClassifierName.POS, classifierCodes, displayLang);
-		lexeme.setPoses(classifiers);
-		classifierCodes = tuple.getDerivCodes();
-		classifiers = getClassifiers(ClassifierName.DERIV, classifierCodes, displayLang);
-		lexeme.setDerivs(classifiers);
 		lexeme.setMeaningWords(new ArrayList<>());
 		lexeme.setDestinLangMatchWords(new ArrayList<>());
 		lexeme.setOtherLangMatchWords(new ArrayList<>());
@@ -222,6 +211,7 @@ public class ConversionUtil {
 		lexeme.setPublicNotes(tuple.getPublicNotes());
 		lexeme.setGrammars(tuple.getGrammars());
 		lexeme.setGovernments(tuple.getGovernments());
+		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
 		return lexeme;
 	}
 
@@ -233,22 +223,13 @@ public class ConversionUtil {
 		if (CollectionUtils.isNotEmpty(meaningWordIds) && meaningWordIds.contains(meaningWordId)) {
 			return;
 		}
-		String classifierCode;
-		List<String> classifierCodes;
-		Classifier classifier;
-		List<Classifier> classifiers;
 		MeaningWord meaningWord = new MeaningWord();
 		meaningWord.setWordId(meaningWordId);
 		meaningWord.setWord(tuple.getMeaningWord());
 		meaningWord.setHomonymNr(tuple.getMeaningWordHomonymNr());
 		meaningWord.setLang(tuple.getMeaningWordLang());
-		classifierCode = tuple.getMeaningWordAspectCode();
-		classifier = getClassifier(ClassifierName.ASPECT_TYPE, classifierCode, displayLang);
-		meaningWord.setAspect(classifier);
-		classifierCodes = tuple.getMeaningLexemeRegisterCodes();
-		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);
-		meaningWord.setRegisters(classifiers);
 		meaningWord.setGovernments(tuple.getMeaningLexemeGovernments());
+		classifierUtil.applyClassifiers(tuple, meaningWord, displayLang);
 		boolean additionalDataExists = (meaningWord.getAspect() != null)
 				|| CollectionUtils.isNotEmpty(meaningWord.getRegisters())
 				|| CollectionUtils.isNotEmpty(meaningWord.getGovernments());
@@ -264,27 +245,20 @@ public class ConversionUtil {
 	}
 
 	private void populateMeaning(Lexeme lexeme, LexemeMeaningTuple tuple, String displayLang) {
-		List<Classifier> classifiers;
-		List<TypeDomain> domainCodes = tuple.getDomainCodes();
-		classifiers = getClassifiersWithOrigin(ClassifierName.DOMAIN, domainCodes, displayLang);
-		lexeme.setDomains(classifiers);
 		lexeme.setImageFiles(tuple.getImageFiles());
 		lexeme.setSystematicPolysemyPatterns(tuple.getSystematicPolysemyPatterns());
 		lexeme.setSemanticTypes(tuple.getSemanticTypes());
 		lexeme.setLearnerComments(tuple.getLearnerComments());
 		lexeme.setDefinitions(tuple.getDefinitions());
+		classifierUtil.applyClassifiers(tuple, lexeme, displayLang);
 	}
 
 	private void populateUsages(Lexeme lexeme, LexemeDetailsTuple tuple, String displayLang) {
-		String classifierCode;
-		Classifier classifier;
 		List<TypeUsage> usages = tuple.getUsages();
 		if (CollectionUtils.isNotEmpty(usages)) {
 			for (TypeUsage usage : usages) {
-				classifierCode = usage.getUsageTypeCode();
-				classifier = getClassifier(ClassifierName.USAGE_TYPE, classifierCode, displayLang);
-				usage.setUsageType(classifier);
 				usage.setUsageAuthors(new ArrayList<>());
+				classifierUtil.applyClassifiers(usage, displayLang);
 				List<String> usageAuthorsRaw = usage.getUsageAuthorsRaw();
 				if (CollectionUtils.isNotEmpty(usageAuthorsRaw)) {
 					for (String usageAuthorRaw : usageAuthorsRaw) {
@@ -308,14 +282,10 @@ public class ConversionUtil {
 		if (CollectionUtils.isNotEmpty(lexeme.getRelatedLexemes())) {
 			return;
 		}
-		String classifierCode;
-		Classifier classifier;
 		List<TypeLexemeRelation> relatedLexemes = tuple.getRelatedLexemes();
 		if (CollectionUtils.isNotEmpty(relatedLexemes)) {
 			for (TypeLexemeRelation lexemeRelation : relatedLexemes) {
-				classifierCode = lexemeRelation.getLexRelTypeCode();
-				classifier = getClassifier(ClassifierName.LEX_REL_TYPE, classifierCode, displayLang);
-				lexemeRelation.setLexRelType(classifier);
+				classifierUtil.applyClassifiers(lexemeRelation, displayLang);
 			}
 		}
 		lexeme.setRelatedLexemes(relatedLexemes);
@@ -329,14 +299,10 @@ public class ConversionUtil {
 		if (CollectionUtils.isNotEmpty(lexeme.getRelatedMeanings())) {
 			return;
 		}
-		String classifierCode;
-		Classifier classifier;
 		List<TypeMeaningRelation> relatedMeanings = tuple.getRelatedMeanings();
 		if (CollectionUtils.isNotEmpty(relatedMeanings)) {
 			for (TypeMeaningRelation meaningRelation : relatedMeanings) {
-				classifierCode = meaningRelation.getMeaningRelTypeCode();
-				classifier = getClassifier(ClassifierName.MEANING_REL_TYPE, classifierCode, displayLang);
-				meaningRelation.setMeaningRelType(classifier);
+				classifierUtil.applyClassifiers(meaningRelation, displayLang);
 			}
 		}
 		lexeme.setRelatedMeanings(relatedMeanings);
@@ -353,11 +319,9 @@ public class ConversionUtil {
 			collocPosGroup = collocPosGroupMap.get(posGroupId);
 			if (collocPosGroup == null) {
 				collocPosGroup = new CollocationPosGroup();
-				String classifierCode = tuple.getPosGroupCode();
-				Classifier classifier = getClassifier(ClassifierName.POS_GROUP, classifierCode, displayLang);
 				collocPosGroup.setPosGroupId(posGroupId);
-				collocPosGroup.setPosGroup(classifier);
 				collocPosGroup.setRelationGroups(new ArrayList<>());
+				classifierUtil.applyClassifiers(tuple, collocPosGroup, displayLang);
 				collocPosGroupMap.put(posGroupId, collocPosGroup);
 				lexeme.getCollocationPosGroups().add(collocPosGroup);
 			}
@@ -552,15 +516,11 @@ public class ConversionUtil {
 			return;
 		}
 		word.setWordGroups(new ArrayList<>());
-		String classifierCode;
-		Classifier classifier;
 		for (WordRelationTuple tuple : wordRelationTuples) {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				for (TypeWordRelation wordRelation : relatedWords) {
-					classifierCode = wordRelation.getWordRelTypeCode();
-					classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
-					wordRelation.setWordRelType(classifier);
+					classifierUtil.applyClassifiers(wordRelation, displayLang);
 				}
 			}
 			word.setRelatedWords(relatedWords);
@@ -569,9 +529,7 @@ public class ConversionUtil {
 				wordGroup.setWordGroupId(tuple.getWordGroupId());
 				wordGroup.setWordRelTypeCode(tuple.getWordRelTypeCode());
 				wordGroup.setWordGroupMembers(tuple.getWordGroupMembers());
-				classifierCode = tuple.getWordRelTypeCode();
-				classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
-				wordGroup.setWordRelType(classifier);
+				classifierUtil.applyClassifiers(tuple, wordGroup, displayLang);
 				word.getWordGroups().add(wordGroup);
 			}
 		}
@@ -584,17 +542,14 @@ public class ConversionUtil {
 		List<Paradigm> paradigms = new ArrayList<>();
 		Map<String, Form> formMap;
 		List<FormPair> compactForms;
-		String classifierCode;
-		Classifier classifier;
+		String morphCode;
 		for (Entry<Long, List<Form>> paradigmFormsEntry : paradigmFormsMap.entrySet()) {
 			Long paradigmId = paradigmFormsEntry.getKey();
 			List<Form> forms = paradigmFormsEntry.getValue();
 			formMap = new HashMap<>();
 			for (Form form : forms) {
-				classifierCode = form.getMorphCode();
-				classifier = getClassifier(ClassifierName.MORPH, classifierCode, displayLang);
-				form.setMorph(classifier);
-				formMap.put(classifierCode, form);
+				morphCode = classifierUtil.applyClassifiers(form, displayLang);
+				formMap.put(morphCode, form);
 			}
 			compactForms = composeCompactForms(formMap);
 			Paradigm paradigm = new Paradigm();
@@ -655,53 +610,6 @@ public class ConversionUtil {
 			name = code;
 		}
 		return name;
-	}
-
-	private Classifier getClassifier(ClassifierName name, String code, String lang) {
-		if (StringUtils.isBlank(code)) {
-			return null;
-		}
-		Classifier classifier = commonDataDbService.getClassifier(name, code, lang);
-		if (classifier == null) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
-			classifier = new Classifier(name.name(), null, null, code, code, lang);
-		}
-		return classifier;
-	}
-
-	private List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
-		if (CollectionUtils.isEmpty(codes)) {
-			return Collections.emptyList();
-		}
-		List<Classifier> classifiers = commonDataDbService.getClassifiers(name, codes, lang);
-		if (CollectionUtils.isEmpty(classifiers) || (classifiers.size() != codes.size())) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
-			classifiers = new ArrayList<>();
-			for (String code : codes) {
-				Classifier classifier = new Classifier(name.name(), null, null, code, code, lang);
-				classifiers.add(classifier);
-			}
-		}
-		return classifiers;
-	}
-
-	private List<Classifier> getClassifiersWithOrigin(ClassifierName name, List<TypeDomain> codes, String lang) {
-		if (CollectionUtils.isEmpty(codes)) {
-			return Collections.emptyList();
-		}
-		List<Classifier> classifiers = commonDataDbService.getClassifiersWithOrigin(name, codes, lang);
-		if (CollectionUtils.isEmpty(classifiers) || (classifiers.size() != codes.size())) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
-			classifiers = new ArrayList<>();
-			for (TypeDomain code : codes) {
-				Classifier classifier = new Classifier(name.name(), code.getOrigin(), null, code.getCode(), code.getCode(), lang);
-				classifiers.add(classifier);
-			}
-		}
-		return classifiers;
 	}
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {

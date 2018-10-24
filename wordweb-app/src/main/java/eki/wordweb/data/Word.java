@@ -21,6 +21,10 @@ public class Word extends AbstractDataObject {
 
 	private String displayMorphCode;
 
+	private String typeCode;
+
+	private Classifier type;
+
 	private String aspectCode;
 
 	private Classifier aspect;
@@ -91,6 +95,22 @@ public class Word extends AbstractDataObject {
 
 	public void setDisplayMorphCode(String displayMorphCode) {
 		this.displayMorphCode = displayMorphCode;
+	}
+
+	public String getTypeCode() {
+		return typeCode;
+	}
+
+	public void setTypeCode(String typeCode) {
+		this.typeCode = typeCode;
+	}
+
+	public Classifier getType() {
+		return type;
+	}
+
+	public void setType(Classifier type) {
+		this.type = type;
 	}
 
 	public String getAspectCode() {

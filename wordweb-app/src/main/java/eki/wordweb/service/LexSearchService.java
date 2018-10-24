@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
 import eki.wordweb.service.db.LexSearchDbService;
+import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.ConversionUtil;
 
 @Component
@@ -37,9 +39,13 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 	private static final String INDECLINABLE_WORD_FORM_CODE = "ID";
 	private static final String UNKNOWN_FORM_CODE = "??";
+	private static final String[] ABBREVIATION_WORD_TYPE_CODES = new String[] {"l", "th"};
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
+
+	@Autowired
+	private ClassifierUtil classifierUtil;
 
 	@Autowired
 	private ConversionUtil conversionUtil;
@@ -116,6 +122,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		Word word = lexSearchDbService.getWord(wordId);
+		classifierUtil.applyClassifiers(word, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
 		conversionUtil.composeWordRelations(word, wordRelationTuples, displayLang);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
@@ -130,6 +137,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
+		boolean isAbbreviationWord = ArrayUtils.contains(ABBREVIATION_WORD_TYPE_CODES, word.getTypeCode());
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
 		boolean isIndeclinableWord = false;
@@ -154,6 +162,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		wordData.setImageFiles(allImageFiles);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableSoundFile(firstAvailableSoundFile);
+		wordData.setAbbreviationWord(isAbbreviationWord);
 		wordData.setIndeclinableWord(isIndeclinableWord);
 		wordData.setUnknownForm(isUnknownForm);
 		combineLevels(wordData.getLexemes());

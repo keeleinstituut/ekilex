@@ -16,6 +16,7 @@ select w.word_id,
        w.lang,
        w.morph_code,
        w.display_morph_code,
+       w.type_code,
        w.aspect_code,
        (select array_agg(distinct ld.dataset_code)
         from lexeme ld
@@ -30,6 +31,7 @@ from (select w.id as word_id,
              w.lang,
              w.morph_code,
              w.display_morph_code,
+             w.type_code,
              w.aspect_code
       from word as w
         join paradigm as p on p.word_id = w.id
@@ -511,6 +513,15 @@ create view view_ww_classifier
        value,
        lang
      from display_morph_label
+     where type = 'wordweb'
+     union all
+     select
+       'WORD_TYPE' as name,
+       null as origin,
+       code,
+       value,
+       lang
+     from word_type_label
      where type = 'wordweb'
      union all
      select

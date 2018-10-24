@@ -43,6 +43,7 @@ dblink(
 	lang char(3),
 	morph_code varchar(100),
 	display_morph_code varchar(100),
+	type_code varchar(100),
 	aspect_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
