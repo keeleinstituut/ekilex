@@ -130,6 +130,12 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateWordType(Long wordId, String typeCode) {
+		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordId, typeCode);
+		updateDbService.updateWordType(wordId, typeCode);
+	}
+
+	@Transactional
 	public void updateLexemeFrequencyGroup(Long lexemeId, String freqGroupCode) {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.FREQUENCY_GROUP, lexemeId, freqGroupCode);
 		updateDbService.updateLexemeFrequencyGroup(lexemeId, freqGroupCode);

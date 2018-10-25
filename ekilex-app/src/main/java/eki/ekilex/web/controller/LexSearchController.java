@@ -57,6 +57,11 @@ public class LexSearchController extends AbstractSearchController {
 		return lexSearchService.getLexemeGenders();
 	}
 
+	@ModelAttribute("wordTypes")
+	public List<Classifier> getWordTypes() {
+		return lexSearchService.getWordTypes();
+	}
+
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 

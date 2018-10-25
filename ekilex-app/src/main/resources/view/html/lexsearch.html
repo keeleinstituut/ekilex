@@ -139,7 +139,25 @@
                 </div>
                 <div th:if="${lexeme.wordTypeCode != null}">
                   <span class="lbl">Sõna tüüp</span>
-                  <span th:text="${lexeme.wordTypeCode}"></span>
+
+                  <span th:name="${lexeme.lexemeId} + '_lexeme_word_type'"
+                        th:data-id="${wordId}"
+                        th:data-op-code="lexeme_word_type"
+                        th:data-value="${lexeme.wordTypeCode}"
+                        th:text="${lexeme.wordTypeCode}"></span>
+                  <button type="button" class="btn badge badge-primary"
+                          th:title="Muuda"
+                          onclick="openSelectDlg(this)"
+                          data-toggle="modal" data-target="#lexemeWordTypeDlg"
+                          th:data-target-elem="${lexeme.lexemeId} + '_lexeme_word_type'">
+                    <i class="fa fa-caret-down" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" class="btn badge badge-warning"
+                          th:data-target-elem="${lexeme.lexemeId} + '_lexeme_word_type'"
+                          data-toggle="delete-confirmation" data-placement="right">
+                    <i class="fa fa-remove" aria-hidden="true"></i>
+                  </button>
+
                 </div>
                 <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
                   <span class="lbl">Grammatika</span>
@@ -886,6 +904,7 @@
   <div th:replace="common :: #lexemeDerivDlg"></div>
   <div th:replace="common :: #lexemeRegisterDlg"></div>
   <div th:replace="common :: #lexemeGenderDlg"></div>
+  <div th:replace="common :: #lexemeWordTypeDlg"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
 
   <script th:inline="javascript">

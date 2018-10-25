@@ -243,6 +243,7 @@
                 <option value="lexeme_deriv">Tuletuskood</option>
                 <option value="lexeme_register">Register</option>
                 <option value="lexeme_gender">Sugu</option>
+                <option value="lexeme_word_type">Sõna tüüp</option>
                 <option value="lexeme_grammar">Grammatika</option>
               </select>
             </div>
@@ -300,6 +301,15 @@
                 <option th:each="gender : ${allLexemeGenders}"
                         th:value="${gender.code}"
                         th:text="${gender.value}">gender</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="lexeme_word_type">
+            <div class="col-md-8">
+              <select class="form-control value-select">
+                <option th:each="item : ${wordTypes}"
+                        th:value="${item.code}"
+                        th:text="${item.value}">value</option>
               </select>
             </div>
           </div>
@@ -425,6 +435,25 @@
           <input type="hidden" name="opCode" value="lexeme_gender">
           <select class="form-control" name="value">
             <option th:each="item : ${allLexemeGenders}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeWordTypeDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_word_type">
+          <select class="form-control" name="value">
+            <option th:each="item : ${wordTypes}"
                     th:value="${item.code}"
                     th:text="${item.value}">value</option>
           </select>

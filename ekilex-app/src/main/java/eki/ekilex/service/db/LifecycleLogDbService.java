@@ -323,6 +323,11 @@ public class LifecycleLogDbService {
 				recent = (String) entityData.get("gender_code");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createWordLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
+				Map<String, Object> entityData = helper.getWordData(create, entityId);
+				recent = (String) entityData.get("type_code");
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createWordLifecycleLog(entityId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.MEANING.equals(entity)) {
 			if (LifecycleProperty.DOMAIN.equals(property)) {

@@ -11,5 +11,6 @@ public enum LifecycleProperty {
 	GENDER,
 	DOMAIN,
 	ORDER_BY,
-	DATASET
+	DATASET,
+	WORD_TYPE
 }

@@ -218,6 +218,11 @@ public class LexSearchService implements SystemConstant {
 		return commonDataDbService.getLexemeGenders(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
+	@Transactional
+	public List<Classifier> getWordTypes() {
+		return commonDataDbService.getWordTypes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
 	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
 
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());
