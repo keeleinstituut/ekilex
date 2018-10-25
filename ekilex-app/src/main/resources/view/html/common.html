@@ -298,7 +298,7 @@
           <div class="form-group row value-group" data-id="lexeme_gender">
             <div class="col-md-8">
               <select class="form-control value-select">
-                <option th:each="gender : ${allLexemeGenders}"
+                <option th:each="gender : ${wordGenders}"
                         th:value="${gender.code}"
                         th:text="${gender.value}">gender</option>
               </select>
@@ -434,7 +434,7 @@
           <input type="hidden" name="currentValue">
           <input type="hidden" name="opCode" value="lexeme_gender">
           <select class="form-control" name="value">
-            <option th:each="item : ${allLexemeGenders}"
+            <option th:each="item : ${wordGenders}"
                     th:value="${item.code}"
                     th:text="${item.value}">value</option>
           </select>

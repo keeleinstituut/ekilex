@@ -1,6 +1,5 @@
 package eki.ekilex.web.controller;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +63,16 @@ public abstract class AbstractSearchController implements WebConstant {
 	@ModelAttribute("wordMorphCodes")
 	public List<Classifier> getWordMorphCodes() {
 		return commonDataService.getWordMorphCodes();
+	}
+
+	@ModelAttribute("wordGenders")
+	public List<Classifier> getWordGenders() {
+		return commonDataService.getWordGenders();
+	}
+
+	@ModelAttribute("wordTypes")
+	public List<Classifier> getWordTypes() {
+		return commonDataService.getWordTypes();
 	}
 
 	protected void initSearchForms(Model model) {

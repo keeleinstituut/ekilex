@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import eki.ekilex.data.WordGroup;
@@ -50,6 +51,11 @@ import static java.util.stream.Collectors.groupingBy;
 public class ConversionUtil {
 
 	private static final Logger logger = LoggerFactory.getLogger(ConversionUtil.class);
+
+	public static String getClassifierValue(String code, List<Classifier> classifiers) {
+		Optional<Classifier> classifier = classifiers.stream().filter(c -> c.getCode().equals(code)).findFirst();
+		return classifier.isPresent() ? classifier.get().getValue() : code;
+	}
 
 	public List<TermMeaning> composeTermMeanings(List<TermMeaningWordTuple> termMeaningWordTuples) {
 		
