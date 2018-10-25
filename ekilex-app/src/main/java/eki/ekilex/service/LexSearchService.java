@@ -275,6 +275,7 @@ public class LexSearchService implements SystemConstant {
 				|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
 				|| StringUtils.isNotBlank(lexeme.getMeaningProcessStateCode())
 				|| StringUtils.isNotBlank(lexeme.getGenderCode())
+				|| StringUtils.isNotBlank(lexeme.getWordTypeCode())
 				|| CollectionUtils.isNotEmpty(lexemePos)
 				|| CollectionUtils.isNotEmpty(lexemeDerivs)
 				|| CollectionUtils.isNotEmpty(lexemeRegisters)

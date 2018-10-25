@@ -137,6 +137,10 @@
                     <i class="fa fa-remove" aria-hidden="true"></i>
                   </button>
                 </div>
+                <div th:if="${lexeme.wordTypeCode != null}">
+                  <span class="lbl">Sõna tüüp</span>
+                  <span th:text="${lexeme.wordTypeCode}"></span>
+                </div>
                 <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
                   <span class="lbl">Grammatika</span>
                   <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">

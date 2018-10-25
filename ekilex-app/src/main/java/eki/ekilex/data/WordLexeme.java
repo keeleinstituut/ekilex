@@ -22,6 +22,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "word_display_morph_code")
 	private String wordDisplayMorphCode;
 
+	@Column(name = "word_type_code")
+	private String wordTypeCode;
+
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -365,4 +368,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
 
+	public String getWordTypeCode() {
+		return wordTypeCode;
+	}
+
+	public void setWordTypeCode(String wordTypeCode) {
+		this.wordTypeCode = wordTypeCode;
+	}
 }
