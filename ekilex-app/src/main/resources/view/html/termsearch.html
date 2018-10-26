@@ -313,11 +313,11 @@
               <hr />
               <div th:if="${lexeme.wordGenderCode != null}">
                 <span class="lbl">Sugu</span>
-                <span th:text="${lexeme.wordGenderCode}"></span>
+                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.wordGenderCode, wordGenders)}"></span>
               </div>
               <div th:if="${lexeme.wordTypeCode != null}">
                 <span class="lbl">Sõna tüüp</span>
-                <span th:text="${lexeme.wordTypeCode}"></span>
+                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.wordTypeCode, wordTypes)}"></span>
               </div>
               <div th:if="${lexeme.lexemeProcessStateCode != null}">
                 <span class="lbl">Protsessi olek</span>

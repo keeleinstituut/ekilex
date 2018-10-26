@@ -5,7 +5,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 	var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
 	$.get(wordDetailsUrl).done(function(data) {
 		detailsDiv.replaceWith(data);
-		if (word.includes('/')) {
+		if (word.indexOf('/') !== -1) {
             wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
 		}
 		var historyState = {

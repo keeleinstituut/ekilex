@@ -6415,8 +6415,10 @@ a.text-dark:hover, a.text-dark:focus {
   overflow: hidden;
 }
 
-.morphology-test {
+.morphology-full {
   font-size: 0.75rem;
+  margin-right: -2.5rem !important;
+  margin-left: -2.5rem !important;
 }
 
 * {
@@ -6803,9 +6805,6 @@ ul {
 
 .level-3-panel.expand {
   flex-direction: column;
-  margin-top: 5px !important;
-  margin-bottom: 5px !important;
-  box-shadow: 0 -5px #F2F2F2, 0 5px #F2F2F2;
 }
 
 .level-3-panel.expand .dependence {
@@ -6979,14 +6978,6 @@ ul {
 .morphology-section .row div:not(.label) {
   display: block;
   height: 1.875rem;
-}
-
-.morphology-section .row div div {
-  float: left;
-}
-
-.expand .morphology-section .col {
-  margin-left: 0.9375rem;
 }
 
 .homonym-image {

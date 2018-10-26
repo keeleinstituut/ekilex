@@ -30,6 +30,7 @@ import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -113,6 +114,14 @@ public class CommonDataDbService implements DbConstant {
 				.select(GENDER_LABEL.CODE, GENDER_LABEL.VALUE)
 				.from(GENDER_LABEL)
 				.where(GENDER_LABEL.LANG.eq(classifierLabelLang).and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getWordTypes(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(WORD_TYPE_LABEL.CODE, WORD_TYPE_LABEL.VALUE)
+				.from(WORD_TYPE_LABEL)
+				.where(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 

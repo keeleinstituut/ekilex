@@ -61,6 +61,7 @@ function initialise() {
     initSelectDlg($('#lexemeDerivDlg'));
     initSelectDlg($('#lexemeRegisterDlg'));
     initSelectDlg($('#lexemeGenderDlg'));
+    initSelectDlg($('#lexemeWordTypeDlg'));
     initSelectDlg($('#meaningDomainDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
     initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);

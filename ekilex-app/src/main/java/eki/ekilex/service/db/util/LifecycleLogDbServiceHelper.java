@@ -71,7 +71,8 @@ public class LifecycleLogDbServiceHelper {
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
 				.select(
-						WORD.GENDER_CODE
+						WORD.GENDER_CODE,
+						WORD.TYPE_CODE
 						)
 				.from(WORD)
 				.where(WORD.ID.eq(entityId))
