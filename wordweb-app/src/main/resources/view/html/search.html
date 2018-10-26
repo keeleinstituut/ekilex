@@ -345,7 +345,7 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
+            <div class="level-3-panel" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
                 <div class="morphology-section">
                   <h6 th:text="#{label.word.forms}">Sõnavormid</h6>
@@ -360,65 +360,57 @@
               </div>
               <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <div class="morphology-section">
-                  <div>
-                    <h6 th:text="#{label.word.forms}">Sõnavormid</h6>
-                    <div th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-                      <div th:each="formPair : ${paradigm.compactForms}" class="row intro">
-                        <div class="col-6 pr-1">
-                          <div th:if="${formPair.form1 != null}">
-                            <div th:text="${formPair.form1.form}" data-toggle="tooltip" th:title="${formPair.form1.morph.value + ' - ' + formPair.form1.displayForm}">tekk</div>
-                            <button class="btn btn-speaker"
-                                    th:if="${formPair.form1.soundFile != null}"
-                                    th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form1.soundFile}}"
-                                    th:onclick="'generateVoiceAndPlay(this)'">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                        </div>
-                        <div class="col-6 pr-1">
-                          <div th:if="${formPair.form2 != null}">
-                            <div th:text="${formPair.form2.form}" data-toggle="tooltip" th:title="${formPair.form2.morph.value + ' - ' + formPair.form2.displayForm}">tekid</div>
-                            <button class="btn btn-speaker"
-                                    th:if="${formPair.form2.soundFile != null}"
-                                    th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form2.soundFile}}"
-                                    th:onclick="'generateVoiceAndPlay(this)'">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                        </div>
+                  <h6 th:text="#{label.word.forms}">Sõnavormid</h6>
+                  <th:block th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+                    <div th:each="formPair : ${paradigm.compactForms}" class="row intro">
+                      <div class="col-6 pr-1" th:if="${formPair.form1 != null}">
+                          <div class="float-left" th:text="${formPair.form1.form}" data-toggle="tooltip" th:title="${formPair.form1.morph.value + ' - ' + formPair.form1.displayForm}">tekk</div>
+                          <button class="btn btn-speaker"
+                                  th:if="${formPair.form1.soundFile != null}"
+                                  th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form1.soundFile}}"
+                                  th:onclick="'generateVoiceAndPlay(this)'">
+                            <span class="icon icon-speaker"></span>
+                          </button>
                       </div>
-                      <hr th:unless="${paradigmIter.last}"/>
+                      <div class="col-6 pr-1" th:if="${formPair.form2 != null}">
+                        <div class="float-left" th:text="${formPair.form2.form}" data-toggle="tooltip" th:title="${formPair.form2.morph.value + ' - ' + formPair.form2.displayForm}">tekid</div>
+                        <button class="btn btn-speaker"
+                                th:if="${formPair.form2.soundFile != null}"
+                                th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form2.soundFile}}"
+                                th:onclick="'generateVoiceAndPlay(this)'">
+                          <span class="icon icon-speaker"></span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
+                    <hr th:unless="${paradigmIter.last}"/>
+                  </th:block>
+                  <!-- full morphology -->
+                  <th:block th:each="paradigm : ${wordData.paradigms}" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
+                    <div class="row morphology-full" th:if="${not #lists.isEmpty(paradigm.forms)}">
+                      <hr class="w-100"/>
+                      <table style="width: 100%">
+                        <tr th:each="form : ${paradigm.forms}">
+                          <td style="width: 40%">
+                            <span th:text="${form.morph.value}" th:if="${form.morph != null}"></span>
+                          </td>
+                          <td>
+                            <span th:text="${form.form}"></span>
+                          </td>
+                          <td>
+                            <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
+                          </td>
+                          <td>
+                            <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </th:block>
                 </div>
               </div>
               <button class="more-btn" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <span class="icon icon-chevron-left"></span>
               </button>
-              <!-- full morphology -->
-              <div class="morphology-section morphology-test" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
-                <div th:each="paradigm : ${wordData.paradigms}">
-                  <hr />
-                  <div class="row" th:if="${not #lists.isEmpty(paradigm.forms)}">
-                    <table style="width: 100%">
-                      <tr th:each="form : ${paradigm.forms}">
-                        <td style="width: 40%">
-                          <span th:text="${form.morph.value}" th:if="${form.morph != null}"></span>
-                        </td>
-                        <td>
-                          <span th:text="${form.form}"></span>
-                        </td>
-                        <td>
-                          <span th:text="${form.displayForm}" th:unless="${#strings.isEmpty(form.displayForm)}"></span>
-                        </td>
-                        <td>
-                          <span th:text="${form.vocalForm}" th:unless="${#strings.isEmpty(form.vocalForm)}"></span>
-                        </td>
-                      </tr>
-                    </table>
-                  </div>
-                </div>
-              </div>
             </div>
             <div class="level-3-panel row" th:if="${wordData.word.wordRelationsExist}">
               <h6 th:text="#{label.word.relations}">Sõna seosed</h6>
