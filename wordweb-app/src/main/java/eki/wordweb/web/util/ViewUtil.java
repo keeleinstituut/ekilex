@@ -219,4 +219,9 @@ public class ViewUtil implements WebConstant, InitializingBean {
 		return uri;
 	}
 
+	//FIXME content from text resources
+	public String getLexicalDecisionHowToPlayMessage() {
+
+		return "PALAPALAPALAPALA";
+	}
 }

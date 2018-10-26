@@ -44,7 +44,7 @@ public class SearchController extends AbstractController {
 	@GetMapping(SEARCH_URI)
 	public String home(Model model) {
 
-		populateModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
+		populateSearchModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
 
 		return SEARCH_PAGE;
 	}
@@ -96,7 +96,7 @@ public class SearchController extends AbstractController {
 		sessionBean.setSearchMode(wordsData.getSearchMode());
 		boolean switchedToDetailMode = !StringUtils.equals(wordsData.getSearchMode(), searchMode);
 		model.addAttribute("switchedToDetailMode", switchedToDetailMode);
-		populateModel(searchWord, wordsData, model);
+		populateSearchModel(searchWord, wordsData, model);
 
 		return SEARCH_PAGE;
 	}

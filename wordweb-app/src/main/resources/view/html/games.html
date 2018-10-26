@@ -2,6 +2,7 @@
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(_,~{::links})">
 <th:block th:fragment="links">
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
 </th:block>
 </head>
 <body class="home-page">
@@ -14,6 +15,9 @@
   </div>
   <div class="container-fluid search-wrap">
     <h5>Mängude avaleht</h5>
+    <p>
+      <a th:href="@{/games/lexicdecis}">Sõnatundmise mäng</a>
+    </p>
   </div>
   <script th:inline="javascript">
   	var currentPage = /*[[@{/search}]]*/"/games";

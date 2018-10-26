@@ -18,7 +18,7 @@ public class HomeController extends AbstractController {
 
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
-		populateModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
+		populateSearchModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
 		return HOME_PAGE;
 	}
 
@@ -27,8 +27,8 @@ public class HomeController extends AbstractController {
 		return LEARN_PAGE;
 	}
 
-	@GetMapping("games")
+	@GetMapping(GAMES_URI)
 	public String games(Model model) {
-		return "games";
+		return GAMES_PAGE;
 	}
 }

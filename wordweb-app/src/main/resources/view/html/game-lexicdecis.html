@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title th:text="#{general.title}">Sõnaveeb</title>
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/font-import.css}" />
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/font-awesome.min.css}" />
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/bootstrap-games.css}" />
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
+  <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
+</head>
+<body style="overflow-y: auto;">
+  <div id="lexicalDecisionStartPage" class="frame col-sm-8 col-sm-offset-2">
+    <div class="col-sm-10 col-sm-offset-1 text-center">
+      <h2>Hi.</h2>
+      You play the game using your keyboard
+    </div>
+    <div class="col-sm-12">
+      <div class="howtoplay"></div>
+    </div>
+    <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
+      The goal of the game is to decide is the given string of characters a word or not.
+      <br />
+      Press <strong>F</strong> if the given string of characters is a word.
+      <br />
+      Press <strong>J</strong> if the given string of characters is not a word.
+    </div>
+    <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
+      <button id="playGameButton" th:text="#{game.label.play}" type="button" class="btn btn-success" autofocus="autofocus">Play!</button>
+    </div>
+  </div>
+  <div id="lexicalDecisionGamePage" style="display: none;">
+    <div class="wrapper game-friggin-content">
+      <div id="lexicalDecisionHeader">
+        <nav class="navbar landing-page navbar-fixed-top" role="navigation" style="padding: 10px">
+          <div class="col-md-2">
+            <a th:href="@{/}">
+              <span>LOGO!</span>
+            </a>
+          </div>
+          <div class="collapse navbar-collapse">
+            <div class="nav-game-title">
+              <div class="game-abc-small"></div>
+              LEXICAL DECISION
+            </div>
+            <div class="nav navbar-nav navbar-right">
+              <span>
+                <a class="btn btn-link" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-placement="bottom"
+                  th:attr="data-content=${viewUtil.lexicalDecisionHowToPlayMessage}" th:text="#{game.label.howtoplay}">How to play?</a>
+              </span>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div id="lexicDecisValidationNotification" class="col-md-12" style="display: none;">
+        <div class="row">
+          <div class="alert alert-danger text-center" style="position: relative; top: 100px" th:text="#{game.lexicdecis.notification.validation}">Vale klahv</div>
+        </div>
+      </div>
+      <form id="lexicalDecisionResultForm" th:action="@{/games/lexicdecis/finish}" method="POST">
+        <input id="lexicDecisFinishMode" name="lexicDecisFinishMode" type="hidden" />
+      </form>
+      <div class="col-sm-10 col-sm-offset-1 words-block">
+        <div class="col-sm-12 text-center">
+          <h2>
+            <span id="suggestedWordValue" class="tx-large"></span>
+          </h2>
+        </div>
+      </div>
+      <div class="col-sm-12 help-tip">
+        <div class="col-sm-5">
+          <div class="help-letters-right">
+            <h4 th:text="#{game.label.fno}">F(No)</h4>
+          </div>
+        </div>
+        <div class="col-sm-2 text-center">
+          <!--<h5 th:text="'(' + #{quitGame} + ')'">-->
+          <!--0 / 9-->
+          <!--</h5>-->
+        </div>
+        <div class="col-sm-5">
+          <div class="help-letters-left">
+            <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script th:inline="javascript">
+	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
+	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
+	var confirmQuitMessage = "Kas oled kindel, et soovid lõpetada mängu?"
+  </script>
+</body>
+</html>

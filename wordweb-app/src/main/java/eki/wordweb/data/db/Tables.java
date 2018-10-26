@@ -4,6 +4,8 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.tables.LexicalDecisionData;
+import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwAsWord;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
@@ -11,6 +13,7 @@ import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
+import eki.wordweb.data.db.tables.MviewWwLexicalDecisionData;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -31,6 +34,16 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.lexical_decision_data</code>.
+     */
+    public static final LexicalDecisionData LEXICAL_DECISION_DATA = eki.wordweb.data.db.tables.LexicalDecisionData.LEXICAL_DECISION_DATA;
+
+    /**
+     * The table <code>public.lexical_decision_result</code>.
+     */
+    public static final LexicalDecisionResult LEXICAL_DECISION_RESULT = eki.wordweb.data.db.tables.LexicalDecisionResult.LEXICAL_DECISION_RESULT;
 
     /**
      * The table <code>public.mview_ww_as_word</code>.
@@ -66,6 +79,11 @@ public class Tables {
      * The table <code>public.mview_ww_lexeme_relation</code>.
      */
     public static final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
+
+    /**
+     * The table <code>public.mview_ww_lexical_decision_data</code>.
+     */
+    public static final MviewWwLexicalDecisionData MVIEW_WW_LEXICAL_DECISION_DATA = eki.wordweb.data.db.tables.MviewWwLexicalDecisionData.MVIEW_WW_LEXICAL_DECISION_DATA;
 
     /**
      * The table <code>public.mview_ww_meaning</code>.

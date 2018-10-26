@@ -44,26 +44,6 @@ function fetchCorpSentences(sentence) {
 $(document).on("click", ".more-btn", function() {
 	$(this).parent().toggleClass("expand");
 	$(this).parent().find(".additional-meta, .dictionary-source, .dependence:not(:first-child), .dependence:first-child .example-item:not(:first-child) , .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
-	// var height1 = $(this).parent().find(".meaning").height();
-	// var height2 = $(this).parent().find(".dependencies").height();
-	// var height3 = $(this).parent().find(".meaning-meta").height();
-	// var heightLeft = height1 + height3;
-	// // $(this).parent().css( "height" + $(this).parent().height());
-	// if ($(this).parent().hasClass("expand")) {
-	//     if (height2 > heightLeft) {
-	//         $(this).parent().css({
-	//             height: height2 + 62
-	//         });
-	//     } else {
-	//         $(this).parent().css({
-	//             height: heightLeft + 62
-	//         });
-	//     }
-	// } else {
-	//     $(this).parent().css({
-	//         height: 'auto'
-	//     });
-	// }
 });
 
 $(window).on("popstate", function(e) {

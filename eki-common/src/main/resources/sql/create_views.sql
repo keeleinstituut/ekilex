@@ -483,6 +483,33 @@ create view view_ww_meaning_relation
                         where (ld.meaning_id = m1.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
     group by m1.id;
 
+-- lexical decision game data
+create view view_ww_lexical_decision_data
+  as
+      select w.word,
+             w.is_word
+      from ((select w.word,
+                    true is_word
+             from (select distinct f.value word
+                   from word w,
+                        paradigm p,
+                        form f
+                   where p.word_id = w.id
+                   and   f.paradigm_id = p.id
+                   and   f.mode = 'WORD'
+                   and   exists (select ld.id
+                                 from lexeme as ld
+                                 where (ld.word_id = w.id and ld.dataset_code = 'psv'))
+                   and   f.value not like '% %'
+                   and   length(f.value) > 2) w
+             order by random())
+             union all 
+             (select w.word,
+                     false is_word
+             from (
+                  values ('vurfunkel'), ('kukupikap'), ('nagunaa'), ('kolmaar')) w (word))) w
+      order by random();
+
 -- datasets, classifiers
 create view view_ww_dataset
   as

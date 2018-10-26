@@ -4,6 +4,8 @@
 package eki.wordweb.data.db;
 
 
+import eki.wordweb.data.db.tables.LexicalDecisionData;
+import eki.wordweb.data.db.tables.LexicalDecisionResult;
 import eki.wordweb.data.db.tables.MviewWwAsWord;
 import eki.wordweb.data.db.tables.MviewWwClassifier;
 import eki.wordweb.data.db.tables.MviewWwCollocation;
@@ -11,6 +13,7 @@ import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
+import eki.wordweb.data.db.tables.MviewWwLexicalDecisionData;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
@@ -31,6 +34,7 @@ import java.util.List;
 import javax.annotation.Generated;
 
 import org.jooq.Catalog;
+import org.jooq.Sequence;
 import org.jooq.Table;
 import org.jooq.UDT;
 import org.jooq.impl.SchemaImpl;
@@ -49,12 +53,22 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 793727925;
+    private static final long serialVersionUID = -116585025;
 
     /**
      * The reference instance of <code>public</code>
      */
     public static final Public PUBLIC = new Public();
+
+    /**
+     * The table <code>public.lexical_decision_data</code>.
+     */
+    public final LexicalDecisionData LEXICAL_DECISION_DATA = eki.wordweb.data.db.tables.LexicalDecisionData.LEXICAL_DECISION_DATA;
+
+    /**
+     * The table <code>public.lexical_decision_result</code>.
+     */
+    public final LexicalDecisionResult LEXICAL_DECISION_RESULT = eki.wordweb.data.db.tables.LexicalDecisionResult.LEXICAL_DECISION_RESULT;
 
     /**
      * The table <code>public.mview_ww_as_word</code>.
@@ -90,6 +104,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_lexeme_relation</code>.
      */
     public final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
+
+    /**
+     * The table <code>public.mview_ww_lexical_decision_data</code>.
+     */
+    public final MviewWwLexicalDecisionData MVIEW_WW_LEXICAL_DECISION_DATA = eki.wordweb.data.db.tables.MviewWwLexicalDecisionData.MVIEW_WW_LEXICAL_DECISION_DATA;
 
     /**
      * The table <code>public.mview_ww_meaning</code>.
@@ -128,6 +147,19 @@ public class Public extends SchemaImpl {
     }
 
     @Override
+    public final List<Sequence<?>> getSequences() {
+        List result = new ArrayList();
+        result.addAll(getSequences0());
+        return result;
+    }
+
+    private final List<Sequence<?>> getSequences0() {
+        return Arrays.<Sequence<?>>asList(
+            Sequences.LEXICAL_DECISION_DATA_ID_SEQ,
+            Sequences.LEXICAL_DECISION_RESULT_ID_SEQ);
+    }
+
+    @Override
     public final List<Table<?>> getTables() {
         List result = new ArrayList();
         result.addAll(getTables0());
@@ -136,6 +168,8 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
+            LexicalDecisionData.LEXICAL_DECISION_DATA,
+            LexicalDecisionResult.LEXICAL_DECISION_RESULT,
             MviewWwAsWord.MVIEW_WW_AS_WORD,
             MviewWwClassifier.MVIEW_WW_CLASSIFIER,
             MviewWwCollocation.MVIEW_WW_COLLOCATION,
@@ -143,6 +177,7 @@ public class Public extends SchemaImpl {
             MviewWwForm.MVIEW_WW_FORM,
             MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
+            MviewWwLexicalDecisionData.MVIEW_WW_LEXICAL_DECISION_DATA,
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
             MviewWwWord.MVIEW_WW_WORD,
