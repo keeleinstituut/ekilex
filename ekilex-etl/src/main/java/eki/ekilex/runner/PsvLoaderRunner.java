@@ -84,7 +84,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
-			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id where f.value = :formValue and p.word_id = :wordId)";
+			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id "
+			+ "where f.morph_code = :morphCode and p.word_id = :wordId and p.inflection_type_nr in (:inflectionTypeNumbers))";
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
@@ -1331,28 +1332,39 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private void addSoundFileNamesToForms(Long wordId, Element wordGroupNode) {
 
-		final String morphValueGroupExp = "x:mfp/x:gkg/x:mvg/x:mvgp";
-		final String soundFileExp = "x:hldf";
-		final String formValueExp = "x:mvf";
+		final String paradigmGroupExp = "x:mfp";
+		final String paradigmInflectionTypeExp = "x:mt";
+		final String morphValueGroupExp = "x:gkg/x:mvg";
+		final String morphCodeAttr = "vn";
+		final String soundFileExp = "x:mvgp/x:hldf";
 
 		List<SoundFileData> soundFiles = new ArrayList<>();
-		List<Element> morphValueGroupNodes = wordGroupNode.selectNodes(morphValueGroupExp);
-		for (Element morphValueGroupNode : morphValueGroupNodes) {
-			Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
-			if (soundFileNode != null) {
-				Element formValueNode = (Element) morphValueGroupNode.selectSingleNode(formValueExp);
-				String formValue = formValueNode.getTextTrim();
-				formValue = cleanEkiEntityMarkup(formValue);
-				formValue = StringUtils.replaceChars(formValue, formStrCleanupChars, "");
-				SoundFileData data = new SoundFileData();
-				data.soundFile = soundFileNode.getTextTrim();
-				data.formValue = formValue;
-				soundFiles.add(data);
+		List<Element> paradigmGroupNodes = wordGroupNode.selectNodes(paradigmGroupExp);
+		for (Element paradigmGroupNode : paradigmGroupNodes) {
+			Element paradigmInflectionTypeNode = (Element) paradigmGroupNode.selectSingleNode(paradigmInflectionTypeExp);
+			if (paradigmInflectionTypeNode != null) {
+				String inflectionTypeNrStr = paradigmInflectionTypeNode.getTextTrim().replace("?", "");
+				List<String> inflectionNumbers = asList(inflectionTypeNrStr.split("~"));
+				List<Element> morphValueGroupNodes = paradigmGroupNode.selectNodes(morphValueGroupExp);
+				for (Element morphValueGroupNode : morphValueGroupNodes) {
+					Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
+					if (soundFileNode != null) {
+						String morphCode = morphValueGroupNode.attributeValue(morphCodeAttr);
+						SoundFileData data = new SoundFileData();
+						data.soundFile = soundFileNode.getTextTrim();
+						data.morphCode = morphCode;
+						data.inflectionTypeNumbers = inflectionNumbers;
+						soundFiles.add(data);
+					}
+				}
+			} else {
+				logger.debug("missing inflection type : {}", wordId);
 			}
 		}
 		for (SoundFileData soundFileData : soundFiles) {
 			Map<String, Object> params = new HashMap<>();
-			params.put("formValue", soundFileData.formValue);
+			params.put("morphCode", soundFileData.morphCode);
+			params.put("inflectionTypeNumbers", soundFileData.inflectionTypeNumbers);
 			params.put("wordId", wordId);
 			params.put("soundFile", soundFileData.soundFile);
 			basicDbService.executeScript(sqlUpdateSoundFiles, params);
@@ -1632,7 +1644,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class SoundFileData {
 		String soundFile;
-		String formValue;
+		String morphCode;
+		List<String> inflectionTypeNumbers;
 	}
 
 	private class LexemeData {
