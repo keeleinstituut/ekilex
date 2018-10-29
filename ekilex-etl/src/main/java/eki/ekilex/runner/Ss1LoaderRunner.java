@@ -872,8 +872,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
-		final String deinitionExp = "s:nd";
-		final String deinitionExp2 = "s:nk";
 		final String quotationGroupExp = "s:np/s:cg";
 		final String quotationExp = "s:c";
 		final String quotationAuhorExp = "s:caut";
@@ -888,17 +886,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			usage.setExtSourceId(conceptId);//disputable mitigation
 			usage.setValue(usageValue);
 			usage.setDefinitions(new ArrayList<>());
-			if (usageNode.hasMixedContent()) {
-				Element definitionNode = (Element) usageNode.selectSingleNode(deinitionExp);
-				if (definitionNode == null) {
-					definitionNode = (Element) usageNode.selectSingleNode(deinitionExp2);
-				}
-				if (definitionNode != null) {
-					String usageDefinitionValue = definitionNode.getText();
-					usageDefinitionValue = cleanEkiEntityMarkup(usageDefinitionValue);
-					usage.getDefinitions().add(usageDefinitionValue);
-				}
-			}
 			usage.setUsageType(usageNode.attributeValue(usageTypeAttr));
 			usageMeanings.add(usage);
 		}
