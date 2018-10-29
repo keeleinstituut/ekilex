@@ -487,10 +487,14 @@ create view view_ww_meaning_relation
 create view view_ww_lexical_decision_data
   as
       select w.word,
+             w.lang,
              w.is_word
       from ((select w.word,
+                    w.lang,
                     true is_word
-             from (select distinct f.value word
+             from (select distinct
+                        f.value word,
+                        w.lang
                    from word w,
                         paradigm p,
                         form f
@@ -504,10 +508,11 @@ create view view_ww_lexical_decision_data
                    and   length(f.value) > 2) w
              order by random())
              union all 
-             (select w.word,
+             (select nw.word,
+                     nw.lang,
                      false is_word
-             from (
-                  values ('vurfunkel'), ('kukupikap'), ('nagunaa'), ('kolmaar')) w (word))) w
+             from game_nonword nw
+             order by random())) w
       order by random();
 
 -- datasets, classifiers

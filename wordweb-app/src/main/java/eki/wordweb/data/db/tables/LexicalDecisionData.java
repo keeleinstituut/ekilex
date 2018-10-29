@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
 
-    private static final long serialVersionUID = 2092515284;
+    private static final long serialVersionUID = 1862759900;
 
     /**
      * The reference instance of <code>public.lexical_decision_data</code>
@@ -63,6 +63,11 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
      * The column <code>public.lexical_decision_data.word</code>.
      */
     public final TableField<LexicalDecisionDataRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.lexical_decision_data.lang</code>.
+     */
+    public final TableField<LexicalDecisionDataRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
      * The column <code>public.lexical_decision_data.is_word</code>.
@@ -111,7 +116,7 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXICAL_DECISION_DATA_PKEY);
+        return Arrays.<Index>asList(Indexes.LEXICAL_DECISION_DATA_PKEY, Indexes.LEXICAL_DECISION_RESULT_LANG_IDX);
     }
 
     /**

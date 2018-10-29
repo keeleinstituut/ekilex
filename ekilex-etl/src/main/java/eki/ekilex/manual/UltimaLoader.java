@@ -16,6 +16,7 @@ import eki.ekilex.runner.EstermLoaderRunner;
 import eki.ekilex.runner.EstermSourceLoaderRunner;
 import eki.ekilex.runner.EtymologyLoaderRunner;
 import eki.ekilex.runner.Ev2LoaderRunner;
+import eki.ekilex.runner.GameDataLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
@@ -50,6 +51,7 @@ public class UltimaLoader extends AbstractLoader {
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
 			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
+			GameDataLoaderRunner gameDataLoaderRunner = getComponent(GameDataLoaderRunner.class);
 
 			String dataFilePath, dataFilePath2, dataset;
 			Map<String, List<Guid>> ssGuidMap;
@@ -143,6 +145,13 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				voiceFileUpdaterRunner.update(dataFilePath);
 				successfullyLoadedDatasets.add("voice");
+			}
+
+			// game data
+			dataFilePath = getConfProperty("games.nonwords.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				String dataLang = "est";
+				gameDataLoaderRunner.execute(dataFilePath, dataLang);
 			}
 
 			t2 = System.currentTimeMillis();

@@ -71,7 +71,7 @@ $(window).keyup(function(e) {
 
 		answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
 		lexicalDecisionStopTime = new Date().getTime();
-		answerLexicDecisGameRow.answer = false;
+		answerLexicDecisGameRow.answer = true;
 		answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
 		answerLexicDecisGameRow.correct = currentLexicDecisGameRow.word ? true : false;
 
@@ -90,11 +90,8 @@ $(window).keyup(function(e) {
 		if (gameAnswers == 0) {
 			return;
 		}
-		var confirmEndGame = confirm(confirmQuitMessage);
-		if (confirmEndGame == true) {
-			$("#lexicDecisFinishMode").val("decent");
-			$("#lexicalDecisionResultForm").submit();
-		}
+		$("#lexicDecisFinishMode").val("decent");
+		$("#lexicalDecisionResultForm").submit();
 
 	} else {
 

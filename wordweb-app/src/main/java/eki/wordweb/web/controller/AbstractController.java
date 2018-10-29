@@ -14,15 +14,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	protected static final int AUTOCOMPLETE_MAX_RESULTS_LIMIT = 10;
 
-	//TODO should be set by defaults and/or ui
-	protected static final String DISPLAY_LANG = "est";
-
-	protected static final String DEFAULT_SOURCE_LANG = "est";
-
-	protected static final String DEFAULT_DESTIN_LANG = "est";
-
-	protected static final String[] SUPPORTED_LANGUAGES = new String[] {"est", "rus"};
-
 	protected static final char LANGUAGE_PAIR_SEPARATOR = '-';
 
 	@Value("${speech.recognition.service.url:}")

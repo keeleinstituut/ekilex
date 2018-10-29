@@ -2,6 +2,15 @@ package eki.wordweb.constant;
 
 public interface WebConstant {
 
+	//TODO should be set by defaults and/or ui
+	String DISPLAY_LANG = "est";
+
+	String DEFAULT_SOURCE_LANG = "est";
+
+	String DEFAULT_DESTIN_LANG = "est";
+
+	String[] SUPPORTED_LANGUAGES = new String[] {"est", "rus"};
+
 	String HOME_PAGE = "index";
 
 	String SEARCH_PAGE = "search";

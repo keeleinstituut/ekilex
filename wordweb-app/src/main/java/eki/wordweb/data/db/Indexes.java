@@ -42,6 +42,8 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     public static final Index LEXICAL_DECISION_DATA_PKEY = Indexes0.LEXICAL_DECISION_DATA_PKEY;
+    public static final Index LEXICAL_DECISION_RESULT_LANG_IDX = Indexes0.LEXICAL_DECISION_RESULT_LANG_IDX;
+    public static final Index LEXICAL_DECISION_RESULT_DATA_ID_IDX = Indexes0.LEXICAL_DECISION_RESULT_DATA_ID_IDX;
     public static final Index LEXICAL_DECISION_RESULT_PKEY = Indexes0.LEXICAL_DECISION_RESULT_PKEY;
     public static final Index MVIEW_WW_AS_WORD_VALUE_IDX = Indexes0.MVIEW_WW_AS_WORD_VALUE_IDX;
     public static final Index MVIEW_WW_AS_WORD_VALUE_PREFIX_IDX = Indexes0.MVIEW_WW_AS_WORD_VALUE_PREFIX_IDX;
@@ -74,6 +76,8 @@ public class Indexes {
 
     private static class Indexes0 {
         public static Index LEXICAL_DECISION_DATA_PKEY = Internal.createIndex("lexical_decision_data_pkey", LexicalDecisionData.LEXICAL_DECISION_DATA, new OrderField[] { LexicalDecisionData.LEXICAL_DECISION_DATA.ID }, true);
+        public static Index LEXICAL_DECISION_RESULT_LANG_IDX = Internal.createIndex("lexical_decision_result_lang_idx", LexicalDecisionData.LEXICAL_DECISION_DATA, new OrderField[] { LexicalDecisionData.LEXICAL_DECISION_DATA.LANG }, false);
+        public static Index LEXICAL_DECISION_RESULT_DATA_ID_IDX = Internal.createIndex("lexical_decision_result_data_id_idx", LexicalDecisionResult.LEXICAL_DECISION_RESULT, new OrderField[] { LexicalDecisionResult.LEXICAL_DECISION_RESULT.DATA_ID }, false);
         public static Index LEXICAL_DECISION_RESULT_PKEY = Internal.createIndex("lexical_decision_result_pkey", LexicalDecisionResult.LEXICAL_DECISION_RESULT, new OrderField[] { LexicalDecisionResult.LEXICAL_DECISION_RESULT.ID }, true);
         public static Index MVIEW_WW_AS_WORD_VALUE_IDX = Internal.createIndex("mview_ww_as_word_value_idx", MviewWwAsWord.MVIEW_WW_AS_WORD, new OrderField[] { MviewWwAsWord.MVIEW_WW_AS_WORD.AS_WORD }, false);
         public static Index MVIEW_WW_AS_WORD_VALUE_PREFIX_IDX = Internal.createIndex("mview_ww_as_word_value_prefix_idx", MviewWwAsWord.MVIEW_WW_AS_WORD, new OrderField[] { MviewWwAsWord.MVIEW_WW_AS_WORD.AS_WORD }, false);

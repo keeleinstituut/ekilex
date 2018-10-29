@@ -789,6 +789,13 @@ create table lexeme_source_link
 );
 alter sequence lexeme_source_link_id_seq restart with 10000;
 
+create table game_nonword
+(
+  id bigserial primary key,
+  word text not null,
+  lang char(3) references lang(code) not null
+);
+
 --- indexes
 
 create index form_value_idx on form(value);
