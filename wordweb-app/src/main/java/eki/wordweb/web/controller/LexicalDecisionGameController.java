@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,12 +54,10 @@ public class LexicalDecisionGameController implements WebConstant {
 	}
 
 	@PostMapping(GAMES_LEXICDECIS_FINISH_URI)
-	public String finishLexicDecisGame(@RequestParam String lexicDecisFinishMode, Model model) {
+	public String finishLexicDecisGame(@RequestParam String lexicDecisExitMode, Model model) {
 
 		String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
-		LexicalDecisionGameStat lexicDecisGameStat = gameDataService.getLexicDecisGameStat(sessionId);
-		boolean isBrainlessExit = StringUtils.equals("brainless", lexicDecisFinishMode);
-		lexicDecisGameStat.setBrainlessExit(isBrainlessExit);
+		LexicalDecisionGameStat lexicDecisGameStat = gameDataService.getLexicDecisGameStat(sessionId, lexicDecisExitMode);
 
 		model.addAttribute("lexicDecisGameStat", lexicDecisGameStat);
 

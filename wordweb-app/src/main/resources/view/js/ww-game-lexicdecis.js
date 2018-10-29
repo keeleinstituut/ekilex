@@ -40,7 +40,6 @@ function getLexicDecisGameBatch() {
 		lexicDecisGameBatch = gameRows;
 		populateLexicDecisGameRow()
 	});
-	
 }
 
 $(window).keyup(function(e) {
@@ -90,7 +89,7 @@ $(window).keyup(function(e) {
 		if (gameAnswers == 0) {
 			return;
 		}
-		$("#lexicDecisFinishMode").val("decent");
+		$("#lexicDecisExitMode").val("decent");
 		$("#lexicalDecisionResultForm").submit();
 
 	} else {
@@ -99,7 +98,7 @@ $(window).keyup(function(e) {
 	}
 
 	if (brainlessAnswers == 3) {
-		$("#lexicDecisFinishMode").val("brainless");
+		$("#lexicDecisExitMode").val("brainless");
 		$("#lexicalDecisionResultForm").submit();
 	}
 

@@ -31,5 +31,5 @@ dblink(
   is_word boolean
 );
 
-create index lexical_decision_result_lang_idx on lexical_decision_data (lang);
+create index lexical_decision_data_lang_idx on lexical_decision_data (lang);
 create index lexical_decision_result_data_id_idx on lexical_decision_result (data_id);

@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,8 @@ import eki.wordweb.service.db.GameDataDbService;
 public class GameDataService {
 
 	private static final Logger logger = LoggerFactory.getLogger(GameDataService.class);
+
+	private static final String GAME_EXIT_MODE_BRAINLESS = "brainless";
 
 	private static final int GAME_BATCH_SIZE = 100;
 
@@ -38,7 +41,7 @@ public class GameDataService {
 	}
 
 	@Transactional
-	public LexicalDecisionGameStat getLexicDecisGameStat(String sessionId) {
+	public LexicalDecisionGameStat getLexicDecisGameStat(String sessionId, String lexicDecisExitMode) {
 
 		List<LexicalDecisionGameResult> gameResults = gameDataDbService.getLexicDecisGameResults();
 
@@ -65,11 +68,14 @@ public class GameDataService {
 
 		int averageDelayPosition = sortedResults.indexOf(sessionId) + 1;
 
+		boolean isBrainlessExit = StringUtils.equals(GAME_EXIT_MODE_BRAINLESS, lexicDecisExitMode);
+
 		LexicalDecisionGameStat gameStat = new LexicalDecisionGameStat();
 		gameStat.setGameResult(gameResult);
 		gameStat.setCorrectAnswersPosition(correctAnswersPosition);
 		gameStat.setAverageDelayPosition(averageDelayPosition);
 		gameStat.setPlayerCount(playerCount);
+		gameStat.setBrainlessExit(isBrainlessExit);
 
 		return gameStat;
 	}
