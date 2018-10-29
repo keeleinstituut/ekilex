@@ -45,7 +45,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private final static String sqlWordLexemesByMeaningAndDataset =
 			"select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset and l.meaning_id = :meaningId";
 
-	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
@@ -182,17 +181,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processSeries(Context context, Element headerNode, List<WordData> newWords) throws Exception {
 
-		List<Long> seriesGroupIds = new ArrayList<>();
-		// if series words are inside word groups xml tags, i.e. there is more than one word tag inside word group and its type is series
-		// create group and add word id's to it
-		if (isSeries(newWords)) {
-			Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
-			seriesGroupIds.add(wordGroup);
-			for (WordData wordData : newWords) {
-				createWordRelationGroupMember(wordGroup, wordData.id);
-			}
-		}
-
 		// check do we have series data in word links xml group
 		List<WordData> seriesWordData = extractSeriesWords(headerNode);
 		if (seriesWordData.isEmpty()) {
@@ -200,36 +188,23 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 
 		seriesWordData.addAll(newWords);
-
-		if (seriesGroupIds.isEmpty()) {
-			// no group was create, so its ordinary word article
-			List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
-			// no series groups, so its first word in series, create group add words and store it for later use
-			if (seriesForWords.isEmpty()) {
-				Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
-				for (WordData wordData : newWords) {
-					createWordRelationGroupMember(wordGroup, wordData.id);
-				}
-				WordSeries series = new WordSeries();
-				series.groupId = wordGroup;
-				series.words.addAll(seriesWordData);
-				context.series.add(series);
-			} else {
-				// series groups found, so its next word in group, add it to group
-				for (WordSeries series : seriesForWords) {
-					for (WordData wordData : newWords) {
-						createWordRelationGroupMember(series.groupId, wordData.id);
-					}
-				}
+		List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
+		// no series groups, so its first word in series, create group add words and store it for later use
+		if (seriesForWords.isEmpty()) {
+			Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+			for (WordData wordData : newWords) {
+				createWordRelationGroupMember(wordGroup, wordData.id);
 			}
+			WordSeries series = new WordSeries();
+			series.groupId = wordGroup;
+			series.words.addAll(seriesWordData);
+			context.series.add(series);
 		} else {
-			// series group was created, so we have series data in word  xml group and also in word link xml group,
-			// word data from word link xml group is not in this article, store group data for later use
-			for (Long groupId : seriesGroupIds) {
-				WordSeries series = new WordSeries();
-				series.groupId = groupId;
-				series.words.addAll(seriesWordData);
-				context.series.add(series);
+			// series groups found, so its next word in group, add it to group
+			for (WordSeries series : seriesForWords) {
+				for (WordData wordData : newWords) {
+					createWordRelationGroupMember(series.groupId, wordData.id);
+				}
 			}
 		}
 	}
