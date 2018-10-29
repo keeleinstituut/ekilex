@@ -584,7 +584,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					if (lexemeId != null) {
 						lexeme.setLexemeId(lexemeId);
 						createUsages(lexemeId, usages, dataLang);
-						saveGovernments(meaningGroupNode, lexemeId);
+						saveGovernments(meaningGroupNode, lexemeId, newWordData);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers, reportingId);
@@ -775,17 +775,27 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void saveGovernments(Element node, Long lexemeId) throws Exception {
+	private void saveGovernments(Element node, Long lexemeId, WordData wordData) throws Exception {
+
+		List<String> governmentValues = extractGovernments(node);
+		governmentValues.addAll(wordData.governments);
+		for (String governmentValue : governmentValues) {
+			createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
+		}
+	}
+
+	private List<String> extractGovernments(Element node) {
 
 		final String governmentExp = "s:grg/s:r";
 
+		List<String> governments = new ArrayList<>();
 		List<Element> governmentNodes = node.selectNodes(governmentExp);
 		if (CollectionUtils.isNotEmpty(governmentNodes)) {
 			for (Element governmentNode : governmentNodes) {
-				String governmentValue = governmentNode.getTextTrim();
-				createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
+				governments.add(governmentNode.getTextTrim());
 			}
 		}
+		return governments;
 	}
 
 	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
@@ -814,6 +824,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
 				wordData.posCodes.addAll(posCodes);
+				List<String> governments = extractGovernments(wordGroupNode);
+				wordData.governments.addAll(governments);
 
 				newWords.add(wordData);
 			}
