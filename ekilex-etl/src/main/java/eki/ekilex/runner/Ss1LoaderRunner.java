@@ -819,7 +819,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 
 		final String wordGroupExp = "s:mg";
-		final String wordPosCodeExp = "s:sl";
 		final String wordGrammarPosCodesExp = "s:grg/s:sl";
 		String wordExp = xpathExpressions().get("word");//		final String wordExp = "s:m";
 
@@ -841,9 +840,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					context.unionWords.addAll(unionWordsOfTheWord);
 				}
 
-				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
-				wordData.posCodes.addAll(posCodes);
-				posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
+				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
 				wordData.posCodes.addAll(posCodes);
 
 				newWords.add(wordData);
