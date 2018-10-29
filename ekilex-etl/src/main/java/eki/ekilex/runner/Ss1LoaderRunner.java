@@ -64,7 +64,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private String wordTypeAbbreviation;
 	private String wordTypeToken;
-	private final static String wordTypeFormula = "valem";
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -140,7 +139,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		processSynonymsNotFoundInImportFile(context);
 		processAbbreviations(context);
 		processTokens(context);
-		processFormulas(context);
 		processLatinTerms(context);
 		processAntonyms(context);
 		processCohyponyms(context);
@@ -262,19 +260,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return seriesWords;
-	}
-
-	private void processFormulas(Context context) throws Exception {
-
-		logger.debug("Found {} formulas <s:val>.", context.formulas.size());
-		logger.debug("Processing started.");
-		reportingPaused = true;
-
-		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, wordTypeFormula, "Ei leitud valemit, loome uue", dataLang);
-
-		reportingPaused = false;
-		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
-		logger.debug("Formulas import done.");
 	}
 
 	private void processTokens(Context context) throws Exception {
@@ -543,7 +528,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningFormulas = extractFormulas(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
@@ -551,7 +535,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 								meaningAbbreviations.stream(),
 								meaningAbbreviationFullWords.stream(),
 								meaningTokens.stream(),
-								meaningFormulas.stream(),
 								meaningLatinTerms.stream()
 						).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
@@ -580,7 +563,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
 				context.cohyponyms.addAll(meaningCohyponyms);
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
-						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningFormulas, meaningLatinTerms);
+						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningLatinTerms);
 
 				if (isNotBlank(conceptId)) {
 					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
@@ -651,7 +634,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			List<LexemeToWordData> abbreviations,
 			List<LexemeToWordData> abbreviationFullWords,
 			List<LexemeToWordData> tokens,
-			List<LexemeToWordData> formulas,
 			List<LexemeToWordData> latinTerms
 			) {
 		subWords.forEach(data -> data.meaningId = meaningId);
@@ -669,9 +651,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		tokens.forEach(data -> data.meaningId = meaningId);
 		context.tokens.addAll(tokens);
 
-		formulas.forEach(data -> data.meaningId = meaningId);
-		context.formulas.addAll(formulas);
-
 		latinTerms.forEach(data -> data.meaningId = meaningId);
 		context.latinTermins.addAll(latinTerms);
 
@@ -686,7 +665,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			context.meanings.addAll(convertToMeaningData(abbreviations, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(abbreviationFullWords, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(tokens, word, level1, definitions));
-			context.meanings.addAll(convertToMeaningData(formulas, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
 		});
 	}
@@ -737,12 +715,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		final String latinTermExp = "s:lig/s:ld";
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
-	}
-
-	private List<LexemeToWordData> extractFormulas(Element node, String reportingId) throws Exception {
-
-		final String tokenExp = "s:lig/s:val";
-		return extractLexemeMetadata(node, tokenExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractTokens(Element node, String reportingId) throws Exception {
