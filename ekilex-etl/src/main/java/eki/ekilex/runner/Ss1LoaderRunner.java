@@ -46,6 +46,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			"select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset and l.meaning_id = :meaningId";
 
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
+	private final static String POS_TYPE_DERIVATIVE = "adjga";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
@@ -172,7 +173,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (contentNode != null) {
 			processArticleContent(reportingId, contentNode, newWords, context, comments);
 			processVariants(newWords);
-			processSeries(context, headerNode, newWords);
 		}
 		context.importedWords.addAll(newWords);
 	}
@@ -205,6 +205,35 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				}
 			}
 		}
+	}
+
+	private void processDerivativesInHeaderNode(Context context, Element headerNode, List<WordData> newWords) throws Exception {
+
+		List<WordData> derivativesData = extractDerivativesData(headerNode);
+		if (derivativesData.isEmpty()) {
+			return;
+		}
+
+		for (WordData newWord : newWords) {
+			for (WordData derivativeData : derivativesData) {
+				Optional<WordData> connectedWord = findConnectedWord(context, derivativeData);
+				if (connectedWord.isPresent()) {
+					boolean newWordIsDerivative = newWord.posCodes.stream().anyMatch(pos -> pos.code.equals(POS_TYPE_DERIVATIVE));
+					if (newWordIsDerivative) {
+						createWordRelation(connectedWord.get().id, newWord.id, WORD_RELATION_DERIVATIVE);
+						createWordRelation(newWord.id, connectedWord.get().id, WORD_RELATION_DERIVATIVE_BASE);
+					} else {
+						createWordRelation(newWord.id, connectedWord.get().id, WORD_RELATION_DERIVATIVE);
+						createWordRelation(connectedWord.get().id, newWord.id, WORD_RELATION_DERIVATIVE_BASE);
+					}
+				}
+			}
+		}
+	}
+
+	private Optional<WordData> findConnectedWord(Context context, WordData connectedWordData) {
+		return context.importedWords.stream()
+				.filter(word -> word.value.equals(connectedWordData.value) && word.homonymNr == connectedWordData.homonymNr).findFirst();
 	}
 
 	private List<WordSeries> findSeriesForWords(Context context, List<WordData> words) {
@@ -240,26 +269,35 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
 	}
 
+	private List<WordData> extractDerivativesData(Element headerNode) {
+		final String wordLinkDerivativeType = "pnatr";
+		return extractWordLinksOfType(wordLinkDerivativeType, headerNode);
+	}
+
 	private List<WordData> extractSeriesWords(Element headerNode) {
+		final String wordLinkSeriesType = "srj";
+		return extractWordLinksOfType(wordLinkSeriesType, headerNode);
+	}
+
+	private List<WordData> extractWordLinksOfType(String wordLinkType, Element node) {
 
 		final String wordLinkExp = "s:mvtg/s:mvt";
 		final String wordLinkTypeAttr = "mvtl";
-		final String wordLinkSeriesType = "srj";
 		final String homonymNrAttr = "i";
 
-		List<WordData> seriesWords = new ArrayList<>();
-		List<Element> seriesWordNodes = headerNode.selectNodes(wordLinkExp);
-		for (Element seriesWordNode : seriesWordNodes) {
-			if (Objects.equals(seriesWordNode.attributeValue(wordLinkTypeAttr), wordLinkSeriesType)) {
-				WordData seriesWord = new WordData();
-				seriesWord.value = cleanUp(seriesWordNode.getTextTrim());
-				if (seriesWordNode.attributeValue(homonymNrAttr) != null) {
-					seriesWord.homonymNr = Integer.parseInt(seriesWordNode.attributeValue(homonymNrAttr));
+		List<WordData> linkedWords = new ArrayList<>();
+		List<Element> linkedWordNodes = node.selectNodes(wordLinkExp);
+		for (Element linkedWordNode : linkedWordNodes) {
+			if (Objects.equals(linkedWordNode.attributeValue(wordLinkTypeAttr), wordLinkType)) {
+				WordData linkedWord = new WordData();
+				linkedWord.value = cleanUp(linkedWordNode.getTextTrim());
+				if (linkedWordNode.attributeValue(homonymNrAttr) != null) {
+					linkedWord.homonymNr = Integer.parseInt(linkedWordNode.attributeValue(homonymNrAttr));
 				}
-				seriesWords.add(seriesWord);
+				linkedWords.add(linkedWord);
 			}
 		}
-		return seriesWords;
+		return linkedWords;
 	}
 
 	private void processTokens(Context context) throws Exception {
@@ -830,6 +868,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				newWords.add(wordData);
 			}
 		}
+		processSeries(context, headerNode, newWords);
+		processDerivativesInHeaderNode(context, headerNode, newWords);
 	}
 
 	private List<WordToMeaningData> extractCohyponyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
