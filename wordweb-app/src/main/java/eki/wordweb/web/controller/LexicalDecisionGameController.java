@@ -25,7 +25,7 @@ public class LexicalDecisionGameController implements WebConstant {
 	private GameDataService gameDataService;
 
 	@GetMapping(GAMES_LEXICDECIS_URI)
-	public String games(Model model) {
+	public String game(Model model) {
 
 		return GAME_LEXICDECIS_PAGE;
 	}
@@ -59,6 +59,6 @@ public class LexicalDecisionGameController implements WebConstant {
 
 		model.addAttribute("lexicDecisGameStat", lexicDecisGameStat);
 
-		return GAMES_URI;
+		return GAMES_PAGE;
 	}
 }
