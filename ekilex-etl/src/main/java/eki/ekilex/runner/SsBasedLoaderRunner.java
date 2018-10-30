@@ -584,7 +584,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<LexemeToWordData> abbreviationFullWords = new ArrayList<>();
 		List<WordToMeaningData> cohyponyms = new ArrayList<>();
 		List<LexemeToWordData> tokens = new ArrayList<>();
-		List<LexemeToWordData> formulas = new ArrayList<>();
 		List<LexemeToWordData> latinTermins = new ArrayList<>();
 		List<WordToMeaningData> meanings = new ArrayList<>();
 		List<WordSeries> series = new ArrayList<>();

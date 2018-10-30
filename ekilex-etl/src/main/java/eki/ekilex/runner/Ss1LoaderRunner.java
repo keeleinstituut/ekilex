@@ -45,8 +45,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private final static String sqlWordLexemesByMeaningAndDataset =
 			"select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset and l.meaning_id = :meaningId";
 
-	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
+	private final static String POS_TYPE_DERIVATIVE = "adjga";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
@@ -65,7 +65,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private String wordTypeAbbreviation;
 	private String wordTypeToken;
-	private final static String wordTypeFormula = "valem";
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
@@ -141,7 +140,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		processSynonymsNotFoundInImportFile(context);
 		processAbbreviations(context);
 		processTokens(context);
-		processFormulas(context);
 		processLatinTerms(context);
 		processAntonyms(context);
 		processCohyponyms(context);
@@ -175,23 +173,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (contentNode != null) {
 			processArticleContent(reportingId, contentNode, newWords, context, comments);
 			processVariants(newWords);
-			processSeries(context, headerNode, newWords);
 		}
 		context.importedWords.addAll(newWords);
 	}
 
 	private void processSeries(Context context, Element headerNode, List<WordData> newWords) throws Exception {
-
-		List<Long> seriesGroupIds = new ArrayList<>();
-		// if series words are inside word groups xml tags, i.e. there is more than one word tag inside word group and its type is series
-		// create group and add word id's to it
-		if (isSeries(newWords)) {
-			Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
-			seriesGroupIds.add(wordGroup);
-			for (WordData wordData : newWords) {
-				createWordRelationGroupMember(wordGroup, wordData.id);
-			}
-		}
 
 		// check do we have series data in word links xml group
 		List<WordData> seriesWordData = extractSeriesWords(headerNode);
@@ -200,38 +186,54 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 
 		seriesWordData.addAll(newWords);
-
-		if (seriesGroupIds.isEmpty()) {
-			// no group was create, so its ordinary word article
-			List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
-			// no series groups, so its first word in series, create group add words and store it for later use
-			if (seriesForWords.isEmpty()) {
-				Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+		List<WordSeries> seriesForWords = findSeriesForWords(context, newWords);
+		// no series groups, so its first word in series, create group add words and store it for later use
+		if (seriesForWords.isEmpty()) {
+			Long wordGroup = createWordRelationGroup(WordRelationGroupType.SERIES);
+			for (WordData wordData : newWords) {
+				createWordRelationGroupMember(wordGroup, wordData.id);
+			}
+			WordSeries series = new WordSeries();
+			series.groupId = wordGroup;
+			series.words.addAll(seriesWordData);
+			context.series.add(series);
+		} else {
+			// series groups found, so its next word in group, add it to group
+			for (WordSeries series : seriesForWords) {
 				for (WordData wordData : newWords) {
-					createWordRelationGroupMember(wordGroup, wordData.id);
+					createWordRelationGroupMember(series.groupId, wordData.id);
 				}
-				WordSeries series = new WordSeries();
-				series.groupId = wordGroup;
-				series.words.addAll(seriesWordData);
-				context.series.add(series);
-			} else {
-				// series groups found, so its next word in group, add it to group
-				for (WordSeries series : seriesForWords) {
-					for (WordData wordData : newWords) {
-						createWordRelationGroupMember(series.groupId, wordData.id);
+			}
+		}
+	}
+
+	private void processDerivativesInHeaderNode(Context context, Element headerNode, List<WordData> newWords) throws Exception {
+
+		List<WordData> derivativesData = extractDerivativesData(headerNode);
+		if (derivativesData.isEmpty()) {
+			return;
+		}
+
+		for (WordData newWord : newWords) {
+			for (WordData derivativeData : derivativesData) {
+				Optional<WordData> connectedWord = findConnectedWord(context, derivativeData);
+				if (connectedWord.isPresent()) {
+					boolean newWordIsDerivative = newWord.posCodes.stream().anyMatch(pos -> pos.code.equals(POS_TYPE_DERIVATIVE));
+					if (newWordIsDerivative) {
+						createWordRelation(connectedWord.get().id, newWord.id, WORD_RELATION_DERIVATIVE);
+						createWordRelation(newWord.id, connectedWord.get().id, WORD_RELATION_DERIVATIVE_BASE);
+					} else {
+						createWordRelation(newWord.id, connectedWord.get().id, WORD_RELATION_DERIVATIVE);
+						createWordRelation(connectedWord.get().id, newWord.id, WORD_RELATION_DERIVATIVE_BASE);
 					}
 				}
 			}
-		} else {
-			// series group was created, so we have series data in word  xml group and also in word link xml group,
-			// word data from word link xml group is not in this article, store group data for later use
-			for (Long groupId : seriesGroupIds) {
-				WordSeries series = new WordSeries();
-				series.groupId = groupId;
-				series.words.addAll(seriesWordData);
-				context.series.add(series);
-			}
 		}
+	}
+
+	private Optional<WordData> findConnectedWord(Context context, WordData connectedWordData) {
+		return context.importedWords.stream()
+				.filter(word -> word.value.equals(connectedWordData.value) && word.homonymNr == connectedWordData.homonymNr).findFirst();
 	}
 
 	private List<WordSeries> findSeriesForWords(Context context, List<WordData> words) {
@@ -267,39 +269,35 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
 	}
 
+	private List<WordData> extractDerivativesData(Element headerNode) {
+		final String wordLinkDerivativeType = "pnatr";
+		return extractWordLinksOfType(wordLinkDerivativeType, headerNode);
+	}
+
 	private List<WordData> extractSeriesWords(Element headerNode) {
+		final String wordLinkSeriesType = "srj";
+		return extractWordLinksOfType(wordLinkSeriesType, headerNode);
+	}
+
+	private List<WordData> extractWordLinksOfType(String wordLinkType, Element node) {
 
 		final String wordLinkExp = "s:mvtg/s:mvt";
 		final String wordLinkTypeAttr = "mvtl";
-		final String wordLinkSeriesType = "srj";
 		final String homonymNrAttr = "i";
 
-		List<WordData> seriesWords = new ArrayList<>();
-		List<Element> seriesWordNodes = headerNode.selectNodes(wordLinkExp);
-		for (Element seriesWordNode : seriesWordNodes) {
-			if (Objects.equals(seriesWordNode.attributeValue(wordLinkTypeAttr), wordLinkSeriesType)) {
-				WordData seriesWord = new WordData();
-				seriesWord.value = cleanUp(seriesWordNode.getTextTrim());
-				if (seriesWordNode.attributeValue(homonymNrAttr) != null) {
-					seriesWord.homonymNr = Integer.parseInt(seriesWordNode.attributeValue(homonymNrAttr));
+		List<WordData> linkedWords = new ArrayList<>();
+		List<Element> linkedWordNodes = node.selectNodes(wordLinkExp);
+		for (Element linkedWordNode : linkedWordNodes) {
+			if (Objects.equals(linkedWordNode.attributeValue(wordLinkTypeAttr), wordLinkType)) {
+				WordData linkedWord = new WordData();
+				linkedWord.value = cleanUp(linkedWordNode.getTextTrim());
+				if (linkedWordNode.attributeValue(homonymNrAttr) != null) {
+					linkedWord.homonymNr = Integer.parseInt(linkedWordNode.attributeValue(homonymNrAttr));
 				}
-				seriesWords.add(seriesWord);
+				linkedWords.add(linkedWord);
 			}
 		}
-		return seriesWords;
-	}
-
-	private void processFormulas(Context context) throws Exception {
-
-		logger.debug("Found {} formulas <s:val>.", context.formulas.size());
-		logger.debug("Processing started.");
-		reportingPaused = true;
-
-		Count newFormulaWordCount = processLexemeToWord(context, context.formulas, wordTypeFormula, "Ei leitud valemit, loome uue", dataLang);
-
-		reportingPaused = false;
-		logger.debug("Formula words created {}", newFormulaWordCount.getValue());
-		logger.debug("Formulas import done.");
+		return linkedWords;
 	}
 
 	private void processTokens(Context context) throws Exception {
@@ -568,7 +566,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningFormulas = extractFormulas(meaningGroupNode, reportingId);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
@@ -576,7 +573,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 								meaningAbbreviations.stream(),
 								meaningAbbreviationFullWords.stream(),
 								meaningTokens.stream(),
-								meaningFormulas.stream(),
 								meaningLatinTerms.stream()
 						).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
@@ -605,7 +601,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
 				context.cohyponyms.addAll(meaningCohyponyms);
 				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
-						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningFormulas, meaningLatinTerms);
+						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningLatinTerms);
 
 				if (isNotBlank(conceptId)) {
 					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
@@ -626,7 +622,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					if (lexemeId != null) {
 						lexeme.setLexemeId(lexemeId);
 						createUsages(lexemeId, usages, dataLang);
-						saveGovernments(meaningGroupNode, lexemeId);
+						saveGovernments(meaningGroupNode, lexemeId, newWordData);
 						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
 						saveGrammars(meaningGroupNode, lexemeId, newWordData);
 						saveRegisters(lexemeId, registers, reportingId);
@@ -676,7 +672,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			List<LexemeToWordData> abbreviations,
 			List<LexemeToWordData> abbreviationFullWords,
 			List<LexemeToWordData> tokens,
-			List<LexemeToWordData> formulas,
 			List<LexemeToWordData> latinTerms
 			) {
 		subWords.forEach(data -> data.meaningId = meaningId);
@@ -694,9 +689,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		tokens.forEach(data -> data.meaningId = meaningId);
 		context.tokens.addAll(tokens);
 
-		formulas.forEach(data -> data.meaningId = meaningId);
-		context.formulas.addAll(formulas);
-
 		latinTerms.forEach(data -> data.meaningId = meaningId);
 		context.latinTermins.addAll(latinTerms);
 
@@ -711,7 +703,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			context.meanings.addAll(convertToMeaningData(abbreviations, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(abbreviationFullWords, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(tokens, word, level1, definitions));
-			context.meanings.addAll(convertToMeaningData(formulas, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
 		});
 	}
@@ -762,12 +753,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		final String latinTermExp = "s:lig/s:ld";
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
-	}
-
-	private List<LexemeToWordData> extractFormulas(Element node, String reportingId) throws Exception {
-
-		final String tokenExp = "s:lig/s:val";
-		return extractLexemeMetadata(node, tokenExp, null, reportingId);
 	}
 
 	private List<LexemeToWordData> extractTokens(Element node, String reportingId) throws Exception {
@@ -828,23 +813,32 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void saveGovernments(Element node, Long lexemeId) throws Exception {
+	private void saveGovernments(Element node, Long lexemeId, WordData wordData) throws Exception {
+
+		List<String> governmentValues = extractGovernments(node);
+		governmentValues.addAll(wordData.governments);
+		for (String governmentValue : governmentValues) {
+			createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
+		}
+	}
+
+	private List<String> extractGovernments(Element node) {
 
 		final String governmentExp = "s:grg/s:r";
 
+		List<String> governments = new ArrayList<>();
 		List<Element> governmentNodes = node.selectNodes(governmentExp);
 		if (CollectionUtils.isNotEmpty(governmentNodes)) {
 			for (Element governmentNode : governmentNodes) {
-				String governmentValue = governmentNode.getTextTrim();
-				createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, governmentValue);
+				governments.add(governmentNode.getTextTrim());
 			}
 		}
+		return governments;
 	}
 
 	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 
 		final String wordGroupExp = "s:mg";
-		final String wordPosCodeExp = "s:sl";
 		final String wordGrammarPosCodesExp = "s:grg/s:sl";
 		String wordExp = xpathExpressions().get("word");//		final String wordExp = "s:m";
 
@@ -866,14 +860,16 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					context.unionWords.addAll(unionWordsOfTheWord);
 				}
 
-				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
+				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
 				wordData.posCodes.addAll(posCodes);
-				posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
-				wordData.posCodes.addAll(posCodes);
+				List<String> governments = extractGovernments(wordGroupNode);
+				wordData.governments.addAll(governments);
 
 				newWords.add(wordData);
 			}
 		}
+		processSeries(context, headerNode, newWords);
+		processDerivativesInHeaderNode(context, headerNode, newWords);
 	}
 
 	private List<WordToMeaningData> extractCohyponyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
@@ -928,8 +924,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
-		final String deinitionExp = "s:nd";
-		final String deinitionExp2 = "s:nk";
 		final String quotationGroupExp = "s:np/s:cg";
 		final String quotationExp = "s:c";
 		final String quotationAuhorExp = "s:caut";
@@ -944,17 +938,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			usage.setExtSourceId(conceptId);//disputable mitigation
 			usage.setValue(usageValue);
 			usage.setDefinitions(new ArrayList<>());
-			if (usageNode.hasMixedContent()) {
-				Element definitionNode = (Element) usageNode.selectSingleNode(deinitionExp);
-				if (definitionNode == null) {
-					definitionNode = (Element) usageNode.selectSingleNode(deinitionExp2);
-				}
-				if (definitionNode != null) {
-					String usageDefinitionValue = definitionNode.getText();
-					usageDefinitionValue = cleanEkiEntityMarkup(usageDefinitionValue);
-					usage.getDefinitions().add(usageDefinitionValue);
-				}
-			}
 			usage.setUsageType(usageNode.attributeValue(usageTypeAttr));
 			usageMeanings.add(usage);
 		}
