@@ -18,9 +18,10 @@ import org.springframework.stereotype.Component;
 
 import eki.common.constant.TableName;
 import eki.common.service.db.BasicDbService;
+import eki.ekilex.constant.SystemConstant;
 
 @Component
-public class GameDataLoaderRunner implements TableName {
+public class GameDataLoaderRunner implements TableName, SystemConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(GameDataLoaderRunner.class);
 
@@ -28,19 +29,24 @@ public class GameDataLoaderRunner implements TableName {
 	protected BasicDbService basicDbService;
 
 	@Transactional
-	public void execute(String nonWordsFilePath, String lang) throws Exception {
+	public void execute(String nonWordsFilePath) throws Exception {
 
 		File nowWordsFile = new File(nonWordsFilePath);
 		FileInputStream nonWordsFileInputStream = new FileInputStream(nowWordsFile);
 		List<String> nonWordLines = IOUtils.readLines(nonWordsFileInputStream, StandardCharsets.UTF_8);
 		nonWordsFileInputStream.close();
 
+		//remove headers
+		nonWordLines.remove(0);
+
 		int nonwordCount = 0;
-		for (String nonword : nonWordLines) {
-			if (StringUtils.isEmpty(nonword)) {
+		for (String nonwordLine : nonWordLines) {
+			if (StringUtils.isEmpty(nonwordLine)) {
 				continue;
 			}
-			nonword = StringUtils.trim(nonword);
+			String[] nonwordLineParts = StringUtils.split(nonwordLine, CSV_SEPARATOR);
+			String nonword = StringUtils.trim(nonwordLineParts[0]);
+			String lang = StringUtils.trim(nonwordLineParts[1]);
 			Map<String, Object> tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("word", nonword);
 			tableRowParamMap.put("lang", lang);

@@ -793,7 +793,8 @@ create table game_nonword
 (
   id bigserial primary key,
   word text not null,
-  lang char(3) references lang(code) not null
+  lang char(3) references lang(code) not null,
+  unique(word, lang)
 );
 
 --- indexes

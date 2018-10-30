@@ -19,10 +19,9 @@ public class GameDataLoader extends AbstractLoader {
 			initDefault();
 
 			GameDataLoaderRunner dataRunner = getComponent(GameDataLoaderRunner.class);
-			String dataLang = "est";
 
 			String nonWordsFilePath = getConfProperty("games.nonwords.file");
-			dataRunner.execute(nonWordsFilePath, dataLang);
+			dataRunner.execute(nonWordsFilePath);
 
 		} catch (Exception e) {
 			logger.error("Unexpected behaviour of the system", e);

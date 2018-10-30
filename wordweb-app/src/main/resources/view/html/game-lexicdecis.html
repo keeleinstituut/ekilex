@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="#{general.title}">Sõnaveeb</title>
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/font-import.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/font-awesome.min.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/bootstrap-games.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
-  <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
+<title th:text="#{general.title}">Sõnaveeb</title>
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/font-import.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/font-awesome.min.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/bootstrap-games.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
+<script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
 </head>
 <body style="overflow-y: auto;">
   <div id="lexicalDecisionStartPage" class="frame col-sm-8 col-sm-offset-2">
@@ -38,7 +38,7 @@
   <div id="lexicalDecisionGamePage" style="display: none;">
     <div class="wrapper game-friggin-content">
       <div id="lexicalDecisionHeader">
-        <nav class="navbar landing-page navbar-fixed-top" role="navigation" style="padding: 10px">
+        <nav class="navbar landing-page navbar-fixed-top" role="navigation" style="padding: 20px">
           <div class="col-md-2">
             <a th:href="@{/}">
               <span>LOGO!</span>
@@ -47,13 +47,10 @@
           <div class="collapse navbar-collapse">
             <div class="nav-game-title">
               <div class="game-abc-small"></div>
-              LEXICAL DECISION
+              <span th:text="#{game.lexicdecis}" style="font-variant: small-caps;">Sõnatundmise mäng.</span>
             </div>
             <div class="nav navbar-nav navbar-right">
-              <span>
-                <a class="btn btn-link" tabindex="0" role="button" data-toggle="popover" data-trigger="focus" data-html="true" data-placement="bottom"
-                  th:attr="data-content=${viewUtil.lexicalDecisionHowToPlayMessage}" th:text="#{game.label.howtoplay}">How to play?</a>
-              </span>
+              <span> </span>
             </div>
           </div>
         </nav>
@@ -69,7 +66,9 @@
       <div class="col-sm-10 col-sm-offset-1 words-block">
         <div class="col-sm-12 text-center">
           <h2>
-            <span id="suggestedWordValue" class="tx-large"></span>
+            <span id="suggestedWordWrapper" class="bg-success" style="padding: 20px">
+              <span id="suggestedWordValue"></span>
+            </span>
           </h2>
         </div>
       </div>
@@ -92,10 +91,9 @@
       </div>
     </div>
   </div>
-
   <script th:inline="javascript">
-	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
-	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
+  	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
+  	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
   </script>
 </body>
 </html>

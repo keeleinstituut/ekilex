@@ -218,10 +218,4 @@ public class ViewUtil implements WebConstant, InitializingBean {
 		String uri = SEARCH_URI + "/" + sourceLang + "-" + destinLang + "/" + searchMode + "/" + word;
 		return uri;
 	}
-
-	//FIXME content from text resources
-	public String getLexicalDecisionHowToPlayMessage() {
-
-		return "PALAPALAPALAPALA";
-	}
 }

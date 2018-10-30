@@ -150,8 +150,7 @@ public class UltimaLoader extends AbstractLoader {
 			// game data
 			dataFilePath = getConfProperty("games.nonwords.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				String dataLang = "est";
-				gameDataLoaderRunner.execute(dataFilePath, dataLang);
+				gameDataLoaderRunner.execute(dataFilePath);
 			}
 
 			t2 = System.currentTimeMillis();
