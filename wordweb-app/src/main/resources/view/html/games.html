@@ -18,10 +18,24 @@
     <p>
       <a th:href="@{/games/lexicdecis}">Sõnatundmise mäng</a>
     </p>
+    <th:block th:if="${lexicDecisGameStat != null}">
+      <h6 th:text="#{game.label.thanks}" th:if="${!lexicDecisGameStat.brainlessExit}">Aitäh!</h6>
+      <div>
+        <b th:text="#{game.lexicdecis.brainless.exit}" th:if="${lexicDecisGameStat.brainlessExit}"></b>
+      </div>
+      <th:block th:if="${lexicDecisGameStat.gameResult != null}">
+        <div>
+          <span th:text="#{|game.lexicdecis.result.stat.1|(${lexicDecisGameStat.gameResult.allAnswersCount},${lexicDecisGameStat.gameResult.correctAnswersCount})}"></span>
+        </div>
+        <div>
+          <span th:text="#{|game.lexicdecis.result.stat.2|(${lexicDecisGameStat.playerCount},${lexicDecisGameStat.averageDelayPosition},${lexicDecisGameStat.correctAnswersPosition})}"></span>
+        </div>
+      </th:block>
+    </th:block>
   </div>
   <script th:inline="javascript">
-  	var currentPage = /*[[@{/search}]]*/"/games";
-    setActiveMenuItem('games');
+  	var currentPage = /*[[@{/games}]]*/"/games";
+  	setActiveMenuItem('games');
   </script>
 </body>
 </html>

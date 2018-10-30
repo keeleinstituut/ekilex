@@ -5,6 +5,7 @@ create table lexical_decision_data
 (
   id bigserial primary key,
   word text,
+  lang char(3),
   is_word boolean
 );
 
@@ -20,11 +21,15 @@ create table lexical_decision_result
   created timestamp not null default statement_timestamp()
 );
 
-insert into lexical_decision_data (word, is_word)
+insert into lexical_decision_data (word, lang, is_word)
 select * from
 dblink(
   'host=localhost user=ekilex password=3kil3x dbname=ekilex',
   'select * from view_ww_lexical_decision_data') as lexical_decision_data(
   word text,
+  lang char(3),
   is_word boolean
 );
+
+create index lexical_decision_data_lang_idx on lexical_decision_data (lang);
+create index lexical_decision_result_data_id_idx on lexical_decision_result (data_id);

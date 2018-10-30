@@ -19,6 +19,7 @@ drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
 
+drop table if exists game_nonword;
 drop table if exists freeform_source_link;
 drop table if exists definition_source_link;
 drop table if exists lexeme_source_link;

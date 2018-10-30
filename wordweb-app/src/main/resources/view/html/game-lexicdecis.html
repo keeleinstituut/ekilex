@@ -14,18 +14,22 @@
 <body style="overflow-y: auto;">
   <div id="lexicalDecisionStartPage" class="frame col-sm-8 col-sm-offset-2">
     <div class="col-sm-10 col-sm-offset-1 text-center">
-      <h2>Hi.</h2>
-      You play the game using your keyboard
+      <h2 th:text="#{game.lexicdecis}">Sõnatundmise mäng.</h2>
     </div>
     <div class="col-sm-12">
       <div class="howtoplay"></div>
     </div>
     <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
-      The goal of the game is to decide is the given string of characters a word or not.
-      <br />
-      Press <strong>F</strong> if the given string of characters is a word.
-      <br />
-      Press <strong>J</strong> if the given string of characters is not a word.
+      <div th:text="#{game.lexicdecis.instruction.1}"></div>
+      <div th:text="#{game.lexicdecis.instruction.2}"></div>
+      <div>
+        <span th:text="#{game.lexicdecis.instruction.3}"></span>
+        <strong>J</strong>
+      </div>
+      <div>
+        <span th:text="#{game.lexicdecis.instruction.4}"></span>
+        <strong>F</strong>
+      </div>
     </div>
     <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
       <button id="playGameButton" th:text="#{game.label.play}" type="button" class="btn btn-success" autofocus="autofocus">Play!</button>
@@ -60,7 +64,7 @@
         </div>
       </div>
       <form id="lexicalDecisionResultForm" th:action="@{/games/lexicdecis/finish}" method="POST">
-        <input id="lexicDecisFinishMode" name="lexicDecisFinishMode" type="hidden" />
+        <input id="lexicDecisExitMode" name="lexicDecisExitMode" type="hidden" />
       </form>
       <div class="col-sm-10 col-sm-offset-1 words-block">
         <div class="col-sm-12 text-center">
@@ -92,7 +96,6 @@
   <script th:inline="javascript">
 	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
 	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
-	var confirmQuitMessage = "Kas oled kindel, et soovid lõpetada mängu?"
   </script>
 </body>
 </html>

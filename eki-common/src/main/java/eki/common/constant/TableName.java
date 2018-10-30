@@ -54,6 +54,7 @@ public interface TableName {
 	String WORD_LIFECYCLE_LOG = "word_lifecycle_log";
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
 	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
+	String GAME_NONWORD = "game_nonword";
 
 	// classifier binds
 	String MEANING_DOMAIN = "meaning_domain";

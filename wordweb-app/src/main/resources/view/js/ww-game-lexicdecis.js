@@ -40,7 +40,6 @@ function getLexicDecisGameBatch() {
 		lexicDecisGameBatch = gameRows;
 		populateLexicDecisGameRow()
 	});
-	
 }
 
 $(window).keyup(function(e) {
@@ -71,7 +70,7 @@ $(window).keyup(function(e) {
 
 		answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
 		lexicalDecisionStopTime = new Date().getTime();
-		answerLexicDecisGameRow.answer = false;
+		answerLexicDecisGameRow.answer = true;
 		answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
 		answerLexicDecisGameRow.correct = currentLexicDecisGameRow.word ? true : false;
 
@@ -90,11 +89,8 @@ $(window).keyup(function(e) {
 		if (gameAnswers == 0) {
 			return;
 		}
-		var confirmEndGame = confirm(confirmQuitMessage);
-		if (confirmEndGame == true) {
-			$("#lexicDecisFinishMode").val("decent");
-			$("#lexicalDecisionResultForm").submit();
-		}
+		$("#lexicDecisExitMode").val("decent");
+		$("#lexicalDecisionResultForm").submit();
 
 	} else {
 
@@ -102,7 +98,7 @@ $(window).keyup(function(e) {
 	}
 
 	if (brainlessAnswers == 3) {
-		$("#lexicDecisFinishMode").val("brainless");
+		$("#lexicDecisExitMode").val("brainless");
 		$("#lexicalDecisionResultForm").submit();
 	}
 
