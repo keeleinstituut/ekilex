@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
 
-    private static final long serialVersionUID = 1862759900;
+    private static final long serialVersionUID = -1576446167;
 
     /**
      * The reference instance of <code>public.lexical_decision_data</code>
@@ -116,7 +116,7 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXICAL_DECISION_DATA_PKEY, Indexes.LEXICAL_DECISION_RESULT_LANG_IDX);
+        return Arrays.<Index>asList(Indexes.LEXICAL_DECISION_DATA_LANG_IDX, Indexes.LEXICAL_DECISION_DATA_PKEY);
     }
 
     /**

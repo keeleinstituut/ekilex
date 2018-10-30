@@ -41,11 +41,9 @@ public class LexicalDecisionGameController implements WebConstant {
 	@PostMapping(GAMES_LEXICDECIS_SUBMITGAMEROW_URI)
 	public @ResponseBody String submitLexicDecisGameRow(LexicalDecisionGameRow lexicalDecisionGameRow, HttpServletRequest request) {
 
-		String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
 		String remoteAddr = request.getRemoteAddr();
-		String localAddr = request.getLocalAddr();
+		String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
 		lexicalDecisionGameRow.setRemoteAddr(remoteAddr);
-		lexicalDecisionGameRow.setLocalAddr(localAddr);
 		lexicalDecisionGameRow.setSessionId(sessionId);
 
 		gameDataService.submitLexicDecisGameRow(lexicalDecisionGameRow);

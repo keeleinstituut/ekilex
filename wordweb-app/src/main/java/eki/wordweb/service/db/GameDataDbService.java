@@ -45,7 +45,6 @@ public class GameDataDbService {
 			.columns(
 					LEXICAL_DECISION_RESULT.DATA_ID,
 					LEXICAL_DECISION_RESULT.REMOTE_ADDR,
-					LEXICAL_DECISION_RESULT.LOCAL_ADDR,
 					LEXICAL_DECISION_RESULT.SESSION_ID,
 					LEXICAL_DECISION_RESULT.ANSWER,
 					LEXICAL_DECISION_RESULT.DELAY
@@ -53,7 +52,6 @@ public class GameDataDbService {
 			.values(
 					lexicalDecisionGameRow.getDataId(),
 					lexicalDecisionGameRow.getRemoteAddr(),
-					lexicalDecisionGameRow.getLocalAddr(),
 					lexicalDecisionGameRow.getSessionId(),
 					lexicalDecisionGameRow.isAnswer(),
 					lexicalDecisionGameRow.getDelay()

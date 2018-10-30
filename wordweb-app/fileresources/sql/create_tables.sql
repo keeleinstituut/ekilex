@@ -14,7 +14,6 @@ create table lexical_decision_result
   id bigserial primary key,
   data_id bigint references lexical_decision_data(id) not null,
   remote_addr text not null,
-  local_addr text not null,
   session_id text not null,
   answer boolean not null,
   delay bigint not null,

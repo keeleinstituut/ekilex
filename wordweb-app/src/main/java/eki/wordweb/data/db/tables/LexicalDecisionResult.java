@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord> {
 
-    private static final long serialVersionUID = -521900106;
+    private static final long serialVersionUID = 701050276;
 
     /**
      * The reference instance of <code>public.lexical_decision_result</code>
@@ -70,11 +70,6 @@ public class LexicalDecisionResult extends TableImpl<LexicalDecisionResultRecord
      * The column <code>public.lexical_decision_result.remote_addr</code>.
      */
     public final TableField<LexicalDecisionResultRecord, String> REMOTE_ADDR = createField("remote_addr", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
-
-    /**
-     * The column <code>public.lexical_decision_result.local_addr</code>.
-     */
-    public final TableField<LexicalDecisionResultRecord, String> LOCAL_ADDR = createField("local_addr", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lexical_decision_result.session_id</code>.

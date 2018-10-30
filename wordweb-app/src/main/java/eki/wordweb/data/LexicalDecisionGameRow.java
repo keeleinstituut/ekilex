@@ -14,8 +14,6 @@ public class LexicalDecisionGameRow extends AbstractDataObject {
 
 	private String remoteAddr;
 
-	private String localAddr;
-
 	private String sessionId;
 
 	private boolean answer;
@@ -54,14 +52,6 @@ public class LexicalDecisionGameRow extends AbstractDataObject {
 
 	public void setRemoteAddr(String remoteAddr) {
 		this.remoteAddr = remoteAddr;
-	}
-
-	public String getLocalAddr() {
-		return localAddr;
-	}
-
-	public void setLocalAddr(String localAddr) {
-		this.localAddr = localAddr;
 	}
 
 	public String getSessionId() {
