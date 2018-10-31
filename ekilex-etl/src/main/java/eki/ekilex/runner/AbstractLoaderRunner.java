@@ -18,6 +18,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -167,7 +168,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (matcher.find()) {
 			value = matcher.replaceAll(matcher.group(2));
 		}
-		return StringUtils.removePattern(value, "[&]\\w+[;]");
+		return RegExUtils.removePattern(value, "[&]\\w+[;]");
 	}
 
 	protected String removeAccents(String value, String lang) {

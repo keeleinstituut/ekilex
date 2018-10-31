@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.core.io.PathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -66,7 +66,7 @@ public class DataController implements SystemConstant {
 					1,
 					(p,a) -> p.getFileName().toString().startsWith(fileId)).findFirst();
 			if (fileToServe.isPresent()) {
-				resource = new PathResource(fileToServe.get());
+				resource = new FileSystemResource(fileToServe.get());
 				fileName = fileToServe.get().getFileName().toString();
 			}
 		} catch (IOException e) {

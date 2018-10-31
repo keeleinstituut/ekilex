@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -103,7 +104,7 @@ public abstract class AbstractLoader implements SystemConstant {
 				String sourceGuid = ssGuidMapRowCells[1].toLowerCase();
 				String targetGuid = ssGuidMapRowCells[2].toLowerCase();
 				String word = ssGuidMapRowCells[3];
-				word = StringUtils.removePattern(word, "[&]\\w+[;]");
+				word = RegExUtils.removePattern(word, "[&]\\w+[;]");
 				if (StringUtils.equals(sourceDataset, filteringDataset)) {
 					mappedGuids = ssGuidMap.get(sourceGuid);
 					if (mappedGuids == null) {
