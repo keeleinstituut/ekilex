@@ -60,6 +60,15 @@ function handleJanswer() {
 	answerLexicDecisGameRow.correct = isCorrectAnswer;
 }
 
+function handleEsc() {
+
+	if (gameAnswers == 0) {
+		return;
+	}
+	$("#lexicDecisExitMode").val("decent");
+	$("#lexicalDecisionResultForm").submit();
+}
+
 function resolveAnswer() {
 
 	if (answerLexicDecisGameRow.delay > brainlessAnswerDelayTreshold) {
@@ -91,25 +100,14 @@ $(window).keyup(function(e) {
 	}
 
 	if (e.keyCode == fButtonKeyCode) {
-
 		handleFanswer();
 		resolveAnswer();
-
 	} else if (e.keyCode == jButtonKeyCode) {
-
 		handleJanswer();
 		resolveAnswer();
-
 	} else if (e.keyCode == escButtonKeyCode) {
-
-		if (gameAnswers == 0) {
-			return;
-		}
-		$("#lexicDecisExitMode").val("decent");
-		$("#lexicalDecisionResultForm").submit();
-
+		handleEsc();
 	} else {
-
 		$("#lexicDecisValidationNotification").show();
 	}
 });
@@ -129,3 +127,8 @@ $(document).on("click", "#answerJbtn", function(e) {
 	handleJanswer();
 	resolveAnswer();
 });
+
+$(document).on("click", "#escBtn", function(e) {
+	handleEsc();
+});
+
