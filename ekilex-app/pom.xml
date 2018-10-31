@@ -81,7 +81,7 @@
 							</jdbc>
 							<generator>
 								<database>
-									<name>org.jooq.util.postgres.PostgresDatabase</name>
+									<name>org.jooq.meta.postgres.PostgresDatabase</name>
 									<includes>.*</includes>
 									<excludes></excludes>
 									<inputSchema>public</inputSchema>
@@ -138,7 +138,7 @@
 
 		<dependency>
 			<groupId>org.thymeleaf.extras</groupId>
-			<artifactId>thymeleaf-extras-springsecurity4</artifactId>
+			<artifactId>thymeleaf-extras-springsecurity5</artifactId>
 		</dependency>
 
 		<dependency>

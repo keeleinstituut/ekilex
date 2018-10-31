@@ -3,7 +3,7 @@ package eki.wordweb.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.PathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +32,7 @@ public class FileService {
 		Path pathToFile = findFilePath(fileName);
 		if (pathToFile != null) {
 			Path path = doMp3ConversionIfNeeded(pathToFile);
-			resource = new PathResource(path);
+			resource = new FileSystemResource(path);
 		}
 		return resource;
 	}
@@ -40,7 +40,7 @@ public class FileService {
 	public Resource getFileAsResource(String fileName) {
 
 		Path pathToFile = findFilePath(fileName);
-		return pathToFile == null ? null : new PathResource(pathToFile);
+		return pathToFile == null ? null : new FileSystemResource(pathToFile);
 	}
 
 	private Path findFilePath(String fileName) {
