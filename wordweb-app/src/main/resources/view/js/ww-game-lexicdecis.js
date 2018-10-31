@@ -18,12 +18,6 @@ $(document).ready(function() {
 
 });
 
-$(document).on("click", "#playGameButton", function(e) {
-	$("#lexicalDecisionStartPage").hide();
-	$("#lexicalDecisionGamePage").show();
-	getLexicDecisGameBatch();
-});
-
 function populateLexicDecisGameRow() {
 
 	if (lexicDecisGameBatch.length > 0) {
@@ -44,7 +38,29 @@ function getLexicDecisGameBatch() {
 	});
 }
 
-function handleAnswer() {
+function handleFanswer() {
+
+	$("#lexicDecisValidationNotification").hide();
+	answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
+	lexicalDecisionStopTime = new Date().getTime();
+	var isCorrectAnswer = currentLexicDecisGameRow.word ? false : true;
+	answerLexicDecisGameRow.answer = false;
+	answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
+	answerLexicDecisGameRow.correct = isCorrectAnswer;
+}
+
+function handleJanswer() {
+
+	$("#lexicDecisValidationNotification").hide();
+	answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
+	lexicalDecisionStopTime = new Date().getTime();
+	var isCorrectAnswer = currentLexicDecisGameRow.word ? true : false;
+	answerLexicDecisGameRow.answer = true;
+	answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
+	answerLexicDecisGameRow.correct = isCorrectAnswer;
+}
+
+function resolveAnswer() {
 
 	if (answerLexicDecisGameRow.delay > brainlessAnswerDelayTreshold) {
 		$.post(submitLexicDecisGameRowUrl, answerLexicDecisGameRow);
@@ -76,27 +92,13 @@ $(window).keyup(function(e) {
 
 	if (e.keyCode == fButtonKeyCode) {
 
-		$("#lexicDecisValidationNotification").hide();
-		answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
-		lexicalDecisionStopTime = new Date().getTime();
-		var isCorrectAnswer = currentLexicDecisGameRow.word ? false : true;
-		answerLexicDecisGameRow.answer = false;
-		answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
-		answerLexicDecisGameRow.correct = isCorrectAnswer;
-
-		handleAnswer();
+		handleFanswer();
+		resolveAnswer();
 
 	} else if (e.keyCode == jButtonKeyCode) {
 
-		$("#lexicDecisValidationNotification").hide();
-		answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
-		lexicalDecisionStopTime = new Date().getTime();
-		var isCorrectAnswer = currentLexicDecisGameRow.word ? true : false;
-		answerLexicDecisGameRow.answer = true;
-		answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
-		answerLexicDecisGameRow.correct = isCorrectAnswer;
-
-		handleAnswer();
+		handleJanswer();
+		resolveAnswer();
 
 	} else if (e.keyCode == escButtonKeyCode) {
 
@@ -112,3 +114,18 @@ $(window).keyup(function(e) {
 	}
 });
 
+$(document).on("click", "#playGameButton", function(e) {
+	$("#lexicalDecisionStartPage").hide();
+	$("#lexicalDecisionGamePage").show();
+	getLexicDecisGameBatch();
+});
+
+$(document).on("click", "#answerFbtn", function(e) {
+	handleFanswer();
+	resolveAnswer();
+});
+
+$(document).on("click", "#answerJbtn", function(e) {
+	handleJanswer();
+	resolveAnswer();
+});

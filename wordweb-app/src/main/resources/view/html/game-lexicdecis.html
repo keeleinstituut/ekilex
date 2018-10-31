@@ -23,12 +23,13 @@
       <div th:text="#{game.lexicdecis.instruction.1}"></div>
       <div th:text="#{game.lexicdecis.instruction.2}"></div>
       <div>
-        <span th:text="#{game.lexicdecis.instruction.3}"></span>
-        <strong>J</strong>
+        <span th:utext="#{game.lexicdecis.instruction.3}"></span>
       </div>
       <div>
-        <span th:text="#{game.lexicdecis.instruction.4}"></span>
-        <strong>F</strong>
+        <span th:utext="#{game.lexicdecis.instruction.4}"></span>
+      </div>
+      <div>
+        <span th:utext="#{game.lexicdecis.instruction.5}"></span>
       </div>
     </div>
     <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
@@ -72,9 +73,9 @@
           </h2>
         </div>
       </div>
-      <div class="col-sm-12 help-tip">
-        <div class="col-sm-5">
-          <div class="help-letters-right">
+      <div class="col-sm-12 help-tip key-row">
+        <div id="answerFbtn" class="col-sm-5">
+          <div class="help-letters-right btn-box">
             <h4 th:text="#{game.label.fno}">F(No)</h4>
           </div>
         </div>
@@ -83,8 +84,8 @@
           <!--0 / 9-->
           <!--</h5>-->
         </div>
-        <div class="col-sm-5">
-          <div class="help-letters-left">
+        <div id="answerJbtn" class="col-sm-5">
+          <div class="help-letters-left btn-box">
             <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
           </div>
         </div>
