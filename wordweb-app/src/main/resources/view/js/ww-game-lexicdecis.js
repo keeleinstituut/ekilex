@@ -26,8 +26,10 @@ function populateLexicDecisGameRow() {
 		$("#suggestedWordValue").text(currentLexicDecisGameRow.suggestedWordValue);
 		$("#lexicDecisValidationNotification").hide();
 		lexicalDecisionStartTime = new Date().getTime();
-	} else {
+	} else if (gameAnswers == 0) {
 		getLexicDecisGameBatch();
+	} else {
+		handleEsc();
 	}
 }
 
@@ -38,7 +40,7 @@ function getLexicDecisGameBatch() {
 	});
 }
 
-function handleFanswer() {
+function handleAnswerF() {
 
 	$("#lexicDecisValidationNotification").hide();
 	answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
@@ -49,7 +51,7 @@ function handleFanswer() {
 	answerLexicDecisGameRow.correct = isCorrectAnswer;
 }
 
-function handleJanswer() {
+function handleAnswerJ() {
 
 	$("#lexicDecisValidationNotification").hide();
 	answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
@@ -100,10 +102,10 @@ $(window).keyup(function(e) {
 	}
 
 	if (e.keyCode == fButtonKeyCode) {
-		handleFanswer();
+		handleAnswerF();
 		resolveAnswer();
 	} else if (e.keyCode == jButtonKeyCode) {
-		handleJanswer();
+		handleAnswerJ();
 		resolveAnswer();
 	} else if (e.keyCode == escButtonKeyCode) {
 		handleEsc();
@@ -119,12 +121,12 @@ $(document).on("click", "#playGameButton", function(e) {
 });
 
 $(document).on("click", "#answerFbtn", function(e) {
-	handleFanswer();
+	handleAnswerF();
 	resolveAnswer();
 });
 
 $(document).on("click", "#answerJbtn", function(e) {
-	handleJanswer();
+	handleAnswerJ();
 	resolveAnswer();
 });
 
