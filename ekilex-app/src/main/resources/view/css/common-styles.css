@@ -119,3 +119,8 @@ input:checked+.slider:before {
 	margin-bottom: 0.5rem;
     margin-top: 0.5rem;
 }
+
+.btn-text-wrap {
+	white-space: initial;
+	text-align: initial;
+}

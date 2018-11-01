@@ -752,11 +752,11 @@
               <span class="lbl">Keelendi seosed</span>
               <table class="orderable" th:data-op-code="word_relation">
                 <tr th:each="relation, itemStat : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
-                  <td>
+                  <td style="display: flex">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
-                    <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
+                    <button type="button" class="btn btn-link btn-text-wrap" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                   </td>
