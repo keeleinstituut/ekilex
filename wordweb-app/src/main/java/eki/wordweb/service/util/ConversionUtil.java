@@ -39,6 +39,7 @@ import eki.wordweb.data.TypeWord;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
+import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationTuple;
 
 @Component
@@ -47,6 +48,8 @@ public class ConversionUtil {
 	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
 	private static final Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
+
+	private static final String[] WORD_REL_TYPE_ORDER = new String[] {"posit", "komp", "superl", "deriv_base", "deriv", "ühend"};
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -518,6 +521,18 @@ public class ConversionUtil {
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
+				}
+				word.setRelatedWordTypeGroups(new ArrayList<>());
+				Map<String, List<TypeWordRelation>> relatedWordsMap = relatedWords.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
+				for (String wordRelTypeCode : WORD_REL_TYPE_ORDER) {
+					List<TypeWordRelation> relatedWordsOfType = relatedWordsMap.get(wordRelTypeCode);
+					if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
+						Classifier wordRelType = relatedWordsOfType.get(0).getWordRelType();
+						WordRelationGroup wordRelationGroup = new WordRelationGroup();
+						wordRelationGroup.setWordRelType(wordRelType);
+						wordRelationGroup.setRelatedWords(relatedWordsOfType);
+						word.getRelatedWordTypeGroups().add(wordRelationGroup);
+					}
 				}
 			}
 			word.setRelatedWords(relatedWords);
