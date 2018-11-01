@@ -786,7 +786,7 @@
               <span class="lbl">Keelendi etümoloogia</span>
               <table class="orderable" th:data-op-code="word_etymology">
                 <tr th:each="wordEtym, itemStat : ${details.wordEtymology}" th:data-id="${wordEtym.wordEtymologyId}" th:data-orderby="${wordEtym.orderBy}">
-                  <td>
+                  <td style="display: flex">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td style="vertical-align: text-top; padding-right: 1em">
