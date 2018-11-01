@@ -7,6 +7,7 @@ import javax.transaction.Transactional;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -35,7 +36,7 @@ public class XmlAnalyserRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
-		List<Element> elementNodes;
+		List<Node> elementNodes;
 		List<String> elementPaths;
 		int elementCount;
 
@@ -50,7 +51,7 @@ public class XmlAnalyserRunner extends AbstractLoaderRunner {
 			elementPaths = new ArrayList<>();
 			String nodePath;
 
-			for (Element elementNode : elementNodes) {
+			for (Node elementNode : elementNodes) {
 				nodePath = elementNode.getPath();
 				if (!elementPaths.contains(nodePath)) {
 					elementPaths.add(nodePath);

@@ -21,6 +21,7 @@ import org.apache.lucene.morphology.LuceneMorphology;
 import org.apache.lucene.morphology.russian.RussianWordProcessing;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -150,7 +151,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		Element rootElement = dataDoc.getRootElement();
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 		long articleCount = articleNodes.size();
 		logger.debug("Extracted {} articles", articleCount);
 
@@ -158,8 +159,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		Map<Long, List<Grammar>> wordIdGrammarMap = new HashMap<>();
 
 		Element headerNode, contentNode;
-		List<Element> wordGroupNodes, governmentNodes, grammarNodes, meaningGroupNodes, meaningNodes;
-		List<Element> definitionNodes, wordMatchNodes, synonymLevel1Nodes, synonymLevel2Nodes, usageGroupNodes;
+		List<Node> wordGroupNodes, governmentNodes, grammarNodes, meaningGroupNodes, meaningNodes;
+		List<Node> definitionNodes, wordMatchNodes, synonymLevel1Nodes, synonymLevel2Nodes, usageGroupNodes;
 		Element guidNode, wordNode, wordVocalFormNode, morphNode, wordMatchValueNode, formsNode;
 
 		List<Usage> allUsages;
@@ -184,7 +185,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
-		for (Element articleNode : articleNodes) {
+		for (Node articleNode : articleNodes) {
 
 			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode == null) {
@@ -202,7 +203,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			word = null;
 			wordIds = new ArrayList<>();
 
-			for (Element wordGroupNode : wordGroupNodes) {
+			for (Node wordGroupNode : wordGroupNodes) {
 
 				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
@@ -264,9 +265,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			synonymLevel1Nodes = contentNode.selectNodes(synonymExp);
 			meaningGroupNodes = contentNode.selectNodes(meaningGroupExp);//x:tp
 
-			for (Element meaningGroupNode : meaningGroupNodes) {
+			for (Node meaningGroupNode : meaningGroupNodes) {
 
-				lexemeLevel1Str = meaningGroupNode.attributeValue(lexemeLevel1Attr);
+				lexemeLevel1Str = ((Element)meaningGroupNode).attributeValue(lexemeLevel1Attr);
 				lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 
 				usageGroupNodes = meaningGroupNode.selectNodes(usageGroupExp);//x:np/x:ng
@@ -280,7 +281,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				lexemeLevel2 = 0;
 				allWordMatches = new ArrayList<>();
 
-				for (Element meaningNode : meaningNodes) {
+				for (Node meaningNode : meaningNodes) {
 
 					lexemeLevel2++;
 
@@ -295,9 +296,9 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					wordMatchNodes = meaningNode.selectNodes(wordMatchExpr);//x:xp/x:xg
 					wordMatches = new ArrayList<>();
 
-					for (Element wordMatchNode : wordMatchNodes) {
+					for (Node wordMatchNode : wordMatchNodes) {
 
-						wordMatchLang = wordMatchNode.attributeValue(langAttr);
+						wordMatchLang = ((Element)wordMatchNode).attributeValue(langAttr);
 						wordMatchLang = unifyLang(wordMatchLang);
 						wordMatchValueNode = (Element) wordMatchNode.selectSingleNode(wordMatchValueExp);
 						wordMatch = wordMatchValueNode.getTextTrim();
@@ -558,41 +559,41 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return compoundWordParadigms;
 	}
 
-	private void createDefinitions(List<Element> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {
+	private void createDefinitions(List<Node> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {
 
 		if (definitionValueNodes == null) {
 			return;
 		}
-		for (Element definitionValueNode : definitionValueNodes) {
-			String definition = definitionValueNode.getTextTrim();
+		for (Node definitionValueNode : definitionValueNodes) {
+			String definition = ((Element)definitionValueNode).getTextTrim();
 			definition = cleanEkiEntityMarkup(definition);
 			createDefinition(meaningId, definition, dataLang, dataset);
 		}
 	}
 
-	private void createGovernments(List<Element> governmentNodes, Long lexemeId, String lang) throws Exception {
+	private void createGovernments(List<Node> governmentNodes, Long lexemeId, String lang) throws Exception {
 
 		if (governmentNodes == null) {
 			return;
 		}
-		for (Element governmentNode : governmentNodes) {
-			String government = governmentNode.getTextTrim();
+		for (Node governmentNode : governmentNodes) {
+			String government = ((Element)governmentNode).getTextTrim();
 			createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, lang);
 		}
 	}
 
-	private void extractGrammar(List<Element> grammarNodes, Long wordId, Map<Long, List<Grammar>> wordIdGrammarMap) {
+	private void extractGrammar(List<Node> grammarNodes, Long wordId, Map<Long, List<Grammar>> wordIdGrammarMap) {
 
 		List<Grammar> grammarObjs;
 		Grammar grammarObj;
 		String grammarLang;
 		String grammar;
 
-		for (Element grammarNode : grammarNodes) {
+		for (Node grammarNode : grammarNodes) {
 
-			grammarLang = grammarNode.attributeValue("lang");
+			grammarLang = ((Element)grammarNode).attributeValue("lang");
 			grammarLang = unifyLang(grammarLang);
-			grammar = grammarNode.getTextTrim();
+			grammar = ((Element)grammarNode).getTextTrim();
 			grammar = cleanEkiEntityMarkup(grammar);
 
 			grammarObjs = wordIdGrammarMap.get(wordId);
@@ -607,7 +608,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private void extractGovernments(List<Element> governmentNodes, Long wordId, Map<Long, List<Government>> wordIdGovernmentMap) {
+	private void extractGovernments(List<Node> governmentNodes, Long wordId, Map<Long, List<Government>> wordIdGovernmentMap) {
 
 		if (governmentNodes == null) {
 			return;
@@ -617,15 +618,15 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			governmentObjs = new ArrayList<>();
 			wordIdGovernmentMap.put(wordId, governmentObjs);
 		}
-		for (Element governmentNode : governmentNodes) {
-			String government = governmentNode.getTextTrim();
+		for (Node governmentNode : governmentNodes) {
+			String government = ((Element)governmentNode).getTextTrim();
 			Government governmentObj = new Government();
 			governmentObj.setValue(government);
 			governmentObjs.add(governmentObj);
 		}
 	}
 
-	private List<Usage> extractUsages(List<Element> usageGroupNodes) {
+	private List<Usage> extractUsages(List<Node> usageGroupNodes) {
 
 		//x:np/x:ng
 
@@ -641,14 +642,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String usageTranslationValue;
 		String[] usageTranslationParts;
 
-		for (Element usageGroupNode : usageGroupNodes) {
+		for (Node usageGroupNode : usageGroupNodes) {
 
-			List<Element> usageNodes = usageGroupNode.selectNodes(usageExp);//x:n
-			List<Element> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);//x:qnp/x:qng
+			List<Node> usageNodes = usageGroupNode.selectNodes(usageExp);//x:n
+			List<Node> usageTranslationNodes = usageGroupNode.selectNodes(usageTranslationExp);//x:qnp/x:qng
 
 			usages = new ArrayList<>();
-			for (Element usageNode : usageNodes) {
-				usageValue = usageNode.getTextTrim();
+			for (Node usageNode : usageNodes) {
+				usageValue = ((Element)usageNode).getTextTrim();
 				usageValue = cleanEkiEntityMarkup(usageValue);
 				newUsage = new Usage();
 				newUsage.setValue(usageValue);
@@ -656,8 +657,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			}
 
 			usageTranslations = new ArrayList<>();
-			for (Element usageTranslationNode : usageTranslationNodes) {
-				usageTranslationLang = usageTranslationNode.attributeValue(langAttr);
+			for (Node usageTranslationNode : usageTranslationNodes) {
+				usageTranslationLang = ((Element)usageTranslationNode).attributeValue(langAttr);
 				usageTranslationLang = unifyLang(usageTranslationLang);
 				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);

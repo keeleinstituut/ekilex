@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -78,25 +79,25 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
-		List<Element> conceptGroupNodes = dataDoc.selectNodes(sourceConceptGroupExp);
+		List<Node> conceptGroupNodes = dataDoc.selectNodes(sourceConceptGroupExp);
 		int conceptGroupCount = conceptGroupNodes.size();
 		logger.debug("Extracted {} concept groups", conceptGroupCount);
 
-		List<Element> termGroupNodes;
+		List<Node> termGroupNodes;
 		Source sourceObj;
 		Long sourceId;
 
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
 
-		for (Element conceptGroupNode : conceptGroupNodes) {
+		for (Node conceptGroupNode : conceptGroupNodes) {
 
 			sourceObj = extractAndApplySourceProperties(conceptGroupNode);
 			sourceId = createSource(sourceObj);
 
 			termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
 
-			for (Element termGroupNode : termGroupNodes) {
+			for (Node termGroupNode : termGroupNodes) {
 
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_NAME, termValueExp);
 				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.LTB_SOURCE, sourceLtbSourceExp);
@@ -128,11 +129,11 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private Source extractAndApplySourceProperties(Element conceptGroupNode) throws ParseException {
+	private Source extractAndApplySourceProperties(Node conceptGroupNode) throws ParseException {
 
 		Source sourceObj = new Source();
 
-		Element valueNode;
+		Node valueNode;
 		String valueStr;
 		long valueLong;
 		Timestamp valueTs;
@@ -143,41 +144,41 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		 */
 		sourceObj.setType(SourceType.UNKNOWN);
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(conceptExp);
+		valueNode = conceptGroupNode.selectSingleNode(conceptExp);
 		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
+			valueStr = ((Element)valueNode).getTextTrim();
 			sourceObj.setExtSourceId(valueStr);
 		}
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(entryClassExp);
+		valueNode = conceptGroupNode.selectSingleNode(entryClassExp);
 		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
+			valueStr = ((Element)valueNode).getTextTrim();
 			sourceObj.setProcessStateCode(valueStr);
 		}
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdByExp);
+		valueNode = conceptGroupNode.selectSingleNode(createdByExp);
 		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
+			valueStr = ((Element)valueNode).getTextTrim();
 			sourceObj.setCreatedBy(valueStr);
 		}
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(createdOnExp);
+		valueNode = conceptGroupNode.selectSingleNode(createdOnExp);
 		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
+			valueStr = ((Element)valueNode).getTextTrim();
 			valueLong = defaultDateFormat.parse(valueStr).getTime();
 			valueTs = new Timestamp(valueLong);
 			sourceObj.setCreatedOn(valueTs);
 		}
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedByExp);
+		valueNode = conceptGroupNode.selectSingleNode(modifiedByExp);
 		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
+			valueStr = ((Element)valueNode).getTextTrim();
 			sourceObj.setModifiedBy(valueStr);
 		}
 
-		valueNode = (Element) conceptGroupNode.selectSingleNode(modifiedOnExp);
+		valueNode = conceptGroupNode.selectSingleNode(modifiedOnExp);
 		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
+			valueStr = ((Element)valueNode).getTextTrim();
 			valueLong = defaultDateFormat.parse(valueStr).getTime();
 			valueTs = new Timestamp(valueLong);
 			sourceObj.setModifiedOn(valueTs);
@@ -197,15 +198,15 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 		return sourceObj;
 	}
 
-	private void extractAndSaveFreeforms(Long sourceId, Element termGroupNode, FreeformType freeformType, String sourceTermPropertyExp) throws Exception {
+	private void extractAndSaveFreeforms(Long sourceId, Node termGroupNode, FreeformType freeformType, String sourceTermPropertyExp) throws Exception {
 
-		List<Element> sourceTermPropertyNodes = termGroupNode.selectNodes(sourceTermPropertyExp);
+		List<Node> sourceTermPropertyNodes = termGroupNode.selectNodes(sourceTermPropertyExp);
 		String valueStr;
 		long valueLong;
 		Timestamp valueTs;
 
-		for (Element sourceTermPropertyNode : sourceTermPropertyNodes) {
-			valueStr = sourceTermPropertyNode.getTextTrim();
+		for (Node sourceTermPropertyNode : sourceTermPropertyNodes) {
+			valueStr = ((Element)sourceTermPropertyNode).getTextTrim();
 			if (StringUtils.isBlank(valueStr)) {
 				continue;
 			}

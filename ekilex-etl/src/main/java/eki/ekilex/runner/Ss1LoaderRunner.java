@@ -21,6 +21,7 @@ import java.util.stream.Stream;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -123,8 +124,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		Context context = new Context();
 
 		writeToLogFile("Artiklite töötlus", "", "");
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
-		for (Element articleNode : articleNodes) {
+		List<Node> articleNodes = rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
+		for (Node articleNode : articleNodes) {
 			processArticle(articleNode, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
@@ -154,7 +155,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Transactional
-	void processArticle(Element articleNode, Context context) throws Exception {
+	void processArticle(Node articleNode, Context context) throws Exception {
 
 		final String articleHeaderExp = "s:P";
 		final String articleBodyExp = "s:S";
@@ -177,7 +178,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		context.importedWords.addAll(newWords);
 	}
 
-	private void processSeries(Context context, Element headerNode, List<WordData> newWords) throws Exception {
+	private void processSeries(Context context, Node headerNode, List<WordData> newWords) throws Exception {
 
 		// check do we have series data in word links xml group
 		List<WordData> seriesWordData = extractSeriesWords(headerNode);
@@ -207,7 +208,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processDerivativesInHeaderNode(Context context, Element headerNode, List<WordData> newWords) throws Exception {
+	private void processDerivativesInHeaderNode(Context context, Node headerNode, List<WordData> newWords) throws Exception {
 
 		List<WordData> derivativesData = extractDerivativesData(headerNode);
 		if (derivativesData.isEmpty()) {
@@ -269,30 +270,31 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
 	}
 
-	private List<WordData> extractDerivativesData(Element headerNode) {
+	private List<WordData> extractDerivativesData(Node headerNode) {
 		final String wordLinkDerivativeType = "pnatr";
 		return extractWordLinksOfType(wordLinkDerivativeType, headerNode);
 	}
 
-	private List<WordData> extractSeriesWords(Element headerNode) {
+	private List<WordData> extractSeriesWords(Node headerNode) {
 		final String wordLinkSeriesType = "srj";
 		return extractWordLinksOfType(wordLinkSeriesType, headerNode);
 	}
 
-	private List<WordData> extractWordLinksOfType(String wordLinkType, Element node) {
+	private List<WordData> extractWordLinksOfType(String wordLinkType, Node node) {
 
 		final String wordLinkExp = "s:mvtg/s:mvt";
 		final String wordLinkTypeAttr = "mvtl";
 		final String homonymNrAttr = "i";
 
 		List<WordData> linkedWords = new ArrayList<>();
-		List<Element> linkedWordNodes = node.selectNodes(wordLinkExp);
-		for (Element linkedWordNode : linkedWordNodes) {
-			if (Objects.equals(linkedWordNode.attributeValue(wordLinkTypeAttr), wordLinkType)) {
+		List<Node> linkedWordNodes = node.selectNodes(wordLinkExp);
+		for (Node linkedWordNode : linkedWordNodes) {
+			Element linkedWordElement = (Element) linkedWordNode;
+			if (Objects.equals(linkedWordElement.attributeValue(wordLinkTypeAttr), wordLinkType)) {
 				WordData linkedWord = new WordData();
-				linkedWord.value = cleanUp(linkedWordNode.getTextTrim());
-				if (linkedWordNode.attributeValue(homonymNrAttr) != null) {
-					linkedWord.homonymNr = Integer.parseInt(linkedWordNode.attributeValue(homonymNrAttr));
+				linkedWord.value = cleanUp(linkedWordElement.getTextTrim());
+				if (linkedWordElement.attributeValue(homonymNrAttr) != null) {
+					linkedWord.homonymNr = Integer.parseInt(linkedWordElement.attributeValue(homonymNrAttr));
 				}
 				linkedWords.add(linkedWord);
 			}
@@ -540,16 +542,16 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<WordData> derivativeWords = extractDerivativeWords(contentNode, newWords);
 		context.derivativeWords.addAll(derivativeWords);
 
-		List<Element> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
-		for (Element meaningNumberGroupNode : meaningNumberGroupNodes) {
-			String lexemeLevel1Str = meaningNumberGroupNode.attributeValue(lexemeLevel1Attr);
+		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
+		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
+			String lexemeLevel1Str = ((Element)meaningNumberGroupNode).attributeValue(lexemeLevel1Attr);
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
-			List<Element> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
+			List<Node> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
 			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
 
 			int lexemeLevel2 = 0;
-			for (Element meaningGroupNode : meanigGroupNodes) {
+			for (Node meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
 				List<Usage> usages = extractUsages(meaningGroupNode, conceptId);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
@@ -707,30 +709,30 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		});
 	}
 
-	private void processSemanticData(Element node, Long meaningId) throws Exception {
+	private void processSemanticData(Node node, Long meaningId) throws Exception {
 
 		final String semanticTypeExp = "s:semg/s:st";
 		final String semanticTypeGroupAttr = "sta";
 		final String systematicPolysemyPatternExp = "s:semg/s:spm";
 
-		List<Element> semanticTypeNodes = node.selectNodes(semanticTypeExp);
-		for (Element semanticTypeNode : semanticTypeNodes) {
-			String semanticType = semanticTypeNode.getTextTrim();
+		List<Node> semanticTypeNodes = node.selectNodes(semanticTypeExp);
+		for (Node semanticTypeNode : semanticTypeNodes) {
+			String semanticType = ((Element)semanticTypeNode).getTextTrim();
 			Long meaningFreeformId = createMeaningFreeform(meaningId, FreeformType.SEMANTIC_TYPE, semanticType);
-			String semanticTypeGroup = semanticTypeNode.attributeValue(semanticTypeGroupAttr);
+			String semanticTypeGroup = ((Element)semanticTypeNode).attributeValue(semanticTypeGroupAttr);
 			if (isNotBlank(semanticTypeGroup)) {
 				createFreeformTextOrDate(FreeformType.SEMANTIC_TYPE_GROUP, meaningFreeformId, semanticTypeGroup, null);
 			}
 		}
 
-		List<Element> systematicPolysemyPatternNodes = node.selectNodes(systematicPolysemyPatternExp);
-		for (Element systematicPolysemyPatternNode : systematicPolysemyPatternNodes) {
-			String systematicPolysemyPattern = systematicPolysemyPatternNode.getTextTrim();
+		List<Node> systematicPolysemyPatternNodes = node.selectNodes(systematicPolysemyPatternExp);
+		for (Node systematicPolysemyPatternNode : systematicPolysemyPatternNodes) {
+			String systematicPolysemyPattern = ((Element)systematicPolysemyPatternNode).getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.SYSTEMATIC_POLYSEMY_PATTERN, systematicPolysemyPattern);
 		}
 	}
 
-	private List<CommentData> extractArticleComments(Element node) {
+	private List<CommentData> extractArticleComments(Node node) {
 
 		final String commentGroupExp = "s:KOM/s:komg";
 		final String commentValueExp = "s:kom";
@@ -738,8 +740,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String commentCreatedExp = "s:kaeg";
 
 		List<CommentData> comments = new ArrayList<>();
-		List<Element> commentGroupNodes = node.selectNodes(commentGroupExp);
-		for (Element commentGroupNode : commentGroupNodes) {
+		List<Node> commentGroupNodes = node.selectNodes(commentGroupExp);
+		for (Node commentGroupNode : commentGroupNodes) {
 			CommentData comment = new CommentData();
 			comment.value = commentGroupNode.selectSingleNode(commentValueExp).getText();
 			comment.author = commentGroupNode.selectSingleNode(commentAuthorExp).getText();
@@ -749,31 +751,31 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return comments;
 	}
 
-	private List<LexemeToWordData> extractLatinTerms(Element node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractLatinTerms(Node node, String reportingId) throws Exception {
 
 		final String latinTermExp = "s:lig/s:ld";
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
 	}
 
-	private List<LexemeToWordData> extractTokens(Element node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractTokens(Node node, String reportingId) throws Exception {
 
 		final String tokenExp = "s:lig/s:ths";
 		return extractLexemeMetadata(node, tokenExp, null, reportingId);
 	}
 
-	private List<LexemeToWordData> extractAbbreviations(Element node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractAbbreviations(Node node, String reportingId) throws Exception {
 
 		final String abbreviationExp = "s:lig/s:lyh";
 		return extractLexemeMetadata(node, abbreviationExp, null, reportingId);
 	}
 
-	private List<LexemeToWordData> extractAbbreviationFullWords(Element node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String reportingId) throws Exception {
 
 		final String abbreviationFullWordExp = "s:dg/s:lhx";
 		return extractLexemeMetadata(node, abbreviationFullWordExp, null, reportingId);
 	}
 
-	private void saveGrammars(Element node, Long lexemeId, WordData wordData) throws Exception {
+	private void saveGrammars(Node node, Long lexemeId, WordData wordData) throws Exception {
 
 		List<String> grammars = extractGrammar(node);
 		grammars.addAll(wordData.grammars);
@@ -813,7 +815,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void saveGovernments(Element node, Long lexemeId, WordData wordData) throws Exception {
+	private void saveGovernments(Node node, Long lexemeId, WordData wordData) throws Exception {
 
 		List<String> governmentValues = extractGovernments(node);
 		governmentValues.addAll(wordData.governments);
@@ -822,28 +824,28 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private List<String> extractGovernments(Element node) {
+	private List<String> extractGovernments(Node node) {
 
 		final String governmentExp = "s:grg/s:r";
 
 		List<String> governments = new ArrayList<>();
-		List<Element> governmentNodes = node.selectNodes(governmentExp);
+		List<Node> governmentNodes = node.selectNodes(governmentExp);
 		if (CollectionUtils.isNotEmpty(governmentNodes)) {
-			for (Element governmentNode : governmentNodes) {
-				governments.add(governmentNode.getTextTrim());
+			for (Node governmentNode : governmentNodes) {
+				governments.add(((Element)governmentNode).getTextTrim());
 			}
 		}
 		return governments;
 	}
 
-	private void processArticleHeader(String reportingId, Element headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
+	private void processArticleHeader(String reportingId, Node headerNode, List<WordData> newWords, Context context, String guid) throws Exception {
 
 		final String wordGroupExp = "s:mg";
 		final String wordGrammarPosCodesExp = "s:grg/s:sl";
 		String wordExp = xpathExpressions().get("word");//		final String wordExp = "s:m";
 
-		List<Element> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
-		for (Element wordGroupNode : wordGroupNodes) {
+		List<Node> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
+		for (Node wordGroupNode : wordGroupNodes) {
 			int numberOfWordsInGroup = wordGroupNode.selectNodes(wordExp).size();
 
 			for (int index = 0; index < numberOfWordsInGroup; index++) {
@@ -872,7 +874,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		processDerivativesInHeaderNode(context, headerNode, newWords);
 	}
 
-	private List<WordToMeaningData> extractCohyponyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractCohyponyms(Node node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
 
 		final String cohyponymExp = "s:ssh/s:khy";
 
@@ -881,7 +883,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return convertToMeaningData(cohyponyms, wordData, level1, Collections.emptyList());
 	}
 
-	private List<WordToMeaningData> extractAntonyms(Element node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
+	private List<WordToMeaningData> extractAntonyms(Node node, Long meaningId, WordData wordData, int level1, String reportingId) throws Exception {
 
 		final String antonymExp = "s:ssh/s:ant";
 
@@ -890,37 +892,37 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return convertToMeaningData(antonyms, wordData, level1, Collections.emptyList());
 	}
 
-	private List<LexemeToWordData> extractSynonyms(Element node, String reportingId) throws Exception {
+	private List<LexemeToWordData> extractSynonyms(Node node, String reportingId) throws Exception {
 
 		final String synonymExp = "s:ssh/s:syn";
 		return extractLexemeMetadata(node, synonymExp, null, reportingId);
 	}
 
-	private List<String> extractAdviceNotes(Element node) {
+	private List<String> extractAdviceNotes(Node node) {
 
 		final String registerValueExp = "s:lig/s:nb";
 		return extractValuesAsStrings(node, registerValueExp);
 	}
 
-	private List<String> extractPublicNotes(Element node) {
+	private List<String> extractPublicNotes(Node node) {
 
 		final String registerValueExp = "s:lig/s:tx";
 		return extractValuesAsStrings(node, registerValueExp);
 	}
 
-	private List<String> extractRegisters(Element node) {
+	private List<String> extractRegisters(Node node) {
 
 		final String registerValueExp = "s:dg/s:regr/s:s";
 		return extractValuesAsStrings(node, registerValueExp);
 	}
 
-	private List<String> extractDefinitions(Element node) {
+	private List<String> extractDefinitions(Node node) {
 
 		final String definitionValueExp = "s:dg/s:d";
 		return extractValuesAsStrings(node, definitionValueExp);
 	}
 
-	private List<Usage> extractUsages(Element node, String conceptId) {
+	private List<Usage> extractUsages(Node node, String conceptId) {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
@@ -930,19 +932,19 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String quotationAuhorTypeAttr = "aliik";
 
 		List<Usage> usageMeanings = new ArrayList<>();
-		List<Element> usageNodes = node.selectNodes(usageExp);
-		for (Element usageNode : usageNodes) {
-			String usageValue = usageNode.getTextTrim();
+		List<Node> usageNodes = node.selectNodes(usageExp);
+		for (Node usageNode : usageNodes) {
+			String usageValue = ((Element)usageNode).getTextTrim();
 			usageValue = cleanEkiEntityMarkup(usageValue);
 			Usage usage = new Usage();
 			usage.setExtSourceId(conceptId);//disputable mitigation
 			usage.setValue(usageValue);
 			usage.setDefinitions(new ArrayList<>());
-			usage.setUsageType(usageNode.attributeValue(usageTypeAttr));
+			usage.setUsageType(((Element)usageNode).attributeValue(usageTypeAttr));
 			usageMeanings.add(usage);
 		}
-		List<Element> quotationGroupNodes = node.selectNodes(quotationGroupExp);
-		for (Element quotationGroupNode : quotationGroupNodes) {
+		List<Node> quotationGroupNodes = node.selectNodes(quotationGroupExp);
+		for (Node quotationGroupNode : quotationGroupNodes) {
 			Usage usage = new Usage();
 			Element quotationNode = (Element) quotationGroupNode.selectSingleNode(quotationExp);
 			Element quotationAutorNode = (Element) quotationGroupNode.selectSingleNode(quotationAuhorExp);
@@ -963,16 +965,16 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String homonymNrAttr = "i";
 
 		List<WordData> derivatives = new ArrayList<>();
-		List<Element> wordGroupNodes = node.selectNodes(wordGroupExp);
+		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
 		for (WordData mainWord : mainWords) {
-			for (Element wordGroupNode: wordGroupNodes) {
+			for (Node wordGroupNode: wordGroupNodes) {
 				Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				WordData derivative = new WordData();
 				derivative.id = mainWord.id;
 				derivative.reportingId = mainWord.reportingId;
 				derivative.value = cleanUp(wordNode.getTextTrim());
-				if (wordGroupNode.attributeValue(homonymNrAttr) != null) {
-					derivative.homonymNr = Integer.parseInt(wordGroupNode.attributeValue(homonymNrAttr));
+				if (((Element)wordGroupNode).attributeValue(homonymNrAttr) != null) {
+					derivative.homonymNr = Integer.parseInt(((Element)wordGroupNode).attributeValue(homonymNrAttr));
 				}
 				Element frequencyGroupNode = (Element) node.selectSingleNode(frequencyGroupExp);
 				if (frequencyGroupNode != null) {
@@ -986,7 +988,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return derivatives;
 	}
 
-	private List<WordData> extractSubWords(Element node, WordData mainWord) {
+	private List<WordData> extractSubWords(Node node, WordData mainWord) {
 
 		final String subWordExp = "s:mmg/s:mm";
 		final String frequencyGroupExp = "s:mmg/s:msag";
@@ -1009,16 +1011,17 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 
 		List<WordData> subWords = new ArrayList<>();
-		List<Element> subWordNodes = node.selectNodes(subWordExp);
-		for (Element subWordNode : subWordNodes) {
+		List<Node> subWordNodes = node.selectNodes(subWordExp);
+		for (Node subWordNode : subWordNodes) {
+			Element subWordElement = (Element) subWordNode;
 			WordData subWord = new WordData();
 			subWord.id = mainWord.id;
-			subWord.value = cleanUp(subWordNode.getTextTrim());
+			subWord.value = cleanUp(subWordElement.getTextTrim());
 			subWord.reportingId = mainWord.reportingId;
-			if (subWordNode.attributeValue(homonymNrAttr) != null) {
-				subWord.homonymNr = Integer.parseInt(subWordNode.attributeValue(homonymNrAttr));
+			if (subWordElement.attributeValue(homonymNrAttr) != null) {
+				subWord.homonymNr = Integer.parseInt(subWordElement.attributeValue(homonymNrAttr));
 			}
-			if (subWordNode.hasMixedContent()) {
+			if (subWordElement.hasMixedContent()) {
 				Element governmentNode = (Element) subWordNode.selectSingleNode(governmentExp);
 				if (governmentNode != null) {
 					subWord.governments.add(governmentNode.getTextTrim());
@@ -1031,20 +1034,21 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return subWords;
 	}
 
-	private List<WordData> extractUnionWords(Element node, Long wordId, String reportingId) {
+	private List<WordData> extractUnionWords(Node node, Long wordId, String reportingId) {
 
 		final String unionWordExp = "s:ps";
 		final String homonymNrAttr = "i";
 
 		List<WordData> unionWords = new ArrayList<>();
-		List<Element> unionWordNodes = node.selectNodes(unionWordExp);
-		for (Element unionWordNode : unionWordNodes) {
+		List<Node> unionWordNodes = node.selectNodes(unionWordExp);
+		for (Node unionWordNode : unionWordNodes) {
+			Element unionWordElement = (Element) unionWordNode;
 			WordData unionWord = new WordData();
 			unionWord.id = wordId;
-			unionWord.value = cleanUp(unionWordNode.getTextTrim());
+			unionWord.value = cleanUp(unionWordElement.getTextTrim());
 			unionWord.reportingId = reportingId;
-			if (unionWordNode.attributeValue(homonymNrAttr) != null) {
-				unionWord.homonymNr = Integer.parseInt(unionWordNode.attributeValue(homonymNrAttr));
+			if (unionWordElement.attributeValue(homonymNrAttr) != null) {
+				unionWord.homonymNr = Integer.parseInt(unionWordElement.attributeValue(homonymNrAttr));
 			}
 			unionWords.add(unionWord);
 		}

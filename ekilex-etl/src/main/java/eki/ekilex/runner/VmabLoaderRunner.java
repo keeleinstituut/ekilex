@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -34,7 +35,7 @@ public class VmabLoaderRunner extends AbstractLoaderRunner {
 		Element rootElement = dataDoc.getRootElement();
 
 		long articleCount = rootElement.content().stream().filter(node -> node instanceof Element).count();
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 		logger.debug("Extracted {} articles", articleCount);
 	}
 }
