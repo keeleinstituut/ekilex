@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -188,7 +189,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return MapUtils.isNotEmpty(result);
 	}
 
-	protected void processDomains(Element node, Long meaningId, List<String> additionalDomains) throws Exception {
+	protected void processDomains(Node node, Long meaningId, List<String> additionalDomains) throws Exception {
 
 		final String domainOrigin = "bolan";
 		final String domainExp = xpathExpressions().get("domain");
@@ -220,7 +221,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return createdWord;
 	}
 
-	protected List<LexemeToWordData> extractLexemeMetadata(Element node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
+	protected List<LexemeToWordData> extractLexemeMetadata(Node node, String lexemeMetadataExp, String relationTypeAttr, String reportingId) throws Exception {
 
 		final String lexemeLevel1Attr = "t";
 		final String homonymNrAttr = "i";
@@ -228,29 +229,30 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final int defaultLexemeLevel1 = 1;
 
 		List<LexemeToWordData> metadataList = new ArrayList<>();
-		List<Element> metadataNodes = node.selectNodes(lexemeMetadataExp);
-		for (Element metadataNode : metadataNodes) {
+		List<Node> metadataNodes = node.selectNodes(lexemeMetadataExp);
+		for (Node metadataNode : metadataNodes) {
 			if (isRestricted(metadataNode)) {
 				continue;
 			}
+			Element metadataElement = (Element) metadataNode;
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
-			lexemeMetadata.displayForm = metadataNode.getTextTrim();
+			lexemeMetadata.displayForm = metadataElement.getTextTrim();
 			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
 			lexemeMetadata.reportingId = reportingId;
-			String lexemeLevel1AttrValue = metadataNode.attributeValue(lexemeLevel1Attr);
+			String lexemeLevel1AttrValue = metadataElement.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
 				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
 			} else {
 				lexemeMetadata.lexemeLevel1 = Integer.parseInt(lexemeLevel1AttrValue);
 			}
-			String homonymNrAttrValue = metadataNode.attributeValue(homonymNrAttr);
+			String homonymNrAttrValue = metadataElement.attributeValue(homonymNrAttr);
 			if (StringUtils.isNotBlank(homonymNrAttrValue)) {
 				lexemeMetadata.homonymNr = Integer.parseInt(homonymNrAttrValue);
 			}
 			if (relationTypeAttr != null) {
-				lexemeMetadata.relationType = metadataNode.attributeValue(relationTypeAttr);
+				lexemeMetadata.relationType = metadataElement.attributeValue(relationTypeAttr);
 			}
-			String wordTypeAttrValue = metadataNode.attributeValue(wordTypeAttr);
+			String wordTypeAttrValue = metadataElement.attributeValue(wordTypeAttr);
 			if (StringUtils.isNotBlank(wordTypeAttrValue)) {
 				lexemeMetadata.wordType = wordTypes.get(wordTypeAttrValue);
 				if (lexemeMetadata.wordType == null) {
@@ -263,7 +265,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return metadataList;
 	}
 
-	protected List<Paradigm> extractParadigms(Element wordGroupNode, WordData word) throws Exception {
+	protected List<Paradigm> extractParadigms(Node wordGroupNode, WordData word) throws Exception {
 
 		String morphGroupExp = xpathExpressions().get("morphGroup");
 
@@ -327,7 +329,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return formEndings;
 	}
 
-	protected Word extractWordData(Element wordGroupNode, WordData wordData, String guid, int index) throws Exception {
+	protected Word extractWordData(Node wordGroupNode, WordData wordData, String guid, int index) throws Exception {
 
 		String wordExp = xpathExpressions().get("word");//		final String wordExp = "s:m";
 		String wordDisplayMorphExp = xpathExpressions().get("wordDisplayMorph");//	final String wordDisplayMorphExp = "s:vk";
@@ -376,27 +378,28 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return word;
 	}
 
-	protected List<String> extractGrammar(Element node) {
+	protected List<String> extractGrammar(Node node) {
 		String grammarValueExp = xpathExpressions().get("grammarValue");
 		return extractValuesAsStrings(node, grammarValueExp);
 	}
 
-	protected List<PosData> extractPosCodes(Element node, String wordPosCodeExp) {
+	protected List<PosData> extractPosCodes(Node node, String wordPosCodeExp) {
 
 		final String asTyypAttr = "as";
 
 		List<PosData> posCodes = new ArrayList<>();
-		List<Element> posCodeNodes = node.selectNodes(wordPosCodeExp);
-		for (Element posCodeNode : posCodeNodes) {
+		List<Node> posCodeNodes = node.selectNodes(wordPosCodeExp);
+		for (Node posCodeNode : posCodeNodes) {
+			Element posCodeElement = (Element) posCodeNode;
 			PosData posData = new PosData();
-			posData.code = posCodeNode.getTextTrim();
-			posData.processStateCode = posCodeNode.attributeValue(asTyypAttr);
+			posData.code = posCodeElement.getTextTrim();
+			posData.processStateCode = posCodeElement.attributeValue(asTyypAttr);
 			posCodes.add(posData);
 		}
 		return posCodes;
 	}
 
-	protected String extractReporingId(Element node) {
+	protected String extractReporingId(Node node) {
 
 		String reportingIdExp = xpathExpressions().get("reportingId");
 
@@ -405,18 +408,18 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return reportingId;
 	}
 
-	protected String extractGuid(Element node, String articleGuidExp) {
+	protected String extractGuid(Node node, String articleGuidExp) {
 		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
 		return guidNode != null ? StringUtils.lowerCase(guidNode.getTextTrim()) : null;
 	}
 
-	protected List<String> extractValuesAsStrings(Element node, String valueExp) {
+	protected List<String> extractValuesAsStrings(Node node, String valueExp) {
 
 		List<String> values = new ArrayList<>();
-		List<Element> valueNodes = node.selectNodes(valueExp);
-		for (Element valueNode : valueNodes) {
+		List<Node> valueNodes = node.selectNodes(valueExp);
+		for (Node valueNode : valueNodes) {
 			if (!isRestricted(valueNode)) {
-				String value = valueNode.getTextTrim();
+				String value = ((Element)valueNode).getTextTrim();
 				value = cleanEkiEntityMarkup(value);
 				values.add(value);
 			}
@@ -424,10 +427,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return values;
 	}
 
-	protected boolean isRestricted(Element node) {
+	protected boolean isRestricted(Node node) {
 
 		final String restrictedAttr = "as";
-		String restrictedValue = node.attributeValue(restrictedAttr);
+		String restrictedValue = ((Element)node).attributeValue(restrictedAttr);
 		return asList("ab", "ap").contains(restrictedValue);
 	}
 

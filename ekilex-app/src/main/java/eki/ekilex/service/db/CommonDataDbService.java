@@ -152,6 +152,7 @@ public class CommonDataDbService implements DbConstant {
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name())))
+				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
 
@@ -162,6 +163,7 @@ public class CommonDataDbService implements DbConstant {
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
+				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
 

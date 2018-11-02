@@ -131,12 +131,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
-		List<Element> conceptGroupNodes = dataDoc.selectNodes(conceptGroupExp);
+		List<Node> conceptGroupNodes = dataDoc.selectNodes(conceptGroupExp);
 		int conceptGroupCount = conceptGroupNodes.size();
 		logger.debug("Extracted {} concept groups", conceptGroupCount);
 
 		Element valueNode;
-		List<Element> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
+		List<Node> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
 		Long wordId, meaningId, lexemeId;
 		List<Content> definitions, usages, sources;
 		String valueStr, concept, term, processStateCode, wordTypeCode;
@@ -154,7 +154,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		int conceptGroupCounter = 0;
 		int progressIndicator = conceptGroupCount / Math.min(conceptGroupCount, 100);
 
-		for (Element conceptGroupNode : conceptGroupNodes) {
+		for (Node conceptGroupNode : conceptGroupNodes) {
 
 			boolean isLanguageTypeConcept = isLanguageTypeConcept(conceptGroupNode);
 			if (!isLanguageTypeConcept) {
@@ -181,7 +181,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 
-			for (Element langGroupNode : langGroupNodes) {
+			for (Node langGroupNode : langGroupNodes) {
 
 				valueNode = (Element) langGroupNode.selectSingleNode(langExp);
 				valueStr = valueNode.attributeValue(langTypeAttr);
@@ -198,7 +198,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
-				for (Element termGroupNode : termGroupNodes) {
+				for (Node termGroupNode : termGroupNodes) {
 
 					valueNode = (Element) termGroupNode.selectSingleNode(termExp);
 					term = valueNode.getTextTrim();
@@ -227,7 +227,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 					// definitions
 					valueNodes = termGroupNode.selectNodes(definitionExp);
-					for (Element definitionNode : valueNodes) {
+					for (Node definitionNode : valueNodes) {
 						definitions = extractContentAndRefs(definitionNode, lang, term, true);
 						saveDefinitionsAndSourceLinks(meaningId, definitions, concept, term, doReports);
 					}
@@ -235,7 +235,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					// usages
 					valueNodes = termGroupNode.selectNodes(usageExp);
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
-						for (Element usageNode : valueNodes) {
+						for (Node usageNode : valueNodes) {
 							usages = extractContentAndRefs(usageNode, lang, term, true);
 							saveUsagesAndSourceLinks(lexemeId, usages, concept, term, doReports);
 						}
@@ -243,7 +243,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 					// sources
 					valueNodes = termGroupNode.selectNodes(sourceExp);
-					for (Element sourceNode : valueNodes) {
+					for (Node sourceNode : valueNodes) {
 						sources = extractContentAndRefs(sourceNode, lang, term, false);
 						saveLexemeSourceLinks(lexemeId, sources, concept, term, doReports);
 					}
@@ -284,12 +284,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		logger.debug("Done loading in {} ms", (t2 - t1));
 	}
 
-	private boolean isLanguageTypeConcept(Element conceptGroupNode) {
+	private boolean isLanguageTypeConcept(Node conceptGroupNode) {
 
 		String valueStr;
-		List<Element> valueNodes = conceptGroupNode.selectNodes(langGroupExp + "/" + langExp);
-		for (Element langNode : valueNodes) {
-			valueStr = langNode.attributeValue(langTypeAttr);
+		List<Node> valueNodes = conceptGroupNode.selectNodes(langGroupExp + "/" + langExp);
+		for (Node langNode : valueNodes) {
+			valueStr = ((Element)langNode).attributeValue(langTypeAttr);
 			boolean isLang = isLang(valueStr);
 			if (isLang) {
 				continue;
@@ -299,7 +299,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return true;
 	}
 
-	private String extractProcessState(Element conceptGroupNode, Count processStateConflictCount) {
+	private String extractProcessState(Node conceptGroupNode, Count processStateConflictCount) {
 
 		Element valueNode;
 		String valueStr;
@@ -339,7 +339,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return null;
 	}
 
-	private String extractWordType(Element conceptGroupNode) {
+	private String extractWordType(Node conceptGroupNode) {
 
 		Element valueNode;
 		String valueStr;
@@ -357,7 +357,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return wordType;
 	}
 
-	private void extractAndApplyMeaningProperties(Element conceptGroupNode, Meaning meaningObj) throws Exception {
+	private void extractAndApplyMeaningProperties(Node conceptGroupNode, Meaning meaningObj) throws Exception {
 
 		Element valueNode;
 		String valueStr;
@@ -393,9 +393,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void extractAndSaveMeaningFreeforms(Long meaningId, Element conceptGroupNode) throws Exception {
+	private void extractAndSaveMeaningFreeforms(Long meaningId, Node conceptGroupNode) throws Exception {
 
-		List<Element> valueNodes;
+		List<Node> valueNodes;
 		Element valueNode, valueNode1, valueNode2;
 		String valueStr, valueStr1, valueStr2;
 		long valueLong;
@@ -408,8 +408,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 
 		valueNodes = conceptGroupNode.selectNodes(ltbIdExp);
-		for (Element ltbIdNode : valueNodes) {
-			valueStr = ltbIdNode.getTextTrim();
+		for (Node ltbIdNode : valueNodes) {
+			valueStr = ((Element)ltbIdNode).getTextTrim();
 			createMeaningFreeform(meaningId, FreeformType.LTB_ID, valueStr);
 		}
 
@@ -420,10 +420,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 
 		valueNodes = conceptGroupNode.selectNodes(noteExp);
-		for (Element noteValueNode : valueNodes) {
-			valueStr = noteValueNode.getTextTrim();
+		for (Node noteValueNode : valueNodes) {
+			valueStr = ((Element)noteValueNode).getTextTrim();
 			Long freeformId = createMeaningFreeform(meaningId, FreeformType.PUBLIC_NOTE, valueStr);
-			if (noteValueNode.hasMixedContent()) {
+			if (((Element)noteValueNode).hasMixedContent()) {
 				valueStr = handleFreeformRefLinks(noteValueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
@@ -566,10 +566,10 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private List<Content> extractContentAndRefs(Element rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
+	private List<Content> extractContentAndRefs(Node rootContentNode, String lang, String term, boolean logWarrnings) throws Exception {
 
 		List<Content> contentList = new ArrayList<>();
-		Iterator<Node> contentNodeIter = rootContentNode.nodeIterator();
+		Iterator<Node> contentNodeIter = ((Element)rootContentNode).nodeIterator();
 		DefaultText textContentNode;
 		DefaultElement elemContentNode;
 		String valueStr;
@@ -732,23 +732,23 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	}
 
 	private void extractAndSaveDefinitionsAndNotes(
-			Long meaningId, Element langGroupNode, String lang, String concept, boolean doReports, Count definitionsWithSameNotesCount) throws Exception {
+			Long meaningId, Node langGroupNode, String lang, String concept, boolean doReports, Count definitionsWithSameNotesCount) throws Exception {
 
-		List<Element> definitionNodes = langGroupNode.selectNodes(definitionExp);
-		List<Element> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
+		List<Node> definitionNodes = langGroupNode.selectNodes(definitionExp);
+		List<Node> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
 		List<Content> definitions;
 		int totalDefinitionCount = 0;
 
-		for (Element definitionNode : definitionNodes) {
+		for (Node definitionNode : definitionNodes) {
 			definitions = extractContentAndRefs(definitionNode, lang, concept, true);
 			saveDefinitionsAndSourceLinks(meaningId, definitions, concept, "*", doReports);
 			totalDefinitionCount += definitions.size();
 			for (Content definitionObj : definitions) {
 				Long definitionId = definitionObj.getId();
-				for (Element definitionNoteNode : definitionNoteNodes) {
-					String definitionNote = definitionNoteNode.getTextTrim();
+				for (Node definitionNoteNode : definitionNoteNodes) {
+					String definitionNote = ((Element)definitionNoteNode).getTextTrim();
 					Long freeformId = createDefinitionFreeform(definitionId, FreeformType.PUBLIC_NOTE, definitionNote);
-					if (definitionNoteNode.hasMixedContent()) {
+					if (((Element)definitionNoteNode).hasMixedContent()) {
 						definitionNote = handleFreeformRefLinks(definitionNoteNode, freeformId);
 						updateFreeformText(freeformId, definitionNote);
 					}
@@ -760,7 +760,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void extractAndUpdateLexemeProperties(Long lexemeId, Element termGroupNode) throws Exception {
+	private void extractAndUpdateLexemeProperties(Long lexemeId, Node termGroupNode) throws Exception {
 
 		Element valueNode;
 		String valueStr, mappedValueStr;
@@ -818,7 +818,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void extractAndUpdateWordProperties(Long wordId, String wordTypeCode, Element termGroupNode, Count wordTypeConflictCount) throws Exception {
+	private void extractAndUpdateWordProperties(Long wordId, String wordTypeCode, Node termGroupNode, Count wordTypeConflictCount) throws Exception {
 
 		Element valueNode;
 		String valueStr, mappedValueStr;
@@ -847,9 +847,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 	}
 
-	private void extractAndSaveLexemeFreeforms(Long lexemeId, Element termGroupNode) throws Exception {
+	private void extractAndSaveLexemeFreeforms(Long lexemeId, Node termGroupNode) throws Exception {
 
-		List<Element> valueNodes;
+		List<Node> valueNodes;
 		Element valueNode1, valueNode2;
 		String valueStr, valueStr1, valueStr2;
 		long valueLong;
@@ -932,17 +932,17 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		}
 
 		valueNodes = termGroupNode.selectNodes(noteExp);
-		for (Element valueNode : valueNodes) {
-			valueStr = valueNode.getTextTrim();
+		for (Node valueNode : valueNodes) {
+			valueStr = ((Element)valueNode).getTextTrim();
 			Long freeformId = createLexemeFreeform(lexemeId, FreeformType.PUBLIC_NOTE, valueStr, null);
-			if (valueNode.hasMixedContent()) {
+			if (((Element)valueNode).hasMixedContent()) {
 				valueStr = handleFreeformRefLinks(valueNode, freeformId);
 				updateFreeformText(freeformId, valueStr);
 			}
 		}
 	}
 
-	private void saveDomains(String concept, List<Element> domainNodes, Long meaningId, String domainOrigin) throws Exception {
+	private void saveDomains(String concept, List<Node> domainNodes, Long meaningId, String domainOrigin) throws Exception {
 
 		if (domainNodes == null) {
 			return;
@@ -950,8 +950,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		List<String> domainCodes = new ArrayList<>();
 		String domainCode;
 
-		for (Element domainNode : domainNodes) {
-			domainCode = domainNode.getTextTrim();
+		for (Node domainNode : domainNodes) {
+			domainCode = ((Element)domainNode).getTextTrim();
 			int listingDelimCount = StringUtils.countMatches(domainCode, listingsDelimiter);
 			if (listingDelimCount == 0) {
 				handleDomain(concept, meaningId, domainCode, domainOrigin, domainCodes);
@@ -1003,9 +1003,9 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	}
 
 	//TODO should be replaced by separate ref links handling later
-	private String handleFreeformRefLinks(Element mixedContentNode, Long ownerId) throws Exception {
+	private String handleFreeformRefLinks(Node mixedContentNode, Long ownerId) throws Exception {
 
-		Iterator<Node> contentNodeIter = mixedContentNode.nodeIterator();
+		Iterator<Node> contentNodeIter = ((Element)mixedContentNode).nodeIterator();
 		StringBuffer contentBuf = new StringBuffer();
 		DefaultText textContentNode;
 		DefaultElement elemContentNode;

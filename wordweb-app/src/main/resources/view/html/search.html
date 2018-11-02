@@ -107,7 +107,9 @@
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </span>
                     <span th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <span th:each="grammar : ${lexeme.grammars}" th:text="${grammar}"></span>
+                      <th:block th:each="grammar,grammarIter : ${lexeme.grammars}">
+                        <span th:text="${grammar}"></span><span th:unless="${grammarIter.last}">,</span>
+                      </th:block>
                     </span>
                   </div>
                   <div class="definition">
@@ -414,11 +416,13 @@
             </div>
             <div class="level-3-panel row" th:if="${wordData.word.wordRelationsExist}">
               <h6 th:text="#{label.word.relations}">Sõna seosed</h6>
-              <div class="col-12" th:if="${not #lists.isEmpty(wordData.word.relatedWords)}">
-                <div class="mb-1" th:each="relation, relationIter : ${wordData.word.relatedWords}">
-                  <span th:text="${#strings.capitalize(relation.wordRelType.value) + ' :'}"></span>
-                  <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word}"></a>
-                </div>
+              <div class="col-12" th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
+                <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
+                  <span th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
+                  <span class="mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
+                    <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word}" class="text-nowrap"></a><span th:unless="${relationIter.last}">,</span>
+                  </span>
+                </th:block>
               </div>
               <div class="col-12" th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
                 <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">

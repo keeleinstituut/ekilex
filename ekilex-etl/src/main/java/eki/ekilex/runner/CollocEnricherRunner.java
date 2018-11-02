@@ -17,6 +17,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +114,7 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 		logger.debug("Extracted {} articles", articleCount);
 
 		Element headerNode, contentNode, wordNode, wordPosNode;
-		List<Element> wordGroupNodes, meaningBlockNodes, collocPosGroupNodes, relationGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes;
+		List<Node> wordGroupNodes, meaningBlockNodes, collocPosGroupNodes, relationGroupNodes, collocGroupNodes, prevWordNodes, collocWordNodes, nextWordNodes;
 		String word, wordPosCode, collocPosCode;
 		List<LexemeMeaningData> lexemes;
 		WordLexemeData wordLexemeData;
@@ -129,9 +130,9 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 
-		for (Element articleNode : articleNodes) {
+		for (Node articleNode : articleNodes) {
 
 			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode == null) {
@@ -142,7 +143,7 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 			wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 
 			wordMap = new HashMap<>();
-			for (Element wordGroupNode : wordGroupNodes) {
+			for (Node wordGroupNode : wordGroupNodes) {
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
 				word = wordNode.getTextTrim();
 				wordPosNode = (Element) wordGroupNode.selectSingleNode(wordPosExp);
@@ -173,22 +174,22 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 
 			meaningBlockNodes = contentNode.selectNodes("x:tp");
 
-			for (Element meaningBlockNode : meaningBlockNodes) {
+			for (Node meaningBlockNode : meaningBlockNodes) {
 
 				collocPosGroupNodes = meaningBlockNode.selectNodes("x:colp/x:cmg");
 
-				for (Element colPosGroupNode : collocPosGroupNodes) {
+				for (Node colPosGroupNode : collocPosGroupNodes) {
 
-					collocPosCode = colPosGroupNode.attributeValue("csl");
+					collocPosCode = ((Element)colPosGroupNode).attributeValue("csl");
 					collocPosCode = posCodes.get(collocPosCode);
 
 					relationGroupNodes = colPosGroupNode.selectNodes("x:relg");
 
-					for (Element relationGroupNode : relationGroupNodes) {
+					for (Node relationGroupNode : relationGroupNodes) {
 
 						collocGroupNodes = relationGroupNode.selectNodes("x:colg");
 
-						for (Element collocGroupNode : collocGroupNodes) {
+						for (Node collocGroupNode : collocGroupNodes) {
 
 							collocWordNodes = collocGroupNode.selectNodes("x:col");
 							prevWordNodes = collocGroupNode.selectNodes("x:mse");
@@ -226,9 +227,9 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 
 	private void createCollocations(
 			Map<String, WordLexemeData> wordMap,
-			List<Element> collocWordNodes,
-			List<Element> prevWordNodes,
-			List<Element> nextWordNodes,
+			List<Node> collocWordNodes,
+			List<Node> prevWordNodes,
+			List<Node> nextWordNodes,
 			String collocPosCode,
 			String targetDataset,
 			String dataLang,
@@ -587,8 +588,8 @@ public class CollocEnricherRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private List<String> collectTextValues(List<Element> nodes) {
-		List<String> textValues = nodes.stream().map(node -> node.getTextTrim()).collect(Collectors.toList());
+	private List<String> collectTextValues(List<Node> nodes) {
+		List<String> textValues = nodes.stream().map(node -> ((Element)node).getTextTrim()).collect(Collectors.toList());
 		return new ArrayList<>(textValues);
 	}
 

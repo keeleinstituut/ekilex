@@ -14,6 +14,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -87,10 +88,10 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 	
 			Document dataDoc = xmlReader.readDocument(classifierXsdFilePath);
 	
-			List<Element> classifierGroupNodes = dataDoc.selectNodes(classifGroupExp);
-			for (Element classifierGroupNode : classifierGroupNodes) {
+			List<Node> classifierGroupNodes = dataDoc.selectNodes(classifGroupExp);
+			for (Node classifierGroupNode : classifierGroupNodes) {
 	
-				String ekiType = classifierGroupNode.attributeValue(classifTypeAttr);
+				String ekiType = ((Element)classifierGroupNode).attributeValue(classifTypeAttr);
 				if (StringUtils.isNotBlank(filteringEkiType) && !StringUtils.equals(ekiType, filteringEkiType)) {
 					continue;
 				}
@@ -101,16 +102,16 @@ public abstract class AbstractClassifierRunner implements InitializingBean, Syst
 				} else {
 					ekiName = classifierNameNode.getTextTrim();
 				}
-				List<Element> classifierNodes = classifierGroupNode.selectNodes(classifValuesExp);
-				for (Element classifierNode : classifierNodes) {
+				List<Node> classifierNodes = classifierGroupNode.selectNodes(classifValuesExp);
+				for (Node classifierNode : classifierNodes) {
 	
-					String ekiCode = classifierNode.attributeValue(classifCodeAttr);
+					String ekiCode = ((Element)classifierNode).attributeValue(classifCodeAttr);
 	
-					List<Element> classifierValueNodes = classifierNode.selectNodes(classifNameExp);
-					for (Element classifierValueNode : classifierValueNodes) {
+					List<Node> classifierValueNodes = classifierNode.selectNodes(classifNameExp);
+					for (Node classifierValueNode : classifierValueNodes) {
 	
-						String ekiValueLang = classifierValueNode.attributeValue(classifValueLangAttr);
-						String ekiValue = classifierValueNode.getTextTrim();
+						String ekiValueLang = ((Element)classifierValueNode).attributeValue(classifValueLangAttr);
+						String ekiValue = ((Element)classifierValueNode).getTextTrim();
 	
 						if (StringUtils.isNotBlank(ekiValue)) {
 	

@@ -15,6 +15,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -81,12 +82,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		String[] dataXmlFilePaths = new String[] {dataXmlFilePath1, dataXmlFilePath2};
 		Document dataDoc;
 		Element rootElement;
-		List<Element> allArticleNodes = new ArrayList<>();
-		List<Element> articleNodes;
+		List<Node> allArticleNodes = new ArrayList<>();
+		List<Node> articleNodes;
 		for (String dataXmlFilePath : dataXmlFilePaths) {
 			dataDoc = xmlReader.readDocument(dataXmlFilePath);
 			rootElement = dataDoc.getRootElement();
-			articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+			articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 			allArticleNodes.addAll(articleNodes);
 		}
 		int articleCount = allArticleNodes.size();
@@ -94,8 +95,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 
-		Element headerNode, contentNode, wordGroupNode, wordNode, morphValueNode, inflectionTypeNrNode;
-		List<Element> rootBaseNodes, formGroupNodes, formNodes;
+		Node headerNode, contentNode, wordGroupNode, wordNode, morphValueNode, inflectionTypeNrNode;
+		List<Node> rootBaseNodes, formGroupNodes, formNodes;
 		List<Paradigm> paradigms, newParadigms;
 		List<Form> forms;
 		List<String> formValues;
@@ -109,20 +110,20 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
-		for (Element articleNode : allArticleNodes) {
+		for (Node articleNode : allArticleNodes) {
 
-			contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+			contentNode = articleNode.selectSingleNode(articleBodyExp);
 			if (contentNode == null) {
 				continue;
 			}
 
-			headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			wordGroupNode = (Element) headerNode.selectSingleNode(wordGroupExp);
-			wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			word = wordNode.getTextTrim();
+			headerNode = articleNode.selectSingleNode(articleHeaderExp);
+			wordGroupNode = headerNode.selectSingleNode(wordGroupExp);
+			wordNode = wordGroupNode.selectSingleNode(wordExp);
+			word = ((Element)wordNode).getTextTrim();
 
 			Integer homonymNr = null;
-			String homonymNrAsString = wordNode.attributeValue(homonymNrAttr);
+			String homonymNrAsString = ((Element)wordNode).attributeValue(homonymNrAttr);
 			if (isNotEmpty(homonymNrAsString)) {
 				homonymNr = Integer.parseInt(homonymNrAsString);
 			}
@@ -145,11 +146,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 			newParadigms = new ArrayList<>();
 
-			for (Element rootBaseNode : rootBaseNodes) {
+			for (Node rootBaseNode : rootBaseNodes) {
 
 				formGroupNodes = rootBaseNode.selectNodes(formGroupExp);
-				inflectionTypeNrNode = (Element) rootBaseNode.selectSingleNode(inflectionTypeNrExp);
-				inflectionTypeNr = inflectionTypeNrNode.getTextTrim();
+				inflectionTypeNrNode = rootBaseNode.selectSingleNode(inflectionTypeNrExp);
+				inflectionTypeNr = ((Element)inflectionTypeNrNode).getTextTrim();
 				inflectionTypeNr = String.valueOf(Integer.parseInt(inflectionTypeNr));
 
 				forms = new ArrayList<>();
@@ -157,10 +158,10 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				boolean isWord = true;
 				FormMode mode = FormMode.WORD;
 
-				for (Element formGroupNode : formGroupNodes) {
+				for (Node formGroupNode : formGroupNodes) {
 
-					morphValueNode = (Element) formGroupNode.selectSingleNode(morphValueExp);
-					sourceMorphCode = morphValueNode.getTextTrim();
+					morphValueNode = formGroupNode.selectSingleNode(morphValueExp);
+					sourceMorphCode = ((Element)morphValueNode).getTextTrim();
 					destinMorphCode = morphValueCodeMap.get(sourceMorphCode);
 					if (StringUtils.equals(destinMorphCode, DISCLOSED_MORPH_CODE)) {
 						continue;
@@ -168,9 +169,9 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 					formNodes = formGroupNode.selectNodes(formExp);
 
-					for (Element formNode : formNodes) {
+					for (Node formNode : formNodes) {
 
-						displayForm = formNode.getTextTrim();
+						displayForm = ((Element)formNode).getTextTrim();
 						form = StringUtils.replaceChars(displayForm, formCleanupChars, "");
 
 						if (StringUtils.isBlank(form)) {

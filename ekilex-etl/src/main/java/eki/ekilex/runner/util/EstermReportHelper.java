@@ -44,7 +44,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		this.valueStateCodes = valueStateCodes;
 	}
 
-	public void detectAndReportConceptGrp(String concept, Element conceptGroupNode, Count dataErrorCount) throws Exception {
+	public void detectAndReportConceptGrp(String concept, Node conceptGroupNode, Count dataErrorCount) throws Exception {
 
 		if (true) {
 			//TODO until further notice...
@@ -53,7 +53,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 		Map<String, Object> tableRowParamMap;
 		Map<String, Object> tableRowValueMap;
-		List<Element> valueNodes;
+		List<Node> valueNodes;
 		Element valueNode;
 		List<String> values;
 		String valueStr;
@@ -69,8 +69,8 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 		valueNodes = conceptGroupNode.selectNodes(domainExp);
 		values = new ArrayList<>();
-		for (Element domainNode : valueNodes) {
-			valueStr = domainNode.getTextTrim();
+		for (Node domainNode : valueNodes) {
+			valueStr = ((Element)domainNode).getTextTrim();
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
 				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "korduv valdkonnaviide: " + valueStr);
@@ -90,8 +90,8 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 		valueNodes = conceptGroupNode.selectNodes(subdomainExp);
 		values = new ArrayList<>();
-		for (Element domainNode : valueNodes) {
-			valueStr = domainNode.getTextTrim();
+		for (Node domainNode : valueNodes) {
+			valueStr = ((Element)domainNode).getTextTrim();
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
 				appendToReport(true, REPORT_ILLEGAL_CLASSIFIERS, concept, "korduv alamvaldkonnaviide: " + valueStr);
@@ -110,19 +110,19 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		}
 
 		values = new ArrayList<>();
-		List<Element> createdByNodes = conceptGroupNode.selectNodes(ltbCreatedByExp);
-		List<Element> createdOnNodes = conceptGroupNode.selectNodes(ltbEõkkCreatedOnExp);
+		List<Node> createdByNodes = conceptGroupNode.selectNodes(ltbCreatedByExp);
+		List<Node> createdOnNodes = conceptGroupNode.selectNodes(ltbEõkkCreatedOnExp);
 		int createdByCount = createdByNodes.size();
 		int createdOnCount = createdOnNodes.size();
 		boolean isTooManyCreates = createdByCount > 1 && createdOnCount > 1;
 		boolean isIncompleteCreate = (createdByCount == 1 || createdOnCount == 1) && (createdByCount != createdOnCount);
 		if (isTooManyCreates || isIncompleteCreate) {
-			for (Element createdNode : createdByNodes) {
-				valueStr = createdNode.getTextTrim();
+			for (Node createdNode : createdByNodes) {
+				valueStr = ((Element)createdNode).getTextTrim();
 				values.add(valueStr);
 			}
-			for (Element createdNode : createdOnNodes) {
-				valueStr = createdNode.getTextTrim();
+			for (Node createdNode : createdOnNodes) {
+				valueStr = ((Element)createdNode).getTextTrim();
 				values.add(valueStr);
 			}
 			if (isTooManyCreates) {
@@ -136,7 +136,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		}
 	}
 
-	public void detectAndReportLanguageGrp(String concept, Element langGroupNode, Count dataErrorCount) throws Exception {
+	public void detectAndReportLanguageGrp(String concept, Node langGroupNode, Count dataErrorCount) throws Exception {
 
 		if (true) {
 			//TODO until further notice...
@@ -145,8 +145,8 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 		StringBuffer logBuf = new StringBuffer();
 
-		List<Element> definitionNodes = langGroupNode.selectNodes(definitionExp);
-		List<Element> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
+		List<Node> definitionNodes = langGroupNode.selectNodes(definitionExp);
+		List<Node> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
 		int definitionCount = definitionNodes.size();
 		int definitionNoteCount = definitionNoteNodes.size();
 		if (definitionCount > 1 && definitionNoteCount > 0) {
@@ -166,7 +166,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		composeDefinitionsAndNotesReports(concept, "*", langGroupNode);
 	}
 
-	public void detectAndReportTermGrp(String concept, String term, int homonymNr, String lang, Element termGroupNode, Count dataErrorCount) throws Exception {
+	public void detectAndReportTermGrp(String concept, String term, int homonymNr, String lang, Node termGroupNode, Count dataErrorCount) throws Exception {
 
 		if (true) {
 			//TODO until further notice...
@@ -175,14 +175,14 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 
 		StringBuffer logBuf = new StringBuffer();
 
-		List<Element> valueNodes;
+		List<Node> valueNodes;
 		List<String> values;
 		String valueStr;
 
 		valueNodes = termGroupNode.selectNodes(valueStateExp);
 		values = new ArrayList<>();
-		for (Element lexemeTypeNode : valueNodes) {
-			valueStr = lexemeTypeNode.getTextTrim();
+		for (Node lexemeTypeNode : valueNodes) {
+			valueStr = ((Element)lexemeTypeNode).getTextTrim();
 			if (values.contains(valueStr)) {
 				dataErrorCount.increment();
 				logBuf = new StringBuffer();
@@ -225,7 +225,7 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		valueNodes = termGroupNode.selectNodes(definitionExp);
 		if (CollectionUtils.isNotEmpty(valueNodes)) {
 			dataErrorCount.increment();
-			valueStr = valueNodes.get(0).getTextTrim();
+			valueStr = ((Element)valueNodes.get(0)).getTextTrim();
 			logBuf = new StringBuffer();
 			logBuf.append(concept);
 			logBuf.append(CSV_SEPARATOR);
@@ -241,19 +241,19 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 		composeDefinitionsAndNotesReports(concept, term, termGroupNode);
 	}
 
-	private void composeDefinitionsAndNotesReports(String concept, String term, Element sourceNode) throws Exception {
+	private void composeDefinitionsAndNotesReports(String concept, String term, Node sourceNode) throws Exception {
 
 		String valueStr;
-		List<Element> definitionNodes = sourceNode.selectNodes(definitionExp);
+		List<Node> definitionNodes = sourceNode.selectNodes(definitionExp);
 
 		if (CollectionUtils.isNotEmpty(definitionNodes)) {
-			List<Element> notesSourceNodes = sourceNode.selectNodes("descripGrp/descrip[@type='Märkus']/xref[contains(@Tlink,'Allikas')]");
+			List<Node> notesSourceNodes = sourceNode.selectNodes("descripGrp/descrip[@type='Märkus']/xref[contains(@Tlink,'Allikas')]");
 
 			List<String> definitionSourceNames = new ArrayList<>();
 
-			for (Element definitionNode : definitionNodes) {
+			for (Node definitionNode : definitionNodes) {
 
-				Iterator<Node> contentNodeIter = definitionNode.nodeIterator();
+				Iterator<Node> contentNodeIter = ((Element)definitionNode).nodeIterator();
 				DefaultText textContentNode;
 				DefaultElement elemContentNode;
 				String recentDefinition = null;
@@ -292,8 +292,8 @@ public class EstermReportHelper implements EstermLoaderConstant, SystemConstant 
 				}
 			}
 
-			for (Element noteSourceNode : notesSourceNodes) {
-				String tlinkAttrValue = noteSourceNode.attributeValue(xrefTlinkAttr);
+			for (Node noteSourceNode : notesSourceNodes) {
+				String tlinkAttrValue = ((Element)noteSourceNode).attributeValue(xrefTlinkAttr);
 				String sourceName = StringUtils.substringAfter(tlinkAttrValue, xrefTlinkSourcePrefix);
 				if (definitionSourceNames.contains(sourceName)) {
 					int sourceCodeOccCount = Collections.frequency(definitionSourceNames, sourceName);

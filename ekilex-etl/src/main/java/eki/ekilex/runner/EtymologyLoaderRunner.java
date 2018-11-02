@@ -16,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -95,7 +96,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		Element rootElement = dataDoc.getRootElement();
-		List<Element> articleNodes = (List<Element>) rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
+		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
 		long articleCount = articleNodes.size();
 		logger.debug("Extracted {} articles", articleCount);
 
@@ -112,16 +113,16 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 
-		for (Element articleNode : articleNodes) {
+		for (Node articleNode : articleNodes) {
 
 			Element etymNode = (Element) articleNode.selectSingleNode(etymExp);
 			if (etymNode != null) {
 				Element guidNode = (Element) articleNode.selectSingleNode(guidExp);
 				String guid = guidNode.getTextTrim();
-				List<Element> wordNodes = articleNode.selectNodes(headWordExp);
+				List<Node> wordNodes = articleNode.selectNodes(headWordExp);
 				List<String> words = wordNodes.stream()
 						.map(wordNode -> {
-							String rawWord = wordNode.getTextTrim();
+							String rawWord = ((Element)wordNode).getTextTrim();
 							String word = cleanUp(rawWord);
 							return word;
 						})
@@ -137,23 +138,23 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 					}
 				}
 
-				List<Element> etymCommentNodes = etymNode.selectNodes(etymRootCommentExp);
+				List<Node> etymCommentNodes = etymNode.selectNodes(etymRootCommentExp);
 				List<String> etymRootComments = null;
 				if (CollectionUtils.isNotEmpty(etymCommentNodes)) {
-					etymRootComments = etymCommentNodes.stream().map(Element::getTextTrim).collect(Collectors.toList());
+					etymRootComments = etymCommentNodes.stream().map( e -> ((Element) e).getTextTrim()).collect(Collectors.toList());
 				}
 				//TODO impl
-				List<Element> etymPrivateNoteNodes = etymNode.selectNodes(etymRootPrivateNoteExp);
-				List<Element> etymGroupNodes = etymNode.selectNodes(etymGroupExp);
+				List<Node> etymPrivateNoteNodes = etymNode.selectNodes(etymRootPrivateNoteExp);
+				List<Node> etymGroupNodes = etymNode.selectNodes(etymGroupExp);
 				List<Long> word1Ids = null;
 				List<Long> word2Ids = null;
 				List<String> etymComments = null;
 				String etymTypeCode = null;
 				String mappedEtymTypeCode = null;
 				String mappedRegisterCode = null;
-				for (Element etymGroupNode : etymGroupNodes) {
-					List<Element> etymWordsWrapupNodes = etymGroupNode.selectNodes(etymWordWrapupExp);
-					List<String> etymWordsWrapup = etymWordsWrapupNodes.stream().map(Element::getTextTrim).collect(Collectors.toList());
+				for (Node etymGroupNode : etymGroupNodes) {
+					List<Node> etymWordsWrapupNodes = etymGroupNode.selectNodes(etymWordWrapupExp);
+					List<String> etymWordsWrapup = etymWordsWrapupNodes.stream().map(n -> ((Element) n).getTextTrim()).collect(Collectors.toList());
 					Element etymTypeNode = (Element) etymGroupNode.selectSingleNode(etymTypeExp);
 					if (etymTypeNode == null) {
 						missingEtymTypeCount.increment();
@@ -167,9 +168,9 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							appendToReport(doReports, REPORT_UNKNOWN_ETYM_TYPE, words, etymWordsWrapup, etymTypeCode);
 						}
 					}
-					String etymQuestionable = etymGroupNode.attributeValue(etymQuestionableAttr);
+					String etymQuestionable = ((Element)etymGroupNode).attributeValue(etymQuestionableAttr);
 					boolean isEtymQuestionable = StringUtils.isNotBlank(etymQuestionable);
-					String etymAlternative = etymGroupNode.attributeValue(etymAlternativeAttr);
+					String etymAlternative = ((Element)etymGroupNode).attributeValue(etymAlternativeAttr);
 					boolean isEtymAlternative = StringUtils.isNotBlank(etymAlternative);
 					boolean isFirstEtym;
 					if (word1Ids == null) {
@@ -183,15 +184,15 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 					}
 					word2Ids = new ArrayList<>();
 					// etym subgroup
-					List<Element> etymSubGroupNodes = etymGroupNode.selectNodes(etymSubGroupExp);
-					for (Element etymSubGroupNode : etymSubGroupNodes) {
-						etymQuestionable = etymSubGroupNode.attributeValue(etymQuestionableAttr);
+					List<Node> etymSubGroupNodes = etymGroupNode.selectNodes(etymSubGroupExp);
+					for (Node etymSubGroupNode : etymSubGroupNodes) {
+						etymQuestionable = ((Element)etymSubGroupNode).attributeValue(etymQuestionableAttr);
 						isEtymQuestionable = (isFirstEtym && isEtymQuestionable) || StringUtils.isNotBlank(etymQuestionable);
-						String etymWordCompound = etymSubGroupNode.attributeValue(etymWordCompoundAttr);
+						String etymWordCompound = ((Element)etymSubGroupNode).attributeValue(etymWordCompoundAttr);
 						boolean isEtymWordCompound = StringUtils.isNotBlank(etymWordCompound);
 						//TODO impl
-						List<Element> etymLangNodes = etymSubGroupNode.selectNodes(etymLangExp);
-						List<Element> etymWordNodes = etymSubGroupNode.selectNodes(etymWordExp);
+						List<Node> etymLangNodes = etymSubGroupNode.selectNodes(etymLangExp);
+						List<Node> etymWordNodes = etymSubGroupNode.selectNodes(etymWordExp);
 						Element etymCommentNode = (Element) etymSubGroupNode.selectSingleNode(etymCommentExp);
 						if (isFirstEtym && CollectionUtils.isNotEmpty(etymRootComments)) {
 							etymComments = new ArrayList<>(etymRootComments);
@@ -202,10 +203,10 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							String etymComment = etymCommentNode.getTextTrim();
 							etymComments.add(etymComment);
 						}
-						List<Element> etymRegisterNodes = etymSubGroupNode.selectNodes(etymRegisterExp);
+						List<Node> etymRegisterNodes = etymSubGroupNode.selectNodes(etymRegisterExp);
 						List<String> etymRegisterCodes = new ArrayList<>();
-						for (Element etymRegisterNode : etymRegisterNodes) {
-							String etymRegister = etymRegisterNode.getTextTrim();
+						for (Node etymRegisterNode : etymRegisterNodes) {
+							String etymRegister = ((Element)etymRegisterNode).getTextTrim();
 							mappedRegisterCode = registerConversionMap.get(etymRegister);
 							if (mappedRegisterCode == null) {
 								logger.debug("Unknown register \"{}\"", etymRegister);
@@ -216,8 +217,8 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						}
 						Long meaningId = createMeaning();
 						// foreign etym words
-						for (Element etymWordNode : etymWordNodes) {
-							String word = etymWordNode.getTextTrim();
+						for (Node etymWordNode : etymWordNodes) {
+							String word = ((Element)etymWordNode).getTextTrim();
 							int homonymNr = getWordMaxHomonymNr(word, missingLangCode);//TODO collect lang by mapped iso 
 							homonymNr++;
 							Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, missingLangCode);//TODO collect lang by mapped iso
@@ -232,10 +233,10 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							}
 						}
 						// est etym words
-						List<Element> etymEstWordNodes = etymSubGroupNode.selectNodes(etymEstWordExp);
+						List<Node> etymEstWordNodes = etymSubGroupNode.selectNodes(etymEstWordExp);
 						if (CollectionUtils.isNotEmpty(etymEstWordNodes)) {
-							for (Element etymEstWordNode : etymEstWordNodes) {
-								String word = etymEstWordNode.getTextTrim();
+							for (Node etymEstWordNode : etymEstWordNodes) {
+								String word = ((Element)etymEstWordNode).getTextTrim();
 								int homonymNr = getWordMaxHomonymNr(word, langEst);
 								homonymNr++;
 								Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, langEst);
@@ -243,7 +244,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							}
 						}
 						//TODO impl
-						List<Element> etymAuthorNodes = etymSubGroupNode.selectNodes(etymAuthorExp);
+						List<Node> etymAuthorNodes = etymSubGroupNode.selectNodes(etymAuthorExp);
 						//TODO impl
 						Element etymYearNode = (Element) etymSubGroupNode.selectSingleNode(etymYearExp);
 
