@@ -33,7 +33,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1400px;
-  --font-family-sans-serif: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family-sans-serif: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -62,7 +62,7 @@ article, aside, dialog, figcaption, figure, footer, header, hgroup, main, nav, s
 
 body {
   margin: 0;
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -370,7 +370,7 @@ h1, h2, h3, h4, h5, h6,
 
 h6,
 .h6 {
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: 700;
 }
 
@@ -3562,7 +3562,7 @@ input[type="button"].btn-block {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -6506,7 +6506,7 @@ ul {
   display: block;
   height: 3.4375rem;
   font-size: 1.375rem;
-  font-family: "Montserrat" !important;
+  font-family: "Myriad Pro", Myriad, "Montserrat" !important;
   color: rgba(255, 255, 255, 0.8);
   font-weight: 700;
   padding-left: 0.9375rem;
@@ -6718,7 +6718,7 @@ ul {
   border-radius: 6.25rem;
   font-size: 0.75rem;
   font-weight: 700;
-  font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   padding-top: 0.125rem;
   text-align: center;
   position: relative;
@@ -6793,8 +6793,6 @@ ul {
 .level-3-panel:not(.expand) .additional-meta,
 .level-3-panel:not(.expand) .dictionary-source,
 .level-3-panel:not(.expand) .meaning-meta,
-.level-3-panel:not(.expand) .dependence:not(:first-child),
-.level-3-panel:not(.expand) .example-item:not(:first-child),
 .level-3-panel:not(.expand) .label,
 .level-3-panel:not(.expand) .label-md,
 .level-3-panel:not(.expand) .morphology-section .row:not(.intro),
@@ -6803,17 +6801,30 @@ ul {
   opacity: 0;
 }
 
+.level-3-panel .dependence {
+  display: none;
+  opacity: 0;
+}
+
+.level-3-panel .dependence:nth-child(1),
+.level-3-panel .dependence:nth-child(2),
+.level-3-panel .dependence:nth-child(3)
+ {
+  display: inline-flex;
+  opacity: 1;
+}
+
+.level-3-panel.expand .dependence
+{
+  display: inline-flex;
+  opacity: 1;
+}
+
+
 .level-3-panel.expand {
   flex-direction: column;
 }
 
-.level-3-panel.expand .dependence {
-  padding-bottom: 0.3125rem;
-}
-
-.level-3-panel.expand .example-text {
-  margin-bottom: 0.1875rem;
-}
 
 .level-3-panel.expand .meaning,
 .level-3-panel.expand .meaning-meta {
@@ -6907,15 +6918,34 @@ ul {
   border-radius: 0.3125rem;
 }
 
+
 .dependencies * {
   transition: 0ms;
 }
 
-.dependence {
-  overflow: auto;
-  margin-bottom: -0.4375rem;
-  max-width: 31.25rem;
+.dependencies .btn-speaker {
+  color: #0077FF;
+  opacity: 0.5;
+  position: relative;
+  top: 0.1875rem;
 }
+
+.dependencies .btn-speaker .icon-speaker {
+  font-size: 1rem;
+}
+
+.dependencies .btn-speaker:focus, .dependencies .btn-speaker:focus-within, .dependencies .btn-speaker:active {
+  color: #0077FF;
+  opacity: 1;
+}
+
+.dependence {
+  overflow: inherit;
+  margin-bottom: -0.4375rem;
+  padding-bottom: 0.1875rem;
+  position: relative;
+}
+
 
 .question {
   color: lightgray;
@@ -6932,8 +6962,8 @@ ul {
   cursor: pointer;
 }
 
-.example-item:hover .example-text {
-  background-color: #e9ecef;
+.dependencies .example-item:hover {
+  background-color: #e9ecef!important;
 }
 
 .example-item:hover .btn-speaker {
@@ -6944,12 +6974,15 @@ ul {
   clear: right;
 }
 
+.dependencies .example-item {
+   background-color: #F2F2F2;
+  border-radius: 0.6875rem;
+      margin-bottom: 0.125rem;
+}
+
 .example-text {
   float: left;
   font-style: italic;
-  letter-spacing: 0.02rem;
-  background-color: #F2F2F2;
-  border-radius: 0.6875rem;
 }
 
 .example-text strong {
@@ -6957,7 +6990,11 @@ ul {
 }
 
 .example-text {
-  padding: 0.25rem 0.625rem 0.375rem 0.625rem;
+  padding: 0rem 0.5rem 0rem 0.5rem;
+  line-height: 1;
+  font-size: 0.875rem;
+  align-items: center;
+  display: flex;
 }
 
 .btn-speaker {
@@ -7264,7 +7301,7 @@ ul {
   }
   h3 span + span {
     font-size: 1.2rem;
-    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+    font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
   }
   .homonym-item {
     cursor: pointer;
@@ -7341,7 +7378,7 @@ ul {
     display: block;
   }
   .homonym-item .homonym-header {
-    font-family: "Montserrat";
+    font-family: "Myriad Pro", Myriad, "Montserrat";
     font-size: 1.25rem;
   }
   .homonym-intro {
@@ -7402,7 +7439,10 @@ ul {
     padding-top: 0;
   }
   .level-3-panel {
-    padding: 1.875rem 2.5rem;
+    padding: 1.875rem 2.5rem 1.875rem 1rem;
+  }
+  .more-data .level-3-panel {
+    padding: 1.875rem 2.5rem 1.875rem 2.5rem;
   }
   .content-title {
     z-index: 1;
@@ -7416,11 +7456,10 @@ ul {
   }
   .meaning-panel .meaning,
   .meaning-panel .meaning-meta {
-    max-width: 50.01% !important;
     float: left;
   }
   .meaning-panel .dependencies {
-    max-width: 49.99% !important;
+    padding-top: 1rem;
     float: right;
   }
   .example-text {
@@ -7463,3 +7502,7 @@ ul {
     margin-top: -0.25rem;
   }
 }
+
+.logo-wrapper { position: relative; }
+.logo-list { display: flex; flex-direction: row; margin: 0 auto; justify-content: center; margin-top: 1.5rem; position: absolute; left: 0; right: 0  }
+.htm-logo { background: url(../images/htm.png) center center no-repeat; display: block; height: 98px; width: 236px; background-size: 236px 98px; }
