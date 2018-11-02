@@ -24,7 +24,7 @@ public class EkilexApplication {
 	boolean ajpEnabled;
 
 	@Value("${server.servlet.session.timeout:30m}")  // default 30 min
-	String sessionTimeout;
+	Duration sessionTimeout;
 
 	public static void main(String[] args) {
 		SpringApplication.run(EkilexApplication.class, args);
@@ -43,7 +43,7 @@ public class EkilexApplication {
 	@Bean
 	public TomcatServletWebServerFactory servletContainer() {
 		TomcatServletWebServerFactory tomcat = new TomcatServletWebServerFactory();
-		tomcat.getSession().setTimeout(Duration.parse("PT" + sessionTimeout));
+		tomcat.getSession().setTimeout(sessionTimeout);
 		if (ajpEnabled) {
 			Connector ajpConnector = new Connector("AJP/1.3");
 			ajpConnector.setPort(ajpPort);
