@@ -38,6 +38,8 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_MISSING_ETYM_TYPE = "missing_etym_type";
 
+	private static final String REPORT_MISSING_ETYM_LANG = "missing_etym_lang";
+
 	private static final String REPORT_UNKNOWN_ETYM_TYPE = "unknown_etym_type";
 
 	private static final String REPORT_UNKNOWN_REGISTER = "unknown_register";
@@ -70,6 +72,8 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 
 	private Map<String, String> registerConversionMap;
 
+	private Map<String, String> languageConversionMap;
+
 	@Override
 	String getDataset() {
 		return "ety";
@@ -79,6 +83,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	public void initialise() throws Exception {
 		etymTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_ETYMPLTYYP);
 		registerConversionMap = loadClassifierMappingsFor(EKI_CLASSIFIER_STYYP, ClassifierName.REGISTER.name());
+		languageConversionMap = loadClassifierMappingsFor(EKI_CLASSIIFER_ETYMKEELTYYP, ClassifierName.LANGUAGE.name());
 	}
 
 	@Transactional
@@ -90,7 +95,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		t1 = System.currentTimeMillis();
 
 		if (doReports) {
-			reportComposer = new ReportComposer("etymology loader report", REPORT_MISSING_ETYM_TYPE, REPORT_UNKNOWN_ETYM_TYPE);
+			reportComposer = new ReportComposer("etymology loader report", REPORT_MISSING_ETYM_TYPE, REPORT_MISSING_ETYM_LANG, REPORT_UNKNOWN_ETYM_TYPE);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -101,8 +106,6 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Extracted {} articles", articleCount);
 
 		final String ssDataset = "ss1";
-		//TODO remove later
-		final String missingLangCode = "---";
 		final String defaultWordMorphCode = "??";
 
 		List<Map<String, Object>> wordDatas;
@@ -153,8 +156,9 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 				String mappedEtymTypeCode = null;
 				String mappedRegisterCode = null;
 				for (Node etymGroupNode : etymGroupNodes) {
+					Element etymGroupElement = (Element) etymGroupNode;
 					List<Node> etymWordsWrapupNodes = etymGroupNode.selectNodes(etymWordWrapupExp);
-					List<String> etymWordsWrapup = etymWordsWrapupNodes.stream().map(n -> ((Element) n).getTextTrim()).collect(Collectors.toList());
+					List<String> etymWordsWrapup = etymWordsWrapupNodes.stream().map(node -> ((Element) node).getTextTrim()).collect(Collectors.toList());
 					Element etymTypeNode = (Element) etymGroupNode.selectSingleNode(etymTypeExp);
 					if (etymTypeNode == null) {
 						missingEtymTypeCount.increment();
@@ -168,9 +172,9 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							appendToReport(doReports, REPORT_UNKNOWN_ETYM_TYPE, words, etymWordsWrapup, etymTypeCode);
 						}
 					}
-					String etymQuestionable = ((Element)etymGroupNode).attributeValue(etymQuestionableAttr);
+					String etymQuestionable = etymGroupElement.attributeValue(etymQuestionableAttr);
 					boolean isEtymQuestionable = StringUtils.isNotBlank(etymQuestionable);
-					String etymAlternative = ((Element)etymGroupNode).attributeValue(etymAlternativeAttr);
+					String etymAlternative = etymGroupElement.attributeValue(etymAlternativeAttr);
 					boolean isEtymAlternative = StringUtils.isNotBlank(etymAlternative);
 					boolean isFirstEtym;
 					if (word1Ids == null) {
@@ -186,13 +190,17 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 					// etym subgroup
 					List<Node> etymSubGroupNodes = etymGroupNode.selectNodes(etymSubGroupExp);
 					for (Node etymSubGroupNode : etymSubGroupNodes) {
-						etymQuestionable = ((Element)etymSubGroupNode).attributeValue(etymQuestionableAttr);
+						Element etymSubGroupElement = (Element) etymSubGroupNode;
+						etymQuestionable = etymSubGroupElement.attributeValue(etymQuestionableAttr);
 						isEtymQuestionable = (isFirstEtym && isEtymQuestionable) || StringUtils.isNotBlank(etymQuestionable);
-						String etymWordCompound = ((Element)etymSubGroupNode).attributeValue(etymWordCompoundAttr);
+						String etymWordCompound = etymSubGroupElement.attributeValue(etymWordCompoundAttr);
 						boolean isEtymWordCompound = StringUtils.isNotBlank(etymWordCompound);
-						//TODO impl
-						List<Node> etymLangNodes = etymSubGroupNode.selectNodes(etymLangExp);
 						List<Node> etymWordNodes = etymSubGroupNode.selectNodes(etymWordExp);
+						List<Node> etymLangNodes = etymSubGroupNode.selectNodes(etymLangExp);
+						if (CollectionUtils.isEmpty(etymLangNodes)) {
+							logger.debug("Missing lang for \"{}\" - \"{}\"", words, etymWordsWrapup);
+							appendToReport(doReports, REPORT_MISSING_ETYM_LANG, words, etymWordsWrapup);
+						}
 						Element etymCommentNode = (Element) etymSubGroupNode.selectSingleNode(etymCommentExp);
 						if (isFirstEtym && CollectionUtils.isNotEmpty(etymRootComments)) {
 							etymComments = new ArrayList<>(etymRootComments);
@@ -218,25 +226,32 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						Long meaningId = createMeaning();
 						// foreign etym words
 						for (Node etymWordNode : etymWordNodes) {
-							String word = ((Element)etymWordNode).getTextTrim();
-							int homonymNr = getWordMaxHomonymNr(word, missingLangCode);//TODO collect lang by mapped iso 
-							homonymNr++;
-							Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, missingLangCode);//TODO collect lang by mapped iso
-							Long lexemeId = createLexeme(wordId, meaningId);
-							for (String etymRegisterCode : etymRegisterCodes) {
-								createLexemeRegister(lexemeId, etymRegisterCode);
-							}
-							word2Ids.add(wordId);
-							for (Long word1Id : word1Ids) {
-								createWordEtymology(word1Id, wordId, mappedEtymTypeCode, etymComments, isEtymQuestionable, isEtymWordCompound);
-								etymCount.increment();
+							Element etymWordElement = (Element) etymWordNode;
+							String word = etymWordElement.getTextTrim();
+							for (Node etymLangNode : etymLangNodes) {
+								Element etymLangElement = (Element) etymLangNode;
+								String etymLang = etymLangElement.getTextTrim();
+								String mappedEtymLangCode = languageConversionMap.get(etymLang);
+								int homonymNr = getWordMaxHomonymNr(word, mappedEtymLangCode);
+								homonymNr++;
+								Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, mappedEtymLangCode);
+								Long lexemeId = createLexeme(wordId, meaningId);
+								for (String etymRegisterCode : etymRegisterCodes) {
+									createLexemeRegister(lexemeId, etymRegisterCode);
+								}
+								word2Ids.add(wordId);
+								for (Long word1Id : word1Ids) {
+									createWordEtymology(word1Id, wordId, mappedEtymTypeCode, etymComments, isEtymQuestionable, isEtymWordCompound);
+									etymCount.increment();
+								}
 							}
 						}
 						// est etym words
 						List<Node> etymEstWordNodes = etymSubGroupNode.selectNodes(etymEstWordExp);
 						if (CollectionUtils.isNotEmpty(etymEstWordNodes)) {
 							for (Node etymEstWordNode : etymEstWordNodes) {
-								String word = ((Element)etymEstWordNode).getTextTrim();
+								Element etymEstWordElement = (Element) etymEstWordNode;
+								String word = etymEstWordElement.getTextTrim();
 								int homonymNr = getWordMaxHomonymNr(word, langEst);
 								homonymNr++;
 								Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, langEst);
