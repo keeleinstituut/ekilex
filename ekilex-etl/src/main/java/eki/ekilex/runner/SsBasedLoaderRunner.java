@@ -540,7 +540,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
-		String government;
+		List<String> governments = new ArrayList<>();
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
 		String wordType;
@@ -557,7 +557,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.lexemeLevel1 = this.lexemeLevel1;
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
-			newData.government = this.government;
+			newData.governments.addAll(this.governments);
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
 			newData.wordType = this.wordType;
