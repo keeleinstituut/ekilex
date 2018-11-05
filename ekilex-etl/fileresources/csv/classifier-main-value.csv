@@ -119,7 +119,7 @@ lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
 lex_rel_type	yhvt	vaata ka	est	wordweb
 lex_rel_type	vor	suhtlus, vestlus	est	wordweb
 lex_rel_type	tvt:vrd	võrdle	est	wordweb
-lexeme_frequency	1	1 - 3000	est	descrip
+lexeme_frequency	1	jaan.00	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
 lexeme_frequency	4	4 - pole sagedussõnastikus	est	descrip
@@ -216,17 +216,17 @@ morph	SgN	SgN	eng	abbrev
 morph	SgG	om	est	abbrev
 morph	SgP	os	est	abbrev
 morph	ID	--------	est	ekimorfo
-morph	??	------xx	est	ekimorfo
+morph	??	#NAME?	est	ekimorfo
 morph	SgN	------0N	est	ekimorfo
 morph	SgG	------0G	est	ekimorfo
 morph	SgP	------0P	est	ekimorfo
 morph	SgAdt	------0D	est	ekimorfo
-morph	SgIll	------01	est	ekimorfo
-morph	SgIn	------02	est	ekimorfo
-morph	SgEl	------03	est	ekimorfo
-morph	SgAll	------04	est	ekimorfo
-morph	SgAd	------05	est	ekimorfo
-morph	SgAbl	------06	est	ekimorfo
+morph	SgIll	1	est	ekimorfo
+morph	SgIn	2	est	ekimorfo
+morph	SgEl	3	est	ekimorfo
+morph	SgAll	4	est	ekimorfo
+morph	SgAd	5	est	ekimorfo
+morph	SgAbl	6	est	ekimorfo
 morph	SgTr	------0T	est	ekimorfo
 morph	SgTer	------0R	est	ekimorfo
 morph	SgEs	------0E	est	ekimorfo
@@ -235,12 +235,12 @@ morph	SgKom	------0K	est	ekimorfo
 morph	PlN	------1N	est	ekimorfo
 morph	PlG	------1G	est	ekimorfo
 morph	PlP	------1P	est	ekimorfo
-morph	PlIll	------11	est	ekimorfo
-morph	PlIn	------12	est	ekimorfo
-morph	PlEl	------13	est	ekimorfo
-morph	PlAll	------14	est	ekimorfo
-morph	PlAd	------15	est	ekimorfo
-morph	PlAbl	------16	est	ekimorfo
+morph	PlIll	11	est	ekimorfo
+morph	PlIn	12	est	ekimorfo
+morph	PlEl	13	est	ekimorfo
+morph	PlAll	14	est	ekimorfo
+morph	PlAd	15	est	ekimorfo
+morph	PlAbl	16	est	ekimorfo
 morph	PlTr	------1T	est	ekimorfo
 morph	PlTer	------1R	est	ekimorfo
 morph	PlEs	------1E	est	ekimorfo
@@ -248,7 +248,7 @@ morph	PlAb	------1A	est	ekimorfo
 morph	PlKom	------1K	est	ekimorfo
 morph	Rpl	------1-	est	ekimorfo
 morph	Nlyhi	------RC	est	ekimorfo
-morph	Nvahe	------HC	est	ekimorfo
+morph	Nvahe	#NAME?	est	ekimorfo
 morph	Sup	30------	est	ekimorfo
 morph	SupAb	30-----A	est	ekimorfo
 morph	SupIn	30-----2	est	ekimorfo
@@ -740,3 +740,599 @@ word_type	organisatsiooni, asutuse nimi	organisatsiooni, asutuse nimi	est	wordwe
 word_type	termin	termin	est	wordweb
 word_type	tõlkeprobleem	tõlkeprobleem	est	wordweb
 word_type	valem	valem	est	wordweb
+language	abk	abhaasi keel	est	wordweb
+language	abk	Abkhaz	eng	wordweb
+language	afr	afrikaani keel	est	wordweb
+language	qab	alamsaksa keel	est	wordweb
+language	qab	Low German	eng	wordweb
+language	sqi	albaania keel	est	wordweb
+language	sqi	Albanian	eng	wordweb
+language	ara	araabia keel	est	wordweb
+language	ara	Arabic	eng	wordweb
+language	arw	aravaki	est	wordweb
+language	arw	Arawak	eng	wordweb
+language	aze	aserbaidžaani keel	est	wordweb
+language	aze	Azerbaijani	eng	wordweb
+language	qbk	Austraalia keeled	est	wordweb
+language	qbk	Australian languages	eng	wordweb
+language	ave	avesta keel	est	wordweb
+language	ave	Avesta	eng	wordweb
+language	bft	balti keel (tiibeti keelerühmas)	est	wordweb
+language	bft	Balti	eng	wordweb
+language	qad	baltisaksa murre	est	wordweb
+language	qad	Baltic German	eng	wordweb
+language	bam	bambara keel (Malis)	est	wordweb
+language	bam	Bambara	eng	wordweb
+language	qbl	bantu keeled	est	wordweb
+language	ben	bengali keel	est	wordweb
+language	ben	Bengal	eng	wordweb
+language	ber	berberi keel	est	wordweb
+language	ber	Berber	eng	wordweb
+language	xdk	dharuki	est	wordweb
+language	enh	eenetsi keel	est	wordweb
+language	qae	eestirootsi murre	est	wordweb
+language	qaf	eesti-vadja	est	wordweb
+language	qaf	Estonian and Votic	eng	wordweb
+language	egy	egiptuse	est	wordweb
+language	egy	Egyptian	eng	wordweb
+language	myv	ersa keel	est	wordweb
+language	myv	Erzya	eng	wordweb
+language	gez	etioopia keel	est	wordweb
+language	eve	eveeni keel	est	wordweb
+language	evn	evengi keel	est	wordweb
+language	qag	frangi keel	est	wordweb
+language	qag	Frankish (Old Franconian, Old Frankish)	eng	wordweb
+language	gla	gaeli keel	est	wordweb
+language	gla	Gaelish	eng	wordweb
+language	gem	germaani	est	wordweb
+language	gem	Germanic	eng	wordweb
+language	got	gooti keel	est	wordweb
+language	got	Gothic	eng	wordweb
+language	kat	gruusia keel	est	wordweb
+language	kat	Georgian	eng	wordweb
+language	kal	grööni keel	est	wordweb
+language	kal	Greenlandic	eng	wordweb
+language	kca	handi keel	est	wordweb
+language	haw	havai keel	est	wordweb
+language	haw	Hawaiian	eng	wordweb
+language	heb	heebrea keel	est	wordweb
+language	heb	Hebrew	eng	wordweb
+language	zho	hiina keel	est	wordweb
+language	zho	Chinese	eng	wordweb
+language	qah	hiliskreeka keel (2.-7. saj)	est	wordweb
+language	qah	Late Greek	eng	wordweb
+language	qai	hilisladina keel	est	wordweb
+language	qai	Late Latin	eng	wordweb
+language	hin	hindi keel	est	wordweb
+language	hin	Hindi	eng	wordweb
+language	spa	hispaania keel	est	wordweb
+language	spa	Spanish	eng	wordweb
+language	nld	hollandi keel	est	wordweb
+language	nld	Dutch	eng	wordweb
+language	ine	indoeuroopa	est	wordweb
+language	ind	Indoneesia keel	est	wordweb
+language	ind	Indonesian	eng	wordweb
+language	eng	inglise keel	est	wordweb
+language	eng	English	eng	wordweb
+language	isl	islandi keel	est	wordweb
+language	isl	Icelandic	eng	wordweb
+language	izh	isuri keel	est	wordweb
+language	ita	itaalia keel	est	wordweb
+language	ita	Italian	eng	wordweb
+language	jpn	jaapani keel	est	wordweb
+language	jpn	Japanese	eng	wordweb
+language	yid	jidiši keel	est	wordweb
+language	yid	Yidish	eng	wordweb
+language	xas	kamassi keel	est	wordweb
+language	car	kariibi keel	est	wordweb
+language	krl	karjala keel	est	wordweb
+language	krl	Karelian	eng	wordweb
+language	kaz	kasahhi keel	est	wordweb
+language	kaz	Kazakh	eng	wordweb
+language	cat	katalaani keel	est	wordweb
+language	dum	keskhollandi keel	est	wordweb
+language	dum	Middle Dutch	eng	wordweb
+language	qaj	keskindia keel	est	wordweb
+language	qaa	keskaja kreeka keel	est	wordweb
+language	qaa	Medieval Greek	eng	wordweb
+language	qak	keskaja ladina keel	est	wordweb
+language	qak	Medieval Latin	eng	wordweb
+language	frm	keskprantsuse keel	est	wordweb
+language	frm	Middle French	eng	wordweb
+language	qal	keskpärsia keel	est	wordweb
+language	qal	Middle Persian	eng	wordweb
+language	gmh	keskülemsaksa keel	est	wordweb
+language	gmh	Middle High German	eng	wordweb
+language	que	ketšua keel	est	wordweb
+language	que	Quechua	eng	wordweb
+language	kmb	kimbundu	est	wordweb
+language	kmb	Kimbundu (North Mbundu)	eng	wordweb
+language	kir	kirgiisi keel	est	wordweb
+language	kir	Kirghiz	eng	wordweb
+language	qam	kirikuladina (keel)	est	wordweb
+language	qam	Church Latin	eng	wordweb
+language	chu	kirikusalaavi (vanaslaavi) keel	est	wordweb
+language	chu	Old Church Slavonic	eng	wordweb
+language	kom	komi keel	est	wordweb
+language	kom	Komi	eng	wordweb
+language	kon	kongo keel	est	wordweb
+language	kon	Kongo	eng	wordweb
+language	ell	kreeka keel	est	wordweb
+language	ell	Greek	eng	wordweb
+language	crh	krimmitatari keel	est	wordweb
+language	cym	kõmri keel	est	wordweb
+language	cym	Welsh	eng	wordweb
+language	qwm	kõptšaki keel	est	wordweb
+language	qwm	Kipchak	eng	wordweb
+language	lat	ladina keel	est	wordweb
+language	lat	Latin	eng	wordweb
+language	lit	leedu keel	est	wordweb
+language	lit	Lithuanian	eng	wordweb
+language	liv	liivi keel	est	wordweb
+language	liv	Livonian	eng	wordweb
+language	qan	liivi keele Salatsi murre	est	wordweb
+language	lav	läti keel	est	wordweb
+language	lav	Latvian	eng	wordweb
+language	qao	läänemeresoome	est	wordweb
+language	qao	Baltic-Finnic	eng	wordweb
+language	qap	läänemeresoome-mordva	est	wordweb
+language	qaq	läänemeresoome-permi	est	wordweb
+language	qar	läänemeresoome-saami	est	wordweb
+language	qas	läänemeresoome-volga	est	wordweb
+language	lud	lüüdi keel	est	wordweb
+language	mlg	malagassi keel	est	wordweb
+language	msa	malai keel	est	wordweb
+language	msa	Malay	eng	wordweb
+language	mal	malajalami keel	est	wordweb
+language	mal	Malayalam	eng	wordweb
+language	div	maldiivi keel	est	wordweb
+language	div	Dhivehi	eng	wordweb
+language	mns	mansi keel	est	wordweb
+language	mri	maoori keel	est	wordweb
+language	chm	mari keel	est	wordweb
+language	chm	Mari	eng	wordweb
+language	qat	meditsiiniladina keelend	est	wordweb
+language	qat	Medical Latin	eng	wordweb
+language	mic	mikmaki keel	est	wordweb
+language	mic	Micmac	eng	wordweb
+language	mdf	mokša	est	wordweb
+language	mdf	Moksha	eng	wordweb
+language	mon	mongoli keel	est	wordweb
+language	mon	Mongolian	eng	wordweb
+language	nah	nahua keel	est	wordweb
+language	nah	Nahuatl	eng	wordweb
+language	naq	nama (endise nimega hotentoti) keel	est	wordweb
+language	naq	Khoekhoe (Nama, Hottentot)	eng	wordweb
+language	yrk	neenetsi keel	est	wordweb
+language	nep	nepaali keel	est	wordweb
+language	nio	nganassaani keel	est	wordweb
+language	nor	norra keel	est	wordweb
+language	oss	osseedi keel	est	wordweb
+language	pol	poola keel	est	wordweb
+language	pol	Polish	eng	wordweb
+language	por	portugali keel	est	wordweb
+language	por	Portuguese	eng	wordweb
+language	pim	pouhatani keel	est	wordweb
+language	pim	Powhatan	eng	wordweb
+language	fra	prantsuse keel	est	wordweb
+language	fra	French	eng	wordweb
+language	qau	provansi	est	wordweb
+language	prg	preisi keel	est	wordweb
+language	fas	pärsia	est	wordweb
+language	fas	Persian	eng	wordweb
+language	qav	rahvaladina keel	est	wordweb
+language	qav	Vulgar Latin	eng	wordweb
+language	qbm	romaani keeled	est	wordweb
+language	swe	rootsi keel	est	wordweb
+language	swe	Swedish	eng	wordweb
+language	ron	rumeenia keel	est	wordweb
+language	ron	Romanian	eng	wordweb
+language	qaw	saami keel	est	wordweb
+language	qaw	Sami	eng	wordweb
+language	smn	Inari saami keel	est	wordweb
+language	sms	koltasaami keel	est	wordweb
+language	smj	Lule saami keel	est	wordweb
+language	sma	lõunasaami keel	est	wordweb
+language	sje	Pite saami keel	est	wordweb
+language	sjt	turjasaami keel	est	wordweb
+language	deu	saksa keel	est	wordweb
+language	deu	German	eng	wordweb
+language	srh	sarikoli keel	est	wordweb
+language	qbn	semi keeled	est	wordweb
+language	hbs	serbohorvaadi keel	est	wordweb
+language	dak	siuu	est	wordweb
+language	qbo	slaavi keeled	est	wordweb
+language	slv	sloveeni keel	est	wordweb
+language	fin	soome keel	est	wordweb
+language	fin	Finnish	eng	wordweb
+language	qac	soome-ugri	est	wordweb
+language	qac	Finno-Ugric	eng	wordweb
+language	swa	suahiili keel	est	wordweb
+language	swa	Swahili	eng	wordweb
+language	zul	suulu keel	est	wordweb
+language	zul	Zulu	eng	wordweb
+language	sel	sölkupi keel	est	wordweb
+language	syr	süüria keel	est	wordweb
+language	syr	Syrian	eng	wordweb
+language	dan	taani keel	est	wordweb
+language	dan	Danish	eng	wordweb
+language	tgk	tadžiki keel	est	wordweb
+language	tgk	Tajiki (Tajiki Persian)	eng	wordweb
+language	tgl	tagalogi keel	est	wordweb
+language	tgl	Tagalog	eng	wordweb
+language	tha	tai keel	est	wordweb
+language	tha	Thai	eng	wordweb
+language	tnq	taino keel	est	wordweb
+language	tnq	Taino	eng	wordweb
+language	tam	tamili keel	est	wordweb
+language	tam	Tamil	eng	wordweb
+language	tat	tatari keel	est	wordweb
+language	tat	Tatar	eng	wordweb
+language	bod	tiibeti keel	est	wordweb
+language	bod	Tibetan	eng	wordweb
+language	ton	tonga keel	est	wordweb
+language	ton	Tongan	eng	wordweb
+language	chg	tšagatai (vanausbeki) keel	est	wordweb
+language	chg	Chagatai	eng	wordweb
+language	ces	tšehhi keel	est	wordweb
+language	ces	Czech	eng	wordweb
+language	ckt	tšuktši keel	est	wordweb
+language	ckt	Chukchi	eng	wordweb
+language	chv	tšuvaši keel	est	wordweb
+language	chv	Chuvash	eng	wordweb
+language	qax	tupi-guaranii keel	est	wordweb
+language	qax	Tupi-Guarani	eng	wordweb
+language	qbj	turgi keeled	est	wordweb
+language	qbj	Turkic	eng	wordweb
+language	tur	türgi keel	est	wordweb
+language	tur	Turkish	eng	wordweb
+language	udm	udmurdi keel	est	wordweb
+language	udm	Udmurt	eng	wordweb
+language	uig	uiguuri keel	est	wordweb
+language	uig	Uighur	eng	wordweb
+language	ukr	ukraina	est	wordweb
+language	ukr	Ukrainian	eng	wordweb
+language	hun	ungari keel	est	wordweb
+language	hun	Hungarian	eng	wordweb
+language	urd	urdu keel	est	wordweb
+language	urd	Urdu	eng	wordweb
+language	qay	uurali	est	wordweb
+language	qay	Uralic	eng	wordweb
+language	qaz	uuskreeka keel	est	wordweb
+language	qaz	New Greek	eng	wordweb
+language	qba	uusladina keel	est	wordweb
+language	qba	New Latin / Neo-Latin	eng	wordweb
+language	vot	vadja keel	est	wordweb
+language	vot	Votic	eng	wordweb
+language	bel	valgevene keel	est	wordweb
+language	bel	Belarusian	eng	wordweb
+language	qbb	vanaegiptuse keel	est	wordweb
+language	qbc	vanafriisi keel	est	wordweb
+language	qbd	vanahispaania keel	est	wordweb
+language	qbe	vanaindia keel	est	wordweb
+language	ang	vanainglise keel	est	wordweb
+language	qbf	vanasaksi keel	est	wordweb
+language	qbf	Old Saxon	eng	wordweb
+language	fro	vanaprantsuse keel	est	wordweb
+language	fro	Old French	eng	wordweb
+language	non	vanapõhja keel	est	wordweb
+language	qbg	vanarootsi keel	est	wordweb
+language	qbg	Old Swedish	eng	wordweb
+language	qbh	vanatürgi keel	est	wordweb
+language	qbh	Old Turkish	eng	wordweb
+language	qbi	vanavene keel	est	wordweb
+language	qbi	Old Russian	eng	wordweb
+language	goh	vanaülemsaksa keel	est	wordweb
+language	goh	Old High German	eng	wordweb
+language	rus	vene keel	est	wordweb
+language	rus	Russian	eng	wordweb
+language	vep	vepsa keel	est	wordweb
+language	vep	Vepsian	eng	wordweb
+language	vie	vietnami keel	est	wordweb
+language	vie	Vietnamese	eng	wordweb
+language	est	Estonian	eng	wordweb
+language	san	Sanskrit	eng	wordweb
+language	pli	Pali	eng	wordweb
+language	pan	Panjabi	eng	wordweb
+language	est	eesti	est	wordweb
+language	san	sanskriti	est	wordweb
+language	pli	paali	est	wordweb
+language	pan	pandžabi	est	wordweb
+language	abk	abhaasi keel	est	descrip
+language	abk	Abkhaz	eng	descrip
+language	afr	afrikaani keel	est	descrip
+language	qab	alamsaksa keel	est	descrip
+language	qab	Low German	eng	descrip
+language	sqi	albaania keel	est	descrip
+language	sqi	Albanian	eng	descrip
+language	ara	araabia keel	est	descrip
+language	ara	Arabic	eng	descrip
+language	arw	aravaki	est	descrip
+language	arw	Arawak	eng	descrip
+language	aze	aserbaidžaani keel	est	descrip
+language	aze	Azerbaijani	eng	descrip
+language	qbk	Austraalia keeled	est	descrip
+language	qbk	Australian languages	eng	descrip
+language	ave	avesta keel	est	descrip
+language	ave	Avesta	eng	descrip
+language	bft	balti keel (tiibeti keelerühmas)	est	descrip
+language	bft	Balti	eng	descrip
+language	qad	baltisaksa murre	est	descrip
+language	qad	Baltic German	eng	descrip
+language	bam	bambara keel (Malis)	est	descrip
+language	bam	Bambara	eng	descrip
+language	qbl	bantu keeled	est	descrip
+language	ben	bengali keel	est	descrip
+language	ben	Bengal	eng	descrip
+language	ber	berberi keel	est	descrip
+language	ber	Berber	eng	descrip
+language	xdk	dharuki	est	descrip
+language	enh	eenetsi keel	est	descrip
+language	qae	eestirootsi murre	est	descrip
+language	qaf	eesti-vadja	est	descrip
+language	qaf	Estonian and Votic	eng	descrip
+language	egy	egiptuse	est	descrip
+language	egy	Egyptian	eng	descrip
+language	myv	ersa keel	est	descrip
+language	myv	Erzya	eng	descrip
+language	gez	etioopia keel	est	descrip
+language	eve	eveeni keel	est	descrip
+language	evn	evengi keel	est	descrip
+language	qag	frangi keel	est	descrip
+language	qag	Frankish (Old Franconian, Old Frankish)	eng	descrip
+language	gla	gaeli keel	est	descrip
+language	gla	Gaelish	eng	descrip
+language	gem	germaani	est	descrip
+language	gem	Germanic	eng	descrip
+language	got	gooti keel	est	descrip
+language	got	Gothic	eng	descrip
+language	kat	gruusia keel	est	descrip
+language	kat	Georgian	eng	descrip
+language	kal	grööni keel	est	descrip
+language	kal	Greenlandic	eng	descrip
+language	kca	handi keel	est	descrip
+language	haw	havai keel	est	descrip
+language	haw	Hawaiian	eng	descrip
+language	heb	heebrea keel	est	descrip
+language	heb	Hebrew	eng	descrip
+language	zho	hiina keel	est	descrip
+language	zho	Chinese	eng	descrip
+language	qah	hiliskreeka keel (2.-7. saj)	est	descrip
+language	qah	Late Greek	eng	descrip
+language	qai	hilisladina keel	est	descrip
+language	qai	Late Latin	eng	descrip
+language	hin	hindi keel	est	descrip
+language	hin	Hindi	eng	descrip
+language	spa	hispaania keel	est	descrip
+language	spa	Spanish	eng	descrip
+language	nld	hollandi keel	est	descrip
+language	nld	Dutch	eng	descrip
+language	ine	indoeuroopa	est	descrip
+language	ind	Indoneesia keel	est	descrip
+language	ind	Indonesian	eng	descrip
+language	eng	inglise keel	est	descrip
+language	eng	English	eng	descrip
+language	isl	islandi keel	est	descrip
+language	isl	Icelandic	eng	descrip
+language	izh	isuri keel	est	descrip
+language	ita	itaalia keel	est	descrip
+language	ita	Italian	eng	descrip
+language	jpn	jaapani keel	est	descrip
+language	jpn	Japanese	eng	descrip
+language	yid	jidiši keel	est	descrip
+language	yid	Yidish	eng	descrip
+language	xas	kamassi keel	est	descrip
+language	car	kariibi keel	est	descrip
+language	krl	karjala keel	est	descrip
+language	krl	Karelian	eng	descrip
+language	kaz	kasahhi keel	est	descrip
+language	kaz	Kazakh	eng	descrip
+language	cat	katalaani keel	est	descrip
+language	dum	keskhollandi keel	est	descrip
+language	dum	Middle Dutch	eng	descrip
+language	qaj	keskindia keel	est	descrip
+language	qaa	keskaja kreeka keel	est	descrip
+language	qaa	Medieval Greek	eng	descrip
+language	qak	keskaja ladina keel	est	descrip
+language	qak	Medieval Latin	eng	descrip
+language	frm	keskprantsuse keel	est	descrip
+language	frm	Middle French	eng	descrip
+language	qal	keskpärsia keel	est	descrip
+language	qal	Middle Persian	eng	descrip
+language	gmh	keskülemsaksa keel	est	descrip
+language	gmh	Middle High German	eng	descrip
+language	que	ketšua keel	est	descrip
+language	que	Quechua	eng	descrip
+language	kmb	kimbundu	est	descrip
+language	kmb	Kimbundu (North Mbundu)	eng	descrip
+language	kir	kirgiisi keel	est	descrip
+language	kir	Kirghiz	eng	descrip
+language	qam	kirikuladina (keel)	est	descrip
+language	qam	Church Latin	eng	descrip
+language	chu	kirikusalaavi (vanaslaavi) keel	est	descrip
+language	chu	Old Church Slavonic	eng	descrip
+language	kom	komi keel	est	descrip
+language	kom	Komi	eng	descrip
+language	kon	kongo keel	est	descrip
+language	kon	Kongo	eng	descrip
+language	ell	kreeka keel	est	descrip
+language	ell	Greek	eng	descrip
+language	crh	krimmitatari keel	est	descrip
+language	cym	kõmri keel	est	descrip
+language	cym	Welsh	eng	descrip
+language	qwm	kõptšaki keel	est	descrip
+language	qwm	Kipchak	eng	descrip
+language	lat	ladina keel	est	descrip
+language	lat	Latin	eng	descrip
+language	lit	leedu keel	est	descrip
+language	lit	Lithuanian	eng	descrip
+language	liv	liivi keel	est	descrip
+language	liv	Livonian	eng	descrip
+language	qan	liivi keele Salatsi murre	est	descrip
+language	lav	läti keel	est	descrip
+language	lav	Latvian	eng	descrip
+language	qao	läänemeresoome	est	descrip
+language	qao	Baltic-Finnic	eng	descrip
+language	qap	läänemeresoome-mordva	est	descrip
+language	qaq	läänemeresoome-permi	est	descrip
+language	qar	läänemeresoome-saami	est	descrip
+language	qas	läänemeresoome-volga	est	descrip
+language	lud	lüüdi keel	est	descrip
+language	mlg	malagassi keel	est	descrip
+language	msa	malai keel	est	descrip
+language	msa	Malay	eng	descrip
+language	mal	malajalami keel	est	descrip
+language	mal	Malayalam	eng	descrip
+language	div	maldiivi keel	est	descrip
+language	div	Dhivehi	eng	descrip
+language	mns	mansi keel	est	descrip
+language	mri	maoori keel	est	descrip
+language	chm	mari keel	est	descrip
+language	chm	Mari	eng	descrip
+language	qat	meditsiiniladina keelend	est	descrip
+language	qat	Medical Latin	eng	descrip
+language	mic	mikmaki keel	est	descrip
+language	mic	Micmac	eng	descrip
+language	mdf	mokša	est	descrip
+language	mdf	Moksha	eng	descrip
+language	mon	mongoli keel	est	descrip
+language	mon	Mongolian	eng	descrip
+language	nah	nahua keel	est	descrip
+language	nah	Nahuatl	eng	descrip
+language	naq	nama (endise nimega hotentoti) keel	est	descrip
+language	naq	Khoekhoe (Nama, Hottentot)	eng	descrip
+language	yrk	neenetsi keel	est	descrip
+language	nep	nepaali keel	est	descrip
+language	nio	nganassaani keel	est	descrip
+language	nor	norra keel	est	descrip
+language	oss	osseedi keel	est	descrip
+language	pol	poola keel	est	descrip
+language	pol	Polish	eng	descrip
+language	por	portugali keel	est	descrip
+language	por	Portuguese	eng	descrip
+language	pim	pouhatani keel	est	descrip
+language	pim	Powhatan	eng	descrip
+language	fra	prantsuse keel	est	descrip
+language	fra	French	eng	descrip
+language	qau	provansi	est	descrip
+language	prg	preisi keel	est	descrip
+language	fas	pärsia	est	descrip
+language	fas	Persian	eng	descrip
+language	qav	rahvaladina keel	est	descrip
+language	qav	Vulgar Latin	eng	descrip
+language	qbm	romaani keeled	est	descrip
+language	swe	rootsi keel	est	descrip
+language	swe	Swedish	eng	descrip
+language	ron	rumeenia keel	est	descrip
+language	ron	Romanian	eng	descrip
+language	qaw	saami keel	est	descrip
+language	qaw	Sami	eng	descrip
+language	smn	Inari saami keel	est	descrip
+language	sms	koltasaami keel	est	descrip
+language	smj	Lule saami keel	est	descrip
+language	sma	lõunasaami keel	est	descrip
+language	sje	Pite saami keel	est	descrip
+language	sjt	turjasaami keel	est	descrip
+language	deu	saksa keel	est	descrip
+language	deu	German	eng	descrip
+language	srh	sarikoli keel	est	descrip
+language	qbn	semi keeled	est	descrip
+language	hbs	serbohorvaadi keel	est	descrip
+language	dak	siuu	est	descrip
+language	qbo	slaavi keeled	est	descrip
+language	slv	sloveeni keel	est	descrip
+language	fin	soome keel	est	descrip
+language	fin	Finnish	eng	descrip
+language	qac	soome-ugri	est	descrip
+language	qac	Finno-Ugric	eng	descrip
+language	swa	suahiili keel	est	descrip
+language	swa	Swahili	eng	descrip
+language	zul	suulu keel	est	descrip
+language	zul	Zulu	eng	descrip
+language	sel	sölkupi keel	est	descrip
+language	syr	süüria keel	est	descrip
+language	syr	Syrian	eng	descrip
+language	dan	taani keel	est	descrip
+language	dan	Danish	eng	descrip
+language	tgk	tadžiki keel	est	descrip
+language	tgk	Tajiki (Tajiki Persian)	eng	descrip
+language	tgl	tagalogi keel	est	descrip
+language	tgl	Tagalog	eng	descrip
+language	tha	tai keel	est	descrip
+language	tha	Thai	eng	descrip
+language	tnq	taino keel	est	descrip
+language	tnq	Taino	eng	descrip
+language	tam	tamili keel	est	descrip
+language	tam	Tamil	eng	descrip
+language	tat	tatari keel	est	descrip
+language	tat	Tatar	eng	descrip
+language	bod	tiibeti keel	est	descrip
+language	bod	Tibetan	eng	descrip
+language	ton	tonga keel	est	descrip
+language	ton	Tongan	eng	descrip
+language	chg	tšagatai (vanausbeki) keel	est	descrip
+language	chg	Chagatai	eng	descrip
+language	ces	tšehhi keel	est	descrip
+language	ces	Czech	eng	descrip
+language	ckt	tšuktši keel	est	descrip
+language	ckt	Chukchi	eng	descrip
+language	chv	tšuvaši keel	est	descrip
+language	chv	Chuvash	eng	descrip
+language	qax	tupi-guaranii keel	est	descrip
+language	qax	Tupi-Guarani	eng	descrip
+language	qbj	turgi keeled	est	descrip
+language	qbj	Turkic	eng	descrip
+language	tur	türgi keel	est	descrip
+language	tur	Turkish	eng	descrip
+language	udm	udmurdi keel	est	descrip
+language	udm	Udmurt	eng	descrip
+language	uig	uiguuri keel	est	descrip
+language	uig	Uighur	eng	descrip
+language	ukr	ukraina	est	descrip
+language	ukr	Ukrainian	eng	descrip
+language	hun	ungari keel	est	descrip
+language	hun	Hungarian	eng	descrip
+language	urd	urdu keel	est	descrip
+language	urd	Urdu	eng	descrip
+language	qay	uurali	est	descrip
+language	qay	Uralic	eng	descrip
+language	qaz	uuskreeka keel	est	descrip
+language	qaz	New Greek	eng	descrip
+language	qba	uusladina keel	est	descrip
+language	qba	New Latin / Neo-Latin	eng	descrip
+language	vot	vadja keel	est	descrip
+language	vot	Votic	eng	descrip
+language	bel	valgevene keel	est	descrip
+language	bel	Belarusian	eng	descrip
+language	qbb	vanaegiptuse keel	est	descrip
+language	qbc	vanafriisi keel	est	descrip
+language	qbd	vanahispaania keel	est	descrip
+language	qbe	vanaindia keel	est	descrip
+language	ang	vanainglise keel	est	descrip
+language	qbf	vanasaksi keel	est	descrip
+language	qbf	Old Saxon	eng	descrip
+language	fro	vanaprantsuse keel	est	descrip
+language	fro	Old French	eng	descrip
+language	non	vanapõhja keel	est	descrip
+language	qbg	vanarootsi keel	est	descrip
+language	qbg	Old Swedish	eng	descrip
+language	qbh	vanatürgi keel	est	descrip
+language	qbh	Old Turkish	eng	descrip
+language	qbi	vanavene keel	est	descrip
+language	qbi	Old Russian	eng	descrip
+language	goh	vanaülemsaksa keel	est	descrip
+language	goh	Old High German	eng	descrip
+language	rus	vene keel	est	descrip
+language	rus	Russian	eng	descrip
+language	vep	vepsa keel	est	descrip
+language	vep	Vepsian	eng	descrip
+language	vie	vietnami keel	est	descrip
+language	vie	Vietnamese	eng	descrip
+language	est	Estonian	eng	descrip
+language	san	Sanskrit	eng	descrip
+language	pli	Pali	eng	descrip
+language	pan	Panjabi	eng	descrip
+language	est	eesti	est	descrip
+language	san	sanskriti	est	descrip
+language	pli	paali	est	descrip
+language	pan	pandžabi	est	descrip
