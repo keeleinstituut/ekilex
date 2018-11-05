@@ -1,110 +1,110 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="common_header(title,links)">
-<title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
-<!-- Common styles and scripts -->
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<!--<link rel="shortcut icon" th:href="@{/favicon.ico}">-->
-<th:block th:replace=" :: css"></th:block>
-<th:block th:replace=" :: js"></th:block>
-<link href="https://fonts.googleapis.com/css?family=Montserrat:800&amp;subset=cyrillic-ext,latin-ext" rel="stylesheet">
-<!--/* Per-page placeholder for additional links */-->
-<th:block th:replace="${links}"></th:block>
-<script th:inline="javascript">
-	var applicationUrl = /*[[@{/}]]*/'/';
-	var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
-	var messages = {
-		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
-		'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
-		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.'
-	}
+  <title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
+  <!-- Common styles and scripts -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <link rel="shortcut icon" type="image/png" th:href="@{/view/images/favicon.png}"/>
+  <th:block th:replace=" :: css"></th:block>
+  <th:block th:replace=" :: js"></th:block>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat:800&amp;subset=cyrillic-ext,latin-ext" rel="stylesheet">
+  <!--/* Per-page placeholder for additional links */-->
+  <th:block th:replace="${links}"></th:block>
+  <script th:inline="javascript">
+   var applicationUrl = /*[[@{/}]]*/'/';
+   var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
+   var messages = {
+    'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+    'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
+    'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.'
+  }
 </script>
 </head>
 <body>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
-    <link rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
-    <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
-    <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
-    <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
-    <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
-  </th:block>
-  <!-- Bootstrap core JS -->
-  <th:block th:fragment="js">
-    <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
-    <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
-  </th:block>
-  <!-- menu -->
-  <th:block th:fragment="menu">
-    <div class="container-fluid header-container">
-      <div class="row header-wrap">
-        <div class="col-12">
-          <a th:href="@{/}" class="logo">
-            <span class="icon icon-logo-s d-md-none"></span>
-            <span class="icon icon-logo d-none d-md-block"></span>
-          </a>
-          <div class="back">
-            <span class="icon icon-back"></span>
-          </div>
-          <div th:replace=":: menu-links"></div>
-          <button class="btn menu-btn">
-            <span class="icon icon-menu"></span>
-          </button>
-        </div>
+  <link rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
+  <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
+  <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
+  <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
+  <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
+</th:block>
+<!-- Bootstrap core JS -->
+<th:block th:fragment="js">
+<script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
+</th:block>
+<!-- menu -->
+<th:block th:fragment="menu">
+<div class="container-fluid header-container">
+  <div class="row header-wrap">
+    <div class="col-12">
+      <a th:href="@{/}" class="logo">
+        <span class="icon icon-logo-s d-md-none"></span>
+        <span class="icon icon-logo d-none d-md-block"></span>
+      </a>
+      <div class="back">
+        <span class="icon icon-back"></span>
       </div>
-    </div>
-  </th:block>
-  <th:block th:fragment="menu-links">
-    <div class="header-links">
-      <button class="btn menu-btn float-right clear-both">
-        <span th:text="#{menu.close}">Sulge</span>
-        <span class="icon icon-close"></span>
+      <div th:replace=":: menu-links"></div>
+      <button class="btn menu-btn">
+        <span class="icon icon-menu"></span>
       </button>
-      <a th:href="@{/}" class="menu-item" data-item-name="search">
-        <span th:text="#{menu.search}">Otsing</span>
-      </a>
-      <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
-        <span th:text="#{menu.learn}">Õpi eesti keelt</span>
-      </a>
-      <a th:href="@{/games}" class="menu-item" data-item-name="games">
-        <span th:text="#{menu.games}">Keelemängud</span>
-      </a>
-      <a th:href="@{/}" class="menu-item">
-        <span th:text="#{menu.info}">Portaalist</span>
-      </a>
-      <a th:href="@{/}" class="menu-item">
-        <span th:text="#{menu.contacts}">Kontakt</span>
-      </a>
     </div>
-  </th:block>
-  <!-- debugging aid -->
-  <div th:fragment="dump_vars" class="m-4">
-    <h4>Dump of all variables in Thymeleaf context</h4>
-    <hr />
-    <table>
-      <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
-        <td th:text="${var}"></td>
-        <td th:text="${#vars.getVariable(var)}"></td>
-      </tr>
-      <tr>
-        <td>param</td>
-        <td th:text="${#vars.getVariable('param')}"></td>
-      </tr>
-      <tr>
-        <td>session</td>
-        <td th:text="${#vars.getVariable('session')}"></td>
-      </tr>
-      <tr>
-        <td>application</td>
-        <td th:text="${#vars.getVariable('application')}"></td>
-      </tr>
-    </table>
   </div>
+</div>
+</th:block>
+<th:block th:fragment="menu-links">
+<div class="header-links">
+  <button class="btn menu-btn float-right clear-both">
+    <span th:text="#{menu.close}">Sulge</span>
+    <span class="icon icon-close"></span>
+  </button>
+  <a th:href="@{/}" class="menu-item" data-item-name="search">
+    <span th:text="#{menu.search}">Otsing</span>
+  </a>
+  <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
+    <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+  </a>
+  <a th:href="@{/games}" class="menu-item" data-item-name="games">
+    <span th:text="#{menu.games}">Keelemängud</span>
+  </a>
+  <a th:href="@{/}" class="menu-item">
+    <span th:text="#{menu.info}">Portaalist</span>
+  </a>
+  <a th:href="@{/}" class="menu-item">
+    <span th:text="#{menu.contacts}">Kontakt</span>
+  </a>
+</div>
+</th:block>
+<!-- debugging aid -->
+<div th:fragment="dump_vars" class="m-4">
+  <h4>Dump of all variables in Thymeleaf context</h4>
+  <hr />
+  <table>
+    <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
+      <td th:text="${var}"></td>
+      <td th:text="${#vars.getVariable(var)}"></td>
+    </tr>
+    <tr>
+      <td>param</td>
+      <td th:text="${#vars.getVariable('param')}"></td>
+    </tr>
+    <tr>
+      <td>session</td>
+      <td th:text="${#vars.getVariable('session')}"></td>
+    </tr>
+    <tr>
+      <td>application</td>
+      <td th:text="${#vars.getVariable('application')}"></td>
+    </tr>
+  </table>
+</div>
 </body>
 </html>

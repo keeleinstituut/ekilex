@@ -4,7 +4,7 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
-:root {
+ :root {
   --blue: #003F87;
   --indigo: #6610f2;
   --purple: #6f42c1;
@@ -33,7 +33,7 @@
   --breakpoint-md: 768px;
   --breakpoint-lg: 1200px;
   --breakpoint-xl: 1400px;
-  --font-family-sans-serif: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --font-family-sans-serif: "Klavika", Klavika, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
@@ -62,7 +62,7 @@ article, aside, dialog, figcaption, figure, footer, header, hgroup, main, nav, s
 
 body {
   margin: 0;
-  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
+  font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
@@ -362,7 +362,7 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 0.5rem;
-  font-family: "Montserrat";
+  font-family: "Klavika", "Montserrat";
   font-weight: 500;
   line-height: 1.2;
   color: inherit;
@@ -370,7 +370,7 @@ h1, h2, h3, h4, h5, h6,
 
 h6,
 .h6 {
-  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-weight: 700;
 }
 
@@ -3562,7 +3562,7 @@ input[type="button"].btn-block {
   z-index: 1070;
   display: block;
   margin: 0;
-  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   font-style: normal;
   font-weight: 400;
   line-height: 1.5;
@@ -6440,7 +6440,7 @@ ul {
 
 .home-page-content {
   background-color: #F2F2F2 !important;
-  height: calc(100vh - 100px);
+  height: calc(100vh);
   z-index: -1;
   text-align: center;
 }
@@ -6450,15 +6450,6 @@ ul {
 }
 
 .home-page-content .logo-main {
-  font-size: 2.5rem;
-}
-
-.footer {
-  position: absolute;
-  background-color: #001124;
-  color: #D8D8D8;
-  min-height: 100px;
-  padding-top: 1.25rem;
   font-size: 2.5rem;
 }
 
@@ -6506,7 +6497,7 @@ ul {
   display: block;
   height: 3.4375rem;
   font-size: 1.375rem;
-  font-family: "Myriad Pro", Myriad, "Montserrat" !important;
+  font-family: "Klavika", "Montserrat" !important;
   color: rgba(255, 255, 255, 0.8);
   font-weight: 700;
   padding-left: 0.9375rem;
@@ -6718,7 +6709,7 @@ ul {
   border-radius: 6.25rem;
   font-size: 0.75rem;
   font-weight: 700;
-  font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   padding-top: 0.125rem;
   text-align: center;
   position: relative;
@@ -6809,7 +6800,7 @@ ul {
 .level-3-panel .dependence:nth-child(1),
 .level-3-panel .dependence:nth-child(2),
 .level-3-panel .dependence:nth-child(3)
- {
+{
   display: inline-flex;
   opacity: 1;
 }
@@ -6975,9 +6966,9 @@ ul {
 }
 
 .dependencies .example-item {
-   background-color: #F2F2F2;
-  border-radius: 0.6875rem;
-      margin-bottom: 0.125rem;
+ background-color: #F2F2F2;
+ border-radius: 0.6875rem;
+ margin-bottom: 0.125rem;
 }
 
 .example-text {
@@ -6990,7 +6981,7 @@ ul {
 }
 
 .example-text {
-  padding: 0rem 0.5rem 0rem 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
   line-height: 1;
   font-size: 0.875rem;
   align-items: center;
@@ -7301,7 +7292,7 @@ ul {
   }
   h3 span + span {
     font-size: 1.2rem;
-    font-family: "Myriad Pro", Myriad, "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
+    font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol" !important;
   }
   .homonym-item {
     cursor: pointer;
@@ -7378,7 +7369,7 @@ ul {
     display: block;
   }
   .homonym-item .homonym-header {
-    font-family: "Myriad Pro", Myriad, "Montserrat";
+    font-family: "Klavika", "Montserrat";
     font-size: 1.25rem;
   }
   .homonym-intro {
@@ -7503,6 +7494,81 @@ ul {
   }
 }
 
-.logo-wrapper { position: relative; }
-.logo-list { display: flex; flex-direction: row; margin: 0 auto; justify-content: center; margin-top: 1.5rem; position: absolute; left: 0; right: 0  }
-.htm-logo { background: url(../images/htm.png) center center no-repeat; display: block; height: 98px; width: 236px; background-size: 236px 98px; }
+
+
+
+.logo-wrapper { 
+  position: relative; 
+}
+.logo-list {
+  display: flex; 
+  flex-direction: column; 
+  margin: 0 auto; 
+  justify-content: center;
+  margin-top: 1.5rem; 
+  position: absolute; 
+  left: 0; 
+  right: 0;
+  align-items: center;
+}
+.eki-logo { 
+  background: url(../images/eki.svg) center center no-repeat; 
+  display: block; 
+  height: calc(6.25rem / 1.3); 
+  width: calc(16.875rem / 1.3); 
+  background-size: calc(16.875rem / 1.3) calc(6.25rem / 1.3);
+}
+.htm-logo { 
+  background: url(../images/htm.svg) center center no-repeat; 
+  display: block; 
+  height: calc(6.125rem / 1.2); 
+  width: calc(14.75rem / 1.2); 
+  background-size: calc(14.75rem / 1.2) calc(6.125rem / 1.2); 
+}
+.esf-logo { 
+  background: url(../images/esf.svg) center center no-repeat; 
+  display: block; 
+  height: calc(11.6875rem / 2); 
+  width: calc(22.125rem / 2);
+  background-size: calc(22.125rem / 2) calc(11.6875rem / 2); 
+}
+  .mini-logo {
+    justify-content: center;
+    margin: 0 1rem;
+  }
+
+@media (min-width: 768px) { 
+  .logo-list {
+    flex-direction: row;
+  }
+}
+
+
+@media (max-width: 767px) { 
+  .main-content-wrapper.align-self-center {
+    align-self: auto!important;
+    margin-top: 3.125rem; 
+  }
+  .mini-logo {
+    justify-content: center;
+    margin: 0.5rem auto;
+  }
+  .htm-logo { 
+    height: calc(6.125rem / 1.6);
+    width: calc(14.75rem / 1.6);
+
+    background-size: calc(14.75rem / 1.6) calc(6.125rem / 1.6); 
+  }
+  .esf-logo { 
+    height: calc(11.6875rem / 2); 
+    width: calc(22.125rem / 2);
+    background-size: calc(22.125rem / 2) calc(11.6875rem / 2);
+  }
+  .eki-logo { 
+  height: calc(6.25rem / 1.8); 
+  width: calc(16.875rem / 1.8); 
+  background-size: calc(16.875rem / 1.8) calc(6.25rem / 1.8); 
+  }
+}
+
+

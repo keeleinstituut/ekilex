@@ -16,7 +16,17 @@
           <div th:replace="common-search :: search"></div>
         </div>
         <div class="col-12 col-md-6 p-0" id="language-detail-panel">
-          <div th:replace="common-search :: lang-filter"></div>
+          
+            <div class="row align-items-center ml-0">
+              <div class="col-6 p-1">
+                <div th:replace="common-search :: lang-filter"></div>
+              </div>
+
+              <div class="col-6 p-0">
+                <div th:replace="common-search :: detail-filter"></div>
+              </div>
+            </div>
+          
         </div>
         <!-- TODO: let client to decide waht message option they like, option 1 -->
         <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
