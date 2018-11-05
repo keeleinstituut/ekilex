@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormRelTypeLabel extends TableImpl<FormRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = 956847663;
+    private static final long serialVersionUID = 387048025;
 
     /**
      * The reference instance of <code>public.form_rel_type_label</code>
@@ -144,8 +144,8 @@ public class FormRelTypeLabel extends TableImpl<FormRelTypeLabelRecord> {
         return new FormRelType(this, Keys.FORM_REL_TYPE_LABEL__FORM_REL_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.FORM_REL_TYPE_LABEL__FORM_REL_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.FORM_REL_TYPE_LABEL__FORM_REL_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

@@ -33,8 +33,8 @@ import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.GovernmentType;
 import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
-import eki.ekilex.data.db.tables.Lang;
-import eki.ekilex.data.db.tables.LangLabel;
+import eki.ekilex.data.db.tables.Language;
+import eki.ekilex.data.db.tables.LanguageLabel;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -131,7 +131,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1993607381;
+    private static final long serialVersionUID = -1800446604;
 
     /**
      * The reference instance of <code>public</code>
@@ -284,14 +284,14 @@ public class Public extends SchemaImpl {
     public final LabelType LABEL_TYPE = eki.ekilex.data.db.tables.LabelType.LABEL_TYPE;
 
     /**
-     * The table <code>public.lang</code>.
+     * The table <code>public.language</code>.
      */
-    public final Lang LANG = eki.ekilex.data.db.tables.Lang.LANG;
+    public final Language LANGUAGE = eki.ekilex.data.db.tables.Language.LANGUAGE;
 
     /**
-     * The table <code>public.lang_label</code>.
+     * The table <code>public.language_label</code>.
      */
-    public final LangLabel LANG_LABEL = eki.ekilex.data.db.tables.LangLabel.LANG_LABEL;
+    public final LanguageLabel LANGUAGE_LABEL = eki.ekilex.data.db.tables.LanguageLabel.LANGUAGE_LABEL;
 
     /**
      * The table <code>public.lex_colloc</code>.
@@ -623,6 +623,7 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
+            Sequences.ASPECT_TYPE_ORDER_BY_SEQ,
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
@@ -631,8 +632,13 @@ public class Public extends SchemaImpl {
             Sequences.DEFINITION_ORDER_BY_SEQ,
             Sequences.DEFINITION_SOURCE_LINK_ID_SEQ,
             Sequences.DEFINITION_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.DERIV_ORDER_BY_SEQ,
+            Sequences.DISPLAY_MORPH_ORDER_BY_SEQ,
+            Sequences.DOMAIN_ORDER_BY_SEQ,
             Sequences.EKI_USER_ID_SEQ,
+            Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
             Sequences.FORM_ID_SEQ,
+            Sequences.FORM_REL_TYPE_ORDER_BY_SEQ,
             Sequences.FORM_RELATION_ID_SEQ,
             Sequences.FORM_RELATION_ORDER_BY_SEQ,
             Sequences.FREEFORM_ID_SEQ,
@@ -640,15 +646,20 @@ public class Public extends SchemaImpl {
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.GAME_NONWORD_ID_SEQ,
+            Sequences.GENDER_ORDER_BY_SEQ,
+            Sequences.GOVERNMENT_TYPE_ORDER_BY_SEQ,
+            Sequences.LANGUAGE_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ID_SEQ,
             Sequences.LEX_COLLOC_POS_GROUP_ORDER_BY_SEQ,
             Sequences.LEX_COLLOC_REL_GROUP_ID_SEQ,
             Sequences.LEX_COLLOC_REL_GROUP_ORDER_BY_SEQ,
+            Sequences.LEX_REL_TYPE_ORDER_BY_SEQ,
             Sequences.LEX_RELATION_ID_SEQ,
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
+            Sequences.LEXEME_FREQUENCY_ORDER_BY_SEQ,
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_LIFECYCLE_LOG_ID_SEQ,
             Sequences.LEXEME_ORDER_BY_SEQ,
@@ -664,11 +675,19 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.MEANING_LIFECYCLE_LOG_ID_SEQ,
+            Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
+            Sequences.MORPH_ORDER_BY_SEQ,
             Sequences.PARADIGM_ID_SEQ,
+            Sequences.POS_GROUP_ORDER_BY_SEQ,
+            Sequences.POS_ORDER_BY_SEQ,
+            Sequences.PROCESS_STATE_ORDER_BY_SEQ,
+            Sequences.REGISTER_ORDER_BY_SEQ,
             Sequences.SOURCE_FREEFORM_ID_SEQ,
             Sequences.SOURCE_ID_SEQ,
+            Sequences.USAGE_TYPE_ORDER_BY_SEQ,
+            Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
             Sequences.WORD_GROUP_ID_SEQ,
@@ -677,8 +696,10 @@ public class Public extends SchemaImpl {
             Sequences.WORD_GUID_ID_SEQ,
             Sequences.WORD_ID_SEQ,
             Sequences.WORD_LIFECYCLE_LOG_ID_SEQ,
+            Sequences.WORD_REL_TYPE_ORDER_BY_SEQ,
             Sequences.WORD_RELATION_ID_SEQ,
-            Sequences.WORD_RELATION_ORDER_BY_SEQ);
+            Sequences.WORD_RELATION_ORDER_BY_SEQ,
+            Sequences.WORD_TYPE_ORDER_BY_SEQ);
     }
 
     @Override
@@ -719,8 +740,8 @@ public class Public extends SchemaImpl {
             GovernmentType.GOVERNMENT_TYPE,
             GovernmentTypeLabel.GOVERNMENT_TYPE_LABEL,
             LabelType.LABEL_TYPE,
-            Lang.LANG,
-            LangLabel.LANG_LABEL,
+            Language.LANGUAGE,
+            LanguageLabel.LANGUAGE_LABEL,
             LexColloc.LEX_COLLOC,
             LexCollocPosGroup.LEX_COLLOC_POS_GROUP,
             LexCollocRelGroup.LEX_COLLOC_REL_GROUP,

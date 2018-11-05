@@ -33,8 +33,8 @@ import eki.ekilex.data.db.tables.GenderLabel;
 import eki.ekilex.data.db.tables.GovernmentType;
 import eki.ekilex.data.db.tables.GovernmentTypeLabel;
 import eki.ekilex.data.db.tables.LabelType;
-import eki.ekilex.data.db.tables.Lang;
-import eki.ekilex.data.db.tables.LangLabel;
+import eki.ekilex.data.db.tables.Language;
+import eki.ekilex.data.db.tables.LanguageLabel;
 import eki.ekilex.data.db.tables.LexColloc;
 import eki.ekilex.data.db.tables.LexCollocPosGroup;
 import eki.ekilex.data.db.tables.LexCollocRelGroup;
@@ -259,14 +259,14 @@ public class Tables {
     public static final LabelType LABEL_TYPE = eki.ekilex.data.db.tables.LabelType.LABEL_TYPE;
 
     /**
-     * The table <code>public.lang</code>.
+     * The table <code>public.language</code>.
      */
-    public static final Lang LANG = eki.ekilex.data.db.tables.Lang.LANG;
+    public static final Language LANGUAGE = eki.ekilex.data.db.tables.Language.LANGUAGE;
 
     /**
-     * The table <code>public.lang_label</code>.
+     * The table <code>public.language_label</code>.
      */
-    public static final LangLabel LANG_LABEL = eki.ekilex.data.db.tables.LangLabel.LANG_LABEL;
+    public static final LanguageLabel LANGUAGE_LABEL = eki.ekilex.data.db.tables.LanguageLabel.LANGUAGE_LABEL;
 
     /**
      * The table <code>public.lex_colloc</code>.

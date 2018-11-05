@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProcessState extends TableImpl<ProcessStateRecord> {
 
-    private static final long serialVersionUID = -1666299500;
+    private static final long serialVersionUID = 2077427989;
 
     /**
      * The reference instance of <code>public.process_state</code>
@@ -64,6 +65,11 @@ public class ProcessState extends TableImpl<ProcessStateRecord> {
      * The column <code>public.process_state.datasets</code>.
      */
     public final TableField<ProcessStateRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.process_state.order_by</code>.
+     */
+    public final TableField<ProcessStateRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('process_state_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.process_state</code> table reference
@@ -112,6 +118,14 @@ public class ProcessState extends TableImpl<ProcessStateRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.PROCESS_STATE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<ProcessStateRecord, Long> getIdentity() {
+        return Keys.IDENTITY_PROCESS_STATE;
     }
 
     /**

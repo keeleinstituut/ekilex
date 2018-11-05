@@ -15,7 +15,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@SpringBootApplication(scanBasePackages = {"eki.common","eki.wordweb"})
+@SpringBootApplication(scanBasePackages = {"eki.common", "eki.wordweb"})
 @EnableCaching
 @EnableTransactionManagement
 @EnableScheduling
@@ -27,7 +27,7 @@ public class WordwebApplication {
 	@Value("${tomcat.ajp.enabled:false}")
 	boolean ajpEnabled;
 
-	@Value("${server.servlet.session.timeout:30m}")  // default 30 min
+	@Value("${server.servlet.session.timeout:30m}") // default 30 min
 	Duration sessionTimeout;
 
 	public static void main(String[] args) {

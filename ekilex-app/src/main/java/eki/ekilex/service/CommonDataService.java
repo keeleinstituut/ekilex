@@ -31,7 +31,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getLanguages() {
-		return commonDataDbService.getLanguages().into(Classifier.class);
+		return commonDataDbService.getLanguages(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional

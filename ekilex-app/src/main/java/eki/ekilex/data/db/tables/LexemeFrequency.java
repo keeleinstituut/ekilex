@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
 
-    private static final long serialVersionUID = -1223635942;
+    private static final long serialVersionUID = -1871398573;
 
     /**
      * The reference instance of <code>public.lexeme_frequency</code>
@@ -64,6 +65,11 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
      * The column <code>public.lexeme_frequency.datasets</code>.
      */
     public final TableField<LexemeFrequencyRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.lexeme_frequency.order_by</code>.
+     */
+    public final TableField<LexemeFrequencyRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_frequency_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lexeme_frequency</code> table reference
@@ -112,6 +118,14 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.LEXEME_FREQUENCY_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<LexemeFrequencyRecord, Long> getIdentity() {
+        return Keys.IDENTITY_LEXEME_FREQUENCY;
     }
 
     /**

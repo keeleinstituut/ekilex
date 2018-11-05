@@ -23,7 +23,7 @@ public class EkilexApplication {
 	@Value("${tomcat.ajp.enabled:false}")
 	boolean ajpEnabled;
 
-	@Value("${server.servlet.session.timeout:30m}")  // default 30 min
+	@Value("${server.servlet.session.timeout:30m}") // default 30 min
 	Duration sessionTimeout;
 
 	public static void main(String[] args) {

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = -1065077553;
+    private static final long serialVersionUID = 1338781157;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -171,8 +171,8 @@ public class Definition extends TableImpl<DefinitionRecord> {
         return new Meaning(this, Keys.DEFINITION__DEFINITION_MEANING_ID_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.DEFINITION__DEFINITION_LANG_FKEY);
     }
 
     public ProcessState processState() {

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Freeform extends TableImpl<FreeformRecord> {
 
-    private static final long serialVersionUID = -1790829934;
+    private static final long serialVersionUID = 912964392;
 
     /**
      * The reference instance of <code>public.freeform</code>
@@ -203,8 +203,8 @@ public class Freeform extends TableImpl<FreeformRecord> {
         return new eki.ekilex.data.db.tables.Freeform(this, Keys.FREEFORM__FREEFORM_PARENT_ID_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.FREEFORM__FREEFORM_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.FREEFORM__FREEFORM_LANG_FKEY);
     }
 
     public ProcessState processState() {

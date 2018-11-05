@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ValueStateLabel extends TableImpl<ValueStateLabelRecord> {
 
-    private static final long serialVersionUID = -2025479736;
+    private static final long serialVersionUID = -534443918;
 
     /**
      * The reference instance of <code>public.value_state_label</code>
@@ -144,8 +144,8 @@ public class ValueStateLabel extends TableImpl<ValueStateLabelRecord> {
         return new ValueState(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.VALUE_STATE_LABEL__VALUE_STATE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

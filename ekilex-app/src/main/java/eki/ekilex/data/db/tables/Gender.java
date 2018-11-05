@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Gender extends TableImpl<GenderRecord> {
 
-    private static final long serialVersionUID = -1798709477;
+    private static final long serialVersionUID = -1276405186;
 
     /**
      * The reference instance of <code>public.gender</code>
@@ -64,6 +65,11 @@ public class Gender extends TableImpl<GenderRecord> {
      * The column <code>public.gender.datasets</code>.
      */
     public final TableField<GenderRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.gender.order_by</code>.
+     */
+    public final TableField<GenderRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('gender_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.gender</code> table reference
@@ -112,6 +118,14 @@ public class Gender extends TableImpl<GenderRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.GENDER_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<GenderRecord, Long> getIdentity() {
+        return Keys.IDENTITY_GENDER;
     }
 
     /**

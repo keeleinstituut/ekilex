@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ValueState extends TableImpl<ValueStateRecord> {
 
-    private static final long serialVersionUID = -2128381078;
+    private static final long serialVersionUID = -2054524883;
 
     /**
      * The reference instance of <code>public.value_state</code>
@@ -64,6 +65,11 @@ public class ValueState extends TableImpl<ValueStateRecord> {
      * The column <code>public.value_state.datasets</code>.
      */
     public final TableField<ValueStateRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.value_state.order_by</code>.
+     */
+    public final TableField<ValueStateRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('value_state_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.value_state</code> table reference
@@ -112,6 +118,14 @@ public class ValueState extends TableImpl<ValueStateRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.VALUE_STATE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<ValueStateRecord, Long> getIdentity() {
+        return Keys.IDENTITY_VALUE_STATE;
     }
 
     /**

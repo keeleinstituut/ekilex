@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordType extends TableImpl<WordTypeRecord> {
 
-    private static final long serialVersionUID = -1533011330;
+    private static final long serialVersionUID = 1261258733;
 
     /**
      * The reference instance of <code>public.word_type</code>
@@ -64,6 +65,11 @@ public class WordType extends TableImpl<WordTypeRecord> {
      * The column <code>public.word_type.datasets</code>.
      */
     public final TableField<WordTypeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.word_type.order_by</code>.
+     */
+    public final TableField<WordTypeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('word_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.word_type</code> table reference
@@ -112,6 +118,14 @@ public class WordType extends TableImpl<WordTypeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.WORD_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<WordTypeRecord, Long> getIdentity() {
+        return Keys.IDENTITY_WORD_TYPE;
     }
 
     /**

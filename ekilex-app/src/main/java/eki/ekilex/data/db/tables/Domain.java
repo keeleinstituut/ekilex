@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Domain extends TableImpl<DomainRecord> {
 
-    private static final long serialVersionUID = 418175448;
+    private static final long serialVersionUID = -213440112;
 
     /**
      * The reference instance of <code>public.domain</code>
@@ -79,6 +80,11 @@ public class Domain extends TableImpl<DomainRecord> {
      * The column <code>public.domain.datasets</code>.
      */
     public final TableField<DomainRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.domain.order_by</code>.
+     */
+    public final TableField<DomainRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('domain_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.domain</code> table reference
@@ -127,6 +133,14 @@ public class Domain extends TableImpl<DomainRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.DOMAIN_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DomainRecord, Long> getIdentity() {
+        return Keys.IDENTITY_DOMAIN;
     }
 
     /**

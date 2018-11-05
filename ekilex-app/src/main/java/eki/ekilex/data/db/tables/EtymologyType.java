@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
 
-    private static final long serialVersionUID = 465634773;
+    private static final long serialVersionUID = -1168206791;
 
     /**
      * The reference instance of <code>public.etymology_type</code>
@@ -64,6 +65,11 @@ public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
      * The column <code>public.etymology_type.datasets</code>.
      */
     public final TableField<EtymologyTypeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.etymology_type.order_by</code>.
+     */
+    public final TableField<EtymologyTypeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('etymology_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.etymology_type</code> table reference
@@ -112,6 +118,14 @@ public class EtymologyType extends TableImpl<EtymologyTypeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.ETYMOLOGY_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<EtymologyTypeRecord, Long> getIdentity() {
+        return Keys.IDENTITY_ETYMOLOGY_TYPE;
     }
 
     /**

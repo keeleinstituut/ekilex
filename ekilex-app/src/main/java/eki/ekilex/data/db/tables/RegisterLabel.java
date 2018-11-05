@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
 
-    private static final long serialVersionUID = -665756311;
+    private static final long serialVersionUID = 1896258963;
 
     /**
      * The reference instance of <code>public.register_label</code>
@@ -144,8 +144,8 @@ public class RegisterLabel extends TableImpl<RegisterLabelRecord> {
         return new Register(this, Keys.REGISTER_LABEL__REGISTER_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.REGISTER_LABEL__REGISTER_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

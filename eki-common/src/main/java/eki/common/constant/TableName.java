@@ -5,7 +5,7 @@ public interface TableName {
 	String EKI_USER = "eki_user";
 
 	// classifiers
-	String LANG = "lang";
+	String LANGUAGE = "language";
 	String DOMAIN = "domain";
 	String DOMAIN_LABEL = "domain_label";
 	String REGISTER = "register";

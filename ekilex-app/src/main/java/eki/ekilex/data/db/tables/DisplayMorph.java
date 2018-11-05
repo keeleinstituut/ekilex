@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
 
-    private static final long serialVersionUID = -1885958120;
+    private static final long serialVersionUID = 1685573055;
 
     /**
      * The reference instance of <code>public.display_morph</code>
@@ -64,6 +65,11 @@ public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
      * The column <code>public.display_morph.datasets</code>.
      */
     public final TableField<DisplayMorphRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.display_morph.order_by</code>.
+     */
+    public final TableField<DisplayMorphRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('display_morph_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.display_morph</code> table reference
@@ -112,6 +118,14 @@ public class DisplayMorph extends TableImpl<DisplayMorphRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.DISPLAY_MORPH_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DisplayMorphRecord, Long> getIdentity() {
+        return Keys.IDENTITY_DISPLAY_MORPH;
     }
 
     /**

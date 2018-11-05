@@ -375,7 +375,8 @@ create view view_ww_word_relation
       left outer join (select w1.id word_id,
                               array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
                        from word w1
-                         inner join (select r.word1_id,
+                         inner join (select distinct
+                                            r.word1_id,
                                             r.word2_id related_word_id,
                                             r.word_rel_type_code,
                                             r.order_by word_rel_order_by,

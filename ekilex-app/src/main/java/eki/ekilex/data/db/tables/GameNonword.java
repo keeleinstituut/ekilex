@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GameNonword extends TableImpl<GameNonwordRecord> {
 
-    private static final long serialVersionUID = 903596825;
+    private static final long serialVersionUID = -1296114385;
 
     /**
      * The reference instance of <code>public.game_nonword</code>
@@ -152,8 +152,8 @@ public class GameNonword extends TableImpl<GameNonwordRecord> {
         return Arrays.<ForeignKey<GameNonwordRecord, ?>>asList(Keys.GAME_NONWORD__GAME_NONWORD_LANG_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.GAME_NONWORD__GAME_NONWORD_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.GAME_NONWORD__GAME_NONWORD_LANG_FKEY);
     }
 
     /**

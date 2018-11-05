@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Register extends TableImpl<RegisterRecord> {
 
-    private static final long serialVersionUID = 338811317;
+    private static final long serialVersionUID = -1888862070;
 
     /**
      * The reference instance of <code>public.register</code>
@@ -64,6 +65,11 @@ public class Register extends TableImpl<RegisterRecord> {
      * The column <code>public.register.datasets</code>.
      */
     public final TableField<RegisterRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.register.order_by</code>.
+     */
+    public final TableField<RegisterRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('register_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.register</code> table reference
@@ -112,6 +118,14 @@ public class Register extends TableImpl<RegisterRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.REGISTER_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<RegisterRecord, Long> getIdentity() {
+        return Keys.IDENTITY_REGISTER;
     }
 
     /**

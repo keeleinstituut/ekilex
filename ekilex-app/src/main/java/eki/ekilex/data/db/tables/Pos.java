@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Pos extends TableImpl<PosRecord> {
 
-    private static final long serialVersionUID = 1924722940;
+    private static final long serialVersionUID = -699543462;
 
     /**
      * The reference instance of <code>public.pos</code>
@@ -64,6 +65,11 @@ public class Pos extends TableImpl<PosRecord> {
      * The column <code>public.pos.datasets</code>.
      */
     public final TableField<PosRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.pos.order_by</code>.
+     */
+    public final TableField<PosRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('pos_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.pos</code> table reference
@@ -112,6 +118,14 @@ public class Pos extends TableImpl<PosRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.POS_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<PosRecord, Long> getIdentity() {
+        return Keys.IDENTITY_POS;
     }
 
     /**

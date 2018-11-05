@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Deriv extends TableImpl<DerivRecord> {
 
-    private static final long serialVersionUID = 289844458;
+    private static final long serialVersionUID = 49610374;
 
     /**
      * The reference instance of <code>public.deriv</code>
@@ -64,6 +65,11 @@ public class Deriv extends TableImpl<DerivRecord> {
      * The column <code>public.deriv.datasets</code>.
      */
     public final TableField<DerivRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.deriv.order_by</code>.
+     */
+    public final TableField<DerivRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('deriv_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.deriv</code> table reference
@@ -112,6 +118,14 @@ public class Deriv extends TableImpl<DerivRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.DERIV_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<DerivRecord, Long> getIdentity() {
+        return Keys.IDENTITY_DERIV;
     }
 
     /**

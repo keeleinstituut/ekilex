@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 529186291;
+    private static final long serialVersionUID = 87828233;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -177,8 +177,8 @@ public class Word extends TableImpl<WordRecord> {
         return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_TYPE_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.WORD__WORD_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.WORD__WORD_LANG_FKEY);
     }
 
     public Morph morph() {

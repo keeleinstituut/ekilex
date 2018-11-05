@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GenderLabel extends TableImpl<GenderLabelRecord> {
 
-    private static final long serialVersionUID = 1753677277;
+    private static final long serialVersionUID = -1692381689;
 
     /**
      * The reference instance of <code>public.gender_label</code>
@@ -144,8 +144,8 @@ public class GenderLabel extends TableImpl<GenderLabelRecord> {
         return new Gender(this, Keys.GENDER_LABEL__GENDER_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.GENDER_LABEL__GENDER_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.GENDER_LABEL__GENDER_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
 
-    private static final long serialVersionUID = 237238260;
+    private static final long serialVersionUID = -8966992;
 
     /**
      * The reference instance of <code>public.meaning_rel_type</code>
@@ -64,6 +65,11 @@ public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
      * The column <code>public.meaning_rel_type.datasets</code>.
      */
     public final TableField<MeaningRelTypeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.meaning_rel_type.order_by</code>.
+     */
+    public final TableField<MeaningRelTypeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('meaning_rel_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.meaning_rel_type</code> table reference
@@ -112,6 +118,14 @@ public class MeaningRelType extends TableImpl<MeaningRelTypeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.MEANING_REL_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<MeaningRelTypeRecord, Long> getIdentity() {
+        return Keys.IDENTITY_MEANING_REL_TYPE;
     }
 
     /**

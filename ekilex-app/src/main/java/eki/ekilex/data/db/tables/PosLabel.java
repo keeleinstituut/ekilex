@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosLabel extends TableImpl<PosLabelRecord> {
 
-    private static final long serialVersionUID = 1666262583;
+    private static final long serialVersionUID = -1887319967;
 
     /**
      * The reference instance of <code>public.pos_label</code>
@@ -144,8 +144,8 @@ public class PosLabel extends TableImpl<PosLabelRecord> {
         return new Pos(this, Keys.POS_LABEL__POS_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.POS_LABEL__POS_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.POS_LABEL__POS_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

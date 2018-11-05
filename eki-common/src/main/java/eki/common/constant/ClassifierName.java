@@ -3,7 +3,7 @@ package eki.common.constant;
 public enum ClassifierName {
 
 	LABEL_TYPE(false),
-	LANG(true),
+	LANGUAGE(true),
 	DOMAIN(true),
 	GOVERNMENT_TYPE(true),
 	REGISTER(true),

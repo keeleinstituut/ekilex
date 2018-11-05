@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MeaningRelTypeLabel extends TableImpl<MeaningRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = 236033423;
+    private static final long serialVersionUID = -439539527;
 
     /**
      * The reference instance of <code>public.meaning_rel_type_label</code>
@@ -144,8 +144,8 @@ public class MeaningRelTypeLabel extends TableImpl<MeaningRelTypeLabelRecord> {
         return new MeaningRelType(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.MEANING_REL_TYPE_LABEL__MEANING_REL_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

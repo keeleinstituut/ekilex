@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class PosGroupLabel extends TableImpl<PosGroupLabelRecord> {
 
-    private static final long serialVersionUID = -1035345142;
+    private static final long serialVersionUID = 1553167540;
 
     /**
      * The reference instance of <code>public.pos_group_label</code>
@@ -144,8 +144,8 @@ public class PosGroupLabel extends TableImpl<PosGroupLabelRecord> {
         return new PosGroup(this, Keys.POS_GROUP_LABEL__POS_GROUP_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.POS_GROUP_LABEL__POS_GROUP_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.POS_GROUP_LABEL__POS_GROUP_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {
