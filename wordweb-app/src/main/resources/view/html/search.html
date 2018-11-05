@@ -16,7 +16,17 @@
           <div th:replace="common-search :: search"></div>
         </div>
         <div class="col-12 col-md-6 p-0" id="language-detail-panel">
-          <div th:replace="common-search :: lang-filter"></div>
+          
+            <div class="row align-items-center ml-0">
+              <div class="col-6 p-1">
+                <div th:replace="common-search :: lang-filter"></div>
+              </div>
+
+              <div class="col-6 p-0">
+                <div th:replace="common-search :: detail-filter"></div>
+              </div>
+            </div>
+          
         </div>
         <!-- TODO: let client to decide waht message option they like, option 1 -->
         <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
@@ -91,7 +101,7 @@
           <div class="col-md-7 col-lg-8 main-data">
             <div class="level-2-panel">
               <div class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexemes}">
-                <div class="col-lg-6 meaning">
+                <div class="col-12 meaning">
                   <div class="float-left mr-2" th:unless="${lexeme.emptyLexeme}">
                     <span th:text="${lexeme.levels}"></span>
                   </div>
@@ -159,7 +169,7 @@
                     </span>
                   </div>
                 </div>
-                <div class="col-lg-6 dependencies">
+                <div class="col-12 dependencies">
                   <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-2 small">
                       <i th:each="government, iter : ${lexeme.governments}"
                          th:text="${government + (iter.last ? '' : ', ')}">
@@ -175,7 +185,7 @@
                         </div>
                       </th:block>
                       <button class="btn btn-speaker">
-                        <img class="robo-icon" th:src="@{/view/images/icons/robot.svg}">
+                        <span class="icon icon-speaker"></span>
                       </button>
                       <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
                         <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:text="${usageTranslation}"></span>
@@ -186,7 +196,7 @@
                       <img class="homonym-image" th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
                   </div>
                 </div>
-                <div class="col-lg-12 meaning-meta">
+                <div class="col-lg meaning-meta">
                   <div class="synonyms">
                     <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                       <span th:text="#{label.same.as}">sama mis</span>
@@ -245,7 +255,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-12 collocations-section">
+                <div class="col-12 collocations-section">
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
                     <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                       <div class="row">
@@ -339,7 +349,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="col-lg-12 dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</div>
+                <div class="col-12 dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</div>
                 <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
                 </button>

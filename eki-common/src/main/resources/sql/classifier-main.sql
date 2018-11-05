@@ -390,7 +390,7 @@ insert into lex_rel_type_label (code, value, lang, type) values ('vor', 'suhtlus
 insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vrd', 'võrdle', 'est', 'wordweb');
 insert into meaning_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'kaashüponüüm', 'est', 'descrip');
-insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'kaashüponüüm', 'est', 'wordweb');
+insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'võrdle', 'est', 'wordweb');
 insert into meaning_rel_type_label (code, value, lang, type) values ('ant', 'vastand', 'est', 'wordweb');
 insert into morph_label (code, value, lang, type) values ('ID', 'muutumatu', 'est', 'descrip2');
 insert into morph_label (code, value, lang, type) values ('SgN', 'ainsuse nimetav', 'est', 'descrip2');

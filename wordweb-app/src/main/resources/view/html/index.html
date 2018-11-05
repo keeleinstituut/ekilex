@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(_,~{::links})">
-<th:block th:fragment="links">
+  <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-index.js}"></script>
 </th:block>
+
 </head>
 <body class="home-page">
   <div class="header-container">
@@ -17,7 +18,7 @@
   </div>
   <div class="container-fluid home-page-content pb-4">
     <div class="row">
-      <div class="col align-self-center">
+      <div class="col align-self-center main-content-wrapper">
         <div class="row">
           <div class="col-12 mb-1 mb-md-2">
             <span class="icon icon-logo logo-main"></span>
@@ -29,8 +30,18 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12 mb-2">
-            <div th:replace="common-search :: lang-filter"></div>
+          <div class="col-12 home-page-lang mb-2">
+
+            <div class="row align-items-center ml-0">
+              <div class="col-12 col-sm-6 p-1">
+                <div th:replace="common-search :: lang-filter"></div>
+              </div>
+
+              <div class="col-12 col-sm-6 p-0">
+                <div th:replace="common-search :: detail-filter"></div>
+              </div>
+            </div>
+
           </div>
         </div>
         <div class="row">
@@ -38,12 +49,17 @@
             <div th:replace="common-search :: search"></div>
           </div>
         </div>
+        <div class="logo-wrapper">
+          <ul class="logo-list">
+            <li><span class="htm-logo mini-logo"></span></li>
+            <li><span class="eki-logo mini-logo"></span></li>
+            <li><span class="esf-logo mini-logo"></span></li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
-  <div class="container-fluid footer text-center">
-    <span class="icon-eki-logo"></span>
-  </div>
+
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";

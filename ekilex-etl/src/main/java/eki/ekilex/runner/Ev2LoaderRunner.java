@@ -1,11 +1,11 @@
 package eki.ekilex.runner;
 
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -374,11 +374,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setLevel3(1);
 			Long lexemeId = createLexeme(lexeme, getDataset());
 			if (lexemeId != null) {
-				if (StringUtils.isNotBlank(russianWordData.government)) {
-					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, russianWordData.government);
+				if (!russianWordData.governments.isEmpty()) {
+					for (String government : russianWordData.governments) {
+						createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
+					}
 				}
 				if (StringUtils.isNotBlank(russianWordData.register)) {
-					saveRegisters(lexemeId, asList(russianWordData.register), russianWordData.word);
+					saveRegisters(lexemeId, Collections.singletonList(russianWordData.register), russianWordData.word);
 				}
 			}
 		}
@@ -669,7 +671,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.displayForm = word;
 			wordData.reportingId = reportingId;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
-			wordData.government = extractAsString(wordGroupNode, governmentExp);
+			wordData.governments.addAll(extractValuesAsStrings(wordGroupNode, governmentExp));
 			String domainCode = extractAsString(wordGroupNode, domainExp);
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
