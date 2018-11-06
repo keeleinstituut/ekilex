@@ -18,35 +18,36 @@ $(document).ready(function() {
 		selectedHomonymItem.delay(1250).queue(function() {}).trigger('click');
 		selectedHomonymItem.addClass("animation-target");
 	}
+
 	calculateAndSetStyles();
 
 	var searchWordAutocompleteMenuRenderer = function(ul, items) {
 		var self = this;
-        var groups = [];
+		var groups = [];
 
-        groups = $.map(items, function(item) {
-        	return item.group;
-        });
+		groups = $.map(items, function(item) {
+			return item.group;
+		});
 
-        groups = $.grep(groups, function(el, index) {
-            return index === $.inArray(el, groups);
-        });
+		groups = $.grep(groups, function(el, index) {
+			return index === $.inArray(el, groups);
+		});
 
-        ul.addClass("list-group");
-        $.each(groups, function (index, group) {
-        	if (group == "formWord") {
-        		var li = $("<li>");
-        		li.addClass("list-group-item list-group-item-info");
-        		li.text(messages.this_is_form);
-            	ul.append(li);
-        	}
-        	$.each(items, function (index, item) {
-        		if (item.group == group) {
-        			self._renderItemData(ul, item);
-        		}
-        	});
-        });
-    };
+		ul.addClass("list-group");
+		$.each(groups, function (index, group) {
+			if (group == "formWord") {
+				var li = $("<li>");
+				li.addClass("list-group-item list-group-item-info");
+				li.text(messages.this_is_form);
+				ul.append(li);
+			}
+			$.each(items, function (index, item) {
+				if (item.group == group) {
+					self._renderItemData(ul, item);
+				}
+			});
+		});
+	};
 
 	var searchWordAutocompleteConfig = {
 		source: function(request, response) {
@@ -91,6 +92,15 @@ $(document).ready(function() {
 	};
 
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
+
+	$(".homonym-item").on("click", function (e) {
+			$(".header-container .back").addClass("show-btn");
+	});
+		$(".back").on("click", function (e) {
+			$(".header-container .back").removeClass("show-btn");
+	});
+
+
 });
 
 $(window).resize(function() {
@@ -137,8 +147,8 @@ function calculateAndSetStyles() {
 			$(".last-selected").addClass("selected");
 		}
 		$('#form-words').css("margin-top", '');
-        $(".homonym-panel").css("margin-top", '');
-        $('.word-details').css("margin-top", '');
+		$(".homonym-panel").css("margin-top", '');
+		$('.word-details').css("margin-top", '');
 	} else {
 		if (isMultiHomonym) {
 			if (!$(".homonym-panel").hasClass("d-none")) {
@@ -149,16 +159,16 @@ function calculateAndSetStyles() {
 			$(".search-panel").addClass("d-none");
 		}
 		if ($('#form-words').length == 0) {
-            $('.homonym-panel').css("margin-top", '');
-            $('.word-details').css("margin-top", '');
+			$('.homonym-panel').css("margin-top", '');
+			$('.word-details').css("margin-top", '');
 		} else {
 			if ($(".search-panel").hasClass("d-none")) {
-				$('#form-words').css("margin-top", '5em');
+				$('#form-words').css("margin-top", '1em');
 			} else {
-                $('#form-words').css("margin-top", '10em');
+				$('#form-words').css("margin-top", '10em');
 			}
-            $('.word-details').css("margin-top", '-1em');
-            $('.homonym-panel').css("margin-top", '-1em');
+			$('.word-details').css("margin-top", '-1em');
+			$('.homonym-panel').css("margin-top", '-1em');
 		}
 	}
 }
@@ -199,9 +209,9 @@ var speechRecognitionServiceUrl;
  * Patch the APIs for every browser that supports them and check if getUserMedia
  * is supported on the browser.
  */
-function initialiseRecording(serviceUrl) {
-	try {
-		speechRecognitionServiceUrl = serviceUrl;
+ function initialiseRecording(serviceUrl) {
+ 	try {
+ 		speechRecognitionServiceUrl = serviceUrl;
 		// Monkeypatch for AudioContext, getUserMedia and URL
 		window.AudioContext = window.AudioContext || window.webkitAudioContext;
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -413,14 +423,16 @@ $(document).on("click", "#toggle-simple", function (e) {
 });
 
 $(document).on("click", "#toggle-detail", function (e) {
-    var searchMode = $("input[name='searchMode']").val();
-    if (searchMode === "simple") {
-        $("input[name='searchMode']").val("detail");
-        $(this).addClass("active");
-        $("#toggle-simple").removeClass("active");
-        var tempSearchWord = $("input[name='searchWord']").val();
-        if (tempSearchWord) {
-            $("#search-btn").click();
-        }
-    }
+	var searchMode = $("input[name='searchMode']").val();
+	if (searchMode === "simple") {
+		$("input[name='searchMode']").val("detail");
+		$(this).addClass("active");
+		$("#toggle-simple").removeClass("active");
+		var tempSearchWord = $("input[name='searchWord']").val();
+		if (tempSearchWord) {
+			$("#search-btn").click();
+		}
+	}
 });
+
+

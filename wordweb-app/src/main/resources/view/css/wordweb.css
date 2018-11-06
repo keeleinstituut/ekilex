@@ -44,9 +44,7 @@
 
 @media (max-width: 768px) {
     body:not(.home-page) #language-detail-panel {
-        position: fixed;
-        top: 0;
-        left: 0;
+		margin-top: 1rem;
         width: calc(100vw - 4em);
     }
     .menu-btn {
@@ -54,7 +52,7 @@
         padding-right: 0.25em;
     }
     .more-btn {
-        margin-right: -0.75em;
+        margin-right: 0em;
     }
 }
 
@@ -81,15 +79,35 @@
     clear: both;
     display: block;
 }
-
-.level-3-panel:not(.expand) .collocations-section {
+.level-3-panel:not(.expand) .filler-row,
+.level-3-panel:not(.expand) .lexeme-list,
+.level-3-panel:not(.expand) .collocations-section .colloc-section .colloc-inner-section,
+.level-3-panel:not(.expand) .collocations-section .colloc-heading,
+.level-3-panel:not(.expand) .collocations-section .colloc-section .colloc-name,
+.level-3-panel:not(.expand) .collocations-section .colloc-section .colloc-row .colloc-col {
     display: none;
     opacity: 0;
 }
 
+.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) .colloc-row .colloc-col:nth-of-type(1),
+.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) .colloc-row .colloc-col:nth-of-type(2),
+.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) .colloc-row .colloc-col:nth-of-type(3) {
+  display: block;
+  opacity: 1;
+}
+
+.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) { display: block; opacity: 1 }
+
 .homonym-item,
 .back {
     cursor: pointer;
+
+}
+
+.header-container .back { display:none; }
+
+.header-container .show-btn.back {
+ display:block;
 }
 
 .lang-btn {

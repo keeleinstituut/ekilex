@@ -35,7 +35,7 @@
       </div>
     </div>
   </div>
-  <div class="container-fluid homonym-page">
+  <div class="container-fluid homonym-page bottom-gutter">
     <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="col offset-1">
         <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
@@ -195,6 +195,9 @@
                   <div class="mt-3" th:if="${not #lists.isEmpty(lexeme.imageFiles)}">
                       <img class="homonym-image" th:each="imageFile : ${lexeme.imageFiles}" th:src="@{'/files/images/' + ${imageFile}}">
                   </div>
+                                  <button class="more-btn">
+                  <span class="icon icon-chevron-left"></span>
+                </button>
                 </div>
                 <div class="col-lg meaning-meta">
                   <div class="synonyms">
@@ -258,24 +261,24 @@
                 <div class="col-12 collocations-section">
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
                     <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-                      <div class="row">
+                      <div class="colloc-heading row">
                           <span class="col">
                             <b th:text="#{label.collocations}">Kollokatsioonid</b>
                             &nbsp;
                             <button name="colloc-usages-btn" type="button" class="btn btn-light btn-sm" th:text="#{button.label.usages}">Kasutusnäited</button>
                           </span>
                       </div>
-                      <div class="row">&nbsp;</div>
+                      <div class="filler-row row">&nbsp;</div>
                       <div style="width: 100%">
-                        <div th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}" style="width: 100%">
-                          <div class="row">
+                        <div class="colloc-section" th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}" style="width: 100%">
+                          <div class="colloc-name row">
                             <i class="col">
                               <span th:text="${collocPosGr.posGroup.value}"></span>
                             </i>
                           </div>
-                          <div style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
-                            <div class="row" style="padding: 5px;">
-                              <span th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
+                          <div class="colloc-inner-section" style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
+                            <div class="colloc-row row" style="padding: 5px;">
+                              <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs}" style="padding: 2px;">
                                 <span class="colloc-member">
                                   <span th:if="${displayCollocIter.first}">
                                     <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
@@ -326,7 +329,7 @@
                         </div>
                       </div>
                     </div>
-                    <div th:if="${not #lists.isEmpty(lexeme.secondaryDisplayCollocs)}">
+                    <div class="lexeme-list" th:if="${not #lists.isEmpty(lexeme.secondaryDisplayCollocs)}">
                       <div class="row">
                         <b class="col" th:text="#{label.used.in.collocations}">Kasutatud kollokatsioonides</b>
                       </div>
@@ -350,9 +353,6 @@
                   </div>
                 </div>
                 <div class="col-12 dictionary-source" th:text="${lexeme.datasetName}">Eesti-vene sõnaraamat</div>
-                <button class="more-btn">
-                  <span class="icon icon-chevron-left"></span>
-                </button>
               </div>
             </div>
           </div>
@@ -437,6 +437,8 @@
       <span class="icon icon-chevron-left"></span>
     </button>
   </div>
+   <div th:replace="common-app :: footer-content">
+ </div>
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
