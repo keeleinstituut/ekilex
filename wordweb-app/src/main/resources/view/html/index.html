@@ -16,7 +16,7 @@
       <span class="icon icon-menu"></span>
     </button>
   </div>
-  <div class="container-fluid home-page-content pb-4">
+  <div class="container-fluid home-page-content">
     <div class="row">
       <div class="col align-self-center main-content-wrapper">
         <div class="row">
@@ -30,18 +30,19 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12 home-page-lang mb-2">
+          <div class="col-12 mb-2">
+            <div class="row align-items-center">
 
-            <div class="row align-items-center ml-0">
-              <div class="col-12 col-sm-6 p-1">
+              <div class="col-12 p-1 col-sm-6">
                 <div th:replace="common-search :: lang-filter"></div>
               </div>
 
               <div class="col-12 col-sm-6 p-0">
                 <div th:replace="common-search :: detail-filter"></div>
               </div>
-            </div>
 
+
+            </div>
           </div>
         </div>
         <div class="row">
@@ -59,6 +60,10 @@
       </div>
     </div>
   </div>
+
+ <div th:replace="common-app :: footer-content">
+ </div>
+
 
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
