@@ -6427,11 +6427,18 @@ a.text-dark:hover, a.text-dark:focus {
 
 html {
   background-color: #F2F2F2;
+  height: 100%;
 }
 
 ul {
   list-style: none;
   padding-left: 0;
+}
+
+.home-page {
+  position: relative;
+  min-height: 100%;
+  background: #F2F2F2 !important
 }
 
 .home-page .header-container {
@@ -6440,9 +6447,11 @@ ul {
 
 .home-page-content {
   background-color: #F2F2F2 !important;
-  height: calc(100vh);
+  height: 100%;
   z-index: -1;
   text-align: center;
+  padding-bottom: 6.25rem;
+  padding-top: 0rem;
 }
 
 .home-page-content > .row:last-child {
@@ -7088,6 +7097,9 @@ ul {
 	transform: rotate(45deg);
 }
 
+
+/*Custome Response*/
+
 @media (min-width: 401px) and (max-width: 767px) {
   .home-page-content .logo-main {
     font-size: 10.5vw;
@@ -7204,6 +7216,9 @@ ul {
     max-width: 31.25rem !important;
     width: auto !important;
   }
+    .home-page-content { 
+  padding-top: 6.25rem;
+   }
   .back {
     display: none;
   }
@@ -7489,20 +7504,16 @@ ul {
 }
 
 
-
-
 .logo-wrapper { 
   position: relative; 
 }
+
 .logo-list {
   display: flex; 
   flex-direction: column; 
   margin: 0 auto; 
   justify-content: center;
   margin-top: 1.5rem; 
-  position: absolute; 
-  left: 0; 
-  right: 0;
   align-items: center;
 }
 .eki-logo { 
@@ -7526,14 +7537,61 @@ ul {
   width: calc(22.125rem / 2);
   background-size: calc(22.125rem / 2) calc(11.6875rem / 2); 
 }
-  .mini-logo {
-    justify-content: center;
-    margin: 0 1rem;
-  }
+.mini-logo {
+  justify-content: center;
+  margin: 0 1rem;
+}
+
+
+.footer {
+   position:absolute;
+   bottom: 0px;
+   width:100%;
+   min-height: 60px;
+   background: #001124;
+   padding: 1rem 0 1rem 0;
+}
+.footer .social-list { 
+  margin-top: 0.5rem;
+  display: inline-flex;
+ }
+ .social-list .icon {
+  margin-left: 0.5rem;
+ }
+.copyright { 
+  display: block; 
+  margin: 0 auto 0 auto; 
+  color: #d8d8d8; 
+  text-align: center; 
+  font-size: 0.75rem;
+  width: 100%; 
+}
+.last-update {  
+  display: block; 
+  margin: 0 auto 0 auto; 
+  color: #d8d8d8; 
+  text-align: center; 
+  font-size: 0.75rem;
+  width: 100%;
+   }
+.fb-icon { 
+  background: url(../images/fb-icn.svg) center center no-repeat; 
+  display: block; 
+  height: 1.5rem; 
+  width: 1.5rem; 
+  background-size: 1.5rem; 
+  text-indent: -9999px;
+}
+.helper-text {
+    color: #d8d8d8; 
+    display: inline-block;
+}
 
 @media (min-width: 768px) { 
   .logo-list {
     flex-direction: row;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
   }
 }
 
@@ -7545,7 +7603,7 @@ ul {
   }
   .mini-logo {
     justify-content: center;
-    margin: 0.5rem auto;
+    margin: 1.5rem auto;
   }
   .htm-logo { 
     height: calc(6.125rem / 1.6);
@@ -7559,10 +7617,22 @@ ul {
     background-size: calc(22.125rem / 2) calc(11.6875rem / 2);
   }
   .eki-logo { 
-  height: calc(6.25rem / 1.8); 
-  width: calc(16.875rem / 1.8); 
-  background-size: calc(16.875rem / 1.8) calc(6.25rem / 1.8); 
+    height: calc(6.25rem / 1.8); 
+    width: calc(16.875rem / 1.8); 
+    background-size: calc(16.875rem / 1.8) calc(6.25rem / 1.8); 
+  }
+
+  .home-page-content .search-lang {
+    display: block;
+    margin: 0 auto;
+  }
+
+  .home-page-content .lang-btn {
+    float: none!important;
+  }
+
+  .home-page-content .detail-toggle-container {
+    display: block;
+    margin: 0 auto 0.5rem auto;
   }
 }
-
-
