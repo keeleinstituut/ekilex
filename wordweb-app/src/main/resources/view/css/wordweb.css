@@ -99,3 +99,22 @@
 .dropdown-menu {
     min-width: 18em;
 }
+
+.morphology-section {
+    position: relative;
+}
+
+.morphology-section .more-btn{
+    top: -0.5rem;
+    right: -2rem;
+}
+
+.morphology-section:not(.expand) .row:not(.intro) {
+    display: none;
+    opacity: 0;
+}
+
+.morphology-section .row div:not(.label) {
+    display: block;
+    height: 1.875rem;
+}

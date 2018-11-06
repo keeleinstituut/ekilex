@@ -42,6 +42,8 @@ import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationTuple;
 
+import static java.util.Arrays.asList;
+
 @Component
 public class ConversionUtil {
 
@@ -578,7 +580,7 @@ public class ConversionUtil {
 
 		final String[] orderedMorphPairCodes1 = new String[] {"SgN", "SgG", "SgP"};
 		final String[] orderedMorphPairCodes2 = new String[] {"PlN", "PlG", "PlP"};
-		final String[] unorderedMorphPairCodes = new String[] {"Sup", "Inf", "IndPrSg3", "PtsPtIps", "ID"};
+//		final String[] unorderedMorphPairCodes = new String[] {"Sup", "Inf", "IndPrSg3", "PtsPtIps", "ID"};
 
 		List<FormPair> compactForms = new ArrayList<>();
 		FormPair formPair;
@@ -595,7 +597,13 @@ public class ConversionUtil {
 			}
 		}
 		formPair = null;
-		for (String morphCode : unorderedMorphPairCodes) {
+		List<String> codesToSkip = new ArrayList<>();
+		codesToSkip.addAll(asList(orderedMorphPairCodes1));
+		codesToSkip.addAll(asList(orderedMorphPairCodes2));
+		for (String morphCode : formMap.keySet()) {
+			if (codesToSkip.contains(morphCode)) {
+				continue;
+			}
 			Form form = formMap.get(morphCode);
 			if (form == null) {
 				continue;
