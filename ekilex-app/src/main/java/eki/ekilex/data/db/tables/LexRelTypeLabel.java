@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelTypeLabel extends TableImpl<LexRelTypeLabelRecord> {
 
-    private static final long serialVersionUID = 272846787;
+    private static final long serialVersionUID = -835850003;
 
     /**
      * The reference instance of <code>public.lex_rel_type_label</code>
@@ -144,8 +144,8 @@ public class LexRelTypeLabel extends TableImpl<LexRelTypeLabelRecord> {
         return new LexRelType(this, Keys.LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.LEX_REL_TYPE_LABEL__LEX_REL_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

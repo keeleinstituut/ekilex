@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DomainLabel extends TableImpl<DomainLabelRecord> {
 
-    private static final long serialVersionUID = 1721374596;
+    private static final long serialVersionUID = 763061550;
 
     /**
      * The reference instance of <code>public.domain_label</code>
@@ -149,8 +149,8 @@ public class DomainLabel extends TableImpl<DomainLabelRecord> {
         return new Domain(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

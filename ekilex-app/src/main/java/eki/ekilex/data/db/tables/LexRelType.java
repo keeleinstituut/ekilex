@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexRelType extends TableImpl<LexRelTypeRecord> {
 
-    private static final long serialVersionUID = 1475496538;
+    private static final long serialVersionUID = 430742308;
 
     /**
      * The reference instance of <code>public.lex_rel_type</code>
@@ -64,6 +65,11 @@ public class LexRelType extends TableImpl<LexRelTypeRecord> {
      * The column <code>public.lex_rel_type.datasets</code>.
      */
     public final TableField<LexRelTypeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.lex_rel_type.order_by</code>.
+     */
+    public final TableField<LexRelTypeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lex_rel_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.lex_rel_type</code> table reference
@@ -112,6 +118,14 @@ public class LexRelType extends TableImpl<LexRelTypeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.LEX_REL_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<LexRelTypeRecord, Long> getIdentity() {
+        return Keys.IDENTITY_LEX_REL_TYPE;
     }
 
     /**

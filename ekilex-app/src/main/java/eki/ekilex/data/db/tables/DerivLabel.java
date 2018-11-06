@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DerivLabel extends TableImpl<DerivLabelRecord> {
 
-    private static final long serialVersionUID = -1134738481;
+    private static final long serialVersionUID = 1461675001;
 
     /**
      * The reference instance of <code>public.deriv_label</code>
@@ -144,8 +144,8 @@ public class DerivLabel extends TableImpl<DerivLabelRecord> {
         return new Deriv(this, Keys.DERIV_LABEL__DERIV_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.DERIV_LABEL__DERIV_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.DERIV_LABEL__DERIV_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

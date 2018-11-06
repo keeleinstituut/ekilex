@@ -43,20 +43,18 @@ function fetchCorpSentences(sentence) {
 
 $(document).on("click", ".more-btn", function() {
 	$(this).parent().toggleClass("expand");
-	$(this).parent().find(".additional-meta, .dictionary-source, .dependence, .label, .label-md, .morphology-section .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
-
-var counter = 0;
-$('.dependence').each(function(i) {
-   if (i % 1000 == 0) {
-       counter = 1;
-   } else {
-       counter++;
-   }
-   if (counter < 4) {
-       $(this).removeClass('fade-target');
-   }
-});
-
+	$(this).parent().find(".additional-meta, .dictionary-source, .dependence, .label, .label-md, .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
+	var counter = 0;
+	$('.dependence').each(function(i) {
+	   if (i % 1000 == 0) {
+		   counter = 1;
+	   } else {
+		   counter++;
+	   }
+	   if (counter < 4) {
+		   $(this).removeClass('fade-target');
+	   }
+	});
 });
 
 $(window).on("popstate", function(e) {

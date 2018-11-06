@@ -22,17 +22,18 @@ create table label_type
 );
 
 -- keel
-create table lang
+create table language
 (
   code char(3) primary key,
-  value text not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
-create table lang_label
+create table language_label
 (
-  code char(3) references lang(code) on delete cascade not null,
+  code char(3) references language(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -45,6 +46,7 @@ create table domain
   parent_code varchar(100) null,
   parent_origin varchar(100) null,
   datasets varchar(10) array not null,
+  order_by bigserial,
   primary key (code, origin),
   foreign key (parent_code, parent_origin) references domain (code, origin)
 );
@@ -54,7 +56,7 @@ create table domain_label
   code varchar(100) not null,
   origin varchar(100) not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   foreign key (code, origin) references domain (code, origin),
   unique(code, origin, lang, type)
@@ -63,14 +65,15 @@ create table domain_label
 create table value_state
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table value_state_label
 (
   code varchar(100) references value_state(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -79,14 +82,15 @@ create table value_state_label
 create table government_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table government_type_label
 (
   code varchar(100) references government_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -95,14 +99,15 @@ create table government_type_label
 create table register
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table register_label
 (
   code varchar(100) references register(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -111,14 +116,15 @@ create table register_label
 create table word_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table word_type_label
 (
   code varchar(100) references word_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -127,14 +133,15 @@ create table word_type_label
 create table aspect_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table aspect_type_label
 (
   code varchar(100) references aspect_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -143,21 +150,23 @@ create table aspect_type_label
 create table lexeme_frequency
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 -- sugu
 create table gender
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table gender_label
 (
   code varchar(100) references gender(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -166,14 +175,15 @@ create table gender_label
 create table pos
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table pos_label
 (
   code varchar(100) references pos(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -182,14 +192,15 @@ create table pos_label
 create table pos_group
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table pos_group_label
 (
   code varchar(100) references pos_group(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -198,14 +209,15 @@ create table pos_group_label
 create table morph
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table morph_label
 (
   code varchar(100) references morph(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -214,14 +226,15 @@ create table morph_label
 create table display_morph
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table display_morph_label
 (
   code varchar(100) references display_morph(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -230,14 +243,15 @@ create table display_morph_label
 create table deriv
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table deriv_label
 (
   code varchar(100) references deriv(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -246,21 +260,23 @@ create table deriv_label
 create table process_state
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 -- seose liik
 create table lex_rel_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table lex_rel_type_label
 (
   code varchar(100) references lex_rel_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -269,14 +285,15 @@ create table lex_rel_type_label
 create table form_rel_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table form_rel_type_label
 (
   code varchar(100) references form_rel_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -285,14 +302,15 @@ create table form_rel_type_label
 create table word_rel_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table word_rel_type_label
 (
   code varchar(100) references word_rel_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -301,14 +319,15 @@ create table word_rel_type_label
 create table meaning_rel_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table meaning_rel_type_label
 (
   code varchar(100) references meaning_rel_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -316,14 +335,15 @@ create table meaning_rel_type_label
 create table usage_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 create table usage_type_label
 (
   code varchar(100) references usage_type(code) on delete cascade not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
   unique(code, lang, type)
 );
@@ -331,7 +351,8 @@ create table usage_type_label
 create table etymology_type
 (
   code varchar(100) primary key,
-  datasets varchar(10) array not null
+  datasets varchar(10) array not null,
+  order_by bigserial
 );
 
 ---------------------------
@@ -376,7 +397,7 @@ create table freeform
   value_array text array null,
   classif_name text null,
   classif_code varchar(100) null,
-  lang char(3) references lang(code) null,
+  lang char(3) references language(code) null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
@@ -410,7 +431,7 @@ alter sequence source_freeform_id_seq restart with 10000;
 create table word
 (
   id bigserial primary key,
-  lang char(3) references lang(code) null,
+  lang char(3) references language(code) null,
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
   display_morph_code varchar(100) references display_morph(code) null,
@@ -582,7 +603,7 @@ create table definition
   id bigserial primary key,
   meaning_id bigint references meaning(id) not null,
   value text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
@@ -793,7 +814,7 @@ create table game_nonword
 (
   id bigserial primary key,
   word text not null,
-  lang char(3) references lang(code) not null,
+  lang char(3) references language(code) not null,
   unique(word, lang)
 );
 

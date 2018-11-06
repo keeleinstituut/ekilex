@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AspectTypeLabel extends TableImpl<AspectTypeLabelRecord> {
 
-    private static final long serialVersionUID = 1613489916;
+    private static final long serialVersionUID = -1227792474;
 
     /**
      * The reference instance of <code>public.aspect_type_label</code>
@@ -144,8 +144,8 @@ public class AspectTypeLabel extends TableImpl<AspectTypeLabelRecord> {
         return new AspectType(this, Keys.ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.ASPECT_TYPE_LABEL__ASPECT_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

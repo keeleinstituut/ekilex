@@ -1,26 +1,3 @@
-insert into lang (code, value) values ('est', 'Estonian');
-insert into lang (code, value) values ('eng', 'English');
-insert into lang (code, value) values ('rus', 'Russian');
-insert into lang (code, value) values ('fra', 'French');
-insert into lang (code, value) values ('deu', 'German');
-insert into lang (code, value) values ('fin', 'Finnish');
-insert into lang (code, value) values ('lat', 'Latin');
-insert into lang (code, value) values ('pol', 'Polish');
-insert into lang (code, value) values ('lav', 'Latvian');
-insert into lang (code, value) values ('swe', 'Swedish');
-insert into lang (code, value) values ('nld', 'Dutch');
-insert into lang (code, value) values ('san', 'Sanskrit');
-insert into lang (code, value) values ('pli', 'Pali');
-insert into lang (code, value) values ('zho', 'Chinese');
-insert into lang (code, value) values ('jpn', 'Japanese');
-insert into lang (code, value) values ('bod', 'Tibetan');
-insert into lang (code, value) values ('hin', 'Hindi');
-insert into lang (code, value) values ('pan', 'Panjabi');
-insert into lang (code, value) values ('ell', 'Greek');
-insert into lang (code, value) values ('spa', 'Spanish');
-insert into lang (code, value) values ('dan', 'Danish');
-insert into lang (code, value) values ('---', 'N/A');
-
 insert into label_type (code, value) values ('capital', 'capital');
 insert into label_type (code, value) values ('abbrev', 'abbrev');
 insert into label_type (code, value) values ('ekimorfo', 'ekimorfo');

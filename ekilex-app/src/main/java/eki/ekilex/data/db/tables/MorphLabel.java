@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MorphLabel extends TableImpl<MorphLabelRecord> {
 
-    private static final long serialVersionUID = 948369767;
+    private static final long serialVersionUID = -2017118831;
 
     /**
      * The reference instance of <code>public.morph_label</code>
@@ -144,8 +144,8 @@ public class MorphLabel extends TableImpl<MorphLabelRecord> {
         return new Morph(this, Keys.MORPH_LABEL__MORPH_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.MORPH_LABEL__MORPH_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.MORPH_LABEL__MORPH_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

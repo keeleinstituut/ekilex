@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UsageTypeLabel extends TableImpl<UsageTypeLabelRecord> {
 
-    private static final long serialVersionUID = 1620529300;
+    private static final long serialVersionUID = 252276798;
 
     /**
      * The reference instance of <code>public.usage_type_label</code>
@@ -144,8 +144,8 @@ public class UsageTypeLabel extends TableImpl<UsageTypeLabelRecord> {
         return new UsageType(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.USAGE_TYPE_LABEL__USAGE_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

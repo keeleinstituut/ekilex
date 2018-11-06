@@ -85,6 +85,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIFIER_MSAGTYYP = "msag_tyyp";
 	protected static final String EKI_CLASSIFIER_STYYP = "s_tyyp";
 	protected static final String EKI_CLASSIFIER_ETYMPLTYYP = "etympl_tyyp";
+	protected static final String EKI_CLASSIIFER_ETYMKEELTYYP = "etymkeel_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
 	@Autowired

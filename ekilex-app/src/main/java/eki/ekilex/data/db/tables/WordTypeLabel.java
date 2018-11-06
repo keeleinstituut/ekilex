@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordTypeLabel extends TableImpl<WordTypeLabelRecord> {
 
-    private static final long serialVersionUID = 383393248;
+    private static final long serialVersionUID = 1799405194;
 
     /**
      * The reference instance of <code>public.word_type_label</code>
@@ -144,8 +144,8 @@ public class WordTypeLabel extends TableImpl<WordTypeLabelRecord> {
         return new WordType(this, Keys.WORD_TYPE_LABEL__WORD_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.WORD_TYPE_LABEL__WORD_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {

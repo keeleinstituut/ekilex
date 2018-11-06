@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
 
-    private static final long serialVersionUID = -13608335;
+    private static final long serialVersionUID = 1922293337;
 
     /**
      * The reference instance of <code>public.government_type</code>
@@ -64,6 +65,11 @@ public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
      * The column <code>public.government_type.datasets</code>.
      */
     public final TableField<GovernmentTypeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.government_type.order_by</code>.
+     */
+    public final TableField<GovernmentTypeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('government_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.government_type</code> table reference
@@ -112,6 +118,14 @@ public class GovernmentType extends TableImpl<GovernmentTypeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.GOVERNMENT_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<GovernmentTypeRecord, Long> getIdentity() {
+        return Keys.IDENTITY_GOVERNMENT_TYPE;
     }
 
     /**

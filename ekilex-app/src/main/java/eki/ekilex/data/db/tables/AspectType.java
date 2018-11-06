@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Index;
 import org.jooq.Name;
 import org.jooq.Record;
@@ -40,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AspectType extends TableImpl<AspectTypeRecord> {
 
-    private static final long serialVersionUID = -1691248476;
+    private static final long serialVersionUID = -885800123;
 
     /**
      * The reference instance of <code>public.aspect_type</code>
@@ -64,6 +65,11 @@ public class AspectType extends TableImpl<AspectTypeRecord> {
      * The column <code>public.aspect_type.datasets</code>.
      */
     public final TableField<AspectTypeRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.aspect_type.order_by</code>.
+     */
+    public final TableField<AspectTypeRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('aspect_type_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.aspect_type</code> table reference
@@ -112,6 +118,14 @@ public class AspectType extends TableImpl<AspectTypeRecord> {
     @Override
     public List<Index> getIndexes() {
         return Arrays.<Index>asList(Indexes.ASPECT_TYPE_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<AspectTypeRecord, Long> getIdentity() {
+        return Keys.IDENTITY_ASPECT_TYPE;
     }
 
     /**

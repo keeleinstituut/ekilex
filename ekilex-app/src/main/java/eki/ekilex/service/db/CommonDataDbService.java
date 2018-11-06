@@ -9,7 +9,8 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
-import static eki.ekilex.data.db.Tables.LANG;
+import static eki.ekilex.data.db.Tables.LANGUAGE;
+import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -73,12 +74,17 @@ public class CommonDataDbService implements DbConstant {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).orderBy(DATASET.ORDER_BY).fetch();
 	}
 
-	public Map<String, String> getLanguagesMap() {
-		return create.select().from(LANG).fetchMap(LANG.CODE, LANG.VALUE);
-	}
-
-	public Result<Record2<String, String>> getLanguages() {
-		return create.select(LANG.CODE, LANG.VALUE).from(LANG).fetch();
+	public Result<Record2<String, String>> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(LANGUAGE_LABEL.CODE, LANGUAGE_LABEL.VALUE)
+				.from(LANGUAGE, LANGUAGE_LABEL)
+				.where(
+						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
+						.and(LANGUAGE_LABEL.LANG.eq(classifierLabelLang))
+						.and(LANGUAGE_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
+				.orderBy(LANGUAGE.ORDER_BY)
+				.fetch();
 	}
 
 	public Result<Record2<String, String>> getLexemeFrequencyGroups() {

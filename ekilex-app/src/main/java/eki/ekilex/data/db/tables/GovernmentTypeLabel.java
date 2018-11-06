@@ -40,7 +40,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class GovernmentTypeLabel extends TableImpl<GovernmentTypeLabelRecord> {
 
-    private static final long serialVersionUID = -821417554;
+    private static final long serialVersionUID = 566233944;
 
     /**
      * The reference instance of <code>public.government_type_label</code>
@@ -144,8 +144,8 @@ public class GovernmentTypeLabel extends TableImpl<GovernmentTypeLabelRecord> {
         return new GovernmentType(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_CODE_FKEY);
     }
 
-    public Lang lang() {
-        return new Lang(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_LANG_FKEY);
+    public Language language() {
+        return new Language(this, Keys.GOVERNMENT_TYPE_LABEL__GOVERNMENT_TYPE_LABEL_LANG_FKEY);
     }
 
     public LabelType labelType() {
