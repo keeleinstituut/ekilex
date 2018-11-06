@@ -69,6 +69,8 @@ body {
   color: #001124;
   text-align: left;
   background-color: #fff;
+  position: relative;
+  min-height: 100%;
 }
 
 [tabindex="-1"]:focus {
@@ -6454,6 +6456,7 @@ ul {
   padding-top: 0rem;
 }
 
+
 .home-page-content > .row:last-child {
   height: 100%;
 }
@@ -6863,11 +6866,15 @@ ul {
   }
 }
 
+.meaning-panel .more-btn { 
+
+ }
+
 .more-btn {
   cursor: pointer;
   position: absolute;
   top: 1.25rem;
-  right: 0;
+  right: -2.5rem;
   width: 3.75rem;
   background: transparent;
   border: none;
@@ -7216,7 +7223,7 @@ ul {
     max-width: 31.25rem !important;
     width: auto !important;
   }
-    .home-page-content { 
+   .home-page .home-page-content { 
   padding-top: 6.25rem;
    }
   .back {
@@ -7542,6 +7549,13 @@ ul {
   margin: 0 1rem;
 }
 
+.header-container .eki-logo {
+  margin: 1rem auto 0 auto; 
+  height: calc(6.25rem / 2.5); 
+  width: calc(16.875rem / 2.5); 
+  background-size: calc(16.875rem / 2.5) calc(6.25rem / 2.5);
+}
+
 
 .footer {
    position:absolute;
@@ -7586,6 +7600,10 @@ ul {
     color: #d8d8d8; 
     display: inline-block;
 }
+
+.bottom-gutter { 
+padding-bottom: 140px;
+ }
 
 @media (min-width: 768px) { 
   .logo-list {
@@ -7634,5 +7652,11 @@ ul {
   .home-page-content .detail-toggle-container {
     display: block;
     margin: 0 auto 0.5rem auto;
+  }
+    .homonym-page { 
+    margin-top: 4.375rem; 
+  }
+  .homonym-wrap {
+    margin-top: 0rem;
   }
 }
