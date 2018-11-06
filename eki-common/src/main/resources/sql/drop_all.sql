@@ -94,6 +94,10 @@ drop table if exists government_type_label;
 drop table if exists government_type;
 drop table if exists value_state_label;
 drop table if exists value_state;
+-- FIXME: remove after sript has been run on all environments
+drop table if exists lang_label;
+drop table if exists lang;
+--
 drop table if exists language_label;
 drop table if exists language;
 drop table if exists label_type;
