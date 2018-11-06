@@ -172,6 +172,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 					for (Node formNode : formNodes) {
 
 						displayForm = ((Element)formNode).getTextTrim();
+						displayForm = StringUtils.removeEnd(displayForm, "[");
 						form = StringUtils.replaceChars(displayForm, formCleanupChars, "");
 
 						if (StringUtils.isBlank(form)) {
