@@ -43,8 +43,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(Ss1LoaderRunner.class);
 
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
-	private final static String sqlWordLexemesByMeaningAndDataset =
-			"select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset and l.meaning_id = :meaningId";
 
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private final static String POS_TYPE_DERIVATIVE = "adjga";
@@ -55,6 +53,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private final static String WORD_RELATION_DERIVATIVE = "deriv";
 	private final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
 	private final static String WORD_RELATION_UNION = "ühend";
+	private final static String WORD_RELATION_SUB_WORD = "sub_word";
 
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SUBWORDS_REPORT_NAME = "subkeywords";
@@ -136,7 +135,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("total {} articles iterated", articleCounter);
 
 		processUnionWords(context);
-		processSubWords(context);
 		processDerivativeWords(context);
 		processSynonymsNotFoundInImportFile(context);
 		processAbbreviations(context);
@@ -452,38 +450,23 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Derivatives processing done.");
 	}
 
-	private void processSubWords(Context context) throws Exception {
-		logger.debug("Found {} sub words <s:mm>.", context.subWords.size());
-		logger.debug("Processing started.");
-		setActivateReport(SUBWORDS_REPORT_NAME);
-		writeToLogFile("Alammärksõna seoste töötlus <s:mm>", "", "");
-
-		Count newWordsCounter = new Count();
-		for (WordData subWord : context.subWords) {
-			Long subWordId = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.reportingId);
-			if (subWordId == null) {
-				subWordId = createWordWithLexeme(context, subWord);
-				newWordsCounter.increment();
-			}
-
-			Map<String, Object> params = new HashMap<>();
-			params.put("wordId", subWord.id);
-			params.put("dataset", getDataset());
-			params.put("meaningId", subWord.meaningId);
-			List<Map<String, Object>> mainWordLexemes = basicDbService.queryList(sqlWordLexemesByMeaningAndDataset, params);
-			for (Map<String, Object> mainWordLexeme : mainWordLexemes) {
-				params.clear();
-				params.put("wordId", subWordId);
-				params.put("dataset", getDataset());
-				List<Map<String, Object>> subWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
-				for (Map<String, Object> subWordLexeme : subWordLexemes) {
-					createLexemeRelation((Long) mainWordLexeme.get("id"), (Long) subWordLexeme.get("id"), LEXEME_RELATION_SUB_WORD);
+	private List<WordData> processSubWords(Node node, Context context, List<WordData> mainWords, String reportingId) throws Exception {
+		List<WordData> subWords = extractSubWords(node, reportingId);
+		if (!subWords.isEmpty()) {
+			for (WordData subWord: subWords) {
+				subWord.id = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.value);
+				if (subWord.id == null) {
+					WordData newWord = createDefaultWordFrom(subWord.value, subWord.displayForm, dataLang, subWord.displayMorph, subWord.wordType, null);
+					newWord.homonymNr = subWord.homonymNr;
+					context.importedWords.add(newWord);
+					subWord.id = newWord.id;
+				}
+				for (WordData mainWord: mainWords) {
+					createWordRelation(mainWord.id, subWord.id, WORD_RELATION_SUB_WORD);
 				}
 			}
 		}
-
-		logger.debug("Sub words created {}", newWordsCounter.getValue());
-		logger.debug("Sub words processing done.");
+		return subWords;
 	}
 
 	private Long createWordWithLexeme(Context context, WordData wordData) throws Exception {
@@ -536,7 +519,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String meaningNumberGroupExp = "s:tp";
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "s:tg";
-		final String meaningPosCodeExp = "s:grg/s:sl";
 		final String conceptIdExp = "s:tpid";
 
 		List<WordData> derivativeWords = extractDerivativeWords(contentNode, newWords);
@@ -545,7 +527,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
 			String lexemeLevel1Str = ((Element)meaningNumberGroupNode).attributeValue(lexemeLevel1Attr);
-			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
+			int lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Node> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
 			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
 			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
@@ -553,94 +535,113 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
-				List<Usage> usages = extractUsages(meaningGroupNode, conceptId);
-				List<String> definitions = extractDefinitions(meaningGroupNode);
-				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
-				List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
-				List<WordData> subWords = extractSubWords(meaningGroupNode, newWords.get(0));
-				List<String> publicNotes = extractPublicNotes(meaningGroupNode);
-
-				Long meaningId;
-				List<String> definitionsToAdd = new ArrayList<>();
-				List<String> definitionsToCache = new ArrayList<>();
-
-				List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
-				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
-				List<LexemeToWordData> connectedWords =
-						Stream.of(
-								meaningSynonyms.stream(),
-								meaningAbbreviations.stream(),
-								meaningAbbreviationFullWords.stream(),
-								meaningTokens.stream(),
-								meaningLatinTerms.stream()
-						).flatMap(i -> i).collect(toList());
-				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
-				if (meaningData == null) {
-					Meaning meaning = new Meaning();
-					meaningId = createMeaning(meaning);
-					definitionsToAdd.addAll(definitions);
-					definitionsToCache.addAll(definitions);
+				List<WordData> subWords = processSubWords(meaningGroupNode, context, newWords, reportingId);
+				if (!subWords.isEmpty()) {
+					processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, reportingId);
 				} else {
-					meaningId = meaningData.meaningId;
-					validateMeaning(meaningData, definitions, reportingId);
-					definitionsToAdd = definitions.stream().filter(def -> !meaningData.meaningDefinitions.contains(def)).collect(toList());
-					meaningData.meaningDefinitions.addAll(definitionsToAdd);
-					definitionsToCache.addAll(meaningData.meaningDefinitions);
+					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, reportingId);
 				}
-				if (!definitionsToAdd.isEmpty()) {
-					for (String definition : definitionsToAdd) {
-						createDefinition(meaningId, definition, dataLang, getDataset());
-					}
-					if (definitionsToAdd.size() > 1) {
-						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
-					}
-				}
-				List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
-				context.antonyms.addAll(meaningAntonyms);
-				List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
-				context.cohyponyms.addAll(meaningCohyponyms);
-				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1,
-						subWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningLatinTerms);
+			}
+		}
+	}
 
-				if (isNotBlank(conceptId)) {
-					createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
-				}
-				List<String> registers = extractRegisters(meaningGroupNode);
-				processSemanticData(meaningGroupNode, meaningId);
-				processDomains(meaningGroupNode, meaningId, null);
+	private void processMeaning(
+			Node meaningGroupNode,
+			Context context,
+			List<WordData> newWords,
+			int lexemeLevel1,
+			int lexemeLevel2,
+			List<CommentData> comments,
+			String conceptId,
+			String reportingId) throws Exception {
 
-				for (WordData newWordData : newWords) {
-					Lexeme lexeme = new Lexeme();
-					lexeme.setWordId(newWordData.id);
-					lexeme.setMeaningId(meaningId);
-					lexeme.setLevel1(lexemeLevel1);
-					lexeme.setLevel2(lexemeLevel2);
-					lexeme.setLevel3(1);
-					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
-					Long lexemeId = createLexeme(lexeme, getDataset());
-					if (lexemeId != null) {
-						lexeme.setLexemeId(lexemeId);
-						createUsages(lexemeId, usages, dataLang);
-						saveGovernments(meaningGroupNode, lexemeId, newWordData);
-						savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
-						saveGrammars(meaningGroupNode, lexemeId, newWordData);
-						saveRegisters(lexemeId, registers, reportingId);
-						saveAdviceNotes(lexemeId, adviceNotes);
-						savePublicNotes(lexemeId, publicNotes);
-						saveComments(lexemeId, comments);
-						for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
-							LexemeToWordData abbreviationData = meaningAbbreviation.copy();
-							abbreviationData.lexemeId = lexemeId;
-							context.abbreviations.add(abbreviationData);
-						}
-					} else {
-						// null is returned in case we already have lexeme for word and meaning, this is bad data in xml, so we need to log it
-						writeToLogFile(MEANINGS_REPORT_NAME, newWordData.value, "Mõiste ja märksõna jaoks on juba ilmik olemas", definitions.get(0));
-					}
+		final String meaningPosCodeExp = "s:grg/s:sl";
+
+ 		List<Usage> usages = extractUsages(meaningGroupNode, conceptId);
+		List<String> definitions = extractDefinitions(meaningGroupNode);
+		List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
+		List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
+		List<String> publicNotes = extractPublicNotes(meaningGroupNode);
+
+		Long meaningId;
+		List<String> definitionsToAdd = new ArrayList<>();
+		List<String> definitionsToCache = new ArrayList<>();
+
+		List<LexemeToWordData> meaningSynonyms = extractSynonyms(meaningGroupNode, reportingId);
+		List<LexemeToWordData> meaningAbbreviations = extractAbbreviations(meaningGroupNode, reportingId);
+		List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
+		List<LexemeToWordData> meaningTokens = extractTokens(meaningGroupNode, reportingId);
+		List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, reportingId);
+		List<LexemeToWordData> connectedWords =
+				Stream.of(
+						meaningSynonyms.stream(),
+						meaningAbbreviations.stream(),
+						meaningAbbreviationFullWords.stream(),
+						meaningTokens.stream(),
+						meaningLatinTerms.stream()
+				).flatMap(i -> i).collect(toList());
+		WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
+		if (meaningData == null) {
+			Meaning meaning = new Meaning();
+			meaningId = createMeaning(meaning);
+			definitionsToAdd.addAll(definitions);
+			definitionsToCache.addAll(definitions);
+		} else {
+			meaningId = meaningData.meaningId;
+			validateMeaning(meaningData, definitions, reportingId);
+			definitionsToAdd = definitions.stream().filter(def -> !meaningData.meaningDefinitions.contains(def)).collect(toList());
+			meaningData.meaningDefinitions.addAll(definitionsToAdd);
+			definitionsToCache.addAll(meaningData.meaningDefinitions);
+		}
+		if (!definitionsToAdd.isEmpty()) {
+			for (String definition : definitionsToAdd) {
+				createDefinition(meaningId, definition, dataLang, getDataset());
+			}
+			if (definitionsToAdd.size() > 1) {
+				writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
+			}
+		}
+		List<WordToMeaningData> meaningAntonyms = extractAntonyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+		context.antonyms.addAll(meaningAntonyms);
+		List<WordToMeaningData> meaningCohyponyms = extractCohyponyms(meaningGroupNode, meaningId, newWords.get(0), lexemeLevel1, reportingId);
+		context.cohyponyms.addAll(meaningCohyponyms);
+		cacheMeaningRelatedData(context, meaningId, definitionsToCache, lexemeLevel1,
+				newWords, meaningSynonyms, meaningAbbreviations, meaningAbbreviationFullWords, meaningTokens, meaningLatinTerms);
+
+		if (isNotBlank(conceptId)) {
+			createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
+		}
+		List<String> registers = extractRegisters(meaningGroupNode);
+		processSemanticData(meaningGroupNode, meaningId);
+		processDomains(meaningGroupNode, meaningId, null);
+
+		for (WordData newWordData : newWords) {
+			Lexeme lexeme = new Lexeme();
+			lexeme.setWordId(newWordData.id);
+			lexeme.setMeaningId(meaningId);
+			lexeme.setLevel1(lexemeLevel1);
+			lexeme.setLevel2(lexemeLevel2);
+			lexeme.setLevel3(1);
+			lexeme.setFrequencyGroup(newWordData.frequencyGroup);
+			Long lexemeId = createLexeme(lexeme, getDataset());
+			if (lexemeId != null) {
+				lexeme.setLexemeId(lexemeId);
+				createUsages(lexemeId, usages, dataLang);
+				saveGovernments(meaningGroupNode, lexemeId, newWordData);
+				savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
+				saveGrammars(meaningGroupNode, lexemeId, newWordData);
+				saveRegisters(lexemeId, registers, reportingId);
+				saveAdviceNotes(lexemeId, adviceNotes);
+				savePublicNotes(lexemeId, publicNotes);
+				saveComments(lexemeId, comments);
+				for (LexemeToWordData meaningAbbreviation : meaningAbbreviations) {
+					LexemeToWordData abbreviationData = meaningAbbreviation.copy();
+					abbreviationData.lexemeId = lexemeId;
+					context.abbreviations.add(abbreviationData);
 				}
+			} else {
+				// null is returned in case we already have lexeme for word and meaning, this is bad data in xml, so we need to log it
+				writeToLogFile(MEANINGS_REPORT_NAME, newWordData.value, "Mõiste ja märksõna jaoks on juba ilmik olemas", definitions.get(0));
 			}
 		}
 	}
@@ -668,17 +669,14 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private void cacheMeaningRelatedData(
-			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
-			List<WordData> subWords,
+			Context context, Long meaningId, List<String> definitions, int level1,
+			List<WordData> newWords,
 			List<LexemeToWordData> synonyms,
 			List<LexemeToWordData> abbreviations,
 			List<LexemeToWordData> abbreviationFullWords,
 			List<LexemeToWordData> tokens,
 			List<LexemeToWordData> latinTerms
 			) {
-		subWords.forEach(data -> data.meaningId = meaningId);
-		context.subWords.addAll(subWords);
-
 		synonyms.forEach(data -> data.meaningId = meaningId);
 		context.synonyms.addAll(synonyms);
 
@@ -698,8 +696,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				.filter(m -> Objects.equals(m.meaningId, meaningId))
 				.forEach(m -> {m.meaningDefinitions.clear(); m.meaningDefinitions.addAll(definitions);});
 		List<WordData> words = new ArrayList<>();
-		words.add(keyword);
-		words.addAll(subWords);
+		words.addAll(newWords);
 		words.forEach(word -> {
 			context.meanings.addAll(convertToMeaningData(synonyms, word, level1, definitions));
 			context.meanings.addAll(convertToMeaningData(abbreviations, word, level1, definitions));
@@ -988,7 +985,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return derivatives;
 	}
 
-	private List<WordData> extractSubWords(Node node, WordData mainWord) {
+	private List<WordData> extractSubWords(Node node, String reportingId) {
 
 		final String subWordExp = "s:mmg/s:mm";
 		final String frequencyGroupExp = "s:mmg/s:msag";
@@ -1006,7 +1003,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (displayMorphNode != null) {
 			displayMorph = displayMorpCodes.get(displayMorphNode.getTextTrim());
 			if (displayMorph == null) {
-				logger.warn("Unknown display morph code : {} : {}", displayMorphNode.getTextTrim(), mainWord.value);
+				logger.warn("Unknown display morph code : {} : {}", displayMorphNode.getTextTrim(), reportingId);
 			}
 		}
 
@@ -1015,9 +1012,8 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		for (Node subWordNode : subWordNodes) {
 			Element subWordElement = (Element) subWordNode;
 			WordData subWord = new WordData();
-			subWord.id = mainWord.id;
-			subWord.value = cleanUp(subWordElement.getTextTrim());
-			subWord.reportingId = mainWord.reportingId;
+			subWord.displayForm = subWordElement.getTextTrim();
+			subWord.value = cleanUp(subWord.displayForm);
 			if (subWordElement.attributeValue(homonymNrAttr) != null) {
 				subWord.homonymNr = Integer.parseInt(subWordElement.attributeValue(homonymNrAttr));
 			}
