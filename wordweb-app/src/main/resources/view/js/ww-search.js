@@ -57,7 +57,7 @@ $(document).on("click", ".more-btn", function() {
 	$(this).next(".morphology-section").toggleClass("expand");
 
 	var counter = 0;
-	$('.dependence, word-options').each(function(i) {
+	$('.dependence').each(function(i) {
 		if (i % 1000 == 0) {
 			counter = 1;
 		} else {

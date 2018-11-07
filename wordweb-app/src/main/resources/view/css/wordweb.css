@@ -159,6 +159,7 @@
 .word-relations .word-group:not(expand) .word-options:nth-of-type(2),
 .word-relations .word-group:not(expand) .word-options:nth-of-type(3) {
  display:inline-block!important;
+     animation: inherit!important;
 }
 
 .word-relations .word-group.expand .word-options {
