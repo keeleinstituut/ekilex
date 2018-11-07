@@ -6,7 +6,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 	$.get(wordDetailsUrl).done(function(data) {
 		detailsDiv.replaceWith(data);
 		if (word.indexOf('/') !== -1) {
-            wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
+			wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
 		}
 		var historyState = {
 			wordId: wordId,
@@ -20,7 +20,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		calculateAndSetStyles();
 	}).fail(function(data) {
 		console.log(data);
-        alert(messages.search_failure);
+		alert(messages.search_failure);
 	})
 }
 
@@ -41,19 +41,31 @@ function fetchCorpSentences(sentence) {
 	})
 }
 
+$(function(){
+	$('[data-toggle="tooltip"]').tooltip({
+		container: 'body'
+	});
+});
+
 $(document).on("click", ".more-btn", function() {
-	$(this).parents(".meaning-panel, .morphology-section,  .level-3-panel").toggleClass("expand");
-	$(this).parents(".meaning-panel, level-3-panel").find(".additional-meta, .dictionary-source, .dependence, .label, .label-md, .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
+	$(this).parents(".meaning-panel, .dependencies, .collocations-section").toggleClass("expand");
+	$(this).parents(".meaning-panel, .dependencies, .collocations-section").find(".dependence, .label, .label-md, .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
+	
+	$(this).parent(".word-group, .corp-panel").toggleClass("expand");
+	$(this).parent(".word-group").find(".word-options").toggleClass("fade-target");
+
+	$(this).next(".morphology-section").toggleClass("expand");
+
 	var counter = 0;
-	$('.dependence').each(function(i) {
-	   if (i % 1000 == 0) {
-		   counter = 1;
-	   } else {
-		   counter++;
-	   }
-	   if (counter < 4) {
-		   $(this).removeClass('fade-target');
-	   }
+	$('.dependence, word-options').each(function(i) {
+		if (i % 1000 == 0) {
+			counter = 1;
+		} else {
+			counter++;
+		}
+		if (counter < 4) {
+			$(this).removeClass('fade-target');
+		}
 	});
 });
 
@@ -96,15 +108,15 @@ $(document).on("click", ".homonym-item", function(e) {
 	calculateAndSetStyles();
 	if ($(window).width() >= windowWidthTreshold) {
 		$('.homonym-list').animate({
-				scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
-			},
-			200);
+			scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
+		},
+		200);
 	}
 	if ($(window).width() >= windowWidthTreshold) {
 		$('.homonym-list').animate({
-				scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
-			},
-			200);
+			scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
+		},
+		200);
 	} else {
 		$(".homonym-panel").addClass("d-none");
 		$(".search-panel").addClass("d-none");

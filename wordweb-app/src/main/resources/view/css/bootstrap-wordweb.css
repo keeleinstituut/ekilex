@@ -68,7 +68,6 @@ body {
   line-height: 1.5;
   color: #001124;
   text-align: left;
-  background-color: #fff;
   position: relative;
   min-height: 100%;
 }
@@ -6793,9 +6792,6 @@ ul {
   background-color: #fff;
 }
 
-.level-3-panel:not(.expand) .additional-meta,
-.level-3-panel:not(.expand) .dictionary-source,
-.level-3-panel:not(.expand) .meaning-meta,
 .level-3-panel:not(.expand) .label,
 .level-3-panel:not(.expand) .label-md,
 .level-3-panel:not(.expand) .corp-panel div:nth-child(n+5) {
@@ -6803,33 +6799,38 @@ ul {
   opacity: 0;
 }
 
-.level-3-panel .dependence {
+.level-3-panel .dependencies:not(.expand) .dependence {
   display: none;
   opacity: 0;
 }
 
-.level-3-panel .dependence:nth-child(1),
-.level-3-panel .dependence:nth-child(2),
-.level-3-panel .dependence:nth-child(3)
+.level-3-panel .dependencies.expand .dependence { 
+  display: inline-flex; 
+  opacity: 1;
+}
+
+.level-3-panel .dependencies .dependence:nth-child(1),
+.level-3-panel .dependencies .dependence:nth-child(2),
+.level-3-panel .dependencies .dependence:nth-child(3)
 {
   display: inline-flex;
   opacity: 1;
 }
 
-.level-3-panel.expand .dependence
+.level-3-panel .dependence.expand
 {
   display: inline-flex;
   opacity: 1;
 }
 
 
-.level-3-panel.expand {
+/*.level-3-panel.expand {
   flex-direction: column;
-}
+}*/
 
 
-.level-3-panel.expand .meaning,
-.level-3-panel.expand .meaning-meta {
+.level-3-panel .dependence.expand .meaning,
+.level-3-panel .dependence.expand .meaning-meta {
   flex: 0 1 auto;
 }
 
@@ -6842,6 +6843,7 @@ ul {
   display: block;
   color: #7F8891;
   font-size: 0.75rem;
+  margin-top: 0.625rem;
 }
 
 .additional-meta {
@@ -6907,9 +6909,6 @@ ul {
   color: #7F8891;
 }
 
-.expand .more-btn {
-  top: calc( 1.25rem + 5px);
-}
 
 .expand .more-btn .icon:before {
   color: #001124 !important;
@@ -7594,7 +7593,7 @@ ul {
   height: 1.5rem; 
   width: 1.5rem; 
   background-size: 1.5rem; 
-  text-indent: -9999px;
+  text-indent: -624.938rem;
 }
 .helper-text {
     color: #d8d8d8; 
@@ -7602,8 +7601,12 @@ ul {
 }
 
 .bottom-gutter { 
-padding-bottom: 140px;
+padding-bottom: 8.75rem;
  }
+
+ .bs-tooltip-top { 
+  top: -160px!important;
+  }
 
 @media (min-width: 768px) { 
   .logo-list {
