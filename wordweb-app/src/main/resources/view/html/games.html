@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(_,~{::links})">
-<th:block th:fragment="links">
+  <th:block th:fragment="links">
 </th:block>
 </head>
 <body>
@@ -17,29 +17,29 @@
               </a>
             </h5>
             <th:block th:if="${lexicDecisGameStat != null}">
-              <h6 th:text="#{game.label.thanks}" th:if="${!lexicDecisGameStat.brainlessExit}">Aitäh!</h6>
-              <div>
-                <b th:text="#{game.lexicdecis.brainless.exit}" th:if="${lexicDecisGameStat.brainlessExit}"></b>
-              </div>
-              <th:block th:if="${lexicDecisGameStat.gameResult != null}">
-                <div>
-                  <span th:text="#{|game.lexicdecis.result.stat.1|(${lexicDecisGameStat.gameResult.allAnswersCount},${lexicDecisGameStat.gameResult.correctAnswersCount})}"></span>
-                </div>
-                <div>
-                  <span th:text="#{|game.lexicdecis.result.stat.2|(${lexicDecisGameStat.playerCount},${lexicDecisGameStat.averageDelayPosition},${lexicDecisGameStat.correctAnswersPosition})}"></span>
-                </div>
-              </th:block>
-            </th:block>
-          </div>
-        </div>
+            <h6 th:text="#{game.label.thanks}" th:if="${!lexicDecisGameStat.brainlessExit}">Aitäh!</h6>
+            <div>
+              <b th:text="#{game.lexicdecis.brainless.exit}" th:if="${lexicDecisGameStat.brainlessExit}"></b>
+            </div>
+            <th:block th:if="${lexicDecisGameStat.gameResult != null}">
+            <div>
+              <span th:text="#{|game.lexicdecis.result.stat.1|(${lexicDecisGameStat.gameResult.allAnswersCount},${lexicDecisGameStat.gameResult.correctAnswersCount})}"></span>
+            </div>
+            <div>
+              <span th:text="#{|game.lexicdecis.result.stat.2|(${lexicDecisGameStat.playerCount},${lexicDecisGameStat.averageDelayPosition},${lexicDecisGameStat.correctAnswersPosition})}"></span>
+            </div>
+          </th:block>
+        </th:block>
       </div>
     </div>
   </div>
-     <div th:replace="common-app :: footer-content">
- </div>
-  <script th:inline="javascript">
-  	var currentPage = /*[[@{/games}]]*/"/games";
-  	setActiveMenuItem('games');
-  </script>
+</div>
+</div>
+<div th:replace="common-app :: footer-content">
+</div>
+<script th:inline="javascript">
+ var currentPage = /*[[@{/games}]]*/"/games";
+ setActiveMenuItem('games');
+</script>
 </body>
 </html>
