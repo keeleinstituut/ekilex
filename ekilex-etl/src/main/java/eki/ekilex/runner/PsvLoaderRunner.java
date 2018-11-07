@@ -429,8 +429,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel1(1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-		// FIXME: value state, from where this is fetched ?
-		//lexeme.setValueState(lexemeType);
 		if (isNotBlank(wordData.definition)) {
 			createDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
@@ -803,12 +801,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		Lexeme lexeme = new Lexeme();
 		lexeme.setMeaningId(meaningId);
 		lexeme.setWordId(abbreviation.id);
-		lexeme.setLevel1(1);
+		lexeme.setLevel1(abbreviation.level1);
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
-		//FIXME: from where we get state ?
-		//lexeme.setValueState(wordTypeAbbreviation);
 		createLexeme(lexeme, getDataset());
+		abbreviation.level1++;
 	}
 
 	private WordData extractAbbreviation(Node node, Context context) throws Exception {
@@ -1570,6 +1567,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordType;
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
+		int level1 = 1;
 	}
 
 	private class PosData {

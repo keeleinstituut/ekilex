@@ -218,10 +218,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						russianLexeme.setWordId(russianWordData.id);
 						russianLexeme.setMeaningId(meaningId);
 						russianLexeme.setLevel1(russianWordData.level1);
-						russianWordData.level1++;
 						russianLexeme.setLevel2(1);
 						russianLexeme.setLevel3(1);
 						Long russianLexemeId = createLexeme(russianLexeme, getDataset());
+						russianWordData.level1++;
 						if (russianLexemeId != null) {
 							saveRegisters(russianLexemeId, russianRegisters, reportingId);
 						}
@@ -369,10 +369,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setWordId(russianWord.id);
 			lexeme.setMeaningId(meaningId);
 			lexeme.setLevel1(russianWord.level1);
-			russianWord.level1++;
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
 			Long lexemeId = createLexeme(lexeme, getDataset());
+			russianWord.level1++;
 			if (lexemeId != null) {
 				if (!russianWordData.governments.isEmpty()) {
 					for (String government : russianWordData.governments) {
@@ -486,10 +486,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 									Lexeme russianLexeme = new Lexeme();
 									russianLexeme.setWordId(russianWordData.id);
 									russianLexeme.setMeaningId(meaningId);
-									russianLexeme.setLevel1(1);
+									russianLexeme.setLevel1(russianWordData.level1);
 									russianLexeme.setLevel2(1);
 									russianLexeme.setLevel3(1);
 									russianLexemeId = createLexeme(russianLexeme, getDataset());
+									russianWordData.level1++;
 								}
 								if (russianLexemeId != null) {
 									saveRegisters(russianLexemeId, russianRegisters, reportingId);
