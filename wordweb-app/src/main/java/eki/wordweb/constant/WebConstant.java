@@ -18,6 +18,8 @@ public interface WebConstant {
 	String LEARN_PAGE = "learn";
 
 	String GAMES_PAGE = "games";
+	
+	String CONTACTS_PAGE = "contacts";
 
 	String GAME_LEXICDECIS_PAGE = "game-lexicdecis";
 
@@ -28,6 +30,8 @@ public interface WebConstant {
 	String LEARN_URI = "/learn";
 
 	String GAMES_URI = "/games";
+	
+	String CONTACTS_URI = "/contacts";
 
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";
 

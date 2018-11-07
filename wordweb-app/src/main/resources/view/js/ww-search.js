@@ -42,7 +42,7 @@ function fetchCorpSentences(sentence) {
 }
 
 $(document).on("click", ".more-btn", function() {
-	$(this).parents(".meaning-panel, level-3-panel").toggleClass("expand");
+	$(this).parents(".meaning-panel, .morphology-section,  .level-3-panel").toggleClass("expand");
 	$(this).parents(".meaning-panel, level-3-panel").find(".additional-meta, .dictionary-source, .dependence, .label, .label-md, .row:not(.intro), .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
 	var counter = 0;
 	$('.dependence').each(function(i) {

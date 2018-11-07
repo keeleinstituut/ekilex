@@ -31,4 +31,9 @@ public class HomeController extends AbstractController {
 	public String games(Model model) {
 		return GAMES_PAGE;
 	}
+	
+	@GetMapping(CONTACTS_URI)
+	public String contacts(Model model) {
+		return CONTACTS_PAGE;
+	}
 }

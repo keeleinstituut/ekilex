@@ -6873,8 +6873,8 @@ ul {
 .more-btn {
   cursor: pointer;
   position: absolute;
-  top: 1.25rem;
-  right: -2.5rem;
+  top: 0rem;
+  right: 0rem;
   width: 3.75rem;
   background: transparent;
   border: none;
@@ -7611,6 +7611,9 @@ padding-bottom: 140px;
     margin-top: 3rem;
     margin-bottom: 3rem;
   }
+  .more-btn {
+  right: -2.5rem;
+}
 }
 
 
