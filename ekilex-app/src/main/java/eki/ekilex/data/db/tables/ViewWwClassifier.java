@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwClassifier extends TableImpl<ViewWwClassifierRecord> {
 
-    private static final long serialVersionUID = -683858799;
+    private static final long serialVersionUID = 661022354;
 
     /**
      * The reference instance of <code>public.view_ww_classifier</code>
@@ -61,7 +61,7 @@ public class ViewWwClassifier extends TableImpl<ViewWwClassifierRecord> {
     /**
      * The column <code>public.view_ww_classifier.code</code>.
      */
-    public final TableField<ViewWwClassifierRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<ViewWwClassifierRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.CHAR, this, "");
 
     /**
      * The column <code>public.view_ww_classifier.value</code>.
@@ -72,6 +72,11 @@ public class ViewWwClassifier extends TableImpl<ViewWwClassifierRecord> {
      * The column <code>public.view_ww_classifier.lang</code>.
      */
     public final TableField<ViewWwClassifierRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.view_ww_classifier.order_by</code>.
+     */
+    public final TableField<ViewWwClassifierRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.view_ww_classifier</code> table reference

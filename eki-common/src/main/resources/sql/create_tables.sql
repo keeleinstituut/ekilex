@@ -488,6 +488,7 @@ create table word_etymology
   word2_id bigint references word(id) on delete cascade not null,
   etymology_type_code varchar(100) references etymology_type(code),
   comments text array null,
+  year text null,
   is_questionable boolean not null default false,
   is_compound boolean not null default false,
   order_by bigserial,

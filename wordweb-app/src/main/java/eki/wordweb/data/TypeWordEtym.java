@@ -1,6 +1,7 @@
 package eki.wordweb.data;
 
 import eki.common.data.AbstractDataObject;
+import eki.common.data.Classifier;
 
 public class TypeWordEtym extends AbstractDataObject {
 
@@ -14,9 +15,13 @@ public class TypeWordEtym extends AbstractDataObject {
 
 	private String etymWordLang;
 
+	private Classifier etymWordLanguage;
+
 	private String[] etymMeaningWords;
 
 	private String etymTypeCode;
+
+	private Classifier etymType;
 
 	private String[] comments;
 
@@ -56,6 +61,14 @@ public class TypeWordEtym extends AbstractDataObject {
 		this.etymWordLang = etymWordLang;
 	}
 
+	public Classifier getEtymWordLanguage() {
+		return etymWordLanguage;
+	}
+
+	public void setEtymWordLanguage(Classifier etymWordLanguage) {
+		this.etymWordLanguage = etymWordLanguage;
+	}
+
 	public String[] getEtymMeaningWords() {
 		return etymMeaningWords;
 	}
@@ -70,6 +83,14 @@ public class TypeWordEtym extends AbstractDataObject {
 
 	public void setEtymTypeCode(String etymTypeCode) {
 		this.etymTypeCode = etymTypeCode;
+	}
+
+	public Classifier getEtymType() {
+		return etymType;
+	}
+
+	public void setEtymType(Classifier etymType) {
+		this.etymType = etymType;
 	}
 
 	public String[] getComments() {

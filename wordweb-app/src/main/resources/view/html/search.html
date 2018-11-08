@@ -393,6 +393,13 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
+            <div class="level-3-panel row" th:if="${wordData.word.wordEtymologyWrapup != null}">
+              <div class="col-12">
+                <h6 th:text="#{label.word.etymology}">Sõna päritolu</h6>
+                <div th:text="${wordData.word.wordEtymologyWrapup}">
+                </div>
+              </div>
+            </div>
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="morphology-panel" th:if="${wordData.unknownForm}">
                 <h6 th:text="#{label.word.forms}">Sõnavormid</h6>

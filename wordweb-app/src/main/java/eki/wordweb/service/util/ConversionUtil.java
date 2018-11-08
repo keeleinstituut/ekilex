@@ -515,10 +515,46 @@ public class ConversionUtil {
 	}
 
 	// TODO to be implemented
-	public void composeWordEtymologyWrapup(Word word, WordEtymology wordEtymology) {
+	public void composeWordEtymologyWrapup(Word word, WordEtymology wordEtymology, String displayLang) {
 
+		if (wordEtymology == null) {
+			return;
+		}
 		List<TypeWordEtym> etymLineup = wordEtymology.getEtymLineup();
-		//...
+		List<String> wordEtymologyWrapupLines = etymLineup.stream()
+				.map(wordEtym -> {
+					classifierUtil.applyClassifiers(wordEtym, displayLang);
+					String etymTypeCode = wordEtym.getEtymTypeCode();
+					Classifier etymWordLanguage = wordEtym.getEtymWordLanguage();
+					String[] etymMeaningWords = wordEtym.getEtymMeaningWords();
+					String[] comments = wordEtym.getComments();
+					StringBuffer wordEtymBuf = new StringBuffer();
+					if (StringUtils.isNotBlank(etymTypeCode)) {
+						wordEtymBuf.append(etymTypeCode);
+						wordEtymBuf.append(", ");
+					}
+					if (etymWordLanguage != null) {
+						wordEtymBuf.append(etymWordLanguage.getValue());
+						wordEtymBuf.append(", ");
+					}
+					if (wordEtym.isCompound()) {
+						wordEtymBuf.append(" + ");
+					}
+					wordEtymBuf.append(wordEtym.getEtymWord());
+					wordEtymBuf.append(' ');
+					if (ArrayUtils.isNotEmpty(etymMeaningWords)) {
+						wordEtymBuf.append('\'');
+						wordEtymBuf.append(StringUtils.join(etymMeaningWords, ", "));
+						wordEtymBuf.append('\'');
+					}
+					if (ArrayUtils.isNotEmpty(comments)) {
+						wordEtymBuf.append(". ");
+						wordEtymBuf.append(StringUtils.join(comments, " "));
+					}
+					return wordEtymBuf.toString().trim();
+				}).collect(Collectors.toList());
+		String wordEtymologyWrapup = StringUtils.join(wordEtymologyWrapupLines, " < ");
+		word.setWordEtymologyWrapup(wordEtymologyWrapup);
 	}
 
 	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, String displayLang) {

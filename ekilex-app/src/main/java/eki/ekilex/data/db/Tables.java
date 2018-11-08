@@ -84,9 +84,11 @@ import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwWord;
+import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
+import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -514,6 +516,11 @@ public class Tables {
     public static final ViewWwWord VIEW_WW_WORD = eki.ekilex.data.db.tables.ViewWwWord.VIEW_WW_WORD;
 
     /**
+     * The table <code>public.view_ww_word_etymology</code>.
+     */
+    public static final ViewWwWordEtymology VIEW_WW_WORD_ETYMOLOGY = eki.ekilex.data.db.tables.ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY;
+
+    /**
      * The table <code>public.view_ww_word_relation</code>.
      */
     public static final ViewWwWordRelation VIEW_WW_WORD_RELATION = eki.ekilex.data.db.tables.ViewWwWordRelation.VIEW_WW_WORD_RELATION;
@@ -527,6 +534,11 @@ public class Tables {
      * The table <code>public.word_etymology</code>.
      */
     public static final WordEtymology WORD_ETYMOLOGY = eki.ekilex.data.db.tables.WordEtymology.WORD_ETYMOLOGY;
+
+    /**
+     * The table <code>public.word_etymology_source_link</code>.
+     */
+    public static final WordEtymologySourceLink WORD_ETYMOLOGY_SOURCE_LINK = eki.ekilex.data.db.tables.WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK;
 
     /**
      * The table <code>public.word_group</code>.

@@ -84,9 +84,11 @@ import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
 import eki.ekilex.data.db.tables.ViewWwWord;
+import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
+import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -103,6 +105,7 @@ import eki.ekilex.data.db.udt.TypeLexemeRelation;
 import eki.ekilex.data.db.udt.TypeMeaningRelation;
 import eki.ekilex.data.db.udt.TypeUsage;
 import eki.ekilex.data.db.udt.TypeWord;
+import eki.ekilex.data.db.udt.TypeWordEtym;
 import eki.ekilex.data.db.udt.TypeWordRelation;
 
 import java.util.ArrayList;
@@ -131,7 +134,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1800446604;
+    private static final long serialVersionUID = -843638876;
 
     /**
      * The reference instance of <code>public</code>
@@ -539,6 +542,11 @@ public class Public extends SchemaImpl {
     public final ViewWwWord VIEW_WW_WORD = eki.ekilex.data.db.tables.ViewWwWord.VIEW_WW_WORD;
 
     /**
+     * The table <code>public.view_ww_word_etymology</code>.
+     */
+    public final ViewWwWordEtymology VIEW_WW_WORD_ETYMOLOGY = eki.ekilex.data.db.tables.ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY;
+
+    /**
      * The table <code>public.view_ww_word_relation</code>.
      */
     public final ViewWwWordRelation VIEW_WW_WORD_RELATION = eki.ekilex.data.db.tables.ViewWwWordRelation.VIEW_WW_WORD_RELATION;
@@ -552,6 +560,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.word_etymology</code>.
      */
     public final WordEtymology WORD_ETYMOLOGY = eki.ekilex.data.db.tables.WordEtymology.WORD_ETYMOLOGY;
+
+    /**
+     * The table <code>public.word_etymology_source_link</code>.
+     */
+    public final WordEtymologySourceLink WORD_ETYMOLOGY_SOURCE_LINK = eki.ekilex.data.db.tables.WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK;
 
     /**
      * The table <code>public.word_group</code>.
@@ -690,6 +703,8 @@ public class Public extends SchemaImpl {
             Sequences.VALUE_STATE_ORDER_BY_SEQ,
             Sequences.WORD_ETYMOLOGY_ID_SEQ,
             Sequences.WORD_ETYMOLOGY_ORDER_BY_SEQ,
+            Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ID_SEQ,
+            Sequences.WORD_ETYMOLOGY_SOURCE_LINK_ORDER_BY_SEQ,
             Sequences.WORD_GROUP_ID_SEQ,
             Sequences.WORD_GROUP_MEMBER_ID_SEQ,
             Sequences.WORD_GROUP_MEMBER_ORDER_BY_SEQ,
@@ -791,9 +806,11 @@ public class Public extends SchemaImpl {
             ViewWwMeaning.VIEW_WW_MEANING,
             ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION,
             ViewWwWord.VIEW_WW_WORD,
+            ViewWwWordEtymology.VIEW_WW_WORD_ETYMOLOGY,
             ViewWwWordRelation.VIEW_WW_WORD_RELATION,
             Word.WORD,
             WordEtymology.WORD_ETYMOLOGY,
+            WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK,
             WordGroup.WORD_GROUP,
             WordGroupMember.WORD_GROUP_MEMBER,
             WordGuid.WORD_GUID,
@@ -821,6 +838,7 @@ public class Public extends SchemaImpl {
             TypeMeaningRelation.TYPE_MEANING_RELATION,
             TypeUsage.TYPE_USAGE,
             TypeWord.TYPE_WORD,
+            TypeWordEtym.TYPE_WORD_ETYM,
             TypeWordRelation.TYPE_WORD_RELATION);
     }
 }

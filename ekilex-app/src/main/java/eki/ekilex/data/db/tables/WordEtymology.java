@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WordEtymology extends TableImpl<WordEtymologyRecord> {
 
-    private static final long serialVersionUID = 1031248362;
+    private static final long serialVersionUID = 1650399874;
 
     /**
      * The reference instance of <code>public.word_etymology</code>
@@ -80,6 +80,11 @@ public class WordEtymology extends TableImpl<WordEtymologyRecord> {
      * The column <code>public.word_etymology.comments</code>.
      */
     public final TableField<WordEtymologyRecord, String[]> COMMENTS = createField("comments", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.word_etymology.year</code>.
+     */
+    public final TableField<WordEtymologyRecord, String> YEAR = createField("year", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.word_etymology.is_questionable</code>.
