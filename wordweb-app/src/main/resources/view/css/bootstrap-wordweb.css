@@ -65,7 +65,7 @@ body {
   font-family: "Klavika", "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"!important;
   font-size: 1rem;
   font-weight: 400;
-  line-height: 1.5;
+  line-height: 1.8;
   color: #001124;
   text-align: left;
   position: relative;
@@ -6603,7 +6603,6 @@ ul {
 .header-links a span {
   display: block;
   margin: auto 0;
-  padding: 0;
 }
 
 .header-links > .menu-btn {
@@ -6700,6 +6699,7 @@ ul {
 .homonym-matches,
 .homonym-intro {
   white-space: nowrap;
+  line-height: 1.4;
 }
 
 .homonym-header {
@@ -6709,6 +6709,7 @@ ul {
 .homonym-name {
   transition: 0ms !important;
   color: #0077FF;
+  font-weight: 900;
 }
 
 .homonym-nr {
@@ -6875,7 +6876,7 @@ ul {
   .more-btn {
     cursor: pointer;
     position: absolute;
-    top: 0rem;
+    top: 0.7rem;
     right: 0rem;
     width: 3.75rem;
     background: transparent;
@@ -6919,7 +6920,7 @@ ul {
     font-size: 0.75rem;
     border: 1px solid rgba(0, 17, 36, 0.25);
     color: rgba(0, 17, 36, 0.5);
-    padding: 0 0.3125rem 0.0625rem 0.3125rem;
+    padding: 0.125rem 0.3125rem 0.0625rem 0.3125rem;
     border-radius: 0.3125rem;
   }
 
@@ -6995,7 +6996,7 @@ ul {
 }
 
 .example-text {
-  padding: 0.5rem 0.5rem 0.5rem 0.5rem;
+  padding: 0.5rem 0.5rem 0.25rem 0.5rem;
   line-height: 1;
   font-size: 0.875rem;
   align-items: center;
@@ -7509,6 +7510,9 @@ ul {
   }
 }
 
+.form-control {
+ padding: 1.125rem 1.15625rem 1rem 1.15625rem;
+}
 
 .logo-wrapper { 
   position: relative; 
@@ -7614,10 +7618,21 @@ ul {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: .1em;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1rem 0.3rem 1rem;
   font-weight: 400;
   border-radius: 0.375rem;
 }
+
+  .detail-toggle-container { 
+    line-height: 3.1;
+  }
+
+
+
+
+
+
+
 
 @media (min-width: 768px) { 
   .logo-list {
@@ -7665,7 +7680,7 @@ ul {
   .home-page-content .lang-btn {
     float: none!important;
   }
-
+  
   .home-page-content .detail-toggle-container {
     display: block;
     margin: 0 auto 0.5rem auto;
