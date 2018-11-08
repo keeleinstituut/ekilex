@@ -818,6 +818,22 @@ create table game_nonword
   unique(word, lang)
 );
 
+create table feedback_log
+(
+  id bigserial primary key,
+  feedback_type varchar(100) not null,
+  sender_name text not null,
+  sender_email text not null,
+  created_on timestamp not null default statement_timestamp(),
+  word text not null,
+  definition text null,
+  comments text null,
+  usages text null,
+  other_info text null,
+  last_search text null
+);
+alter sequence feedback_id_seq restart with 10000;
+
 --- indexes
 
 create index form_value_idx on form(value);
