@@ -42,7 +42,7 @@
     right: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     body:not(.home-page) #language-detail-panel {
 		margin-top: 1rem;
         width: calc(100vw - 4em);
@@ -54,6 +54,12 @@
     .more-btn {
         margin-right: 0em;
     }
+}
+
+@media (min-width: 768px) { 
+.header-container .show-btn.back {
+ display:none!important;
+}
 }
 
 .message-wrap {
@@ -79,24 +85,17 @@
     clear: both;
     display: block;
 }
-.level-3-panel:not(.expand) .filler-row,
-.level-3-panel:not(.expand) .lexeme-list,
-.level-3-panel:not(.expand) .collocations-section .colloc-section .colloc-inner-section,
-.level-3-panel:not(.expand) .collocations-section .colloc-heading,
-.level-3-panel:not(.expand) .collocations-section .colloc-section .colloc-name,
-.level-3-panel:not(.expand) .collocations-section .colloc-section .colloc-row .colloc-col {
+
+.level-3-panel .collocations-section:not(.expand) .colloc-fulldata, .level-3-panel .collocations-section.expand .colloc-samples {
     display: none;
     opacity: 0;
 }
 
-.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) .colloc-row .colloc-col:nth-of-type(1),
-.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) .colloc-row .colloc-col:nth-of-type(2),
-.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) .colloc-row .colloc-col:nth-of-type(3) {
-  display: block;
-  opacity: 1;
+.level-3-panel .collocations-section.expand .colloc-fulldata, .level-3-panel .collocations-section:not(.expand) .colloc-samples {
+    display: block;
+    opacity: 1;
 }
 
-.level-3-panel .collocations-section .colloc-section:nth-child(1) .colloc-inner-section:nth-of-type(2) { display: block; opacity: 1 }
 
 .homonym-item,
 .back {
@@ -122,11 +121,6 @@
     position: relative;
 }
 
-.morphology-section .more-btn{
-    top: -0.5rem;
-    right: -2rem;
-}
-
 .morphology-section:not(.expand) .row:not(.intro) {
     display: none;
     opacity: 0;
@@ -136,3 +130,45 @@
     display: block;
     height: 1.875rem;
 }
+
+
+.word-group {
+    display: block;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.word-group .more-btn {
+	margin-top: -0.25rem;
+}
+
+.word-group .more-btn .icon {
+	font-size: 1rem;
+}
+
+.word-group .more-btn .icon::before {
+ padding: 0.2rem;
+ 
+}
+
+.word-relations .word-group:not(expand) .word-options {
+ display:none;
+}
+
+.word-relations .word-group:not(expand) .word-options:nth-of-type(1),
+.word-relations .word-group:not(expand) .word-options:nth-of-type(2),
+.word-relations .word-group:not(expand) .word-options:nth-of-type(3) {
+ display:inline-block!important;
+     animation: inherit!important;
+}
+
+.word-relations .word-group.expand .word-options {
+ display:inline-block;
+}
+
+.word-grouper-wrapper { 
+display: inline;
+}
+
+
+
