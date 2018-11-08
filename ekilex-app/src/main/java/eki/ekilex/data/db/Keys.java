@@ -21,6 +21,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
+import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -101,6 +102,7 @@ import eki.ekilex.data.db.tables.records.DomainLabelRecord;
 import eki.ekilex.data.db.tables.records.DomainRecord;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 import eki.ekilex.data.db.tables.records.EtymologyTypeRecord;
+import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
 import eki.ekilex.data.db.tables.records.FormRecord;
 import eki.ekilex.data.db.tables.records.FormRelTypeLabelRecord;
 import eki.ekilex.data.db.tables.records.FormRelTypeRecord;
@@ -203,6 +205,7 @@ public class Keys {
     public static final Identity<DomainRecord, Long> IDENTITY_DOMAIN = Identities0.IDENTITY_DOMAIN;
     public static final Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Identities0.IDENTITY_EKI_USER;
     public static final Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Identities0.IDENTITY_ETYMOLOGY_TYPE;
+    public static final Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Identities0.IDENTITY_FEEDBACK_LOG;
     public static final Identity<FormRecord, Long> IDENTITY_FORM = Identities0.IDENTITY_FORM;
     public static final Identity<FormRelTypeRecord, Long> IDENTITY_FORM_REL_TYPE = Identities0.IDENTITY_FORM_REL_TYPE;
     public static final Identity<FormRelationRecord, Long> IDENTITY_FORM_RELATION = Identities0.IDENTITY_FORM_RELATION;
@@ -276,6 +279,7 @@ public class Keys {
     public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = UniqueKeys0.EKI_USER_PKEY;
     public static final UniqueKey<EkiUserRecord> EKI_USER_NAME_KEY = UniqueKeys0.EKI_USER_NAME_KEY;
     public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = UniqueKeys0.ETYMOLOGY_TYPE_PKEY;
+    public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = UniqueKeys0.FEEDBACK_LOG_PKEY;
     public static final UniqueKey<FormRecord> FORM_PKEY = UniqueKeys0.FORM_PKEY;
     public static final UniqueKey<FormRelTypeRecord> FORM_REL_TYPE_PKEY = UniqueKeys0.FORM_REL_TYPE_PKEY;
     public static final UniqueKey<FormRelTypeLabelRecord> FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = UniqueKeys0.FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY;
@@ -525,6 +529,7 @@ public class Keys {
         public static Identity<DomainRecord, Long> IDENTITY_DOMAIN = Internal.createIdentity(Domain.DOMAIN, Domain.DOMAIN.ORDER_BY);
         public static Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Internal.createIdentity(EkiUser.EKI_USER, EkiUser.EKI_USER.ID);
         public static Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Internal.createIdentity(EtymologyType.ETYMOLOGY_TYPE, EtymologyType.ETYMOLOGY_TYPE.ORDER_BY);
+        public static Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Internal.createIdentity(FeedbackLog.FEEDBACK_LOG, FeedbackLog.FEEDBACK_LOG.ID);
         public static Identity<FormRecord, Long> IDENTITY_FORM = Internal.createIdentity(Form.FORM, Form.FORM.ID);
         public static Identity<FormRelTypeRecord, Long> IDENTITY_FORM_REL_TYPE = Internal.createIdentity(FormRelType.FORM_REL_TYPE, FormRelType.FORM_REL_TYPE.ORDER_BY);
         public static Identity<FormRelationRecord, Long> IDENTITY_FORM_RELATION = Internal.createIdentity(FormRelation.FORM_RELATION, FormRelation.FORM_RELATION.ID);
@@ -596,6 +601,7 @@ public class Keys {
         public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_pkey", EkiUser.EKI_USER.ID);
         public static final UniqueKey<EkiUserRecord> EKI_USER_NAME_KEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_name_key", EkiUser.EKI_USER.NAME);
         public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = Internal.createUniqueKey(EtymologyType.ETYMOLOGY_TYPE, "etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE.CODE);
+        public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = Internal.createUniqueKey(FeedbackLog.FEEDBACK_LOG, "feedback_log_pkey", FeedbackLog.FEEDBACK_LOG.ID);
         public static final UniqueKey<FormRecord> FORM_PKEY = Internal.createUniqueKey(Form.FORM, "form_pkey", Form.FORM.ID);
         public static final UniqueKey<FormRelTypeRecord> FORM_REL_TYPE_PKEY = Internal.createUniqueKey(FormRelType.FORM_REL_TYPE, "form_rel_type_pkey", FormRelType.FORM_REL_TYPE.CODE);
         public static final UniqueKey<FormRelTypeLabelRecord> FORM_REL_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createUniqueKey(FormRelTypeLabel.FORM_REL_TYPE_LABEL, "form_rel_type_label_code_lang_type_key", FormRelTypeLabel.FORM_REL_TYPE_LABEL.CODE, FormRelTypeLabel.FORM_REL_TYPE_LABEL.LANG, FormRelTypeLabel.FORM_REL_TYPE_LABEL.TYPE);

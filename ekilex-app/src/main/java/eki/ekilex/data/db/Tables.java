@@ -21,6 +21,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
+import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -197,6 +198,11 @@ public class Tables {
      * The table <code>public.etymology_type</code>.
      */
     public static final EtymologyType ETYMOLOGY_TYPE = eki.ekilex.data.db.tables.EtymologyType.ETYMOLOGY_TYPE;
+
+    /**
+     * The table <code>public.feedback_log</code>.
+     */
+    public static final FeedbackLog FEEDBACK_LOG = eki.ekilex.data.db.tables.FeedbackLog.FEEDBACK_LOG;
 
     /**
      * The table <code>public.form</code>.

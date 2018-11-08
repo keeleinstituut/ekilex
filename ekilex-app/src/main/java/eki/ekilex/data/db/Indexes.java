@@ -21,6 +21,7 @@ import eki.ekilex.data.db.tables.Domain;
 import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
+import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormRelType;
 import eki.ekilex.data.db.tables.FormRelTypeLabel;
@@ -136,6 +137,7 @@ public class Indexes {
     public static final Index EKI_USER_NAME_KEY = Indexes0.EKI_USER_NAME_KEY;
     public static final Index EKI_USER_PKEY = Indexes0.EKI_USER_PKEY;
     public static final Index ETYMOLOGY_TYPE_PKEY = Indexes0.ETYMOLOGY_TYPE_PKEY;
+    public static final Index FEEDBACK_LOG_PKEY = Indexes0.FEEDBACK_LOG_PKEY;
     public static final Index FORM_MODE_IDX = Indexes0.FORM_MODE_IDX;
     public static final Index FORM_PARADIGM_ID_IDX = Indexes0.FORM_PARADIGM_ID_IDX;
     public static final Index FORM_PKEY = Indexes0.FORM_PKEY;
@@ -304,6 +306,7 @@ public class Indexes {
         public static Index EKI_USER_NAME_KEY = Internal.createIndex("eki_user_name_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.NAME }, true);
         public static Index EKI_USER_PKEY = Internal.createIndex("eki_user_pkey", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, true);
         public static Index ETYMOLOGY_TYPE_PKEY = Internal.createIndex("etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE, new OrderField[] { EtymologyType.ETYMOLOGY_TYPE.CODE }, true);
+        public static Index FEEDBACK_LOG_PKEY = Internal.createIndex("feedback_log_pkey", FeedbackLog.FEEDBACK_LOG, new OrderField[] { FeedbackLog.FEEDBACK_LOG.ID }, true);
         public static Index FORM_MODE_IDX = Internal.createIndex("form_mode_idx", Form.FORM, new OrderField[] { Form.FORM.MODE }, false);
         public static Index FORM_PARADIGM_ID_IDX = Internal.createIndex("form_paradigm_id_idx", Form.FORM, new OrderField[] { Form.FORM.PARADIGM_ID }, false);
         public static Index FORM_PKEY = Internal.createIndex("form_pkey", Form.FORM, new OrderField[] { Form.FORM.ID }, true);

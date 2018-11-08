@@ -832,7 +832,7 @@ create table feedback_log
   other_info text null,
   last_search text null
 );
-alter sequence feedback_id_seq restart with 10000;
+alter sequence feedback_log_id_seq restart with 10000;
 
 --- indexes
 
