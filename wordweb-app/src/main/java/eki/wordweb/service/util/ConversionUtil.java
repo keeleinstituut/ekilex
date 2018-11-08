@@ -36,8 +36,10 @@ import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeUsage;
 import eki.wordweb.data.TypeWord;
+import eki.wordweb.data.TypeWordEtym;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordEtymology;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationTuple;
@@ -508,6 +510,13 @@ public class ConversionUtil {
 				.collect(Collectors.toList());
 		String collocMemberGroupKey = StringUtils.join(headwordAndPrimaryMemberForms, '-');
 		return collocMemberGroupKey;
+	}
+
+	// TODO to be implemented
+	public void composeWordEtymologyWrapup(Word word, WordEtymology wordEtymology) {
+
+		List<TypeWordEtym> etymLineup = wordEtymology.getEtymLineup();
+		//...
 	}
 
 	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, String displayLang) {

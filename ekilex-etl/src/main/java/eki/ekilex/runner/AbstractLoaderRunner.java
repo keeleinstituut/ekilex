@@ -74,6 +74,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
 
+	protected static final String EXT_SOURCE_ID_NA = "n/a";
 	protected static final String EKI_CLASSIFIER_STAATUS = "staatus";
 	protected static final String EKI_CLASSIFIER_MÕISTETÜÜP = "mõistetüüp";
 	protected static final String EKI_CLASSIFIER_KEELENDITÜÜP = "keelenditüüp";
@@ -567,7 +568,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				createFreeformClassifier(FreeformType.USAGE_TYPE, usageId, usageType);
 			}
 			if (StringUtils.isBlank(extSourceId)) {
-				extSourceId = "n/a";
+				extSourceId = EXT_SOURCE_ID_NA;
 			}
 			if (StringUtils.isNotBlank(author)) {
 				Long authorId = getSource(SourceType.PERSON, extSourceId, author);
@@ -720,8 +721,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(value)) {
 			tableRowParamMap.put("value", value);
 		}
-		Long refLinkId = basicDbService.create(FREEFORM_SOURCE_LINK, tableRowParamMap);
-		return refLinkId;
+		Long sourceLinkId = basicDbService.create(FREEFORM_SOURCE_LINK, tableRowParamMap);
+		return sourceLinkId;
 	}
 
 	protected Long createLexemeSourceLink(Long lexemeId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {

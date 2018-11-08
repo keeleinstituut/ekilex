@@ -4,6 +4,7 @@ drop materialized view if exists mview_ww_form;
 drop materialized view if exists mview_ww_meaning;
 drop materialized view if exists mview_ww_lexeme;
 drop materialized view if exists mview_ww_collocation;
+drop materialized view if exists mview_ww_word_etymology;
 drop materialized view if exists mview_ww_classifier;
 drop materialized view if exists mview_ww_dataset;
 drop materialized view if exists mview_ww_word_relation;
@@ -14,6 +15,7 @@ drop type if exists type_definition;
 drop type if exists type_domain;
 drop type if exists type_usage;
 drop type if exists type_colloc_member;
+drop type if exists type_word_etym;
 drop type if exists type_word_relation;
 drop type if exists type_lexeme_relation;
 drop type if exists type_meaning_relation;
@@ -27,6 +29,7 @@ create type type_definition as (lexeme_id bigint, meaning_id bigint, value text,
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_word_etym as (word_id bigint, etym_word_id bigint, etym_word text, etym_word_lang char(3), etym_meaning_words text array, etym_type_code varchar(100), comments text array, is_questionable boolean, is_compound boolean);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -143,6 +146,15 @@ dblink(
 	colloc_members type_colloc_member array
 );
 
+create materialized view mview_ww_word_etymology as
+select * from 
+dblink(
+	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
+	'select * from view_ww_word_etymology') as word_etymology(
+	word_id bigint,
+	etym_lineup type_word_etym array
+);
+
 create materialized view mview_ww_word_relation as
 select * from
 dblink(
@@ -194,7 +206,8 @@ dblink(
 	origin text,
 	code varchar(100),
 	value text,
-	lang char(3)
+	lang char(3),
+	order_by bigint
 );
 
 create index mview_ww_word_word_id_idx on mview_ww_word (word_id);
@@ -222,6 +235,7 @@ create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
 create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
 create index mview_ww_collocation_dataset_code_idx on mview_ww_collocation (dataset_code);
+create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (word_id);
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);
 create index mview_ww_meaning_relation_meaning_id_idx on mview_ww_meaning_relation (meaning_id);

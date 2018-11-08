@@ -553,7 +553,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meanigGroupNodes) {
 				lexemeLevel2++;
-				List<Usage> usages = extractUsages(meaningGroupNode, conceptId);
+				List<Usage> usages = extractUsages(meaningGroupNode);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 				List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
@@ -922,7 +922,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return extractValuesAsStrings(node, definitionValueExp);
 	}
 
-	private List<Usage> extractUsages(Node node, String conceptId) {
+	private List<Usage> extractUsages(Node node) {
 
 		final String usageExp = "s:np/s:ng/s:n";
 		final String usageTypeAttr = "nliik";
@@ -934,13 +934,13 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<Usage> usageMeanings = new ArrayList<>();
 		List<Node> usageNodes = node.selectNodes(usageExp);
 		for (Node usageNode : usageNodes) {
-			String usageValue = ((Element)usageNode).getTextTrim();
+			Element usageElement = (Element)usageNode;
+			String usageValue = usageElement.getTextTrim();
 			usageValue = cleanEkiEntityMarkup(usageValue);
 			Usage usage = new Usage();
-			usage.setExtSourceId(conceptId);//disputable mitigation
 			usage.setValue(usageValue);
 			usage.setDefinitions(new ArrayList<>());
-			usage.setUsageType(((Element)usageNode).attributeValue(usageTypeAttr));
+			usage.setUsageType(usageElement.attributeValue(usageTypeAttr));
 			usageMeanings.add(usage);
 		}
 		List<Node> quotationGroupNodes = node.selectNodes(quotationGroupExp);
