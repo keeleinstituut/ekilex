@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},_)">
-<title>Viga</title>
+  <title>Viga</title>
 </head>
 <body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
   <div class="container-fluid">
@@ -13,6 +13,8 @@
         <p th:unless="${httpStatus.value() == 200}" th:text="|${httpStatus} - ${httpStatus.reasonPhrase}|"></p>
       </div>
     </div>
+  </div>
+  <div th:replace="common-app :: footer-content">
   </div>
 </body>
 </html>

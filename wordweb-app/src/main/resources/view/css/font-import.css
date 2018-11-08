@@ -4,7 +4,7 @@
   font-weight: 400;
   src: url('../fonts/klavika/KlavikaRegular.eot'); /* IE9 Compat Modes */
      src: url('../fonts/klavika/KlavikaRegular.otf') format("opentype");
-  src: local('Klavika'), local('Klavika'),
+  src: local('Klavika'), local('Klavika Regular'),
        url('../fonts/klavika/KlavikaRegular.woff2') format('woff2'), /* Super Modern Browsers */
        url('../fonts/klavika/KlavikaRegular.woff') format('woff'), /* Modern Browsers */
        url('../fonts/klavika/KlavikaRegular.ttf') format('truetype'), /* Safari, Android, iOS */

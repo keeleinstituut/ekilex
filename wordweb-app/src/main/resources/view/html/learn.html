@@ -4,8 +4,8 @@
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
   <title>Õpi eesti keelt</title>
   <th:block th:fragment="links">
-    <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
-  </th:block>
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
+</th:block>
 </head>
 
 <body>
@@ -514,8 +514,8 @@
           </div>
           <div class="row pb-4">
             <div class="col-12">
-                <span class="colored-bold">NB!</span> Kui sa tahad olla viisakas, kirjuta Teie suure tähega. Kui kiri on
-                mõeldud korraga mitmele inimesele, kirjuta teie väikese tähega.
+              <span class="colored-bold">NB!</span> Kui sa tahad olla viisakas, kirjuta Teie suure tähega. Kui kiri on
+              mõeldud korraga mitmele inimesele, kirjuta teie väikese tähega.
             </div>
           </div>
           <h5 class="colored-bold">Kiri sõbrale</h5>
@@ -674,7 +674,7 @@
               <p>Armas Maarja!</p>
               <p>Palun tule minu sünnipäevale neljapäeval, 26. oktoobril kell 19 restorani Must Lammas.</p>
               <p>Tervitades<br>
-                Laura</p>
+              Laura</p>
             </div>
           </div>
           <div class="row mb-4">
@@ -896,7 +896,7 @@
               <p>Usun, et ajakiri Looming annaks mulle võimaluse arendada ennast vald- konnas, mis pakub mulle huvi, ning minu kogemustest ja oskustest oleks Teile kasu. Olen valmis vastama Teie küsimustele Teile sobival ajal.</p>
               <p>Lugupidamisega</p> 
               <p>Tarmo Mets<br>
-              allkiri
+                allkiri
               </p>
               <p>Lisa: CV</p>
             </div>
@@ -1060,14 +1060,18 @@
       </div>
     </div>
   </div>
-  <script th:inline="javascript">
-      var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
-      var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
-      setActiveMenuItem('learn');
 
-      $(document).on("click", ".back", function(e) {
-          window.location = applicationUrl;
-      });
+  <div th:replace="common-app :: footer-content">
+  </div>
+
+  <script th:inline="javascript">
+    var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+    var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+    setActiveMenuItem('learn');
+
+    $(document).on("click", ".back", function(e) {
+      window.location = applicationUrl;
+    });
   </script>
 </body>
 

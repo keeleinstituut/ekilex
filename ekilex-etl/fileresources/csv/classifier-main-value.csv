@@ -702,7 +702,6 @@ lex_rel_type	yvt:vrd	ühisviide, võrdle tähendust	est	full
 lex_rel_type	yvt:vt ka	ühisviide, vaata ka	est	full
 lex_rel_type	yvt:NB	ühisviide, ära aja segi	est	full
 lex_rel_type	lyh	lühend	est	full
-lex_rel_type	mm	allmärksõna	est	full
 lex_rel_type	yvt:NB	ära aja segi	est	wordweb
 lex_rel_type	yvt:vt ka	vaata ka	est	wordweb
 lex_rel_type	yvt:vrd	võrdle	est	wordweb
@@ -1277,6 +1276,7 @@ word_rel_type	SERIES	sari	est	full
 word_rel_type	VARIANTS	variandid	est	full
 word_rel_type	ASPECTS	aspektid	est	full
 word_rel_type	ühend	ühend	est	full
+word_rel_type	sub_word	allmärksõna	est	full
 word_rel_type	posit	võrdlus	est	wordweb
 word_rel_type	komp	võrdlus	est	wordweb
 word_rel_type	deriv	saab moodustada	est	wordweb
@@ -1286,6 +1286,7 @@ word_rel_type	SERIES	samas sarjas	est	wordweb
 word_rel_type	VARIANTS	variandid	est	wordweb
 word_rel_type	ASPECTS	aspektid	est	wordweb
 word_rel_type	ühend	ühend	est	wordweb
+word_rel_type	sub_word	allmärksõna	est	wordweb
 word_type	k	kohanimi	est	descrip
 word_type	k	place name	eng	descrip
 word_type	l	lühend	est	descrip

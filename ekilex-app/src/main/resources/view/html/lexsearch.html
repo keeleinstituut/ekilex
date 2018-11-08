@@ -319,6 +319,10 @@
                     <span th:unless="${classifIter.last}">,</span>
                   </span>
                 </div>
+                <div th:if="${lexeme.wordAspectCode != null}">
+                  <span class="lbl">Aspekt</span>
+                  <span th:text="${lexeme.wordAspectCode}"></span>
+                </div>
               </div>
               <div>
                 <hr />

@@ -30,6 +30,7 @@
   <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
   <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
   <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/font-import.css}" />
   <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
 </th:block>
 <!-- Bootstrap core JS -->
@@ -49,6 +50,7 @@
         <span class="icon icon-logo-s d-md-none"></span>
         <span class="icon icon-logo d-none d-md-block"></span>
       </a>
+      <span class="eki-logo mini-logo"></span>
       <div class="back">
         <span class="icon icon-back"></span>
       </div>
@@ -75,11 +77,14 @@
   <a th:href="@{/games}" class="menu-item" data-item-name="games">
     <span th:text="#{menu.games}">Keelemängud</span>
   </a>
-  <a th:href="@{/}" class="menu-item">
-    <span th:text="#{menu.info}">Portaalist</span>
+  <a th:href="@{/about}" class="menu-item" data-item-name="about">
+    <span th:text="#{menu.about}">Portaalist</span>
   </a>
-  <a th:href="@{/}" class="menu-item">
+  <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
     <span th:text="#{menu.contacts}">Kontakt</span>
+  </a>
+  <a th:href="@{/feedback}" class="menu-item" data-item-name="feedback">
+    <span th:text="#{menu.feedback}">Tagasiside</span>
   </a>
 </div>
 </th:block>
@@ -106,5 +111,22 @@
     </tr>
   </table>
 </div>
+<!-- Footer -->
+<th:block th:fragment="footer-content">
+<footer class="footer">
+  <div class="container footer-wrapper">
+
+    <div class="social-list">
+      <span class="helper-text">Jaga meid:</span>
+      <a class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://ekitest.tripledev.ee/wordweb/" target="_blank" title="Share this in Facebook">Share this in Facebook</a>
+    </div>
+
+    <span class="copyright">&copy; Eesti Keele Instituut 2018</span>
+    <span class="last-update">Viimati uuendatud: 20. november 2018</span>
+
+  </div>
+</footer>
+</th:block>
+
 </body>
 </html>

@@ -62,6 +62,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "gender_code")
 	private String genderCode;
 
+	@Column(name = "word_aspect_code")
+	private String wordAspectCode;
+
 	private List<Classifier> lexemePos;
 
 	private List<Classifier> lexemeDerivs;
@@ -374,5 +377,13 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setWordTypeCode(String wordTypeCode) {
 		this.wordTypeCode = wordTypeCode;
+	}
+
+	public String getWordAspectCode() {
+		return wordAspectCode;
+	}
+
+	public void setWordAspectCode(String wordAspectCode) {
+		this.wordAspectCode = wordAspectCode;
 	}
 }

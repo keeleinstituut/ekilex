@@ -42,11 +42,9 @@
     right: 0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
     body:not(.home-page) #language-detail-panel {
-        position: fixed;
-        top: 0;
-        left: 0;
+		margin-top: 1rem;
         width: calc(100vw - 4em);
     }
     .menu-btn {
@@ -54,8 +52,14 @@
         padding-right: 0.25em;
     }
     .more-btn {
-        margin-right: -0.75em;
+        margin-right: 0em;
     }
+}
+
+@media (min-width: 768px) { 
+.header-container .show-btn.back {
+ display:none!important;
+}
 }
 
 .message-wrap {
@@ -82,14 +86,27 @@
     display: block;
 }
 
-.level-3-panel:not(.expand) .collocations-section {
+.level-3-panel .collocations-section:not(.expand) .colloc-fulldata, .level-3-panel .collocations-section.expand .colloc-samples {
     display: none;
     opacity: 0;
 }
 
+.level-3-panel .collocations-section.expand .colloc-fulldata, .level-3-panel .collocations-section:not(.expand) .colloc-samples {
+    display: block;
+    opacity: 1;
+}
+
+
 .homonym-item,
 .back {
     cursor: pointer;
+
+}
+
+.header-container .back { display:none; }
+
+.header-container .show-btn.back {
+ display:block;
 }
 
 .lang-btn {
@@ -99,3 +116,59 @@
 .dropdown-menu {
     min-width: 18em;
 }
+
+.morphology-section {
+    position: relative;
+}
+
+.morphology-section:not(.expand) .row:not(.intro) {
+    display: none;
+    opacity: 0;
+}
+
+.morphology-section .row div:not(.label) {
+    display: block;
+    height: 1.875rem;
+}
+
+
+.word-group {
+    display: block;
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.word-group .more-btn {
+	margin-top: -0.25rem;
+}
+
+.word-group .more-btn .icon {
+	font-size: 1rem;
+}
+
+.word-group .more-btn .icon::before {
+ padding: 0.2rem;
+ 
+}
+
+.word-relations .word-group:not(expand) .word-options {
+ display:none;
+}
+
+.word-relations .word-group:not(expand) .word-options:nth-of-type(1),
+.word-relations .word-group:not(expand) .word-options:nth-of-type(2),
+.word-relations .word-group:not(expand) .word-options:nth-of-type(3) {
+ display:inline-block!important;
+     animation: inherit!important;
+}
+
+.word-relations .word-group.expand .word-options {
+ display:inline-block;
+}
+
+.word-grouper-wrapper { 
+display: inline;
+}
+
+
+
