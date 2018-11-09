@@ -247,7 +247,9 @@
                         <div class="colloc-section w-100" th:with="collocPosGr = ${lexeme.collocationPosGroups.get(0)}">
                           <div class="colloc-inner-section" style="padding: 0px 10px;" th:with="collocRelGr = ${collocPosGr.relationGroups.get(0)}">
                             <div class="colloc-row row" style="padding: 5px;">
-                              <span class="colloc-col" th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs.subList(0,3)}" style="padding: 2px;">
+                              <span class="colloc-col"
+                                    th:each="displayColloc,displayCollocIter : ${collocRelGr.displayCollocs.subList(0,collocRelGr.displayCollocs.size() < 3 ? collocRelGr.displayCollocs.size() : 3)}"
+                                    style="padding: 2px;">
                                 <span class="colloc-member">
                                   <span th:if="${displayCollocIter.first}">
                                     <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
