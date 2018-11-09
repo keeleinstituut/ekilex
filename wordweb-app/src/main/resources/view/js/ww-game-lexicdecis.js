@@ -91,7 +91,7 @@ function resolveAnswer() {
 		$("#suggestedWordWrapper").addClass("bg-danger");
 	}
 	setTimeout(function() {
-		populateLexicDecisGameRow();			
+		populateLexicDecisGameRow();
 	}, answerDisplayDelay);
 }
 
@@ -133,4 +133,3 @@ $(document).on("click", "#answerJbtn", function(e) {
 $(document).on("click", "#escBtn", function(e) {
 	handleEsc();
 });
-

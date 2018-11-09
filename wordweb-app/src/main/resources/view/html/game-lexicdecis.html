@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <title th:text="#{general.title}">Sõnaveeb</title>
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/font-import.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/font-awesome.min.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/bootstrap-games.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
-  <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
-  <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
-  <script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
+<title th:text="#{general.title}">Sõnaveeb</title>
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/font-import.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/font-awesome.min.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/bootstrap-games.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
+<link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
+<script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
+<script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
 </head>
 <body style="overflow-y: auto;">
   <div id="lexicalDecisionStartPage" class="frame col-sm-8 col-sm-offset-2">
@@ -81,25 +81,25 @@
         </div>
         <div class="col-sm-2 text-center">
           <!--<h5 th:text="'(' + #{quitGame} + ')'">-->
-            <!--0 / 9-->
-            <!--</h5>-->
-          </div>
-          <div id="answerJbtn" class="col-sm-5">
-            <div class="help-letters-left btn-box">
-              <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
-            </div>
-          </div>
+          <!--0 / 9-->
+          <!--</h5>-->
         </div>
-        <div id="escBtn" style="position: fixed; bottom: 50px; width: 100%;">
-          <div class="help-letters-center btn-box">
-            <h4>Esc</h4>
+        <div id="answerJbtn" class="col-sm-5">
+          <div class="help-letters-left btn-box">
+            <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
           </div>
         </div>
       </div>
+      <div id="escBtn" style="position: fixed; bottom: 50px; width: 100%;">
+        <div class="help-letters-center btn-box">
+          <h4>Esc</h4>
+        </div>
+      </div>
     </div>
-    <script th:inline="javascript">
-     var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
-     var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
-   </script>
- </body>
- </html>
+  </div>
+  <script th:inline="javascript">
+  	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
+  	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
+  </script>
+</body>
+</html>

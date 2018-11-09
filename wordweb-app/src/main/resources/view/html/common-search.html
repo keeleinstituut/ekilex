@@ -3,70 +3,62 @@
 <body>
   <!-- search -->
   <th:block th:fragment="search">
-  <div class="search-main">
-    <form th:action="@{/search}" th:method="post">
-      <div>
-        <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
-        <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
-        <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
-        <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
-      </div>
-      <div class="extra-buttons">
-        <button id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
-          <span class="icon icon-close"></span>
+    <div class="search-main">
+      <form th:action="@{/search}" th:method="post">
+        <div>
+          <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
+          <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
+          <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
+          <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
+        </div>
+        <div class="extra-buttons">
+          <button id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
+            <span class="icon icon-close"></span>
+          </button>
+          <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:title="#{button.label.start.rec}">
+            <span class="icon icon-mic"></span>
+          </button>
+          <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
+        </div>
+        <button id="search-btn" type="submit" class="btn btn-green search-btn">
+          <span class="icon icon-search"></span>
         </button>
-        <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:title="#{button.label.start.rec}">
-          <span class="icon icon-mic"></span>
-        </button>
-        <button type="button" id="stop-rec-btn" class="btn btn-light speak-btn" hidden th:text="#{button.label.stop.rec}">Finish</button>
-      </div>
-      <button id="search-btn" type="submit" class="btn btn-green search-btn">
-        <span class="icon icon-search"></span>
+      </form>
+    </div>
+  </th:block>
+  <!-- lang filter -->
+  <th:block th:fragment="lang-filter">
+    <div class="search-lang dropdown">
+      <button id="lang-selector-btn" class="btn btn-light lang-btn float-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <span id="source-lang-lbl">eesti</span>
+        <span class="icon icon-arrow-right"></span>
+        <span id="destin-lang-lbl">vene</span>
       </button>
-    </form>
-  </div>
-</th:block>
-<!-- lang filter -->
-
-
-<th:block th:fragment="lang-filter">
-
-<div class="search-lang dropdown">
-  <button id="lang-selector-btn" class="btn btn-light lang-btn float-right" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span id="source-lang-lbl">eesti</span>
-    <span class="icon icon-arrow-right"></span>
-    <span id="destin-lang-lbl">vene</span>
-  </button>
-  <form class="dropdown-menu p-4 container">
-    <div class="row">
-      <div class="col-6">
-        <button name="source-lang-btn" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
-        <button name="source-lang-btn" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
+      <form class="dropdown-menu p-4 container">
+        <div class="row">
+          <div class="col-6">
+            <button name="source-lang-btn" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
+            <button name="source-lang-btn" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
+          </div>
+          <div class="col-6">
+            <button name="destin-lang-btn" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
+            <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </th:block>
+  <th:block th:fragment="detail-filter">
+    <div id="detail-toggle-container" class="detail-toggle-container">
+      <div class="inner-container">
+        <div class="toggle" id="toggle-detail" th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
+          <p th:text="#{button.label.detail}">Detailne</p>
+        </div>
+        <div class="toggle" id="toggle-simple" th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
+          <p th:text="#{button.label.simple}">Lihtne</p>
+        </div>
       </div>
-      <div class="col-6">
-        <button name="destin-lang-btn" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
-        <button name="destin-lang-btn" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
-      </div>
     </div>
-  </form>
-</div>
-
-</th:block>
-
-
-<th:block th:fragment="detail-filter">
-<div id="detail-toggle-container" class="detail-toggle-container">
-  <div class="inner-container">
-    <div class="toggle" id="toggle-detail" th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
-      <p th:text="#{button.label.detail}">Detailne</p>
-    </div>
-    <div class="toggle" id="toggle-simple" th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
-      <p th:text="#{button.label.simple}">Lihtne</p>
-    </div>
-  </div>
-</div>
-</th:block>
-
-
+  </th:block>
 </body>
 </html>

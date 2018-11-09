@@ -29,6 +29,8 @@ public class Word extends AbstractDataObject {
 
 	private Classifier aspect;
 
+	private String wordEtymologyWrapup;
+
 	private List<String> datasetCodes;
 
 	private Integer meaningCount;
@@ -129,6 +131,14 @@ public class Word extends AbstractDataObject {
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
+	}
+
+	public String getWordEtymologyWrapup() {
+		return wordEtymologyWrapup;
+	}
+
+	public void setWordEtymologyWrapup(String wordEtymologyWrapup) {
+		this.wordEtymologyWrapup = wordEtymologyWrapup;
 	}
 
 	public List<String> getDatasetCodes() {

@@ -1,5 +1,6 @@
 package eki.wordweb.service.db;
 
+import static eki.wordweb.data.db.Tables.MVIEW_WW_AS_WORD;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_COLLOCATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_FORM;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME;
@@ -7,7 +8,7 @@ import static eki.wordweb.data.db.Tables.MVIEW_WW_LEXEME_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_MEANING_RELATION;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD;
-import static eki.wordweb.data.db.Tables.MVIEW_WW_AS_WORD;
+import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_ETYMOLOGY;
 import static eki.wordweb.data.db.Tables.MVIEW_WW_WORD_RELATION;
 
 import java.util.List;
@@ -29,6 +30,7 @@ import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Word;
+import eki.wordweb.data.WordEtymology;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
@@ -132,6 +134,15 @@ public class LexSearchDbService {
 				.where(MVIEW_WW_WORD.WORD_ID.eq(wordId))
 				.fetchOne()
 				.into(Word.class);
+	}
+
+	public WordEtymology findWordEtymology(Long wordId) {
+
+		return create
+				.select(MVIEW_WW_WORD_ETYMOLOGY.ETYM_LINEUP)
+				.from(MVIEW_WW_WORD_ETYMOLOGY)
+				.where(MVIEW_WW_WORD_ETYMOLOGY.WORD_ID.eq(wordId))
+				.fetchOneInto(WordEtymology.class);
 	}
 
 	public List<WordRelationTuple> findWordRelationTuples(Long wordId) {

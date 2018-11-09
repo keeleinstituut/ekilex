@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
 
-    private static final long serialVersionUID = -320555258;
+    private static final long serialVersionUID = -1402232624;
 
     /**
      * The reference instance of <code>public.mview_ww_classifier</code>
@@ -77,6 +77,11 @@ public class MviewWwClassifier extends TableImpl<MviewWwClassifierRecord> {
      * The column <code>public.mview_ww_classifier.lang</code>.
      */
     public final TableField<MviewWwClassifierRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+
+    /**
+     * The column <code>public.mview_ww_classifier.order_by</code>.
+     */
+    public final TableField<MviewWwClassifierRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>public.mview_ww_classifier</code> table reference
