@@ -8,7 +8,6 @@
 	">
 
     <bean id="hikariConfigTermeki" class="com.zaxxer.hikari.HikariConfig">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
         <property name="jdbcUrl" value="${db.termeki.url}" />
         <property name="username" value="${db.termeki.usr}" />
         <property name="password" value="${db.termeki.psw}" />
