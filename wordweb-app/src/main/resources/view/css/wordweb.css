@@ -136,10 +136,11 @@
     display: block;
     margin-bottom: 0.5rem;
     position: relative;
+    line-height: 1;
 }
 
 .word-group .more-btn {
-	margin-top: -0.25rem;
+	margin-top: -1rem;
 }
 
 .word-group .more-btn .icon {
@@ -170,5 +171,7 @@
 display: inline;
 }
 
+.matches span { margin-bottom: 0.625rem; } 
 
+.definition span { margin-bottom: 0.625rem; display: inline-block; }
 
