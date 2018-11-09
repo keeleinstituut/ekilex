@@ -472,7 +472,7 @@
                   </tr>
                 </table>
               </div>
-              <div th:if="${not #lists.isEmpty(lexeme.usages)}">
+              <div>
                 <hr />
                 <table>
                   <tr>
@@ -485,7 +485,7 @@
                       </button>
                     </th>
                   </tr>
-                  <tr>
+                  <tr th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <td>
                       <table th:each="usage,usageIter : ${lexeme.usages}" class="border">
                         <tr>

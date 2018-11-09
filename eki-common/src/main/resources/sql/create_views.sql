@@ -3,6 +3,7 @@ create type type_definition as (lexeme_id bigint, meaning_id bigint, value text,
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
+create type type_word_etym as (word_id bigint, etym_word_id bigint, etym_word text, etym_word_lang char(3), etym_meaning_words text array, etym_type_code varchar(100), comments text array, is_questionable boolean, is_compound boolean);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
@@ -363,6 +364,67 @@ create view view_ww_collocation
       lc1.group_order,
       c.id;
 
+-- etymology
+create view view_ww_word_etymology
+	as
+		with recursive word_etym_recursion (word_id, word_etym_id, word1_id, word2_id, etymology_type_code, comments, is_questionable, is_compound, order_by) as
+		(
+		  (select
+		      we.word1_id,
+			  we.id word_etym_id,
+		      we.word1_id,
+		      we.word2_id,
+		      we.etymology_type_code,
+		      we.comments,
+		      we.is_questionable,
+		      we.is_compound,
+		      we.order_by
+		  from word_etymology we
+		  order by we.order_by) 
+		  union all 
+		  (select 
+		      wer.word_id,
+			  we.id word_etym_id,
+		      we.word1_id,
+		      we.word2_id,
+		      we.etymology_type_code,
+		      we.comments,
+		      we.is_questionable,
+		      we.is_compound,
+		      we.order_by
+		  from word_etym_recursion wer
+		    inner join word_etymology we on we.word1_id = wer.word2_id
+		  where we.word1_id = wer.word2_id
+		  group by wer.word_id,
+		           we.id
+		  order by we.order_by)
+		)
+		select wer.word_id,
+		       array_agg(row (wer.word1_id,wer.word2_id,ef2.value,ew2.lang,mw2.meaning_words,wer.etymology_type_code,wer.comments,wer.is_questionable,wer.is_compound)::type_word_etym order by wer.order_by) etym_lineup
+		from word_etym_recursion wer
+		  inner join word ew2 on ew2.id = wer.word2_id
+		  inner join paradigm ep2 on ep2.word_id = ew2.id
+		  inner join form ef2 on ef2.paradigm_id = ep2.id and ef2.mode = 'WORD'
+		  left outer join (select l1.word_id,
+		                          array_agg(distinct f2.value) meaning_words
+		                   from lexeme l1,
+		                        meaning m,
+		                        lexeme l2,
+		                        paradigm p2,
+		                        form f2
+		                   where l1.dataset_code = 'ety'
+		                   and   l1.meaning_id = m.id
+		                   and   l2.meaning_id = m.id
+		                   and   l1.word_id != l2.word_id
+		                   and   l2.dataset_code = 'ety'
+		                   and   p2.word_id = l2.word_id
+		                   and   f2.paradigm_id = p2.id
+		                   and   f2.mode = 'WORD'
+		                   group by l1.word_id) mw2
+		               on mw2.word_id = wer.word2_id
+		group by wer.word_id
+		order by wer.word_id;
+
 -- word relations
 create view view_ww_word_relation 
   as
@@ -532,120 +594,214 @@ create view view_ww_dataset
 
 create view view_ww_classifier
   as
-    (select
-       'MORPH' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from morph_label
-     where type = 'wordweb'
-     union all
-     select
-       'DISPLAY_MORPH' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from display_morph_label
-     where type = 'wordweb'
-     union all
-     select
-       'WORD_TYPE' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from word_type_label
-     where type = 'wordweb'
-     union all
-     select
-       'ASPECT_TYPE' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from aspect_type_label
-     where type = 'wordweb'
-     union all
-     select
-       'POS' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from pos_label
-     where type = 'wordweb'
-     union all
-     select
-       'REGISTER' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from register_label
-     where type = 'wordweb'
-     union all
-     select
-       'DERIV' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from deriv_label
-     where type = 'wordweb'
-     union all
-     select
-       'DOMAIN' as name,
-       origin,
-       code,
-       value,
-       lang
-     from domain_label
-     where type = 'descrip'
-     union all
-     select
-       'USAGE_TYPE' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from usage_type_label
-     where type = 'wordweb'
-     union all
-     select
-       'POS_GROUP' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from pos_group_label
-     where type = 'wordweb'
-     union all
-     select
-       'WORD_REL_TYPE' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from word_rel_type_label
-     where type = 'wordweb'
-     union all
-     select
-       'LEX_REL_TYPE' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from lex_rel_type_label
-     where type = 'wordweb'
-     union all
-     select
-       'MEANING_REL_TYPE' as name,
-       null as origin,
-       code,
-       value,
-       lang
-     from meaning_rel_type_label
-     where type = 'wordweb'
-    );
+	((select
+		'LANGUAGE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		language c,
+		language_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all 
+	(select
+		'MORPH' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		morph c,
+		morph_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'DISPLAY_MORPH' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		display_morph c,
+		display_morph_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'WORD_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		word_type c,
+		word_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'ASPECT_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		aspect_type c,
+		aspect_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'POS' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		pos c,
+		pos_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'REGISTER' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		register c,
+		register_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'DERIV' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		deriv c,
+		deriv_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'DOMAIN' as name,
+		c.origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		domain c,
+		domain_label cl
+	where 
+		c.code = cl.code
+		and c.origin = cl.origin
+		and cl.type = 'descrip'
+	order by c.order_by)
+	union all
+	(select
+		'USAGE_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		usage_type c,
+		usage_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'POS_GROUP' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		pos_group c,
+		pos_group_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'WORD_REL_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		word_rel_type c,
+		word_rel_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'LEX_REL_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		lex_rel_type c,
+		lex_rel_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+	union all
+	(select
+		'MEANING_REL_TYPE' as name,
+		null as origin,
+		c.code,
+		cl.value,
+		cl.lang,
+		c.order_by
+	from 
+		meaning_rel_type c,
+		meaning_rel_type_label cl
+	where 
+		c.code = cl.code
+		and cl.type = 'wordweb'
+	order by c.order_by)
+);

@@ -22,6 +22,7 @@ import eki.wordweb.data.TypeDomain;
 import eki.wordweb.data.TypeLexemeRelation;
 import eki.wordweb.data.TypeMeaningRelation;
 import eki.wordweb.data.TypeUsage;
+import eki.wordweb.data.TypeWordEtym;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
@@ -131,6 +132,17 @@ public class ClassifierUtil {
 		classifierCode = wordRelation.getWordRelTypeCode();
 		classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 		wordRelation.setWordRelType(classifier);
+	}
+
+	public void applyClassifiers(TypeWordEtym wordEtym, String displayLang) {
+		String classifierCode;
+		Classifier classifier;
+		classifierCode = wordEtym.getEtymWordLang();
+		classifier = getClassifier(ClassifierName.LANGUAGE, classifierCode, displayLang);
+		wordEtym.setEtymWordLanguage(classifier);
+		//TODO there are no etym type labels yet
+		classifierCode = wordEtym.getEtymTypeCode();
+		//...
 	}
 
 	public void applyClassifiers(CollocationTuple tuple, CollocationPosGroup collocPosGroup, String displayLang) {

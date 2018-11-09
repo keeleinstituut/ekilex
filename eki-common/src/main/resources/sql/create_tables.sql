@@ -488,6 +488,7 @@ create table word_etymology
   word2_id bigint references word(id) on delete cascade not null,
   etymology_type_code varchar(100) references etymology_type(code),
   comments text array null,
+  year text null,
   is_questionable boolean not null default false,
   is_compound boolean not null default false,
   order_by bigserial,
@@ -810,6 +811,19 @@ create table lexeme_source_link
 );
 alter sequence lexeme_source_link_id_seq restart with 10000;
 
+create table word_etymology_source_link
+(
+  id bigserial primary key,
+  word_etymology_id bigint references word_etymology(id) on delete cascade not null,
+  source_id bigint references source(id) on delete cascade not null,
+  type varchar(100) not null,
+  name text null,
+  value text null,
+  process_state_code varchar(100) references process_state(code) null,
+  order_by bigserial
+);
+alter sequence word_etymology_source_link_id_seq restart with 10000;
+
 create table game_nonword
 (
   id bigserial primary key,
@@ -868,6 +882,8 @@ create index definition_source_link_definition_id_idx on definition_source_link(
 create index definition_source_link_source_id_idx on definition_source_link(source_id);
 create index lexeme_source_link_lexeme_id_idx on lexeme_source_link(lexeme_id);
 create index lexeme_source_link_source_id_idx on lexeme_source_link(source_id);
+create index word_etymology_source_link_word_etymology_id_idx on word_etymology_source_link(word_etymology_id);
+create index word_etymology_source_link_source_id_idx on word_etymology_source_link(source_id);
 create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
 create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);

@@ -27,6 +27,8 @@ import eki.common.constant.LifecycleEntity;
 import eki.common.constant.LifecycleEventType;
 import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
+import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
 import eki.ekilex.service.ReportComposer;
@@ -59,8 +61,10 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	private final String etymCommentExp = "s:dtx";
 	private final String etymRegisterExp = "s:s";
 	private final String etymEstWordExp = "s:ed";
-	private final String etymAuthorExp = "s:autg/s:aut";
-	private final String etymYearExp = "s:autg/s:a";
+	private final String etymSourceGroupExp = "s:autg";
+	private final String etymSourceAuthorExp = "s:aut";
+	private final String etymSourceDocumentExp = "s:all";
+	private final String etymYearExp = "s:a";
 	private final String etymQuestionableAttr = "ky";
 	private final String etymAlternativeAttr = "alt";
 	private final String etymWordCompoundAttr = "etl";
@@ -111,6 +115,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		List<Map<String, Object>> wordDatas;
 
 		Count etymCount = new Count();
+		Count etymWordAuthorCount = new Count();
 		Count missingEtymTypeCount = new Count();
 
 		long articleCounter = 0;
@@ -144,13 +149,20 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 				List<Node> etymCommentNodes = etymNode.selectNodes(etymRootCommentExp);
 				List<String> etymRootComments = null;
 				if (CollectionUtils.isNotEmpty(etymCommentNodes)) {
-					etymRootComments = etymCommentNodes.stream().map( e -> ((Element) e).getTextTrim()).collect(Collectors.toList());
+					etymRootComments = etymCommentNodes
+							.stream()
+							.map(node -> {
+								String etymComment = ((Element) node).getTextTrim();
+								etymComment = cleanEkiEntityMarkup(etymComment);
+								return etymComment;
+							}).collect(Collectors.toList());
 				}
 				//TODO impl
 				List<Node> etymPrivateNoteNodes = etymNode.selectNodes(etymRootPrivateNoteExp);
 				List<Node> etymGroupNodes = etymNode.selectNodes(etymGroupExp);
 				List<Long> word1Ids = null;
 				List<Long> word2Ids = null;
+				List<Long> wordEtymologyIds = null;
 				List<String> etymComments = null;
 				String etymTypeCode = null;
 				String mappedEtymTypeCode = null;
@@ -209,7 +221,16 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						}
 						if (etymCommentNode != null) {
 							String etymComment = etymCommentNode.getTextTrim();
+							etymComment = cleanEkiEntityMarkup(etymComment);
 							etymComments.add(etymComment);
+						}
+						Node etymSourceGroupNode = etymSubGroupNode.selectSingleNode(etymSourceGroupExp);
+						String year = null;
+						if (etymSourceGroupNode != null) {
+							Element etymYearNode = (Element) etymSourceGroupNode.selectSingleNode(etymYearExp);
+							if (etymYearNode != null) {
+								year = etymYearNode.getTextTrim();
+							}
 						}
 						List<Node> etymRegisterNodes = etymSubGroupNode.selectNodes(etymRegisterExp);
 						List<String> etymRegisterCodes = new ArrayList<>();
@@ -224,6 +245,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							etymRegisterCodes.add(mappedRegisterCode);
 						}
 						Long meaningId = createMeaning();
+						wordEtymologyIds = new ArrayList<>();
 						// foreign etym words
 						for (Node etymWordNode : etymWordNodes) {
 							Element etymWordElement = (Element) etymWordNode;
@@ -241,7 +263,8 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								}
 								word2Ids.add(wordId);
 								for (Long word1Id : word1Ids) {
-									createWordEtymology(word1Id, wordId, mappedEtymTypeCode, etymComments, isEtymQuestionable, isEtymWordCompound);
+									Long wordEtymologyId = createWordEtymology(word1Id, wordId, mappedEtymTypeCode, etymComments, year, isEtymQuestionable, isEtymWordCompound);
+									wordEtymologyIds.add(wordEtymologyId);
 									etymCount.increment();
 								}
 							}
@@ -258,11 +281,24 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								createLexeme(wordId, meaningId);
 							}
 						}
-						//TODO impl
-						List<Node> etymAuthorNodes = etymSubGroupNode.selectNodes(etymAuthorExp);
-						//TODO impl
-						Element etymYearNode = (Element) etymSubGroupNode.selectSingleNode(etymYearExp);
-
+						// etym source links
+						if (etymSourceGroupNode != null) {
+							List<Node> etymSourceAuthorNodes = etymSourceGroupNode.selectNodes(etymSourceAuthorExp);
+							if (CollectionUtils.isNotEmpty(etymSourceAuthorNodes)) {
+								for (Node etymSourceAuthorNode : etymSourceAuthorNodes) {
+									Element etymSourceAuthorElement = (Element) etymSourceAuthorNode;
+									String author = etymSourceAuthorElement.getTextTrim();
+									Long sourceId = getSource(SourceType.PERSON, EXT_SOURCE_ID_NA, author);
+									if (sourceId == null) {
+										sourceId = createSource(SourceType.PERSON, EXT_SOURCE_ID_NA, author);
+										etymWordAuthorCount.increment();
+									}
+									for (Long wordEtymologyId : wordEtymologyIds) {
+										createWordEtymologySourceLink(wordEtymologyId, ReferenceType.AUTHOR, sourceId, null, author);
+									}
+								}
+							}
+						}
 					}
 				}
 			}
@@ -280,6 +316,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} word etym relations", etymCount.getValue());
+		logger.debug("Found {} etym word authors", etymWordAuthorCount.getValue());
 		logger.debug("Found {} etym groups with missing type", missingEtymTypeCount.getValue());
 
 		t2 = System.currentTimeMillis();
@@ -303,7 +340,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		return results;
 	}
 
-	private Long createWordEtymology(Long word1Id, Long word2Id, String etymTypeCode, List<String> comments, boolean isQuestionable, boolean isCompound) throws Exception {
+	private Long createWordEtymology(Long word1Id, Long word2Id, String etymTypeCode, List<String> comments, String year, boolean isQuestionable, boolean isCompound) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word1_id", word1Id);
@@ -313,6 +350,9 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		}
 		if (CollectionUtils.isNotEmpty(comments)) {
 			tableRowParamMap.put("comments", new PgVarcharArray(comments));
+		}
+		if (StringUtils.isNotEmpty(year)) {
+			tableRowParamMap.put("year", year);
 		}
 		tableRowParamMap.put("is_questionable", isQuestionable);
 		tableRowParamMap.put("is_compound", isCompound);
@@ -352,6 +392,22 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		criteriaParamMap.put("dataset_code", getDataset());
 		Long lexemeId = basicDbService.create(LEXEME, criteriaParamMap);
 		return lexemeId;
+	}
+
+	private Long createWordEtymologySourceLink(Long wordEtymologyId, ReferenceType refType, Long sourceId, String name, String value) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_etymology_id", wordEtymologyId);
+		tableRowParamMap.put("type", refType.name());
+		tableRowParamMap.put("source_id", sourceId);
+		if (StringUtils.isNotBlank(name)) {
+			tableRowParamMap.put("name", name);
+		}
+		if (StringUtils.isNotBlank(value)) {
+			tableRowParamMap.put("value", value);
+		}
+		Long sourceLinkId = basicDbService.create(WORD_ETYMOLOGY_SOURCE_LINK, tableRowParamMap);
+		return sourceLinkId;
 	}
 
 	private void appendToReport(boolean doReports, String reportName, Object ... reportCells) throws Exception {

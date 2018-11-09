@@ -1,6 +1,6 @@
 var windowWidthTreshold = 768;
 
-$(document).ready(function() {
+$(document).ready(function () {
 
 	initLanguageFilter();
 	initialiseRecording(speechRecognitionServiceUrl);
@@ -8,28 +8,28 @@ $(document).ready(function() {
 	var isWideWindow = $(window).width() >= windowWidthTreshold;
 	var isSingleHomonym = $(".homonym-item").length == 1;
 	if (isWideWindow || isSingleHomonym) {
-		var selectedHomonymItem = $(".homonym-item").filter(function() {
+		var selectedHomonymItem = $(".homonym-item").filter(function () {
 			var isHomonymSelected = $(this).closest("form").find("input[name='word-selected']").val();
 			return isHomonymSelected == "true";
 		}).filter(":first");
 		if (selectedHomonymItem.get().length == 0) {
 			selectedHomonymItem = $(".homonym-item:first");
 		}
-		selectedHomonymItem.delay(1250).queue(function() {}).trigger('click');
+		selectedHomonymItem.delay(1250).queue(function () {}).trigger('click');
 		selectedHomonymItem.addClass("animation-target");
 	}
 
 	calculateAndSetStyles();
 
-	var searchWordAutocompleteMenuRenderer = function(ul, items) {
+	var searchWordAutocompleteMenuRenderer = function (ul, items) {
 		var self = this;
 		var groups = [];
 
-		groups = $.map(items, function(item) {
+		groups = $.map(items, function (item) {
 			return item.group;
 		});
 
-		groups = $.grep(groups, function(el, index) {
+		groups = $.grep(groups, function (el, index) {
 			return index === $.inArray(el, groups);
 		});
 
@@ -50,7 +50,7 @@ $(document).ready(function() {
 	};
 
 	var searchWordAutocompleteConfig = {
-		source: function(request, response) {
+		source: function (request, response) {
 			var sourceLang = $("button[name='source-lang-btn'].active").val();
 			var destinLang = $("button[name='destin-lang-btn'].active").val();
 			var wordPrefix = request.term;
@@ -58,35 +58,43 @@ $(document).ready(function() {
 			$.ajax({
 				url: searchWordsByPrefixUrlWithParams,
 				type: "GET",
-				success: function(data) {
+				success: function (data) {
 					var prefWords = data.prefWords;
 					var formWords = data.formWords;
 					var fullList = [];
-					$.each(data.prefWords, function(index, item) {
-						fullList.push({group : "prefWord", label : item, value : item});
+					$.each(data.prefWords, function (index, item) {
+						fullList.push({
+							group: "prefWord",
+							label: item,
+							value: item
+						});
 					});
-					$.each(data.formWords, function(index, item) {
-						fullList.push({group : "formWord", label : item, value : item});
+					$.each(data.formWords, function (index, item) {
+						fullList.push({
+							group: "formWord",
+							label: item,
+							value: item
+						});
 					});
 					response(fullList);
 				}
 			});
 		},
 		minLength: 2,
-		create: function() {
+		create: function () {
 			$(this).data('uiAutocomplete')._renderMenu = searchWordAutocompleteMenuRenderer;
 		},
-		select: function(event, ui) {
+		select: function (event, ui) {
 			if (ui.item) {
 				$("input[name='searchWord']").val(ui.item.value);
 				$("#search-btn").click();
 			}
 			return false;
 		},
-		open: function() {
+		open: function () {
 			return false;
 		},
-		close: function() {
+		close: function () {
 			return false;
 		}
 	};
@@ -94,16 +102,15 @@ $(document).ready(function() {
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
 
 	$(".homonym-item").on("click", function (e) {
-			$(".header-container .back").addClass("show-btn");
-	});
-		$(".back").on("click", function (e) {
-			$(".header-container .back").removeClass("show-btn");
+		$(".header-container .back").addClass("show-btn");
 	});
 
-
+	$(".back").on("click", function (e) {
+		$(".header-container .back").removeClass("show-btn");
+	});
 });
 
-$(window).resize(function() {
+$(window).resize(function () {
 	calculateAndSetStyles();
 });
 
@@ -114,7 +121,7 @@ function initLanguageFilter() {
 }
 
 function clearLanguageSelection(name) {
-	$("button[name = '" + name + "']").each(function() {
+	$("button[name = '" + name + "']").each(function () {
 		$(this).removeClass("active");
 	});
 }
@@ -190,11 +197,11 @@ function generateVoiceAndPlay(e) {
 	var data = {
 		'words': words
 	};
-	$.post(applicationUrl + 'generate_voice', data).done(function(urlToSound) {
+	$.post(applicationUrl + 'generate_voice', data).done(function (urlToSound) {
 		elem.data('url-to-sound', urlToSound);
 		elem.html(content);
 		playSound(urlToSound);
-	}).fail(function() {
+	}).fail(function () {
 		elem.html(content);
 		alert(messages.sound_generation_failure);
 	})
@@ -209,9 +216,9 @@ var speechRecognitionServiceUrl;
  * Patch the APIs for every browser that supports them and check if getUserMedia
  * is supported on the browser.
  */
- function initialiseRecording(serviceUrl) {
- 	try {
- 		speechRecognitionServiceUrl = serviceUrl;
+function initialiseRecording(serviceUrl) {
+	try {
+		speechRecognitionServiceUrl = serviceUrl;
 		// Monkeypatch for AudioContext, getUserMedia and URL
 		window.AudioContext = window.AudioContext || window.webkitAudioContext;
 		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -230,7 +237,7 @@ function startRecording() {
 	// Access the Microphone using the navigator.getUserMedia method to obtain a stream
 	navigator.getUserMedia({
 		audio: true
-	}, function(stream) {
+	}, function (stream) {
 		// Expose the stream to be accessible globally
 		audio_stream = stream;
 		var input = audio_context.createMediaStreamSource(stream);
@@ -242,7 +249,7 @@ function startRecording() {
 		// Start recording !
 		recorder && recorder.record();
 		console.log('Recording...');
-	}, function(e) {
+	}, function (e) {
 		console.error('No live audio input: ' + e);
 	});
 }
@@ -255,8 +262,8 @@ function stopRecording(callback) {
 
 	// Use the Recorder Library to export the recorder Audio as a .mp3 file
 	// The callback providen in the stop recording method receives the blob
-	if (typeof(callback) == "function") {
-		recorder && recorder.exportWAV(function(blob) {
+	if (typeof (callback) == "function") {
+		recorder && recorder.exportWAV(function (blob) {
 			callback(blob);
 			// Clear the Recorder to start again !
 			recorder.clear();
@@ -273,14 +280,14 @@ function sendToWebSocket(audioBlob) {
 		// Let us open a web socket
 		// ws = new WebSocket("ws://localhost:9090/client/ws/speech");
 		ws = new WebSocket(speechRecognitionServiceUrl);
-		ws.onopen = function() {
+		ws.onopen = function () {
 			// Web Socket is connected, send data using send()
 			ws.send(audioBlob);
 			ws.send("EOS");
 			console.log("Message is sent...");
 		};
 
-		ws.onmessage = function(evt) {
+		ws.onmessage = function (evt) {
 			var data = evt.data;
 			console.log("Message is received...", data);
 			var res = JSON.parse(data);
@@ -296,7 +303,7 @@ function sendToWebSocket(audioBlob) {
 			}
 		};
 
-		ws.onclose = function(e) {
+		ws.onclose = function (e) {
 			var code = e.code;
 			var reason = e.reason;
 			var wasClean = e.wasClean;
@@ -304,12 +311,12 @@ function sendToWebSocket(audioBlob) {
 			ws = null;
 		};
 
-		ws.onerror = function(e) {
+		ws.onerror = function (e) {
 			var data = e.data;
 			console.log("Error ", data);
 		};
 
-		window.onbeforeunload = function(event) {
+		window.onbeforeunload = function (event) {
 			socket.close();
 		};
 	} else {
@@ -317,32 +324,32 @@ function sendToWebSocket(audioBlob) {
 	}
 }
 
-$(document).on("click", "#clear-search-btn", function(e) {
+$(document).on("click", "#clear-search-btn", function (e) {
 	window.location = currentPage;
 });
 
-$(document).on("keyup", "input[name='searchWord']", function(e) {
+$(document).on("keyup", "input[name='searchWord']", function (e) {
 	if ($(this).val()) {
 		$("#clear-search-btn").show();
 	} else {
-		$("#clear-search-btn").hide(1000);//hack to avoid disabling the button
+		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 	}
 
 });
 
-$(document).on("focus", "input[name='searchWord']", function(e) {
+$(document).on("focus", "input[name='searchWord']", function (e) {
 	if ($(this).val()) {
 		$("#clear-search-btn").show();
 	} else {
-		$("#clear-search-btn").hide(1000);//hack to avoid disabling the button
+		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 	}
 });
 
-$(document).on("blur", "input[name='searchWord']", function(e) {
-	$("#clear-search-btn").hide(1000);//hack to avoid disabling the button
+$(document).on("blur", "input[name='searchWord']", function (e) {
+	$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 });
 
-$(document).on("click", "button[name='source-lang-btn']", function(e) {
+$(document).on("click", "button[name='source-lang-btn']", function (e) {
 	var prevSourceLang = $("button[name='source-lang-btn'].active").val();
 	var currSourceLang = $(this).val();
 	if (currSourceLang == prevSourceLang) {
@@ -358,13 +365,13 @@ $(document).on("click", "button[name='source-lang-btn']", function(e) {
 	empowerLanguageSelection();
 	var tempSearchWord = $("input[name='searchWord']").val();
 	if (tempSearchWord) {
-		$("#search-btn").click();		
+		$("#search-btn").click();
 	} else {
 		$("#lang-selector-btn").click();
 	}
 });
 
-$(document).on("click", "button[name='destin-lang-btn']", function(e) {
+$(document).on("click", "button[name='destin-lang-btn']", function (e) {
 	var currSourceLang = $("button[name='source-lang-btn'].active").val();
 	var prevDestinLang = $("button[name='destin-lang-btn'].active").val();
 	var currDestinLang = $(this).val();
@@ -380,31 +387,31 @@ $(document).on("click", "button[name='destin-lang-btn']", function(e) {
 	empowerLanguageSelection();
 	var tempSearchWord = $("input[name='searchWord']").val();
 	if (tempSearchWord) {
-		$("#search-btn").click();		
+		$("#search-btn").click();
 	} else {
 		$("#lang-selector-btn").click();
 	}
 });
 
-$(document).on("click", "button[id='lang-sel-complete-btn']", function(e) {
+$(document).on("click", "button[id='lang-sel-complete-btn']", function (e) {
 	$("#lang-selector-btn").click();
 	if ($("input[name='searchWord']").val()) {
 		$("#search-btn").click();
 	}
 });
 
-$(document).on("click", "#start-rec-btn", function(e) {
+$(document).on("click", "#start-rec-btn", function (e) {
 	$('#start-rec-btn').prop('hidden', 'hidden');
 	$('#stop-rec-btn').prop('hidden', null);
 	$('.search-btn').prop('disabled', true);
 	startRecording();
 });
 
-$(document).on("click", "#stop-rec-btn", function(e) {
+$(document).on("click", "#stop-rec-btn", function (e) {
 	$('#stop-rec-btn').prop('hidden', 'hidden');
 	$('#start-rec-btn').prop('hidden', null);
 	$('.search-btn').prop('disabled', false);
-	stopRecording(function(audioBlob) {
+	stopRecording(function (audioBlob) {
 		sendToWebSocket(audioBlob);
 	});
 });
@@ -434,5 +441,4 @@ $(document).on("click", "#toggle-detail", function (e) {
 		}
 	}
 });
-
 

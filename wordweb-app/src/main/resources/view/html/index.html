@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(_,~{::links})">
-  <th:block th:fragment="links">
+<th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-index.js}"></script>
 </th:block>
-
 </head>
 <body class="home-page">
   <div class="header-container">
@@ -48,19 +47,21 @@
         </div>
         <div class="logo-wrapper">
           <ul class="logo-list">
-            <li><span class="esf-logo mini-logo"></span></li>
-            <li><span class="eki-logo mini-logo"></span></li>
-            <li><span class="htm-logo mini-logo"></span></li>
+            <li>
+              <span class="esf-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="eki-logo mini-logo"></span>
+            </li>
+            <li>
+              <span class="htm-logo mini-logo"></span>
+            </li>
           </ul>
         </div>
       </div>
     </div>
   </div>
-
-  <div th:replace="common-app :: footer-content">
-  </div>
-
-
+  <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";

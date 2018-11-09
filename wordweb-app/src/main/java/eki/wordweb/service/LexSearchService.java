@@ -27,6 +27,7 @@ import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
+import eki.wordweb.data.WordEtymology;
 import eki.wordweb.data.WordOrForm;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.data.WordsData;
@@ -123,6 +124,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		Word word = lexSearchDbService.getWord(wordId);
 		classifierUtil.applyClassifiers(word, displayLang);
+		WordEtymology wordEtymology = lexSearchDbService.findWordEtymology(wordId);
+		conversionUtil.composeWordEtymologyWrapup(word, wordEtymology, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
 		conversionUtil.composeWordRelations(word, wordRelationTuples, displayLang);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
