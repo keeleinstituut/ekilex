@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -32,6 +33,7 @@ public class WordwebFeedbackController {
 		return "ww_feedback";
 	}
 
+	@CrossOrigin
 	@PostMapping("/send_feedback")
 	@ResponseBody
 	public String receiveFeedback(Feedback newFeedback) {
