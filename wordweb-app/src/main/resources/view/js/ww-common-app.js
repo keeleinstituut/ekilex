@@ -19,6 +19,11 @@ function setActiveMenuItem(itemName) {
 }
 
 $(document).on("click", "button[name='feedbackSendBtn']", function () {
+    if (feedbackServiceUrl === null) {
+        console.debug('Feedback service configuration is missing.');
+        alert(messages.fb_service_error);
+        return;
+    }
 	var feedbackForm = $(this).closest('form');
 	var okMessage = feedbackForm.find('[name=ok_message]').text();
 	var errorMessage = feedbackForm.find('[name=error_message]').text();
@@ -36,6 +41,6 @@ $(document).on("click", "button[name='feedbackSendBtn']", function () {
         }
     }).fail(function (data) {
         console.log(data);
-        alert('Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.');
+        alert(messages.fb_technical_error);
     });
 });
