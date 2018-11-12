@@ -8070,15 +8070,6 @@ footer p {
   margin-right: 2.5rem;
  }
 
-.lang-btn {
-  float: none!important;
-  margin: 0 auto;
-  display: block;
-}
-
-.detail-toggle-container { 
-  margin: 0 auto;
-}
 
 body:not(.home-page) .bottom-gutter {
 padding-bottom: 13.375rem;
@@ -8141,6 +8132,17 @@ body:not(.home-page) footer {
   .bottom-gutter { 
   padding-bottom: 0rem;
   }
+
+  
+.lang-btn {
+  float: none!important;
+  margin: 0 auto;
+  display: block;
+}
+
+.detail-toggle-container { 
+  margin: 0 auto;
+}
 }
 
 

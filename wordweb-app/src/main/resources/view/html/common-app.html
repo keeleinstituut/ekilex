@@ -129,19 +129,19 @@
 
         <div class="modal-radio">
 
-<div class="custom-control custom-radio custom-control-inline">
-  <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
-  <label class="custom-control-label" for="customRadioInline1">Toggle this custom radio</label>
-</div>
-<div class="custom-control custom-radio custom-control-inline">
-  <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-  <label class="custom-control-label" for="customRadioInline2">Or toggle this other custom radio</label>
-</div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline1">Toggle this custom radio</label>
+          </div>
+          <div class="custom-control custom-radio custom-control-inline">
+            <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+            <label class="custom-control-label" for="customRadioInline2">Or toggle this other custom radio</label>
+          </div>
 
 
-    <th:block th:insert="common-app :: feedback_new_word"></th:block>
+          <th:block th:insert="common-app :: feedback_new_word"></th:block>
 
-  <th:block th:insert="common-app :: feedback_comment"></th:block>
+          <th:block th:insert="common-app :: feedback_comment"></th:block>
 
         </div>
 
@@ -188,75 +188,75 @@
 </th:block>
 
 <th:block th:fragment="feedback_new_word">
-  <form>
-    <div class="form-group row">
-      <label hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, oleme uue sõna kätte saanud.</label>
-      <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-      <input type="hidden" name="feedbackType" value="new_word">
-      <input type="hidden" name="lastSerach">
-      <label class="col-2 col-form-label" th:text="#{label.fb.word}">Sõna</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="word">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.definition}">Tähendus</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="definition">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.usages}">Näitelause(d)</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="usages">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.other.info}">Muu info</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="otherInfo">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.name}">Nimi</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="sender">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <div class="col-10">
-        <input type="email" class="form-control" name="email">
-      </div>
+<form>
+  <div class="form-group row">
+    <label hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, oleme uue sõna kätte saanud.</label>
+    <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+    <input type="hidden" name="feedbackType" value="new_word">
+    <input type="hidden" name="lastSerach">
+    <label class="col-2 col-form-label" th:text="#{label.fb.word}">Sõna</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="word">
     </div>
-    <div class="form-group row">
-      <div class="col-10 offset-2">
-        <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
-      </div>
+    <label class="col-2 col-form-label" th:text="#{label.fb.definition}">Tähendus</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="definition">
     </div>
-  </form>
+    <label class="col-2 col-form-label" th:text="#{label.fb.usages}">Näitelause(d)</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="usages">
+    </div>
+    <label class="col-2 col-form-label" th:text="#{label.fb.other.info}">Muu info</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="otherInfo">
+    </div>
+    <label class="col-2 col-form-label" th:text="#{label.fb.name}">Nimi</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="sender">
+    </div>
+    <label class="col-2 col-form-label" th:text="#{label.fb.email}">E-post</label>
+    <div class="col-10">
+      <input type="email" class="form-control" name="email">
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-10 offset-2">
+      <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+    </div>
+  </div>
+</form>
 </th:block>
 
 <th:block th:fragment="feedback_comment">
-  <form>
-    <div class="form-group row">
-      <label hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, oleme kommentaari kätte saanud. Vastame paari päeva jooksul.</label>
-      <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-      <input type="hidden" name="feedbackType" value="comment">
-      <input type="hidden" name="lastSerach">
-      <label class="col-2 col-form-label" th:text="#{label.fb.word}">Sõna</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="word">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.comment}">Kommentaar</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="comments">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.name}">Nimi</label>
-      <div class="col-10">
-        <input type="text" class="form-control" name="sender">
-      </div>
-      <label class="col-2 col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <div class="col-10">
-        <input type="email" class="form-control" name="email">
-      </div>
+<form>
+  <div class="form-group row">
+    <label hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, oleme kommentaari kätte saanud. Vastame paari päeva jooksul.</label>
+    <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+    <input type="hidden" name="feedbackType" value="comment">
+    <input type="hidden" name="lastSerach">
+    <label class="col-2 col-form-label" th:text="#{label.fb.word}">Sõna</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="word">
     </div>
-    <div class="form-group row">
-      <div class="col-10 offset-2">
-        <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
-      </div>
+    <label class="col-2 col-form-label" th:text="#{label.fb.comment}">Kommentaar</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="comments">
     </div>
-  </form>
+    <label class="col-2 col-form-label" th:text="#{label.fb.name}">Nimi</label>
+    <div class="col-10">
+      <input type="text" class="form-control" name="sender">
+    </div>
+    <label class="col-2 col-form-label" th:text="#{label.fb.email}">E-post</label>
+    <div class="col-10">
+      <input type="email" class="form-control" name="email">
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-10 offset-2">
+      <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+    </div>
+  </div>
+</form>
 </th:block>
 
 </body>
