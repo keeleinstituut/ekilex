@@ -17,11 +17,11 @@ public class TypeWordEtym extends AbstractDataObject {
 
 	private Classifier etymWordLanguage;
 
+	private String etymYear;
+
 	private String[] etymMeaningWords;
 
-	private String etymTypeCode;
-
-	private Classifier etymType;
+	private String[] etymWordSources;
 
 	private String[] comments;
 
@@ -69,6 +69,14 @@ public class TypeWordEtym extends AbstractDataObject {
 		this.etymWordLanguage = etymWordLanguage;
 	}
 
+	public String getEtymYear() {
+		return etymYear;
+	}
+
+	public void setEtymYear(String etymYear) {
+		this.etymYear = etymYear;
+	}
+
 	public String[] getEtymMeaningWords() {
 		return etymMeaningWords;
 	}
@@ -77,20 +85,12 @@ public class TypeWordEtym extends AbstractDataObject {
 		this.etymMeaningWords = etymMeaningWords;
 	}
 
-	public String getEtymTypeCode() {
-		return etymTypeCode;
+	public String[] getEtymWordSources() {
+		return etymWordSources;
 	}
 
-	public void setEtymTypeCode(String etymTypeCode) {
-		this.etymTypeCode = etymTypeCode;
-	}
-
-	public Classifier getEtymType() {
-		return etymType;
-	}
-
-	public void setEtymType(Classifier etymType) {
-		this.etymType = etymType;
+	public void setEtymWordSources(String[] etymWordSources) {
+		this.etymWordSources = etymWordSources;
 	}
 
 	public String[] getComments() {

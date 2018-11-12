@@ -352,7 +352,8 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		}
 
 		logger.debug("Found {} word etym relations", etymCount.getValue());
-		logger.debug("Found {} etym word authors", etymWordSourceAuthorCount.getValue());
+		logger.debug("Found {} word source authors", etymWordSourceAuthorCount.getValue());
+		logger.debug("Found {} word source documents", etymWordSourceDocumentCount.getValue());
 		logger.debug("Found {} etym groups with missing type", missingEtymTypeCount.getValue());
 
 		t2 = System.currentTimeMillis();
@@ -427,7 +428,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("homonym_nr", homonymNr);
 		if (StringUtils.isNotBlank(etymYear)) {
-			tableRowParamMap.put("etym_year", etymYear);	
+			tableRowParamMap.put("etymology_year", etymYear);	
 		}
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 

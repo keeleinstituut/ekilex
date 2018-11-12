@@ -29,7 +29,7 @@ public class Word extends AbstractDataObject {
 
 	private Classifier aspect;
 
-	private String wordEtymologyWrapup;
+	private WordEtymology wordEtymology;
 
 	private List<String> datasetCodes;
 
@@ -133,12 +133,12 @@ public class Word extends AbstractDataObject {
 		this.aspect = aspect;
 	}
 
-	public String getWordEtymologyWrapup() {
-		return wordEtymologyWrapup;
+	public WordEtymology getWordEtymology() {
+		return wordEtymology;
 	}
 
-	public void setWordEtymologyWrapup(String wordEtymologyWrapup) {
-		this.wordEtymologyWrapup = wordEtymologyWrapup;
+	public void setWordEtymology(WordEtymology wordEtymology) {
+		this.wordEtymology = wordEtymology;
 	}
 
 	public List<String> getDatasetCodes() {

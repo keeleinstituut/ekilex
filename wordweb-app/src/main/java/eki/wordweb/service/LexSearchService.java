@@ -125,7 +125,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		Word word = lexSearchDbService.getWord(wordId);
 		classifierUtil.applyClassifiers(word, displayLang);
 		WordEtymology wordEtymology = lexSearchDbService.findWordEtymology(wordId);
-		conversionUtil.composeWordEtymologyWrapup(word, wordEtymology, displayLang);
+		conversionUtil.composeWordEtymology(word, wordEtymology, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
 		conversionUtil.composeWordRelations(word, wordRelationTuples, displayLang);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);

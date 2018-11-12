@@ -514,47 +514,75 @@ public class ConversionUtil {
 		return collocMemberGroupKey;
 	}
 
-	// TODO to be implemented
-	public void composeWordEtymologyWrapup(Word word, WordEtymology wordEtymology, String displayLang) {
+	public void composeWordEtymology(Word word, WordEtymology wordEtymology, String displayLang) {
 
 		if (wordEtymology == null) {
 			return;
 		}
+		word.setWordEtymology(wordEtymology);
+		classifierUtil.applyClassifiers(wordEtymology, displayLang);
+
+		StringBuffer wordEtymBuf = new StringBuffer();
+		Classifier etymologyType = wordEtymology.getEtymologyType();
+		if (etymologyType != null) {
+			wordEtymBuf.append(etymologyType.getValue());
+		}
+		List<String> wordSources = wordEtymology.getWordSources();
+		if (CollectionUtils.isNotEmpty(wordSources)) {
+			wordEtymBuf.append(", ");
+			wordEtymBuf.append(StringUtils.join(wordSources, ", "));
+		}
+		String etymologyYear = wordEtymology.getEtymologyYear();
+		if (StringUtils.isNotEmpty(etymologyYear)) {
+			wordEtymBuf.append(", ");
+			wordEtymBuf.append(etymologyYear);
+		}
+		if (wordEtymBuf.length() > 0) {
+			String wordEtymologyWrapup = wordEtymBuf.toString().trim();
+			wordEtymology.setWordEtymologyWrapup(wordEtymologyWrapup);
+		}
+
 		List<TypeWordEtym> etymLineup = wordEtymology.getEtymLineup();
-		List<String> wordEtymologyWrapupLines = etymLineup.stream()
+		List<String> wordEtymologyLineupWrapupLines = etymLineup.stream()
 				.map(wordEtym -> {
 					classifierUtil.applyClassifiers(wordEtym, displayLang);
-					String etymTypeCode = wordEtym.getEtymTypeCode();
 					Classifier etymWordLanguage = wordEtym.getEtymWordLanguage();
 					String[] etymMeaningWords = wordEtym.getEtymMeaningWords();
+					String[] etymWordSources = wordEtym.getEtymWordSources();
 					String[] comments = wordEtym.getComments();
-					StringBuffer wordEtymBuf = new StringBuffer();
-					if (StringUtils.isNotBlank(etymTypeCode)) {
-						wordEtymBuf.append(etymTypeCode);
-						wordEtymBuf.append(", ");
-					}
+					StringBuffer wordEtymLineupBuf = new StringBuffer();
 					if (etymWordLanguage != null) {
-						wordEtymBuf.append(etymWordLanguage.getValue());
-						wordEtymBuf.append(", ");
+						wordEtymLineupBuf.append(etymWordLanguage.getValue());
+						wordEtymLineupBuf.append(", ");
 					}
 					if (wordEtym.isCompound()) {
-						wordEtymBuf.append(" + ");
+						wordEtymLineupBuf.append(" + ");
 					}
-					wordEtymBuf.append(wordEtym.getEtymWord());
-					wordEtymBuf.append(' ');
+					wordEtymLineupBuf.append(wordEtym.getEtymWord());
 					if (ArrayUtils.isNotEmpty(etymMeaningWords)) {
-						wordEtymBuf.append('\'');
-						wordEtymBuf.append(StringUtils.join(etymMeaningWords, ", "));
-						wordEtymBuf.append('\'');
+						wordEtymLineupBuf.append(' ');
+						wordEtymLineupBuf.append('\'');
+						wordEtymLineupBuf.append(StringUtils.join(etymMeaningWords, ", "));
+						wordEtymLineupBuf.append('\'');
+					}
+					if (ArrayUtils.isNotEmpty(etymWordSources)) {
+						wordEtymLineupBuf.append(' ');
+						wordEtymLineupBuf.append('(');
+						wordEtymLineupBuf.append(StringUtils.join(etymWordSources, ", "));
+						if (StringUtils.isNotBlank(wordEtym.getEtymYear())) {
+							wordEtymLineupBuf.append(' ');
+							wordEtymLineupBuf.append(wordEtym.getEtymYear());
+						}
+						wordEtymLineupBuf.append(')');
 					}
 					if (ArrayUtils.isNotEmpty(comments)) {
-						wordEtymBuf.append(". ");
-						wordEtymBuf.append(StringUtils.join(comments, " "));
+						wordEtymLineupBuf.append(". ");
+						wordEtymLineupBuf.append(StringUtils.join(comments, " "));
 					}
-					return wordEtymBuf.toString().trim();
+					return wordEtymLineupBuf.toString().trim();
 				}).collect(Collectors.toList());
-		String wordEtymologyWrapup = StringUtils.join(wordEtymologyWrapupLines, " < ");
-		word.setWordEtymologyWrapup(wordEtymologyWrapup);
+		String wordEtymologyLineupWrapup = StringUtils.join(wordEtymologyLineupWrapupLines, " < ");
+		wordEtymology.setWordEtymologyLineupWrapup(wordEtymologyLineupWrapup);
 	}
 
 	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, String displayLang) {
