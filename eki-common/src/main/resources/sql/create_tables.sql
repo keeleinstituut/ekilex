@@ -1,3 +1,4 @@
+
 create table eki_user
 (
   id bigserial primary key,
@@ -437,7 +438,9 @@ create table word
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
   type_code varchar(100) references word_type(code) null,
-  aspect_code varchar(100) references aspect_type(code) null
+  aspect_code varchar(100) references aspect_type(code) null,
+  etymology_year text null,
+  etymology_type_code varchar(100) references etymology_type(code) 
 );
 alter sequence word_id_seq restart with 10000;
 
@@ -486,9 +489,7 @@ create table word_etymology
   id bigserial primary key,
   word1_id bigint references word(id) on delete cascade not null,
   word2_id bigint references word(id) on delete cascade not null,
-  etymology_type_code varchar(100) references etymology_type(code),
   comments text array null,
-  year text null,
   is_questionable boolean not null default false,
   is_compound boolean not null default false,
   order_by bigserial,
@@ -811,10 +812,10 @@ create table lexeme_source_link
 );
 alter sequence lexeme_source_link_id_seq restart with 10000;
 
-create table word_etymology_source_link
+create table word_source_link
 (
   id bigserial primary key,
-  word_etymology_id bigint references word_etymology(id) on delete cascade not null,
+  word_id bigint references word(id) on delete cascade not null,
   source_id bigint references source(id) on delete cascade not null,
   type varchar(100) not null,
   name text null,
@@ -822,7 +823,7 @@ create table word_etymology_source_link
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial
 );
-alter sequence word_etymology_source_link_id_seq restart with 10000;
+alter sequence word_source_link_id_seq restart with 10000;
 
 create table game_nonword
 (
@@ -858,9 +859,9 @@ create index form_paradigm_id_idx on form(paradigm_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
+create index word_etym_type_code_idx on word(etymology_type_code);
 create index word_etym_word1_id_idx on word_etymology(word1_id);
 create index word_etym_word2_id_idx on word_etymology(word2_id);
-create index word_etym_type_code_idx on word_etymology(etymology_type_code);
 create index word_guid_word_id_idx on word_guid(word_id);
 create index word_guid_dataset_code_idx on word_guid(dataset_code);
 create index word_guid_guid_idx on word_guid(guid);
@@ -898,8 +899,8 @@ create index definition_source_link_definition_id_idx on definition_source_link(
 create index definition_source_link_source_id_idx on definition_source_link(source_id);
 create index lexeme_source_link_lexeme_id_idx on lexeme_source_link(lexeme_id);
 create index lexeme_source_link_source_id_idx on lexeme_source_link(source_id);
-create index word_etymology_source_link_word_etymology_id_idx on word_etymology_source_link(word_etymology_id);
-create index word_etymology_source_link_source_id_idx on word_etymology_source_link(source_id);
+create index word_source_link_word_id_idx on word_source_link(word_id);
+create index word_source_link_source_id_idx on word_source_link(source_id);
 create index lex_colloc_pos_group_lexeme_id_idx on lex_colloc_pos_group(lexeme_id);
 create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_group_id);
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);

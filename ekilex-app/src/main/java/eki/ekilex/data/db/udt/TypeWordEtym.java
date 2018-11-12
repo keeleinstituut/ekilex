@@ -27,7 +27,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordEtym extends UDTImpl<TypeWordEtymRecord> {
 
-    private static final long serialVersionUID = -1285874222;
+    private static final long serialVersionUID = 641466273;
 
     /**
      * The reference instance of <code>public.type_word_etym</code>
@@ -63,14 +63,19 @@ public class TypeWordEtym extends UDTImpl<TypeWordEtymRecord> {
     public static final UDTField<TypeWordEtymRecord, String> ETYM_WORD_LANG = createField("etym_word_lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD_ETYM, "");
 
     /**
+     * The attribute <code>public.type_word_etym.etym_year</code>.
+     */
+    public static final UDTField<TypeWordEtymRecord, String> ETYM_YEAR = createField("etym_year", org.jooq.impl.SQLDataType.CLOB, TYPE_WORD_ETYM, "");
+
+    /**
      * The attribute <code>public.type_word_etym.etym_meaning_words</code>.
      */
     public static final UDTField<TypeWordEtymRecord, String[]> ETYM_MEANING_WORDS = createField("etym_meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_ETYM, "");
 
     /**
-     * The attribute <code>public.type_word_etym.etym_type_code</code>.
+     * The attribute <code>public.type_word_etym.word_sources</code>.
      */
-    public static final UDTField<TypeWordEtymRecord, String> ETYM_TYPE_CODE = createField("etym_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), TYPE_WORD_ETYM, "");
+    public static final UDTField<TypeWordEtymRecord, String[]> WORD_SOURCES = createField("word_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_ETYM, "");
 
     /**
      * The attribute <code>public.type_word_etym.comments</code>.
