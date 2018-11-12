@@ -19,6 +19,9 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 	@Value("${speech.recognition.service.url:}")
 	protected String speechRecognitionServiceUrl;
 
+	@Value("${wordweb.feedback.service.url:}")
+	protected String feedbackServiceUrl;
+
 	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
@@ -44,5 +47,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		model.addAttribute("searchWord", searchWord);
 		model.addAttribute("wordsData", wordsData);
 		model.addAttribute("wordData", new WordData());
+		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 	}
+
 }
