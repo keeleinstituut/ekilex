@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="common-app :: common_header(~{::title},~{::links})">
+  <title>Tagasiside</title>
+  <th:block th:fragment="links"></th:block>
+</head>
+
+<body>
+  <div th:replace="common-app :: menu"></div>
+  <div class="container-fluid home-page-content">
+    <div class="card shadow" style="margin-top: 5rem">
+      <div class="card-header">
+        <h5 class="card-title">Uus sõna</h5>
+      </div>
+      <div class="card-body">
+        <th:block th:insert="common-app :: feedback_new_word"></th:block>
+      </div>
+    </div>
+
+    <div class="card shadow mt-2">
+      <div class="card-header">
+        <h5 class="card-title">Küsimus või kommentaar</h5>
+      </div>
+      <div class="card-body">
+        <th:block th:insert="common-app :: feedback_comment"></th:block>
+      </div>
+    </div>
+  </div>
+
+  <div th:replace="common-app :: footer-content"></div>
+</body>

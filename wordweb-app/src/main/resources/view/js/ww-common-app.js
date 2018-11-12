@@ -17,3 +17,25 @@ $(document).on("click", ".menu-btn", function(e) {
 function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
 }
+
+$(document).on("click", "button[name='feedbackSendBtn']", function () {
+	var feedbackForm = $(this).closest('form');
+	var okMessage = feedbackForm.find('[name=ok_message]').text();
+	var errorMessage = feedbackForm.find('[name=error_message]').text();
+    return $.ajax({
+        url: feedbackServiceUrl,
+        data: feedbackForm.serialize(),
+        method: 'POST'
+    }).done(function(data) {
+    	console.log(data);
+    	var answer = JSON.parse(data);
+    	if (answer.status === 'ok') {
+    	    alert(okMessage);
+        } else {
+    	    alert(errorMessage);
+        }
+    }).fail(function (data) {
+        console.log(data);
+        alert('Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.');
+    });
+});

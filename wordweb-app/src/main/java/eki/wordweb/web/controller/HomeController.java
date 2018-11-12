@@ -41,5 +41,11 @@ public class HomeController extends AbstractController {
 	public String about(Model model) {
 		return ABOUT_PAGE;
 	}
-	
+
+	@GetMapping("/feedback")
+	public String feedback(Model model) {
+		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+		return "feedback";
+	}
+
 }
