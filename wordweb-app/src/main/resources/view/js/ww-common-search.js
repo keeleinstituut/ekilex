@@ -172,7 +172,7 @@ function calculateAndSetStyles() {
 			if ($(".search-panel").hasClass("d-none")) {
 				$('#form-words').css("margin-top", '1em');
 			} else {
-				$('#form-words').css("margin-top", '10em');
+				$('#form-words').css("margin-top", '11em');
 			}
 			$('.word-details').css("margin-top", '-1em');
 			$('.homonym-panel').css("margin-top", '-1em');

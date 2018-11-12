@@ -128,7 +128,7 @@
 
 .morphology-section .row div:not(.label) {
     display: block;
-    height: 1.875rem;
+    height: 1.75rem;
 }
 
 
@@ -140,11 +140,12 @@
 }
 
 .word-group .more-btn {
-	margin-top: -1rem;
+    top: -0.25rem;
 }
 
 .word-group .more-btn .icon {
 	font-size: 1rem;
+
 }
 
 .word-group .more-btn .icon::before {
