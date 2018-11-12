@@ -160,8 +160,9 @@
                   <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-2 small">
                     <i th:each="government, iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
                   </div>
-                  <div th:if="${not #lists.isEmpty(lexeme.usages)}">
+                  <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
+                           <div class="dependence-unit">
                       <span class="example-text" th:text="${usage.usage}"></span>
                       <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
                         <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
@@ -176,6 +177,7 @@
                         <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:text="${usageTranslation}"></span>
                       </th:block>
                     </div>
+                         </div>
                     <button class="more-btn" name="colloc-usages-btn">
                       <span class="icon icon-chevron-left"></span>
                     </button>

@@ -49,7 +49,7 @@ $(function () {
 
 $(document).on("click", ".more-btn", function () {
 	$(this).parents(".meaning-panel, .dependencies, .collocations-section").toggleClass("expand");
-	$(this).parents(".meaning-panel, .dependencies, .collocations-section").find(".dependence, .label, .label-md, .corp-panel div:nth-child(n+5)").toggleClass("fade-target");
+	$(this).parents(".meaning-panel, .dependencies, .collocations-section").find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b").toggleClass("fade-target");
 
 	$(this).parent(".word-group, .corp-panel").toggleClass("expand");
 	$(this).parent(".word-group").find(".word-options").toggleClass("fade-target");
@@ -58,6 +58,16 @@ $(document).on("click", ".more-btn", function () {
 
 	var counter = 0;
 	$('.dependence').each(function (i) {
+		if (i % 1000 == 0) {
+			counter = 1;
+		} else {
+			counter++;
+		}
+		if (counter < 4) {
+			$(this).removeClass('fade-target');
+		}
+	});
+		$('.colloc-col').each(function (i) {
 		if (i % 1000 == 0) {
 			counter = 1;
 		} else {

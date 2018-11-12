@@ -6934,6 +6934,8 @@ ul {
     top: 0.1875rem;
   }
 
+  .dependence .icon-speaker { padding-right: 0.5rem; }
+  .dependence .icon-speaker + .example-text { padding-left: 0rem; }
   .dependencies .btn-speaker .icon-speaker {
     font-size: 1rem;
   }
@@ -6943,7 +6945,7 @@ ul {
     opacity: 1;
   }
 
-  .dependence {
+  .dependence .dependence-unit {
     overflow: inherit;
     margin-bottom: -0.4375rem;
     padding-bottom: 0.1875rem;
@@ -6966,7 +6968,12 @@ ul {
     cursor: pointer;
   }
 
-  .dependencies .example-item:hover {
+.dependence-group { 
+  display: flex;
+  flex-direction: column;
+ }
+
+  .dependencies .example-item .dependence-unit:hover {
     background-color: #e9ecef!important;
   }
 
@@ -6978,10 +6985,16 @@ ul {
     clear: right;
   }
 
-  .dependencies .example-item {
+    .example-item .btn-speaker + .example-text {
+    padding-left: 0rem;
+    float: none;
+  }
+
+  .dependencies .example-item .dependence-unit {
    background-color: #F2F2F2;
    border-radius: 0.6875rem;
    margin-bottom: 0.125rem;
+   display: flex;
  }
 
  .example-text {
@@ -6996,7 +7009,7 @@ ul {
 .example-text {
   padding: 0.5rem 0.5rem 0.25rem 0.5rem;
   line-height: 1;
-  font-size: 0.875rem;
+  font-size: 1rem;
   align-items: center;
   display: flex;
 }
@@ -7466,9 +7479,9 @@ ul {
   .meaning-panel .dependencies {
     float: right;
   }
-  .example-text {
+/*  .example-text {
     max-width: calc( 100% - 30px);
-  }
+  }*/
 }
 
 @media (min-width: 1200px) {
@@ -7482,6 +7495,7 @@ ul {
   }
   .header-wrap,
   .search-panel,
+  .footer-wrapper,
   .content-panel {
     max-width: 80vw !important;
     margin-left: auto !important;
@@ -7526,27 +7540,27 @@ ul {
 .eki-logo { 
   background: url(../images/eki.svg) center center no-repeat; 
   display: block; 
-  height: calc(6.25rem / 1.3); 
-  width: calc(16.875rem / 1.3); 
-  background-size: calc(16.875rem / 1.3) calc(6.25rem / 1.3);
+  height: calc(6.25rem / 1.5); 
+  width: calc(16.875rem / 1.5); 
+  background-size: calc(16.875rem / 1.5) calc(6.25rem / 1.5);
 }
 .htm-logo { 
   background: url(../images/htm.svg) center center no-repeat; 
   display: block; 
-  height: calc(6.125rem / 1.2); 
-  width: calc(14.75rem / 1.2); 
-  background-size: calc(14.75rem / 1.2) calc(6.125rem / 1.2); 
+  height: calc(6.125rem / 1.4); 
+  width: calc(14.75rem / 1.4); 
+  background-size: calc(14.75rem / 1.4) calc(6.125rem / 1.4); 
 }
 .esf-logo { 
   background: url(../images/esf.svg) center center no-repeat; 
   display: block; 
-  height: calc(11.6875rem / 2); 
-  width: calc(22.125rem / 2);
-  background-size: calc(22.125rem / 2) calc(11.6875rem / 2); 
+  height: calc(11.6875rem / 2.2); 
+  width: calc(22.125rem / 2.2);
+  background-size: calc(22.125rem / 2.2) calc(11.6875rem / 2.2); 
 }
 .mini-logo {
   justify-content: center;
-  margin: 0 1rem;
+  margin: 0 2rem;
 }
 
 .header-container .eki-logo {
@@ -7563,7 +7577,7 @@ ul {
  width:100%;
  min-height: 60px;
  background: #001124;
- padding: 2rem 0 1rem 0;
+ padding: 1rem 0 1rem 0;
 }
 
 footer p { 
@@ -7610,7 +7624,7 @@ footer p {
 }
 
 .bottom-gutter { 
-  padding-bottom: 14.0625rem;
+  padding-bottom: 11.25rem;
 }
 
 .bs-tooltip-top { 
@@ -7632,30 +7646,38 @@ footer p {
   line-height: 3.1;
 }
 
+.col-reverse {
+    display: flex;
+    flex-direction: column-reverse;
+}
 
+.footer-wrapper .row { max-height: unset; }
 
-
-
-
+.icon-logo-s {
+  margin-top: 0.5rem; 
+  display: block;
+  padding-top: 0px;
+}
 
 
 @media (min-width: 768px) { 
   .logo-list {
     flex-direction: row;
-    margin-top: 3rem;
-    margin-bottom: 3rem;
+    margin-top: 4rem;
+    margin-bottom: 4rem;
   }
   .more-btn {
     right: -2.5rem;
   }
   .home-page-content {
-    padding-bottom: 12.1875rem;
+    padding-bottom: 8.3125rem;
   }
     .footer { position: absolute; }
 
         .footer .social-list { 
     margin-bottom: 0rem;
   }
+  .footer-wrapper .row { max-height: 5.9375rem; }
 }
 
 
