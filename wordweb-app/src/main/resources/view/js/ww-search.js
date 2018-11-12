@@ -67,7 +67,7 @@ $(document).on("click", ".more-btn", function () {
 			$(this).removeClass('fade-target');
 		}
 	});
-		$('.colloc-col').each(function (i) {
+	$('.colloc-col').each(function (i) {
 		if (i % 1000 == 0) {
 			counter = 1;
 		} else {
