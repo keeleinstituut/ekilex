@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title th:text="#{feedback.title}">Sõnaveeb-i tagasiside</title>
+<th:block th:fragment="links">
+</th:block>
+</head>
+<body class="body-with-navbar">
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
+    <div class="card shadow">
+      <div class="card-header">
+        <h5 class="card-title">Sõnaveeb-i tagasiside</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-striped">
+          <thead class="thead-light">
+            <tr>
+              <th>Saadetud</th>
+              <th>Tagasiside tüüp</th>
+              <th>Saatja</th>
+              <th>E-mail</th>
+              <th>Sõna</th>
+              <th>Teade</th>
+              <th>Viimane otsing</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="fbItem : ${feedbackLog}">
+              <td th:text="${#dates.format(fbItem.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+              <td th:text="${fbItem.feedbackType}"></td>
+              <td th:text="${fbItem.sender}"></td>
+              <td th:text="${fbItem.email}"></td>
+              <td th:text="${fbItem.word}"></td>
+              <td>
+                <div class="row" th:if="${fbItem.definition != null}">
+                    <span class="lbl pr-2">Tähendus</span>
+                    <span th:text="${fbItem.definition}"></span>
+                </div>
+                <div class="row" th:if="${fbItem.usages != null}">
+                  <span class="lbl pr-2">Kasutusnäited</span>
+                  <span th:text="${fbItem.usages}"></span>
+                </div>
+                <div class="row" th:if="${fbItem.comments != null}">
+                  <span class="lbl pr-2">Komentaar</span>
+                  <span th:text="${fbItem.comments}"></span>
+                </div>
+                <div class="row" th:if="${fbItem.otherInfo != null}">
+                  <span class="lbl pr-2">Muu info</span>
+                  <span th:text="${fbItem.otherInfo}"></span>
+                </div>
+              </td>
+              <td th:text="${fbItem.lastSearch}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
