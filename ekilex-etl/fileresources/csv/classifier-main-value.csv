@@ -66,6 +66,7 @@ display_morph	Sg	ainsus	est	wordweb
 display_morph	Pl	mitmus	est	wordweb
 display_morph	Ips	umbisikuline tegumood	est	wordweb
 display_morph	Pts	kesksõna	est	wordweb
+etymology_type	põlissõna	-	-	-
 etymology_type	kirjakeele sõna	-	-	-
 etymology_type	kõlasõna	-	-	-
 etymology_type	laensõna	-	-	-
