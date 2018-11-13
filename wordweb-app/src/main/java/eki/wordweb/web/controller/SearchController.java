@@ -79,6 +79,7 @@ public class SearchController extends AbstractController {
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, searchMode);
+		sessionBean.setLastSearchWord(searchWord);
 
 		if (!searchFilter.isValid()) {
 			return "redirect:" + searchFilter.getSearchUri();

@@ -115,8 +115,6 @@
   </table>
 </div>
 
-
-
 <th:block th:fragment="modal-content">
 <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="Tagasiside modaal" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -155,9 +153,6 @@
 </div>
 </th:block>
 
-
-
-
 <!-- Footer -->
 <th:block th:fragment="footer-content">
 <footer class="footer">
@@ -193,7 +188,7 @@
       <label hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, oleme uue sõna kätte saanud.</label>
       <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
       <input type="hidden" name="feedbackType" value="new_word">
-      <input type="hidden" name="lastSerach">
+      <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
     </div>
   </div>
   <div class="form-row">
@@ -247,7 +242,7 @@
       <label hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, oleme kommentaari kätte saanud. Vastame paari päeva jooksul.</label>
       <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
       <input type="hidden" name="feedbackType" value="comment">
-      <input type="hidden" name="lastSerach">
+      <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
     </div>
   </div>
   <div class="form-row">
