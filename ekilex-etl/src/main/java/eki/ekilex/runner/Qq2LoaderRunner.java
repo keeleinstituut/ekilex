@@ -95,7 +95,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	private final String defaultWordMorphCode = "??";
 	private final int defaultHomonymNr = 1;
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´.:_–!°()¤";
-	private final char wordComponentSeparator = '+';
+	private final String wordComponentSeparator = "+";
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
 	private final String usageTranslationLangRus = "rus";
 	private final String dataLang = "est";
@@ -210,6 +210,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				word = wordDisplayForm = wordNode.getTextTrim();
 				word = cleanEkiEntityMarkup(word);
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
+				if (StringUtils.endsWith(word, wordComponentSeparator)) {
+					word = StringUtils.removeEnd(word, wordComponentSeparator);
+					word = word + "-";
+				}
 				wordComponents = StringUtils.split(word, wordComponentSeparator);
 				word = StringUtils.remove(word, wordComponentSeparator);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
