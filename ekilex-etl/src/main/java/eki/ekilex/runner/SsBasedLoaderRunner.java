@@ -36,7 +36,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
 
-	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=*";
+	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=*";  // here is not the regular -, but the special minus symbol
+	private final static String wordComponentSeparator = "+";
 	protected final static String defaultWordMorphCode = "??";
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
@@ -433,9 +434,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected String cleanUp(String value) {
+		boolean isComponentWord = StringUtils.endsWith(value, wordComponentSeparator);
 		String cleanedWord = cleanEkiEntityMarkup(value);
 		cleanedWord = replaceChars(cleanedWord, formStrCleanupChars, "");
-		return cleanedWord;
+		return cleanedWord + (isComponentWord ? "-" : "");
 	}
 
 	protected void writeToLogFile(String reportingId, String message, String values) throws Exception {
