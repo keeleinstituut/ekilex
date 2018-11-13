@@ -53,6 +53,8 @@ public class ConversionUtil {
 
 	private static final Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 
+	private static final int COLLECTIONS_DISPLAY_LIMIT = 3;
+
 	private static final String[] WORD_REL_TYPE_ORDER = new String[] {"posit", "komp", "superl", "deriv_base", "deriv", "ühend"};
 
 	@Autowired
@@ -259,6 +261,8 @@ public class ConversionUtil {
 
 	private void populateUsages(Lexeme lexeme, LexemeDetailsTuple tuple, String displayLang) {
 		List<TypeUsage> usages = tuple.getUsages();
+		boolean isMoreUsages = CollectionUtils.size(usages) > COLLECTIONS_DISPLAY_LIMIT;
+		lexeme.setMoreUsages(isMoreUsages);
 		if (CollectionUtils.isNotEmpty(usages)) {
 			for (TypeUsage usage : usages) {
 				usage.setUsageAuthors(new ArrayList<>());
@@ -389,14 +393,34 @@ public class ConversionUtil {
 				transformCollocationsForDisplay(wordId, collocations, displayCollocs, allUsages, existingCollocationValues);
 			}
 		}
+		if (CollectionUtils.isNotEmpty(collocationPosGroups)) {
+			CollocationPosGroup firstCollocPosGroup = collocationPosGroups.get(0);
+			CollocationRelGroup firstCollocRelGroup = firstCollocPosGroup.getRelationGroups().get(0);
+			boolean isMorePrimaryCollocs = CollectionUtils.size(firstCollocRelGroup.getDisplayCollocs()) > COLLECTIONS_DISPLAY_LIMIT;
+			lexeme.setMorePrimaryCollocs(isMorePrimaryCollocs);
+			if (isMorePrimaryCollocs) {
+				List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>(firstCollocRelGroup.getDisplayCollocs());
+				limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, COLLECTIONS_DISPLAY_LIMIT);
+				lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
+			}
+		}
 	}
 
 	private void transformSecondaryCollocationsForDisplay(Long wordId, Lexeme lexeme, List<String> existingCollocationValues) {
 
 		List<Collocation> collocations = lexeme.getSecondaryCollocations();
-		List<DisplayColloc> displayCollocs = new ArrayList<>();
-		lexeme.setSecondaryDisplayCollocs(displayCollocs);
-		transformCollocationsForDisplay(wordId, collocations, displayCollocs, null, existingCollocationValues);
+		List<DisplayColloc> secondaryDisplayCollocs = new ArrayList<>();
+		lexeme.setSecondaryDisplayCollocs(secondaryDisplayCollocs);
+		transformCollocationsForDisplay(wordId, collocations, secondaryDisplayCollocs, null, existingCollocationValues);
+		if (CollectionUtils.isNotEmpty(secondaryDisplayCollocs)) {
+			boolean isMoreSecondaryCollocs = CollectionUtils.size(secondaryDisplayCollocs) > COLLECTIONS_DISPLAY_LIMIT;
+			lexeme.setMoreSecondaryCollocs(isMoreSecondaryCollocs);
+			if (isMoreSecondaryCollocs) {
+				List<DisplayColloc> limitedSecondaryDisplayCollocs = new ArrayList<>(secondaryDisplayCollocs);
+				limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs.subList(0, COLLECTIONS_DISPLAY_LIMIT);
+				lexeme.setLimitedSecondaryDisplayCollocs(limitedSecondaryDisplayCollocs);
+			}
+		}
 	}
 
 	private void transformCollocationsForDisplay(
@@ -622,6 +646,8 @@ public class ConversionUtil {
 		}
 		boolean wordRelationsExist = CollectionUtils.isNotEmpty(word.getRelatedWords()) || CollectionUtils.isNotEmpty(word.getWordGroups());
 		word.setWordRelationsExist(wordRelationsExist);
+		boolean isMoreWordRelations = CollectionUtils.size(word.getRelatedWords()) > COLLECTIONS_DISPLAY_LIMIT;
+		word.setMoreWordRelations(isMoreWordRelations);
 	}
 
 	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {

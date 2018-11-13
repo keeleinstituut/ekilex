@@ -51,6 +51,8 @@ public class Word extends AbstractDataObject {
 
 	private boolean wordRelationsExist;
 
+	private boolean moreWordRelations;
+
 	private boolean selected;
 
 	public Long getWordId() {
@@ -219,6 +221,14 @@ public class Word extends AbstractDataObject {
 
 	public void setWordRelationsExist(boolean wordRelationsExist) {
 		this.wordRelationsExist = wordRelationsExist;
+	}
+
+	public boolean isMoreWordRelations() {
+		return moreWordRelations;
+	}
+
+	public void setMoreWordRelations(boolean moreWordRelations) {
+		this.moreWordRelations = moreWordRelations;
 	}
 
 	public boolean isSelected() {

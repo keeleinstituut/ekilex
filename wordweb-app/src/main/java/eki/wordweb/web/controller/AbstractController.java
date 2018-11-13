@@ -24,6 +24,15 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	protected void populateSearchModel(String searchWord, WordsData wordsData, Model model) {
 
+		populateGeneralData(model);
+		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
+		model.addAttribute("searchWord", searchWord);
+		model.addAttribute("wordsData", wordsData);
+		model.addAttribute("wordData", new WordData());
+	}
+
+	protected void populateGeneralData(Model model) {
+
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
 		if (sessionBean == null) {
 			sessionBean = new SessionBean();
@@ -42,11 +51,6 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 		if (StringUtils.isBlank(sessionBean.getSearchMode())) {
 			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
 		}
-
-		model.addAttribute("speechRecognitionServiceUrl", speechRecognitionServiceUrl);
-		model.addAttribute("searchWord", searchWord);
-		model.addAttribute("wordsData", wordsData);
-		model.addAttribute("wordData", new WordData());
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
 	}
 

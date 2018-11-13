@@ -12,6 +12,8 @@ public class SessionBean extends AbstractDataObject {
 
 	private String searchMode;
 
+	private String lastSearchWord;
+
 	public String getSourceLang() {
 		return sourceLang;
 	}
@@ -34,6 +36,14 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setSearchMode(String searchMode) {
 		this.searchMode = searchMode;
+	}
+
+	public String getLastSearchWord() {
+		return lastSearchWord;
+	}
+
+	public void setLastSearchWord(String lastSearchWord) {
+		this.lastSearchWord = lastSearchWord;
 	}
 
 }

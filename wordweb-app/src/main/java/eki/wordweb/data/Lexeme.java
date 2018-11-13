@@ -36,6 +36,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<TypeUsage> usages;
 
+	private boolean moreUsages;
+
 	private List<Classifier> registers;
 
 	private List<Classifier> poses;
@@ -73,6 +75,14 @@ public class Lexeme extends AbstractDataObject {
 	private List<Collocation> secondaryCollocations;
 
 	private List<DisplayColloc> secondaryDisplayCollocs;
+
+	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
+
+	private boolean morePrimaryCollocs;
+
+	private List<DisplayColloc> limitedSecondaryDisplayCollocs;
+
+	private boolean moreSecondaryCollocs;
 
 	private boolean emptyLexeme;
 
@@ -178,6 +188,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setUsages(List<TypeUsage> usages) {
 		this.usages = usages;
+	}
+
+	public boolean isMoreUsages() {
+		return moreUsages;
+	}
+
+	public void setMoreUsages(boolean moreUsages) {
+		this.moreUsages = moreUsages;
 	}
 
 	public List<Classifier> getRegisters() {
@@ -330,6 +348,38 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setSecondaryDisplayCollocs(List<DisplayColloc> secondaryDisplayCollocs) {
 		this.secondaryDisplayCollocs = secondaryDisplayCollocs;
+	}
+
+	public List<DisplayColloc> getLimitedPrimaryDisplayCollocs() {
+		return limitedPrimaryDisplayCollocs;
+	}
+
+	public void setLimitedPrimaryDisplayCollocs(List<DisplayColloc> limitedPrimaryDisplayCollocs) {
+		this.limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs;
+	}
+
+	public boolean isMorePrimaryCollocs() {
+		return morePrimaryCollocs;
+	}
+
+	public void setMorePrimaryCollocs(boolean morePrimaryCollocs) {
+		this.morePrimaryCollocs = morePrimaryCollocs;
+	}
+
+	public List<DisplayColloc> getLimitedSecondaryDisplayCollocs() {
+		return limitedSecondaryDisplayCollocs;
+	}
+
+	public void setLimitedSecondaryDisplayCollocs(List<DisplayColloc> limitedSecondaryDisplayCollocs) {
+		this.limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs;
+	}
+
+	public boolean isMoreSecondaryCollocs() {
+		return moreSecondaryCollocs;
+	}
+
+	public void setMoreSecondaryCollocs(boolean moreSecondaryCollocs) {
+		this.moreSecondaryCollocs = moreSecondaryCollocs;
 	}
 
 	public boolean isEmptyLexeme() {

@@ -268,7 +268,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			for (Node meaningBlockNode : meaningBlockNodes) {
 
-				String level1Str = ((Element)meaningBlockNode).attributeValue(lexemeLevelAttr);
+				Element meaningBlockElement = (Element) meaningBlockNode;
+				String level1Str = meaningBlockElement.attributeValue(lexemeLevelAttr);
 				Integer level1 = Integer.valueOf(level1Str);
 				levelMeaningMap = meaningMap.get(wordId);
 				LexemeMeaning lexemeMeaning = levelMeaningMap.get(level1);
@@ -459,7 +460,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			
 			for (Node meaningBlockNode : meaningBlockNodes) {
 
-				String level1Str = ((Element)meaningBlockNode).attributeValue(lexemeLevelAttr);
+				Element meaningBlockElement = (Element)meaningBlockNode;
+				String level1Str = meaningBlockElement.attributeValue(lexemeLevelAttr);
 				Integer level1 = Integer.valueOf(level1Str);
 				LexemeMeaning lexemeMeaning = createLexemeMeaning(wordId, level1, wordPosCode);
 				levelMeaningMap.put(level1, lexemeMeaning);
@@ -1558,7 +1560,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	class RefNum {
+	class RefNum extends AbstractDataObject {
+
+		private static final long serialVersionUID = 1L;
 
 		private Integer homonymNr;
 
