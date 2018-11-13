@@ -6492,7 +6492,7 @@ ul {
   width: 20rem;
   top: 0;
   right: 0;
-  z-index: 1050;
+  z-index: 1039;
   padding: 7.5rem 1.25rem 0 1.25rem;
 }
 
@@ -8092,17 +8092,49 @@ body:not(.home-page) footer {
 }
 
 .modal-dialog {
-  margin-top: 9rem;
+  margin-top: 5rem;
   min-width: 100%;
 }
 
 .show-section { display: block!important }
 .formarea { display: none; }
 
-.modal-content label { margin-top: 0.5rem; font-weight: 700; }
-.modal-content input { padding: 0.5rem 1.15625rem 0.5rem 1.15625rem; margin-bottom: 1rem;  }
-.heading-wrapper { display: inline-flex; }
+.modal-content label { 
+  margin-top: 0rem; 
+  font-weight: 700; 
+  margin-left: 1rem;
+}
+.modal-content input { 
+  padding: 0.5rem 1.15625rem 0.5rem 1.15625rem; 
+}
+.heading-wrapper { 
+  display: inline-flex; }
 
+.modal-body, .modal-header { 
+    padding: 1rem 1.5rem 0.7rem 1.5rem;
+    padding: 1rem 1.5rem 0.7rem 1.5rem; 
+}
+
+.modal-body .form-row {
+  margin: 0 -0.75rem;
+}
+
+.modal-body .form-group {
+  padding: 0 0.75rem; 
+ }
+
+.modal .icon.icon-close {
+  color: black;
+}
+
+.modal .custom-control {
+  padding-left: 1rem;
+}
+
+.custom-control-label::before {
+  border: 1px solid #cccccc;
+  background-color: #f9f9f9;
+}
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
@@ -8152,8 +8184,6 @@ body:not(.home-page) footer {
   .bottom-gutter { 
   padding-bottom: 0rem;
   }
-
-
 .lang-btn {
   float: none!important;
   margin: 0 auto;
@@ -8164,8 +8194,6 @@ body:not(.home-page) footer {
   margin: 0 auto;
 }
 }
-
-
 
 
 @media (min-width: 768px) { 

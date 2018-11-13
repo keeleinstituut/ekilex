@@ -171,7 +171,11 @@
 display: inline;
 }
 
-.matches span { margin-bottom: 0.625rem; } 
+.matches span { 
+    margin-bottom: 0.625rem;
+     } 
 
-.meaning { margin-bottom: 0.625rem; }
+.meaning { 
+    margin-bottom: 0.625rem; 
+}
 
