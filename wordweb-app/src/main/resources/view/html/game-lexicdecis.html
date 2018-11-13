@@ -1,25 +1,23 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head>
-<title th:text="#{general.title}">Sõnaveeb</title>
-<link type="text/css" rel="stylesheet" th:href="@{/view/css/font-import.css}" />
-<link type="text/css" rel="stylesheet" th:href="@{/view/css/font-awesome.min.css}" />
-<link type="text/css" rel="stylesheet" th:href="@{/view/css/bootstrap-games.css}" />
-<link type="text/css" rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
-<link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
-<script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-<script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
-<script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
+  <title th:text="#{general.title}">Sõnaveeb</title>
+  <head th:replace="common-app :: common_header(_,~{::links})">
+    <th:block th:fragment="links">
+    <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
+  </th:block>
 </head>
-<body style="overflow-y: auto;">
-  <div id="lexicalDecisionStartPage" class="frame col-sm-8 col-sm-offset-2">
-    <div class="col-sm-10 col-sm-offset-1 text-center">
+<body class="games-body" style="overflow-y: hidden;">
+  <div th:replace="common-app :: menu"></div>
+
+  <div id="lexicalDecisionStartPage" class="frame col-sm-12">
+    <div class="col-sm-112 text-center">
       <h2 th:text="#{game.lexicdecis}">Sõnatundmise mäng.</h2>
     </div>
     <div class="col-sm-12">
       <div class="howtoplay"></div>
     </div>
-    <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
+    <div class="col-sm-12 text-center clear-20">
       <div th:text="#{game.lexicdecis.instruction.1}"></div>
       <div th:text="#{game.lexicdecis.instruction.2}"></div>
       <div>
@@ -32,40 +30,22 @@
         <span th:utext="#{game.lexicdecis.instruction.5}"></span>
       </div>
     </div>
-    <div class="col-sm-10 col-sm-offset-1 text-center clear-20">
+    <div class="col-sm-12 text-center clear-20">
       <button id="playGameButton" th:text="#{game.label.play}" type="button" class="btn btn-success" autofocus="autofocus">Play!</button>
     </div>
   </div>
   <div id="lexicalDecisionGamePage" style="display: none;">
     <div class="wrapper game-friggin-content">
-      <div id="lexicalDecisionHeader">
-        <nav class="navbar landing-page navbar-fixed-top" role="navigation" style="padding: 20px">
-          <div class="col-md-2">
-            <a th:href="@{/}">
-              <span>LOGO!</span>
-            </a>
-          </div>
-          <div class="collapse navbar-collapse">
-            <div class="nav-game-title">
-              <div class="game-abc-small"></div>
-              <span th:text="#{game.lexicdecis}" style="font-variant: small-caps;">Sõnatundmise mäng.</span>
-            </div>
-            <div class="nav navbar-nav navbar-right">
-              <span> </span>
-            </div>
-          </div>
-        </nav>
-      </div>
       <div id="lexicDecisValidationNotification" class="col-md-12" style="display: none;">
-        <div class="row">
+        <div class="row justify-content-center">
           <div class="alert alert-danger text-center" style="position: relative; top: 100px" th:text="#{game.lexicdecis.notification.validation}">Vale klahv</div>
         </div>
       </div>
       <form id="lexicalDecisionResultForm" th:action="@{/games/lexicdecis/finish}" method="POST">
         <input id="lexicDecisExitMode" name="lexicDecisExitMode" type="hidden" />
       </form>
-      <div class="col-sm-10 col-sm-offset-1 words-block">
-        <div class="col-sm-12 text-center">
+      <div class="col-sm-12 words-block">
+        <div class="col-12 col-sm-8 text-center inner-block">
           <h2>
             <span id="suggestedWordWrapper" style="padding: 20px">
               <span id="suggestedWordValue"></span>
@@ -81,25 +61,27 @@
         </div>
         <div class="col-sm-2 text-center">
           <!--<h5 th:text="'(' + #{quitGame} + ')'">-->
-          <!--0 / 9-->
-          <!--</h5>-->
+            <!--0 / 9-->
+            <!--</h5>-->
+          </div>
+          <div id="answerJbtn" class="col-sm-5">
+            <div class="help-letters-left btn-box">
+              <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
+            </div>
+          </div>
         </div>
-        <div id="answerJbtn" class="col-sm-5">
-          <div class="help-letters-left btn-box">
-            <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
+        <div id="escBtn" style="position: fixed; bottom: 50px; width: 100%;">
+          <div class="help-letters-center btn-box">
+            <h4>Esc</h4>
           </div>
         </div>
       </div>
-      <div id="escBtn" style="position: fixed; bottom: 50px; width: 100%;">
-        <div class="help-letters-center btn-box">
-          <h4>Esc</h4>
-        </div>
-      </div>
     </div>
-  </div>
-  <script th:inline="javascript">
-  	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
-  	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
-  </script>
-</body>
-</html>
+
+    <script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
+    <script th:inline="javascript">
+     var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
+     var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
+   </script>
+ </body>
+ </html>

@@ -8136,6 +8136,30 @@ body:not(.home-page) footer {
   background-color: #f9f9f9;
 }
 
+.games-wrap { 
+    margin-top: 4.375rem;
+     }
+
+.games-list .card-body { 
+  justify-content: center;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+ }
+
+.games-list .card-body div {
+  border-bottom: 1px solid rgba(0, 17, 36, 0.125);
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.25rem;
+  width: 100%;
+}
+
+.games-list .card-body div:last-of-type {
+  border-bottom: 0px solid red;
+  padding-bottom: 0rem;
+  margin-bottom: 0rem;
+}
+
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
     align-self: auto!important;
@@ -8193,6 +8217,8 @@ body:not(.home-page) footer {
 .detail-toggle-container { 
   margin: 0 auto;
 }
+
+.home-page-content { padding-bottom: 15rem; }
 }
 
 
