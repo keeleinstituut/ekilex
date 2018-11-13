@@ -7961,6 +7961,18 @@ input[type="checkbox"] {
   margin: 0 2rem;
 }
 
+.alert-icn { 
+position: relative;
+right: 0;
+left: 0.5rem; 
+top: 0.25rem;
+background: url(../images/alert-icn.svg) center center no-repeat; 
+display: inline-block; 
+height: 1.25rem;
+width: 1.25rem;
+background-size: 1.25rem;
+}
+
 .header-container .eki-logo {
   margin: 1rem auto 0 auto; 
   height: calc(6.25rem / 2.5); 
@@ -7970,7 +7982,7 @@ input[type="checkbox"] {
 
 
 .footer {
- position: absolute;
+ position: relative;
  bottom: 0px;
  width:100%;
  min-height: 60px;
@@ -8084,6 +8096,14 @@ body:not(.home-page) footer {
   min-width: 100%;
 }
 
+.show-section { display: block!important }
+.formarea { display: none; }
+
+.modal-content label { margin-top: 0.5rem; font-weight: 700; }
+.modal-content input { padding: 0.5rem 1.15625rem 0.5rem 1.15625rem; margin-bottom: 1rem;  }
+.heading-wrapper { display: inline-flex; }
+
+
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
     align-self: auto!important;
@@ -8133,7 +8153,7 @@ body:not(.home-page) footer {
   padding-bottom: 0rem;
   }
 
-  
+
 .lang-btn {
   float: none!important;
   margin: 0 auto;

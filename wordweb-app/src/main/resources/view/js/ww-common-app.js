@@ -24,9 +24,9 @@ $(document).on("click", "button[name='feedbackSendBtn']", function () {
         alert(messages.fb_service_error);
         return;
     }
-	var feedbackForm = $(this).closest('form');
-	var okMessage = feedbackForm.find('[name=ok_message]').text();
-	var errorMessage = feedbackForm.find('[name=error_message]').text();
+    var feedbackForm = $(this).closest('form');
+    var okMessage = feedbackForm.find('[name=ok_message]').text();
+    var errorMessage = feedbackForm.find('[name=error_message]').text();
     return $.ajax({
         url: feedbackServiceUrl,
         data: feedbackForm.serialize(),
@@ -35,12 +35,24 @@ $(document).on("click", "button[name='feedbackSendBtn']", function () {
     	console.log(data);
     	var answer = JSON.parse(data);
     	if (answer.status === 'ok') {
-    	    alert(okMessage);
-        } else {
-    	    alert(errorMessage);
-        }
-    }).fail(function (data) {
-        console.log(data);
-        alert(messages.fb_technical_error);
-    });
+           alert(okMessage);
+       } else {
+           alert(errorMessage);
+       }
+   }).fail(function (data) {
+    console.log(data);
+    alert(messages.fb_technical_error);
 });
+});
+
+
+$(document).on("click", "#customRadioInline1", function () {
+    $('#feedWord').addClass('show-section');
+    $('#feedComment').removeClass('show-section');
+});
+
+$(document).on("click", "#customRadioInline2", function () {
+    $('#feedWord').removeClass('show-section');
+    $('#feedComment').addClass('show-section');
+});
+

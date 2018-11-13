@@ -500,7 +500,10 @@
   </div>
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
+      <div class="heading-wrapper">
       <h6 th:text="#{label.korp.examples}">Veebilauseid</h6>
+      <div class="alert-icn" data-toggle="tooltip" data-placement="top" title="lala">lala</div>
+    </div>
       <button class="more-btn">
         <span class="icon icon-chevron-left"></span>
       </button>

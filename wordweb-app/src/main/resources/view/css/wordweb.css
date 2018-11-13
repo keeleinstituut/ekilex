@@ -131,7 +131,6 @@
     height: 1.75rem;
 }
 
-
 .word-group {
     display: block;
     margin-bottom: 0.5rem;
@@ -174,5 +173,5 @@ display: inline;
 
 .matches span { margin-bottom: 0.625rem; } 
 
-.definition span { margin-bottom: 0.625rem; display: inline-block; }
+.meaning { margin-bottom: 0.625rem; }
 
