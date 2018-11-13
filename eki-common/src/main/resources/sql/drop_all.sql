@@ -26,7 +26,8 @@ drop table if exists game_nonword;
 drop table if exists freeform_source_link;
 drop table if exists definition_source_link;
 drop table if exists lexeme_source_link;
-drop table if exists word_etymology_source_link;
+drop table if exists word_source_link;
+drop table if exists word_etymology_source_link;--remove later
 drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;

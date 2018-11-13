@@ -139,7 +139,13 @@ public class LexSearchDbService {
 	public WordEtymology findWordEtymology(Long wordId) {
 
 		return create
-				.select(MVIEW_WW_WORD_ETYMOLOGY.ETYM_LINEUP)
+				.select(
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_ID,
+						MVIEW_WW_WORD_ETYMOLOGY.ETYMOLOGY_YEAR,
+						MVIEW_WW_WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE,
+						MVIEW_WW_WORD_ETYMOLOGY.WORD_SOURCES,
+						MVIEW_WW_WORD_ETYMOLOGY.ETYM_LINEUP
+						)
 				.from(MVIEW_WW_WORD_ETYMOLOGY)
 				.where(MVIEW_WW_WORD_ETYMOLOGY.WORD_ID.eq(wordId))
 				.fetchOneInto(WordEtymology.class);

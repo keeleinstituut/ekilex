@@ -643,7 +643,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record9<Long,Long,String,String,String,String[],Boolean,Boolean,Long>> findWordEtymology(Long wordId) {
+	public Result<Record8<Long,Long,String,String,String[],Boolean,Boolean,Long>> findWordEtymology(Long wordId) {
 
 		WordEtymology we = WORD_ETYMOLOGY.as("we");
 		Word w2 = WORD.as("w2");
@@ -656,7 +656,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						w2.ID.as("word_id"),
 						f2.VALUE.as("word"),
 						w2.LANG.as("word_lang"),
-						we.ETYMOLOGY_TYPE_CODE,
 						we.COMMENTS,
 						we.IS_QUESTIONABLE,
 						we.IS_COMPOUND,

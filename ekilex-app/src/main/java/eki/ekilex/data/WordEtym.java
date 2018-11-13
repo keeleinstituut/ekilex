@@ -16,8 +16,6 @@ public class WordEtym extends AbstractDataObject {
 
 	private String wordLang;
 
-	private String etymologyTypeCode;
-
 	private List<String> comments;
 
 	private boolean isQuestionable;
@@ -56,14 +54,6 @@ public class WordEtym extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
-	}
-
-	public String getEtymologyTypeCode() {
-		return etymologyTypeCode;
-	}
-
-	public void setEtymologyTypeCode(String etymologyTypeCode) {
-		this.etymologyTypeCode = etymologyTypeCode;
 	}
 
 	public List<String> getComments() {

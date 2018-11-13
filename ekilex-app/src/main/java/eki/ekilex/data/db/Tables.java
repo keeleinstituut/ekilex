@@ -89,7 +89,6 @@ import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
-import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -97,6 +96,7 @@ import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordSourceLink;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 
@@ -542,11 +542,6 @@ public class Tables {
     public static final WordEtymology WORD_ETYMOLOGY = eki.ekilex.data.db.tables.WordEtymology.WORD_ETYMOLOGY;
 
     /**
-     * The table <code>public.word_etymology_source_link</code>.
-     */
-    public static final WordEtymologySourceLink WORD_ETYMOLOGY_SOURCE_LINK = eki.ekilex.data.db.tables.WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK;
-
-    /**
      * The table <code>public.word_group</code>.
      */
     public static final WordGroup WORD_GROUP = eki.ekilex.data.db.tables.WordGroup.WORD_GROUP;
@@ -580,6 +575,11 @@ public class Tables {
      * The table <code>public.word_relation</code>.
      */
     public static final WordRelation WORD_RELATION = eki.ekilex.data.db.tables.WordRelation.WORD_RELATION;
+
+    /**
+     * The table <code>public.word_source_link</code>.
+     */
+    public static final WordSourceLink WORD_SOURCE_LINK = eki.ekilex.data.db.tables.WordSourceLink.WORD_SOURCE_LINK;
 
     /**
      * The table <code>public.word_type</code>.

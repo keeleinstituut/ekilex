@@ -22,6 +22,7 @@ insert into display_morph (code, datasets) values ('Sg', '{}');
 insert into display_morph (code, datasets) values ('Pl', '{}');
 insert into display_morph (code, datasets) values ('Ips', '{}');
 insert into display_morph (code, datasets) values ('Pts', '{}');
+insert into etymology_type (code, datasets) values ('põlissõna', '{}');
 insert into etymology_type (code, datasets) values ('kirjakeele sõna', '{}');
 insert into etymology_type (code, datasets) values ('kõlasõna', '{}');
 insert into etymology_type (code, datasets) values ('laensõna', '{}');

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
 
-    private static final long serialVersionUID = -825950430;
+    private static final long serialVersionUID = 1842495736;
 
     /**
      * The reference instance of <code>public.view_ww_word_etymology</code>
@@ -53,6 +53,21 @@ public class ViewWwWordEtymology extends TableImpl<ViewWwWordEtymologyRecord> {
      * The column <code>public.view_ww_word_etymology.word_id</code>.
      */
     public final TableField<ViewWwWordEtymologyRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_word_etymology.etymology_year</code>.
+     */
+    public final TableField<ViewWwWordEtymologyRecord, String> ETYMOLOGY_YEAR = createField("etymology_year", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_word_etymology.etymology_type_code</code>.
+     */
+    public final TableField<ViewWwWordEtymologyRecord, String> ETYMOLOGY_TYPE_CODE = createField("etymology_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.view_ww_word_etymology.word_sources</code>.
+     */
+    public final TableField<ViewWwWordEtymologyRecord, String[]> WORD_SOURCES = createField("word_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word_etymology.etym_lineup</code>.

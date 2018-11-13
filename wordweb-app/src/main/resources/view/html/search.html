@@ -415,10 +415,12 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data">
-            <div class="level-3-panel row" th:if="${wordData.word.wordEtymologyWrapup != null}">
+            <div class="level-3-panel row" th:if="${wordData.word.wordEtymology != null}">
               <div class="col-12">
                 <h6 th:text="#{label.word.etymology}">Sõna päritolu</h6>
-                <div th:text="${wordData.word.wordEtymologyWrapup}">
+                <div th:text="${wordData.word.wordEtymology.wordEtymologyWrapup}" th:if="${wordData.word.wordEtymology.wordEtymologyWrapup != null}">
+                </div>
+                <div th:text="${wordData.word.wordEtymology.wordEtymologyLineupWrapup}">
                 </div>
               </div>
             </div>

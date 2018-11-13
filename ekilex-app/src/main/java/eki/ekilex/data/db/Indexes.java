@@ -76,7 +76,6 @@ import eki.ekilex.data.db.tables.ValueState;
 import eki.ekilex.data.db.tables.ValueStateLabel;
 import eki.ekilex.data.db.tables.Word;
 import eki.ekilex.data.db.tables.WordEtymology;
-import eki.ekilex.data.db.tables.WordEtymologySourceLink;
 import eki.ekilex.data.db.tables.WordGroup;
 import eki.ekilex.data.db.tables.WordGroupMember;
 import eki.ekilex.data.db.tables.WordGuid;
@@ -84,6 +83,7 @@ import eki.ekilex.data.db.tables.WordLifecycleLog;
 import eki.ekilex.data.db.tables.WordRelType;
 import eki.ekilex.data.db.tables.WordRelTypeLabel;
 import eki.ekilex.data.db.tables.WordRelation;
+import eki.ekilex.data.db.tables.WordSourceLink;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
 
@@ -245,17 +245,14 @@ public class Indexes {
     public static final Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index VALUE_STATE_PKEY = Indexes0.VALUE_STATE_PKEY;
     public static final Index VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index WORD_ETYM_TYPE_CODE_IDX = Indexes0.WORD_ETYM_TYPE_CODE_IDX;
     public static final Index WORD_HOMONYM_NR_IDX = Indexes0.WORD_HOMONYM_NR_IDX;
     public static final Index WORD_LANG_IDX = Indexes0.WORD_LANG_IDX;
     public static final Index WORD_PKEY = Indexes0.WORD_PKEY;
-    public static final Index WORD_ETYM_TYPE_CODE_IDX = Indexes0.WORD_ETYM_TYPE_CODE_IDX;
     public static final Index WORD_ETYM_WORD1_ID_IDX = Indexes0.WORD_ETYM_WORD1_ID_IDX;
     public static final Index WORD_ETYM_WORD2_ID_IDX = Indexes0.WORD_ETYM_WORD2_ID_IDX;
     public static final Index WORD_ETYMOLOGY_PKEY = Indexes0.WORD_ETYMOLOGY_PKEY;
     public static final Index WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY = Indexes0.WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY;
-    public static final Index WORD_ETYMOLOGY_SOURCE_LINK_PKEY = Indexes0.WORD_ETYMOLOGY_SOURCE_LINK_PKEY;
-    public static final Index WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_IDX;
-    public static final Index WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYMOLOGY_ID_IDX = Indexes0.WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYMOLOGY_ID_IDX;
     public static final Index WORD_GROUP_PKEY = Indexes0.WORD_GROUP_PKEY;
     public static final Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Indexes0.WORD_GROUP_MEMBER_GROUP_ID_IDX;
     public static final Index WORD_GROUP_MEMBER_PKEY = Indexes0.WORD_GROUP_MEMBER_PKEY;
@@ -275,6 +272,9 @@ public class Indexes {
     public static final Index WORD_RELATION_WORD1_ID_IDX = Indexes0.WORD_RELATION_WORD1_ID_IDX;
     public static final Index WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Indexes0.WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY;
     public static final Index WORD_RELATION_WORD2_ID_IDX = Indexes0.WORD_RELATION_WORD2_ID_IDX;
+    public static final Index WORD_SOURCE_LINK_PKEY = Indexes0.WORD_SOURCE_LINK_PKEY;
+    public static final Index WORD_SOURCE_LINK_SOURCE_ID_IDX = Indexes0.WORD_SOURCE_LINK_SOURCE_ID_IDX;
+    public static final Index WORD_SOURCE_LINK_WORD_ID_IDX = Indexes0.WORD_SOURCE_LINK_WORD_ID_IDX;
     public static final Index WORD_TYPE_PKEY = Indexes0.WORD_TYPE_PKEY;
     public static final Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
 
@@ -417,17 +417,14 @@ public class Indexes {
         public static Index USAGE_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("usage_type_label_code_lang_type_key", UsageTypeLabel.USAGE_TYPE_LABEL, new OrderField[] { UsageTypeLabel.USAGE_TYPE_LABEL.CODE, UsageTypeLabel.USAGE_TYPE_LABEL.LANG, UsageTypeLabel.USAGE_TYPE_LABEL.TYPE }, true);
         public static Index VALUE_STATE_PKEY = Internal.createIndex("value_state_pkey", ValueState.VALUE_STATE, new OrderField[] { ValueState.VALUE_STATE.CODE }, true);
         public static Index VALUE_STATE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("value_state_label_code_lang_type_key", ValueStateLabel.VALUE_STATE_LABEL, new OrderField[] { ValueStateLabel.VALUE_STATE_LABEL.CODE, ValueStateLabel.VALUE_STATE_LABEL.LANG, ValueStateLabel.VALUE_STATE_LABEL.TYPE }, true);
+        public static Index WORD_ETYM_TYPE_CODE_IDX = Internal.createIndex("word_etym_type_code_idx", Word.WORD, new OrderField[] { Word.WORD.ETYMOLOGY_TYPE_CODE }, false);
         public static Index WORD_HOMONYM_NR_IDX = Internal.createIndex("word_homonym_nr_idx", Word.WORD, new OrderField[] { Word.WORD.HOMONYM_NR }, false);
         public static Index WORD_LANG_IDX = Internal.createIndex("word_lang_idx", Word.WORD, new OrderField[] { Word.WORD.LANG }, false);
         public static Index WORD_PKEY = Internal.createIndex("word_pkey", Word.WORD, new OrderField[] { Word.WORD.ID }, true);
-        public static Index WORD_ETYM_TYPE_CODE_IDX = Internal.createIndex("word_etym_type_code_idx", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.ETYMOLOGY_TYPE_CODE }, false);
         public static Index WORD_ETYM_WORD1_ID_IDX = Internal.createIndex("word_etym_word1_id_idx", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.WORD1_ID }, false);
         public static Index WORD_ETYM_WORD2_ID_IDX = Internal.createIndex("word_etym_word2_id_idx", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.WORD2_ID }, false);
         public static Index WORD_ETYMOLOGY_PKEY = Internal.createIndex("word_etymology_pkey", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.ID }, true);
         public static Index WORD_ETYMOLOGY_WORD1_ID_WORD2_ID_KEY = Internal.createIndex("word_etymology_word1_id_word2_id_key", WordEtymology.WORD_ETYMOLOGY, new OrderField[] { WordEtymology.WORD_ETYMOLOGY.WORD1_ID, WordEtymology.WORD_ETYMOLOGY.WORD2_ID }, true);
-        public static Index WORD_ETYMOLOGY_SOURCE_LINK_PKEY = Internal.createIndex("word_etymology_source_link_pkey", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, new OrderField[] { WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.ID }, true);
-        public static Index WORD_ETYMOLOGY_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("word_etymology_source_link_source_id_idx", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, new OrderField[] { WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.SOURCE_ID }, false);
-        public static Index WORD_ETYMOLOGY_SOURCE_LINK_WORD_ETYMOLOGY_ID_IDX = Internal.createIndex("word_etymology_source_link_word_etymology_id_idx", WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK, new OrderField[] { WordEtymologySourceLink.WORD_ETYMOLOGY_SOURCE_LINK.WORD_ETYMOLOGY_ID }, false);
         public static Index WORD_GROUP_PKEY = Internal.createIndex("word_group_pkey", WordGroup.WORD_GROUP, new OrderField[] { WordGroup.WORD_GROUP.ID }, true);
         public static Index WORD_GROUP_MEMBER_GROUP_ID_IDX = Internal.createIndex("word_group_member_group_id_idx", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.WORD_GROUP_ID }, false);
         public static Index WORD_GROUP_MEMBER_PKEY = Internal.createIndex("word_group_member_pkey", WordGroupMember.WORD_GROUP_MEMBER, new OrderField[] { WordGroupMember.WORD_GROUP_MEMBER.ID }, true);
@@ -447,6 +444,9 @@ public class Indexes {
         public static Index WORD_RELATION_WORD1_ID_IDX = Internal.createIndex("word_relation_word1_id_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD1_ID }, false);
         public static Index WORD_RELATION_WORD1_ID_WORD2_ID_WORD_REL_TYPE_CODE_KEY = Internal.createIndex("word_relation_word1_id_word2_id_word_rel_type_code_key", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD1_ID, WordRelation.WORD_RELATION.WORD2_ID, WordRelation.WORD_RELATION.WORD_REL_TYPE_CODE }, true);
         public static Index WORD_RELATION_WORD2_ID_IDX = Internal.createIndex("word_relation_word2_id_idx", WordRelation.WORD_RELATION, new OrderField[] { WordRelation.WORD_RELATION.WORD2_ID }, false);
+        public static Index WORD_SOURCE_LINK_PKEY = Internal.createIndex("word_source_link_pkey", WordSourceLink.WORD_SOURCE_LINK, new OrderField[] { WordSourceLink.WORD_SOURCE_LINK.ID }, true);
+        public static Index WORD_SOURCE_LINK_SOURCE_ID_IDX = Internal.createIndex("word_source_link_source_id_idx", WordSourceLink.WORD_SOURCE_LINK, new OrderField[] { WordSourceLink.WORD_SOURCE_LINK.SOURCE_ID }, false);
+        public static Index WORD_SOURCE_LINK_WORD_ID_IDX = Internal.createIndex("word_source_link_word_id_idx", WordSourceLink.WORD_SOURCE_LINK, new OrderField[] { WordSourceLink.WORD_SOURCE_LINK.WORD_ID }, false);
         public static Index WORD_TYPE_PKEY = Internal.createIndex("word_type_pkey", WordType.WORD_TYPE, new OrderField[] { WordType.WORD_TYPE.CODE }, true);
         public static Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL, new OrderField[] { WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE }, true);
     }

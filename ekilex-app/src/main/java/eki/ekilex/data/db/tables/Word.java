@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 87828233;
+    private static final long serialVersionUID = -1522369515;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -97,6 +97,16 @@ public class Word extends TableImpl<WordRecord> {
     public final TableField<WordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
+     * The column <code>public.word.etymology_year</code>.
+     */
+    public final TableField<WordRecord, String> ETYMOLOGY_YEAR = createField("etymology_year", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.word.etymology_type_code</code>.
+     */
+    public final TableField<WordRecord, String> ETYMOLOGY_TYPE_CODE = createField("etymology_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
      * Create a <code>public.word</code> table reference
      */
     public Word() {
@@ -142,7 +152,7 @@ public class Word extends TableImpl<WordRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_PKEY);
+        return Arrays.<Index>asList(Indexes.WORD_ETYM_TYPE_CODE_IDX, Indexes.WORD_HOMONYM_NR_IDX, Indexes.WORD_LANG_IDX, Indexes.WORD_PKEY);
     }
 
     /**
@@ -174,7 +184,7 @@ public class Word extends TableImpl<WordRecord> {
      */
     @Override
     public List<ForeignKey<WordRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_TYPE_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY);
+        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_TYPE_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY, Keys.WORD__WORD_ETYMOLOGY_TYPE_CODE_FKEY);
     }
 
     public Language language() {
@@ -199,6 +209,10 @@ public class Word extends TableImpl<WordRecord> {
 
     public AspectType aspectType() {
         return new AspectType(this, Keys.WORD__WORD_ASPECT_CODE_FKEY);
+    }
+
+    public EtymologyType etymologyType() {
+        return new EtymologyType(this, Keys.WORD__WORD_ETYMOLOGY_TYPE_CODE_FKEY);
     }
 
     /**
