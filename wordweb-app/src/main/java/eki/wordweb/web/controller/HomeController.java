@@ -24,28 +24,26 @@ public class HomeController extends AbstractController {
 
 	@GetMapping(LEARN_URI)
 	public String learn(Model model) {
+		populateGeneralData(model);
 		return LEARN_PAGE;
 	}
 
 	@GetMapping(GAMES_URI)
 	public String games(Model model) {
+		populateGeneralData(model);
 		return GAMES_PAGE;
 	}
 	
 	@GetMapping(CONTACTS_URI)
 	public String contacts(Model model) {
+		populateGeneralData(model);
 		return CONTACTS_PAGE;
 	}
 	
 	@GetMapping(ABOUT_URI)
 	public String about(Model model) {
+		populateGeneralData(model);
 		return ABOUT_PAGE;
-	}
-
-	@GetMapping("/feedback")
-	public String feedback(Model model) {
-		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
-		return "feedback";
 	}
 
 }
