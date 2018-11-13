@@ -729,6 +729,7 @@ h2 {
 
 .alert-danger { 
 	color: #880000;
+	padding: 0 1.5rem;
 }
 
 .btn:focus, .btn:active {

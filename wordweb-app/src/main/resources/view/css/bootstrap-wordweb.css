@@ -8136,6 +8136,10 @@ body:not(.home-page) footer {
   background-color: #f9f9f9;
 }
 
+.close:hover {
+  text-decoration: none;
+}
+
 .games-wrap { 
     margin-top: 4.375rem;
      }
@@ -8159,6 +8163,13 @@ body:not(.home-page) footer {
   padding-bottom: 0rem;
   margin-bottom: 0rem;
 }
+
+.has-error {
+  display: none;
+  color: #880000;
+}
+
+.alert-danger.hide { display: none; }
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {

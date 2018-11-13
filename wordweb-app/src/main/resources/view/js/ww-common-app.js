@@ -18,7 +18,36 @@ function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
 }
 
+
+
+
+
 $(document).on("click", "button[name='feedbackSendBtn']", function () {
+
+
+
+  var $error = $(".alert-danger");
+
+
+    // if ($("input[name='sender'], input[value='email'], input[name='word']").val() == "") {
+
+
+    // if ($("input[name='sender']").val() == "") {
+    //   $(this).closest($error).removeClass("hide").text("No value");
+    //   console.log('aaaaa');
+    // }    else if ($("input[name='email']").val() == "") {
+    //   $(this).closest($error).removeClass("hide").text("No value");
+    //   console.log('aaaaa');
+    // }     if ($("input[name='word']").val() == "") {
+    //   $(this).closest($error).removeClass("hide").text("No value");
+    //   console.log('aaaaa');
+    // }
+    //  else {
+    //   $error.addClass("hide");
+    //   console.log('bbbbb');
+    // }
+
+
     if (feedbackServiceUrl === null) {
         console.debug('Feedback service configuration is missing.');
         alert(messages.fb_service_error);
@@ -40,8 +69,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function () {
            alert(errorMessage);
        }
    }).fail(function (data) {
-    console.log(data);
-    alert(messages.fb_technical_error);
+        $('.has-error').show();
 });
 });
 
