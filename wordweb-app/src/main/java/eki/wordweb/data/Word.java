@@ -45,6 +45,8 @@ public class Word extends AbstractDataObject {
 
 	private List<TypeWordRelation> relatedWords;
 
+	private WordRelationGroup limitedRelatedWords;
+
 	private List<WordRelationGroup> relatedWordTypeGroups;
 
 	private List<WordGroup> wordGroups;
@@ -197,6 +199,14 @@ public class Word extends AbstractDataObject {
 
 	public void setRelatedWords(List<TypeWordRelation> relatedWords) {
 		this.relatedWords = relatedWords;
+	}
+
+	public WordRelationGroup getLimitedRelatedWords() {
+		return limitedRelatedWords;
+	}
+
+	public void setLimitedRelatedWords(WordRelationGroup limitedRelatedWords) {
+		this.limitedRelatedWords = limitedRelatedWords;
 	}
 
 	public List<WordRelationGroup> getRelatedWordTypeGroups() {

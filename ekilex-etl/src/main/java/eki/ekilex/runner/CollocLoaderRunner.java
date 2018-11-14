@@ -51,6 +51,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private static final String REPORT_INCORRECT_LEMPOSVK_LEMMA = "incorrect_lemposvk_lemma";
 	private static final String REPORT_DIFFERENT_COLLOC_DEFINITION = "different_colloc_definition";
 	private static final String REPORT_FAILING_HOMONYM_GUESS = "failing_homonym_guess";
+	private static final String REPORT_COLLOC_MEMBER_LEXEME_MISMATCH = "colloc_member_lexeme_mismatch";
 
 	private final String dataLang = "est";
 
@@ -166,7 +167,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		if (doReports) {
 			reportComposer = new ReportComposer("kol loader report",
 					REPORT_ILLEGAL_DATA, REPORT_UNKNOWN_CLASSIF, REPORT_REPEATING_COLLOC_MEMBER, REPORT_UNKNOWN_COLLOC_MEMBER,
-					REPORT_ILLEGAL_LEMPOSVK_REF, REPORT_INCORRECT_LEMPOSVK_LEMMA, REPORT_DIFFERENT_COLLOC_DEFINITION, REPORT_FAILING_HOMONYM_GUESS);
+					REPORT_ILLEGAL_LEMPOSVK_REF, REPORT_INCORRECT_LEMPOSVK_LEMMA, REPORT_DIFFERENT_COLLOC_DEFINITION,
+					REPORT_FAILING_HOMONYM_GUESS, REPORT_COLLOC_MEMBER_LEXEME_MISMATCH);
 		}
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -836,6 +838,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			CollocRecord existingCollocRecord = collocMap.get(collocation);
+
 			if (existingCollocRecord == null) {
 				collocationCount.increment();
 				collocateCount.increment(currentCollocMemberRecords.size());
@@ -844,8 +847,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				collocMap.put(collocation, existingCollocRecord);
 			} else {
 				reusedCollocationCount.increment();
-				compareAndUpdateCollocation(existingCollocRecord, collocUsages, collocDefinition, updatedCollocCount, word, collocation, doReports);
-				compareAndUpdateCollocMembers(existingCollocRecord, currentCollocMemberRecords, updatedCollocMemberCount);
+				compareAndUpdateCollocation(word, collocation, existingCollocRecord, collocUsages, collocDefinition, updatedCollocCount, doReports);
+				compareAndUpdateCollocMembers(word, collocation, existingCollocRecord, currentCollocMemberRecords, updatedCollocMemberCount, doReports);
 			}
 		}
 	}
@@ -990,8 +993,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void compareAndUpdateCollocation(
-			CollocRecord existingCollocRecord, List<String> collocUsages, String collocDefinition,
-			Count updatedCollocCount, String word, String collocation, boolean doReports) throws Exception {
+			String word, String collocation, CollocRecord existingCollocRecord,
+			List<String> collocUsages, String collocDefinition, Count updatedCollocCount, boolean doReports) throws Exception {
 
 		Long collocId = existingCollocRecord.getId();
 		String existingCollocDefinition = existingCollocRecord.getDefinition();
@@ -1035,9 +1038,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void compareAndUpdateCollocMembers(
-			CollocRecord existingCollocRecord,
+			String word, String collocation, CollocRecord existingCollocRecord,
 			List<CollocMemberRecord> currentCollocMemberRecords,
-			Count updatedCollocMemberCount) throws Exception {
+			Count updatedCollocMemberCount, boolean doReports) throws Exception {
 
 		Long collocationId = existingCollocRecord.getId();
 		List<CollocMemberRecord> existingCollocMemberRecords = existingCollocRecord.getMembers();
@@ -1045,9 +1048,11 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		for (CollocMemberRecord existingCollocMemberRecord : existingCollocMemberRecords) {
 			Long existingCollocMemberLexemeId = existingCollocMemberRecord.getLexemeId();
 			Long existingCollocMemberRelGroupId = existingCollocMemberRecord.getRelGroupId();
+			String existingCollocMemberForm = existingCollocMemberRecord.getMemberForm();
 			Float existingCollocMemberWeight = existingCollocMemberRecord.getWeight();
 			for (CollocMemberRecord currentCollocMemberRecord : currentCollocMemberRecords) {
 				Long currentCollocMemberLexemeId = currentCollocMemberRecord.getLexemeId();
+				String currentCollocMemberForm = currentCollocMemberRecord.getMemberForm();
 				if (existingCollocMemberLexemeId.equals(currentCollocMemberLexemeId)) {
 					Long currentCollocMemberRelGroupId = currentCollocMemberRecord.getRelGroupId();
 					Float currentCollocMemberWeight = currentCollocMemberRecord.getWeight();
@@ -1076,6 +1081,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 								newCollocMemberWeight, newCollocMemberGroupOrder);
 					}
 					break;
+				}
+				if (StringUtils.equals(existingCollocMemberForm, currentCollocMemberForm)
+						&& !existingCollocMemberLexemeId.equals(currentCollocMemberLexemeId)) {
+					appendToReport(doReports, REPORT_COLLOC_MEMBER_LEXEME_MISMATCH, word, collocation);
 				}
 			}
 		}
