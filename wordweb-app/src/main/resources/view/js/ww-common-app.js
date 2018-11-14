@@ -32,6 +32,7 @@ function setActiveMenuItem(itemName) {
 }
 
 $(document).on("click", "button[name='feedbackSendBtn']", function() {
+
 	var $error = $(".alert-danger");
 	if ($("input[name='sender']").val() == "") {
 		$("input[name='sender']").siblings(".errors").find($error).addClass("error-show");
@@ -48,6 +49,22 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	} else {
 		$("input[name='word']").siblings(".errors").find($error).removeClass("error-show");
 	}
+        if ($("input[name='sender2']").val() == "") {
+        $("input[name='sender2']").siblings(".errors").find($error).addClass("error-show");
+    } else {
+        $("input[name='sender2']").siblings(".errors").find($error).removeClass("error-show");
+    }
+    if ($("input[name='email2']").val() == "") {
+        $("input[name='email2']").siblings(".errors").find($error).addClass("error-show");
+    } else {
+        $("input[name='email2']").siblings(".errors").find($error).removeClass("error-show");
+    }
+    if ($("input[name='word2']").val() == "") {
+        $("input[name='word2']").siblings(".errors").find($error).addClass("error-show");
+    } else {
+        $("input[name='word2']").siblings(".errors").find($error).removeClass("error-show");
+    }
+
 	if (feedbackServiceUrl === null) {
 		console.debug('Feedback service configuration is missing.');
 		alert(messages.fb_service_error);
@@ -75,7 +92,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 
 
 $(document).on("click", ".modal-check", function() {
-  $(this).parents('form').find("button[name='feedbackSendBtn']").removeClass('disabled');
+  $(this).parents('form').find("button[name='feedbackSendBtn']").toggleClass('disabled');
 });
 
 $(document).on("click", "#customRadioInline1", function() {

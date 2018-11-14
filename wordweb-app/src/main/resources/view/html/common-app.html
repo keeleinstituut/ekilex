@@ -185,8 +185,8 @@
 <form>
   <div class="form-row">
     <div class="form-group col-12">
-      <label hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, oleme uue sõna kätte saanud.</label>
-      <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+      <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
+      <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
       <input type="hidden" name="feedbackType" value="new_word">
       <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
     </div>
@@ -257,8 +257,8 @@
 <form id="formid">
   <div class="form-row">
     <div class="form-group col-12">
-      <label hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, oleme kommentaari kätte saanud. Vastame paari päeva jooksul.</label>
-      <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+      <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
+      <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
       <input type="hidden" name="feedbackType" value="comment">
       <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
     </div>
@@ -266,7 +266,7 @@
   <div class="form-row">
     <div class="form-group col-12">
       <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
-      <input type="text" class="form-control" name="word">
+      <input type="text" class="form-control" name="word2">
       <div class="errors">
         <div class="alert alert-danger hide">Väli kohustuslik</div>
       </div>
@@ -275,23 +275,24 @@
   <div class="form-row">
     <div class="form-group col-12">
       <label class="col-form-label" th:text="#{label.fb.comment}">Kommentaar</label>
-      <textarea type="text" class="form-control" name="comments"></textarea>
+      <textarea type="text" class="form-control" name="comments2"></textarea>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
-      <input type="text" class="form-control" name="sender">
+      <input type="text" class="form-control" name="sender2">
       <div class="errors">
         <div class="alert alert-danger hide">Väli kohustuslik</div>
       </div>
     </div>
+
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <input type="email" class="form-control form-email" name="email">
+      <input type="email" class="form-control form-email" name="email2">
       <div class="errors">
         <div class="alert alert-danger hide">Väli kohustuslik</div>
-        <div class="alert alert-mail hide">Palun sisestage korrektne e-mail</div>
+        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
       </div>
     </div>
   </div>
