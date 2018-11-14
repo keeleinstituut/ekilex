@@ -195,8 +195,8 @@
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
       <input type="text" class="form-control" name="word">
-            <div class="errors">
-        <div class="alert alert-danger hide">aaa</div>
+      <div class="errors">
+        <div class="alert alert-danger hide">Väli kohustuslik</div>
       </div>
     </div>
     <div class="form-group col-12 col-md-6">
@@ -221,14 +221,15 @@
       <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
       <input type="text" class="form-control" name="sender">
       <div class="errors">
-        <div class="alert alert-danger hide">aaa</div>
+        <div class="alert alert-danger hide">Väli kohustuslik</div>
       </div>
     </div>
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <input type="email" class="form-control" name="email">
-            <div class="errors">
-        <div class="alert alert-danger hide">aaa</div>
+      <input type="email" class="form-control form-email" name="email">
+      <div class="errors">
+        <div class="alert alert-danger hide">Väli kohustuslik</div>
+        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
       </div>
     </div>
   </div>
@@ -256,6 +257,9 @@
     <div class="form-group col-12">
       <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
       <input type="text" class="form-control" name="word">
+      <div class="errors">
+        <div class="alert alert-danger hide">Väli kohustuslik</div>
+      </div>
     </div>
   </div>
   <div class="form-row">
@@ -268,10 +272,17 @@
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
       <input type="text" class="form-control" name="sender">
+      <div class="errors">
+        <div class="alert alert-danger hide">Väli kohustuslik</div>
+      </div>
     </div>
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <input type="email" class="form-control" name="email">
+      <input type="email" class="form-control form-email" name="email">
+      <div class="errors">
+        <div class="alert alert-danger hide">Väli kohustuslik</div>
+        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+      </div>
     </div>
   </div>
   <div class="form-group">
