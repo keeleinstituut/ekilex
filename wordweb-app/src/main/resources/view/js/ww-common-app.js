@@ -38,20 +38,16 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	} else {
 		$("input[name='sender']").siblings(".errors").find($error).removeClass("error-show");
 	}
-	;
 	if ($("input[name='email']").val() == "") {
 		$("input[name='email']").siblings(".errors").find($error).addClass("error-show");
 	} else {
 		$("input[name='email']").siblings(".errors").find($error).removeClass("error-show");
 	}
-	;
 	if ($("input[name='word']").val() == "") {
 		$("input[name='word']").siblings(".errors").find($error).addClass("error-show");
 	} else {
 		$("input[name='word']").siblings(".errors").find($error).removeClass("error-show");
 	}
-	;
-
 	if (feedbackServiceUrl === null) {
 		console.debug('Feedback service configuration is missing.');
 		alert(messages.fb_service_error);

@@ -461,19 +461,27 @@
             <div class="level-3-panel row" th:if="${wordData.word.wordRelationsExist}">
               <div class="col-12 word-relations" th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
                 <h6 th:text="#{label.word.relations}">Sõna seosed</h6>
-                <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
-                  <div class="word-group">
+                <div class="word-group">
+                  <span class="word-grouper" th:text="${#strings.capitalize(wordData.word.limitedRelatedWords.wordRelType.value) + ':'}"></span>
+                  <div class="word-grouper-wrapper">
+                    <span class="word-options mb-1" th:each="relation, relationIter : ${wordData.word.limitedRelatedWords.relatedWords}">
+                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
+                    </span>
+                  </div>
+                </div>
+                <div class="word-group">
+                  <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
                     <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
                     <div class="word-grouper-wrapper">
                       <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
                         <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
                       </span>
                     </div>
-                    <button class="more-btn" th:if="${wordData.word.moreWordRelations}">
-                      <span class="icon icon-chevron-left"></span>
-                    </button>
-                  </div>
-                </th:block>
+                  </th:block>
+                </div>
+                <button class="more-btn" th:if="${wordData.word.moreWordRelations}">
+                  <span class="icon icon-chevron-left"></span>
+                </button>
               </div>
               <div class="col-12" th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
                 <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">

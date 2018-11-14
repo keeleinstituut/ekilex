@@ -631,6 +631,17 @@ public class ConversionUtil {
 						wordRelationGroup.setWordRelType(wordRelType);
 						wordRelationGroup.setRelatedWords(relatedWordsOfType);
 						word.getRelatedWordTypeGroups().add(wordRelationGroup);
+						if (word.getLimitedRelatedWords() == null) {
+							List<TypeWordRelation> limitedRelatedWordsOfType = new ArrayList<>(relatedWordsOfType);
+							boolean isMoreWordRelationsOfType = CollectionUtils.size(relatedWordsOfType) > COLLECTIONS_DISPLAY_LIMIT;
+							if (isMoreWordRelationsOfType) {
+								limitedRelatedWordsOfType = relatedWordsOfType.subList(0, COLLECTIONS_DISPLAY_LIMIT);
+							}
+							WordRelationGroup limitedWordRelationGroup = new WordRelationGroup();
+							limitedWordRelationGroup.setWordRelType(wordRelType);
+							limitedWordRelationGroup.setRelatedWords(limitedRelatedWordsOfType);
+							word.setLimitedRelatedWords(limitedWordRelationGroup);
+						}
 					}
 				}
 			}
