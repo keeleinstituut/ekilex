@@ -417,22 +417,19 @@
               </div>
             </div>
             <div class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
-              <div class="morphology-panel" th:if="${wordData.unknownForm}">
+              <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
                 <h6 th:text="#{label.word.forms}">Sõnavormid</h6>
-                <button class="more-btn">
-                  <span class="icon icon-chevron-left"></span>
-                </button>
                 <span th:text="#{label.no.data}">Andmed puuduvad</span>
               </div>
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
                 <h6 th:text="#{label.word.forms}">Sõnavormid</h6>
-                <button class="more-btn">
-                  <span class="icon icon-chevron-left"></span>
-                </button>
                 <span th:text="#{label.unchangeable.word}">See sõna ei muutu</span>
               </div>
               <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
-                <h6 th:text="#{label.word.forms}">Sõnavormid</h6>
+                <h6>
+                  <span th:text="#{label.word.forms}">Sõnavormid</span>
+                  <div class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></div>
+                </h6>
                 <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
                 </button>
@@ -496,8 +493,10 @@
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
       <div class="heading-wrapper">
-        <h6 th:text="#{label.korp.examples}">Veebilauseid</h6>
-        <div class="alert-icn" data-toggle="tooltip" data-placement="top" title="lala">lala</div>
+        <h6>
+          <span th:text="#{label.korp.examples}">Veebilauseid</span>
+          <div class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></div>
+        </h6>
       </div>
       <button class="more-btn">
         <span class="icon icon-chevron-left"></span>
@@ -511,6 +510,9 @@
         <a th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="${sentence}" target="_blank"></a>
       </div>
     </div>
+    <script th:inline="javascript">
+        $('.corp-panel [data-toggle="tooltip"]').tooltip();
+    </script>
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: modal-content"></div>
