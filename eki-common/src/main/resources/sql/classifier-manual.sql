@@ -7,11 +7,11 @@ insert into label_type (code, value) values ('full', 'full');
 insert into label_type (code, value) values ('wordweb', 'wordweb');
 
 insert into dataset (code, name) values ('ss1', 'Eesti keele sõnaraamat 2018');
-insert into dataset (code, name) values ('psv', 'Õppesõnastik A2/B1: eesti keele põhisõnavara (2014)');
-insert into dataset (code, name) values ('kol',	'Kollokatsioonid');
+insert into dataset (code, name) values ('psv', 'Eesti keele põhisõnavara sõnastik 2014');
+insert into dataset (code, name) values ('kol',	'Eesti keele naabersõnad 2018');
 insert into dataset (code, name) values ('ety',	'Etümoloogia');
-insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS (2011)');
-insert into dataset (code, name) values ('ev2',	'Eesti-vene');
+insert into dataset (code, name) values ('qq2', 'Eesti-vene õpilase ÕS 2018');
+insert into dataset (code, name) values ('ev2',	'Eesti-vene sõnaraamat 2018');
 
 insert into dataset (code, name) values ('est', 'Esterm');
 insert into dataset (code, name) values ('aia',	'Aiandus (aiandusterminoloogia sõnastik)');
