@@ -7964,13 +7964,13 @@ input[type="checkbox"] {
 .alert-icn { 
 position: relative;
 right: 0;
-left: 0.5rem; 
-top: 0.25rem;
+left: 0.25rem; 
+top: 0.2rem;
 background: url(../images/alert-icn.svg) center center no-repeat; 
 display: inline-block; 
-height: 1.25rem;
-width: 1.25rem;
-background-size: 1.25rem;
+height: 1rem;
+width: 1rem;
+background-size: 1rem;
 }
 
 .header-container .eki-logo {
@@ -8072,6 +8072,10 @@ footer p {
 .morphology-section .morph-word {
   position: relative;
   top: -0.125rem;
+}
+
+.morphology-panel .btn-speaker {
+  margin-top: -0.25rem;
 }
 
 .morphology-panel .more-btn, .corp-panel .more-btn {
@@ -8193,12 +8197,48 @@ body:not(.home-page) footer {
 
 .errors { 
 padding: 0 1.15625rem 0 1.15625rem;
+ line-height: 0;
  }
 
 .errors .alert {   
   color: #880000;
-  padding: 0.25rem;
+  position: relative;
+  top: 0.8rem;
    }
+
+.custom-checkbox .custom-control-label::before {
+  top: 0.2rem;
+}
+
+.custom-checkbox .custom-control-label::before {
+  top: 0.2rem;
+}
+
+.doted-list {
+  padding-left: 1.5rem;
+}
+
+.doted-list li {
+position: relative;
+}
+
+.doted-list li:before { 
+content:"";
+display: inline-block;
+position: absolute;
+  height: 0.5rem;
+  width: 0.5rem;
+  background-color: dodgerblue; 
+  border-radius: 1rem;
+  bottom: 0.55rem;
+  left: -1rem;
+}
+
+.btn.disabled { 
+ pointer-events: none;
+ cursor: none;
+ opacity: 0.5;
+ }
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
@@ -8212,7 +8252,6 @@ padding: 0 1.15625rem 0 1.15625rem;
   .htm-logo { 
     height: calc(6.125rem / 1.6);
     width: calc(14.75rem / 1.6);
-
     background-size: calc(14.75rem / 1.6) calc(6.125rem / 1.6); 
   }
   .esf-logo { 
@@ -8248,6 +8287,7 @@ padding: 0 1.15625rem 0 1.15625rem;
   .bottom-gutter { 
   padding-bottom: 0rem;
   }
+
 .lang-btn {
   float: none!important;
   margin: 0 auto;
@@ -8258,7 +8298,9 @@ padding: 0 1.15625rem 0 1.15625rem;
   margin: 0 auto;
 }
 
-.home-page-content { padding-bottom: 15rem; }
+.home-page-content {
+ padding-bottom: 15rem;
+ }
 }
 
 

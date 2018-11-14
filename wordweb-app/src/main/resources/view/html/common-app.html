@@ -233,11 +233,21 @@
       </div>
     </div>
   </div>
+
+  <div class="form-row">
+    <div class="form-group col-12">
+      <div class="custom-control custom-checkbox mt-2">
+        <input type="checkbox" class="custom-control-input modal-check" id="modalCheck1">
+        <label class="custom-control-label" for="modalCheck1">Postitades uue sõna või kommentaari nõustud <a th:href="@{/regulations}" data-item-name="regulations">andmekaitse sedusega</a>.</label>
+      </div>
+    </div>
+  </div>
+
   <div class="form-group">
     <div class="col-12 p-0 mt-2">
       <div class="text-right">
         <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
-        <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+        <button type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
       </div>
     </div>
   </div>
@@ -281,15 +291,26 @@
       <input type="email" class="form-control form-email" name="email">
       <div class="errors">
         <div class="alert alert-danger hide">Väli kohustuslik</div>
-        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+        <div class="alert alert-mail hide">Palun sisestage korrektne e-mail</div>
       </div>
     </div>
   </div>
+
+  <div class="form-row">
+    <div class="form-group col-12">
+      <div class="custom-control custom-checkbox mt-2">
+        <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
+        <label class="custom-control-label" for="modalCheck2">Postitades uue sõna või kommentaari nõustud <a th:href="@{/regulations}" data-item-name="regulations">andmekaitse sedusega</a>.</label>
+      </div>
+    </div>
+  </div>
+
+
   <div class="form-group">
     <div class="col-12 p-0 mt-2">
       <div class="text-right">
         <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
-        <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+        <button type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
       </div>
     </div>
   </div>

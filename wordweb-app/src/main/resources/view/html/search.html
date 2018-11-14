@@ -428,7 +428,7 @@
               <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <h6>
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
-                  <div class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></div>
+                  <span class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h6>
                 <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
@@ -461,7 +461,8 @@
             <div class="level-3-panel row" th:if="${wordData.word.wordRelationsExist}">
               <div class="col-12 word-relations" th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
                 <h6 th:text="#{label.word.relations}">Sõna seosed</h6>
-                <div class="word-group">
+                
+                <div class="word-group limited-group">
                   <span class="word-grouper" th:text="${#strings.capitalize(wordData.word.limitedRelatedWords.wordRelType.value) + ':'}"></span>
                   <div class="word-grouper-wrapper">
                     <span class="word-options mb-1" th:each="relation, relationIter : ${wordData.word.limitedRelatedWords.relatedWords}">
@@ -469,7 +470,8 @@
                     </span>
                   </div>
                 </div>
-                <div class="word-group">
+
+                <div class="word-group full-group">
                   <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
                     <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
                     <div class="word-grouper-wrapper">
@@ -479,6 +481,7 @@
                     </div>
                   </th:block>
                 </div>
+
                 <button class="more-btn" th:if="${wordData.word.moreWordRelations}">
                   <span class="icon icon-chevron-left"></span>
                 </button>
@@ -503,7 +506,7 @@
       <div class="heading-wrapper">
         <h6>
           <span th:text="#{label.korp.examples}">Veebilauseid</span>
-          <div class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></div>
+          <span class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></span>
         </h6>
       </div>
       <button class="more-btn">

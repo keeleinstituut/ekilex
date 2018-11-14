@@ -73,6 +73,11 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	});
 });
 
+
+$(document).on("click", ".modal-check", function() {
+  $(this).parents('form').find("button[name='feedbackSendBtn']").removeClass('disabled');
+});
+
 $(document).on("click", "#customRadioInline1", function() {
 	$('#feedWord').addClass('show-section');
 	$('.alert').removeClass('error-show');
