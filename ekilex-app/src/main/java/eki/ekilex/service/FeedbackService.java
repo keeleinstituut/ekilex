@@ -39,6 +39,7 @@ public class FeedbackService {
 				isNotBlank(newFeedback.getWord());
 	}
 
+	@Transactional
 	public String addFeedback(Feedback newFeedback) {
 		String retMessage = "ok";
 		try {
