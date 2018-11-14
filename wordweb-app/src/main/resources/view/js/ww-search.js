@@ -48,11 +48,10 @@ $(function () {
 });
 
 $(document).on("click", ".more-btn", function () {
-	$(this).parents(".meaning-panel, .dependencies, .collocations-section").toggleClass("expand");
+	$(this).parents(".meaning-panel, .word-relations, .dependencies, .collocations-section").toggleClass("expand");
 	$(this).parents(".meaning-panel, .dependencies, .collocations-section").find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b").toggleClass("fade-target");
 
-	$(this).parent(".word-group, .corp-panel").toggleClass("expand");
-	$(this).parent(".word-group").find(".word-options").toggleClass("fade-target");
+	$(this).parent(".corp-panel").toggleClass("expand");
 
 	$(this).next(".morphology-section").toggleClass("expand");
 
