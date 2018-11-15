@@ -25,25 +25,29 @@ public interface WebConstant {
 
 	String GAME_LEXICDECIS_PAGE = "game-lexicdecis";
 
+	String GAME_SIMILJUDGE_PAGE = "game-similjudge";
+
 	String HOME_URI = "/";
 
 	String SEARCH_URI = "/search";
 
 	String LEARN_URI = "/learn";
 
-	String GAMES_URI = "/games";
-	
 	String ABOUT_URI = "/about";
 	
 	String CONTACTS_URI = "/contacts";
 
+	String GAMES_URI = "/games";
+
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";
 
-	String GAMES_LEXICDECIS_GETGAMEDBATCH_URI = GAMES_LEXICDECIS_URI + "/getgamebatch";
+	String GAMES_SIMILJUDGE_URI = GAMES_URI + "/similjudge";
 
-	String GAMES_LEXICDECIS_SUBMITGAMEROW_URI = GAMES_LEXICDECIS_URI + "/submitgamerow";
+	String GAMES_GETGAMEBATCH_URI = "/getgamebatch";
 
-	String GAMES_LEXICDECIS_FINISH_URI = GAMES_LEXICDECIS_URI + "/finish";
+	String GAMES_SUBMITGAMEROW_URI = "/submitgamerow";
+
+	String GAMES_FINISH_URI = "/finish";
 
 	String ERROR_PAGE = "error";
 

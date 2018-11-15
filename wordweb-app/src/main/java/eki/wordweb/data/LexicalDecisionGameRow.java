@@ -1,8 +1,6 @@
 package eki.wordweb.data;
 
-import eki.common.data.AbstractDataObject;
-
-public class LexicalDecisionGameRow extends AbstractDataObject {
+public class LexicalDecisionGameRow extends AbstractGameRow {
 
 	private static final long serialVersionUID = 1L;
 
@@ -12,15 +10,7 @@ public class LexicalDecisionGameRow extends AbstractDataObject {
 
 	private boolean word;
 
-	private String remoteAddr;
-
-	private String sessionId;
-
 	private boolean answer;
-
-	private boolean correct;
-
-	private long delay;
 
 	public Long getDataId() {
 		return dataId;
@@ -46,44 +36,12 @@ public class LexicalDecisionGameRow extends AbstractDataObject {
 		this.word = word;
 	}
 
-	public String getRemoteAddr() {
-		return remoteAddr;
-	}
-
-	public void setRemoteAddr(String remoteAddr) {
-		this.remoteAddr = remoteAddr;
-	}
-
-	public String getSessionId() {
-		return sessionId;
-	}
-
-	public void setSessionId(String sessionId) {
-		this.sessionId = sessionId;
-	}
-
 	public boolean isAnswer() {
 		return answer;
 	}
 
 	public void setAnswer(boolean answer) {
 		this.answer = answer;
-	}
-
-	public boolean isCorrect() {
-		return correct;
-	}
-
-	public void setCorrect(boolean correct) {
-		this.correct = correct;
-	}
-
-	public long getDelay() {
-		return delay;
-	}
-
-	public void setDelay(long delay) {
-		this.delay = delay;
 	}
 
 }
