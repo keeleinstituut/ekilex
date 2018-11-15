@@ -52,10 +52,10 @@ public class LexicalDecisionGameController implements WebConstant {
 	}
 
 	@PostMapping(GAMES_LEXICDECIS_URI + GAMES_FINISH_URI)
-	public String finishLexicDecisGame(@RequestParam String lexicDecisExitMode, Model model) {
+	public String finishLexicDecisGame(@RequestParam String gameExitMode, Model model) {
 
 		String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
-		LexicalDecisionGameStat lexicDecisGameStat = gameDataService.getLexicDecisGameStat(sessionId, lexicDecisExitMode);
+		LexicalDecisionGameStat lexicDecisGameStat = gameDataService.getLexicDecisGameStat(sessionId, gameExitMode);
 
 		model.addAttribute("lexicDecisGameStat", lexicDecisGameStat);
 
