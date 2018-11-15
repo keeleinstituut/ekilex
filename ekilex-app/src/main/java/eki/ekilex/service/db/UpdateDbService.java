@@ -340,6 +340,11 @@ public class UpdateDbService implements DbConstant {
 		Long meaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
 		Long sourceMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne().value1();
 
+		// delete source meaning lexemes with words, that are already connected to target meaning
+		create.delete(LEXEME)
+				.where(LEXEME.MEANING_ID.eq(sourceMeaningId)
+						.and(LEXEME.WORD_ID.in(create.select(LEXEME.WORD_ID).from(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId))))).execute();
+
 		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
 		joinMeaningDefinitions(meaningId, sourceMeaningId);
 		joinMeaningDomains(meaningId, sourceMeaningId);

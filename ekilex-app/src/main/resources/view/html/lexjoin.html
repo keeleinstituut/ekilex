@@ -1,10 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(~{::title},~{::links})">
+<head th:replace="common :: common_header(~{::title},_)">
   <title th:text="#{lexeme.join.title}">EKILEX ilmikute ühendamine</title>
-  <th:block th:fragment="links">
-    <!--<script type="text/javascript" th:src="@{/view/js/ekilex-lexsearch.js}"></script>-->
-  </th:block>
 </head>
 <body class="body-with-navbar">
 
@@ -83,7 +80,7 @@
       <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
       <a class="btn btn-primary"
          data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite tähendused ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
-         th:href="@{'/lexjoin/' + ${lexeme.lexemeId}} + '/' + ${lexemeToJoin.lexemeId}"
+         th:href="@{'/lexjoin/' + ${lexemeToJoin.lexemeId}} + '/' + ${lexeme.lexemeId}"
          th:if="${lexeme.meaningId != lexemeToJoin.meaningId}"
         >Ühenda</a>
       <b th:text="${lexeme.dataset}" class="float-right"></b>
