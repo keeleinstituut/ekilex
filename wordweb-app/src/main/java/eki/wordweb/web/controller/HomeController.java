@@ -45,5 +45,11 @@ public class HomeController extends AbstractController {
 		populateGeneralData(model);
 		return ABOUT_PAGE;
 	}
+	
+	@GetMapping(REGULATIONS_URI)
+	public String regulations(Model model) {
+		populateGeneralData(model);
+		return REGULATIONS_PAGE;
+	}
 
 }

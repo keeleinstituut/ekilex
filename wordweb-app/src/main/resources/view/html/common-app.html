@@ -1,299 +1,321 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:fragment="common_header(title,links)">
-  <title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
-  <!-- Common styles and scripts -->
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-  <link rel="shortcut icon" type="image/png" th:href="@{/view/images/favicon.png}" />
-  <th:block th:replace=" :: css"></th:block>
-  <th:block th:replace=" :: js"></th:block>
-  <link href="https://fonts.googleapis.com/css?family=Montserrat:800&amp;subset=cyrillic-ext,latin-ext" rel="stylesheet">
-  <!--/* Per-page placeholder for additional links */-->
-  <th:block th:replace="${links}"></th:block>
-  <script th:inline="javascript">
-   var applicationUrl = /*[[@{/}]]*/'/';
-   var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
-   var feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
-   var messages = {
-    'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
-    'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
-    'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
-    'fb_service_error' : /*[[#{label.fb.missing.sevice}]]*/'Tagasiside teenus ei ole seadistatud.'
-  }
+<title th:replace="${title}" th:text="#{general.title}">Sõnaveeb</title>
+<!-- Common styles and scripts -->
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="shortcut icon" type="image/png" th:href="@{/view/images/favicon.png}" />
+<th:block th:replace=" :: css"></th:block>
+<th:block th:replace=" :: js"></th:block>
+<link href="https://fonts.googleapis.com/css?family=Montserrat:800&amp;subset=cyrillic-ext,latin-ext" rel="stylesheet">
+<!--/* Per-page placeholder for additional links */-->
+<th:block th:replace="${links}"></th:block>
+<script th:inline="javascript">
+	var applicationUrl = /*[[@{/}]]*/'/';
+	var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
+	var feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
+	var messages = {
+		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
+		'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
+		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
+		'fb_service_error' : /*[[#{label.fb.missing.sevice}]]*/'Tagasiside teenus ei ole seadistatud.'
+	}
 </script>
 </head>
 <body>
   <!-- Bootstrap core CSS -->
   <th:block th:fragment="css">
-  <link rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
-  <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
-  <link rel="stylesheet" th:href="@{/view/css/font-import.css}" />
-  <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
-</th:block>
-<!-- Bootstrap core JS -->
-<th:block th:fragment="js">
-<script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
-<script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
-<script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
-<script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
-<script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
-</th:block>
-<!-- menu -->
-<th:block th:fragment="menu">
-<div class="container-fluid header-container">
-  <div class="row header-wrap">
-    <div class="col-12">
-      <a th:href="@{/}" class="logo">
-        <span class="icon icon-logo-s d-md-none"></span>
-        <span class="icon icon-logo d-none d-md-block"></span>
-      </a>
-      <span class="eki-logo mini-logo"></span>
-      <div class="back">
-        <span class="icon icon-back"></span>
+    <link rel="stylesheet" th:href="@{/view/css/jquery-ui.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap-wordweb.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap-grid.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/bootstrap-reboot.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/font-import.css}" />
+    <link rel="stylesheet" th:href="@{/view/css/wordweb.css}" />
+  </th:block>
+  <!-- Bootstrap core JS -->
+  <th:block th:fragment="js">
+    <script type="text/javascript" th:src="@{/view/js/jquery-3.2.1.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/jquery-ui.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/popper.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
+    <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
+  </th:block>
+  <!-- menu -->
+  <th:block th:fragment="menu">
+    <div class="container-fluid header-container">
+      <div class="row header-wrap">
+        <div class="col-12">
+          <a th:href="@{/}" class="logo">
+            <span class="icon icon-logo-s d-md-none"></span>
+            <span class="icon icon-logo d-none d-md-block"></span>
+          </a>
+          <span class="eki-logo mini-logo"></span>
+          <div class="back">
+            <span class="icon icon-back"></span>
+          </div>
+          <div th:replace=":: menu-links"></div>
+          <button class="btn menu-btn">
+            <span class="icon icon-menu"></span>
+          </button>
+        </div>
       </div>
-      <div th:replace=":: menu-links"></div>
-      <button class="btn menu-btn">
-        <span class="icon icon-menu"></span>
+    </div>
+  </th:block>
+  <th:block th:fragment="menu-links">
+    <div class="header-links">
+      <button class="btn menu-btn float-right clear-both">
+        <span th:text="#{menu.close}">Sulge</span>
+        <span class="icon icon-close"></span>
       </button>
+      <a th:href="@{/}" class="menu-item" data-item-name="search">
+        <span th:text="#{menu.search}">Otsing</span>
+      </a>
+      <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
+        <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+      </a>
+      <a th:href="@{/games}" class="menu-item" data-item-name="games">
+        <span th:text="#{menu.games}">Keelemängud</span>
+      </a>
+      <a th:href="@{/about}" class="menu-item" data-item-name="about">
+        <span th:text="#{menu.about}">Portaalist</span>
+      </a>
+      <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
+        <span th:text="#{menu.contacts}">Kontakt</span>
+      </a>
+      <a th:href="@{/#}" data-toggle="modal" data-target="#feedbackModal" class="menu-item" data-item-name="feedback">
+        <span th:text="#{menu.feedback}">Tagasiside</span>
+      </a>
     </div>
+  </th:block>
+  <!-- debugging aid -->
+  <div th:fragment="dump_vars" class="m-4">
+    <h4>Dump of all variables in Thymeleaf context</h4>
+    <hr />
+    <table>
+      <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
+        <td th:text="${var}"></td>
+        <td th:text="${#vars.getVariable(var)}"></td>
+      </tr>
+      <tr>
+        <td>param</td>
+        <td th:text="${#vars.getVariable('param')}"></td>
+      </tr>
+      <tr>
+        <td>session</td>
+        <td th:text="${#vars.getVariable('session')}"></td>
+      </tr>
+      <tr>
+        <td>application</td>
+        <td th:text="${#vars.getVariable('application')}"></td>
+      </tr>
+    </table>
   </div>
-</div>
-</th:block>
-<th:block th:fragment="menu-links">
-<div class="header-links">
-  <button class="btn menu-btn float-right clear-both">
-    <span th:text="#{menu.close}">Sulge</span>
-    <span class="icon icon-close"></span>
-  </button>
-  <a th:href="@{/}" class="menu-item" data-item-name="search">
-    <span th:text="#{menu.search}">Otsing</span>
-  </a>
-  <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
-    <span th:text="#{menu.learn}">Õpi eesti keelt</span>
-  </a>
-  <a th:href="@{/games}" class="menu-item" data-item-name="games">
-    <span th:text="#{menu.games}">Keelemängud</span>
-  </a>
-  <a th:href="@{/about}" class="menu-item" data-item-name="about">
-    <span th:text="#{menu.about}">Portaalist</span>
-  </a>
-  <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
-    <span th:text="#{menu.contacts}">Kontakt</span>
-  </a>
-  <a th:href="@{/#}" data-toggle="modal" data-target="#feedbackModal" class="menu-item" data-item-name="feedback">
-    <span th:text="#{menu.feedback}">Tagasiside</span>
-  </a>
-</div>
-</th:block>
-<!-- debugging aid -->
-<div th:fragment="dump_vars" class="m-4">
-  <h4>Dump of all variables in Thymeleaf context</h4>
-  <hr />
-  <table>
-    <tr th:each="var : ${#lists.sort(#vars.getVariableNames())}">
-      <td th:text="${var}"></td>
-      <td th:text="${#vars.getVariable(var)}"></td>
-    </tr>
-    <tr>
-      <td>param</td>
-      <td th:text="${#vars.getVariable('param')}"></td>
-    </tr>
-    <tr>
-      <td>session</td>
-      <td th:text="${#vars.getVariable('session')}"></td>
-    </tr>
-    <tr>
-      <td>application</td>
-      <td th:text="${#vars.getVariable('application')}"></td>
-    </tr>
-  </table>
-</div>
-<th:block th:fragment="modal-content">
-<div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="Tagasiside modaal" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Tagasiside</h5>
-        <a href="#" class="close" data-dismiss="modal" aria-label="Close">
-          <span class="icon icon-close"></span>
-        </a>
-      </div>
-      <div class="modal-body">
-        <div class="modal-radio">
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline1" checked name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline1">Lisa uus sõna</label>
+  <th:block th:fragment="modal-content">
+    <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="Tagasiside modaal" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Tagasiside</h5>
+            <a href="#" class="close" data-dismiss="modal" aria-label="Close">
+              <span class="icon icon-close"></span>
+            </a>
           </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline2">Teata vigasest sõnast</label>
-          </div>
-        </div>
-
-        <div class="has-error mt-2">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-
-        <div classs="modal-content">
-          <div id="feedWord" class="formarea show-section">
-            <th:block th:insert="common-app :: feedback_new_word"></th:block>
-          </div>
-          <div id="feedComment" class="formarea">
-            <th:block th:insert="common-app :: feedback_comment"></th:block>
+          <div class="modal-body">
+            <div class="modal-radio">
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="customRadioInline1" checked name="customRadioInline1" class="custom-control-input">
+                <label class="custom-control-label" for="customRadioInline1">Lisa uus sõna</label>
+              </div>
+              <div class="custom-control custom-radio custom-control-inline">
+                <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+                <label class="custom-control-label" for="customRadioInline2">Teata vigasest sõnast</label>
+              </div>
+            </div>
+            <div class="has-error mt-2">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+            <div classs="modal-content">
+              <div id="feedWord" class="formarea show-section">
+                <th:block th:insert="common-app :: feedback_new_word"></th:block>
+              </div>
+              <div id="feedComment" class="formarea">
+                <th:block th:insert="common-app :: feedback_comment"></th:block>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</div>
-</th:block>
-<!-- Footer -->
-<th:block th:fragment="footer-content">
-<footer class="footer">
-  <div class="container footer-wrapper">
-    <div class="row">
-      <div class="col-12 col-sm-6 col-md-4">
-        <p>
-          Roosikrantsi 6, 10119 Tallinn
-          <br>
-          tel: 617 7500
-          <br>
-          e-post:
-          <a class="text-underline" href="mailto:eki@eki.ee">eki@eki.ee</a>
-          <br>
-          reg-kood: 70004011
-        </p>
-      </div>
-      <div class="col-12 col-md-4 order-2 order-md-1 col-reverse">
-        <span class="last-update">Viimati uuendatud: 20. november 2018</span>
-        <span class="copyright">&copy; Eesti Keele Instituut 2018</span>
-      </div>
-      <div class="col-12 col-sm-6 col-md-4 order-1 order-md-2">
-        <div class="social-list">
-          <span class="helper-text">Jaga meid:</span>
-          <a class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://ekitest.tripledev.ee/wordweb/" target="_blank" title="Share this in Facebook">Share this in Facebook</a>
+  </th:block>
+  <!-- Footer -->
+  <th:block th:fragment="footer-content">
+    <footer class="footer">
+      <div class="container footer-wrapper">
+        <div class="row">
+          <div class="col-12 col-sm-6 col-md-4">
+            <p>
+              Roosikrantsi 6, 10119 Tallinn
+              <br>
+              tel: 617 7500
+              <br>
+              e-post:
+              <a class="text-underline" href="mailto:eki@eki.ee">eki@eki.ee</a>
+              <br>
+              reg-kood: 70004011
+            </p>
+          </div>
+          <div class="col-12 col-md-4 order-2 order-md-1 col-reverse">
+            <span class="last-update">Viimati uuendatud: 20. november 2018</span>
+            <span class="copyright">&copy; Eesti Keele Instituut 2018</span>
+          </div>
+          <div class="col-12 col-sm-6 col-md-4 order-1 order-md-2">
+            <div class="social-list">
+              <span class="helper-text">Jaga meid:</span>
+              <a class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://ekitest.tripledev.ee/wordweb/" target="_blank" title="Share this in Facebook">Share this in Facebook</a>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</footer>
-</th:block>
-<th:block th:fragment="feedback_new_word">
-<form>
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, oleme uue sõna kätte saanud.</label>
-      <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-      <input type="hidden" name="feedbackType" value="new_word">
-      <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12 col-md-6">
-      <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
-      <input type="text" class="form-control" name="word">
-      <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+    </footer>
+  </th:block>
+  <th:block th:fragment="feedback_new_word">
+    <form>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, oleme uue sõna kätte saanud.</label>
+          <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+          <input type="hidden" name="feedbackType" value="new_word">
+          <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
+        </div>
       </div>
-    </div>
-    <div class="form-group col-12 col-md-6">
-      <label class="col-form-label" th:text="#{label.fb.definition}">Tähendus</label>
-      <input type="text" class="form-control" name="definition">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label class="col-form-label" th:text="#{label.fb.usages}">Näitelause(d)</label>
-      <input type="text" class="form-control" name="usages">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label class="col-form-label" th:text="#{label.fb.other.info}">Muu info</label>
-      <input type="text" class="form-control" name="otherInfo">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12 col-md-6">
-      <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
-      <input type="text" class="form-control" name="sender">
-      <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+      <div class="form-row">
+        <div class="form-group col-12 col-md-6">
+          <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
+          <input type="text" class="form-control" name="word">
+          <div class="errors">
+            <div class="alert alert-danger hide">Väli kohustuslik</div>
+          </div>
+        </div>
+        <div class="form-group col-12 col-md-6">
+          <label class="col-form-label" th:text="#{label.fb.definition}">Tähendus</label>
+          <input type="text" class="form-control" name="definition">
+        </div>
       </div>
-    </div>
-    <div class="form-group col-12 col-md-6">
-      <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <input type="email" class="form-control form-email" name="email">
-      <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
-        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label class="col-form-label" th:text="#{label.fb.usages}">Näitelause(d)</label>
+          <input type="text" class="form-control" name="usages">
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-12 p-0 mt-2">
-      <div class="text-right">
-        <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
-        <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label class="col-form-label" th:text="#{label.fb.other.info}">Muu info</label>
+          <input type="text" class="form-control" name="otherInfo">
+        </div>
       </div>
-    </div>
-  </div>
-</form>
-</th:block>
-<th:block th:fragment="feedback_comment">
-<form id="formid">
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, oleme kommentaari kätte saanud. Vastame paari päeva jooksul.</label>
-      <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
-      <input type="hidden" name="feedbackType" value="comment">
-      <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
-      <input type="text" class="form-control" name="word">
-      <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+      <div class="form-row">
+        <div class="form-group col-12 col-md-6">
+          <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
+          <input type="text" class="form-control" name="sender">
+          <div class="errors">
+            <div class="alert alert-danger hide">Väli kohustuslik</div>
+          </div>
+        </div>
+        <div class="form-group col-12 col-md-6">
+          <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
+          <input type="email" class="form-control form-email" name="email">
+          <div class="errors">
+            <div class="alert alert-danger hide">Väli kohustuslik</div>
+            <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12">
-      <label class="col-form-label" th:text="#{label.fb.comment}">Kommentaar</label>
-      <textarea type="text" class="form-control" name="comments"></textarea>
-    </div>
-  </div>
-  <div class="form-row">
-    <div class="form-group col-12 col-md-6">
-      <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
-      <input type="text" class="form-control" name="sender">
-      <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <div class="custom-control custom-checkbox mt-2">
+            <input type="checkbox" class="custom-control-input modal-check" id="modalCheck1">
+            <label class="custom-control-label" for="modalCheck1">
+              Postitades uue sõna või kommentaari nõustud
+              <a th:href="@{/regulations}" data-item-name="regulations">andmekaitse sedusega</a>
+              .
+            </label>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="form-group col-12 col-md-6">
-      <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <input type="email" class="form-control form-email" name="email">
-      <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
-        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+      <div class="form-group">
+        <div class="col-12 p-0 mt-2">
+          <div class="text-right">
+            <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
+            <button type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div class="form-group">
-    <div class="col-12 p-0 mt-2">
-      <div class="text-right">
-        <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
-        <button type="button" class="btn btn-primary" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+    </form>
+  </th:block>
+  <th:block th:fragment="feedback_comment">
+    <form id="formid">
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, oleme kommentaari kätte saanud. Vastame paari päeva jooksul.</label>
+          <label hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+          <input type="hidden" name="feedbackType" value="comment">
+          <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
+        </div>
       </div>
-    </div>
-  </div>
-</form>
-</th:block>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
+          <input type="text" class="form-control" name="word">
+          <div class="errors">
+            <div class="alert alert-danger hide">Väli kohustuslik</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <label class="col-form-label" th:text="#{label.fb.comment}">Kommentaar</label>
+          <textarea type="text" class="form-control" name="comments"></textarea>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-12 col-md-6">
+          <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
+          <input type="text" class="form-control" name="sender">
+          <div class="errors">
+            <div class="alert alert-danger hide">Väli kohustuslik</div>
+          </div>
+        </div>
+        <div class="form-group col-12 col-md-6">
+          <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
+          <input type="email" class="form-control form-email" name="email">
+          <div class="errors">
+            <div class="alert alert-danger hide">Väli kohustuslik</div>
+            <div class="alert alert-mail hide">Palun sisestage korrektne e-mail</div>
+          </div>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group col-12">
+          <div class="custom-control custom-checkbox mt-2">
+            <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
+            <label class="custom-control-label" for="modalCheck2">
+              Postitades uue sõna või kommentaari nõustud
+              <a th:href="@{/regulations}" data-item-name="regulations">andmekaitse sedusega</a>
+              .
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="col-12 p-0 mt-2">
+          <div class="text-right">
+            <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
+            <button type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </th:block>
 </body>
 </html>

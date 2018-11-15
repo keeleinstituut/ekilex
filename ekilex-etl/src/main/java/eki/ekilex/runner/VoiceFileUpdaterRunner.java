@@ -18,8 +18,16 @@ public class VoiceFileUpdaterRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(VoiceFileUpdaterRunner.class);
 
-	// TODO: check over with client is this matching logic ok
-	private final static String sqlFindWords = "select * from " + FORM + " where lower(value) = :word and mode = '" + FormMode.WORD.name() + "' and sound_file is null";
+	private final static String sqlFindWords =
+			"select distinct f.* "
+					+ "from " + FORM + " f "
+					+ "join " + PARADIGM + " p on p.id = f.paradigm_id "
+					+ "join " + WORD + " w on w.id = p.word_id "
+					+ "join " + LEXEME + " l on l.word_id = w.id "
+					+ "join " + LEXEME_POS + " lp on lp.lexeme_id = l.id "
+					+ "where "
+					+ "lower(f.value) = :word and f.mode = '" + FormMode.WORD.name() + "' and f.sound_file is null and"
+					+ "(w.type_code = 'z' or lp.pos_code = 'prop')";
 	private final static String sqlUpdateSoundFileNames = "update " + FORM + " set sound_file = :soundFileName where id in (:formIds)";
 
 	@Override

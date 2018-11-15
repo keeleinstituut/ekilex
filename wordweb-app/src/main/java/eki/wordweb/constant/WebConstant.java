@@ -17,6 +17,8 @@ public interface WebConstant {
 
 	String LEARN_PAGE = "learn";
 
+	String REGULATIONS_PAGE = "regulations";
+
 	String GAMES_PAGE = "games";
 	
 	String ABOUT_PAGE = "about";
@@ -33,6 +35,8 @@ public interface WebConstant {
 
 	String LEARN_URI = "/learn";
 
+	String REGULATIONS_URI = "/regulations";
+	
 	String ABOUT_URI = "/about";
 	
 	String CONTACTS_URI = "/contacts";

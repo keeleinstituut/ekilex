@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head>
+<title th:text="#{general.title}">Sõnaveeb</title>
+<head th:replace="common-app :: common_header(_,~{::links})">
+<th:block th:fragment="links">
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/games.css}" />
+</th:block>
+</head>
+<body class="games-body" style="overflow-y: hidden;">
+  <div th:replace="common-app :: menu"></div>
+  <div id="gameStartPage" class="frame col-sm-12">
+    <div class="col-sm-112 text-center">
+      <h2 th:text="#{game.similjudge}">Sõnatundmise mäng.</h2>
+    </div>
+    <div class="col-sm-12">
+      <div class="howtoplay"></div>
+    </div>
+    <div class="col-sm-12 text-center clear-20">
+      <div th:text="#{game.similjudge.instruction.1}"></div>
+      <div th:text="#{game.similjudge.instruction.2}"></div>
+      <div>
+        <span th:utext="#{game.similjudge.instruction.3}"></span>
+      </div>
+      <div>
+        <span th:utext="#{game.similjudge.instruction.4}"></span>
+      </div>
+      <div>
+        <span th:utext="#{game.similjudge.instruction.5}"></span>
+      </div>
+    </div>
+    <div class="col-sm-12 text-center clear-20">
+      <button id="playGameButton" th:text="#{game.label.play}" type="button" class="btn btn-success" autofocus="autofocus">Play!</button>
+    </div>
+  </div>
+  <div id="gamePage" style="display: none;">
+    <div class="wrapper game-friggin-content">
+      <div id="gameValidationNotification" class="col-md-12" style="display: none;">
+        <div class="row justify-content-center">
+          <div class="alert alert-danger text-center" style="position: relative; top: 100px" th:text="#{game.similjudge.notification.validation}">Vale klahv</div>
+        </div>
+      </div>
+      <form id="gameResultForm" th:action="@{/games/similjudge/finish}" method="POST">
+        <input id="gameExitMode" name="gameExitMode" type="hidden" />
+      </form>
+      <div class="col-sm-12 words-block">
+        <div class="col-12 col-sm-8 text-center inner-block">
+          <h2>
+            <span id="suggestedWordWrapper" style="padding: 20px">
+              <span id="suggestedWordValue"></span>
+            </span>
+          </h2>
+        </div>
+      </div>
+      <div class="col-sm-12 help-tip key-row">
+        <div id="answerFbtn" class="col-sm-5">
+          <div class="help-letters-right btn-box">
+            <h4 th:text="#{game.label.fno}">F(No)</h4>
+          </div>
+        </div>
+        <div class="col-sm-2 text-center">
+          <!--<h5 th:text="'(' + #{quitGame} + ')'">-->
+          <!--0 / 9-->
+          <!--</h5>-->
+        </div>
+        <div id="answerJbtn" class="col-sm-5">
+          <div class="help-letters-left btn-box">
+            <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
+          </div>
+        </div>
+      </div>
+      <div id="escBtn" style="position: fixed; bottom: 50px; width: 100%;">
+        <div class="help-letters-center btn-box">
+          <h4>Esc</h4>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div th:replace="common-app :: modal-content"></div>
+  <script type="text/javascript" th:src="@{/view/js/ww-game-similjudge.js}"></script>
+  <script th:inline="javascript">
+  	var getSimilJudgeGameBatchUrl = /*[[@{/games/similjudge/getgamebatch}]]*/"/games/similjudge/getgamebatch";
+  	var submitSimilJudgeGameRowUrl = /*[[@{/games/similjudge/submitgamerow}]]*/"/games/similjudge/submitgamerow";
+  </script>
+</body>
+</html>
