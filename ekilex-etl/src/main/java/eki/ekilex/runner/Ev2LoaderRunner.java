@@ -357,6 +357,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				}
 				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId);
 			}
+			for (WordData w : newWords) {
+				w.level1 = lexemeLevel1 + 1;
+			}
 			processWordsInUsageGroups(context, meaningNumberGroupNode, reportingId);
 		}
 	}
@@ -417,11 +420,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				for (String wordValue : wordValues) {
 					if (!isUsage(cleanUp(wordValue))) {
 						int level1 = 1;
+						List<Integer> insertedLevelOnes = new ArrayList<>();
 						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang, null);
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
 						for (Node meaningGroupNode: meaningGroupNodes) {
-							Map<String, Object> lexemeForWord = findExistingLexemeForWord(wordData.id, level1);
-							boolean useExistingLexeme = (lexemeForWord != null);
+							boolean useExistingLexeme = false;
+							Map<String, Object> lexemeForWord = null;
+							if (!insertedLevelOnes.contains(level1)) {
+								lexemeForWord = findExistingLexemeForWord(wordData.id, level1);
+								useExistingLexeme = (lexemeForWord != null);
+							}
 							Long meaningId;
 							if (useExistingLexeme) {
 								meaningId = (Long)lexemeForWord.get("meaning_id");
@@ -458,10 +466,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								Lexeme lexeme = new Lexeme();
 								lexeme.setWordId(wordData.id);
 								lexeme.setMeaningId(meaningId);
-								lexeme.setLevel1(level1);
+								lexeme.setLevel1(wordData.level1);
 								lexeme.setLevel2(1);
 								lexeme.setLevel3(1);
 								lexemeId = createLexeme(lexeme, getDataset());
+								insertedLevelOnes.add(wordData.level1);
+								wordData.level1++;
 							}
 							if (lexemeId != null) {
 								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
@@ -507,7 +517,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect) throws Exception {
 		Optional<WordData> word = context.importedWords.stream()
-				.filter(w -> Objects.equals(w.value, wordValue) && Objects.equals(w.displayForm, wordDisplayForm)).findFirst();
+				.filter(w -> Objects.equals(w.value, wordValue) &&
+						(Objects.equals(w.displayForm, wordDisplayForm) || Objects.equals(wordValue, wordDisplayForm))).findFirst();
 		if (word.isPresent()) {
 			return word.get();
 		} else {

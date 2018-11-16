@@ -7,59 +7,59 @@ var brainlessAnswerDelayTreshold = 250;
 var brainlessAnswers = 0;
 var gameAnswers = 0;
 
-var lexicalDecisionStartTime;
-var lexicalDecisionStopTime;
+var gameRowStartTime;
+var gameRowStopTime;
 
-var lexicDecisGameBatch = [];
-var currentLexicDecisGameRow;
-var answerLexicDecisGameRow;
+var gameBatch = [];
+var currentGameRow;
+var answerGameRow;
 
 $(document).ready(function() {
 
 });
 
-function populateLexicDecisGameRow() {
+function populateGameRow() {
 
-	if (lexicDecisGameBatch.length > 0) {
-		currentLexicDecisGameRow = lexicDecisGameBatch.pop();
+	if (gameBatch.length > 0) {
+		currentGameRow = gameBatch.pop();
 		$("#suggestedWordWrapper").removeClass();
-		$("#suggestedWordValue").text(currentLexicDecisGameRow.suggestedWordValue);
-		$("#lexicDecisValidationNotification").hide();
-		lexicalDecisionStartTime = new Date().getTime();
+		$("#suggestedWordValue").text(currentGameRow.suggestedWordValue);
+		$("#gameValidationNotification").hide();
+		gameRowStartTime = new Date().getTime();
 	} else if (gameAnswers == 0) {
-		getLexicDecisGameBatch();
+		getGameBatch();
 	} else {
 		handleEsc();
 	}
 }
 
-function getLexicDecisGameBatch() {
+function getGameBatch() {
 	$.get(getLexicDecisGameBatchUrl, function(gameRows) {
-		lexicDecisGameBatch = gameRows;
-		populateLexicDecisGameRow()
+		gameBatch = gameRows;
+		populateGameRow()
 	});
 }
 
 function handleAnswerF() {
 
-	$("#lexicDecisValidationNotification").hide();
-	answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
-	lexicalDecisionStopTime = new Date().getTime();
-	var isCorrectAnswer = currentLexicDecisGameRow.word ? false : true;
-	answerLexicDecisGameRow.answer = false;
-	answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
-	answerLexicDecisGameRow.correct = isCorrectAnswer;
+	$("#gameValidationNotification").hide();
+	answerGameRow = Object.assign({}, currentGameRow);
+	gameRowStopTime = new Date().getTime();
+	var isCorrectAnswer = currentGameRow.word ? false : true;
+	answerGameRow.answer = false;
+	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
+	answerGameRow.correct = isCorrectAnswer;
 }
 
 function handleAnswerJ() {
 
-	$("#lexicDecisValidationNotification").hide();
-	answerLexicDecisGameRow = Object.assign({}, currentLexicDecisGameRow);
-	lexicalDecisionStopTime = new Date().getTime();
-	var isCorrectAnswer = currentLexicDecisGameRow.word ? true : false;
-	answerLexicDecisGameRow.answer = true;
-	answerLexicDecisGameRow.delay = lexicalDecisionStopTime - lexicalDecisionStartTime;
-	answerLexicDecisGameRow.correct = isCorrectAnswer;
+	$("#gameValidationNotification").hide();
+	answerGameRow = Object.assign({}, currentGameRow);
+	gameRowStopTime = new Date().getTime();
+	var isCorrectAnswer = currentGameRow.word ? true : false;
+	answerGameRow.answer = true;
+	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
+	answerGameRow.correct = isCorrectAnswer;
 }
 
 function handleEsc() {
@@ -67,37 +67,37 @@ function handleEsc() {
 	if (gameAnswers == 0) {
 		return;
 	}
-	$("#lexicDecisExitMode").val("decent");
-	$("#lexicalDecisionResultForm").submit();
+	$("#gameExitMode").val("decent");
+	$("#gameResultForm").submit();
 }
 
 function resolveAnswer() {
 
-	if (answerLexicDecisGameRow.delay > brainlessAnswerDelayTreshold) {
-		$.post(submitLexicDecisGameRowUrl, answerLexicDecisGameRow);
+	if (answerGameRow.delay > brainlessAnswerDelayTreshold) {
+		$.post(submitLexicDecisGameRowUrl, answerGameRow);
 		gameAnswers++;
 		brainlessAnswers = 0;
 	} else {
 		brainlessAnswers++;
 	}
 	if (brainlessAnswers == 3) {
-		$("#lexicDecisExitMode").val("brainless");
-		$("#lexicalDecisionResultForm").submit();
+		$("#gameExitMode").val("brainless");
+		$("#gameResultForm").submit();
 		return;
 	}
-	if (answerLexicDecisGameRow.correct) {
+	if (answerGameRow.correct) {
 		$("#suggestedWordWrapper").addClass("bg-success");
 	} else {
 		$("#suggestedWordWrapper").addClass("bg-danger");
 	}
 	setTimeout(function() {
-		populateLexicDecisGameRow();
+		populateGameRow();
 	}, answerDisplayDelay);
 }
 
 $(window).keyup(function(e) {
 
-	if (!currentLexicDecisGameRow) {
+	if (!currentGameRow) {
 		return;
 	}
 
@@ -110,14 +110,14 @@ $(window).keyup(function(e) {
 	} else if (e.keyCode == escButtonKeyCode) {
 		handleEsc();
 	} else {
-		$("#lexicDecisValidationNotification").show();
+		$("#gameValidationNotification").show();
 	}
 });
 
 $(document).on("click", "#playGameButton", function(e) {
-	$("#lexicalDecisionStartPage").hide();
-	$("#lexicalDecisionGamePage").show();
-	getLexicDecisGameBatch();
+	$("#gameStartPage").hide();
+	$("#gamePage").show();
+	getGameBatch();
 });
 
 $(document).on("click", "#answerFbtn", function(e) {

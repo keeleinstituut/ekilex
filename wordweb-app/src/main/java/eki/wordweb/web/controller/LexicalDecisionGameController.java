@@ -30,7 +30,7 @@ public class LexicalDecisionGameController implements WebConstant {
 		return GAME_LEXICDECIS_PAGE;
 	}
 
-	@GetMapping(GAMES_LEXICDECIS_GETGAMEDBATCH_URI)
+	@GetMapping(GAMES_LEXICDECIS_URI + GAMES_GETGAMEBATCH_URI)
 	public @ResponseBody List<LexicalDecisionGameRow> getLexicDecisGameBatch() {
 
 		List<LexicalDecisionGameRow> gameRows = gameDataService.getLexicDecisGameBatch(DISPLAY_LANG);
@@ -38,7 +38,7 @@ public class LexicalDecisionGameController implements WebConstant {
 		return gameRows;
 	}
 
-	@PostMapping(GAMES_LEXICDECIS_SUBMITGAMEROW_URI)
+	@PostMapping(GAMES_LEXICDECIS_URI + GAMES_SUBMITGAMEROW_URI)
 	public @ResponseBody String submitLexicDecisGameRow(LexicalDecisionGameRow lexicalDecisionGameRow, HttpServletRequest request) {
 
 		String remoteAddr = request.getRemoteAddr();
@@ -51,11 +51,11 @@ public class LexicalDecisionGameController implements WebConstant {
 		return NOTHING;
 	}
 
-	@PostMapping(GAMES_LEXICDECIS_FINISH_URI)
-	public String finishLexicDecisGame(@RequestParam String lexicDecisExitMode, Model model) {
+	@PostMapping(GAMES_LEXICDECIS_URI + GAMES_FINISH_URI)
+	public String finishLexicDecisGame(@RequestParam String gameExitMode, Model model) {
 
 		String sessionId = RequestContextHolder.currentRequestAttributes().getSessionId();
-		LexicalDecisionGameStat lexicDecisGameStat = gameDataService.getLexicDecisGameStat(sessionId, lexicDecisExitMode);
+		LexicalDecisionGameStat lexicDecisGameStat = gameDataService.getLexicDecisGameStat(sessionId, gameExitMode);
 
 		model.addAttribute("lexicDecisGameStat", lexicDecisGameStat);
 

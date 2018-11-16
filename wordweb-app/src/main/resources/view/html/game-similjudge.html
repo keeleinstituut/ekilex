@@ -11,22 +11,22 @@
   <div th:replace="common-app :: menu"></div>
   <div id="gameStartPage" class="frame col-sm-12">
     <div class="col-sm-112 text-center">
-      <h2 th:text="#{game.lexicdecis}">Sõnatundmise mäng.</h2>
+      <h2 th:text="#{game.similjudge}">Sõnatundmise mäng.</h2>
     </div>
     <div class="col-sm-12">
       <div class="howtoplay"></div>
     </div>
     <div class="col-sm-12 text-center clear-20">
-      <div th:text="#{game.lexicdecis.instruction.1}"></div>
-      <div th:text="#{game.lexicdecis.instruction.2}"></div>
+      <div th:text="#{game.similjudge.instruction.1}"></div>
+      <div th:text="#{game.similjudge.instruction.2}"></div>
       <div>
-        <span th:utext="#{game.lexicdecis.instruction.3}"></span>
+        <span th:utext="#{game.similjudge.instruction.3}"></span>
       </div>
       <div>
-        <span th:utext="#{game.lexicdecis.instruction.4}"></span>
+        <span th:utext="#{game.similjudge.instruction.4}"></span>
       </div>
       <div>
-        <span th:utext="#{game.lexicdecis.instruction.5}"></span>
+        <span th:utext="#{game.similjudge.instruction.5}"></span>
       </div>
     </div>
     <div class="col-sm-12 text-center clear-20">
@@ -37,10 +37,10 @@
     <div class="wrapper game-friggin-content">
       <div id="gameValidationNotification" class="col-md-12" style="display: none;">
         <div class="row justify-content-center">
-          <div class="alert alert-danger text-center" style="position: relative; top: 100px" th:text="#{game.lexicdecis.notification.validation}">Vale klahv</div>
+          <div class="alert alert-danger text-center" style="position: relative; top: 100px" th:text="#{game.similjudge.notification.validation}">Vale klahv</div>
         </div>
       </div>
-      <form id="gameResultForm" th:action="@{/games/lexicdecis/finish}" method="POST">
+      <form id="gameResultForm" th:action="@{/games/similjudge/finish}" method="POST">
         <input id="gameExitMode" name="gameExitMode" type="hidden" />
       </form>
       <div class="col-sm-12 words-block">
@@ -77,10 +77,10 @@
     </div>
   </div>
   <div th:replace="common-app :: modal-content"></div>
-  <script type="text/javascript" th:src="@{/view/js/ww-game-lexicdecis.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ww-game-similjudge.js}"></script>
   <script th:inline="javascript">
-  	var getLexicDecisGameBatchUrl = /*[[@{/games/lexicdecis/getgamebatch}]]*/"/games/lexicdecis/getgamebatch";
-  	var submitLexicDecisGameRowUrl = /*[[@{/games/lexicdecis/submitgamerow}]]*/"/games/lexicdecis/submitgamerow";
+  	var getSimilJudgeGameBatchUrl = /*[[@{/games/similjudge/getgamebatch}]]*/"/games/similjudge/getgamebatch";
+  	var submitSimilJudgeGameRowUrl = /*[[@{/games/similjudge/submitgamerow}]]*/"/games/similjudge/submitgamerow";
   </script>
 </body>
 </html>
