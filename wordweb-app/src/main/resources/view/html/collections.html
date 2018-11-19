@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="et" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common-app :: common_header(~{::title},~{::links})">
+  <title>Sõnakogud</title>
+  <th:block th:fragment="links">
+  <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
+  <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
+</th:block>
+</head>
+<body>
+  <div th:replace="common-app :: menu"></div>
+  <div class="container home-page-content">
+    <div class="row learn-container">
+      <div class="col-12 col-md-3">
+
+    </div>
+    <div class="col-12 col-md-9 learn-content">
+      <div class="pb-4">
+        <h3 class="mt-4 mb-2 text-left">Sõnakogud</h3>
+      <br>
+        <h5 class="colored-bold">Eesti keele sõnaraamat 2018</h5>
+        <p><strong>Bibliograafiline kirje (uus veebiväljaanne):</i></p>
+        <p>Eesti keele sõnaraamat 2018. Sõnaveeb 2018. Toimetajad Margit Langemets, Mai Tiits, Udo Uibo, Tiia Valdre, Piret Voll. Eesti Keele Instituut. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+        <p><i>Sõnaveebis avaneb selle sõnakogu sisu EESTI->EESTI detailses vaates.</i></p>
+         <br>
+        <h5 class="colored-bold">Eesti keele naabersõnad 2018</h5>
+        <p><strong>Bibliograafiline kirje (uus veebiväljaanne):</i></p>
+        <p>Eesti keele naabersõnad 2018. Sõnaveeb 2018. Toimetajad Jelena Kallas, Kristina Koppel, Maria Tuulik, Geda Paulsen. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+         <p><i>Sõnaveebis avaneb selle sõnakogu sisu EESTI->EESTI detailses vaates.</i></p>
+         <br>
+        <h5 class="colored-bold">Eesti keele põhisõnavara sõnastik (2014)</h5>
+        <p><strong>Bibliograafiline kirje (2. veebiväljaanne):</i></p>
+        <p>Eesti keele põhisõnavara sõnastik (2014). Sõnaveeb 2018. Eesti Keele Instituut. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+        <p><i>Sõnaveebis avaneb selle sõnakogu sisu EESTI->EESTI lihtsas vaates.</i></p>
+         <br>
+        <h5 class="colored-bold">Sõnaraamatu 1. trükk:</h5>
+        <p>Eesti keele põhisõnavara sõnastik. [The Basic Estonian Dictionary, BED] Toimetanud Jelena Kallas, Mai Tiits ja Maria Tuulik. Koostanud Madis Jürviste, Kristina Koppel ja Maria Tuulik. Eesti Keele Instituut. Eesti Keele Sihtasutus, 2014.</p> 
+        <p>Sõnaraamatu 1. trüki <a href="http://www.eki.ee/dict/psv/">veebiversioon</a> (veebis alates november 2014)</p>
+         <br>
+        <h5 class="colored-bold">Eesti-vene õpilase ÕS 2018</h5>
+        <p><strong>Bibliograafiline kirje (2. veebiväljaanne):</i></p>
+        <p>Eesti-vene õpilase ÕS 2018. Sõnaveeb 2018. 2., täiendatud ja parandatud veebiväljaanne. Eesti Keele Instituut. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+        <p><strong>Sõnaraamatu 1. trükk:</i></p>
+        <p>Eesti-vene õpilase ÕS (2011). Toimetajad Helle Leemets ja Tiina Leemets. Eesti Keele Instituut. Tallinn: Eesti Keele Sihtasutus, 2011.</p>
+        <p>Sõnaraamatu 1. trüki <a href="http://www.eki.ee/dict/qqv/">veebiversioon</a></p>
+         <br>
+        <h5 class="colored-bold">Eesti-vene sõnaraamat 2018</h5>
+        <p><strong>Bibliograafiline kirje (2. veebiväljaanne):</i></p>
+        <p>Eesti-vene sõnaraamat 2018. Sõnaveeb 2018. 2., täiendatud ja parandatud veebiväljaanne. Toimetaja Jelena Kallas. Uute sõnade osa koostajad ………………………………………. Eesti Keele Instituut. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+        <p><strong>Sõnaraamatu 1. trükk:</i></p>
+        <p>Eesti-vene sõnaraamat I–V (1997–2009). Toimetanud Anne Romet, Nelli Melts, Maimu Liiv, Elli Riikoja, Inna Martoja, Savvati Smirnov, Mare Tetsov, Mai Tiits, Tiia Valdre ja Enn Veskimägi. Koostanud Jelena Kallas, Helga Laasi, Tiiu Lagle, Helle Leemets, Maimu Liiv, Hele Pärn, Anne Romet, Leeni Simm, Ülle Viks, Asta Õim. Eesti Keele Instituut. Tallinn: Eesti Keele Sihtasutus, 1997–2009.</p>
+        <p>Sõnaraamatu 1. trüki <a href="http://portaal.eki.ee/dict/evs/">veebiversioon</a></p>
+         <br>
+        <h5 class="colored-bold">EKI eesti keele morfoloogiline andmebaas 2018</h5>
+        <p><strong>Bibliograafiline kirje (veebiversioon Sõnaveebis):</i></p>
+        <p>Eesti Keele Instituudi eesti keele morfoloogiline andmebaas 2018. Sõnaveeb 2018. Koostanud Ülle Viks, Indrek Hein, …………………………………………….... Eesti Keele Instituut. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+         <br>
+        <h5 class="colored-bold">EKI vene keele morfoloogiline andmebaas 2018</h5>
+        <p><strong>Bibliograafiline kirje (veebiversioon Sõnaveebis):</i></p>
+        <p>Eesti Keele Instituudi vene keele morfoloogiline andmebaas 2018. Sõnaveeb 2018. Toimetajad Jelena Kallas, Indrek Hein, …………………………………………….... Eesti Keele Instituut. http://www.SÕNAVEEBIAADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (1.12.2018)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div th:replace="common-app :: footer-content"></div>
+<div th:replace="common-app :: modal-content"></div>
+
+
+<a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
+  <span class="icon icon-chevron-left"></span>
+</a>
+
+</body>
+</html>
+
