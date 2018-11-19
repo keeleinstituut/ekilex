@@ -41,7 +41,7 @@
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
       <!-- TODO: let client to decide waht message option they like, option 2 -->
-      <div class="col-12" style="max-width: 80vw; margin: auto; margin-bottom: 1em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
+      <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
         <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
           <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
           <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
@@ -83,7 +83,7 @@
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span th:text="${wordData.word.homonymNr}">1</span>
-              <button name="feedback-btn" value="feedback" class="btn btn-primary" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
+              <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
               <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
             </h3>
             <button class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"

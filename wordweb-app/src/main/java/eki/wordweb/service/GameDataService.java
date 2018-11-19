@@ -41,7 +41,7 @@ public class GameDataService {
 	}
 
 	@Transactional
-	public LexicalDecisionGameStat getLexicDecisGameStat(String sessionId, String lexicDecisExitMode) {
+	public LexicalDecisionGameStat getLexicDecisGameStat(String sessionId, String gameExitMode) {
 
 		List<LexicalDecisionGameResult> gameResults = gameDataDbService.getLexicDecisGameResults();
 
@@ -68,7 +68,7 @@ public class GameDataService {
 
 		int averageDelayPosition = sortedResults.indexOf(sessionId) + 1;
 
-		boolean isBrainlessExit = StringUtils.equals(GAME_EXIT_MODE_BRAINLESS, lexicDecisExitMode);
+		boolean isBrainlessExit = StringUtils.equals(GAME_EXIT_MODE_BRAINLESS, gameExitMode);
 
 		LexicalDecisionGameStat gameStat = new LexicalDecisionGameStat();
 		gameStat.setGameResult(gameResult);
