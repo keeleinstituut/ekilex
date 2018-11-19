@@ -27,9 +27,6 @@
           </div>
         </div>
         <!-- TODO: let client to decide waht message option they like, option 1 -->
-        <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
-          <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
-        </div>
       </div>
     </div>
   </div>
@@ -41,6 +38,8 @@
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
       <!-- TODO: let client to decide waht message option they like, option 2 -->
+      
+  <div class="container">
       <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
         <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
           <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
@@ -49,6 +48,7 @@
         <div th:if="${switchedToDetailMode}">
           <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
         </div>
+      </div>
       </div>
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
@@ -83,8 +83,8 @@
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span th:text="${wordData.word.homonymNr}">1</span>
-              <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
               <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
+                            <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
             </h3>
             <button class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
                   th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}"
@@ -133,20 +133,20 @@
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" style="font-style: italic; color: #777777;">
                           [
-                          <span th:if="${not #lists.isEmpty(meaningWord.governments)}">
-                            <span th:each="government : ${meaningWord.governments}">
+                          <span th:if="${not #lists.isEmpty(meaningWord.governments)}"> <!--rekts-->
+                            <span class="YOL" th:each="government : ${meaningWord.governments}">
                               <span th:text="${government}"></span>
                             </span>
                           </span>
-                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">
+                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">.  <!--reg-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
-                            <span th:each="register : ${meaningWord.registers}">
+                            <span class="..........." th:each="register : ${meaningWord.registers}">
                               <span th:text="${register.value}"></span>
                             </span>
                           </span>
-                          <span th:if="${meaningWord.aspect != null}">
+                          <span th:if="${meaningWord.aspect != null}"> <!--aspekt-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
-                            <span th:text="${meaningWord.aspect.value}"></span>
+                            <span class="äääääääääää" th:text="${meaningWord.aspect.value}"></span>
                           </span>
                           ]
                         </span>
@@ -534,7 +534,6 @@
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search');
-  	$('#switched-to-details').delay(4000).hide(300);
   </script>
 </body>
 </html>

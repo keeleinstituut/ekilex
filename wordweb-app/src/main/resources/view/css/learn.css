@@ -23,6 +23,11 @@
 	color: rgb(0, 157, 181);
 }
 
+.highlighted {
+	font-weight: bold;
+	color: rgb(0, 157, 181);
+}
+
 .col-text {
 	width: 30%;
 }

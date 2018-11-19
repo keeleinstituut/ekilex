@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
-  <title>Andmekaitse</title>
+  <title>Privaatsuspoliitika</title>
   <th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
+  <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
+
 </th:block>
 </head>
 <body>
   <div th:replace="common-app :: menu"></div>
-  <div class="container-fluid home-page-content">
+  <div class="container home-page-content">
     <div class="row learn-container">
       <div class="col-12 col-md-3">
         <ul class="mt-4">
@@ -20,7 +22,7 @@
       </div>
       <div class="col-12 col-md-9 learn-content">
         <div class="pb-4">
-                  <h3 class="mt-4 mb-2 text-left">Andmekaitse Info</h3>
+          <h3 class="mt-4 mb-2 text-left">Privaatsuspoliitika</h3>
           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
             tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
             quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
@@ -28,7 +30,7 @@
             cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
           proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
 
-          <ul class="doted-list">
+          <ul class="dotted-list">
             <li>Lorem ipsum dolor sit amet, consectetur adipisicing elit,</li>
             <li>Incididunt ut labore et dolore magna aliqua. </li>
             <li>Officia deserunt mollit anim id est laborum.</li>
@@ -71,6 +73,13 @@
 
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: modal-content"></div>
+
+
+  <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
+    <span class="icon icon-chevron-left"></span>
+  </a>
+
+
 </body>
 </html>
 

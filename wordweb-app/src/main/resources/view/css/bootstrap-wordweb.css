@@ -4904,6 +4904,17 @@ button.bg-dark:focus {
   margin-top: 1.5rem !important;
 }
 
+.mt-5,
+.my-5 {
+  margin-top: 2rem !important;
+}
+
+.mt-6,
+.my-6 {
+  margin-top: 2.5rem !important;
+}
+
+
 .mr-4,
 .mx-4 {
   margin-right: 1.5rem !important;
@@ -7967,6 +7978,13 @@ input[type="checkbox"] {
   background-size: calc(16.875rem / 1.8) calc(6.25rem / 1.8); 
 }
 
+.eki-logo-wrapper { 
+  display: block; 
+  height: calc(6.25rem / 1.8); 
+  width: calc(16.875rem / 1.8); 
+  margin: 0 auto;
+ }
+
 .mini-logo {
   justify-content: center;
   margin: 0 2rem;
@@ -8225,21 +8243,21 @@ body:not(.home-page) footer {
   top: 0.2rem;
 }
 
-.doted-list {
+.dotted-list {
   padding-left: 1.5rem;
 }
 
-.doted-list li {
+.dotted-list li {
   position: relative;
 }
 
-.doted-list li:before { 
+.dotted-list li:before { 
   content:"";
   display: inline-block;
   position: absolute;
   height: 0.5rem;
   width: 0.5rem;
-  background-color: dodgerblue; 
+  background-color: rgb(0, 157, 181); 
   border-radius: 1rem;
   bottom: 0.55rem;
   left: -1rem;
@@ -8266,6 +8284,69 @@ body:not(.home-page) footer {
 
 .definition {
   line-height: 1.2
+}
+
+.top-button {
+  position: fixed;
+  bottom: 2rem;
+  right: calc( 5%);
+  -webkit-transform: rotate(90deg);
+transform: rotate(90deg);
+background: rgba(255, 255, 255, 0.7);
+border-radius: 3.125rem;
+height: 2rem;
+width: 2rem;
+z-index: 10;
+}
+
+.top-button:hover {
+ text-decoration: none; 
+ background: rgba(255, 255, 255, 1);
+}
+
+.top-button .icon{
+  font-size: 2rem;
+}
+
+
+.header-links .lang-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.4375rem 0.6875rem 0.6875rem 0.6875rem!important;
+  width: 7.81rem;
+}
+
+.header-links .lang-btn a{
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 1.5rem;
+  color: white!important;
+}
+
+.header-links .lang-btn a:focus{
+ background: #003F87 !important;
+ color: white!important;
+}
+
+.header-links .lang-btn .dropdown-menu {
+  width: 6.4375rem;
+  max-width: 6.4375rem;
+  min-width: 6.4375rem;
+  overflow: hidden;
+}
+
+.header-links .lang-btn .dropdown-menu a {
+ background: white!important;
+ color: #001124!important;
+}
+
+.header-links .lang-btn .dropdown-menu a:hover {
+ color: white!important;
+ background: #0077FF!important;
+ border-radius: 0px!important;
 }
 
 @media (max-width: 767px) { 
