@@ -27,7 +27,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 function setHomonymNrVisibility() {
 	var nrOfHomonyms = $(".homonym-item").length;
 	if (nrOfHomonyms == 1) {
-		$('.word-details .homonym-nr').addClass('d-none');
+		$('.word-details-homonym-nr').addClass('d-none');
 	}
 }
 

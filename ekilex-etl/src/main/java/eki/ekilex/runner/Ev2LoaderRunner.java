@@ -419,22 +419,39 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> wordValues = extractValuesAsStrings(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
 					if (!isUsage(cleanUp(wordValue))) {
-						int level1 = 1;
-						List<Integer> insertedLevelOnes = new ArrayList<>();
 						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang, null);
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
+						List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
+						int meaningNodeIndex = 1;
 						for (Node meaningGroupNode: meaningGroupNodes) {
-							boolean useExistingLexeme = false;
-							Map<String, Object> lexemeForWord = null;
-							if (!insertedLevelOnes.contains(level1)) {
-								lexemeForWord = findExistingLexemeForWord(wordData.id, level1);
-								useExistingLexeme = (lexemeForWord != null);
-							}
 							Long meaningId;
-							if (useExistingLexeme) {
+							boolean useExistingLexeme = false;
+							if (!lexemesForWord.isEmpty()) {
+								int lexemeIndex = lexemesForWord.size() < meaningNodeIndex ? lexemesForWord.size() - 1 : meaningNodeIndex - 1;
+								Map<String, Object> lexemeForWord = lexemesForWord.get(lexemeIndex);
+								meaningNodeIndex++;
+								useExistingLexeme = true;
 								meaningId = (Long)lexemeForWord.get("meaning_id");
 							} else {
 								meaningId = createMeaning(new Meaning());
+								List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
+								processDomains(null, meaningId, domains);
+
+								List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionExp);
+								for (String definition : definitions) {
+									createDefinition(meaningId, definition, dataLang, getDataset());
+								}
+								Lexeme lexeme = new Lexeme();
+								lexeme.setWordId(wordData.id);
+								lexeme.setMeaningId(meaningId);
+								lexeme.setLevel1(wordData.level1);
+								lexeme.setLevel2(1);
+								lexeme.setLevel3(1);
+								wordData.level1++;
+
+								Long lexemeId = createLexeme(lexeme, getDataset());
+								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
+								saveRegisters(lexemeId, registers, reportingId);
 							}
 
 							List<LexemeToWordData> latinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
@@ -447,37 +464,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							} else {
 								context.latinTermins.addAll(latinTerms);
 							}
-
-							List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
-							processDomains(null, meaningId, domains);
-
-							List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionExp);
-							for (String definition : definitions) {
-								createDefinition(meaningId, definition, dataLang, getDataset());
-								if (useExistingLexeme) {
-									writeToLogFile(reportingId, "lisan definitsiooni olemasolevale mõistele", wordData.value + " : " + definition);
-								}
-							}
-
-							Long lexemeId;
-							if (useExistingLexeme) {
-								lexemeId = (Long)lexemeForWord.get("id");
-							} else {
-								Lexeme lexeme = new Lexeme();
-								lexeme.setWordId(wordData.id);
-								lexeme.setMeaningId(meaningId);
-								lexeme.setLevel1(wordData.level1);
-								lexeme.setLevel2(1);
-								lexeme.setLevel3(1);
-								lexemeId = createLexeme(lexeme, getDataset());
-								insertedLevelOnes.add(wordData.level1);
-								wordData.level1++;
-							}
-							if (lexemeId != null) {
-								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
-								saveRegisters(lexemeId, registers, reportingId);
-							}
-							level1++;
 
 							List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for(Node transalationGroupNode : translationGroupNodes) {
@@ -733,14 +719,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return CollectionUtils.isEmpty(words);
 	}
 
-	private Map<String, Object> findExistingLexemeForWord(Long wordId, int level1) throws Exception {
+	private List<Map<String, Object>> findExistingLexemesForWord(Long wordId) throws Exception {
 
 		Map<String, Object> params = new HashMap<>();
 		params.put("word_id", wordId);
-		params.put("level1", level1);
 		params.put("dataset_code", getDataset());
-		List<Map<String, Object>> lexemes = basicDbService.selectAll(LEXEME, params);
-		return lexemes.size() == 1 ? lexemes.get(0) : null;
+		return basicDbService.selectAll(LEXEME, params);
 	}
 
 	private Map<String, Object> findExistingLexemeForWordAndMeaning(Long wordId, Long meaningId) throws Exception {

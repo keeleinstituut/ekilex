@@ -40,6 +40,12 @@ public class HomeController extends AbstractController {
 		return CONTACTS_PAGE;
 	}
 
+	@GetMapping(COLLECTIONS_URI)
+	public String collections(Model model) {
+		populateGeneralData(model);
+		return COLLECTIONS_PAGE;
+	}
+
 	@GetMapping(ABOUT_URI)
 	public String about(Model model) {
 		populateGeneralData(model);
@@ -50,6 +56,12 @@ public class HomeController extends AbstractController {
 	public String regulations(Model model) {
 		populateGeneralData(model);
 		return REGULATIONS_PAGE;
+	}
+
+	@GetMapping(CONDITIONS_URI)
+	public String conditions(Model model) {
+		populateGeneralData(model);
+		return CONDITIONS_PAGE;
 	}
 
 }

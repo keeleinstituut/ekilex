@@ -26,10 +26,6 @@
             </div>
           </div>
         </div>
-        <!-- TODO: let client to decide waht message option they like, option 1 -->
-        <div th:if="${switchedToDetailMode}" id="switched-to-details" class="details-message">
-          <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
-        </div>
       </div>
     </div>
   </div>
@@ -40,14 +36,15 @@
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
-      <!-- TODO: let client to decide waht message option they like, option 2 -->
-      <div class="col-12" style="max-width: 80vw; margin: auto; margin-bottom: 1em;" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
-        <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
-          <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-          <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
-        </div>
-        <div th:if="${switchedToDetailMode}">
-          <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
+      <div class="container">
+        <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
+          <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+            <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+            <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+          </div>
+          <div th:if="${switchedToDetailMode}">
+            <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
+          </div>
         </div>
       </div>
       <div class="col-12 homonym-panel">
@@ -76,15 +73,16 @@
       </div>
     </div>
     <div class="word-details"></div>
+
     <div class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-md-block">
         <div class="row">
           <div class="col-12 content-title">
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
-              <span th:text="${wordData.word.homonymNr}">1</span>
-              <button name="feedback-btn" value="feedback" class="btn btn-primary" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
+              <span class="word-details-homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
               <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
+              <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
             </h3>
             <button class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
                   th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}"
@@ -133,20 +131,20 @@
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" style="font-style: italic; color: #777777;">
                           [
-                          <span th:if="${not #lists.isEmpty(meaningWord.governments)}">
-                            <span th:each="government : ${meaningWord.governments}">
+                          <span th:if="${not #lists.isEmpty(meaningWord.governments)}"> <!--rekts-->
+                            <span class="YOL" th:each="government : ${meaningWord.governments}">
                               <span th:text="${government}"></span>
                             </span>
                           </span>
-                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">
+                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">.  <!--reg-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
-                            <span th:each="register : ${meaningWord.registers}">
+                            <span class="..........." th:each="register : ${meaningWord.registers}">
                               <span th:text="${register.value}"></span>
                             </span>
                           </span>
-                          <span th:if="${meaningWord.aspect != null}">
+                          <span th:if="${meaningWord.aspect != null}"> <!--aspekt-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
-                            <span th:text="${meaningWord.aspect.value}"></span>
+                            <span class="äääääääääää" th:text="${meaningWord.aspect.value}"></span>
                           </span>
                           ]
                         </span>
@@ -501,6 +499,7 @@
       </div>
     </div>
   </div>
+
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
       <div class="heading-wrapper">
@@ -513,9 +512,7 @@
         <span class="icon icon-chevron-left"></span>
       </button>
       <div class="mb-2" th:each="sentence : ${sentences}">
-        <span th:text="${sentence.getLeftPart()}"></span>
-        <b th:text="${sentence.getMiddlePart()}"></b>
-        <span th:text="${sentence.getRightPart()}"></span>
+        <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
       </div>
       <div class="mb-2" style="margin-bottom: 0.5em;">
         <a th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="${sentence}" target="_blank"></a>
@@ -525,6 +522,7 @@
         $('.corp-panel [data-toggle="tooltip"]').tooltip();
     </script>
   </div>
+
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: modal-content"></div>
   <script th:inline="javascript">
@@ -534,7 +532,6 @@
   	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
   	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
   	setActiveMenuItem('search');
-  	$('#switched-to-details').delay(4000).hide(300);
   </script>
 </body>
 </html>

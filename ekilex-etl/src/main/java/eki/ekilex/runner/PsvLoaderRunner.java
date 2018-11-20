@@ -674,7 +674,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
 			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
 			Element learnerCommentNode = (Element) meaningNumberGroupNode.selectSingleNode(learnerCommentExp);
-			String learnerComment = learnerCommentNode == null ? null : learnerCommentNode.getTextTrim();
+			String learnerComment = nodeToString(learnerCommentNode);
 			Element imageNameNode = (Element) meaningNumberGroupNode.selectSingleNode(imageNameExp);
 			String imageName = imageNameNode == null ? null : imageNameNode.getTextTrim();
 
@@ -811,11 +811,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private WordData extractAbbreviation(Node node, Context context) throws Exception {
 
 		final String abbreviationExp = "x:lyh";
-		Element abbreviationNode = (Element) node.selectSingleNode(abbreviationExp);
+		Node abbreviationNode = node.selectSingleNode(abbreviationExp);
 		if (abbreviationNode == null) {
 			return null;
 		}
-		String abbreviationValue = abbreviationNode.getTextTrim();
+		String abbreviationValue = nodeToString(abbreviationNode);
 		Optional<WordData> abbreviation = context.importedWords.stream().filter(w -> w.value.equals(abbreviationValue)).findFirst();
 		if (abbreviation.isPresent()) {
 			return abbreviation.get();
@@ -844,7 +844,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Node> compoundFormNodes = compoundFormGroupNode.selectNodes(compoundFormNodeExp);
 			for (Node compoundFormNode : compoundFormNodes) {
 				LexemeToWordData data = new LexemeToWordData();
-				data.word = ((Element)compoundFormNode).getTextTrim();
+				data.word = nodeToString(compoundFormNode);
 				if (((Element)compoundFormNode).hasMixedContent()) {
 					data.government = extractGovernment(compoundFormNode.selectSingleNode(governmentExp));
 				}
@@ -859,18 +859,18 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			for (LexemeToWordData data : forms) {
 				Element definitionGroupNodeNode = (Element) compoundFormGroupNode.selectSingleNode(definitionGroupNodeExp);
-				Element definitionNode = (Element) definitionGroupNodeNode.selectSingleNode(definitionExp);
+				Node definitionNode = definitionGroupNodeNode.selectSingleNode(definitionExp);
 				if (definitionNode != null) {
-					data.definition = definitionNode.getTextTrim();
+					data.definition = nodeToString(definitionNode);
 				}
 				List<Node> usageNodes = definitionGroupNodeNode.selectNodes(usageExp);
 				for (Node usageNode : usageNodes) {
 					Usage usage = new Usage();
-					usage.setValue(((Element)usageNode).getTextTrim());
+					usage.setValue(nodeToString(usageNode));
 					usage.setDefinitions(new ArrayList<>());
 					if (((Element)usageNode).hasMixedContent()) {
 						Node usageDefinitionNode = usageNode.selectSingleNode(usageDefinitionExp);
-						String usageDefinition = usageDefinitionNode.getText();
+						String usageDefinition = nodeToString(usageDefinitionNode);
 						usage.getDefinitions().add(usageDefinition);
 					}
 					data.usages.add(usage);
@@ -889,7 +889,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		Government government = new Government();
 		Element governmentElement = (Element) governmentNode;
-		government.setValue(governmentElement.getTextTrim());
+		government.setValue(nodeToString(governmentNode));
 		government.setType(governmentElement.attributeValue(governmentTypeAttr));
 		government.setVariant(governmentElement.attributeValue(governmentVariantAttr));
 		government.setOptional(governmentElement.attributeValue(governmentOptionalAttr));
@@ -900,9 +900,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String symbolExp = "x:symb";
 
-		Element symbolNode = (Element) node.selectSingleNode(symbolExp);
+		Node symbolNode = node.selectSingleNode(symbolExp);
 		if (symbolNode != null) {
-			String symbolValue = symbolNode.getTextTrim();
+			String symbolValue = nodeToString(symbolNode);
 			WordData data = createDefaultWordFrom(symbolValue, null);
 			data.reportingId = reportingId;
 			context.importedWords.add(data);
@@ -926,26 +926,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Node> formUsageNodes = singleFormGroupNode.selectNodes(usageExp);
 			for (Node usageNode : formUsageNodes) {
 				Usage usage = new Usage();
-				usage.setValue(((Element)usageNode).getTextTrim());
+				usage.setValue(nodeToString(usageNode));
 				usage.setDefinitions(new ArrayList<>());
 				usages.add(usage);
 				if (((Element)usageNode).hasMixedContent()) {
 					Node usageDefinitionNode = usageNode.selectSingleNode(usageDefinitionExp);
-					String usageDefinition = usageDefinitionNode.getText();
+					String usageDefinition = nodeToString(usageDefinitionNode);
 					usage.getDefinitions().add(usageDefinition);
 				}
 			}
 			List<Node> singleFormNodes = singleFormGroupNode.selectNodes(singleFormNodeExp);
 			for (Node singleFormNode : singleFormNodes) {
 				LexemeToWordData data = new LexemeToWordData();
-				Element formValueNode = (Element) singleFormNode.selectSingleNode(formValueExp);
-				Element formDefinitionNode = (Element) singleFormNode.selectSingleNode(formDefinitionExp);
-				data.word = formValueNode.getTextTrim();
-				if (formValueNode.hasMixedContent()) {
-					data.government = extractGovernment((Element) formValueNode.selectSingleNode(governmentExp));
+				Node formValueNode = singleFormNode.selectSingleNode(formValueExp);
+				data.word = nodeToString(formValueNode);
+				if (((Element)formValueNode).hasMixedContent()) {
+					data.government = extractGovernment(formValueNode.selectSingleNode(governmentExp));
 				}
+				Node formDefinitionNode = singleFormNode.selectSingleNode(formDefinitionExp);
 				if (formDefinitionNode != null) {
-					data.definition = formDefinitionNode.getTextTrim();
+					data.definition = nodeToString(formDefinitionNode);
 				}
 				data.usages.addAll(usages);
 				singleForms.add(data);
@@ -968,16 +968,16 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Node> vormelNodes = node.selectNodes(vormelNodeExp);
 		for (Node vormelNode : vormelNodes) {
 			LexemeToWordData data = new LexemeToWordData();
-			Element vormelValueNode = (Element) vormelNode.selectSingleNode(vormelExp);
-			Element vormelDefinitionNode = (Element) vormelNode.selectSingleNode(vormelDefinitionExp);
+			Node vormelValueNode = vormelNode.selectSingleNode(vormelExp);
+			data.word = nodeToString(vormelValueNode);
+			Node vormelDefinitionNode = vormelNode.selectSingleNode(vormelDefinitionExp);
 			List<Node> vormelUsages = vormelNode.selectNodes(vormelUsageExp);
-			data.word = vormelValueNode.getTextTrim();
 			if (vormelDefinitionNode != null) {
-				data.definition = vormelDefinitionNode.getTextTrim();
+				data.definition = nodeToString(vormelDefinitionNode);
 			}
 			for (Node usageNode : vormelUsages) {
 				Usage usage = new Usage();
-				usage.setValue(((Element)usageNode).getTextTrim());
+				usage.setValue(nodeToString(usageNode));
 				data.usages.add(usage);
 			}
 			vormels.add(data);
@@ -1011,7 +1011,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<String> compoundWords = new ArrayList<>();
 		List<Node> compoundWordNodes = node.selectNodes(compoundWordExp);
 		for (Node compoundWordNode : compoundWordNodes) {
-			compoundWords.add(((Element)compoundWordNode).getTextTrim());
+			compoundWords.add(nodeToString(compoundWordNode));
 		}
 		return compoundWords;
 	}
@@ -1057,7 +1057,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Node metadataNode : metadataNodes) {
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			Element metadataElement = (Element) metadataNode;
-			lexemeMetadata.word = metadataElement.getTextTrim();
+			lexemeMetadata.word = nodeToString(metadataElement);
 			String lexemeLevel1AttrValue = metadataElement.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
 				lexemeMetadata.lexemeLevel1 = defaultLexemeLevel1;
@@ -1093,7 +1093,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (Node synonymNode : synonymNodes) {
 			SynonymData data = new SynonymData();
 			data.reportingId = reportingId;
-			data.word = ((Element)synonymNode).getTextTrim();
+			data.word = nodeToString(synonymNode);
 			data.meaningId = meaningId;
 			String homonymNrAtrValue = ((Element)synonymNode).attributeValue(homonymNrAttr);
 			if (StringUtils.isNotBlank(homonymNrAtrValue)) {
@@ -1113,7 +1113,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		List<Node> grammarNodes = node.selectNodes(grammarValueExp);
 		for (Node grammarNode : grammarNodes) {
-			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, ((Element)grammarNode).getTextTrim(), dataLang);
+			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, nodeToString(grammarNode), dataLang);
 		}
 		if (isNotBlank(wordData.grammar)) {
 			createLexemeFreeform(lexemeId, FreeformType.GRAMMAR, wordData.grammar, dataLang);
@@ -1191,15 +1191,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Node> usageNodes = usageGroupNode.selectNodes(usageExp);
 			for (Node usageNode : usageNodes) {
 				Usage usage = new Usage();
-				String usageValue = ((Element)usageNode).getTextTrim();
-				usageValue = cleanEkiEntityMarkup(usageValue);
+				String usageValue = nodeToString(usageNode);
 				usage.setValue(usageValue);
 				usage.setDefinitions(new ArrayList<>());
 				usages.add(usage);
 				if (((Element)usageNode).hasMixedContent()) {
 					Node usageDefinitionNode = usageNode.selectSingleNode("x:nd");
-					String usageDefinition = usageDefinitionNode.getText();
-					usageDefinition = cleanEkiEntityMarkup(usageDefinition);
+					String usageDefinition = nodeToString(usageDefinitionNode);
 					usage.getDefinitions().add(usageDefinition);
 				}
 			}
@@ -1235,15 +1233,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		List<Node> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Node wordGroupNode : wordGroupNodes) {
-			Element wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-			String formValue = wordNode.getTextTrim();
-			formValue = cleanEkiEntityMarkup(formValue);
+			Node wordNode = wordGroupNode.selectSingleNode(wordExp);
+			String formValue = nodeToString(wordNode);
 			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
 			for (Node referenceFormNode : referenceFormNodes) {
 				Element referenceFormElement = (Element) referenceFormNode;
 				ReferenceFormData referenceFormData = new ReferenceFormData();
-				String wordValue = referenceFormElement.getTextTrim();
-				wordValue = cleanEkiEntityMarkup(wordValue);
+				String wordValue = nodeToString(referenceFormElement);
 				referenceFormData.formValue = formValue;
 				referenceFormData.reportingId = reportingId;
 				referenceFormData.wordValue = wordValue;
@@ -1300,8 +1296,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
 			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
 
-			Element grammarNode = (Element) wordGroupNode.selectSingleNode(wordGrammarExp);
-			wordData.grammar = grammarNode == null ? null : cleanEkiEntityMarkup(grammarNode.getTextTrim());
+			Node grammarNode = wordGroupNode.selectSingleNode(wordGrammarExp);
+			wordData.grammar = nodeToString(grammarNode);
 
 			Element frequencyNode = (Element) wordGroupNode.selectSingleNode(wordFrequencyGroupExp);
 			wordData.frequencyGroup = frequencyNode == null ? null : frequencyNode.getTextTrim();
@@ -1309,8 +1305,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Node> wordComparativeNodes = wordGroupNode.selectNodes(wordComparativeExp);
 			wordData.comparatives = wordComparativeNodes.stream()
 					.map(n -> {
-						String value = ((Element)n).getTextTrim();
-						value = cleanEkiEntityMarkup(value);
+						String value = nodeToString(n);
 						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
 						return value;
 						})
@@ -1319,8 +1314,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<Node> wordSuperlativeNodes = wordGroupNode.selectNodes(wordSuperlativeExp);
 			wordData.superlatives = wordSuperlativeNodes.stream()
 					.map(n -> {
-						String value = ((Element)n).getTextTrim();
-						value = cleanEkiEntityMarkup(value);
+						String value = nodeToString(n);
 						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
 						return value;
 						})
@@ -1379,8 +1373,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Node> wordNodes = node.selectNodes(wordExp);
 		for (Node wordNode : wordNodes) {
 			WordData wordData = new WordData();
-			String basicWordValue = ((Element)wordNode).getTextTrim();
-			basicWordValue = cleanEkiEntityMarkup(basicWordValue);
+			String basicWordValue = nodeToString(wordNode);
 			wordData.id = wordId;
 			wordData.value = basicWordValue;
 			wordData.reportingId = reportingId;
@@ -1406,8 +1399,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 		List<String> formValues = formsNodes.stream()
 				.map(n -> {
-					String value = ((Element)n).getTextTrim();
-					value = cleanEkiEntityMarkup(value);
+					String value = nodeToString(n);
 					value = StringUtils.replaceChars(value, formStrCleanupChars, "");
 					return value;
 					})
@@ -1442,9 +1434,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (wordNode.attributeValue(wordTypeAttr) != null) {
 			wordData.wordType = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
 		}
-		String wordValue = wordNode.getTextTrim();
+		String wordValue = nodeToString(wordNode);
 		String wordDisplayForm = wordValue;
-		wordValue = cleanEkiEntityMarkup(wordValue);
 		wordValue = StringUtils.replaceChars(wordValue, wordDisplayFormStripChars, "");
 		wordData.value = wordValue;
 
@@ -1452,9 +1443,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordMorphCode = extractWordMorphCode(wordValue, wordGroupNode);
 		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, guid, wordData.wordType);
 
-		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
+		Node wordDisplayMorphNode = wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
-			word.setDisplayMorph(wordDisplayMorphNode.getTextTrim());
+			word.setDisplayMorph(nodeToString(wordDisplayMorphNode));
 		}
 		return word;
 	}
@@ -1502,30 +1493,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		List<Node> formGroupNodes = wordGroupNode.selectNodes(formGroupExp);
 		for (Node formGroup : formGroupNodes) {
-			Element formElement = (Element) formGroup.selectSingleNode(formExp);
-			String formValue = formElement.getTextTrim();
-			formValue = cleanEkiEntityMarkup(formValue);
+			String formValue = nodeToString(formGroup.selectSingleNode(formExp));
 			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
 			if (word.equals(formValue)) {
 				return ((Element)formGroup).attributeValue(morphCodeAttributeExp);
 			}
 		}
 		return defaultWordMorphCode;
-	}
-
-	private List<String> extractWordForms(Node wordGroupNode) {
-
-		final String formValueExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
-
-		List<String> forms = new ArrayList<>();
-		List<Node> formNodes = wordGroupNode.selectNodes(formValueExp);
-		for (Node formNode : formNodes) {
-			String formValue = ((Element)formNode).getTextTrim();
-			formValue = cleanEkiEntityMarkup(formValue);
-			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
-			forms.add(formValue);
-		}
-		return forms;
 	}
 
 	private List<String> extractDefinitions(Node node) {
@@ -1535,11 +1509,15 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<String> definitions = new ArrayList<>();
 		List<Node> definitionValueNodes = node.selectNodes(definitionValueExp);
 		for (Node definitionValueNode : definitionValueNodes) {
-			String definition = ((Element)definitionValueNode).getTextTrim();
-			definition = cleanEkiEntityMarkup(definition);
+			String definition = nodeToString(definitionValueNode);
 			definitions.add(definition);
 		}
 		return definitions;
+	}
+
+	private String nodeToString(Node node) {
+		String stringValue = node == null ? null : ((Element)node).getTextTrim();
+		return cleanEkiEntityMarkup(stringValue);
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
