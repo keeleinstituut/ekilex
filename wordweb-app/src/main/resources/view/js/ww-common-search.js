@@ -102,11 +102,11 @@ $(document).ready(function () {
 	$("input[name='searchWord']").autocomplete(searchWordAutocompleteConfig).autocomplete("instance");
 
 	$(".homonym-item").on("click", function (e) {
-		$(".header-container .back").addClass("show-btn");
+		$(".header-container .back").removeClass("show-btn");
 	});
 
 	$(".back").on("click", function (e) {
-		$(".header-container .back").removeClass("show-btn");
+		$(".header-container .back").addClass("show-btn");
 	});
 });
 

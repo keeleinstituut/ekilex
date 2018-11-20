@@ -100,7 +100,9 @@
     cursor: pointer;
 }
 
-.header-container .back { display:none; }
+.back.show-btn { 
+	display: none!important;
+}
 
 .header-container .show-btn.back {
    display:block;

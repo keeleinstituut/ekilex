@@ -5,6 +5,7 @@
   <title>Õpi eesti keelt</title>
   <th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
+    <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
 </th:block>
 </head>
 
@@ -1063,6 +1064,11 @@
 
   <div th:replace="common-app :: footer-content"></div>
   <div th:replace="common-app :: modal-content"></div>
+
+        <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
+          <span class="icon icon-chevron-left"></span>
+        </a>
+
   <script th:inline="javascript">
     var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
     var destinLang = /*[[${sessionBean.destinLang}]]*/"est";

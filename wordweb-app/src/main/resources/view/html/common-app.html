@@ -52,8 +52,14 @@
         <span class="icon icon-logo-s d-md-none"></span>
         <span class="icon icon-logo d-none d-md-block"></span>
       </a>
+
+      <a class="eki-logo-wrapper" href="http://portaal.eki.ee/">
       <span class="eki-logo mini-logo"></span>
-      <div class="back">
+      </a>
+      
+
+
+      <div class="back mt-2 show-btn">
         <span class="icon icon-back"></span>
       </div>
       <div th:replace=":: menu-links"></div>
@@ -66,6 +72,18 @@
 </th:block>
 <th:block th:fragment="menu-links">
 <div class="header-links">
+
+<div class="dropdown lang-btn">
+  <a href="#" class="dropdown-toggle" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    EST
+  </a>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+    <a class="dropdown-item" href="#">EST</a>
+    <a class="dropdown-item" href="#">RUS</a>
+    <a class="dropdown-item" href="#">ENG</a>
+  </div>
+</div>
+
   <button class="btn menu-btn float-right clear-both">
     <span th:text="#{menu.close}">Sulge</span>
     <span class="icon icon-close"></span>
@@ -301,7 +319,7 @@
     <div class="form-group col-12">
       <div class="custom-control custom-checkbox mt-2">
         <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
-        <label class="custom-control-label" for="modalCheck2">Postitades uue sõna või kommentaari nõustud <a th:href="@{/regulations}" data-item-name="regulations">andmekaitse sedusega</a>.</label>
+        <label class="custom-control-label" for="modalCheck2">Postitades uue sõna või kommentaari nõustud <a th:href="@{/regulations}" data-item-name="regulations">Privaatsuspoliitikaga</a>.</label>
       </div>
     </div>
   </div>
