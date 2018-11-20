@@ -26,7 +26,6 @@
             </div>
           </div>
         </div>
-        <!-- TODO: let client to decide waht message option they like, option 1 -->
       </div>
     </div>
   </div>
@@ -37,18 +36,16 @@
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
-      <!-- TODO: let client to decide waht message option they like, option 2 -->
-      
-  <div class="container">
-      <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
-        <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
-          <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
-          <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+      <div class="container">
+        <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
+          <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+            <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
+            <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
+          </div>
+          <div th:if="${switchedToDetailMode}">
+            <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
+          </div>
         </div>
-        <div th:if="${switchedToDetailMode}">
-          <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
-        </div>
-      </div>
       </div>
       <div class="col-12 homonym-panel">
         <ul class="homonym-list">
@@ -76,15 +73,16 @@
       </div>
     </div>
     <div class="word-details"></div>
+
     <div class="row word-details" th:fragment="worddetails" th:if="${not #lists.isEmpty(wordData.lexemes)}">
       <div class="col-12 content-panel d-md-block">
         <div class="row">
           <div class="col-12 content-title">
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
-              <span th:text="${wordData.word.homonymNr}">1</span>
+              <span class="word-details-homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
               <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
-                            <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
+              <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" type="button" data-toggle="modal" data-target="#feedbackModal">Tagasiside</button>
             </h3>
             <button class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
                   th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}"
@@ -501,6 +499,7 @@
       </div>
     </div>
   </div>
+
   <div class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
     <div class="col-12 corp-panel">
       <div class="heading-wrapper">
