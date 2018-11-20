@@ -33,19 +33,19 @@ public class HomeController extends AbstractController {
 		populateGeneralData(model);
 		return GAMES_PAGE;
 	}
-	
+
 	@GetMapping(CONTACTS_URI)
 	public String contacts(Model model) {
 		populateGeneralData(model);
 		return CONTACTS_PAGE;
 	}
-	
+
 	@GetMapping(ABOUT_URI)
 	public String about(Model model) {
 		populateGeneralData(model);
 		return ABOUT_PAGE;
 	}
-	
+
 	@GetMapping(REGULATIONS_URI)
 	public String regulations(Model model) {
 		populateGeneralData(model);

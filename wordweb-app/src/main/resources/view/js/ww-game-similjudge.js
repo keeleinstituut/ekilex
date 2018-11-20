@@ -22,8 +22,14 @@ function populateGameRow() {
 
 	if (gameBatch.length > 0) {
 		currentGameRow = gameBatch.pop();
-		$("#suggestedWordWrapper").removeClass();
-		$("#suggestedWordValue").text(currentGameRow.suggestedWordValue);
+
+		//TODO remove previous answer correctness notification
+		//$("#suggestedWordWrapper").removeClass();
+
+		$("#synonymPair1Word1").text(currentGameRow.wordPair1.word1);
+		$("#synonymPair1Word2").text(currentGameRow.wordPair1.word2);
+		$("#synonymPair2Word1").text(currentGameRow.wordPair2.word1);
+		$("#synonymPair2Word2").text(currentGameRow.wordPair2.word2);
 		$("#gameValidationNotification").hide();
 		gameRowStartTime = new Date().getTime();
 	} else if (gameAnswers == 0) {
@@ -34,7 +40,8 @@ function populateGameRow() {
 }
 
 function getGameBatch() {
-	$.get(getLexicDecisGameBatchUrl, function(gameRows) {
+	var getSimilJudgeGameBatchUrlUrlWithParams = getSimilJudgeGameBatchUrl + "/" + gameKey;
+	$.get(getSimilJudgeGameBatchUrlUrlWithParams, function(gameRows) {
 		if (gameRows.length > 0) {
 			gameBatch = gameRows;
 			populateGameRow()
@@ -47,10 +54,10 @@ function handleAnswerF() {
 	$("#gameValidationNotification").hide();
 	answerGameRow = Object.assign({}, currentGameRow);
 	gameRowStopTime = new Date().getTime();
-	var isCorrectAnswer = currentGameRow.word ? false : true;
-	answerGameRow.answer = false;
+	answerGameRow.answerPair1 = true;
+	answerGameRow.answerPair2 = false;
 	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
-	answerGameRow.correct = isCorrectAnswer;
+	answerGameRow.correct = currentGameRow.wordPair1.synonym;
 }
 
 function handleAnswerJ() {
@@ -58,10 +65,10 @@ function handleAnswerJ() {
 	$("#gameValidationNotification").hide();
 	answerGameRow = Object.assign({}, currentGameRow);
 	gameRowStopTime = new Date().getTime();
-	var isCorrectAnswer = currentGameRow.word ? true : false;
-	answerGameRow.answer = true;
+	answerGameRow.answerPair1 = false;
+	answerGameRow.answerPair2 = true;
 	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
-	answerGameRow.correct = isCorrectAnswer;
+	answerGameRow.correct = currentGameRow.wordPair1.synonym;
 }
 
 function handleEsc() {
@@ -78,7 +85,7 @@ function resolveAnswer() {
 	if (answerGameRow.delay > brainlessAnswerDelayTreshold) {
 		var answerGameRowSer = JSON.stringify(answerGameRow);
 		$.ajax({
-			url : submitLexicDecisGameRowUrl,
+			url : submitSimilJudgeGameRowUrl,
 			type : "POST",
 			dataType : "json",
 			contentType : "application/json",
@@ -94,11 +101,15 @@ function resolveAnswer() {
 		$("#gameResultForm").submit();
 		return;
 	}
+	/*
+	 * TODO notify about answer correctness
+	 * 
 	if (answerGameRow.correct) {
 		$("#suggestedWordWrapper").addClass("bg-success");
 	} else {
 		$("#suggestedWordWrapper").addClass("bg-danger");
 	}
+	*/
 	setTimeout(function() {
 		populateGameRow();
 	}, answerDisplayDelay);

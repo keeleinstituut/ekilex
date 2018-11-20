@@ -2,7 +2,7 @@ package eki.wordweb.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class LexicalDecisionGameResult extends AbstractDataObject {
+public class GameResult extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 

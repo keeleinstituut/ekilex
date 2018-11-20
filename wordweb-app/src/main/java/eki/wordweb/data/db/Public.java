@@ -13,12 +13,13 @@ import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
-import eki.wordweb.data.db.tables.MviewWwLexicalDecisionData;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
+import eki.wordweb.data.db.tables.SimilarityJudgementData;
+import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 import eki.wordweb.data.db.udt.TypeCollocMember;
 import eki.wordweb.data.db.udt.TypeDefinition;
 import eki.wordweb.data.db.udt.TypeDomain;
@@ -55,7 +56,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -809995650;
+    private static final long serialVersionUID = -1601054381;
 
     /**
      * The reference instance of <code>public</code>
@@ -108,11 +109,6 @@ public class Public extends SchemaImpl {
     public final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
 
     /**
-     * The table <code>public.mview_ww_lexical_decision_data</code>.
-     */
-    public final MviewWwLexicalDecisionData MVIEW_WW_LEXICAL_DECISION_DATA = eki.wordweb.data.db.tables.MviewWwLexicalDecisionData.MVIEW_WW_LEXICAL_DECISION_DATA;
-
-    /**
      * The table <code>public.mview_ww_meaning</code>.
      */
     public final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
@@ -136,6 +132,16 @@ public class Public extends SchemaImpl {
      * The table <code>public.mview_ww_word_relation</code>.
      */
     public final MviewWwWordRelation MVIEW_WW_WORD_RELATION = eki.wordweb.data.db.tables.MviewWwWordRelation.MVIEW_WW_WORD_RELATION;
+
+    /**
+     * The table <code>public.similarity_judgement_data</code>.
+     */
+    public final SimilarityJudgementData SIMILARITY_JUDGEMENT_DATA = eki.wordweb.data.db.tables.SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA;
+
+    /**
+     * The table <code>public.similarity_judgement_result</code>.
+     */
+    public final SimilarityJudgementResult SIMILARITY_JUDGEMENT_RESULT = eki.wordweb.data.db.tables.SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT;
 
     /**
      * No further instances allowed
@@ -163,7 +169,9 @@ public class Public extends SchemaImpl {
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
             Sequences.LEXICAL_DECISION_DATA_ID_SEQ,
-            Sequences.LEXICAL_DECISION_RESULT_ID_SEQ);
+            Sequences.LEXICAL_DECISION_RESULT_ID_SEQ,
+            Sequences.SIMILARITY_JUDGEMENT_DATA_ID_SEQ,
+            Sequences.SIMILARITY_JUDGEMENT_RESULT_ID_SEQ);
     }
 
     @Override
@@ -184,12 +192,13 @@ public class Public extends SchemaImpl {
             MviewWwForm.MVIEW_WW_FORM,
             MviewWwLexeme.MVIEW_WW_LEXEME,
             MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION,
-            MviewWwLexicalDecisionData.MVIEW_WW_LEXICAL_DECISION_DATA,
             MviewWwMeaning.MVIEW_WW_MEANING,
             MviewWwMeaningRelation.MVIEW_WW_MEANING_RELATION,
             MviewWwWord.MVIEW_WW_WORD,
             MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY,
-            MviewWwWordRelation.MVIEW_WW_WORD_RELATION);
+            MviewWwWordRelation.MVIEW_WW_WORD_RELATION,
+            SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA,
+            SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT);
     }
 
     @Override

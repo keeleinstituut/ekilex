@@ -32,4 +32,14 @@ public class Sequences {
      * The sequence <code>public.lexical_decision_result_id_seq</code>
      */
     public static final Sequence<Long> LEXICAL_DECISION_RESULT_ID_SEQ = new SequenceImpl<Long>("lexical_decision_result_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.similarity_judgement_data_id_seq</code>
+     */
+    public static final Sequence<Long> SIMILARITY_JUDGEMENT_DATA_ID_SEQ = new SequenceImpl<Long>("similarity_judgement_data_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.similarity_judgement_result_id_seq</code>
+     */
+    public static final Sequence<Long> SIMILARITY_JUDGEMENT_RESULT_ID_SEQ = new SequenceImpl<Long>("similarity_judgement_result_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }
