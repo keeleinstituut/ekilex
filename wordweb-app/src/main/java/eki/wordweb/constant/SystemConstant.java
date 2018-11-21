@@ -10,6 +10,10 @@ public interface SystemConstant {
 
 	String SEARCH_MODE_DETAIL = "detail";
 
+	String GAME_DIFFICULTY_SIMPLE = "easy";
+
+	String GAME_DIFFICULTY_HARD = "hard";
+
 	long CACHE_EVICT_DELAY = 5 * 60 * 1000;
 
 	String CACHE_KEY_CLASSIF = "classif";

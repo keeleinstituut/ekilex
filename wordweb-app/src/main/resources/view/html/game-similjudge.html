@@ -41,21 +41,31 @@
         </div>
       </div>
       <form id="gameResultForm" th:action="@{/games/similjudge/finish}" method="POST">
+        <input name="gameKey" th:value="${gameKey}"/>
         <input id="gameExitMode" name="gameExitMode" type="hidden" />
       </form>
       <div class="col-sm-12 words-block">
         <div class="col-12 col-sm-8 text-center inner-block">
-          <h2>
-            <span id="suggestedWordWrapper" style="padding: 20px">
-              <span id="suggestedWordValue"></span>
-            </span>
-          </h2>
+          <div class="row">
+            <h2>
+              <span style="padding: 20px">
+                <span class="row" id="synonymPair1Word1"></span>
+                <span class="row" id="synonymPair1Word2"></span>
+              </span>
+            </h2>
+            <h2>
+              <span style="padding: 20px">
+                <span class="row" id="synonymPair2Word1"></span>
+                <span class="row" id="synonymPair2Word2"></span>
+              </span>
+            </h2>
+          </div>
         </div>
       </div>
       <div class="col-sm-12 help-tip key-row">
         <div id="answerFbtn" class="col-sm-5">
           <div class="help-letters-right btn-box">
-            <h4 th:text="#{game.label.fno}">F(No)</h4>
+            <h4 th:text="#{game.label.f}">F</h4>
           </div>
         </div>
         <div class="col-sm-2 text-center">
@@ -65,7 +75,7 @@
         </div>
         <div id="answerJbtn" class="col-sm-5">
           <div class="help-letters-left btn-box">
-            <h4 th:text="#{game.label.jyes}">J(Yes)</h4>
+            <h4 th:text="#{game.label.j}">J</h4>
           </div>
         </div>
       </div>
@@ -76,9 +86,9 @@
       </div>
     </div>
   </div>
-  <div th:replace="common-app :: modal-content"></div>
   <script type="text/javascript" th:src="@{/view/js/ww-game-similjudge.js}"></script>
   <script th:inline="javascript">
+    var gameKey = /*[[${gameKey}]]*/"est-rus-easy";
   	var getSimilJudgeGameBatchUrl = /*[[@{/games/similjudge/getgamebatch}]]*/"/games/similjudge/getgamebatch";
   	var submitSimilJudgeGameRowUrl = /*[[@{/games/similjudge/submitgamerow}]]*/"/games/similjudge/submitgamerow";
   </script>

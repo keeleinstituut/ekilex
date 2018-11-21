@@ -20,13 +20,13 @@ public interface WebConstant {
 	String REGULATIONS_PAGE = "regulations";
 
 	String GAMES_PAGE = "games";
-	
+
 	String CONDITIONS_PAGE = "conditions";
-	
-	String COLLECTIONS_PAGE = "collections";	
-	
+
+	String COLLECTIONS_PAGE = "collections";
+
 	String ABOUT_PAGE = "about";
-	
+
 	String CONTACTS_PAGE = "contacts";
 
 	String GAME_LEXICDECIS_PAGE = "game-lexicdecis";
@@ -40,15 +40,15 @@ public interface WebConstant {
 	String LEARN_URI = "/learn";
 
 	String REGULATIONS_URI = "/regulations";
-	
+
 	String ABOUT_URI = "/about";
-	
+
 	String CONTACTS_URI = "/contacts";
 
 	String GAMES_URI = "/games";
-	
+
 	String CONDITIONS_URI = "/conditions";
-	
+
 	String COLLECTIONS_URI = "/collections";
 
 	String GAMES_LEXICDECIS_URI = GAMES_URI + "/lexicdecis";
@@ -60,6 +60,10 @@ public interface WebConstant {
 	String GAMES_SUBMITGAMEROW_URI = "/submitgamerow";
 
 	String GAMES_FINISH_URI = "/finish";
+
+	String GAMES_LEXICDECIS_NAME = "lexicdecis";
+
+	String GAMES_SIMILJUDGE_NAME = "similjudge";
 
 	String ERROR_PAGE = "error";
 

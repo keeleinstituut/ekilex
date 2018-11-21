@@ -2,11 +2,11 @@ package eki.wordweb.data;
 
 import eki.common.data.AbstractDataObject;
 
-public class LexicalDecisionGameStat extends AbstractDataObject {
+public class GameStat extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private LexicalDecisionGameResult gameResult;
+	private GameResult gameResult;
 
 	private int correctAnswersPosition;
 
@@ -16,11 +16,11 @@ public class LexicalDecisionGameStat extends AbstractDataObject {
 
 	private boolean brainlessExit;
 
-	public LexicalDecisionGameResult getGameResult() {
+	public GameResult getGameResult() {
 		return gameResult;
 	}
 
-	public void setGameResult(LexicalDecisionGameResult gameResult) {
+	public void setGameResult(GameResult gameResult) {
 		this.gameResult = gameResult;
 	}
 

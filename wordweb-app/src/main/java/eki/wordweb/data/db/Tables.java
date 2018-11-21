@@ -13,12 +13,13 @@ import eki.wordweb.data.db.tables.MviewWwDataset;
 import eki.wordweb.data.db.tables.MviewWwForm;
 import eki.wordweb.data.db.tables.MviewWwLexeme;
 import eki.wordweb.data.db.tables.MviewWwLexemeRelation;
-import eki.wordweb.data.db.tables.MviewWwLexicalDecisionData;
 import eki.wordweb.data.db.tables.MviewWwMeaning;
 import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
+import eki.wordweb.data.db.tables.SimilarityJudgementData;
+import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 
 import javax.annotation.Generated;
 
@@ -82,11 +83,6 @@ public class Tables {
     public static final MviewWwLexemeRelation MVIEW_WW_LEXEME_RELATION = eki.wordweb.data.db.tables.MviewWwLexemeRelation.MVIEW_WW_LEXEME_RELATION;
 
     /**
-     * The table <code>public.mview_ww_lexical_decision_data</code>.
-     */
-    public static final MviewWwLexicalDecisionData MVIEW_WW_LEXICAL_DECISION_DATA = eki.wordweb.data.db.tables.MviewWwLexicalDecisionData.MVIEW_WW_LEXICAL_DECISION_DATA;
-
-    /**
      * The table <code>public.mview_ww_meaning</code>.
      */
     public static final MviewWwMeaning MVIEW_WW_MEANING = eki.wordweb.data.db.tables.MviewWwMeaning.MVIEW_WW_MEANING;
@@ -110,4 +106,14 @@ public class Tables {
      * The table <code>public.mview_ww_word_relation</code>.
      */
     public static final MviewWwWordRelation MVIEW_WW_WORD_RELATION = eki.wordweb.data.db.tables.MviewWwWordRelation.MVIEW_WW_WORD_RELATION;
+
+    /**
+     * The table <code>public.similarity_judgement_data</code>.
+     */
+    public static final SimilarityJudgementData SIMILARITY_JUDGEMENT_DATA = eki.wordweb.data.db.tables.SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA;
+
+    /**
+     * The table <code>public.similarity_judgement_result</code>.
+     */
+    public static final SimilarityJudgementResult SIMILARITY_JUDGEMENT_RESULT = eki.wordweb.data.db.tables.SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT;
 }

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
 
-    private static final long serialVersionUID = -713165898;
+    private static final long serialVersionUID = -2064608297;
 
     /**
      * The reference instance of <code>public.lexical_decision_data</code>
@@ -64,17 +64,17 @@ public class LexicalDecisionData extends TableImpl<LexicalDecisionDataRecord> {
     /**
      * The column <code>public.lexical_decision_data.word</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<LexicalDecisionDataRecord, String> WORD = createField("word", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.lexical_decision_data.lang</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
+    public final TableField<LexicalDecisionDataRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3).nullable(false), this, "");
 
     /**
      * The column <code>public.lexical_decision_data.is_word</code>.
      */
-    public final TableField<LexicalDecisionDataRecord, Boolean> IS_WORD = createField("is_word", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<LexicalDecisionDataRecord, Boolean> IS_WORD = createField("is_word", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * Create a <code>public.lexical_decision_data</code> table reference

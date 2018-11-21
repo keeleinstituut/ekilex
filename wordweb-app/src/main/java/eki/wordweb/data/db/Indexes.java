@@ -17,6 +17,8 @@ import eki.wordweb.data.db.tables.MviewWwMeaningRelation;
 import eki.wordweb.data.db.tables.MviewWwWord;
 import eki.wordweb.data.db.tables.MviewWwWordEtymology;
 import eki.wordweb.data.db.tables.MviewWwWordRelation;
+import eki.wordweb.data.db.tables.SimilarityJudgementData;
+import eki.wordweb.data.db.tables.SimilarityJudgementResult;
 
 import javax.annotation.Generated;
 
@@ -71,6 +73,13 @@ public class Indexes {
     public static final Index MVIEW_WW_WORD_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX;
     public static final Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Indexes0.MVIEW_WW_WORD_RELATION_WORD_ID_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_DATA_LANG_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_LANG_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_DATA_PKEY = Indexes0.SIMILARITY_JUDGEMENT_DATA_PKEY;
+    public static final Index SIMILARITY_JUDGEMENT_DATA_WORD_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_WORD_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX = Indexes0.SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_RESULT_PKEY = Indexes0.SIMILARITY_JUDGEMENT_RESULT_PKEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -106,5 +115,12 @@ public class Indexes {
         public static Index MVIEW_WW_WORD_WORD_ID_IDX = Internal.createIndex("mview_ww_word_word_id_idx", MviewWwWord.MVIEW_WW_WORD, new OrderField[] { MviewWwWord.MVIEW_WW_WORD.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_ETYMOLOGY_WORD_ID_IDX = Internal.createIndex("mview_ww_word_etymology_word_id_idx", MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY, new OrderField[] { MviewWwWordEtymology.MVIEW_WW_WORD_ETYMOLOGY.WORD_ID }, false);
         public static Index MVIEW_WW_WORD_RELATION_WORD_ID_IDX = Internal.createIndex("mview_ww_word_relation_word_id_idx", MviewWwWordRelation.MVIEW_WW_WORD_RELATION, new OrderField[] { MviewWwWordRelation.MVIEW_WW_WORD_RELATION.WORD_ID }, false);
+        public static Index SIMILARITY_JUDGEMENT_DATA_DATASET_CODE_IDX = Internal.createIndex("similarity_judgement_data_dataset_code_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.DATASET_CODE }, false);
+        public static Index SIMILARITY_JUDGEMENT_DATA_LANG_IDX = Internal.createIndex("similarity_judgement_data_lang_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.LANG }, false);
+        public static Index SIMILARITY_JUDGEMENT_DATA_MEANING_ID_IDX = Internal.createIndex("similarity_judgement_data_meaning_id_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.MEANING_ID }, false);
+        public static Index SIMILARITY_JUDGEMENT_DATA_PKEY = Internal.createIndex("similarity_judgement_data_pkey", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.ID }, true);
+        public static Index SIMILARITY_JUDGEMENT_DATA_WORD_IDX = Internal.createIndex("similarity_judgement_data_word_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.WORD }, false);
+        public static Index SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX = Internal.createIndex("similarity_judgement_result_game_key_idx", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.GAME_KEY }, false);
+        public static Index SIMILARITY_JUDGEMENT_RESULT_PKEY = Internal.createIndex("similarity_judgement_result_pkey", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.ID }, true);
     }
 }

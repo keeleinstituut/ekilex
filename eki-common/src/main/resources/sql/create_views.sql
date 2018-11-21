@@ -556,36 +556,118 @@ create view view_ww_meaning_relation
     group by m1.id;
 
 -- lexical decision game data
-create view view_ww_lexical_decision_data
+create view view_ww_lexical_decision_data 
   as
-      select w.word,
-             w.lang,
-             w.is_word
-      from ((select w.word,
-                    w.lang,
-                    true is_word
-             from (select distinct
-                        f.value word,
+    select w.word,
+           w.lang,
+           w.is_word
+    from ((select w.word,
+                  w.lang,
+                  true is_word
+           from (select distinct f.value word,
                         w.lang
-                   from word w,
-                        paradigm p,
-                        form f
-                   where p.word_id = w.id
-                   and   f.paradigm_id = p.id
-                   and   f.mode = 'WORD'
-                   and   exists (select ld.id
-                                 from lexeme as ld
-                                 where (ld.word_id = w.id and ld.dataset_code = 'psv'))
-                   and   f.value not like '% %'
-                   and   length(f.value) > 2) w
-             order by random())
-             union all 
-             (select nw.word,
-                     nw.lang,
-                     false is_word
-             from game_nonword nw
-             order by random())) w
-      order by random();
+                 from word w,
+                      paradigm p,
+                      form f
+                 where p.word_id = w.id
+                 and   f.paradigm_id = p.id
+                 and   f.mode = 'WORD'
+                 and   exists (select ld.id
+                               from lexeme as ld
+                               where (ld.word_id = w.id and ld.dataset_code = 'psv'))
+                 and   f.value not like '% %'
+                 and   length(f.value) > 2) w
+           order by random()) 
+           union all
+           (select nw.word,
+                  nw.lang,
+                  false is_word
+           from game_nonword nw
+           order by random())) w
+    order by random();
+
+-- similarity judgement game data
+create view view_ww_similarity_judgement_data
+  as
+    select
+      w.meaning_id,
+      w.word,
+      w.lang,
+      w.dataset_code
+    from
+    ((select 
+           w.meaning_id,
+           w.word,
+           w.lang,
+           'qq2' dataset_code
+    from (select distinct l.meaning_id,
+                 f.value word,
+                 w.lang
+          from word w,
+               paradigm p,
+               form f,
+               lexeme l
+          where p.word_id = w.id
+          and   f.paradigm_id = p.id
+          and   f.mode = 'WORD'
+          and   f.value not like '% %'
+          and   length(f.value) > 2
+          and   l.word_id = w.id
+          and   l.dataset_code = 'qq2') w
+    order by random())
+    union all 
+    (select 
+           w.meaning_id,
+           w.word,
+           w.lang,
+           'ev2' dataset_code
+    from (select distinct l.meaning_id,
+                 f.value word,
+                 w.lang
+          from word w,
+               paradigm p,
+               form f,
+               lexeme l
+          where p.word_id = w.id
+          and   f.paradigm_id = p.id
+          and   f.mode = 'WORD'
+          and   f.value not like '% %'
+          and   length(f.value) > 2
+          and   l.word_id = w.id
+          and   l.dataset_code = 'ev2') w
+    where not exists (select w2.id
+                      from word w2,
+                           paradigm p2,
+                           form f2,
+                           lexeme l2
+                      where p2.word_id = w2.id
+                      and   f2.paradigm_id = p2.id
+                      and   f2.mode = 'WORD'
+                      and   l2.word_id = w2.id
+                      and   l2.dataset_code = 'qq2'
+                      and   w.word = f2.value)
+    order by random())
+    union all
+    (select 
+           w.meaning_id,
+           w.word,
+           w.lang,
+           'psv' dataset_code
+    from (select distinct l.meaning_id,
+                 f.value word,
+                 w.lang
+          from word w,
+               paradigm p,
+               form f,
+               lexeme l
+          where p.word_id = w.id
+          and   f.paradigm_id = p.id
+          and   f.mode = 'WORD'
+          and   f.value not like '% %'
+          and   length(f.value) > 2
+          and   l.word_id = w.id
+          and   l.dataset_code = 'psv') w
+    order by random())) w;
 
 -- datasets, classifiers
 create view view_ww_dataset

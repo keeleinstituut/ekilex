@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(_,~{::links})">
-    <title>Keelemängud</title>
-  <th:block th:fragment="links">
+<title>Keelemängud</title>
+<th:block th:fragment="links">
 </th:block>
 </head>
 <body>
@@ -11,42 +11,121 @@
     <div class="row">
       <div class="col-12">
         <h3 class="mt-4 mb-2 text-left">Keelemängud</h3>
-
         <div class="games-list row">
           <div class="col-12 col-md-6 the-game mb-2">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="m-0">
-                <a th:href="@{/games/lexicdecis}">
-                  <span class="text-center" th:text="#{game.lexicdecis}">Sõnatundmise mäng</span>
-                </a>
-              </h5>
-              <th:block th:if="${lexicDecisGameStat != null}">
-              <h6 class="mt-2" th:text="#{game.label.thanks}" th:if="${!lexicDecisGameStat.brainlessExit}">Aitäh!</h6>
-              <div>
-                <b th:text="#{game.lexicdecis.brainless.exit}" th:if="${lexicDecisGameStat.brainlessExit}"></b>
+            <div class="card">
+              <div class="card-body">
+                <h5 class="m-0">
+                  <a th:href="@{/games/lexicdecis}">
+                    <span class="text-center" th:text="#{game.lexicdecis}">Sõnatundmise mäng</span>
+                  </a>
+                </h5>
+                <th:block th:if="${(gameStat != null) && (gameName == 'lexicdecis')}">
+                  <h6 class="mt-2" th:text="#{game.label.thanks}" th:if="${!gameStat.brainlessExit}">Aitäh!</h6>
+                  <div>
+                    <b th:text="#{game.brainless.exit}" th:if="${gameStat.brainlessExit}"></b>
+                  </div>
+                  <th:block th:if="${gameStat.gameResult != null}">
+                    <div>
+                      <span th:text="#{|game.lexicdecis.result.stat.1|(${gameStat.gameResult.allAnswersCount},${gameStat.gameResult.correctAnswersCount})}"></span>
+                    </div>
+                    <div>
+                      <span th:text="#{|game.lexicdecis.result.stat.2|(${gameStat.playerCount},${gameStat.averageDelayPosition},${gameStat.correctAnswersPosition})}"></span>
+                    </div>
+                  </th:block>
+                </th:block>
               </div>
-              <th:block th:if="${lexicDecisGameStat.gameResult != null}">
-              <div>
-                <span th:text="#{|game.lexicdecis.result.stat.1|(${lexicDecisGameStat.gameResult.allAnswersCount},${lexicDecisGameStat.gameResult.correctAnswersCount})}"></span>
+            </div>
+          </div>
+        </div>
+        <div class="games-list row">
+          <div class="col-12 col-md-6 the-game mb-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="m-0">
+                  <a th:href="@{/games/similjudge/est-rus-easy}">
+                    <span class="text-center" th:text="#{game.similjudge.est.rus.easy}">Sarnasuse mäng</span>
+                  </a>
+                </h5>
+                <th:block th:if="${(gameStat != null) && (gameName == 'similjudge') && (gameKey == 'est-rus-easy')}">
+                  <h6 class="mt-2" th:text="#{game.label.thanks}" th:if="${!gameStat.brainlessExit}">Aitäh!</h6>
+                  <div>
+                    <b th:text="#{game.brainless.exit}" th:if="${gameStat.brainlessExit}"></b>
+                  </div>
+                  <th:block th:if="${gameStat.gameResult != null}">
+                    <div>
+                      <span th:text="#{|game.similjudge.result.stat.1|(${gameStat.gameResult.allAnswersCount},${gameStat.gameResult.correctAnswersCount})}"></span>
+                    </div>
+                    <div>
+                      <span th:text="#{|game.similjudge.result.stat.2|(${gameStat.playerCount},${gameStat.averageDelayPosition},${gameStat.correctAnswersPosition})}"></span>
+                    </div>
+                  </th:block>
+                </th:block>
               </div>
-              <div>
-                <span th:text="#{|game.lexicdecis.result.stat.2|(${lexicDecisGameStat.playerCount},${lexicDecisGameStat.averageDelayPosition},${lexicDecisGameStat.correctAnswersPosition})}"></span>
+            </div>
+          </div>
+        </div>
+        <div class="games-list row">
+          <div class="col-12 col-md-6 the-game mb-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="m-0">
+                  <a th:href="@{/games/similjudge/est-rus-hard}">
+                    <span class="text-center" th:text="#{game.similjudge.est.rus.hard}">Sarnasuse mäng</span>
+                  </a>
+                </h5>
+                <th:block th:if="${(gameStat != null) && (gameName == 'similjudge') && (gameKey == 'est-rus-hard')}">
+                  <h6 class="mt-2" th:text="#{game.label.thanks}" th:if="${!gameStat.brainlessExit}">Aitäh!</h6>
+                  <div>
+                    <b th:text="#{game.brainless.exit}" th:if="${gameStat.brainlessExit}"></b>
+                  </div>
+                  <th:block th:if="${gameStat.gameResult != null}">
+                    <div>
+                      <span th:text="#{|game.similjudge.result.stat.1|(${gameStat.gameResult.allAnswersCount},${gameStat.gameResult.correctAnswersCount})}"></span>
+                    </div>
+                    <div>
+                      <span th:text="#{|game.similjudge.result.stat.2|(${gameStat.playerCount},${gameStat.averageDelayPosition},${gameStat.correctAnswersPosition})}"></span>
+                    </div>
+                  </th:block>
+                </th:block>
               </div>
-            </th:block>
-          </th:block>
+            </div>
+          </div>
+        </div>
+        <div class="games-list row">
+          <div class="col-12 col-md-6 the-game mb-2">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="m-0">
+                  <a th:href="@{/games/similjudge/est-est-easy}">
+                    <span class="text-center" th:text="#{game.similjudge.est.est.easy}">Sarnasuse mäng</span>
+                  </a>
+                </h5>
+                <th:block th:if="${(gameStat != null) && (gameName == 'similjudge') && (gameKey == 'est-est-easy')}">
+                  <h6 class="mt-2" th:text="#{game.label.thanks}" th:if="${!gameStat.brainlessExit}">Aitäh!</h6>
+                  <div>
+                    <b th:text="#{game.brainless.exit}" th:if="${gameStat.brainlessExit}"></b>
+                  </div>
+                  <th:block th:if="${gameStat.gameResult != null}">
+                    <div>
+                      <span th:text="#{|game.similjudge.result.stat.1|(${gameStat.gameResult.allAnswersCount},${gameStat.gameResult.correctAnswersCount})}"></span>
+                    </div>
+                    <div>
+                      <span th:text="#{|game.similjudge.result.stat.2|(${gameStat.playerCount},${gameStat.averageDelayPosition},${gameStat.correctAnswersPosition})}"></span>
+                    </div>
+                  </th:block>
+                </th:block>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-    </div>
   </div>
-</div>
-</div>
   <div th:replace="common-app :: footer-content"></div>
-    <div th:replace="common-app :: modal-content"></div>
-<script th:inline="javascript">
- var currentPage = /*[[@{/games}]]*/"/games";
- setActiveMenuItem('games');
-</script>
+  <script th:inline="javascript">
+  	var currentPage = /*[[@{/games}]]*/"/games";
+  	setActiveMenuItem('games');
+  </script>
 </body>
 </html>
