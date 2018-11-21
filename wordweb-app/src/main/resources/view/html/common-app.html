@@ -43,6 +43,7 @@
 <script type="text/javascript" th:src="@{/view/js/bootstrap.js}"></script>
 <script type="text/javascript" th:src="@{/view/js/ww-common-app.js}"></script>
 </th:block>
+
 <!-- menu -->
 <th:block th:fragment="menu">
 <div class="container-fluid header-container">
@@ -52,13 +53,9 @@
         <span class="icon icon-logo-s d-md-none"></span>
         <span class="icon icon-logo d-none d-md-block"></span>
       </a>
-
       <a class="eki-logo-wrapper" href="http://portaal.eki.ee/">
       <span class="eki-logo mini-logo"></span>
       </a>
-      
-
-
       <div class="back mt-2 show-btn">
         <span class="icon icon-back"></span>
       </div>
@@ -69,20 +66,21 @@
     </div>
   </div>
 </div>
+<th:block th:replace=":: feedback-form"></th:block>
 </th:block>
+
 <th:block th:fragment="menu-links">
 <div class="header-links">
-
-<div class="dropdown lang-btn">
-  <a href="#" class="dropdown-toggle" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    EST
-  </a>
-  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-    <a class="dropdown-item" href="#">EST</a>
-    <a class="dropdown-item" href="#">RUS</a>
-    <a class="dropdown-item" href="#">ENG</a>
+  <div class="dropdown lang-btn">
+    <a href="#" class="dropdown-toggle" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      EST
+    </a>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+      <a class="dropdown-item" href="#">EST</a>
+      <a class="dropdown-item" href="#">RUS</a>
+      <a class="dropdown-item" href="#">ENG</a>
+    </div>
   </div>
-</div>
 
   <button class="btn menu-btn float-right clear-both">
     <span th:text="#{menu.close}">Sulge</span>
@@ -108,6 +106,7 @@
   </a>
 </div>
 </th:block>
+
 <!-- debugging aid -->
 <div th:fragment="dump_vars" class="m-4">
   <h4>Dump of all variables in Thymeleaf context</h4>
@@ -131,12 +130,14 @@
     </tr>
   </table>
 </div>
-<th:block th:fragment="modal-content">
+
+<!-- Feedback dialog -->
+<th:block th:fragment="feedback-form">
 <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="Tagasiside modaal" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Tagasiside</h5>
+        <h5 class="modal-title" th:text="#{feedback.title}">Tagasiside</h5>
         <a href="#" class="close" data-dismiss="modal" aria-label="Close">
           <span class="icon icon-close"></span>
         </a>
@@ -144,30 +145,27 @@
       <div class="modal-body">
         <div class="modal-radio">
           <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline1" checked name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline1">Lisa uus sõna</label>
+            <input type="radio" id="feedbackWordRadio" checked name="feedbackRadio" class="custom-control-input">
+            <label class="custom-control-label" for="feedbackWordRadio" th:text="#{label.fb.new.word}">Lisa uus sõna</label>
           </div>
           <div class="custom-control custom-radio custom-control-inline">
-            <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-            <label class="custom-control-label" for="customRadioInline2">Teata vigasest sõnast</label>
+            <input type="radio" id="feedbackCommentRadio" name="feedbackRadio" class="custom-control-input">
+            <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Komentaar</label>
           </div>
         </div>
-
-        <div class="has-error mt-2">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
-
-        <div classs="modal-content">
-          <div id="feedWord" class="formarea show-section">
-            <th:block th:insert="common-app :: feedback_new_word"></th:block>
-          </div>
-          <div id="feedComment" class="formarea">
-            <th:block th:insert="common-app :: feedback_comment"></th:block>
-          </div>
+        <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
+        <div id="feedWord" class="formarea show-section">
+          <th:block th:insert="common-app :: feedback_new_word"></th:block>
+        </div>
+        <div id="feedComment" class="formarea">
+          <th:block th:insert="common-app :: feedback_comment"></th:block>
         </div>
       </div>
     </div>
   </div>
 </div>
 </th:block>
+
 <!-- Footer -->
 <th:block th:fragment="footer-content">
 <footer class="footer">
@@ -199,6 +197,7 @@
   </div>
 </footer>
 </th:block>
+
 <th:block th:fragment="feedback_new_word">
 <form>
   <div class="form-row">
@@ -214,7 +213,7 @@
       <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
       <input type="text" class="form-control" name="word">
       <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+        <div class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
       </div>
     </div>
     <div class="form-group col-12 col-md-6">
@@ -239,15 +238,15 @@
       <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
       <input type="text" class="form-control" name="sender">
       <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+        <div class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
       </div>
     </div>
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
       <input type="email" class="form-control form-email" name="email">
       <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
-        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+        <div class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
+        <div class="alert alert-mail hide" th:text="#{label.fb.invalid.email}">Palun sisestage e-mail</div>
       </div>
     </div>
   </div>
@@ -256,7 +255,7 @@
     <div class="form-group col-12">
       <div class="custom-control custom-checkbox mt-2">
         <input type="checkbox" class="custom-control-input modal-check" id="modalCheck1">
-        <label class="custom-control-label" for="modalCheck1">Postitades uue sõna või kommentaari nõustud <a th:href="@{/regulations}" data-item-name="regulations">andmekaitse sedusega</a>.</label>
+        <label class="custom-control-label" for="modalCheck1"><span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span> <a th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">Privaatsuspoliitikaga</a>.</label>
       </div>
     </div>
   </div>
@@ -264,15 +263,16 @@
   <div class="form-group">
     <div class="col-12 p-0 mt-2">
       <div class="text-right">
-        <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
+        <a href="#" class="mr-3" data-dismiss="modal" th:text="#{button.fb.close}">Sulge</a>
         <button type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
       </div>
     </div>
   </div>
 </form>
 </th:block>
+
 <th:block th:fragment="feedback_comment">
-<form id="formid">
+<form>
   <div class="form-row">
     <div class="form-group col-12">
       <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.comment.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
@@ -284,33 +284,33 @@
   <div class="form-row">
     <div class="form-group col-12">
       <label class="col-form-label" th:text="#{label.fb.word}">Sõna</label>
-      <input type="text" class="form-control" name="word2">
+      <input type="text" class="form-control" name="word">
       <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+        <div class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
       </div>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-12">
       <label class="col-form-label" th:text="#{label.fb.comment}">Kommentaar</label>
-      <textarea type="text" class="form-control" name="comments2"></textarea>
+      <textarea type="text" class="form-control" name="comments"></textarea>
     </div>
   </div>
   <div class="form-row">
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.name}">Nimi</label>
-      <input type="text" class="form-control" name="sender2">
+      <input type="text" class="form-control" name="sender">
       <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
+        <div class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
       </div>
     </div>
 
     <div class="form-group col-12 col-md-6">
       <label class="col-form-label" th:text="#{label.fb.email}">E-post</label>
-      <input type="email" class="form-control form-email" name="email2">
+      <input type="email" class="form-control form-email" name="email">
       <div class="errors">
-        <div class="alert alert-danger hide">Väli kohustuslik</div>
-        <div class="alert alert-mail hide">Palun sisestage e-mail</div>
+        <div class="alert alert-danger hide" th:text="#{label.fb.required}">Väli on kohustuslik</div>
+        <div class="alert alert-mail hide" th:text="#{label.fb.invalid.email}">Palun sisestage e-mail</div>
       </div>
     </div>
   </div>
@@ -319,21 +319,21 @@
     <div class="form-group col-12">
       <div class="custom-control custom-checkbox mt-2">
         <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
-        <label class="custom-control-label" for="modalCheck2">Postitades uue sõna või kommentaari nõustud <a th:href="@{/regulations}" data-item-name="regulations">Privaatsuspoliitikaga</a>.</label>
+        <label class="custom-control-label" for="modalCheck2"><span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span> <a th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">Privaatsuspoliitikaga</a>.</label>
       </div>
     </div>
   </div>
 
-
   <div class="form-group">
     <div class="col-12 p-0 mt-2">
       <div class="text-right">
-        <a href="#" class="mr-3" data-dismiss="modal">Sulge</a>
+        <a href="#" class="mr-3" data-dismiss="modal" th:text="#{button.fb.close}">Sulge</a>
         <button type="button" class="btn btn-primary disabled" name="feedbackSendBtn" th:text="#{button.fb.send.feedback}">Saada</button>
       </div>
     </div>
   </div>
 </form>
 </th:block>
+
 </body>
 </html>

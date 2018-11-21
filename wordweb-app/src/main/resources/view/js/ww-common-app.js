@@ -1,7 +1,6 @@
 var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
-
 	var sessionTimeoutMs = (sessionTimeoutSec - sessionTimeoutBufferSec) * 1000;
 	setTimeout(function() {
 		window.location = applicationUrl;
@@ -10,17 +9,15 @@ $(document).ready(function() {
 	$('[data-toggle="tooltip"]').tooltip();
 
 	$(".form-email").on('input', function() {
-		var $errorMail = $(".alert-mail");
 		var input = $(this);
 		var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 		var is_email = re.test(input.val());
 		if (is_email) {
-			input.siblings(".errors").find($errorMail).removeClass("error-show");
+			input.siblings(".errors").find(".alert-mail").removeClass("error-show");
 		} else {
-			input.siblings(".errors").find($errorMail).addClass("error-show");
+			input.siblings(".errors").find(".alert-mail").addClass("error-show");
 		}
 	});
-
 });
 
 $(document).on("click", ".menu-btn", function(e) {
@@ -31,32 +28,35 @@ function setActiveMenuItem(itemName) {
 	$('.menu-item[data-item-name=' + itemName + ']').addClass('selected');
 }
 
+function validateRequiredFormField(form, fieldName) {
+	var fieldElement = form.find("input[name="  + fieldName +"]");
+    if (fieldElement.val() == "") {
+        fieldElement.siblings(".errors").find(".alert-danger").addClass("error-show");
+    } else {
+        fieldElement.siblings(".errors").find(".alert-danger").removeClass("error-show");
+    }
+}
+
+function isValidFeedbackForm(fbForm) {
+    validateRequiredFormField(fbForm, 'sender');
+    validateRequiredFormField(fbForm, 'email');
+    validateRequiredFormField(fbForm, 'word');
+    return fbForm.find(".error-show").length == 0;
+}
+
 $(document).on("click", "button[name='feedbackSendBtn']", function() {
-	var $error = $(".alert-danger");
-	if ($("input[name='sender']").val() == "") {
-		$("input[name='sender']").siblings(".errors").find($error).addClass("error-show");
-	} else {
-		$("input[name='sender']").siblings(".errors").find($error).removeClass("error-show");
-	}
-	if ($("input[name='email']").val() == "") {
-		$("input[name='email']").siblings(".errors").find($error).addClass("error-show");
-	} else {
-		$("input[name='email']").siblings(".errors").find($error).removeClass("error-show");
-	}
-	if ($("input[name='word']").val() == "") {
-		$("input[name='word']").siblings(".errors").find($error).addClass("error-show");
-	} else {
-		$("input[name='word']").siblings(".errors").find($error).removeClass("error-show");
-	}
 	if (feedbackServiceUrl === null) {
 		console.debug('Feedback service configuration is missing.');
 		alert(messages.fb_service_error);
 		return;
 	}
 	var feedbackForm = $(this).closest('form');
-	var okMessage = feedbackForm.find('[name=ok_message]').text();
-	var errorMessage = feedbackForm.find('[name=error_message]').text();
-	return $.ajax({
+	if (!isValidFeedbackForm(feedbackForm)) {
+		return;
+	}
+	var okMessageElement = feedbackForm.find('[name=ok_message]');
+	var errorMessageElement = feedbackForm.find('[name=error_message]');
+	$.ajax({
 		url : feedbackServiceUrl,
 		data : feedbackForm.serialize(),
 		method : 'POST'
@@ -64,27 +64,37 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 		console.log(data);
 		var answer = JSON.parse(data);
 		if (answer.status === 'ok') {
-			alert(okMessage);
+			okMessageElement.attr('hidden', false);
 		} else {
-			alert(errorMessage);
+			errorMessageElement.attr('hidden', false);
 		}
 	}).fail(function(data) {
-		$('.has-error').show();
+        feedbackForm.find('.has-error').show();
 	});
 });
 
 $(document).on("click", ".modal-check", function() {
-	$(this).parents('form').find("button[name='feedbackSendBtn']").removeClass('disabled');
+	$(this).closest('form').find("button[name='feedbackSendBtn']").toggleClass('disabled');
 });
 
-$(document).on("click", "#customRadioInline1", function() {
+function clearMessages(modalDlg) {
+    modalDlg.find('.alert').removeClass('error-show');
+    modalDlg.find('[name=ok_message]').attr('hidden', true);
+    modalDlg.find('[name=error_message]').attr('hidden', true);
+}
+
+$(document).on("click", "#feedbackWordRadio", function() {
 	$('#feedWord').addClass('show-section');
-	$('.alert').removeClass('error-show');
 	$('#feedComment').removeClass('show-section');
+    clearMessages($(this).closest('.modal-dialog'));
 });
 
-$(document).on("click", "#customRadioInline2", function() {
+$(document).on("click", "#feedbackCommentRadio", function() {
 	$('#feedWord').removeClass('show-section');
 	$('#feedComment').addClass('show-section');
-	$('.alert').removeClass('error-show');
+    clearMessages($(this).closest('.modal-dialog'));
+});
+
+$(document).on('show.bs.modal', '#feedbackModal', function() {
+    clearMessages($(this));
 });
