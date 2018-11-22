@@ -18,6 +18,11 @@ $(document).ready(function() {
 			input.siblings(".errors").find(".alert-mail").addClass("error-show");
 		}
 	});
+	
+	$(function() {
+  $('[autofocus]:not(:focus)').eq(0).focus();
+});
+
 });
 
 $(document).on("click", ".menu-btn", function(e) {
@@ -98,3 +103,5 @@ $(document).on("click", "#feedbackCommentRadio", function() {
 $(document).on('show.bs.modal', '#feedbackModal', function() {
     clearMessages($(this));
 });
+
+

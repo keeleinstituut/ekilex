@@ -6,7 +6,7 @@
     <div class="search-main">
       <form th:action="@{/search}" th:method="post">
         <div>
-          <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
+          <input type="text" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" autofocus/>
           <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
           <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
           <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
