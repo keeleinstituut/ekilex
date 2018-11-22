@@ -10,7 +10,7 @@
 <body class="games-body" style="overflow-y: hidden;">
   <div th:replace="common-app :: menu"></div>
   <div id="gameStartPage" class="frame col-sm-12">
-    <div class="col-sm-112 text-center">
+    <div class="col-sm-12 text-center">
       <h2 th:text="#{game.similjudge}">Sõnatundmise mäng.</h2>
     </div>
     <div class="col-sm-12">
@@ -46,25 +46,26 @@
       </form>
       <div class="col-sm-12 words-block">
         <div class="col-12 col-sm-8 text-center inner-block">
-          <div class="row">
-            <h2>
+          <div class="row flexbox">
+            <h4 id="synonymPair1">
               <span style="padding: 20px">
                 <span class="row" id="synonymPair1Word1"></span>
                 <span class="row" id="synonymPair1Word2"></span>
               </span>
-            </h2>
-            <h2>
+            </h4>
+
+            <h4 id="synonymPair2">
               <span style="padding: 20px">
                 <span class="row" id="synonymPair2Word1"></span>
                 <span class="row" id="synonymPair2Word2"></span>
               </span>
-            </h2>
+            </h4>
           </div>
         </div>
       </div>
       <div class="col-sm-12 help-tip key-row">
         <div id="answerFbtn" class="col-sm-5">
-          <div class="help-letters-right btn-box">
+          <div class="help-letters-right btn-box btn-neutral-dark">
             <h4 th:text="#{game.label.f}">F</h4>
           </div>
         </div>
@@ -74,7 +75,7 @@
           <!--</h5>-->
         </div>
         <div id="answerJbtn" class="col-sm-5">
-          <div class="help-letters-left btn-box">
+          <div class="help-letters-left btn-box btn-neutral-light">
             <h4 th:text="#{game.label.j}">J</h4>
           </div>
         </div>

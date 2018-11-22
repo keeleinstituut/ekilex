@@ -23,8 +23,8 @@ function populateGameRow() {
 	if (gameBatch.length > 0) {
 		currentGameRow = gameBatch.pop();
 
-		//TODO remove previous answer correctness notification
-		//$("#suggestedWordWrapper").removeClass();
+
+		$("#synonymPair1, #synonymPair2").removeClass();
 
 		$("#synonymPair1Word1").text(currentGameRow.wordPair1.word1);
 		$("#synonymPair1Word2").text(currentGameRow.wordPair1.word2);
@@ -68,7 +68,7 @@ function handleAnswerJ() {
 	answerGameRow.answerPair1 = false;
 	answerGameRow.answerPair2 = true;
 	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
-	answerGameRow.correct = currentGameRow.wordPair1.synonym;
+	answerGameRow.correct = currentGameRow.wordPair2.synonym;
 }
 
 function handleEsc() {
@@ -101,15 +101,26 @@ function resolveAnswer() {
 		$("#gameResultForm").submit();
 		return;
 	}
-	/*
-	 * TODO notify about answer correctness
-	 * 
+
+
 	if (answerGameRow.correct) {
-		$("#suggestedWordWrapper").addClass("bg-success");
+		if (answerGameRow.answerPair1) {
+			$("#synonymPair1").addClass("bg-success");
+		} else {
+			$("#synonymPair2").addClass("bg-success");
+		}
 	} else {
-		$("#suggestedWordWrapper").addClass("bg-danger");
+		if (answerGameRow.answerPair1) {
+			$("#synonymPair1").addClass("bg-danger");
+		} else {
+			$("#synonymPair2").addClass("bg-danger");
+		}
+		
 	}
-	*/
+	
+
+
+
 	setTimeout(function() {
 		populateGameRow();
 	}, answerDisplayDelay);

@@ -8183,6 +8183,12 @@ body:not(.home-page) footer {
     margin-top: 4.375rem;
   }
 
+  .games-list {
+      align-items: center;
+  flex-direction: row;
+  display: block;
+  }
+
   .games-list .card-body { 
     justify-content: center;
     display: flex;
@@ -8351,7 +8357,7 @@ body:not(.home-page) footer {
 
 .rections .type-one, .rections .type-one-list {
   font-style: italic;
-  color: #777777;
+  color: #658ad4;
 }
 
 
@@ -8369,12 +8375,17 @@ body:not(.home-page) footer {
 
 .rekts-est {
     font-style: italic;
-  color: #777777;
+  color: #658ad4;
 }
 
 .lexeme {
-  color: #777777;
+  color: #658ad4;
 }
+
+.homonym-container {
+  max-width: 100%
+}
+
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
@@ -8433,6 +8444,14 @@ body:not(.home-page) footer {
   transform: translate3d(0px, 43px, 0px)!important;
   min-width: inherit;
   width: unset;
+}
+
+.homonym-innerwrap {
+  padding-left: 0px!important;
+}
+
+.homonym-innerwrap button:first-of-type {
+  margin-left: 0px!important;
 }
 
 }
@@ -8495,7 +8514,16 @@ body:not(.home-page) footer {
   width: calc(22.125rem / 2.2);
   background-size: calc(22.125rem / 2.2) calc(11.6875rem / 2.2); 
 }
-
+  .games-list {
+      align-items: center;
+  flex-direction: column;
+  display: flex;
+  }
 }
 
+@media (min-width: 1200px) { 
+.homonym-container {
+  max-width: 80vw;
+}
+}
 
