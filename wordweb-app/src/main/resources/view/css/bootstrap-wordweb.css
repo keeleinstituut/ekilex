@@ -7502,13 +7502,13 @@ input[type="checkbox"] {
   margin-right: 1rem;
 }
 
-  .homonym-innerwrap { 
-    max-width: 80vw!important; 
-    margin: auto; 
-    margin-bottom: 1.5em;
-   margin-left: 0rem; 
+.homonym-innerwrap { 
+  max-width: 80vw!important; 
+  margin: auto; 
+  margin-bottom: 1.5em;
+  margin-left: 0rem; 
 
- }
+}
 
 @media (min-width: 576px) {
   .modal-dialog {
@@ -7983,7 +7983,7 @@ input[type="checkbox"] {
   height: calc(6.25rem / 1.8); 
   width: calc(16.875rem / 1.8); 
   margin: 0 auto;
- }
+}
 
 .mini-logo {
   justify-content: center;
@@ -8291,12 +8291,12 @@ body:not(.home-page) footer {
   bottom: 2rem;
   right: calc( 5%);
   -webkit-transform: rotate(90deg);
-transform: rotate(90deg);
-background: rgba(255, 255, 255, 0.7);
-border-radius: 3.125rem;
-height: 2rem;
-width: 2rem;
-z-index: 10;
+  transform: rotate(90deg);
+  background: rgba(255, 255, 255, 0.7);
+  border-radius: 3.125rem;
+  height: 2rem;
+  width: 2rem;
+  z-index: 10;
 }
 
 .top-button:hover {
@@ -8347,6 +8347,33 @@ z-index: 10;
  color: white!important;
  background: #0077FF!important;
  border-radius: 0px!important;
+}
+
+.rections .type-one, .rections .type-one-list {
+  font-style: italic;
+  color: #777777;
+}
+
+
+.rections .type-two {
+  color: #003F87 !important;
+  padding: 0.125rem 0.3125rem 0.0625rem 0.3125rem;
+  border-radius: 0.3125rem;
+  font-weight: bold;
+}
+
+.rections .type-three {
+  font-style: normal;
+  color: #00874F;
+}
+
+.rekts-est {
+    font-style: italic;
+  color: #777777;
+}
+
+.lexeme {
+  color: #777777;
 }
 
 @media (max-width: 767px) { 
@@ -8400,7 +8427,7 @@ z-index: 10;
    position: absolute;
  }
 
-.search-lang .dropdown-menu {
+ .search-lang .dropdown-menu {
   left: 1rem!important;
   right: 1rem!important;
   transform: translate3d(0px, 43px, 0px)!important;
@@ -8414,44 +8441,44 @@ z-index: 10;
 @media (min-width: 768px) { 
 
  .homonym-innerwrap {
-      margin-bottom: 1em;
-   padding-left: 1.25rem;
+  margin-bottom: 1em;
+  padding-left: 1.25rem;
 }
 
-  .logo-list {
-    flex-direction: row;
-    margin-top: 4rem;
-    margin-bottom: 4rem;
-  }
+.logo-list {
+  flex-direction: row;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
 
-  .more-btn {
-    right: -2.5rem;
-  }
+.more-btn {
+  right: -2.5rem;
+}
 
-  .home-page-content {
-    padding-bottom: 8.3125rem; }
+.home-page-content {
+  padding-bottom: 8.3125rem; }
 
-    .footer {
-     position: absolute;
-   }
+  .footer {
+   position: absolute;
+ }
 
-   .footer .social-list { 
-    margin-bottom: 0rem;
-  }
+ .footer .social-list { 
+  margin-bottom: 0rem;
+}
 
-  .footer-wrapper .row { 
-    max-height: 5.9375rem;
-  }
+.footer-wrapper .row { 
+  max-height: 5.9375rem;
+}
 
-  .modal-dialog {
-    min-width: 700px;
-    margin-right: auto;
-    margin-left: auto;
-  }
+.modal-dialog {
+  min-width: 700px;
+  margin-right: auto;
+  margin-left: auto;
+}
 
-  .definition {
-    line-height: 1.8
-  }
+.definition {
+  line-height: 1.8
+}
 
 .eki-logo { 
   height: calc(6.25rem / 1.5); 

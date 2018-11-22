@@ -109,8 +109,8 @@
                     <span th:if="${not #lists.isEmpty(lexeme.poses)}">
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </span>
-                    <span th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      <th:block th:each="grammar,grammarIter : ${lexeme.grammars}">
+                    <span class="lexeme small" th:if="${not #lists.isEmpty(lexeme.grammars)}">
+                      - <th:block th:each="grammar,grammarIter : ${lexeme.grammars}">
                         <span th:text="${grammar}"></span>
                         <span th:unless="${grammarIter.last}">,</span>
                       </th:block>
@@ -129,24 +129,23 @@
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
                         <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black; font-family: 'Montserrat';">
                         </a>
-                        <span th:if="${meaningWord.additionalDataExists}" style="font-style: italic; color: #777777;">
-                          [
-                          <span th:if="${not #lists.isEmpty(meaningWord.governments)}"> <!--rekts-->
-                            <span class="YOL" th:each="government : ${meaningWord.governments}">
+                        <span th:if="${meaningWord.additionalDataExists}" class="rections">
+                          
+                          <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}"> <!--rekts-->
+                            [<span class="type-one" th:each="government : ${meaningWord.governments}">
                               <span th:text="${government}"></span>
-                            </span>
+                            </span>]
                           </span>
                           <span th:if="${not #lists.isEmpty(meaningWord.registers)}">.  <!--reg-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
-                            <span class="..........." th:each="register : ${meaningWord.registers}">
-                              <span th:text="${register.value}"></span>
+                            <span class="type-two" th:each="register : ${meaningWord.registers}">| <span th:text="${register.value}"></span> |
                             </span>
                           </span>
                           <span th:if="${meaningWord.aspect != null}"> <!--aspekt-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
-                            <span class="äääääääääää" th:text="${meaningWord.aspect.value}"></span>
+                            <span class="type-three" th:text="${meaningWord.aspect.value}"></span>
                           </span>
-                          ]
+                          
                         </span>
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
                       </span>
@@ -155,8 +154,8 @@
                   </div>
                 </div>
                 <div class="col-12 dependencies">
-                  <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-2 small">
-                    <i th:each="government, iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
+                  <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-2 rekts-est">
+                    [<i th:each="government, iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>]
                   </div>
                   <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
@@ -524,7 +523,6 @@
   </div>
 
   <div th:replace="common-app :: footer-content"></div>
-  <div th:replace="common-app :: modal-content"></div>
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
   	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
