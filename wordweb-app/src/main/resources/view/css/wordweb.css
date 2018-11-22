@@ -62,7 +62,7 @@
 }
 
 .message-wrap {
-    margin-top: 9.5em;
+    margin-top: 15.5em;
 }
 .details-message {
     top: -1.5em;
@@ -154,6 +154,9 @@
 
 .meaning { 
     margin-bottom: 0.625rem; 
+}
+.message-wrap {
+    margin-top: 9.5em;
 }
 }
 
