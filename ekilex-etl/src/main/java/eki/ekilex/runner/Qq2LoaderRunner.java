@@ -543,16 +543,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			List<Form> mabForms = lastCompParadigm.getForms();
 			List<Form> compoundForms = new ArrayList<>();
 			for (Form mabForm : mabForms) {
-				String mabFormValue = mabForm.getValue();
-				String displayForm = mabForm.getDisplayForm();
-				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabFormValue;
-				String compoundDisplayForm = StringUtils.join(wordComponents, '+', 0, wordComponentCount - 1) + '+' + displayForm; 
+				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabForm.getValue();
+				String compoundDisplayForm = StringUtils.join(wordComponents, '+', 0, wordComponentCount - 1) + '+' + mabForm.getDisplayForm(); 
 				compoundFormValues.add(compoundFormValue);
-				Form compoundForm = new Form();
+				Form compoundForm = copy(mabForm);
 				compoundForm.setValue(compoundFormValue);
 				compoundForm.setDisplayForm(compoundDisplayForm);
-				compoundForm.setMorphCode(mabForm.getMorphCode());
-				compoundForm.setMode(mabForm.getMode());
 				compoundForms.add(compoundForm);
 			}
 			Paradigm compoundWordParadigm = new Paradigm();
@@ -561,6 +557,21 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			compoundWordParadigms.add(compoundWordParadigm);
 		}
 		return compoundWordParadigms;
+	}
+
+	private Form copy(Form mabForm) {
+		Form copy = new Form();
+		copy.setMode(mabForm.getMode());
+		copy.setMorphGroup1(mabForm.getMorphGroup1());
+		copy.setMorphGroup2(mabForm.getMorphGroup2());
+		copy.setMorphGroup3(mabForm.getMorphGroup3());
+		copy.setDisplayLevel(mabForm.getDisplayLevel());
+		copy.setMorphCode(mabForm.getMorphCode());
+		copy.setMorphExists(mabForm.getMorphExists());
+		copy.setValue(mabForm.getValue());
+		copy.setDisplayForm(mabForm.getDisplayForm());
+		copy.setOrderBy(mabForm.getOrderBy());
+		return copy;
 	}
 
 	private void createDefinitions(List<Node> definitionValueNodes, Long meaningId, String dataLang, String dataset) throws Exception {

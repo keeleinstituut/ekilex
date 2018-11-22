@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
 
-    private static final long serialVersionUID = 1622773231;
+    private static final long serialVersionUID = -1894504078;
 
     /**
      * The reference instance of <code>public.mview_ww_form</code>
@@ -69,6 +69,11 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), this, "");
 
     /**
+     * The column <code>public.mview_ww_form.dataset_codes</code>.
+     */
+    public final TableField<MviewWwFormRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
      * The column <code>public.mview_ww_form.paradigm_id</code>.
      */
     public final TableField<MviewWwFormRecord, Long> PARADIGM_ID = createField("paradigm_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
@@ -84,14 +89,39 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, String> MODE = createField("mode", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.mview_ww_form.form</code>.
+     * The column <code>public.mview_ww_form.morph_group1</code>.
      */
-    public final TableField<MviewWwFormRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, this, "");
+    public final TableField<MviewWwFormRecord, String> MORPH_GROUP1 = createField("morph_group1", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.morph_group2</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> MORPH_GROUP2 = createField("morph_group2", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.morph_group3</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> MORPH_GROUP3 = createField("morph_group3", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.display_level</code>.
+     */
+    public final TableField<MviewWwFormRecord, Integer> DISPLAY_LEVEL = createField("display_level", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * The column <code>public.mview_ww_form.morph_code</code>.
      */
     public final TableField<MviewWwFormRecord, String> MORPH_CODE = createField("morph_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.morph_exists</code>.
+     */
+    public final TableField<MviewWwFormRecord, Boolean> MORPH_EXISTS = createField("morph_exists", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+
+    /**
+     * The column <code>public.mview_ww_form.form</code>.
+     */
+    public final TableField<MviewWwFormRecord, String> FORM = createField("form", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.mview_ww_form.components</code>.
@@ -114,9 +144,9 @@ public class MviewWwForm extends TableImpl<MviewWwFormRecord> {
     public final TableField<MviewWwFormRecord, String> SOUND_FILE = createField("sound_file", org.jooq.impl.SQLDataType.VARCHAR(255), this, "");
 
     /**
-     * The column <code>public.mview_ww_form.dataset_codes</code>.
+     * The column <code>public.mview_ww_form.order_by</code>.
      */
-    public final TableField<MviewWwFormRecord, String[]> DATASET_CODES = createField("dataset_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+    public final TableField<MviewWwFormRecord, Integer> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.INTEGER, this, "");
 
     /**
      * Create a <code>public.mview_ww_form</code> table reference

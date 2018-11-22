@@ -79,6 +79,10 @@ public class Indexes {
     public static final Index SIMILARITY_JUDGEMENT_DATA_PKEY = Indexes0.SIMILARITY_JUDGEMENT_DATA_PKEY;
     public static final Index SIMILARITY_JUDGEMENT_DATA_WORD_IDX = Indexes0.SIMILARITY_JUDGEMENT_DATA_WORD_IDX;
     public static final Index SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX = Indexes0.SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_IDX = Indexes0.SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_IDX = Indexes0.SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_IDX = Indexes0.SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_IDX;
+    public static final Index SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_IDX = Indexes0.SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_IDX;
     public static final Index SIMILARITY_JUDGEMENT_RESULT_PKEY = Indexes0.SIMILARITY_JUDGEMENT_RESULT_PKEY;
 
     // -------------------------------------------------------------------------
@@ -121,6 +125,10 @@ public class Indexes {
         public static Index SIMILARITY_JUDGEMENT_DATA_PKEY = Internal.createIndex("similarity_judgement_data_pkey", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.ID }, true);
         public static Index SIMILARITY_JUDGEMENT_DATA_WORD_IDX = Internal.createIndex("similarity_judgement_data_word_idx", SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA, new OrderField[] { SimilarityJudgementData.SIMILARITY_JUDGEMENT_DATA.WORD }, false);
         public static Index SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX = Internal.createIndex("similarity_judgement_result_game_key_idx", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.GAME_KEY }, false);
+        public static Index SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_IDX = Internal.createIndex("similarity_judgement_result_pair11_data_id_idx", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.PAIR11_DATA_ID }, false);
+        public static Index SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_IDX = Internal.createIndex("similarity_judgement_result_pair12_data_id_idx", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.PAIR12_DATA_ID }, false);
+        public static Index SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_IDX = Internal.createIndex("similarity_judgement_result_pair21_data_id_idx", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.PAIR21_DATA_ID }, false);
+        public static Index SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_IDX = Internal.createIndex("similarity_judgement_result_pair22_data_id_idx", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.PAIR22_DATA_ID }, false);
         public static Index SIMILARITY_JUDGEMENT_RESULT_PKEY = Internal.createIndex("similarity_judgement_result_pkey", SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT, new OrderField[] { SimilarityJudgementResult.SIMILARITY_JUDGEMENT_RESULT.ID }, true);
     }
 }

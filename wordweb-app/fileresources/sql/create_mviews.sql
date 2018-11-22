@@ -71,16 +71,22 @@ dblink(
 	word_id bigint,
 	word text,
 	lang char(3),
+	dataset_codes varchar(100) array,
 	paradigm_id bigint,
 	form_id bigint,
 	mode varchar(100),
-	form text,
+	morph_group1 text,
+	morph_group2 text,
+	morph_group3 text,
+	display_level integer,
 	morph_code varchar(100),
+	morph_exists boolean,
+	form text,
 	components varchar(100) array,
 	display_form varchar(255),
 	vocal_form varchar(255),
 	sound_file varchar(255),
-	dataset_codes varchar(100) array
+	order_by integer
 );
 
 create materialized view mview_ww_meaning as

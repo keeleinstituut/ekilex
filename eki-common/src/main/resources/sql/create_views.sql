@@ -119,23 +119,29 @@ create view view_ww_form
       w.id word_id,
       fw.value word,
       w.lang,
-      p.id paradigm_id,
-      ff.id form_id,
-      ff.mode,
-      ff.value form,
-      ff.morph_code,
-      ff.components,
-      ff.display_form,
-      ff.vocal_form,
-      ff.sound_file,
       (select
-        array_agg(ld.dataset_code) 
+        array_agg(distinct ld.dataset_code) 
       from
         lexeme ld
       where
         ld.word_id = w.id
         group by ld.word_id
-      ) dataset_codes
+      ) dataset_codes,
+      p.id paradigm_id,
+      ff.id form_id,
+      ff.mode,
+      ff.morph_group1,
+      ff.morph_group2,
+      ff.morph_group3,
+      ff.display_level,
+      ff.morph_code,
+      ff.morph_exists,
+      ff.value form,
+      ff.components,
+      ff.display_form,
+      ff.vocal_form,
+      ff.sound_file,
+      ff.order_by
     from
       word w,
       paradigm p,
@@ -148,7 +154,7 @@ create view view_ww_form
           and exists (select ld.id
                         from lexeme as ld
                         where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
-    order by ff.id;
+    order by p.id, ff.order_by;
 
 -- lexeme meanings
 create view view_ww_meaning 

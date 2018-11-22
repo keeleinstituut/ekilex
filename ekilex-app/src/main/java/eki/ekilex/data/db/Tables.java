@@ -84,6 +84,7 @@ import eki.ekilex.data.db.tables.ViewWwLexemeRelation;
 import eki.ekilex.data.db.tables.ViewWwLexicalDecisionData;
 import eki.ekilex.data.db.tables.ViewWwMeaning;
 import eki.ekilex.data.db.tables.ViewWwMeaningRelation;
+import eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData;
 import eki.ekilex.data.db.tables.ViewWwWord;
 import eki.ekilex.data.db.tables.ViewWwWordEtymology;
 import eki.ekilex.data.db.tables.ViewWwWordRelation;
@@ -515,6 +516,11 @@ public class Tables {
      * The table <code>public.view_ww_meaning_relation</code>.
      */
     public static final ViewWwMeaningRelation VIEW_WW_MEANING_RELATION = eki.ekilex.data.db.tables.ViewWwMeaningRelation.VIEW_WW_MEANING_RELATION;
+
+    /**
+     * The table <code>public.view_ww_similarity_judgement_data</code>.
+     */
+    public static final ViewWwSimilarityJudgementData VIEW_WW_SIMILARITY_JUDGEMENT_DATA = eki.ekilex.data.db.tables.ViewWwSimilarityJudgementData.VIEW_WW_SIMILARITY_JUDGEMENT_DATA;
 
     /**
      * The table <code>public.view_ww_word</code>.

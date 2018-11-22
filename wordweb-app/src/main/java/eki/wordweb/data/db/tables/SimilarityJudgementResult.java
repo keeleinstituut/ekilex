@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResultRecord> {
 
-    private static final long serialVersionUID = 1686317100;
+    private static final long serialVersionUID = 800883024;
 
     /**
      * The reference instance of <code>public.similarity_judgement_result</code>
@@ -163,7 +163,7 @@ public class SimilarityJudgementResult extends TableImpl<SimilarityJudgementResu
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PKEY);
+        return Arrays.<Index>asList(Indexes.SIMILARITY_JUDGEMENT_RESULT_GAME_KEY_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR11_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR12_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR21_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PAIR22_DATA_ID_IDX, Indexes.SIMILARITY_JUDGEMENT_RESULT_PKEY);
     }
 
     /**

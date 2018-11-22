@@ -27,7 +27,7 @@ import org.jooq.impl.UDTRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implements Record10<Long, Long, String, String, String, String[], String[], String[], Boolean, Boolean> {
 
-    private static final long serialVersionUID = 829459525;
+    private static final long serialVersionUID = 1471477846;
 
     /**
      * Setter for <code>public.type_word_etym.word_id</code>.
@@ -114,16 +114,16 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
     }
 
     /**
-     * Setter for <code>public.type_word_etym.word_sources</code>.
+     * Setter for <code>public.type_word_etym.etym_word_sources</code>.
      */
-    public void setWordSources(String... value) {
+    public void setEtymWordSources(String... value) {
         set(6, value);
     }
 
     /**
-     * Getter for <code>public.type_word_etym.word_sources</code>.
+     * Getter for <code>public.type_word_etym.etym_word_sources</code>.
      */
-    public String[] getWordSources() {
+    public String[] getEtymWordSources() {
         return (String[]) get(6);
     }
 
@@ -242,7 +242,7 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
      */
     @Override
     public Field<String[]> field7() {
-        return TypeWordEtym.WORD_SOURCES;
+        return TypeWordEtym.ETYM_WORD_SOURCES;
     }
 
     /**
@@ -322,7 +322,7 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
      */
     @Override
     public String[] component7() {
-        return getWordSources();
+        return getEtymWordSources();
     }
 
     /**
@@ -402,7 +402,7 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
      */
     @Override
     public String[] value7() {
-        return getWordSources();
+        return getEtymWordSources();
     }
 
     /**
@@ -488,7 +488,7 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
      */
     @Override
     public TypeWordEtymRecord value7(String... value) {
-        setWordSources(value);
+        setEtymWordSources(value);
         return this;
     }
 
@@ -551,7 +551,7 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
     /**
      * Create a detached, initialised TypeWordEtymRecord
      */
-    public TypeWordEtymRecord(Long wordId, Long etymWordId, String etymWord, String etymWordLang, String etymYear, String[] etymMeaningWords, String[] wordSources, String[] comments, Boolean isQuestionable, Boolean isCompound) {
+    public TypeWordEtymRecord(Long wordId, Long etymWordId, String etymWord, String etymWordLang, String etymYear, String[] etymMeaningWords, String[] etymWordSources, String[] comments, Boolean isQuestionable, Boolean isCompound) {
         super(TypeWordEtym.TYPE_WORD_ETYM);
 
         set(0, wordId);
@@ -560,7 +560,7 @@ public class TypeWordEtymRecord extends UDTRecordImpl<TypeWordEtymRecord> implem
         set(3, etymWordLang);
         set(4, etymYear);
         set(5, etymMeaningWords);
-        set(6, wordSources);
+        set(6, etymWordSources);
         set(7, comments);
         set(8, isQuestionable);
         set(9, isCompound);

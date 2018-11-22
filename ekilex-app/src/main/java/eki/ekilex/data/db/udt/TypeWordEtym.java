@@ -27,7 +27,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWordEtym extends UDTImpl<TypeWordEtymRecord> {
 
-    private static final long serialVersionUID = 641466273;
+    private static final long serialVersionUID = 379711049;
 
     /**
      * The reference instance of <code>public.type_word_etym</code>
@@ -73,9 +73,9 @@ public class TypeWordEtym extends UDTImpl<TypeWordEtymRecord> {
     public static final UDTField<TypeWordEtymRecord, String[]> ETYM_MEANING_WORDS = createField("etym_meaning_words", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_ETYM, "");
 
     /**
-     * The attribute <code>public.type_word_etym.word_sources</code>.
+     * The attribute <code>public.type_word_etym.etym_word_sources</code>.
      */
-    public static final UDTField<TypeWordEtymRecord, String[]> WORD_SOURCES = createField("word_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_ETYM, "");
+    public static final UDTField<TypeWordEtymRecord, String[]> ETYM_WORD_SOURCES = createField("etym_word_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), TYPE_WORD_ETYM, "");
 
     /**
      * The attribute <code>public.type_word_etym.comments</code>.

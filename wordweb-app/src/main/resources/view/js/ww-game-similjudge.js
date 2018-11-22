@@ -68,7 +68,7 @@ function handleAnswerJ() {
 	answerGameRow.answerPair1 = false;
 	answerGameRow.answerPair2 = true;
 	answerGameRow.delay = gameRowStopTime - gameRowStartTime;
-	answerGameRow.correct = currentGameRow.wordPair1.synonym;
+	answerGameRow.correct = currentGameRow.wordPair2.synonym;
 }
 
 function handleEsc() {

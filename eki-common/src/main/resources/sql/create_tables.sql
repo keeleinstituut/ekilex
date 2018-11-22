@@ -521,13 +521,19 @@ create table form
 (
   id bigserial primary key,
   paradigm_id bigint references paradigm(id) on delete cascade not null,
-  morph_code varchar(100) references morph(code) not null,
   mode varchar(100) not null,
+  morph_group1 text null,
+  morph_group2 text null,
+  morph_group3 text null,
+  display_level integer not null default 1,
+  morph_code varchar(100) references morph(code) not null,
+  morph_exists boolean not null,
   value text not null,
   components varchar(100) array null,
   display_form varchar(255) null,
   vocal_form varchar(255) null,
-  sound_file varchar(255) null
+  sound_file varchar(255) null,
+  order_by integer not null default 0
 );
 alter sequence form_id_seq restart with 10000;
 

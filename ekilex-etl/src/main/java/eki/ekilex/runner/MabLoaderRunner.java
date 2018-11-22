@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,31 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private static final String REPORT_ENRICHED_WORDS = "enriched_words";
 
 	private static final String DISCLOSED_MORPH_CODE = "Rpl";
+	private static final String EMPTY_FORM_VALUE = "-";	
 
 	private final String dataLang = "est";
+
+	private final String articleHeaderExp = "x:P";
+	private final String wordGroupExp = "x:mg";
+	private final String wordExp = "x:m";
+	private final String articleBodyExp = "x:S";
+	private final String rootBaseExp = "x:lemp[not(@x:as='ab')]/x:mtg";
+	private final String formGroupExp = "x:pdgp/x:mvg";
+	private final String morphValueExp = "x:vk";
+	private final String formExp = "x:parg/x:mv";
+	private final String inflectionTypeNrExp = "x:mt";
+	private final String homonymNrAttr = "i";
+	private final String formValueAttr = "kuvavorm";
+	private final String formOrderAttr = "ord";
+	private final String morphGroup1Attr = "grp2";
+	private final String morphGroup2Attr = "grp3";
+	private final String morphGroup3Attr = "grp4";
+	private final String displayLevelAttr = "lvl";
+
+	private final String inexistentFormValue = "#";
+	private final String wordCleanupChars = ".+'`()¤:_";
+	private final String expectedWordAppendix = "[ne]";
+	private final String expectedWordSuffix = "ne";
 
 	private ReportComposer reportComposer;
 
@@ -53,22 +77,6 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	public MabData execute(String dataXmlFilePath1, String dataXmlFilePath2, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
-
-		final String articleHeaderExp = "x:P";
-		final String wordGroupExp = "x:mg";
-		final String wordExp = "x:m";
-		final String articleBodyExp = "x:S";
-		final String rootBaseExp = "x:lemp/x:mtg";
-		final String formGroupExp = "x:pdgp/x:mvg";
-		final String morphValueExp = "x:vk";
-		final String formExp = "x:parg/x:mv";
-		final String inflectionTypeNrExp = "x:mt";
-		final String homonymNrAttr = "i";
-
-		final String wordCleanupChars = ".+'`()¤:_";//probably () only
-		final String formCleanupChars = "`´[]#";
-		final String expectedWordAppendix = "(ne)";
-		final String expectedWordSuffix = "ne";
 
 		long t1, t2;
 		t1 = System.currentTimeMillis();
@@ -96,6 +104,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 
 		Node headerNode, contentNode, wordGroupNode, wordNode, morphValueNode, inflectionTypeNrNode;
+		Element wordElement, formElement, formGroupElement;
 		List<Node> rootBaseNodes, formGroupNodes, formNodes;
 		List<Paradigm> paradigms, newParadigms;
 		List<Form> forms;
@@ -103,7 +112,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<String> words;
 		Paradigm paradigmObj;
 		Form formObj;
-		String word, sourceMorphCode, destinMorphCode, form, displayForm, inflectionTypeNr;
+		String word, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr;
+		Integer formOrderBy, displayLevel;
 
 		Count uncleanWordCount = new Count();
 
@@ -120,10 +130,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			headerNode = articleNode.selectSingleNode(articleHeaderExp);
 			wordGroupNode = headerNode.selectSingleNode(wordGroupExp);
 			wordNode = wordGroupNode.selectSingleNode(wordExp);
-			word = ((Element)wordNode).getTextTrim();
+			wordElement = (Element) wordNode;
+			word = wordElement.getTextTrim();
 
 			Integer homonymNr = null;
-			String homonymNrAsString = ((Element)wordNode).attributeValue(homonymNrAttr);
+			String homonymNrAsString = wordElement.attributeValue(homonymNrAttr);
 			if (isNotEmpty(homonymNrAsString)) {
 				homonymNr = Integer.parseInt(homonymNrAsString);
 			}
@@ -141,6 +152,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			} else {
 				words.add(word);
 			}
+			word = words.get(0);
 
 			rootBaseNodes = contentNode.selectNodes(rootBaseExp);
 
@@ -150,51 +162,81 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 				formGroupNodes = rootBaseNode.selectNodes(formGroupExp);
 				inflectionTypeNrNode = rootBaseNode.selectSingleNode(inflectionTypeNrExp);
-				inflectionTypeNr = ((Element)inflectionTypeNrNode).getTextTrim();
+				inflectionTypeNr = ((Element) inflectionTypeNrNode).getTextTrim();
 				inflectionTypeNr = String.valueOf(Integer.parseInt(inflectionTypeNr));
 
+				// compose forms
 				forms = new ArrayList<>();
 				formValues = new ArrayList<>();
-				boolean isWord = true;
-				FormMode mode = FormMode.WORD;
 
 				for (Node formGroupNode : formGroupNodes) {
 
 					morphValueNode = formGroupNode.selectSingleNode(morphValueExp);
-					sourceMorphCode = ((Element)morphValueNode).getTextTrim();
+					sourceMorphCode = ((Element) morphValueNode).getTextTrim();
 					destinMorphCode = morphValueCodeMap.get(sourceMorphCode);
 					if (StringUtils.equals(destinMorphCode, DISCLOSED_MORPH_CODE)) {
 						continue;
 					}
 
+					formGroupElement = (Element) formGroupNode;
+					formOrderByStr = formGroupElement.attributeValue(formOrderAttr);
+					formOrderBy = Integer.valueOf(formOrderByStr);
+					morphGroup1 = formGroupElement.attributeValue(morphGroup1Attr);
+					morphGroup2 = formGroupElement.attributeValue(morphGroup2Attr);
+					morphGroup3 = formGroupElement.attributeValue(morphGroup3Attr);
+
 					formNodes = formGroupNode.selectNodes(formExp);
 
 					for (Node formNode : formNodes) {
 
-						displayForm = ((Element)formNode).getTextTrim();
+						formElement = (Element) formNode;
+						formValue = formElement.attributeValue(formValueAttr);
+						displayLevelStr = formElement.attributeValue(displayLevelAttr);
+						displayLevel = Integer.valueOf(displayLevelStr);
+						displayForm = formElement.getTextTrim();
 						displayForm = StringUtils.removeEnd(displayForm, "[");
-						form = StringUtils.replaceChars(displayForm, formCleanupChars, "");
-
-						if (StringUtils.isBlank(form)) {
-							continue;
+						boolean noMorphExists = StringUtils.equals(inexistentFormValue, displayForm);
+						if (noMorphExists) {
+							formValue = EMPTY_FORM_VALUE;
+							displayForm = EMPTY_FORM_VALUE;
 						}
 
 						formObj = new Form();
-						formObj.setValue(form);
-						formObj.setDisplayForm(displayForm);
+						formObj.setMorphGroup1(morphGroup1);
+						formObj.setMorphGroup2(morphGroup2);
+						formObj.setMorphGroup3(morphGroup3);
+						formObj.setDisplayLevel(displayLevel);
 						formObj.setMorphCode(destinMorphCode);
-						formObj.setMode(mode);
+						formObj.setMorphExists(new Boolean(noMorphExists));
+						formObj.setValue(formValue);
+						//formObj.setComponents(components);
+						formObj.setDisplayForm(displayForm);
+						//formObj.setVocalForm(vocalForm);
+						//formObj.setSoundFile(soundFile);
+						formObj.setOrderBy(formOrderBy);
 
 						forms.add(formObj);
-						formValues.add(form);
-					}
-					// TODO ask - first is the word?
-					if (isWord) {
-						isWord = false;
-						mode = FormMode.FORM;
+						formValues.add(formValue);
 					}
 				}
 
+				// sort forms
+				forms.sort(Comparator.comparing(Form::getOrderBy));
+
+				// which is word
+				boolean wordFormLocated = false;
+				for (Form formObjOfMode : forms) {
+					if (wordFormLocated) {
+						formObjOfMode.setMode(FormMode.FORM);
+					} else if (StringUtils.equals(word, formObjOfMode.getValue())) {
+						formObjOfMode.setMode(FormMode.WORD);
+						wordFormLocated = true;
+					} else {
+						formObjOfMode.setMode(FormMode.FORM);
+					}
+				}
+
+				// compose paradigm
 				paradigmObj = new Paradigm();
 				paradigmObj.setForms(forms);
 				paradigmObj.setFormValues(formValues);
@@ -204,6 +246,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				newParadigms.add(paradigmObj);
 			}
 
+			// assign morphology to headword(s)
 			for (String newWord : words) {
 				paradigms = wordParadigmsMap.get(newWord);
 				if (paradigms == null) {

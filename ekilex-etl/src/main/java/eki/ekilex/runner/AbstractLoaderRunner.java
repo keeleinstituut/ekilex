@@ -226,6 +226,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		String typeCode = word.getWordTypeCode();
 		String aspectCode = word.getAspectTypeCode();
 
+		Form wordForm = new Form();
+		wordForm.setMode(FormMode.WORD);
+		wordForm.setMorphCode(wordMorphCode);
+		wordForm.setMorphExists(new Boolean(true));
+		wordForm.setValue(wordValue);
+		wordForm.setComponents(wordComponents);
+		wordForm.setDisplayForm(wordDisplayForm);
+		wordForm.setVocalForm(wordVocalForm);
+
 		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
 
@@ -236,7 +245,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
 				Long paradigmId = createParadigm(wordId, null, false);
-				createFormWithAsWord(paradigmId, wordValue, wordLang, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, FormMode.WORD);
+				createWordFormWithAsWord(paradigmId, wordForm, wordLang);
 			}
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
@@ -252,14 +261,14 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				// mab forms
 				List<Form> forms = paradigm.getForms();
 				if (CollectionUtils.isEmpty(forms)) {
-					createFormWithAsWord(paradigmId, wordValue, wordLang, wordComponents, wordDisplayForm, wordVocalForm, wordMorphCode, FormMode.WORD);
+					createWordFormWithAsWord(paradigmId, wordForm, wordLang);
 				} else {
 					for (Form form : forms) {
 						if (form.getMode().equals(FormMode.WORD)) {
-							createFormWithAsWord(paradigmId, wordValue, wordLang, null, form.getDisplayForm(), wordVocalForm, form.getMorphCode(), form.getMode());
-						} else {
-							createForm(paradigmId, form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), form.getMode());
+							form.setVocalForm(wordVocalForm);
 						}
+						createForm(paradigmId, form);
+						//createForm(paradigmId, form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), form.getMode());
 					}
 				}
 			}
@@ -335,32 +344,70 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMaps;
 	}
 
-	private void createFormWithAsWord(Long paradigmId, String form, String lang, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, FormMode mode) throws Exception {
+	private void createWordFormWithAsWord(Long paradigmId, Form wordForm, String lang) throws Exception {
 
-		createForm(paradigmId, form, wordComponents, wordDisplayForm, wordVocalForm, morphCode, mode);
-		if (mode.equals(FormMode.WORD)) {
-			String asWordValue = removeAccents(form, lang);
-			if (StringUtils.isNotBlank(asWordValue)) {
-				createForm(paradigmId, asWordValue, null, null, null, morphCode, FormMode.AS_WORD);
-			}
+		createForm(paradigmId, wordForm);
+		String wordValue = wordForm.getValue();
+		wordValue = removeAccents(wordValue, lang);
+		String morphCode = wordForm.getMorphCode();
+		if (StringUtils.isNotBlank(wordValue)) {
+			Form asWordForm = new Form();
+			asWordForm.setMode(FormMode.AS_WORD);
+			asWordForm.setValue(wordValue);
+			asWordForm.setMorphCode(morphCode);
+			asWordForm.setMorphExists(new Boolean(true));
+			createForm(paradigmId, wordForm);
 		}
 	}
 
-	private void createForm(Long paradigmId, String form, String[] wordComponents, String wordDisplayForm, String wordVocalForm, String morphCode, FormMode mode) throws Exception {
+	private void createForm(Long paradigmId, Form form) throws Exception {
+
+		FormMode mode = form.getMode();
+		String morphGroup1 = form.getMorphGroup1();
+		String morphGroup2 = form.getMorphGroup2();
+		String morphGroup3 = form.getMorphGroup3();
+		Integer displayLevel = form.getDisplayLevel();
+		String morphCode = form.getMorphCode();
+		Boolean morphExists = form.getMorphExists();
+		String value = form.getValue();
+		String[] components = form.getComponents();
+		String displayForm = form.getDisplayForm();
+		String vocalForm = form.getVocalForm();
+		String soundFile = form.getSoundFile();
+		Integer orderBy = form.getOrderBy();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("paradigm_id", paradigmId);
-		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("mode", mode.name());
-		tableRowParamMap.put("value", form);
-		if (wordComponents != null) {
-			tableRowParamMap.put("components", new PgVarcharArray(wordComponents));
+		if (StringUtils.isNotBlank(morphGroup1)) {
+			tableRowParamMap.put("morph_group1", morphGroup1);
 		}
-		if (StringUtils.isNotBlank(wordDisplayForm)) {
-			tableRowParamMap.put("display_form", wordDisplayForm);
+		if (StringUtils.isNotBlank(morphGroup2)) {
+			tableRowParamMap.put("morph_group2", morphGroup2);
 		}
-		if (StringUtils.isNotBlank(wordVocalForm)) {
-			tableRowParamMap.put("vocal_form", wordVocalForm);
+		if (StringUtils.isNotBlank(morphGroup3)) {
+			tableRowParamMap.put("morph_group3", morphGroup3);
+		}
+		if (displayLevel != null) {
+			tableRowParamMap.put("display_level", displayLevel);
+		}
+		tableRowParamMap.put("morph_code", morphCode);
+		tableRowParamMap.put("morph_exists", morphExists);
+		tableRowParamMap.put("value", value);
+		if (components != null) {
+			tableRowParamMap.put("components", new PgVarcharArray(components));
+		}
+		if (StringUtils.isNotBlank(displayForm)) {
+			tableRowParamMap.put("display_form", displayForm);
+		}
+		if (StringUtils.isNotBlank(vocalForm)) {
+			tableRowParamMap.put("vocal_form", vocalForm);
+		}
+		if (StringUtils.isNotBlank(soundFile)) {
+			tableRowParamMap.put("sound_file", soundFile);
+		}
+		if (orderBy != null) {
+			tableRowParamMap.put("order_by", orderBy);
 		}
 		basicDbService.create(FORM, tableRowParamMap);
 	}

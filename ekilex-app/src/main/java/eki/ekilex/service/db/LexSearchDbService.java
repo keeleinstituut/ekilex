@@ -439,7 +439,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(MORPH_LABEL.LANG.eq(classifierLabelLang))
 						.and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode))
 						)
-				.orderBy(PARADIGM.ID, FORM.ID)
+				.orderBy(PARADIGM.ID, FORM.ORDER_BY)
 				.fetch();
 	}
 

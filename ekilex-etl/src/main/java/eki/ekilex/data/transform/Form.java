@@ -7,28 +7,70 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private String value;
+	private FormMode mode;
 
-	private String displayForm;
+	private String morphGroup1;
+
+	private String morphGroup2;
+
+	private String morphGroup3;
+
+	private Integer displayLevel;
 
 	private String morphCode;
 
-	private FormMode mode;
+	private Boolean morphExists;
 
-	public String getValue() {
-		return value;
+	private String value;
+
+	private String[] components;
+
+	private String displayForm;
+
+	private String vocalForm;
+
+	private String soundFile;
+
+	private Integer orderBy;
+
+	public FormMode getMode() {
+		return mode;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setMode(FormMode mode) {
+		this.mode = mode;
 	}
 
-	public String getDisplayForm() {
-		return displayForm;
+	public String getMorphGroup1() {
+		return morphGroup1;
 	}
 
-	public void setDisplayForm(String displayForm) {
-		this.displayForm = displayForm;
+	public void setMorphGroup1(String morphGroup1) {
+		this.morphGroup1 = morphGroup1;
+	}
+
+	public String getMorphGroup2() {
+		return morphGroup2;
+	}
+
+	public void setMorphGroup2(String morphGroup2) {
+		this.morphGroup2 = morphGroup2;
+	}
+
+	public String getMorphGroup3() {
+		return morphGroup3;
+	}
+
+	public void setMorphGroup3(String morphGroup3) {
+		this.morphGroup3 = morphGroup3;
+	}
+
+	public Integer getDisplayLevel() {
+		return displayLevel;
+	}
+
+	public void setDisplayLevel(Integer displayLevel) {
+		this.displayLevel = displayLevel;
 	}
 
 	public String getMorphCode() {
@@ -39,12 +81,60 @@ public class Form extends AbstractDataObject {
 		this.morphCode = morphCode;
 	}
 
-	public FormMode getMode() {
-		return mode;
+	public Boolean getMorphExists() {
+		return morphExists;
 	}
 
-	public void setMode(FormMode mode) {
-		this.mode = mode;
+	public void setMorphExists(Boolean morphExists) {
+		this.morphExists = morphExists;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public String[] getComponents() {
+		return components;
+	}
+
+	public void setComponents(String[] components) {
+		this.components = components;
+	}
+
+	public String getDisplayForm() {
+		return displayForm;
+	}
+
+	public void setDisplayForm(String displayForm) {
+		this.displayForm = displayForm;
+	}
+
+	public String getVocalForm() {
+		return vocalForm;
+	}
+
+	public void setVocalForm(String vocalForm) {
+		this.vocalForm = vocalForm;
+	}
+
+	public String getSoundFile() {
+		return soundFile;
+	}
+
+	public void setSoundFile(String soundFile) {
+		this.soundFile = soundFile;
+	}
+
+	public Integer getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Integer orderBy) {
+		this.orderBy = orderBy;
 	}
 
 }
