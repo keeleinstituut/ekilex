@@ -1,11 +1,10 @@
 /*GAMES STYLES*/
-
 .games-body {
 	background-color: white;
 }
 
 .navbar-sub .navbar-nav>li>a:hover, .navbar-sub .navbar-nav>li>a:active,
-.navbar-sub .navbar-nav>li>a.active {
+	.navbar-sub .navbar-nav>li>a.active {
 	background: #BBE5ED;
 	color: #333;
 }
@@ -98,7 +97,7 @@ h2 {
 }
 
 .nav-pills>li>a:hover, .nav-pills>li.active>a, .nav-pills>li.active>a:focus,
-.nav-pills>li.active>a:hover {
+	.nav-pills>li.active>a:hover {
 	background-color: #FFF;
 	color: #666;
 }
@@ -167,8 +166,6 @@ h2 {
 	padding: 0.625rem;
 }
 
-
-
 @media ( max-width : 991px) {
 	.games-list .game-box {
 		flex: 0 1 50%;
@@ -179,11 +176,9 @@ h2 {
 	.games-list .game-box {
 		flex: 0 1 100%;
 	}
-
 	.flexbox h4 {
 		font-size: 1rem;
 	}
-
 }
 
 .game-box form {
@@ -277,7 +272,7 @@ h2 {
 }
 
 .btn-box:hover {
- cursor: pointer;
+	cursor: pointer;
 }
 
 .game-title {
@@ -419,7 +414,7 @@ h2 {
 }
 
 .right-1:hover, .right-2:hover, .right-3:hover, .left-1:hover, .left-2:hover,
-.left-3:hover, .key-down-shadow, .center-key:hover {
+	.left-3:hover, .key-down-shadow, .center-key:hover {
 	-moz-box-shadow: inset 0 0 0.9375rem #b7b7b7;
 	-webkit-box-shadow: inset 0 0 0.9375rem #b7b7b7;
 	box-shadow: inset 0 0 0.9375rem #b7b7b7;
@@ -578,7 +573,7 @@ h2 {
 
 /*GAME INTRO*/
 .howtoplay {
-display: none
+	display: none
 }
 
 .frame {
@@ -735,7 +730,7 @@ display: none
 	margin: 0;
 }
 
-.alert-danger { 
+.alert-danger {
 	color: #880000;
 	padding: 0 1.5rem;
 }
@@ -805,21 +800,21 @@ display: none
 
 .slider-handle {
 	background-image: -webkit-linear-gradient(top, #3c763d 0, #094 100%)
-	!important;
+		!important;
 	background-image: -o-linear-gradient(top, #3c763d 0, #094 100%)
-	!important;
+		!important;
 	background-image: linear-gradient(to bottom, #3c763d 0, #094 100%)
-	!important;
+		!important;
 }
 
 .slider-selection {
 	position: absolute;
 	background-image: -webkit-linear-gradient(top, #f9f9f9 0, #ccc 100%)
-	!important;
+		!important;
 	background-image: -o-linear-gradient(top, #f9f9f9 0, #ccc 100%)
-	!important;
+		!important;
 	background-image: linear-gradient(to bottom, #f9f9f9 0, #ccc 100%)
-	!important;
+		!important;
 }
 
 .slider.slider-horizontal .slider-track {
@@ -1089,7 +1084,7 @@ display: none
 }
 
 .nav-tabs>li.active, .nav-tabs>li.active:hover, .nav-tabs>li.active:focus
-{
+	{
 	border-bottom: 0.0625rem solid #094;
 	color: #222;
 }
@@ -1197,7 +1192,7 @@ td.total-nr {
 	margin-right: 0.625rem;
 }
 
-.inner-block { 
+.inner-block {
 	margin: 0 auto;
 	padding: 2rem 0rem 1.6rem 0rem;
 }
@@ -1211,64 +1206,66 @@ td.total-nr {
 
 .flexbox .row {
 	padding: 8px 24px;
-	margin: 0!important;
+	margin: 0 !important;
 }
 
 .btn-neutral-dark {
-border: 0px solid transparent;
-background: dodgerblue;
-color: white;
-border-radius: 6px;
-font-weight: 700;
-padding: 1rem 1.5rem 0.25rem;
+	border: 0px solid transparent;
+	background: dodgerblue;
+	color: white;
+	border-radius: 6px;
+	font-weight: 700;
+	padding: 1rem 1.5rem 0.25rem;
 }
+
 .btn-neutral-dark:hover {
-background: #73b8fb;
-box-shadow: 0px 2px 10px 0px gray;
--webkit-box-shadow: 0px 2px 10px 0px gray;
--moz-box-shadow: 0px 2px 10px 0px gray;
+	background: #73b8fb;
+	box-shadow: 0px 2px 10px 0px gray;
+	-webkit-box-shadow: 0px 2px 10px 0px gray;
+	-moz-box-shadow: 0px 2px 10px 0px gray;
 }
+
 .btn-neutral-dark:focus {
-background: #006dd8;
-box-shadow: 0px 2px 10px 0px;
--webkit-box-shadow: 0px 2px 10px 0px;
--moz-box-shadow: 0px 2px 10px 0px;
+	background: #006dd8;
+	box-shadow: 0px 2px 10px 0px;
+	-webkit-box-shadow: 0px 2px 10px 0px;
+	-moz-box-shadow: 0px 2px 10px 0px;
 }
 
 .btn-neutral-light {
-border: 0px solid transparent;
-background: #e9e9e9;
-color: #a9a9a9;
-border-radius: 6px;
-font-weight: 700;
-padding: 1rem 1.5rem 0.25rem;
+	border: 0px solid transparent;
+	background: #e9e9e9;
+	color: #a9a9a9;
+	border-radius: 6px;
+	font-weight: 700;
+	padding: 1rem 1.5rem 0.25rem;
 }
+
 .btn-neutral-light:hover {
-background: #f3f3f3;
-box-shadow: 0px 2px 10px 0px;	
--webkit-box-shadow: 0px 2px 10px 0px;
--moz-box-shadow: 0px 2px 10px 0px;
+	background: #f3f3f3;
+	box-shadow: 0px 2px 10px 0px;
+	-webkit-box-shadow: 0px 2px 10px 0px;
+	-moz-box-shadow: 0px 2px 10px 0px;
 }
+
 .btn-neutral-dark:focus {
-background: #a9a9a9;
-color: #000000;
-box-shadow: 0px 2px 10px 0px;
--webkit-box-shadow: 0px 2px 10px 0px;
--moz-box-shadow: 0px 2px 10px 0px;	
+	background: #a9a9a9;
+	color: #000000;
+	box-shadow: 0px 2px 10px 0px;
+	-webkit-box-shadow: 0px 2px 10px 0px;
+	-moz-box-shadow: 0px 2px 10px 0px;
 }
 
 @media ( min-width : 768px) {
-.howtoplay {
-	background: url(../images/howtoplay.png) no-repeat center;
-	background-size: 20.125rem;
-	height: 11.75rem;
-	margin-bottom: 1.25rem;
-	display: block;
-
+	.howtoplay {
+		background: url(../images/howtoplay.png) no-repeat center;
+		background-size: 20.125rem;
+		height: 11.75rem;
+		margin-bottom: 1.25rem;
+		display: block;
+	}
+	.inner-block {
+		margin: 0 auto;
+		padding: 2rem 2rem 1.6rem 2rem;
+	}
 }
-.inner-block { 
-	margin: 0 auto;
-	padding: 2rem 2rem 1.6rem 2rem;
-}
-}
-	

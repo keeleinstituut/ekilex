@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
-  <title>Kontakt</title>
-  <th:block th:fragment="links">
+<title>Kontakt</title>
+<th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
 </th:block>
 </head>
@@ -10,22 +10,24 @@
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">
-      <div class="col-12 col-md-3">
-
-      </div>
+      <div class="col-12 col-md-3"></div>
       <div class="col-12 col-md-9 learn-content">
         <div class="pb-4">
           <h3>Kontakt</h3>
-          <p>Roosikrantsi 6, 10119 Tallinn<br>
-            tel: 617 7500 <br>
-            e-post: <a class="text-underline" href="mailto:eki@eki.ee">eki@eki.ee</a><br>
-          reg-kood: 70004011</p>
+          <p>
+            Roosikrantsi 6, 10119 Tallinn
+            <br>
+            tel: 617 7500
+            <br>
+            e-post:
+            <a class="text-underline" href="mailto:eki@eki.ee">eki@eki.ee</a>
+            <br>
+            reg-kood: 70004011
+          </p>
         </div>
       </div>
     </div>
   </div>
-
   <div th:replace="common-app :: footer-content"></div>
 </body>
 </html>
-
