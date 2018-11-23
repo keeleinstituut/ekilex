@@ -18,10 +18,10 @@ $(document).ready(function() {
 			input.siblings(".errors").find(".alert-mail").addClass("error-show");
 		}
 	});
-	
+
 	$(function() {
-  $('[autofocus]:not(:focus)').eq(0).focus();
-});
+		$('[autofocus]:not(:focus)').eq(0).focus();
+	});
 
 });
 
@@ -34,19 +34,19 @@ function setActiveMenuItem(itemName) {
 }
 
 function validateRequiredFormField(form, fieldName) {
-	var fieldElement = form.find("input[name="  + fieldName +"]");
-    if (fieldElement.val() == "") {
-        fieldElement.siblings(".errors").find(".alert-danger").addClass("error-show");
-    } else {
-        fieldElement.siblings(".errors").find(".alert-danger").removeClass("error-show");
-    }
+	var fieldElement = form.find("input[name=" + fieldName + "]");
+	if (fieldElement.val() == "") {
+		fieldElement.siblings(".errors").find(".alert-danger").addClass("error-show");
+	} else {
+		fieldElement.siblings(".errors").find(".alert-danger").removeClass("error-show");
+	}
 }
 
 function isValidFeedbackForm(fbForm) {
-    validateRequiredFormField(fbForm, 'sender');
-    validateRequiredFormField(fbForm, 'email');
-    validateRequiredFormField(fbForm, 'word');
-    return fbForm.find(".error-show").length == 0;
+	validateRequiredFormField(fbForm, 'sender');
+	validateRequiredFormField(fbForm, 'email');
+	validateRequiredFormField(fbForm, 'word');
+	return fbForm.find(".error-show").length == 0;
 }
 
 $(document).on("click", "button[name='feedbackSendBtn']", function() {
@@ -74,7 +74,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 			errorMessageElement.attr('hidden', false);
 		}
 	}).fail(function(data) {
-        feedbackForm.find('.has-error').show();
+		feedbackForm.find('.has-error').show();
 	});
 });
 
@@ -83,25 +83,23 @@ $(document).on("click", ".modal-check", function() {
 });
 
 function clearMessages(modalDlg) {
-    modalDlg.find('.alert').removeClass('error-show');
-    modalDlg.find('[name=ok_message]').attr('hidden', true);
-    modalDlg.find('[name=error_message]').attr('hidden', true);
+	modalDlg.find('.alert').removeClass('error-show');
+	modalDlg.find('[name=ok_message]').attr('hidden', true);
+	modalDlg.find('[name=error_message]').attr('hidden', true);
 }
 
 $(document).on("click", "#feedbackWordRadio", function() {
 	$('#feedWord').addClass('show-section');
 	$('#feedComment').removeClass('show-section');
-    clearMessages($(this).closest('.modal-dialog'));
+	clearMessages($(this).closest('.modal-dialog'));
 });
 
 $(document).on("click", "#feedbackCommentRadio", function() {
 	$('#feedWord').removeClass('show-section');
 	$('#feedComment').addClass('show-section');
-    clearMessages($(this).closest('.modal-dialog'));
+	clearMessages($(this).closest('.modal-dialog'));
 });
 
 $(document).on('show.bs.modal', '#feedbackModal', function() {
-    clearMessages($(this));
+	clearMessages($(this));
 });
-
-

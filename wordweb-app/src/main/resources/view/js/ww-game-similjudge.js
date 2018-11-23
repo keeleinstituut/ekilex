@@ -23,7 +23,6 @@ function populateGameRow() {
 	if (gameBatch.length > 0) {
 		currentGameRow = gameBatch.pop();
 
-
 		$("#synonymPair1, #synonymPair2").removeClass();
 
 		$("#synonymPair1Word1").text(currentGameRow.wordPair1.word1);
@@ -102,24 +101,19 @@ function resolveAnswer() {
 		return;
 	}
 
-
 	if (answerGameRow.correct) {
 		if (answerGameRow.answerPair1) {
 			$("#synonymPair1").addClass("bg-success");
-		} else {
+		} else if (answerGameRow.answerPair2) { {
 			$("#synonymPair2").addClass("bg-success");
 		}
 	} else {
 		if (answerGameRow.answerPair1) {
 			$("#synonymPair1").addClass("bg-danger");
-		} else {
+		} else if (answerGameRow.answerPair2) { {
 			$("#synonymPair2").addClass("bg-danger");
 		}
-		
 	}
-	
-
-
 
 	setTimeout(function() {
 		populateGameRow();

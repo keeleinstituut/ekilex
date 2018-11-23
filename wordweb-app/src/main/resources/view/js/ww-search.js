@@ -3,22 +3,22 @@ var windowWidthTreshold = 768;
 function fetchDetails(wordId, word, wordSelectUrl) {
 	var detailsDiv = $('.word-details');
 	var wordDetailsUrl = applicationUrl + "worddetails/" + wordId;
-	$.get(wordDetailsUrl).done(function (data) {
+	$.get(wordDetailsUrl).done(function(data) {
 		detailsDiv.replaceWith(data);
 		if (word.indexOf('/') !== -1) {
 			wordSelectUrl = wordSelectUrl.replace(word, encodeURIComponent(word));
 		}
 		var historyState = {
-			wordId: wordId,
-			word: word,
-			wordSelectUrl: wordSelectUrl
+			wordId : wordId,
+			word : word,
+			wordSelectUrl : wordSelectUrl
 		};
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 		fetchCorpSentences(word);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		calculateAndSetStyles();
-	}).fail(function (data) {
+	}).fail(function(data) {
 		console.log(data);
 		alert(messages.search_failure);
 	})
@@ -34,51 +34,56 @@ function setHomonymNrVisibility() {
 function fetchCorpSentences(sentence) {
 	var corpDiv = $("#korp");
 	var corpSentencesUrl = applicationUrl + 'korp/' + encodeURIComponent(sentence);
-	$.get(corpSentencesUrl).done(function (data) {
+	$.get(corpSentencesUrl).done(function(data) {
 		corpDiv.replaceWith(data);
-	}).fail(function (data) {
+	}).fail(function(data) {
 		console.log(data);
 	})
 }
 
-$(function () {
+$(function() {
 	$('[data-toggle="tooltip"]').tooltip({
-		container: 'body'
+		container : 'body'
 	});
 });
 
-$(document).on("click", ".more-btn", function () {
-	$(this).parents(".meaning-panel, .word-relations, .dependencies, .collocations-section").toggleClass("expand");
-	$(this).parents(".meaning-panel, .dependencies, .collocations-section").find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b").toggleClass("fade-target");
+$(document).on(
+		"click",
+		".more-btn",
+		function() {
+			$(this).parents(".meaning-panel, .word-relations, .dependencies, .collocations-section").toggleClass("expand");
+			$(this).parents(".meaning-panel, .dependencies, .collocations-section")
+					.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b")
+					.toggleClass("fade-target");
 
-	$(this).parent(".corp-panel").toggleClass("expand");
+			$(this).parent(".corp-panel").toggleClass("expand");
 
-	$(this).next(".morphology-section").toggleClass("expand");
+			$(this).next(".morphology-section").toggleClass("expand");
 
-	var counter = 0;
-	$('.dependence').each(function (i) {
-		if (i % 1000 == 0) {
-			counter = 1;
-		} else {
-			counter++;
-		}
-		if (counter < 4) {
-			$(this).removeClass('fade-target');
-		}
-	});
-	$('.colloc-col').each(function (i) {
-		if (i % 1000 == 0) {
-			counter = 1;
-		} else {
-			counter++;
-		}
-		if (counter < 4) {
-			$(this).removeClass('fade-target');
-		}
-	});
-});
+			var counter = 0;
+			$('.dependence').each(function(i) {
+				if (i % 1000 == 0) {
+					counter = 1;
+				} else {
+					counter++;
+				}
+				if (counter < 4) {
+					$(this).removeClass('fade-target');
+				}
+			});
+			$('.colloc-col').each(function(i) {
+				if (i % 1000 == 0) {
+					counter = 1;
+				} else {
+					counter++;
+				}
+				if (counter < 4) {
+					$(this).removeClass('fade-target');
+				}
+			});
+		});
 
-$(window).on("popstate", function (e) {
+$(window).on("popstate", function(e) {
 	e.preventDefault();
 	var historyState = e.originalEvent.state;
 	if (historyState != null) {
@@ -87,7 +92,7 @@ $(window).on("popstate", function (e) {
 	}
 });
 
-$(document).on("click", "a[id^='word-details-link']", function (e) {
+$(document).on("click", "a[id^='word-details-link']", function(e) {
 	var wordWrapperForm = $(this).closest("form");
 	var wordId = wordWrapperForm.children("[name='word-id']").val();
 	var word = wordWrapperForm.children("[name='word-value']").val();
@@ -95,12 +100,12 @@ $(document).on("click", "a[id^='word-details-link']", function (e) {
 	fetchDetails(wordId, word, wordSelectUrl);
 });
 
-$(document).on("click", "button[name='colloc-usages-btn']", function (e) {
+$(document).on("click", "button[name='colloc-usages-btn']", function(e) {
 	$(this).closest("[id^='collocs-area']").find("[id^='colloc-usages-area']").fadeToggle();
 });
 
 // demo js for interactions between the mobile and desktop modes
-$(document).on("click", ".back", function (e) {
+$(document).on("click", ".back", function(e) {
 	if ($(".homonym-panel").hasClass("d-none")) {
 		$(".content-panel").addClass("d-none d-md-block");
 		$(".homonym-panel").removeClass("d-none d-md-block");
@@ -110,32 +115,36 @@ $(document).on("click", ".back", function (e) {
 	}
 });
 
-$(document).on("click", ".homonym-item", function (e) {
-	$(".homonym-item").removeClass("selected last-selected");
-	$(".homonym-item:first").removeClass("animation-target").dequeue();
-	$(this).addClass("selected last-selected");
-	calculateAndSetStyles();
-	if ($(window).width() >= windowWidthTreshold) {
-		$('.homonym-list').animate({
-				scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
-			},
-			200);
-	}
-	if ($(window).width() >= windowWidthTreshold) {
-		$('.homonym-list').animate({
-				scrollLeft: $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + $('.homonym-list').scrollLeft()
-			},
-			200);
-	} else {
-		$(".homonym-panel").addClass("d-none");
-		$(".search-panel").addClass("d-none");
-		$('#form-words').css("margin-top", '5em');
-	}
-});
+$(document).on(
+		"click",
+		".homonym-item",
+		function(e) {
+			$(".homonym-item").removeClass("selected last-selected");
+			$(".homonym-item:first").removeClass("animation-target").dequeue();
+			$(this).addClass("selected last-selected");
+			calculateAndSetStyles();
+			if ($(window).width() >= windowWidthTreshold) {
+				$('.homonym-list').animate(
+						{
+							scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
+									+ $('.homonym-list').scrollLeft()
+						}, 200);
+			}
+			if ($(window).width() >= windowWidthTreshold) {
+				$('.homonym-list').animate(
+						{
+							scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
+									+ $('.homonym-list').scrollLeft()
+						}, 200);
+			} else {
+				$(".homonym-panel").addClass("d-none");
+				$(".search-panel").addClass("d-none");
+				$('#form-words').css("margin-top", '5em');
+			}
+		});
 
-$(document).on("click", "[name='word-form-btn']", function (e) {
+$(document).on("click", "[name='word-form-btn']", function(e) {
 	var word = $(this).data('word');
 	$("input[name = 'searchWord']").val(word);
 	$('#search-btn').trigger('click');
 });
-
