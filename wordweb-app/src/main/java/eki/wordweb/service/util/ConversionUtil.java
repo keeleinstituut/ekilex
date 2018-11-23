@@ -702,6 +702,7 @@ public class ConversionUtil {
 				String formGroupKey;
 				List<Form> groupForms;
 				for (String morphGroup1Name : morphGroup1Names) {
+					//FIXME add group only if any such forms exist
 					paradigmGroup1 = newParadigmGroup(morphGroup1Name);
 					paradigm.getGroups().add(paradigmGroup1);
 					if (CollectionUtils.isEmpty(morphGroup2Names)) {
@@ -713,6 +714,7 @@ public class ConversionUtil {
 						distributeParadigmGroupForms(morphGroup1Names, paradigmGroup1, groupForms);
 					} else {
 						for (String morphGroup2Name : morphGroup2Names) {
+							//FIXME add group only if any such forms exist
 							paradigmGroup2 = newParadigmGroup(morphGroup2Name);
 							paradigmGroup1.getGroups().add(paradigmGroup2);
 							if (CollectionUtils.isEmpty(morphGroup3Names)) {
@@ -724,13 +726,13 @@ public class ConversionUtil {
 								distributeParadigmGroupForms(morphGroup2Names, paradigmGroup2, groupForms);
 							} else {
 								for (String morphGroup3Name : morphGroup3Names) {
-									paradigmGroup3 = newParadigmGroup(morphGroup3Name);
-									paradigmGroup2.getGroups().add(paradigmGroup3);
 									formGroupKey = morphGroup1Name + "-" + morphGroup2Name + "-" + morphGroup3Name;
 									groupForms = formGroupsMap.get(formGroupKey);
 									if (CollectionUtils.isEmpty(groupForms)) {
 										continue;
 									}
+									paradigmGroup3 = newParadigmGroup(morphGroup3Name);
+									paradigmGroup2.getGroups().add(paradigmGroup3);
 									distributeParadigmGroupForms(morphGroup3Names, paradigmGroup3, groupForms);
 								}
 							}
@@ -756,9 +758,9 @@ public class ConversionUtil {
 			paradigmGroup.getForms1().addAll(groupForms);
 		} else {
 			if (CollectionUtils.isEmpty(paradigmGroup.getForms1())) {
-				paradigmGroup.setForms1(groupForms);;
+				paradigmGroup.setForms1(groupForms);
 			} else if (CollectionUtils.isEmpty(paradigmGroup.getForms2())) {
-				paradigmGroup.setForms2(groupForms);;
+				paradigmGroup.setForms2(groupForms);
 			}
 		}
 	}
