@@ -622,7 +622,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				if (matchingWord.isPresent()) {
 					wordId = matchingWord.get().id;
 				} else {
-					logger.debug("No matching word was found for {} word {}, {}", reportingId, wordValue, homonymNr);
+					logger.debug("No matching word was found for: \"{}\", word: \"{}\", homonym: \"{}\"", reportingId, wordValue, homonymNr);
 					writeToLogFile(reportingId, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 				}
 			}
@@ -1327,7 +1327,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private void addSoundFileNamesToForms(Long wordId, Node wordGroupNode) {
 
 		final String paradigmGroupExp = "x:mfp";
-		final String paradigmInflectionTypeExp = "x:mt";
+		final String paradigmInflectionTypeNrExp = "x:mt";
 		final String morphValueGroupExp = "x:gkg/x:mvg";
 		final String morphCodeAttr = "vn";
 		final String soundFileExp = "x:mvgp/x:hldf";
@@ -1335,10 +1335,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<SoundFileData> soundFiles = new ArrayList<>();
 		List<Node> paradigmGroupNodes = wordGroupNode.selectNodes(paradigmGroupExp);
 		for (Node paradigmGroupNode : paradigmGroupNodes) {
-			Element paradigmInflectionTypeNode = (Element) paradigmGroupNode.selectSingleNode(paradigmInflectionTypeExp);
-			if (paradigmInflectionTypeNode != null) {
-				String inflectionTypeNrStr = paradigmInflectionTypeNode.getTextTrim().replace("?", "");
-				List<String> inflectionNumbers = asList(inflectionTypeNrStr.split("~"));
+			Element paradigmInflectionTypeNrNode = (Element) paradigmGroupNode.selectSingleNode(paradigmInflectionTypeNrExp);
+			if (paradigmInflectionTypeNrNode != null) {
+				String inflectionTypeNrStr = paradigmInflectionTypeNrNode.getTextTrim().replace("?", "");
+				List<String> inflectionTypeNumbers = asList(inflectionTypeNrStr.split("~"));
 				List<Node> morphValueGroupNodes = paradigmGroupNode.selectNodes(morphValueGroupExp);
 				for (Node morphValueGroupNode : morphValueGroupNodes) {
 					Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
@@ -1347,7 +1347,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 						SoundFileData data = new SoundFileData();
 						data.soundFile = soundFileNode.getTextTrim();
 						data.morphCode = morphCode;
-						data.inflectionTypeNumbers = inflectionNumbers;
+						data.inflectionTypeNumbers = inflectionTypeNumbers;
 						soundFiles.add(data);
 					}
 				}

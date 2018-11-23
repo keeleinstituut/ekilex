@@ -44,12 +44,14 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String wordGroupExp = "x:mg";
 	private final String wordExp = "x:m";
 	private final String articleBodyExp = "x:S";
-	private final String rootBaseExp = "x:lemp[not(@x:as='ab')]/x:mtg";
-	private final String formGroupExp = "x:pdgp/x:mvg";
+	private final String paradigmExp = "x:lemp[not(@x:as='ab')]/x:mtg";
+	private final String paradigmDataExp = "x:pdgp";
+	private final String inflectionTypeNrExp = "x:mt";
+	private final String formGroupExp = "x:mvg";
 	private final String morphValueExp = "x:vk";
 	private final String formExp = "x:parg/x:mv";
-	private final String inflectionTypeNrExp = "x:mt";
 	private final String homonymNrAttr = "i";
+	//private final String inflectionTypeAttr = "kuvamuuttyyp";//TODO needs further analyse
 	private final String formValueAttr = "kuvavorm";
 	private final String formOrderAttr = "ord";
 	private final String morphGroup1Attr = "grp2";
@@ -103,9 +105,9 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 
-		Node headerNode, contentNode, wordGroupNode, wordNode, morphValueNode, inflectionTypeNrNode;
+		Node headerNode, contentNode, wordGroupNode, wordNode, paradigmDataNode, morphValueNode, inflectionTypeNrNode;
 		Element wordElement, formElement, formGroupElement;
-		List<Node> rootBaseNodes, formGroupNodes, formNodes;
+		List<Node> paradigmNodes, formGroupNodes, formNodes;
 		List<Paradigm> paradigms, newParadigms;
 		List<Form> forms;
 		List<String> formValues;
@@ -154,16 +156,18 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			}
 			word = words.get(0);
 
-			rootBaseNodes = contentNode.selectNodes(rootBaseExp);
+			paradigmNodes = contentNode.selectNodes(paradigmExp);
 
 			newParadigms = new ArrayList<>();
 
-			for (Node rootBaseNode : rootBaseNodes) {
+			for (Node paradigmNode : paradigmNodes) {
 
-				formGroupNodes = rootBaseNode.selectNodes(formGroupExp);
-				inflectionTypeNrNode = rootBaseNode.selectSingleNode(inflectionTypeNrExp);
+				paradigmDataNode = paradigmNode.selectSingleNode(paradigmDataExp);
+				inflectionTypeNrNode = paradigmNode.selectSingleNode(inflectionTypeNrExp);
 				inflectionTypeNr = ((Element) inflectionTypeNrNode).getTextTrim();
-				inflectionTypeNr = String.valueOf(Integer.parseInt(inflectionTypeNr));
+				inflectionTypeNr = String.valueOf(Integer.valueOf(inflectionTypeNr));
+
+				formGroupNodes = paradigmDataNode.selectNodes(formGroupExp);
 
 				// compose forms
 				forms = new ArrayList<>();

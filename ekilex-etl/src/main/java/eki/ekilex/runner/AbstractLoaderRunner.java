@@ -417,7 +417,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
 		tableRowParamMap.put("is_secondary", isSecondary);
-		if (inflectionTypeNr != null) {
+		if (StringUtils.isNotBlank(inflectionTypeNr)) {
 			tableRowParamMap.put("inflection_type_nr", inflectionTypeNr);
 		}
 		Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);

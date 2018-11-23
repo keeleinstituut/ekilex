@@ -12,8 +12,12 @@ public class Paradigm extends AbstractDataObject {
 
 	private String title;
 
+	private List<ParadigmGroup> groups;
+
+	//TODO will be removed later
 	private List<Form> forms;
 
+	//TODO will be removed later
 	private List<FormPair> compactForms;
 
 	public Long getParadigmId() {
@@ -30,6 +34,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public List<ParadigmGroup> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(List<ParadigmGroup> groups) {
+		this.groups = groups;
 	}
 
 	public List<Form> getForms() {

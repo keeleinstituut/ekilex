@@ -1060,7 +1060,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 		if (wordId == null) {
 			if (!reportingPaused) {
-				logger.debug("No matching word was found for {} word {}, {}", reportingId, wordValue, homonymNr);
+				logger.debug("No matching word was found for: \"{}\", word: \"{}\", homonym: \"{}\"", reportingId, wordValue, homonymNr);
 			}
 			writeToLogFile(reportingId, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 		}

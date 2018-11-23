@@ -928,22 +928,28 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		if (unknownWord == null) {
 			collocMemberUniqueDummyHomonymCount.increment();
 			Map<String, Object> tableRowParamMap;
+
 			Long wordId = basicDbService.create(WORD);
 			tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("word_id", wordId);
 			Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
+
 			tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("paradigm_id", paradigmId);
-			tableRowParamMap.put("morph_code", defaultWordMorphCode);
 			tableRowParamMap.put("mode", FormMode.UNKNOWN.name());
+			tableRowParamMap.put("morph_code", defaultWordMorphCode);
+			tableRowParamMap.put("morph_exists", Boolean.TRUE);
 			tableRowParamMap.put("value", word);
 			basicDbService.create(FORM, tableRowParamMap);
+
 			Long meaningId = basicDbService.create(MEANING);
+
 			tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("word_id", wordId);
 			tableRowParamMap.put("meaning_id", meaningId);
 			tableRowParamMap.put("dataset_code", getDataset());
 			Long lexemeId = basicDbService.create(LEXEME, tableRowParamMap);
+
 			unknownWord = new UnknownWord(wordId, lexemeId, meaningId);
 			dummyWordMap.put(word, unknownWord);
 		}

@@ -10,17 +10,27 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Long paradigmId;
-
 	private Long formId;
+
+	private Long paradigmId;
 
 	private FormMode mode;
 
-	private String form;
+	private String morphGroup1;
+
+	private String morphGroup2;
+
+	private String morphGroup3;
+
+	private Integer displayLevel;
 
 	private String morphCode;
 
 	private Classifier morph;
+
+	private Boolean morphExists;
+
+	private String form;
 
 	private List<String> components;
 
@@ -30,13 +40,7 @@ public class Form extends AbstractDataObject {
 
 	private String soundFile;
 
-	public Long getParadigmId() {
-		return paradigmId;
-	}
-
-	public void setParadigmId(Long paradigmId) {
-		this.paradigmId = paradigmId;
-	}
+	private Integer orderBy;
 
 	public Long getFormId() {
 		return formId;
@@ -44,6 +48,14 @@ public class Form extends AbstractDataObject {
 
 	public void setFormId(Long formId) {
 		this.formId = formId;
+	}
+
+	public Long getParadigmId() {
+		return paradigmId;
+	}
+
+	public void setParadigmId(Long paradigmId) {
+		this.paradigmId = paradigmId;
 	}
 
 	public FormMode getMode() {
@@ -54,12 +66,36 @@ public class Form extends AbstractDataObject {
 		this.mode = mode;
 	}
 
-	public String getForm() {
-		return form;
+	public String getMorphGroup1() {
+		return morphGroup1;
 	}
 
-	public void setForm(String form) {
-		this.form = form;
+	public void setMorphGroup1(String morphGroup1) {
+		this.morphGroup1 = morphGroup1;
+	}
+
+	public String getMorphGroup2() {
+		return morphGroup2;
+	}
+
+	public void setMorphGroup2(String morphGroup2) {
+		this.morphGroup2 = morphGroup2;
+	}
+
+	public String getMorphGroup3() {
+		return morphGroup3;
+	}
+
+	public void setMorphGroup3(String morphGroup3) {
+		this.morphGroup3 = morphGroup3;
+	}
+
+	public Integer getDisplayLevel() {
+		return displayLevel;
+	}
+
+	public void setDisplayLevel(Integer displayLevel) {
+		this.displayLevel = displayLevel;
 	}
 
 	public String getMorphCode() {
@@ -76,6 +112,22 @@ public class Form extends AbstractDataObject {
 
 	public void setMorph(Classifier morph) {
 		this.morph = morph;
+	}
+
+	public Boolean getMorphExists() {
+		return morphExists;
+	}
+
+	public void setMorphExists(Boolean morphExists) {
+		this.morphExists = morphExists;
+	}
+
+	public String getForm() {
+		return form;
+	}
+
+	public void setForm(String form) {
+		this.form = form;
 	}
 
 	public List<String> getComponents() {
@@ -108,6 +160,14 @@ public class Form extends AbstractDataObject {
 
 	public void setSoundFile(String soundFile) {
 		this.soundFile = soundFile;
+	}
+
+	public Integer getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Integer orderBy) {
+		this.orderBy = orderBy;
 	}
 
 }

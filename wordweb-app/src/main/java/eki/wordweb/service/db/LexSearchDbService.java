@@ -297,8 +297,10 @@ public class LexSearchDbService {
 						MVIEW_WW_FORM.SOUND_FILE
 						)
 				.from(MVIEW_WW_FORM)
-				.where(MVIEW_WW_FORM.WORD_ID.eq(wordId).and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name())))
-				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.FORM_ID)
+				.where(
+						MVIEW_WW_FORM.WORD_ID.eq(wordId)
+						.and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name())))
+				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.ORDER_BY)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}
 

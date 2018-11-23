@@ -1,6 +1,9 @@
 package eki.wordweb.service.util;
 
+import static java.util.Arrays.asList;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +32,7 @@ import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.MeaningWord;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.ParadigmGroup;
 import eki.wordweb.data.SourceLink;
 import eki.wordweb.data.TypeCollocMember;
 import eki.wordweb.data.TypeDefinition;
@@ -43,8 +47,6 @@ import eki.wordweb.data.WordEtymology;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationTuple;
-
-import static java.util.Arrays.asList;
 
 @Component
 public class ConversionUtil {
@@ -661,7 +663,108 @@ public class ConversionUtil {
 		word.setMoreWordRelations(isMoreWordRelations);
 	}
 
+	//TODO under construction
 	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
+
+		List<Paradigm> paradigms = new ArrayList<>();
+		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
+		Collections.sort(paradigmIds);
+
+		for (Long paradigmId : paradigmIds) {
+
+			List<Form> forms = paradigmFormsMap.get(paradigmId);
+			forms.sort(Comparator.comparing(Form::getOrderBy));
+
+			for (Form form : forms) {
+				classifierUtil.applyClassifiers(form, displayLang);
+			}
+
+			Paradigm paradigm = new Paradigm();
+			paradigm.setParadigmId(paradigmId);
+			paradigm.setGroups(new ArrayList<>());
+			paradigms.add(paradigm);
+
+			Map<String, List<Form>> formGroupsMap = forms.stream()
+					.collect(Collectors.groupingBy(form -> form.getMorphGroup1() + "-" + form.getMorphGroup2() + "-" + form.getMorphGroup3()));
+
+			List<String> morphGroup1Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup1())).map(Form::getMorphGroup1).distinct().collect(Collectors.toList());
+			List<String> morphGroup2Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup2())).map(Form::getMorphGroup2).distinct().collect(Collectors.toList());
+			List<String> morphGroup3Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup3())).map(Form::getMorphGroup3).distinct().collect(Collectors.toList());
+
+			if (CollectionUtils.isEmpty(morphGroup1Names)) {
+				ParadigmGroup paradigmGroup = new ParadigmGroup();
+				paradigmGroup.setForms1(forms);
+				paradigm.getGroups().add(paradigmGroup);
+			} else {
+				ParadigmGroup paradigmGroup1;
+				ParadigmGroup paradigmGroup2;
+				ParadigmGroup paradigmGroup3;
+				String formGroupKey;
+				List<Form> groupForms;
+				for (String morphGroup1Name : morphGroup1Names) {
+					paradigmGroup1 = newParadigmGroup(morphGroup1Name);
+					paradigm.getGroups().add(paradigmGroup1);
+					if (CollectionUtils.isEmpty(morphGroup2Names)) {
+						formGroupKey = morphGroup1Name + "-null-null";
+						groupForms = formGroupsMap.get(formGroupKey);
+						if (CollectionUtils.isEmpty(groupForms)) {
+							continue;
+						}
+						distributeParadigmGroupForms(morphGroup1Names, paradigmGroup1, groupForms);
+					} else {
+						for (String morphGroup2Name : morphGroup2Names) {
+							paradigmGroup2 = newParadigmGroup(morphGroup2Name);
+							paradigmGroup1.getGroups().add(paradigmGroup2);
+							if (CollectionUtils.isEmpty(morphGroup3Names)) {
+								formGroupKey = morphGroup1Name + "-" + morphGroup2Name + "-null";
+								groupForms = formGroupsMap.get(formGroupKey);
+								if (CollectionUtils.isEmpty(groupForms)) {
+									continue;
+								}
+								distributeParadigmGroupForms(morphGroup2Names, paradigmGroup2, groupForms);
+							} else {
+								for (String morphGroup3Name : morphGroup3Names) {
+									paradigmGroup3 = newParadigmGroup(morphGroup3Name);
+									paradigmGroup2.getGroups().add(paradigmGroup3);
+									formGroupKey = morphGroup1Name + "-" + morphGroup2Name + "-" + morphGroup3Name;
+									groupForms = formGroupsMap.get(formGroupKey);
+									if (CollectionUtils.isEmpty(groupForms)) {
+										continue;
+									}
+									distributeParadigmGroupForms(morphGroup3Names, paradigmGroup3, groupForms);
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return paradigms;
+	}
+
+	private ParadigmGroup newParadigmGroup(String morphGroupName) {
+		ParadigmGroup paradigmGroup = new ParadigmGroup();
+		paradigmGroup.setName(morphGroupName);
+		paradigmGroup.setForms1(new ArrayList<>());
+		paradigmGroup.setForms2(new ArrayList<>());
+		paradigmGroup.setGroups(new ArrayList<>());
+		return paradigmGroup;
+	}
+
+	private void distributeParadigmGroupForms(List<String> morphGroupNames, ParadigmGroup paradigmGroup, List<Form> groupForms) {
+		if (morphGroupNames.size() > 2) {
+			paradigmGroup.getForms1().addAll(groupForms);
+		} else {
+			if (CollectionUtils.isEmpty(paradigmGroup.getForms1())) {
+				paradigmGroup.setForms1(groupForms);;
+			} else if (CollectionUtils.isEmpty(paradigmGroup.getForms2())) {
+				paradigmGroup.setForms2(groupForms);;
+			}
+		}
+	}
+
+	@Deprecated
+	public List<Paradigm> composeParadigmsOld(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
 		List<Paradigm> paradigms = new ArrayList<>();
 		Map<String, Form> formMap;
@@ -686,6 +789,7 @@ public class ConversionUtil {
 		return paradigms;
 	}
 
+	@Deprecated
 	private List<FormPair> composeCompactForms(Map<String, Form> formMap) {
 
 		final String[] orderedMorphPairCodes1 = new String[] {"SgN", "SgG", "SgP"};

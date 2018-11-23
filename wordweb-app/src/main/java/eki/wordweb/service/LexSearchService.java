@@ -79,7 +79,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		}
 		conversionUtil.filterIrrelevantValues(allWords, destinLang, datasets);
 		conversionUtil.selectHomonym(allWords, homonymNr);
-		allWords = allWords.stream().filter(word -> StringUtils.isNotEmpty(word.getDefinitionsWrapup())).collect(Collectors.toList());
+		//TODO nope, problem is elsewhere
+		//allWords = allWords.stream().filter(word -> StringUtils.isNotEmpty(word.getDefinitionsWrapup())).collect(Collectors.toList());
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(word -> word.getWord()).distinct().collect(Collectors.toList());
@@ -134,6 +135,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
+		//List<Paradigm> paradigms = conversionUtil.composeParadigmsOld(paradigmFormsMap, displayLang);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
 		lexemes.forEach(lexeme -> {

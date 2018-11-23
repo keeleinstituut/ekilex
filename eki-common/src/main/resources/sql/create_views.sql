@@ -151,6 +151,7 @@ create view view_ww_form
           and ff.paradigm_id = p.id
           and fw.paradigm_id = p.id
           and fw.mode = 'WORD'
+          and ff.display_level > 0
           and exists (select ld.id
                         from lexeme as ld
                         where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
