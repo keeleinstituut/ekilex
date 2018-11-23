@@ -35,8 +35,8 @@
         <span>
           <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
           <a th:href="${'http://kn.eki.ee/?Q=' + searchWord}" th:text="#{label.find.from.kn.eki}" target="_blank">Proovi otsida e-keelenõust</a>.
-      </span>
-     </div>
+        </span>
+      </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="homonym-container container-fluid">
@@ -124,7 +124,7 @@
                 <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
                 <span th:each="definition,definitionIter : ${lexeme.definitions}" th:text="${definition.value + (definitionIter.last ? '' : '; ')}"> </span>
                 <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
-                  <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}" th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}"> </span>
+                  <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}" th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}" th:style="${meaningWord.lang == 'lat' ? 'font-style:italic' : ''}"> </span>
                 </div>
               </div>
               <div class="col-lg meaning-meta pl-0">
@@ -410,10 +410,10 @@
 </div>
 </div>
 </div>
-<div class="col-md-5 col-lg-4 more-data">
+<div class="col-md-5 col-lg-4 more-data sidebar">
   <div class="level-3-panel row">
     <div class="col-12">
-      <h5 class="font-weight-bold" th:text="#{label.word.etymology}">Sõna päritolu</h5>
+      <h5 class="font-weight-bold" th:text="#{label.word.etymology}">Päritolu</h5>
       <div th:if="${wordData.word.wordEtymology == null}">
         <span th:text="#{label.no.data}">Andmed puuduvad</span>
       </div>
@@ -470,46 +470,53 @@
   <div class="col-12 word-relations">
     <h5 class="font-weight-bold" th:text="#{label.word.relations}">Sõna seosed</h5>
 
-<div th:unless="${wordData.word.wordRelationsExist}">
+    <div th:unless="${wordData.word.wordRelationsExist}">
       <span th:text="#{label.no.data}">Andmed puuduvad</span>
-</div>
-
-<div th:if="${wordData.word.wordRelationsExist}">
-  <div th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
-    <div class="word-group limited-group">
-      <span class="word-grouper" th:text="${#strings.capitalize(wordData.word.limitedRelatedWords.wordRelType.value) + ':'}"></span>
-      <div class="word-grouper-wrapper">
-        <span class="word-options mb-1" th:each="relation, relationIter : ${wordData.word.limitedRelatedWords.relatedWords}">
-          <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
-        </span>
-      </div>
     </div>
 
-    <div class="word-group full-group">
-      <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
-      <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
-      <div class="word-grouper-wrapper">
-        <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
-          <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
-        </span>
-      </div>
-    </th:block>
+  <div th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
+    <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">
+      <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
+      <span th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
+        <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+      </span>
+    </div>
   </div>
 
-  <button class="more-btn" th:if="${wordData.word.moreWordRelations}">
-    <span class="icon icon-chevron-left"></span>
-  </button>
-</div>
-</div>
-</div>
-<div class="col-12" th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
-  <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">
-    <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
-    <span th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
-      <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
-    </span>
+    <div th:if="${wordData.word.wordRelationsExist}">
+      <div th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
+        <div class="word-group limited-group">
+          <div class="word-grouper-wrapper mb-2">
+            <span class="word-grouper" th:text="${#strings.capitalize(wordData.word.limitedRelatedWords.wordRelType.value) + ':'}"></span>
+            <span class="word-options mb-1" th:each="relation, relationIter : ${wordData.word.limitedRelatedWords.relatedWords}">
+              <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
+            </span>
+          </div>
+        </div>
+
+        <div class="word-group full-group">
+          <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
+          <div class="word-grouper-wrapper mb-2">
+            <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
+            <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
+              <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
+            </span>
+          </div>
+        </th:block>
+      </div>
+
+
+      <button class="more-btn" th:if="${wordData.word.moreWordRelations}">
+        <span class="icon icon-chevron-left"></span>
+      </button>
+    </div>
   </div>
+
+
+
+
 </div>
+
 </div>
 <div id="korp" th:text="#{label.korp.search}">Otsin veebilauseid...</div>
 </div>

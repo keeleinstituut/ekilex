@@ -6724,12 +6724,12 @@ ul {
 
 .homonym-name {
   transition: 0ms !important;
-  color: #0077FF;
+  color: #001124;
   font-weight: 900;
 }
 
 .homonym-nr {
-  background-color: #0077FF;
+  background-color: #001124;
   color: #fff;
   height: 1.375rem;
   width: 1.375rem;
@@ -6860,11 +6860,9 @@ ul {
     display: block;
     color: #7F8891;
     font-size: 0.75rem;
-    margin-top: 0.625rem;
   }
 
   .additional-meta {
-    margin-top: 0.625rem;
     color: #7F8891;
     opacity: 1;
   }
@@ -6901,18 +6899,27 @@ ul {
   }
 
   .more-btn:active .icon::before, .more-btn:hover .icon::before, .more-btn:focus .icon::before {
-    background-color: #F2F2F2;
-    color: #0077FF !important;
+    background-color: #0077FF;
+    color: white !important;
+    opacity: 0.7
   }
 
   .more-btn .icon::before {
-    color: #7F8891;
+    color: white;
     transform: rotate(270deg);
     display: inline-block;
     border-radius: 1.375rem;
-    padding: 0.625rem;
+    padding: 0rem;
     margin-left: -0.625rem;
+    background: #0077FF;
+    position: relative;
+    top: 0.5rem;
+       border: 2px solid #0077FF;
   }
+   
+.sidebar .more-btn .icon::before {
+      top: 1.5rem;
+}
 
   .label {
     font-size: 0.75rem;
@@ -6925,8 +6932,10 @@ ul {
 
 
   .expand .more-btn .icon:before {
-    color: #001124 !important;
+    color: #0077FF !important;
     transform: rotate(90deg);
+        background: white;
+        border: 2px solid #0077FF;
   }
 
   .tag {
@@ -7577,15 +7586,16 @@ input[type="checkbox"] {
     margin-top: -1px;
   }
   .homonym-item.last-selected *:not(.homonym-nr), .homonym-item.last-selected *:after {
-    color: #001124 !important;
+    color: #0077FF !important;
   }
   .homonym-item.last-selected .homonym-nr {
-    background-color: #001124;
+    background-color: #0077FF;
   }
   .homonym-item *:not(.homonym-nr) {
-    display: block;
+    display: flex;
     white-space: nowrap;
     float: left;
+    align-items: center;
   }
   .homonym-item:after {
     content: "\e908";
@@ -7596,7 +7606,7 @@ input[type="checkbox"] {
     right: 1.25rem;
     width: 1.25rem;
     height: 1.25rem;
-    margin-top: -0.625rem;
+    margin-top: -0.725rem;
   }
   .homonym-item-wrap {
     max-width: 100%;
@@ -7617,6 +7627,9 @@ input[type="checkbox"] {
   .homonym-matches {
     font-size: 1rem;
     font-weight: 400;
+    flex-shrink: 0;
+    margin-right: 0.125rem;
+    font-weight: 700;
   }
   .word-details {
     margin-top: 4.375rem;
@@ -7798,10 +7811,25 @@ input[type="checkbox"] {
     transform: scale(1);
   }
   .homonym-item.selected .homonym-nr {
-    background-color: #003F87;
+    background-color: #0077FF;
     color: #fff;
     font-weight: 700;
   }
+  .word-details-homonym-nr {
+    background-color: #0077FF;
+    color: #fff;
+    font-weight: 700;
+    display: inline-block;
+    border-radius: 6.25rem;
+    height: 1.75rem;
+    width: 1.75rem;
+    text-align: center;
+    position: relative;
+    top: -0.25rem;
+    line-height: 1.6;
+    transition: 0ms !important;
+  }
+
   .homonym-item.selected span:not(.homonym-nr) {
     color: #fff !important;
   }
@@ -7940,7 +7968,7 @@ input[type="checkbox"] {
   }
 
   .form-control {
-   padding: 1.125rem 1.15625rem 1.125rem 1.15625rem;
+   padding: 1.125rem 9.5rem 1.125rem 1.15625rem;
  }
 
  .logo-wrapper { 
@@ -8107,9 +8135,6 @@ footer p {
   margin-top: -0.25rem;
 }
 
-.morphology-panel .more-btn, .corp-panel .more-btn {
-  top: 0.75rem;
-}
 
 .dependence-group { 
   margin-right: 2.5rem;
@@ -8184,9 +8209,9 @@ body:not(.home-page) footer {
   }
 
   .games-list {
-      align-items: center;
-  flex-direction: row;
-  display: block;
+    align-items: center;
+    flex-direction: row;
+    display: block;
   }
 
   .games-list .card-body { 
@@ -8374,7 +8399,7 @@ body:not(.home-page) footer {
 }
 
 .rekts-est {
-    font-style: italic;
+  font-style: italic;
   color: #658ad4;
 }
 
@@ -8454,6 +8479,10 @@ body:not(.home-page) footer {
   margin-left: 0px!important;
 }
 
+  .more-btn .icon::before {
+    top: 0.85rem; 
+  }
+
 }
 
 
@@ -8514,16 +8543,16 @@ body:not(.home-page) footer {
   width: calc(22.125rem / 2.2);
   background-size: calc(22.125rem / 2.2) calc(11.6875rem / 2.2); 
 }
-  .games-list {
-      align-items: center;
+.games-list {
+  align-items: center;
   flex-direction: column;
   display: flex;
-  }
+}
 }
 
 @media (min-width: 1200px) { 
-.homonym-container {
-  max-width: 80vw;
-}
+  .homonym-container {
+    max-width: 80vw;
+  }
 }
 
