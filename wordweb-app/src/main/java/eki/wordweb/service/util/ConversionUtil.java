@@ -762,11 +762,11 @@ public class ConversionUtil {
 					paradigmGroup1.setGroups(validParadigmGroups);
 					calculateFormDisplayFlags(paradigmGroup1);
 				}
+				validParadigmGroups = paradigm.getGroups().stream()
+						.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
+						.collect(Collectors.toList());
+				paradigm.setGroups(validParadigmGroups);
 			}
-			validParadigmGroups = paradigm.getGroups().stream()
-					.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
-					.collect(Collectors.toList());
-			paradigm.setGroups(validParadigmGroups);
 		}
 		return paradigms;
 	}

@@ -25,6 +25,7 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
+import eki.wordweb.data.ParadigmGroup;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymology;
@@ -149,15 +150,18 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		boolean isIndeclinableWord = false;
 		boolean isUnknownForm = false;
 		if (CollectionUtils.isNotEmpty(paradigms)) {
-			List<Form> firstForms = paradigms.get(0).getForms();
-			if (CollectionUtils.isNotEmpty(firstForms)) {
-				Optional<Form> firstFormOption = firstForms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst();
-				if (firstFormOption.isPresent()) {
-					Form firstForm = firstFormOption.get();
-					firstAvailableVocalForm = firstForm.getVocalForm();
-					firstAvailableSoundFile = firstForm.getSoundFile();
-					isIndeclinableWord = StringUtils.equals(INDECLINABLE_WORD_FORM_CODE, firstForm.getMorphCode());
-					isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstForm.getMorphCode());
+			List<ParadigmGroup> paradigmFirstGroup = paradigms.get(0).getGroups();
+			if (CollectionUtils.isNotEmpty(paradigmFirstGroup)) {
+				List<Form> firstForms = paradigmFirstGroup.get(0).getForms1();
+				if (CollectionUtils.isNotEmpty(firstForms)) {
+					Optional<Form> firstFormOption = firstForms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst();
+					if (firstFormOption.isPresent()) {
+						Form firstForm = firstFormOption.get();
+						firstAvailableVocalForm = firstForm.getVocalForm();
+						firstAvailableSoundFile = firstForm.getSoundFile();
+						isIndeclinableWord = StringUtils.equals(INDECLINABLE_WORD_FORM_CODE, firstForm.getMorphCode());
+						isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstForm.getMorphCode());
+					}
 				}
 			}
 		}
