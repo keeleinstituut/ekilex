@@ -8426,9 +8426,16 @@ body:not(.home-page) footer {
   opacity: 1;
 }
 
-.morphology-panel h5 {
+.morphology-panel h6.main-title { 
+color: red!important;
+ }
+
+.morphology-panel h6, .morphology-panel h6.main-title {
   display: flex;
   width: 100%;
+  color: #658ad4;
+  font-weight: 700;
+  font-size:18px;
 }
 
 @media (max-width: 767px) { 
