@@ -251,7 +251,8 @@
                 </div>
                 <div class="col-12 collocations-section">
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
-                    <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups) || not #lists.isEmpty(lexeme.secondaryDisplayCollocs)}">
+                    <!--  || not #lists.isEmpty(lexeme.secondaryDisplayCollocs) -->
+                    <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                       <div class="w-100 colloc-samples">
                         <div class="colloc-section w-100" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                           <div class="colloc-inner-section" style="padding: 0px 10px;">
@@ -299,6 +300,8 @@
                             </div>
                           </div>
                         </div>
+                        <!-- temporarily disabled -->
+                        <!-- 
                         <div class="row" style="padding: 5px;" th:if="${#lists.isEmpty(lexeme.collocationPosGroups)}">
                           <span th:each="displayColloc,displayCollocIter : ${lexeme.limitedSecondaryDisplayCollocs}" style="padding: 2px;">
                             <span class="colloc-member">
@@ -313,6 +316,7 @@
                             </span>
                           </span>
                         </div>
+                         -->
                       </div>
                       <div class="colloc-fulldata">
                         <th:block th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
@@ -383,6 +387,8 @@
                             </div>
                           </div>
                         </th:block>
+                        <!-- temporarily disabled -->
+                        <!-- 
                         <div class="lexeme-list" th:if="${not #lists.isEmpty(lexeme.secondaryDisplayCollocs)}">
                           <div class="row">
                             <b class="col" th:text="#{label.used.in.collocations}">Kasutatud kollokatsioonides</b>
@@ -404,8 +410,10 @@
                             </div>
                           </div>
                         </div>
+                         -->
                       </div>
-                      <button class="more-btn" name="colloc-expand-btn" th:if="${lexeme.morePrimaryCollocs || lexeme.moreSecondaryCollocs}">
+                      <!--  || lexeme.moreSecondaryCollocs -->
+                      <button class="more-btn" name="colloc-expand-btn" th:if="${lexeme.morePrimaryCollocs}">
                         <span class="icon icon-chevron-left"></span>
                       </button>
                     </div>
