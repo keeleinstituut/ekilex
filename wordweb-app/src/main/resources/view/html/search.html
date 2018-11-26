@@ -445,8 +445,8 @@
                 <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
                 </button>
-                <div th:each="paradigm,paradigmIter : ${wordData.paradigms}" class="morphology-section">
-                  <div th:each="paradigmGroup1 : ${paradigm.groups}">
+                <div th:each="paradigm,paradigmIter : ${wordData.paradigms}" class="morphology-section d-flex">
+                  <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
                     <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>
                     <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
                       <h6>gr 1 forms 1</h6>
@@ -559,7 +559,7 @@
                       <div class="word-grouper-wrapper mb-2">
                         <span class="word-grouper" th:text="${#strings.capitalize(wordData.word.limitedRelatedWords.wordRelType.value) + ':'}"></span>
                         <span class="word-options mb-1" th:each="relation, relationIter : ${wordData.word.limitedRelatedWords.relatedWords}">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
+                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
                         </span>
                       </div>
                     </div>
@@ -568,7 +568,7 @@
                         <div class="word-grouper-wrapper mb-2">
                           <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
                           <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
-                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}" class="text-nowrap"></a>
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
                           </span>
                         </div>
                       </th:block>
