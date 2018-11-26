@@ -8420,7 +8420,7 @@ body:not(.home-page) footer {
 }
 
 .position-relative.expand .secondary-morph {
-  display: flex;
+  display: inline;
   opacity: 1;
 }
 
@@ -8453,7 +8453,6 @@ body:not(.home-page) footer {
   border-bottom-right: 0rem;
 }
 
-.morph-word { font-style: italic; }
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
