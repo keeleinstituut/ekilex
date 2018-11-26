@@ -55,7 +55,9 @@ public class ConversionUtil {
 
 	private static final Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 
-	private static final int COLLECTIONS_DISPLAY_LIMIT = 3;
+	private static final int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;
+
+	private static final int WORD_RELATIONS_DISPLAY_LIMIT = 10;
 
 	private static final String[] WORD_REL_TYPE_ORDER = new String[] {"posit", "komp", "superl", "deriv_base", "deriv", "ühend"};
 
@@ -263,7 +265,7 @@ public class ConversionUtil {
 
 	private void populateUsages(Lexeme lexeme, LexemeDetailsTuple tuple, String displayLang) {
 		List<TypeUsage> usages = tuple.getUsages();
-		boolean isMoreUsages = CollectionUtils.size(usages) > COLLECTIONS_DISPLAY_LIMIT;
+		boolean isMoreUsages = CollectionUtils.size(usages) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		lexeme.setMoreUsages(isMoreUsages);
 		if (CollectionUtils.isNotEmpty(usages)) {
 			for (TypeUsage usage : usages) {
@@ -398,13 +400,13 @@ public class ConversionUtil {
 		if (CollectionUtils.isNotEmpty(collocationPosGroups)) {
 			CollocationPosGroup firstCollocPosGroup = collocationPosGroups.get(0);
 			CollocationRelGroup firstCollocRelGroup = firstCollocPosGroup.getRelationGroups().get(0);
-			boolean isMorePrimaryCollocs = CollectionUtils.size(firstCollocRelGroup.getDisplayCollocs()) > COLLECTIONS_DISPLAY_LIMIT;
+			boolean isMorePrimaryCollocs = CollectionUtils.size(firstCollocRelGroup.getDisplayCollocs()) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 			lexeme.setMorePrimaryCollocs(isMorePrimaryCollocs);
+			List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>(firstCollocRelGroup.getDisplayCollocs());
 			if (isMorePrimaryCollocs) {
-				List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>(firstCollocRelGroup.getDisplayCollocs());
-				limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, COLLECTIONS_DISPLAY_LIMIT);
-				lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
+				limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
 			}
+			lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
 		}
 	}
 
@@ -415,13 +417,13 @@ public class ConversionUtil {
 		lexeme.setSecondaryDisplayCollocs(secondaryDisplayCollocs);
 		transformCollocationsForDisplay(wordId, collocations, secondaryDisplayCollocs, null, existingCollocationValues);
 		if (CollectionUtils.isNotEmpty(secondaryDisplayCollocs)) {
-			boolean isMoreSecondaryCollocs = CollectionUtils.size(secondaryDisplayCollocs) > COLLECTIONS_DISPLAY_LIMIT;
+			boolean isMoreSecondaryCollocs = CollectionUtils.size(secondaryDisplayCollocs) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 			lexeme.setMoreSecondaryCollocs(isMoreSecondaryCollocs);
+			List<DisplayColloc> limitedSecondaryDisplayCollocs = new ArrayList<>(secondaryDisplayCollocs);
 			if (isMoreSecondaryCollocs) {
-				List<DisplayColloc> limitedSecondaryDisplayCollocs = new ArrayList<>(secondaryDisplayCollocs);
-				limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs.subList(0, COLLECTIONS_DISPLAY_LIMIT);
-				lexeme.setLimitedSecondaryDisplayCollocs(limitedSecondaryDisplayCollocs);
+				limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
 			}
+			lexeme.setLimitedSecondaryDisplayCollocs(limitedSecondaryDisplayCollocs);
 		}
 	}
 
@@ -623,6 +625,7 @@ public class ConversionUtil {
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
 				}
+				word.setLimitedRelatedWordTypeGroups(new ArrayList<>());
 				word.setRelatedWordTypeGroups(new ArrayList<>());
 				Map<String, List<TypeWordRelation>> relatedWordsMap = relatedWords.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
 				for (String wordRelTypeCode : WORD_REL_TYPE_ORDER) {
@@ -633,17 +636,23 @@ public class ConversionUtil {
 						wordRelationGroup.setWordRelType(wordRelType);
 						wordRelationGroup.setRelatedWords(relatedWordsOfType);
 						word.getRelatedWordTypeGroups().add(wordRelationGroup);
-						if (word.getLimitedRelatedWords() == null) {
-							List<TypeWordRelation> limitedRelatedWordsOfType = new ArrayList<>(relatedWordsOfType);
-							boolean isMoreWordRelationsOfType = CollectionUtils.size(relatedWordsOfType) > COLLECTIONS_DISPLAY_LIMIT;
-							if (isMoreWordRelationsOfType) {
-								limitedRelatedWordsOfType = relatedWordsOfType.subList(0, COLLECTIONS_DISPLAY_LIMIT);
-							}
-							WordRelationGroup limitedWordRelationGroup = new WordRelationGroup();
-							limitedWordRelationGroup.setWordRelType(wordRelType);
-							limitedWordRelationGroup.setRelatedWords(limitedRelatedWordsOfType);
-							word.setLimitedRelatedWords(limitedWordRelationGroup);
-						}
+					}
+				}
+				int limitedRelatedWordCounter = 0;
+				for (WordRelationGroup wordRelationGroup : word.getRelatedWordTypeGroups()) {
+					if (limitedRelatedWordCounter >= WORD_RELATIONS_DISPLAY_LIMIT) {
+						break;
+					}
+					wordRelationGroup.getRelatedWords();
+					List<TypeWordRelation> relatedWordsOfType = wordRelationGroup.getRelatedWords();
+					int maxLimit = Math.min(relatedWordsOfType.size(), WORD_RELATIONS_DISPLAY_LIMIT - limitedRelatedWordCounter);
+					List<TypeWordRelation> limitedRelatedWordsOfType = relatedWordsOfType.subList(0, maxLimit);
+					if (CollectionUtils.isNotEmpty(limitedRelatedWordsOfType)) {
+						WordRelationGroup limitedWordRelationGroup = new WordRelationGroup();
+						limitedWordRelationGroup.setWordRelType(wordRelationGroup.getWordRelType());
+						limitedWordRelationGroup.setRelatedWords(limitedRelatedWordsOfType);
+						word.getLimitedRelatedWordTypeGroups().add(limitedWordRelationGroup);
+						limitedRelatedWordCounter += limitedRelatedWordsOfType.size();
 					}
 				}
 			}
@@ -659,7 +668,7 @@ public class ConversionUtil {
 		}
 		boolean wordRelationsExist = CollectionUtils.isNotEmpty(word.getRelatedWords()) || CollectionUtils.isNotEmpty(word.getWordGroups());
 		word.setWordRelationsExist(wordRelationsExist);
-		boolean isMoreWordRelations = CollectionUtils.size(word.getRelatedWords()) > COLLECTIONS_DISPLAY_LIMIT;
+		boolean isMoreWordRelations = CollectionUtils.size(word.getRelatedWords()) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 		word.setMoreWordRelations(isMoreWordRelations);
 	}
 
