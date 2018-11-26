@@ -670,6 +670,13 @@ public class ConversionUtil {
 		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
 		Collections.sort(paradigmIds);
 
+		ParadigmGroup paradigmGroup1;
+		ParadigmGroup paradigmGroup2;
+		ParadigmGroup paradigmGroup3;
+		String formGroupKey;
+		List<Form> groupForms;
+		List<ParadigmGroup> validParadigmGroups;
+
 		for (Long paradigmId : paradigmIds) {
 
 			List<Form> forms = paradigmFormsMap.get(paradigmId);
@@ -696,13 +703,7 @@ public class ConversionUtil {
 				paradigmGroup.setForms1(forms);
 				paradigm.getGroups().add(paradigmGroup);
 			} else {
-				ParadigmGroup paradigmGroup1;
-				ParadigmGroup paradigmGroup2;
-				ParadigmGroup paradigmGroup3;
-				String formGroupKey;
-				List<Form> groupForms;
 				for (String morphGroup1Name : morphGroup1Names) {
-					//FIXME add group only if any such forms exist
 					paradigmGroup1 = newParadigmGroup(morphGroup1Name);
 					paradigm.getGroups().add(paradigmGroup1);
 					if (CollectionUtils.isEmpty(morphGroup2Names)) {
@@ -714,7 +715,6 @@ public class ConversionUtil {
 						distributeParadigmGroupForms(morphGroup1Names, paradigmGroup1, groupForms);
 					} else {
 						for (String morphGroup2Name : morphGroup2Names) {
-							//FIXME add group only if any such forms exist
 							paradigmGroup2 = newParadigmGroup(morphGroup2Name);
 							paradigmGroup1.getGroups().add(paradigmGroup2);
 							if (CollectionUtils.isEmpty(morphGroup3Names)) {
@@ -734,14 +734,41 @@ public class ConversionUtil {
 									paradigmGroup3 = newParadigmGroup(morphGroup3Name);
 									paradigmGroup2.getGroups().add(paradigmGroup3);
 									distributeParadigmGroupForms(morphGroup3Names, paradigmGroup3, groupForms);
+									calculateFormDisplayFlags(paradigmGroup3);
 								}
 							}
+							validParadigmGroups = paradigmGroup2.getGroups().stream()
+									.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
+									.collect(Collectors.toList());
+							paradigmGroup2.setGroups(validParadigmGroups);
+							calculateFormDisplayFlags(paradigmGroup2);
 						}
 					}
+					validParadigmGroups = paradigmGroup1.getGroups().stream()
+							.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
+							.collect(Collectors.toList());
+					paradigmGroup1.setGroups(validParadigmGroups);
+					calculateFormDisplayFlags(paradigmGroup1);
 				}
 			}
+			validParadigmGroups = paradigm.getGroups().stream()
+					.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
+					.collect(Collectors.toList());
+			paradigm.setGroups(validParadigmGroups);
 		}
 		return paradigms;
+	}
+
+	private void calculateFormDisplayFlags(ParadigmGroup paradigmGroup) {
+		List<Form> groupFormsTest = new ArrayList<>();
+		groupFormsTest.addAll(paradigmGroup.getForms1());
+		groupFormsTest.addAll(paradigmGroup.getForms2());
+		boolean formsExist = CollectionUtils.isNotEmpty(groupFormsTest);
+		boolean primaryFormsExist = groupFormsTest.stream().anyMatch(form -> form.getDisplayLevel() == 1);
+		boolean groupsExist = CollectionUtils.isNotEmpty(paradigmGroup.getGroups());
+		paradigmGroup.setFormsExist(formsExist);
+		paradigmGroup.setPrimaryFormsExist(primaryFormsExist);
+		paradigmGroup.setGroupsExist(groupsExist);
 	}
 
 	private ParadigmGroup newParadigmGroup(String morphGroupName) {

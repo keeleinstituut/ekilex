@@ -16,6 +16,12 @@ public class ParadigmGroup extends AbstractDataObject {
 
 	private List<Form> forms2;
 
+	private boolean formsExist;
+
+	private boolean primaryFormsExist;
+
+	private boolean groupsExist;
+
 	public String getName() {
 		return name;
 	}
@@ -46,6 +52,30 @@ public class ParadigmGroup extends AbstractDataObject {
 
 	public void setForms2(List<Form> forms2) {
 		this.forms2 = forms2;
+	}
+
+	public boolean isFormsExist() {
+		return formsExist;
+	}
+
+	public void setFormsExist(boolean formsExist) {
+		this.formsExist = formsExist;
+	}
+
+	public boolean isPrimaryFormsExist() {
+		return primaryFormsExist;
+	}
+
+	public void setPrimaryFormsExist(boolean primaryFormsExist) {
+		this.primaryFormsExist = primaryFormsExist;
+	}
+
+	public boolean isGroupsExist() {
+		return groupsExist;
+	}
+
+	public void setGroupsExist(boolean groupsExist) {
+		this.groupsExist = groupsExist;
 	}
 
 }
