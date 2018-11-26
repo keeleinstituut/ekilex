@@ -59,7 +59,7 @@ $(document).on(
 			$(this).parent(".corp-panel").toggleClass("expand");
 
 			var counter = 0;
-			$('.dependence').each(function(i) {
+			$(this).siblings('.dependencies .dependence').each(function(i) {
 				if (i % 1000 === 0) {
 					counter = 1;
 				} else {
@@ -69,7 +69,7 @@ $(document).on(
 					$(this).removeClass('fade-target');
 				}
 			});
-			$('.colloc-col').each(function(i) {
+				$(this).closest('.colloc-col').each(function(i) {
 				if (i % 1000 === 0) {
 					counter = 1;
 				} else {

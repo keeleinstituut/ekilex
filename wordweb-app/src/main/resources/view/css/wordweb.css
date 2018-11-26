@@ -43,7 +43,7 @@
 }
 
 @media ( max-width : 767px) {
-	body:not (.home-page ) #language-detail-panel {
+	body:not(.home-page ) #language-detail-panel {
 		margin-top: 1rem;
 		width: calc(100vw - 4em);
 	}
@@ -123,12 +123,12 @@
 	position: relative;
 }
 
-.morphology-section:not (.expand ) .row:not (.intro ) {
+.morphology-section:not(.expand ) .row:not(.intro ) {
 	display: none;
 	opacity: 0;
 }
 
-.morphology-section .row div:not (.label ) {
+.morphology-section .row div:not(.label ) {
 	display: block;
 	height: 1.75rem;
 }
@@ -140,12 +140,12 @@
 	line-height: 1;
 }
 
-.word-relations.expand .limited-group, .word-relations:not (.expand ) .full-group
+.word-relations.expand .limited-group, .word-relations:not(.expand ) .full-group
 	{
 	display: none;
 }
 
-.word-relations.expand .full-group, .word-relations:not (.expand ) .limited-group
+.word-relations.expand .full-group, .word-relations:not(.expand ) .limited-group
 	{
 	display: inline;
 }
