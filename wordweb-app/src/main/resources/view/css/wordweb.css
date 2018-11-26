@@ -86,14 +86,14 @@
 	display: block;
 }
 
-.level-3-panel .collocations-section:not (.expand ) .colloc-fulldata,
+.level-3-panel .collocations-section:not(.expand ) .colloc-fulldata,
 	.level-3-panel .collocations-section.expand .colloc-samples {
 	display: none;
 	opacity: 0;
 }
 
 .level-3-panel .collocations-section.expand .colloc-fulldata,
-	.level-3-panel .collocations-section:not (.expand ) .colloc-samples {
+	.level-3-panel .collocations-section:not(.expand ) .colloc-samples {
 	display: block;
 	opacity: 1;
 }
