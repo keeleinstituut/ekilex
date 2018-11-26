@@ -167,7 +167,8 @@ public class ConversionUtil {
 			Collocation collocation = populateCollocation(tuple);
 
 			if (collocPosGroup == null) {
-				lexeme.getSecondaryCollocations().add(collocation);
+				//TODO temporarily disabled
+				//lexeme.getSecondaryCollocations().add(collocation);
 			} else {
 				collocRelGroup.getCollocations().add(collocation);
 			}
@@ -196,7 +197,8 @@ public class ConversionUtil {
 			filterMeaningWords(allRelatedWordValues, lexeme);
 			List<String> existingCollocationValues = new ArrayList<>();
 			transformCollocationPosGroupsForDisplay(wordId, lexeme, existingCollocationValues);
-			transformSecondaryCollocationsForDisplay(wordId, lexeme, existingCollocationValues);
+			//TODO temporarily disabled
+			//transformSecondaryCollocationsForDisplay(wordId, lexeme, existingCollocationValues);
 		}
 
 		return lexemes;
@@ -410,6 +412,7 @@ public class ConversionUtil {
 		}
 	}
 
+	//TODO temporarily disabled
 	private void transformSecondaryCollocationsForDisplay(Long wordId, Lexeme lexeme, List<String> existingCollocationValues) {
 
 		List<Collocation> collocations = lexeme.getSecondaryCollocations();
@@ -876,7 +879,7 @@ public class ConversionUtil {
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
 		return CollectionUtils.isEmpty(lexeme.getDefinitions()) &&
-				CollectionUtils.isEmpty(lexeme.getSecondaryCollocations()) &&
+				//CollectionUtils.isEmpty(lexeme.getSecondaryCollocations()) && //TODO temporarily disabled
 				CollectionUtils.isEmpty(lexeme.getCollocationPosGroups()) &&
 				CollectionUtils.isEmpty(lexeme.getDomains()) &&
 				CollectionUtils.isEmpty(lexeme.getGovernments()) &&

@@ -354,8 +354,8 @@ create view view_ww_collocation
               and   p2.word_id = w2.id
               and   f2.paradigm_id = p2.id
               and   f2.mode in ('WORD', 'UNKNOWN')) lw2 on lw2.lexeme_id = lc2.lexeme_id
-      left outer join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
-      left outer join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
+      inner join lex_colloc_rel_group as rgr1 on lc1.rel_group_id = rgr1.id
+      inner join lex_colloc_pos_group as pgr1 on pgr1.id = rgr1.pos_group_id
     group by
       l1.id,
       c.id,
