@@ -6910,16 +6910,14 @@ ul {
     display: inline-block;
     border-radius: 1.375rem;
     padding: 0rem;
-    margin-left: -0.625rem;
     background: #0077FF;
     position: relative;
-    top: 0.5rem;
-       border: 2px solid #0077FF;
+    border: 2px solid #0077FF;
   }
-   
-.sidebar .more-btn .icon::before {
-      top: 1.5rem;
-}
+
+  .sidebar .more-btn {
+    top: 1.5rem;
+  }
 
   .label {
     font-size: 0.75rem;
@@ -6934,8 +6932,8 @@ ul {
   .expand .more-btn .icon:before {
     color: #0077FF !important;
     transform: rotate(90deg);
-        background: white;
-        border: 2px solid #0077FF;
+    background: white;
+    border: 2px solid #0077FF;
   }
 
   .tag {
@@ -8022,7 +8020,7 @@ input[type="checkbox"] {
   position: relative;
   right: 0;
   left: 0.25rem; 
-  top: 0.2rem;
+  top: 0.1rem;
   background: url(../images/alert-icn.svg) center center no-repeat; 
   display: inline-block; 
   height: 1rem;
@@ -8133,6 +8131,7 @@ footer p {
 
 .morphology-panel .btn-speaker {
   margin-top: -0.25rem;
+  margin-bottom: -1rem; 
 }
 
 
@@ -8412,7 +8411,6 @@ body:not(.home-page) footer {
 }
 
 .secondary-morph {
-  width: 100%;
   display: none;
 }
 
@@ -8422,21 +8420,40 @@ body:not(.home-page) footer {
 }
 
 .position-relative.expand .secondary-morph {
-  display: block;
+  display: flex;
   opacity: 1;
 }
 
-.morphology-panel h6.main-title { 
-color: red!important;
+.morphology-panel .more-btn {
+  top: 0rem;
+    right: -3.75rem;
+ }
+
+.morphology-panel .icon-speaker { 
+  display: inline;
  }
 
 .morphology-panel h6, .morphology-panel h6.main-title {
   display: flex;
   width: 100%;
   color: #658ad4;
-  font-weight: 700;
-  font-size:18px;
+  font-weight: 400;
+  font-size:1.125rem;
+  margin-top: 0.25rem;
 }
+
+.morphology-panel h6.main-title { 
+  border-bottom: 1px solid #658ad4;
+  font-weight: 700;
+  font-size:1.125rem;
+  margin-top: 0px;
+}
+
+.sidebar .level-3-panel:last-of-type {
+  border-bottom-right: 0rem;
+}
+
+.morph-word { font-style: italic; }
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {
@@ -8505,12 +8522,20 @@ color: red!important;
   margin-left: 0px!important;
 }
 
-  .more-btn .icon::before {
-    top: 0.85rem; 
-  }
-
+.more-btn .icon::before {
+  top: 0.85rem; 
 }
 
+.morphology-panel .more-btn {
+  top: -0.5rem;
+    right: -1.25rem;
+ }
+
+.morphology-panel .position-relative, .relations-wrapper, .sentence-wrapper {
+  padding-right: 2rem;
+}
+
+}
 
 @media (min-width: 768px) { 
 
@@ -8574,6 +8599,11 @@ color: red!important;
   flex-direction: column;
   display: flex;
 }
+
+.sidebar .level-3-panel:last-of-type {
+  border-bottom-right: 0.6875rem;
+}
+
 }
 
 @media (min-width: 1200px) { 

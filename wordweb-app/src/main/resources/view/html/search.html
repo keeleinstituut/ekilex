@@ -474,9 +474,11 @@
                         </button>
                       </div>
                     </th:block>
+
                     <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
-                      <div th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
-                        <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="${!paradigmGroup2.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                      <div class="d-block" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
+                        <h6 class="main-title d-inline" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="${!paradigmGroup2.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+
                         <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms1)}">
                           <div th:each="form : ${paradigmGroup2.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                             <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
@@ -493,9 +495,11 @@
                             </button>
                           </div>
                         </th:block>
+
                         <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
-                          <div th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
+                          <div class="d-flex flex-column" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
                             <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="${!paradigmGroup3.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+
                             <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms1)}">
                               <div th:each="form : ${paradigmGroup3.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                                 <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
@@ -537,9 +541,11 @@
                     </div>
                   </div>
                    -->
+
                   
                 </div>
                 <hr th:unless="${paradigmIter.last}" />
+
               </div>
               </div>
             </div>
@@ -558,7 +564,7 @@
                   </div>
                 </div>
                 <div th:if="${wordData.word.wordRelationsExist}">
-                  <div th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
+                  <div class="relations-wrapper" th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
                     <div class="word-group limited-group">
                       <th:block th:each="relationTypeGroup : ${wordData.word.limitedRelatedWordTypeGroups}">
                         <div class="word-grouper-wrapper mb-2">
@@ -603,7 +609,7 @@
       <button class="more-btn">
         <span class="icon icon-chevron-left"></span>
       </button>
-      <div class="mb-2" th:each="sentence : ${sentences}">
+      <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
         <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
       </div>
       <div class="mb-2" style="margin-bottom: 0.5em;">
@@ -611,17 +617,17 @@
       </div>
     </div>
     <script th:inline="javascript">
-		$('.corp-panel [data-toggle="tooltip"]').tooltip();
-	</script>
+    $('.corp-panel [data-toggle="tooltip"]').tooltip();
+  </script>
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
-  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
-  	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
-  	var currentPage = /*[[@{/search}]]*/"/search";
-  	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
-  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-  	setActiveMenuItem('search');
+    var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+    var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+    var currentPage = /*[[@{/search}]]*/"/search";
+    var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
+    var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+    setActiveMenuItem('search');
   </script>
 </body>
 </html>
