@@ -263,10 +263,10 @@
                                     <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
                                       <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
                                         <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="text-muted"
-                                          th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                              th:text="${displayColloc.headwordMember.conjunct}"></span>
                                         <span class="text-info" th:text="${displayColloc.headwordMember.form}"></span>
                                         <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="text-muted"
-                                          th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                              th:text="${displayColloc.headwordMember.conjunct}"></span>
                                       </span>
                                       <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                         <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
@@ -330,7 +330,8 @@
                           <div class="w-100">
                             <div class="colloc-section w-100" th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}">
                               <div class="colloc-name row">
-                                <i class="col"> <span th:text="${collocPosGr.posGroup.value}"></span>
+                                <i class="col">
+                                  <span th:text="${collocPosGr.posGroup.value}"></span>
                                 </i>
                               </div>
                               <div class="colloc-inner-section" style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
@@ -341,10 +342,10 @@
                                         <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
                                           <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
                                             <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="text-muted"
-                                              th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                                  th:text="${displayColloc.headwordMember.conjunct}"></span>
                                             <span class="text-info" th:text="${displayColloc.headwordMember.form}"></span>
                                             <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="text-muted"
-                                              th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                                  th:text="${displayColloc.headwordMember.conjunct}"></span>
                                           </span>
                                           <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                             <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
@@ -376,8 +377,8 @@
                                     </span>
                                   </span>
                                 </div>
-                                <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="row"
-                                  style="display: none">
+                                <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}"
+                                      th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="row" style="display: none">
                                   <div style="padding: 0px 20px; width: 100%" th:each="collocUsage : ${collocRelGr.allUsages}">
                                     <span class="font-weight-light" th:text="${collocUsage}"></span>
                                   </div>
@@ -450,103 +451,101 @@
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
                   <span class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
-
-<div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+                <div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
                   <button class="more-btn">
-                  <span class="icon icon-chevron-left"></span>
-                </button>
-                <div class="morphology-section d-flex">
-                  <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
-                    <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>
-                    <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
-                      <div th:each="form : ${paradigmGroup1.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                        <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
-                        <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                    <span class="icon icon-chevron-left"></span>
+                  </button>
+                  <div class="morphology-section d-flex">
+                    <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
+                      <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>
+                      <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
+                        <div th:each="form : ${paradigmGroup1.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                          <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.form}" data-toggle="tooltip" data-placement="top"
+                                th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
+                          <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                            <span class="icon icon-speaker"></span>
+                          </button>
+                        </div>
+                      </th:block>
+                      <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms2)}">
+                        <div th:each="form : ${paradigmGroup1.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                          <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.form}" data-toggle="tooltip" data-placement="top"
+                                th:title="${form.morph.value + ' - ' + form.displayForm}">tekid</div>
+                          <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                            <span class="icon icon-speaker"></span>
+                          </button>
+                        </div>
+                      </th:block>
+                      <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
+                        <div class="d-block" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
+                          <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="${!paradigmGroup2.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                          <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms1)}">
+                            <div th:each="form : ${paradigmGroup2.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                              <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.form}" data-toggle="tooltip" data-placement="top"
+                                  th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
+                              <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                <span class="icon icon-speaker"></span>
+                              </button>
+                            </div>
+                          </th:block>
+                          <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms2)}">
+                            <div th:each="form : ${paradigmGroup2.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                              <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.form}" data-toggle="tooltip" data-placement="top"
+                                    th:title="${form.morph.value + ' - ' + form.displayForm}">tekid</div>
+                              <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                <span class="icon icon-speaker"></span>
+                              </button>
+                            </div>
+                          </th:block>
+                          <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
+                            <div class="d-flex flex-column" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
+                              <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="${!paradigmGroup3.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                              <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms1)}">
+                                <div th:each="form : ${paradigmGroup3.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                                  <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.form}" data-toggle="tooltip"
+                                      data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
+                                  <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                    <span class="icon icon-speaker"></span>
+                                  </button>
+                                </div>
+                              </th:block>
+                              <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms2)}">
+                                <div th:each="form : ${paradigmGroup3.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
+                                  <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.form}" data-toggle="tooltip"
+                                      data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekid</div>
+                                  <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                    <span class="icon icon-speaker"></span>
+                                  </button>
+                                </div>
+                              </th:block>
+                            </div>
+                          </th:block>
+                        </div>
+                      </th:block>
+                    </div>
+                    <!-- previous solution. to be removed later -->
+                    <!-- 
+                    <div th:each="formPair,pairIter : ${paradigm.compactForms}" class="row" th:classappend="${pairIter.index < 3 ? 'intro' : ''}">
+                      <div class="col-6 pr-1" th:if="${formPair.form1 != null}">
+                        <div class="float-left morph-word" th:text="${formPair.form1.form}" data-toggle="tooltip" data-placement="top"
+                          th:title="${formPair.form1.morph.value + ' - ' + formPair.form1.displayForm}">tekk</div>
+                        <button class="btn btn-speaker" th:if="${formPair.form1.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form1.soundFile}}"
+                          th:onclick="'generateVoiceAndPlay(this)'">
                           <span class="icon icon-speaker"></span>
                         </button>
                       </div>
-                    </th:block>
-                    <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms2)}">
-                      <div th:each="form : ${paradigmGroup1.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                        <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekid</div>
-                        <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                      <div class="col-6 pr-1" th:if="${formPair.form2 != null}">
+                        <div class="float-left" th:text="${formPair.form2.form}" data-toggle="tooltip" data-placement="top" th:title="${formPair.form2.morph.value + ' - ' + formPair.form2.displayForm}">tekid</div>
+                        <button class="btn btn-speaker" th:if="${formPair.form2.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form2.soundFile}}"
+                          th:onclick="'generateVoiceAndPlay(this)'">
                           <span class="icon icon-speaker"></span>
                         </button>
                       </div>
-                    </th:block>
-
-                    <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
-                      <div class="d-block" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
-                        <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="${!paradigmGroup2.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
-
-                        <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms1)}">
-                          <div th:each="form : ${paradigmGroup2.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                            <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
-                            <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                        </th:block>
-                        <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms2)}">
-                          <div th:each="form : ${paradigmGroup2.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                            <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekid</div>
-                            <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
-                              <span class="icon icon-speaker"></span>
-                            </button>
-                          </div>
-                        </th:block>
-
-                        <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
-                          <div class="d-flex flex-column" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
-                            <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="${!paradigmGroup3.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
-
-                            <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms1)}">
-                              <div th:each="form : ${paradigmGroup3.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                                <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekk</div>
-                                <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
-                                  <span class="icon icon-speaker"></span>
-                                </button>
-                              </div>
-                            </th:block>
-                            <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms2)}">
-                              <div th:each="form : ${paradigmGroup3.forms2}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
-                                <div th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" class="float-left morph-word" th:text="${form.form}" data-toggle="tooltip" data-placement="top" th:title="${form.morph.value + ' - ' + form.displayForm}">tekid</div>
-                                <button class="btn btn-speaker" th:if="${form.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
-                                  <span class="icon icon-speaker"></span>
-                                </button>
-                              </div>
-                            </th:block>
-                          </div>
-                        </th:block>
-                      </div>
-                    </th:block>
-                  </div>
-                  <!-- previous solution. to be removed later -->
-                  <!-- 
-                  <div th:each="formPair,pairIter : ${paradigm.compactForms}" class="row" th:classappend="${pairIter.index < 3 ? 'intro' : ''}">
-                    <div class="col-6 pr-1" th:if="${formPair.form1 != null}">
-                      <div class="float-left morph-word" th:text="${formPair.form1.form}" data-toggle="tooltip" data-placement="top"
-                        th:title="${formPair.form1.morph.value + ' - ' + formPair.form1.displayForm}">tekk</div>
-                      <button class="btn btn-speaker" th:if="${formPair.form1.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form1.soundFile}}"
-                        th:onclick="'generateVoiceAndPlay(this)'">
-                        <span class="icon icon-speaker"></span>
-                      </button>
                     </div>
-                    <div class="col-6 pr-1" th:if="${formPair.form2 != null}">
-                      <div class="float-left" th:text="${formPair.form2.form}" data-toggle="tooltip" data-placement="top" th:title="${formPair.form2.morph.value + ' - ' + formPair.form2.displayForm}">tekid</div>
-                      <button class="btn btn-speaker" th:if="${formPair.form2.soundFile != null}" th:data-url-to-sound="@{'/files/sounds/' + ${formPair.form2.soundFile}}"
-                        th:onclick="'generateVoiceAndPlay(this)'">
-                        <span class="icon icon-speaker"></span>
-                      </button>
-                    </div>
+                    -->
                   </div>
-                   -->
-
-                  
+                  <hr th:unless="${paradigmIter.last}" />
                 </div>
-                <hr th:unless="${paradigmIter.last}" />
-
-              </div>
               </div>
             </div>
             <div class="level-3-panel row">
@@ -617,17 +616,17 @@
       </div>
     </div>
     <script th:inline="javascript">
-    $('.corp-panel [data-toggle="tooltip"]').tooltip();
-  </script>
+		$('.corp-panel [data-toggle="tooltip"]').tooltip();
+	</script>
   </div>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
-    var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
-    var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
-    var currentPage = /*[[@{/search}]]*/"/search";
-    var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
-    var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
-    setActiveMenuItem('search');
+  	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
+  	var destinLang = /*[[${sessionBean.destinLang}]]*/"est";
+  	var currentPage = /*[[@{/search}]]*/"/search";
+  	var searchWordsByPrefixUrl = /*[[@{/prefix}]]*/"/prefix";
+  	var speechRecognitionServiceUrl = /*[[${speechRecognitionServiceUrl}]]*/'/';
+  	setActiveMenuItem('search');
   </script>
 </body>
 </html>
