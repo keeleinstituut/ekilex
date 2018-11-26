@@ -560,12 +560,14 @@
                 <div th:if="${wordData.word.wordRelationsExist}">
                   <div th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
                     <div class="word-group limited-group">
-                      <div class="word-grouper-wrapper mb-2">
-                        <span class="word-grouper" th:text="${#strings.capitalize(wordData.word.limitedRelatedWords.wordRelType.value) + ':'}"></span>
-                        <span class="word-options mb-1" th:each="relation, relationIter : ${wordData.word.limitedRelatedWords.relatedWords}">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
-                        </span>
-                      </div>
+                      <th:block th:each="relationTypeGroup : ${wordData.word.limitedRelatedWordTypeGroups}">
+                        <div class="word-grouper-wrapper mb-2">
+                          <span class="word-grouper" th:text="${#strings.capitalize(relationTypeGroup.wordRelType.value) + ':'}"></span>
+                          <span class="word-options mb-1" th:each="relation, relationIter : ${relationTypeGroup.relatedWords}">
+                            <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+                          </span>
+                        </div>
+                      </th:block>
                     </div>
                     <div class="word-group full-group">
                       <th:block th:each="relationTypeGroup : ${wordData.word.relatedWordTypeGroups}">
