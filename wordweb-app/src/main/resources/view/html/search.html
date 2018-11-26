@@ -442,10 +442,13 @@
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
                   <span class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
-                <button class="more-btn">
+
+
+<div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
+                  <button class="more-btn">
                   <span class="icon icon-chevron-left"></span>
                 </button>
-                <div th:each="paradigm,paradigmIter : ${wordData.paradigms}" class="morphology-section d-flex">
+                <div class="morphology-section d-flex">
                   <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
                     <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>
                     <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
@@ -537,6 +540,7 @@
                    -->
                   <hr th:unless="${paradigmIter.last}" />
                 </div>
+              </div>
               </div>
             </div>
             <div class="level-3-panel row">

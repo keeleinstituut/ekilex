@@ -8411,6 +8411,25 @@ body:not(.home-page) footer {
   max-width: 100%
 }
 
+.secondary-morph {
+  width: 100%;
+  display: none;
+}
+
+.position-relative:not(.expand) .secondary-morph {
+  display: none;
+  opacity: 0;
+}
+
+.position-relative.expand .secondary-morph {
+  display: block;
+  opacity: 1;
+}
+
+.morphology-panel h5 {
+  display: flex;
+  width: 100%;
+}
 
 @media (max-width: 767px) { 
   .main-content-wrapper.align-self-center {

@@ -51,14 +51,12 @@ $(document).on(
 		"click",
 		".more-btn",
 		function() {
-			$(this).parents(" .word-relations, .dependencies, .collocations-section").toggleClass("expand");
+			$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative").toggleClass("expand");
 			$(this).parents(".meaning-panel, .dependencies, .collocations-section")
 					.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b")
 					.toggleClass("fade-target");
 
 			$(this).parent(".corp-panel").toggleClass("expand");
-
-			$(this).next(".morphology-section").toggleClass("expand");
 
 			var counter = 0;
 			$('.dependence').each(function(i) {
