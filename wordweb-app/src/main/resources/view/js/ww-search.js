@@ -48,38 +48,41 @@ $(function() {
 });
 
 $(document).on(
-		"click",
-		".more-btn",
-		function() {
-			$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative").toggleClass("expand");
-			$(this).parents(".meaning-panel, .dependencies, .collocations-section")
-					.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b")
-					.toggleClass("fade-target");
+	"click",
+	".more-btn",
+	function() {
+		$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative").toggleClass("expand");
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative")
+		.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options")
+		.toggleClass("fade-target");
 
-			$(this).parent(".corp-panel").toggleClass("expand");
+		$(this).parent(".corp-panel").toggleClass("expand");
 
-			var counter = 0;
-			$(this).siblings('.dependencies .dependence').each(function(i) {
-				if (i % 1000 === 0) {
-					counter = 1;
-				} else {
-					counter++;
-				}
-				if (counter < 4) {
-					$(this).removeClass('fade-target');
-				}
-			});
-				$(this).closest('.colloc-col').each(function(i) {
-				if (i % 1000 === 0) {
-					counter = 1;
-				} else {
-					counter++;
-				}
-				if (counter < 4) {
-					$(this).removeClass('fade-target');
-				}
-			});
+
+
+		var counter = 0;
+		var counter2 = 0;
+		$(this).siblings('.dependencies .dependence').each(function(i) {
+			if (i % 1000 === 0) {
+				counter = 1;
+			} else {
+				counter++;
+			}
+			if (counter < 4) {
+				$(this).removeClass('fade-target');
+			}
 		});
+		$(this).siblings('.colloc-col').each(function(i) {
+			if (i % 1000 === 0) {
+				counter = 1;
+			} else {
+				counter++;
+			}
+			if (counter < 4) {
+				$(this).removeClass('fade-target');
+			}
+		});
+	});
 
 $(window).on("popstate", function(e) {
 	e.preventDefault();
@@ -113,33 +116,33 @@ $(document).on("click", ".back", function() {
 });
 
 $(document).on(
-		"click",
-		".homonym-item",
-		function() {
-			$(".homonym-item").removeClass("selected last-selected");
-			$(".homonym-item:first").removeClass("animation-target").dequeue();
-			$(this).addClass("selected last-selected");
-			calculateAndSetStyles();
-			var homonymList = $('.homonym-list');
-			if ($(window).width() >= windowWidthTreshold) {
-				homonymList.animate(
-						{
-							scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
-									+ homonymList.scrollLeft()
-						}, 200);
-			}
-			if ($(window).width() >= windowWidthTreshold) {
-				homonymList.animate(
-						{
-							scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
-									+ homonymList.scrollLeft()
-						}, 200);
-			} else {
-				$(".homonym-panel").addClass("d-none");
-				$(".search-panel").addClass("d-none");
-				$('#form-words').css("margin-top", '5em');
-			}
-		});
+	"click",
+	".homonym-item",
+	function() {
+		$(".homonym-item").removeClass("selected last-selected");
+		$(".homonym-item:first").removeClass("animation-target").dequeue();
+		$(this).addClass("selected last-selected");
+		calculateAndSetStyles();
+		var homonymList = $('.homonym-list');
+		if ($(window).width() >= windowWidthTreshold) {
+			homonymList.animate(
+			{
+				scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
+				+ homonymList.scrollLeft()
+			}, 200);
+		}
+		if ($(window).width() >= windowWidthTreshold) {
+			homonymList.animate(
+			{
+				scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
+				+ homonymList.scrollLeft()
+			}, 200);
+		} else {
+			$(".homonym-panel").addClass("d-none");
+			$(".search-panel").addClass("d-none");
+			$('#form-words').css("margin-top", '5em');
+		}
+	});
 
 $(document).on("click", "[name='word-form-btn']", function() {
 	var word = $(this).data('word');

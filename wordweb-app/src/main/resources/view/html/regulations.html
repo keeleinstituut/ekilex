@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
-  <title>Privaatsuspoliitika</title>
+  <title>Sõnaveeb - Privaatsuspoliitika</title>
   <th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
@@ -13,17 +13,21 @@
   <div class="container home-page-content">
     <div class="row learn-container">
       <div class="col-12 col-md-3">
+
+        <div th:replace="common-app :: important-links-menu"></div>
+
         <ul class="mt-4">
-          <li><a href="#">Siin on võimalik</a></li>
-          <li><a href="#">Viia scroll</a></li>
-          <li><a href="#">Täpselt ägeda</a></li>
-          <li><a href="#">Sisupunktini</a></li>
+          <li><a href="#">Tähtis alapealkiri üks</a></li>
+          <li><a href="#">Ohoooo! Veel üks tähtis alapealkiri</a></li>
+          <li><a href="#">Oi-Oi! Leidub veel üks alapealkiri</a></li>
+          <li><a href="#">Viimane mitte nii tähtis sisujupp</a></li>
         </ul>
       </div>
       <div class="col-12 col-md-9 learn-content">
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Privaatsuspoliitika</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+          <p>Info lisandub lähinädalate jooksul</p>
+<!--           <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
             tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
             quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
             consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
@@ -65,7 +69,7 @@
             quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
             consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse
             cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+          proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p> -->
         </div>
       </div>
     </div>

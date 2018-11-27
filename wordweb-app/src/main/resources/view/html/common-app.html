@@ -52,7 +52,7 @@
             <span class="icon icon-logo-s d-md-none"></span>
             <span class="icon icon-logo d-none d-md-block"></span>
           </a>
-          <a class="eki-logo-wrapper" href="http://portaal.eki.ee/">
+          <a class="eki-logo-wrapper" href="http://portaal.eki.ee/" target="_blank">
             <span class="eki-logo mini-logo"></span>
           </a>
           <div class="back mt-2">
@@ -158,6 +158,16 @@
       </div>
     </div>
   </th:block>
+  <!-- About, Conditions, API, Regulations secondary IMPORTANT LINK MENU -->
+  <th:block th:fragment="important-links-menu">
+        <ul class="mt-4">
+          <li><a class="font-weight-bold text-uppercase" th:href="@{/about}" data-item-name="about">Portaalist</a></li>
+          <li><a class="font-weight-bold text-uppercase" th:href="@{/collections}" data-item-name="collections">Sõnakogud</a></li>
+          <li><a class="font-weight-bold text-uppercase" th:href="@{/api}" data-item-name="api">API</a></li>
+          <li><a class="font-weight-bold text-uppercase" th:href="@{/conditions}" data-item-name="conditions">Kasutustingimused</a></li>
+          <li><a class="font-weight-bold text-uppercase" th:href="@{/regulations}" data-item-name="regulations">Privaatsuspoliitika</a></li>
+        </ul>
+  </th:block>
   <!-- Footer -->
   <th:block th:fragment="footer-content">
     <footer class="footer">
@@ -165,6 +175,8 @@
         <div class="row">
           <div class="col-12 col-sm-6 col-md-4">
             <p>
+              <strong>Eesti Keele Instituut</strong>
+              <br>
               Roosikrantsi 6, 10119 Tallinn
               <br>
               tel: 617 7500
@@ -312,7 +324,6 @@
             <label class="custom-control-label" for="modalCheck2">
               <span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span>
               <a th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">Privaatsuspoliitikaga</a>
-              .
             </label>
           </div>
         </div>

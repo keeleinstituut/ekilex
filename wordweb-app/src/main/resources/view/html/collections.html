@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
-  <title>Sõnakogud</title>
+<title>Sõnaveeb - Sõnakogud</title>
   <th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
   <script type="text/javascript" th:src="@{/view/js/hash.js}"></script>
@@ -12,6 +12,10 @@
   <div class="container home-page-content">
     <div class="row learn-container">
       <div class="col-12 col-md-3">
+
+
+        <div th:replace="common-app :: important-links-menu"></div>
+
 
     </div>
     <div class="col-12 col-md-9 learn-content">

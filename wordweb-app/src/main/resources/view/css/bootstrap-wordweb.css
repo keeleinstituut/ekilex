@@ -8064,7 +8064,6 @@ footer p {
   margin: 0 auto 0 auto; 
   color: #d8d8d8; 
   text-align: center; 
-  font-size: 0.75rem;
   width: 100%; 
 }
 .last-update {  
@@ -8072,7 +8071,6 @@ footer p {
   margin: 0 auto 0 auto; 
   color: #d8d8d8; 
   text-align: center; 
-  font-size: 0.75rem;
   width: 100%;
 }
 .fb-icon { 
@@ -8141,7 +8139,7 @@ footer p {
 
 
 body:not(.home-page) .bottom-gutter {
-  padding-bottom: 13.375rem;
+  padding-bottom: 238px;
 }
 body:not(.home-page) footer {
   position: absolute;
@@ -8205,12 +8203,6 @@ body:not(.home-page) footer {
 
   .games-wrap { 
     margin-top: 4.375rem;
-  }
-
-  .games-list {
-    align-items: center;
-    flex-direction: row;
-    display: block;
   }
 
   .games-list .card-body { 
@@ -8289,7 +8281,7 @@ body:not(.home-page) footer {
   width: 0.5rem;
   background-color: rgb(0, 157, 181); 
   border-radius: 1rem;
-  bottom: 0.55rem;
+  top: 0.5rem;
   left: -1rem;
 }
 
@@ -8455,6 +8447,11 @@ body:not(.home-page) footer {
 
 
 @media (max-width: 767px) { 
+
+.sm-max-noneset {
+  margin-left: 0!important;
+}
+
   .main-content-wrapper.align-self-center {
     align-self: auto!important;
     margin-top: 3.125rem; 
@@ -8498,7 +8495,7 @@ body:not(.home-page) footer {
   }
 
   .home-page-content {
-   padding-bottom: 15rem;
+   padding-bottom: 16.5rem;
  }
 
  .footer {
@@ -8565,7 +8562,7 @@ body:not(.home-page) footer {
 }
 
 .footer-wrapper .row { 
-  max-height: 5.9375rem;
+  max-height: 7.4375rem;
 }
 
 .modal-dialog {
@@ -8593,11 +8590,7 @@ body:not(.home-page) footer {
   width: calc(22.125rem / 2.2);
   background-size: calc(22.125rem / 2.2) calc(11.6875rem / 2.2); 
 }
-.games-list {
-  align-items: center;
-  flex-direction: column;
-  display: flex;
-}
+
 
 .sidebar .level-3-panel:last-of-type {
   border-bottom-right: 0.6875rem;
