@@ -36,7 +36,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
 
-	private final static String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=*";  // here is not the regular -, but the special minus symbol
+	private final static String formStrCleanupChars = "()¤:_|[]̄̆̇\"`´–+=*";  // here is not the regular -, but the special minus symbol
 	private final static String wordComponentSeparator = "+";
 	protected final static String defaultWordMorphCode = "??";
 	protected final static String dataLang = "est";

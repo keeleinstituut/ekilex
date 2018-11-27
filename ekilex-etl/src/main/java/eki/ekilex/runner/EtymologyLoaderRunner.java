@@ -47,7 +47,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String REPORT_UNKNOWN_REGISTER = "unknown_register";
 
-	private final String formStrCleanupChars = ".()¤:_|[]̄̆̇\"`´–+=";
+	private final String formStrCleanupChars = "()¤:_|[]̄̆̇\"`´–+=";
 	private final String etymExp = "s:S/s:etp";
 	private final String guidExp = "s:G";
 	private final String headWordExp = "s:P/s:mg/s:m";

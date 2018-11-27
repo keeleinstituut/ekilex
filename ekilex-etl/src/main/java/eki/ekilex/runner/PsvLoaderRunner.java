@@ -47,7 +47,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final String dataLang = "est";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]";
-	private final String formStrCleanupChars = ".()¤:_|[]̄̆̇’\"'`´;–+=";
+	private final String formStrCleanupChars = "()¤:_|[]̄̆̇’\"'`´;–+=";
 	private final String defaultWordMorphCode = "SgN";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
