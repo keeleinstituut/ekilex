@@ -63,11 +63,5 @@ public class HomeController extends AbstractController {
 		populateGeneralData(model);
 		return CONDITIONS_PAGE;
 	}
-	
-	@GetMapping(API_URI)
-	public String api(Model model) {
-		populateGeneralData(model);
-		return API_PAGE;
-	}
 
 }
