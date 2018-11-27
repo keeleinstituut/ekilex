@@ -8391,7 +8391,7 @@ body:not(.home-page) footer {
 }
 
 .header-links .lang-btn a:focus .icon:before  {
-    transform: rotate(90deg);
+  transform: rotate(90deg);
 }
 
 .rections .type-one, .rections .type-one-list {
@@ -8441,12 +8441,12 @@ body:not(.home-page) footer {
 
 .morphology-panel .more-btn {
   top: 0rem;
-    right: -3.75rem;
- }
+  right: -3.75rem;
+}
 
 .morphology-panel .icon-speaker { 
   display: inline;
- }
+}
 
 .morphology-panel h6, .morphology-panel h6.main-title {
   display: flex;
@@ -8470,10 +8470,6 @@ body:not(.home-page) footer {
 
 
 @media (max-width: 767px) { 
-
-.sm-max-noneset {
-  margin-left: 0!important;
-}
 
   .main-content-wrapper.align-self-center {
     align-self: auto!important;
@@ -8547,8 +8543,8 @@ body:not(.home-page) footer {
 
 .morphology-panel .more-btn {
   top: -0.5rem;
-    right: -1.25rem;
- }
+  right: -1.25rem;
+}
 
 .morphology-panel .position-relative, .relations-wrapper, .sentence-wrapper {
   padding-right: 2rem;
@@ -8621,9 +8617,17 @@ body:not(.home-page) footer {
 
 }
 
+@media (max-width: 1200px) { 
+  .lg-max-noneset {
+  margin-left: 0!important;
+}
+}
+
 @media (min-width: 1200px) { 
   .homonym-container {
     max-width: 80vw;
   }
+
+
 }
 

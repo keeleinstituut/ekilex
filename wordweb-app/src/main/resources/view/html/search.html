@@ -31,11 +31,10 @@
   </div>
   <div class="container-fluid homonym-page bottom-gutter">
     <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
-      <div class="col offset-1">
+      <div class="col offset-1 lg-max-noneset">
         <span>
           <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
           <a th:href="${'http://kn.eki.ee/?Q=' + searchWord}" th:text="#{label.find.from.kn.eki}" target="_blank">Proovi otsida e-keelenõust</a>
-          .
         </span>
       </div>
     </div>
