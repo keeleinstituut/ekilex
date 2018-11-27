@@ -554,15 +554,15 @@
                 <div th:unless="${wordData.word.wordRelationsExist}">
                   <span th:text="#{label.no.data}">Andmed puuduvad</span>
                 </div>
-                <div th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
-                  <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">
-                    <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
-                    <span th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
-                      <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
-                    </span>
-                  </div>
-                </div>
                 <div th:if="${wordData.word.wordRelationsExist}">
+                  <div th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
+                    <div class="mb-1" th:each="wordGroup : ${wordData.word.wordGroups}">
+                      <span th:text="${#strings.capitalize(wordGroup.wordRelType.value) + ' :'}"></span>
+                      <span th:each="relation, relationIter : ${wordGroup.wordGroupMembers}">
+                        <a th:href="@{${viewUtil.getSearchUri(sessionBean, relation.word)}}" th:text="${relation.word + (relationIter.last ? '' : ',')}"></a>
+                      </span>
+                    </div>
+                  </div>
                   <div class="relations-wrapper" th:if="${not #lists.isEmpty(wordData.word.relatedWordTypeGroups)}">
                     <div class="word-group limited-group">
                       <th:block th:each="relationTypeGroup : ${wordData.word.limitedRelatedWordTypeGroups}">
