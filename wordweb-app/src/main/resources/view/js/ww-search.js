@@ -14,7 +14,8 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 			wordSelectUrl : wordSelectUrl
 		};
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
-		fetchCorpSentences(word);
+		var lang = wordSelectUrl.split('/').find(function(e) { return e.indexOf('-') !== -1 }).split('-')[0];
+		fetchCorpSentences(lang, word);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		calculateAndSetStyles();
@@ -31,9 +32,9 @@ function setHomonymNrVisibility() {
 	}
 }
 
-function fetchCorpSentences(sentence) {
+function fetchCorpSentences(lang, sentence) {
 	var corpDiv = $("#korp");
-	var corpSentencesUrl = applicationUrl + 'korp/' + encodeURIComponent(sentence);
+	var corpSentencesUrl = applicationUrl + 'korp/' + lang + '/' + encodeURIComponent(sentence);
 	$.get(corpSentencesUrl).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {

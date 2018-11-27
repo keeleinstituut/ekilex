@@ -2,9 +2,12 @@ package eki.wordweb.web.controller;
 
 import static java.util.Collections.emptyList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import eki.wordweb.service.CorporaServiceEst;
+import eki.wordweb.service.CorporaServiceRus;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +42,10 @@ public class SearchController extends AbstractController {
 	private LexSearchService lexSearchService;
 
 	@Autowired
-	private CorporaService corporaService;
+	private CorporaServiceEst corporaServiceEst;
+
+	@Autowired
+	private CorporaServiceRus corporaServiceRus;
 
 	@GetMapping(SEARCH_URI)
 	public String home(Model model) {
@@ -128,10 +134,15 @@ public class SearchController extends AbstractController {
 		return SEARCH_PAGE + " :: worddetails";
 	}
 
-	@GetMapping("/korp/{sentence}")
-	public String generateSoundFileUrl(@PathVariable String sentence, Model model) {
+	@GetMapping("/korp/{lang}/{sentence}")
+	public String searchFromCorpora(@PathVariable("lang") String language, @PathVariable("sentence") String sentence, Model model) {
 
-		List<CorporaSentence> textCorpus = corporaService.fetchSentences(sentence);
+		List<CorporaSentence> textCorpus = new ArrayList<>();
+		if (StringUtils.equalsIgnoreCase(language, "est")) {
+			textCorpus = corporaServiceEst.fetchSentences(sentence);
+		} else if (StringUtils.equalsIgnoreCase(language, "rus")) {
+			textCorpus = corporaServiceRus.fetchSentences(sentence);
+		}
 		model.addAttribute("sentences", textCorpus);
 		model.addAttribute("sentence", sentence);
 
