@@ -104,13 +104,13 @@ function resolveAnswer() {
 	if (answerGameRow.correct) {
 		if (answerGameRow.answerPair1) {
 			$("#synonymPair1").addClass("bg-success");
-		} else if (answerGameRow.answerPair2) { {
+		} else if (answerGameRow.answerPair2) {
 			$("#synonymPair2").addClass("bg-success");
 		}
 	} else {
 		if (answerGameRow.answerPair1) {
 			$("#synonymPair1").addClass("bg-danger");
-		} else if (answerGameRow.answerPair2) { {
+		} else if (answerGameRow.answerPair2) {
 			$("#synonymPair2").addClass("bg-danger");
 		}
 	}
