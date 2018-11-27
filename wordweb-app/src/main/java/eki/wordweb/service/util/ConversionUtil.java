@@ -622,6 +622,7 @@ public class ConversionUtil {
 			return;
 		}
 		word.setWordGroups(new ArrayList<>());
+		word.setRelatedWords(new ArrayList<>());
 		for (WordRelationTuple tuple : wordRelationTuples) {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
@@ -659,7 +660,7 @@ public class ConversionUtil {
 					}
 				}
 			}
-			word.setRelatedWords(relatedWords);
+			word.getRelatedWords().addAll(relatedWords);
 			if (CollectionUtils.isNotEmpty(tuple.getWordGroupMembers())) {
 				WordGroup wordGroup = new WordGroup();
 				wordGroup.setWordGroupId(tuple.getWordGroupId());
@@ -671,7 +672,7 @@ public class ConversionUtil {
 		}
 		boolean wordRelationsExist = CollectionUtils.isNotEmpty(word.getRelatedWords()) || CollectionUtils.isNotEmpty(word.getWordGroups());
 		word.setWordRelationsExist(wordRelationsExist);
-		boolean isMoreWordRelations = CollectionUtils.size(word.getRelatedWords()) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
+		boolean isMoreWordRelations = CollectionUtils.size(word.getRelatedWords()) > WORD_RELATIONS_DISPLAY_LIMIT;
 		word.setMoreWordRelations(isMoreWordRelations);
 	}
 
@@ -762,11 +763,11 @@ public class ConversionUtil {
 					paradigmGroup1.setGroups(validParadigmGroups);
 					calculateFormDisplayFlags(paradigmGroup1);
 				}
+				validParadigmGroups = paradigm.getGroups().stream()
+						.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
+						.collect(Collectors.toList());
+				paradigm.setGroups(validParadigmGroups);
 			}
-			validParadigmGroups = paradigm.getGroups().stream()
-					.filter(paradigmGroup -> paradigmGroup.isFormsExist() || paradigmGroup.isGroupsExist())
-					.collect(Collectors.toList());
-			paradigm.setGroups(validParadigmGroups);
 		}
 		return paradigms;
 	}

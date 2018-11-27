@@ -302,6 +302,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						for (Node etymWordNode : etymWordNodes) {
 							Element etymWordElement = (Element) etymWordNode;
 							String word = etymWordElement.getTextTrim();
+							word = cleanUp(word);
 							for (Node etymLangNode : etymLangNodes) {
 								Element etymLangElement = (Element) etymLangNode;
 								String etymLang = etymLangElement.getTextTrim();
@@ -329,6 +330,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							for (Node etymEstWordNode : etymEstWordNodes) {
 								Element etymEstWordElement = (Element) etymEstWordNode;
 								String word = etymEstWordElement.getTextTrim();
+								word = cleanUp(word);
 								int homonymNr = getWordMaxHomonymNr(word, langEst);
 								homonymNr++;
 								Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, langEst, null);
