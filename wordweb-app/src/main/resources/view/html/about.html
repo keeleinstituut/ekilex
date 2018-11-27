@@ -14,7 +14,7 @@
       <div class="col-12 col-md-3">
 
 
-  <div th:replace="common-app :: important-links-menu"></div>
+        <div th:replace="common-app :: important-links-menu"></div>
 
         <ul class="mt-4">
           <li><a href="#portaalist">Portaalist</a></li>
@@ -36,10 +36,12 @@
           <li><a href="#naite">Näitelaused</a></li>
           <li><a href="#veeb">Veebilaused</a></li>
           <li><a href="#sagedus">Sagedusinfo</a></li>
+          <li><a href="#eri">Eri keeleoskustasemete sõnavara</a></li>
           <li><a href="#vene">Vene vasted</a></li>
           <li><a href="#autor">Autoriõigused</a></li>
           <li><a href="#kuidas">Kuidas Sõnaveebile viidata</a></li>
           <li><a href="#ver">Versioneerimine</a></li>
+<li><a href="#opi">Õpi eesti keelt</a></li>
         </ul>
 
       </div>
@@ -218,51 +220,79 @@
           <p>Lisaks leksikograafi hoolikalt valitud näidetele esitab Sõnaveeb ka automaatselt valitud ja toimetamata veebilauseid. Kuna veebilauseid valib arvuti, mitte inimene, siis võib näidete hulka sattuda ebatäpsusi või suisa vigaseid lauseid. Eesti Keele Instituudis arendatakse veebilausete programmi edasi, nõnda muutuvad veebilaused edaspidi täpsemaks.</p>
           <h5 id="veeb" class="colored-bold">Veebilaused</h5>
           <p>Veebilaused on arvuti poolt automaatselt valitud autentsed laused, mis pärinevad “Eesti keele õppekorpusest 2018 (etSkELL)”. Need on eesti keele õpikute, erinevate meedia-, ilukirjandus- ja teadustekstide ning eestikeelse Wikipedia laused. Õppekorpus sisaldab umbes 25 mln lauset ja 250 mln sõna. Korpusest päritakse veebilauseid korpuspäringusüsteemi KORP <a href="https://github.com/spraakbanken/korp-backend/">API</a> kaudu.
-            
+
             <p>Veebilaused on valitud spetsiaalse programmi (Good Dictionary Example  ehk GDEX) abil, toetudes lause teatud tunnustele. Lause pikkus peab olema 3 kuni 20 sõna, lause ei tohi sisaldada väga harva esinevaid sõnu ega väga pikki sõnu jm. Veebilauseid ei ole toimetatud.
-            Veebilausetes esineb otsitav sõna eri vormides: kui otsida sõna <i>lammas</i>, siis lausetes esinevad ka vormid <i>lambaid, lambaile, lammastega</i> jm.</p>
+              Veebilausetes esineb otsitav sõna eri vormides: kui otsida sõna <i>lammas</i>, siis lausetes esinevad ka vormid <i>lambaid, lambaile, lammastega</i> jm.</p>
 
-            Kuna veebilauseid valib arvuti, mitte inimene, siis võib näidete hulka sattuda ebatäpsusi või suisa vigaseid lauseid. Arvuti ei oska veel teha vahet sõna eri tähendustel: kui kasutaja otsib sõna leht, siis esinevad veebilausetes nii ajalehe, paberilehe, puulehe kui ka veebilehe laused. Arvuti ei erista ka homonüüme: otsingu <i>tamm</i> puhul on veebilausetes läbisegi nii tamme (‘puu’) kui ka tammi (‘vesiehitis’) näited. Segadusi põhjustavad ka eri sõnade kokkulangevad vormid (ehk vormihomonüümia): otsingule <i>kalla</i> (‘lill’) pakub arvuti vastuseks lauseid, kus tegemist on tegusõna <i>kallama</i> vormiga.
-          Eesti Keele Instituudis arendatakse veebilausete programmi edasi, nõnda muutuvad veebilaused edaspidi täpsemaks.</p>
-          <h5 id="sagedus" class="colored-bold">Sagedusinfo</h5>
-          <p>Sõnaveebis on tähistatud 20 000 sagedama sõna sagedusklass.  Sagedusandmed pärinevad “Eesti keele ühendkorpusest 2017”.  Kolme tärniga sõnad on eesti keeles kõige sagedamini esinevad sõnad: korpuses kuuluvad nad 5000 kõige sagedama sõna hulka. Kahe tärniga sõnad on sageduselt järgmises rühmas: nad kuuluvad kuni 10 000 kõige sagedama sõna hulka. Üks tärn on sõnadel, mis on sagedusloendis kuni 20 000 kõige sagedama hulgas.</p> 
-          <h5>Eri keeleoskustasemete sõnavara</h5>
-          <p>Keeleõppija vajadusi silmas pidades pakutakse Sõnaveebis infot selle kohta, mis taseme sõnavarasse teatud sõna kuulub. Sõnaveebis on keeleoskustase märgitud 13 000 sõna juures.  Tasemekohasuse määramisel on silmas peetud täiskasvanud keeleõppija vajadusi ning toetutud seni ilmunud eri keeleoskustasemete kirjeldustele, Eesti Keele Instituudis koostatud õppesõnastikele ja eesti keele korpustele. Andmed pärinevad Eesti Keele Instituudi eri keeleoskustasemete sõnavara <a href="http://www.eki.ee/keeletase/#/">andmebaasist etLex</a>.</p>
+              <p>Kuna veebilauseid valib arvuti, mitte inimene, siis võib näidete hulka sattuda ebatäpsusi või suisa vigaseid lauseid. Arvuti ei oska veel teha vahet sõna eri tähendustel: kui kasutaja otsib sõna leht, siis esinevad veebilausetes nii ajalehe, paberilehe, puulehe kui ka veebilehe laused. Arvuti ei erista ka homonüüme: otsingu <i>tamm</i> puhul on veebilausetes läbisegi nii tamme (‘puu’) kui ka tammi (‘vesiehitis’) näited. Segadusi põhjustavad ka eri sõnade kokkulangevad vormid (ehk vormihomonüümia): otsingule <i>kalla</i> (‘lill’) pakub arvuti vastuseks lauseid, kus tegemist on tegusõna <i>kallama</i> vormiga.
+              Eesti Keele Instituudis arendatakse veebilausete programmi edasi, nõnda muutuvad veebilaused edaspidi täpsemaks.</p>
+              <h5 id="sagedus" class="colored-bold">Sagedusinfo</h5>
+              <p>Sõnaveebis on tähistatud 20 000 sagedama sõna sagedusklass.  Sagedusandmed pärinevad “Eesti keele ühendkorpusest 2017”.  Kolme tärniga sõnad on eesti keeles kõige sagedamini esinevad sõnad: korpuses kuuluvad nad 5000 kõige sagedama sõna hulka. Kahe tärniga sõnad on sageduselt järgmises rühmas: nad kuuluvad kuni 10 000 kõige sagedama sõna hulka. Üks tärn on sõnadel, mis on sagedusloendis kuni 20 000 kõige sagedama hulgas.</p> 
+              <h5 id="eri" class="colored-bold">Eri keeleoskustasemete sõnavara</h5>
+              <p>Keeleõppija vajadusi silmas pidades pakutakse Sõnaveebis infot selle kohta, mis taseme sõnavarasse teatud sõna kuulub. Sõnaveebis on keeleoskustase märgitud 13 000 sõna juures.  Tasemekohasuse määramisel on silmas peetud täiskasvanud keeleõppija vajadusi ning toetutud seni ilmunud eri keeleoskustasemete kirjeldustele, Eesti Keele Instituudis koostatud õppesõnastikele ja eesti keele korpustele. Andmed pärinevad Eesti Keele Instituudi eri keeleoskustasemete sõnavara <a href="http://www.eki.ee/keeletase/#/">andmebaasist etLex</a>.</p>
 
-          <p>Euroopa keeleõppe raamdokumendis eristatakse algaja keeleõppija (A1, A2), edasijõudnud keeleõppija (B1, B2) ja vilunud keelekasutaja taset (C1). Sõnaveebis on tähistatud üldised tasemed A (algaja)ja B (edasijõudnud õppija): sagedusklassi tärnid on värvitud eri värviga.</p>
-          <h5 id="vene" class="colored-bold">Vene vasted</h5>
-          <p>Venekeelsed vasted on pärit eesti-vene sõnaraamatutest “Eesti-vene õpilase ÕS 2018” (1. trükk 2011) ja “Eesti-vene sõnaraamat 2018” (1. trükk 1997–2009). Sõnaveebi lisatud uute eesti sõnade vene vastete õigekirja ja grammatilise info esitamisel on kasutatud enamasti Venemaal välja antud akadeemilisi sõnaraamatuid ja elektrooniliste sõnastike portaale. Olulisemad allikad on ortograafiline akadeemiline ressurss <a href="http://orfo.ruslang.ru/">”Aкадемоc”</a>, portaalid <a href="http://gramota.ru/">"ГРАМОТА.РУ”</a> ja <a href="https://dic.academic.ru/">“Словари на Акакдемике”</a>.</p>
-          <h5 id="autor" class="colored-bold">Autoriõigused</h5>
-          <p>Sõnaveebi autoriõiguste omanik on Eesti Keele Instituut.</p>
-          <p>Autoriõigus: Eesti Keele Instituut 2018</p>
-          <h5 id="kuidas" class="colored-bold">Kuidas Sõnaveebile viidata</h5>
-          <p>Sõnaveebis esitatud sõnale või väljendile palume viidata nii:</p>
+              <p>Euroopa keeleõppe raamdokumendis eristatakse algaja keeleõppija (A1, A2), edasijõudnud keeleõppija (B1, B2) ja vilunud keelekasutaja taset (C1). Sõnaveebis on tähistatud üldised tasemed A (algaja)ja B (edasijõudnud õppija): sagedusklassi tärnid on värvitud eri värviga.</p>
+              <h5 id="vene" class="colored-bold">Vene vasted</h5>
+              <p>Venekeelsed vasted on pärit eesti-vene sõnaraamatutest “Eesti-vene õpilase ÕS 2018” (1. trükk 2011) ja “Eesti-vene sõnaraamat 2018” (1. trükk 1997–2009). Sõnaveebi lisatud uute eesti sõnade vene vastete õigekirja ja grammatilise info esitamisel on kasutatud enamasti Venemaal välja antud akadeemilisi sõnaraamatuid ja elektrooniliste sõnastike portaale. Olulisemad allikad on ortograafiline akadeemiline ressurss <a href="http://orfo.ruslang.ru/">”Aкадемоc”</a>, portaalid <a href="http://gramota.ru/">"ГРАМОТА.РУ”</a> ja <a href="https://dic.academic.ru/">“Словари на Акакдемике”</a>.</p>
+              <h5 id="autor" class="colored-bold">Autoriõigused</h5>
+              <p>Sõnaveebi autoriõiguste omanik on Eesti Keele Instituut.</p>
+              <p>Autoriõigus: Eesti Keele Instituut 2018</p>
+              <h5 id="kuidas" class="colored-bold">Kuidas Sõnaveebile viidata</h5>
+              <p>Sõnaveebis esitatud sõnale või väljendile palume viidata nii:</p>
 
-          <p>sõna või väljend. Sõnaveeb 2018. http://www.AADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (3.10.2019)</p>
+              <p>sõna või väljend. Sõnaveeb 2018. http://www.AADRESS või doi:0000000/000000000000 või http://dx.doi.org/10.0000/0000 (3.10.2019)</p>
 
-          <p>Kui on vaja täpselt viidata mõnele Sõnaveebis olevale sõnakogule, palume seda teha nii:</p>
+              <p>Kui on vaja täpselt viidata mõnele Sõnaveebis olevale sõnakogule, palume seda teha nii:</p>
 
-          <p>sõna või väljend. Eesti keele sõnaraamat 2018. http://www.AADRESS (3.10.2019)</p>
+              <p>sõna või väljend. Eesti keele sõnaraamat 2018. http://www.AADRESS (3.10.2019)</p>
 
-          <p>sõna või väljend. Eesti-vene õpilase ÕS 2018. http://www.AADRESS (3.10.2019)</p>
-          <h5 id="ver" class="colored-bold">Versioneerimine</h5>
-          <p>Kõiki Sõnaveebi sõnakogusid täiendatakse ja toimetatakse jooksvalt, sealhulgas kasutajate tagasiside põhjal.</p>
+              <p>sõna või väljend. Eesti-vene õpilase ÕS 2018. http://www.AADRESS (3.10.2019)</p>
+              <h5 id="ver" class="colored-bold">Versioneerimine</h5>
+              <p>Kõiki Sõnaveebi sõnakogusid täiendatakse ja toimetatakse jooksvalt, sealhulgas kasutajate tagasiside põhjal.</p>
 
-          <p>Sõnaveebi uus versioon luuakse ja arhiveeritakse kord aastas. Versiooni märgib aastaarv, millele on lisatud versiooni loomise kuupäev, nt Sõnaveeb 2020 (01.03.2020).</p>
-          <p>Vana versioon jääb alles. Iga versioon saab omaette püsiva identifikaatori, mida kasutatakse sellele versioonile viitamisel. Kõik versioonid registreeritakse METASHARE’is, arhiveeritakse Eesti Keeleressursside Keskuses ja Ekilexi andmebaasis.</p>
-
-
-          <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
-            <span class="icon icon-chevron-left"></span>
-          </a>
+              <p>Sõnaveebi uus versioon luuakse ja arhiveeritakse kord aastas. Versiooni märgib aastaarv, millele on lisatud versiooni loomise kuupäev, nt Sõnaveeb 2020 (01.03.2020).</p>
+              <p>Vana versioon jääb alles. Iga versioon saab omaette püsiva identifikaatori, mida kasutatakse sellele versioonile viitamisel. Kõik versioonid registreeritakse METASHARE’is, arhiveeritakse Eesti Keeleressursside Keskuses ja Ekilexi andmebaasis.</p>
 
 
+              <h5 id="opi" class="colored-bold">Õpi eesti keelt</h5>
+              <p>Sõnaveebi lihtsas vaates on 5000 kõige sagedamat ja olulisemat sõna, mis on piisav, et eesti keelt A2-, B1-keeleoskustasemel rääkida. Need sõnad on seletatud lihtsas keeles ja on varustatud näitelausetega. Näited näitavad, kuidas sõna lauses kasutatakse ning aitavad sõna tähendusest aru saada. Tähenduse paremaks mõistmiseks on mõnede sõnade juurde lisatud pildid. Kokku  on umbes 400 pilti.</p>
+
+              <p>Keeleõppijat abistavad veel:</p>
+              <ul class="dotted-list">
+                <li>
+                  õppekommentaarid: näiteks sõna <i>sada</i> juures on kommentaar “Kui on tegemist arvudega üle tuhande, kasuta sõna sada asemel <i>ükssada</i>, näiteks <i>viis tuhat ükssada</i>. Kasuta sõna <i>ükssada</i> ka siis, kui ametlikus dokumendis on vaja sõnadega märkida täpne rahasumma.”
+                </li>
+                <li>
+                  suhtlusväljendid: näiteks sõna <i>isu</i> juures on suhtlusväljend <i>Head isu!</i>
+                </li>
+                <li>
+                  liitsõnad, mida saab otsitud sõna abil moodustada: sõna <i>linn</i> juures on liitsõnad <i>kesklinn, kodulinn, pealinn, südalinn, vanalinn, äärelinn; linnaosa</i> ja <i>linnapea</i>
+                </li>
+                <li>
+                  info sarnassõnade kohta: näiteks <i>ehitus</i> ära aja segi <i>ehitis</i>; õieti ära aja segi <i>õigesti</i>
+                </li>
+                <li>
+                  keelemängud
+                </li>
+                <li>
+                  õppelehed, kust saab infot, kuidas eesti keeles kasutada kirjavahemärke ning kuidas kirjutada arve, kuupäevi, kellaaega jms. Maade ja rahvaste tabelis on esitatud valik maade nimesid, seal elavate inimeste ja nendega seotud keelte nimetusi.
+                </li>
+              </ul>
+
+              <p>Detailses vaates saab vaadata naabersõnu. Näiteks sõna päike juures on esitatud  sõnapaarid ere <i>päike, päike paistab</i> ja <i>päikest nautima</i>. Naabersõnade eesmärk on aidata edasijõudnud keeleõppijat ja muuta tema keelekasutus sarnaseks emakeelse kõneleja omaga. Kui õppida uut keelt nö tükkidena, on keeleõppijal lihtsam selles keeles loomulikult ja ladusalt rääkida ning kirjutada.</p>
+
+
+              <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
+                <span class="icon icon-chevron-left"></span>
+              </a>
+
+
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div th:replace="common-app :: footer-content"></div>
-</body>
-</html>
+      <div th:replace="common-app :: footer-content"></div>
+    </body>
+    </html>
 
 

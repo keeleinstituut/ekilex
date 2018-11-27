@@ -4,7 +4,7 @@
 }
 
 .navbar-sub .navbar-nav>li>a:hover, .navbar-sub .navbar-nav>li>a:active,
-	.navbar-sub .navbar-nav>li>a.active {
+.navbar-sub .navbar-nav>li>a.active {
 	background: #BBE5ED;
 	color: #333;
 }
@@ -97,7 +97,7 @@ h2 {
 }
 
 .nav-pills>li>a:hover, .nav-pills>li.active>a, .nav-pills>li.active>a:focus,
-	.nav-pills>li.active>a:hover {
+.nav-pills>li.active>a:hover {
 	background-color: #FFF;
 	color: #666;
 }
@@ -172,12 +172,17 @@ h2 {
 	}
 }
 
+@media ( max-width : 767px) {
+	.flexbox h4 {
+		font-size: 0.85rem!important;
+		word-break: break-word;
+		width: 50%;
+	}
+}
+
 @media ( max-width : 480px) {
 	.games-list .game-box {
 		flex: 0 1 100%;
-	}
-	.flexbox h4 {
-		font-size: 1rem;
 	}
 }
 
@@ -414,7 +419,7 @@ h2 {
 }
 
 .right-1:hover, .right-2:hover, .right-3:hover, .left-1:hover, .left-2:hover,
-	.left-3:hover, .key-down-shadow, .center-key:hover {
+.left-3:hover, .key-down-shadow, .center-key:hover {
 	-moz-box-shadow: inset 0 0 0.9375rem #b7b7b7;
 	-webkit-box-shadow: inset 0 0 0.9375rem #b7b7b7;
 	box-shadow: inset 0 0 0.9375rem #b7b7b7;
@@ -800,21 +805,21 @@ h2 {
 
 .slider-handle {
 	background-image: -webkit-linear-gradient(top, #3c763d 0, #094 100%)
-		!important;
+	!important;
 	background-image: -o-linear-gradient(top, #3c763d 0, #094 100%)
-		!important;
+	!important;
 	background-image: linear-gradient(to bottom, #3c763d 0, #094 100%)
-		!important;
+	!important;
 }
 
 .slider-selection {
 	position: absolute;
 	background-image: -webkit-linear-gradient(top, #f9f9f9 0, #ccc 100%)
-		!important;
+	!important;
 	background-image: -o-linear-gradient(top, #f9f9f9 0, #ccc 100%)
-		!important;
+	!important;
 	background-image: linear-gradient(to bottom, #f9f9f9 0, #ccc 100%)
-		!important;
+	!important;
 }
 
 .slider.slider-horizontal .slider-track {
@@ -1084,7 +1089,7 @@ h2 {
 }
 
 .nav-tabs>li.active, .nav-tabs>li.active:hover, .nav-tabs>li.active:focus
-	{
+{
 	border-bottom: 0.0625rem solid #094;
 	color: #222;
 }
@@ -1200,14 +1205,29 @@ td.total-nr {
 .flexbox {
 	display: flex;
 	justify-content: space-between;
-	max-width: 32.25rem;
+	max-width: 100%;
 	margin: 0 auto;
+	flex-wrap: nowrap;
 }
 
 .flexbox .row {
 	padding: 8px 24px;
 	margin: 0 !important;
+	justify-content: center;
 }
+
+.flexbox h4 {
+	font-size: 1rem;
+}
+
+.flexbox h4:first-child {
+	margin-right: 0.25rem;
+}
+
+.flexbox h4:last-child {
+	margin-left: 0.25rem;
+}
+
 
 .btn-neutral-dark {
 	border: 0px solid transparent;
@@ -1267,5 +1287,11 @@ td.total-nr {
 	.inner-block {
 		margin: 0 auto;
 		padding: 2rem 2rem 1.6rem 2rem;
+	}
+}
+
+@media ( min-width : 1200px) {
+	.inner-block {
+		max-width: 50rem;
 	}
 }

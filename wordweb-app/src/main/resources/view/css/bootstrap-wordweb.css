@@ -8371,6 +8371,29 @@ body:not(.home-page) footer {
  border-radius: 0px!important;
 }
 
+.header-links .lang-btn a:after {
+  display: none;
+}
+
+.header-links .lang-btn .icon {
+  font-size: 1rem;
+}
+
+.header-links .lang-btn .icon:before {
+  color: white;
+  transform: rotate(270deg);
+  display: inline-block;
+  border-radius: 1.375rem;
+  padding: 0rem;
+  position: relative;
+  top: -0.4rem;
+  font-size: 1.5rem;
+}
+
+.header-links .lang-btn a:focus .icon:before  {
+    transform: rotate(90deg);
+}
+
 .rections .type-one, .rections .type-one-list {
   font-style: italic;
   color: #658ad4;

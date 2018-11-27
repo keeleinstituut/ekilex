@@ -51,37 +51,19 @@ $(document).on(
 	"click",
 	".more-btn",
 	function() {
-		$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative").toggleClass("expand");
-		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative")
-		.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options")
+		$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");
+
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
+		.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
 		.toggleClass("fade-target");
 
-		$(this).parent(".corp-panel").toggleClass("expand");
+
+		$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel").find(".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(3), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)").removeClass("fade-target");
 
 
 
-		var counter = 0;
-		var counter2 = 0;
-		$(this).siblings('.dependencies .dependence').each(function(i) {
-			if (i % 1000 === 0) {
-				counter = 1;
-			} else {
-				counter++;
-			}
-			if (counter < 4) {
-				$(this).removeClass('fade-target');
-			}
-		});
-		$(this).siblings('.colloc-col').each(function(i) {
-			if (i % 1000 === 0) {
-				counter = 1;
-			} else {
-				counter++;
-			}
-			if (counter < 4) {
-				$(this).removeClass('fade-target');
-			}
-		});
+
+
 	});
 
 $(window).on("popstate", function(e) {
