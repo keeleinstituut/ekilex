@@ -71,8 +71,13 @@ public abstract class CorporaService implements SystemConstant {
 		RestTemplate restTemplate = new RestTemplate();
 
 		logger.debug("Sending request to > {}", url.toString());
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-		return response.getBody();
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			return response.getBody();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 
 	private boolean isNotEnabled(URI corporaUrl) {
