@@ -33,7 +33,7 @@ public class CorporaServiceRus extends CorporaService {
 
 	protected URI composeCorporaUri(String sentence) {
 
-		if (isBlank(serviceUrl)) {
+		if (isBlank(serviceUrl) || isBlank(apiKey)) {
 			return null;
 		} else {
 			return UriComponentsBuilder.fromUriString(serviceUrl)

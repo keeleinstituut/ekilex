@@ -663,14 +663,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<LexemeToWordData> singleForms = extractSingleForms(meaningNumberGroupNode);
 			List<LexemeToWordData> compoundForms = extractCompoundForms(meaningNumberGroupNode, reportingId);
 			List<Long> newLexemes = new ArrayList<>();
-			List<Node> posCodeNodes = meaningNumberGroupNode.selectNodes(lexemePosCodeExp);
-			List<PosData> meaningPosCodes = new ArrayList<>();
-			for (Node posCodeNode : posCodeNodes) {
-				PosData posData = new PosData();
-				posData.code = ((Element)posCodeNode).getTextTrim();
-				posData.processStateCode = ((Element)posCodeNode).attributeValue(asTyypAttr);
-				meaningPosCodes.add(posData);
-			}
+			List<String> meaningPosCodes = extractPosCodes(meaningNumberGroupNode, lexemePosCodeExp);
 			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
 			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
 			Element learnerCommentNode = (Element) meaningNumberGroupNode.selectSingleNode(learnerCommentExp);
@@ -1121,9 +1114,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<PosData> meaningPosCodes, String reportingId) throws Exception {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String reportingId) throws Exception {
 
-		Set<PosData> lexemePosCodes = new HashSet<>();
+		Set<String> lexemePosCodes = new HashSet<>();
 		if (meaningPosCodes.isEmpty()) {
 			lexemePosCodes.addAll(newWordData.posCodes);
 		} else {
@@ -1132,12 +1125,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				writeToLogFile(reportingId, "Tähenduse juures leiti rohkem kui üks sõnaliik <x:tp/x:grg/x:sl>", "");
 			}
 		}
-		for (PosData posCode : lexemePosCodes) {
-			if (posCodes.containsKey(posCode.code)) {
+		for (String code : lexemePosCodes) {
+			if (posCodes.containsKey(code)) {
 				Map<String, Object> params = new HashMap<>();
 				params.put("lexeme_id", lexemeId);
-				params.put("pos_code", posCodes.get(posCode.code));
-				params.put("process_state_code", processStateCodes.get(posCode.processStateCode));
+				params.put("pos_code", posCodes.get(code));
 				basicDbService.create(LEXEME_POS, params);
 			}
 		}
@@ -1266,7 +1258,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String wordFrequencyGroupExp = "x:sag";
 		final String wordComparativeExp = "x:mfp/x:kmpg/x:kmp";
 		final String wordSuperlativeExp = "x:mfp/x:kmpg/x:suprl";
-		final String posAsTyypAttr = "as";
 		final String basicWordExp = "x:ps";
 
 		List<Node> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
@@ -1285,13 +1276,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			List<WordData> basicWordsOfTheWord = extractWordMetadata(wordGroupNode, basicWordExp, wordData.id, reportingId);
 			context.basicWords.addAll(basicWordsOfTheWord);
 
-			List<Node> posCodeNodes = wordGroupNode.selectNodes(wordPosCodeExp);
-			for (Node posCodeNode : posCodeNodes) {
-				PosData posData = new PosData();
-				posData.code = ((Element)posCodeNode).getTextTrim();
-				posData.processStateCode = ((Element)posCodeNode).attributeValue(posAsTyypAttr);
-				wordData.posCodes.add(posData);
-			}
+			wordData.posCodes.addAll(extractPosCodes(wordGroupNode, wordPosCodeExp));
 
 			Element derivCodeNode = (Element) wordGroupNode.selectSingleNode(wordDerivCodeExp);
 			wordData.derivCode = derivCodeNode == null ? null : derivCodeNode.getTextTrim();
@@ -1515,6 +1500,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return definitions;
 	}
 
+	private List<String> extractPosCodes(Node node, String posCodeExp) {
+
+		final String asTyypAttr = "as";
+
+		List<String> posCodes = new ArrayList<>();
+		for (Node posCodeNode : node.selectNodes(posCodeExp)) {
+			if (((Element)posCodeNode).attributeValue(asTyypAttr) != null) {
+				posCodes.add(nodeToString(posCodeNode));
+			}
+		}
+		return posCodes;
+	}
+
 	private String nodeToString(Node node) {
 		String stringValue = node == null ? null : ((Element)node).getTextTrim();
 		return cleanEkiEntityMarkup(stringValue);
@@ -1535,7 +1533,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private class WordData {
 		Long id;
-		List<PosData> posCodes = new ArrayList<>();
+		List<String> posCodes = new ArrayList<>();
 		String derivCode;
 		String grammar;
 		String value;
@@ -1546,26 +1544,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
 		int level1 = 1;
-	}
-
-	private class PosData {
-		String code;
-		String processStateCode;
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
-			PosData posData = (PosData) o;
-			return Objects.equals(code, posData.code);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(code);
-		}
 	}
 
 	private class WordToMeaningData {
