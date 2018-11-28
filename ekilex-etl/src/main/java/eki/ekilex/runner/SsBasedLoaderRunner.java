@@ -382,20 +382,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return extractValuesAsStrings(node, grammarValueExp);
 	}
 
-	protected List<PosData> extractPosCodes(Node node, String wordPosCodeExp) {
-
-		final String asTyypAttr = "as";
-
-		List<PosData> posCodes = new ArrayList<>();
-		List<Node> posCodeNodes = node.selectNodes(wordPosCodeExp);
-		for (Node posCodeNode : posCodeNodes) {
-			Element posCodeElement = (Element) posCodeNode;
-			PosData posData = new PosData();
-			posData.code = posCodeElement.getTextTrim();
-			posData.processStateCode = posCodeElement.attributeValue(asTyypAttr);
-			posCodes.add(posData);
-		}
-		return posCodes;
+	protected List<String> extractPosCodes(Node node, String wordPosCodeExp) {
+		return extractValuesAsStrings(node, wordPosCodeExp);
 	}
 
 	protected String extractReporingId(Node node) {
@@ -491,7 +479,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		String reportingId;
 		String wordType;
-		List<PosData> posCodes = new ArrayList<>();
+		List<String> posCodes = new ArrayList<>();
 		String frequencyGroup;
 		List<String> grammars = new ArrayList<>();
 		Long meaningId;
@@ -500,26 +488,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		int level1 = 1;
 		String language;
 		String displayForm;
-	}
-
-	protected class PosData {
-		String code;
-		String processStateCode;
-
-		@Override
-		public boolean equals(Object o) {
-			if (this == o)
-				return true;
-			if (o == null || getClass() != o.getClass())
-				return false;
-			PosData posData = (PosData) o;
-			return Objects.equals(code, posData.code);
-		}
-
-		@Override
-		public int hashCode() {
-			return Objects.hash(code);
-		}
 	}
 
 	protected class WordToMeaningData {
