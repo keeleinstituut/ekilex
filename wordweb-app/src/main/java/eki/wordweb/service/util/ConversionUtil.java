@@ -794,13 +794,34 @@ public class ConversionUtil {
 	}
 
 	private void distributeParadigmGroupForms(List<String> morphGroupNames, ParadigmGroup paradigmGroup, List<Form> groupForms) {
+
+		List<String> groupMorphCodes = groupForms.stream().map(Form::getMorphCode).distinct().collect(Collectors.toList());
+		Map<String, List<Form>> groupFormsByMorph = groupForms.stream().collect(Collectors.groupingBy(Form::getMorphCode));
+		List<Form> groupedForms = new ArrayList<>();
+		List<Form> morphForms;
+		Form morphForm;
+		List<String> forms;
+		List<String> displayForms;
+		String formsWrapup;
+		String displayFormsWrapup;
+		for (String morphCode : groupMorphCodes) {
+			morphForms = groupFormsByMorph.get(morphCode);
+			morphForm = morphForms.get(0);
+			forms = morphForms.stream().map(Form::getForm).collect(Collectors.toList());
+			formsWrapup = StringUtils.join(forms, ", ");
+			morphForm.setFormsWrapup(formsWrapup);
+			displayForms = morphForms.stream().map(Form::getDisplayForm).collect(Collectors.toList());
+			displayFormsWrapup = StringUtils.join(displayForms, ", ");
+			morphForm.setDisplayFormsWrapup(displayFormsWrapup);
+			groupedForms.add(morphForm);
+		}
 		if (morphGroupNames.size() > 2) {
-			paradigmGroup.getForms1().addAll(groupForms);
+			paradigmGroup.getForms1().addAll(groupedForms);
 		} else {
 			if (CollectionUtils.isEmpty(paradigmGroup.getForms1())) {
-				paradigmGroup.setForms1(groupForms);
+				paradigmGroup.setForms1(groupedForms);
 			} else if (CollectionUtils.isEmpty(paradigmGroup.getForms2())) {
-				paradigmGroup.setForms2(groupForms);
+				paradigmGroup.setForms2(groupedForms);
 			}
 		}
 	}
