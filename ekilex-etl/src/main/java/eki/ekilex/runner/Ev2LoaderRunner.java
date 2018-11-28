@@ -48,6 +48,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private final static String ASPECT_TYPE_SOV = "сов";
 	private final static String ASPECT_TYPE_NESOV = "несов";
 	private final static String ASPECT_TYPE_SOV_NESOV = "сов/несов";
+	private final static String POS_CODE_VERB = "v";
 
 	private String sqlSelectWordByDataset;
 
@@ -280,6 +281,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String registerExp = "x:dg/x:s";
 		final String latinTermExp = "x:dg/x:ld";
 
+		boolean isVerb = newWords.get(0).posCodes.contains(POS_CODE_VERB);
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		int lexemeLevel1 = 0;
 		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
@@ -305,7 +307,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
-				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId);
+				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
 								meaningLatinTerms.stream()
@@ -645,7 +647,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return extractValuesAsStrings(node, wordGovernmentExp);
 	}
 
-	private List<LexemeToWordData> extractRussianWords(Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId) {
+	private List<LexemeToWordData> extractRussianWords(
+			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -672,13 +675,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
 			}
-			boolean wordHasAspect = StringUtils.isNotBlank(aspectWord);
-			if (wordHasAspect) {
+			boolean wordHasAspectPair = isNotBlank(aspectWord);
+			if (wordHasAspectPair || wordContainsAspectType(word) || isVerb) {
 				wordData.aspect = calculateAspectType(word);
 			}
 			dataList.add(wordData);
 
-			if (wordHasAspect) {
+			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
 				aspectData.aspect = calculateAspectType(aspectWord);
 				aspectData.word = cleanUp(aspectWord);
@@ -692,6 +695,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return dataList;
+	}
+
+	private boolean wordContainsAspectType(String word) {
+		return word.endsWith("[*]") || word.endsWith("*");
 	}
 
 	private String calculateAspectType(String word) {
