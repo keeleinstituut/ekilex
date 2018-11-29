@@ -8446,6 +8446,7 @@ body:not(.home-page) footer {
 
 .morphology-panel .icon-speaker { 
   display: inline;
+  padding-top: 0px;
 }
 
 .morphology-panel h6, .morphology-panel h6.main-title {
