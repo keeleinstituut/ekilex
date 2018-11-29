@@ -665,7 +665,9 @@ public class ConversionUtil {
 					}
 				}
 			}
-			word.getRelatedWords().addAll(relatedWords);
+			if(CollectionUtils.isNotEmpty(relatedWords)) {
+				word.getRelatedWords().addAll(relatedWords);
+			}
 			if (CollectionUtils.isNotEmpty(tuple.getWordGroupMembers())) {
 				WordGroup wordGroup = new WordGroup();
 				wordGroup.setWordGroupId(tuple.getWordGroupId());
