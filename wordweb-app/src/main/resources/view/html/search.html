@@ -143,6 +143,11 @@
                         <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black; font-family: 'Montserrat';">
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
+                          <span th:if="${meaningWord.aspect != null}">
+                            <!--aspekt-->
+                            <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
+                            <span class="type-three" th:text="${meaningWord.aspect.value}"></span>
+                          </span>
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <!--rekts-->
                             <span class="type-one" th:each="government : ${meaningWord.governments}">
@@ -157,11 +162,6 @@
                               <span th:text="${register.value}"></span>
                               |
                             </span>
-                          </span>
-                          <span th:if="${meaningWord.aspect != null}">
-                            <!--aspekt-->
-                            <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
-                            <span class="type-three" th:text="${meaningWord.aspect.value}"></span>
                           </span>
                         </span>
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
