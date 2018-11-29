@@ -53,6 +53,8 @@ public class ConversionUtil {
 
 	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
 
+	private static final String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
+
 	private static final Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 
 	private static final int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;
@@ -388,6 +390,7 @@ public class ConversionUtil {
 		List<Collocation> collocations;
 		List<DisplayColloc> displayCollocs;
 		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
+		int totalCollocCount = 0;
 		for (CollocationPosGroup collocationPosGroup : collocationPosGroups) {
 			List<CollocationRelGroup> collocationRelGroups = collocationPosGroup.getRelationGroups();
 			for (CollocationRelGroup collocationRelGroup : collocationRelGroups) {
@@ -396,16 +399,18 @@ public class ConversionUtil {
 				List<String> allUsages = new ArrayList<>();
 				collocationRelGroup.setAllUsages(allUsages);
 				collocations = collocationRelGroup.getCollocations();
+				totalCollocCount += collocations.size();
 				transformCollocationsForDisplay(wordId, collocations, displayCollocs, allUsages, existingCollocationValues);
 			}
 		}
-		if (CollectionUtils.isNotEmpty(collocationPosGroups)) {
+		boolean isMorePrimaryCollocs = totalCollocCount > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
+		lexeme.setMorePrimaryCollocs(isMorePrimaryCollocs);
+		if (isMorePrimaryCollocs) {
 			CollocationPosGroup firstCollocPosGroup = collocationPosGroups.get(0);
 			CollocationRelGroup firstCollocRelGroup = firstCollocPosGroup.getRelationGroups().get(0);
-			boolean isMorePrimaryCollocs = CollectionUtils.size(firstCollocRelGroup.getDisplayCollocs()) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
-			lexeme.setMorePrimaryCollocs(isMorePrimaryCollocs);
+			boolean needsToLimit = CollectionUtils.size(firstCollocRelGroup.getDisplayCollocs()) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
 			List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>(firstCollocRelGroup.getDisplayCollocs());
-			if (isMorePrimaryCollocs) {
+			if (needsToLimit) {
 				limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
 			}
 			lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
@@ -679,6 +684,8 @@ public class ConversionUtil {
 	//TODO under construction
 	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
+		final String keyValSep = "-";
+
 		List<Paradigm> paradigms = new ArrayList<>();
 		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
 		Collections.sort(paradigmIds);
@@ -705,11 +712,16 @@ public class ConversionUtil {
 			paradigms.add(paradigm);
 
 			Map<String, List<Form>> formGroupsMap = forms.stream()
-					.collect(Collectors.groupingBy(form -> form.getMorphGroup1() + "-" + form.getMorphGroup2() + "-" + form.getMorphGroup3()));
+					.collect(Collectors.groupingBy(form -> {
+						return form.getMorphGroup1() + keyValSep + form.getMorphGroup2() + keyValSep + form.getMorphGroup3();
+					}));
 
-			List<String> morphGroup1Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup1())).map(Form::getMorphGroup1).distinct().collect(Collectors.toList());
-			List<String> morphGroup2Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup2())).map(Form::getMorphGroup2).distinct().collect(Collectors.toList());
-			List<String> morphGroup3Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup3())).map(Form::getMorphGroup3).distinct().collect(Collectors.toList());
+			List<String> morphGroup1Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup1()))
+					.map(Form::getMorphGroup1).distinct().collect(Collectors.toList());
+			List<String> morphGroup2Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup2()))
+					.map(Form::getMorphGroup2).distinct().collect(Collectors.toList());
+			List<String> morphGroup3Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup3()))
+					.map(Form::getMorphGroup3).distinct().collect(Collectors.toList());
 
 			if (CollectionUtils.isEmpty(morphGroup1Names)) {
 				ParadigmGroup paradigmGroup = new ParadigmGroup();
@@ -731,7 +743,7 @@ public class ConversionUtil {
 							paradigmGroup2 = newParadigmGroup(morphGroup2Name);
 							paradigmGroup1.getGroups().add(paradigmGroup2);
 							if (CollectionUtils.isEmpty(morphGroup3Names)) {
-								formGroupKey = morphGroup1Name + "-" + morphGroup2Name + "-null";
+								formGroupKey = morphGroup1Name + keyValSep + morphGroup2Name + "-null";
 								groupForms = formGroupsMap.get(formGroupKey);
 								if (CollectionUtils.isEmpty(groupForms)) {
 									continue;
@@ -739,7 +751,7 @@ public class ConversionUtil {
 								distributeParadigmGroupForms(morphGroup2Names, paradigmGroup2, groupForms);
 							} else {
 								for (String morphGroup3Name : morphGroup3Names) {
-									formGroupKey = morphGroup1Name + "-" + morphGroup2Name + "-" + morphGroup3Name;
+									formGroupKey = morphGroup1Name + keyValSep + morphGroup2Name + keyValSep + morphGroup3Name;
 									groupForms = formGroupsMap.get(formGroupKey);
 									if (CollectionUtils.isEmpty(groupForms)) {
 										continue;
@@ -807,11 +819,17 @@ public class ConversionUtil {
 		for (String morphCode : groupMorphCodes) {
 			morphForms = groupFormsByMorph.get(morphCode);
 			morphForm = morphForms.get(0);
-			forms = morphForms.stream().map(Form::getForm).collect(Collectors.toList());
-			formsWrapup = StringUtils.join(forms, ", ");
+			if (morphForms.size() > 1) {
+				//morphForms.sort(Comparator.comparing(Form::getOrderBy));
+				forms = morphForms.stream().map(Form::getForm).collect(Collectors.toList());
+				formsWrapup = StringUtils.join(forms, ALTERNATIVE_FORMS_SEPARATOR);
+				displayForms = morphForms.stream().map(Form::getDisplayForm).collect(Collectors.toList());
+				displayFormsWrapup = StringUtils.join(displayForms, ALTERNATIVE_FORMS_SEPARATOR);
+			} else {
+				formsWrapup = morphForm.getForm();
+				displayFormsWrapup = morphForm.getDisplayForm();
+			}
 			morphForm.setFormsWrapup(formsWrapup);
-			displayForms = morphForms.stream().map(Form::getDisplayForm).collect(Collectors.toList());
-			displayFormsWrapup = StringUtils.join(displayForms, ", ");
 			morphForm.setDisplayFormsWrapup(displayFormsWrapup);
 			groupedForms.add(morphForm);
 		}
