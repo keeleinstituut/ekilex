@@ -45,9 +45,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private final static String SQL_SELECT_WORD_BY_DATASET = "sql/select_word_by_dataset.sql";
 	private final static String LANG_RUS = "rus";
-	private final static String ASPECT_TYPE_SOV = "сов";
-	private final static String ASPECT_TYPE_NESOV = "несов";
-	private final static String ASPECT_TYPE_SOV_NESOV = "сов/несов";
+	private final static String ASPECT_TYPE_SOV = "сов.";
+	private final static String ASPECT_TYPE_NESOV = "несов.";
+	private final static String ASPECT_TYPE_SOV_NESOV = "сов. и несов.";
 	private final static String POS_CODE_VERB = "v";
 
 	private String sqlSelectWordByDataset;

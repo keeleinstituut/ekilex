@@ -1271,7 +1271,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
-			addSoundFileNamesToForms(wordData.id, wordGroupNode);
+//			addSoundFileNamesToForms(wordData.id, wordGroupNode);
 
 			List<WordData> basicWordsOfTheWord = extractWordMetadata(wordGroupNode, basicWordExp, wordData.id, reportingId);
 			context.basicWords.addAll(basicWordsOfTheWord);
