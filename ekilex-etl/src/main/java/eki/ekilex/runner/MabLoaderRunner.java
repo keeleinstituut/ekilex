@@ -214,7 +214,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						formObj.setMorphGroup3(morphGroup3);
 						formObj.setDisplayLevel(displayLevel);
 						formObj.setMorphCode(destinMorphCode);
-						formObj.setMorphExists(new Boolean(noMorphExists));
+						formObj.setMorphExists(new Boolean(!noMorphExists));
 						formObj.setValue(formValue);
 						//formObj.setComponents(components);
 						formObj.setDisplayForm(displayForm);

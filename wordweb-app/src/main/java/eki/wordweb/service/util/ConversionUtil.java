@@ -820,14 +820,15 @@ public class ConversionUtil {
 		String displayFormsWrapup;
 		for (String morphCode : groupMorphCodes) {
 			morphForms = groupFormsByMorph.get(morphCode);
-			morphForm = morphForms.get(0);
 			if (morphForms.size() > 1) {
 				morphForms.sort(Comparator.comparing(Form::getDisplayLevel));
+				morphForm = morphForms.get(0);
 				forms = morphForms.stream().map(Form::getForm).collect(Collectors.toList());
 				formsWrapup = StringUtils.join(forms, ALTERNATIVE_FORMS_SEPARATOR);
 				displayForms = morphForms.stream().map(Form::getDisplayForm).collect(Collectors.toList());
 				displayFormsWrapup = StringUtils.join(displayForms, ALTERNATIVE_FORMS_SEPARATOR);
 			} else {
+				morphForm = morphForms.get(0);
 				formsWrapup = morphForm.getForm();
 				displayFormsWrapup = morphForm.getDisplayForm();
 			}
