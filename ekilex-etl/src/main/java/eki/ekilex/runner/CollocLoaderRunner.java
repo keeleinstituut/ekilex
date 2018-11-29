@@ -200,6 +200,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocateCount = new Count();
 		Count collocationCount = new Count();
 		Count reusedCollocationCount = new Count();
+		Count duplicateCollocationCount = new Count();
 		Count updatedCollocCount = new Count();
 		Count updatedCollocMemberCount = new Count();
 		Count reusedWordCount = new Count();
@@ -218,6 +219,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		countersMap.put("collocateCount", collocateCount);
 		countersMap.put("collocationCount", collocationCount);
 		countersMap.put("reusedCollocationCount", reusedCollocationCount);
+		countersMap.put("duplicateCollocationCount", duplicateCollocationCount);
 		countersMap.put("updatedCollocCount", updatedCollocCount);
 		countersMap.put("updatedCollocMemberCount", updatedCollocMemberCount);
 		countersMap.put("reusedWordCount", reusedWordCount);
@@ -233,7 +235,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<String, UnknownWord> dummyWordMap = new HashMap<>();
 		extractAndSaveWordsLexemesMeanings(articleNodes, wordMap, meaningMap, ssGuidMap, countersMap);
 
-		Map<String, CollocRecord> collocMap = new HashMap<>();
+		Map<String, Map<String, CollocRecord>> collocMap = new HashMap<>();
 
 		for (Node articleNode : articleNodes) {
 
@@ -369,6 +371,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} collocates", collocateCount.getValue());
 		logger.debug("Found {} collocations", collocationCount.getValue());
 		logger.debug("Found {} reused collocations", reusedCollocationCount.getValue());
+		logger.debug("Found {} duplicate collocations", duplicateCollocationCount.getValue());
 		logger.debug("Found {} updated collocations", updatedCollocCount.getValue());
 		logger.debug("Found {} updated collocation members", updatedCollocMemberCount.getValue());
 		logger.debug("Found {} reused words", reusedWordCount.getValue());
@@ -626,7 +629,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			Map<String, Map<Integer, Word>> wordMap,
 			Map<Long, Map<Integer, LexemeMeaning>> meaningMap,
 			Map<String, UnknownWord> dummyWordMap,
-			Map<String, CollocRecord> collocMap,
+			Map<String, Map<String, CollocRecord>> collocMap,
 			Map<String, Count> countersMap,
 			boolean doReports) throws Exception {
 
@@ -640,6 +643,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Count collocateCount = countersMap.get("collocateCount");
 		Count collocationCount = countersMap.get("collocationCount");
 		Count reusedCollocationCount = countersMap.get("reusedCollocationCount");
+		Count duplicateCollocationCount = countersMap.get("duplicateCollocationCount");
 		Count updatedCollocCount = countersMap.get("updatedCollocCount");
 		Count updatedCollocMemberCount = countersMap.get("updatedCollocMemberCount");
 
@@ -689,6 +693,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Long> currentCollocMemberIds;
 		List<CollocMemberRecord> currentCollocMemberRecords;
 		CollocMemberRecord collocMemberRecord;
+		Map<String, CollocRecord> collocLexemesMap;
+		CollocRecord existingCollocRecord;
 
 		for (List<CollocMember> collocMembersPermutation : collocMembersPermutations) {
 
@@ -836,20 +842,40 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			CollocRecord existingCollocRecord = collocMap.get(collocation);
+			boolean collocExists = collocMap.containsKey(collocation);
 
-			if (existingCollocRecord == null) {
+			if (collocExists) {
+				String collocLexemesKey = composeCollocLexemesKey(currentCollocMemberRecords);
+				collocLexemesMap = collocMap.get(collocation);
+				existingCollocRecord = collocLexemesMap.get(collocLexemesKey);
+				if (existingCollocRecord == null) {
+					duplicateCollocationCount.increment();
+					Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, currentCollocMemberRecords);
+					existingCollocRecord = new CollocRecord(collocId, collocDefinition, collocUsages, currentCollocMemberRecords);
+					collocLexemesMap.put(collocLexemesKey, existingCollocRecord);
+				} else {
+					reusedCollocationCount.increment();
+					compareAndUpdateCollocation(word, collocation, existingCollocRecord, collocUsages, collocDefinition, updatedCollocCount, doReports);
+					compareAndUpdateCollocMembers(word, collocation, existingCollocRecord, currentCollocMemberRecords, updatedCollocMemberCount, doReports);
+				}
+			} else {
 				collocationCount.increment();
 				collocateCount.increment(currentCollocMemberRecords.size());
 				Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, currentCollocMemberRecords);
 				existingCollocRecord = new CollocRecord(collocId, collocDefinition, collocUsages, currentCollocMemberRecords);
-				collocMap.put(collocation, existingCollocRecord);
-			} else {
-				reusedCollocationCount.increment();
-				compareAndUpdateCollocation(word, collocation, existingCollocRecord, collocUsages, collocDefinition, updatedCollocCount, doReports);
-				compareAndUpdateCollocMembers(word, collocation, existingCollocRecord, currentCollocMemberRecords, updatedCollocMemberCount, doReports);
+				String collocLexemesKey = composeCollocLexemesKey(existingCollocRecord.getMembers());
+				collocLexemesMap = new HashMap<>();
+				collocLexemesMap.put(collocLexemesKey, existingCollocRecord);
+				collocMap.put(collocation, collocLexemesMap);
 			}
 		}
+	}
+
+	private String composeCollocLexemesKey(List<CollocMemberRecord> collocMembers) {
+		List<Long> lexemeIds = collocMembers.stream().map(CollocMemberRecord::getLexemeId).collect(Collectors.toList());
+		Collections.sort(lexemeIds);
+		String collocLexemesKey = StringUtils.join(lexemeIds, "-");
+		return collocLexemesKey;
 	}
 
 	private String composeCollocValue(List<CollocMember> collocMembers) {

@@ -76,7 +76,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public MabData execute(String dataXmlFilePath1, String dataXmlFilePath2, boolean doReports) throws Exception {
+	public MabData execute(String[] dataXmlFilePaths, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
 
@@ -89,12 +89,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		// morph value to code conversion map
 		Map<String, String> morphValueCodeMap = composeMorphValueCodeMap(dataLang);
-		String[] dataXmlFilePaths = new String[] {dataXmlFilePath1, dataXmlFilePath2};
 		Document dataDoc;
 		Element rootElement;
 		List<Node> allArticleNodes = new ArrayList<>();
 		List<Node> articleNodes;
 		for (String dataXmlFilePath : dataXmlFilePaths) {
+			logger.debug("Loading \"{}\"", dataXmlFilePath);
 			dataDoc = xmlReader.readDocument(dataXmlFilePath);
 			rootElement = dataDoc.getRootElement();
 			articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());

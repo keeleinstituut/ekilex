@@ -820,7 +820,7 @@ public class ConversionUtil {
 			morphForms = groupFormsByMorph.get(morphCode);
 			morphForm = morphForms.get(0);
 			if (morphForms.size() > 1) {
-				//morphForms.sort(Comparator.comparing(Form::getOrderBy));
+				morphForms.sort(Comparator.comparing(Form::getDisplayLevel));
 				forms = morphForms.stream().map(Form::getForm).collect(Collectors.toList());
 				formsWrapup = StringUtils.join(forms, ALTERNATIVE_FORMS_SEPARATOR);
 				displayForms = morphForms.stream().map(Form::getDisplayForm).collect(Collectors.toList());

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eki.ekilex.runner.VoiceFileUpdaterRunner;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +21,7 @@ import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
 import eki.ekilex.runner.TermekiRunner;
+import eki.ekilex.runner.VoiceFileUpdaterRunner;
 import eki.ekilex.service.MabService;
 
 public class UltimaLoader extends AbstractLoader {
@@ -67,10 +68,9 @@ public class UltimaLoader extends AbstractLoader {
 			initRunner.execute();
 
 			// mab
-			dataFilePath = getConfProperty("mab.data.file.1");
-			dataFilePath2 = getConfProperty("mab.data.file.2");
-			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
-				mabService.loadParadigms(dataFilePath, dataFilePath2, doReports);
+			String[] mabDataFilePaths = getMabDataFilePaths();
+			if (ArrayUtils.isNotEmpty(mabDataFilePaths)) {
+				mabService.loadParadigms(mabDataFilePaths, doReports);
 				successfullyLoadedDatasets.add("mab");
 			}
 
@@ -154,7 +154,7 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			t2 = System.currentTimeMillis();
-			float fullLoadTimeMin = ((float)(t2 - t1)) / 60000f;
+			float fullLoadTimeMin = ((float) (t2 - t1)) / 60000f;
 			logger.info("----DONE LOADING DATASETS!!----");
 			logger.info("Full load took {} min", fullLoadTimeMin);
 
