@@ -116,7 +116,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<String> words;
 		Paradigm paradigmObj;
 		Form formObj;
-		String word, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr;
+		String word, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
 		Integer formOrderBy, displayLevel;
 
 		Count uncleanWordCount = new Count();
@@ -206,6 +206,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							formValue = EMPTY_FORM_VALUE;
 							displayForm = EMPTY_FORM_VALUE;
 						}
+						soundFile = extractSoundFileName(formElement);
 
 						formObj = new Form();
 						formObj.setMorphGroup1(morphGroup1);
@@ -218,7 +219,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						//formObj.setComponents(components);
 						formObj.setDisplayForm(displayForm);
 						//formObj.setVocalForm(vocalForm);
-						formObj.setSoundFile(extractSoundFileName(formElement));
+						formObj.setSoundFile(soundFile);
 						formObj.setOrderBy(formOrderBy);
 
 						forms.add(formObj);
