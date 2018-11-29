@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String homonymNrAttr = "i";
 	//private final String inflectionTypeAttr = "kuvamuuttyyp";//TODO needs further analyse
 	private final String formValueAttr = "kuvavorm";
+	private final String soundFileAttr = "kuvaheli";
 	private final String formOrderAttr = "ord";
 	private final String morphGroup1Attr = "grp2";
 	private final String morphGroup2Attr = "grp3";
@@ -216,7 +218,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						//formObj.setComponents(components);
 						formObj.setDisplayForm(displayForm);
 						//formObj.setVocalForm(vocalForm);
-						//formObj.setSoundFile(soundFile);
+						formObj.setSoundFile(extractSoundFileName(formElement));
 						formObj.setOrderBy(formOrderBy);
 
 						forms.add(formObj);
@@ -281,6 +283,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 
 		return new MabData(wordParadigmsMap, formWordsMap);
+	}
+
+	private String extractSoundFileName(Element element) {
+		String name = element.attributeValue(soundFileAttr);
+		return isNotBlank(name) ? name + ".mp3" : null;
 	}
 
 	private Map<String, List<String>> composeFormWordsMap(Map<String, List<Paradigm>> wordParadigmsMap) {
