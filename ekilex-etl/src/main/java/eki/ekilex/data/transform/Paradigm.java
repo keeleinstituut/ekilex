@@ -8,15 +8,59 @@ public class Paradigm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	private Integer homonymNr;
+
+	private String wordClass;
+
 	private String inflectionTypeNr;
 
-	private Integer homonymNr;
+	private String inflectionType;
 
 	private boolean isSecondary;
 
 	private List<String> formValues;
 
 	private List<Form> forms;
+
+	public Integer getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(Integer homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
+	}
+
+	public String getInflectionTypeNr() {
+		return inflectionTypeNr;
+	}
+
+	public void setInflectionTypeNr(String inflectionTypeNr) {
+		this.inflectionTypeNr = inflectionTypeNr;
+	}
+
+	public String getInflectionType() {
+		return inflectionType;
+	}
+
+	public void setInflectionType(String inflectionType) {
+		this.inflectionType = inflectionType;
+	}
+
+	public boolean isSecondary() {
+		return isSecondary;
+	}
+
+	public void setSecondary(boolean isSecondary) {
+		this.isSecondary = isSecondary;
+	}
 
 	public List<String> getFormValues() {
 		return formValues;
@@ -34,27 +78,4 @@ public class Paradigm extends AbstractDataObject {
 		this.forms = forms;
 	}
 
-	public String getInflectionTypeNr() {
-		return inflectionTypeNr;
-	}
-
-	public void setInflectionTypeNr(String inflectionTypeNr) {
-		this.inflectionTypeNr = inflectionTypeNr;
-	}
-
-	public boolean isSecondary() {
-		return isSecondary;
-	}
-
-	public void setSecondary(boolean secondary) {
-		isSecondary = secondary;
-	}
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
-	}
 }

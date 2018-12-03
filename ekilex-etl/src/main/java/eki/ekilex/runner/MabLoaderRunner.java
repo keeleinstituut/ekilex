@@ -29,6 +29,7 @@ import eki.ekilex.data.transform.MabData;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.service.ReportComposer;
 
+//TODO architectural change is necessary - holding DOM and hash maps in RAM requires too much heap
 @Component
 public class MabLoaderRunner extends AbstractLoaderRunner {
 
@@ -52,7 +53,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String morphValueExp = "x:vk";
 	private final String formExp = "x:parg/x:mv";
 	private final String homonymNrAttr = "i";
-	//private final String inflectionTypeAttr = "kuvamuuttyyp";//TODO needs further analyse
+	private final String wordClassAttr = "kuvasonaklass";
+	private final String inflectionTypeAttr = "kuvamuuttyyp";
 	private final String formValueAttr = "kuvavorm";
 	private final String soundFileAttr = "kuvaheli";
 	private final String formOrderAttr = "ord";
@@ -107,8 +109,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
 
-		Node headerNode, contentNode, wordGroupNode, wordNode, paradigmDataNode, morphValueNode, inflectionTypeNrNode;
-		Element wordElement, formElement, formGroupElement;
+		Node headerNode, contentNode, wordGroupNode, wordNode, firstParadigmDataNode, paradigmDataNode, morphValueNode, inflectionTypeNrNode;
+		Element wordElement, firstParadigmDataElement, paradigmDataElement, formElement, formGroupElement;
 		List<Node> paradigmNodes, formGroupNodes, formNodes;
 		List<Paradigm> paradigms, newParadigms;
 		List<Form> forms;
@@ -116,7 +118,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<String> words;
 		Paradigm paradigmObj;
 		Form formObj;
-		String word, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
+		String word, wordClass, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, inflectionType;
+		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
 		Integer formOrderBy, displayLevel;
 
 		Count uncleanWordCount = new Count();
@@ -158,6 +161,10 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			}
 			word = words.get(0);
 
+			firstParadigmDataNode = contentNode.selectSingleNode(paradigmExp + "/" + paradigmDataExp);
+			firstParadigmDataElement = (Element) firstParadigmDataNode;
+			wordClass = firstParadigmDataElement.attributeValue(wordClassAttr);
+
 			paradigmNodes = contentNode.selectNodes(paradigmExp);
 
 			newParadigms = new ArrayList<>();
@@ -169,7 +176,9 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				inflectionTypeNr = ((Element) inflectionTypeNrNode).getTextTrim();
 				inflectionTypeNr = String.valueOf(Integer.valueOf(inflectionTypeNr));
 
-				formGroupNodes = paradigmDataNode.selectNodes(formGroupExp);
+				paradigmDataElement = (Element) paradigmDataNode;
+				inflectionType = paradigmDataElement.attributeValue(inflectionTypeAttr);
+				formGroupNodes = paradigmDataElement.selectNodes(formGroupExp);
 
 				// compose forms
 				forms = new ArrayList<>();
@@ -245,10 +254,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 				// compose paradigm
 				paradigmObj = new Paradigm();
+				paradigmObj.setHomonymNr(homonymNr);
+				paradigmObj.setWordClass(wordClass);
+				paradigmObj.setInflectionTypeNr(inflectionTypeNr);
+				paradigmObj.setInflectionType(inflectionType);
 				paradigmObj.setForms(forms);
 				paradigmObj.setFormValues(formValues);
-				paradigmObj.setInflectionTypeNr(inflectionTypeNr);
-				paradigmObj.setHomonymNr(homonymNr);
 
 				newParadigms.add(paradigmObj);
 			}

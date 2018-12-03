@@ -14,6 +14,7 @@ as
 select w.word_id,
        w.word,
        w.homonym_nr,
+       w.word_class,
        w.lang,
        w.morph_code,
        w.display_morph_code,
@@ -29,6 +30,7 @@ select w.word_id,
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
              w.homonym_nr,
+             w.word_class,
              w.lang,
              w.morph_code,
              w.display_morph_code,
@@ -128,6 +130,7 @@ create view view_ww_form
         group by ld.word_id
       ) dataset_codes,
       p.id paradigm_id,
+      p.inflection_type,
       ff.id form_id,
       ff.mode,
       ff.morph_group1,
@@ -155,7 +158,7 @@ create view view_ww_form
           and exists (select ld.id
                         from lexeme as ld
                         where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
-    order by p.id, ff.order_by;
+    order by p.id, ff.order_by, ff.id;
 
 -- lexeme meanings
 create view view_ww_meaning 
