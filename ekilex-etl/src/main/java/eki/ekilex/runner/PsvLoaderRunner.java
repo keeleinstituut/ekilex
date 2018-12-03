@@ -1271,8 +1271,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
-//			addSoundFileNamesToForms(wordData.id, wordGroupNode);
-
 			List<WordData> basicWordsOfTheWord = extractWordMetadata(wordGroupNode, basicWordExp, wordData.id, reportingId);
 			context.basicWords.addAll(basicWordsOfTheWord);
 
@@ -1306,47 +1304,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					.collect(Collectors.toList());
 
 			newWords.add(wordData);
-		}
-	}
-
-	private void addSoundFileNamesToForms(Long wordId, Node wordGroupNode) {
-
-		final String paradigmGroupExp = "x:mfp";
-		final String paradigmInflectionTypeNrExp = "x:mt";
-		final String morphValueGroupExp = "x:gkg/x:mvg";
-		final String morphCodeAttr = "vn";
-		final String soundFileExp = "x:mvgp/x:hldf";
-
-		List<SoundFileData> soundFiles = new ArrayList<>();
-		List<Node> paradigmGroupNodes = wordGroupNode.selectNodes(paradigmGroupExp);
-		for (Node paradigmGroupNode : paradigmGroupNodes) {
-			Element paradigmInflectionTypeNrNode = (Element) paradigmGroupNode.selectSingleNode(paradigmInflectionTypeNrExp);
-			if (paradigmInflectionTypeNrNode != null) {
-				String inflectionTypeNrStr = paradigmInflectionTypeNrNode.getTextTrim().replace("?", "");
-				List<String> inflectionTypeNumbers = asList(inflectionTypeNrStr.split("~"));
-				List<Node> morphValueGroupNodes = paradigmGroupNode.selectNodes(morphValueGroupExp);
-				for (Node morphValueGroupNode : morphValueGroupNodes) {
-					Element soundFileNode = (Element) morphValueGroupNode.selectSingleNode(soundFileExp);
-					if (soundFileNode != null) {
-						String morphCode = ((Element)morphValueGroupNode).attributeValue(morphCodeAttr);
-						SoundFileData data = new SoundFileData();
-						data.soundFile = soundFileNode.getTextTrim();
-						data.morphCode = morphCode;
-						data.inflectionTypeNumbers = inflectionTypeNumbers;
-						soundFiles.add(data);
-					}
-				}
-			} else {
-				logger.debug("missing inflection type : {}", wordId);
-			}
-		}
-		for (SoundFileData soundFileData : soundFiles) {
-			Map<String, Object> params = new HashMap<>();
-			params.put("morphCode", soundFileData.morphCode);
-			params.put("inflectionTypeNumbers", soundFileData.inflectionTypeNumbers);
-			params.put("wordId", wordId);
-			params.put("soundFile", soundFileData.soundFile);
-			basicDbService.executeScript(sqlUpdateSoundFiles, params);
 		}
 	}
 
