@@ -83,9 +83,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 
 	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
-	private final static String sqlUpdateSoundFiles = "update " + FORM + " set sound_file = :soundFile where id in "
-			+ "(select f.id from " + FORM + " f join " + PARADIGM + " p on f.paradigm_id = p.id "
-			+ "where f.morph_code = :morphCode and p.word_id = :wordId and p.inflection_type_nr in (:inflectionTypeNumbers))";
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
@@ -1554,12 +1551,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String wordValue;
 		int wordHomonymNr = 0;
 		String reportingId;
-	}
-
-	private class SoundFileData {
-		String soundFile;
-		String morphCode;
-		List<String> inflectionTypeNumbers;
 	}
 
 	private class LexemeData {
