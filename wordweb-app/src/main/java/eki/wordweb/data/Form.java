@@ -32,9 +32,13 @@ public class Form extends AbstractDataObject {
 
 	private String form;
 
+	private String formsWrapup;
+
 	private List<String> components;
 
 	private String displayForm;
+
+	private String displayFormsWrapup;
 
 	private String vocalForm;
 
@@ -130,6 +134,14 @@ public class Form extends AbstractDataObject {
 		this.form = form;
 	}
 
+	public String getFormsWrapup() {
+		return formsWrapup;
+	}
+
+	public void setFormsWrapup(String formsWrapup) {
+		this.formsWrapup = formsWrapup;
+	}
+
 	public List<String> getComponents() {
 		return components;
 	}
@@ -144,6 +156,14 @@ public class Form extends AbstractDataObject {
 
 	public void setDisplayForm(String displayForm) {
 		this.displayForm = displayForm;
+	}
+
+	public String getDisplayFormsWrapup() {
+		return displayFormsWrapup;
+	}
+
+	public void setDisplayFormsWrapup(String displayFormsWrapup) {
+		this.displayFormsWrapup = displayFormsWrapup;
 	}
 
 	public String getVocalForm() {

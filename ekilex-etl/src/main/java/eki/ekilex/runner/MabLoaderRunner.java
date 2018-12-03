@@ -1,6 +1,7 @@
 package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
@@ -53,6 +54,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String homonymNrAttr = "i";
 	//private final String inflectionTypeAttr = "kuvamuuttyyp";//TODO needs further analyse
 	private final String formValueAttr = "kuvavorm";
+	private final String soundFileAttr = "kuvaheli";
 	private final String formOrderAttr = "ord";
 	private final String morphGroup1Attr = "grp2";
 	private final String morphGroup2Attr = "grp3";
@@ -76,7 +78,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public MabData execute(String dataXmlFilePath1, String dataXmlFilePath2, boolean doReports) throws Exception {
+	public MabData execute(String[] dataXmlFilePaths, boolean doReports) throws Exception {
 
 		logger.debug("Loading MAB...");
 
@@ -89,12 +91,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		// morph value to code conversion map
 		Map<String, String> morphValueCodeMap = composeMorphValueCodeMap(dataLang);
-		String[] dataXmlFilePaths = new String[] {dataXmlFilePath1, dataXmlFilePath2};
 		Document dataDoc;
 		Element rootElement;
 		List<Node> allArticleNodes = new ArrayList<>();
 		List<Node> articleNodes;
 		for (String dataXmlFilePath : dataXmlFilePaths) {
+			logger.debug("Loading \"{}\"", dataXmlFilePath);
 			dataDoc = xmlReader.readDocument(dataXmlFilePath);
 			rootElement = dataDoc.getRootElement();
 			articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
@@ -114,7 +116,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<String> words;
 		Paradigm paradigmObj;
 		Form formObj;
-		String word, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr;
+		String word, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
 		Integer formOrderBy, displayLevel;
 
 		Count uncleanWordCount = new Count();
@@ -204,6 +206,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							formValue = EMPTY_FORM_VALUE;
 							displayForm = EMPTY_FORM_VALUE;
 						}
+						soundFile = extractSoundFileName(formElement);
 
 						formObj = new Form();
 						formObj.setMorphGroup1(morphGroup1);
@@ -211,12 +214,12 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						formObj.setMorphGroup3(morphGroup3);
 						formObj.setDisplayLevel(displayLevel);
 						formObj.setMorphCode(destinMorphCode);
-						formObj.setMorphExists(new Boolean(noMorphExists));
+						formObj.setMorphExists(new Boolean(!noMorphExists));
 						formObj.setValue(formValue);
 						//formObj.setComponents(components);
 						formObj.setDisplayForm(displayForm);
 						//formObj.setVocalForm(vocalForm);
-						//formObj.setSoundFile(soundFile);
+						formObj.setSoundFile(soundFile);
 						formObj.setOrderBy(formOrderBy);
 
 						forms.add(formObj);
@@ -281,6 +284,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Done loading in {} ms", (t2 - t1));
 
 		return new MabData(wordParadigmsMap, formWordsMap);
+	}
+
+	private String extractSoundFileName(Element element) {
+		String name = element.attributeValue(soundFileAttr);
+		return isNotBlank(name) ? name + ".mp3" : null;
 	}
 
 	private Map<String, List<String>> composeFormWordsMap(Map<String, List<Paradigm>> wordParadigmsMap) {

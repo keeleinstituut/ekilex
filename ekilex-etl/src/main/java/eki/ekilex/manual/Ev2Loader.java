@@ -29,9 +29,8 @@ public class Ev2Loader extends AbstractLoader {
 			boolean doReports = doReports();
 
 			// mab
-			String mabFilePath1 = getConfProperty("mab.data.file.1");
-			String mabFilePath2 = getConfProperty("mab.data.file.2");
-			mabService.loadParadigms(mabFilePath1, mabFilePath2, doReports);
+			String[] mabDataFilePaths = getMabDataFilePaths();
+			mabService.loadParadigms(mabDataFilePaths, doReports);
 
 			// ev2
 			String evFilePath1 = getMandatoryConfProperty("ev2.data.file.1");

@@ -27,8 +27,6 @@ public interface WebConstant {
 
 	String ABOUT_PAGE = "about";
 	
-	String API_PAGE = "api";
-
 	String CONTACTS_PAGE = "contacts";
 
 	String GAME_LEXICDECIS_PAGE = "game-lexicdecis";
@@ -49,8 +47,6 @@ public interface WebConstant {
 
 	String GAMES_URI = "/games";
 	
-	String API_URI = "/api";
-
 	String CONDITIONS_URI = "/conditions";
 
 	String COLLECTIONS_URI = "/collections";

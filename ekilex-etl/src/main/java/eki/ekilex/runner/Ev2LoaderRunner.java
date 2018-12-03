@@ -1,6 +1,8 @@
 package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toList;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.replaceChars;
 
 import java.io.InputStream;
@@ -13,14 +15,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
 import eki.common.constant.WordRelationGroupType;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -45,9 +45,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private final static String SQL_SELECT_WORD_BY_DATASET = "sql/select_word_by_dataset.sql";
 	private final static String LANG_RUS = "rus";
-	private final static String ASPECT_TYPE_SOV = "сов";
-	private final static String ASPECT_TYPE_NESOV = "несов";
-	private final static String ASPECT_TYPE_SOV_NESOV = "сов/несов";
+	private final static String ASPECT_TYPE_SOV = "сов.";
+	private final static String ASPECT_TYPE_NESOV = "несов.";
+	private final static String ASPECT_TYPE_SOV_NESOV = "сов. и несов.";
+	private final static String POS_CODE_VERB = "v";
 
 	private String sqlSelectWordByDataset;
 
@@ -256,7 +257,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
-			List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
+			List<String> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
 			wordData.posCodes.addAll(posCodes);
 			posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
 			wordData.posCodes.addAll(posCodes);
@@ -280,11 +281,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String registerExp = "x:dg/x:s";
 		final String latinTermExp = "x:dg/x:ld";
 
+		boolean isVerb = newWords.get(0).posCodes.contains(POS_CODE_VERB);
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		int lexemeLevel1 = 0;
 		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
 			lexemeLevel1++;
-			List<PosData> meaningPosCodes = extractPosCodes(meaningNumberGroupNode, meaningPosCodeExp);
+			List<String> meaningPosCodes = extractPosCodes(meaningNumberGroupNode, meaningPosCodeExp);
 			meaningPosCodes.addAll(extractPosCodes(meaningNumberGroupNode, meaningPosCode2Exp));
 			List<String> meaningGovernments = extractGovernments(meaningNumberGroupNode);
 			List<String> meaningGrammars = extractGrammar(meaningNumberGroupNode);
@@ -294,7 +296,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meaningGroupNodes) {
 				lexemeLevel2++;
-				List<PosData> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
+				List<String> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> lexemeGrammars = extractGrammar(meaningGroupNode);
 				List<String> registers = extractValuesAsStrings(meaningGroupNode, registerExp);
 
@@ -305,7 +307,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
-				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId);
+				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
 								meaningLatinTerms.stream()
@@ -382,7 +384,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
 					}
 				}
-				if (StringUtils.isNotBlank(russianWordData.register)) {
+				if (isNotBlank(russianWordData.register)) {
 					saveRegisters(lexemeId, Collections.singletonList(russianWordData.register), russianWordData.word);
 				}
 			}
@@ -535,9 +537,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		});
 	}
 
-	private void savePosAndDeriv(WordData newWordData, List<PosData> meaningPosCodes, List<PosData> lexemePosCodes, Long lexemeId, String reportingId) {
+	private void savePosAndDeriv(WordData newWordData, List<String> meaningPosCodes, List<String> lexemePosCodes, Long lexemeId, String reportingId) {
 
-		Set<PosData> combinedPosCodes = new HashSet<>();
+		Set<String> combinedPosCodes = new HashSet<>();
 		try {
 			combinedPosCodes.addAll(lexemePosCodes);
 			if (combinedPosCodes.isEmpty()) {
@@ -547,22 +549,20 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				combinedPosCodes.addAll(newWordData.posCodes);
 			}
 			if (combinedPosCodes.size() > 1) {
-				String posCodesStr = combinedPosCodes.stream().map(p -> p.code).collect(Collectors.joining(","));
-				//					logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
+				String posCodesStr = String.join(",", combinedPosCodes);
 				writeToLogFile(reportingId, "Leiti rohkem kui üks sõnaliik <x:sl>", posCodesStr);
 			}
-			for (PosData posCode : combinedPosCodes) {
-				if (posCodes.containsKey(posCode.code)) {
+			for (String posCode : combinedPosCodes) {
+				if (posCodes.containsKey(posCode)) {
 					Map<String, Object> params = new HashMap<>();
 					params.put("lexeme_id", lexemeId);
-					params.put("pos_code", posCodes.get(posCode.code));
-					params.put("process_state_code", processStateCodes.get(posCode.processStateCode));
+					params.put("pos_code", posCodes.get(posCode));
 					basicDbService.create(LEXEME_POS, params);
 				}
 			}
 		} catch (Exception e) {
 			logger.debug("lexemeId {} : newWord : {}, {}, {}",
-					lexemeId, newWordData.value, newWordData.id, combinedPosCodes.stream().map(p -> p.code).collect(Collectors.joining(",")));
+					lexemeId, newWordData.value, newWordData.id, String.join(",", combinedPosCodes));
 			logger.error("ERROR", e);
 		}
 	}
@@ -647,7 +647,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return extractValuesAsStrings(node, wordGovernmentExp);
 	}
 
-	private List<LexemeToWordData> extractRussianWords(Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId) {
+	private List<LexemeToWordData> extractRussianWords(
+			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -664,7 +665,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			LexemeToWordData wordData = new LexemeToWordData();
 			wordData.word = cleanUp(word);
 
-			if (StringUtils.isBlank(wordData.word)) continue;
+			if (isBlank(wordData.word)) continue;
 
 			wordData.displayForm = word;
 			wordData.reportingId = reportingId;
@@ -674,13 +675,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
 			}
-			boolean wordHasAspect = StringUtils.isNotBlank(aspectWord);
-			if (wordHasAspect) {
+			boolean wordHasAspectPair = isNotBlank(aspectWord);
+			if (wordHasAspectPair || wordContainsAspectType(word) || isVerb) {
 				wordData.aspect = calculateAspectType(word);
 			}
 			dataList.add(wordData);
 
-			if (wordHasAspect) {
+			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
 				aspectData.aspect = calculateAspectType(aspectWord);
 				aspectData.word = cleanUp(aspectWord);
@@ -694,6 +695,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return dataList;
+	}
+
+	private boolean wordContainsAspectType(String word) {
+		return word.endsWith("[*]") || word.endsWith("*");
 	}
 
 	private String calculateAspectType(String word) {

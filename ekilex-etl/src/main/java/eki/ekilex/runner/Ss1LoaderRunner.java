@@ -217,7 +217,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			for (WordData derivativeData : derivativesData) {
 				Optional<WordData> connectedWord = findConnectedWord(context, derivativeData);
 				if (connectedWord.isPresent()) {
-					boolean newWordIsDerivative = newWord.posCodes.stream().anyMatch(pos -> pos.code.equals(POS_TYPE_DERIVATIVE));
+					boolean newWordIsDerivative = newWord.posCodes.contains(POS_TYPE_DERIVATIVE);
 					if (newWordIsDerivative) {
 						createWordRelation(connectedWord.get().id, newWord.id, WORD_RELATION_DERIVATIVE);
 						createWordRelation(newWord.id, connectedWord.get().id, WORD_RELATION_DERIVATIVE_BASE);
@@ -559,7 +559,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
  		List<Usage> usages = extractUsages(meaningGroupNode);
 		List<String> definitions = extractDefinitions(meaningGroupNode);
-		List<PosData> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
+		List<String> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 		List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
 		List<String> publicNotes = extractPublicNotes(meaningGroupNode);
 
@@ -782,32 +782,31 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<PosData> meaningPosCodes, String reportingId) {
+	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String reportingId) {
 
-		Set<PosData> lexemePosCodes = new HashSet<>();
+		Set<String> lexemePosCodes = new HashSet<>();
 		try {
 			if (meaningPosCodes.isEmpty()) {
 				lexemePosCodes.addAll(newWordData.posCodes);
 				if (lexemePosCodes.size() > 1) {
-					String posCodesStr = lexemePosCodes.stream().map(p -> p.code).collect(Collectors.joining(","));
+					String posCodesStr = String.join(",", lexemePosCodes);
 //					logger.debug("Found more than one POS code <s:mg/s:sl> : {} : {}", reportingId, posCodesStr);
 					writeToLogFile(reportingId, "Märksõna juures leiti rohkem kui üks sõnaliik <s:mg/s:sl>", posCodesStr);
 				}
 			} else {
 				lexemePosCodes.addAll(meaningPosCodes);
 			}
-			for (PosData posCode : lexemePosCodes) {
-				if (posCodes.containsKey(posCode.code)) {
+			for (String code : lexemePosCodes) {
+				if (posCodes.containsKey(code)) {
 					Map<String, Object> params = new HashMap<>();
 					params.put("lexeme_id", lexemeId);
-					params.put("pos_code", posCodes.get(posCode.code));
-					params.put("process_state_code", processStateCodes.get(posCode.processStateCode));
+					params.put("pos_code", posCodes.get(code));
 					basicDbService.create(LEXEME_POS, params);
 				}
 			}
 		} catch (Exception e) {
 			logger.debug("lexemeId {} : newWord : {}, {}, {}",
-					lexemeId, newWordData.value, newWordData.id, lexemePosCodes.stream().map(p -> p.code).collect(Collectors.joining(",")));
+					lexemeId, newWordData.value, newWordData.id, String.join(",", lexemePosCodes));
 			logger.error("ERROR", e);
 		}
 	}
@@ -859,7 +858,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					context.unionWords.addAll(unionWordsOfTheWord);
 				}
 
-				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
+				List<String> posCodes = extractPosCodes(wordGroupNode, wordGrammarPosCodesExp);
 				wordData.posCodes.addAll(posCodes);
 				List<String> governments = extractGovernments(wordGroupNode);
 				wordData.governments.addAll(governments);
@@ -977,7 +976,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				if (frequencyGroupNode != null) {
 					derivative.frequencyGroup = frequencyGroupCodes.get(frequencyGroupNode.getTextTrim());
 				}
-				List<PosData> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
+				List<String> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
 				derivative.posCodes.addAll(posCodes);
 				derivatives.add(derivative);
 			}
