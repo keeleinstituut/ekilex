@@ -684,9 +684,11 @@ public class ConversionUtil {
 	}
 
 	//TODO under construction
-	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
+	public List<Paradigm> composeParadigms(Word word, Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
 		final String keyValSep = "-";
+
+		String wordClass = word.getWordClass();
 
 		List<Paradigm> paradigms = new ArrayList<>();
 		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
@@ -698,6 +700,8 @@ public class ConversionUtil {
 		String formGroupKey;
 		List<Form> groupForms;
 		List<ParadigmGroup> validParadigmGroups;
+		Form firstForm;
+		List<String> paradigmTitleElements;
 
 		for (Long paradigmId : paradigmIds) {
 
@@ -708,8 +712,22 @@ public class ConversionUtil {
 				classifierUtil.applyClassifiers(form, displayLang);
 			}
 
+			paradigmTitleElements = new ArrayList<>();
+			if (StringUtils.isNotBlank(wordClass)) {
+				paradigmTitleElements.add(wordClass);
+			}
+			firstForm = forms.get(0);
+			if (StringUtils.isNotBlank(firstForm.getInflectionType())) {
+				paradigmTitleElements.add(firstForm.getInflectionType());
+			}
+			String paradigmTitle = null;
+			if (CollectionUtils.isNotEmpty(paradigmTitleElements)) {
+				paradigmTitle = StringUtils.join(paradigmTitleElements, ", ");
+			}
+
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
+			paradigm.setTitle(paradigmTitle);
 			paradigm.setGroups(new ArrayList<>());
 			paradigms.add(paradigm);
 

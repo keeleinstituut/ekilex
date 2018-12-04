@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 1767124887;
+    private static final long serialVersionUID = 1824979789;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -75,6 +75,11 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.homonym_nr</code>.
      */
     public final TableField<WordRecord, Integer> HOMONYM_NR = createField("homonym_nr", org.jooq.impl.SQLDataType.INTEGER.defaultValue(org.jooq.impl.DSL.field("1", org.jooq.impl.SQLDataType.INTEGER)), this, "");
+
+    /**
+     * The column <code>public.word.word_class</code>.
+     */
+    public final TableField<WordRecord, String> WORD_CLASS = createField("word_class", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word.display_morph_code</code>.

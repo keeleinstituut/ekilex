@@ -454,6 +454,7 @@
                   <button class="more-btn">
                     <span class="icon icon-chevron-left"></span>
                   </button>
+                  <p th:text="${paradigm.title}" th:if="${paradigm.title != null}"></p>
                   <div class="morphology-section d-flex">
                     <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
                       <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>

@@ -14,6 +14,8 @@ public class Form extends AbstractDataObject {
 
 	private Long paradigmId;
 
+	private String inflectionType;
+
 	private FormMode mode;
 
 	private String morphGroup1;
@@ -60,6 +62,14 @@ public class Form extends AbstractDataObject {
 
 	public void setParadigmId(Long paradigmId) {
 		this.paradigmId = paradigmId;
+	}
+
+	public String getInflectionType() {
+		return inflectionType;
+	}
+
+	public void setInflectionType(String inflectionType) {
+		this.inflectionType = inflectionType;
 	}
 
 	public FormMode getMode() {

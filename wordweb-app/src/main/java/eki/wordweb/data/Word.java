@@ -15,6 +15,8 @@ public class Word extends AbstractDataObject {
 
 	private Integer homonymNr;
 
+	private String wordClass;
+
 	private String lang;
 
 	private String morphCode;
@@ -79,6 +81,14 @@ public class Word extends AbstractDataObject {
 
 	public void setHomonymNr(Integer homonymNr) {
 		this.homonymNr = homonymNr;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
 	}
 
 	public String getLang() {
