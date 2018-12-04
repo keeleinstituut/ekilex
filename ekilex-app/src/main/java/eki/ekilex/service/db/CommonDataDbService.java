@@ -1,5 +1,7 @@
 package eki.ekilex.service.db;
 
+import static eki.ekilex.data.db.Tables.ASPECT_TYPE;
+import static eki.ekilex.data.db.Tables.ASPECT_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -128,6 +130,14 @@ public class CommonDataDbService implements DbConstant {
 				.select(WORD_TYPE_LABEL.CODE, WORD_TYPE_LABEL.VALUE)
 				.from(WORD_TYPE_LABEL)
 				.where(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getWordAspects(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(ASPECT_TYPE_LABEL.CODE, ASPECT_TYPE_LABEL.VALUE)
+				.from(ASPECT_TYPE_LABEL)
+				.where(ASPECT_TYPE_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 

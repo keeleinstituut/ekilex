@@ -76,4 +76,9 @@ public class CommonDataService {
 		return commonDataDbService.getWordTypes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
+	@Transactional
+	public List<Classifier> getWordAspects() {
+		return commonDataDbService.getWordAspects(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
 }

@@ -117,6 +117,9 @@ public class ModifyController implements WebConstant {
 			case "lexeme_grammar" :
 				updateService.updateGrammar(itemData.getId(), itemData.getValue());
 				break;
+			case "lexeme_word_aspect" :
+				updateService.updateWordAspect(itemData.getId(), itemData.getValue());
+				break;
 		}
 
 		return "{}";
@@ -236,6 +239,9 @@ public class ModifyController implements WebConstant {
 		case "lexeme_word_type" :
 			updateService.updateWordType(id, null);
 			break;
+		case "lexeme_word_aspect" :
+			updateService.updateWordAspect(id, null);
+			break;
 		}
 		return "OK";
 	}
@@ -297,6 +303,9 @@ public class ModifyController implements WebConstant {
 			break;
 		case "lexeme_word_type" :
 			updateService.updateWordType(itemData.getId3(), itemData.getValue());
+			break;
+		case "lexeme_word_aspect" :
+			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());
 			break;
 		case "lexeme_grammar" :
 			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());

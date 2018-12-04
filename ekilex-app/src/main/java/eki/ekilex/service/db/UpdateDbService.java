@@ -156,6 +156,13 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
+	public void updateWordAspect(Long wordId, String typeCode) {
+		create.update(WORD)
+				.set(WORD.ASPECT_CODE, typeCode)
+				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
 	public Long updateLexemePos(Long lexemeId, String currentPos, String newPos) {
 		Long lexemePosId = create
 				.update(LEXEME_POS)
