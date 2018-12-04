@@ -19,6 +19,12 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordGroup> wordGroups;
 
+	private String wordGenderCode;
+
+	private String wordTypeCode;
+
+	private String wordAspectCode;
+
 	public WordDetails() {
 	}
 
@@ -65,4 +71,29 @@ public class WordDetails extends AbstractDataObject {
 	public void setWordGroups(List<WordGroup> wordGroups) {
 		this.wordGroups = wordGroups;
 	}
+
+	public String getWordGenderCode() {
+		return wordGenderCode;
+	}
+
+	public void setWordGenderCode(String wordGenderCode) {
+		this.wordGenderCode = wordGenderCode;
+	}
+
+	public String getWordTypeCode() {
+		return wordTypeCode;
+	}
+
+	public void setWordTypeCode(String wordTypeCode) {
+		this.wordTypeCode = wordTypeCode;
+	}
+
+	public String getWordAspectCode() {
+		return wordAspectCode;
+	}
+
+	public void setWordAspectCode(String wordAspectCode) {
+		this.wordAspectCode = wordAspectCode;
+	}
+
 }

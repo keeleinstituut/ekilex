@@ -75,6 +75,11 @@ public abstract class AbstractSearchController implements WebConstant {
 		return commonDataService.getWordTypes();
 	}
 
+	@ModelAttribute("wordAspects")
+	public List<Classifier> getWordAspect() {
+		return commonDataService.getWordAspects();
+	}
+
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
