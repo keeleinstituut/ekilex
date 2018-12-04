@@ -179,13 +179,13 @@
       <span class="lbl">Sugu</span>
       <span th:name="word_gender"
             th:data-id="${wordId}"
-            th:data-op-code="lexeme_gender"
+            th:data-op-code="word_gender"
             th:data-value="${details.wordGenderCode}"
             th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordGenderCode, wordGenders)}"></span>
       <button type="button" class="btn badge badge-primary"
               th:title="Muuda"
               onclick="openSelectDlg(this)"
-              data-toggle="modal" data-target="#lexemeGenderDlg"
+              data-toggle="modal" data-target="#wordGenderDlg"
               th:data-target-elem="word_gender">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
@@ -200,13 +200,13 @@
       <span class="lbl">Sõna tüüp</span>
       <span th:name="word_type"
             th:data-id="${wordId}"
-            th:data-op-code="lexeme_word_type"
+            th:data-op-code="word_type"
             th:data-value="${details.wordTypeCode}"
             th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordTypeCode, wordTypes)}"></span>
       <button type="button" class="btn badge badge-primary"
               th:title="Muuda"
               onclick="openSelectDlg(this)"
-              data-toggle="modal" data-target="#lexemeWordTypeDlg"
+              data-toggle="modal" data-target="#wordTypeDlg"
               th:data-target-elem="word_type">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>
@@ -221,13 +221,13 @@
       <span class="lbl">Aspekt</span>
       <span th:name="word_aspect"
             th:data-id="${wordId}"
-            th:data-op-code="lexeme_word_aspect"
+            th:data-op-code="word_aspect"
             th:data-value="${details.wordAspectCode}"
             th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordAspectCode, wordAspects)}"></span>
       <button type="button" class="btn badge badge-primary"
               th:title="Muuda"
               onclick="openSelectDlg(this)"
-              data-toggle="modal" data-target="#lexemeWordAspectDlg"
+              data-toggle="modal" data-target="#wordAspectDlg"
               th:data-target-elem="word_aspect">
         <i class="fa fa-caret-down" aria-hidden="true"></i>
       </button>

@@ -117,7 +117,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getLexemeGenders(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record2<String, String>> getWordGenders(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(GENDER_LABEL.CODE, GENDER_LABEL.VALUE)
 				.from(GENDER_LABEL)

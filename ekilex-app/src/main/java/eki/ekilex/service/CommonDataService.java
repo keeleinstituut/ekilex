@@ -68,7 +68,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getWordGenders() {
-		return commonDataDbService.getLexemeGenders(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getWordGenders(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional

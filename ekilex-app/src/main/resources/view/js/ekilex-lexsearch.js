@@ -60,9 +60,9 @@ function initialise() {
     initSelectDlg($('#lexemePosDlg'));
     initSelectDlg($('#lexemeDerivDlg'));
     initSelectDlg($('#lexemeRegisterDlg'));
-    initSelectDlg($('#lexemeGenderDlg'));
-    initSelectDlg($('#lexemeWordTypeDlg'));
-    initSelectDlg($('#lexemeWordAspectDlg'));
+    initSelectDlg($('#wordGenderDlg'));
+    initSelectDlg($('#wordTypeDlg'));
+    initSelectDlg($('#wordAspectDlg'));
     initSelectDlg($('#meaningDomainDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
     initMultiValueAddDlg($('#wordClassifiersDlg'), true);

@@ -108,16 +108,16 @@ public class ModifyController implements WebConstant {
 			case "lexeme_register" :
 				updateService.updateLexemeRegister(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
 				break;
-			case "lexeme_gender" :
+			case "word_gender" :
 				updateService.updateWordGender(itemData.getId(), itemData.getValue());
 				break;
-			case "lexeme_word_type" :
+			case "word_type" :
 				updateService.updateWordType(itemData.getId(), itemData.getValue());
 				break;
 			case "lexeme_grammar" :
 				updateService.updateGrammar(itemData.getId(), itemData.getValue());
 				break;
-			case "lexeme_word_aspect" :
+			case "word_aspect" :
 				updateService.updateWordAspect(itemData.getId(), itemData.getValue());
 				break;
 		}
@@ -230,16 +230,16 @@ public class ModifyController implements WebConstant {
 		case "lexeme_register" :
 			updateService.deleteLexemeRegister(id, valueToRemove);
 			break;
-		case "lexeme_gender" :
+		case "word_gender" :
 			updateService.updateWordGender(id, null);
 			break;
 		case "lexeme_grammar" :
 			updateService.deleteGrammar(id);
 			break;
-		case "lexeme_word_type" :
+		case "word_type" :
 			updateService.updateWordType(id, null);
 			break;
-		case "lexeme_word_aspect" :
+		case "word_aspect" :
 			updateService.updateWordAspect(id, null);
 			break;
 		}
@@ -298,13 +298,13 @@ public class ModifyController implements WebConstant {
 		case "lexeme_register" :
 			updateService.addLexemeRegister(itemData.getId(), itemData.getValue());
 			break;
-		case "lexeme_gender" :
+		case "word_gender" :
 			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
 			break;
-		case "lexeme_word_type" :
+		case "word_type" :
 			updateService.updateWordType(itemData.getId3(), itemData.getValue());
 			break;
-		case "lexeme_word_aspect" :
+		case "word_aspect" :
 			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());
 			break;
 		case "lexeme_grammar" :
