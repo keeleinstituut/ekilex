@@ -533,18 +533,25 @@
         <div class="col-4">
           <div class="card shadow mb-2">
             <div class="card-body pb-0">
-              <button type="button" class="btn badge badge-success float-right" title="Lisa omadus"
+              <div class="lbl mb-2">Keelendi omadused
+              <button type="button" class="btn badge badge-success" title="Lisa omadus"
                       th:data-word-id="${wordId}"
                       onclick="openClassifiersDlg(this)"
                       data-toggle="modal" data-target="#wordClassifiersDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
-              <div class="lbl mb-2">Keelendi omadused</div>
+              </div>
               <th:block th:replace="lexsearch_components :: word_parameters"></th:block>
               <hr />
             </div>
             <div class="card-body pb-0" th:if="${not #lists.isEmpty(details.wordRelations) || not #lists.isEmpty(details.wordGroups)}">
               <span class="lbl">Keelendi seosed</span>
+              <button type="button" class="btn badge badge-success" title="Lisa seos"
+                      th:data-id="${wordId}"
+                      onclick="openAddNewWordRelationDlg(this)"
+                      data-toggle="modal" data-target="#addNewWordRelationDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
               <table class="orderable" th:data-op-code="word_relation">
                 <tr th:each="relation, itemStat : ${details.wordRelations}" th:data-id="${relation.id}" th:data-orderby="${relation.orderBy}">
                   <td style="display: flex">
@@ -698,6 +705,7 @@
   <div th:replace="common :: #wordTypeDlg"></div>
   <div th:replace="common :: #wordAspectDlg"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
+  <div th:replace="lexsearch_components :: #addNewWordRelationDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

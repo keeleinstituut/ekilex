@@ -239,4 +239,81 @@
     </div>
   </th:block>
 
+  <div id="addNewWordRelationDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/wordsearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id">
+            <input type="hidden" name="opCode" value="word_relation">
+            <input type="hidden" name="id2">
+              <div class="form-group row">
+                <div class="col-md-6">
+                  <select class="form-control" name="value">
+                    <option th:each="item : ${wordRelationTypes}"
+                            th:value="${item.code}"
+                            th:text="${item.value}">value</option>
+                  </select>
+                </div>
+              </div>
+              <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-name="dialogContent" th:fragment="word_search_result">
+    <div class="card" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
+      <div class="card-body p-2">
+        <span th:text="${'Kokku leiti : ' + totalCount}"></span>
+        <div style="max-height: 70vh; overflow: auto;">
+          <table id="results" class="table table-striped mb-0">
+            <tr th:each="word : ${wordsFoundBySearch}">
+              <td class="p-0" style="line-height: 0.6rem;">
+                <div class="btn btn-custom pt-0" th:data-id="${word.wordId}">
+                  <span th:text="${word.value}" class="ttl">vorm 1</span>
+                  <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
+                  (
+                  <span th:text="${word.language}"></span>
+                  )
+                </div>
+                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2"
+                        th:data-word-id="${word.wordId}">Lisa</button>
+                <div class="ml-3 mb-2" style="margin-top: -6px;">
+                  <small>
+                  <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
+                    <span th:text="${wordDatasetCode}"></span>
+                    <span th:unless="${wordDatasetIter.last}">,</span>
+                  </span>
+                  </small>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
+      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+    </div>
+  </div>
+
 </body>

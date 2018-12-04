@@ -310,6 +310,9 @@ public class ModifyController implements WebConstant {
 		case "lexeme_grammar" :
 			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());
 			break;
+		case "word_relation" :
+			logger.debug("{}", itemData);
+			break;
 		}
 		return "{}";
 	}

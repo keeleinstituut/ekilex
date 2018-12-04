@@ -96,6 +96,20 @@ public class LexSearchController extends AbstractSearchController {
 		return LEX_SEARCH_PAGE;
 	}
 
+	@GetMapping("/wordsearchajax")
+	public String searchAjax(
+			@RequestParam String searchFilter,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+		logger.debug("word search ajax {}", searchFilter);
+
+		WordsResult result = lexSearchService.findWords(searchFilter, sessionBean.getSelectedDatasets(), false);
+		model.addAttribute("wordsFoundBySearch", result.getWords());
+		model.addAttribute("totalCount", result.getTotalCount());
+
+		return 	" lexsearch_components :: word_search_result";
+	}
+
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")
 	public String details(@PathVariable("wordId") Long wordId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
