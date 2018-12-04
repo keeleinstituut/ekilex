@@ -33,11 +33,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 
 	protected void populateGeneralData(Model model) {
 
-		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-		if (sessionBean == null) {
-			sessionBean = new SessionBean();
-			model.addAttribute(SESSION_BEAN, sessionBean);
-		}
+		SessionBean sessionBean = getSessionBean(model);
 		if (StringUtils.isBlank(sessionBean.getSourceLang())) {
 			sessionBean.setSourceLang(DEFAULT_SOURCE_LANG);
 		}
@@ -52,6 +48,15 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 			sessionBean.setSearchMode(SEARCH_MODE_DETAIL);
 		}
 		model.addAttribute("feedbackServiceUrl", feedbackServiceUrl);
+	}
+
+	protected SessionBean getSessionBean(Model model) {
+		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
+		if (sessionBean == null) {
+			sessionBean = new SessionBean();
+			model.addAttribute(SESSION_BEAN, sessionBean);
+		}
+		return sessionBean;
 	}
 
 }
