@@ -7,11 +7,16 @@
 </th:block>
 </head>
 <body>
+
+  <!-- WCAG helpers -->
+    <th:block th:replace="common-app :: wcag-main"></th:block>
+    <!-- WCAG helpers -->
+
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">
-      <div class="col-12 col-md-3"></div>
-      <div class="col-12 col-md-9 learn-content">
+      <aside class="col-12 col-md-3"></aside>
+      <div id="main" role="main" class="col-12 col-md-9 learn-content">
         <div class="pb-4">
           <h3>Kontakt</h3>
           <p>
