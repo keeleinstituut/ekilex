@@ -11,8 +11,10 @@
 <body>
 
   <!-- WCAG helpers -->
+  <div>
      <th:block th:replace="common-app :: wcag-search"></th:block>
-    <th:block th:replace="common-app :: wcag-main"></th:block>
+       <th:block th:replace="common-app :: wcag-main"></th:block>
+</div>
     <!-- WCAG helpers -->
 
   <div th:replace="common-app :: menu"></div>
@@ -40,7 +42,7 @@
       <div class="col offset-1 lg-max-noneset">
         <span>
           <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
-          <a th:href="${'http://kn.eki.ee/?Q=' + searchWord}" th:text="#{label.find.from.kn.eki}" target="_blank">Proovi otsida e-keelenõust</a>
+          <a th:href="${'http://kn.eki.ee/?Q=' + searchWord}"  th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|" th:text="#{label.find.from.kn.eki}" target="_blank">Proovi otsida e-keelenõust</a>
         </span>
       </div>
     </div>
@@ -64,7 +66,7 @@
               <input type="hidden" name="word-value" th:value="${word.word}" />
               <input type="hidden" name="word-selected" th:value="${word.selected}" />
               <input type="hidden" name="word-select-url" th:value="@{${viewUtil.getSearchUri(sessionBean, word.word, word.homonymNr)}}" />
-              <a href="#" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
+              <a href="#" role="button" tabindex="0" th:id="${'word-details-link-' + word.wordId}" class="homonym-item">
                 <span class="homonym-item-wrap">
                   <span class="homonym-header">
                     <span class="homonym-name-container">
@@ -88,7 +90,7 @@
           <div class="col-12 content-title">
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
-              <span class="word-details-homonym-nr" th:text="${wordData.word.homonymNr}">1</span>
+              <span class="word-details-homonym-nr" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
               <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
               <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
             </h3>
@@ -105,7 +107,7 @@
               <section class="level-3-panel meaning-panel row" th:each="lexeme : ${wordData.lexemes}">
                 <div class="col-12 meaning">
                   <div class="float-left mr-2 font-weight-bold" th:unless="${lexeme.emptyLexeme}">
-                    <span th:text="${lexeme.levels}"></span>
+                    <span th:aria-label="${wordData.word.word}" th:text="${lexeme.levels}"></span>
                   </div>
                   <div th:if="${lexeme.emptyLexeme}">
                     <span th:text="#{label.word.has.no.description}">Selle sõna kirjeldust veel ei ole. Seni vaata</span>
@@ -181,7 +183,7 @@
                     <i th:each="government, iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
                   </div>
                   <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
-                    <button class="more-btn" name="colloc-usages-btn" th:if="${lexeme.moreUsages}">
+                    <button class="more-btn" name="colloc-usages-btn" th:if="${lexeme.moreUsages}" aria-expanded="false">
                       <span class="icon icon-chevron-left"></span>
                     </button>
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
@@ -258,7 +260,7 @@
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
                     <!--  || not #lists.isEmpty(lexeme.secondaryDisplayCollocs) -->
                     <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-                      <button class="more-btn" name="colloc-expand-btn" th:if="${lexeme.morePrimaryCollocs}">
+                      <button class="more-btn" name="colloc-expand-btn" th:if="${lexeme.morePrimaryCollocs}" aria-expanded="false">
                         <span class="icon icon-chevron-left"></span>
                       </button>
                       <div class="w-100 colloc-samples">
@@ -457,7 +459,7 @@
                   <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
                 <div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-                  <button class="more-btn">
+                  <button class="more-btn" aria-expanded="false">
                     <span class="icon icon-chevron-left"></span>
                   </button>
                   <div class="morphology-section d-flex">
@@ -560,7 +562,7 @@
                   <span th:text="#{label.no.data}">Andmed puuduvad</span>
                 </div>
                 <div th:if="${wordData.word.wordRelationsExist}">
-                    <button class="more-btn" th:if="${wordData.word.moreWordRelations}">
+                    <button class="more-btn" th:if="${wordData.word.moreWordRelations}" aria-expanded="false">
                       <span class="icon icon-chevron-left"></span>
                     </button>
                   <div th:if="${not #lists.isEmpty(wordData.word.wordGroups)}">
@@ -610,7 +612,7 @@
           <span th:aria-label="#{corpus.title}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></span>
         </h5>
       </div>
-      <button class="more-btn">
+      <button class="more-btn" aria-expanded="false">
         <span class="icon icon-chevron-left"></span>
       </button>
       <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">

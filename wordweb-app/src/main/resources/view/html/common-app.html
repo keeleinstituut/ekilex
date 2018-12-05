@@ -52,7 +52,7 @@
             <span class="icon icon-logo-s d-md-none"></span>
             <span class="icon icon-logo d-none d-md-block"></span>
           </a>
-          <a class="eki-logo-wrapper" href="http://portaal.eki.ee/" target="_blank">
+          <a class="eki-logo-wrapper" th:aria-label="|portaal.eki.ee #{aria.new.window}|" href="http://portaal.eki.ee/" target="_blank">
             <span class="eki-logo mini-logo"></span>
           </a>
           <div class="back mt-2">
@@ -108,15 +108,15 @@
   </th:block>
   <!-- WCAG main -->
   <th:block th:fragment="wcag-main">
-  <a class="skip-link" role="button" tabindex="0" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
+  <a class="skip-link" role="button" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
 </th:block>
   <!-- WCAG sidebar -->
   <th:block th:fragment="wcag-sidebar">
-  <a class="skip-link" role="button" tabindex="0" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
+  <a class="skip-link" role="button" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
 </th:block>
   <!-- WCAG search -->
   <th:block th:fragment="wcag-search">
-  <a class="skip-link" role="button" tabindex="0" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
+  <a class="skip-link" role="button" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
 </th:block>
   <!-- debugging aid -->
   <div th:fragment="dump_vars" class="m-4">

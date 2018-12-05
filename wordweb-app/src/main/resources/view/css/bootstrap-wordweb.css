@@ -37,7 +37,10 @@
   --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-*:focus { outline: 1px solid red!important; }
+*:focus { border-color: #087bff;
+box-shadow: 0 0 0 0.2rem rgba(0, 63, 135, 0.25); }
+
+
 
 *,
 *::before,
