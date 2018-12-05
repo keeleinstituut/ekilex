@@ -615,12 +615,15 @@
       <button class="more-btn" aria-expanded="false">
         <span class="icon icon-chevron-left"></span>
       </button>
+     
+           <div class="mb-2">
+        <a th:aria-label="|#{aria.search.from.keelenou} ${sentence}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="#{sentence.same.as}" target="_blank"></a>
+      </div>
+
       <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
         <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
       </div>
-      <div class="mb-2" style="margin-bottom: 0.5em;">
-        <a th:aria-label="|#{aria.search.from.keelenou} ${sentence}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="${sentence}" target="_blank"></a>
-      </div>
+
     </div>
     <script th:inline="javascript">
 		$('.corp-panel [data-toggle="tooltip"]').tooltip();
