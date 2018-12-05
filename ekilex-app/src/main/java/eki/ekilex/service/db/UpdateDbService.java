@@ -23,8 +23,10 @@ import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record4;
@@ -330,6 +332,24 @@ public class UpdateDbService implements DbConstant {
 		return lexemeId;
 	}
 
+	public Long addWordRelation(Long wordId, Long targetWordId, String wordRelationCode) {
+
+		Optional<WordRelationRecord> wordRelationRecord = create.fetchOptional(WORD_RELATION,
+				WORD_RELATION.WORD1_ID.eq(wordId).and(
+				WORD_RELATION.WORD2_ID.eq(targetWordId)).and(
+				WORD_RELATION.WORD_REL_TYPE_CODE.eq(wordRelationCode)));
+		if (wordRelationRecord.isPresent()) {
+			return wordRelationRecord.get().getId();
+		} else {
+			WordRelationRecord newRelation = create.newRecord(WORD_RELATION);
+			newRelation.setWord1Id(wordId);
+			newRelation.setWord2Id(targetWordId);
+			newRelation.setWordRelTypeCode(wordRelationCode);
+			newRelation.store();
+			return newRelation.getId();
+		}
+	}
+
 	public Long addLexemeGrammar(Long lexemeId, String value) {
 
 		Long grammarFreeformId = create
@@ -437,6 +457,10 @@ public class UpdateDbService implements DbConstant {
 				.set(LEXEME_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
 				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
+	}
+
+	public void deleteWordRelation(Long relationId) {
+		create.delete(WORD_RELATION).where(WORD_RELATION.ID.eq(relationId)).execute();
 	}
 
 	public Long addDefinition(Long meaningId, String value, String languageCode) {

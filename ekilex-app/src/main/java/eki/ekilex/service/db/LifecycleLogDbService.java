@@ -401,6 +401,18 @@ public class LifecycleLogDbService {
 				}
 				
 			}
+		} else if (LifecycleEntity.WORD_RELATION.equals(entity)) {
+			Map<String, Object> entityData = helper.getWordRelationData(create, entityId);
+			Map<String, Object> relatedWordData = helper.getWordData(create, (Long) entityData.get("word2_id"));
+			String logString = entityData.get("word_rel_type_code") + " -> " + relatedWordData.get("value");
+			Long lifecycleLogId;
+			if (LifecycleEventType.DELETE == eventType) {
+				lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, logString, null);
+			} else {
+				lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, null, logString);
+			}
+			Long wordId = (Long) entityData.get("word1_id");
+			createWordLifecycleLog(wordId, lifecycleLogId);
 		}
 	}
 

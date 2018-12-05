@@ -242,6 +242,9 @@ public class ModifyController implements WebConstant {
 		case "word_aspect" :
 			updateService.updateWordAspect(id, null);
 			break;
+		case "word_relation" :
+			updateService.deleteWordRelation(id);
+			break;
 		}
 		return "OK";
 	}
@@ -311,7 +314,7 @@ public class ModifyController implements WebConstant {
 			updateService.addLexemeGrammar(itemData.getId(), itemData.getValue());
 			break;
 		case "word_relation" :
-			logger.debug("{}", itemData);
+			updateService.addWordRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
 			break;
 		}
 		return "{}";
