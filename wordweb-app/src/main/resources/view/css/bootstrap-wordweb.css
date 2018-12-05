@@ -7521,6 +7521,7 @@ input[type="checkbox"] {
 
 }
 
+
 @media (min-width: 576px) {
   .modal-dialog {
     max-width: 500px;
@@ -7680,10 +7681,7 @@ input[type="checkbox"] {
     top: 0rem;
     right: 0rem;
   }
-.home-page .menu-btn {
-  top: 1.25rem;
-  right: 1.25rem;
-}
+
 .header-links .menu-btn {
   background-color: transparent !important;
 }
@@ -7910,10 +7908,10 @@ h3 span + span {
   padding-top: 0;
 }
 .level-3-panel {
-  padding: 1.875rem 2.5rem 1.875rem 1rem;
+  padding: 1rem 2.5rem 1rem 0rem;
 }
 .more-data .level-3-panel {
-  padding: 1.875rem 2.5rem 1.875rem 2.5rem;
+  padding: 1rem 2.5rem 1rem 1rem;
 }
 .content-title {
   z-index: 1;
@@ -8645,9 +8643,16 @@ body:not(.home-page) footer {
   background-size: calc(22.125rem / 2.2) calc(11.6875rem / 2.2); 
 }
 
-
 .sidebar .level-3-panel:last-of-type {
   border-bottom-right: 0.6875rem;
+}
+
+.dependence-group { 
+  margin-left: -0.5rem;
+}
+
+.colloc-inner-section {
+    margin-left: -0.5rem;
 }
 
 }
