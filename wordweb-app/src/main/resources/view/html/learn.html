@@ -10,10 +10,15 @@
 </head>
 
 <body>
+  <!-- WCAG helpers -->
+     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+    <th:block th:replace="common-app :: wcag-main"></th:block>
+    <!-- WCAG helpers -->
+
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">
-      <div class="col-12 col-md-3">
+      <aside class="col-12 col-md-3"  role="navigation" id="sidebar">
         <ul class="mt-4">
           <li><a href="#arvud">Arvud</a></li>
           <li><a href="#margid">Märgid</a></li>
@@ -33,8 +38,8 @@
           <li><a href="#kaaskiri" class="pl-4">Kaaskiri</a></li>
           <li><a href="#kasulikke">Kasulikke väljendeid</a></li>
         </ul>
-      </div>
-      <div class="col-12 col-md-9 learn-content">
+      </aside>
+      <div class="col-12 col-md-9 learn-content" id="main" role="main">
         <div class="pb-4">
           <a name="arvud"></a>
         <h3 class="mt-4 mb-2 text-left">Arvud</h3>
@@ -1064,9 +1069,7 @@
 
   <div th:replace="common-app :: footer-content"></div>
 
-  <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
-    <span class="icon icon-chevron-left"></span>
-  </a>
+                  <th:block th:replace="common-app :: content-top"></th:block>
 
   <script th:inline="javascript">
     var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";

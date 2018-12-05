@@ -9,10 +9,16 @@
 </th:block>
 </head>
 <body>
+
+  <!-- WCAG helpers -->
+     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+    <th:block th:replace="common-app :: wcag-helper"></th:block>
+    <!-- WCAG helpers -->
+
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">
-      <div class="col-12 col-md-3">
+      <aside class="col-12 col-md-3" role="navigation" id="sidebar">
 
         <div th:replace="common-app :: important-links-menu"></div>
 
@@ -22,8 +28,8 @@
           <li><a href="#">Oi-Oi! Leidub veel üks alapealkiri</a></li>
           <li><a href="#">Viimane mitte nii tähtis sisujupp</a></li>
         </ul>
-      </div>
-      <div class="col-12 col-md-9 learn-content">
+      </aside>
+      <div class="col-12 col-md-9 learn-content" id="main" role="main">
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Privaatsuspoliitika</h3>
           <p>Info lisandub lähinädalate jooksul</p>
@@ -77,9 +83,7 @@
 
   <div th:replace="common-app :: footer-content"></div>
 
-  <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
-    <span class="icon icon-chevron-left"></span>
-  </a>
+                  <th:block th:replace="common-app :: content-top"></th:block>
 
 </body>
 </html>

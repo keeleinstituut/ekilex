@@ -1,6 +1,8 @@
 var sessionTimeoutBufferSec = 60;
 
 $(document).ready(function() {
+
+
 	var sessionTimeoutMs = (sessionTimeoutSec - sessionTimeoutBufferSec) * 1000;
 	setTimeout(function() {
 		window.location = applicationUrl;
@@ -19,9 +21,30 @@ $(document).ready(function() {
 		}
 	});
 
+	parent.location.hash = ''; // Clear Hash
+
 	$(function() {
 		$('[autofocus]:not(:focus)').eq(0).focus();
+		    $('.home-page #search').focus();
 	});
+
+// Focus trap modal
+	    $('#feedbackModal .btn:last-of-type').on('focus',function (e) {
+        if ($("#feedbackModal").val() == "") {
+            
+            $("#feedbackModal .icon-close").focus(); 
+        }
+    });
+
+	    // Focus trap sidebar
+	    $('.header-links .menu-item:last-of-type').on('focus',function (e) {
+        if ($("#langDropdownMenuButton").val() == "") {
+            
+            $("#langDropdownMenuButton").focus(); 
+        }
+    });
+
+
 
 });
 
@@ -102,4 +125,14 @@ $(document).on("click", "#feedbackCommentRadio", function() {
 
 $(document).on('show.bs.modal', '#feedbackModal', function() {
 	clearMessages($(this));
+
+  $('#feedbackModal').modal('toggle');
+  $('#feedbackModal').on('shown.bs.modal', function() {
+    $('#feedbackModal .close').focus()
+  });
+
 });
+
+
+
+
