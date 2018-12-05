@@ -80,13 +80,22 @@ public class SearchController extends AbstractController {
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
 			Model model) {
 
-		SessionBean sessionBean = getSessionBean(model);
+		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
+		SessionBean sessionBean;
+		if (sessionBeanNotPresent) {
+			sessionBean = createSessionBean(model);
+		} else {
+			sessionBean = getSessionBean(model);
+		}
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, searchMode);
 		sessionBean.setLastSearchWord(searchWord);
 
-		if (!searchFilter.isValid()) {
+		if (sessionBeanNotPresent) {
+			//to get rid of the sessionid in the url
+			return "redirect:" + searchFilter.getSearchUri();
+		} else if (!searchFilter.isValid()) {
 			return "redirect:" + searchFilter.getSearchUri();
 		}
 
