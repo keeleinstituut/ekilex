@@ -12,5 +12,6 @@ public enum LifecycleProperty {
 	DOMAIN,
 	ORDER_BY,
 	DATASET,
-	WORD_TYPE
+	WORD_TYPE,
+	ASPECT
 }

@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -490,6 +489,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				createLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government, null);
 			}
 		}
+		if (!wordData.posCodes.isEmpty()) {
+			savePosCodes(lexemeId, wordData, Collections.emptyList(), newWord.value);
+		}
 		return newWord.id;
 	}
 
@@ -628,7 +630,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				lexeme.setLexemeId(lexemeId);
 				createUsages(lexemeId, usages, dataLang);
 				saveGovernments(meaningGroupNode, lexemeId, newWordData);
-				savePosAndDeriv(lexemeId, newWordData, meaningPosCodes, reportingId);
+				savePosCodes(lexemeId, newWordData, meaningPosCodes, reportingId);
 				saveGrammars(meaningGroupNode, lexemeId, newWordData);
 				saveRegisters(lexemeId, registers, reportingId);
 				saveAdviceNotes(lexemeId, adviceNotes);
@@ -782,7 +784,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	//POS - part of speech
-	private void savePosAndDeriv(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String reportingId) {
+	private void savePosCodes(Long lexemeId, WordData newWordData, List<String> meaningPosCodes, String reportingId) {
 
 		Set<String> lexemePosCodes = new HashSet<>();
 		try {

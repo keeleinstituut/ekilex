@@ -60,10 +60,12 @@ function initialise() {
     initSelectDlg($('#lexemePosDlg'));
     initSelectDlg($('#lexemeDerivDlg'));
     initSelectDlg($('#lexemeRegisterDlg'));
-    initSelectDlg($('#lexemeGenderDlg'));
-    initSelectDlg($('#lexemeWordTypeDlg'));
+    initSelectDlg($('#wordGenderDlg'));
+    initSelectDlg($('#wordTypeDlg'));
+    initSelectDlg($('#wordAspectDlg'));
     initSelectDlg($('#meaningDomainDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
+    initMultiValueAddDlg($('#wordClassifiersDlg'), true);
     initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
     initNewWordDlg();
 
@@ -91,7 +93,7 @@ function openLexemeLevelDlg(elem) {
     });
 }
 
-function openLexemeClassifiersDlg(elem) {
+function openClassifiersDlg(elem) {
     var theDlg = $($(elem).data('target'));
     theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
     theDlg.find('[name=id2]').val($(elem).data('meaning-id'));

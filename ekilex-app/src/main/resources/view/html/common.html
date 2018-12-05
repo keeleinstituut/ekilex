@@ -242,8 +242,6 @@
                 <option value="meaning_domain">Valdkond</option>
                 <option value="lexeme_deriv">Tuletuskood</option>
                 <option value="lexeme_register">Register</option>
-                <option value="lexeme_gender">Sugu</option>
-                <option value="lexeme_word_type">Sõna tüüp</option>
                 <option value="lexeme_grammar">Grammatika</option>
               </select>
             </div>
@@ -295,8 +293,41 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" data-id="lexeme_gender">
-            <div class="col-md-8">
+          <div class="form-group row value-group" data-id="lexeme_grammar">
+            <div class="col-md-12">
+              <input type="text" class="form-control value-select">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="wordClassifiersDlg" class="modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="form-group row">
+            <div class="col-md-6">
+              <select class="form-control" name="opCode">
+                <option value="word_gender">Sugu</option>
+                <option value="word_type">Sõna tüüp</option>
+                <option value="word_aspect">Aspekt</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row value-group" data-id="word_gender">
+            <div class="col-md-4">
               <select class="form-control value-select">
                 <option th:each="gender : ${wordGenders}"
                         th:value="${gender.code}"
@@ -304,7 +335,7 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" data-id="lexeme_word_type">
+          <div class="form-group row value-group" data-id="word_type">
             <div class="col-md-8">
               <select class="form-control value-select">
                 <option th:each="item : ${wordTypes}"
@@ -313,9 +344,13 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" data-id="lexeme_grammar">
-            <div class="col-md-12">
-              <input type="text" class="form-control value-select">
+          <div class="form-group row value-group" data-id="word_aspect">
+            <div class="col-md-8">
+              <select class="form-control value-select">
+                <option th:each="item : ${wordAspects}"
+                        th:value="${item.code}"
+                        th:text="${item.value}">value</option>
+              </select>
             </div>
           </div>
         </div>
@@ -425,14 +460,14 @@
   </div>
 </div>
 
-<div id="lexemeGenderDlg" class="modal select-dlg" role="dialog">
+<div id="wordGenderDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
           <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_gender">
+          <input type="hidden" name="opCode" value="word_gender">
           <select class="form-control" name="value">
             <option th:each="item : ${wordGenders}"
                     th:value="${item.code}"
@@ -444,16 +479,35 @@
   </div>
 </div>
 
-<div id="lexemeWordTypeDlg" class="modal select-dlg" role="dialog">
+<div id="wordTypeDlg" class="modal select-dlg" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <form th:action="@{/modify_item}" method="post">
         <div class="modal-body">
           <input type="hidden" name="id">
           <input type="hidden" name="currentValue">
-          <input type="hidden" name="opCode" value="lexeme_word_type">
+          <input type="hidden" name="opCode" value="word_type">
           <select class="form-control" name="value">
             <option th:each="item : ${wordTypes}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="wordAspectDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="word_aspect">
+          <select class="form-control" name="value">
+            <option th:each="item : ${wordAspects}"
                     th:value="${item.code}"
                     th:text="${item.value}">value</option>
           </select>

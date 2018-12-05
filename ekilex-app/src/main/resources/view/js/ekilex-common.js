@@ -284,9 +284,14 @@ function initSelectDlg(selectDlg) {
     selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         var dlgTop =  $(e.relatedTarget).offset().top;
         var dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
-        selectDlg.find('.modal-content').css('top', dlgTop - 30);
-        selectDlg.find('.modal-content').css('left', dlgLeft);
-        selectDlg.find('.modal-content').css('width', dlgWidth);
+        var modalContent = selectDlg.find('.modal-content');
+        modalContent.css('top', dlgTop - 30);
+        modalContent.css('left', dlgLeft);
+        modalContent.css('width', dlgWidth);
+        var overTheEdge = (modalContent.offset().left + modalContent.width()) - window.innerWidth;
+        if (overTheEdge > 0) {
+            modalContent.css('left', dlgLeft - modalContent.width());
+        }
         selectDlg.find('.form-control').first().focus();
         $('.modal-backdrop').css('opacity', 0);
     });
@@ -319,6 +324,9 @@ function submitForm(theForm, failMessage) {
 function alignAndFocus(e, dlg) {
     dlg.find('.form-control').first().focus();
     var dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
+    if (dlgTop < 0 ) {
+        dlgTop = 0;
+    }
     dlg.find('.modal-content').css('top', dlgTop);
 }
 
