@@ -1216,10 +1216,6 @@ td.total-nr {
 	justify-content: center;
 }
 
-.flexbox h4 {
-	font-size: 1rem;
-}
-
 .flexbox h4:first-child {
 	margin-right: 0.25rem;
 }
@@ -1288,10 +1284,24 @@ td.total-nr {
 		margin: 0 auto;
 		padding: 2rem 2rem 1.6rem 2rem;
 	}
+	.flexbox h4 {
+	font-size: 1rem;
 }
+}
+
+@media ( min-width : 991px) {
+.flexbox h4 {
+	font-size: 1.25rem;
+}
+
 
 @media ( min-width : 1200px) {
 	.inner-block {
 		max-width: 50rem;
 	}
+
+.flexbox h4 {
+	font-size: 1.5rem;
+}
+
 }
