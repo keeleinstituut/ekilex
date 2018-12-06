@@ -1,8 +1,6 @@
 package eki.common.data;
 
-import java.io.Serializable;
-
-public class AppData implements Serializable {
+public class AppData extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
@@ -10,7 +8,7 @@ public class AppData implements Serializable {
 
 	private String appVersion;
 
-	private int sessionTimeout;
+	private long sessionTimeoutSec;
 
 	public String getAppName() {
 		return appName;
@@ -28,11 +26,12 @@ public class AppData implements Serializable {
 		this.appVersion = appVersion;
 	}
 
-	public int getSessionTimeout() {
-		return sessionTimeout;
+	public long getSessionTimeoutSec() {
+		return sessionTimeoutSec;
 	}
 
-	public void setSessionTimeout(int sessionTimeout) {
-		this.sessionTimeout = sessionTimeout;
+	public void setSessionTimeoutSec(long sessionTimeoutSec) {
+		this.sessionTimeoutSec = sessionTimeoutSec;
 	}
+
 }

@@ -14,7 +14,9 @@ public interface SystemConstant {
 
 	String GAME_DIFFICULTY_HARD = "hard";
 
-	long CACHE_EVICT_DELAY = 5 * 60 * 1000;
+	long CACHE_EVICT_DELAY_5MIN = 5 * 60 * 1000;
+
+	long CACHE_EVICT_DELAY_60MIN = 60 * 60 * 1000;
 
 	String CACHE_KEY_CLASSIF = "classif";
 

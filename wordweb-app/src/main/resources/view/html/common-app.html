@@ -15,7 +15,7 @@
 <th:block th:replace="${links}"></th:block>
 <script th:inline="javascript">
 	var applicationUrl = /*[[@{/}]]*/'/';
-	var sessionTimeoutSec = /*[[${#session.maxInactiveInterval}]]*/3600;
+	var sessionTimeoutSec = /*[[${appData.sessionTimeoutSec}]]*/3600;
 	var feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
 	var messages = {
 		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',

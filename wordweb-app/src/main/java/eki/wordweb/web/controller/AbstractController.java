@@ -57,7 +57,7 @@ public abstract class AbstractController implements WebConstant, SystemConstant 
 	}
 
 	protected boolean sessionBeanNotPresent(Model model) {
-		return model.asMap().get(SESSION_BEAN) == null;
+		return !model.asMap().containsKey(SESSION_BEAN);
 	}
 
 	protected SessionBean createSessionBean(Model model) {

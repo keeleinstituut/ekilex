@@ -6,8 +6,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +24,13 @@ import org.springframework.web.bind.annotation.RestController;
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.constant.WebConstant;
 import eki.wordweb.service.FileService;
 import eki.wordweb.service.SpeechSynthesisService;
 
 @ConditionalOnWebApplication
 @RestController
-public class DataController implements SystemConstant {
+public class DataController implements WebConstant, SystemConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(DataController.class);
 
@@ -45,8 +44,8 @@ public class DataController implements SystemConstant {
 	private FileService fileService;
 
 	@GetMapping(value="/data/app", produces = "application/json;charset=UTF-8")
-	public AppData getAppData(HttpServletRequest request) {
-		return appDataHolder.getAppData(request, POM_PATH);
+	public AppData getAppData() {
+		return appDataHolder.getAppData(POM_PATH);
 	}
 
 	@PostMapping("/generate_voice")
@@ -54,7 +53,7 @@ public class DataController implements SystemConstant {
 		return speechSynthesisService.urlToSoundSource(words);
 	}
 
-	@GetMapping("/files/{fileId}")
+	@GetMapping(FILES_URI + "/{fileId}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveFile(@PathVariable String fileId) {
 
@@ -78,7 +77,7 @@ public class DataController implements SystemConstant {
 				.body(resource);
 	}
 
-	@GetMapping("/files/sounds/{fileName:.+}")
+	@GetMapping(FILES_URI + "/sounds/{fileName:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveSoundFile(@PathVariable String fileName) {
 
@@ -89,7 +88,7 @@ public class DataController implements SystemConstant {
 				.body(resource);
 	}
 
-	@GetMapping("/files/images/{fileName:.+}")
+	@GetMapping(FILES_URI + "/images/{fileName:.+}")
 	@ResponseBody
 	public ResponseEntity<Resource> serveImage(@PathVariable String fileName) {
 

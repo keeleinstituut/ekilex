@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,14 +30,17 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import eki.common.util.CodeGenerator;
+import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Word;
 
 @Service
-public class SpeechSynthesisService {
+public class SpeechSynthesisService implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesisService.class);
 
 	private static final String SYNTH_COMMAND_STRING = "bin/synthts_et -lex dct/et.dct -lexd dct/et3.dct -o %s -f %s -m htsvoices/eki_et_tnu.htsvoice -r 1.1";
+
+	private static final String LANG_EST = "est";
 
 	@Value("${server.servlet.context-path:}")
 	private String contextPath;
@@ -58,10 +62,10 @@ public class SpeechSynthesisService {
 	}
 
 	public String urlToSoundSource(Word word) throws Exception {
-		if (!"est".equals(word.getLang())) {
-			return null;
+		if (StringUtils.equals(LANG_EST, word.getLang())) {
+			return urlToSoundSource(word.getWord());
 		}
-		return urlToSoundSource(word.getWord());
+		return null;
 	}
 
 	public boolean isEnabled() {
@@ -91,7 +95,7 @@ public class SpeechSynthesisService {
 			logger.error(e.getMessage());
 			fileId = null;
 		}
-		return fileId == null ? null : contextPath + "/files/" + fileId;
+		return fileId == null ? null : contextPath + FILES_URI + "/" + fileId;
 	}
 
 	private String urlFromEkiPublicService(String words) throws Exception {

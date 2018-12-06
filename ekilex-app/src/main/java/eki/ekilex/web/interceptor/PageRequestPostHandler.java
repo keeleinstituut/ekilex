@@ -48,7 +48,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
-			AppData appData = appDataHolder.getAppData(request, POM_PATH);
+			AppData appData = appDataHolder.getAppData(POM_PATH);
 			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
 		}
 		if (!modelMap.containsKey(USER_KEY)) {
