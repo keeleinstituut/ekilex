@@ -435,6 +435,7 @@ create table word
   lang char(3) references language(code) null,
   morph_code varchar(100) references morph(code) null,
   homonym_nr integer default 1,
+  word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
   type_code varchar(100) references word_type(code) null,
@@ -512,6 +513,7 @@ create table paradigm
   word_id bigint references word(id) on delete cascade not null,
   example text null,
   inflection_type_nr varchar(100),
+  inflection_type varchar(100),
   is_secondary boolean default false
 );
 alter sequence paradigm_id_seq restart with 10000;

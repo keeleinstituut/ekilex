@@ -1,8 +1,8 @@
 package eki.wordweb.service.util;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -161,8 +161,6 @@ public class ClassifierUtil {
 	private String getDatasetName(String code, String lang) {
 		String name = commonDataDbService.getDatasetName(code, lang);
 		if (StringUtils.isBlank(name)) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
 			name = code;
 		}
 		return name;
@@ -174,11 +172,14 @@ public class ClassifierUtil {
 		}
 		Classifier classifier = commonDataDbService.getClassifier(name, code, lang);
 		if (classifier == null) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
 			classifier = new Classifier(name.name(), null, null, code, code, lang);
 		}
 		return classifier;
+	}
+
+	public List<Classifier> getClassifiers(ClassifierName name, String lang) {
+		List<Classifier> classifiers = commonDataDbService.getClassifiers(name, lang);
+		return classifiers;
 	}
 
 	private List<Classifier> getClassifiers(ClassifierName name, List<String> codes, String lang) {
@@ -187,13 +188,9 @@ public class ClassifierUtil {
 		}
 		List<Classifier> classifiers = commonDataDbService.getClassifiers(name, codes, lang);
 		if (CollectionUtils.isEmpty(classifiers) || (classifiers.size() != codes.size())) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
-			classifiers = new ArrayList<>();
-			for (String code : codes) {
-				Classifier classifier = new Classifier(name.name(), null, null, code, code, lang);
-				classifiers.add(classifier);
-			}
+			classifiers = codes.stream()
+					.map(code -> new Classifier(name.name(), null, null, code, code, lang))
+					.collect(Collectors.toList());
 		}
 		return classifiers;
 	}
@@ -204,13 +201,9 @@ public class ClassifierUtil {
 		}
 		List<Classifier> classifiers = commonDataDbService.getClassifiersWithOrigin(name, codes, lang);
 		if (CollectionUtils.isEmpty(classifiers) || (classifiers.size() != codes.size())) {
-			//TODO try with default lang first, then...
-			//fallback to code as value
-			classifiers = new ArrayList<>();
-			for (TypeDomain code : codes) {
-				Classifier classifier = new Classifier(name.name(), code.getOrigin(), null, code.getCode(), code.getCode(), lang);
-				classifiers.add(classifier);
-			}
+			classifiers = codes.stream()
+					.map(code -> new Classifier(name.name(), code.getOrigin(), null, code.getCode(), code.getCode(), lang))
+					.collect(Collectors.toList());
 		}
 		return classifiers;
 	}

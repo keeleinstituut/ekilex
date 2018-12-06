@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eki.wordweb.service.CorporaServiceEst;
-import eki.wordweb.service.CorporaServiceRus;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +27,8 @@ import eki.wordweb.data.CorporaSentence;
 import eki.wordweb.data.SearchFilter;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordsData;
-import eki.wordweb.service.CorporaService;
+import eki.wordweb.service.CorporaServiceEst;
+import eki.wordweb.service.CorporaServiceRus;
 import eki.wordweb.service.LexSearchService;
 import eki.wordweb.web.bean.SessionBean;
 
@@ -60,8 +59,7 @@ public class SearchController extends AbstractController {
 			@RequestParam(name = "searchWord") String searchWord,
 			@RequestParam(name = "sourceLang") String sourceLang,
 			@RequestParam(name = "destinLang") String destinLang,
-			@RequestParam(name = "searchMode") String searchMode,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
+			@RequestParam(name = "searchMode") String searchMode) {
 
 		searchWord = StringUtils.trim(searchWord);
 		if (StringUtils.isBlank(searchWord)) {
@@ -80,14 +78,24 @@ public class SearchController extends AbstractController {
 			@PathVariable(name = "searchMode") String searchMode,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
+
+		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
+		SessionBean sessionBean;
+		if (sessionBeanNotPresent) {
+			sessionBean = createSessionBean(model);
+		} else {
+			sessionBean = getSessionBean(model);
+		}
 
 		searchWord = UriUtils.decode(searchWord, SystemConstant.UTF_8);
 		SearchFilter searchFilter = validate(langPair, searchWord, homonymNrStr, searchMode);
 		sessionBean.setLastSearchWord(searchWord);
 
-		if (!searchFilter.isValid()) {
+		if (sessionBeanNotPresent) {
+			//to get rid of the sessionid in the url
+			return "redirect:" + searchFilter.getSearchUri();
+		} else if (!searchFilter.isValid()) {
 			return "redirect:" + searchFilter.getSearchUri();
 		}
 

@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -53,8 +51,8 @@ public class DataController implements SystemConstant, WebConstant {
 	private TermSearchService termSearchService;
 
 	@GetMapping(REST_SERVICES_URI + "/app")
-	public AppData getAppData(HttpServletRequest request) {
-		return appDataHolder.getAppData(request, POM_PATH);
+	public AppData getAppData() {
+		return appDataHolder.getAppData(POM_PATH);
 	}
 
 	@GetMapping("/files/images/{fileName:.+}")

@@ -33,7 +33,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
 
-    private static final long serialVersionUID = -1850193349;
+    private static final long serialVersionUID = 1253631878;
 
     /**
      * The reference instance of <code>public.view_ww_form</code>
@@ -72,6 +72,11 @@ public class ViewWwForm extends TableImpl<ViewWwFormRecord> {
      * The column <code>public.view_ww_form.paradigm_id</code>.
      */
     public final TableField<ViewWwFormRecord, Long> PARADIGM_ID = createField("paradigm_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+
+    /**
+     * The column <code>public.view_ww_form.inflection_type</code>.
+     */
+    public final TableField<ViewWwFormRecord, String> INFLECTION_TYPE = createField("inflection_type", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_form.form_id</code>.

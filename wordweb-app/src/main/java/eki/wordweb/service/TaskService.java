@@ -9,8 +9,13 @@ import eki.wordweb.constant.SystemConstant;
 @Component
 public class TaskService implements SystemConstant {
 
-	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF, CACHE_KEY_DATASET, CACHE_KEY_CORPORA})
-	@Scheduled(fixedDelay = CACHE_EVICT_DELAY,  initialDelay = 5000)
+	@CacheEvict(allEntries = true, value = {CACHE_KEY_CORPORA})
+	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_5MIN,  initialDelay = 5000)
 	public void corporaCacheEvict() {
+	}
+
+	@CacheEvict(allEntries = true, value = {CACHE_KEY_CLASSIF, CACHE_KEY_DATASET})
+	@Scheduled(fixedDelay = CACHE_EVICT_DELAY_60MIN,  initialDelay = 5000)
+	public void corporaCacheClassif() {
 	}
 }

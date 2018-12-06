@@ -6,13 +6,13 @@
     <div class="search-main">
       <form th:action="@{/search}" th:method="post">
         <div>
-          <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}"/>
+          <input type="text" id="search" role="search" class="form-control search-phrase" name="searchWord" th:value="${searchWord}" th:placeholder="#{search.placeholder}" />
           <input type="hidden" name="sourceLang" th:value="${sessionBean.sourceLang}" />
           <input type="hidden" name="destinLang" th:value="${sessionBean.destinLang}" />
           <input type="hidden" name="searchMode" th:value="${sessionBean.searchMode}" />
         </div>
         <div class="extra-buttons">
-          <button  th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
+          <button th:aria-label="#{aria.search.clear}" id="clear-search-btn" type="button" class="btn btn-light clear-btn" style="display: none;">
             <span class="icon icon-close"></span>
           </button>
           <button type="button" id="start-rec-btn" class="btn btn-light speak-btn" th:title="#{button.label.start.rec}">
@@ -37,12 +37,20 @@
       <form class="dropdown-menu p-4 container">
         <div class="row">
           <div class="col-6">
-            <button name="source-lang-btn" th:aria-label="#{aria.search.searchlanguages.languagestart.est}" value="est" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
-            <button name="source-lang-btn" th:aria-label="#{aria.search.searchlanguages.languagestart.rus}" value="rus" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
+            <button name="source-lang-btn" 
+                  th:aria-label="#{aria.search.searchlanguages.languagestart.est}" value="est" class="dropdown-item" type="button" 
+                  th:text="#{button.label.estonian}">eesti keel</button>
+            <button name="source-lang-btn" 
+                  th:aria-label="#{aria.search.searchlanguages.languagestart.rus}" value="rus" class="dropdown-item" type="button" 
+                  th:text="#{button.label.russian}">vene keel</button>
           </div>
           <div class="col-6">
-            <button name="destin-lang-btn" value="est" th:aria-label="#{aria.search.searchlanguages.languageend.est}" class="dropdown-item" type="button" th:text="#{button.label.estonian}">eesti keel</button>
-            <button name="destin-lang-btn" value="rus" th:aria-label="#{aria.search.searchlanguages.languageend.rus}" class="dropdown-item" type="button" th:text="#{button.label.russian}">vene keel</button>
+            <button name="destin-lang-btn" value="est" 
+                  th:aria-label="#{aria.search.searchlanguages.languageend.est}" class="dropdown-item" type="button" 
+                  th:text="#{button.label.estonian}">eesti keel</button>
+            <button name="destin-lang-btn" value="rus" 
+                  th:aria-label="#{aria.search.searchlanguages.languageend.rus}" class="dropdown-item" type="button" 
+                  th:text="#{button.label.russian}">vene keel</button>
           </div>
         </div>
       </form>
@@ -51,10 +59,12 @@
   <th:block th:fragment="detail-filter">
     <div id="detail-toggle-container" class="detail-toggle-container">
       <div class="inner-container">
-        <div tabindex="0" th:aria-label="#{aria.search.detail.detail}" role="button" class="toggle" id="toggle-detail" th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
+        <div tabindex="0" th:aria-label="#{aria.search.detail.detail}" role="button" class="toggle" id="toggle-detail" 
+            th:classappend="${sessionBean.searchMode == 'detail' ? 'active' : ''}">
           <p th:text="#{button.label.detail}">Detailne</p>
         </div>
-        <div tabindex="0" th:aria-label="#{aria.search.detail.simple}" role="button" class="toggle" id="toggle-simple" th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
+        <div tabindex="0" th:aria-label="#{aria.search.detail.simple}" role="button" class="toggle" id="toggle-simple" 
+            th:classappend="${sessionBean.searchMode == 'simple' ? 'active' : ''}">
           <p th:text="#{button.label.simple}">Lihtne</p>
         </div>
       </div>

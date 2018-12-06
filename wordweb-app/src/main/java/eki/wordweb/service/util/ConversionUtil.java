@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
@@ -60,8 +61,6 @@ public class ConversionUtil {
 	private static final int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;
 
 	private static final int WORD_RELATIONS_DISPLAY_LIMIT = 10;
-
-	private static final String[] WORD_REL_TYPE_ORDER = new String[] {"posit", "komp", "superl", "deriv_base", "deriv", "ühend"};
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -626,6 +625,8 @@ public class ConversionUtil {
 		if (CollectionUtils.isEmpty(wordRelationTuples)) {
 			return;
 		}
+		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
+		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
 		word.setWordGroups(new ArrayList<>());
 		word.setRelatedWords(new ArrayList<>());
 		for (WordRelationTuple tuple : wordRelationTuples) {
@@ -637,7 +638,7 @@ public class ConversionUtil {
 				word.setLimitedRelatedWordTypeGroups(new ArrayList<>());
 				word.setRelatedWordTypeGroups(new ArrayList<>());
 				Map<String, List<TypeWordRelation>> relatedWordsMap = relatedWords.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
-				for (String wordRelTypeCode : WORD_REL_TYPE_ORDER) {
+				for (String wordRelTypeCode : wordRelTypeCodes) {
 					List<TypeWordRelation> relatedWordsOfType = relatedWordsMap.get(wordRelTypeCode);
 					if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
 						Classifier wordRelType = relatedWordsOfType.get(0).getWordRelType();
@@ -684,9 +685,11 @@ public class ConversionUtil {
 	}
 
 	//TODO under construction
-	public List<Paradigm> composeParadigms(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
+	public List<Paradigm> composeParadigms(Word word, Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
 		final String keyValSep = "-";
+
+		String wordClass = word.getWordClass();
 
 		List<Paradigm> paradigms = new ArrayList<>();
 		List<Long> paradigmIds = new ArrayList<>(paradigmFormsMap.keySet());
@@ -698,6 +701,8 @@ public class ConversionUtil {
 		String formGroupKey;
 		List<Form> groupForms;
 		List<ParadigmGroup> validParadigmGroups;
+		Form firstForm;
+		List<String> paradigmTitleElements;
 
 		for (Long paradigmId : paradigmIds) {
 
@@ -708,8 +713,22 @@ public class ConversionUtil {
 				classifierUtil.applyClassifiers(form, displayLang);
 			}
 
+			paradigmTitleElements = new ArrayList<>();
+			if (StringUtils.isNotBlank(wordClass)) {
+				paradigmTitleElements.add(wordClass);
+			}
+			firstForm = forms.get(0);
+			if (StringUtils.isNotBlank(firstForm.getInflectionType())) {
+				paradigmTitleElements.add(firstForm.getInflectionType());
+			}
+			String paradigmTitle = null;
+			if (CollectionUtils.isNotEmpty(paradigmTitleElements)) {
+				paradigmTitle = StringUtils.join(paradigmTitleElements, ", ");
+			}
+
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
+			paradigm.setTitle(paradigmTitle);
 			paradigm.setGroups(new ArrayList<>());
 			paradigms.add(paradigm);
 

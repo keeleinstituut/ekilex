@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},~{::links})">
- <title>Sõnaveeb - Kontakt</title>
+<title>Sõnaveeb - Kontakt</title>
 <th:block th:fragment="links">
   <link type="text/css" rel="stylesheet" th:href="@{/view/css/learn.css}" />
 </th:block>
 </head>
 <body>
-
   <!-- WCAG helpers -->
-    <th:block th:replace="common-app :: wcag-main"></th:block>
-    <!-- WCAG helpers -->
-
+  <th:block th:replace="common-app :: wcag-main"></th:block>
+  <!-- WCAG helpers -->
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">

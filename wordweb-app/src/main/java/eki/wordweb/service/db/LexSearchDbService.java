@@ -120,6 +120,7 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.WORD_ID,
 						MVIEW_WW_WORD.WORD,
 						MVIEW_WW_WORD.HOMONYM_NR,
+						MVIEW_WW_WORD.WORD_CLASS,
 						MVIEW_WW_WORD.LANG,
 						MVIEW_WW_WORD.MORPH_CODE,
 						MVIEW_WW_WORD.DISPLAY_MORPH_CODE,
@@ -287,6 +288,7 @@ public class LexSearchDbService {
 		return create
 				.select(
 						MVIEW_WW_FORM.PARADIGM_ID,
+						MVIEW_WW_FORM.INFLECTION_TYPE,
 						MVIEW_WW_FORM.FORM_ID,
 						MVIEW_WW_FORM.MODE,
 						MVIEW_WW_FORM.MORPH_GROUP1,
@@ -306,7 +308,7 @@ public class LexSearchDbService {
 				.where(
 						MVIEW_WW_FORM.WORD_ID.eq(wordId)
 						.and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name())))
-				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.ORDER_BY)
+				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.ORDER_BY, MVIEW_WW_FORM.FORM_ID)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}
 

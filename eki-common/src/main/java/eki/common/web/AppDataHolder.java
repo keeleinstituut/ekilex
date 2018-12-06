@@ -2,13 +2,14 @@ package eki.common.web;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.time.Duration;
 import java.util.Properties;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +18,9 @@ import eki.common.data.AppData;
 @ConditionalOnWebApplication
 @Component
 public class AppDataHolder {
+
+	@Value("${server.servlet.session.timeout:30m}") // default 30 min
+	private Duration sessionTimeout;
 
 	@Autowired
 	private ServletContext servletContext;
@@ -27,13 +31,12 @@ public class AppDataHolder {
 
 	private AppData appData = null;
 
-	public AppData getAppData(HttpServletRequest request, String pomPath) {
+	public AppData getAppData(String pomPath) {
 
 		if (appData != null) {
 			return appData;
 		}
 
-		int sessionTimeout = 0;
 		InputStream pomStream = null;
 		String fullPomPath = "/META-INF/maven/" + pomPath + "/pom.properties";
 		try {
@@ -62,10 +65,7 @@ public class AppDataHolder {
 			} catch (Exception e) {
 			}
 		}
-		try {
-			sessionTimeout = request.getSession().getMaxInactiveInterval() / 60;
-		} catch (Exception e) {
-		}
+		long sessionTimeoutSec = sessionTimeout.getSeconds();
 		if (StringUtils.isAllBlank(appName, appVersion)) {
 			appName = "n/a";
 			appVersion = "n/a";
@@ -74,7 +74,7 @@ public class AppDataHolder {
 		appData = new AppData();
 		appData.setAppName(appName);
 		appData.setAppVersion(appVersion);
-		appData.setSessionTimeout(sessionTimeout);
+		appData.setSessionTimeoutSec(sessionTimeoutSec);
 
 		return appData;
 	}

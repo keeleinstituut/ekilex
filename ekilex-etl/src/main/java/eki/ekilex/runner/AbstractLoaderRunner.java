@@ -225,6 +225,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		String genderCode = word.getGenderCode();
 		String typeCode = word.getWordTypeCode();
 		String aspectCode = word.getAspectTypeCode();
+		String wordClass = null;
 
 		Form wordForm = new Form();
 		wordForm.setMode(FormMode.WORD);
@@ -238,26 +239,37 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
 		Long wordId;
 
+		//TODO temp solution until MAB loading as separate dataset is implemented
+		if (CollectionUtils.isNotEmpty(paradigms)) {
+			wordClass = paradigms.get(0).getWordClass();
+		}
+		//...
+
 		if (tableRowValueMap == null) {
-			wordId = createWord(wordValue, wordMorphCode, homonymNr, wordLang, wordDisplayMorph, genderCode, typeCode, aspectCode);
+			wordId = createWord(wordValue, wordMorphCode, homonymNr, wordClass, wordLang, wordDisplayMorph, genderCode, typeCode, aspectCode);
 			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
 				createWordGuid(wordId, dataset, guid);
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
-				Long paradigmId = createParadigm(wordId, null, false);
+				Long paradigmId = createParadigm(wordId, null, null, false);
 				createWordFormWithAsWord(paradigmId, wordForm, wordLang);
 			}
 		} else {
 			wordId = (Long) tableRowValueMap.get("id");
+			//TODO temp solution until MAB loading as separate dataset is implemented
+			if (StringUtils.isNotEmpty(wordClass)) {
+				updateWordClass(wordId, wordClass);
+			}
+			//...
 			if (reusedWordCount != null) {
 				reusedWordCount.increment();
 			}
 		}
-
 		word.setId(wordId);
+
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			for (Paradigm paradigm : paradigms) {
-				Long paradigmId = createParadigm(wordId, paradigm.getInflectionTypeNr(), paradigm.isSecondary());
+				Long paradigmId = createParadigm(wordId, paradigm.getInflectionTypeNr(), paradigm.getInflectionType(), paradigm.isSecondary());
 				// mab forms
 				List<Form> forms = paradigm.getForms();
 				if (CollectionUtils.isEmpty(forms)) {
@@ -268,7 +280,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 							form.setVocalForm(wordVocalForm);
 						}
 						createForm(paradigmId, form);
-						//createForm(paradigmId, form.getValue(), null, form.getDisplayForm(), null, form.getMorphCode(), form.getMode());
 					}
 				}
 			}
@@ -344,6 +355,16 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMaps;
 	}
 
+	//TODO temp solution until MAB loading as separate dataset is implemented
+	private void updateWordClass(Long wordId, String wordClass) {
+
+		String wordClassUpdateSql = "update " + WORD + " set word_class = :wordClass where id = :wordId";
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("wordId", wordId);
+		tableRowParamMap.put("wordClass", wordClass);
+		basicDbService.executeScript(wordClassUpdateSql, tableRowParamMap);
+	}
+
 	private void createWordFormWithAsWord(Long paradigmId, Form wordForm, String lang) throws Exception {
 
 		createForm(paradigmId, wordForm);
@@ -412,7 +433,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		basicDbService.create(FORM, tableRowParamMap);
 	}
 
-	private Long createParadigm(Long wordId, String inflectionTypeNr, boolean isSecondary) throws Exception {
+	private Long createParadigm(Long wordId, String inflectionTypeNr, String inflectionType, boolean isSecondary) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
@@ -420,16 +441,21 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		if (StringUtils.isNotBlank(inflectionTypeNr)) {
 			tableRowParamMap.put("inflection_type_nr", inflectionTypeNr);
 		}
+		if (StringUtils.isNotBlank(inflectionType)) {
+			tableRowParamMap.put("inflection_type", inflectionType);
+		}
 		Long paradigmId = basicDbService.create(PARADIGM, tableRowParamMap);
 		return paradigmId;
 	}
 
-	private Long createWord(String word, final String morphCode, final int homonymNr, String lang, String displayMorph, String genderCode, String typeCode, String aspectCode) throws Exception {
+	private Long createWord(
+			String word, final String morphCode, final int homonymNr, String wordClass, String lang, String displayMorph, String genderCode, String typeCode, String aspectCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("homonym_nr", homonymNr);
+		tableRowParamMap.put("word_class", wordClass);
 		tableRowParamMap.put("display_morph_code", displayMorph);
 		tableRowParamMap.put("gender_code", genderCode);
 		tableRowParamMap.put("type_code", typeCode);

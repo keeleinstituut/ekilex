@@ -75,8 +75,8 @@ public abstract class AbstractLoader implements SystemConstant {
 		String[] mabDataFilePathKeys = new String[] {
 				"mab.data.file.1",
 				"mab.data.file.2",
-				"mab.data.file.3"
-				//"mab.data.file.4" //smth is wrong with mab7_uus.xml
+				"mab.data.file.3",
+				"mab.data.file.4"
 		};
 		String[] dataFilePaths = new String[mabDataFilePathKeys.length];
 		for (int dataFilePathKeyIndex = 0; dataFilePathKeyIndex < mabDataFilePathKeys.length; dataFilePathKeyIndex++) {
