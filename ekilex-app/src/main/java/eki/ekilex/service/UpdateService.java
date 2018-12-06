@@ -291,87 +291,91 @@ public class UpdateService {
 
 	@Transactional
 	public void deleteUsage(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteUsageTranslation(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteUsageDefinition(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteGovernment(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteGrammar(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteFreeform(id);
 	}
 
 	@Transactional
 	public void deleteDefinition(Long id) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, null);
 		updateDbService.deleteDefinition(id);
 	}
 
 	@Transactional
 	public void deleteDefinitionSourceLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.DEFINITION_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		updateDbService.deleteDefinitionRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteFreeformSourceLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		updateDbService.deleteFreeformRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteLexemeSourceLink(Long sourceLinkId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId);
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, null);
 		updateDbService.deleteLexemeRefLink(sourceLinkId);
 	}
 
 	@Transactional
 	public void deleteLexemePos(Long lexemeId, String posCode) {
 		if (StringUtils.isNotBlank(posCode)) {
-			Long lexemePosId = updateDbService.deleteLexemePos(lexemeId, posCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode);
+			Long lexemePosId = updateDbService.findLexemePosId(lexemeId, posCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.POS, lexemePosId, posCode, null);
+			updateDbService.deleteLexemePos(lexemePosId);
 		}
 	}
 
 	@Transactional
 	public void deleteLexemeDeriv(Long lexemeId, String derivCode) {
 		if (StringUtils.isNotBlank(derivCode)) {
-			Long lexemeDerivId = updateDbService.deleteLexemeDeriv(lexemeId, derivCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode);
+			Long lexemeDerivId = updateDbService.findLexemeDerivId(lexemeId, derivCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.DERIV, lexemeDerivId, derivCode, null);
+			updateDbService.deleteLexemeDeriv(lexemeDerivId);
 		}
 	}
 
 	@Transactional
 	public void deleteLexemeRegister(Long lexemeId, String registerCode) {
 		if (StringUtils.isNotBlank(registerCode)) {
-			Long lexemeRegisterId = updateDbService.deleteLexemeRegister(lexemeId, registerCode);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode);
+			Long lexemeRegisterId = updateDbService.findLexemeRegisterId(lexemeId, registerCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.REGISTER, lexemeRegisterId, registerCode, null);
+			updateDbService.deleteLexemeRegister(lexemeRegisterId);
 		}
 	}
 
 	@Transactional
 	public void deleteMeaningDomain(Long meaningId,  Classifier domain) {
 		if (domain != null) {
-			Long meaningDomainId = updateDbService.deleteMeaningDomain(meaningId, domain);
-			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode());
+			Long meaningDomainId = updateDbService.findMeaningDomainId(meaningId, domain);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domain.getCode(), null);
+			updateDbService.deleteMeaningDomain(meaningDomainId);
 		}
 	}
 

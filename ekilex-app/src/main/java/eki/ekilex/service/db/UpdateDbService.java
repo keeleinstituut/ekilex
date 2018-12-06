@@ -26,6 +26,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
@@ -390,77 +393,81 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public void deleteDefinition(Long id) {
-		create.update(DEFINITION).set(DEFINITION.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(DEFINITION.ID.eq(id)).execute();
+		create.delete(DEFINITION)
+				.where(DEFINITION.ID.eq(id))
+				.execute();
 	}
 
-	public Long deleteLexemePos(Long lexemeId, String posCode) {
-		Long lexemePosId = create.update(LEXEME_POS)
-				.set(LEXEME_POS.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_POS.POS_CODE.eq(posCode)))
-				.returning(LEXEME_POS.ID)
-				.fetchOne()
-				.getId();
-		return lexemePosId;
+	public void deleteLexemePos(Long lexemePosId) {
+		create.delete(LEXEME_POS)
+				.where(LEXEME_POS.ID.eq(lexemePosId))
+				.execute();
 	}
 
-	public Long deleteLexemeDeriv(Long lexemeId, String derivCode) {
-		Long lexemeDerivId = create.update(LEXEME_DERIV)
-				.set(LEXEME_DERIV.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
-				.returning(LEXEME_DERIV.ID)
-				.fetchOne()
-				.getId();
-		return lexemeDerivId;
+	public Long findLexemePosId(Long lexemeId, String posCode) {
+		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
+		return lexemePosRecord.getId();
 	}
 
-	public Long deleteLexemeRegister(Long lexemeId, String registerCode) {
-		Long lexemeRegisterId = create.update(LEXEME_REGISTER)
-				.set(LEXEME_REGISTER.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
-				.returning(LEXEME_REGISTER.ID)
-				.fetchOne()
-				.getId();
-		return lexemeRegisterId;
+	public void deleteLexemeDeriv(Long lexemeDerivId) {
+		create.delete(LEXEME_DERIV)
+				.where(LEXEME_DERIV.ID.eq(lexemeDerivId))
+				.execute();
 	}
 
-	public Long deleteMeaningDomain(Long meaningId,  Classifier domain) {
-		Long meaningDomainId = create.update(MEANING_DOMAIN)
-				.set(MEANING_DOMAIN.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+	public Long findLexemeDerivId(Long lexemeId, String derivCode) {
+		LexemeDerivRecord lexemeDerivRecord = create.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
+		return lexemeDerivRecord.getId();
+	}
+
+	public void deleteLexemeRegister(Long lexemeRegisterId) {
+		create.delete(LEXEME_REGISTER)
+				.where(LEXEME_REGISTER.ID.eq(lexemeRegisterId))
+				.execute();
+	}
+
+	public Long findLexemeRegisterId(Long lexemeId, String registerCode) {
+		LexemeRegisterRecord lexemeRegisterRecord = create.fetchOne(LEXEME_REGISTER,
+				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
+		return lexemeRegisterRecord.getId();
+	}
+
+	public void deleteMeaningDomain(Long meaningDomainId) {
+		create.delete(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.ID.eq(meaningDomainId))
+				.execute();
+	}
+
+	public Long findMeaningDomainId(Long meaningId,  Classifier domain) {
+		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
+				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
-						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())))
-				.returning(MEANING_DOMAIN.ID)
-				.fetchOne()
-				.getId();
-		return meaningDomainId;
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
+		return meaningDomainRecord.getId();
 	}
 
 	public void deleteDefinitionRefLink(Long refLinkId) {
-		create.update(DEFINITION_SOURCE_LINK)
-				.set(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+		create.delete(DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void deleteFreeformRefLink(Long refLinkId) {
-		create.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+		create.delete(FREEFORM_SOURCE_LINK)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void deleteLexemeRefLink(Long refLinkId) {
-		create.update(LEXEME_SOURCE_LINK)
-				.set(LEXEME_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+		create.delete(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void deleteWordRelation(Long relationId) {
-		create.delete(WORD_RELATION).where(WORD_RELATION.ID.eq(relationId)).execute();
+		create.delete(WORD_RELATION)
+				.where(WORD_RELATION.ID.eq(relationId))
+				.execute();
 	}
 
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
