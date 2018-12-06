@@ -8,10 +8,14 @@
 </th:block>
 </head>
 <body>
+  <!-- WCAG helpers -->
+     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+    <th:block th:replace="common-app :: wcag-main"></th:block>
+    <!-- WCAG helpers -->
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">
-      <div class="col-12 col-md-3">
+      <aside class="col-12 col-md-3" role="navigation" id="sidebar">
 
         <div th:replace="common-app :: important-links-menu"></div>
 
@@ -43,8 +47,8 @@
           <li><a href="#opi">Õpi eesti keelt</a></li>
         </ul>
 
-      </div>
-      <div class="col-12 col-md-9 learn-content">
+      </aside>
+      <div id="main" role="main" class="col-12 col-md-9 learn-content">
         <div class="pb-4">
           <h3 class="mt-4 mb-2 text-left">Portaalist</h3>
           <p>Sõnaveeb on Eesti Keele Instituudi uus sõnastikuportaal, kuhu on koondatud keeleinfo instituudi paljudest sõnakogudest ja andmebaasidest. Kuvatav info pärineb Ekilexist, uuest Eesti Keele Instituudi hallatavast ja arendatavast sõnastiku- ja terminibaasisüsteemist. 2018. aasta detsembri seisuga sisaldab Ekilex üle 50 sõnakogu, nii üldkeele sõnaraamatuid kui ka oskussõnastikke.  Sõnaveebis kuvatakse esialgu seitsme sõnakogu ja andmebaasi infot. Portaalis on umbes 130 000 eestikeelset sõna ja väljendit ning umbes 70 000 venekeelset sõna ja väljendit. Sõnaveebi arendatakse ja täiendatakse pidevalt: lisatakse uusi sõnu ja tähendusi, infot järgmistest sõnakogudest, uusi kasutajamugavusi, korrastatakse olemasolevat esitust. Sõnaveebi versiooni uuendatakse ja arhiveeritakse kord aastas.</p>
@@ -281,9 +285,6 @@
               <p>Detailses vaates saab vaadata naabersõnu. Näiteks sõna päike juures on esitatud  sõnapaarid ere <i>päike, päike paistab</i> ja <i>päikest nautima</i>. Naabersõnade eesmärk on aidata edasijõudnud keeleõppijat ja muuta tema keelekasutus sarnaseks emakeelse kõneleja omaga. Kui õppida uut keelt nö tükkidena, on keeleõppijal lihtsam selles keeles loomulikult ja ladusalt rääkida ning kirjutada.</p>
 
 
-              <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
-                <span class="icon icon-chevron-left"></span>
-              </a>
 
 
             </div>
@@ -291,6 +292,7 @@
         </div>
       </div>
       <div th:replace="common-app :: footer-content"></div>
+                        <th:block th:replace="common-app :: content-top"></th:block>
     </body>
     </html>
 

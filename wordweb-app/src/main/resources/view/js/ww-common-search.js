@@ -334,20 +334,19 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 	} else {
 		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 	}
-
 });
 
-$(document).on("focus", "input[name='searchWord']", function (e) {
-	if ($(this).val()) {
-		$("#clear-search-btn").show();
-	} else {
-		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
-	}
-});
+// $(document).on("focus", "input[name='searchWord']", function (e) {
+// 	if ($(this).val()) {
+// 		$("#clear-search-btn").show();
+// 	} else {
+// 		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
+// 	}
+// });
 
-$(document).on("blur", "input[name='searchWord']", function (e) {
-	$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
-});
+// $(document).on("blur", "input[name='searchWord']", function (e) {
+// 	$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
+// });
 
 $(document).on("click", "button[name='source-lang-btn']", function (e) {
 	var prevSourceLang = $("button[name='source-lang-btn'].active").val();
