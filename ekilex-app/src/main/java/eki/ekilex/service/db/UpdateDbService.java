@@ -19,6 +19,8 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.List;
@@ -29,6 +31,8 @@ import java.util.stream.Collectors;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
+import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
+import eki.ekilex.data.db.tables.records.WordGroupRecord;
 import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
@@ -353,6 +357,49 @@ public class UpdateDbService implements DbConstant {
 		}
 	}
 
+	public Long findWordRelationGroupId(String groupType, Long wordId) {
+		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP.WORD_REL_TYPE_CODE.eq(groupType).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
+				.fetchOptional();
+		return result.map(Record1::value1).orElse(null);
+	}
+
+	public Long findWordRelationGroupId(Long relationId) {
+		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
+				.fetchOptional();
+		return result.map(Record1::value1).orElse(null);
+	}
+
+	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {
+		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP.ID.eq(groupId).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
+				.fetchOptional();
+		return result.isPresent();
+	}
+
+	public int findNumberOfRelationGroupMembers(Long groupId) {
+		return create.fetchCount(WORD_GROUP_MEMBER, WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId));
+	}
+
+	public Long addWordRelationGroup(String groupType) {
+		WordGroupRecord wordGroupRecord = create.newRecord(WORD_GROUP);
+		wordGroupRecord.setWordRelTypeCode(groupType);
+		wordGroupRecord.store();
+		return wordGroupRecord.getId();
+	}
+
+	public Long addWordRelationGroupMember(Long groupId, Long wordId) {
+		WordGroupMemberRecord wordGroupMember = create.newRecord(WORD_GROUP_MEMBER);
+		wordGroupMember.setWordGroupId(groupId);
+		wordGroupMember.setWordId(wordId);
+		wordGroupMember.store();
+		return wordGroupMember.getId();
+	}
+
 	public Long addLexemeGrammar(Long lexemeId, String value) {
 
 		Long grammarFreeformId = create
@@ -467,6 +514,18 @@ public class UpdateDbService implements DbConstant {
 	public void deleteWordRelation(Long relationId) {
 		create.delete(WORD_RELATION)
 				.where(WORD_RELATION.ID.eq(relationId))
+				.execute();
+	}
+
+	public void deleteWordRelationGroupMember(Long relationId) {
+		create.delete(WORD_GROUP_MEMBER)
+				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
+				.execute();
+	}
+
+	public void deleteWordRelationGroup(Long groupId) {
+		create.delete(WORD_GROUP)
+				.where(WORD_GROUP.ID.eq(groupId))
 				.execute();
 	}
 

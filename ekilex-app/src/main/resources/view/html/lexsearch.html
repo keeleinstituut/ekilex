@@ -579,12 +579,20 @@
               <table>
                 <tr th:each="wordGroup : ${details.wordGroups}">
                   <td style="vertical-align: text-top; padding-right: 1em">
-                    <th:block th:each="relation, itemStat : ${wordGroup.members}">
+                    <span th:each="relation, itemStat : ${wordGroup.members}"
+                         th:data-id="${relation.id}"
+                         th:data-op-code="word_relation"
+                         th:name="${relation.id} + '_word_relation_member'">
                       <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}" name="detailsBtn">
                         <span th:text="${relation.word}"></span>
                       </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-target-elem="${relation.id} + '_word_relation_member'"
+                              data-toggle="delete-confirmation" data-placement="left">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
                       <span th:unless="${itemStat.last}">,</span>
-                    </th:block>
+                    </span>
                   </td>
                   <td>
                     <span th:text="${wordGroup.groupTypeLabel}"></span>

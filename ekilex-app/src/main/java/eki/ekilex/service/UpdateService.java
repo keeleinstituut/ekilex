@@ -2,10 +2,12 @@ package eki.ekilex.service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.WordRelationGroupType;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -271,8 +273,22 @@ public class UpdateService {
 
 	@Transactional
 	public void addWordRelation(Long wordId, Long targetWordId, String relationTypeCode) {
-		Long relationId = updateDbService.addWordRelation(wordId, targetWordId, relationTypeCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
+		if (wordRelationGroupType.isPresent()) {
+			Long groupId = updateDbService.findWordRelationGroupId(relationTypeCode, wordId);
+			if (groupId == null) {
+				groupId = updateDbService.addWordRelationGroup(relationTypeCode);
+				updateDbService.addWordRelationGroupMember(groupId, wordId);
+				updateDbService.addWordRelationGroupMember(groupId, targetWordId);
+			} else {
+				if (!updateDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
+					updateDbService.addWordRelationGroupMember(groupId, targetWordId);
+				}
+			}
+		} else {
+			Long relationId = updateDbService.addWordRelation(wordId, targetWordId, relationTypeCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+		}
 	}
 
 	//TODO lifecycle log
@@ -381,8 +397,16 @@ public class UpdateService {
 
 	@Transactional
 	public void deleteWordRelation(Long relationId) {
-		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
-		updateDbService.deleteWordRelation(relationId);
+		Long groupId = updateDbService.findWordRelationGroupId(relationId);
+		if (groupId == null) {
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
+			updateDbService.deleteWordRelation(relationId);
+		} else {
+			updateDbService.deleteWordRelationGroupMember(relationId);
+			if (updateDbService.findNumberOfRelationGroupMembers(groupId) <= 1) {
+				updateDbService.deleteWordRelationGroup(groupId);
+			}
+		}
 	}
 
 	void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
