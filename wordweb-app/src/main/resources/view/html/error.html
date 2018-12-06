@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common-app :: common_header(~{::title},_)">
- <title>Sõnaveeb - Viga</title>
+<title>Sõnaveeb - Viga</title>
 </head>
 <body th:with="httpStatus=${T(org.springframework.http.HttpStatus).valueOf(#response.status)}">
-  
-    <!-- WCAG helpers -->
-    <th:block th:replace="common-app :: wcag-main"></th:block>
-    <!-- WCAG helpers -->
-
+  <!-- WCAG helpers -->
+  <th:block th:replace="common-app :: wcag-main"></th:block>
+  <!-- WCAG helpers -->
   <div id="main" role="main" class="container">
     <div class="card mt-4">
       <div class="card-body">

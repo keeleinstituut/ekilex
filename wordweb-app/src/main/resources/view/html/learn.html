@@ -11,10 +11,9 @@
 
 <body>
   <!-- WCAG helpers -->
-     <th:block th:replace="common-app :: wcag-sidebar"></th:block>
-    <th:block th:replace="common-app :: wcag-main"></th:block>
-    <!-- WCAG helpers -->
-
+  <th:block th:replace="common-app :: wcag-sidebar"></th:block>
+  <th:block th:replace="common-app :: wcag-main"></th:block>
+  <!-- WCAG helpers -->
   <div th:replace="common-app :: menu"></div>
   <div class="container home-page-content">
     <div class="row learn-container">
@@ -1066,11 +1065,8 @@
       </div>
     </div>
   </div>
-
   <div th:replace="common-app :: footer-content"></div>
-
-                  <th:block th:replace="common-app :: content-top"></th:block>
-
+  <th:block th:replace="common-app :: content-top"></th:block>
   <script th:inline="javascript">
     var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
     var destinLang = /*[[${sessionBean.destinLang}]]*/"est";

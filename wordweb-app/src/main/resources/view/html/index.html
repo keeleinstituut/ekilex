@@ -8,15 +8,15 @@
 </th:block>
 </head>
 <body class="home-page">
-    <!-- WCAG helpers -->
-    <th:block th:replace="common-app :: wcag-search"></th:block>
-    <!-- WCAG helpers -->
+  <!-- WCAG helpers -->
+  <th:block th:replace="common-app :: wcag-search"></th:block>
+  <!-- WCAG helpers -->
   <div class="header-container">
     <button class="btn menu-btn" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
       <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
       <span class="icon icon-menu"></span>
     </button>
-        <div th:replace="common-app :: menu-links"></div>
+    <div th:replace="common-app :: menu-links"></div>
   </div>
   <div class="container-fluid home-page-content">
     <div class="row">

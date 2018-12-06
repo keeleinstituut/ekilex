@@ -14,7 +14,9 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 			wordSelectUrl : wordSelectUrl
 		};
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
-		var lang = wordSelectUrl.split('/').find(function(e) { return e.indexOf('-') !== -1 }).split('-')[0];
+		var lang = wordSelectUrl.split('/').find(function(e) {
+			return e.indexOf('-') !== -1
+		}).split('-')[0];
 		fetchCorpSentences(lang, word);
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
@@ -48,22 +50,17 @@ $(function() {
 	});
 });
 
-$(document).on(
-	"click",
-	".more-btn",
-	function() {
-		$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");
+$(document).on("click", ".more-btn", function() {
+	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");
 
-		$(this)
-			.parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
+	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
 			.find(".colloc-col, .dependence, .label, .label-md, .corp-panel div:nth-child(n+5), .colloc-heading, .colloc-name, .lexeme-list b, .secondary-morph, .word-options, .sentence-wrapper")
 			.toggleClass("fade-target");
 
-		$(this)
-			.parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel")
-			.find(".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(3), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
+	$(this).parents(".word-relations, .meaning-panel, .dependencies, .collocations-section, .position-relative, .corp-panel").find(
+			".colloc-fulldata .colloc-col:lt(3), .dependencies .dependence:lt(3), .full-group .word-options:lt(10), .sentence-wrapper:lt(2)")
 			.removeClass("fade-target");
-	});
+});
 
 $(window).on("popstate", function(e) {
 	e.preventDefault();
@@ -96,34 +93,27 @@ $(document).on("click", ".back", function() {
 	}
 });
 
-$(document).on(
-	"click",
-	".homonym-item",
-	function() {
-		$(".homonym-item").removeClass("selected last-selected");
-		$(".homonym-item:first").removeClass("animation-target").dequeue();
-		$(this).addClass("selected last-selected");
-		calculateAndSetStyles();
-		var homonymList = $('.homonym-list');
-		if ($(window).width() >= windowWidthTreshold) {
-			homonymList.animate(
-			{
-				scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
-				+ homonymList.scrollLeft()
-			}, 200);
-		}
-		if ($(window).width() >= windowWidthTreshold) {
-			homonymList.animate(
-			{
-				scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left
-				+ homonymList.scrollLeft()
-			}, 200);
-		} else {
-			$(".homonym-panel").addClass("d-none");
-			$(".search-panel").addClass("d-none");
-			$('#form-words').css("margin-top", '5em');
-		}
-	});
+$(document).on("click", ".homonym-item", function() {
+	$(".homonym-item").removeClass("selected last-selected");
+	$(".homonym-item:first").removeClass("animation-target").dequeue();
+	$(this).addClass("selected last-selected");
+	calculateAndSetStyles();
+	var homonymList = $('.homonym-list');
+	if ($(window).width() >= windowWidthTreshold) {
+		homonymList.animate({
+			scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
+		}, 200);
+	}
+	if ($(window).width() >= windowWidthTreshold) {
+		homonymList.animate({
+			scrollLeft : $('.homonym-item.selected .homonym-item-wrap').parent().position().left - $('.search-panel').offset().left + homonymList.scrollLeft()
+		}, 200);
+	} else {
+		$(".homonym-panel").addClass("d-none");
+		$(".search-panel").addClass("d-none");
+		$('#form-words').css("margin-top", '5em');
+	}
+});
 
 $(document).on("click", "[name='word-form-btn']", function() {
 	var word = $(this).data('word');

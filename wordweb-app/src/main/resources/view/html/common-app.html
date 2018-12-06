@@ -68,56 +68,59 @@
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
   <th:block th:fragment="menu-links">
-  <div id="headerLinks">
-    <div class="header-links" role="navbar">
-      <div class="dropdown lang-btn">
-        <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="langDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> EST <span class="icon icon-chevron-left"></span></a>
-        <div class="dropdown-menu" data-target="langDropdownMenuButton" aria-expanded="true" aria-labelledby="langDropdownMenuButton">
-          <a role="link" class="dropdown-item" href="#">EST</a>
-          <a role="link" class="dropdown-item" href="#">RUS</a>
-          <a role="link" class="dropdown-item" href="#">ENG</a>
+    <div id="headerLinks">
+      <div class="header-links" role="navbar">
+        <div class="dropdown lang-btn">
+          <a href="#" th:aria-label="#{aria.menu.lang}" role="button" class="dropdown-toggle" id="langDropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            EST
+            <span class="icon icon-chevron-left"></span>
+          </a>
+          <div class="dropdown-menu" data-target="langDropdownMenuButton" aria-expanded="true" aria-labelledby="langDropdownMenuButton">
+            <a role="link" class="dropdown-item" href="#">EST</a>
+            <a role="link" class="dropdown-item" href="#">RUS</a>
+            <a role="link" class="dropdown-item" href="#">ENG</a>
+          </div>
         </div>
+        <button class="btn menu-btn float-right clear-both" data-toggle="collapse" data-target="#headerLinks">
+          <span th:text="#{menu.close}">Sulge</span>
+          <span class="icon icon-close"></span>
+        </button>
+        <a th:href="@{/}" class="menu-item" data-item-name="search">
+          <span th:text="#{menu.search}">Otsing</span>
+        </a>
+        <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
+          <span th:text="#{menu.learn}">Õpi eesti keelt</span>
+        </a>
+        <a aria-hidden="true" th:href="@{/games}" class="menu-item" data-item-name="games">
+          <span th:text="#{menu.games}">Keelemängud</span>
+        </a>
+        <a th:href="@{/about}" class="menu-item" data-item-name="about">
+          <span th:text="#{menu.about}">Portaalist</span>
+        </a>
+        <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
+          <span th:text="#{menu.contacts}">Kontakt</span>
+        </a>
+        <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedbackModal" class="menu-item" data-item-name="feedback">
+          <span th:text="#{menu.feedback}">Tagasiside</span>
+        </a>
+        <a class="menu-item" href="#">
+          <!-- For WCAG focus trap. Not to be removed -->
+        </a>
       </div>
-      <button class="btn menu-btn float-right clear-both" data-toggle="collapse" data-target="#headerLinks">
-        <span th:text="#{menu.close}">Sulge</span>
-        <span class="icon icon-close"></span>
-      </button>
-      <a th:href="@{/}" class="menu-item" data-item-name="search">
-        <span th:text="#{menu.search}">Otsing</span>
-      </a>
-      <a th:href="@{/learn}" class="menu-item" data-item-name="learn">
-        <span th:text="#{menu.learn}">Õpi eesti keelt</span>
-      </a>
-      <a aria-hidden="true" th:href="@{/games}" class="menu-item" data-item-name="games">
-        <span th:text="#{menu.games}">Keelemängud</span>
-      </a>
-      <a th:href="@{/about}" class="menu-item" data-item-name="about">
-        <span th:text="#{menu.about}">Portaalist</span>
-      </a>
-      <a th:href="@{/contacts}" class="menu-item" data-item-name="contacts">
-        <span th:text="#{menu.contacts}">Kontakt</span>
-      </a>
-      <a th:href="@{/#}" role="button" data-toggle="modal" data-target="#feedbackModal" class="menu-item" data-item-name="feedback">
-        <span th:text="#{menu.feedback}">Tagasiside</span>
-      </a>
-      <a class="menu-item" href="#">
-        <!-- For WCAG focus trap. Not to be removed -->
-      </a>
     </div>
-  </div>
   </th:block>
   <!-- WCAG main -->
   <th:block th:fragment="wcag-main">
-  <a class="skip-link" role="button" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
-</th:block>
+    <a class="skip-link" role="button" href="#main" th:text="#{aria.skip.link}">Põhisisu juurde</a>
+  </th:block>
   <!-- WCAG sidebar -->
   <th:block th:fragment="wcag-sidebar">
-  <a class="skip-link" role="button" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
-</th:block>
+    <a class="skip-link" role="button" href="#sidebar" th:text="#{aria.skip.link.sidebar}">Külgriba juurde</a>
+  </th:block>
   <!-- WCAG search -->
   <th:block th:fragment="wcag-search">
-  <a class="skip-link" role="button" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
-</th:block>
+    <a class="skip-link" role="button" href="#search" th:text="#{aria.skip.link.search}">Põhisisu juurde</a>
+  </th:block>
   <!-- debugging aid -->
   <div th:fragment="dump_vars" class="m-4">
     <h4>Dump of all variables in Thymeleaf context</h4>
@@ -178,10 +181,18 @@
   <!-- About, Conditions, API, Regulations secondary IMPORTANT LINK MENU -->
   <th:block th:fragment="important-links-menu">
     <ul class="mt-4">
-      <li><a class="font-weight-bold text-uppercase" th:href="@{/about}" data-item-name="about">Portaalist</a></li>
-      <li><a class="font-weight-bold text-uppercase" th:href="@{/collections}" data-item-name="collections">Sõnakogud</a></li>
-      <li><a class="font-weight-bold text-uppercase" th:href="@{/conditions}" data-item-name="conditions">Kasutustingimused</a></li>
-      <li><a class="font-weight-bold text-uppercase" th:href="@{/regulations}" data-item-name="regulations">Privaatsuspoliitika</a></li>
+      <li>
+        <a class="font-weight-bold text-uppercase" th:href="@{/about}" data-item-name="about">Portaalist</a>
+      </li>
+      <li>
+        <a class="font-weight-bold text-uppercase" th:href="@{/collections}" data-item-name="collections">Sõnakogud</a>
+      </li>
+      <li>
+        <a class="font-weight-bold text-uppercase" th:href="@{/conditions}" data-item-name="conditions">Kasutustingimused</a>
+      </li>
+      <li>
+        <a class="font-weight-bold text-uppercase" th:href="@{/regulations}" data-item-name="regulations">Privaatsuspoliitika</a>
+      </li>
     </ul>
   </th:block>
   <!-- Footer -->
@@ -210,7 +221,8 @@
           <div class="col-12 col-sm-6 col-md-4 order-1 order-md-2 justify-content-md-end d-flex">
             <div class="social-list">
               <span class="helper-text">Jaga meid:</span>
-              <a th:aria-label="#{aria.footer.facebook}" class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://ekitest.tripledev.ee/wordweb/" target="_blank" title="Share this in Facebook"></a>
+              <a th:aria-label="#{aria.footer.facebook}" class="fb-icon icon" href="http://www.facebook.com/sharer.php?u=https://ekitest.tripledev.ee/wordweb/" target="_blank"
+                title="Share this in Facebook"></a>
             </div>
           </div>
         </div>
@@ -353,12 +365,11 @@
       </div>
     </form>
   </th:block>
-<!-- Scroll content top -->
+  <!-- Scroll content top -->
   <th:block th:fragment="content-top">
-              <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
-                <span class="icon icon-chevron-left"></span>
-              </a>
+    <a class="top-button" id="topUp" title="Tagasi päisesse" href="#">
+      <span class="icon icon-chevron-left"></span>
+    </a>
   </th:block>
-
 </body>
 </html>
