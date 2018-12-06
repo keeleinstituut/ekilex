@@ -17,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
@@ -60,8 +61,6 @@ public class ConversionUtil {
 	private static final int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;
 
 	private static final int WORD_RELATIONS_DISPLAY_LIMIT = 10;
-
-	private static final String[] WORD_REL_TYPE_ORDER = new String[] {"posit", "komp", "superl", "deriv_base", "deriv", "ühend"};
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -626,6 +625,8 @@ public class ConversionUtil {
 		if (CollectionUtils.isEmpty(wordRelationTuples)) {
 			return;
 		}
+		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
+		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
 		word.setWordGroups(new ArrayList<>());
 		word.setRelatedWords(new ArrayList<>());
 		for (WordRelationTuple tuple : wordRelationTuples) {
@@ -637,7 +638,7 @@ public class ConversionUtil {
 				word.setLimitedRelatedWordTypeGroups(new ArrayList<>());
 				word.setRelatedWordTypeGroups(new ArrayList<>());
 				Map<String, List<TypeWordRelation>> relatedWordsMap = relatedWords.stream().collect(Collectors.groupingBy(TypeWordRelation::getWordRelTypeCode));
-				for (String wordRelTypeCode : WORD_REL_TYPE_ORDER) {
+				for (String wordRelTypeCode : wordRelTypeCodes) {
 					List<TypeWordRelation> relatedWordsOfType = relatedWordsMap.get(wordRelTypeCode);
 					if (CollectionUtils.isNotEmpty(relatedWordsOfType)) {
 						Classifier wordRelType = relatedWordsOfType.get(0).getWordRelType();

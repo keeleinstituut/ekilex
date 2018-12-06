@@ -77,6 +77,24 @@ public class CommonDataDbService implements SystemConstant {
 		return result.into(Classifier.class);
 	}
 
+	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #lang}")
+	public List<Classifier> getClassifiers(ClassifierName name, String lang) {
+
+		return create
+				.select(
+						MVIEW_WW_CLASSIFIER.NAME,
+						MVIEW_WW_CLASSIFIER.ORIGIN,
+						MVIEW_WW_CLASSIFIER.CODE,
+						MVIEW_WW_CLASSIFIER.VALUE,
+						MVIEW_WW_CLASSIFIER.LANG
+						)
+				.from(MVIEW_WW_CLASSIFIER)
+				.where(MVIEW_WW_CLASSIFIER.NAME.eq(name.name())
+						.and(MVIEW_WW_CLASSIFIER.LANG.eq(lang)))
+				.orderBy(MVIEW_WW_CLASSIFIER.ORDER_BY)
+				.fetch().into(Classifier.class);
+	}
+
 	@Cacheable(value = CACHE_KEY_CLASSIF, key = "{#name, #code, #lang}")
 	public Classifier getClassifier(ClassifierName name, String code, String lang) {
 		return getClassifier(name, null, code, lang);
@@ -105,6 +123,7 @@ public class CommonDataDbService implements SystemConstant {
 						)
 				.from(MVIEW_WW_CLASSIFIER)
 				.where(where)
+				.orderBy(MVIEW_WW_CLASSIFIER.ORDER_BY)
 				.fetch().into(Classifier.class);
 	}
 
