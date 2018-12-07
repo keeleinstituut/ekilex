@@ -537,6 +537,12 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
+	public void deleteLexemeRelation(Long relationId) {
+		create.delete(LEX_RELATION)
+				.where(LEX_RELATION.ID.eq(relationId))
+				.execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)

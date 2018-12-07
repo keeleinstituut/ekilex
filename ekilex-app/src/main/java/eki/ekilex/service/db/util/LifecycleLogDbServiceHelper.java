@@ -171,9 +171,10 @@ public class LifecycleLogDbServiceHelper {
 				.select(
 						LEX_RELATION.LEXEME1_ID,
 						LEX_RELATION.LEX_REL_TYPE_CODE,
-						LEX_RELATION.ORDER_BY
+						LEX_RELATION.ORDER_BY,
+						LEXEME.WORD_ID.as("word2_id")
 						)
-				.from(LEX_RELATION)
+				.from(LEX_RELATION).join(LEXEME).on(LEXEME.ID.eq(LEX_RELATION.LEXEME2_ID))
 				.where(LEX_RELATION.ID.eq(entityId))
 				.fetchSingleMap();
 		return result;

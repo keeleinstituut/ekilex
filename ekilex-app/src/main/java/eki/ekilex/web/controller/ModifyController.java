@@ -245,6 +245,9 @@ public class ModifyController implements WebConstant {
 		case "word_relation" :
 			updateService.deleteWordRelation(id);
 			break;
+		case "lexeme_relation" :
+			updateService.deleteLexemeRelation(id);
+			break;
 		}
 		return "OK";
 	}

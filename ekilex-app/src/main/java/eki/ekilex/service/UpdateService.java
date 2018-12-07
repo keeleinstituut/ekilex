@@ -447,6 +447,12 @@ public class UpdateService {
 		}
 	}
 
+	@Transactional
+	public void deleteLexemeRelation(Long relationId) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
+		updateDbService.deleteLexemeRelation(relationId);
+	}
+
 	void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
 		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);
