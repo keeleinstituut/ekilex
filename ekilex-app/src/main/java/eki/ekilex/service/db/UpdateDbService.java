@@ -19,12 +19,22 @@ import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
+import static eki.ekilex.data.db.Tables.WORD_GROUP;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
+import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
+import eki.ekilex.data.db.tables.records.WordGroupRecord;
+import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record4;
@@ -330,6 +340,74 @@ public class UpdateDbService implements DbConstant {
 		return lexemeId;
 	}
 
+	public Long addWordRelation(Long wordId, Long targetWordId, String wordRelationCode) {
+
+		Optional<WordRelationRecord> wordRelationRecord = create.fetchOptional(WORD_RELATION,
+				WORD_RELATION.WORD1_ID.eq(wordId).and(
+				WORD_RELATION.WORD2_ID.eq(targetWordId)).and(
+				WORD_RELATION.WORD_REL_TYPE_CODE.eq(wordRelationCode)));
+		if (wordRelationRecord.isPresent()) {
+			return wordRelationRecord.get().getId();
+		} else {
+			WordRelationRecord newRelation = create.newRecord(WORD_RELATION);
+			newRelation.setWord1Id(wordId);
+			newRelation.setWord2Id(targetWordId);
+			newRelation.setWordRelTypeCode(wordRelationCode);
+			newRelation.store();
+			return newRelation.getId();
+		}
+	}
+
+	public Long findWordRelationGroupId(String groupType, Long wordId) {
+		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP.WORD_REL_TYPE_CODE.eq(groupType).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
+				.fetchOptional();
+		return result.map(Record1::value1).orElse(null);
+	}
+
+	public Long findWordRelationGroupId(Long relationId) {
+		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
+				.fetchOptional();
+		return result.map(Record1::value1).orElse(null);
+	}
+
+	public boolean isMemberOfWordRelationGroup(Long groupId, Long wordId) {
+		Optional<Record1<Long>> result = create.select(WORD_GROUP.ID)
+				.from(WORD_GROUP.join(WORD_GROUP_MEMBER).on(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(WORD_GROUP.ID)))
+				.where(WORD_GROUP.ID.eq(groupId).and(WORD_GROUP_MEMBER.WORD_ID.eq(wordId)))
+				.fetchOptional();
+		return result.isPresent();
+	}
+
+	public List<Map<String, Object>> findWordRelationGroupMembers(Long groupId) {
+		return create.selectDistinct(WORD_GROUP_MEMBER.ID, WORD_GROUP_MEMBER.WORD_ID, FORM.VALUE, WORD_GROUP.WORD_REL_TYPE_CODE)
+				.from(WORD_GROUP_MEMBER)
+				.join(WORD_GROUP).on(WORD_GROUP.ID.eq(WORD_GROUP_MEMBER.WORD_GROUP_ID))
+				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(WORD_GROUP_MEMBER.WORD_ID))
+				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+				.where(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId)
+						.and(FORM.MODE.eq("WORD")))
+				.fetchMaps();
+	}
+
+	public Long addWordRelationGroup(String groupType) {
+		WordGroupRecord wordGroupRecord = create.newRecord(WORD_GROUP);
+		wordGroupRecord.setWordRelTypeCode(groupType);
+		wordGroupRecord.store();
+		return wordGroupRecord.getId();
+	}
+
+	public Long addWordRelationGroupMember(Long groupId, Long wordId) {
+		WordGroupMemberRecord wordGroupMember = create.newRecord(WORD_GROUP_MEMBER);
+		wordGroupMember.setWordGroupId(groupId);
+		wordGroupMember.setWordId(wordId);
+		wordGroupMember.store();
+		return wordGroupMember.getId();
+	}
+
 	public Long addLexemeGrammar(Long lexemeId, String value) {
 
 		Long grammarFreeformId = create
@@ -370,72 +448,92 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public void deleteDefinition(Long id) {
-		create.update(DEFINITION).set(DEFINITION.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(DEFINITION.ID.eq(id)).execute();
+		create.delete(DEFINITION)
+				.where(DEFINITION.ID.eq(id))
+				.execute();
 	}
 
-	public Long deleteLexemePos(Long lexemeId, String posCode) {
-		Long lexemePosId = create.update(LEXEME_POS)
-				.set(LEXEME_POS.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_POS.POS_CODE.eq(posCode)))
-				.returning(LEXEME_POS.ID)
-				.fetchOne()
-				.getId();
-		return lexemePosId;
+	public void deleteLexemePos(Long lexemePosId) {
+		create.delete(LEXEME_POS)
+				.where(LEXEME_POS.ID.eq(lexemePosId))
+				.execute();
 	}
 
-	public Long deleteLexemeDeriv(Long lexemeId, String derivCode) {
-		Long lexemeDerivId = create.update(LEXEME_DERIV)
-				.set(LEXEME_DERIV.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)))
-				.returning(LEXEME_DERIV.ID)
-				.fetchOne()
-				.getId();
-		return lexemeDerivId;
+	public Long findLexemePosId(Long lexemeId, String posCode) {
+		LexemePosRecord lexemePosRecord = create.fetchOne(LEXEME_POS, LEXEME_POS.LEXEME_ID.eq(lexemeId).and(LEXEME_POS.POS_CODE.eq(posCode)));
+		return lexemePosRecord.getId();
 	}
 
-	public Long deleteLexemeRegister(Long lexemeId, String registerCode) {
-		Long lexemeRegisterId = create.update(LEXEME_REGISTER)
-				.set(LEXEME_REGISTER.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
-						.and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)))
-				.returning(LEXEME_REGISTER.ID)
-				.fetchOne()
-				.getId();
-		return lexemeRegisterId;
+	public void deleteLexemeDeriv(Long lexemeDerivId) {
+		create.delete(LEXEME_DERIV)
+				.where(LEXEME_DERIV.ID.eq(lexemeDerivId))
+				.execute();
 	}
 
-	public Long deleteMeaningDomain(Long meaningId,  Classifier domain) {
-		Long meaningDomainId = create.update(MEANING_DOMAIN)
-				.set(MEANING_DOMAIN.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)
+	public Long findLexemeDerivId(Long lexemeId, String derivCode) {
+		LexemeDerivRecord lexemeDerivRecord = create.fetchOne(LEXEME_DERIV, LEXEME_DERIV.LEXEME_ID.eq(lexemeId).and(LEXEME_DERIV.DERIV_CODE.eq(derivCode)));
+		return lexemeDerivRecord.getId();
+	}
+
+	public void deleteLexemeRegister(Long lexemeRegisterId) {
+		create.delete(LEXEME_REGISTER)
+				.where(LEXEME_REGISTER.ID.eq(lexemeRegisterId))
+				.execute();
+	}
+
+	public Long findLexemeRegisterId(Long lexemeId, String registerCode) {
+		LexemeRegisterRecord lexemeRegisterRecord = create.fetchOne(LEXEME_REGISTER,
+				LEXEME_REGISTER.LEXEME_ID.eq(lexemeId).and(LEXEME_REGISTER.REGISTER_CODE.eq(registerCode)));
+		return lexemeRegisterRecord.getId();
+	}
+
+	public void deleteMeaningDomain(Long meaningDomainId) {
+		create.delete(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.ID.eq(meaningDomainId))
+				.execute();
+	}
+
+	public Long findMeaningDomainId(Long meaningId,  Classifier domain) {
+		MeaningDomainRecord meaningDomainRecord = create.fetchOne(MEANING_DOMAIN,
+				MEANING_DOMAIN.MEANING_ID.eq(meaningId)
 						.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(domain.getOrigin()))
-						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())))
-				.returning(MEANING_DOMAIN.ID)
-				.fetchOne()
-				.getId();
-		return meaningDomainId;
+						.and(MEANING_DOMAIN.DOMAIN_CODE.eq(domain.getCode())));
+		return meaningDomainRecord.getId();
 	}
 
 	public void deleteDefinitionRefLink(Long refLinkId) {
-		create.update(DEFINITION_SOURCE_LINK)
-				.set(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+		create.delete(DEFINITION_SOURCE_LINK)
 				.where(DEFINITION_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void deleteFreeformRefLink(Long refLinkId) {
-		create.update(FREEFORM_SOURCE_LINK)
-				.set(FREEFORM_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+		create.delete(FREEFORM_SOURCE_LINK)
 				.where(FREEFORM_SOURCE_LINK.ID.eq(refLinkId))
 				.execute();
 	}
 
 	public void deleteLexemeRefLink(Long refLinkId) {
-		create.update(LEXEME_SOURCE_LINK)
-				.set(LEXEME_SOURCE_LINK.PROCESS_STATE_CODE, PROCESS_STATE_DELETED)
+		create.delete(LEXEME_SOURCE_LINK)
 				.where(LEXEME_SOURCE_LINK.ID.eq(refLinkId))
+				.execute();
+	}
+
+	public void deleteWordRelation(Long relationId) {
+		create.delete(WORD_RELATION)
+				.where(WORD_RELATION.ID.eq(relationId))
+				.execute();
+	}
+
+	public void deleteWordRelationGroupMember(Long relationId) {
+		create.delete(WORD_GROUP_MEMBER)
+				.where(WORD_GROUP_MEMBER.ID.eq(relationId))
+				.execute();
+	}
+
+	public void deleteWordRelationGroup(Long groupId) {
+		create.delete(WORD_GROUP)
+				.where(WORD_GROUP.ID.eq(groupId))
 				.execute();
 	}
 

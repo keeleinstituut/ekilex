@@ -3,6 +3,7 @@ package eki.ekilex.service.db.util;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_FREEFORM;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
@@ -11,7 +12,9 @@ import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
+import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.Map;
@@ -70,12 +73,16 @@ public class LifecycleLogDbServiceHelper {
 
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
-				.select(
+				.selectDistinct(
 						WORD.GENDER_CODE,
-						WORD.TYPE_CODE
+						WORD.TYPE_CODE,
+						WORD.ASPECT_CODE,
+						FORM.VALUE
 						)
-				.from(WORD)
-				.where(WORD.ID.eq(entityId))
+				.from(WORD, PARADIGM, FORM)
+				.where(WORD.ID.eq(entityId)
+						.and(PARADIGM.WORD_ID.eq(entityId))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID)).and(FORM.MODE.eq("WORD")))
 				.fetchSingleMap();
 		return result;
 	}
@@ -189,6 +196,7 @@ public class LifecycleLogDbServiceHelper {
 		Map<String, Object> result = create
 				.select(
 						WORD_RELATION.WORD1_ID,
+						WORD_RELATION.WORD2_ID,
 						WORD_RELATION.WORD_REL_TYPE_CODE,
 						WORD_RELATION.ORDER_BY
 						)
@@ -197,4 +205,16 @@ public class LifecycleLogDbServiceHelper {
 				.fetchSingleMap();
 		return result;
 	}
+
+	public Map<String, Object> getWordRelationGroupMember(DSLContext create, Long entityId) {
+		Map<String, Object> result = create
+				.select(
+						WORD_GROUP_MEMBER.WORD_ID
+				)
+				.from(WORD_GROUP_MEMBER)
+				.where(WORD_GROUP_MEMBER.ID.eq(entityId))
+				.fetchSingleMap();
+		return result;
+	}
+
 }

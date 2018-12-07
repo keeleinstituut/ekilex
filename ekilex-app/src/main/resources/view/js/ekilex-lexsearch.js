@@ -99,3 +99,42 @@ function openClassifiersDlg(elem) {
     theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
     theDlg.find('[name=id3]').val($(elem).data('word-id'));
 }
+
+function openAddNewWordRelationDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    var selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var content = button.html();
+        button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+        var theForm = $(this).closest('form');
+        var url = theForm.attr('action') + '?' + theForm.serialize();
+        $.get(url).done(function(data) {
+            addDlg.find('[data-name=dialogContent]').replaceWith(data);
+            addDlg.find('button[data-word-id]').off('click').on('click', function(e) {
+                e.preventDefault();
+                var button = $(e.target);
+                addDlg.find('[name=id2]').val(button.data('word-id'));
+                var theForm = button.closest('form');
+                submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+                    addDlg.modal('hide');
+                });
+            });
+        }).fail(function(data) {
+            console.log(data);
+            alert(failMessage);
+        }).always(function () {
+            button.html(content);
+        });
+    });
+
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        addDlg.find('.form-control').first().focus();
+    });
+}

@@ -20,6 +20,7 @@ public class CommonDataService {
 
 	private final static String classifierLabelLang = "est";
 	private final static String classifierLabelTypeDescrip = "descrip";
+	private final static String classifierLabelTypeFull = "full";
 
 	@Autowired
 	private CommonDataDbService commonDataDbService;
@@ -79,6 +80,11 @@ public class CommonDataService {
 	@Transactional
 	public List<Classifier> getWordAspects() {
 		return commonDataDbService.getWordAspects(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
+	@Transactional
+	public List<Classifier> getWordRelationTypes() {
+		return commonDataDbService.getWordRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
 	}
 
 }

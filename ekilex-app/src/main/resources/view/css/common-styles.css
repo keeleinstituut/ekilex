@@ -124,3 +124,10 @@ input:checked+.slider:before {
 	white-space: initial;
 	text-align: initial;
 }
+
+.btn-custom {
+	font-weight: 400;
+	color: #007bff;
+	background-color: transparent;
+	cursor: auto !important;
+}
