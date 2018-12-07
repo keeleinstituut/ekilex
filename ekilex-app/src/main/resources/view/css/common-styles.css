@@ -40,11 +40,11 @@ td {
 	overflow-y: auto;
 }
 
-.hidden-buttons button {
+.hidden-buttons .badge {
 	display: none;
 }
 
-.hidden-buttons:hover button {
+.hidden-buttons:hover .badge {
 	display: inline-block;
 }
 

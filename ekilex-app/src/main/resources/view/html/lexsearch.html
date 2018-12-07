@@ -531,8 +531,8 @@
           </div>
         </div>
         <div class="col-4">
-          <div class="card shadow mb-2">
-            <div class="card-body pb-0">
+          <div class="card shadow pt-3 mb-2">
+            <div class="card-body pt-0 pb-0">
               <div class="lbl mb-2">Keelendi omadused
               <button type="button" class="btn badge badge-success" title="Lisa omadus"
                       th:data-word-id="${wordId}"
@@ -544,7 +544,7 @@
               <th:block th:replace="lexsearch_components :: word_parameters"></th:block>
               <hr />
             </div>
-            <div class="card-body pb-0" th:if="${not #lists.isEmpty(details.wordRelations) || not #lists.isEmpty(details.wordGroups)}">
+            <div class="card-body pt-0 pb-0">
               <span class="lbl">Keelendi seosed</span>
               <button type="button" class="btn badge badge-success" title="Lisa seos"
                       th:data-id="${wordId}"
@@ -552,7 +552,7 @@
                       data-toggle="modal" data-target="#addNewWordRelationDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
-              <table class="orderable" th:data-op-code="word_relation">
+              <table class="orderable" th:data-op-code="word_relation" th:if="${not #lists.isEmpty(details.wordRelations)}">
                 <tr th:each="relation, itemStat : ${details.wordRelations}"
                     th:data-id="${relation.id}"
                     th:data-orderby="${relation.orderBy}"
@@ -561,24 +561,24 @@
                   <td style="display: flex">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
-                  <td style="vertical-align: text-top; padding-right: 1em">
+                  <td style="vertical-align: text-top; padding-right: 1em" class="hidden-buttons">
                     <button type="button" class="btn btn-link btn-text-wrap" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
-                  </td>
-                  <td class="hidden-buttons">
-                    <span th:text="${relation.relationTypeLabel}"></span>
                     <button type="button" class="btn badge badge-warning"
                             th:data-target-elem="${relation.id} + '_word_relation'"
                             data-toggle="delete-confirmation" data-placement="left">
                       <i class="fa fa-remove" aria-hidden="true"></i>
                     </button>
                   </td>
+                  <td>
+                    <span th:text="${relation.relationTypeLabel}"></span>
+                  </td>
                 </tr>
               </table>
-              <table>
+              <table th:if="${not #lists.isEmpty(details.wordGroups)}">
                 <tr th:each="wordGroup : ${details.wordGroups}">
-                  <td style="vertical-align: text-top; padding-right: 1em">
+                  <td style="vertical-align: text-top; padding-right: 1em" class="hidden-buttons">
                     <span th:each="relation, itemStat : ${wordGroup.members}"
                          th:data-id="${relation.id}"
                          th:data-op-code="word_relation"
@@ -601,7 +601,7 @@
               </table>
               <hr />
             </div>
-            <div class="card-body pb-0" th:if="${not #lists.isEmpty(details.wordEtymology)}">
+            <div class="card-body pt-0 pb-0" th:if="${not #lists.isEmpty(details.wordEtymology)}">
               <span class="lbl">Keelendi etümoloogia</span>
               <table class="orderable" th:data-op-code="word_etymology">
                 <tr th:each="wordEtym, itemStat : ${details.wordEtymology}" th:data-id="${wordEtym.wordEtymologyId}" th:data-orderby="${wordEtym.orderBy}">
