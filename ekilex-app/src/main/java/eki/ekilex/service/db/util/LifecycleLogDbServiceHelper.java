@@ -14,6 +14,7 @@ import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
+import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.Map;
@@ -204,4 +205,16 @@ public class LifecycleLogDbServiceHelper {
 				.fetchSingleMap();
 		return result;
 	}
+
+	public Map<String, Object> getWordRelationGroupMember(DSLContext create, Long entityId) {
+		Map<String, Object> result = create
+				.select(
+						WORD_GROUP_MEMBER.WORD_ID
+				)
+				.from(WORD_GROUP_MEMBER)
+				.where(WORD_GROUP_MEMBER.ID.eq(entityId))
+				.fetchSingleMap();
+		return result;
+	}
+
 }

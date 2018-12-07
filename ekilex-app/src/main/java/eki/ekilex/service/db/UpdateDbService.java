@@ -24,6 +24,7 @@ import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -381,8 +382,15 @@ public class UpdateDbService implements DbConstant {
 		return result.isPresent();
 	}
 
-	public int findNumberOfRelationGroupMembers(Long groupId) {
-		return create.fetchCount(WORD_GROUP_MEMBER, WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId));
+	public List<Map<String, Object>> findWordRelationGroupMembers(Long groupId) {
+		return create.selectDistinct(WORD_GROUP_MEMBER.ID, WORD_GROUP_MEMBER.WORD_ID, FORM.VALUE, WORD_GROUP.WORD_REL_TYPE_CODE)
+				.from(WORD_GROUP_MEMBER)
+				.join(WORD_GROUP).on(WORD_GROUP.ID.eq(WORD_GROUP_MEMBER.WORD_GROUP_ID))
+				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(WORD_GROUP_MEMBER.WORD_ID))
+				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+				.where(WORD_GROUP_MEMBER.WORD_GROUP_ID.eq(groupId)
+						.and(FORM.MODE.eq("WORD")))
+				.fetchMaps();
 	}
 
 	public Long addWordRelationGroup(String groupType) {

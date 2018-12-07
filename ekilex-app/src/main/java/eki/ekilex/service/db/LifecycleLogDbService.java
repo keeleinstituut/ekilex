@@ -413,6 +413,11 @@ public class LifecycleLogDbService {
 			}
 			Long wordId = (Long) entityData.get("word1_id");
 			createWordLifecycleLog(wordId, lifecycleLogId);
+		} else if (LifecycleEntity.WORD_RELATION_GROUP_MEMBER.equals(entity)) {
+			Map<String, Object> memberData = helper.getWordRelationGroupMember(create, entityId);
+			Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+			Long wordId = (Long) memberData.get("word_id");
+			createWordLifecycleLog(wordId, lifecycleLogId);
 		}
 	}
 

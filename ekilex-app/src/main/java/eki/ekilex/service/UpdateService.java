@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -275,14 +276,33 @@ public class UpdateService {
 	public void addWordRelation(Long wordId, Long targetWordId, String relationTypeCode) {
 		Optional<WordRelationGroupType> wordRelationGroupType = WordRelationGroupType.toRelationGroupType(relationTypeCode);
 		if (wordRelationGroupType.isPresent()) {
+			boolean doLogging = false;
+			String previousLogValue = null;
 			Long groupId = updateDbService.findWordRelationGroupId(relationTypeCode, wordId);
 			if (groupId == null) {
 				groupId = updateDbService.addWordRelationGroup(relationTypeCode);
 				updateDbService.addWordRelationGroupMember(groupId, wordId);
 				updateDbService.addWordRelationGroupMember(groupId, targetWordId);
+				doLogging = true;
 			} else {
 				if (!updateDbService.isMemberOfWordRelationGroup(groupId, targetWordId)) {
+					List<Map<String, Object>> wordRelationGroupMembers = updateDbService.findWordRelationGroupMembers(groupId);
+					previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
 					updateDbService.addWordRelationGroupMember(groupId, targetWordId);
+					doLogging = true;
+				}
+			}
+			if (doLogging) {
+				List<Map<String, Object>> wordRelationGroupMembers = updateDbService.findWordRelationGroupMembers(groupId);
+				String logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
+				for (Map<String, Object> member : wordRelationGroupMembers) {
+					lifecycleLogDbService.addLog(
+							LifecycleEventType.CREATE,
+							LifecycleEntity.WORD_RELATION_GROUP_MEMBER,
+							LifecycleProperty.VALUE,
+							(Long) member.get("id"),
+							previousLogValue,
+							logValue);
 				}
 			}
 		} else {
@@ -402,8 +422,26 @@ public class UpdateService {
 			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD_RELATION, LifecycleProperty.VALUE, relationId);
 			updateDbService.deleteWordRelation(relationId);
 		} else {
+			List<Map<String, Object>> wordRelationGroupMembers = updateDbService.findWordRelationGroupMembers(groupId);
+			String relationTypeCode = wordRelationGroupMembers.get(0).get("word_rel_type_code").toString();
+			String previousLogValue = relationTypeCode + " : " + wordRelationGroupMembers.stream().map(m -> m.get("value").toString()).collect(Collectors.joining(","));
+			String logValue = null;
+			if (wordRelationGroupMembers.size() > 2) {
+				logValue = relationTypeCode + " : " + wordRelationGroupMembers.stream()
+					.filter(m -> !relationId.equals(m.get("id")))
+					.map(m -> m.get("value").toString()).collect(Collectors.joining(","));
+			}
+			for (Map<String, Object> member : wordRelationGroupMembers) {
+				lifecycleLogDbService.addLog(
+						LifecycleEventType.DELETE,
+						LifecycleEntity.WORD_RELATION_GROUP_MEMBER,
+						LifecycleProperty.VALUE,
+						(Long) member.get("id"),
+						previousLogValue,
+						logValue);
+			}
 			updateDbService.deleteWordRelationGroupMember(relationId);
-			if (updateDbService.findNumberOfRelationGroupMembers(groupId) <= 1) {
+			if (wordRelationGroupMembers.size() <= 2) {
 				updateDbService.deleteWordRelationGroup(groupId);
 			}
 		}
