@@ -19,7 +19,7 @@ import eki.common.data.AppData;
 @Component
 public class AppDataHolder {
 
-	@Value("${server.servlet.session.timeout:30m}") // default 30 min
+	@Value("${server.servlet.session.timeout:30m}")
 	private Duration sessionTimeout;
 
 	@Autowired
