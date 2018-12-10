@@ -136,7 +136,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
 		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
-		//List<Paradigm> paradigms = conversionUtil.composeParadigmsOld(paradigmFormsMap, displayLang);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
 		lexemes.forEach(lexeme -> {

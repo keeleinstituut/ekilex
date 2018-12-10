@@ -14,6 +14,8 @@ public class Paradigm extends AbstractDataObject {
 
 	private List<ParadigmGroup> groups;
 
+	private boolean expandable;
+
 	//TODO will be removed later
 	private List<Form> forms;
 
@@ -42,6 +44,14 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setGroups(List<ParadigmGroup> groups) {
 		this.groups = groups;
+	}
+
+	public boolean isExpandable() {
+		return expandable;
+	}
+
+	public void setExpandable(boolean expandable) {
+		this.expandable = expandable;
 	}
 
 	public List<Form> getForms() {

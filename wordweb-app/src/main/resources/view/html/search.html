@@ -449,7 +449,7 @@
               </div>
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
                 <h5 class="font-weight-bold" th:text="#{label.word.forms}">Sõnavormid</h5>
-                <span th:text="#{label.unchangeable.word}">See sõna ei muutu</span>
+                <span th:text="#{label.indeclinable.word}">See sõna ei muutu</span>
               </div>
               <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
                 <h5 class="font-weight-bold">
@@ -457,7 +457,7 @@
                   <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
                 <div class="position-relative" th:each="paradigm,paradigmIter : ${wordData.paradigms}">
-                  <button class="more-btn" aria-expanded="false">
+                  <button class="more-btn" aria-expanded="false" th:if="${paradigm.expandable}">
                     <span class="icon icon-chevron-left"></span>
                   </button>
                   <p th:text="${paradigm.title}" th:if="${paradigm.title != null}"></p>

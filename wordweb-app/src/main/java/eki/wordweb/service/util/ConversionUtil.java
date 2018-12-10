@@ -1,14 +1,11 @@
 package eki.wordweb.service.util;
 
-import static java.util.Arrays.asList;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,7 +24,6 @@ import eki.wordweb.data.CollocationRelGroup;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.DisplayColloc;
 import eki.wordweb.data.Form;
-import eki.wordweb.data.FormPair;
 import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
@@ -725,11 +721,13 @@ public class ConversionUtil {
 			if (CollectionUtils.isNotEmpty(paradigmTitleElements)) {
 				paradigmTitle = StringUtils.join(paradigmTitleElements, ", ");
 			}
+			boolean isExpandable = forms.stream().anyMatch(form -> form.getDisplayLevel() > 1);
 
 			Paradigm paradigm = new Paradigm();
 			paradigm.setParadigmId(paradigmId);
 			paradigm.setTitle(paradigmTitle);
 			paradigm.setGroups(new ArrayList<>());
+			paradigm.setExpandable(isExpandable);
 			paradigms.add(paradigm);
 
 			Map<String, List<Form>> formGroupsMap = forms.stream()
@@ -746,8 +744,8 @@ public class ConversionUtil {
 
 			if (CollectionUtils.isEmpty(morphGroup1Names)) {
 				ParadigmGroup paradigmGroup = new ParadigmGroup();
-				paradigmGroup.setForms1(forms);
 				paradigm.getGroups().add(paradigmGroup);
+				distributeParadigmGroupForms(null, paradigmGroup, forms);
 			} else {
 				for (String morphGroup1Name : morphGroup1Names) {
 					paradigmGroup1 = newParadigmGroup(morphGroup1Name);
@@ -851,11 +849,16 @@ public class ConversionUtil {
 				formsWrapup = morphForm.getForm();
 				displayFormsWrapup = morphForm.getDisplayForm();
 			}
+			if (StringUtils.isBlank(displayFormsWrapup)) {
+				displayFormsWrapup = "-";
+			}
 			morphForm.setFormsWrapup(formsWrapup);
 			morphForm.setDisplayFormsWrapup(displayFormsWrapup);
 			groupedForms.add(morphForm);
 		}
-		if (morphGroupNames.size() > 2) {
+		if (CollectionUtils.isEmpty(morphGroupNames)) {
+			paradigmGroup.setForms1(groupedForms);
+		} else if (morphGroupNames.size() > 2) {
 			paradigmGroup.getForms1().addAll(groupedForms);
 		} else {
 			if (CollectionUtils.isEmpty(paradigmGroup.getForms1())) {
@@ -864,79 +867,6 @@ public class ConversionUtil {
 				paradigmGroup.setForms2(groupedForms);
 			}
 		}
-	}
-
-	@Deprecated
-	public List<Paradigm> composeParadigmsOld(Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
-
-		List<Paradigm> paradigms = new ArrayList<>();
-		Map<String, Form> formMap;
-		List<FormPair> compactForms;
-		String morphCode;
-		for (Entry<Long, List<Form>> paradigmFormsEntry : paradigmFormsMap.entrySet()) {
-			Long paradigmId = paradigmFormsEntry.getKey();
-			List<Form> forms = paradigmFormsEntry.getValue();
-			formMap = new HashMap<>();
-			for (Form form : forms) {
-				morphCode = classifierUtil.applyClassifiers(form, displayLang);
-				formMap.put(morphCode, form);
-			}
-			compactForms = composeCompactForms(formMap);
-			Paradigm paradigm = new Paradigm();
-			paradigm.setParadigmId(paradigmId);
-			paradigm.setForms(forms);
-			paradigm.setCompactForms(compactForms);
-			paradigms.add(paradigm);
-		}
-		paradigms.sort(Comparator.comparing(Paradigm::getParadigmId));
-		return paradigms;
-	}
-
-	@Deprecated
-	private List<FormPair> composeCompactForms(Map<String, Form> formMap) {
-
-		final String[] orderedMorphPairCodes1 = new String[] {"SgN", "SgG", "SgP"};
-		final String[] orderedMorphPairCodes2 = new String[] {"PlN", "PlG", "PlP"};
-//		final String[] unorderedMorphPairCodes = new String[] {"Sup", "Inf", "IndPrSg3", "PtsPtIps", "ID"};
-
-		List<FormPair> compactForms = new ArrayList<>();
-		FormPair formPair;
-		for (int orderedMorphPairIndex = 0; orderedMorphPairIndex < orderedMorphPairCodes1.length; orderedMorphPairIndex++) {
-			String morphCode1 = orderedMorphPairCodes1[orderedMorphPairIndex];
-			Form form1 = formMap.get(morphCode1);
-			String morphCode2 = orderedMorphPairCodes2[orderedMorphPairIndex];
-			Form form2 = formMap.get(morphCode2);
-			if ((form1 != null) || (form2 != null)) {
-				formPair = new FormPair();
-				formPair.setForm1(form1);
-				formPair.setForm2(form2);
-				compactForms.add(formPair);
-			}
-		}
-		formPair = null;
-		List<String> codesToSkip = new ArrayList<>();
-		codesToSkip.addAll(asList(orderedMorphPairCodes1));
-		codesToSkip.addAll(asList(orderedMorphPairCodes2));
-		for (String morphCode : formMap.keySet()) {
-			if (codesToSkip.contains(morphCode)) {
-				continue;
-			}
-			Form form = formMap.get(morphCode);
-			if (form == null) {
-				continue;
-			}
-			if (formPair == null) {
-				formPair = new FormPair();
-			}
-			if (formPair.getForm1() == null) {
-				formPair.setForm1(form);
-				compactForms.add(formPair);
-			} else if (formPair.getForm2() == null) {
-				formPair.setForm2(form);
-				formPair = null;
-			}
-		}
-		return compactForms;
 	}
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
