@@ -21,9 +21,18 @@
 	color: #a9a9a9;
 }
 
+.inner-container .toggle {
+	overflow: hidden;
+}
+
 .inner-container .active {
 	background: dodgerblue;
 	color: white;
+}
+
+.inner-container .active:focus {
+	  box-shadow: 0 0 0 0.2rem rgba(0, 63, 135, 0.5);
+    background: #0263d2;
 }
 
 .toggle {
@@ -32,6 +41,11 @@
 	height: inherit;
 	display: flex;
 	box-sizing: border-box;
+}
+
+.toggle:focus {
+	background: #a9a9a9;
+	color: white;
 }
 
 .toggle p {
