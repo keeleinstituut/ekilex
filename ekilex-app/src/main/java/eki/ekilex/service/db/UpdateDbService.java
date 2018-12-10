@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
@@ -632,6 +633,15 @@ public class UpdateDbService implements DbConstant {
 				.values(lexemeId, sourceId, refType.name(), sourceValue, sourceName).returning(LEXEME_SOURCE_LINK.ID)
 				.fetchOne()
 				.getId();
+	}
+
+	public Long addLexemeRelation(Long lexemeId1, Long lexemeId2, String relationType) {
+		LexRelationRecord lexemeRelation = create.newRecord(LEX_RELATION);
+		lexemeRelation.setLexeme1Id(lexemeId1);
+		lexemeRelation.setLexeme2Id(lexemeId2);
+		lexemeRelation.setLexRelTypeCode(relationType);
+		lexemeRelation.store();
+		return lexemeRelation.getId();
 	}
 
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {

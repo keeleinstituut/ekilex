@@ -285,10 +285,10 @@
       <div class="card-body p-2">
         <span th:text="${'Kokku leiti : ' + totalCount}"></span>
         <div style="max-height: 70vh; overflow: auto;">
-          <table id="results" class="table table-striped mb-0">
+          <table class="table table-striped mb-0">
             <tr th:each="word : ${wordsFoundBySearch}">
               <td class="p-0" style="line-height: 0.6rem;">
-                <div class="btn btn-custom pt-0" th:data-id="${word.wordId}">
+                <div class="btn btn-custom pt-0">
                   <span th:text="${word.value}" class="ttl">vorm 1</span>
                   <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
                   (
@@ -312,6 +312,86 @@
       </div>
     </div>
     <div class="card" th:if="${#lists.isEmpty(wordsFoundBySearch)}">
+      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+    </div>
+  </div>
+
+  <div id="addNewLexemeRelationDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/lexemesearchajax}">
+            <input type="hidden" name="lexemeId">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id">
+            <input type="hidden" name="opCode" value="lexeme_relation">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="value">
+                  <option th:each="item : ${lexemeRelationTypes}"
+                          th:value="${item.code}"
+                          th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-name="dialogContent" th:fragment="lexeme_search_result">
+    <div class="card" th:if="${not #lists.isEmpty(lexemesFoundBySearch)}">
+      <div class="card-body p-2">
+        <div style="max-height: 70vh; overflow: auto;">
+          <table class="table table-striped mb-0">
+            <tr th:each="lexeme : ${lexemesFoundBySearch}">
+              <td class="p-0">
+                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2"
+                        th:data-lexeme-id="${lexeme.lexemeId}">Lisa</button>
+                <div>
+                  <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
+                    <span th:text="${word}"></span>
+                    <span th:unless="${wordIter.last}">,</span>
+                  </span>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <span class="pt-0" style="color: #007bff;">
+                      <span th:text="${meaningWord.value}"></span>
+                      <span th:text="${meaningWord.homonymNumber}"></span>
+                      <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+                    </span>
+                    <span th:unless="${meaningWordIter.last}">|</span>
+                  </th:block>
+                  <small th:if="${lexeme.levels != null}" th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+                </div>
+                <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                  <span th:text="${lexeme.definitions.get(0).value}"></span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
       <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
     </div>
   </div>

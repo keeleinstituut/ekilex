@@ -319,6 +319,9 @@ public class ModifyController implements WebConstant {
 		case "word_relation" :
 			updateService.addWordRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
 			break;
+		case "lexeme_relation" :
+			updateService.addLexemeRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
+			break;
 		}
 		return "{}";
 	}

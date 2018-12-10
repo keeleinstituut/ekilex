@@ -400,10 +400,16 @@
                   </tr>
                 </table>
               </div>
-              <div th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
+              <div>
                 <hr />
                 <span class="lbl">Ilmiku seosed</span>
-                <table class="orderable" th:data-op-code="lexeme_relation">
+                <button type="button" class="btn badge badge-success" title="Lisa seos"
+                        th:data-id="${lexeme.lexemeId}"
+                        onclick="openAddNewLexemeRelationDlg(this)"
+                        data-toggle="modal" data-target="#addNewLexemeRelationDlg">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <table class="orderable" th:data-op-code="lexeme_relation" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                   <tr th:each="relation, itemStat : ${lexeme.lexemeRelations}"
                       th:data-id="${relation.id}"
                       th:data-op-code="lexeme_relation"
@@ -732,6 +738,7 @@
   <div th:replace="common :: #wordAspectDlg"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
   <div th:replace="lexsearch_components :: #addNewWordRelationDlg"></div>
+  <div th:replace="lexsearch_components :: #addNewLexemeRelationDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
