@@ -85,6 +85,11 @@ public abstract class AbstractSearchController implements WebConstant {
 		return commonDataService.getWordRelationTypes();
 	}
 
+	@ModelAttribute("lexemeRelationTypes")
+	public List<Classifier> getLexemeRelationTypes() {
+		return commonDataService.getLexemeRelationTypes();
+	}
+
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);

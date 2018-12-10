@@ -216,6 +216,30 @@ public class LexSearchService implements SystemConstant {
 		return commonDataDbService.getLexemeDerivs(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
+	@Transactional
+	public List<WordLexeme> findWordLexemesWithDefinitionsData(String searchFilter, List<String> selectedDatasets) {
+		List<WordLexeme> lexemes = new ArrayList<>();
+		if (isNotBlank(searchFilter)) {
+			WordsResult words = findWords(searchFilter, selectedDatasets, false);
+			if (CollectionUtils.isNotEmpty(words.getWords())) {
+				for (Word word : words.getWords()) {
+					List<WordLexeme> wordLexemes = lexSearchDbService.findWordLexemes(word.getWordId(), selectedDatasets).into(WordLexeme.class);
+					wordLexemes.forEach(lexeme -> {
+						Long meaningId = lexeme.getMeaningId();
+						List<Word> meaningWords = lexSearchDbService.findMeaningWords(lexeme.getWordId(), meaningId, selectedDatasets).into(Word.class);
+						List<DefinitionRefTuple> definitionRefTuples = commonDataDbService.findMeaningDefinitionRefTuples(meaningId).into(DefinitionRefTuple.class);
+						List<Definition> definitions = conversionUtil.composeMeaningDefinitions(definitionRefTuples);
+						lexeme.setMeaningWords(meaningWords);
+						lexeme.setDefinitions(definitions);
+					});
+					combineLevels(wordLexemes);
+					lexemes.addAll(wordLexemes);
+				}
+			}
+		}
+		return lexemes;
+	}
+
 	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
 
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());

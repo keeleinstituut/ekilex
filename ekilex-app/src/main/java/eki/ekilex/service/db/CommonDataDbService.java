@@ -1,6 +1,5 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ASPECT_TYPE;
 import static eki.ekilex.data.db.Tables.ASPECT_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
@@ -20,6 +19,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
@@ -443,6 +443,14 @@ public class CommonDataDbService implements DbConstant {
 						.and(FORM.MODE.eq(FormMode.WORD.name()))
 						.and(WORD.ID.eq(wordId)))
 				.fetchOne();
+	}
+
+	public Result<Record2<String, String>> getLexemeRelationTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(LEX_REL_TYPE_LABEL.CODE, LEX_REL_TYPE_LABEL.VALUE)
+				.from(LEX_REL_TYPE_LABEL)
+				.where(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
 	}
 
 }

@@ -1,8 +1,10 @@
 package eki.ekilex.web.controller;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.WordLexeme;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -97,7 +99,7 @@ public class LexSearchController extends AbstractSearchController {
 	}
 
 	@GetMapping("/wordsearchajax")
-	public String searchAjax(
+	public String searchWordAjax(
 			@RequestParam String searchFilter,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
@@ -108,6 +110,21 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("totalCount", result.getTotalCount());
 
 		return 	" lexsearch_components :: word_search_result";
+	}
+
+	@GetMapping("/lexemesearchajax")
+	public String searchLexemeAjax(
+			@RequestParam String searchFilter,
+			@RequestParam Long lexemeId,
+			Model model) {
+		logger.debug("lexeme search ajax {}, lexeme {}", searchFilter, lexemeId);
+
+		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
+		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, datasets);
+		model.addAttribute("lexemesFoundBySearch", lexemes);
+
+		return 	" lexsearch_components :: lexeme_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

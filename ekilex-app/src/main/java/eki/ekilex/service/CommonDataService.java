@@ -87,4 +87,9 @@ public class CommonDataService {
 		return commonDataDbService.getWordRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
 	}
 
+	@Transactional
+	public List<Classifier> getLexemeRelationTypes() {
+		return commonDataDbService.getLexemeRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
+	}
+
 }
