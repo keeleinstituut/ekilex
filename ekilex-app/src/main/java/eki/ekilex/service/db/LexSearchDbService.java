@@ -4,8 +4,6 @@ import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
-import static eki.ekilex.data.db.Tables.FORM_RELATION;
-import static eki.ekilex.data.db.Tables.FORM_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -42,7 +40,6 @@ import org.jooq.Record10;
 import org.jooq.Record15;
 import org.jooq.Record4;
 import org.jooq.Record6;
-import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Record9;
 import org.jooq.Result;
@@ -670,40 +667,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(f2.MODE.eq(FormMode.WORD.name()))
 						)
 				.orderBy(we.ID)
-				.fetch();
-	}
-
-	public Result<Record7<Long,Long,String,Long,String,String,String>> findWordFormRelations(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		Form f1 = FORM.as("f1");
-		Form f2 = FORM.as("f2");
-
-		return create
-				.select(
-						PARADIGM.ID.as("paradigm_id"),
-						f1.ID.as("form1_id"),
-						f1.VALUE.as("form1_value"),
-						f2.ID.as("form2_id"),
-						f2.VALUE.as("form2_value"),
-						FORM_REL_TYPE_LABEL.CODE.as("rel_type_code"),
-						FORM_REL_TYPE_LABEL.VALUE.as("rel_type_label")
-						)
-				.from(
-						PARADIGM,
-						f1,
-						f2,
-						FORM_RELATION.leftOuterJoin(FORM_REL_TYPE_LABEL).on(
-							FORM_RELATION.FORM_REL_TYPE_CODE.eq(FORM_REL_TYPE_LABEL.CODE)
-							.and(FORM_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-							.and(FORM_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))))
-						)
-				.where(
-						PARADIGM.WORD_ID.eq(wordId)
-						.and(f1.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM_RELATION.FORM1_ID.eq(f1.ID))
-						.and(FORM_RELATION.FORM2_ID.eq(f2.ID))
-						)
-				.orderBy(PARADIGM.ID, FORM_RELATION.ORDER_BY)
 				.fetch();
 	}
 

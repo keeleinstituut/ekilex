@@ -26,7 +26,6 @@ import eki.ekilex.data.CollocationPosGroup;
 import eki.ekilex.data.CollocationTuple;
 import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionRefTuple;
-import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.FreeForm;
 import eki.ekilex.data.Government;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
@@ -174,8 +173,7 @@ public class LexSearchService implements SystemConstant {
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 		List<WordLexeme> lexemes = lexSearchDbService.findWordLexemes(wordId, selectedDatasets).into(WordLexeme.class);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
-		List<FormRelation> wordFormRelations = lexSearchDbService.findWordFormRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(FormRelation.class);
-		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples, wordFormRelations);
+		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
 		List<Relation> wordRelations = lexSearchDbService.findWordRelations(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<WordEtym> wordEtymology = lexSearchDbService.findWordEtymology(wordId).into(WordEtym.class);
 		List<Relation> wordGroupMembers = lexSearchDbService.findWordGroupMembers(wordId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);

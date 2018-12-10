@@ -23,9 +23,6 @@ import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.FormRelType;
-import eki.ekilex.data.db.tables.FormRelTypeLabel;
-import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.GameNonword;
@@ -136,7 +133,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1677455506;
+    private static final long serialVersionUID = -1203461941;
 
     /**
      * The reference instance of <code>public</code>
@@ -237,21 +234,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.form</code>.
      */
     public final Form FORM = eki.ekilex.data.db.tables.Form.FORM;
-
-    /**
-     * The table <code>public.form_rel_type</code>.
-     */
-    public final FormRelType FORM_REL_TYPE = eki.ekilex.data.db.tables.FormRelType.FORM_REL_TYPE;
-
-    /**
-     * The table <code>public.form_rel_type_label</code>.
-     */
-    public final FormRelTypeLabel FORM_REL_TYPE_LABEL = eki.ekilex.data.db.tables.FormRelTypeLabel.FORM_REL_TYPE_LABEL;
-
-    /**
-     * The table <code>public.form_relation</code>.
-     */
-    public final FormRelation FORM_RELATION = eki.ekilex.data.db.tables.FormRelation.FORM_RELATION;
 
     /**
      * The table <code>public.freeform</code>.
@@ -664,9 +646,6 @@ public class Public extends SchemaImpl {
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
             Sequences.FORM_ID_SEQ,
-            Sequences.FORM_REL_TYPE_ORDER_BY_SEQ,
-            Sequences.FORM_RELATION_ID_SEQ,
-            Sequences.FORM_RELATION_ORDER_BY_SEQ,
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
@@ -758,9 +737,6 @@ public class Public extends SchemaImpl {
             EtymologyType.ETYMOLOGY_TYPE,
             FeedbackLog.FEEDBACK_LOG,
             Form.FORM,
-            FormRelType.FORM_REL_TYPE,
-            FormRelTypeLabel.FORM_REL_TYPE_LABEL,
-            FormRelation.FORM_RELATION,
             Freeform.FREEFORM,
             FreeformSourceLink.FREEFORM_SOURCE_LINK,
             GameNonword.GAME_NONWORD,

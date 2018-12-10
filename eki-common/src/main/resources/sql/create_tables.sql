@@ -282,23 +282,6 @@ create table lex_rel_type_label
   unique(code, lang, type)
 );
 
--- vormi seose liik
-create table form_rel_type
-(
-  code varchar(100) primary key,
-  datasets varchar(10) array not null,
-  order_by bigserial
-);
-
-create table form_rel_type_label
-(
-  code varchar(100) references form_rel_type(code) on delete cascade not null,
-  value text not null,
-  lang char(3) references language(code) not null,
-  type varchar(10) references label_type(code) not null,
-  unique(code, lang, type)
-);
-
 -- ilmiku seose liik
 create table word_rel_type
 (
@@ -538,18 +521,6 @@ create table form
   order_by integer not null default 0
 );
 alter sequence form_id_seq restart with 10000;
-
--- vormi seos
-create table form_relation
-(
-  id bigserial primary key,
-  form1_id bigint references form(id) on delete cascade not null,
-  form2_id bigint references form(id) on delete cascade not null,
-  form_rel_type_code varchar(100) references form_rel_type(code),
-  order_by bigserial,
-  unique(form1_id, form2_id, form_rel_type_code)
-);
-alter sequence form_relation_id_seq restart with 10000;
 
 -- tähendus
 create table meaning
@@ -884,8 +855,6 @@ create index lex_relation_lexeme1_id_idx on lex_relation(lexeme1_id);
 create index lex_relation_lexeme2_id_idx on lex_relation(lexeme2_id);
 create index word_relation_word1_id_idx on word_relation(word1_id);
 create index word_relation_word2_id_idx on word_relation(word2_id);
-create index form_relation_form1_id_idx on form_relation(form1_id);
-create index form_relation_form2_id_idx on form_relation(form2_id);
 create index freeform_parent_id_idx on freeform(parent_id);
 create index freeform_value_text_idx on freeform(value_text);
 create index freeform_type_idx on freeform(type);
