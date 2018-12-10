@@ -7,7 +7,8 @@ $(document).ready(function() {
 		window.location = applicationUrl;
 	}, sessionTimeoutMs);
 
-	$('[data-toggle="tooltip"]').tooltip();
+	//TODO causes # at url - can't allow that
+	//parent.location.hash = ''; // Clear Hash
 
 	$(".form-email").on('input', function() {
 		var input = $(this);
@@ -20,17 +21,12 @@ $(document).ready(function() {
 		}
 	});
 
-	parent.location.hash = ''; // Clear Hash
-
-	$(function() {
-		$('[autofocus]:not(:focus)').eq(0).focus();
-		$('.home-page #search').focus();
-	});
+	$('[autofocus]:not(:focus)').eq(0).focus();
+	$('.home-page #search').focus();
 
 	// Focus trap modal
 	$('#feedbackModal .btn:last-of-type').on('focus', function(e) {
 		if ($("#feedbackModal").val() == "") {
-
 			$("#feedbackModal .icon-close").focus();
 		}
 	});
@@ -38,11 +34,11 @@ $(document).ready(function() {
 	// Focus trap sidebar
 	$('.header-links .menu-item:last-of-type').on('focus', function(e) {
 		if ($("#langDropdownMenuButton").val() == "") {
-
 			$("#langDropdownMenuButton").focus();
 		}
 	});
 
+	$('[data-toggle="tooltip"]').tooltip();
 });
 
 $(document).on("click", ".menu-btn", function(e) {
