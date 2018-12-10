@@ -54,7 +54,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String ANTONYMS_REPORT_NAME = "antonyms";
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String COMPOUND_WORDS_REPORT_NAME = "compound_words";
-	private final static String REFERENCE_FORMS_REPORT_NAME = "reference_forms";
 	private final static String MEANING_REFERENCES_REPORT_NAME = "meaning_references";
 	private final static String JOINT_REFERENCES_REPORT_NAME = "joint_references";
 	private final static String COMPOUND_REFERENCES_REPORT_NAME = "compound_references";
@@ -69,8 +68,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String WORD_RELATION_POSITIVE = "posit";
 	private final static String WORD_RELATION_UNION = "ühend";
 
-	private final static String FORM_RELATION_REFERENCE_FORM = "mvt";
-
 	private final static String LEXEME_RELATION_COMPOUND_FORM = "pyh";
 	private final static String LEXEME_RELATION_SINGLE_FORM = "yvr";
 	private final static String LEXEME_RELATION_VORMEL = "vor";
@@ -81,7 +78,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 
-	private final static String sqlFormsOfTheWord = "select f.* from " + FORM + " f, " + PARADIGM + " p where p.word_id = :word_id and f.paradigm_id = p.id";
 	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
 
 	private static Logger logger = LoggerFactory.getLogger(PsvLoaderRunner.class);
@@ -130,8 +126,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		if (reportingEnabled) {
 			reportComposer = new ReportComposer("PSV import",
-					ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME,
-					COMPOUND_WORDS_REPORT_NAME, REFERENCE_FORMS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
+					ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME,
+					COMPOUND_WORDS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
 					COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
 					WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
 		}
@@ -173,7 +169,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		processSynonymsNotFoundInImportFile(context);
 		processAntonyms(context);
 		processBasicWords(context);
-		processReferenceForms(context);
 		processCompoundWords(context);
 		processMeaningReferences(context);
 		processJointReferences(context);
@@ -467,47 +462,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			lexemeId = (Long) lexemes.get(0).get("id");
 		}
 		return lexemeId;
-	}
-
-	private void processReferenceForms(Context context) throws Exception {
-
-		logger.debug("Found {} reference forms.", context.referenceForms.size());
-		setActivateReport(REFERENCE_FORMS_REPORT_NAME);
-		writeToLogFile("Vormid mis viitavad põhisõnale töötlus <x:mvt>", "", "");
-
-		for (ReferenceFormData referenceForm : context.referenceForms) {
-			Optional<WordData> word = context.importedWords.stream()
-					.filter(w -> referenceForm.wordValue.equals(w.value) && referenceForm.wordHomonymNr == w.homonymNr).findFirst();
-			if (word.isPresent()) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("word_id", word.get().id);
-				List<Map<String, Object>> forms = basicDbService.queryList(sqlFormsOfTheWord, params);
-				List<Map<String, Object>> wordForms = forms.stream().filter(f -> {
-					String mode = (String) f.get("mode");
-					return StringUtils.equals(mode, FormMode.WORD.name());
-				}).collect(Collectors.toList());
-				if (wordForms.size() > 1) {
-					logger.debug("More than one word form found for word : {}, id : {}", referenceForm.wordValue, word.get().id);
-					continue;
-				}
-				Map<String, Object> wordForm = wordForms.get(0);
-				Optional<Map<String, Object>> form = forms.stream().filter(f -> referenceForm.formValue.equals(f.get("value"))).findFirst();
-				if (!form.isPresent()) {
-					logger.debug("Form not found for {}, {} -> {}", referenceForm.reportingId, referenceForm.formValue, referenceForm.wordValue);
-					writeToLogFile(referenceForm.reportingId, "Vormi ei leitud", referenceForm.formValue + " -> " + referenceForm.wordValue);
-					continue;
-				}
-				params.clear();
-				params.put("form1_id", form.get().get("id"));
-				params.put("form2_id", wordForm.get("id"));
-				params.put("form_rel_type_code", FORM_RELATION_REFERENCE_FORM);
-				basicDbService.create(FORM_RELATION, params);
-			} else {
-				logger.debug("Word not found {}, {}, {}", referenceForm.reportingId, referenceForm.wordValue, referenceForm.wordHomonymNr);
-				writeToLogFile(referenceForm.reportingId, "Sihtsõna ei leitud", referenceForm.wordValue + ", " + referenceForm.wordHomonymNr);
-			}
-		}
-		logger.debug("Reference forms processing done.");
 	}
 
 	private void processBasicWords(Context context) throws Exception {
@@ -1204,38 +1158,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String referenceFormExp = "x:mvt";
 
 		List<Node> referenceFormNodes = headerNode.selectNodes(referenceFormExp);
-		boolean isReferenceForm = !referenceFormNodes.isEmpty();
+		boolean isWord = referenceFormNodes.isEmpty();
 
-		if (isReferenceForm) {
-			processAsForm(reportingId, headerNode, referenceFormNodes, context.referenceForms);
-		} else {
+		if (isWord) {
 			processAsWord(guid, reportingId, headerNode, newWords, ssGuidMap, context);
-		}
-	}
-
-	private void processAsForm(String reportingId, Element headerNode, List<Node> referenceFormNodes, List<ReferenceFormData> referenceForms) {
-
-		final String wordGroupExp = "x:mg";
-		final String wordExp = "x:m";
-		final String homonymNrAttr = "i";
-
-		List<Node> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
-		for (Node wordGroupNode : wordGroupNodes) {
-			Node wordNode = wordGroupNode.selectSingleNode(wordExp);
-			String formValue = nodeToString(wordNode);
-			formValue = StringUtils.replaceChars(formValue, wordDisplayFormStripChars, "");
-			for (Node referenceFormNode : referenceFormNodes) {
-				Element referenceFormElement = (Element) referenceFormNode;
-				ReferenceFormData referenceFormData = new ReferenceFormData();
-				String wordValue = nodeToString(referenceFormElement);
-				referenceFormData.formValue = formValue;
-				referenceFormData.reportingId = reportingId;
-				referenceFormData.wordValue = wordValue;
-				if (referenceFormElement.attributeValue(homonymNrAttr) != null) {
-					referenceFormData.wordHomonymNr = Integer.parseInt(referenceFormElement.attributeValue(homonymNrAttr));
-				}
-				referenceForms.add(referenceFormData);
-			}
 		}
 	}
 
@@ -1566,7 +1492,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> basicWords = new ArrayList<>();
 		List<WordData> unionWords = new ArrayList<>(); // ühendiviide
-		List<ReferenceFormData> referenceForms = new ArrayList<>(); // viitemärksõna
 		List<LexemeToWordData> compoundWords = new ArrayList<>(); // liitsõnad
 		List<LexemeToWordData> meaningReferences = new ArrayList<>(); // tähendusviide
 		List<LexemeToWordData> jointReferences = new ArrayList<>(); // ühisviide

@@ -104,21 +104,6 @@ public class Sequences {
     public static final Sequence<Long> FORM_ID_SEQ = new SequenceImpl<Long>("form_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.form_rel_type_order_by_seq</code>
-     */
-    public static final Sequence<Long> FORM_REL_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("form_rel_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.form_relation_id_seq</code>
-     */
-    public static final Sequence<Long> FORM_RELATION_ID_SEQ = new SequenceImpl<Long>("form_relation_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
-     * The sequence <code>public.form_relation_order_by_seq</code>
-     */
-    public static final Sequence<Long> FORM_RELATION_ORDER_BY_SEQ = new SequenceImpl<Long>("form_relation_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
-
-    /**
      * The sequence <code>public.freeform_id_seq</code>
      */
     public static final Sequence<Long> FREEFORM_ID_SEQ = new SequenceImpl<Long>("freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

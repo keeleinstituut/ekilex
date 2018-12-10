@@ -23,9 +23,6 @@ import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
-import eki.ekilex.data.db.tables.FormRelType;
-import eki.ekilex.data.db.tables.FormRelTypeLabel;
-import eki.ekilex.data.db.tables.FormRelation;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
 import eki.ekilex.data.db.tables.GameNonword;
@@ -211,21 +208,6 @@ public class Tables {
      * The table <code>public.form</code>.
      */
     public static final Form FORM = eki.ekilex.data.db.tables.Form.FORM;
-
-    /**
-     * The table <code>public.form_rel_type</code>.
-     */
-    public static final FormRelType FORM_REL_TYPE = eki.ekilex.data.db.tables.FormRelType.FORM_REL_TYPE;
-
-    /**
-     * The table <code>public.form_rel_type_label</code>.
-     */
-    public static final FormRelTypeLabel FORM_REL_TYPE_LABEL = eki.ekilex.data.db.tables.FormRelTypeLabel.FORM_REL_TYPE_LABEL;
-
-    /**
-     * The table <code>public.form_relation</code>.
-     */
-    public static final FormRelation FORM_RELATION = eki.ekilex.data.db.tables.FormRelation.FORM_RELATION;
 
     /**
      * The table <code>public.freeform</code>.

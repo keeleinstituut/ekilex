@@ -49,7 +49,9 @@ drop table if exists meaning_relation;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning;
+-- FIXME: delete after import has been run in prod environment
 drop table if exists form_relation;
+--
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
@@ -69,8 +71,10 @@ drop table if exists meaning_rel_type_label;
 drop table if exists meaning_rel_type;
 drop table if exists word_rel_type_label;
 drop table if exists word_rel_type;
+-- FIXME: delete after import has been run in prod environment
 drop table if exists form_rel_type_label;
 drop table if exists form_rel_type;
+--
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
 drop table if exists process_state;

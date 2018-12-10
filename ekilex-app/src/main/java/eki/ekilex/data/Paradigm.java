@@ -16,8 +16,6 @@ public class Paradigm extends AbstractDataObject {
 
 	private List<Form> forms;
 
-	private List<FormRelation> formRelations;
-
 	private boolean formsExist;
 
 	public Long getParadigmId() {
@@ -50,14 +48,6 @@ public class Paradigm extends AbstractDataObject {
 
 	public void setForms(List<Form> forms) {
 		this.forms = forms;
-	}
-
-	public List<FormRelation> getFormRelations() {
-		return formRelations;
-	}
-
-	public void setFormRelations(List<FormRelation> formRelations) {
-		this.formRelations = formRelations;
 	}
 
 	public boolean isFormsExist() {

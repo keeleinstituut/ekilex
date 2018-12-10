@@ -31,7 +31,6 @@ import eki.ekilex.data.Definition;
 import eki.ekilex.data.DefinitionLangGroup;
 import eki.ekilex.data.DefinitionRefTuple;
 import eki.ekilex.data.Form;
-import eki.ekilex.data.FormRelation;
 import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Paradigm;
@@ -136,13 +135,12 @@ public class ConversionUtil {
 		return classifier;
 	}
 
-	public List<Paradigm> composeParadigms(List<ParadigmFormTuple> paradigmFormTuples, List<FormRelation> wordFormRelations) {
+	public List<Paradigm> composeParadigms(List<ParadigmFormTuple> paradigmFormTuples) {
 
 		List<Paradigm> paradigms = new ArrayList<>();
 
 		Map<Long, Paradigm> paradigmsMap = new HashMap<>();
 		List<Form> forms;
-		List<FormRelation> formRelations; 
 
 		for (ParadigmFormTuple tuple : paradigmFormTuples) {
 
@@ -151,12 +149,10 @@ public class ConversionUtil {
 			Paradigm paradigm = paradigmsMap.get(paradigmId);
 			if (paradigm == null) {
 				forms = new ArrayList<>();
-				formRelations = new ArrayList<>();
 				paradigm = new Paradigm();
 				paradigm.setParadigmId(paradigmId);
 				paradigm.setInflectionTypeNr(tuple.getInflectionTypeNr());
 				paradigm.setForms(forms);
-				paradigm.setFormRelations(formRelations);
 				paradigmsMap.put(paradigmId, paradigm);
 				paradigms.add(paradigm);
 			} else {
@@ -176,15 +172,6 @@ public class ConversionUtil {
 		composeParadigmTitles(paradigms);
 		flagFormMorphCodes(paradigms);
 		flagFormsExist(paradigms);
-
-		for (FormRelation formRelation : wordFormRelations) {
-
-			Long paradigmId = formRelation.getParadigmId();
-
-			Paradigm paradigm = paradigmsMap.get(paradigmId);
-			formRelations = paradigm.getFormRelations();
-			formRelations.add(formRelation);
-		}
 
 		return paradigms;
 	}

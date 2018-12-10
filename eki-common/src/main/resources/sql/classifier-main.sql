@@ -31,7 +31,6 @@ insert into etymology_type (code, datasets) values ('pooltõlkelaen', '{}');
 insert into etymology_type (code, datasets) values ('tehissõna', '{}');
 insert into etymology_type (code, datasets) values ('tootenimi', '{}');
 insert into etymology_type (code, datasets) values ('tõlkelaen', '{}');
-insert into form_rel_type (code, datasets) values ('mvt', '{}');
 insert into gender (code, datasets) values ('f', '{}');
 insert into gender (code, datasets) values ('n', '{}');
 insert into gender (code, datasets) values ('o', '{}');
@@ -519,7 +518,6 @@ insert into display_morph_label (code, value, lang, type) values ('Sg', 'ainsus'
 insert into display_morph_label (code, value, lang, type) values ('Pl', 'mitmus', 'est', 'wordweb');
 insert into display_morph_label (code, value, lang, type) values ('Ips', 'umbisikuline tegumood', 'est', 'wordweb');
 insert into display_morph_label (code, value, lang, type) values ('Pts', 'kesksõna', 'est', 'wordweb');
-insert into form_rel_type_label (code, value, lang, type) values ('mvt', 'viitemärksõna', 'est', 'full');
 insert into gender_label (code, value, lang, type) values ('f', 'feminine', 'eng', 'descrip');
 insert into gender_label (code, value, lang, type) values ('f', 'naissugu', 'est', 'descrip');
 insert into gender_label (code, value, lang, type) values ('n', 'neuter', 'eng', 'descrip');
