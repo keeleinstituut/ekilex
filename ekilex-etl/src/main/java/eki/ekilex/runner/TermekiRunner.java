@@ -40,7 +40,6 @@ public class TermekiRunner extends AbstractLoaderRunner {
 
 	private static final String SQL_UPDATE_DOMAIN_DATSETS = "update " + DOMAIN + " set datasets = :datasets where code = :code and origin = :origin";
 
-	private static final String defaultWordMorphCode = "SgN";
 	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private static final String TERMEKI_CLASSIFIER_PRONUNCIATION = "termeki_pronunciation";
 	private static final String TERMEKI_CLASSIFIER_WORD_CLASS = "termeki_word_class";
@@ -254,7 +253,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			String language = unifyLang((String)term.get("lang"));
 			String wordValue = (String)term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
-			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
+			Word word = new Word(wordValue,language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
 			String genderCode = intoGenderCode((String)term.get("gender"));
 			if (StringUtils.isNotBlank(genderCode)) {
 				if (existingGenders.contains(genderCode)) {
@@ -448,7 +447,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		if (abbreviation.isPresent()) {
 			String abbreviationValue = (String) abbreviation.get().get("attribute_value");
 			int homonymNr = getWordMaxHomonymNr(abbreviationValue, language) + 1;
-			Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, defaultWordMorphCode, null, null);
+			Word word = new Word(abbreviationValue,language, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
 			Long wordId = createOrSelectWord(word, null, null, wordDuplicateCount);
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(wordId);

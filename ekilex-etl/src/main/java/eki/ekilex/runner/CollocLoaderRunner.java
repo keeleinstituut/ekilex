@@ -89,8 +89,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final char lemmaDataCellDelim = ':';
 	private final char compundWordCompDelim = '+';
 
-	private final String defaultWordMorphCode = "??";
-
 	private final String domainOriginBolan = "bolan";
 
 	private final String prevWordCollocMemberName = "mse";
@@ -442,7 +440,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			wordPosCode = posConversionMap.get(wordPosCode);
 
 			// save word
-			wordObj = createOrSelectWord(word, defaultWordMorphCode, guid, wordDisplayMorph, ssGuidMap, ssWordCount, reusedWordCount);
+			wordObj = createOrSelectWord(word, DEFAULT_WORD_MORPH_CODE, guid, wordDisplayMorph, ssGuidMap, ssWordCount, reusedWordCount);
 			wordId = wordObj.getId();
 			homonymWordMap = wordMap.get(word);
 			if (homonymWordMap == null) {
@@ -587,7 +585,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			posCode = posConversionMap.get(posCode);
 			String morphCode = posMorphConversionMap.get(posCode);
 			if (StringUtils.isBlank(morphCode)) {
-				morphCode = defaultWordMorphCode;
+				morphCode = DEFAULT_WORD_MORPH_CODE;
 			}
 			if (lemmaDataCandidateCells.length == 4) {
 				String[] refNumCandidatesArr = StringUtils.split(lemmaDataCandidateCells[3], ',');
@@ -962,7 +960,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			tableRowParamMap = new HashMap<>();
 			tableRowParamMap.put("paradigm_id", paradigmId);
 			tableRowParamMap.put("mode", FormMode.UNKNOWN.name());
-			tableRowParamMap.put("morph_code", defaultWordMorphCode);
+			tableRowParamMap.put("morph_code", DEFAULT_WORD_MORPH_CODE);
 			tableRowParamMap.put("morph_exists", Boolean.TRUE);
 			tableRowParamMap.put("value", word);
 			basicDbService.create(FORM, tableRowParamMap);

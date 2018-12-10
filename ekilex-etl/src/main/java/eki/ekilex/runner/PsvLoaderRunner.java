@@ -48,7 +48,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final String dataLang = "est";
 	private final String wordDisplayFormStripChars = ".+'`()¤:_|[]";
 	private final String formStrCleanupChars = "()¤:_|[]̄̆̇’\"'`´;–+=";
-	private final String defaultWordMorphCode = "SgN";
 
 	private final static String ARTICLES_REPORT_NAME = "keywords";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";
@@ -439,7 +438,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		createdWord.value = wordValue;
 		createdWord.wordType = wordType;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, defaultWordMorphCode, null, wordType);
+		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordType);
 		createdWord.id = createOrSelectWord(word, null, null, null);
 		return createdWord;
 	}
@@ -1438,7 +1437,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				return ((Element)formGroup).attributeValue(morphCodeAttributeExp);
 			}
 		}
-		return defaultWordMorphCode;
+		return DEFAULT_WORD_MORPH_CODE;
 	}
 
 	private List<String> extractDefinitions(Node node) {

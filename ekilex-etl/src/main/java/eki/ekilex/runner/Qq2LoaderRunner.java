@@ -92,7 +92,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private final String langAttr = "lang";
 
-	private final String defaultWordMorphCode = "??";
 	private final int defaultHomonymNr = 1;
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´:_–!°()¤";
 	private final String wordComponentSeparator = "+";
@@ -232,7 +231,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 				morphNode = (Element) wordGroupNode.selectSingleNode(wordMorphExp);
 				if (morphNode == null) {
-					destinMorphCode = defaultWordMorphCode;
+					destinMorphCode = DEFAULT_WORD_MORPH_CODE;
 					destinDerivCode = null;
 				} else {
 					sourceMorphCode = morphNode.getTextTrim();
@@ -313,7 +312,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 							continue;
 						}
 
-						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, defaultWordMorphCode, null, null);
+						wordObj = new Word(wordMatch, wordMatchLang, null, null, null, null, defaultHomonymNr, DEFAULT_WORD_MORPH_CODE, null, null);
 						wordId = createOrSelectWord(wordObj, null, getDataset(), reusedWordCount);
 						wordMatches.add(wordObj);
 						allWordMatches.add(wordObj);

@@ -115,8 +115,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		logger.debug("Starting loading Esterm...");
 
-		final String defaultWordMorphCode = "??";
-
 		long t1, t2;
 		t1 = System.currentTimeMillis();
 
@@ -209,7 +207,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
-					wordObj = new Word(term, lang, null, null, null, null, homonymNr, defaultWordMorphCode, null, wordTypeCode);
+					wordObj = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCode);
 					wordId = createOrSelectWord(wordObj, null, null, null);
 
 					//lexeme

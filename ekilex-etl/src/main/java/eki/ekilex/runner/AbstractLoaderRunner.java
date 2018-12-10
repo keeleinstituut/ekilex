@@ -56,6 +56,8 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 	abstract String getDataset();
 
+	protected static final String DEFAULT_WORD_MORPH_CODE = "??";
+
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 
 	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";

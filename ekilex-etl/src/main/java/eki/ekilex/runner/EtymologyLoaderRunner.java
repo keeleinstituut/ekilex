@@ -112,7 +112,6 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Extracted {} articles", articleCount);
 
 		final String ssDataset = "ss1";
-		final String defaultWordMorphCode = "??";
 
 		List<Map<String, Object>> wordDatas;
 
@@ -309,7 +308,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								String mappedEtymLangCode = languageConversionMap.get(etymLang);
 								int homonymNr = getWordMaxHomonymNr(word, mappedEtymLangCode);
 								homonymNr++;
-								Long word2Id = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, mappedEtymLangCode, etymYear);
+								Long word2Id = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, mappedEtymLangCode, etymYear);
 								for (SourceLink sourceLink : sourceLinks) {
 									createWordSourceLink(word2Id, ReferenceType.AUTHOR, sourceLink.getSourceId(), null, sourceLink.getValue());
 								}
@@ -333,7 +332,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 								word = cleanUp(word);
 								int homonymNr = getWordMaxHomonymNr(word, langEst);
 								homonymNr++;
-								Long wordId = createWordParadigmForm(word, defaultWordMorphCode, homonymNr, langEst, null);
+								Long wordId = createWordParadigmForm(word, DEFAULT_WORD_MORPH_CODE, homonymNr, langEst, null);
 								createLexeme(wordId, meaningId);
 							}
 						}

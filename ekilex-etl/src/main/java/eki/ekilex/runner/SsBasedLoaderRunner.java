@@ -38,7 +38,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	private final static String formStrCleanupChars = "()¤:_|[]̄̆̇\"`´–+=*";  // here is not the regular -, but the special minus symbol
 	private final static String wordComponentSeparator = "+";
-	protected final static String defaultWordMorphCode = "??";
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
 
@@ -209,7 +208,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType, String aspectType) throws Exception {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
-		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, defaultWordMorphCode, null, wordType);
+		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordType);
 		word.setDisplayMorph(displayMorph);
 		word.setAspectTypeCode(aspectType);
 		WordData createdWord = new WordData();
@@ -358,7 +357,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, defaultWordMorphCode, guid, wordData.wordType);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, guid, wordData.wordType);
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
