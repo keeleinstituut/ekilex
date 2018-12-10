@@ -647,16 +647,6 @@
                   <span th:text="${paradigm.title}"></span>
                 </button>
                 <div th:id="${'paradigmArea_' + paradigm.paradigmId}" class="collapse p-1">
-                  <div th:if="${not #lists.isEmpty(paradigm.formRelations)}">
-                    <div th:each="formRelation : ${paradigm.formRelations}" style="white-space: nowrap;">
-                      <span th:text="${formRelation.form1Value}"></span>
-                      -
-                      <span th:text="${formRelation.relationTypeLabel}"></span>
-                      -
-                      <span th:text="${formRelation.form2Value}"></span>
-                    </div>
-                    <hr />
-                  </div>
                   <div th:if="${not #lists.isEmpty(paradigm.forms)}">
                     <table>
                       <tr th:each="form : ${paradigm.forms}">
