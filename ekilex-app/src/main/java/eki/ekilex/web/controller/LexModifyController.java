@@ -65,9 +65,16 @@ public class LexModifyController implements WebConstant {
 			@PathVariable("lexemeId") Long lexemeId,
 			@PathVariable("lexemeId2") Long lexemeId2,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			RedirectAttributes attributes,
+			Model model) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		List<String> validationMessages = updateService.validateLexemeJoin(lexemeId, lexemeId2);
+		if (!validationMessages.isEmpty()) {
+			model.addAttribute("sourceLexeme", lexeme);
+			model.addAttribute("validationMessages", validationMessages);
+			return LEX_JOIN_PAGE;
+		}
 		updateService.joinLexemeMeanings(lexemeId, lexemeId2);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
 

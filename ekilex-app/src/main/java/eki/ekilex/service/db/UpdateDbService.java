@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
@@ -15,6 +16,7 @@ import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
+import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_RELATION;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.WORD;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
 import eki.ekilex.data.db.tables.records.WordGroupRecord;
@@ -423,21 +426,50 @@ public class UpdateDbService implements DbConstant {
 
 	public void joinLexemeMeanings(Long lexemeId, Long sourceLexemeId) {
 
-		Long meaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne().value1();
-		Long sourceMeaningId = create.select(LEXEME.MEANING_ID).from(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).fetchOne().value1();
+		LexemeRecord lexeme = create.fetchOne(LEXEME,LEXEME.ID.eq(lexemeId));
+		LexemeRecord sourceLexeme = create.fetchOne(LEXEME,LEXEME.ID.eq(sourceLexemeId));
+		if (lexeme.getWordId().equals(sourceLexeme.getWordId()) && lexeme.getDatasetCode().equals(sourceLexeme.getDatasetCode())) {
+			joinLexemes(lexemeId, sourceLexemeId);
+		}
+		create.update(LEXEME).set(LEXEME.MEANING_ID, lexeme.getMeaningId()).where(LEXEME.MEANING_ID.eq(sourceLexeme.getMeaningId())).execute();
+		joinMeaningDefinitions(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
+		joinMeaningDomains(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
+		joinMeaningFreeforms(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
+		joinMeaningRelations(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
+		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, lexeme.getMeaningId()).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceLexeme.getMeaningId())).execute();
+		create.delete(MEANING).where(MEANING.ID.eq(sourceLexeme.getMeaningId())).execute();
+	}
 
-		// FIXME : tegelikult on meil vaja ka lekseemid ühendada, kui sama sõna viitab mõlemale tähendusele, ei saa teda lihtsalt ära kustutada
-		// delete source meaning lexemes with words, that are already connected to target meaning
-//		create.delete(LEXEME)
-//				.where(LEXEME.MEANING_ID.eq(sourceMeaningId)
-//						.and(LEXEME.WORD_ID.in(create.select(LEXEME.WORD_ID).from(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId))))).execute();
+	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {
 
-		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
-		joinMeaningDefinitions(meaningId, sourceMeaningId);
-		joinMeaningDomains(meaningId, sourceMeaningId);
-		joinMeaningFreeforms(meaningId, sourceMeaningId);
-		joinMeaningRelations(meaningId, sourceMeaningId);
-		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
+		create.update(LEXEME_SOURCE_LINK).set(LEXEME_SOURCE_LINK.LEXEME_ID, lexemeId).where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(sourceLexemeId)).execute();
+		create.update(LEXEME_REGISTER)
+				.set(LEXEME_REGISTER.LEXEME_ID, lexemeId)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_REGISTER.REGISTER_CODE.notIn(
+								DSL.select(LEXEME_REGISTER.REGISTER_CODE).from(LEXEME_REGISTER).where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)))))
+				.execute();
+		create.update(LEXEME_POS)
+				.set(LEXEME_POS.LEXEME_ID, lexemeId)
+				.where(LEXEME_POS.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_POS.POS_CODE.notIn(
+								DSL.select(LEXEME_POS.POS_CODE).from(LEXEME_POS).where(LEXEME_POS.LEXEME_ID.eq(lexemeId)))))
+				.execute(); // <-unique
+		create.update(LEXEME_FREEFORM).set(LEXEME_FREEFORM.LEXEME_ID, lexemeId).where(LEXEME_FREEFORM.LEXEME_ID.eq(sourceLexemeId)).execute();  // <- ??
+		create.update(LEXEME_DERIV)
+				.set(LEXEME_DERIV.LEXEME_ID, lexemeId)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(sourceLexemeId)
+						.and(LEXEME_DERIV.DERIV_CODE.notIn(
+								DSL.select(LEXEME_DERIV.DERIV_CODE).from(LEXEME_DERIV).where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)))))
+				.execute();
+		create.update(LEXEME_LIFECYCLE_LOG).set(LEXEME_LIFECYCLE_LOG.LEXEME_ID, lexemeId).where(LEXEME_LIFECYCLE_LOG.LEXEME_ID.eq(sourceLexemeId)).execute();
+		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME1_ID, lexemeId).where(LEX_RELATION.LEXEME1_ID.eq(sourceLexemeId)).execute();
+		create.update(LEX_RELATION).set(LEX_RELATION.LEXEME2_ID, lexemeId).where(LEX_RELATION.LEXEME2_ID.eq(sourceLexemeId)).execute();
+		create.delete(LEXEME).where(LEXEME.ID.eq(sourceLexemeId)).execute();
+	}
+
+	public LexemeRecord getLexeme(Long lexemeId) {
+		return create.fetchOne(LEXEME,LEXEME.ID.eq(lexemeId));
 	}
 
 	public void deleteFreeform(Long id) {

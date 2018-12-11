@@ -1,14 +1,17 @@
 package eki.ekilex.service;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import eki.common.constant.WordRelationGroupType;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -320,7 +323,25 @@ public class UpdateService {
 	//TODO lifecycle log
 	@Transactional
 	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
+		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
+		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
+		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
+			updateLexemeLevels(lexemeId2,"delete");
+		}
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
+	}
+
+	@Transactional
+	public List<String> validateLexemeJoin(Long lexemeId, Long lexemeId2) {
+		List<String> validationMessages = new ArrayList<>();
+		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
+		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
+		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
+			if (!Objects.equals(lexeme.getFrequencyGroup(), lexeme2.getFrequencyGroup())) {
+				validationMessages.add("Ilmikute sagedusrühmad on erinevad.");
+			}
+		}
+		return validationMessages;
 	}
 
 	//TODO lifecycle log
@@ -536,6 +557,23 @@ public class UpdateService {
 					lexemeToMove.setLevel3(maxLevel3 + 1);
 					level2lexemes.stream().filter(l -> l.getLevel2() > level2).forEach(l -> l.setLevel2(l.getLevel2() - 1));
 				}
+			}
+			break;
+		case "delete":
+			if (levelToChange == 1) {
+				lexemes.stream()
+						.filter(l -> l.getLevel1() > lexemeToMove.getLevel1())
+						.forEach(l -> l.setLevel1(l.getLevel1() - 1));
+			}
+			if (levelToChange == 2) {
+				lexemes.stream()
+						.filter(l -> l.getLevel1().equals(lexemeToMove.getLevel1()) && l.getLevel2() > lexemeToMove.getLevel2())
+						.forEach(l -> l.setLevel2(l.getLevel2() - 1));
+			}
+			if (levelToChange == 3) {
+				lexemes.stream()
+						.filter(l -> l.getLevel1().equals(lexemeToMove.getLevel1()) && l.getLevel2().equals(lexemeToMove.getLevel2()) && l.getLevel3() > lexemeToMove.getLevel3())
+						.forEach(l -> l.setLevel3(l.getLevel3() - 1));
 			}
 			break;
 		}
