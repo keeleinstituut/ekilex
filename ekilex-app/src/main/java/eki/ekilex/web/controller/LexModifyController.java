@@ -5,6 +5,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,8 +52,10 @@ public class LexModifyController implements WebConstant {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
+		if (CollectionUtils.isNotEmpty(sessionBean.getSelectedDatasets())) {
+			datasets = sessionBean.getSelectedDatasets();
+		}
 		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithMinimalData(searchFilter, datasets);
-
 		model.addAttribute("sourceLexeme", lexeme);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("lexemes", lexemes);
