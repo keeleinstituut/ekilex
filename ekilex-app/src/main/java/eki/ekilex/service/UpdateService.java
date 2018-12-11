@@ -327,7 +327,13 @@ public class UpdateService {
 		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
 		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
 			updateLexemeLevels(lexemeId2,"delete");
+			String logEntrySource = StringUtils.joinWith(".", lexeme2.getLevel1(), lexeme2.getLevel2(), lexeme2.getLevel3());
+			String logEntryTarget = StringUtils.joinWith(".", lexeme.getLevel1(), lexeme.getLevel2(), lexeme.getLevel3());
+			lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId, logEntrySource, logEntryTarget);
 		}
+		String logEntrySource = updateDbService.getFirstDefinitionOfMeaning(lexeme2.getMeaningId());
+		String logEntryTarget = updateDbService.getFirstDefinitionOfMeaning(lexeme.getMeaningId());
+		lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, lexeme.getMeaningId(), logEntrySource, logEntryTarget);
 		updateDbService.joinLexemeMeanings(lexemeId, lexemeId2);
 	}
 

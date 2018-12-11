@@ -676,6 +676,13 @@ public class UpdateDbService implements DbConstant {
 		return lexemeRelation.getId();
 	}
 
+	public String getFirstDefinitionOfMeaning(Long meaningId) {
+		Optional<Record1<String>> definition = create.select(DEFINITION.VALUE).from(DEFINITION)
+				.where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).limit(1)
+				.fetchOptional();
+		return definition.map(Record1::value1).orElse(null);
+	}
+
 	private void joinMeaningRelations(Long meaningId, Long sourceMeaningId) {
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING1_ID, meaningId).where(MEANING_RELATION.MEANING1_ID.eq(sourceMeaningId)).execute();
 		create.update(MEANING_RELATION).set(MEANING_RELATION.MEANING2_ID, meaningId).where(MEANING_RELATION.MEANING2_ID.eq(sourceMeaningId)).execute();

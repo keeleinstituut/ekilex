@@ -5,6 +5,7 @@ public enum LifecycleEventType {
 	CREATE,
 	UPDATE,
 	DELETE,
+	JOIN,
 	@Deprecated
 	LTB_CREATED,
 	@Deprecated

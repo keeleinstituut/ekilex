@@ -313,6 +313,9 @@ public class LifecycleLogDbService {
 			} else if (LifecycleProperty.DATASET.equals(property)) {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.VALUE.equals(property)) {
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.WORD.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
@@ -343,6 +346,9 @@ public class LifecycleLogDbService {
 						.fetchSingleInto(Long.class);
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
+			} else if (LifecycleProperty.VALUE.equals(property)) {
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createMeaningLifecycleLog(entityId, lifecycleLogId);
 			}
 		} else if (LifecycleEntity.LEXEME_SOURCE_LINK.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
