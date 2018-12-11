@@ -188,9 +188,11 @@ public class LexSearchService implements SystemConstant {
 			d.setWordRelations(wordRelations);
 			d.setWordEtymology(wordEtymology);
 			d.setWordGroups(wordGroups);
-			d.setWordAspectCode(lexemes.get(0).getWordAspectCode());
-			d.setWordTypeCode(lexemes.get(0).getWordTypeCode());
-			d.setWordGenderCode(lexemes.get(0).getGenderCode());
+			if (!lexemes.isEmpty()) {
+				d.setWordAspectCode(lexemes.get(0).getWordAspectCode());
+				d.setWordTypeCode(lexemes.get(0).getWordTypeCode());
+				d.setWordGenderCode(lexemes.get(0).getGenderCode());
+			}
 		});
 	}
 

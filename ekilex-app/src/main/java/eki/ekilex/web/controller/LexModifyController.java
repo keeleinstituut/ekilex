@@ -5,6 +5,7 @@ import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -51,8 +52,10 @@ public class LexModifyController implements WebConstant {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		List<String> datasets = Collections.singletonList(lexeme.getDatasetCode());
+		if (CollectionUtils.isNotEmpty(sessionBean.getSelectedDatasets())) {
+			datasets = sessionBean.getSelectedDatasets();
+		}
 		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithMinimalData(searchFilter, datasets);
-
 		model.addAttribute("sourceLexeme", lexeme);
 		model.addAttribute("searchFilter", searchFilter);
 		model.addAttribute("lexemes", lexemes);
@@ -65,9 +68,16 @@ public class LexModifyController implements WebConstant {
 			@PathVariable("lexemeId") Long lexemeId,
 			@PathVariable("lexemeId2") Long lexemeId2,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			RedirectAttributes attributes,
+			Model model) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
+		List<String> validationMessages = updateService.validateLexemeJoin(lexemeId, lexemeId2);
+		if (!validationMessages.isEmpty()) {
+			model.addAttribute("sourceLexeme", lexeme);
+			model.addAttribute("validationMessages", validationMessages);
+			return LEX_JOIN_PAGE;
+		}
 		updateService.joinLexemeMeanings(lexemeId, lexemeId2);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
 

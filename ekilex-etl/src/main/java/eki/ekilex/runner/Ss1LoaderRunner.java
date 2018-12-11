@@ -166,19 +166,26 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		String guid = extractGuid(articleNode, articleGuidExp);
 		String reportingId = extractReporingId(articleNode);
-		List<WordData> newWords = new ArrayList<>();
-
-		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-		processArticleHeader(reportingId, headerNode, newWords, context, guid);
-
-		List<CommentData> comments = extractArticleComments(articleNode);
-
-		Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
-		if (contentNode != null) {
-			processArticleContent(reportingId, contentNode, newWords, context, comments);
-			processVariants(newWords);
+		if (articleHasMeanings(articleNode)) {
+			List<WordData> newWords = new ArrayList<>();
+			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
+			processArticleHeader(reportingId, headerNode, newWords, context, guid);
+			List<CommentData> comments = extractArticleComments(articleNode);
+			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+			if (contentNode != null) {
+				processArticleContent(reportingId, contentNode, newWords, context, comments);
+				processVariants(newWords);
+			}
+			context.importedWords.addAll(newWords);
+		} else {
+			logger.debug("Article does not have meanings, skipping : {}", reportingId);
+			writeToLogFile(reportingId, "Artikkel ei sisalda mõisteid", "");
 		}
-		context.importedWords.addAll(newWords);
+	}
+
+	private boolean articleHasMeanings(Node articleNode) {
+		final String meaningGroupNodeExp = "s:P/s:tp/s:tg";
+		return !articleNode.selectNodes(meaningGroupNodeExp).isEmpty();
 	}
 
 	private void processSeries(Context context, Node headerNode, List<WordData> newWords) throws Exception {
