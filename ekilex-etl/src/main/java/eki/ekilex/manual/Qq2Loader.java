@@ -27,6 +27,7 @@ public class Qq2Loader extends AbstractLoader {
 			MabService mabService = getComponent(MabService.class);
 			String datasetCode = datasetRunner.getDataset();
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
 
 			// mab
 			String[] mabDataFilePaths = getMabDataFilePaths();
@@ -35,6 +36,9 @@ public class Qq2Loader extends AbstractLoader {
 			// qq2
 			String qqFilePath = getMandatoryConfProperty("qq2.data.file");
 			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(qqFilePath, ssGuidMap, doReports);
 
 		} catch (Exception e) {

@@ -14,19 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class XmlAnalyserRunner extends AbstractLoaderRunner {
+public class XmlAnalyserRunner extends AbstractLoaderCommons {
 
 	private static Logger logger = LoggerFactory.getLogger(XmlAnalyserRunner.class);
-
-	@Override
-	String getDataset() {
-		return null;
-	}
-
-	@Override
-	void initialise() throws Exception {
-		//Nothing
-	}
 
 	@Transactional
 	public void execute(String dataXmlFilePath, String[] xPathExpressions) throws Exception {

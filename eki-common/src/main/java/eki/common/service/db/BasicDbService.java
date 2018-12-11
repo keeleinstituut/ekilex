@@ -24,6 +24,11 @@ public class BasicDbService extends AbstractDbService {
 		jdbcTemplate.update(sqlScript, paramMap);
 	}
 
+	public <T> List<T> queryList(String sqlScript, Map<String, ?> paramMap, Class<T> fieldType) {
+		List<T> results = jdbcTemplate.queryForList(sqlScript, paramMap, fieldType);
+		return results;
+	}
+
 	public List<Map<String, Object>> queryList(String sqlScript, Map<String, ?> paramMap) {
 
 		List<Map<String, Object>> results = jdbcTemplate.queryForList(sqlScript, paramMap);

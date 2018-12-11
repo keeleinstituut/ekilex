@@ -21,7 +21,12 @@ public class EstermLoader extends AbstractLoader {
 			EstermLoaderRunner datasetRunner = getComponent(EstermLoaderRunner.class);
 
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
+
 			String estFilePath = getMandatoryConfProperty("est.data.file");
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(estFilePath, doReports);
 
 		} catch (Exception e) {

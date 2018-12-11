@@ -88,6 +88,12 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		return "ss1";
 	}
 
+	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
+	}
+
 	@Override
 	void initialise() throws Exception {
 		super.initialise();

@@ -22,6 +22,7 @@ public class Ss1Loader extends AbstractLoader {
 			Ss1LoaderRunner datasetRunner = getComponent(Ss1LoaderRunner.class);
 			MabService mabService = getComponent(MabService.class);
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
 
 			// mab
 			String[] mabDataFilePaths = getMabDataFilePaths();
@@ -29,6 +30,9 @@ public class Ss1Loader extends AbstractLoader {
 
 			// ss
 			String ssFilePath = getMandatoryConfProperty("ss1.data.file");
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(ssFilePath, doReports);
 
 		} catch (Exception e) {

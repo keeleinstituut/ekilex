@@ -24,10 +24,14 @@ public class CollocLoader extends AbstractLoader {
 
 			CollocLoaderRunner datasetRunner = getComponent(CollocLoaderRunner.class);
 			String datasetCode = datasetRunner.getDataset();
-
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
+
 			String kolFilePath = getMandatoryConfProperty("kol.data.file");
 			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(kolFilePath, ssGuidMap, doReports);
 
 		} catch (Exception e) {

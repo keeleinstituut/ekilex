@@ -85,6 +85,12 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		return "ety";
 	}
 
+	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
+	}
+
 	@Override
 	public void initialise() throws Exception {
 		etymTypes = loadClassifierMappingsFor(EKI_CLASSIFIER_ETYMPLTYYP);
@@ -141,7 +147,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 
 				List<Long> headWordIds = new ArrayList<>();
 				for (String word : words) {
-					wordDatas = getWords(word, guid, ssDataset);
+					wordDatas = getWord(word, guid, ssDataset);
 					for (Map<String, Object> wordData : wordDatas) {
 						Long wordId = (Long) wordData.get("id");
 						headWordIds.add(wordId);
@@ -392,18 +398,6 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("wordId", wordId);
 		tableRowParamMap.put("etymTypeCode", etymTypeCode);
 		basicDbService.executeScript(sql, tableRowParamMap);
-	}
-
-	private List<Map<String, Object>> getWords(String word, String guid, String dataset) throws Exception {
-
-		guid = guid.toLowerCase();
-
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word", word);
-		tableRowParamMap.put("guid", guid);
-		tableRowParamMap.put("dataset", dataset);
-		List<Map<String, Object>> results = basicDbService.queryList(sqlSelectWordByDatasetAndGuid, tableRowParamMap);
-		return results;
 	}
 
 	private Long createWordEtymology(Long word1Id, Long word2Id, List<String> comments, boolean isQuestionable, boolean isCompound) throws Exception {

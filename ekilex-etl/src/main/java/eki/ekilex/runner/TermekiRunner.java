@@ -55,6 +55,11 @@ public class TermekiRunner extends AbstractLoaderRunner {
 	}
 
 	@Override
+	public void deleteDatasetData() throws Exception {
+		//TODO to be handled per dataset
+	}
+
+	@Override
 	void initialise() throws Exception {
 		posCodes = loadClassifierMappingsFor(TERMEKI_CLASSIFIER_PRONUNCIATION);
 		posCodes.putAll(loadClassifierMappingsFor(TERMEKI_CLASSIFIER_WORD_CLASS));

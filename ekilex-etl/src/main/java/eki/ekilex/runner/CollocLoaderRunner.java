@@ -120,6 +120,12 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return "kol";
 	}
 
+	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
+	}
+
 	@Override
 	void initialise() throws Exception {
 

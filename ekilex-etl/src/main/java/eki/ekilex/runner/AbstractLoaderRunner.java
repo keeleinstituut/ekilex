@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.Normalizer;
@@ -16,14 +15,13 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
@@ -33,12 +31,9 @@ import eki.common.constant.LifecycleLogOwner;
 import eki.common.constant.LifecycleProperty;
 import eki.common.constant.ReferenceType;
 import eki.common.constant.SourceType;
-import eki.common.constant.TableName;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
-import eki.common.service.db.BasicDbService;
-import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
@@ -48,32 +43,29 @@ import eki.ekilex.data.transform.Source;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
-import eki.ekilex.service.XmlReader;
 
-public abstract class AbstractLoaderRunner implements InitializingBean, SystemConstant, TableName {
+public abstract class AbstractLoaderRunner extends AbstractLoaderCommons implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractLoaderRunner.class);
 
 	abstract String getDataset();
+	abstract void deleteDatasetData() throws Exception;
+	abstract void initialise() throws Exception;
 
 	protected static final String DEFAULT_WORD_MORPH_CODE = "??";
 
+	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET = "sql/select_word_ids_for_dataset.sql";
+	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
+	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
-
 	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
-
 	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
-
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
-
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
-
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
-
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
 	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
-
 	private static final String[] DISCLOSED_DIACRITIC_LANGS = new String[] {"rus"};
 
 	protected static final String EXT_SOURCE_ID_NA = "n/a";
@@ -91,27 +83,17 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 	protected static final String EKI_CLASSIIFER_ETYMKEELTYYP = "etymkeel_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
-	@Autowired
-	protected XmlReader xmlReader;
-
-	@Autowired
-	protected BasicDbService basicDbService;
-
-	protected String sqlSelectWordByFormAndHomonym;
-
-	protected String sqlSelectWordByDatasetAndGuid;
-
-	protected String sqlSelectWordMaxHomonym;
-
-	protected String sqlSelectLexemeFreeform;
-
-	protected String sqlSourceByTypeAndName;
-
-	protected String sqlWordGroupWithMembers;
+	private String sqlSelectWordIdsForDataset;
+	private String sqlSelectMeaningIdsForDataset;
+	private String sqlDeleteDefinitionsForDataset;
+	private String sqlSelectWordByFormAndHomonym;
+	private String sqlSelectWordByDatasetAndGuid;
+	private String sqlSelectWordMaxHomonym;
+	private String sqlSelectLexemeFreeform;
+	private String sqlSourceByTypeAndName;
+	private String sqlWordGroupWithMembers;
 
 	private Pattern ekiEntityPatternV;
-
-	abstract void initialise() throws Exception;
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
@@ -120,6 +102,15 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET);
+		sqlSelectWordIdsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_FOR_DATASET);
+		sqlSelectMeaningIdsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
+		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
 		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
@@ -140,12 +131,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		sqlWordGroupWithMembers = getContent(resourceFileInputStream);
 
 		ekiEntityPatternV = Pattern.compile("(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|v|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)");
-	}
-
-	protected String getContent(InputStream resourceInputStream) throws Exception {
-		String content = IOUtils.toString(resourceInputStream, UTF_8);
-		resourceInputStream.close();
-		return content;
 	}
 
 	protected boolean isLang(String lang) {
@@ -211,6 +196,50 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 			return null;
 		}
 		return cleanValue;
+	}
+
+	//TODO under construction
+	protected void deleteDatasetData(String dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("dataset", dataset);
+
+		List<Long> wordIds = basicDbService.queryList(sqlSelectWordIdsForDataset, tableRowParamMap, Long.class);
+		logger.debug("There are {} words in \"{}\" to be deleted", wordIds.size(), dataset);
+
+		List<Long> meaningIds = basicDbService.queryList(sqlSelectMeaningIdsForDataset, tableRowParamMap, Long.class);
+		logger.debug("There are {} meanings in \"{}\" to be deleted", meaningIds.size(), dataset);
+
+		String sql;
+
+		// delete lexemes
+		sql = "delete from " + LEXEME + " l where l.dataset_code = :dataset";
+		basicDbService.executeScript(sql, tableRowParamMap);
+
+		// delete word guids
+		sql = "delete from " + WORD_GUID + " wg where wg.dataset_code = :dataset";
+		basicDbService.executeScript(sql, tableRowParamMap);
+
+		// delete definitions
+		basicDbService.executeScript(sqlDeleteDefinitionsForDataset, tableRowParamMap);
+
+		// delete words
+		sql = "delete from " + WORD + " where id = :wordId";
+		tableRowParamMap.clear();
+		for (Long wordId : wordIds) {
+			tableRowParamMap.put("wordId", wordId);
+			basicDbService.executeScript(sql, tableRowParamMap);
+		}
+
+		// delete meanings
+		sql = "delete from " + MEANING + " where id = :meaningId";
+		tableRowParamMap.clear();
+		for (Long meaningId : meaningIds) {
+			tableRowParamMap.put("meaningId", meaningId);
+			basicDbService.executeScript(sql, tableRowParamMap);
+		}
+
+		logger.debug("Data deletion complete for \"{}\"", dataset);
 	}
 
 	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
@@ -326,6 +355,13 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				ssWordCount.increment();
 				Long wordId = (Long) tableRowValueMap.get("id");
 				word.setId(wordId);
+				if (StringUtils.isNotBlank(guid)) {
+					PgArray guidDatasetCodesArr = (PgArray) tableRowValueMap.get("guid_dataset_codes");
+					String[] guidDatasetCodes = (String[]) guidDatasetCodesArr.getArray();
+					if (!ArrayUtils.contains(guidDatasetCodes, dataset)) {
+						createWordGuid(wordId, dataset, guid);
+					}
+				}
 				return wordId;
 			}
 		}
@@ -345,7 +381,7 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 		return tableRowValueMap;
 	}
 
-	private List<Map<String, Object>> getWord(String word, String guid, String dataset) throws Exception {
+	protected List<Map<String, Object>> getWord(String word, String guid, String dataset) throws Exception {
 
 		guid = guid.toLowerCase();
 
@@ -1042,12 +1078,6 @@ public abstract class AbstractLoaderRunner implements InitializingBean, SystemCo
 				.filter(cells -> "et".equals(cells[4]))
 				.filter(cells -> !"-".equals(cells[5]))
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
-	}
-
-	protected List<String> readFileLines(String sourcePath) throws Exception {
-		try (InputStream resourceInputStream = new FileInputStream(sourcePath)) {
-			return IOUtils.readLines(resourceInputStream, UTF_8);
-		}
 	}
 
 }

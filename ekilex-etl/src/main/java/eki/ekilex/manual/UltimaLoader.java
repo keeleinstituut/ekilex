@@ -58,6 +58,7 @@ public class UltimaLoader extends AbstractLoader {
 			Map<String, List<Guid>> ssGuidMap;
 
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
 
 			logger.info("Starting to clear database and load all datasets specified in ultima-loader.properties file");
 
@@ -65,7 +66,9 @@ public class UltimaLoader extends AbstractLoader {
 			t1 = System.currentTimeMillis();
 
 			// db init
-			initRunner.execute();
+			if (isFullReload) {
+				initRunner.execute();
+			}
 
 			// mab
 			String[] mabDataFilePaths = getMabDataFilePaths();
@@ -77,6 +80,9 @@ public class UltimaLoader extends AbstractLoader {
 			// ss1
 			dataFilePath = getConfProperty("ss1.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
+				if (!isFullReload) {
+					ss1Runner.deleteDatasetData();
+				}
 				ss1Runner.execute(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("ss1");
 			}
@@ -86,6 +92,9 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				dataset = psvRunner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
+				if (!isFullReload) {
+					psvRunner.deleteDatasetData();
+				}
 				psvRunner.execute(dataFilePath, ssGuidMap, doReports);
 				successfullyLoadedDatasets.add("psv");
 			}
@@ -95,6 +104,9 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				dataset = kolRunner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
+				if (!isFullReload) {
+					kolRunner.deleteDatasetData();
+				}
 				kolRunner.execute(dataFilePath, ssGuidMap, doReports);
 				successfullyLoadedDatasets.add("kol");
 			}
@@ -104,6 +116,9 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				dataset = qq2Runner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
+				if (!isFullReload) {
+					qq2Runner.deleteDatasetData();
+				}
 				qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
 				successfullyLoadedDatasets.add(dataset);
 			}
@@ -114,12 +129,18 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
 				dataset = ev2Runner.getDataset();
 				ssGuidMap = getSsGuidMapFor(dataset);
+				if (!isFullReload) {
+					ev2Runner.deleteDatasetData();
+				}
 				ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, doReports);
 			}
 
 			// ety
 			dataFilePath = getConfProperty("ss1.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
+				if (!isFullReload) {
+					etyRunner.deleteDatasetData();
+				}
 				etyRunner.execute(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("ety");
 			}
@@ -127,8 +148,12 @@ public class UltimaLoader extends AbstractLoader {
 			// est src + est
 			dataFilePath = getConfProperty("est.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				estSrcRunner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("est src");
+				if (isFullReload) {
+					estSrcRunner.execute(dataFilePath, doReports);
+					successfullyLoadedDatasets.add("est src");
+				} else {
+					estRunner.deleteDatasetData();
+				}
 				estRunner.execute(dataFilePath, doReports);
 				successfullyLoadedDatasets.add("est");
 			}
@@ -136,21 +161,28 @@ public class UltimaLoader extends AbstractLoader {
 			// termeki
 			dataFilePath = getConfProperty("termeki.data.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				termekiRunner.batchLoad(dataFilePath);
-				successfullyLoadedDatasets.add("termeki");
+				//TODO temp until termeki datasets are moved to ultima loader
+				if (isFullReload) {
+					termekiRunner.batchLoad(dataFilePath);
+					successfullyLoadedDatasets.add("termeki");
+				}
 			}
 
 			// sound file names updater
 			dataFilePath = getConfProperty("voice.index.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				voiceFileUpdaterRunner.update(dataFilePath);
-				successfullyLoadedDatasets.add("voice");
+				if (isFullReload) {
+					voiceFileUpdaterRunner.update(dataFilePath);
+					successfullyLoadedDatasets.add("voice");
+				}
 			}
 
 			// game data
 			dataFilePath = getConfProperty("games.nonwords.file");
 			if (StringUtils.isNotBlank(dataFilePath)) {
-				gameDataLoaderRunner.execute(dataFilePath);
+				if (isFullReload) {
+					gameDataLoaderRunner.execute(dataFilePath);
+				}
 			}
 
 			t2 = System.currentTimeMillis();

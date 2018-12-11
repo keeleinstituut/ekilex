@@ -27,6 +27,7 @@ public class PsvLoader extends AbstractLoader {
 			MabService mabService = getComponent(MabService.class);
 			String datasetCode = datasetRunner.getDataset();
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
 
 			// mab
 			String[] mabDataFilePaths = getMabDataFilePaths();
@@ -35,6 +36,9 @@ public class PsvLoader extends AbstractLoader {
 			// ps
 			String psFilePath = getMandatoryConfProperty("psv.data.file");
 			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(psFilePath, ssGuidMap, doReports);
 
 		} catch (Exception e) {

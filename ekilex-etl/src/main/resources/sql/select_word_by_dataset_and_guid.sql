@@ -1,4 +1,5 @@
 select
+    (select array_agg(wg.dataset_code) from word_guid wg where wg.word_id = w.id group by wg.word_id) guid_dataset_codes,
 	w.*
 from
 	word w
