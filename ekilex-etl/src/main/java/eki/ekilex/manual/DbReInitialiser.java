@@ -11,11 +11,11 @@ public class DbReInitialiser extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(DbReInitialiser.class);
 
 	public static void main(String[] args) {
-		new DbReInitialiser().execute();
+		new DbReInitialiser().execute(args);
 	}
 
 	@Override
-	public void execute() {
+	public void execute(String[] args) {
 		try {
 			initDefault();
 

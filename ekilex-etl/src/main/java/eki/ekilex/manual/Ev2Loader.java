@@ -15,11 +15,11 @@ public class Ev2Loader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(Ev2Loader.class);
 
 	public static void main(String[] args) {
-		new Ev2Loader().execute();
+		new Ev2Loader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 

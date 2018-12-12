@@ -10,11 +10,11 @@ public class VoiceFileUpdaterLoader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(VoiceFileUpdaterLoader.class);
 
 	public static void main(String[] args) {
-		new VoiceFileUpdaterLoader().execute();
+		new VoiceFileUpdaterLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 

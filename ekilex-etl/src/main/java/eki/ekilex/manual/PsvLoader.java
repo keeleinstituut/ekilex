@@ -15,11 +15,11 @@ public class PsvLoader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(PsvLoader.class);
 
 	public static void main(String[] args) {
-		new PsvLoader().execute();
+		new PsvLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 

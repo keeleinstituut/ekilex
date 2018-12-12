@@ -10,11 +10,11 @@ public class VmabLoader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(VmabLoader.class);
 
 	public static void main(String[] args) {
-		new VmabLoader().execute();
+		new VmabLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 
