@@ -27,6 +27,7 @@ public class Ev2Loader extends AbstractLoader {
 			MabService mabService = getComponent(MabService.class);
 			String datasetCode = datasetRunner.getDataset();
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
 
 			// mab
 			String[] mabDataFilePaths = getMabDataFilePaths();
@@ -36,6 +37,9 @@ public class Ev2Loader extends AbstractLoader {
 			String evFilePath1 = getMandatoryConfProperty("ev2.data.file.1");
 			String evFilePath2 = getMandatoryConfProperty("ev2.data.file.2");
 			Map<String, List<Guid>> ssGuidMap = getSsGuidMapFor(datasetCode);
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(evFilePath1, evFilePath2, ssGuidMap, doReports);
 
 		} catch (Exception e) {

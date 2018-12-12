@@ -75,6 +75,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return "est";
 	}
 
+	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
+	}
+
 	@Override
 	void initialise() throws Exception {
 

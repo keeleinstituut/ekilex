@@ -9,19 +9,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DbReInitialiserRunner extends AbstractLoaderRunner {
+public class DbReInitialiserRunner extends AbstractLoaderCommons {
 
 	private static Logger logger = LoggerFactory.getLogger(DbReInitialiserRunner.class);
-
-	@Override
-	String getDataset() {
-		return null;
-	}
-
-	@Override
-	void initialise() throws Exception {
-
-	}
 
 	@Transactional
 	public void execute() throws Exception {

@@ -29,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.ClassifierName;
-import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Government;
@@ -96,6 +95,12 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	@Override
 	public String getDataset() {
 		return "psv";
+	}
+
+	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
 	}
 
 	@Override

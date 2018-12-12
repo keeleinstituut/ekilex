@@ -104,6 +104,12 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return "qq2";
 	}
 
+	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
+	}
+
 	@Override
 	void initialise() throws Exception {
 

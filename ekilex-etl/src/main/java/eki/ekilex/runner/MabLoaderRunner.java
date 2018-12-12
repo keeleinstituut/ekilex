@@ -76,6 +76,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Override
+	void deleteDatasetData() throws Exception {
+		
+	}
+
+	@Override
 	void initialise() {
 	}
 

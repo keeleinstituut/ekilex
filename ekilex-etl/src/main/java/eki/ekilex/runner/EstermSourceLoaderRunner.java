@@ -59,12 +59,17 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 	private DateFormat defaultDateFormat;
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "est";
 	}
 
 	@Override
-	void initialise() throws Exception {
+	public void deleteDatasetData() throws Exception {
+
+	}
+
+	@Override
+	public void initialise() throws Exception {
 
 		defaultDateFormat = new SimpleDateFormat(DEFAULT_TIMESTAMP_PATTERN);
 	}

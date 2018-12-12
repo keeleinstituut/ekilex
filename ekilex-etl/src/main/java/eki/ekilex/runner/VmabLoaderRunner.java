@@ -22,6 +22,11 @@ public class VmabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Override
+	public void deleteDatasetData() throws Exception {
+		
+	}
+
+	@Override
 	public void initialise() throws Exception {
 	}
 

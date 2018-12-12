@@ -20,8 +20,12 @@ public class EtymologyLoader extends AbstractLoader {
 
 			EtymologyLoaderRunner datasetRunner = getComponent(EtymologyLoaderRunner.class);
 			boolean doReports = doReports();
+			boolean isFullReload = isFullReload();
 
 			String ssFilePath = getMandatoryConfProperty("ss1.data.file");
+			if (!isFullReload) {
+				datasetRunner.deleteDatasetData();
+			}
 			datasetRunner.execute(ssFilePath, doReports);
 
 		} catch (Exception e) {

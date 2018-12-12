@@ -41,8 +41,10 @@ public abstract class AbstractLoader implements SystemConstant {
 	private void initMain() throws IOException {
 		applicationContext.registerShutdownHook();
 		Resource loaderConfResource = applicationContext.getResource("ultima-loader.properties");
+		InputStream confStream = loaderConfResource.getInputStream();
 		loaderConf = new Properties();
-		loaderConf.load(loaderConfResource.getInputStream());
+		loaderConf.load(confStream);
+		confStream.close();
 	}
 
 	protected <T> T getComponent(Class<T> componentType) {
@@ -57,6 +59,12 @@ public abstract class AbstractLoader implements SystemConstant {
 		String doReportsStr = loaderConf.getProperty("doreports");
 		boolean doReports = Boolean.valueOf(doReportsStr);
 		return doReports;
+	}
+
+	public boolean isFullReload() {
+		String isFullReloadStr = loaderConf.getProperty("isfullreload");
+		boolean isFullReload = Boolean.valueOf(isFullReloadStr);
+		return isFullReload;
 	}
 
 	public String getMandatoryConfProperty(String key) throws Exception {

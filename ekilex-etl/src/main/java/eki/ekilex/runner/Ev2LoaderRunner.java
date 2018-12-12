@@ -81,6 +81,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Transactional
+	@Override
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
+	}
+
+	@Transactional
 	public void execute(String dataXmlFilePath1, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
 
 		long t1, t2;

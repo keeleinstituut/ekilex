@@ -14,7 +14,7 @@ import java.util.Map;
 import static java.util.stream.Collectors.toList;
 
 @Component
-public class VoiceFileUpdaterRunner extends AbstractLoaderRunner {
+public class VoiceFileUpdaterRunner extends AbstractLoaderCommons {
 
 	private static Logger logger = LoggerFactory.getLogger(VoiceFileUpdaterRunner.class);
 
@@ -29,15 +29,6 @@ public class VoiceFileUpdaterRunner extends AbstractLoaderRunner {
 					+ "lower(f.value) = :word and f.mode = '" + FormMode.WORD.name() + "' and f.sound_file is null and"
 					+ "(w.type_code = 'z' or lp.pos_code = 'prop')";
 	private final static String sqlUpdateSoundFileNames = "update " + FORM + " set sound_file = :soundFileName where id in (:formIds)";
-
-	@Override
-	String getDataset() {
-		return null;
-	}
-
-	@Override
-	void initialise() throws Exception {
-	}
 
 	@Transactional
 	public void update(String voiceFilesIndexFilePath) throws Exception {
