@@ -92,8 +92,24 @@ public class CommonDataService {
 		return commonDataDbService.getLexemeRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
 	}
 
+	@Transactional
 	public List<Classifier> getMeaningRelationTypes() {
 		return commonDataDbService.getMeaningRelationTypes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
+	@Transactional
+	public List<Classifier> getAllLexemePos() {
+		return commonDataDbService.getAllLexemePos(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
+	@Transactional
+	public List<Classifier> getLexemeRegisters() {
+		return commonDataDbService.getLexemeRegisters(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
+	@Transactional
+	public List<Classifier> getLexemeDerivs() {
+		return commonDataDbService.getLexemeDerivs(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 }

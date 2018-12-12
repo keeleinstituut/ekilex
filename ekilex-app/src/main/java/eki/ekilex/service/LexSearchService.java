@@ -197,26 +197,6 @@ public class LexSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public List<Classifier> getAllLexemePos() {
-		return commonDataDbService.getAllLexemePos(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-	}
-
-	@Transactional
-	public List<Classifier> getWordMorphCodes() {
-		return commonDataDbService.getWordMorphCodes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-	}
-
-	@Transactional
-	public List<Classifier> getLexemeRegisters() {
-		return commonDataDbService.getLexemeRegisters(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-	}
-
-	@Transactional
-	public List<Classifier> getLexemeDerivs() {
-		return commonDataDbService.getLexemeDerivs(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
-	}
-
-	@Transactional
 	public List<WordLexeme> findWordLexemesWithDefinitionsData(String searchFilter, List<String> selectedDatasets) {
 		List<WordLexeme> lexemes = new ArrayList<>();
 		if (isNotBlank(searchFilter)) {
@@ -274,9 +254,9 @@ public class LexSearchService implements SystemConstant {
 		List<Collocation> secondaryCollocations = conversionUtil.composeCollocations(secondaryCollocTuples);
 		List<SourceLink> lexemeSourceLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
 
-		lexeme.setLexemePos(lexemePos);
-		lexeme.setLexemeDerivs(lexemeDerivs);
-		lexeme.setLexemeRegisters(lexemeRegisters);
+		lexeme.setPos(lexemePos);
+		lexeme.setDerivs(lexemeDerivs);
+		lexeme.setRegisters(lexemeRegisters);
 		lexeme.setMeaningWords(meaningWords);
 		lexeme.setMeaningDomains(meaningDomains);
 		lexeme.setDefinitions(definitions);

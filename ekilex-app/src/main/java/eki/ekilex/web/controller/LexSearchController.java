@@ -40,21 +40,6 @@ public class LexSearchController extends AbstractSearchController {
 	@Autowired
 	private LexSearchService lexSearchService;
 
-	@ModelAttribute("allLexemePos")
-	public List<Classifier> getLexemePos() {
-		return lexSearchService.getAllLexemePos();
-	}
-
-	@ModelAttribute("allLexemeRegisters")
-	public List<Classifier> getLexemeRegisters() {
-		return lexSearchService.getLexemeRegisters();
-	}
-
-	@ModelAttribute("allLexemeDerivs")
-	public List<Classifier> getLexemeDerivs() {
-		return lexSearchService.getLexemeDerivs();
-	}
-
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 

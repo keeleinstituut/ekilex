@@ -4,7 +4,7 @@
 <body>
 
   <th:block th:fragment="lexeme_parameters">
-    <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
+    <div th:if="${!#lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
       <span class="lbl">Grammatika</span>
       <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
                     <span th:name="${grammar.id} + '_lexeme_grammar'"
@@ -31,7 +31,7 @@
       <span class="lbl">Väärtusolek</span>
       <span th:text="${lexeme.lexemeValueStateCode}"></span>
     </div>
-    <div th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons">
+    <div th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons" th:fragment="lexeme_frequency_group">
       <span class="lbl">Sagedusrühm</span>
       <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
             th:data-id="${lexeme.lexemeId}"
@@ -57,38 +57,38 @@
       <span th:text="${lexeme.meaningProcessStateCode}"></span>
     </div>
 
-    <div th:if="${not #lists.isEmpty(lexeme.lexemePos)}">
+    <div th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">
       <span class="lbl">Sõnaliik</span>
-      <span th:each="classif,classifIter : ${lexeme.lexemePos}" class="hidden-buttons">
-                    <span
-                      th:data-id="${lexeme.lexemeId}"
-                      th:data-op-code="lexeme_pos"
-                      th:data-value="${classif.code}"
-                      th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
-                      th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda"
-                            onclick="openSelectDlg(this)"
-                            data-toggle="modal" data-target="#lexemePosDlg"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'">
-                      <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
-                            data-toggle="delete-confirmation" data-placement="right">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
+      <span th:each="classif,classifIter : ${lexeme.pos}" class="hidden-buttons">
+        <span
+          th:data-id="${lexeme.lexemeId}"
+          th:data-op-code="lexeme_pos"
+          th:data-value="${classif.code}"
+          th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
+          th:text="${classif.code}"></span>
+        <th:block th:unless="${classif.code == classif.value}">
+          -
+          <span th:text="${classif.value}"></span>
+        </th:block>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#lexemePosDlg"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_pos'"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${classifIter.last}">,</span>
+      </span>
     </div>
 
-    <div th:if="${not #lists.isEmpty(lexeme.lexemeDerivs)}">
+    <div th:if="${not #lists.isEmpty(lexeme.derivs)}" th:fragment="lexeme_derivative">
       <span class="lbl">Tuletuskood</span>
-      <span th:each="classif,classifIter : ${lexeme.lexemeDerivs}" class="hidden-buttons">
+      <span th:each="classif,classifIter : ${lexeme.derivs}" class="hidden-buttons">
                     <span
                       th:data-id="${lexeme.lexemeId}"
                       th:data-op-code="lexeme_deriv"
@@ -115,9 +115,9 @@
                   </span>
     </div>
 
-    <div th:if="${not #lists.isEmpty(lexeme.lexemeRegisters)}">
+    <div th:if="${not #lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
       <span class="lbl">Register</span>
-      <span th:each="classif,classifIter : ${lexeme.lexemeRegisters}" class="hidden-buttons">
+      <span th:each="classif,classifIter : ${lexeme.registers}" class="hidden-buttons">
                     <span
                       th:data-id="${lexeme.lexemeId}"
                       th:data-op-code="lexeme_register"
@@ -217,7 +217,7 @@
       </button>
     </div>
 
-    <div th:if="${details.wordAspectCode != null}">
+    <div th:if="${details.wordAspectCode != null}" class="hidden-buttons">
       <span class="lbl">Aspekt</span>
       <span th:name="word_aspect"
             th:data-id="${wordId}"
@@ -472,37 +472,5 @@
       <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
     </div>
   </div>
-
-  <!--<div data-name="dialogContent" th:fragment="meaning_search_result">-->
-    <!--<div class="card" th:if="${meaningsData.resultExist}">-->
-      <!--<div class="card-body p-2">-->
-        <!--<div style="max-height: 70vh; overflow: auto;">-->
-          <!--<table class="table table-striped mb-0">-->
-            <!--<tr th:each="meaning : ${meaningsData.termMeanings}">-->
-              <!--<td class="p-0">-->
-                <!--<button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2"-->
-                        <!--th:data-meaning-id="${meaning.meaningId}">Lisa</button>-->
-                <!--<div>-->
-                  <!--<span th:text="${meaning.mainWord.word + ' ' + meaning.mainWord.homonymNr}" class="ttl"></span>-->
-                  <!--<th:block th:each="meaningWord, meaningWordIter : ${meaning.otherWords}">-->
-                      <!--<span class="pt-0" style="color: #007bff;"-->
-                        <!--th:text="${meaningWord.word + ' ' + meaningWord.homonymNr + '( ' + meaningWord.wordLang + ' )'}">-->
-                      <!--</span>-->
-                    <!--<span th:unless="${meaningWordIter.last}">|</span>-->
-                  <!--</th:block>-->
-                <!--</div>-->
-                <!--<div>-->
-                  <!--<small th:text="${meaning.mainWord.datasetCodesWrapup}"></small>-->
-                <!--</div>-->
-              <!--</td>-->
-            <!--</tr>-->
-          <!--</table>-->
-        <!--</div>-->
-      <!--</div>-->
-    <!--</div>-->
-    <!--<div class="card" th:if="${not meaningsData.resultExist}">-->
-      <!--<div th:text="#{lex.not.found}" class="card-body">Not found.</div>-->
-    <!--</div>-->
-  <!--</div>-->
 
 </body>

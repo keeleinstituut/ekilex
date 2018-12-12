@@ -65,11 +65,11 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "word_aspect_code")
 	private String wordAspectCode;
 
-	private List<Classifier> lexemePos;
+	private List<Classifier> pos;
 
-	private List<Classifier> lexemeDerivs;
+	private List<Classifier> derivs;
 
-	private List<Classifier> lexemeRegisters;
+	private List<Classifier> registers;
 
 	private List<Classifier> meaningDomains;
 
@@ -235,28 +235,28 @@ public class WordLexeme extends AbstractDataObject {
 		this.genderCode = genderCode;
 	}
 
-	public List<Classifier> getLexemePos() {
-		return lexemePos;
+	public List<Classifier> getPos() {
+		return pos;
 	}
 
-	public void setLexemePos(List<Classifier> lexemePos) {
-		this.lexemePos = lexemePos;
+	public void setPos(List<Classifier> pos) {
+		this.pos = pos;
 	}
 
-	public List<Classifier> getLexemeDerivs() {
-		return lexemeDerivs;
+	public List<Classifier> getDerivs() {
+		return derivs;
 	}
 
-	public void setLexemeDerivs(List<Classifier> lexemeDerivs) {
-		this.lexemeDerivs = lexemeDerivs;
+	public void setDerivs(List<Classifier> derivs) {
+		this.derivs = derivs;
 	}
 
-	public List<Classifier> getLexemeRegisters() {
-		return lexemeRegisters;
+	public List<Classifier> getRegisters() {
+		return registers;
 	}
 
-	public void setLexemeRegisters(List<Classifier> lexemeRegisters) {
-		this.lexemeRegisters = lexemeRegisters;
+	public void setRegisters(List<Classifier> registers) {
+		this.registers = registers;
 	}
 
 	public List<Classifier> getMeaningDomains() {
