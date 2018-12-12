@@ -436,6 +436,18 @@ public class LifecycleLogDbService {
 			}
 			Long lexemeId = (Long) entityData.get("lexeme1_id");
 			createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+		} else if (LifecycleEntity.MEANING_RELATION.equals(entity)) {
+			Map<String, Object> entityData = helper.getMeaningRelationData(create, entityId);
+			List<String> meaningWords = helper.getMeaningWords(create, (Long) entityData.get("meaning2_id"));
+			String logString = entityData.get("meaning_rel_type_code") + " -> " + String.join(",", meaningWords);
+			Long lifecycleLogId;
+			if (LifecycleEventType.DELETE == eventType) {
+				lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, logString, null);
+			} else {
+				lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, null, logString);
+			}
+			Long meaningId = (Long) entityData.get("meaning1_id");
+			createMeaningLifecycleLog(meaningId, lifecycleLogId);
 		}
 	}
 

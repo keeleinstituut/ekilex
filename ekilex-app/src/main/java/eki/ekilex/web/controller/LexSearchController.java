@@ -1,5 +1,6 @@
 package eki.ekilex.web.controller;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -125,6 +126,27 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
 		return 	" lexsearch_components :: lexeme_search_result";
+	}
+
+	@GetMapping("/meaningsearchajax")
+	public String searchMeaningAjax(
+			@RequestParam String searchFilter,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+		logger.debug("meaning search ajax {}", searchFilter);
+
+		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, sessionBean.getSelectedDatasets());
+		List<WordLexeme> lexemesFileterdByMeaning = new ArrayList<>();
+		List<Long> distinctMeanings = new ArrayList<>();
+		for (WordLexeme lexeme : lexemes) {
+			if (!distinctMeanings.contains(lexeme.getMeaningId())) {
+				lexemesFileterdByMeaning.add(lexeme);
+				distinctMeanings.add(lexeme.getMeaningId());
+			}
+		}
+		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
+
+		return 	" lexsearch_components :: meaning_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

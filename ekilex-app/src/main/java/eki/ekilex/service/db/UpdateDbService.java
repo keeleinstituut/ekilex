@@ -321,8 +321,8 @@ public class UpdateDbService implements DbConstant {
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
-				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.MODE, FORM.MORPH_CODE)
-				.values(paradigmId, word, word, FormMode.WORD.name(), morphCode)
+				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS)
+				.values(paradigmId, word, word, FormMode.WORD.name(), morphCode, true)
 				.execute();
 		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
 		create
@@ -576,6 +576,12 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
+	public void deleteMeaningRelation(Long relationId) {
+		create.delete(MEANING_RELATION)
+				.where(MEANING_RELATION.ID.eq(relationId))
+				.execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
@@ -674,6 +680,15 @@ public class UpdateDbService implements DbConstant {
 		lexemeRelation.setLexRelTypeCode(relationType);
 		lexemeRelation.store();
 		return lexemeRelation.getId();
+	}
+
+	public Long addMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {
+		MeaningRelationRecord meaningRelation = create.newRecord(MEANING_RELATION);
+		meaningRelation.setMeaning1Id(meaningId1);
+		meaningRelation.setMeaning2Id(meaningId2);
+		meaningRelation.setMeaningRelTypeCode(relationType);
+		meaningRelation.store();
+		return meaningRelation.getId();
 	}
 
 	public String getFirstDefinitionOfMeaning(Long meaningId) {

@@ -396,4 +396,113 @@
     </div>
   </div>
 
+  <div id="addNewMeaningRelationDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document" style="max-width: 600px;">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/meaningsearchajax}">
+            <input type="hidden" name="meaningId">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav keelend">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id">
+            <input type="hidden" name="opCode" value="meaning_relation">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="value">
+                  <option th:each="item : ${meaningRelationTypes}"
+                          th:value="${item.code}"
+                          th:text="${item.value}">value</option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-name="dialogContent" th:fragment="meaning_search_result">
+    <div class="card" th:if="${not #lists.isEmpty(lexemesFoundBySearch)}">
+      <div class="card-body p-2">
+        <div style="max-height: 70vh; overflow: auto;">
+          <table class="table table-striped mb-0">
+            <tr th:each="lexeme : ${lexemesFoundBySearch}">
+              <td class="p-0">
+                <button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2"
+                        th:data-meaning-id="${lexeme.meaningId}">Lisa</button>
+                <div>
+                  <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
+                    <span th:text="${word}"></span>
+                    <span th:unless="${wordIter.last}">,</span>
+                  </span>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <span class="pt-0" style="color: #007bff;"
+                          th:text="${meaningWord.value + ' ' + meaningWord.homonymNumber + ' ( ' + meaningWord.language + ' )'}">
+                    </span>
+                    <span th:unless="${meaningWordIter.last}">|</span>
+                  </th:block>
+                </div>
+                <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                  <span th:text="${lexeme.definitions.get(0).value}"></span>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(lexemesFoundBySearch)}">
+      <div th:text="#{lex.not.found}" class="card-body">Not found.</div>
+    </div>
+  </div>
+
+  <!--<div data-name="dialogContent" th:fragment="meaning_search_result">-->
+    <!--<div class="card" th:if="${meaningsData.resultExist}">-->
+      <!--<div class="card-body p-2">-->
+        <!--<div style="max-height: 70vh; overflow: auto;">-->
+          <!--<table class="table table-striped mb-0">-->
+            <!--<tr th:each="meaning : ${meaningsData.termMeanings}">-->
+              <!--<td class="p-0">-->
+                <!--<button type="button" class="btn btn-primary float-right btn-sm mt-2 mr-2"-->
+                        <!--th:data-meaning-id="${meaning.meaningId}">Lisa</button>-->
+                <!--<div>-->
+                  <!--<span th:text="${meaning.mainWord.word + ' ' + meaning.mainWord.homonymNr}" class="ttl"></span>-->
+                  <!--<th:block th:each="meaningWord, meaningWordIter : ${meaning.otherWords}">-->
+                      <!--<span class="pt-0" style="color: #007bff;"-->
+                        <!--th:text="${meaningWord.word + ' ' + meaningWord.homonymNr + '( ' + meaningWord.wordLang + ' )'}">-->
+                      <!--</span>-->
+                    <!--<span th:unless="${meaningWordIter.last}">|</span>-->
+                  <!--</th:block>-->
+                <!--</div>-->
+                <!--<div>-->
+                  <!--<small th:text="${meaning.mainWord.datasetCodesWrapup}"></small>-->
+                <!--</div>-->
+              <!--</td>-->
+            <!--</tr>-->
+          <!--</table>-->
+        <!--</div>-->
+      <!--</div>-->
+    <!--</div>-->
+    <!--<div class="card" th:if="${not meaningsData.resultExist}">-->
+      <!--<div th:text="#{lex.not.found}" class="card-body">Not found.</div>-->
+    <!--</div>-->
+  <!--</div>-->
+
 </body>

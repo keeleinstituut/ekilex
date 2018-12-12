@@ -248,6 +248,9 @@ public class ModifyController implements WebConstant {
 		case "lexeme_relation" :
 			updateService.deleteLexemeRelation(id);
 			break;
+		case "meaning_relation" :
+			updateService.deleteMeaningRelation(id);
+			break;
 		}
 		return "OK";
 	}
@@ -321,6 +324,9 @@ public class ModifyController implements WebConstant {
 			break;
 		case "lexeme_relation" :
 			updateService.addLexemeRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
+			break;
+		case "meaning_relation" :
+			updateService.addMeaningRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
 			break;
 		}
 		return "{}";

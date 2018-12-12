@@ -92,4 +92,8 @@ public class CommonDataService {
 		return commonDataDbService.getLexemeRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
 	}
 
+	public List<Classifier> getMeaningRelationTypes() {
+		return commonDataDbService.getMeaningRelationTypes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
 }

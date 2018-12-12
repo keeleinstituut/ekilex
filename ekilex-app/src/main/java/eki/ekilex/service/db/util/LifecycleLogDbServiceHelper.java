@@ -17,6 +17,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 
+import java.util.List;
 import java.util.Map;
 
 import org.jooq.DSLContext;
@@ -184,6 +185,7 @@ public class LifecycleLogDbServiceHelper {
 		Map<String, Object> result = create
 				.select(
 						MEANING_RELATION.MEANING1_ID,
+						MEANING_RELATION.MEANING2_ID,
 						MEANING_RELATION.MEANING_REL_TYPE_CODE,
 						MEANING_RELATION.ORDER_BY
 						)
@@ -215,6 +217,19 @@ public class LifecycleLogDbServiceHelper {
 				.from(WORD_GROUP_MEMBER)
 				.where(WORD_GROUP_MEMBER.ID.eq(entityId))
 				.fetchSingleMap();
+		return result;
+	}
+
+	public List<String> getMeaningWords(DSLContext create, Long entityId) {
+		List<String> result = create
+				.select(
+						FORM.VALUE
+				)
+				.from(LEXEME)
+				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
+				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+				.where(LEXEME.MEANING_ID.eq(entityId).and(FORM.MODE.eq("WORD")))
+				.fetch(0, String.class);
 		return result;
 	}
 
