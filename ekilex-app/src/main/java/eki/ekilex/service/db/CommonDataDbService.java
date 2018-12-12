@@ -453,4 +453,12 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
+	public Result<Record2<String, String>> getMeaningRelationTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
+				.from(MEANING_REL_TYPE_LABEL)
+				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
+	}
+
 }

@@ -178,3 +178,43 @@ function openAddNewLexemeRelationDlg(elem) {
         addDlg.find('.form-control').first().focus();
     });
 }
+
+function openAddNewMeaningRelationDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=meaningId]').val($(elem).data('id'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    var selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var content = button.html();
+        button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+        var theForm = $(this).closest('form');
+        var url = theForm.attr('action') + '?' + theForm.serialize();
+        $.get(url).done(function(data) {
+            addDlg.find('[data-name=dialogContent]').replaceWith(data);
+            addDlg.find('button[data-meaning-id]').off('click').on('click', function(e) {
+                e.preventDefault();
+                var button = $(e.target);
+                addDlg.find('[name=id2]').val(button.data('meaning-id'));
+                var theForm = button.closest('form');
+                submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+                    addDlg.modal('hide');
+                });
+            });
+        }).fail(function(data) {
+            console.log(data);
+            alert(failMessage);
+        }).always(function () {
+            button.html(content);
+        });
+    });
+
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        addDlg.find('.form-control').first().focus();
+    });
+}

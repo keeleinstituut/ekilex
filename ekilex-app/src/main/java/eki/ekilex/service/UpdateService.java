@@ -320,6 +320,12 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, lexemeRelationId, relationType);
 	}
 
+	@Transactional
+	public void addMeaningRelation(Long meaningId1, Long meaningId2, String relationType) {
+		Long meaningRelationId = updateDbService.addMeaningRelation(meaningId1, meaningId2, relationType);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
+	}
+
 	//TODO lifecycle log
 	@Transactional
 	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
@@ -484,6 +490,12 @@ public class UpdateService {
 	public void deleteLexemeRelation(Long relationId) {
 		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME_RELATION, LifecycleProperty.VALUE, relationId);
 		updateDbService.deleteLexemeRelation(relationId);
+	}
+
+	@Transactional
+	public void deleteMeaningRelation(Long relationId) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
+		updateDbService.deleteMeaningRelation(relationId);
 	}
 
 	void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
