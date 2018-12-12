@@ -184,7 +184,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private boolean articleHasMeanings(Node articleNode) {
-		final String meaningGroupNodeExp = "s:P/s:tp/s:tg";
+		final String meaningGroupNodeExp = "s:S/s:tp/s:tg";
 		return !articleNode.selectNodes(meaningGroupNodeExp).isEmpty();
 	}
 
