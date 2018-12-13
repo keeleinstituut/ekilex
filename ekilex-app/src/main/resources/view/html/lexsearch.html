@@ -106,17 +106,17 @@
                     <span th:unless="${vocalFormIter.last}">,&nbsp;</span>
                 </span>
               </div>
-              <hr />
-              <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
-                      th:data-lexeme-id="${lexeme.lexemeId}"
-                      th:data-meaning-id="${lexeme.meaningId}"
-                      th:data-word-id="${wordId}"
-                      onclick="openClassifiersDlg(this)"
-                      data-toggle="modal" data-target="#lexemeClassifiersDlg">
-                <i class="fa fa-plus" aria-hidden="true"></i>
-              </button>
-              <div th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">&nbsp;</div>
-              <div th:if="${lexeme.lexemeOrMeaningClassifiersExist}">
+              <div>
+                <hr />
+                <span class="lbl" th:unless="${lexeme.lexemeOrMeaningClassifiersExist}">Ilmiku omadused</span>
+                <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
+                        th:data-lexeme-id="${lexeme.lexemeId}"
+                        th:data-meaning-id="${lexeme.meaningId}"
+                        th:data-word-id="${wordId}"
+                        onclick="openClassifiersDlg(this)"
+                        data-toggle="modal" data-target="#lexemeClassifiersDlg">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
                 <th:block th:replace="lexsearch_components :: lexeme_parameters"></th:block>
               </div>
               <div>
