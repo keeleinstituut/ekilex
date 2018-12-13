@@ -39,9 +39,10 @@
     <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="col offset-1 lg-max-noneset">
         <span>
-          <span th:text="#{label.word.not.found}">Ei leidnud midagi</span>
-          <a th:href="${'http://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|" 
-              th:text="#{label.find.from.kn.eki}" target="_blank">Proovi otsida e-keelenõust</a>
+          <span class="lang-est" th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
+          <a class="lang-est" th:href="${'http://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|" 
+              th:text="#{label.find.from.kn.eki}" target="_blank">e-keelenõust</a>
+          <span class="lang-rus" th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
         </span>
       </div>
     </div>
@@ -97,7 +98,7 @@
               th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
-            <span th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
+            <span id="spellingLine" th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
           </div>
         </div>
         <div class="row">
@@ -430,21 +431,12 @@
             </div>
           </div>
           <div class="col-md-5 col-lg-4 more-data sidebar">
-            <section class="level-3-panel row">
-              <div class="col-12">
-                <h5 class="font-weight-bold" th:text="#{label.word.etymology}">Päritolu</h5>
-                <div th:if="${wordData.word.wordEtymology == null}">
-                  <span th:text="#{label.no.data}">Andmed puuduvad</span>
-                </div>
-                <div th:if="${wordData.word.wordEtymology != null}">
-                  <div th:text="${wordData.word.wordEtymology.wordEtymologyWrapup}" th:if="${wordData.word.wordEtymology.wordEtymologyWrapup != null}"></div>
-                  <div th:text="${wordData.word.wordEtymology.wordEtymologyLineupWrapup}"></div>
-                </div>
-              </div>
-            </section>
             <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
-                <h5 class="font-weight-bold" th:text="#{label.word.forms}">Sõnavormid</h5>
+                         <h5 class="font-weight-bold">
+                  <span th:text="#{label.word.forms}">Sõnavormid</span>
+                  <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
+                </h5>
                 <span th:text="#{label.no.data}">Andmed puuduvad</span>
               </div>
               <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
@@ -560,9 +552,12 @@
                 </div>
               </div>
             </section>
-            <section class="level-3-panel row">
+            <section class="level-3-panel row" th:classappend="${sessionBean.searchMode == 'simple' ? 'hide-simple' : ''}">
               <div class="col-12 word-relations">
-                <h5 class="font-weight-bold" th:text="#{label.word.relations}">Sõna seosed</h5>
+                <h5 class="font-weight-bold">
+                  <span th:text="#{label.word.relations}">Sõna seosed</span>
+                  <span th:aria-label="#{label.word.info}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}"></span>
+                </h5>
                 <div th:unless="${wordData.word.wordRelationsExist}">
                   <span th:text="#{label.no.data}">Andmed puuduvad</span>
                 </div>
@@ -603,6 +598,31 @@
                 </div>
               </div>
             </section>
+            <section class="level-3-panel row" th:classappend="${sessionBean.searchMode == 'simple' ? 'hide-simple' : ''}">
+              <div class="col-12">
+                <h5 class="font-weight-bold">
+                  <span th:text="#{label.word.etymology}">Päritolu</span>
+                  <span th:aria-label="#{label.word.info}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{label.word.info}"></span>
+                </h5>
+                <div th:if="${wordData.word.wordEtymology == null}">
+                  <span th:text="#{label.no.data}">Andmed puuduvad</span>
+                </div>
+                <div th:if="${wordData.word.wordEtymology != null}">
+                  <div th:text="${wordData.word.wordEtymology.wordEtymologyWrapup}" th:if="${wordData.word.wordEtymology.wordEtymologyWrapup != null}"></div>
+                  <div th:text="${wordData.word.wordEtymology.wordEtymologyLineupWrapup}"></div>
+                </div>
+              </div>
+            </section>
+            <section class="level-3-panel row">
+              <div class="col-12 corp-panel">
+                <div class="mb-0">
+                  <h5 class="font-weight-bold mb-0">
+                    <span th:text="#{sentence.same.as}" ></span>
+                    <a th:aria-label="|#{aria.search.from.keelenou} ${sentence}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + sentence}"target="_blank">e-keelenõus</a>
+                  </h5>
+                </div>
+              </div>
+             </section>
             <div id="korp" th:text="#{label.korp.search}">Otsin veebilauseid...</div>
           </div>
         </div>
@@ -620,9 +640,6 @@
       <button class="more-btn" aria-expanded="false">
         <span class="icon icon-chevron-left"></span>
       </button>
-      <div class="mb-2">
-        <a th:aria-label="|#{aria.search.from.keelenou} ${sentence}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + sentence}" th:text="#{sentence.same.as}" target="_blank"></a>
-      </div>
       <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
         <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
       </div>

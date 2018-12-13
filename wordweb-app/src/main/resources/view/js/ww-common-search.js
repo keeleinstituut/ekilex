@@ -108,10 +108,22 @@ $(document).ready(function () {
 	$(".back").on("click", function (e) {
 		$(".header-container .back").addClass("show-btn");
 	});
+
+
 });
 
 $(window).resize(function () {
 	calculateAndSetStyles();
+});
+
+$(function() {
+    if ( document.location.href.indexOf('est-rus' ) > -1 ) {
+        $('.lang-est').addClass('hide-message');
+        $('.lang-rus').addClass('show-message');
+    } else if ( document.location.href.indexOf('rus-est' ) > -1 ) {
+                $('.lang-est').addClass('hide-message');
+        $('.lang-rus').addClass('show-message');
+    }
 });
 
 function initLanguageFilter() {
@@ -410,6 +422,7 @@ $(document).on("click", "#stop-rec-btn", function (e) {
 });
 
 $(document).on("click", "#toggle-simple", function (e) {
+
 	var searchMode = $("input[name='searchMode']").val();
 	if (searchMode === "detail") {
 		$("input[name='searchMode']").val("simple");
@@ -422,6 +435,7 @@ $(document).on("click", "#toggle-simple", function (e) {
 	}
 });
 
+
 $(document).on("click", "#toggle-detail", function (e) {
 	var searchMode = $("input[name='searchMode']").val();
 	if (searchMode === "simple") {
@@ -433,5 +447,8 @@ $(document).on("click", "#toggle-detail", function (e) {
 			$("#search-btn").click();
 		}
 	}
+
 });
+
+
 

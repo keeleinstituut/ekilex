@@ -39,7 +39,11 @@ $(document).ready(function() {
 	});
 
 	$('[data-toggle="tooltip"]').tooltip();
+
 });
+
+
+
 
 $(document).on("click", ".menu-btn", function(e) {
 	$(".header-container").toggleClass("show-header");

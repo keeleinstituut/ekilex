@@ -13,6 +13,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 			word : word,
 			wordSelectUrl : wordSelectUrl
 		};
+		$('#spellingLine').text( $('#spellingLine').text().replace(/\¤e/g, "") );
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 		var lang = wordSelectUrl.split('/').find(function(e) {
 			return e.indexOf('-') !== -1
