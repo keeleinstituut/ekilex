@@ -313,6 +313,26 @@
     </select>
   </div>
 </div>
+
+<div class="form-group row value-group" data-id="lexeme_value_state" th:fragment="lexeme_value_state_select">
+  <div class="col-md-4">
+    <select class="form-control value-select">
+      <option th:each="item : ${lexemeValueStates}"
+              th:value="${item.code}"
+              th:text="${item.value}">value</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="lexeme_process_state" th:fragment="lexeme_process_state_select">
+  <div class="col-md-6">
+    <select class="form-control value-select">
+      <option th:each="item : ${processStates}"
+              th:value="${item.code}"
+              th:text="${item.value}">value</option>
+    </select>
+  </div>
+</div>
 <!-- END select fragments -->
 
 <div id="lexemeClassifiersDlg" class="modal" role="dialog">
@@ -327,6 +347,8 @@
           <div class="form-group row">
             <div class="col-md-6">
               <select class="form-control" name="opCode">
+                <option value="lexeme_process_state">Haldusolek</option>
+                <option value="lexeme_value_state">Väärtusolek</option>
                 <option value="lexeme_frequency_group">Sagedusrühm</option>
                 <option value="lexeme_pos">Sõnaliik</option>
                 <option value="meaning_domain">Valdkond</option>
@@ -336,6 +358,8 @@
               </select>
             </div>
           </div>
+          <div th:replace=":: lexeme_process_state_select"></div>
+          <div th:replace=":: lexeme_value_state_select"></div>
           <div th:replace=":: lexeme_frequency_select"></div>
           <div th:replace=":: lexeme_pos_select"></div>
           <div th:replace=":: meaning_domain_select"></div>
@@ -416,6 +440,8 @@
           <div class="form-group row">
             <div class="col-md-6">
               <select class="form-control" name="opCode">
+                <option value="lexeme_process_state">Haldusolek</option>
+                <option value="lexeme_value_state">Väärtusolek</option>
                 <option value="word_gender">Sugu</option>
                 <option value="word_type">Sõna tüüp</option>
                 <option value="lexeme_frequency_group">Sagedusrühm</option>
@@ -426,6 +452,8 @@
               </select>
             </div>
           </div>
+          <div th:replace=":: lexeme_process_state_select"></div>
+          <div th:replace=":: lexeme_value_state_select"></div>
           <div th:replace=":: word_gender_select"></div>
           <div th:replace=":: word_type_select"></div>
           <div th:replace=":: lexeme_frequency_select"></div>
@@ -588,6 +616,44 @@
           <input type="hidden" name="opCode" value="word_aspect">
           <select class="form-control" name="value">
             <option th:each="item : ${wordAspects}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeValueStateCodeDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_value_state">
+          <select class="form-control" name="value">
+            <option th:each="item : ${lexemeValueStates}"
+                    th:value="${item.code}"
+                    th:text="${item.value}">value</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="lexemeProcessStateCodeDlg" class="modal select-dlg" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="currentValue">
+          <input type="hidden" name="opCode" value="lexeme_process_state">
+          <select class="form-control" name="value">
+            <option th:each="item : ${processStates}"
                     th:value="${item.code}"
                     th:text="${item.value}">value</option>
           </select>

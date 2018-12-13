@@ -120,6 +120,12 @@ public class ModifyController implements WebConstant {
 			case "word_aspect" :
 				updateService.updateWordAspect(itemData.getId(), itemData.getValue());
 				break;
+			case "lexeme_value_state" :
+				updateService.updateLexemeValueState(itemData.getId(), itemData.getValue());
+				break;
+			case "lexeme_process_state" :
+				updateService.updateLexemeProcessState(itemData.getId(), itemData.getValue());
+				break;
 		}
 
 		return "{}";
@@ -251,6 +257,12 @@ public class ModifyController implements WebConstant {
 		case "meaning_relation" :
 			updateService.deleteMeaningRelation(id);
 			break;
+		case "lexeme_value_state" :
+			updateService.updateLexemeValueState(id, null);
+			break;
+		case "lexeme_process_state" :
+			updateService.updateLexemeProcessState(id, null);
+			break;
 		}
 		return "OK";
 	}
@@ -327,6 +339,12 @@ public class ModifyController implements WebConstant {
 			break;
 		case "meaning_relation" :
 			updateService.addMeaningRelation(itemData.getId(), itemData.getId2(), itemData.getValue());
+			break;
+		case "lexeme_value_state" :
+			updateService.updateLexemeValueState(itemData.getId(), itemData.getValue());
+			break;
+		case "lexeme_process_state" :
+			updateService.updateLexemeProcessState(itemData.getId(), itemData.getValue());
 			break;
 		}
 		return "{}";

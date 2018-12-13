@@ -28,10 +28,12 @@ import static eki.ekilex.data.db.Tables.MEANING_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MORPH_LABEL;
 import static eki.ekilex.data.db.Tables.PARADIGM;
 import static eki.ekilex.data.db.Tables.POS_LABEL;
+import static eki.ekilex.data.db.Tables.PROCESS_STATE;
 import static eki.ekilex.data.db.Tables.REGISTER_LABEL;
 import static eki.ekilex.data.db.Tables.SOURCE;
 import static eki.ekilex.data.db.Tables.SOURCE_FREEFORM;
 import static eki.ekilex.data.db.Tables.USAGE_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
@@ -40,6 +42,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -458,6 +461,22 @@ public class CommonDataDbService implements DbConstant {
 				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
 				.from(MEANING_REL_TYPE_LABEL)
 				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getLexemeValueStates(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(VALUE_STATE_LABEL.CODE, VALUE_STATE_LABEL.VALUE)
+				.from(VALUE_STATE_LABEL)
+				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> getProcessStates() {
+		return create
+				.select(PROCESS_STATE.CODE, PROCESS_STATE.CODE.as("value"))
+				.from(PROCESS_STATE)
+				.orderBy(PROCESS_STATE.ORDER_BY)
 				.fetch();
 	}
 
