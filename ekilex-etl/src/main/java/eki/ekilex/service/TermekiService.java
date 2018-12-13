@@ -26,6 +26,8 @@ import static java.util.stream.Collectors.toMap;
 @ConditionalOnBean(name = "dataSourceTermeki")
 public class TermekiService implements InitializingBean {
 
+	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
+
 	private static final String SQL_SELECT_TERMS = "sql/select_termeki_terms.sql";
 
 	private static final String SQL_SELECT_DEFINITIONS = "sql/select_termeki_definitions.sql";
@@ -36,6 +38,8 @@ public class TermekiService implements InitializingBean {
 
 	private static final String SQL_SELECT_COMMENTS = "sql/select_termeki_comments.sql";
 
+	//TODO should read db ids from ultima conf now
+	@Deprecated
 	private static final String TERMBASE_IDS = "csv/termeki-databases.csv";
 
 	private static final String SQL_SELECT_TERM_ATTRIBUTES = "sql/select_termeki_term_attributes.sql";
@@ -43,8 +47,6 @@ public class TermekiService implements InitializingBean {
 	private static final String SQL_SELECT_CONCEPT_ATTRIBUTES = "sql/select_termeki_concept_attributes.sql";
 
 	private static final String SQL_SELECT_EXAMPLES = "sql/select_termeki_examples.sql";
-
-	private static Logger logger = LoggerFactory.getLogger(TermekiService.class);
 
 	private String sqlSelectTerms;
 

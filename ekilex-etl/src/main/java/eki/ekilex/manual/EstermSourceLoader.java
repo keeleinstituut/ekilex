@@ -10,11 +10,11 @@ public class EstermSourceLoader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(EstermSourceLoader.class);
 
 	public static void main(String[] args) {
-		new EstermSourceLoader().execute();
+		new EstermSourceLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 

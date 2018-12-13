@@ -948,9 +948,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createSource(Source source) throws Exception {
 
-		Map<String, Object> tableRowParamMap = new HashMap<>();
 		String concept = source.getExtSourceId();
 		SourceType type = source.getType();
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("ext_source_id", concept);
 		tableRowParamMap.put("type", type.name());
 		Timestamp createdOn = source.getCreatedOn();

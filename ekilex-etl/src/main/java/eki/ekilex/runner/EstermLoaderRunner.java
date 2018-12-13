@@ -71,7 +71,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	private Map<String, String> wordTypeCodes;
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "est";
 	}
 

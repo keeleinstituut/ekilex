@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +19,14 @@ import org.springframework.core.io.Resource;
 
 import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.SystemConstant;
+import eki.ekilex.data.transform.DatasetId;
 import eki.ekilex.data.transform.Guid;
 
 public abstract class AbstractLoader implements SystemConstant {
 
-	abstract void execute();
+	private static final String TERMEKI_KEY_PART = ".termeki.";
+
+	abstract void execute(String[] args);
 
 	private ConfigurableApplicationContext applicationContext;
 
@@ -91,6 +95,24 @@ public abstract class AbstractLoader implements SystemConstant {
 			dataFilePaths[dataFilePathKeyIndex] = getConfProperty(mabDataFilePathKeys[dataFilePathKeyIndex]);
 		}
 		return dataFilePaths;
+	}
+
+	public List<DatasetId> getTermekiIds() {
+		List<DatasetId> termekiIds = new ArrayList<>();
+		Enumeration<Object> loaderConfKeys = loaderConf.keys();
+		while (loaderConfKeys.hasMoreElements()) {
+			String loaderConfKey = loaderConfKeys.nextElement().toString();
+			if (StringUtils.contains(loaderConfKey, TERMEKI_KEY_PART)) {
+				String termekiDataset = StringUtils.substringBefore(loaderConfKey, TERMEKI_KEY_PART);
+				String termekiIdStr = loaderConf.getProperty(loaderConfKey);
+				if (StringUtils.isNotEmpty(termekiIdStr)) {
+					Integer termekiId = Integer.valueOf(termekiIdStr);
+					DatasetId datasetId = new DatasetId(termekiDataset, termekiId);
+					termekiIds.add(datasetId);
+				}
+			}
+		}
+		return termekiIds;
 	}
 
 	public Map<String, List<Guid>> getSsGuidMapFor(String filteringDataset) throws Exception {

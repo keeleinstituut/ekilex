@@ -84,7 +84,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "ss1";
 	}
 
@@ -157,7 +157,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Done in {} ms", (t2 - t1));
 	}
 
-	@Transactional
 	void processArticle(Node articleNode, Context context) throws Exception {
 
 		final String articleHeaderExp = "s:P";

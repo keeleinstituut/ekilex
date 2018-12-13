@@ -81,7 +81,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> languageConversionMap;
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "ety";
 	}
 

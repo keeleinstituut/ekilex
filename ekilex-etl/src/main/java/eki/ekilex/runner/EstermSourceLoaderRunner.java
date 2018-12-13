@@ -97,30 +97,42 @@ public class EstermSourceLoaderRunner extends AbstractLoaderRunner {
 
 		for (Node conceptGroupNode : conceptGroupNodes) {
 
-			sourceObj = extractAndApplySourceProperties(conceptGroupNode);
-			sourceId = createSource(sourceObj);
+			Node extSourceIdNode = conceptGroupNode.selectSingleNode(conceptExp);
+			Element extSourceIdElement = (Element) extSourceIdNode;
+			String extSourceId = extSourceIdElement.getTextTrim();
 
-			termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
+			Node sourceNameNode = conceptGroupNode.selectSingleNode(termGroupExp + "/" + termValueExp);
+			Element sourceNameElement = (Element) sourceNameNode;
+			String sourceName = sourceNameElement.getTextTrim();
 
-			for (Node termGroupNode : termGroupNodes) {
+			sourceId = getSource(SourceType.UNKNOWN, extSourceId, sourceName);
+			if (sourceId == null) {
 
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_NAME, termValueExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.LTB_SOURCE, sourceLtbSourceExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_RT, sourceRtExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_CELEX, sourceCelexExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_WWW, sourceWwwExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_AUTHOR, sourceAuthorExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_ISBN, sourceIsbnExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_ISSN, sourceIssnExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLISHER, sourcePublisherExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_YEAR, sourcePublicationYearExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_PLACE, sourcePublicationPlaceExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_NAME, sourcePublicationNameExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.PUBLIC_NOTE, sourceNoteExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_BY, createdByExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_ON, createdOnExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_BY, modifiedByExp);
-				extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_ON, modifiedOnExp);
+				sourceObj = extractAndApplySourceProperties(conceptGroupNode);
+				sourceId = createSource(sourceObj);
+
+				termGroupNodes = conceptGroupNode.selectNodes(termGroupExp);
+
+				for (Node termGroupNode : termGroupNodes) {
+
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_NAME, termValueExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.LTB_SOURCE, sourceLtbSourceExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_RT, sourceRtExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_CELEX, sourceCelexExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_WWW, sourceWwwExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_AUTHOR, sourceAuthorExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_ISBN, sourceIsbnExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_ISSN, sourceIssnExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLISHER, sourcePublisherExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_YEAR, sourcePublicationYearExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_PLACE, sourcePublicationPlaceExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.SOURCE_PUBLICATION_NAME, sourcePublicationNameExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.PUBLIC_NOTE, sourceNoteExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_BY, createdByExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.CREATED_ON, createdOnExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_BY, modifiedByExp);
+					extractAndSaveFreeforms(sourceId, termGroupNode, FreeformType.MODIFIED_ON, modifiedOnExp);
+				}
 			}
 
 			conceptGroupCounter++;

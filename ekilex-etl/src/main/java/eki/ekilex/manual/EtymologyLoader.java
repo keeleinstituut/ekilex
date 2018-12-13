@@ -10,11 +10,11 @@ public class EtymologyLoader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(EtymologyLoader.class);
 
 	public static void main(String[] args) {
-		new EtymologyLoader().execute();
+		new EtymologyLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 

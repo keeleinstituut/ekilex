@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eki.ekilex.data.transform.DatasetId;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.runner.CollocLoaderRunner;
 import eki.ekilex.runner.DbReInitialiserRunner;
@@ -28,12 +30,21 @@ public class UltimaLoader extends AbstractLoader {
 
 	private static Logger logger = LoggerFactory.getLogger(UltimaLoader.class);
 
+	//maven: mvn exec:java -P<profile> -Dexec.args="<dataset1> <dataset2> <dataset3>"
 	public static void main(String[] args) {
-		new UltimaLoader().execute();
+		new UltimaLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
+
+		String[] acquiredDatasets = args;
+		String aquiredDatasetsLog;
+		if (ArrayUtils.isEmpty(acquiredDatasets)) {
+			aquiredDatasetsLog = "*";
+		} else {
+			aquiredDatasetsLog = StringUtils.join(acquiredDatasets, ", ");
+		}
 
 		List<String> successfullyLoadedDatasets = new ArrayList<>();
 
@@ -60,7 +71,8 @@ public class UltimaLoader extends AbstractLoader {
 			boolean doReports = doReports();
 			boolean isFullReload = isFullReload();
 
-			logger.info("Starting to clear database and load all datasets specified in ultima-loader.properties file");
+			logger.info("Starting loading datasets from sources specified in ultima-loader.properties file");
+			logger.info("Acquired datasets are: \"{}\"", aquiredDatasetsLog);
 
 			long t1, t2;
 			t1 = System.currentTimeMillis();
@@ -78,93 +90,115 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			// ss1
-			dataFilePath = getConfProperty("ss1.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				if (!isFullReload) {
-					ss1Runner.deleteDatasetData();
+			dataset = ss1Runner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("ss1.data.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					if (!isFullReload) {
+						ss1Runner.deleteDatasetData();
+					}
+					ss1Runner.execute(dataFilePath, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				ss1Runner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("ss1");
 			}
 
 			// psv
-			dataFilePath = getConfProperty("psv.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				dataset = psvRunner.getDataset();
-				ssGuidMap = getSsGuidMapFor(dataset);
-				if (!isFullReload) {
-					psvRunner.deleteDatasetData();
+			dataset = psvRunner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("psv.data.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					ssGuidMap = getSsGuidMapFor(dataset);
+					if (!isFullReload) {
+						psvRunner.deleteDatasetData();
+					}
+					psvRunner.execute(dataFilePath, ssGuidMap, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				psvRunner.execute(dataFilePath, ssGuidMap, doReports);
-				successfullyLoadedDatasets.add("psv");
 			}
 
 			// kol
-			dataFilePath = getConfProperty("kol.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				dataset = kolRunner.getDataset();
-				ssGuidMap = getSsGuidMapFor(dataset);
-				if (!isFullReload) {
-					kolRunner.deleteDatasetData();
+			dataset = kolRunner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("kol.data.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					ssGuidMap = getSsGuidMapFor(dataset);
+					if (!isFullReload) {
+						kolRunner.deleteDatasetData();
+					}
+					kolRunner.execute(dataFilePath, ssGuidMap, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				kolRunner.execute(dataFilePath, ssGuidMap, doReports);
-				successfullyLoadedDatasets.add("kol");
 			}
 
 			// qq2
-			dataFilePath = getConfProperty("qq2.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				dataset = qq2Runner.getDataset();
-				ssGuidMap = getSsGuidMapFor(dataset);
-				if (!isFullReload) {
-					qq2Runner.deleteDatasetData();
+			dataset = qq2Runner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("qq2.data.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					ssGuidMap = getSsGuidMapFor(dataset);
+					if (!isFullReload) {
+						qq2Runner.deleteDatasetData();
+					}
+					qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				qq2Runner.execute(dataFilePath, ssGuidMap, doReports);
-				successfullyLoadedDatasets.add(dataset);
 			}
 
 			// ev2
-			dataFilePath = getConfProperty("ev2.data.file.1");
-			dataFilePath2 = getConfProperty("ev2.data.file.2");
-			if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
-				dataset = ev2Runner.getDataset();
-				ssGuidMap = getSsGuidMapFor(dataset);
-				if (!isFullReload) {
-					ev2Runner.deleteDatasetData();
+			dataset = ev2Runner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("ev2.data.file.1");
+				dataFilePath2 = getConfProperty("ev2.data.file.2");
+				if (StringUtils.isNotBlank(dataFilePath) && StringUtils.isNotBlank(dataFilePath2)) {
+					ssGuidMap = getSsGuidMapFor(dataset);
+					if (!isFullReload) {
+						ev2Runner.deleteDatasetData();
+					}
+					ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				ev2Runner.execute(dataFilePath, dataFilePath2, ssGuidMap, doReports);
 			}
 
 			// ety
-			dataFilePath = getConfProperty("ss1.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				if (!isFullReload) {
-					etyRunner.deleteDatasetData();
+			dataset = etyRunner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("ss1.data.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					if (!isFullReload) {
+						etyRunner.deleteDatasetData();
+					}
+					etyRunner.execute(dataFilePath, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				etyRunner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("ety");
 			}
 
 			// est src + est
-			dataFilePath = getConfProperty("est.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				if (isFullReload) {
+			dataset = estRunner.getDataset();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("est.data.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					if (!isFullReload) {
+						estRunner.deleteDatasetData();
+					}
 					estSrcRunner.execute(dataFilePath, doReports);
-					successfullyLoadedDatasets.add("est src");
-				} else {
-					estRunner.deleteDatasetData();
+					estRunner.execute(dataFilePath, doReports);
+					successfullyLoadedDatasets.add(dataset);
 				}
-				estRunner.execute(dataFilePath, doReports);
-				successfullyLoadedDatasets.add("est");
 			}
 
 			// termeki
-			dataFilePath = getConfProperty("termeki.data.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				//TODO temp until termeki datasets are moved to ultima loader
-				if (isFullReload) {
-					termekiRunner.batchLoad(dataFilePath);
-					successfullyLoadedDatasets.add("termeki");
+			List<DatasetId> termekiIds = getTermekiIds();
+			if (CollectionUtils.isNotEmpty(termekiIds)) {
+				for (DatasetId datasetId : termekiIds) {
+					Integer termekiId = datasetId.getId();
+					dataset = datasetId.getDataset();
+					if (doLoad(dataset, acquiredDatasets)) {
+						if (!isFullReload) {
+							termekiRunner.deleteTermekiDatasetData(dataset);
+						}
+						termekiRunner.execute(termekiId, dataset);
+						successfullyLoadedDatasets.add(dataset);
+					}
 				}
 			}
 
@@ -173,7 +207,6 @@ public class UltimaLoader extends AbstractLoader {
 			if (StringUtils.isNotBlank(dataFilePath)) {
 				if (isFullReload) {
 					voiceFileUpdaterRunner.update(dataFilePath);
-					successfullyLoadedDatasets.add("voice");
 				}
 			}
 
@@ -198,4 +231,10 @@ public class UltimaLoader extends AbstractLoader {
 		}
 	}
 
+	private boolean doLoad(String dataset, String[] acquiredDatasets) {
+		if (ArrayUtils.isEmpty(acquiredDatasets)) {
+			return true;
+		}
+		return ArrayUtils.contains(acquiredDatasets, dataset);
+	}
 }

@@ -10,11 +10,11 @@ public class GameDataLoader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(GameDataLoader.class);
 
 	public static void main(String[] args) {
-		new GameDataLoader().execute();
+		new GameDataLoader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 

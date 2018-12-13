@@ -11,11 +11,11 @@ public class Ss1Loader extends AbstractLoader {
 	private static Logger logger = LoggerFactory.getLogger(Ss1Loader.class);
 
 	public static void main(String[] args) {
-		new Ss1Loader().execute();
+		new Ss1Loader().execute(args);
 	}
 
 	@Override
-	void execute() {
+	void execute(String[] args) {
 		try {
 			initDefault();
 
