@@ -225,6 +225,96 @@
   </div>
 </div>
 
+<!-- select fragments for classifier dialogs -->
+<div class="form-group row value-group" data-id="lexeme_frequency_group" th:fragment="lexeme_frequency_select">
+  <div class="col-md-2">
+    <select class="form-control value-select">
+      <option th:each="freqGroup : ${lexemeFrequencyGroups}"
+              th:value="${freqGroup.code}"
+              th:text="${freqGroup.value}">freqGroup</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="lexeme_pos" th:fragment="lexeme_pos_select">
+  <div class="col-md-8">
+    <select class="form-control value-select">
+      <option th:each="pos : ${allLexemePos}"
+              th:value="${pos.code}"
+              th:text="${pos.value}">pos</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="meaning_domain" th:fragment="meaning_domain_select">
+  <div class="col-md-12">
+    <select class="form-control value-select">
+      <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
+        <option th:each="domain : ${origin.getValue()}"
+                th:value="${domain.toIdString()}"
+                th:text="${domain.origin + ' - ' + domain.value}">domain</option>
+      </optgroup>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="lexeme_deriv" th:fragment="lexeme_deriv_select">
+  <div class="col-md-8">
+    <select class="form-control value-select">
+      <option th:each="deriv : ${allLexemeDerivs}"
+              th:value="${deriv.code}"
+              th:text="${deriv.value}">deriv</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="lexeme_register" th:fragment="lexeme_register_select">
+  <div class="col-md-8">
+    <select class="form-control value-select">
+      <option th:each="register : ${allLexemeRegisters}"
+              th:value="${register.code}"
+              th:text="${register.value}">register</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="lexeme_grammar" th:fragment="lexeme_grammar_input">
+  <div class="col-md-12">
+    <input type="text" class="form-control value-select">
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="word_gender" th:fragment="word_gender_select">
+  <div class="col-md-4">
+    <select class="form-control value-select">
+      <option th:each="gender : ${wordGenders}"
+              th:value="${gender.code}"
+              th:text="${gender.value}">gender</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="word_type" th:fragment="word_type_select">
+  <div class="col-md-8">
+    <select class="form-control value-select">
+      <option th:each="item : ${wordTypes}"
+              th:value="${item.code}"
+              th:text="${item.value}">value</option>
+    </select>
+  </div>
+</div>
+
+<div class="form-group row value-group" data-id="word_aspect" th:fragment="word_aspect_select">
+  <div class="col-md-8">
+    <select class="form-control value-select">
+      <option th:each="item : ${wordAspects}"
+              th:value="${item.code}"
+              th:text="${item.value}">value</option>
+    </select>
+  </div>
+</div>
+<!-- END select fragments -->
+
 <div id="lexemeClassifiersDlg" class="modal" role="dialog">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -246,58 +336,12 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" data-id="lexeme_frequency_group">
-            <div class="col-md-2">
-              <select class="form-control value-select">
-                <option th:each="freqGroup : ${lexemeFrequencyGroups}"
-                        th:value="${freqGroup.code}"
-                        th:text="${freqGroup.value}">freqGroup</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="lexeme_pos">
-            <div class="col-md-8">
-              <select class="form-control value-select">
-                <option th:each="pos : ${allLexemePos}"
-                        th:value="${pos.code}"
-                        th:text="${pos.value}">pos</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="meaning_domain">
-            <div class="col-md-12">
-              <select class="form-control value-select">
-                <optgroup th:each="origin : ${allDomains}" th:label="${origin.getKey()}">
-                  <option th:each="domain : ${origin.getValue()}"
-                          th:value="${domain.toIdString()}"
-                          th:text="${domain.origin + ' - ' + domain.value}">domain</option>
-                </optgroup>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="lexeme_deriv">
-            <div class="col-md-8">
-              <select class="form-control value-select">
-                <option th:each="deriv : ${allLexemeDerivs}"
-                        th:value="${deriv.code}"
-                        th:text="${deriv.value}">deriv</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="lexeme_register">
-            <div class="col-md-8">
-              <select class="form-control value-select">
-                <option th:each="register : ${allLexemeRegisters}"
-                        th:value="${register.code}"
-                        th:text="${register.value}">register</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="lexeme_grammar">
-            <div class="col-md-12">
-              <input type="text" class="form-control value-select">
-            </div>
-          </div>
+          <div th:replace=":: lexeme_frequency_select"></div>
+          <div th:replace=":: lexeme_pos_select"></div>
+          <div th:replace=":: meaning_domain_select"></div>
+          <div th:replace=":: lexeme_deriv_select"></div>
+          <div th:replace=":: lexeme_register_select"></div>
+          <div th:replace=":: lexeme_grammar_input"></div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Lisa</button>
@@ -326,33 +370,69 @@
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" data-id="word_gender">
-            <div class="col-md-4">
-              <select class="form-control value-select">
-                <option th:each="gender : ${wordGenders}"
-                        th:value="${gender.code}"
-                        th:text="${gender.value}">gender</option>
+          <div th:replace=":: word_gender_select"></div>
+          <div th:replace=":: word_type_select"></div>
+          <div th:replace=":: word_aspect_select"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="termMeaningClassifiersDlg" class="modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <input type="hidden" name="opCode" value="meaning_domain">
+          <div th:replace=":: meaning_domain_select"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Lisa</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="termLexemeClassifiersDlg" class="modal" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <form th:action="@{/add_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="id2">
+          <input type="hidden" name="id3">
+          <input type="hidden" name="value">
+          <div class="form-group row">
+            <div class="col-md-6">
+              <select class="form-control" name="opCode">
+                <option value="word_gender">Sugu</option>
+                <option value="word_type">Sõna tüüp</option>
+                <option value="lexeme_frequency_group">Sagedusrühm</option>
+                <option value="lexeme_grammar">Grammatika</option>
+                <option value="lexeme_pos">Sõnaliik</option>
+                <option value="lexeme_deriv">Tuletuskood</option>
+                <option value="lexeme_register">Register</option>
               </select>
             </div>
           </div>
-          <div class="form-group row value-group" data-id="word_type">
-            <div class="col-md-8">
-              <select class="form-control value-select">
-                <option th:each="item : ${wordTypes}"
-                        th:value="${item.code}"
-                        th:text="${item.value}">value</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="word_aspect">
-            <div class="col-md-8">
-              <select class="form-control value-select">
-                <option th:each="item : ${wordAspects}"
-                        th:value="${item.code}"
-                        th:text="${item.value}">value</option>
-              </select>
-            </div>
-          </div>
+          <div th:replace=":: word_gender_select"></div>
+          <div th:replace=":: word_type_select"></div>
+          <div th:replace=":: lexeme_frequency_select"></div>
+          <div th:replace=":: lexeme_pos_select"></div>
+          <div th:replace=":: lexeme_deriv_select"></div>
+          <div th:replace=":: lexeme_register_select"></div>
+          <div th:replace=":: lexeme_grammar_input"></div>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-primary">Lisa</button>

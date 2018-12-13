@@ -4,33 +4,39 @@
 <body>
 
   <th:block th:fragment="lexeme_parameters">
-    <div th:if="${!#lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
-      <span class="lbl">Grammatika</span>
-      <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
-                    <span th:name="${grammar.id} + '_lexeme_grammar'"
-                          th:data-id="${grammar.id}"
-                          th:data-op-code="lexeme_grammar"
-                          th:data-value="${grammar.valueText}"
-                          th:text="${grammar.valueText}"></span>
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda" th:data-target-elem="${grammar.id} + '_lexeme_grammar'"
-                            onclick="openEditDlg(this)"
-                            data-toggle="modal" data-target="#editDlg">
-                      <i class="fa fa-edit" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${grammar.id} + '_lexeme_grammar'"
-                            data-toggle="delete-confirmation" data-placement="right">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    <span th:unless="${grammarIter.last}">,&nbsp;</span>
-                  </span>
-    </div>
-
     <div th:if="${lexeme.lexemeValueStateCode != null}">
       <span class="lbl">Väärtusolek</span>
       <span th:text="${lexeme.lexemeValueStateCode}"></span>
     </div>
+
+    <div th:if="${lexeme.meaningProcessStateCode != null}">
+      <span class="lbl">Haldusolek</span>
+      <span th:text="${lexeme.meaningProcessStateCode}"></span>
+    </div>
+
+    <div th:if="${!#lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
+      <span class="lbl">Grammatika</span>
+      <span th:each="grammar,grammarIter : ${lexeme.grammars}" class="hidden-buttons">
+        <span th:name="${grammar.id} + '_lexeme_grammar'"
+              th:data-id="${grammar.id}"
+              th:data-op-code="lexeme_grammar"
+              th:data-value="${grammar.valueText}"
+              th:text="${grammar.valueText}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda" th:data-target-elem="${grammar.id} + '_lexeme_grammar'"
+                onclick="openEditDlg(this)"
+                data-toggle="modal" data-target="#editDlg">
+          <i class="fa fa-edit" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="${grammar.id} + '_lexeme_grammar'"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${grammarIter.last}">,&nbsp;</span>
+      </span>
+    </div>
+
     <div th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons" th:fragment="lexeme_frequency_group">
       <span class="lbl">Sagedusrühm</span>
       <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
@@ -50,11 +56,6 @@
               data-toggle="delete-confirmation" data-placement="right">
         <i class="fa fa-remove" aria-hidden="true"></i>
       </button>
-    </div>
-
-    <div th:if="${lexeme.meaningProcessStateCode != null}">
-      <span class="lbl">Haldusolek</span>
-      <span th:text="${lexeme.meaningProcessStateCode}"></span>
     </div>
 
     <div th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">
@@ -89,133 +90,137 @@
     <div th:if="${not #lists.isEmpty(lexeme.derivs)}" th:fragment="lexeme_derivative">
       <span class="lbl">Tuletuskood</span>
       <span th:each="classif,classifIter : ${lexeme.derivs}" class="hidden-buttons">
-                    <span
-                      th:data-id="${lexeme.lexemeId}"
-                      th:data-op-code="lexeme_deriv"
-                      th:data-value="${classif.code}"
-                      th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_deriv'"
-                      th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda"
-                            onclick="openSelectDlg(this)"
-                            data-toggle="modal" data-target="#lexemeDerivDlg"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_deriv'">
-                      <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_deriv'"
-                            data-toggle="delete-confirmation" data-placement="right">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
+        <span
+          th:data-id="${lexeme.lexemeId}"
+          th:data-op-code="lexeme_deriv"
+          th:data-value="${classif.code}"
+          th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_deriv'"
+          th:text="${classif.code}"></span>
+        <th:block th:unless="${classif.code == classif.value}">
+          -
+          <span th:text="${classif.value}"></span>
+        </th:block>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#lexemeDerivDlg"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_deriv'">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_deriv'"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${classifIter.last}">,</span>
+      </span>
     </div>
 
     <div th:if="${not #lists.isEmpty(lexeme.registers)}" th:fragment="lexeme_register">
       <span class="lbl">Register</span>
       <span th:each="classif,classifIter : ${lexeme.registers}" class="hidden-buttons">
-                    <span
-                      th:data-id="${lexeme.lexemeId}"
-                      th:data-op-code="lexeme_register"
-                      th:data-value="${classif.code}"
-                      th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_register'"
-                      th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda"
-                            onclick="openSelectDlg(this)"
-                            data-toggle="modal" data-target="#lexemeRegisterDlg"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_register'">
-                      <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_register'"
-                            data-toggle="delete-confirmation" data-placement="right">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
+        <span
+          th:data-id="${lexeme.lexemeId}"
+          th:data-op-code="lexeme_register"
+          th:data-value="${classif.code}"
+          th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_register'"
+          th:text="${classif.code}"></span>
+        <th:block th:unless="${classif.code == classif.value}">
+          -
+          <span th:text="${classif.value}"></span>
+        </th:block>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#lexemeRegisterDlg"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_register'">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_lexeme_register'"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${classifIter.last}">,</span>
+      </span>
     </div>
 
     <div th:if="${not #lists.isEmpty(lexeme.meaningDomains)}">
       <span class="lbl">Valdkonnad</span>
       <span th:each="classif,classifIter : ${lexeme.meaningDomains}" class="hidden-buttons">
-                    <span
-                      th:data-id="${lexeme.meaningId}"
-                      th:data-op-code="meaning_domain"
-                      th:data-value="${classif.toIdString()}"
-                      th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
-                      th:text="${classif.code}"></span>
-                    <th:block th:unless="${classif.code == classif.value}">
-                      -
-                      <span th:text="${classif.value}"></span>
-                    </th:block>
-                    <button type="button" class="btn badge badge-primary"
-                            th:title="Muuda"
-                            onclick="openSelectDlg(this)"
-                            data-toggle="modal" data-target="#meaningDomainDlg"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'">
-                      <i class="fa fa-caret-down" aria-hidden="true"></i>
-                    </button>
-                    <button type="button" class="btn badge badge-warning"
-                            th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
-                            data-toggle="delete-confirmation" data-placement="right">
-                      <i class="fa fa-remove" aria-hidden="true"></i>
-                    </button>
-                    <span th:unless="${classifIter.last}">,</span>
-                  </span>
+        <span
+          th:data-id="${lexeme.meaningId}"
+          th:data-op-code="meaning_domain"
+          th:data-value="${classif.toIdString()}"
+          th:name="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
+          th:text="${classif.code}"></span>
+        <th:block th:unless="${classif.code == classif.value}">
+          -
+          <span th:text="${classif.value}"></span>
+        </th:block>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#meaningDomainDlg"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="${lexeme.lexemeId} + '_' + ${classifIter.index} + '_meaning_domain'"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+        <span th:unless="${classifIter.last}">,</span>
+      </span>
     </div>
   </th:block>
 
   <th:block th:fragment="word_parameters">
-    <div th:if="${details.wordGenderCode != null}" class="hidden-buttons">
-      <span class="lbl">Sugu</span>
-      <span th:name="word_gender"
-            th:data-id="${wordId}"
-            th:data-op-code="word_gender"
-            th:data-value="${details.wordGenderCode}"
-            th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordGenderCode, wordGenders)}"></span>
-      <button type="button" class="btn badge badge-primary"
-              th:title="Muuda"
-              onclick="openSelectDlg(this)"
-              data-toggle="modal" data-target="#wordGenderDlg"
-              th:data-target-elem="word_gender">
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn badge badge-warning"
-              th:data-target-elem="word_gender"
-              data-toggle="delete-confirmation" data-placement="right">
-        <i class="fa fa-remove" aria-hidden="true"></i>
-      </button>
-    </div>
+    <th:block th:with="wordGenderCode=${details.wordGenderCode}">
+      <div th:if="${wordGenderCode != null}" class="hidden-buttons" th:fragment="word_gender">
+        <span class="lbl">Sugu</span>
+        <span th:name="word_gender"
+              th:data-id="${wordId}"
+              th:data-op-code="word_gender"
+              th:data-value="${wordGenderCode}"
+              th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(wordGenderCode, wordGenders)}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#wordGenderDlg"
+                th:data-target-elem="word_gender">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="word_gender"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+      </div>
+    </th:block>
 
-    <div th:if="${details.wordTypeCode != null}" class="hidden-buttons">
-      <span class="lbl">Sõna tüüp</span>
-      <span th:name="word_type"
-            th:data-id="${wordId}"
-            th:data-op-code="word_type"
-            th:data-value="${details.wordTypeCode}"
-            th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(details.wordTypeCode, wordTypes)}"></span>
-      <button type="button" class="btn badge badge-primary"
-              th:title="Muuda"
-              onclick="openSelectDlg(this)"
-              data-toggle="modal" data-target="#wordTypeDlg"
-              th:data-target-elem="word_type">
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn badge badge-warning"
-              th:data-target-elem="word_type"
-              data-toggle="delete-confirmation" data-placement="right">
-        <i class="fa fa-remove" aria-hidden="true"></i>
-      </button>
-    </div>
+    <th:block th:with="wordTypeCode=${details.wordTypeCode}">
+      <div th:if="${wordTypeCode != null}" class="hidden-buttons" th:fragment="word_type">
+        <span class="lbl">Sõna tüüp</span>
+        <span th:name="word_type"
+              th:data-id="${wordId}"
+              th:data-op-code="word_type"
+              th:data-value="${wordTypeCode}"
+              th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(wordTypeCode, wordTypes)}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#wordTypeDlg"
+                th:data-target-elem="word_type">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="word_type"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+      </div>
+    </th:block>
 
     <div th:if="${details.wordAspectCode != null}" class="hidden-buttons">
       <span class="lbl">Aspekt</span>

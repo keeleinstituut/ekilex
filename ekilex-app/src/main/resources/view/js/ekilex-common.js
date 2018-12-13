@@ -341,22 +341,20 @@ function openUsageMemberDlg(elem) {
     theDlg.find('[name=id]').val($(elem).data('id'));
 }
 
-function initMultiValueAddDlg(theDlg, resetElements) {
+function initMultiValueAddDlg(theDlg) {
     theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
     theDlg.find('.value-select').off('change').on('change', function(e) {
         theDlg.find('[name=value]').val($(this).val());
     });
     theDlg.find('button[type="submit"]').off('click').on('click', function(e) {submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')});
     theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        if (resetElements) {
-            theDlg.find('.form-control').each(function (indx, item) {
-                $(item).val(null);
-            });
-            theDlg.find('select').each(function (indx, item) {
-                $(item).val($(item).find('option').first().val());
-            });
-            toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
-        }
+        theDlg.find('.form-control').each(function (indx, item) {
+            $(item).val(null);
+        });
+        theDlg.find('select').each(function (indx, item) {
+            $(item).val($(item).find('option').first().val());
+        });
+        toggleValueGroup(theDlg, theDlg.find('[name=opCode]').val());
         alignAndFocus(e, theDlg);
     });
 }
@@ -441,4 +439,11 @@ function openDetailsDiv(elem) {
             dlg.find('.modal-body').html(data);
         });
     });
+}
+
+function openClassifiersDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
+    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
+    theDlg.find('[name=id3]').val($(elem).data('word-id'));
 }

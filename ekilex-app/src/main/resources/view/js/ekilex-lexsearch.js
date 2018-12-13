@@ -64,9 +64,9 @@ function initialise() {
     initSelectDlg($('#wordTypeDlg'));
     initSelectDlg($('#wordAspectDlg'));
     initSelectDlg($('#meaningDomainDlg'));
-    initMultiValueAddDlg($('#lexemeClassifiersDlg'), true);
-    initMultiValueAddDlg($('#wordClassifiersDlg'), true);
-    initMultiValueAddDlg($('#addNewUsageMemberDlg'), true);
+    initMultiValueAddDlg($('#lexemeClassifiersDlg'));
+    initMultiValueAddDlg($('#wordClassifiersDlg'));
+    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
     initNewWordDlg();
 
 }
@@ -91,13 +91,6 @@ function openLexemeLevelDlg(elem) {
             console.log(data);
         });
     });
-}
-
-function openClassifiersDlg(elem) {
-    var theDlg = $($(elem).data('target'));
-    theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
-    theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
-    theDlg.find('[name=id3]').val($(elem).data('word-id'));
 }
 
 function openAddNewWordRelationDlg(elem) {

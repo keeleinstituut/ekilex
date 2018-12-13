@@ -142,9 +142,9 @@
                   <span th:unless="${classifIter.last}">,</span>
                 </span>
                 <button type="button" class="btn badge badge-success" title="Lisa uus"
-                        th:data-id="${meaningId}"
-                        onclick="openLexemeClassifiersDlg(this)"
-                        data-toggle="modal" data-target="#lexemeClassifiersDlg">
+                        th:data-meaning-id="${meaningId}"
+                        onclick="openClassifiersDlg(this)"
+                        data-toggle="modal" data-target="#termMeaningClassifiersDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
@@ -309,16 +309,17 @@
                 <span th:text="${lexeme.dataset}" class="float-right"></span>
               </b>
             </div>
-            <div th:if="${lexeme.classifiersExist}">
+            <div>
               <hr />
-              <div th:if="${lexeme.wordGenderCode != null}">
-                <span class="lbl">Sugu</span>
-                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.wordGenderCode, wordGenders)}"></span>
-              </div>
-              <div th:if="${lexeme.wordTypeCode != null}">
-                <span class="lbl">Sõna tüüp</span>
-                <span th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(lexeme.wordTypeCode, wordTypes)}"></span>
-              </div>
+              <span th:unless="${lexeme.classifiersExist}">&nbsp;</span>
+              <button type="button" class="btn badge badge-success float-right" title="Lisa klassifikaator"
+                      th:data-lexeme-id="${lexeme.lexemeId}"
+                      th:data-meaning-id="${lexeme.meaningId}"
+                      th:data-word-id="${lexeme.wordId}"
+                      onclick="openClassifiersDlg(this)"
+                      data-toggle="modal" data-target="#termLexemeClassifiersDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
               <div th:if="${lexeme.lexemeProcessStateCode != null}">
                 <span class="lbl">Protsessi olek</span>
                 <span th:text="${lexeme.lexemeProcessStateCode}"></span>
@@ -327,50 +328,17 @@
                 <span class="lbl">Väärtusolek</span>
                 <span th:text="${lexeme.lexemeValueStateCode}"></span>
               </div>
-              <div th:if="${lexeme.lexemeFrequencyGroupCode != null}">
-                <span class="lbl">Sagedusrühm</span>
-                <span th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
-              </div>
-              <div th:if="${!#lists.isEmpty(lexeme.grammars)}">
-                <span class="lbl">Grammatika</span>
-                <span th:each="grammar,grammarIter : ${lexeme.grammars}">
-                <span th:text="${grammar.valueText}"></span>
-                <span th:unless="${grammarIter.last}">,&nbsp;</span>
-              </span>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.pos)}">
-                <span class="lbl">Sõnaliik</span>
-                <span th:each="classif,classifIter : ${lexeme.pos}">
-                  <span th:text="${classif.code}"></span>
-                  <th:block th:unless="${classif.code == classif.value}">
-                    -
-                    <span th:text="${classif.value}"></span>
-                  </th:block>
-                  <span th:unless="${classifIter.last}">,</span>
-                </span>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.derivs)}">
-                <span class="lbl">Tuletuskood</span>
-                <span th:each="classif,classifIter : ${lexeme.derivs}">
-                  <span th:text="${classif.code}"></span>
-                  <th:block th:unless="${classif.code == classif.value}">
-                    -
-                    <span th:text="${classif.value}"></span>
-                  </th:block>
-                  <span th:unless="${classifIter.last}">,</span>
-                </span>
-              </div>
-              <div th:if="${not #lists.isEmpty(lexeme.registers)}">
-                <span class="lbl">Register</span>
-                <span th:each="classif,classifIter : ${lexeme.registers}">
-                  <span th:text="${classif.code}"></span>
-                  <th:block th:unless="${classif.code == classif.value}">
-                    -
-                    <span th:text="${classif.value}"></span>
-                  </th:block>
-                  <span th:unless="${classifIter.last}">,</span>
-                </span>
-              </div>
+              <th:block th:with="wordGenderCode=${lexeme.wordGenderCode}">
+                <div th:replace="lexsearch_components :: word_gender"></div>
+              </th:block>
+              <th:block th:with="wordTypeCode=${lexeme.wordTypeCode}">
+                <div th:replace="lexsearch_components :: word_type"></div>
+              </th:block>
+              <div th:replace="lexsearch_components :: lexeme_frequency_group"></div>
+              <div th:replace="lexsearch_components :: lexeme_grammar"></div>
+              <div th:replace="lexsearch_components :: lexeme_pos"></div>
+              <div th:replace="lexsearch_components :: lexeme_derivative"></div>
+              <div th:replace="lexsearch_components :: lexeme_register"></div>
             </div>
             <div>
               <hr />
@@ -534,7 +502,14 @@
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
-  <div th:replace="common :: #lexemeClassifiersDlg"></div>
+  <div th:replace="common :: #termMeaningClassifiersDlg"></div>
+  <div th:replace="common :: #lexemeFrequencyDlg"></div>
+  <div th:replace="common :: #lexemePosDlg"></div>
+  <div th:replace="common :: #lexemeDerivDlg"></div>
+  <div th:replace="common :: #lexemeRegisterDlg"></div>
+  <div th:replace="common :: #wordGenderDlg"></div>
+  <div th:replace="common :: #wordTypeDlg"></div>
+  <div th:replace="common :: #termLexemeClassifiersDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
