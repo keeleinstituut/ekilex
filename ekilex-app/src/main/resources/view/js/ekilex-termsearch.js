@@ -74,6 +74,8 @@ function initialise() {
 	initSelectDlg($('#lexemeRegisterDlg'));
 	initSelectDlg($('#wordGenderDlg'));
 	initSelectDlg($('#wordTypeDlg'));
+	initSelectDlg($('#lexemeValueStateCodeDlg'));
+	initSelectDlg($('#lexemeProcessStateCodeDlg'));
 }
 
 function updateTermUserLangWrapup(clickable) {

@@ -110,6 +110,16 @@ public abstract class AbstractSearchController implements WebConstant {
 		return commonDataService.getLexemeDerivs();
 	}
 
+	@ModelAttribute("lexemeValueStates")
+	public List<Classifier> getLexemeValueStates() {
+		return commonDataService.getLexemeValueStates();
+	}
+
+	@ModelAttribute("processStates")
+	public List<Classifier> getProcessStates() {
+		return commonDataService.getProcessStates();
+	}
+
 	protected void initSearchForms(Model model) {
 
 		SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);

@@ -320,14 +320,8 @@
                       data-toggle="modal" data-target="#termLexemeClassifiersDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
-              <div th:if="${lexeme.lexemeProcessStateCode != null}">
-                <span class="lbl">Protsessi olek</span>
-                <span th:text="${lexeme.lexemeProcessStateCode}"></span>
-              </div>
-              <div th:if="${lexeme.lexemeValueStateCode != null}">
-                <span class="lbl">Väärtusolek</span>
-                <span th:text="${lexeme.lexemeValueStateCode}"></span>
-              </div>
+              <div th:replace="lexsearch_components :: lexeme_process_state"></div>
+              <div th:replace="lexsearch_components :: lexeme_value_state"></div>
               <th:block th:with="wordGenderCode=${lexeme.wordGenderCode}">
                 <div th:replace="lexsearch_components :: word_gender"></div>
               </th:block>
@@ -507,6 +501,8 @@
   <div th:replace="common :: #lexemePosDlg"></div>
   <div th:replace="common :: #lexemeDerivDlg"></div>
   <div th:replace="common :: #lexemeRegisterDlg"></div>
+  <div th:replace="common :: #lexemeValueStateCodeDlg"></div>
+  <div th:replace="common :: #lexemeProcessStateCodeDlg"></div>
   <div th:replace="common :: #wordGenderDlg"></div>
   <div th:replace="common :: #wordTypeDlg"></div>
   <div th:replace="common :: #termLexemeClassifiersDlg"></div>

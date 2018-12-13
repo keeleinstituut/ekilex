@@ -13,5 +13,7 @@ public enum LifecycleProperty {
 	ORDER_BY,
 	DATASET,
 	WORD_TYPE,
-	ASPECT
+	ASPECT,
+	VALUE_STATE,
+	PROCESS_STATE
 }

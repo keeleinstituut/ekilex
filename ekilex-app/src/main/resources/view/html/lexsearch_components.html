@@ -4,14 +4,46 @@
 <body>
 
   <th:block th:fragment="lexeme_parameters">
-    <div th:if="${lexeme.lexemeValueStateCode != null}">
-      <span class="lbl">Väärtusolek</span>
-      <span th:text="${lexeme.lexemeValueStateCode}"></span>
+    <div class="hidden-buttons" th:if="${lexeme.lexemeProcessStateCode != null}" th:fragment="lexeme_process_state">
+      <span class="lbl">Haldusolek</span>
+      <span th:name="${lexeme.lexemeId} + '_lexeme_process_state'"
+            th:data-id="${lexeme.lexemeId}"
+            th:data-op-code="lexeme_process_state"
+            th:data-value="${lexeme.lexemeProcessStateCode}"
+            th:text="${lexeme.lexemeProcessStateCode}"></span>
+      <button type="button" class="btn badge badge-primary"
+              th:title="Muuda"
+              onclick="openSelectDlg(this)"
+              data-toggle="modal" data-target="#lexemeProcessStateCodeDlg"
+              th:data-target-elem="${lexeme.lexemeId} + '_lexeme_process_state'">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn badge badge-warning"
+              th:data-target-elem="${lexeme.lexemeId} + '_lexeme_process_state'"
+              data-toggle="delete-confirmation" data-placement="right">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
     </div>
 
-    <div th:if="${lexeme.meaningProcessStateCode != null}">
-      <span class="lbl">Haldusolek</span>
-      <span th:text="${lexeme.meaningProcessStateCode}"></span>
+    <div class="hidden-buttons" th:if="${lexeme.lexemeValueStateCode != null}" th:fragment="lexeme_value_state">
+      <span class="lbl">Väärtusolek</span>
+      <span th:name="${lexeme.lexemeId} + '_lexeme_value_state'"
+            th:data-id="${lexeme.lexemeId}"
+            th:data-op-code="lexeme_value_state"
+            th:data-value="${lexeme.lexemeValueStateCode}"
+            th:text="${lexeme.lexemeValueStateCode}"></span>
+      <button type="button" class="btn badge badge-primary"
+              th:title="Muuda"
+              onclick="openSelectDlg(this)"
+              data-toggle="modal" data-target="#lexemeValueStateCodeDlg"
+              th:data-target-elem="${lexeme.lexemeId} + '_lexeme_value_state'">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn badge badge-warning"
+              th:data-target-elem="${lexeme.lexemeId} + '_lexeme_value_state'"
+              data-toggle="delete-confirmation" data-placement="right">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
     </div>
 
     <div th:if="${!#lists.isEmpty(lexeme.grammars)}" th:fragment="lexeme_grammar">
@@ -37,7 +69,7 @@
       </span>
     </div>
 
-    <div th:if="${lexeme.lexemeFrequencyGroupCode != null}" class="hidden-buttons" th:fragment="lexeme_frequency_group">
+    <div class="hidden-buttons" th:if="${lexeme.lexemeFrequencyGroupCode != null}" th:fragment="lexeme_frequency_group">
       <span class="lbl">Sagedusrühm</span>
       <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
             th:data-id="${lexeme.lexemeId}"

@@ -112,4 +112,14 @@ public class CommonDataService {
 		return commonDataDbService.getLexemeDerivs(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
+	@Transactional
+	public List<Classifier> getLexemeValueStates() {
+		return commonDataDbService.getLexemeValueStates(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+	}
+
+	@Transactional
+	public List<Classifier> getProcessStates() {
+		return commonDataDbService.getProcessStates().into(Classifier.class);
+	}
+
 }

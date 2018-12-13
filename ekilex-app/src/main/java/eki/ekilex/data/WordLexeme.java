@@ -56,6 +56,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_frequency_group_code")
 	private String lexemeFrequencyGroupCode;
 
+	@Column(name = "lexeme_process_state_code")
+	private String lexemeProcessStateCode;
+
 	@Column(name = "meaning_process_state_code")
 	private String meaningProcessStateCode;
 
@@ -386,4 +389,13 @@ public class WordLexeme extends AbstractDataObject {
 	public void setWordAspectCode(String wordAspectCode) {
 		this.wordAspectCode = wordAspectCode;
 	}
+
+	public String getLexemeProcessStateCode() {
+		return lexemeProcessStateCode;
+	}
+
+	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
+		this.lexemeProcessStateCode = lexemeProcessStateCode;
+	}
+
 }

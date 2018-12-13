@@ -94,7 +94,9 @@ public class LifecycleLogDbServiceHelper {
 						LEXEME.FREQUENCY_GROUP,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
-						LEXEME.LEVEL3
+						LEXEME.LEVEL3,
+						LEXEME.VALUE_STATE_CODE,
+						LEXEME.PROCESS_STATE_CODE
 						)
 				.from(LEXEME)
 				.where(LEXEME.ID.eq(entityId))

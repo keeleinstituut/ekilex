@@ -177,6 +177,18 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, currentDomain.getCode(), newDomain.getCode());
 	}
 
+	@Transactional
+	public void updateLexemeValueState(Long lexemeId, String valueStateCode) {
+		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE_STATE, lexemeId, valueStateCode);
+		updateDbService.updateLexemeValueState(lexemeId, valueStateCode);
+	}
+
+	@Transactional
+	public void updateLexemeProcessState(Long lexemeId, String processStateCode) {
+		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.PROCESS_STATE, lexemeId, processStateCode);
+		updateDbService.updateLexemeProcessState(lexemeId, processStateCode);
+	}
+
 	// --- ADD ---
 
 	@Transactional

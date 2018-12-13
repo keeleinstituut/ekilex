@@ -457,6 +457,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 			LEXEME.LEVEL3,
 			LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 			LEXEME.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
+			LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
 			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
 
