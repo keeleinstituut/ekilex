@@ -3,6 +3,9 @@ package eki.ekilex.web.controller;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Feedback;
 import eki.ekilex.service.FeedbackService;
+
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -17,7 +20,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
-public class WordwebFeedbackController {
+public class WordwebFeedbackController implements WebConstant {
 
 	private static final Logger logger = LoggerFactory.getLogger(WordwebFeedbackController.class);
 
@@ -27,22 +30,25 @@ public class WordwebFeedbackController {
 		this.feedbackService = service;
 	}
 
-	@GetMapping("/ww_feedback")
+	@GetMapping(WW_FEEDBACK_URI)
 	public String openPage(Model model) {
-		model.addAttribute("feedbackLog", feedbackService.findFeedback());
-		return "ww_feedback";
+		List<Feedback> feedback = feedbackService.findFeedback();
+		model.addAttribute("feedbackLog", feedback);
+		return WW_FEEDBACK_PAGE;
 	}
 
 	@CrossOrigin
-	@PostMapping("/send_feedback")
+	@PostMapping(SEND_FEEDBACK_URI)
 	@ResponseBody
 	public String receiveFeedback(Feedback newFeedback) {
 
 		logger.debug("This is feedback : \"{}\"", newFeedback);
 
-		String statusMessage = "error";
+		String statusMessage;
 		if (feedbackService.isValidFeedback(newFeedback)) {
 			statusMessage = feedbackService.addFeedback(newFeedback);
+		} else {
+			statusMessage = "error";
 		}
 		return "{\"status\": \"" + statusMessage + "\"}";
 	}

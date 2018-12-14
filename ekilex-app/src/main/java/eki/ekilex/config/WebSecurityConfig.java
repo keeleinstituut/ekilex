@@ -22,7 +22,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
-				.antMatchers(LOGIN_PAGE_URI, LOGIN_ERROR_URI, "/view/**", "/send_feedback").permitAll()
+				.antMatchers(
+						LOGIN_PAGE_URI,
+						LOGIN_ERROR_URI,
+						VIEW_RESOURCES_URI + "/**",
+						REST_SERVICES_URI + "/**",
+						SEND_FEEDBACK_URI)
+				.permitAll()
 				.anyRequest().authenticated()
 				.and()
 				.formLogin()

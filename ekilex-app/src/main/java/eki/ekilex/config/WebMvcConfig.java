@@ -1,5 +1,6 @@
 package eki.ekilex.config;
 
+import eki.ekilex.constant.WebConstant;
 import eki.ekilex.web.interceptor.PageRequestPostHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -19,7 +20,7 @@ import java.util.Locale;
  */
 @ConditionalOnWebApplication
 @Configuration
-public class WebMvcConfig implements WebMvcConfigurer {
+public class WebMvcConfig implements WebMvcConfigurer, WebConstant {
 
 	@Autowired
 	private PageRequestPostHandler pageRequestPostHandler;
@@ -32,10 +33,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/view/css/**").addResourceLocations("classpath:/view/css/");
-		registry.addResourceHandler("/view/js/**").addResourceLocations("classpath:/view/js/");
-		registry.addResourceHandler("/view/img/**").addResourceLocations("classpath:/view/img/");
-		registry.addResourceHandler("/view/fonts/**").addResourceLocations("classpath:/view/fonts/");
+		registry.addResourceHandler(VIEW_RESOURCES_URI + "/css/**").addResourceLocations("classpath:/view/css/");
+		registry.addResourceHandler(VIEW_RESOURCES_URI + "/js/**").addResourceLocations("classpath:/view/js/");
+		registry.addResourceHandler(VIEW_RESOURCES_URI + "/img/**").addResourceLocations("classpath:/view/img/");
+		registry.addResourceHandler(VIEW_RESOURCES_URI + "/fonts/**").addResourceLocations("classpath:/view/fonts/");
 	}
 
 	@Bean
