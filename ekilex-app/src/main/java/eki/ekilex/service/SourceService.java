@@ -53,13 +53,12 @@ public class SourceService {
 	}
 
 	@Transactional
-	public List<Source> findSourcesByNameAndType(String searchFilter, SourceType type) {
+	public List<Source> findSourcesByNameAndType(String searchFilter, SourceType sourceType) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		String typeAsString = type == null ? null : type.toString();
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.findSourcesByNameAndType(searchFilter, typeAsString);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.findSourcesByNameAndType(searchFilter, sourceType);
 		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;

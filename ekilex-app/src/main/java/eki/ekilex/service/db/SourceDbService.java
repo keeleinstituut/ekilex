@@ -15,6 +15,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.SourceType;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.SourcePropertyTuple;
 import eki.ekilex.data.db.tables.Freeform;
@@ -62,7 +63,7 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
-	public List<SourcePropertyTuple> findSourcesByNameAndType(String searchFilterWithMetaCharacters, String sourceType) {
+	public List<SourcePropertyTuple> findSourcesByNameAndType(String searchFilterWithMetaCharacters, SourceType sourceType) {
 
 		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
@@ -81,7 +82,7 @@ public class SourceDbService implements SystemConstant {
 						.and(sffc.FREEFORM_ID.eq(spc.ID))
 						.and(spc.VALUE_TEXT.lower().like(searchFilter)));
 		if (sourceType != null) {
-			existCondition.and(s.TYPE.eq(sourceType));
+			existCondition = existCondition.and(s.TYPE.eq(sourceType.name()));
 		}
 
 		Condition sex = DSL.exists(existCondition);
