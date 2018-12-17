@@ -290,6 +290,16 @@
                                   th:data-value="${usage.value}"
                                   th:utext="${usage.value}"></span>
                             <span th:if="${usage.typeValue != null}" th:text="'(' + ${usage.typeValue + ')'}"></span>
+                            <span th:if="${#lists.isEmpty(usage.authors)}" class="show-on-mouseover">
+                              (
+                              <button type="button" class="btn badge badge-success" title="Lisa autor/tõlkija"
+                                      th:data-id="${usage.id}"
+                                      onclick="openUsageAuthorDlg(this)"
+                                      data-toggle="modal" data-target="#addNewUsageAuthorDlg">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                              </button>
+                              )
+                            </span>
                             <span th:if="${not #lists.isEmpty(usage.authors)}">
                               (
                               <span th:each="sourceLink,sourceLinkIter : ${usage.authors}">
@@ -301,11 +311,19 @@
                                    th:text="${sourceLink.value}"
                                    th:if="${sourceLink.value != null}"
                                 ></a>
-                                <span th:if="${sourceLink.name != null}">
-                                  <span th:text="${sourceLink.name}"></span>
-                                </span>
-                                <span th:unless="${sourceLinkIter.last}">, </span>
+                                <button type="button" class="btn badge badge-warning"
+                                        th:data-target-elem="${sourceLink.id} + '_ff_source_link'"
+                                        data-toggle="delete-confirmation" data-placement="right">
+                                  <i class="fa fa-remove" aria-hidden="true"></i>
+                                </button>
+                                <span th:unless="${sourceLinkIter.last}">,</span>
                               </span>
+                              <button type="button" class="btn badge badge-success" title="Lisa autor/tõlkija"
+                                      th:data-id="${usage.id}"
+                                      onclick="openUsageAuthorDlg(this)"
+                                      data-toggle="modal" data-target="#addNewUsageAuthorDlg">
+                                <i class="fa fa-plus" aria-hidden="true"></i>
+                              </button>
                               )
                             </span>
                             <span th:if="${not #lists.isEmpty(usage.sourceLinks)}">
@@ -335,7 +353,7 @@
                                     data-toggle="delete-confirmation" data-placement="right">
                               <i class="fa fa-remove" aria-hidden="true"></i>
                             </button>
-                            <button type="button" class="btn badge badge-success" title="Lisa uus"
+                            <button type="button" class="btn badge badge-success" title="Lisa tõlge või seletus"
                                     th:data-id="${usage.id}"
                                     onclick="openUsageMemberDlg(this)"
                                     data-toggle="modal" data-target="#addNewUsageMemberDlg">
@@ -746,6 +764,7 @@
   <div th:replace="lexsearch_components :: #addNewWordRelationDlg"></div>
   <div th:replace="lexsearch_components :: #addNewLexemeRelationDlg"></div>
   <div th:replace="lexsearch_components :: #addNewMeaningRelationDlg"></div>
+  <div th:replace="lexsearch_components :: #addNewUsageAuthorDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
