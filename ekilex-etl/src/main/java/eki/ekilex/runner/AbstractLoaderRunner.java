@@ -52,17 +52,26 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	abstract void deleteDatasetData() throws Exception;
 	abstract void initialise() throws Exception;
 
+	protected static final String GUID_OWNER_DATASET_CODE = "ss1";
+	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
+	protected static final String ETYMOLOGY_OWNER_DATASET_CODE = "ety";
 	protected static final String DEFAULT_WORD_MORPH_CODE = "??";
 
 	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET = "sql/select_word_ids_for_dataset.sql";
 	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
-	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
 	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
+
+	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
+	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
+	private static final String SQL_DELETE_MEANING_FF_FOR_DATASET = "sql/delete_meaning_freeforms_for_dataset.sql";
+	private static final String SQL_DELETE_COLLOCATION_FF_FOR_DATASET = "sql/delete_collocation_freeforms_for_dataset.sql";
+	private static final String SQL_DELETE_LEXEME_FF_FOR_DATASET = "sql/delete_lexeme_freeforms_for_dataset.sql";
+
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
 	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
@@ -85,13 +94,18 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	private String sqlSelectWordIdsForDataset;
 	private String sqlSelectMeaningIdsForDataset;
-	private String sqlDeleteDefinitionsForDataset;
 	private String sqlSelectWordByFormAndHomonym;
 	private String sqlSelectWordByDatasetAndGuid;
 	private String sqlSelectWordMaxHomonym;
 	private String sqlSelectLexemeFreeform;
 	private String sqlSourceByTypeAndName;
 	private String sqlWordGroupWithMembers;
+
+	private String sqlDeleteDefinitionsForDataset;
+	private String sqlDeleteDefinitionFreeformsForDataset;
+	private String sqlDeleteMeaningFreeformsForDataset;
+	private String sqlDeleteCollocationFreeformsForDataset;
+	private String sqlDeleteLexemeFreeformsForDataset;
 
 	private Pattern ekiEntityPatternV;
 
@@ -108,9 +122,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_FOR_DATASET);
 		sqlSelectMeaningIdsForDataset = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
-		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
 		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
@@ -129,6 +140,21 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_GROUP_WITH_MEMBERS);
 		sqlWordGroupWithMembers = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
+		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITION_FF_FOR_DATASET);
+		sqlDeleteDefinitionFreeformsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_MEANING_FF_FOR_DATASET);
+		sqlDeleteMeaningFreeformsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_COLLOCATION_FF_FOR_DATASET);
+		sqlDeleteCollocationFreeformsForDataset = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_LEXEME_FF_FOR_DATASET);
+		sqlDeleteLexemeFreeformsForDataset = getContent(resourceFileInputStream);
 
 		ekiEntityPatternV = Pattern.compile("(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|v|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)");
 	}
@@ -212,16 +238,36 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		String sql;
 
+		// freeforms
+		basicDbService.executeScript(sqlDeleteDefinitionFreeformsForDataset, tableRowParamMap);
+		basicDbService.executeScript(sqlDeleteMeaningFreeformsForDataset, tableRowParamMap);
+		basicDbService.executeScript(sqlDeleteLexemeFreeformsForDataset, tableRowParamMap);
+
+		// delete definitions
+		basicDbService.executeScript(sqlDeleteDefinitionsForDataset, tableRowParamMap);
+
+		// delete collocations + freeforms
+		if (StringUtils.equals(COLLOC_OWNER_DATASET_CODE, dataset)) {
+			basicDbService.executeScript(sqlDeleteCollocationFreeformsForDataset);
+			sql = "delete from " + COLLOCATION;
+			basicDbService.executeScript(sql);
+		}
+
+		// delete etymology
+		if (StringUtils.equals(ETYMOLOGY_OWNER_DATASET_CODE, dataset)) {
+			sql = "delete from " + WORD_ETYMOLOGY;
+			basicDbService.executeScript(sql);
+		}
+
 		// delete lexemes
 		sql = "delete from " + LEXEME + " l where l.dataset_code = :dataset";
 		basicDbService.executeScript(sql, tableRowParamMap);
 
 		// delete word guids
-		sql = "delete from " + WORD_GUID + " wg where wg.dataset_code = :dataset";
-		basicDbService.executeScript(sql, tableRowParamMap);
-
-		// delete definitions
-		basicDbService.executeScript(sqlDeleteDefinitionsForDataset, tableRowParamMap);
+		if (!StringUtils.equals(GUID_OWNER_DATASET_CODE, dataset)) {
+			sql = "delete from " + WORD_GUID + " wg where wg.dataset_code = :dataset";
+			basicDbService.executeScript(sql, tableRowParamMap);
+		}
 
 		// delete words
 		sql = "delete from " + WORD + " where id = :wordId";
@@ -338,16 +384,15 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 			String ssWordValue = ssGuidObj.getWord();
 			String ssGuid = ssGuidObj.getValue();
-			String ssDataset = "ss1";
 
 			if (StringUtils.equalsIgnoreCase(wordValue, ssWordValue)) {
-				List<Map<String, Object>> tableRowValueMaps = getWord(wordValue, ssGuid, ssDataset);
+				List<Map<String, Object>> tableRowValueMaps = getWord(wordValue, ssGuid, GUID_OWNER_DATASET_CODE);
 				Map<String, Object> tableRowValueMap = null;
 				if (CollectionUtils.size(tableRowValueMaps) == 1) {
 					tableRowValueMap = tableRowValueMaps.get(0);
 				} else if (CollectionUtils.size(tableRowValueMaps) > 1) {
 					tableRowValueMap = tableRowValueMaps.get(0);
-					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", ssDataset, wordValue, ssGuid);
+					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", GUID_OWNER_DATASET_CODE, wordValue, ssGuid);
 				}
 				if (tableRowValueMap == null) {
 					return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
