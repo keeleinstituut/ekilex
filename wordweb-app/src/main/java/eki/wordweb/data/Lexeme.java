@@ -78,8 +78,6 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
 
-	private boolean morePrimaryCollocs;
-
 	private List<DisplayColloc> limitedSecondaryDisplayCollocs;
 
 	private boolean moreSecondaryCollocs;
@@ -356,14 +354,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLimitedPrimaryDisplayCollocs(List<DisplayColloc> limitedPrimaryDisplayCollocs) {
 		this.limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs;
-	}
-
-	public boolean isMorePrimaryCollocs() {
-		return morePrimaryCollocs;
-	}
-
-	public void setMorePrimaryCollocs(boolean morePrimaryCollocs) {
-		this.morePrimaryCollocs = morePrimaryCollocs;
 	}
 
 	public List<DisplayColloc> getLimitedSecondaryDisplayCollocs() {

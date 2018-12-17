@@ -384,8 +384,8 @@ public class ConversionUtil {
 
 		List<Collocation> collocations;
 		List<DisplayColloc> displayCollocs;
+		List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>();
 		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
-		int totalCollocCount = 0;
 		for (CollocationPosGroup collocationPosGroup : collocationPosGroups) {
 			List<CollocationRelGroup> collocationRelGroups = collocationPosGroup.getRelationGroups();
 			for (CollocationRelGroup collocationRelGroup : collocationRelGroups) {
@@ -394,22 +394,17 @@ public class ConversionUtil {
 				List<String> allUsages = new ArrayList<>();
 				collocationRelGroup.setAllUsages(allUsages);
 				collocations = collocationRelGroup.getCollocations();
-				totalCollocCount += collocations.size();
 				transformCollocationsForDisplay(wordId, collocations, displayCollocs, allUsages, existingCollocationValues);
+				if (limitedPrimaryDisplayCollocs.size() < TYPICAL_COLLECTIONS_DISPLAY_LIMIT) {
+					limitedPrimaryDisplayCollocs.addAll(displayCollocs);
+				}
 			}
 		}
-		boolean isMorePrimaryCollocs = totalCollocCount > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
-		lexeme.setMorePrimaryCollocs(isMorePrimaryCollocs);
-		if (isMorePrimaryCollocs) {
-			CollocationPosGroup firstCollocPosGroup = collocationPosGroups.get(0);
-			CollocationRelGroup firstCollocRelGroup = firstCollocPosGroup.getRelationGroups().get(0);
-			boolean needsToLimit = CollectionUtils.size(firstCollocRelGroup.getDisplayCollocs()) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
-			List<DisplayColloc> limitedPrimaryDisplayCollocs = new ArrayList<>(firstCollocRelGroup.getDisplayCollocs());
-			if (needsToLimit) {
-				limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
-			}
-			lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
+		boolean needsToLimit = CollectionUtils.size(limitedPrimaryDisplayCollocs) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
+		if (needsToLimit) {
+			limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
 		}
+		lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
 	}
 
 	//TODO temporarily disabled
@@ -680,7 +675,6 @@ public class ConversionUtil {
 		word.setMoreWordRelations(isMoreWordRelations);
 	}
 
-	//TODO under construction
 	public List<Paradigm> composeParadigms(Word word, Map<Long, List<Form>> paradigmFormsMap, String displayLang) {
 
 		final String keyValSep = "-";

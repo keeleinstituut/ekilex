@@ -260,7 +260,7 @@
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
                     <!--  || not #lists.isEmpty(lexeme.secondaryDisplayCollocs) -->
                     <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-                      <button class="more-btn" name="colloc-expand-btn" th:if="${lexeme.morePrimaryCollocs}" aria-expanded="false">
+                      <button class="more-btn" name="colloc-expand-btn" aria-expanded="false">
                         <span class="icon icon-chevron-left"></span>
                       </button>
                       <div class="w-100 colloc-samples">
