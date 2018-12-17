@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import eki.common.constant.ReferenceType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -263,6 +264,9 @@ public class ModifyController implements WebConstant {
 		case "lexeme_process_state" :
 			updateService.updateLexemeProcessState(id, null);
 			break;
+		case "usage_author" :
+			updateService.deleteFreeformSourceLink(id);
+			break;
 		}
 		return "OK";
 	}
@@ -305,7 +309,7 @@ public class ModifyController implements WebConstant {
 		}
 		case ContentKey.FREEFORM_SOURCE_LINK : {
 			String sourceName = findSourceName(itemData.getId2());
-			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), sourceName, itemData.getValue());
+			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), ReferenceType.ANY, sourceName, itemData.getValue());
 			break;
 		}
 		case ContentKey.LEXEME_SOURCE_LINK : {
@@ -345,6 +349,11 @@ public class ModifyController implements WebConstant {
 			break;
 		case "lexeme_process_state" :
 			updateService.updateLexemeProcessState(itemData.getId(), itemData.getValue());
+			break;
+		case "usage_author" :
+			String sourceValue = findSourceName(itemData.getId2());
+			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
+			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceValue, null);
 			break;
 		}
 		return "{}";

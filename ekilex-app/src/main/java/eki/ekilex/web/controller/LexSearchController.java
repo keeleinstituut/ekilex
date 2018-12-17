@@ -5,7 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.common.constant.SourceType;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.SourceService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,6 +42,9 @@ public class LexSearchController extends AbstractSearchController {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@Autowired
+	private SourceService sourceService;
 
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
@@ -132,6 +138,19 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
 
 		return 	" lexsearch_components :: meaning_search_result";
+	}
+
+	@GetMapping("/personsearchajax")
+	public String searchPersonsAjax(
+			@RequestParam String searchFilter,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+		logger.debug("person search ajax {}", searchFilter);
+
+		List<Source> sources = sourceService.findSourcesByNameAndType(searchFilter, SourceType.PERSON);
+		model.addAttribute("sourcesFoundBySearch", sources);
+
+		return 	" lexsearch_components :: source_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

@@ -264,9 +264,7 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addFreeformSourceLink(Long freeformId, Long sourceId, String sourceValue, String sourceName) {
-		//TODO ref type should also be set user
-		ReferenceType refType = ReferenceType.ANY;
+	public void addFreeformSourceLink(Long freeformId, Long sourceId, ReferenceType refType, String sourceValue, String sourceName) {
 		Long sourceLinkId = updateDbService.addFreeformSourceLink(freeformId, sourceId, refType, sourceValue, sourceName);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.FREEFORM_SOURCE_LINK, LifecycleProperty.VALUE, sourceLinkId, sourceValue);
 	}

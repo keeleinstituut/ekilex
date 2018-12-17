@@ -48,6 +48,14 @@ td {
 	display: inline-block;
 }
 
+.hidden-buttons .show-on-mouseover {
+	display: none;
+}
+
+.hidden-buttons:hover .show-on-mouseover {
+	display: inline-block;
+}
+
 .switch {
 	position: relative;
 	display: inline-block;

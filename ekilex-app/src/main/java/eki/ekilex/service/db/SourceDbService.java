@@ -9,6 +9,8 @@ import java.util.List;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.SelectConditionStep;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -60,7 +62,7 @@ public class SourceDbService implements SystemConstant {
 				.into(SourcePropertyTuple.class);
 	}
 
-	public List<SourcePropertyTuple> findSourcesByName(String searchFilterWithMetaCharacters) {
+	public List<SourcePropertyTuple> findSourcesByNameAndType(String searchFilterWithMetaCharacters, String sourceType) {
 
 		String searchFilter = searchFilterWithMetaCharacters.replace("*", "%").replace("?", "_").toLowerCase();
 
@@ -70,13 +72,19 @@ public class SourceDbService implements SystemConstant {
 		SourceFreeform sffc = SOURCE_FREEFORM.as("sffc");
 		Freeform spc = FREEFORM.as("spc");
 
-		Condition sex = DSL.exists(DSL
+		SelectConditionStep<Record1<Long>> existCondition =
+				DSL
 				.select(sffc.ID)
 				.from(sffc, spc)
 				.where(
 						sffc.SOURCE_ID.eq(s.ID)
 						.and(sffc.FREEFORM_ID.eq(spc.ID))
-						.and(spc.VALUE_TEXT.lower().like(searchFilter))));
+						.and(spc.VALUE_TEXT.lower().like(searchFilter)));
+		if (sourceType != null) {
+			existCondition.and(s.TYPE.eq(sourceType));
+		}
+
+		Condition sex = DSL.exists(existCondition);
 
 		Field<Boolean> is_source_property_match = DSL.field(sp.VALUE_TEXT.lower().like(searchFilter));
 
