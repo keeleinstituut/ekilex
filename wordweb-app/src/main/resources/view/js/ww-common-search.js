@@ -156,7 +156,7 @@ function calculateAndSetStyles() {
 	if (isWideWindow) {
 		$(".search-panel").removeClass("d-none");
 		$(".content-panel").removeClass("d-none");
-		if ($(".homonym-item").length == 1) {
+		if (isSingleHomonym) {
 			$(".homonym-panel").addClass("d-none");
 		} else {
 			$(".homonym-panel").removeClass("d-none");

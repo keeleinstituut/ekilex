@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 homonym-panel">
+      <div class="col-12 homonym-panel" th:classappend="${#lists.size(wordsData.fullMatchWords) == 1 ? 'd-none' : ''}">
         <ul class="homonym-list">
           <li th:each="word : ${wordsData.fullMatchWords}">
             <form>
