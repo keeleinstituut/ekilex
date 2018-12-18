@@ -629,25 +629,6 @@
       </div>
     </div>
   </div>
-  <section class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
-    <div class="col-12 corp-panel">
-      <div class="heading-wrapper">
-        <h5 class="font-weight-bold">
-          <span th:text="#{label.korp.examples}">Veebilauseid</span>
-          <span th:aria-label="#{corpus.title}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></span>
-        </h5>
-      </div>
-      <button class="more-btn" aria-expanded="false">
-        <span class="icon icon-chevron-left"></span>
-      </button>
-      <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
-        <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
-      </div>
-    </div>
-    <script th:inline="javascript">
-		$('.corp-panel [data-toggle="tooltip"]').tooltip();
-	</script>
-  </section>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";

@@ -153,8 +153,9 @@ public class SearchController extends AbstractController {
 		}
 		model.addAttribute("sentences", textCorpus);
 		model.addAttribute("sentence", sentence);
+		model.addAttribute("corp_language", language);
 
-		return SEARCH_PAGE + " :: korp";
+		return "common-search :: korp";
 	}
 
 	private SearchFilter validate(String langPair, String searchWord, String homonymNrStr, String searchMode) {

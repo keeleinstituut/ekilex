@@ -70,5 +70,34 @@
       </div>
     </div>
   </th:block>
+
+  <section class="level-3-panel row" th:fragment="korp">
+    <div class="col-12 corp-panel">
+      <div class="heading-wrapper">
+        <h5 class="font-weight-bold">
+          <span th:text="#{label.korp.examples}">Veebilauseid</span>
+          <span tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top"
+                th:if="${corp_language == 'est'}"
+                th:aria-label="#{corpus.title.est}"
+                th:title="#{corpus.title.est}"></span>
+          <span tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top"
+                th:if="${corp_language == 'rus'}"
+                th:aria-label="#{corpus.title.rus}"
+                th:title="#{corpus.title.rus}"></span>
+        </h5>
+      </div>
+      <button class="more-btn" aria-expanded="false" th:unless="${#lists.isEmpty(sentences)}">
+        <span class="icon icon-chevron-left"></span>
+      </button>
+      <div th:text="#{label.no.data}" th:if="${#lists.isEmpty(sentences)}">Andmed puuduvad</div>
+      <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
+        <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
+      </div>
+    </div>
+    <script th:inline="javascript">
+        $('.corp-panel [data-toggle="tooltip"]').tooltip();
+    </script>
+  </section>
+
 </body>
 </html>
