@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 homonym-panel">
+      <div class="col-12 homonym-panel" th:classappend="${#lists.size(wordsData.fullMatchWords) == 1 ? 'd-none' : ''}">
         <ul class="homonym-list">
           <li th:each="word : ${wordsData.fullMatchWords}">
             <form>
@@ -618,7 +618,7 @@
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
                     <span th:text="#{sentence.same.as}" ></span>
-                    <a th:aria-label="|#{aria.search.from.keelenou} ${sentence}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + sentence}"target="_blank">e-keelenõus</a>
+                    <a th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + wordData.word.word}"target="_blank">e-keelenõus</a>
                   </h5>
                 </div>
               </div>
@@ -629,25 +629,6 @@
       </div>
     </div>
   </div>
-  <section class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
-    <div class="col-12 corp-panel">
-      <div class="heading-wrapper">
-        <h5 class="font-weight-bold">
-          <span th:text="#{label.korp.examples}">Veebilauseid</span>
-          <span th:aria-label="#{corpus.title}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></span>
-        </h5>
-      </div>
-      <button class="more-btn" aria-expanded="false">
-        <span class="icon icon-chevron-left"></span>
-      </button>
-      <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
-        <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
-      </div>
-    </div>
-    <script th:inline="javascript">
-		$('.corp-panel [data-toggle="tooltip"]').tooltip();
-	</script>
-  </section>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";
