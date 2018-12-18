@@ -89,14 +89,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	@Transactional
 	public void execute(String dataXmlFilePath1, String dataXmlFilePath2, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
 
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-		logger.debug("Loading EV2...");
-
-		reportingEnabled = doReports;
-		if (reportingEnabled) {
-			reportComposer = new ReportComposer("EV2 import", ARTICLES_REPORT_NAME, DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME);
+		this.doReports = doReports;
+		if (doReports) {
+			reportComposer = new ReportComposer(getDataset() + " loader", ARTICLES_REPORT_NAME, DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME);
 		}
+		start();
 
 		String[] dataXmlFilePaths = new String[] {dataXmlFilePath1, dataXmlFilePath2};
 		Document dataDoc;
@@ -130,8 +127,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Found {} reused words", context.reusedWordCount.getValue());
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done loading in {} ms", (t2 - t1));
+		end();
 	}
 
 	@Transactional

@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.lucene.morphology.LuceneMorphology;
 import org.apache.lucene.morphology.russian.RussianWordProcessing;
@@ -138,19 +137,16 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 	@Transactional
 	public void execute(String dataXmlFilePath, Map<String, List<Guid>> ssGuidMap, boolean doReports) throws Exception {
 
-		logger.debug("Loading QQ2...");
-
 		final String pseudoHomonymAttr = "i";
 		final String lexemeLevel1Attr = "tnr";
 
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
+		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer("qq2 load report",
+			reportComposer = new ReportComposer(getDataset() + " loader",
 					REPORT_MISSING_USAGE_MEANING_MATCH, REPORT_AMBIGUOUS_USAGE_MEANING_MATCH, REPORT_MISSING_MAB_INTEGRATION_CASE,
 					REPORT_USAGE_MEANING_MATCH_BY_CREATIVE_ANALYSIS);
 		}
+		start();
 
 		boolean isAddForms = mabService.isMabLoaded();
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
@@ -369,9 +365,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 			}
 
-			if (doReports) {
-				detectAndReportAtArticle(newWords, missingMabIntegrationCaseCount);
-			}
+			detectAndReportAtArticle(newWords, missingMabIntegrationCaseCount);
 
 			// progress
 			articleCounter++;
@@ -390,19 +384,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} lexeme duplicates", lexemeDuplicateCount.getValue());
 		logger.debug("Found {} missing usage groups", missingUsageGroupCount.getValue());
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done loading in {} ms", (t2 - t1));
+		end();
 	}
 
-	private void detectAndReportAtArticle(
-			List<Word> newWords,
-			Count missingMabIntegrationCaseCount) throws Exception {
+	private void detectAndReportAtArticle(List<Word> newWords, Count missingMabIntegrationCaseCount) throws Exception {
 
 		if (!mabService.isMabLoaded()) {
 			return;
 		}
-
-		StringBuffer logBuf;
 
 		for (Word wordObj : newWords) {
 
@@ -417,40 +406,19 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				if (StringUtils.isBlank(wordFormsString)) {
 					wordFormsString = "-";
 				}
-				logBuf = new StringBuffer();
-				logBuf.append(word);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append(wordFormsString);
-				logBuf.append(CSV_SEPARATOR);
-				logBuf.append("MAB-s sõna puudub");
-				String logRow = logBuf.toString();
-				reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+				appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, wordFormsString, "MAB-s sõna puudub");
 				continue;
 			}
 			if (StringUtils.isBlank(wordFormsString)) {
 				if (!mabService.isSingleParadigm(wordLastComp)) {
 					missingMabIntegrationCaseCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(word);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("-");
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("QQ vormid puuduvad");
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+					appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, "-", "QQ vormid puuduvad");
 					continue;
 				}
 			} else {
 				if (StringUtils.countMatches(wordFormsString, '+') > 1) {
 					missingMabIntegrationCaseCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(word);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordFormsString);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("Mitmekordselt käänduv liitsõna?");
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+					appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, wordFormsString, "Mitmekordselt käänduv liitsõna?");
 					continue;
 				}
 				String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
@@ -471,14 +439,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				}
 				if (matchingParadigm == null) {
 					missingMabIntegrationCaseCount.increment();
-					logBuf = new StringBuffer();
-					logBuf.append(word);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append(wordFormsString);
-					logBuf.append(CSV_SEPARATOR);
-					logBuf.append("Vormid ei kattu MAB-ga");
-					String logRow = logBuf.toString();
-					reportComposer.append(REPORT_MISSING_MAB_INTEGRATION_CASE, logRow);
+					appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, wordFormsString, "Vormid ei kattu MAB-ga");
 					continue;
 				}
 			}
@@ -810,10 +771,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		return false;
 	}
 
-	private List<String> getContentLines(InputStream resourceInputStream) throws Exception {
-		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
-		resourceInputStream.close();
-		return contentLines;
+	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
+		if (!doReports) {
+			return;
+		}
+		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
+		reportComposer.append(reportName, logRow);
 	}
-
 }

@@ -86,7 +86,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> wordTypes;
 	private Map<String, String> processStateCodes;
 	private ReportComposer reportComposer;
-	private boolean reportingEnabled;
 	private String wordTypeAbbreviation;
 
 	@Autowired
@@ -117,25 +116,21 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	public void execute(
 			String dataXmlFilePath,
 			Map<String, List<Guid>> ssGuidMap,
-			boolean isAddReporting) throws Exception {
+			boolean doReports) throws Exception {
 
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
 		final String reportingIdExp = "x:P/x:mg/x:m"; // use first word as id for reporting
 
-		logger.info("Starting import");
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
-		reportingEnabled = isAddReporting;
-
-		if (reportingEnabled) {
-			reportComposer = new ReportComposer("PSV import",
+		this.doReports = doReports;
+		if (doReports) {
+			reportComposer = new ReportComposer(getDataset() + " loader",
 					ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME,
 					COMPOUND_WORDS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
 					COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
 					WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
 		}
+		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -191,8 +186,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (reportComposer != null) {
 			reportComposer.end();
 		}
-		t2 = System.currentTimeMillis();
-		logger.debug("Done in {} ms", (t2 - t1));
+		end();
 	}
 
 	private String extractGuid(Node node) {
@@ -1403,7 +1397,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
-		if (reportingEnabled) {
+		if (doReports) {
 			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(reportingId, message, values));
 			reportComposer.append(logMessage);
 		}

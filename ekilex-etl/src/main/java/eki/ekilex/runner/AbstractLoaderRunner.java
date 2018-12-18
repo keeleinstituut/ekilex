@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.toMap;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.text.Normalizer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +44,7 @@ import eki.ekilex.data.transform.Source;
 import eki.ekilex.data.transform.Usage;
 import eki.ekilex.data.transform.UsageTranslation;
 import eki.ekilex.data.transform.Word;
+import eki.ekilex.service.ReportComposer;
 
 public abstract class AbstractLoaderRunner extends AbstractLoaderCommons implements InitializingBean {
 
@@ -52,12 +54,19 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	abstract void deleteDatasetData() throws Exception;
 	abstract void initialise() throws Exception;
 
+	private ReportComposer reportComposer;
+	protected boolean doReports;
+
+	private static final String REPORT_GUID_MISMATCH = "guid_mismatch";
+	private static final String REPORT_GUID_MAPPING_MISSING = "guid_mapping_missing";
+
 	protected static final String GUID_OWNER_DATASET_CODE = "ss1";
 	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
 	protected static final String ETYMOLOGY_OWNER_DATASET_CODE = "ety";
 	protected static final String DEFAULT_WORD_MORPH_CODE = "??";
 
-	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET = "sql/select_word_ids_for_dataset.sql";
+	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_LEX = "sql/select_word_ids_for_dataset_by_lexeme.sql";
+	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID = "sql/select_word_ids_for_dataset_by_guid.sql";
 	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
 	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
@@ -92,7 +101,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String EKI_CLASSIIFER_ETYMKEELTYYP = "etymkeel_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
-	private String sqlSelectWordIdsForDataset;
+	private String sqlSelectWordIdsForDatasetByLexeme;
+	private String sqlSelectWordIdsForDatasetByGuid;
 	private String sqlSelectMeaningIdsForDataset;
 	private String sqlSelectWordByFormAndHomonym;
 	private String sqlSelectWordByDatasetAndGuid;
@@ -109,6 +119,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	private Pattern ekiEntityPatternV;
 
+	private long t1;
+	private long t2;
+
 	@Override
 	public void afterPropertiesSet() throws Exception {
 
@@ -117,8 +130,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		InputStream resourceFileInputStream;
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET);
-		sqlSelectWordIdsForDataset = getContent(resourceFileInputStream);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET_BY_LEX);
+		sqlSelectWordIdsForDatasetByLexeme = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID);
+		sqlSelectWordIdsForDatasetByGuid = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_FOR_DATASET);
 		sqlSelectMeaningIdsForDataset = getContent(resourceFileInputStream);
@@ -157,6 +173,22 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		sqlDeleteLexemeFreeformsForDataset = getContent(resourceFileInputStream);
 
 		ekiEntityPatternV = Pattern.compile("(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|v|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)");
+	}
+
+	protected void start() throws Exception {
+		if (doReports) {
+			reportComposer = new ReportComposer(getDataset() + " unified loader", REPORT_GUID_MISMATCH, REPORT_GUID_MAPPING_MISSING);
+		}
+		logger.debug("Loading \"{}\" ...", getDataset());
+		t1 = System.currentTimeMillis();
+	}
+
+	protected void end() throws Exception {
+		t2 = System.currentTimeMillis();
+		logger.debug("Done loading \"{}\" in {} ms", getDataset(), (t2 - t1));
+		if (reportComposer != null) {
+			reportComposer.end();
+		}
 	}
 
 	protected boolean isLang(String lang) {
@@ -224,14 +256,18 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return cleanValue;
 	}
 
-	//TODO under construction
 	protected void deleteDatasetData(String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("dataset", dataset);
 
-		List<Long> wordIds = basicDbService.queryList(sqlSelectWordIdsForDataset, tableRowParamMap, Long.class);
-		logger.debug("There are {} words in \"{}\" to be deleted", wordIds.size(), dataset);
+		List<Long> wordIdsLex = basicDbService.queryList(sqlSelectWordIdsForDatasetByLexeme, tableRowParamMap, Long.class);
+		List<Long> wordIdsGuid = basicDbService.queryList(sqlSelectWordIdsForDatasetByGuid, tableRowParamMap, Long.class);
+		List<Long> wordIds = new ArrayList<>();
+		wordIds.addAll(wordIdsLex);
+		wordIds.addAll(wordIdsGuid);
+		wordIds = wordIds.stream().distinct().collect(Collectors.toList());
+		logger.debug("There are {} words in \"{}\" to be deleted - {} by lexemes, {} by guids", wordIds.size(), dataset, wordIdsLex.size(), wordIdsGuid.size());
 
 		List<Long> meaningIds = basicDbService.queryList(sqlSelectMeaningIdsForDataset, tableRowParamMap, Long.class);
 		logger.debug("There are {} meanings in \"{}\" to be deleted", meaningIds.size(), dataset);
@@ -377,6 +413,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		List<Guid> mappedGuids = ssGuidMap.get(guid);
 		if (CollectionUtils.isEmpty(mappedGuids)) {
+			appendToReport(REPORT_GUID_MAPPING_MISSING, dataset, wordValue, guid);
 			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 		}
 
@@ -412,6 +449,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		List<String> mappedWordValues = mappedGuids.stream().map(Guid::getWord).collect(Collectors.toList());
 		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordValue, mappedWordValues);
+		appendToReport(REPORT_GUID_MISMATCH, dataset, wordValue, guid, mappedWordValues, "Sõnad ei kattu");
 
 		return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 	}
@@ -1126,4 +1164,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				.collect(toMap(cells -> cells[2], cells -> cells[6], (c1, c2) -> c2));
 	}
 
+	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
+		if (!doReports) {
+			return;
+		}
+		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
+		reportComposer.append(reportName, logRow);
+	}
 }
