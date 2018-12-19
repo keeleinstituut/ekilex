@@ -80,9 +80,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			return;
 		}
 		this.dataset = dataset;
-		logger.debug("Start import \"{}\" from Termeki...", dataset);
-		long t1, t2;
-		t1 = System.currentTimeMillis();
+		start();
 
 		Context context = new Context();
 		context.terms = termekiService.getTerms(baseId);
@@ -107,8 +105,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		doImport(context, dataset);
 		updateDataset(baseId, dataset);
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done in {} ms", (t2 - t1));
+		end();
 	}
 
 	// abbreviations are present only in termbase 1283851 - Eesti E-tervise SA terminibaas (ett)

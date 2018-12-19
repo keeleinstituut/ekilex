@@ -46,7 +46,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String MEANINGS_REPORT_NAME = "keywords_meanings";
 
 	protected ReportComposer reportComposer;
-	protected boolean reportingEnabled;
 	protected boolean reportingPaused;
 
 	protected Map<String, String> wordTypes;
@@ -432,7 +431,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected void writeToLogFile(String reportFile, String reportingId, String message, String values) throws Exception {
-		if (reportingEnabled && !reportingPaused) {
+		if (doReports && !reportingPaused) {
 			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(reportingId, message, values));
 			if (reportFile == null) {
 				reportComposer.append(logMessage);

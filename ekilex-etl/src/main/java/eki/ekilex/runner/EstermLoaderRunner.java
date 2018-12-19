@@ -121,17 +121,16 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		logger.debug("Starting loading Esterm...");
 
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
+		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer("esterm load report",
+			reportComposer = new ReportComposer(getDataset() + " loader",
 					REPORT_DEFINITIONS_NOTES_MESS, REPORT_CREATED_MODIFIED_MESS,
 					REPORT_ILLEGAL_CLASSIFIERS, REPORT_DEFINITIONS_AT_TERMS, REPORT_MISSING_SOURCE_REFS,
 					REPORT_MULTIPLE_DEFINITIONS, REPORT_NOT_A_DEFINITION, REPORT_DEFINITIONS_NOTES_MISMATCH,
 					REPORT_MISSING_VALUE);
 			reportHelper.setup(reportComposer, meaningAndLexemeProcessStateCodes, lexemeValueStateCodes);
 		}
+		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -198,7 +197,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				lang = unifyLang(valueStr);
 
 				//upper level definitions and notes
-				extractAndSaveDefinitionsAndNotes(meaningId, langGroupNode, lang, concept, doReports, definitionsWithSameNotesCount);
+				extractAndSaveDefinitionsAndNotes(meaningId, langGroupNode, lang, concept, definitionsWithSameNotesCount);
 
 				termGroupNodes = langGroupNode.selectNodes(termGroupExp);
 
@@ -233,7 +232,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					valueNodes = termGroupNode.selectNodes(definitionExp);
 					for (Node definitionNode : valueNodes) {
 						definitions = extractContentAndRefs(definitionNode, lang, term, true);
-						saveDefinitionsAndSourceLinks(meaningId, definitions, concept, term, doReports);
+						saveDefinitionsAndSourceLinks(meaningId, definitions, concept, term);
 					}
 
 					// usages
@@ -241,7 +240,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					if (CollectionUtils.isNotEmpty(valueNodes)) {
 						for (Node usageNode : valueNodes) {
 							usages = extractContentAndRefs(usageNode, lang, term, true);
-							saveUsagesAndSourceLinks(lexemeId, usages, concept, term, doReports);
+							saveUsagesAndSourceLinks(lexemeId, usages, concept, term);
 						}
 					}
 
@@ -249,7 +248,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					valueNodes = termGroupNode.selectNodes(sourceExp);
 					for (Node sourceNode : valueNodes) {
 						sources = extractContentAndRefs(sourceNode, lang, term, false);
-						saveLexemeSourceLinks(lexemeId, sources, concept, term, doReports);
+						saveLexemeSourceLinks(lexemeId, sources, concept, term);
 					}
 
 					if (doReports) {
@@ -284,8 +283,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		logger.debug("Found {} conflicting process state settings", processStateConflictCount.getValue());
 		logger.debug("Found {} conflicting word type settings", wordTypeConflictCount.getValue());
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done loading in {} ms", (t2 - t1));
+		end();
 	}
 
 	private boolean isLanguageTypeConcept(Node conceptGroupNode) {
@@ -667,17 +665,17 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		return contentObj;
 	}
 
-	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String concept, String term, boolean doReports) throws Exception {
+	private void saveLexemeSourceLinks(Long lexemeId, List<Content> sources, String concept, String term) throws Exception {
 
 		for (Content sourceObj : sources) {
 			List<Ref> refs = sourceObj.getRefs();
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, concept, term, doReports);
+				createSourceLink(SourceOwner.LEXEME, lexemeId, ref, concept, term);
 			}
 		}
 	}
 
-	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String concept, String term, boolean doReports) throws Exception {
+	private void saveDefinitionsAndSourceLinks(Long meaningId, List<Content> definitions, String concept, String term) throws Exception {
 
 		for (Content definitionObj : definitions) {
 			String definition = definitionObj.getValue();
@@ -686,12 +684,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			Long definitionId = createDefinition(meaningId, definition, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term, doReports);
+				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term);
 			}
 		}
 	}
 
-	private void saveUsagesAndSourceLinks(Long lexemeId, List<Content> usages, String concept, String term, boolean doReports) throws Exception {
+	private void saveUsagesAndSourceLinks(Long lexemeId, List<Content> usages, String concept, String term) throws Exception {
 
 		for (Content usageObj : usages) {
 			String usage = usageObj.getValue();
@@ -700,12 +698,12 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			Long usageId = createLexemeFreeform(lexemeId, FreeformType.USAGE, usage, lang);
 			usageObj.setId(usageId);
 			for (Ref ref : refs) {
-				createSourceLink(SourceOwner.USAGE, usageId, ref, concept, term, doReports);
+				createSourceLink(SourceOwner.USAGE, usageId, ref, concept, term);
 			}
 		}
 	}
 
-	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String concept, String term, boolean doReports) throws Exception {
+	private void createSourceLink(SourceOwner sourceOwner, Long ownerId, Ref ref, String concept, String term) throws Exception {
 
 		String minorRef = ref.getMinorRef();
 		String majorRef = ref.getMajorRef();
@@ -736,7 +734,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 	}
 
 	private void extractAndSaveDefinitionsAndNotes(
-			Long meaningId, Node langGroupNode, String lang, String concept, boolean doReports, Count definitionsWithSameNotesCount) throws Exception {
+			Long meaningId, Node langGroupNode, String lang, String concept, Count definitionsWithSameNotesCount) throws Exception {
 
 		List<Node> definitionNodes = langGroupNode.selectNodes(definitionExp);
 		List<Node> definitionNoteNodes = langGroupNode.selectNodes(noteExp);
@@ -745,7 +743,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		for (Node definitionNode : definitionNodes) {
 			definitions = extractContentAndRefs(definitionNode, lang, concept, true);
-			saveDefinitionsAndSourceLinks(meaningId, definitions, concept, "*", doReports);
+			saveDefinitionsAndSourceLinks(meaningId, definitions, concept, "*");
 			totalDefinitionCount += definitions.size();
 			for (Content definitionObj : definitions) {
 				Long definitionId = definitionObj.getId();
