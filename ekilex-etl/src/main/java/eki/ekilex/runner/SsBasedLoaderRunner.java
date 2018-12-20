@@ -545,7 +545,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Count reusedWordCount = new Count();
 		List<WordData> importedWords = new ArrayList<>();
 		List<WordData> unionWords = new ArrayList<>();
-		List<WordData> subWords = new ArrayList<>();
 		List<WordData> derivativeWords = new ArrayList<>();
 		List<LexemeToWordData> synonyms = new ArrayList<>();
 		List<WordToMeaningData> antonyms = new ArrayList<>();
