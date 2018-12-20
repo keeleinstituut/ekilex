@@ -101,7 +101,7 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
-		return 	" lexsearch_components :: word_search_result";
+		return 	" lexeme_components :: word_search_result";
 	}
 
 	@GetMapping("/lexemesearchajax")
@@ -116,7 +116,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
-		return 	" lexsearch_components :: lexeme_search_result";
+		return 	" lexeme_components :: lexeme_search_result";
 	}
 
 	@GetMapping("/meaningsearchajax")
@@ -137,7 +137,7 @@ public class LexSearchController extends AbstractSearchController {
 		}
 		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
 
-		return 	" lexsearch_components :: meaning_search_result";
+		return 	" lexeme_components :: meaning_search_result";
 	}
 
 	@GetMapping("/personsearchajax")
@@ -150,7 +150,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<Source> sources = sourceService.findSourcesByNameAndType(searchFilter, SourceType.PERSON);
 		model.addAttribute("sourcesFoundBySearch", sources);
 
-		return 	" lexsearch_components :: source_search_result";
+		return 	" lexeme_components :: source_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

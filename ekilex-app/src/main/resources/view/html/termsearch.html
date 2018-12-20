@@ -232,17 +232,28 @@
                   </tr>
                 </table>
               </div>
-              <div th:if="${not #lists.isEmpty(meaning.relations)}">
+              <div>
                 <hr />
                 <span class="lbl">Tähenduse seosed</span>
-                <table>
-                  <tr th:each="relation : ${meaning.relations}">
-                    <td style="vertical-align: text-top; padding-right: 1em">
-                      <button type="button" class="btn btn-link pt-0" th:data-id="${relation.wordId}" name="detailsBtn">
-                        <span th:text="${relation.word}"></span>
-                        (
-                        <span th:text="${relation.wordLang}"></span>
-                        )
+                <button type="button" class="btn badge badge-success" title="Lisa seos"
+                        th:data-id="${meaning.meaningId}"
+                        onclick="openAddNewMeaningRelationDlg(this)"
+                        data-toggle="modal" data-target="#addNewMeaningRelationDlg">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <table th:if="${not #lists.isEmpty(meaning.relations)}">
+                  <tr th:each="relation : ${meaning.relations}"
+                      th:data-id="${relation.id}"
+                      th:data-op-code="meaning_relation"
+                      th:name="${relation.id} + '_meaning_relation'">
+                    <td style="vertical-align: text-top; padding-right: 1em" class="hidden-buttons">
+                      <button type="button" class="btn btn-link pt-0" th:data-id="${relation.meaningId}" name="detailsBtn">
+                        <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-target-elem="${relation.id} + '_meaning_relation'"
+                              data-toggle="delete-confirmation" data-placement="right">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
                       </button>
                     </td>
                     <td>
@@ -311,19 +322,19 @@
                       data-toggle="modal" data-target="#termLexemeClassifiersDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
-              <div th:replace="lexsearch_components :: lexeme_process_state"></div>
-              <div th:replace="lexsearch_components :: lexeme_value_state"></div>
+              <div th:replace="lexeme_components :: lexeme_process_state"></div>
+              <div th:replace="lexeme_components :: lexeme_value_state"></div>
               <th:block th:with="wordGenderCode=${lexeme.wordGenderCode}">
-                <div th:replace="lexsearch_components :: word_gender"></div>
+                <div th:replace="lexeme_components :: word_gender"></div>
               </th:block>
               <th:block th:with="wordTypeCode=${lexeme.wordTypeCode}">
-                <div th:replace="lexsearch_components :: word_type"></div>
+                <div th:replace="lexeme_components :: word_type"></div>
               </th:block>
-              <div th:replace="lexsearch_components :: lexeme_frequency_group"></div>
-              <div th:replace="lexsearch_components :: lexeme_grammar"></div>
-              <div th:replace="lexsearch_components :: lexeme_pos"></div>
-              <div th:replace="lexsearch_components :: lexeme_derivative"></div>
-              <div th:replace="lexsearch_components :: lexeme_register"></div>
+              <div th:replace="lexeme_components :: lexeme_frequency_group"></div>
+              <div th:replace="lexeme_components :: lexeme_grammar"></div>
+              <div th:replace="lexeme_components :: lexeme_pos"></div>
+              <div th:replace="lexeme_components :: lexeme_derivative"></div>
+              <div th:replace="lexeme_components :: lexeme_register"></div>
             </div>
             <div>
               <hr />
@@ -488,6 +499,7 @@
   <div th:replace="common :: #wordGenderDlg"></div>
   <div th:replace="common :: #wordTypeDlg"></div>
   <div th:replace="common :: #termLexemeClassifiersDlg"></div>
+  <div th:replace="lexeme_components :: #addNewMeaningRelationDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
