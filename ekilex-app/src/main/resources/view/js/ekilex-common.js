@@ -490,3 +490,14 @@ function openAddNewMeaningRelationDlg(elem) {
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'meaning-id');
 }
+
+function openAddNewLexemeRelationDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=lexemeId]').val($(elem).data('id'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    var selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'lexeme-id');
+}

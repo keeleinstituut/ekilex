@@ -122,6 +122,7 @@ public class TermSearchService implements SystemConstant {
 
 		final String classifierLabelLang = "est";
 		final String classifierLabelTypeDescrip = "descrip";
+		final String classifierLabelTypeFull = "full";
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
 
 		Meaning meaning = termSearchDbService.getMeaning(meaningId, selectedDatasets).into(Meaning.class);
@@ -148,6 +149,7 @@ public class TermSearchService implements SystemConstant {
 			List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 			List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
 			List<SourceLink> lexemeRefLinks = commonDataDbService.findLexemeSourceLinks(lexemeId).into(SourceLink.class);
+			List<Relation> lexemeRelations = commonDataDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 
 			boolean classifiersExist =
 					StringUtils.isNotBlank(lexeme.getWordGenderCode())
@@ -174,6 +176,7 @@ public class TermSearchService implements SystemConstant {
 			lexeme.setGrammars(lexemeGrammars);
 			lexeme.setClassifiersExist(classifiersExist);
 			lexeme.setSourceLinks(lexemeRefLinks);
+			lexeme.setLexemeRelations(lexemeRelations);
 			lexemes.add(lexeme);
 		}
 
