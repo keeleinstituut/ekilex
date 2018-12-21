@@ -33,7 +33,7 @@ public class UserService {
 
 	@Transactional
 	public void addNewUser(String email, String name, String password) {
-		userDbService.addUser(email, name, password, new String[] {"user"});
+		userDbService.addUser(email, name, password, new String[] {"basic_user"});
 		logger.debug("Uus kasutaja : {}", userDbService.getUserByEmail(email).getDescription());
 	}
 
