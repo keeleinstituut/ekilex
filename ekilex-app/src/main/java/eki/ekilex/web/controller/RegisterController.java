@@ -63,7 +63,12 @@ public class RegisterController implements WebConstant {
 			String password = userService.generatePassword();
 			String encodedPassword = passwordEncoder.encode(password);
 			userService.addNewUser(email, name, encodedPassword);
-			model.addAttribute("success_message", "Kasutaja registreeritud, parool on saadetud e-postile : " + email);
+			// FIXME : remove after email service is properly configured
+			if (emailService.isEnabled()) {
+				model.addAttribute("success_message", "Kasutaja registreeritud, parool on saadetud e-postile : " + email);
+			} else {
+				model.addAttribute("success_message", "Kasutaja registreeritud, teie parool on : " + password);
+			}
 			emailService.sendEmail(
 					asList(email),
 					Collections.emptyList(),

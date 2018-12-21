@@ -35,6 +35,10 @@ public class EmailService {
         this.emailSender = emailSender;
     }
 
+    public boolean isEnabled() {
+    	return isEmailSendingEnabled;
+	}
+
     public void sendEmail(List<String> to, List<String> cc, String subject, String content) {
         if (to == null || to.isEmpty()) return;
         try {
