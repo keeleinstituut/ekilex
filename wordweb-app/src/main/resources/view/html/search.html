@@ -98,7 +98,7 @@
               th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
-            <span id="spellingLine" th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
+            <span id="spellingLine" th:if="${wordData.firstAvailableVocalForm != null}"><i th:text="${'['+wordData.firstAvailableVocalForm+']'}"></i></span>
           </div>
         </div>
         <div class="row">
@@ -119,7 +119,6 @@
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </span>
                     <span class="lexeme" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      -
                       <th:block th:each="grammar,grammarIter : ${lexeme.grammars}">
                         <span th:text="${grammar}"></span>
                         <span th:unless="${grammarIter.last}">,</span>
@@ -148,7 +147,7 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black; font-family: 'Montserrat';">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black;">
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
                           <span th:if="${meaningWord.aspect != null}">
@@ -166,9 +165,7 @@
                             <!--reg-->
                             <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
                             <span class="type-two" th:each="register : ${meaningWord.registers}">
-                              |
                               <span th:text="${register.value}"></span>
-                              |
                             </span>
                           </span>
                         </span>
@@ -552,6 +549,8 @@
                 </div>
               </div>
             </section>
+
+
             <section class="level-3-panel row" th:classappend="${sessionBean.searchMode == 'simple' ? 'hide-simple' : ''}">
               <div class="col-12 word-relations">
                 <h5 class="font-weight-bold">
@@ -613,7 +612,7 @@
                 </div>
               </div>
             </section>
-            <section class="level-3-panel row">
+            <section class="level-3-panel row"  th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
               <div class="col-12 corp-panel">
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">

@@ -369,7 +369,7 @@ template {
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
   margin-bottom: 0.5rem;
-  font-family: "Klavika", "Montserrat";
+  font-family: "Klavika";
   font-weight: 500;
   line-height: 1.2;
   color: inherit;
@@ -6555,7 +6555,7 @@ text-decoration: none;
   display: block;
   height: 3.4375rem;
   font-size: 1.375rem;
-  font-family: "Klavika", "Montserrat" !important;
+  font-family: "Klavika" !important;
   color: rgba(255, 255, 255, 0.8);
   font-weight: 700;
   padding-left: 0.9375rem;
@@ -6953,15 +6953,15 @@ text-decoration: none;
 .expand .more-btn:focus .icon::before {
   outline: 0px;
   background: white;
-  border-color: #d8d8d8;
+  border-color: black;
   opacity: 1;
-  color: #d8d8d8;
+  color: black;
 }
 
 .more-btn:focus .icon::before {
   outline: 0px;
-  background: #d8d8d8;
-  border-color: #d8d8d8;
+  background: black;
+  border-color: black;
   opacity: 1;
   color: white;
 }
@@ -6990,6 +6990,7 @@ text-decoration: none;
   }
 
   .tag {
+    margin-right:0.25rem;
     font-size: 0.75rem;
     border: 1px solid rgba(0, 17, 36, 0.25);
     color: rgba(0, 17, 36, 0.5);
@@ -7898,7 +7899,7 @@ h3 span + span {
   display: block;
 }
 .homonym-item .homonym-header {
-  font-family: "Klavika", "Montserrat";
+  font-family: "Klavika";
   font-size: 1.25rem;
 }
 .homonym-intro {
@@ -8470,10 +8471,12 @@ body:not(.home-page) footer {
 
 
 .rections .type-two {
-  color: #003F87 !important;
+  color: #003F87!important;
   padding: 0.125rem 0.3125rem 0.0625rem 0.3125rem;
   border-radius: 0.3125rem;
-  font-weight: bold;
+  font-weight: 400;
+  text-transform: uppercase;
+  font-style: italic;
 }
 
 .rections .type-three {
@@ -8487,7 +8490,19 @@ body:not(.home-page) footer {
 }
 
 .lexeme {
-  color: #658ad4;
+  color: black;
+  font-weight: 700;
+  background-color: #F2F2F2;
+    border-radius: 0.6875rem;
+    margin-bottom: 0.125rem;
+    padding: 0.5rem 0.5rem 0.25rem 0.5rem;
+    margin-left: 0.25rem;
+}
+
+.definition i {
+    color: #003F87;
+      font-weight: 400;
+      text-transform: uppercase;
 }
 
 .homonym-container {
@@ -8516,6 +8531,10 @@ body:not(.home-page) footer {
 .morphology-panel .icon-speaker { 
   display: inline;
   padding-top: 0px;
+}
+
+.btn-speaker:hover {
+  opacity: 1;
 }
 
 .morphology-panel h6, .morphology-panel h6.main-title {
