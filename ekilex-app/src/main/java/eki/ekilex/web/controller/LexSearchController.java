@@ -5,7 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import eki.common.constant.SourceType;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.SourceService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -39,6 +42,9 @@ public class LexSearchController extends AbstractSearchController {
 
 	@Autowired
 	private LexSearchService lexSearchService;
+
+	@Autowired
+	private SourceService sourceService;
 
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
@@ -95,7 +101,7 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
-		return 	" lexsearch_components :: word_search_result";
+		return 	" lexeme_components :: word_search_result";
 	}
 
 	@GetMapping("/lexemesearchajax")
@@ -110,7 +116,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
-		return 	" lexsearch_components :: lexeme_search_result";
+		return 	" lexeme_components :: lexeme_search_result";
 	}
 
 	@GetMapping("/meaningsearchajax")
@@ -131,7 +137,20 @@ public class LexSearchController extends AbstractSearchController {
 		}
 		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
 
-		return 	" lexsearch_components :: meaning_search_result";
+		return 	" lexeme_components :: meaning_search_result";
+	}
+
+	@GetMapping("/personsearchajax")
+	public String searchPersonsAjax(
+			@RequestParam String searchFilter,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			Model model) {
+		logger.debug("person search ajax {}", searchFilter);
+
+		List<Source> sources = sourceService.findSourcesByNameAndType(searchFilter, SourceType.PERSON);
+		model.addAttribute("sourcesFoundBySearch", sources);
+
+		return 	" lexeme_components :: source_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

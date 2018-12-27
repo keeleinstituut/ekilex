@@ -19,7 +19,8 @@ public class FeedbackDbService {
 	}
 
 	public Result<Record> findFeedback() {
-		return create.select(FEEDBACK_LOG.fields())
+		return create
+				.select(FEEDBACK_LOG.fields())
 				.from(FEEDBACK_LOG)
 				.orderBy(FEEDBACK_LOG.CREATED_ON.desc())
 				.fetch();

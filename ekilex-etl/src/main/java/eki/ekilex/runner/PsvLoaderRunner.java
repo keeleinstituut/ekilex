@@ -86,7 +86,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private Map<String, String> wordTypes;
 	private Map<String, String> processStateCodes;
 	private ReportComposer reportComposer;
-	private boolean reportingEnabled;
 	private String wordTypeAbbreviation;
 
 	@Autowired
@@ -117,25 +116,20 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	public void execute(
 			String dataXmlFilePath,
 			Map<String, List<Guid>> ssGuidMap,
-			boolean isAddReporting) throws Exception {
+			boolean doReports) throws Exception {
 
 		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
-		final String reportingIdExp = "x:P/x:mg/x:m"; // use first word as id for reporting
 
-		logger.info("Starting import");
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
-		reportingEnabled = isAddReporting;
-
-		if (reportingEnabled) {
-			reportComposer = new ReportComposer("PSV import",
+		this.doReports = doReports;
+		if (doReports) {
+			reportComposer = new ReportComposer(getDataset() + " loader",
 					ARTICLES_REPORT_NAME, SYNONYMS_REPORT_NAME, ANTONYMS_REPORT_NAME, BASIC_WORDS_REPORT_NAME,
 					COMPOUND_WORDS_REPORT_NAME, MEANING_REFERENCES_REPORT_NAME, JOINT_REFERENCES_REPORT_NAME,
 					COMPOUND_REFERENCES_REPORT_NAME, VORMELS_REPORT_NAME, SINGLE_FORMS_REPORT_NAME, COMPOUND_FORMS_REPORT_NAME,
 					WORD_COMPARATIVES_REPORT_NAME, WORD_SUPERLATIVES_REPORT_NAME);
 		}
+		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -152,23 +146,26 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		List<Node> articleNodes = rootElement.content().stream().filter(o -> o instanceof Element).collect(toList());
 		for (Node articleNode : articleNodes) {
 			String guid = extractGuid(articleNode);
-			List<WordData> newWords = new ArrayList<>();
-			Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-			Element reportingIdNode = (Element) articleNode.selectSingleNode(reportingIdExp);
-			String reportingId = reportingIdNode != null ? reportingIdNode.getTextTrim() : "";
-			processArticleHeader(guid, reportingId, headerNode, newWords, ssGuidMap, context);
+			String reportingId = extractReportingId(articleNode);
+			if (articleHasMeanings(articleNode)) {
+				List<WordData> newWords = new ArrayList<>();
+				Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
+				processArticleHeader(guid, reportingId, headerNode, newWords, ssGuidMap, context);
 
-			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
-			if (contentNode != null) {
-				processArticleContent(reportingId, contentNode, newWords, context);
+				Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+				if (contentNode != null) {
+					processArticleContent(reportingId, contentNode, newWords, context);
+				}
+				context.importedWords.addAll(newWords);
+			} else {
+				logger.debug("Article does not have meanings, skipping : {}", reportingId);
+				writeToLogFile(reportingId, "Artikkel ei sisalda mõisteid", "");
 			}
-
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				long progressPercent = articleCounter / progressIndicator;
 				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
-			context.importedWords.addAll(newWords);
 		}
 
 		processSynonymsNotFoundInImportFile(context);
@@ -191,14 +188,22 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (reportComposer != null) {
 			reportComposer.end();
 		}
-		t2 = System.currentTimeMillis();
-		logger.debug("Done in {} ms", (t2 - t1));
+		end();
+	}
+
+	private String extractReportingId(Node articleNode) {
+		final String reportingIdExp = "x:P/x:mg/x:m";
+		Element reportingIdNode = (Element) articleNode.selectSingleNode(reportingIdExp);
+		return reportingIdNode != null ? reportingIdNode.getTextTrim() : "";
+	}
+
+	private boolean articleHasMeanings(Node articleNode) {
+		final String meaningGroupNodeExp = "x:S/x:tp/x:tg";
+		return !articleNode.selectNodes(meaningGroupNodeExp).isEmpty();
 	}
 
 	private String extractGuid(Node node) {
-
 		final String articleGuidExp = "x:G";
-
 		Element guidNode = (Element) node.selectSingleNode(articleGuidExp);
 		return guidNode != null ? StringUtils.lowerCase(guidNode.getTextTrim()) : null;
 	}
@@ -1403,7 +1408,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private void writeToLogFile(String reportingId, String message, String values) throws Exception {
-		if (reportingEnabled) {
+		if (doReports) {
 			String logMessage = String.join(String.valueOf(CSV_SEPARATOR), asList(reportingId, message, values));
 			reportComposer.append(logMessage);
 		}

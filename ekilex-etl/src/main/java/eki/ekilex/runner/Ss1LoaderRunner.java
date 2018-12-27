@@ -104,18 +104,15 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	@Transactional
 	public void execute(
 			String dataXmlFilePath,
-			boolean isAddReporting) throws Exception {
+			boolean doReports) throws Exception {
 
-		logger.info("Starting import");
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
-		reportingEnabled = isAddReporting;
-		if (reportingEnabled) {
-			reportComposer = new ReportComposer("SS1 import", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME,
+		this.doReports = doReports;
+		if (doReports) {
+			reportComposer = new ReportComposer(getDataset() + " loader", ARTICLES_REPORT_NAME, BASIC_WORDS_REPORT_NAME, SYNONYMS_REPORT_NAME,
 					ANTONYMS_REPORT_NAME, ABBREVIATIONS_REPORT_NAME, COHYPONYMS_REPORT_NAME, TOKENS_REPORT_NAME,
 					DESCRIPTIONS_REPORT_NAME, MEANINGS_REPORT_NAME, SUBWORDS_REPORT_NAME);
 		}
+		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 		Element rootElement = dataDoc.getRootElement();
@@ -153,8 +150,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (reportComposer != null) {
 			reportComposer.end();
 		}
-		t2 = System.currentTimeMillis();
-		logger.debug("Done in {} ms", (t2 - t1));
+		end();
 	}
 
 	void processArticle(Node articleNode, Context context) throws Exception {

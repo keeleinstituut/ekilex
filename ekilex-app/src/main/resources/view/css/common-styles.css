@@ -48,6 +48,14 @@ td {
 	display: inline-block;
 }
 
+.hidden-buttons .show-on-mouseover {
+	display: none;
+}
+
+.hidden-buttons:hover .show-on-mouseover {
+	display: inline-block;
+}
+
 .switch {
 	position: relative;
 	display: inline-block;
@@ -130,4 +138,8 @@ input:checked+.slider:before {
 	color: #007bff;
 	background-color: transparent;
 	cursor: auto !important;
+}
+
+.validation {
+	display: none;
 }

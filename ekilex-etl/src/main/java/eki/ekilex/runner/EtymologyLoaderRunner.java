@@ -101,14 +101,11 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 	@Transactional
 	public void execute(String dataXmlFilePath, boolean doReports) throws Exception {
 
-		logger.debug("Loading Etymology...");
-
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
+		this.doReports = doReports;
 		if (doReports) {
-			reportComposer = new ReportComposer("etymology loader report", REPORT_MISSING_ETYM_TYPE, REPORT_MISSING_ETYM_LANG, REPORT_UNKNOWN_ETYM_TYPE);
+			reportComposer = new ReportComposer(getDataset() + " loader", REPORT_MISSING_ETYM_TYPE, REPORT_MISSING_ETYM_LANG, REPORT_UNKNOWN_ETYM_TYPE);
 		}
+		start();
 
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
@@ -257,7 +254,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 						List<Node> etymLangNodes = etymSubGroupNode.selectNodes(etymLangExp);
 						if (CollectionUtils.isEmpty(etymLangNodes)) {
 							logger.debug("Missing lang for \"{}\" - \"{}\"", words, etymWordsWrapup);
-							appendToReport(doReports, REPORT_MISSING_ETYM_LANG, words, etymWordsWrapup);
+							appendToReport(REPORT_MISSING_ETYM_LANG, words, etymWordsWrapup);
 						}
 						Element etymCommentNode = (Element) etymSubGroupNode.selectSingleNode(etymCommentExp);
 						if (isFirstEtym && CollectionUtils.isNotEmpty(etymRootComments)) {
@@ -297,7 +294,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 							mappedRegisterCode = registerConversionMap.get(etymRegister);
 							if (mappedRegisterCode == null) {
 								logger.debug("Unknown register \"{}\"", etymRegister);
-								appendToReport(doReports, REPORT_UNKNOWN_REGISTER, words, etymWordsWrapup, etymRegister);
+								appendToReport(REPORT_UNKNOWN_REGISTER, words, etymWordsWrapup, etymRegister);
 								continue;
 							}
 							etymRegisterCodes.add(mappedRegisterCode);
@@ -363,8 +360,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} word source documents", etymWordSourceDocumentCount.getValue());
 		logger.debug("Found {} etym groups with missing type", missingEtymTypeCount.getValue());
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done loading in {} ms", (t2 - t1));
+		end();
 	}
 
 	private String cleanUp(String value) {
@@ -468,7 +464,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		return sourceLinkId;
 	}
 
-	private void appendToReport(boolean doReports, String reportName, Object ... reportCells) throws Exception {
+	private void appendToReport(String reportName, Object ... reportCells) throws Exception {
 		if (!doReports) {
 			return;
 		}

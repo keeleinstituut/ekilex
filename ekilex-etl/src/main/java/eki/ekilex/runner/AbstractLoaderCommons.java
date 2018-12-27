@@ -31,4 +31,10 @@ public abstract class AbstractLoaderCommons implements SystemConstant, TableName
 			return IOUtils.readLines(resourceInputStream, UTF_8);
 		}
 	}
+
+	protected List<String> getContentLines(InputStream resourceInputStream) throws Exception {
+		List<String> contentLines = IOUtils.readLines(resourceInputStream, UTF_8);
+		resourceInputStream.close();
+		return contentLines;
+	}
 }

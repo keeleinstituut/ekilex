@@ -32,7 +32,7 @@ public class GameDataService implements InitializingBean, SystemConstant {
 
 	private static final String GAME_EXIT_MODE_BRAINLESS = "brainless";
 
-	private static final int GAME_BATCH_SIZE = 100;
+	private static final int GAME_BATCH_SIZE = 50;
 
 	@Autowired
 	private GameDataDbService gameDataDbService;

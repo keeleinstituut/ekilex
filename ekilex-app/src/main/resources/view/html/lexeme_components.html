@@ -510,4 +510,65 @@
     </div>
   </div>
 
+  <div id="addNewUsageAuthorDlg" class="modal" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <form th:action="@{/personsearchajax}">
+            <div class="form-row">
+              <div class="col-12">
+                <div class="form-group row">
+                  <div class="col-8">
+                    <input type="text" class="form-control" name="searchFilter" placeholder="sisesta otsitav nimi">
+                  </div>
+                  <div class="col-2">
+                    <button type="submit" class="btn btn-primary">Otsi</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+          <form th:action="@{/add_item}" method="post">
+            <input type="hidden" name="id">
+            <input type="hidden" name="opCode" value="usage_author">
+            <input type="hidden" name="id2">
+            <div class="form-group row">
+              <div class="col-md-6">
+                <select class="form-control" name="itemType">
+                  <option th:value="AUTHOR" th:text="#{enum.reference.type.AUTHOR}"></option>
+                  <option th:value="TRANSLATOR" th:text="#{enum.reference.type.TRANSLATOR}"></option>
+                </select>
+              </div>
+            </div>
+            <div data-name="dialogContent"></div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div data-name="dialogContent" th:fragment="source_search_result">
+    <div class="card" th:if="${not #lists.isEmpty(sourcesFoundBySearch)}">
+      <div class="card-body p-2">
+        <div style="max-height: 70vh; overflow: auto;">
+          <table class="table table-striped mb-0">
+            <tr th:each="source : ${sourcesFoundBySearch}">
+              <td>
+                <button type="button" class="btn btn-primary float-right btn-sm mr-2"
+                        th:data-source-id="${source.sourceId}">Lisa</button>
+                <div th:text="${source.sourceNames.get(0)}" th:if="${not #lists.isEmpty(source.sourceNames)}"></div>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="card" th:if="${#lists.isEmpty(sourcesFoundBySearch)}">
+      <div th:text="#{person.serach.not.found}" class="card-body">Not found.</div>
+    </div>
+  </div>
+
 </body>

@@ -14,25 +14,29 @@
           <span th:text="${loginerror}"></span>
         </div>
         <form th:action="@{/dologin}" method="post">
-          <div>
-            <div class="row mt-2">
-              <span class="col-1">E-posti aadress</span>
-              <span>
-                <input type="text" name="email" />
-              </span>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">E-posti aadress</label>
+            <div class="col-sm-4">
+              <input type="email" class="form-control" name="email" placeholder="E-posti aadress">
             </div>
-            <div class="row mt-2">
-              <span class="col-1">Salasõna</span>
-              <span>
-                <input type="password" name="password" />
-              </span>
+          </div>
+          <div class="form-group row">
+            <label class="col-sm-2 col-form-label">Salasõna</label>
+            <div class="col-sm-2">
+              <input type="password" class="form-control" name="password">
             </div>
-            <div class="row mt-2">
-              <span class="col-1"></span>
-              <input type="submit" value="Sisene" />
+          </div>
+          <div class="form-group row">
+            <div class="col-sm-10 offset-sm-2">
+              <button type="submit" class="btn btn-primary">Sisene</button>
             </div>
           </div>
         </form>
+        <div class="form-group row">
+          <div class="col-sm-10 offset-sm-2">
+            <a role="button" class="btn btn-info" th:href="@{/register}">Uus kasutaja</a>
+          </div>
+        </div>
       </div>
     </div>
   </div>

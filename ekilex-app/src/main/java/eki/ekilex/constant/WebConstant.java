@@ -18,6 +18,8 @@ public interface WebConstant {
 
 	String REST_SERVICES_URI = "/data";
 
+	String VIEW_RESOURCES_URI = "/view";
+
 	String LEX_SEARCH_PAGE = "lexsearch";
 
 	String LEX_SEARCH_URI = "/lexsearch";
@@ -31,6 +33,12 @@ public interface WebConstant {
 	String MEANING_DETAILS_URI = "/meaningdetails";
 
 	String AUTH_ERROR_URI = "/autherror";
+
+	String SEND_FEEDBACK_URI = "/send_feedback";
+
+	String WW_FEEDBACK_URI = "/ww_feedback";
+
+	String WW_FEEDBACK_PAGE = "ww_feedback";
 
 	String LEX_JOIN_PAGE = "lexjoin";
 
@@ -49,5 +57,9 @@ public interface WebConstant {
 	String USER_KEY = "user";
 
 	String SEARCH_WORD_KEY = "searchWord";
+
+	String REGISTER_PAGE_URI = "/register";
+
+	String REGISTER_PAGE = "register";
 
 }

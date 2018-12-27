@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <div class="col-12 homonym-panel">
+      <div class="col-12 homonym-panel" th:classappend="${#lists.size(wordsData.fullMatchWords) == 1 ? 'd-none' : ''}">
         <ul class="homonym-list">
           <li th:each="word : ${wordsData.fullMatchWords}">
             <form>
@@ -139,7 +139,7 @@
                       <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                         <span th:text="#{label.same.as}">sama mis</span>
                         <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym" th:text="${meaningWord.word + (meaningWordIter.last ? '' : ',')}"></a>
+                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym" th:text="${meaningWord.word + (meaningWordIter.last ? '' : ', ')}"></a>
                         </span>
                       </span>
                     </div>
@@ -147,37 +147,31 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
+
                         <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black;">
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
-                          <span th:if="${meaningWord.aspect != null}">
-                            <!--aspekt-->
-                            <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
-                            <span class="type-three" th:text="${meaningWord.aspect.value}"></span>
-                          </span>
+                          <span th:if="${meaningWord.aspect != null}" class="type-three" th:text="${meaningWord.aspect.value}"></span>
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <!--rekts-->
-                            <span class="type-one" th:each="government : ${meaningWord.governments}">
-                              <span th:text="${government}"></span>
-                            </span>
+                            <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
+
                           </span>
-                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">
-                            <!--reg-->
-                            <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
-                            <span class="type-two" th:each="register : ${meaningWord.registers}">
-                              <span th:text="${register.value}"></span>
-                            </span>
-                          </span>
+                          <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
+                            <span class="type-two" th:each="register,regIter : ${meaningWord.registers}"
+                                  th:text="${(regIter.first ? '| ' : '') + register.value + (regIter.last ? ' |' : ', ')}"></span>
+                          </th:block>
                         </span>
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
                       </span>
                     </div>
-                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and (sessionBean.sourceLang != sessionBean.destinLang)}" th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
+                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and (sessionBean.sourceLang != sessionBean.destinLang)}"
+                          th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
                   </div>
                 </div>
                 <div class="col-12 dependencies">
                   <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-1 rekts-est">
-                    <i th:each="government, iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
+                    <i th:each="government,iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
                   </div>
                   <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <button class="more-btn" name="colloc-usages-btn" th:if="${lexeme.moreUsages}" aria-expanded="false">
@@ -257,7 +251,7 @@
                   <div th:id="${'collocs-area-' + lexeme.lexemeId}">
                     <!--  || not #lists.isEmpty(lexeme.secondaryDisplayCollocs) -->
                     <div th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-                      <button class="more-btn" name="colloc-expand-btn" th:if="${lexeme.morePrimaryCollocs}" aria-expanded="false">
+                      <button class="more-btn" name="colloc-expand-btn" aria-expanded="false">
                         <span class="icon icon-chevron-left"></span>
                       </button>
                       <div class="w-100 colloc-samples">
@@ -452,7 +446,7 @@
                   <p th:text="${paradigm.title}" th:if="${paradigm.title != null}"></p>
                   <div class="morphology-section d-flex">
                     <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
-                      <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>
+                      <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}" class="secondary-morph"></h5>
                       <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
                         <div th:each="form : ${paradigmGroup1.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                           <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
@@ -475,7 +469,7 @@
                       </th:block>
                       <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
                         <div class="d-block" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
-                          <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="${!paradigmGroup2.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                          <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="secondary-morph"></h6>
                           <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms1)}">
                             <div th:each="form : ${paradigmGroup2.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                               <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
@@ -498,7 +492,7 @@
                           </th:block>
                           <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
                             <div class="d-flex flex-column" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
-                              <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="${!paradigmGroup3.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                              <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="secondary-morph"></h6>
                               <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms1)}">
                                 <div th:each="form : ${paradigmGroup3.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                                   <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
@@ -617,7 +611,7 @@
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
                     <span th:text="#{sentence.same.as}" ></span>
-                    <a th:aria-label="|#{aria.search.from.keelenou} ${sentence}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + sentence}"target="_blank">e-keelenõus</a>
+                    <a th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + wordData.word.word}"target="_blank">e-keelenõus</a>
                   </h5>
                 </div>
               </div>
@@ -628,25 +622,6 @@
       </div>
     </div>
   </div>
-  <section class="level-3-panel row" th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
-    <div class="col-12 corp-panel">
-      <div class="heading-wrapper">
-        <h5 class="font-weight-bold">
-          <span th:text="#{label.korp.examples}">Veebilauseid</span>
-          <span th:aria-label="#{corpus.title}" tabindex="0" class="alert-icn" data-toggle="tooltip" data-placement="top" th:title="#{corpus.title}"></span>
-        </h5>
-      </div>
-      <button class="more-btn" aria-expanded="false">
-        <span class="icon icon-chevron-left"></span>
-      </button>
-      <div class="mb-2 sentence-wrapper" th:each="sentence : ${sentences}">
-        <span th:utext="${sentence.getLeftPart() + '<b>' + sentence.getMiddlePart() + '</b>' + sentence.getRightPart()}"></span>
-      </div>
-    </div>
-    <script th:inline="javascript">
-		$('.corp-panel [data-toggle="tooltip"]').tooltip();
-	</script>
-  </section>
   <div th:replace="common-app :: footer-content"></div>
   <script th:inline="javascript">
   	var sourceLang = /*[[${sessionBean.sourceLang}]]*/"est";

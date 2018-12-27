@@ -8,6 +8,7 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.SourceType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -48,11 +49,16 @@ public class SourceService {
 
 	@Transactional
 	public List<Source> findSourcesByName(String searchFilter) {
+		return findSourcesByNameAndType(searchFilter, null);
+	}
+
+	@Transactional
+	public List<Source> findSourcesByNameAndType(String searchFilter, SourceType sourceType) {
 
 		if (StringUtils.isBlank(searchFilter)) {
 			return new ArrayList<>();
 		}
-		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.findSourcesByName(searchFilter);
+		List<SourcePropertyTuple> sourcePropertyTuples = sourceDbService.findSourcesByNameAndType(searchFilter, sourceType);
 		List<Source> sources = convert(sourcePropertyTuples);
 
 		return sources;

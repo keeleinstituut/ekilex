@@ -768,8 +768,9 @@
 </div>
 
 <div class="modal-body" data-name="sourceLinkDlgContent" th:fragment="sourceLinkDlgContent">
-  <th:block th:each="source,sourceIter : ${sources}">
-    <table class="w-100 border mb-2">
+  <div th:text="#{source.serach.not.found}" th:if="${#lists.isEmpty(sources)}">Nothing found</div>
+  <div style="max-height: 80vh; overflow-y: auto; overflow-x: hidden;" th:if="${not #lists.isEmpty(sources)}">
+    <table class="w-100 border mb-2" th:each="source,sourceIter : ${sources}">
       <tr>
         <td style="width: 50px; text-align: center; vertical-align: top; background-color: #fafafa">
           <b>
@@ -847,7 +848,7 @@
         </td>
       </tr>
     </table>
-  </th:block>
+  </div>
 </div>
 
 <div id="detailsDlg" class="modal" role="dialog">
