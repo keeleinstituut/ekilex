@@ -44,6 +44,9 @@
     <div class="navbar-nav" th:if="${activeItem}">
       <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</span></a>
       <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+      <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#">
+        Lisa uus keelend
+      </a>
     </div>
     <div class="navbar-nav ml-auto">
       <form th:action="@{/dologout}" method="post" th:if="${user != null}">
@@ -705,6 +708,7 @@
               <select class="form-control" name="language">
                 <option th:each="language : ${allLanguages}"
                         th:value="${language.code}"
+                        th:selected="${language.code == 'est'}"
                         th:text="${language.value}">language</option>
               </select>
             </div>
