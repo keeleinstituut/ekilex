@@ -192,14 +192,14 @@ public class UpdateService {
 	// --- ADD ---
 
 	@Transactional
-	public void addWord(String word, String datasetCode, String language, String morphCode) {
-		Long wordId = updateDbService.addWord(word, datasetCode, language, morphCode);
+	public void addWord(String word, String datasetCode, String language, String morphCode, Long meaningId) {
+		Long wordId = updateDbService.addWord(word, datasetCode, language, morphCode, meaningId);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
 	}
 
 	@Transactional
-	public void addWordToDataset(Long wordId, String datasetCode) {
-		Long lexemeId = updateDbService.addWordToDataset(wordId, datasetCode);
+	public void addWordToDataset(Long wordId, String datasetCode, Long meaningId) {
+		Long lexemeId = updateDbService.addWordToDataset(wordId, datasetCode, meaningId);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
 	}
 

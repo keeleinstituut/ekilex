@@ -694,6 +694,7 @@
       <form th:action="@{/add_word}" method="post">
         <div class="modal-body">
           <input hidden name="returnPage" th:value="${returnPage}">
+          <input hidden name="meaningId">
           <div class="form-group row">
             <div class="col-md-12">
               <select class="form-control" name="dataset">
@@ -708,7 +709,6 @@
               <select class="form-control" name="language">
                 <option th:each="language : ${allLanguages}"
                         th:value="${language.code}"
-                        th:selected="${language.code == 'est'}"
                         th:text="${language.value}">language</option>
               </select>
             </div>

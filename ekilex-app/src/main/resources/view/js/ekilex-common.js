@@ -375,7 +375,7 @@ function decorateSourceLinks() {
 
 function initNewWordDlg() {
     var newWordDlg = $('#newWordDlg');
-    newWordDlg.on('shown.bs.modal', function() {
+    newWordDlg.on('shown.bs.modal', function(e) {
         newWordDlg.find('.form-control').first().focus();
         var searchValue = $("input[name='simpleSearchFilter']").val() || '';
         if (!searchValue.includes('*') && !searchValue.includes('?')) {
@@ -386,6 +386,9 @@ function initNewWordDlg() {
         var firstSelectedDataset = $('[name=selectedDatasets]:checked').val();
         $('[name=dataset]').val(firstSelectedDataset);
         $('[name=morphCode]').val('??');
+        $('[name=language]').val('est');
+        var meaningId = $(e.relatedTarget).data('meaning-id');
+        $('[name=meaningId]').val(meaningId);
     });
 }
 

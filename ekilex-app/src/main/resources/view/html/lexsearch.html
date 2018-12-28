@@ -73,7 +73,7 @@
                   &nbsp;
                 </span>
                 <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                  <button type="button" class="btn btn-link pt-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
+                  <button type="button" class="btn btn-link pt-0 pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
                     <span th:text="${meaningWord.value}"></span>
                     <span th:text="${meaningWord.homonymNumber}"></span>
                     <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
@@ -93,6 +93,7 @@
                 <a class="btn btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}" th:if="${!#lists.isEmpty(lexeme.meaningWords)}"
                    data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
                   >Lahuta</a>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${lexeme.meaningId}">Lisa uus keelend</button>
                 <b th:text="${lexeme.dataset}" class="float-right"></b>
               </div>
               <div th:if="${!#lists.isEmpty(lexeme.vocalForms)}">

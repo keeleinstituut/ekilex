@@ -28,6 +28,7 @@
           <input hidden name="language" th:value="${language}">
           <input hidden name="morphCode" th:value="${morphCode}">
           <input hidden name="value" th:value="${wordValue}">
+          <input hidden name="meaningId" th:value="${meaningId}">
 
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${wordValue}" class="ttl"></span>
@@ -41,7 +42,7 @@
           <div>
             <span th:text="${word.value}" class="ttl"></span>
             <span th:text="${word.homonymNumber}" class="ttl"></span>
-            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${word.wordId} + '/' + ${dataset} + '/' + ${returnPage}}">Vali</a>
+            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${word.wordId} + '/' + ${dataset} + '/' + ${returnPage} + '/' + ${meaningId}}">Vali</a>
             <span class="float-right">
               <th:block th:each="code, codeIter : ${word.datasetCodes}">
                 <b th:text="${code}"></b>
