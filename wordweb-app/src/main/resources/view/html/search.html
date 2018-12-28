@@ -147,7 +147,6 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-
                         <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black;">
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
@@ -155,7 +154,6 @@
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <!--rekts-->
                             <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
-
                           </span>
                           <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
                             <span class="type-two" th:each="register,regIter : ${meaningWord.registers}"
@@ -543,8 +541,6 @@
                 </div>
               </div>
             </section>
-
-
             <section class="level-3-panel row" th:classappend="${sessionBean.searchMode == 'simple' ? 'hide-simple' : ''}">
               <div class="col-12 word-relations">
                 <h5 class="font-weight-bold">
@@ -606,7 +602,7 @@
                 </div>
               </div>
             </section>
-            <section class="level-3-panel row"  th:fragment="korp" th:if="${!#lists.isEmpty(sentences)}">
+            <section class="level-3-panel row">
               <div class="col-12 corp-panel">
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
