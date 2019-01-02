@@ -3,6 +3,7 @@ package eki.ekilex.manual;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import eki.common.exception.DataLoadingException;
 import eki.ekilex.runner.Ss1LoaderRunner;
 import eki.ekilex.service.MabService;
 
@@ -23,16 +24,15 @@ public class Ss1Loader extends AbstractLoader {
 			MabService mabService = getComponent(MabService.class);
 			boolean doReports = doReports();
 			boolean isFullReload = isFullReload();
+			if (!isFullReload) {
+				throw new DataLoadingException("Replacing SS data is not supported!");
+			}
 
 			// mab
-			String[] mabDataFilePaths = getMabDataFilePaths();
-			mabService.loadParadigms(mabDataFilePaths, doReports);
+			mabService.initialise(); //MAB must be loaded first!
 
 			// ss
 			String ssFilePath = getMandatoryConfProperty("ss1.data.file");
-			if (!isFullReload) {
-				datasetRunner.deleteDatasetData();
-			}
 			datasetRunner.execute(ssFilePath, doReports);
 
 		} catch (Exception e) {

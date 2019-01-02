@@ -30,8 +30,7 @@ public class Ev2Loader extends AbstractLoader {
 			boolean isFullReload = isFullReload();
 
 			// mab
-			String[] mabDataFilePaths = getMabDataFilePaths();
-			mabService.loadParadigms(mabDataFilePaths, doReports);
+			mabService.initialise(); //MAB must be loaded first!
 
 			// ev2
 			String evFilePath1 = getMandatoryConfProperty("ev2.data.file.1");

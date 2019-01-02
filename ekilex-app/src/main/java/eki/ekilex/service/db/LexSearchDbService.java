@@ -335,7 +335,12 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
 		Field<String> wf = DSL.field("array_to_string(array_agg(distinct f1.value), ',', '*')").cast(String.class);
 
-		if (CollectionUtils.isNotEmpty(datasets)) {
+		if (CollectionUtils.isEmpty(datasets)) {
+			Lexeme ld = LEXEME.as("ld");
+			where = where.andExists(
+						DSL.select(ld.ID).from(ld)
+						.where((ld.WORD_ID.eq(w1.ID))));
+		} else {
 			Lexeme ld = LEXEME.as("ld");
 			where = where.andExists(
 						DSL.select(ld.ID).from(ld)
@@ -386,12 +391,17 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		Form form = FORM.as("f");
 		Table<Record> from = word.join(paradigm.join(form).on(form.PARADIGM_ID.eq(paradigm.ID).and(form.MODE.eq(FormMode.WORD.name())))).on(paradigm.WORD_ID.eq(word.ID));
 
-		if (CollectionUtils.isNotEmpty(datasets)) {
+		if (CollectionUtils.isEmpty(datasets)) {
 			Lexeme ld = LEXEME.as("ld");
 			where = where.andExists(
-					DSL.select(ld.ID).from(ld)
-							.where((ld.WORD_ID.eq(word.ID))
-									.and(ld.DATASET_CODE.in(datasets))));
+						DSL.select(ld.ID).from(ld)
+						.where((ld.WORD_ID.eq(word.ID))));
+		} else {
+			Lexeme ld = LEXEME.as("ld");
+			where = where.andExists(
+						DSL.select(ld.ID).from(ld)
+						.where((ld.WORD_ID.eq(word.ID))
+						.and(ld.DATASET_CODE.in(datasets))));
 		}
 
 		Table<Record1<Long>> w = create

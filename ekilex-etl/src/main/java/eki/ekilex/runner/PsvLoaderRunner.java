@@ -5,7 +5,6 @@ import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -1252,10 +1251,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		final String formsNodesExp = "x:mfp/x:gkg/x:mvg/x:mvgp/x:mvf";
 
-		if (mabService.isSingleHomonym(wordValue)) {
-			return mabService.getWordParadigms(wordValue);
+		if (!mabService.homonymsExist(wordValue)) {
+			return Collections.emptyList();
 		}
-
 		List<Node> formsNodes = node.selectNodes(formsNodesExp);
 		if (formsNodes.isEmpty()) {
 			return Collections.emptyList();
@@ -1267,20 +1265,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					return value;
 					})
 				.collect(Collectors.toList());
-		List<String> mabFormValues;
-		Collection<String> formValuesIntersection;
-		int bestFormValuesMatchCount = -1;
-		Paradigm matchingParadigm = null;
-		for (Paradigm paradigm : mabService.getWordParadigms(wordValue)) {
-			mabFormValues = paradigm.getFormValues();
-			formValuesIntersection = CollectionUtils.intersection(formValues, mabFormValues);
-			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-				bestFormValuesMatchCount = formValuesIntersection.size();
-				matchingParadigm = paradigm;
-			}
-		}
-		Integer matchingHomonymNumber = matchingParadigm.getHomonymNr();
-		return mabService.getWordParadigmsForHomonym(wordValue, matchingHomonymNumber);
+		return mabService.getMatchingWordParadigms(wordValue, formValues);
 	}
 
 	private Word extractWordData(Node wordGroupNode, WordData wordData, String guid, Context context) throws Exception {
@@ -1318,7 +1303,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String inflectionTypeNrExp = "x:mfp/x:mt";
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.isMabLoaded() && mabService.paradigmsExist(word.value)) {
+		if (mabService.isMabLoaded() && mabService.homonymsExist(word.value)) {
 			paradigms.addAll(fetchParadigmsFromMab(word.value, wordGroupNode));
 		}
 		Element inflectionTypeNrNode = (Element) wordGroupNode.selectSingleNode(inflectionTypeNrExp);

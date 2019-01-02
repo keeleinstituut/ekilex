@@ -3,6 +3,7 @@ package eki.ekilex.runner;
 import static java.util.stream.Collectors.toMap;
 
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -185,7 +186,24 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected void end() throws Exception {
 		t2 = System.currentTimeMillis();
-		logger.debug("Done loading \"{}\" in {} ms", getDataset(), (t2 - t1));
+		long timeMillis = t2 - t1;
+		long secondMillis = 1000;
+		long minuteMillis = 60000;
+		String timeLog;
+		if (timeMillis < secondMillis) {
+			timeLog = timeMillis + " millis";
+		} else if (timeMillis < minuteMillis) {
+			float timeSeconds = (float) timeMillis / (float) secondMillis;
+			BigDecimal timeSecondsRound = new BigDecimal(timeSeconds);
+			timeSecondsRound = timeSecondsRound.setScale(2, BigDecimal.ROUND_HALF_UP);
+			timeLog = timeSecondsRound.toString() + " seconds";
+		} else {
+			float timeMinutes = (float) timeMillis / (float) minuteMillis;
+			BigDecimal timeMinutesRound = new BigDecimal(timeMinutes);
+			timeMinutesRound = timeMinutesRound.setScale(2, BigDecimal.ROUND_HALF_UP);
+			timeLog = timeMinutesRound.toString() + " minutes";
+		}
+		logger.debug("Done loading \"{}\" in {}", getDataset(), timeLog);
 		if (reportComposer != null) {
 			reportComposer.end();
 		}
@@ -502,7 +520,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
-	private void createForm(Long paradigmId, Form form) throws Exception {
+	protected void createForm(Long paradigmId, Form form) throws Exception {
 
 		FormMode mode = form.getMode();
 		String morphGroup1 = form.getMorphGroup1();
@@ -554,7 +572,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		basicDbService.create(FORM, tableRowParamMap);
 	}
 
-	private Long createParadigm(Long wordId, String inflectionTypeNr, String inflectionType, boolean isSecondary) throws Exception {
+	protected Long createParadigm(Long wordId, String inflectionTypeNr, String inflectionType, boolean isSecondary) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
@@ -569,7 +587,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return paradigmId;
 	}
 
-	private Long createWord(
+	protected Long createWord(
 			String word, final String morphCode, final int homonymNr, String wordClass, String lang, String displayMorph, String genderCode, String typeCode, String aspectCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -586,7 +604,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return wordId;
 	}
 
-	private void createWordGuid(Long wordId, String dataset, String guid) throws Exception {
+	protected void createWordGuid(Long wordId, String dataset, String guid) throws Exception {
 
 		guid = guid.toLowerCase();
 

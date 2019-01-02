@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.isNotEmpty;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -12,7 +11,6 @@ import java.util.Map;
 
 import javax.transaction.Transactional;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -25,11 +23,8 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.FormMode;
 import eki.common.data.Count;
 import eki.ekilex.data.transform.Form;
-import eki.ekilex.data.transform.MabData;
-import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.service.ReportComposer;
 
-//TODO architectural change is necessary - holding DOM and hash maps in RAM requires too much heap
 @Component
 public class MabLoaderRunner extends AbstractLoaderRunner {
 
@@ -40,8 +35,10 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private static final String DISCLOSED_MORPH_CODE = "Rpl";
 	private static final String EMPTY_FORM_VALUE = "-";	
 
+	private final int defaultHomonymNr = 0;
 	private final String dataLang = "est";
 
+	private final String guidExp = "x:G";
 	private final String articleHeaderExp = "x:P";
 	private final String wordGroupExp = "x:mg";
 	private final String wordExp = "x:m";
@@ -52,7 +49,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String formGroupExp = "x:mvg";
 	private final String morphValueExp = "x:vk";
 	private final String formExp = "x:parg/x:mv";
-	private final String homonymNrAttr = "i";
+	private final String homonymNrAttr = "i";//can't see use for that
 	private final String wordClassAttr = "kuvasonaklass";
 	private final String inflectionTypeAttr = "kuvamuuttyyp";
 	private final String formValueAttr = "kuvavorm";
@@ -71,13 +68,13 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private ReportComposer reportComposer;
 
 	@Override
-	String getDataset() {
+	public String getDataset() {
 		return "mab";
 	}
 
 	@Override
-	void deleteDatasetData() throws Exception {
-		
+	public void deleteDatasetData() throws Exception {
+		deleteDatasetData(getDataset());
 	}
 
 	@Override
@@ -85,255 +82,211 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	@Transactional
-	public MabData execute(String[] dataXmlFilePaths, boolean doReports) throws Exception {
+	public void execute(String[] dataXmlFilePaths, boolean doReports) throws Exception {
 
-		logger.debug("Loading MAB...");
-
-		long t1, t2;
-		t1 = System.currentTimeMillis();
-
+		this.doReports = doReports;
 		if (doReports) {
 			reportComposer = new ReportComposer("mab load report", REPORT_ENRICHED_WORDS);
 		}
+		start();
 
 		// morph value to code conversion map
 		Map<String, String> morphValueCodeMap = composeMorphValueCodeMap(dataLang);
 		Document dataDoc;
-		Element rootElement;
-		List<Node> allArticleNodes = new ArrayList<>();
-		List<Node> articleNodes;
+		Node guidNode, headerNode, contentNode, wordGroupNode, wordNode, firstParadigmDataNode, paradigmDataNode, morphValueNode, inflectionTypeNrNode;
+		Element rootElement, guidElement, wordElement, inflectionTypeNrElement, firstParadigmDataElement, paradigmDataElement, formElement, formGroupElement;
+		List<Node> articleNodes, paradigmNodes, formGroupNodes, formNodes;
+		List<Form> forms;
+		List<Long> wordIds;
+		Form form;
+		String guid, word, wordAlt, wordClass, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, inflectionType;
+		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
+		Integer formOrderBy, displayLevel;
+		Long wordId, paradigmId;
+
+		Count totalArticleCount = new Count();
+		Count uncleanWordCount = new Count();
+		Count wordCount = new Count();
+		Count paradigmCount = new Count();
+		Count formCount = new Count();
+
+		logger.debug("There are {} volumes in total", dataXmlFilePaths.length);
+
 		for (String dataXmlFilePath : dataXmlFilePaths) {
+
 			logger.debug("Loading \"{}\"", dataXmlFilePath);
 			dataDoc = xmlReader.readDocument(dataXmlFilePath);
 			rootElement = dataDoc.getRootElement();
 			articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(toList());
-			allArticleNodes.addAll(articleNodes);
-		}
-		int articleCount = allArticleNodes.size();
-		logger.debug("Extracted {} articles", articleCount);
+			int articleCount = articleNodes.size();
+			totalArticleCount.increment(articleCount);
+			logger.debug("Extracted {} articles", articleCount);
 
-		Map<String, List<Paradigm>> wordParadigmsMap = new HashMap<>();
-
-		Node headerNode, contentNode, wordGroupNode, wordNode, firstParadigmDataNode, paradigmDataNode, morphValueNode, inflectionTypeNrNode;
-		Element wordElement, firstParadigmDataElement, paradigmDataElement, formElement, formGroupElement;
-		List<Node> paradigmNodes, formGroupNodes, formNodes;
-		List<Paradigm> paradigms, newParadigms;
-		List<Form> forms;
-		List<String> formValues;
-		List<String> words;
-		Paradigm paradigmObj;
-		Form formObj;
-		String word, wordClass, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, inflectionType;
-		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
-		Integer formOrderBy, displayLevel;
-
-		Count uncleanWordCount = new Count();
-
-		long articleCounter = 0;
-		long progressIndicator = articleCount / Math.min(articleCount, 100);
-
-		for (Node articleNode : allArticleNodes) {
-
-			contentNode = articleNode.selectSingleNode(articleBodyExp);
-			if (contentNode == null) {
-				continue;
-			}
-
-			headerNode = articleNode.selectSingleNode(articleHeaderExp);
-			wordGroupNode = headerNode.selectSingleNode(wordGroupExp);
-			wordNode = wordGroupNode.selectSingleNode(wordExp);
-			wordElement = (Element) wordNode;
-			word = wordElement.getTextTrim();
-
-			Integer homonymNr = null;
-			String homonymNrAsString = wordElement.attributeValue(homonymNrAttr);
-			if (isNotEmpty(homonymNrAsString)) {
-				homonymNr = Integer.parseInt(homonymNrAsString);
-			}
-
-			words = new ArrayList<>();
-			if (StringUtils.endsWith(word, expectedWordAppendix)) {
-				word = StringUtils.substringBefore(word, expectedWordAppendix);
-				words.add(word);
-				word = word + expectedWordSuffix;
-				words.add(word);
-			} else if (StringUtils.containsAny(word, wordCleanupChars)) {
-				uncleanWordCount.increment();
-				reportComposer.append(REPORT_ENRICHED_WORDS, word);
-				continue;
-			} else {
-				words.add(word);
-			}
-			word = words.get(0);
-
-			firstParadigmDataNode = contentNode.selectSingleNode(paradigmExp + "/" + paradigmDataExp);
-			firstParadigmDataElement = (Element) firstParadigmDataNode;
-			wordClass = firstParadigmDataElement.attributeValue(wordClassAttr);
-
-			paradigmNodes = contentNode.selectNodes(paradigmExp);
-
-			newParadigms = new ArrayList<>();
-
-			for (Node paradigmNode : paradigmNodes) {
-
-				paradigmDataNode = paradigmNode.selectSingleNode(paradigmDataExp);
-				inflectionTypeNrNode = paradigmNode.selectSingleNode(inflectionTypeNrExp);
-				inflectionTypeNr = ((Element) inflectionTypeNrNode).getTextTrim();
-				inflectionTypeNr = String.valueOf(Integer.valueOf(inflectionTypeNr));
-
-				paradigmDataElement = (Element) paradigmDataNode;
-				inflectionType = paradigmDataElement.attributeValue(inflectionTypeAttr);
-				formGroupNodes = paradigmDataElement.selectNodes(formGroupExp);
-
-				// compose forms
-				forms = new ArrayList<>();
-				formValues = new ArrayList<>();
-
-				for (Node formGroupNode : formGroupNodes) {
-
-					morphValueNode = formGroupNode.selectSingleNode(morphValueExp);
-					sourceMorphCode = ((Element) morphValueNode).getTextTrim();
-					destinMorphCode = morphValueCodeMap.get(sourceMorphCode);
-					if (StringUtils.equals(destinMorphCode, DISCLOSED_MORPH_CODE)) {
-						continue;
-					}
-
-					formGroupElement = (Element) formGroupNode;
-					formOrderByStr = formGroupElement.attributeValue(formOrderAttr);
-					formOrderBy = Integer.valueOf(formOrderByStr);
-					morphGroup1 = formGroupElement.attributeValue(morphGroup1Attr);
-					morphGroup2 = formGroupElement.attributeValue(morphGroup2Attr);
-					morphGroup3 = formGroupElement.attributeValue(morphGroup3Attr);
-
-					formNodes = formGroupNode.selectNodes(formExp);
-
-					for (Node formNode : formNodes) {
-
-						formElement = (Element) formNode;
-						formValue = formElement.attributeValue(formValueAttr);
-						displayLevelStr = formElement.attributeValue(displayLevelAttr);
-						displayLevel = Integer.valueOf(displayLevelStr);
-						displayForm = formElement.getTextTrim();
-						displayForm = StringUtils.removeEnd(displayForm, "[");
-						boolean noMorphExists = StringUtils.equals(inexistentFormValue, displayForm);
-						if (noMorphExists) {
-							formValue = EMPTY_FORM_VALUE;
-							displayForm = EMPTY_FORM_VALUE;
+			long articleCounter = 0;
+			long progressIndicator = articleCount / Math.min(articleCount, 100);
+	
+			for (Node articleNode : articleNodes) {
+	
+				contentNode = articleNode.selectSingleNode(articleBodyExp);
+				if (contentNode == null) {
+					continue;
+				}
+	
+				guidNode = articleNode.selectSingleNode(guidExp);
+				guidElement = (Element) guidNode;
+				guid = guidElement.getTextTrim();
+				headerNode = articleNode.selectSingleNode(articleHeaderExp);
+				wordGroupNode = headerNode.selectSingleNode(wordGroupExp);
+				wordNode = wordGroupNode.selectSingleNode(wordExp);
+				wordElement = (Element) wordNode;
+				word = wordElement.getTextTrim();
+	
+				firstParadigmDataNode = contentNode.selectSingleNode(paradigmExp + "/" + paradigmDataExp);
+				firstParadigmDataElement = (Element) firstParadigmDataNode;
+				wordClass = firstParadigmDataElement.attributeValue(wordClassAttr);
+	
+				wordIds = new ArrayList<>();
+				if (StringUtils.endsWith(word, expectedWordAppendix)) {
+					word = StringUtils.substringBefore(word, expectedWordAppendix);
+					wordId = createWordAndGuid(guid, word, defaultHomonymNr, dataLang, wordClass);
+					wordIds.add(wordId);
+					wordAlt = word + expectedWordSuffix;
+					wordId = createWordAndGuid(guid, wordAlt, defaultHomonymNr, dataLang, wordClass);
+					wordIds.add(wordId);
+				} else if (StringUtils.containsAny(word, wordCleanupChars)) {
+					uncleanWordCount.increment();
+					reportComposer.append(REPORT_ENRICHED_WORDS, word);
+					continue;
+				} else {
+					wordId = createWordAndGuid(guid, word, defaultHomonymNr, dataLang, wordClass);
+					wordIds.add(wordId);
+				}
+				wordCount.increment(wordIds.size());
+	
+				paradigmNodes = contentNode.selectNodes(paradigmExp);
+	
+				for (Node paradigmNode : paradigmNodes) {
+	
+					paradigmDataNode = paradigmNode.selectSingleNode(paradigmDataExp);
+					inflectionTypeNrNode = paradigmNode.selectSingleNode(inflectionTypeNrExp);
+					inflectionTypeNrElement = (Element) inflectionTypeNrNode;
+					inflectionTypeNr = inflectionTypeNrElement.getTextTrim();
+					inflectionTypeNr = String.valueOf(Integer.valueOf(inflectionTypeNr));
+	
+					paradigmDataElement = (Element) paradigmDataNode;
+					inflectionType = paradigmDataElement.attributeValue(inflectionTypeAttr);
+					formGroupNodes = paradigmDataElement.selectNodes(formGroupExp);
+	
+					// compose forms
+					forms = new ArrayList<>();
+	
+					for (Node formGroupNode : formGroupNodes) {
+	
+						morphValueNode = formGroupNode.selectSingleNode(morphValueExp);
+						sourceMorphCode = ((Element) morphValueNode).getTextTrim();
+						destinMorphCode = morphValueCodeMap.get(sourceMorphCode);
+						if (StringUtils.equals(destinMorphCode, DISCLOSED_MORPH_CODE)) {
+							continue;
 						}
-						soundFile = extractSoundFileName(formElement);
-
-						formObj = new Form();
-						formObj.setMorphGroup1(morphGroup1);
-						formObj.setMorphGroup2(morphGroup2);
-						formObj.setMorphGroup3(morphGroup3);
-						formObj.setDisplayLevel(displayLevel);
-						formObj.setMorphCode(destinMorphCode);
-						formObj.setMorphExists(new Boolean(!noMorphExists));
-						formObj.setValue(formValue);
-						//formObj.setComponents(components);
-						formObj.setDisplayForm(displayForm);
-						//formObj.setVocalForm(vocalForm);
-						formObj.setSoundFile(soundFile);
-						formObj.setOrderBy(formOrderBy);
-
-						forms.add(formObj);
-						formValues.add(formValue);
+	
+						formGroupElement = (Element) formGroupNode;
+						formOrderByStr = formGroupElement.attributeValue(formOrderAttr);
+						formOrderBy = Integer.valueOf(formOrderByStr);
+						morphGroup1 = formGroupElement.attributeValue(morphGroup1Attr);
+						morphGroup2 = formGroupElement.attributeValue(morphGroup2Attr);
+						morphGroup3 = formGroupElement.attributeValue(morphGroup3Attr);
+	
+						formNodes = formGroupNode.selectNodes(formExp);
+	
+						for (Node formNode : formNodes) {
+	
+							formElement = (Element) formNode;
+							formValue = formElement.attributeValue(formValueAttr);
+							displayLevelStr = formElement.attributeValue(displayLevelAttr);
+							displayLevel = Integer.valueOf(displayLevelStr);
+							displayForm = formElement.getTextTrim();
+							displayForm = StringUtils.removeEnd(displayForm, "[");
+							boolean noMorphExists = StringUtils.equals(inexistentFormValue, displayForm);
+							if (noMorphExists) {
+								formValue = EMPTY_FORM_VALUE;
+								displayForm = EMPTY_FORM_VALUE;
+							}
+							soundFile = extractSoundFileName(formElement);
+	
+							form = new Form();
+							form.setMorphGroup1(morphGroup1);
+							form.setMorphGroup2(morphGroup2);
+							form.setMorphGroup3(morphGroup3);
+							form.setDisplayLevel(displayLevel);
+							form.setMorphCode(destinMorphCode);
+							form.setMorphExists(new Boolean(!noMorphExists));
+							form.setValue(formValue);
+							//formObj.setComponents(components);
+							form.setDisplayForm(displayForm);
+							//formObj.setVocalForm(vocalForm);
+							form.setSoundFile(soundFile);
+							form.setOrderBy(formOrderBy);
+	
+							forms.add(form);
+						}
+					}
+	
+					// sort forms
+					forms.sort(Comparator.comparing(Form::getOrderBy));
+	
+					// which is word
+					locateWord(word, forms);
+	
+					// create pradigms and forms for words
+					for (Long newWordId : wordIds) {
+						paradigmId = createParadigm(newWordId, inflectionTypeNr, inflectionType, false);
+						paradigmCount.increment();
+						for (Form newWorm : forms) {
+							createForm(paradigmId, newWorm);
+							formCount.increment();
+						}
 					}
 				}
-
-				// sort forms
-				forms.sort(Comparator.comparing(Form::getOrderBy));
-
-				// which is word
-				boolean wordFormLocated = false;
-				for (Form formObjOfMode : forms) {
-					if (wordFormLocated) {
-						formObjOfMode.setMode(FormMode.FORM);
-					} else if (StringUtils.equals(word, formObjOfMode.getValue())) {
-						formObjOfMode.setMode(FormMode.WORD);
-						wordFormLocated = true;
-					} else {
-						formObjOfMode.setMode(FormMode.FORM);
-					}
+	
+				// progress
+				articleCounter++;
+				if (articleCounter % progressIndicator == 0) {
+					long progressPercent = articleCounter / progressIndicator;
+					logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 				}
-
-				// compose paradigm
-				paradigmObj = new Paradigm();
-				paradigmObj.setHomonymNr(homonymNr);
-				paradigmObj.setWordClass(wordClass);
-				paradigmObj.setInflectionTypeNr(inflectionTypeNr);
-				paradigmObj.setInflectionType(inflectionType);
-				paradigmObj.setForms(forms);
-				paradigmObj.setFormValues(formValues);
-
-				newParadigms.add(paradigmObj);
-			}
-
-			// assign morphology to headword(s)
-			for (String newWord : words) {
-				paradigms = wordParadigmsMap.get(newWord);
-				if (paradigms == null) {
-					paradigms = new ArrayList<>();
-					wordParadigmsMap.put(newWord, paradigms);
-				}
-				paradigms.addAll(newParadigms);
-			}
-
-			// progress
-			articleCounter++;
-			if (articleCounter % progressIndicator == 0) {
-				long progressPercent = articleCounter / progressIndicator;
-				logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
 			}
 		}
-
-		Map<String, List<String>> formWordsMap = composeFormWordsMap(wordParadigmsMap);
 
 		if (reportComposer != null) {
 			reportComposer.end();
 		}
 
+		logger.debug("Found {} articles in total", totalArticleCount.getValue());
 		logger.debug("Found {} unclean words", uncleanWordCount.getValue());
-		logger.debug("Found {} words", wordParadigmsMap.size());
+		logger.debug("Found {} words", wordCount.getValue());
+		logger.debug("Found {} paradigms", paradigmCount.getValue());
+		logger.debug("Found {} forms", formCount.getValue());
 
-		t2 = System.currentTimeMillis();
-		logger.debug("Done loading in {} ms", (t2 - t1));
+		end();
+	}
 
-		return new MabData(wordParadigmsMap, formWordsMap);
+	private void locateWord(String word, List<Form> forms) {
+		boolean wordFormLocated = false;
+		for (Form formObjOfMode : forms) {
+			if (wordFormLocated) {
+				formObjOfMode.setMode(FormMode.FORM);
+			} else if (StringUtils.equals(word, formObjOfMode.getValue())) {
+				formObjOfMode.setMode(FormMode.WORD);
+				wordFormLocated = true;
+			} else {
+				formObjOfMode.setMode(FormMode.FORM);
+			}
+		}
 	}
 
 	private String extractSoundFileName(Element element) {
 		String name = element.attributeValue(soundFileAttr);
 		return isNotBlank(name) ? name + ".mp3" : null;
-	}
-
-	private Map<String, List<String>> composeFormWordsMap(Map<String, List<Paradigm>> wordParadigmsMap) {
-
-		Map<String, List<String>> formWordsMap = new HashMap<>();
-		List<String> wordForms;
-
-		for (String word : wordParadigmsMap.keySet()) {
-			wordForms = new ArrayList<>();
-			List<Paradigm> paradigms = wordParadigmsMap.get(word);
-			for (Paradigm paradigm : paradigms) {
-				List<String> formValues = paradigm.getFormValues();
-				for (String form : formValues) {
-					if (wordForms.contains(form)) {
-						continue;
-					}
-					wordForms.add(form);
-					List<String> assignedWords = formWordsMap.get(form);
-					if (CollectionUtils.isEmpty(assignedWords)) {
-						assignedWords = new ArrayList<>();
-						formWordsMap.put(form, assignedWords);
-					}
-					if (!assignedWords.contains(word)) {
-						assignedWords.add(word);
-					}
-				}
-			}
-		}
-		return formWordsMap;
 	}
 
 	private Map<String, String> composeMorphValueCodeMap(String morphLang) throws Exception {
@@ -357,5 +310,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			throw new Exception("No morph classifiers are available with that criteria");
 		}
 		return morphValueCodeMap;
+	}
+
+	protected Long createWordAndGuid(String guid, String word, int homonymNr, String lang, String wordClass) throws Exception {
+		Long wordId = createWord(word, null, homonymNr, wordClass, lang, null, null, null, null);
+		createWordGuid(wordId, getDataset(), guid);
+		return wordId;
 	}
 }

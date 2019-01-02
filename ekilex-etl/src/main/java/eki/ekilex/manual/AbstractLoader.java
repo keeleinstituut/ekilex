@@ -83,6 +83,7 @@ public abstract class AbstractLoader implements SystemConstant {
 		return loaderConf.getProperty(key);
 	}
 
+	//TODO is no longer meant to be common for all loaders - move to mab loader
 	public String[] getMabDataFilePaths() {
 		String[] mabDataFilePathKeys = new String[] {
 				"mab.data.file.1",

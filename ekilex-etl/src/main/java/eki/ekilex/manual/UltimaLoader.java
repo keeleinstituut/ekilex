@@ -19,6 +19,7 @@ import eki.ekilex.runner.EstermSourceLoaderRunner;
 import eki.ekilex.runner.EtymologyLoaderRunner;
 import eki.ekilex.runner.Ev2LoaderRunner;
 import eki.ekilex.runner.GameDataLoaderRunner;
+import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
 import eki.ekilex.runner.Qq2LoaderRunner;
 import eki.ekilex.runner.Ss1LoaderRunner;
@@ -53,6 +54,7 @@ public class UltimaLoader extends AbstractLoader {
 
 			DbReInitialiserRunner initRunner = getComponent(DbReInitialiserRunner.class);
 			MabService mabService = getComponent(MabService.class);
+			MabLoaderRunner mabRunner = getComponent(MabLoaderRunner.class);
 			Ss1LoaderRunner ss1Runner = getComponent(Ss1LoaderRunner.class);
 			PsvLoaderRunner psvRunner = getComponent(PsvLoaderRunner.class);
 			CollocLoaderRunner kolRunner = getComponent(CollocLoaderRunner.class);
@@ -83,20 +85,21 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			// mab
-			String[] mabDataFilePaths = getMabDataFilePaths();
-			if (ArrayUtils.isNotEmpty(mabDataFilePaths)) {
-				mabService.loadParadigms(mabDataFilePaths, doReports);
-				successfullyLoadedDatasets.add("mab");
+			if (isFullReload) {
+				String[] mabDataFilePaths = getMabDataFilePaths();
+				if (ArrayUtils.isNotEmpty(mabDataFilePaths)) {
+					mabRunner.execute(mabDataFilePaths, doReports);
+					successfullyLoadedDatasets.add("mab");
+				}
+			} else {
+				mabService.initialise();
 			}
 
-			// ss1
+			// ss1 - only when full reload
 			dataset = ss1Runner.getDataset();
-			if (doLoad(dataset, acquiredDatasets)) {
+			if (isFullReload) {
 				dataFilePath = getConfProperty("ss1.data.file");
 				if (StringUtils.isNotBlank(dataFilePath)) {
-					if (!isFullReload) {
-						ss1Runner.deleteDatasetData();
-					}
 					ss1Runner.execute(dataFilePath, doReports);
 					successfullyLoadedDatasets.add(dataset);
 				}
