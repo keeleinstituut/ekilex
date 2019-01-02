@@ -65,7 +65,7 @@
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}">
             <div class="card-body">
               <div class="d-flex flex-row align-items-center flex-wrap">
-                <div class="d-flex align-items-center">
+                <div class="d-flex align-items-center flex-wrap">
                   <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
                         th:text="${word + (wordIter.last ? '' : ', ')}"
                         th:classappend="${wordIter.last ? 'pr-2' : ''}"></span>
