@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
@@ -49,6 +50,7 @@ public class RegisterController implements WebConstant {
 			@RequestParam("name") String name,
 			@RequestParam(value = "email2", required = false) String honeyPot,
 			Model model,
+			RedirectAttributes attributes,
 			HttpServletRequest request) {
 		if (StringUtils.isNotEmpty(honeyPot)) {
 			// bot protection triggered
@@ -65,19 +67,20 @@ public class RegisterController implements WebConstant {
 			userService.addNewUser(email, name, encodedPassword);
 			// FIXME : remove after email service is properly configured
 			if (emailService.isEnabled()) {
-				model.addAttribute("success_message", "Kasutaja registreeritud, parool on saadetud e-postile : " + email);
+				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, parool on saadetud e-postile : " + email);
 			} else {
-				model.addAttribute("success_message", "Kasutaja registreeritud, teie parool on : " + password);
+				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, teie parool on : " + password);
 			}
 			emailService.sendEmail(
 					asList(email),
 					Collections.emptyList(),
 					"Ekilexi kasutaja registreerimine",
 					"Teie parool on : " + password);
+			return "redirect:" + LOGIN_PAGE_URI;
 		} else {
 			model.addAttribute("error_message", "Sellise nime või e-posti aadressiga kasutaja on juba registreeritud.");
+			return REGISTER_PAGE;
 		}
-		return REGISTER_PAGE;
 	}
 
 }
