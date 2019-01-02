@@ -44,6 +44,9 @@
     <div class="navbar-nav" th:if="${activeItem}">
       <a class="nav-item nav-link" th:classappend="${activeItem == 'lex' ? 'active' : ''}" th:href="@{/lexsearch}">Leksikograafid</span></a>
       <a class="nav-item nav-link" th:classappend="${activeItem == 'term' ? 'active' : ''}" th:href="@{/termsearch}">Terminoloogid</a>
+      <a class="nav-item nav-link" data-toggle="modal" data-target="#newWordDlg" href="#">
+        Lisa uus keelend
+      </a>
     </div>
     <div class="navbar-nav ml-auto">
       <form th:action="@{/dologout}" method="post" th:if="${user != null}">
@@ -691,6 +694,7 @@
       <form th:action="@{/add_word}" method="post">
         <div class="modal-body">
           <input hidden name="returnPage" th:value="${returnPage}">
+          <input hidden name="meaningId">
           <div class="form-group row">
             <div class="col-md-12">
               <select class="form-control" name="dataset">

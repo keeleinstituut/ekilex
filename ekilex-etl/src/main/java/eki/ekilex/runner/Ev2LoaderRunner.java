@@ -1,5 +1,6 @@
 package eki.ekilex.runner;
 
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -49,6 +50,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private final static String ASPECT_TYPE_NESOV = "несов.";
 	private final static String ASPECT_TYPE_SOV_NESOV = "сов. и несов.";
 	private final static String POS_CODE_VERB = "v";
+	private final static String meaningRefNodeExp = "x:S/x:tp/x:tvt";
 
 	private String sqlSelectWordByDataset;
 
@@ -111,10 +113,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("{} articles found", articleCount);
 
 		Context context = new Context();
+		context.ssGuidMap = ssGuidMap;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
 		long articleCounter = 0;
 		for (Node articleNode : allArticleNodes) {
-			processArticle(articleNode, ssGuidMap, context);
+			processArticle(articleNode, context);
 			articleCounter++;
 			if (articleCounter % progressIndicator == 0) {
 				long progressPercent = articleCounter / progressIndicator;
@@ -123,6 +126,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		logger.debug("total {} articles iterated", articleCounter);
 		processLatinTerms(context);
+		unusedMeaningReferencesReport(context);
 
 		logger.debug("Found {} reused words", context.reusedWordCount.getValue());
 		logger.debug("Found {} ss words", context.ssWordCount.getValue());
@@ -130,37 +134,167 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		end();
 	}
 
+	private void unusedMeaningReferencesReport(Context context) throws Exception {
+		if (context.referencesToMeanings.isEmpty()) {
+			return;
+		}
+		logger.debug("Unused meaning references");
+		for (MeaningReferenceData refData : context.referencesToMeanings.values()) {
+			String logString;
+			if (refData.words.isEmpty()) {
+				List<String> words = new ArrayList<>();
+				for (Node articleNode : refData.articleNodes) {
+					List<Node> wordNodes = articleNode.selectNodes("x:P/x:mg/x:m");
+					words.addAll(wordNodes.stream().map(n -> ((Element) n).getTextTrim()).collect(toList()));
+				}
+				logString = String.join(",", words);
+				logger.debug("nodes -> {}", logString);
+			} else {
+				logString = refData.words.stream().map(w -> w.value).collect(joining(","));
+				logger.debug("words -> {}", logString);
+			}
+			writeToLogFile(logString, "Ei leitud viidatavat mõistet", "");
+		}
+	}
+
 	@Transactional
 	void processArticle(
 			Node articleNode,
-			Map<String, List<Guid>> ssGuidMap,
 			Context context) throws Exception {
 
-		final String articleHeaderExp = "x:P";
 		final String articleBodyExp = "x:S";
-		final String articleGuidExp = "x:G";
 		final String articlePhraseologyExp = "x:F";
 
 		String reportingId = extractReporingId(articleNode);
-		String guid = extractGuid(articleNode, articleGuidExp);
 		List<WordData> newWords = new ArrayList<>();
-
-		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
-		processArticleHeader(headerNode, guid, reportingId, newWords, ssGuidMap, context);
-		try {
-			Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
-			if (contentNode != null) {
-				processArticleContent(reportingId, contentNode, newWords, context);
+		if (articleHasMeanings(articleNode)) {
+			processArticleHeader(articleNode, reportingId, newWords, context);
+			try {
+				Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
+				if (contentNode != null) {
+					processArticleContent(reportingId, contentNode, newWords, context);
+				}
+				Element phraseologyNode = (Element) articleNode.selectSingleNode(articlePhraseologyExp);
+				if (phraseologyNode != null) {
+					processPhraseology(reportingId, phraseologyNode, context);
+				}
+			} catch (Exception e) {
+				logger.debug("KEYWORD : {}", reportingId);
+				throw e;
 			}
-			Element phraseologyNode = (Element) articleNode.selectSingleNode(articlePhraseologyExp);
-			if (phraseologyNode != null) {
-				processPhraseology(reportingId, phraseologyNode, context);
+		} else if (articleHasMeaningReference(articleNode)) {
+			List<WordData> referencedWords = extractMeaningReferences(articleNode);
+			boolean atLeastOneReferenceExists = referencedWords.stream()
+					.anyMatch(word -> context.importedWords.stream().anyMatch(iw -> Objects.equals(iw.value, word.value) && iw.homonymNr == word.homonymNr));
+			if (atLeastOneReferenceExists) {
+				processArticleHeader(articleNode, reportingId, newWords, context);
 			}
-		} catch (Exception e) {
-			logger.debug("KEYWORD : {}", reportingId);
-			throw e;
+			for (WordData refWord : referencedWords) {
+				Optional<WordData> importedWord = context.importedWords.stream()
+						.filter(w -> Objects.equals(w.value, refWord.value) && w.homonymNr == refWord.homonymNr).findFirst();
+				if (importedWord.isPresent()) {
+					Long meaningId = getMeaningIdOfTheFirstLexeme(importedWord.get().id);
+					createLexemesForWords(newWords, meaningId);
+					for (WordData newWord : newWords) {
+						processMeaningReferences(context, newWord, meaningId);
+					}
+				} else {
+					storeMeaningReference(context, refWord, newWords, articleNode);
+				}
+			}
 		}
 		context.importedWords.addAll(newWords);
+	}
+
+	private void storeMeaningReference(Context context, WordData refWord, List<WordData> targetWords, Node articleNode) {
+		String key = generateRefKey(refWord);
+		if (!context.referencesToMeanings.containsKey(key)) {
+			context.referencesToMeanings.put(key, new MeaningReferenceData());
+		}
+		context.referencesToMeanings.get(key).words.addAll(targetWords);
+		if(articleNode != null) {
+			context.referencesToMeanings.get(key).articleNodes.add(articleNode);
+		}
+	}
+
+	private Long getMeaningIdOfTheFirstLexeme(Long wordId) throws Exception {
+		List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordId);
+		Optional<Map<String, Object>> firstLexeme = lexemesForWord.stream()
+				.filter(l -> Objects.equals(l.get("level1"), 1) && Objects.equals(l.get("level2"), 1) && Objects.equals(l.get("level3"), 1))
+				.findFirst();
+		return firstLexeme.map(lexemeMap -> (Long) lexemeMap.get("meaning_id")).orElse(null);
+	}
+
+	private String generateRefKey(WordData word) {
+		return word.value + "|" + word.homonymNr;
+	}
+
+	private void createLexemesForWords(List<WordData> words, Long meaningId) throws Exception {
+		if (meaningId != null) {
+			for (WordData wordData : words) {
+				Lexeme lexeme = new Lexeme();
+				lexeme.setWordId(wordData.id);
+				lexeme.setMeaningId(meaningId);
+				lexeme.setLevel1(wordData.level1);
+				lexeme.setLevel2(1);
+				lexeme.setLevel3(1);
+				lexeme.setFrequencyGroup(wordData.frequencyGroup);
+				wordData.level1++;
+				Long lexemeId = createLexeme(lexeme, getDataset());
+				if (lexemeId != null) {
+					saveGovernments(wordData, Collections.emptyList(), lexemeId);
+					savePosAndDeriv(wordData, Collections.emptyList(), Collections.emptyList(), lexemeId, wordData.value);
+					saveGrammars(wordData, Collections.emptyList(), Collections.emptyList(), lexemeId);
+				}
+			}
+		}
+	}
+
+	private List<WordData> extractMeaningReferences(Node articleNode) {
+		String homonymNrAttr = "i";
+		List<WordData> referencedWords = new ArrayList<>();
+		List<Node> referenceNodes = articleNode.selectNodes(meaningRefNodeExp);
+		for (Node refNode : referenceNodes) {
+			Element refElement = (Element)refNode;
+			WordData refWord = new WordData();
+			refWord.value = cleanUp(refElement.getTextTrim());
+			if (refElement.attributeValue(homonymNrAttr) != null) {
+				refWord.homonymNr = Integer.parseInt(refElement.attributeValue(homonymNrAttr));
+			}
+			referencedWords.add(refWord);
+		}
+		return referencedWords;
+	}
+
+	private boolean articleHasMeaningReference(Node articleNode) {
+		return !articleNode.selectNodes(meaningRefNodeExp).isEmpty();
+	}
+
+	private boolean articleHasMeanings(Node articleNode) {
+		final String meaningGroupNodeExp = "x:S/x:tp/x:tg";
+		return !articleNode.selectNodes(meaningGroupNodeExp).isEmpty();
+	}
+
+	private void processMeaningReferences(Context context, WordData newWordData, Long meaningId) throws Exception {
+		String key = generateRefKey(newWordData);
+		if (context.referencesToMeanings.containsKey(key)) {
+			MeaningReferenceData refData = context.referencesToMeanings.get(key);
+			context.referencesToMeanings.remove(key);
+			List<WordData> referringWords = new ArrayList<>();
+			if (refData.words.isEmpty()) {
+				for(Node articleNode : refData.articleNodes) {
+					String reportingId = extractReporingId(articleNode);
+					processArticleHeader(articleNode, reportingId, referringWords, context);
+				}
+				context.importedWords.addAll(referringWords);
+			} else {
+				referringWords =  refData.words;
+			}
+			createLexemesForWords(referringWords, meaningId);
+			for (WordData refWord : referringWords) {
+				processMeaningReferences(context, refWord, meaningId);
+			}
+		}
 	}
 
 	private void processPhraseology(String reportingId, Element node, Context context) throws Exception {
@@ -237,17 +371,19 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private void processArticleHeader(
-			Element headerNode,
-			String guid,
+			Node articleNode,
 			String reportingId,
 			List<WordData> newWords,
-			Map<String, List<Guid>> ssGuidMap,
 			Context context) throws Exception {
 
+		final String articleHeaderExp = "x:P";
+		final String articleGuidExp = "x:G";
 		final String wordGroupExp = "x:mg";
 		final String wordPosCodeExp = "x:sl";
 		final String wordGrammarPosCodesExp = "x:grk/x:sl";
 
+		String guid = extractGuid(articleNode, articleGuidExp);
+		Element headerNode = (Element) articleNode.selectSingleNode(articleHeaderExp);
 		List<Node> wordGroupNodes = headerNode.selectNodes(wordGroupExp);
 		for (Node wordGroupNode : wordGroupNodes) {
 			WordData wordData = new WordData();
@@ -256,7 +392,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			Word word = extractWordData(wordGroupNode, wordData, guid, 0);
 			if (word != null) {
 				List<Paradigm> paradigms = extractParadigms(wordGroupNode, wordData);
-				wordData.id = createOrSelectWord(word, paradigms, getDataset(), ssGuidMap, context.ssWordCount, context.reusedWordCount);
+				wordData.id = createOrSelectWord(word, paradigms, getDataset(), context.ssGuidMap, context.ssWordCount, context.reusedWordCount);
 			}
 
 			List<String> posCodes = extractPosCodes(wordGroupNode, wordPosCodeExp);
@@ -358,6 +494,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						saveGrammars(newWordData, meaningGrammars, lexemeGrammars, lexemeId);
 						saveRegisters(lexemeId, registers, reportingId);
 					}
+					if (lexemeLevel1 == 1 && lexemeLevel2 == 1) {
+						processMeaningReferences(context, newWordData, meaningId);
+					}
 				}
 				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId);
 			}
@@ -423,8 +562,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> wordValues = extractValuesAsStrings(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
 					if (!isUsage(cleanUp(wordValue))) {
-						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang, null);
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
+						if (meaningGroupNodes.isEmpty()) {
+							continue;
+						}
+						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang, null);
 						List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 						int meaningNodeIndex = 1;
 						for (Node meaningGroupNode: meaningGroupNodes) {
@@ -742,6 +884,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		params.put("meaning_id", meaningId);
 		params.put("dataset_code", getDataset());
 		return basicDbService.select(LEXEME, params);
+	}
+
+	protected class Context extends SsBasedLoaderRunner.Context {
+		Map<String, MeaningReferenceData> referencesToMeanings = new HashMap<>();
+		Map<String, List<Guid>> ssGuidMap;
+	}
+
+	protected class MeaningReferenceData {
+		List<WordData> words = new ArrayList<>();
+		List<Node> articleNodes = new ArrayList<>();
 	}
 
 }

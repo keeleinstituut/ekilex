@@ -74,6 +74,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<SourceLink> sourceLinks;
 
+	private List<Relation> lexemeRelations;
+
 	private boolean classifiersExist;
 
 	public Long getWordId() {
@@ -274,6 +276,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setClassifiersExist(boolean classifiersExist) {
 		this.classifiersExist = classifiersExist;
+	}
+
+	public List<Relation> getLexemeRelations() {
+		return lexemeRelations;
+	}
+
+	public void setLexemeRelations(List<Relation> lexemeRelations) {
+		this.lexemeRelations = lexemeRelations;
 	}
 
 }

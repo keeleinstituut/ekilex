@@ -324,7 +324,7 @@ public class UpdateDbService implements DbConstant {
 		return meaningDomainId;
 	}
 
-	public Long addWord(String word, String datasetCode, String language, String morphCode) {
+	public Long addWord(String word, String datasetCode, String language, String morphCode, Long meaningId) {
 		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
 				.where(WORD.LANG.eq(language).and(FORM.MODE.eq(FormMode.WORD.name())).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
@@ -338,7 +338,9 @@ public class UpdateDbService implements DbConstant {
 				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS)
 				.values(paradigmId, word, word, FormMode.WORD.name(), morphCode, true)
 				.execute();
-		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		if (meaningId == null) {
+			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		}
 		create
 				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.values(meaningId, wordId, datasetCode, 1, 1, 1)
@@ -346,9 +348,11 @@ public class UpdateDbService implements DbConstant {
 		return wordId;
 	}
 
-	public Long addWordToDataset(Long wordId, String datasetCode) {
+	public Long addWordToDataset(Long wordId, String datasetCode, Long meaningId) {
 
-		Long meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		if (meaningId == null) {
+			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
+		}
 		Long lexemeId = create
 				.insertInto(LEXEME, LEXEME.MEANING_ID, LEXEME.WORD_ID, LEXEME.DATASET_CODE, LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3)
 				.values(meaningId, wordId, datasetCode, 1, 1, 1)

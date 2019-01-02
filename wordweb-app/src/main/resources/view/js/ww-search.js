@@ -13,7 +13,8 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 			word : word,
 			wordSelectUrl : wordSelectUrl
 		};
-		$('#spellingLine').text( $('#spellingLine').text().replace(/\¤e/g, "") );
+		var html = $('#spellingLine').html();
+		$('#spellingLine').html(html.replace(/\¤e/gi, '<span><u>e</u></span>'));
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 		var lang = wordSelectUrl.split('/').find(function(e) {
 			return e.indexOf('-') !== -1
@@ -50,6 +51,38 @@ $(function() {
 		container : 'body'
 	});
 });
+
+// $(document).on("click", "a", function() {
+// 	if ($("a").attr("aria-expanded",'false')) {
+// 		$(this).removeAttr("aria-expanded",'false');
+// 		$(this).attr("aria-expanded",'true');
+// 	} else {
+// 		$(this).removeAttr("aria-expanded",'true');
+// 		$(this).attr("aria-expanded",'false');
+// 	}
+// });
+
+
+$(document).on("click", ".menu-btn", function() {
+      if($(this).attr('aria-expanded')==='false'){
+           //alert("true");
+           $(this).attr('aria-expanded','false');
+       }
+       else{
+            $(this).attr('aria-expanded','true');           
+       }
+});
+
+$(document).on("click", ".more-btn", function() {
+      if($(this).attr('aria-expanded')==='false'){
+           //alert("true");
+           $(this).attr('aria-expanded','true');
+       }
+       else{
+            $(this).attr('aria-expanded','false');           
+       }
+});
+
 
 $(document).on("click", ".more-btn", function() {
 	$(this).parents(".word-relations, .dependencies, .collocations-section, .position-relative, .corp-panel").toggleClass("expand");

@@ -139,3 +139,7 @@ input:checked+.slider:before {
 	background-color: transparent;
 	cursor: auto !important;
 }
+
+.validation {
+	display: none;
+}

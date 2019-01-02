@@ -376,6 +376,7 @@ public class ModifyController implements WebConstant {
 			@RequestParam("language") String language,
 			@RequestParam("morphCode") String morphCode,
 			@RequestParam("returnPage") String returnPage,
+			@RequestParam("meaningId") Long meaningId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
@@ -383,13 +384,14 @@ public class ModifyController implements WebConstant {
 			List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
 			WordsResult words = lexSearchService.findWords(value, allDatasets, true);
 			if (words.getTotalCount() == 0) {
-				updateService.addWord(value, dataset, language,morphCode);
+				updateService.addWord(value, dataset, language, morphCode, meaningId);
 			} else {
 				attributes.addFlashAttribute("dataset", dataset);
 				attributes.addFlashAttribute("wordValue", value);
 				attributes.addFlashAttribute("language", language);
 				attributes.addFlashAttribute("morphCode", morphCode);
 				attributes.addFlashAttribute("returnPage", returnPage);
+				attributes.addFlashAttribute("meaningId", meaningId);
 				return "redirect:/wordselect";
 			}
 			attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
@@ -407,11 +409,12 @@ public class ModifyController implements WebConstant {
 			@RequestParam("language") String language,
 			@RequestParam("morphCode") String morphCode,
 			@RequestParam("returnPage") String returnPage,
+			@RequestParam("meaningId") Long meaningId,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
 		if (StringUtils.isNotBlank(value)) {
-			updateService.addWord(value, dataset, language, morphCode);
+			updateService.addWord(value, dataset, language, morphCode, meaningId);
 			attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
 			if (!sessionBean.getSelectedDatasets().contains(dataset)) {
 				sessionBean.getSelectedDatasets().add(dataset);
@@ -427,6 +430,7 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = "wordValue") String wordValue,
 			@ModelAttribute(name = "language") String language,
 			@ModelAttribute(name = "morphCode") String morphCode,
+			@ModelAttribute(name = "meaningId") Long meaningId,
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
@@ -448,15 +452,16 @@ public class ModifyController implements WebConstant {
 		return "wordselect";
 	}
 
-	@GetMapping("/wordselect/{wordId}/{dataset}/{returnPage}")
+	@GetMapping("/wordselect/{wordId}/{dataset}/{returnPage}/{meaningId}")
 	public String selectWord(
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			@PathVariable(name = "wordId") Long wordId,
 			@PathVariable(name = "dataset") String dataset,
 			@PathVariable(name = "returnPage") String returnPage,
+			@PathVariable(name = "meaningId") Long meaningId,
 			RedirectAttributes attributes) {
 
-		updateService.addWordToDataset(wordId, dataset);
+		updateService.addWordToDataset(wordId, dataset, meaningId);
 		Word word = commonDataService.getWord(wordId);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, word.getValue());
 		if (!sessionBean.getSelectedDatasets().contains(dataset)) {

@@ -58,4 +58,8 @@ public interface WebConstant {
 
 	String SEARCH_WORD_KEY = "searchWord";
 
+	String REGISTER_PAGE_URI = "/register";
+
+	String REGISTER_PAGE = "register";
+
 }

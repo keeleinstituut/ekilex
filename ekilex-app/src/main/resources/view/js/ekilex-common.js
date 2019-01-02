@@ -375,7 +375,7 @@ function decorateSourceLinks() {
 
 function initNewWordDlg() {
     var newWordDlg = $('#newWordDlg');
-    newWordDlg.on('shown.bs.modal', function() {
+    newWordDlg.on('shown.bs.modal', function(e) {
         newWordDlg.find('.form-control').first().focus();
         var searchValue = $("input[name='simpleSearchFilter']").val() || '';
         if (!searchValue.includes('*') && !searchValue.includes('?')) {
@@ -386,6 +386,9 @@ function initNewWordDlg() {
         var firstSelectedDataset = $('[name=selectedDatasets]:checked').val();
         $('[name=dataset]').val(firstSelectedDataset);
         $('[name=morphCode]').val('??');
+        $('[name=language]').val('est');
+        var meaningId = $(e.relatedTarget).data('meaning-id');
+        $('[name=meaningId]').val(meaningId);
     });
 }
 
@@ -446,4 +449,58 @@ function openClassifiersDlg(elem) {
     theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
     theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
     theDlg.find('[name=id3]').val($(elem).data('word-id'));
+}
+
+function initRelationDialogLogic(addDlg, idElementName) {
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        e.preventDefault();
+        var button = $(this);
+        var content = button.html();
+        button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+        var theForm = $(this).closest('form');
+        var url = theForm.attr('action') + '?' + theForm.serialize();
+        $.get(url).done(function(data) {
+            addDlg.find('[data-name=dialogContent]').replaceWith(data);
+            addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
+                e.preventDefault();
+                var button = $(e.target);
+                addDlg.find('[name=id2]').val(button.data(idElementName));
+                var theForm = button.closest('form');
+                submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
+                    addDlg.modal('hide');
+                });
+            });
+        }).fail(function(data) {
+            console.log(data);
+            alert(failMessage);
+        }).always(function () {
+            button.html(content);
+        });
+    });
+
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        addDlg.find('.form-control').first().focus();
+    });
+}
+
+function openAddNewMeaningRelationDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=meaningId]').val($(elem).data('id'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    var selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'meaning-id');
+}
+
+function openAddNewLexemeRelationDlg(elem) {
+    var addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    addDlg.find('[name=lexemeId]').val($(elem).data('id'));
+    addDlg.find('.form-control').val(null);
+    addDlg.find('[data-name=dialogContent]').html(null);
+    var selectElem = addDlg.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    initRelationDialogLogic(addDlg, 'lexeme-id');
 }

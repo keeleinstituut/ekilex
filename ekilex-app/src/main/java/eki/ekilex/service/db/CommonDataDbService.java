@@ -19,6 +19,7 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.LEX_RELATION;
 import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
@@ -476,6 +477,42 @@ public class CommonDataDbService implements DbConstant {
 				.select(PROCESS_STATE.CODE, PROCESS_STATE.CODE.as("value"))
 				.from(PROCESS_STATE)
 				.orderBy(PROCESS_STATE.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record9<Long,Long,Long,Long,String,String,String,Long,Long>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(
+						LEX_RELATION.ID.as("id"),
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						LEX_RELATION.ORDER_BY.as("order_by"),
+						LEXEME.MEANING_ID.as("meaning_id")
+				)
+				.from(
+						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
+								LEX_RELATION.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
+										.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+												.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						LEXEME,
+						WORD,
+						PARADIGM,
+						FORM
+				)
+				.where(
+						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
+								.and(LEX_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+								.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+				)
+				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
 	}
 

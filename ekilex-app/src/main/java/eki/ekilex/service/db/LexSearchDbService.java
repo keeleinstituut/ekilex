@@ -539,42 +539,6 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record8<Long,Long,Long,Long,String,String,String,Long>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						LEX_RELATION.ID.as("id"),
-						LEXEME.ID.as("lexeme_id"),
-						WORD.ID.as("word_id"),
-						FORM.ID.as("form_id"),
-						FORM.VALUE.as("word"),
-						WORD.LANG.as("word_lang"),
-						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						LEX_RELATION.ORDER_BY.as("order_by")
-						)
-				.from(
-						LEX_RELATION.leftOuterJoin(LEX_REL_TYPE_LABEL).on(
-								LEX_RELATION.LEX_REL_TYPE_CODE.eq(LEX_REL_TYPE_LABEL.CODE)
-								.and(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-								.and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						LEXEME,
-						WORD,
-						PARADIGM,
-						FORM
-						)
-				.where(
-						LEX_RELATION.LEXEME1_ID.eq(lexemeId)
-						.and(LEX_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-						.and(LEX_RELATION.LEXEME2_ID.eq(LEXEME.ID))
-						.and(LEXEME.WORD_ID.eq(WORD.ID))
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name()))
-						)
-				.orderBy(LEX_RELATION.ORDER_BY)
-				.fetch();
-	}
-
 	public Result<Record8<Long,Long,Long,Long,String,String,String,Long>> findWordGroupMembers(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		WordGroupMember wgrm1 = WORD_GROUP_MEMBER.as("wgrm1");

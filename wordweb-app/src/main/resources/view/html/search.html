@@ -98,7 +98,7 @@
               th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
               <span class="icon icon-speaker"></span>
             </button>
-            <span id="spellingLine" th:text="${'['+wordData.firstAvailableVocalForm+']'}" th:if="${wordData.firstAvailableVocalForm != null}"></span>
+            <span id="spellingLine" th:if="${wordData.firstAvailableVocalForm != null}"><i th:text="${'['+wordData.firstAvailableVocalForm+']'}"></i></span>
           </div>
         </div>
         <div class="row">
@@ -119,7 +119,6 @@
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </span>
                     <span class="lexeme" th:if="${not #lists.isEmpty(lexeme.grammars)}">
-                      -
                       <th:block th:each="grammar,grammarIter : ${lexeme.grammars}">
                         <span th:text="${grammar}"></span>
                         <span th:unless="${grammarIter.last}">,</span>
@@ -140,7 +139,7 @@
                       <span class="additional-meta" th:if="${not #lists.isEmpty(lexeme.meaningWords)}">
                         <span th:text="#{label.same.as}">sama mis</span>
                         <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym" th:text="${meaningWord.word + (meaningWordIter.last ? '' : ',')}"></a>
+                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, meaningWord.word)}}" class="synonym" th:text="${meaningWord.word + (meaningWordIter.last ? '' : ', ')}"></a>
                         </span>
                       </span>
                     </div>
@@ -148,39 +147,29 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black; font-family: 'Montserrat';">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black;">
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
-                          <span th:if="${meaningWord.aspect != null}">
-                            <!--aspekt-->
-                            <span th:if="${not #lists.isEmpty(meaningWord.governments) or not #lists.isEmpty(meaningWord.registers)}">,</span>
-                            <span class="type-three" th:text="${meaningWord.aspect.value}"></span>
-                          </span>
+                          <span th:if="${meaningWord.aspect != null}" class="type-three" th:text="${meaningWord.aspect.value}"></span>
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <!--rekts-->
-                            <span class="type-one" th:each="government : ${meaningWord.governments}">
-                              <span th:text="${government}"></span>
-                            </span>
+                            <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
                           </span>
-                          <span th:if="${not #lists.isEmpty(meaningWord.registers)}">
-                            <!--reg-->
-                            <span th:if="${not #lists.isEmpty(meaningWord.governments)}">,</span>
-                            <span class="type-two" th:each="register : ${meaningWord.registers}">
-                              |
-                              <span th:text="${register.value}"></span>
-                              |
-                            </span>
-                          </span>
+                          <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
+                            <span class="type-two" th:each="register,regIter : ${meaningWord.registers}"
+                                  th:text="${(regIter.first ? '| ' : '') + register.value + (regIter.last ? ' |' : ', ')}"></span>
+                          </th:block>
                         </span>
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
                       </span>
                     </div>
-                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and (sessionBean.sourceLang != sessionBean.destinLang)}" th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
+                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and (sessionBean.sourceLang != sessionBean.destinLang)}"
+                          th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
                   </div>
                 </div>
                 <div class="col-12 dependencies">
                   <div th:if="${not #lists.isEmpty(lexeme.governments)}" class="mb-1 rekts-est">
-                    <i th:each="government, iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
+                    <i th:each="government,iter : ${lexeme.governments}" th:text="${government + (iter.last ? '' : ', ')}"> </i>
                   </div>
                   <div class="dependence-group" th:if="${not #lists.isEmpty(lexeme.usages)}">
                     <button class="more-btn" name="colloc-usages-btn" th:if="${lexeme.moreUsages}" aria-expanded="false">
@@ -455,7 +444,7 @@
                   <p th:text="${paradigm.title}" th:if="${paradigm.title != null}"></p>
                   <div class="morphology-section d-flex">
                     <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
-                      <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}"></h5>
+                      <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}" class="secondary-morph"></h5>
                       <th:block th:if="${not #lists.isEmpty(paradigmGroup1.forms1)}">
                         <div th:each="form : ${paradigmGroup1.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                           <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
@@ -478,7 +467,7 @@
                       </th:block>
                       <th:block th:if="${paradigmGroup1.groupsExist || paradigmGroup1.formsExist}">
                         <div class="d-block" th:each="paradigmGroup2 : ${paradigmGroup1.groups}">
-                          <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="${!paradigmGroup2.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                          <h6 class="main-title" th:text="${paradigmGroup2.name}" th:if="${paradigmGroup2.name != null}" th:classappend="secondary-morph"></h6>
                           <th:block th:if="${not #lists.isEmpty(paradigmGroup2.forms1)}">
                             <div th:each="form : ${paradigmGroup2.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                               <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
@@ -501,7 +490,7 @@
                           </th:block>
                           <th:block th:if="${paradigmGroup2.groupsExist || paradigmGroup2.formsExist}">
                             <div class="d-flex flex-column" th:each="paradigmGroup3 : ${paradigmGroup2.groups}">
-                              <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="${!paradigmGroup3.primaryFormsExist ? 'secondary-morph' : ''}"></h6>
+                              <h6 th:text="${paradigmGroup3.name}" th:if="${paradigmGroup3.name != null}" th:classappend="secondary-morph"></h6>
                               <th:block th:if="${not #lists.isEmpty(paradigmGroup3.forms1)}">
                                 <div th:each="form : ${paradigmGroup3.forms1}" th:class="${form.displayLevel > 1 ? 'secondary-morph' : ''}">
                                   <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"

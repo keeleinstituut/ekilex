@@ -7,8 +7,6 @@ $(document).ready(function() {
 		window.location = applicationUrl;
 	}, sessionTimeoutMs);
 
-	//TODO causes # at url - can't allow that
-	//parent.location.hash = ''; // Clear Hash
 
 	$(".form-email").on('input', function() {
 		var input = $(this);

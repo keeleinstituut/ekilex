@@ -20,10 +20,6 @@
 
     <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsFoundBySearch) && (simpleSearchFilter != null)}">
       <div th:text="#{lex.not.found}">Not found.</div>
-      <button type="button" class="btn btn-success mt-2"
-              data-toggle="modal" data-target="#newWordDlg">
-        Lisa uus
-      </button>
     </div>
 
     <div class="row no-gutters mt-2">
@@ -68,36 +64,39 @@
         <div class="col-8 pr-2">
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}">
             <div class="card-body">
-              <div>
-                <span>
-                  <span th:each="word,wordIter : ${lexeme.words}" class="ttl">
-                    <span th:text="${word}"></span>
-                    <span th:unless="${wordIter.last}">,&nbsp;</span>
+              <div class="d-flex flex-row align-items-center flex-wrap">
+                <div class="d-flex align-items-center">
+                  <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
+                        th:text="${word + (wordIter.last ? '' : ', ')}"
+                        th:classappend="${wordIter.last ? 'pr-2' : ''}"></span>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <button type="button" class="btn btn-link pl-0 pr-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
+                      <span th:text="${meaningWord.value}"></span>
+                      <span th:text="${meaningWord.homonymNumber}"></span>
+                      <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+                    </button>
+                    <span th:unless="${meaningWordIter.last}">|</span>
+                  </th:block>
+                  <span th:if="${lexeme.levels != null}"
+                        th:data-id="${lexeme.lexemeId}"
+                        th:data-level1="${lexeme.level1}"
+                        th:data-level2="${lexeme.level2}"
+                        th:data-level3="${lexeme.level3}"
+                        class="btn pl-0" onclick="openLexemeLevelDlg(this)" data-toggle="modal" data-target="#editLexemeLevelsDlg">
+                    <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
                   </span>
-                  &nbsp;
-                </span>
-                <span th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
-                  <button type="button" class="btn btn-link pt-0" th:data-id="${meaningWord.wordId}" name="detailsBtn">
-                    <span th:text="${meaningWord.value}"></span>
-                    <span th:text="${meaningWord.homonymNumber}"></span>
-                    <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
-                  </button>
-                  <span th:unless="${meaningWordIter.last}">|</span>
-                </span>
-                <span th:if="${lexeme.levels != null}"
-                      th:data-id="${lexeme.lexemeId}"
-                      th:data-level1="${lexeme.level1}"
-                      th:data-level2="${lexeme.level2}"
-                      th:data-level3="${lexeme.level3}"
-                      class="btn pt-0" onclick="openLexemeLevelDlg(this)" data-toggle="modal" data-target="#editLexemeLevelsDlg">
-                  <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
-                </span>
-                <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-                <a class="btn btn-primary" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}">Ühenda</a>
-                <a class="btn btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}" th:if="${!#lists.isEmpty(lexeme.meaningWords)}"
-                   data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
-                  >Lahuta</a>
-                <b th:text="${lexeme.dataset}" class="float-right"></b>
+                  <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
+                </div>
+                <div>
+                  <a class="btn btn-primary" th:href="@{'/lexjoin/' + ${lexeme.lexemeId}}">Ühenda</a>
+                  <a class="btn btn-primary" th:href="@{'/lexseparate/' + ${lexeme.lexemeId}}" th:if="${!#lists.isEmpty(lexeme.meaningWords)}"
+                     data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
+                    >Lahuta</a>
+                  <button class="btn btn-primary" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${lexeme.meaningId}">Lisa uus keelend</button>
+                </div>
+                <div class="ml-auto">
+                  <b th:text="${lexeme.dataset}"></b>
+                </div>
               </div>
               <div th:if="${!#lists.isEmpty(lexeme.vocalForms)}">
                 <span class="lbl">Hääldus</span>
@@ -117,7 +116,7 @@
                         data-toggle="modal" data-target="#lexemeClassifiersDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                <th:block th:replace="lexsearch_components :: lexeme_parameters"></th:block>
+                <th:block th:replace="lexeme_components :: lexeme_parameters"></th:block>
               </div>
               <div>
                 <hr />
@@ -588,7 +587,7 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
               </div>
-              <th:block th:replace="lexsearch_components :: word_parameters"></th:block>
+              <th:block th:replace="lexeme_components :: word_parameters"></th:block>
               <hr />
             </div>
             <div class="card-body pt-0 pb-0">
@@ -761,10 +760,10 @@
   <div th:replace="common :: #wordTypeDlg"></div>
   <div th:replace="common :: #wordAspectDlg"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
-  <div th:replace="lexsearch_components :: #addNewWordRelationDlg"></div>
-  <div th:replace="lexsearch_components :: #addNewLexemeRelationDlg"></div>
-  <div th:replace="lexsearch_components :: #addNewMeaningRelationDlg"></div>
-  <div th:replace="lexsearch_components :: #addNewUsageAuthorDlg"></div>
+  <div th:replace="lexeme_components :: #addNewWordRelationDlg"></div>
+  <div th:replace="lexeme_components :: #addNewLexemeRelationDlg"></div>
+  <div th:replace="lexeme_components :: #addNewMeaningRelationDlg"></div>
+  <div th:replace="lexeme_components :: #addNewUsageAuthorDlg"></div>
 
   <script th:inline="javascript">
   	initialise();
