@@ -17,19 +17,31 @@
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Ees- ja perekonnanimi</label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" name="name">
+            <input type="text" class="form-control" name="name" th:value="${userName}" th:autofocus="${userName == null}">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">E-posti aadress</label>
           <div class="col-sm-4">
-            <input type="email" class="form-control" name="email" placeholder="E-posti aadress">
+            <input type="email" class="form-control" name="email" placeholder="E-posti aadress"  th:value="${userEmail}">
           </div>
         </div>
         <div class="form-group row validation">
           <label class="col-sm-2 col-form-label">E-posti aadress</label>
           <div class="col-sm-4">
             <input type="email" class="form-control" name="email2">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Parool</label>
+          <div class="col-sm-2">
+            <input type="password" class="form-control" name="password" th:autofocus="${userName != null}">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-sm-2 col-form-label">Parool uuesti</label>
+          <div class="col-sm-2">
+            <input type="password" class="form-control" name="password2">
           </div>
         </div>
         <div class="form-group row">

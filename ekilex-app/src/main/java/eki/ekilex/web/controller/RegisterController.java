@@ -17,6 +17,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
+import java.util.Objects;
 
 import static java.lang.Thread.sleep;
 import static java.util.Arrays.asList;
@@ -48,6 +49,8 @@ public class RegisterController implements WebConstant {
 	public String registerNewUser(
 			@RequestParam("email") String email,
 			@RequestParam("name") String name,
+			@RequestParam("password") String password,
+			@RequestParam("password2") String password2,
 			@RequestParam(value = "email2", required = false) String honeyPot,
 			Model model,
 			RedirectAttributes attributes,
@@ -61,15 +64,20 @@ public class RegisterController implements WebConstant {
 			}
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
+		if (!Objects.equals(password, password2)) {
+			model.addAttribute("userName", name);
+			model.addAttribute("userEmail", email);
+			model.addAttribute("error_message", "Parooli väljade väärtused on erinevad.");
+			return REGISTER_PAGE;
+		}
 		if (userService.isValidNewUser(email, name)) {
-			String password = userService.generatePassword();
 			String encodedPassword = passwordEncoder.encode(password);
 			userService.addNewUser(email, name, encodedPassword);
 			// FIXME : remove after email service is properly configured
 			if (emailService.isEnabled()) {
-				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, parool on saadetud e-postile : " + email);
+				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile : " + email);
 			} else {
-				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, teie parool on : " + password);
+				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud : " + email);
 			}
 			emailService.sendEmail(
 					asList(email),
