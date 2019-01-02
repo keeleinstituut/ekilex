@@ -91,9 +91,8 @@ public class UltimaLoader extends AbstractLoader {
 					mabRunner.execute(mabDataFilePaths, doReports);
 					successfullyLoadedDatasets.add("mab");
 				}
-			} else {
-				mabService.initialise();
 			}
+			mabService.initialise();
 
 			// ss1 - only when full reload
 			dataset = ss1Runner.getDataset();
