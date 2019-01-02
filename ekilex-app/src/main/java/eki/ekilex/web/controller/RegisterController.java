@@ -72,7 +72,7 @@ public class RegisterController implements WebConstant {
 			emailService.sendEmail(
 					asList(email),
 					Collections.emptyList(),
-					"Ekilex kasutaja registreerimine",
+					"Ekilexi kasutaja registreerimine",
 					"Teie parool on : " + password);
 		} else {
 			model.addAttribute("error_message", "Sellise nime või e-posti aadressiga kasutaja on juba registreeritud.");
