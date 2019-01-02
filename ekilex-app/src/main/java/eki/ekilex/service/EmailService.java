@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -18,61 +19,63 @@ import static java.util.stream.Collectors.toList;
 @Service
 public class EmailService {
 
-    private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
+	private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-    @Value("${email.from.address}")
-    private String fromAddress;
+	@Value("${email.from.address}")
+	private String fromAddress;
 
-    @Value("${email.from.name}")
-    private String fromName;
+	@Value("${email.from.name}")
+	private String fromName;
 
-    @Value("${email.sending.enabled:false}")
-    private boolean isEmailSendingEnabled;
+	@Value("${email.sending.enabled:false}")
+	private boolean isEmailSendingEnabled;
 
-    private JavaMailSender emailSender;
+	private JavaMailSender emailSender;
 
-    public EmailService(JavaMailSender emailSender) {
-        this.emailSender = emailSender;
-    }
-
-    public boolean isEnabled() {
-    	return isEmailSendingEnabled;
+	public EmailService(JavaMailSender emailSender) {
+		this.emailSender = emailSender;
 	}
 
-    public void sendEmail(List<String> to, List<String> cc, String subject, String content) {
-        if (to == null || to.isEmpty()) return;
-        try {
-            MimeMessage message = emailSender.createMimeMessage();
-            // pass 'true' to the constructor to create a multipart message
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+	public boolean isEnabled() {
+		return isEmailSendingEnabled;
+	}
 
-            helper.setTo(to.toArray(new String[0]));
-            if (cc != null && !cc.isEmpty()) {
-                helper.setCc(cc.toArray(new String[0]));
-            }
-            helper.setSubject(subject);
-            helper.setFrom(fromAddress, fromName);
-            helper.setText(content, true);
+	public void sendEmail(List<String> to, List<String> cc, String subject, String content) {
+		if (CollectionUtils.isEmpty(to)) {
+			return;
+		}
+		try {
+			MimeMessage message = emailSender.createMimeMessage();
+			// pass 'true' to the constructor to create a multipart message
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
-            if (isEmailSendingEnabled) {
-                emailSender.send(message);
-            }
+			helper.setTo(to.toArray(new String[0]));
+			if (cc != null && !cc.isEmpty()) {
+				helper.setCc(cc.toArray(new String[0]));
+			}
+			helper.setSubject(subject);
+			helper.setFrom(fromAddress, fromName);
+			helper.setText(content, true);
 
-            logMessage(message, content);
-        } catch (MessagingException | IOException e) {
-            logger.error("send email error : ", e);
-        }
-    }
+			if (isEmailSendingEnabled) {
+				emailSender.send(message);
+			}
 
-    private void logMessage(MimeMessage message, String content) throws MessagingException {
-        List<String> recipents = Stream.of(message.getAllRecipients())
-                .map(a -> a.toString())
-                .collect(toList());
-        if (isEmailSendingEnabled) {
-            logger.info("email sent to {}; with content : {}", String.join(",", recipents), content);
-        } else {
-            logger.info("email generated to {}; with content : {}", String.join(",", recipents), content);
-        }
-    }
+			logMessage(message, content);
+		} catch (MessagingException | IOException e) {
+			logger.error("send email error : ", e);
+		}
+	}
+
+	private void logMessage(MimeMessage message, String content) throws MessagingException {
+		List<String> recipents = Stream.of(message.getAllRecipients())
+				.map(a -> a.toString())
+				.collect(toList());
+		if (isEmailSendingEnabled) {
+			logger.info("email sent to {}; with content : {}", String.join(",", recipents), content);
+		} else {
+			logger.info("email generated to {}; with content : {}", String.join(",", recipents), content);
+		}
+	}
 
 }

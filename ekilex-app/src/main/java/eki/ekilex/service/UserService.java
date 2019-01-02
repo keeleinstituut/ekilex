@@ -14,6 +14,8 @@ public class UserService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
+	private static final String DEFAULT_USER_ROLE = "basic_user";
+
 	private UserDbService userDbService;
 
 	public UserService(UserDbService userDbService) {
@@ -28,13 +30,16 @@ public class UserService {
 
 	@Transactional
 	public boolean isValidNewUser(String email, String name) {
-		return userDbService.getUserByEmail(email) == null && userDbService.getUserByName(name) == null;
+		EkiUser userByEmail = userDbService.getUserByEmail(email);
+		EkiUser userByName = userDbService.getUserByName(name);
+		return userByEmail == null && userByName == null;
 	}
 
 	@Transactional
 	public void addNewUser(String email, String name, String password) {
-		userDbService.addUser(email, name, password, new String[] {"basic_user"});
-		logger.debug("Uus kasutaja : {}", userDbService.getUserByEmail(email).getDescription());
+		userDbService.addUser(email, name, password, new String[] {DEFAULT_USER_ROLE});
+		EkiUser user = userDbService.getUserByEmail(email);
+		logger.debug("Created new user : {}", user.getDescription());
 	}
 
 	public String generatePassword() {

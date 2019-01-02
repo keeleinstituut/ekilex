@@ -1466,13 +1466,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private class ReferenceFormData {
-		String formValue;
-		String wordValue;
-		int wordHomonymNr = 0;
-		String reportingId;
-	}
-
 	private class LexemeData {
 		Long lexemeId;
 		Long wordId;
