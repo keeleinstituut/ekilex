@@ -534,6 +534,11 @@ public class ConversionUtil {
 		return collocations;
 	}
 
+	public List<List<Relation>> groupRelationsById(List<Relation> relations) {
+		Map<Long, List<Relation>> groupedById = relations.stream().collect(groupingBy(Relation::getId));
+		return new ArrayList<>(groupedById.values());
+	}
+
 	private Collocation addCollocation(Map<Long, Collocation> collocMap, CollocationTuple collocTuple, List<Collocation> collocations) {
 
 		Long collocId = collocTuple.getCollocId();
@@ -560,4 +565,5 @@ public class ConversionUtil {
 		collocMember.setWeight(collocTuple.getCollocMemberWeight());
 		collocation.getCollocMembers().add(collocMember);
 	}
+
 }

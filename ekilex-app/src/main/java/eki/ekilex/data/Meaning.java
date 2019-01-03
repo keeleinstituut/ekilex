@@ -29,6 +29,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<Relation> relations;
 
+	private List<List<Relation>> groupedRelations;
+
 	private boolean contentExists;
 
 	public Long getMeaningId() {
@@ -101,6 +103,14 @@ public class Meaning extends AbstractDataObject {
 
 	public void setContentExists(boolean contentExists) {
 		this.contentExists = contentExists;
+	}
+
+	public List<List<Relation>> getGroupedRelations() {
+		return groupedRelations;
+	}
+
+	public void setGroupedRelations(List<List<Relation>> groupedRelations) {
+		this.groupedRelations = groupedRelations;
 	}
 
 }

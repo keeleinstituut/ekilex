@@ -90,6 +90,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<Relation> meaningRelations;
 
+	private List<List<Relation>> groupedMeaningRelations;
+
 	private List<FreeForm> lexemeFreeforms;
 
 	private List<Relation> lexemeRelations;
@@ -398,4 +400,11 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
 	}
 
+	public List<List<Relation>> getGroupedMeaningRelations() {
+		return groupedMeaningRelations;
+	}
+
+	public void setGroupedMeaningRelations(List<List<Relation>> groupedMeaningRelations) {
+		this.groupedMeaningRelations = groupedMeaningRelations;
+	}
 }
