@@ -247,6 +247,7 @@ public class LexSearchService implements SystemConstant {
 		List<Usage> usages = conversionUtil.composeUsages(usageTranslationDefinitionTuples);
 		List<Relation> lexemeRelations = commonDataDbService.findLexemeRelations(lexemeId, classifierLabelLang, classifierLabelTypeFull).into(Relation.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+		List<List<Relation>> groupedMeaningRelations = conversionUtil.groupRelationsById(meaningRelations);
 		List<FreeForm> lexemeGrammars = commonDataDbService.findLexemeGrammars(lexemeId).into(FreeForm.class);
 		List<CollocationTuple> primaryCollocTuples = lexSearchDbService.findPrimaryCollocationTuples(lexemeId).into(CollocationTuple.class);
 		List<CollocationPosGroup> collocationPosGroups = conversionUtil.composeCollocPosGroups(primaryCollocTuples);
@@ -271,6 +272,7 @@ public class LexSearchService implements SystemConstant {
 		lexeme.setSecondaryCollocations(secondaryCollocations);
 		lexeme.setVocalForms(vocalForms);
 		lexeme.setSourceLinks(lexemeSourceLinks);
+		lexeme.setGroupedMeaningRelations(groupedMeaningRelations);
 
 		boolean lexemeOrMeaningClassifiersExist =
 				StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())

@@ -132,6 +132,7 @@ public class TermSearchService implements SystemConstant {
 		List<Classifier> domains = commonDataDbService.findMeaningDomains(meaningId).into(Classifier.class);
 		List<FreeForm> meaningFreeforms = commonDataDbService.findMeaningFreeforms(meaningId).into(FreeForm.class);
 		List<Relation> meaningRelations = commonDataDbService.findMeaningRelations(meaningId, classifierLabelLang, classifierLabelTypeDescrip).into(Relation.class);
+		List<List<Relation>> groupedRelations = conversionUtil.groupRelationsById(meaningRelations);
 
 		List<Long> lexemeIds = meaning.getLexemeIds();
 		List<Lexeme> lexemes = new ArrayList<>();
@@ -196,6 +197,7 @@ public class TermSearchService implements SystemConstant {
 		meaning.setLexemeLangGroups(lexemeLangGroups);
 		meaning.setRelations(meaningRelations);
 		meaning.setContentExists(contentExists);
+		meaning.setGroupedRelations(groupedRelations);
 
 		return meaning;
 	}
