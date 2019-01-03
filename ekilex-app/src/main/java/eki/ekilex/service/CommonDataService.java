@@ -18,7 +18,7 @@ import static java.util.stream.Collectors.groupingBy;
 @Component
 public class CommonDataService {
 
-	private final static String classifierLabelLang = "est";
+	private final static String classifierLabelLangEst = "est";
 	private final static String classifierLabelTypeDescrip = "descrip";
 	private final static String classifierLabelTypeFull = "full";
 
@@ -32,7 +32,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getLanguages() {
-		return commonDataDbService.getLanguages(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getLanguages(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
@@ -64,57 +64,57 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getWordMorphCodes() {
-		return commonDataDbService.getWordMorphCodes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getWordMorphCodes(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getWordGenders() {
-		return commonDataDbService.getWordGenders(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getWordGenders(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getWordTypes() {
-		return commonDataDbService.getWordTypes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getWordTypes(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getWordAspects() {
-		return commonDataDbService.getWordAspects(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getWordAspects(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getWordRelationTypes() {
-		return commonDataDbService.getWordRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
+		return commonDataDbService.getWordRelationTypes(classifierLabelLangEst, classifierLabelTypeFull).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeRelationTypes() {
-		return commonDataDbService.getLexemeRelationTypes(classifierLabelLang, classifierLabelTypeFull).into(Classifier.class);
+		return commonDataDbService.getLexemeRelationTypes(classifierLabelLangEst, classifierLabelTypeFull).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getMeaningRelationTypes() {
-		return commonDataDbService.getMeaningRelationTypes(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getMeaningRelationTypes(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getAllLexemePos() {
-		return commonDataDbService.getAllLexemePos(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getAllLexemePos(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeRegisters() {
-		return commonDataDbService.getLexemeRegisters(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getLexemeRegisters(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeDerivs() {
-		return commonDataDbService.getLexemeDerivs(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getLexemeDerivs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
 	public List<Classifier> getLexemeValueStates() {
-		return commonDataDbService.getLexemeValueStates(classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getLexemeValueStates(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional

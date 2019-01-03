@@ -30,8 +30,7 @@ public class Qq2Loader extends AbstractLoader {
 			boolean isFullReload = isFullReload();
 
 			// mab
-			String[] mabDataFilePaths = getMabDataFilePaths();
-			mabService.loadParadigms(mabDataFilePaths, doReports);
+			mabService.initialise(); //MAB must be loaded first!
 
 			// qq2
 			String qqFilePath = getMandatoryConfProperty("qq2.data.file");

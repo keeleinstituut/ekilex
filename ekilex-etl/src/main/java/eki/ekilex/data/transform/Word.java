@@ -8,9 +8,25 @@ public class Word extends AbstractDataObject {
 
 	private Long id;
 
-	private String value;
+	private String guid;
 
 	private String lang;
+
+	private String value;
+
+	private int homonymNr;
+
+	private String wordClass;
+
+	private String displayMorph;
+
+	private String genderCode;
+
+	private String wordTypeCode;
+
+	//form properties
+
+	private String morphCode;
 
 	private String formsString;
 
@@ -19,18 +35,6 @@ public class Word extends AbstractDataObject {
 	private String displayForm;
 
 	private String vocalForm;
-
-	private int homonymNr;
-
-	private String morphCode;
-
-	private String displayMorph;
-
-	private String guid;
-
-	private String genderCode;
-
-	private String wordTypeCode;
 
 	private String aspectTypeCode;
 
@@ -66,12 +70,12 @@ public class Word extends AbstractDataObject {
 		this.id = id;
 	}
 
-	public String getValue() {
-		return value;
+	public String getGuid() {
+		return guid;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setGuid(String guid) {
+		this.guid = guid;
 	}
 
 	public String getLang() {
@@ -80,6 +84,62 @@ public class Word extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
+	}
+
+	public String getValue() {
+		return value;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
+
+	public int getHomonymNr() {
+		return homonymNr;
+	}
+
+	public void setHomonymNr(int homonymNr) {
+		this.homonymNr = homonymNr;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
+	}
+
+	public String getDisplayMorph() {
+		return displayMorph;
+	}
+
+	public void setDisplayMorph(String displayMorph) {
+		this.displayMorph = displayMorph;
+	}
+
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
+	}
+
+	public String getWordTypeCode() {
+		return wordTypeCode;
+	}
+
+	public void setWordTypeCode(String wordTypeCode) {
+		this.wordTypeCode = wordTypeCode;
+	}
+
+	public String getMorphCode() {
+		return morphCode;
+	}
+
+	public void setMorphCode(String morphCode) {
+		this.morphCode = morphCode;
 	}
 
 	public String getFormsString() {
@@ -114,54 +174,6 @@ public class Word extends AbstractDataObject {
 		this.vocalForm = vocalForm;
 	}
 
-	public int getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(int homonymNr) {
-		this.homonymNr = homonymNr;
-	}
-
-	public String getMorphCode() {
-		return morphCode;
-	}
-
-	public void setMorphCode(String morphCode) {
-		this.morphCode = morphCode;
-	}
-
-	public String getDisplayMorph() {
-		return displayMorph;
-	}
-
-	public void setDisplayMorph(String displayMorph) {
-		this.displayMorph = displayMorph;
-	}
-
-	public String getGuid() {
-		return guid;
-	}
-
-	public void setGuid(String guid) {
-		this.guid = guid;
-	}
-
-	public String getGenderCode() {
-		return genderCode;
-	}
-
-	public void setGenderCode(String genderCode) {
-		this.genderCode = genderCode;
-	}
-
-	public String getWordTypeCode() {
-		return wordTypeCode;
-	}
-
-	public void setWordTypeCode(String wordTypeCode) {
-		this.wordTypeCode = wordTypeCode;
-	}
-
 	public String getAspectTypeCode() {
 		return aspectTypeCode;
 	}
@@ -169,4 +181,5 @@ public class Word extends AbstractDataObject {
 	public void setAspectTypeCode(String aspectTypeCode) {
 		this.aspectTypeCode = aspectTypeCode;
 	}
+
 }

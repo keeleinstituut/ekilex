@@ -24,7 +24,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.ClassifierName;
 import eki.common.data.Count;
-import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Lexeme;
 import eki.ekilex.data.transform.Paradigm;
 import eki.ekilex.data.transform.Usage;
@@ -267,7 +266,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String morphGroupExp = xpathExpressions().get("morphGroup");
 
 		List<Paradigm> paradigms = new ArrayList<>();
-		if (mabService.isMabLoaded() && mabService.paradigmsExist(word.value)) {
+		if (mabService.isMabLoaded() && mabService.homonymsExist(word.value)) {
 			Element morphGroupNode = morphGroupExp == null ? null : (Element) wordGroupNode.selectSingleNode(morphGroupExp);
 			List<Paradigm> paradigmsFromMab = fetchParadigmsFromMab(word.value, morphGroupNode);
 			if (!paradigmsFromMab.isEmpty()) {
@@ -282,31 +281,15 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String formsNodeExp = xpathExpressions().get("formsNode");
 		final String formsNodeExp2 = xpathExpressions().get("formsNode2");
 
-		if (mabService.isSingleHomonym(wordValue)) {
-			return mabService.getWordParadigms(wordValue);
+		if (!mabService.homonymsExist(wordValue)) {
+			return Collections.emptyList();
 		}
-
 		List<String> formEndings = extractFormEndings(node, formsNodeExp);
 		formEndings.addAll(extractFormEndings(node, formsNodeExp2));
 		if (formEndings.isEmpty()) {
 			return Collections.emptyList();
 		}
-
-		List<String> morphCodesToCheck = asList("SgG", "Inf", "IndPrSg1");
-		long bestFormValuesMatchCount = -1;
-		Paradigm matchingParadigm = null;
-		for (Paradigm paradigm : mabService.getWordParadigms(wordValue)) {
-			long numberOfMachingEndings = paradigm.getForms().stream()
-					.filter(form -> morphCodesToCheck.contains(form.getMorphCode())).map(Form::getValue)
-					.filter(formValue -> formEndings.stream().anyMatch(formValue::endsWith))
-					.count();
-			if (numberOfMachingEndings > bestFormValuesMatchCount) {
-				bestFormValuesMatchCount = numberOfMachingEndings;
-				matchingParadigm = paradigm;
-			}
-		}
-		Integer matchingHomonymNumber = matchingParadigm.getHomonymNr();
-		return mabService.getWordParadigmsForHomonym(wordValue, matchingHomonymNumber);
+		return mabService.getMatchingWordParadigms(wordValue, formEndings);
 	}
 
 	private List<String> extractFormEndings(Element node, String formsNodeExp) {

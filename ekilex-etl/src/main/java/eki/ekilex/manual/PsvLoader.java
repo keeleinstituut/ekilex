@@ -30,8 +30,7 @@ public class PsvLoader extends AbstractLoader {
 			boolean isFullReload = isFullReload();
 
 			// mab
-			String[] mabDataFilePaths = getMabDataFilePaths();
-			mabService.loadParadigms(mabDataFilePaths, doReports);
+			mabService.initialise(); //MAB must be loaded first!
 
 			// ps
 			String psFilePath = getMandatoryConfProperty("psv.data.file");

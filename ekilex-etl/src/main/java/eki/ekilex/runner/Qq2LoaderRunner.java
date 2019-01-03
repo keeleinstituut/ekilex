@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -401,7 +401,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			int wordComponentCount = wordComponents.length;
 			String wordLastComp = wordComponents[wordComponentCount - 1];
 
-			if (!mabService.paradigmsExist(wordLastComp)) {
+			if (!mabService.homonymsExist(wordLastComp)) {
 				missingMabIntegrationCaseCount.increment();
 				if (StringUtils.isBlank(wordFormsString)) {
 					wordFormsString = "-";
@@ -410,7 +410,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				continue;
 			}
 			if (StringUtils.isBlank(wordFormsString)) {
-				if (!mabService.isSingleParadigm(wordLastComp)) {
+				if (!mabService.isSingleHomonym(wordLastComp)) {
 					missingMabIntegrationCaseCount.increment();
 					appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, "-", "QQ vormid puuduvad");
 					continue;
@@ -424,20 +424,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
 				String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
 				List<String> qq2FormValues = asList(formValuesArr);
-				List<String> mabFormValues;
-				Collection<String> formValuesIntersection;
-				int bestFormValuesMatchCount = 0;
-				List<Paradigm> paradigms = mabService.getWordParadigms(wordLastComp);
-				Paradigm matchingParadigm = null;
-				for (Paradigm paradigm : paradigms) {
-					mabFormValues = paradigm.getFormValues();
-					formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
-					if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-						bestFormValuesMatchCount = formValuesIntersection.size();
-						matchingParadigm = paradigm;
-					}
-				}
-				if (matchingParadigm == null) {
+				List<Paradigm> matchingParadigms = mabService.getMatchingWordParadigms(wordLastComp, qq2FormValues);
+				if (CollectionUtils.isEmpty(matchingParadigms)) {
 					missingMabIntegrationCaseCount.increment();
 					appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, wordFormsString, "Vormid ei kattu MAB-ga");
 					continue;
@@ -451,50 +439,30 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		int wordComponentCount = wordComponents.length;
 		boolean isCompoundWord = wordComponentCount > 1;
 		String wordLastComp = wordComponents[wordComponentCount - 1];
-		List<Paradigm> matchingParadigms;
 
 		if (!mabService.isMabLoaded()) {
 			return null;
 		}
-		if (!mabService.paradigmsExist(wordLastComp)) {
+		if (!mabService.homonymsExist(wordLastComp)) {
 			return null;
 		}
 		if (StringUtils.isNotBlank(wordFormsStr) && StringUtils.countMatches(wordFormsStr, '+') > 1) {
 			return null;
 		}
-		if (mabService.isSingleParadigm(wordLastComp)) {
-			matchingParadigms = mabService.getWordParadigms(wordLastComp);
-			if (isCompoundWord) {
-				return composeCompoundWordParadigms(wordComponents, wordComponentCount, matchingParadigms);
-			}
-			return matchingParadigms;
-		}
+		List<String> qq2FormValues;
 		if (StringUtils.isBlank(wordFormsStr)) {
 			logger.warn("\"{}({})\" has no forms to compare with MAB paradigms", wordLastComp, word);
+			qq2FormValues = Collections.emptyList();
+		} else {
+			String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
+			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
+			qq2FormValues = asList(formValuesArr);
+		}
+		List<Paradigm> matchingParadigms = mabService.getMatchingWordParadigms(wordLastComp, qq2FormValues);
+		if (CollectionUtils.isEmpty(matchingParadigms)) {
+			logger.warn("\"{}({})\" unable to assign paradigms in MAB", wordLastComp, word);
 			return null;
 		}
-		String strippedWordFormsStr = StringUtils.replaceChars(wordFormsStr, formStrCleanupChars, "");
-		String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
-		List<String> qq2FormValues = asList(formValuesArr);
-		List<String> mabFormValues;
-		Collection<String> formValuesIntersection;
-		int bestFormValuesMatchCount = 0;
-		List<Paradigm> allParadigms = mabService.getWordParadigms(wordLastComp);
-		Paradigm matchingParadigm = null;
-		for (Paradigm paradigm : allParadigms) {
-			mabFormValues = paradigm.getFormValues();
-			formValuesIntersection = CollectionUtils.intersection(qq2FormValues, mabFormValues);
-			if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-				bestFormValuesMatchCount = formValuesIntersection.size();
-				matchingParadigm = paradigm;
-			}
-		}
-		if (matchingParadigm == null) {
-			logger.warn("\"{}({})\" has no paradigms in MAB", wordLastComp, word);
-			return null;
-		}
-		Integer homonymNr = matchingParadigm.getHomonymNr();
-		matchingParadigms = mabService.getWordParadigmsForHomonym(wordLastComp, homonymNr);
 		if (isCompoundWord) {
 			return composeCompoundWordParadigms(wordComponents, wordComponentCount, matchingParadigms);
 		}

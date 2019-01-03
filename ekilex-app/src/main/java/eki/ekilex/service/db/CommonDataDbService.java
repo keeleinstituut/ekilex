@@ -43,7 +43,6 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 import org.jooq.DSLContext;
-import org.jooq.Record;
 import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -74,11 +73,11 @@ public class CommonDataDbService implements DbConstant {
 	private DSLContext create;
 
 	public Map<String, String> getDatasetNameMap() {
-		return create.select().from(DATASET).fetchMap(DATASET.CODE, DATASET.NAME);
+		return create.select().from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).fetchMap(DATASET.CODE, DATASET.NAME);
 	}
 
 	public Result<Record2<String, String>> getDatasets() {
-		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).orderBy(DATASET.ORDER_BY).fetch();
+		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).orderBy(DATASET.ORDER_BY).fetch();
 	}
 
 	public Result<Record2<String, String>> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
