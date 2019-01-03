@@ -1,20 +1,21 @@
 package eki.ekilex.service;
 
+import static java.util.stream.Collectors.toList;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.stream.Stream;
+
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
-
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.util.List;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class EmailService {
@@ -50,7 +51,7 @@ public class EmailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 
 			helper.setTo(to.toArray(new String[0]));
-			if (cc != null && !cc.isEmpty()) {
+			if (CollectionUtils.isNotEmpty(cc)) {
 				helper.setCc(cc.toArray(new String[0]));
 			}
 			helper.setSubject(subject);

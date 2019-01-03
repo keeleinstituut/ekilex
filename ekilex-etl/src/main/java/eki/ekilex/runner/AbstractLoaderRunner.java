@@ -75,6 +75,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
+	private static final String SQL_SELECT_FLOATING_WORD_IDS = "sql/select_floating_word_ids.sql";
 
 	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
 	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
@@ -111,6 +112,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private String sqlSelectLexemeFreeform;
 	private String sqlSourceByTypeAndName;
 	private String sqlWordGroupWithMembers;
+	private String sqlSelectFloatingWordIds;
 
 	private String sqlDeleteDefinitionsForDataset;
 	private String sqlDeleteDefinitionFreeformsForDataset;
@@ -158,6 +160,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_GROUP_WITH_MEMBERS);
 		sqlWordGroupWithMembers = getContent(resourceFileInputStream);
 
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_FLOATING_WORD_IDS);
+		sqlSelectFloatingWordIds = getContent(resourceFileInputStream);
+
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
 		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
 
@@ -185,6 +190,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	}
 
 	protected void end() throws Exception {
+		deleteFloatingData();
 		t2 = System.currentTimeMillis();
 		long timeMillis = t2 - t1;
 		long secondMillis = 1000;
@@ -272,6 +278,21 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			return null;
 		}
 		return cleanValue;
+	}
+
+	private void deleteFloatingData() throws Exception {
+
+		String dataset = getDataset();
+		List<Long> wordIds = basicDbService.queryList(sqlSelectFloatingWordIds, new HashMap<>(), Long.class);
+		if (CollectionUtils.isNotEmpty(wordIds)) {
+			logger.debug("There are {} floating words created by \"{}\" which are now deleted", wordIds.size(), dataset);
+			Map<String, Object> tableRowParamMap = new HashMap<>();
+			String sql = "delete from " + WORD + " where id = :wordId";
+			for (Long wordId : wordIds) {
+				tableRowParamMap.put("wordId", wordId);
+				basicDbService.executeScript(sql, tableRowParamMap);
+			}
+		}
 	}
 
 	protected void deleteDatasetData(String dataset) throws Exception {
