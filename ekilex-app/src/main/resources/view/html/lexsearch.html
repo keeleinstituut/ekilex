@@ -187,7 +187,7 @@
                 <span class="lbl">Tähenduse atribuudid</span>
                 <table>
                   <tr th:each="freeform : ${lexeme.meaningFreeforms}">
-                    <td style="vertical-align: text-top; padding-right: 1em">
+                    <td class="align-text-top pr-3">
                       <span th:text="${freeform.type}"></span>
                     </td>
                     <td th:unless="${freeform.type.toString() == 'IMAGE_FILE'}">
@@ -425,7 +425,7 @@
                 <span class="lbl">Ilmiku atribuudid</span>
                 <table>
                   <tr th:each="freeform : ${lexeme.lexemeFreeforms}">
-                    <td style="vertical-align: text-top; padding-right: 1em">
+                    <td class="align-text-top pr-3">
                       <span th:text="${freeform.type}"></span>
                     </td>
                     <td>
@@ -453,8 +453,8 @@
                     <td>
                       <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                     </td>
-                    <td style="vertical-align: text-top; padding-right: 1em" class="hidden-buttons">
-                      <button type="button" class="btn btn-link" th:data-id="${relation.wordId}" name="detailsBtn">
+                    <td class="hidden-buttons align-text-top pr-3">
+                      <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}" name="detailsBtn">
                         <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                       </button>
                       <button type="button" class="btn badge badge-warning"
@@ -611,8 +611,8 @@
                   <td style="display: flex">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
-                  <td style="vertical-align: text-top; padding-right: 1em" class="hidden-buttons">
-                    <button type="button" class="btn btn-link btn-text-wrap" th:data-id="${relation.wordId}" name="detailsBtn">
+                  <td class="align-text-top pr-3 pt-0 pb-0 hidden-buttons">
+                    <button type="button" class="btn btn-link btn-text-wrap p-0" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                     </button>
                     <button type="button" class="btn badge badge-warning"
@@ -628,7 +628,7 @@
               </table>
               <table th:if="${not #lists.isEmpty(details.wordGroups)}">
                 <tr th:each="wordGroup : ${details.wordGroups}">
-                  <td style="vertical-align: text-top; padding-right: 1em" class="hidden-buttons">
+                  <td class="align-text-top pr-3 pt-0 pb-0 hidden-buttons">
                     <span th:each="relation, itemStat : ${wordGroup.members}"
                          th:data-id="${relation.id}"
                          th:data-op-code="word_relation"
@@ -658,8 +658,8 @@
                   <td style="display: flex">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
-                  <td style="vertical-align: text-top; padding-right: 1em">
-                    <button type="button" class="btn btn-link" th:data-id="${wordEtym.wordId}" name="detailsBtn">
+                  <td class="align-text-top pr-3 pt-0 pb-0">
+                    <button type="button" class="btn btn-link p-0" th:data-id="${wordEtym.wordId}" name="detailsBtn">
                       <span>
                         <span th:text="${wordEtym.word + ' ( ' + wordEtym.wordLang + ' )'}"></span>
                         <span th:if="${wordEtym.questionable}">?</span>
