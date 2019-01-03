@@ -211,11 +211,11 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				word = wordDisplayForm = wordNode.getTextTrim();
 				word = cleanEkiEntityMarkup(word);
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
+				wordComponents = StringUtils.split(word, wordComponentSeparator);
 				if (StringUtils.endsWith(word, wordComponentSeparator)) {
 					word = StringUtils.removeEnd(word, wordComponentSeparator);
 					word = word + "-";
 				}
-				wordComponents = StringUtils.split(word, wordComponentSeparator);
 				word = StringUtils.remove(word, wordComponentSeparator);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				wordFormsStr = null;
@@ -424,7 +424,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				String strippedWordFormsStr = StringUtils.replaceChars(wordFormsString, formStrCleanupChars, "");
 				String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
 				List<String> qq2FormValues = asList(formValuesArr);
-				List<Paradigm> matchingParadigms = mabService.getMatchingWordParadigms(wordLastComp, qq2FormValues);
+				List<Paradigm> matchingParadigms = mabService.getMatchingWordParadigms(wordLastComp, qq2FormValues, null);
 				if (CollectionUtils.isEmpty(matchingParadigms)) {
 					missingMabIntegrationCaseCount.increment();
 					appendToReport(REPORT_MISSING_MAB_INTEGRATION_CASE, word, wordFormsString, "Vormid ei kattu MAB-ga");
@@ -458,7 +458,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			String[] formValuesArr = StringUtils.split(strippedWordFormsStr, ' ');
 			qq2FormValues = asList(formValuesArr);
 		}
-		List<Paradigm> matchingParadigms = mabService.getMatchingWordParadigms(wordLastComp, qq2FormValues);
+		List<Paradigm> matchingParadigms = mabService.getMatchingWordParadigms(wordLastComp, qq2FormValues, null);
 		if (CollectionUtils.isEmpty(matchingParadigms)) {
 			logger.warn("\"{}({})\" unable to assign paradigms in MAB", wordLastComp, word);
 			return null;

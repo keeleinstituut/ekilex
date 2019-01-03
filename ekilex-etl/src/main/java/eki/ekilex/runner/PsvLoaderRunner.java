@@ -1266,17 +1266,19 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			return Collections.emptyList();
 		}
 		List<Node> formsNodes = node.selectNodes(formsNodesExp);
-		if (formsNodes.isEmpty()) {
-			return Collections.emptyList();
+		List<String> formValues;
+		if (CollectionUtils.isEmpty(formsNodes)) {
+			formValues = Collections.emptyList();
+		} else {
+			formValues = formsNodes.stream()
+					.map(n -> {
+						String value = nodeToString(n);
+						value = StringUtils.replaceChars(value, formStrCleanupChars, "");
+						return value;
+						})
+					.collect(Collectors.toList());
 		}
-		List<String> formValues = formsNodes.stream()
-				.map(n -> {
-					String value = nodeToString(n);
-					value = StringUtils.replaceChars(value, formStrCleanupChars, "");
-					return value;
-					})
-				.collect(Collectors.toList());
-		return mabService.getMatchingWordParadigms(wordValue, formValues);
+		return mabService.getMatchingWordParadigms(wordValue, formValues, null);
 	}
 
 	private Word extractWordData(Node wordGroupNode, WordData wordData, String guid, Context context) throws Exception {

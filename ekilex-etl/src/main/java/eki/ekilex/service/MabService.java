@@ -5,7 +5,6 @@ import static java.util.Collections.emptyList;
 import java.io.InputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +16,7 @@ import javax.transaction.Transactional;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -105,7 +105,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		return isSingleHomonym;
 	}
 
-	public List<Paradigm> getMatchingWordParadigms(String word, List<String> suggestedFormValues) throws Exception {
+	public List<Paradigm> getMatchingWordParadigms(String word, List<String> suggestedFormValues, List<String> suggestedMorphCodes) throws Exception {
 
 		List<WordParadigms> wordParadigmsList = getWordParadigms(word);
 		if (isSingleHomonym(word)) {
@@ -115,18 +115,35 @@ public class MabService implements SystemConstant, InitializingBean {
 		if (CollectionUtils.isEmpty(suggestedFormValues)) {
 			return Collections.emptyList();
 		}
+
 		WordParadigms matchingWordParadigms = null;
 		List<Paradigm> paradigms;
 		List<String> paradigmFormValues;
-		int bestFormValuesMatchCount = -1;
-		Collection<String> formValuesIntersection;
+		long bestFormValuesMatchCount = -1;
+
+		if (CollectionUtils.isNotEmpty(suggestedMorphCodes)) {
+			for (WordParadigms wordParadigms : wordParadigmsList) {
+				paradigms = wordParadigms.getParadigms();
+				for (Paradigm paradigm : paradigms) {
+					paradigmFormValues = paradigm.getForms().stream()
+							.filter(form -> suggestedMorphCodes.contains(form.getMorphCode()))
+							.map(Form::getValue)
+							.collect(Collectors.toList());
+					paradigm.setFormValues(paradigmFormValues);
+				}
+			}
+		}
+
 		for (WordParadigms wordParadigms : wordParadigmsList) {
 			paradigms = wordParadigms.getParadigms();
 			for (Paradigm paradigm : paradigms) {
 				paradigmFormValues = paradigm.getFormValues();
-				formValuesIntersection = CollectionUtils.intersection(suggestedFormValues, paradigmFormValues);
-				if (formValuesIntersection.size() > bestFormValuesMatchCount) {
-					bestFormValuesMatchCount = formValuesIntersection.size();
+				long formValuesMatchCount = paradigmFormValues.stream()
+						.filter(paradigmFormValue -> suggestedFormValues.stream()
+									.anyMatch(suggestedFormValue -> StringUtils.endsWith(paradigmFormValue, suggestedFormValue)))
+						.count();
+				if (formValuesMatchCount > bestFormValuesMatchCount) {
+					bestFormValuesMatchCount = formValuesMatchCount;
 					matchingWordParadigms = wordParadigms;
 				}
 			}

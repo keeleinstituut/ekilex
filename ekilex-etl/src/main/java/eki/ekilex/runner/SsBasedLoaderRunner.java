@@ -286,10 +286,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		}
 		List<String> formEndings = extractFormEndings(node, formsNodeExp);
 		formEndings.addAll(extractFormEndings(node, formsNodeExp2));
-		if (formEndings.isEmpty()) {
-			return Collections.emptyList();
-		}
-		return mabService.getMatchingWordParadigms(wordValue, formEndings);
+		List<String> suggestedMorphCodes = asList("SgG", "Inf", "IndPrSg1");
+		return mabService.getMatchingWordParadigms(wordValue, formEndings, suggestedMorphCodes);
 	}
 
 	private List<String> extractFormEndings(Element node, String formsNodeExp) {
