@@ -12,7 +12,7 @@ public class EkiUser implements Principal, Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final String[] HIDDEN_FIELD_NAMES = new String[] {"password"};
+	private static final String[] HIDDEN_FIELD_NAMES = new String[] {"password", "activationKey"};
 
 	private Long id;
 
@@ -23,6 +23,8 @@ public class EkiUser implements Principal, Serializable {
 	private String password;
 
 	private String[] roles;
+
+	private String activationKey;
 
 	public Long getId() {
 		return id;
@@ -62,6 +64,14 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setRoles(String[] roles) {
 		this.roles = roles;
+	}
+
+	public String getActivationKey() {
+		return activationKey;
+	}
+
+	public void setActivationKey(String activationKey) {
+		this.activationKey = activationKey;
 	}
 
 	@Override

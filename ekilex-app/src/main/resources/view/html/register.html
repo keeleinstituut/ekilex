@@ -16,19 +16,19 @@
       <form th:action="@{/register}" method="post">
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Ees- ja perekonnanimi</label>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <input type="text" class="form-control" name="name" th:value="${userName}" th:autofocus="${userName == null}">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">E-posti aadress</label>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <input type="email" class="form-control" name="email" placeholder="E-posti aadress"  th:value="${userEmail}">
           </div>
         </div>
         <div class="form-group row validation">
           <label class="col-sm-2 col-form-label">E-posti aadress</label>
-          <div class="col-sm-4">
+          <div class="col-sm-3">
             <input type="email" class="form-control" name="email2">
           </div>
         </div>

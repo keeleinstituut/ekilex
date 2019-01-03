@@ -62,4 +62,6 @@ public interface WebConstant {
 
 	String REGISTER_PAGE = "register";
 
+	String ACTIVATION_PAGE_URI = "/register/activate";
+
 }

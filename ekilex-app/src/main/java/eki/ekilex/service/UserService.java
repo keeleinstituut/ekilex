@@ -1,5 +1,6 @@
 package eki.ekilex.service;
 
+import eki.common.util.CodeGenerator;
 import eki.ekilex.data.EkiUser;
 import eki.ekilex.service.db.UserDbService;
 import org.slf4j.Logger;
@@ -7,7 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.Random;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
 public class UserService {
@@ -30,21 +32,33 @@ public class UserService {
 
 	@Transactional
 	public boolean isValidNewUser(String email, String name) {
+		if (isBlank(email) || isBlank(name)) {
+			return false;
+		}
 		EkiUser userByEmail = userDbService.getUserByEmail(email);
 		EkiUser userByName = userDbService.getUserByName(name);
 		return userByEmail == null && userByName == null;
 	}
 
 	@Transactional
-	public void addNewUser(String email, String name, String password) {
-		userDbService.addUser(email, name, password, new String[] {DEFAULT_USER_ROLE});
+	public void addNewUser(String email, String name, String password, String activationKey) {
+		userDbService.addUser(email, name, password, new String[] {DEFAULT_USER_ROLE}, activationKey);
 		EkiUser user = userDbService.getUserByEmail(email);
 		logger.debug("Created new user : {}", user.getDescription());
 	}
 
-	public String generatePassword() {
-		int randomNumber = new Random().nextInt(9000) + 1000;
-		return "vana" + randomNumber + "isa";
+	@Transactional
+	public EkiUser activateUser(String activationKey) {
+		EkiUser user = userDbService.activateUser(activationKey);
+		return user;
+	}
+
+	public String generateActivationKey() {
+		return CodeGenerator.generateUniqueId();
+	}
+
+	public boolean isActiveUser(EkiUser user) {
+		return user != null && isBlank(user.getActivationKey());
 	}
 
 }
