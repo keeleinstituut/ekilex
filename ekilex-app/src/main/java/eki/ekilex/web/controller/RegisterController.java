@@ -62,7 +62,7 @@ public class RegisterController implements WebConstant {
 			HttpServletRequest request) {
 		if (StringUtils.isNotEmpty(honeyPot)) {
 			// bot protection triggered
-			logger.warn("Bot protection triggered : {} : {} : {} : {}", request.getRemoteAddr(), honeyPot, name);
+			logger.warn("Bot protection triggered : url - > {} : honey -> {} : name -> {}", request.getRemoteAddr(), honeyPot, name);
 			try {
 				sleep(10 * 1000);
 			} catch (InterruptedException e) {
