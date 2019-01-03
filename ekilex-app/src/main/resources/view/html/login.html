@@ -10,20 +10,23 @@
         <h5 class="card-title" th:text="#{index.title}">Tere</h5>
       </div>
       <div class="card-body">
+        <div class="alert alert-info" role="alert" th:if="${success_message}">
+          <span th:text="${success_message}"></span>
+        </div>
         <div class="alert alert-warning" role="alert" th:if="${loginerror}">
           <span th:text="${loginerror}"></span>
         </div>
         <form th:action="@{/dologin}" method="post">
           <div class="form-group row">
             <label class="col-sm-2 col-form-label">E-posti aadress</label>
-            <div class="col-sm-4">
-              <input type="email" class="form-control" name="email" placeholder="E-posti aadress">
+            <div class="col-sm-3">
+              <input type="email" class="form-control" name="email" placeholder="E-posti aadress" th:value="${userEmail}">
             </div>
           </div>
           <div class="form-group row">
             <label class="col-sm-2 col-form-label">Salasõna</label>
             <div class="col-sm-2">
-              <input type="password" class="form-control" name="password">
+              <input type="password" class="form-control" name="password" th:autofocus="${userEmail != null}">
             </div>
           </div>
           <div class="form-group row">

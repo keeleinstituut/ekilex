@@ -34,9 +34,12 @@ public class EkilexAuthenticationManager implements AuthenticationManager {
 		String providedEmail = authentication.getPrincipal().toString();
 		String providedPassword = authentication.getCredentials().toString();
 
-		EkiUser user = null;
+		EkiUser user;
 		try {
 			user = userService.getUserByEmail(providedEmail);
+			if (!userService.isActiveUser(user)) {
+				user = null;
+			}
 		} catch (Exception e) {
 			logger.error("Error at finding the user", e);
 			return null;

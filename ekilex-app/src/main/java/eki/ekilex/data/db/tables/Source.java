@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Source extends TableImpl<SourceRecord> {
 
-    private static final long serialVersionUID = 192928295;
+    private static final long serialVersionUID = -1038658904;
 
     /**
      * The reference instance of <code>public.source</code>
@@ -68,6 +68,11 @@ public class Source extends TableImpl<SourceRecord> {
     public final TableField<SourceRecord, String> EXT_SOURCE_ID = createField("ext_source_id", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
 
     /**
+     * The column <code>public.source.type</code>.
+     */
+    public final TableField<SourceRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
      * The column <code>public.source.created_on</code>.
      */
     public final TableField<SourceRecord, Timestamp> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMP, this, "");
@@ -86,11 +91,6 @@ public class Source extends TableImpl<SourceRecord> {
      * The column <code>public.source.modified_by</code>.
      */
     public final TableField<SourceRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.source.type</code>.
-     */
-    public final TableField<SourceRecord, String> TYPE = createField("type", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.source.process_state_code</code>.

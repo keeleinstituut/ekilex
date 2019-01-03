@@ -38,4 +38,5 @@ public abstract class AbstractDbService {
 		List<T> results = jdbcTemplate.query(sqlQueryStr, paramMap, rowMapper);
 		return results;
 	}
+
 }

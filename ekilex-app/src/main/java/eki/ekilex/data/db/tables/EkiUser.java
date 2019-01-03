@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = -1194720743;
+    private static final long serialVersionUID = -557134278;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -86,6 +86,11 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
      * The column <code>public.eki_user.created</code>.
      */
     public final TableField<EkiUserRecord, Timestamp> CREATED = createField("created", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.eki_user.activation_key</code>.
+     */
+    public final TableField<EkiUserRecord, String> ACTIVATION_KEY = createField("activation_key", org.jooq.impl.SQLDataType.VARCHAR(60), this, "");
 
     /**
      * Create a <code>public.eki_user</code> table reference

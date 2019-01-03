@@ -25,7 +25,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter implements W
 				.antMatchers(
 						LOGIN_PAGE_URI,
 						LOGIN_ERROR_URI,
-						REGISTER_PAGE_URI,
+						REGISTER_PAGE_URI + "/**",
 						VIEW_RESOURCES_URI + "/**",
 						REST_SERVICES_URI + "/**",
 						SEND_FEEDBACK_URI)
