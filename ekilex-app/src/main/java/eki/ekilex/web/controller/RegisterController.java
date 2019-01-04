@@ -56,7 +56,7 @@ public class RegisterController implements WebConstant {
 			@RequestParam("name") String name,
 			@RequestParam("password") String password,
 			@RequestParam("password2") String password2,
-			@RequestParam(value = "email2", required = false) String honeyPot,
+			@RequestParam(value = "ccode", required = false) String honeyPot,
 			Model model,
 			RedirectAttributes attributes,
 			HttpServletRequest request) {
