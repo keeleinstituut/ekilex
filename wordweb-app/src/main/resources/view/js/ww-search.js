@@ -14,7 +14,9 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 			wordSelectUrl : wordSelectUrl
 		};
 		var html = $('#spellingLine').html();
-		$('#spellingLine').html(html.replace(/\¤e/gi, '<span><u>e</u></span>'));
+		if (html !== undefined) {
+			$('#spellingLine').html(html.replace(/\¤e/gi, '<span><u>e</u></span>'));
+		}
 		history.pushState(historyState, "Sõnaveeb", wordSelectUrl);
 		var lang = wordSelectUrl.split('/').find(function(e) {
 			return e.indexOf('-') !== -1
