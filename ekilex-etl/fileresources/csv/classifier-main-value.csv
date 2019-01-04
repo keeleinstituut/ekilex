@@ -61,11 +61,11 @@ display_morph	pl	pluural, mitmus	est	descrip
 display_morph	pl	plural	eng	descrip
 display_morph	sg	singular, ainsus	est	descrip
 display_morph	sg	singular	eng	descrip
-display_morph	Ipf	lihtminevik	est	wordweb
-display_morph	Sg	ainsus	est	wordweb
-display_morph	Pl	mitmus	est	wordweb
-display_morph	Ips	umbisikuline tegumood	est	wordweb
-display_morph	Pts	kesksõna	est	wordweb
+display_morph	ips	umbisikuline tegumood	est	wordweb
+display_morph	ipf	lihtminevik	est	wordweb
+display_morph	pts	kesksõna	est	wordweb
+display_morph	pl	mitmus	est	wordweb
+display_morph	sg	ainsus	est	wordweb
 etymology_type	põlissõna	-	-	-
 etymology_type	kirjakeele sõna	-	-	-
 etymology_type	kõlasõna	-	-	-

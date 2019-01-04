@@ -185,11 +185,16 @@ public class ConversionUtil {
 			}
 		}
 
+		List<Classifier> summarisedPoses = new ArrayList<>();
+
 		for (Lexeme lexeme : lexemes) {
 			boolean isEmptyLexeme = isEmptyLexeme(lexeme);
 			lexeme.setEmptyLexeme(isEmptyLexeme);
 			if (isEmptyLexeme) {
 				continue;
+			}
+			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
+				summarisedPoses.addAll(lexeme.getPoses());
 			}
 			filterMeaningWords(allRelatedWordValues, lexeme);
 			List<String> existingCollocationValues = new ArrayList<>();
@@ -197,6 +202,8 @@ public class ConversionUtil {
 			//TODO temporarily disabled
 			//transformSecondaryCollocationsForDisplay(wordId, lexeme, existingCollocationValues);
 		}
+		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
+		word.setSummarisedPoses(summarisedPoses);
 
 		return lexemes;
 	}
