@@ -247,7 +247,7 @@
                       class="hidden-buttons">
                     <td class="pr-3">
                       <th:block th:each="relation, iter : ${relations}">
-                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.wordId}" name="detailsBtn">
+                        <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
                           <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
                         </button>
                         <span th:unless="${iter.last}">,</span>
