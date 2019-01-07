@@ -45,7 +45,6 @@ public class CorporaServiceRus extends CorporaService {
 				.queryParam("async", "0")
 				.queryParam("pagesize", "15")
 				.queryParam("q", "q"+parseSentenceToQueryString(sentence))
-				.queryParam("q", "r15")
 				.build()
 				.toUri();
 		}
