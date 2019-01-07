@@ -326,10 +326,10 @@
               </button>
               <div th:replace="lexeme_components :: lexeme_process_state"></div>
               <div th:replace="lexeme_components :: lexeme_value_state"></div>
-              <th:block th:with="wordGenderCode=${lexeme.wordGenderCode}">
+              <th:block th:with="wordGenderCode=${lexeme.wordGenderCode},wordIdCode=${lexeme.wordId}">
                 <div th:replace="lexeme_components :: word_gender"></div>
               </th:block>
-              <th:block th:with="wordTypeCode=${lexeme.wordTypeCode}">
+              <th:block th:with="wordTypeCode=${lexeme.wordTypeCode},wordIdCode=${lexeme.wordId}">
                 <div th:replace="lexeme_components :: word_type"></div>
               </th:block>
               <div th:replace="lexeme_components :: lexeme_frequency_group"></div>

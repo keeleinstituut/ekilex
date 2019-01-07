@@ -208,11 +208,11 @@
   </th:block>
 
   <th:block th:fragment="word_parameters">
-    <th:block th:with="wordGenderCode=${details.wordGenderCode}">
+    <th:block th:with="wordGenderCode=${details.wordGenderCode},wordIdCode=${wordId}">
       <div th:if="${wordGenderCode != null}" class="hidden-buttons" th:fragment="word_gender">
         <span class="lbl">Sugu</span>
         <span th:name="word_gender"
-              th:data-id="${wordId}"
+              th:data-id="${wordIdCode}"
               th:data-op-code="word_gender"
               th:data-value="${wordGenderCode}"
               th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(wordGenderCode, wordGenders)}"></span>
@@ -231,11 +231,11 @@
       </div>
     </th:block>
 
-    <th:block th:with="wordTypeCode=${details.wordTypeCode}">
+    <th:block th:with="wordTypeCode=${details.wordTypeCode},wordIdCode=${wordId}">
       <div th:if="${wordTypeCode != null}" class="hidden-buttons" th:fragment="word_type">
         <span class="lbl">Sõna tüüp</span>
         <span th:name="word_type"
-              th:data-id="${wordId}"
+              th:data-id="${wordIdCode}"
               th:data-op-code="word_type"
               th:data-value="${wordTypeCode}"
               th:text="${T(eki.ekilex.service.util.ConversionUtil).getClassifierValue(wordTypeCode, wordTypes)}"></span>
