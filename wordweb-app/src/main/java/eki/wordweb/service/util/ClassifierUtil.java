@@ -40,6 +40,9 @@ public class ClassifierUtil {
 
 		String classifierCode;
 		Classifier classifier;
+		classifierCode = word.getDisplayMorphCode();
+		classifier = getClassifier(ClassifierName.DISPLAY_MORPH, classifierCode, displayLang);
+		word.setDisplayMorph(classifier);
 		classifierCode = word.getTypeCode();
 		classifier = getClassifier(ClassifierName.WORD_TYPE, classifierCode, displayLang);
 		word.setType(classifier);

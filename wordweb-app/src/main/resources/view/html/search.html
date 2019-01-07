@@ -91,8 +91,14 @@
             <h3>
               <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
               <span class="word-details-homonym-nr" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-              <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.abbreviationWord}">lühend</span>
-              <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+              <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.word.type != null}">lühend</span>
+              <span class="tag" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
+              <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
+                <span class="tag" th:text="${summarisedPos.value}"></span>
+              </th:block>
+              <span class="float-right">
+                <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+              </span>
             </h3>
             <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
               th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
@@ -441,7 +447,6 @@
                   <button class="more-btn" aria-expanded="false" th:if="${paradigm.expandable}">
                     <span class="icon icon-chevron-left"></span>
                   </button>
-                  <p th:text="${paradigm.title}" th:if="${paradigm.title != null}"></p>
                   <div class="morphology-section d-flex">
                     <div class="d-flex flex-column w-50 mb-2" th:each="paradigmGroup1 : ${paradigm.groups}">
                       <h5 th:text="${paradigmGroup1.name}" th:if="${paradigmGroup1.name != null}" class="secondary-morph"></h5>

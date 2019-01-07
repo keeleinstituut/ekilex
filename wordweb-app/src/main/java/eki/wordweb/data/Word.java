@@ -23,6 +23,8 @@ public class Word extends AbstractDataObject {
 
 	private String displayMorphCode;
 
+	private Classifier displayMorph;
+
 	private String typeCode;
 
 	private Classifier type;
@@ -30,6 +32,8 @@ public class Word extends AbstractDataObject {
 	private String aspectCode;
 
 	private Classifier aspect;
+
+	private List<Classifier> summarisedPoses;
 
 	private WordEtymology wordEtymology;
 
@@ -115,6 +119,14 @@ public class Word extends AbstractDataObject {
 		this.displayMorphCode = displayMorphCode;
 	}
 
+	public Classifier getDisplayMorph() {
+		return displayMorph;
+	}
+
+	public void setDisplayMorph(Classifier displayMorph) {
+		this.displayMorph = displayMorph;
+	}
+
 	public String getTypeCode() {
 		return typeCode;
 	}
@@ -145,6 +157,14 @@ public class Word extends AbstractDataObject {
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
+	}
+
+	public List<Classifier> getSummarisedPoses() {
+		return summarisedPoses;
+	}
+
+	public void setSummarisedPoses(List<Classifier> summarisedPoses) {
+		this.summarisedPoses = summarisedPoses;
 	}
 
 	public WordEtymology getWordEtymology() {
