@@ -54,8 +54,8 @@ public class RegisterController implements WebConstant {
 	public String registerNewUser(
 			@RequestParam("email") String email,
 			@RequestParam("name") String name,
-			@RequestParam("password") String password,
-			@RequestParam("password2") String password2,
+			@RequestParam("salasona") String password,
+			@RequestParam("salasona2") String password2,
 			@RequestParam(value = "ccode", required = false) String honeyPot,
 			Model model,
 			RedirectAttributes attributes,
@@ -69,10 +69,10 @@ public class RegisterController implements WebConstant {
 			}
 			return "redirect:" + LOGIN_PAGE_URI;
 		}
-		if (password == null || !Objects.equals(password, password2)) {
+		if (!userService.isValidPassword(password, password2)) {
 			model.addAttribute("userName", name);
 			model.addAttribute("userEmail", email);
-			model.addAttribute("error_message", "Parooli väljade väärtused on erinevad.");
+			model.addAttribute("error_message", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");
 			return REGISTER_PAGE;
 		}
 		if (userService.isValidNewUser(email)) {
