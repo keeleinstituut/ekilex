@@ -8,7 +8,7 @@ create table eki_user
   roles text array not null,
   created timestamp not null default statement_timestamp(),
   activation_key varchar(60),
-  unique(name)
+  unique(email)
 );
 alter sequence eki_user_id_seq restart with 10000;
 
