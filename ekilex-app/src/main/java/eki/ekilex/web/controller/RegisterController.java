@@ -75,7 +75,7 @@ public class RegisterController implements WebConstant {
 			model.addAttribute("error_message", "Parooli väljade väärtused on erinevad.");
 			return REGISTER_PAGE;
 		}
-		if (userService.isValidNewUser(email, name)) {
+		if (userService.isValidNewUser(email)) {
 			String encodedPassword = passwordEncoder.encode(password);
 			String activationKey = userService.generateActivationKey();
 			String activationLink = ekilexAppUrl + ACTIVATION_PAGE_URI + "/" + activationKey;

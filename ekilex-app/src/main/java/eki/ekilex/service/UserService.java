@@ -31,13 +31,12 @@ public class UserService {
 	}
 
 	@Transactional
-	public boolean isValidNewUser(String email, String name) {
-		if (isBlank(email) || isBlank(name)) {
+	public boolean isValidNewUser(String email) {
+		if (isBlank(email)) {
 			return false;
 		}
 		EkiUser userByEmail = userDbService.getUserByEmail(email);
-		EkiUser userByName = userDbService.getUserByName(name);
-		return userByEmail == null && userByName == null;
+		return userByEmail == null;
 	}
 
 	@Transactional
