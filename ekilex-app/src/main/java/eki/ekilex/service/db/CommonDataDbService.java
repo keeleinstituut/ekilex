@@ -190,7 +190,8 @@ public class CommonDataDbService implements DbConstant {
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name())))
+						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name()))
+						.and(FREEFORM.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
