@@ -19,6 +19,9 @@ public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
 			.requestMatchers(EndpointRequest.to(ShutdownEndpoint.class))
 			.hasRole("ACTUATOR_ADMIN")
 			.and()
-			.httpBasic();
+			.httpBasic()
+			.and()
+			.csrf().disable();
 	}
+
 }
