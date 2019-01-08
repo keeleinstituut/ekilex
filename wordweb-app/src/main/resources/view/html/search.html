@@ -132,8 +132,8 @@
                     </span>
                   </div>
                   <div class="definition">
-                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i> <i th:each="domain,domainIter : ${lexeme.domains}"
-                      th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
+                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i>
+                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}" th:text="${definition.value + (definitionIter.last ? '' : '; ')}"> </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}" th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}"
@@ -602,8 +602,17 @@
                   <span th:text="#{label.no.data}">Andmed puuduvad</span>
                 </div>
                 <div th:if="${wordData.word.wordEtymology != null}">
-                  <div th:text="${wordData.word.wordEtymology.wordEtymologyWrapup}" th:if="${wordData.word.wordEtymology.wordEtymologyWrapup != null}"></div>
-                  <div th:text="${wordData.word.wordEtymology.wordEtymologyLineupWrapup}"></div>
+                  <div th:if="${wordData.word.wordEtymology.wordEtymologyWrapup != null}">
+                    <span th:utext="${wordData.word.wordEtymology.wordEtymologyWrapup}"></span>
+                  </div>
+                  <div th:if="${not #lists.isEmpty(wordData.word.wordEtymology.wordEtymologyLineupWrapup)}">
+                    <ul>
+                      <li th:each="wordEtym : ${wordData.word.wordEtymology.wordEtymologyLineupWrapup}">
+                        &lt;
+                        <span th:utext="${wordEtym}"></span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </section>

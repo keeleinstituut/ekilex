@@ -3,7 +3,6 @@ package eki.wordweb.data;
 import java.util.List;
 
 import eki.common.data.AbstractDataObject;
-import eki.common.data.Classifier;
 
 public class WordEtymology extends AbstractDataObject {
 
@@ -11,19 +10,13 @@ public class WordEtymology extends AbstractDataObject {
 
 	private Long wordId;
 
-	private String etymologyYear;
-
-	private String etymologyTypeCode;
-
-	private Classifier etymologyType;
-
 	private List<String> wordSources;
 
 	private List<TypeWordEtym> etymLineup;
 
 	private String wordEtymologyWrapup;
 
-	private String wordEtymologyLineupWrapup;
+	private List<String> wordEtymologyLineupWrapup;
 
 	public Long getWordId() {
 		return wordId;
@@ -31,30 +24,6 @@ public class WordEtymology extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
-	}
-
-	public String getEtymologyYear() {
-		return etymologyYear;
-	}
-
-	public void setEtymologyYear(String etymologyYear) {
-		this.etymologyYear = etymologyYear;
-	}
-
-	public String getEtymologyTypeCode() {
-		return etymologyTypeCode;
-	}
-
-	public void setEtymologyTypeCode(String etymologyTypeCode) {
-		this.etymologyTypeCode = etymologyTypeCode;
-	}
-
-	public Classifier getEtymologyType() {
-		return etymologyType;
-	}
-
-	public void setEtymologyType(Classifier etymologyType) {
-		this.etymologyType = etymologyType;
 	}
 
 	public List<String> getWordSources() {
@@ -81,11 +50,11 @@ public class WordEtymology extends AbstractDataObject {
 		this.wordEtymologyWrapup = wordEtymologyWrapup;
 	}
 
-	public String getWordEtymologyLineupWrapup() {
+	public List<String> getWordEtymologyLineupWrapup() {
 		return wordEtymologyLineupWrapup;
 	}
 
-	public void setWordEtymologyLineupWrapup(String wordEtymologyLineupWrapup) {
+	public void setWordEtymologyLineupWrapup(List<String> wordEtymologyLineupWrapup) {
 		this.wordEtymologyLineupWrapup = wordEtymologyLineupWrapup;
 	}
 

@@ -20,6 +20,8 @@ select w.word_id,
        w.display_morph_code,
        w.type_code,
        w.aspect_code,
+       w.etymology_year,
+       w.etymology_type_code,
        (select array_agg(distinct ld.dataset_code)
         from lexeme ld
         where ld.word_id = w.word_id
@@ -35,7 +37,9 @@ from (select w.id as word_id,
              w.morph_code,
              w.display_morph_code,
              w.type_code,
-             w.aspect_code
+             w.aspect_code,
+             w.etymology_year,
+             w.etymology_type_code
       from word as w
         join paradigm as p on p.word_id = w.id
         join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
@@ -406,13 +410,10 @@ create view view_ww_word_etymology
                 we.id
        order by we.order_by)
     )
-    select w.id word_id,
-           w.etymology_year,
-           w.etymology_type_code,
+    select wer.word_id,
            wsl.word_sources,
            array_agg(row (wer.word1_id,wer.word2_id,ef2.value,ew2.lang,ew2.etymology_year,mw2.meaning_words,wsl2.word_sources,wer.comments,wer.is_questionable,wer.is_compound)::type_word_etym order by wer.order_by) etym_lineup
     from word_etym_recursion wer
-      inner join word w on w.id = wer.word_id
       inner join word ew2 on ew2.id = wer.word2_id
       inner join paradigm ep2 on ep2.word_id = ew2.id
       inner join form ef2 on ef2.paradigm_id = ep2.id and ef2.mode = 'WORD'
@@ -421,6 +422,7 @@ create view view_ww_word_etymology
                        from lexeme l1,
                             meaning m,
                             lexeme l2,
+                            word w2,
                             paradigm p2,
                             form f2
                        where l1.dataset_code = 'ety'
@@ -428,7 +430,9 @@ create view view_ww_word_etymology
                        and   l2.meaning_id = m.id
                        and   l1.word_id != l2.word_id
                        and   l2.dataset_code = 'ety'
-                       and   p2.word_id = l2.word_id
+                       and   w2.lang = 'est'
+                       and   l2.word_id = w2.id
+                       and   p2.word_id = w2.id
                        and   f2.paradigm_id = p2.id
                        and   f2.mode = 'WORD'
                        group by l1.word_id) mw2 on mw2.word_id = wer.word2_id
@@ -440,9 +444,9 @@ create view view_ww_word_etymology
                               array_agg(wsl.value order by wsl.order_by) word_sources
                        from word_source_link wsl
                        group by wsl.word_id) wsl2 on wsl2.word_id = wer.word2_id
-    group by w.id,
+    group by wer.word_id,
              wsl.word_sources
-    order by w.id;
+    order by wer.word_id;
 
 -- word relations
 create view view_ww_word_relation 
