@@ -16,7 +16,7 @@
 
     <div class="card shadow mt-4">
       <div class="card-header">
-        <h5 class="card-title" th:text="#{lexeme.join.title}">Tähenduste ühendamine</h5>
+        <h5 class="card-title" th:text="#{lexeme.join.title}">Ilmikute ühendamine</h5>
       </div>
 
       <div class="card-body">
@@ -27,7 +27,7 @@
 
       <div class="card-body" th:if="${not #lists.isEmpty(validationMessages)}">
         <div class="alert alert-danger w-50" role="alert">
-          <strong>Tähenduste ühendamine ebaõnnestus</strong>
+          <strong>Ilmikute ühendamine ebaõnnestus</strong>
           <li>
             <lu th:each="validationMessage : ${validationMessages}"><span th:text="${validationMessage}"></span></lu>
           </li>
@@ -40,7 +40,7 @@
             <div class="form-row" name="searchFilter">
               <div class="col-12">
                 <div class="form-group row">
-                  <label class="col-auto col-form-label">Otsi ühendatavat tähendust</label>
+                  <label class="col-auto col-form-label">Otsi ühendatavat ilmikut</label>
                   <div class="col-5">
                     <input type="text" class="form-control" name="searchFilter" th:value="${searchFilter}" placeholder="sisesta otsitav vorm">
                   </div>
@@ -90,7 +90,7 @@
       </span>
       <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
       <a class="btn btn-primary"
-         data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite tähendused ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
+         data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite ilmikud ühendada ?" data-btn-ok-label="Jah" data-btn-cancel-label="Ei"
          th:href="@{'/lexjoin/' + ${lexemeToJoin.lexemeId}} + '/' + ${lexeme.lexemeId}"
          th:if="${lexeme.meaningId != lexemeToJoin.meaningId}"
         >Ühenda</a>
