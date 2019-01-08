@@ -241,7 +241,7 @@ function initialiseRecording(serviceUrl) {
 		console.log('Audio context is ready !');
 		console.log('navigator.getUserMedia ' + isUserMediaPresent);
 	} catch (e) {
-		alert('No web audio support in this browser!');
+		console.log('No web audio support in this browser!');
 	}
 }
 
