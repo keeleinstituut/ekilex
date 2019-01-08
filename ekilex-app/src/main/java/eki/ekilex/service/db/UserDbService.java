@@ -39,25 +39,6 @@ public class UserDbService extends AbstractDbService {
 		return null;
 	}
 
-	public EkiUser getUserByName(String name) {
-
-		Optional<Record6<Long, String, String, String, String[], String>> optionalResult = create
-				.select(
-						EKI_USER.ID,
-						EKI_USER.NAME,
-						EKI_USER.EMAIL,
-						EKI_USER.PASSWORD,
-						EKI_USER.ROLES,
-						EKI_USER.ACTIVATION_KEY.as("activationKey"))
-				.from(EKI_USER)
-				.where(EKI_USER.NAME.equalIgnoreCase(name))
-				.fetchOptional();
-		if (optionalResult.isPresent()) {
-			return optionalResult.get().into(EkiUser.class);
-		}
-		return null;
-	}
-
 	public Long addUser(String email, String name, String password, String[] roles, String activationKey) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
 		ekiUser.setEmail(email);

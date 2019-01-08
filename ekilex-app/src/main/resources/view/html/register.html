@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="common :: common_header(_,_)">
+<head th:replace="common :: common_header(_,~{::links})">
+  <th:block th:fragment="links">
+    <link rel="stylesheet" th:href="@{/view/css/text-security-disc.css}"/>
+  </th:block>
 </head>
 <body class="body-with-navbar">
 <th:block th:replace="common :: nav_bar"></th:block>
@@ -23,7 +26,7 @@
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">E-posti aadress</label>
           <div class="col-sm-3">
-            <input type="email" class="form-control" name="email" placeholder="E-posti aadress"  th:value="${userEmail}">
+            <input type="email" class="form-control" name="email" placeholder="e-posti aadress"  th:value="${userEmail}">
           </div>
         </div>
         <div class="form-group row validation">
@@ -35,13 +38,13 @@
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Parool</label>
           <div class="col-sm-2">
-            <input type="password" class="form-control" name="password" th:autofocus="${userName != null}">
+            <input type="text" class="form-control pw" name="salasona" th:autofocus="${userName != null}" minlength="8" title="parooli pikkus peab olema vähemalt 8 sümbolit">
           </div>
         </div>
         <div class="form-group row">
           <label class="col-sm-2 col-form-label">Parool uuesti</label>
           <div class="col-sm-2">
-            <input type="password" class="form-control" name="password2">
+            <input type="text" class="form-control pw" name="salasona2">
           </div>
         </div>
         <div class="form-group row">

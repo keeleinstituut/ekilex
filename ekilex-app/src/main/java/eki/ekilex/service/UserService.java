@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
 
+import java.util.Objects;
+
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Component
@@ -31,13 +33,12 @@ public class UserService {
 	}
 
 	@Transactional
-	public boolean isValidNewUser(String email, String name) {
-		if (isBlank(email) || isBlank(name)) {
+	public boolean isValidNewUser(String email) {
+		if (isBlank(email)) {
 			return false;
 		}
 		EkiUser userByEmail = userDbService.getUserByEmail(email);
-		EkiUser userByName = userDbService.getUserByName(name);
-		return userByEmail == null && userByName == null;
+		return userByEmail == null;
 	}
 
 	@Transactional
@@ -59,6 +60,10 @@ public class UserService {
 
 	public boolean isActiveUser(EkiUser user) {
 		return user != null && isBlank(user.getActivationKey());
+	}
+
+	public boolean isValidPassword(String password, String password2) {
+		return password != null && password.length() > 7 && Objects.equals(password, password2);
 	}
 
 }

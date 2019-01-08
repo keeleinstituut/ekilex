@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import eki.common.constant.ReferenceType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -458,9 +459,10 @@ public class ModifyController implements WebConstant {
 			@PathVariable(name = "wordId") Long wordId,
 			@PathVariable(name = "dataset") String dataset,
 			@PathVariable(name = "returnPage") String returnPage,
-			@PathVariable(name = "meaningId") Long meaningId,
+			@PathVariable(name = "meaningId") String meaningIdCode,
 			RedirectAttributes attributes) {
 
+		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
 		updateService.addWordToDataset(wordId, dataset, meaningId);
 		Word word = commonDataService.getWord(wordId);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, word.getValue());
