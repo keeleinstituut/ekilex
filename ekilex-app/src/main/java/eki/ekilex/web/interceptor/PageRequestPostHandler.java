@@ -1,8 +1,11 @@
 package eki.ekilex.web.interceptor;
 
+import java.util.Calendar;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (modelAndView == null) {
 			return;
 		}
+		if (isTraditionalMicrosoftUser(request, modelAndView)) {
+			return;
+		}
 
 		String servletPath = request.getServletPath();
 		logger.debug("Requested path: \"{}\"", servletPath);
@@ -64,5 +70,17 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 
 		// add model attributes here...
+	}
+
+	private boolean isTraditionalMicrosoftUser(HttpServletRequest request, ModelAndView modelAndView) {
+
+		String userAgent = request.getHeader("User-Agent");
+		if (StringUtils.contains(userAgent, "Trident")) {
+			int year = Calendar.getInstance().get(Calendar.YEAR);
+			modelAndView.addObject("year", new Integer(year));
+			modelAndView.setViewName("iescareoff");
+			return true;
+		}
+		return false;
 	}
 }
