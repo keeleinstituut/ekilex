@@ -591,4 +591,26 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.limit(1)
 				.fetchSingle();
 	}
+
+	public Record1<Long> getMeaningFirstLexemeId(Long meaningId, List<String> datasets) {
+
+		Condition datasetCondition = DSL.trueCondition();
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
+		}
+
+		return create
+				.select(LEXEME.ID)
+				.from(FORM, PARADIGM, LEXEME)
+				.where(
+						LEXEME.MEANING_ID.eq(meaningId)
+								.and(datasetCondition)
+								.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.orderBy(LEXEME.LEVEL1, LEXEME.LEVEL2, LEXEME.LEVEL3, LEXEME.WORD_ID, FORM.ID)
+				.limit(1)
+				.fetchSingle();
+	}
+
 }

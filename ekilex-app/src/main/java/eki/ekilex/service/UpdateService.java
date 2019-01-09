@@ -336,9 +336,8 @@ public class UpdateService {
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, meaningRelationId, relationType);
 	}
 
-	//TODO lifecycle log
 	@Transactional
-	public void joinLexemeMeanings(Long lexemeId, Long lexemeId2) {
+	public void joinLexemes(Long lexemeId, Long lexemeId2) {
 		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
 		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
 		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
@@ -370,6 +369,14 @@ public class UpdateService {
 	@Transactional
 	public void separateLexemeMeanings(Long lexemeId) {
 		updateDbService.separateLexemeMeanings(lexemeId);
+	}
+
+	@Transactional
+	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
+		String logEntrySource = updateDbService.getFirstDefinitionOfMeaning(meaningId);
+		String logEntryTarget = updateDbService.getFirstDefinitionOfMeaning(sourceMeaningId);
+		lifecycleLogDbService.addLog(LifecycleEventType.JOIN, LifecycleEntity.MEANING, LifecycleProperty.VALUE, meaningId, logEntrySource, logEntryTarget);
+		updateDbService.joinMeanings(meaningId, sourceMeaningId);
 	}
 
 	// --- DELETE ---

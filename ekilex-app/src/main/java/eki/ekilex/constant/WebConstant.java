@@ -64,4 +64,6 @@ public interface WebConstant {
 
 	String ACTIVATION_PAGE_URI = "/register/activate";
 
+	String MEANING_JOIN_PAGE = "meaningjoin";
+
 }

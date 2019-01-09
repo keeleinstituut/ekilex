@@ -449,13 +449,17 @@ public class UpdateDbService implements DbConstant {
 		if (lexeme.getWordId().equals(sourceLexeme.getWordId()) && lexeme.getDatasetCode().equals(sourceLexeme.getDatasetCode())) {
 			joinLexemes(lexemeId, sourceLexemeId);
 		}
-		create.update(LEXEME).set(LEXEME.MEANING_ID, lexeme.getMeaningId()).where(LEXEME.MEANING_ID.eq(sourceLexeme.getMeaningId())).execute();
-		joinMeaningDefinitions(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
-		joinMeaningDomains(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
-		joinMeaningFreeforms(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
-		joinMeaningRelations(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
-		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, lexeme.getMeaningId()).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceLexeme.getMeaningId())).execute();
-		create.delete(MEANING).where(MEANING.ID.eq(sourceLexeme.getMeaningId())).execute();
+		joinMeanings(lexeme.getMeaningId(), sourceLexeme.getMeaningId());
+	}
+
+	public void joinMeanings(Long meaningId, Long sourceMeaningId) {
+		create.update(LEXEME).set(LEXEME.MEANING_ID, meaningId).where(LEXEME.MEANING_ID.eq(sourceMeaningId)).execute();
+		joinMeaningDefinitions(meaningId, sourceMeaningId);
+		joinMeaningDomains(meaningId, sourceMeaningId);
+		joinMeaningFreeforms(meaningId, sourceMeaningId);
+		joinMeaningRelations(meaningId, sourceMeaningId);
+		create.update(MEANING_LIFECYCLE_LOG).set(MEANING_LIFECYCLE_LOG.MEANING_ID, meaningId).where(MEANING_LIFECYCLE_LOG.MEANING_ID.eq(sourceMeaningId)).execute();
+		create.delete(MEANING).where(MEANING.ID.eq(sourceMeaningId)).execute();
 	}
 
 	public void joinLexemes(Long lexemeId, Long sourceLexemeId) {

@@ -107,7 +107,10 @@
         <div class="card-body">
           <div class="row">
             <div class="col-10">
-              <button class="btn btn-primary float-right" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${meaningId}">Lisa uus keelend</button>
+              <div class="float-right">
+                <a class="btn btn-primary" th:href="@{'/meaningjoin/' + ${meaningId}}">Ühenda</a>
+                <button class="btn btn-primary" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${meaningId}">Lisa uus keelend</button>
+              </div>
               <div th:if="${meaning.processStateCode != null}">
                 <span class="lbl">Protsessi olek</span>
                 <span th:text="${meaning.processStateCode}"></span>

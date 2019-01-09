@@ -78,7 +78,7 @@ public class LexModifyController implements WebConstant {
 			model.addAttribute("validationMessages", validationMessages);
 			return LEX_JOIN_PAGE;
 		}
-		updateService.joinLexemeMeanings(lexemeId, lexemeId2);
+		updateService.joinLexemes(lexemeId, lexemeId2);
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
 
 		return "redirect:" + LEX_SEARCH_URI;
