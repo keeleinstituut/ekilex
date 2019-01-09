@@ -15,6 +15,12 @@ public class SessionBean extends AbstractDataObject {
 
 	private List<ClassifierSelect> languagesOrder;
 
+	private String newWordSelectedDataset;
+
+	private String newWordSelectedLanguage;
+
+	private String newWordSelectedMorphCode;
+
 	public List<String> getSelectedDatasets() {
 		return selectedDatasets;
 	}
@@ -37,6 +43,30 @@ public class SessionBean extends AbstractDataObject {
 
 	public void setLanguagesOrder(List<ClassifierSelect> languagesOrder) {
 		this.languagesOrder = languagesOrder;
+	}
+
+	public String getNewWordSelectedDataset() {
+		return newWordSelectedDataset;
+	}
+
+	public void setNewWordSelectedDataset(String newWordSelectedDataset) {
+		this.newWordSelectedDataset = newWordSelectedDataset;
+	}
+
+	public String getNewWordSelectedLanguage() {
+		return newWordSelectedLanguage;
+	}
+
+	public void setNewWordSelectedLanguage(String newWordSelectedLanguage) {
+		this.newWordSelectedLanguage = newWordSelectedLanguage;
+	}
+
+	public String getNewWordSelectedMorphCode() {
+		return newWordSelectedMorphCode;
+	}
+
+	public void setNewWordSelectedMorphCode(String newWordSelectedMorphCode) {
+		this.newWordSelectedMorphCode = newWordSelectedMorphCode;
 	}
 
 }

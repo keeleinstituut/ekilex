@@ -383,10 +383,6 @@ function initNewWordDlg() {
         } else {
             newWordDlg.find('[name=value]').val(null);
         }
-        var firstSelectedDataset = $('[name=selectedDatasets]:checked').val();
-        $('[name=dataset]').val(firstSelectedDataset);
-        $('[name=morphCode]').val('??');
-        $('[name=language]').val('est');
         var meaningId = $(e.relatedTarget).data('meaning-id');
         $('[name=meaningId]').val(meaningId);
     });

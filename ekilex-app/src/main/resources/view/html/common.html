@@ -700,6 +700,7 @@
               <select class="form-control" name="dataset">
                 <option th:each="dataset : ${allDatasets}"
                         th:value="${dataset.code}"
+                        th:selected="${dataset.code == sessionBean.newWordSelectedDataset}"
                         th:text="${dataset.name}">name</option>
               </select>
             </div>
@@ -709,6 +710,7 @@
               <select class="form-control" name="language">
                 <option th:each="language : ${allLanguages}"
                         th:value="${language.code}"
+                        th:selected="${language.code == sessionBean.newWordSelectedLanguage}"
                         th:text="${language.value}">language</option>
               </select>
             </div>
@@ -718,6 +720,7 @@
               <select class="form-control" name="morphCode">
                 <option th:each="morphCode : ${wordMorphCodes}"
                         th:value="${morphCode.code}"
+                        th:selected="${morphCode.code == sessionBean.newWordSelectedMorphCode}"
                         th:text="${morphCode.value}">morphCode</option>
               </select>
             </div>
