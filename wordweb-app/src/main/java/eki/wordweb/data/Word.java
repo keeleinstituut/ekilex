@@ -33,6 +33,12 @@ public class Word extends AbstractDataObject {
 
 	private Classifier aspect;
 
+	private String etymologyYear;
+
+	private String etymologyTypeCode;
+
+	private Classifier etymologyType;
+
 	private List<Classifier> summarisedPoses;
 
 	private WordEtymology wordEtymology;
@@ -157,6 +163,30 @@ public class Word extends AbstractDataObject {
 
 	public void setAspect(Classifier aspect) {
 		this.aspect = aspect;
+	}
+
+	public String getEtymologyYear() {
+		return etymologyYear;
+	}
+
+	public void setEtymologyYear(String etymologyYear) {
+		this.etymologyYear = etymologyYear;
+	}
+
+	public String getEtymologyTypeCode() {
+		return etymologyTypeCode;
+	}
+
+	public void setEtymologyTypeCode(String etymologyTypeCode) {
+		this.etymologyTypeCode = etymologyTypeCode;
+	}
+
+	public Classifier getEtymologyType() {
+		return etymologyType;
+	}
+
+	public void setEtymologyType(Classifier etymologyType) {
+		this.etymologyType = etymologyType;
 	}
 
 	public List<Classifier> getSummarisedPoses() {

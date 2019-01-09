@@ -48,6 +48,8 @@ dblink(
 	display_morph_code varchar(100),
 	type_code varchar(100),
 	aspect_code varchar(100),
+	etymology_year text,
+    etymology_type_code varchar(100),
 	dataset_codes varchar(100) array,
 	meaning_count integer,
 	meaning_words type_word array,
@@ -160,8 +162,6 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_etymology') as word_etymology(
 	word_id bigint,
-	etymology_year text,
-	etymology_type_code varchar(100),
 	word_sources text array,
 	etym_lineup type_word_etym array
 );

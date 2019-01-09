@@ -25,7 +25,6 @@ import eki.wordweb.data.TypeUsage;
 import eki.wordweb.data.TypeWordEtym;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
-import eki.wordweb.data.WordEtymology;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.service.db.CommonDataDbService;
@@ -49,6 +48,10 @@ public class ClassifierUtil {
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT_TYPE, classifierCode, displayLang);
 		word.setAspect(classifier);
+		classifierCode = word.getEtymologyTypeCode();
+		//TODO no labels yet for etym type code
+		classifier = getClassifier(ClassifierName.ETYMOLOGY_TYPE, classifierCode, displayLang);
+		word.setEtymologyType(classifier);
 	}
 
 	public String applyClassifiers(Form form, String displayLang) {
@@ -136,15 +139,6 @@ public class ClassifierUtil {
 		classifierCode = wordRelation.getWordRelTypeCode();
 		classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 		wordRelation.setWordRelType(classifier);
-	}
-
-	public void applyClassifiers(WordEtymology wordEtym, String displayLang) {
-		String classifierCode;
-		Classifier classifier;
-		classifierCode = wordEtym.getEtymologyTypeCode();
-		//TODO no labels yet for etym type code
-		classifier = getClassifier(ClassifierName.ETYMOLOGY_TYPE, classifierCode, displayLang);
-		wordEtym.setEtymologyType(classifier);
 	}
 
 	public void applyClassifiers(TypeWordEtym wordEtym, String displayLang) {

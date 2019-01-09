@@ -10,8 +10,6 @@ import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
-import static eki.ekilex.data.db.Tables.LEX_RELATION;
-import static eki.ekilex.data.db.Tables.LEX_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
