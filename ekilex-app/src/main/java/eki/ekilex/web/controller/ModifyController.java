@@ -382,6 +382,9 @@ public class ModifyController implements WebConstant {
 			RedirectAttributes attributes) {
 
 		if (StringUtils.isNotBlank(value)) {
+			sessionBean.setNewWordSelectedDataset(dataset);
+			sessionBean.setNewWordSelectedLanguage(language);
+			sessionBean.setNewWordSelectedMorphCode(morphCode);
 			List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
 			WordsResult words = lexSearchService.findWords(value, allDatasets, true);
 			if (words.getTotalCount() == 0) {
