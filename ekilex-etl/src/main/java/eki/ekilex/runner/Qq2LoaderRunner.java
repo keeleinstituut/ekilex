@@ -515,7 +515,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Node definitionValueNode : definitionValueNodes) {
 			String definition = ((Element)definitionValueNode).getTextTrim();
-			definition = cleanEkiEntityMarkup(definition);
 			createDefinition(meaningId, definition, dataLang, dataset);
 		}
 	}
@@ -588,7 +587,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		String usageValue;
 		String usageTranslationLang;
 		Element usageTranslationValueNode;
-		String usageTranslationValue;
+		String usageTranslationCleanValue;
+		String usageTranslationOrigValue;
 		String[] usageTranslationParts;
 
 		for (Node usageGroupNode : usageGroupNodes) {
@@ -599,7 +599,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			usages = new ArrayList<>();
 			for (Node usageNode : usageNodes) {
 				usageValue = ((Element)usageNode).getTextTrim();
-				usageValue = cleanEkiEntityMarkup(usageValue);
 				newUsage = new Usage();
 				newUsage.setValue(usageValue);
 				usages.add(newUsage);
@@ -611,10 +610,10 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				usageTranslationLang = unifyLang(usageTranslationLang);
 				if (StringUtils.equalsIgnoreCase(usageTranslationLang, usageTranslationLangRus)) {
 					usageTranslationValueNode = (Element) usageTranslationNode.selectSingleNode(usageTranslationValueExp);
-					usageTranslationValue = usageTranslationValueNode.getTextTrim();
-					usageTranslationValue = cleanEkiEntityMarkup(usageTranslationValue);
+					usageTranslationOrigValue = usageTranslationValueNode.getTextTrim();
+					usageTranslationCleanValue = cleanEkiEntityMarkup(usageTranslationOrigValue);
 					lemmatisedTokens = new ArrayList<>();
-					usageTranslationParts = StringUtils.split(usageTranslationValue, ' ');
+					usageTranslationParts = StringUtils.split(usageTranslationCleanValue, ' ');
 					originalTokens = new ArrayList<>(Arrays.asList(usageTranslationParts));
 					for (String usageTranslationPart : usageTranslationParts) {
 						usageTranslationPart = RussianWordProcessing.stripIllegalLetters(usageTranslationPart);
@@ -627,7 +626,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 					}
 					usageTranslation = new UsageTranslation();
 					usageTranslation.setLang(usageTranslationLang);
-					usageTranslation.setValue(usageTranslationValue);
+					usageTranslation.setValue(usageTranslationOrigValue);
 					usageTranslation.setOriginalTokens(originalTokens);
 					usageTranslation.setLemmatisedTokens(lemmatisedTokens);
 					usageTranslations.add(usageTranslation);

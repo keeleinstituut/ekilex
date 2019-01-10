@@ -26,6 +26,7 @@ import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
@@ -41,7 +42,8 @@ public class LifecycleLogDbServiceHelper {
 		Map<String, Object> result = create
 				.select(
 						lff.LEXEME_ID,
-						ff1.VALUE_TEXT
+						ff1.VALUE_TEXT,
+						ff1.VALUE_PRESE
 						)
 				.from(lff, ff1)
 				.where(
@@ -59,7 +61,8 @@ public class LifecycleLogDbServiceHelper {
 		Map<String, Object> result = create
 				.select(
 						lff.LEXEME_ID,
-						ff2.VALUE_TEXT
+						ff2.VALUE_TEXT,
+						ff2.VALUE_PRESE
 						)
 				.from(lff, ff1, ff2)
 				.where(
@@ -78,12 +81,14 @@ public class LifecycleLogDbServiceHelper {
 						WORD.GENDER_CODE,
 						WORD.TYPE_CODE,
 						WORD.ASPECT_CODE,
-						FORM.VALUE
+						FORM.VALUE,
+						FORM.VALUE_PRESE
 						)
 				.from(WORD, PARADIGM, FORM)
 				.where(WORD.ID.eq(entityId)
 						.and(PARADIGM.WORD_ID.eq(entityId))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID)).and(FORM.MODE.eq("WORD")))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.fetchSingleMap();
 		return result;
 	}
@@ -121,6 +126,7 @@ public class LifecycleLogDbServiceHelper {
 				.select(
 						DEFINITION.MEANING_ID,
 						DEFINITION.VALUE,
+						DEFINITION.VALUE_PRESE,
 						DEFINITION.ORDER_BY
 						)
 				.from(DEFINITION)
@@ -136,7 +142,9 @@ public class LifecycleLogDbServiceHelper {
 						DEFINITION_SOURCE_LINK.VALUE
 						)
 				.from(DEFINITION, DEFINITION_SOURCE_LINK)
-				.where(DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID).and(DEFINITION_SOURCE_LINK.ID.eq(entityId)))
+				.where(
+						DEFINITION.ID.eq(DEFINITION_SOURCE_LINK.DEFINITION_ID)
+						.and(DEFINITION_SOURCE_LINK.ID.eq(entityId)))
 				.fetchSingleMap();
 		return result;
 	}
@@ -224,13 +232,13 @@ public class LifecycleLogDbServiceHelper {
 
 	public List<String> getMeaningWords(DSLContext create, Long entityId) {
 		List<String> result = create
-				.select(
-						FORM.VALUE
-				)
+				.select(FORM.VALUE)
 				.from(LEXEME)
 				.join(PARADIGM).on(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
 				.join(FORM).on(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-				.where(LEXEME.MEANING_ID.eq(entityId).and(FORM.MODE.eq("WORD")))
+				.where(
+						LEXEME.MEANING_ID.eq(entityId)
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.fetch(0, String.class);
 		return result;
 	}

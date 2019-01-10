@@ -11,19 +11,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.RegExUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.postgresql.jdbc.PgArray;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
@@ -36,6 +34,7 @@ import eki.common.constant.SourceType;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.data.Count;
 import eki.common.data.PgVarcharArray;
+import eki.common.service.TextDecorationService;
 import eki.ekilex.data.transform.Form;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
@@ -50,6 +49,9 @@ import eki.ekilex.service.ReportComposer;
 public abstract class AbstractLoaderRunner extends AbstractLoaderCommons implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(AbstractLoaderRunner.class);
+
+	@Autowired
+	private TextDecorationService textDecorationService;
 
 	abstract String getDataset();
 	abstract void deleteDatasetData() throws Exception;
@@ -120,8 +122,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private String sqlDeleteCollocationFreeformsForDataset;
 	private String sqlDeleteLexemeFreeformsForDataset;
 
-	private Pattern ekiEntityPatternV;
-
 	private long t1;
 	private long t2;
 
@@ -177,8 +177,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_LEXEME_FF_FOR_DATASET);
 		sqlDeleteLexemeFreeformsForDataset = getContent(resourceFileInputStream);
-
-		ekiEntityPatternV = Pattern.compile("(&(ehk|Hrl|hrl|ja|jne|jt|ka|nt|puudub|v|vm|vms|vrd|vt|напр.|и др.|и т. п.|г.);)");
 	}
 
 	protected void start() throws Exception {
@@ -231,15 +229,12 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return lang;
 	}
 
-	protected String cleanEkiEntityMarkup(String value) {
-		if (StringUtils.isBlank(value)) {
-			return value;
-		}
-		Matcher matcher = ekiEntityPatternV.matcher(value);
-		if (matcher.find()) {
-			value = matcher.replaceAll(matcher.group(2));
-		}
-		return RegExUtils.removePattern(value, "[&]\\w+[;]");
+	protected String cleanEkiEntityMarkup(String originalText) {
+		return textDecorationService.cleanEkiEntityMarkup(originalText);
+	}
+
+	protected String convertEkiEntityMarkup(String originalText) {
+		return textDecorationService.convertEkiEntityMarkup(originalText);
 	}
 
 	protected String removeAccents(String value, String lang) {
@@ -557,6 +552,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String soundFile = form.getSoundFile();
 		Integer orderBy = form.getOrderBy();
 
+		String valueClean = cleanEkiEntityMarkup(value);
+		String valuePrese = convertEkiEntityMarkup(value);
+
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("paradigm_id", paradigmId);
 		tableRowParamMap.put("mode", mode.name());
@@ -574,7 +572,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("morph_exists", morphExists);
-		tableRowParamMap.put("value", value);
+		tableRowParamMap.put("value", valueClean);
+		tableRowParamMap.put("value_prese", valuePrese);
 		if (components != null) {
 			tableRowParamMap.put("components", new PgVarcharArray(components));
 		}
@@ -705,14 +704,18 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
 	}
 
-	protected Long createDefinition(Long meaningId, String definition, String lang, String dataset) throws Exception {
+	protected Long createDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
+
+		String valueClean = cleanEkiEntityMarkup(value);
+		String valuePrese = convertEkiEntityMarkup(value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("value", definition);
+		tableRowParamMap.put("value", valueClean);
+		tableRowParamMap.put("value_prese", valuePrese);
 		tableRowParamMap.put("lang", lang);
 		Long definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
-		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, definition);
+		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, value);
 		if (definitionId != null) {
 			tableRowParamMap.clear();
 			tableRowParamMap.put("definition_id", definitionId);
@@ -908,7 +911,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		if (value != null) {
 			if (value instanceof String) {
-				tableRowParamMap.put("value_text", value);
+				String valueStr = (String) value;
+				String valueClean = cleanEkiEntityMarkup(valueStr);
+				String valuePrese = convertEkiEntityMarkup(valueStr);
+				tableRowParamMap.put("value_text", valueClean);
+				tableRowParamMap.put("value_prese", valuePrese);
 			} else if (value instanceof Timestamp) {
 				tableRowParamMap.put("value_date", value);
 			} else {

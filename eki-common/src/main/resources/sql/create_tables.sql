@@ -377,6 +377,7 @@ create table freeform
   parent_id bigint references freeform(id) on delete cascade null,
   type varchar(100) not null,
   value_text text null,
+  value_prese text null,
   value_date timestamp null,
   value_number numeric(14, 4) null,
   value_array text array null,
@@ -515,6 +516,7 @@ create table form
   morph_code varchar(100) references morph(code) not null,
   morph_exists boolean not null,
   value text not null,
+  value_prese text not null,
   components varchar(100) array null,
   display_form varchar(255) null,
   vocal_form varchar(255) null,
@@ -585,6 +587,7 @@ create table definition
   id bigserial primary key,
   meaning_id bigint references meaning(id) not null,
   value text not null,
+  value_prese text not null,
   lang char(3) references language(code) not null,
   process_state_code varchar(100) references process_state(code) null,
   order_by bigserial

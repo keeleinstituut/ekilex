@@ -311,7 +311,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		List<Node> groupNodes = node.selectNodes(phraseologyGroupExp);
 		for (Node groupNode : groupNodes) {
-			List<String> wordValues = extractValuesAsStrings(groupNode, phraseologyValueExp);
+			List<String> wordValues = extractCleanValues(groupNode, phraseologyValueExp);
 			for (String wordValue : wordValues) {
 				String word = cleanUp(wordValue);
 				if (isNotWordInSs1(word)) {
@@ -323,12 +323,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				for (Node meaningGroupNode: meaningGroupNodes) {
 					Long meaningId = createMeaning(new Meaning());
 
-					List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionsExp);
+					List<String> definitions = extractCleanValues(meaningGroupNode, definitionsExp);
 					for (String definition : definitions) {
 						createDefinition(meaningId, definition, dataLang, getDataset());
 					}
 
-					List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
+					List<String> domains = extractCleanValues(meaningGroupNode, domainsExp);
 					processDomains(null, meaningId, domains);
 
 					Lexeme lexeme = new Lexeme();
@@ -339,8 +339,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					lexeme.setLevel3(1);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
-						List<String> governments = extractValuesAsStrings(meaningGroupNode, governmentsExp);
-						List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
+						List<String> governments = extractCleanValues(meaningGroupNode, governmentsExp);
+						List<String> registers = extractCleanValues(meaningGroupNode, registersExp);
 						saveGovernments(wordData, governments, lexemeId);
 						saveRegisters(lexemeId, registers, reportingId);
 					}
@@ -350,7 +350,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					for(Node transalationGroupNode : translationGroupNodes) {
 						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
 						WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, LANG_RUS, null);
-						List<String> russianRegisters = extractValuesAsStrings(transalationGroupNode, registersExp);
+						List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 						Lexeme russianLexeme = new Lexeme();
 						russianLexeme.setWordId(russianWordData.id);
 						russianLexeme.setMeaningId(meaningId);
@@ -362,7 +362,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						if (russianLexemeId != null) {
 							saveRegisters(russianLexemeId, russianRegisters, reportingId);
 						}
-						List<String> additionalDomains = extractValuesAsStrings(transalationGroupNode, domainsExp);
+						List<String> additionalDomains = extractCleanValues(transalationGroupNode, domainsExp);
 						processDomains(null, meaningId, additionalDomains);
 					}
 				}
@@ -436,12 +436,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				lexemeLevel2++;
 				List<String> lexemePosCodes =  extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 				List<String> lexemeGrammars = extractGrammar(meaningGroupNode);
-				List<String> registers = extractValuesAsStrings(meaningGroupNode, registerExp);
+				List<String> registers = extractCleanValues(meaningGroupNode, registerExp);
 
 				Long meaningId;
 				List<String> definitionsToAdd = new ArrayList<>();
 				List<String> definitionsToCache = new ArrayList<>();
-				List<String> definitions = extractValuesAsStrings(meaningGroupNode, meaningDefinitionExp);
+				List<String> definitions = extractCleanValues(meaningGroupNode, meaningDefinitionExp);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
@@ -559,7 +559,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (isRestricted(usageBlockNode)) continue;
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
-				List<String> wordValues = extractValuesAsStrings(usageGroupNode, usageExp);
+				List<String> wordValues = extractCleanValues(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
 					if (!isUsage(cleanUp(wordValue))) {
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
@@ -580,10 +580,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								meaningId = (Long)lexemeForWord.get("meaning_id");
 							} else {
 								meaningId = createMeaning(new Meaning());
-								List<String> domains = extractValuesAsStrings(meaningGroupNode, domainsExp);
+								List<String> domains = extractCleanValues(meaningGroupNode, domainsExp);
 								processDomains(null, meaningId, domains);
 
-								List<String> definitions = extractValuesAsStrings(meaningGroupNode, definitionExp);
+								List<String> definitions = extractCleanValues(meaningGroupNode, definitionExp);
 								for (String definition : definitions) {
 									createDefinition(meaningId, definition, dataLang, getDataset());
 								}
@@ -596,7 +596,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								wordData.level1++;
 
 								Long lexemeId = createLexeme(lexeme, getDataset());
-								List<String> registers = extractValuesAsStrings(meaningGroupNode, registersExp);
+								List<String> registers = extractCleanValues(meaningGroupNode, registersExp);
 								saveRegisters(lexemeId, registers, reportingId);
 							}
 
@@ -615,7 +615,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							for(Node transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
 								WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, LANG_RUS, null);
-								List<String> russianRegisters = extractValuesAsStrings(transalationGroupNode, registersExp);
+								List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 								boolean createNewRussianLexeme = true;
 								Long russianLexemeId = null;
 								if (useExistingLexeme) {
@@ -637,7 +637,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 								if (russianLexemeId != null) {
 									saveRegisters(russianLexemeId, russianRegisters, reportingId);
 								}
-								List<String> additionalDomains = extractValuesAsStrings(transalationGroupNode, domainsExp);
+								List<String> additionalDomains = extractCleanValues(transalationGroupNode, domainsExp);
 								processDomains(null, meaningId, additionalDomains);
 							}
 						}
@@ -747,13 +747,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (isRestricted(usageBlockNode)) continue;
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
-				List<String> usageValues = extractValuesAsStrings(usageGroupNode, usageExp);
-				for (String usageValue : usageValues) {
-					if (isUsage(usageValue)) {
+				List<String> usageOriginalValues = extractOriginalValues(usageGroupNode, usageExp);
+				List<String> usageDefinitionValues = extractOriginalValues(usageGroupNode, usageDefinitionExp);
+				List<UsageTranslation> usageTranslations = extractUsageTranslations(usageGroupNode);
+				for (String usageOriginalValue : usageOriginalValues) {
+					String usageCleanValue = cleanEkiEntityMarkup(usageOriginalValue);
+					if (isUsage(usageCleanValue)) {
 						Usage usage = new Usage();
-						usage.setValue(usageValue);
-						usage.setDefinitions(extractValuesAsStrings(usageGroupNode, usageDefinitionExp));
-						usage.setUsageTranslations(extractUsageTranslations(usageGroupNode));
+						usage.setValue(usageOriginalValue);
+						usage.setDefinitions(usageDefinitionValues);
+						usage.setUsageTranslations(usageTranslations);
 						usages.add(usage);
 					}
 				}
@@ -771,7 +774,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String usageTranslationExp = "x:qnp/x:qng/x:qn";
 
 		List<UsageTranslation> translations = new ArrayList<>();
-		List<String> translationValues = extractValuesAsStrings(node, usageTranslationExp);
+		List<String> translationValues = extractOriginalValues(node, usageTranslationExp);
 		for (String translationValue : translationValues) {
 			UsageTranslation translation = new UsageTranslation();
 			translation.setValue(cleanRussianTranslation(translationValue));
@@ -788,7 +791,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private List<String> extractGovernments(Node node) {
 		final String wordGovernmentExp = "x:grk/x:r";
-		return extractValuesAsStrings(node, wordGovernmentExp);
+		return extractCleanValues(node, wordGovernmentExp);
 	}
 
 	private List<LexemeToWordData> extractRussianWords(
@@ -814,7 +817,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.displayForm = word;
 			wordData.reportingId = reportingId;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
-			wordData.governments.addAll(extractValuesAsStrings(wordGroupNode, governmentExp));
+			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
 			String domainCode = extractAsString(wordGroupNode, domainExp);
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);

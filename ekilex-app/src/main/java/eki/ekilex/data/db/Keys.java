@@ -272,7 +272,7 @@ public class Keys {
     public static final UniqueKey<DomainRecord> DOMAIN_PKEY = UniqueKeys0.DOMAIN_PKEY;
     public static final UniqueKey<DomainLabelRecord> DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = UniqueKeys0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
     public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = UniqueKeys0.EKI_USER_PKEY;
-    public static final UniqueKey<EkiUserRecord> EKI_USER_NAME_KEY = UniqueKeys0.EKI_USER_NAME_KEY;
+    public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = UniqueKeys0.EKI_USER_EMAIL_KEY;
     public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = UniqueKeys0.ETYMOLOGY_TYPE_PKEY;
     public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = UniqueKeys0.FEEDBACK_LOG_PKEY;
     public static final UniqueKey<FormRecord> FORM_PKEY = UniqueKeys0.FORM_PKEY;
@@ -587,7 +587,7 @@ public class Keys {
         public static final UniqueKey<DomainRecord> DOMAIN_PKEY = Internal.createUniqueKey(Domain.DOMAIN, "domain_pkey", Domain.DOMAIN.CODE, Domain.DOMAIN.ORIGIN);
         public static final UniqueKey<DomainLabelRecord> DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Internal.createUniqueKey(DomainLabel.DOMAIN_LABEL, "domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE);
         public static final UniqueKey<EkiUserRecord> EKI_USER_PKEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_pkey", EkiUser.EKI_USER.ID);
-        public static final UniqueKey<EkiUserRecord> EKI_USER_NAME_KEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_name_key", EkiUser.EKI_USER.NAME);
+        public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_email_key", EkiUser.EKI_USER.EMAIL);
         public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = Internal.createUniqueKey(EtymologyType.ETYMOLOGY_TYPE, "etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE.CODE);
         public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = Internal.createUniqueKey(FeedbackLog.FEEDBACK_LOG, "feedback_log_pkey", FeedbackLog.FEEDBACK_LOG.ID);
         public static final UniqueKey<FormRecord> FORM_PKEY = Internal.createUniqueKey(Form.FORM, "form_pkey", Form.FORM.ID);

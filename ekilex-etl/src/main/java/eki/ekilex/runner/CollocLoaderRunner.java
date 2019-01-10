@@ -501,7 +501,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Node> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes(meaningDefinitionExp);
 		for (Node meaningDefinitionNode : meaningDefinitionNodes) {
 			String definition = ((Element)meaningDefinitionNode).getTextTrim();
-			definition = cleanEkiEntityMarkup(definition);
 			createDefinition(meaningId, definition, dataLang, getDataset());
 		}
 	}
@@ -964,6 +963,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			tableRowParamMap.put("morph_code", DEFAULT_WORD_MORPH_CODE);
 			tableRowParamMap.put("morph_exists", Boolean.TRUE);
 			tableRowParamMap.put("value", word);
+			tableRowParamMap.put("value_prese", word);//TODO decoration conversion
 			basicDbService.create(FORM, tableRowParamMap);
 
 			Long meaningId = basicDbService.create(MEANING);

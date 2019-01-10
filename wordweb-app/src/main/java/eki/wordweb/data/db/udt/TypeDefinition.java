@@ -27,7 +27,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
 
-    private static final long serialVersionUID = 1586288188;
+    private static final long serialVersionUID = -689180719;
 
     /**
      * The reference instance of <code>public.type_definition</code>
@@ -56,6 +56,11 @@ public class TypeDefinition extends UDTImpl<TypeDefinitionRecord> {
      * The attribute <code>public.type_definition.value</code>.
      */
     public static final UDTField<TypeDefinitionRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB, TYPE_DEFINITION, "");
+
+    /**
+     * The attribute <code>public.type_definition.value_prese</code>.
+     */
+    public static final UDTField<TypeDefinitionRecord, String> VALUE_PRESE = createField("value_prese", org.jooq.impl.SQLDataType.CLOB, TYPE_DEFINITION, "");
 
     /**
      * The attribute <code>public.type_definition.lang</code>.
