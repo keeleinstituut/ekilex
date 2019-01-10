@@ -141,7 +141,7 @@
                       <button type="button" class="btn badge badge-primary ml-2"
                               th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
                               onclick="openEditDlg(this)"
-                              data-toggle="modal" data-target="#editDlg">
+                              data-toggle="modal" data-target="#ekiEditorDlg">
                         <i class="fa fa-edit" aria-hidden="true"></i>
                       </button>
                       <button type="button" class="btn badge badge-warning"
@@ -744,6 +744,7 @@
   </th:block>
 
   <div th:replace="common :: #editDlg"></div>
+  <div th:replace="common :: #ekiEditorDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
   <div th:replace="common :: #addNewDefinitionDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
