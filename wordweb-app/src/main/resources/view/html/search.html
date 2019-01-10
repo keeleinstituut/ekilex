@@ -97,7 +97,7 @@
                 <span class="tag" th:text="${summarisedPos.value}"></span>
               </th:block>
               <span class="float-right">
-                <button name="feedback-btn" value="feedback" class="btn btn-primary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
+                <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
               </span>
             </h3>
             <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
@@ -132,8 +132,8 @@
                     </span>
                   </div>
                   <div class="definition">
-                    <i th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></i>
-                    <i th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></i>
+                    <span th:class="vald" th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></span>
+                    <span th:class="vald" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}" th:text="${definition.value + (definitionIter.last ? '' : '; ')}"> </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}" th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}"
@@ -153,7 +153,7 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: black;">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" th:text="${meaningWord.word}" style="color: #00874F;">
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
                           <span th:if="${meaningWord.aspect != null}" class="type-three" th:text="${meaningWord.aspect.value}"></span>
@@ -163,7 +163,7 @@
                           </span>
                           <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
                             <span class="type-two" th:each="register,regIter : ${meaningWord.registers}"
-                                  th:text="${(regIter.first ? '| ' : '') + register.value + (regIter.last ? ' |' : ', ')}"></span>
+                                  th:text="${(regIter.first ? '' : '') + register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
@@ -328,7 +328,7 @@
                           <div class="colloc-heading row">
                             <span class="col">
                               <b th:text="#{label.collocations}">Kollokatsioonid</b> &nbsp;
-                              <button name="colloc-usages-btn" type="button" class="btn btn-light btn-sm" th:text="#{button.label.usages}">Kasutusnäited</button>
+                              <button name="colloc-usages-btn" type="button" class="btn btn-secondary btn-sm" th:text="#{button.label.usages}">Kasutusnäited</button>
                             </span>
                           </div>
                           <div class="filler-row row">&nbsp;</div>

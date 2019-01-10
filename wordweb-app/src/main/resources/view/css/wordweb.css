@@ -164,6 +164,10 @@
 	display: inline;
 }
 
+.matches {
+	color: #00874F;
+}
+
 .matches span {
 	margin-bottom: 0.625rem;
 }
