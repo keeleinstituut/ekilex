@@ -515,7 +515,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Node definitionValueNode : definitionValueNodes) {
 			String definition = ((Element)definitionValueNode).getTextTrim();
-			definition = cleanEkiEntityMarkup(definition);
 			createDefinition(meaningId, definition, dataLang, dataset);
 		}
 	}

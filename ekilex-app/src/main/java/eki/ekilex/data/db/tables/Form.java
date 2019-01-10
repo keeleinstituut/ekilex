@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = 1631939687;
+    private static final long serialVersionUID = 333539274;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -110,6 +110,11 @@ public class Form extends TableImpl<FormRecord> {
      * The column <code>public.form.components</code>.
      */
     public final TableField<FormRecord, String[]> COMPONENTS = createField("components", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.form.prese_form</code>.
+     */
+    public final TableField<FormRecord, String> PRESE_FORM = createField("prese_form", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.form.display_form</code>.

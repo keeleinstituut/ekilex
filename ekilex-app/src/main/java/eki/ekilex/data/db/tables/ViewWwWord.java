@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -121873994;
+    private static final long serialVersionUID = -237078792;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -94,6 +94,16 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
      * The column <code>public.view_ww_word.aspect_code</code>.
      */
     public final TableField<ViewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.view_ww_word.etymology_year</code>.
+     */
+    public final TableField<ViewWwWordRecord, String> ETYMOLOGY_YEAR = createField("etymology_year", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.view_ww_word.etymology_type_code</code>.
+     */
+    public final TableField<ViewWwWordRecord, String> ETYMOLOGY_TYPE_CODE = createField("etymology_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.view_ww_word.dataset_codes</code>.

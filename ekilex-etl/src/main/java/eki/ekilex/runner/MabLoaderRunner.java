@@ -112,6 +112,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		logger.debug("There are {} volumes in total", dataXmlFilePaths.length);
 
+		int volumeCounter = 0;
+
 		for (String dataXmlFilePath : dataXmlFilePaths) {
 
 			logger.debug("Loading \"{}\"", dataXmlFilePath);
@@ -122,6 +124,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			totalArticleCount.increment(articleCount);
 			logger.debug("Extracted {} articles", articleCount);
 
+			volumeCounter++;
 			long articleCounter = 0;
 			long progressIndicator = articleCount / Math.min(articleCount, 100);
 	
@@ -252,7 +255,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				articleCounter++;
 				if (articleCounter % progressIndicator == 0) {
 					long progressPercent = articleCounter / progressIndicator;
-					logger.debug("{}% - {} articles iterated", progressPercent, articleCounter);
+					logger.debug("vol #{} - {}% - {} articles iterated", volumeCounter, progressPercent, articleCounter);
 				}
 			}
 		}

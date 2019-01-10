@@ -8,8 +8,6 @@ public class Paradigm extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private Integer homonymNr;
-
 	private String wordClass;
 
 	private String inflectionTypeNr;
@@ -21,14 +19,6 @@ public class Paradigm extends AbstractDataObject {
 	private List<String> formValues;
 
 	private List<Form> forms;
-
-	public Integer getHomonymNr() {
-		return homonymNr;
-	}
-
-	public void setHomonymNr(Integer homonymNr) {
-		this.homonymNr = homonymNr;
-	}
 
 	public String getWordClass() {
 		return wordClass;

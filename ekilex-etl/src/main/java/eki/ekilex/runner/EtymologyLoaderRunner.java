@@ -433,6 +433,7 @@ public class EtymologyLoaderRunner extends AbstractLoaderRunner {
 		tableRowParamMap.put("morph_code", morphCode);
 		tableRowParamMap.put("morph_exists", Boolean.TRUE);
 		tableRowParamMap.put("value", word);
+		tableRowParamMap.put("value_prese", word);//TODO decoration conversion
 		basicDbService.create(FORM, tableRowParamMap);
 
 		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);

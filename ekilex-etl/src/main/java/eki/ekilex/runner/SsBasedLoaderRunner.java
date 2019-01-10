@@ -190,7 +190,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		final String domainOrigin = "bolan";
 		final String domainExp = xpathExpressions().get("domain");
 
-		List<String> domainCodes = node == null ? new ArrayList<>() : extractValuesAsStrings(node, domainExp);
+		List<String> domainCodes = node == null ? new ArrayList<>() : extractCleanValues(node, domainExp);
 		if (additionalDomains != null) {
 			domainCodes.addAll(additionalDomains);
 		}
@@ -358,11 +358,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 
 	protected List<String> extractGrammar(Node node) {
 		String grammarValueExp = xpathExpressions().get("grammarValue");
-		return extractValuesAsStrings(node, grammarValueExp);
+		return extractCleanValues(node, grammarValueExp);
 	}
 
 	protected List<String> extractPosCodes(Node node, String wordPosCodeExp) {
-		return extractValuesAsStrings(node, wordPosCodeExp);
+		return extractCleanValues(node, wordPosCodeExp);
 	}
 
 	protected String extractReporingId(Node node) {
@@ -379,14 +379,27 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return guidNode != null ? StringUtils.lowerCase(guidNode.getTextTrim()) : null;
 	}
 
-	protected List<String> extractValuesAsStrings(Node node, String valueExp) {
+	protected List<String> extractCleanValues(Node node, String valueExp) {
 
 		List<String> values = new ArrayList<>();
 		List<Node> valueNodes = node.selectNodes(valueExp);
 		for (Node valueNode : valueNodes) {
 			if (!isRestricted(valueNode)) {
-				String value = ((Element)valueNode).getTextTrim();
+				String value = ((Element) valueNode).getTextTrim();
 				value = cleanEkiEntityMarkup(value);
+				values.add(value);
+			}
+		}
+		return values;
+	}
+
+	protected List<String> extractOriginalValues(Node node, String valueExp) {
+
+		List<String> values = new ArrayList<>();
+		List<Node> valueNodes = node.selectNodes(valueExp);
+		for (Node valueNode : valueNodes) {
+			if (!isRestricted(valueNode)) {
+				String value = ((Element) valueNode).getTextTrim();
 				values.add(value);
 			}
 		}

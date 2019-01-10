@@ -604,10 +604,10 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public Long addDefinition(Long meaningId, String value, String languageCode) {
+	public Long addDefinition(Long meaningId, String value, String valuePrese, String languageCode) {
 		return create
-				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE)
-				.values(meaningId, languageCode, value)
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE, DEFINITION.VALUE_PRESE)
+				.values(meaningId, languageCode, value, valuePrese)
 				.returning(DEFINITION.ID)
 				.fetchOne()
 				.getId();

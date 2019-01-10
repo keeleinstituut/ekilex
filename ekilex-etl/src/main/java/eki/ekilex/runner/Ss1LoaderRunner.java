@@ -907,25 +907,25 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private List<String> extractAdviceNotes(Node node) {
 
 		final String registerValueExp = "s:lig/s:nb";
-		return extractValuesAsStrings(node, registerValueExp);
+		return extractCleanValues(node, registerValueExp);
 	}
 
 	private List<String> extractPublicNotes(Node node) {
 
 		final String registerValueExp = "s:lig/s:tx";
-		return extractValuesAsStrings(node, registerValueExp);
+		return extractCleanValues(node, registerValueExp);
 	}
 
 	private List<String> extractRegisters(Node node) {
 
 		final String registerValueExp = "s:dg/s:regr/s:s";
-		return extractValuesAsStrings(node, registerValueExp);
+		return extractCleanValues(node, registerValueExp);
 	}
 
 	private List<String> extractDefinitions(Node node) {
 
 		final String definitionValueExp = "s:dg/s:d";
-		return extractValuesAsStrings(node, definitionValueExp);
+		return extractOriginalValues(node, definitionValueExp);
 	}
 
 	private List<Usage> extractUsages(Node node) {
