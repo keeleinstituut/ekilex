@@ -913,7 +913,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private List<String> extractPublicNotes(Node node) {
 
 		final String registerValueExp = "s:lig/s:tx";
-		return extractCleanValues(node, registerValueExp);
+		return extractOriginalValues(node, registerValueExp);
 	}
 
 	private List<String> extractRegisters(Node node) {
@@ -942,7 +942,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		for (Node usageNode : usageNodes) {
 			Element usageElement = (Element)usageNode;
 			String usageValue = usageElement.getTextTrim();
-			usageValue = cleanEkiEntityMarkup(usageValue);
 			Usage usage = new Usage();
 			usage.setValue(usageValue);
 			usage.setDefinitions(new ArrayList<>());

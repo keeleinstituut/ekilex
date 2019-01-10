@@ -747,13 +747,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (isRestricted(usageBlockNode)) continue;
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
-				List<String> usageValues = extractCleanValues(usageGroupNode, usageExp);
-				for (String usageValue : usageValues) {
-					if (isUsage(usageValue)) {
+				List<String> usageOriginalValues = extractOriginalValues(usageGroupNode, usageExp);
+				List<String> usageDefinitionValues = extractOriginalValues(usageGroupNode, usageDefinitionExp);
+				List<UsageTranslation> usageTranslations = extractUsageTranslations(usageGroupNode);
+				for (String usageOriginalValue : usageOriginalValues) {
+					String usageCleanValue = cleanEkiEntityMarkup(usageOriginalValue);
+					if (isUsage(usageCleanValue)) {
 						Usage usage = new Usage();
-						usage.setValue(usageValue);
-						usage.setDefinitions(extractCleanValues(usageGroupNode, usageDefinitionExp));
-						usage.setUsageTranslations(extractUsageTranslations(usageGroupNode));
+						usage.setValue(usageOriginalValue);
+						usage.setDefinitions(usageDefinitionValues);
+						usage.setUsageTranslations(usageTranslations);
 						usages.add(usage);
 					}
 				}
@@ -771,7 +774,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String usageTranslationExp = "x:qnp/x:qng/x:qn";
 
 		List<UsageTranslation> translations = new ArrayList<>();
-		List<String> translationValues = extractCleanValues(node, usageTranslationExp);
+		List<String> translationValues = extractOriginalValues(node, usageTranslationExp);
 		for (String translationValue : translationValues) {
 			UsageTranslation translation = new UsageTranslation();
 			translation.setValue(cleanRussianTranslation(translationValue));

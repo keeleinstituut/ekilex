@@ -189,7 +189,7 @@ public class LifecycleLogDbService {
 		if (LifecycleEntity.USAGE.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.USAGE);
-				recent = (String) entityData.get("value_text");
+				recent = (String) entityData.get("value_prese");
 				if (StringUtils.equals(recent, entry)) {
 					if (isUpdate(eventType)) {
 						return;
@@ -203,7 +203,7 @@ public class LifecycleLogDbService {
 		} else if (LifecycleEntity.USAGE_TRANSLATION.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.USAGE_TRANSLATION);
-				recent = (String) entityData.get("value_text");
+				recent = (String) entityData.get("value_prese");
 				if (StringUtils.equals(recent, entry)) {
 					if (isUpdate(eventType)) {
 						return;
@@ -217,7 +217,7 @@ public class LifecycleLogDbService {
 		} else if (LifecycleEntity.USAGE_DEFINITION.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getSecondDepthFreeformData(create, entityId, FreeformType.USAGE_DEFINITION);
-				recent = (String) entityData.get("value_text");
+				recent = (String) entityData.get("value_prese");
 				if (StringUtils.equals(recent, entry)) {
 					if (isUpdate(eventType)) {
 						return;
@@ -259,7 +259,7 @@ public class LifecycleLogDbService {
 		} else if (LifecycleEntity.DEFINITION.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Map<String, Object> entityData = helper.getDefinitionData(create, entityId);
-				recent = (String) entityData.get("value");
+				recent = (String) entityData.get("value_prese");
 				if (StringUtils.equals(recent, entry)) {
 					if (isUpdate(eventType)) {
 						return;
