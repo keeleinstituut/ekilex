@@ -132,11 +132,9 @@
                     </span>
                   </div>
                   <div class="definition">
-
                     <span th:class="vald" th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></span>
                     <span th:class="vald" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
-                    
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}" th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}"
                         th:style="${meaningWord.lang == 'lat' ? 'font-style:italic' : ''}"> </span>
@@ -160,12 +158,10 @@
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
                           <span th:if="${meaningWord.aspect != null}" class="type-three" th:text="${meaningWord.aspect.value}"></span>
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
-                            <!--rekts-->
                             <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
                           </span>
                           <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
-                            <span class="type-two" th:each="register,regIter : ${meaningWord.registers}"
-                                  th:text="${(regIter.first ? '' : '') + register.value + (regIter.last ? '' : ', ')}"></span>
+                            <span class="type-two" th:each="register,regIter : ${meaningWord.registers}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
@@ -337,7 +333,8 @@
                           <div class="w-100">
                             <div class="colloc-section w-100" th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}">
                               <div class="colloc-name row">
-                                <i class="col"> <span th:text="${collocPosGr.posGroup.value}"></span>
+                                <i class="col">
+                                  <span th:text="${collocPosGr.posGroup.value}"></span>
                                 </i>
                               </div>
                               <div class="colloc-inner-section" style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
@@ -348,10 +345,10 @@
                                         <span th:each="collocMemGr : ${displayColloc.memberGroupOrder}">
                                           <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).HEADWORD}">
                                             <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.preConjunct}" class="text-muted"
-                                              th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                                  th:text="${displayColloc.headwordMember.conjunct}"></span>
                                             <span class="text-info" th:text="${displayColloc.headwordMember.form}"></span>
                                             <span th:if="${displayColloc.headwordMember.conjunct != null && displayColloc.headwordMember.postConjunct}" class="text-muted"
-                                              th:text="${displayColloc.headwordMember.conjunct}"></span>
+                                                  th:text="${displayColloc.headwordMember.conjunct}"></span>
                                           </span>
                                           <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                             <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
@@ -430,7 +427,7 @@
           <div class="col-md-5 col-lg-4 more-data sidebar">
             <section class="level-3-panel row" th:if="${not #lists.isEmpty(wordData.paradigms)}">
               <div class="col-12 morphology-panel" th:if="${wordData.unknownForm}">
-                         <h5 class="font-weight-bold">
+                <h5 class="font-weight-bold">
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
                   <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
                 </h5>
