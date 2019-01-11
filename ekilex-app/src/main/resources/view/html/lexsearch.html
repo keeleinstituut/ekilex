@@ -370,7 +370,7 @@
                             <span th:name="${usageTranslation.id} + '_usage_translation'"
                                   th:data-id="${usageTranslation.id}"
                                   th:data-op-code="usage_translation"
-                                  th:text="${usageTranslation.value}"></span>
+                                  th:utext="${usageTranslation.value}"></span>
                             <button type="button" class="btn badge badge-primary ml-2"
                                     th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
                                     onclick="openEditDlg(this)"
