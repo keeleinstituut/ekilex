@@ -68,16 +68,18 @@ public class UpdateDbService implements DbConstant {
 		create = context;
 	}
 
-	public void updateFreeformTextValue(Long id, String value) {
+	public void updateFreeformTextValue(Long id, String value, String valuePrese) {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE_PRESE, valuePrese)
 				.where(FREEFORM.ID.eq(id))
 				.execute();
 	}
 
-	public void updateDefinitionValue(Long id, String value) {
+	public void updateDefinitionValue(Long id, String value, String valuePrese) {
 		create.update(DEFINITION)
 				.set(DEFINITION.VALUE, value)
+				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
 	}
@@ -613,10 +615,10 @@ public class UpdateDbService implements DbConstant {
 				.getId();
 	}
 
-	public Long addUsage(Long lexemeId, String value, String languageCode) {
+	public Long addUsage(Long lexemeId, String value, String valuePrese, String languageCode) {
 		Long usageFreeformId = create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
-				.values(FreeformType.USAGE.name(), value, languageCode)
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)
+				.values(FreeformType.USAGE.name(), value, valuePrese, languageCode)
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
@@ -624,19 +626,19 @@ public class UpdateDbService implements DbConstant {
 		return usageFreeformId;
 	}
 
-	public Long addUsageTranslation(Long usageId, String value, String languageCode) {
+	public Long addUsageTranslation(Long usageId, String value, String valuePrese, String languageCode) {
 		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
-				.values(FreeformType.USAGE_TRANSLATION.name(), usageId, value, languageCode)
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)
+				.values(FreeformType.USAGE_TRANSLATION.name(), usageId, value, valuePrese, languageCode)
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
 	}
 
-	public Long addUsageDefinition(Long usageId, String value, String languageCode) {
+	public Long addUsageDefinition(Long usageId, String value, String valuePrese, String languageCode) {
 		return create
-				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.LANG)
-				.values(FreeformType.USAGE_DEFINITION.name(), usageId, value, languageCode)
+				.insertInto(FREEFORM, FREEFORM.TYPE, FREEFORM.PARENT_ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.LANG)
+				.values(FreeformType.USAGE_DEFINITION.name(), usageId, value, valuePrese, languageCode)
 				.returning(FREEFORM.ID)
 				.fetchOne()
 				.getId();
@@ -826,6 +828,7 @@ public class UpdateDbService implements DbConstant {
 				.set(FREEFORM.TYPE, freeform.getType())
 				.set(FREEFORM.PARENT_ID, parentFreeformId)
 				.set(FREEFORM.VALUE_TEXT, freeform.getValueText())
+				.set(FREEFORM.VALUE_PRESE, freeform.getValuePrese())
 				.set(FREEFORM.LANG, freeform.getLang())
 				.set(FREEFORM.VALUE_DATE, freeform.getValueDate())
 				.set(FREEFORM.CLASSIF_CODE, freeform.getClassifCode())

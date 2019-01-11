@@ -259,7 +259,7 @@ create view view_ww_lexeme
                        and   ff.type = 'ADVICE_NOTE'
                        group by lf.lexeme_id) anote on anote.lexeme_id = l.id
       left outer join (select lf.lexeme_id,
-                              array_agg(ff.value_text order by ff.order_by) public_notes
+                              array_agg(ff.value_prese order by ff.order_by) public_notes
                        from lexeme_freeform lf,
                             freeform ff
                        where lf.freeform_id = ff.id
@@ -282,7 +282,7 @@ create view view_ww_lexeme
       left outer join (select u.lexeme_id,
                               array_agg(row (u.usage,u.usage_lang,u.usage_type_code,u.usage_translations,u.usage_definitions,u.usage_authors)::type_usage order by u.order_by) usages
                        from (select lf.lexeme_id,
-                                    u.value_text usage,
+                                    u.value_prese usage,
                                     u.lang usage_lang,
                                     u.order_by,
                                     utp.classif_code usage_type_code,
@@ -293,12 +293,12 @@ create view view_ww_lexeme
                                inner join freeform u on lf.freeform_id = u.id and u.type = 'USAGE'
                                left outer join freeform utp on utp.parent_id = u.id and utp.type = 'USAGE_TYPE'
                                left outer join (select ut.parent_id usage_id,
-                                                       array_agg(ut.value_text order by ut.order_by) usage_translations
+                                                       array_agg(ut.value_prese order by ut.order_by) usage_translations
                                                 from freeform ut
                                                 where ut.type = 'USAGE_TRANSLATION'
                                                 group by ut.parent_id) ut on ut.usage_id = u.id
                                left outer join (select ud.parent_id usage_id,
-                                                       array_agg(ud.value_text order by ud.order_by) usage_definitions
+                                                       array_agg(ud.value_prese order by ud.order_by) usage_definitions
                                                 from freeform ud
                                                 where ud.type = 'USAGE_DEFINITION'
                                                 group by ud.parent_id) ud on ud.usage_id = u.id

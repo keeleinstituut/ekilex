@@ -181,7 +181,7 @@
                     </button>
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
                       <div class="dependence-unit">
-                        <span class="example-text" th:text="${usage.usage}"></span>
+                        <span class="example-text" th:utext="${usage.usage}"></span>
                         <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
                           <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
                             <span th:if="${usageAuthor.translator}" th:text="#{reference.type.translator}">Tõlkija</span>
@@ -192,7 +192,7 @@
                           <span class="icon icon-speaker"></span>
                         </button>
                         <th:block th:if="${not #lists.isEmpty(usage.usageTranslations)}">
-                          <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:text="${usageTranslation}"></span>
+                          <span th:each="usageTranslation : ${usage.usageTranslations}" class="example-text" th:utext="${usageTranslation}"></span>
                         </th:block>
                       </div>
                     </div>
@@ -244,7 +244,7 @@
                         <b th:text="#{label.public.note}">Hea teada</b>
                       </div>
                       <div class="col-12">
-                        <div th:each="note : ${lexeme.publicNotes}" th:text="${note}"></div>
+                        <div th:each="note : ${lexeme.publicNotes}" th:utext="${note}"></div>
                       </div>
                     </div>
                   </div>
