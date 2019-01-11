@@ -1,5 +1,5 @@
 create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), dataset_code varchar(10));
-create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), dataset_code varchar(10));
+create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), dataset_code varchar(10));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
@@ -81,7 +81,7 @@ from (select w.id as word_id,
                          where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
-                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.lang,wd.dataset_code)::type_definition order by wd.ds_order_by,wd.level1,wd.level2,wd.level3,wd.lex_order_by,wd.d_order_by) definitions
+                          array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.dataset_code)::type_definition order by wd.ds_order_by,wd.level1,wd.level2,wd.level3,wd.lex_order_by,wd.d_order_by) definitions
                    from (select l.word_id,
                                 l.id lexeme_id,
                                 l.meaning_id,
@@ -92,6 +92,7 @@ from (select w.id as word_id,
                                 l.level3,
                                 l.order_by lex_order_by,
                                 d.value,
+                                d.value_prese,
                                 d.lang,
                                 d.order_by d_order_by
                          from lexeme l
@@ -180,7 +181,7 @@ create view view_ww_meaning
                        from meaning_domain m_dom
                        group by m_dom.meaning_id) m_dom on m_dom.meaning_id = m.id
       left outer join (select d.meaning_id,
-                              array_agg(row (null,d.meaning_id,d.value,d.lang,null)::type_definition order by d.order_by) definitions
+                              array_agg(row (null,d.meaning_id,d.value,d.value_prese,d.lang,null)::type_definition order by d.order_by) definitions
                        from definition d
                        group by d.meaning_id) d on d.meaning_id = m.id
       left outer join (select mf.meaning_id,

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import eki.common.constant.WordRelationGroupType;
+import eki.common.service.TextDecorationService;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
@@ -30,10 +31,13 @@ public class UpdateService {
 
 	private final UpdateDbService updateDbService;
 
+	private final TextDecorationService textDecorationService;
+
 	private final LifecycleLogDbService lifecycleLogDbService;
 
-	public UpdateService(UpdateDbService updateDbService, LifecycleLogDbService lifecycleLogDbService) {
+	public UpdateService(UpdateDbService updateDbService, TextDecorationService textDecorationService, LifecycleLogDbService lifecycleLogDbService) {
 		this.updateDbService  = updateDbService;
+		this.textDecorationService = textDecorationService;
 		this.lifecycleLogDbService = lifecycleLogDbService;
 	}
 
@@ -258,9 +262,10 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void addDefinition(Long meaningId, String value, String languageCode) {
-		Long definitionId = updateDbService.addDefinition(meaningId, value, languageCode);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, value);
+	public void addDefinition(Long meaningId, String valuePrese, String languageCode) {
+		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		Long definitionId = updateDbService.addDefinition(meaningId, value, valuePrese, languageCode);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}
 
 	@Transactional

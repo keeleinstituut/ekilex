@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Freeform extends TableImpl<FreeformRecord> {
 
-    private static final long serialVersionUID = 1846926890;
+    private static final long serialVersionUID = -1872738137;
 
     /**
      * The reference instance of <code>public.freeform</code>
@@ -77,6 +77,11 @@ public class Freeform extends TableImpl<FreeformRecord> {
      * The column <code>public.freeform.value_text</code>.
      */
     public final TableField<FreeformRecord, String> VALUE_TEXT = createField("value_text", org.jooq.impl.SQLDataType.CLOB, this, "");
+
+    /**
+     * The column <code>public.freeform.value_prese</code>.
+     */
+    public final TableField<FreeformRecord, String> VALUE_PRESE = createField("value_prese", org.jooq.impl.SQLDataType.CLOB, this, "");
 
     /**
      * The column <code>public.freeform.value_date</code>.

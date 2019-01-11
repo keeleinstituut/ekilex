@@ -12,6 +12,8 @@ public class TypeDefinition extends AbstractDataObject {
 
 	private String value;
 
+	private String valuePrese;
+
 	private String lang;
 
 	private String datasetCode;
@@ -38,6 +40,14 @@ public class TypeDefinition extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public String getLang() {

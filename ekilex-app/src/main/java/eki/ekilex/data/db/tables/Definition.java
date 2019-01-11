@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Definition extends TableImpl<DefinitionRecord> {
 
-    private static final long serialVersionUID = -509657113;
+    private static final long serialVersionUID = 2035464645;
 
     /**
      * The reference instance of <code>public.definition</code>
@@ -70,6 +70,11 @@ public class Definition extends TableImpl<DefinitionRecord> {
      * The column <code>public.definition.value</code>.
      */
     public final TableField<DefinitionRecord, String> VALUE = createField("value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.definition.value_prese</code>.
+     */
+    public final TableField<DefinitionRecord, String> VALUE_PRESE = createField("value_prese", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.definition.lang</code>.

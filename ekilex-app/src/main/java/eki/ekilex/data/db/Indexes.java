@@ -132,7 +132,7 @@ public class Indexes {
     public static final Index DISPLAY_MORPH_LABEL_CODE_LANG_TYPE_KEY = Indexes0.DISPLAY_MORPH_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index DOMAIN_PKEY = Indexes0.DOMAIN_PKEY;
     public static final Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Indexes0.DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY;
-    public static final Index EKI_USER_NAME_KEY = Indexes0.EKI_USER_NAME_KEY;
+    public static final Index EKI_USER_EMAIL_KEY = Indexes0.EKI_USER_EMAIL_KEY;
     public static final Index EKI_USER_PKEY = Indexes0.EKI_USER_PKEY;
     public static final Index ETYMOLOGY_TYPE_PKEY = Indexes0.ETYMOLOGY_TYPE_PKEY;
     public static final Index FEEDBACK_LOG_PKEY = Indexes0.FEEDBACK_LOG_PKEY;
@@ -298,7 +298,7 @@ public class Indexes {
         public static Index DISPLAY_MORPH_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("display_morph_label_code_lang_type_key", DisplayMorphLabel.DISPLAY_MORPH_LABEL, new OrderField[] { DisplayMorphLabel.DISPLAY_MORPH_LABEL.CODE, DisplayMorphLabel.DISPLAY_MORPH_LABEL.LANG, DisplayMorphLabel.DISPLAY_MORPH_LABEL.TYPE }, true);
         public static Index DOMAIN_PKEY = Internal.createIndex("domain_pkey", Domain.DOMAIN, new OrderField[] { Domain.DOMAIN.CODE, Domain.DOMAIN.ORIGIN }, true);
         public static Index DOMAIN_LABEL_CODE_ORIGIN_LANG_TYPE_KEY = Internal.createIndex("domain_label_code_origin_lang_type_key", DomainLabel.DOMAIN_LABEL, new OrderField[] { DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN, DomainLabel.DOMAIN_LABEL.LANG, DomainLabel.DOMAIN_LABEL.TYPE }, true);
-        public static Index EKI_USER_NAME_KEY = Internal.createIndex("eki_user_name_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.NAME }, true);
+        public static Index EKI_USER_EMAIL_KEY = Internal.createIndex("eki_user_email_key", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.EMAIL }, true);
         public static Index EKI_USER_PKEY = Internal.createIndex("eki_user_pkey", EkiUser.EKI_USER, new OrderField[] { EkiUser.EKI_USER.ID }, true);
         public static Index ETYMOLOGY_TYPE_PKEY = Internal.createIndex("etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE, new OrderField[] { EtymologyType.ETYMOLOGY_TYPE.CODE }, true);
         public static Index FEEDBACK_LOG_PKEY = Internal.createIndex("feedback_log_pkey", FeedbackLog.FEEDBACK_LOG, new OrderField[] { FeedbackLog.FEEDBACK_LOG.ID }, true);
