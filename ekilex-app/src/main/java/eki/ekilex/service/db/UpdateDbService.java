@@ -68,15 +68,17 @@ public class UpdateDbService implements DbConstant {
 		create = context;
 	}
 
-	public void updateFreeformTextValue(Long id, String value) {
+	public void updateFreeformTextValue(Long id, String valuePrese, String value) {
 		create.update(FREEFORM)
 				.set(FREEFORM.VALUE_TEXT, value)
+				.set(FREEFORM.VALUE_PRESE, valuePrese)
 				.where(FREEFORM.ID.eq(id))
 				.execute();
 	}
 
-	public void updateDefinitionValue(Long id, String value) {
+	public void updateDefinitionValue(Long id, String valuePrese, String value) {
 		create.update(DEFINITION)
+				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.set(DEFINITION.VALUE, value)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
