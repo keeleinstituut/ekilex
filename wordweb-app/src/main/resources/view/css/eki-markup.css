@@ -8,11 +8,11 @@ eki-elem-2 {
 }
 
 eki-elem-3 {
-	vertical-align: super;
+	vertical-align: sub;
 	font-size: 70%;
 }
 
 eki-elem-4 {
-	vertical-align: sub;
+	vertical-align: super;
 	font-size: 70%;
 }

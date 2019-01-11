@@ -1,18 +1,18 @@
 eki-elem-1 {
-    color: #dd2222;
-    font-style: italic;
+	color: #dd2222;
+	font-style: italic;
 }
 
 eki-elem-2 {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 eki-elem-3 {
-    vertical-align: super;
-    font-size: 70%;
+	vertical-align: sub;
+	font-size: 70%;
 }
 
 eki-elem-4 {
-    vertical-align: sub;
-    font-size: 70%;
+	vertical-align: super;
+	font-size: 70%;
 }
