@@ -10,16 +10,13 @@
         <div class="modal-body">
           <input type="hidden" name="id">
           <input type="hidden" name="opCode">
+          <input type="hidden" name="value">
           <div class="form-group row">
-            <div class="col-md-12">
-              <b>Eelvaade:</b>
+            <div class="col-md-12 pb-3">
               <div class="float-right">Ctrl-m <= lisa tag; Ctrl-n <= eemalda tagid</div>
             </div>
-            <div class="col-md-12 pb-3">
-              <span name="preview"></span>
-            </div>
             <div class="col-md-12">
-              <textarea class="form-control" rows="2" name="value"></textarea>
+              <div contenteditable="true" name="editFld" class="eki-editor-edit-area form-control"></div>
               <div class="eki-editor-menu">
                 <select class="eki-tag-select" size="4">
                   <option value="eki-elem-1">eki-elem-1</option>

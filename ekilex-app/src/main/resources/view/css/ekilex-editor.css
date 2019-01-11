@@ -21,3 +21,7 @@
 .eki-tag-select option {
     padding: 2px 4px;
 }
+
+.eki-editor-edit-area {
+    height: 4em;
+}
