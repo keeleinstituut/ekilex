@@ -45,42 +45,42 @@ public class UpdateService {
 
 	@Transactional
 	public void updateUsageValue(Long id, String valuePrese) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE, LifecycleProperty.VALUE, id, valuePrese);
 		updateDbService.updateFreeformTextValue(id, valuePrese, value);
 	}
 
 	@Transactional
 	public void updateUsageTranslationValue(Long id, String valuePrese) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_TRANSLATION, LifecycleProperty.VALUE, id, valuePrese);
 		updateDbService.updateFreeformTextValue(id, valuePrese, value);
 	}
 
 	@Transactional
 	public void updateUsageDefinitionValue(Long id, String valuePrese) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.USAGE_DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		updateDbService.updateFreeformTextValue(id, valuePrese, value);
 	}
 
 	@Transactional
 	public void updateGovernment(Long id, String valuePrese) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.GOVERNMENT, LifecycleProperty.VALUE, id, valuePrese);
 		updateDbService.updateFreeformTextValue(id, valuePrese, value);
 	}
 
 	@Transactional
 	public void updateGrammar(Long id, String valuePrese) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.GRAMMAR, LifecycleProperty.VALUE, id, valuePrese);
 		updateDbService.updateFreeformTextValue(id, valuePrese, value);
 	}
 
 	@Transactional
 	public void updateDefinitionValue(Long id, String valuePrese) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, id, valuePrese);
 		updateDbService.updateDefinitionValue(id, valuePrese, value);
 	}
@@ -269,7 +269,7 @@ public class UpdateService {
 
 	@Transactional
 	public void addDefinition(Long meaningId, String valuePrese, String languageCode) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		Long definitionId = updateDbService.addDefinition(meaningId, value, valuePrese, languageCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}
