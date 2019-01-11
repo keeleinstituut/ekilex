@@ -1,0 +1,23 @@
+.eki-editor-menu {
+    visibility: hidden;
+    width: 160px;
+    padding: 6px;
+    position: absolute;
+    z-index: 1;
+    top: 60%;
+    left: 50%;
+    margin-left: -80px;
+}
+
+.eki-editor-menu.show {
+    visibility: visible;
+}
+
+.eki-tag-select {
+    width: 100%;
+    overflow-y: auto;
+}
+
+.eki-tag-select option {
+    padding: 2px 4px;
+}

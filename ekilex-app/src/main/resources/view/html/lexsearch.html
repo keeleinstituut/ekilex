@@ -4,6 +4,7 @@
 <title th:text="#{lex.search.title}">EKILEX otsing</title>
 <th:block th:fragment="links">
   <script type="text/javascript" th:src="@{/view/js/ekilex-lexsearch.js}"></script>
+  <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -744,7 +745,6 @@
   </th:block>
 
   <div th:replace="common :: #editDlg"></div>
-  <div th:replace="common :: #ekiEditorDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
   <div th:replace="common :: #addNewDefinitionDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
@@ -769,6 +769,7 @@
   <div th:replace="lexeme_components :: #addNewLexemeRelationDlg"></div>
   <div th:replace="lexeme_components :: #addNewMeaningRelationDlg"></div>
   <div th:replace="lexeme_components :: #addNewUsageAuthorDlg"></div>
+  <div th:replace="ekilex_editor :: #ekiEditorDlg"></div>
 
   <script th:inline="javascript">
   	initialise();

@@ -215,8 +215,7 @@ function openEditDlg(elem) {
 		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
 	if ($(elem).data('target') === '#ekiEditorDlg') {
-        let previewFld = editDlg.find('[name=preview]');
-        initEkiEditor(modifyFld, previewFld);
+        initEkiEditor(editDlg);
     }
 }
 
@@ -503,33 +502,4 @@ function openAddNewLexemeRelationDlg(elem) {
     var selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'lexeme-id');
-}
-
-function initEkiEditor(editorElem, previewElement) {
-    editorElem.off('keydown').on('keydown', function (e) {
-        let isEditorCommand = e.ctrlKey === true && (e.key === 'm' || e.key === 'n');
-        if (isEditorCommand) {
-            let isTextSelected = e.target.selectionStart !== e.target.selectionEnd;
-            if (isTextSelected) {
-                let preSelect = e.target.value.substring(0, e.target.selectionStart);
-                let selectedText = e.target.value.substring(e.target.selectionStart, e.target.selectionEnd);
-                let postSelect = e.target.value.substring(e.target.selectionEnd);
-                if (e.key === 'm') {
-                    selectedText = '<eki-tag-1>' + selectedText + '</eki-tag-1>';
-                } else if (e.key === 'n') {
-                    selectedText = selectedText.replace(/<eki-tag-1>/g, '').replace(/<\/eki-tag-1>/g, '');
-                }
-                e.target.value = preSelect + selectedText + postSelect;
-                console.log(e.target.value);
-                console.log(e);
-                editorElem.trigger('input');
-            }
-        }
-    });
-    if (previewElement !== undefined) {
-        previewElement.html(editorElem.val());
-        editorElem.off('input').on('input', function() {
-            previewElement.html(editorElem.val());
-        });
-    }
 }
