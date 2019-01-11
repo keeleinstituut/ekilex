@@ -204,16 +204,19 @@ function postJson(url, dataObject) {
 }
 
 function openEditDlg(elem) {
-	var targetName = $(elem).data('target-elem');
-	var targetElement = $('[name="' + targetName + '"]');
-	var editDlg = $('#editDlg');
-	var modifyFld = editDlg.find('[name=value]');
-	modifyFld.val(targetElement.data('value') != undefined ? targetElement.data('value') : targetElement.text());
+	let targetName = $(elem).data('target-elem');
+	let targetElement = $('[name="' + targetName + '"]');
+	let editDlg = $($(elem).data('target'));
+	let modifyFld = editDlg.find('[name=value]');
+	modifyFld.val(targetElement.data('value') === undefined ? targetElement.text() : targetElement.data('value'));
 	editDlg.find('[name=id]').val(targetElement.data('id'));
 	editDlg.find('[name=opCode]').val(targetElement.data('op-code'));
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
+	if ($(elem).data('target') === '#ekiEditorDlg') {
+        initEkiEditor(editDlg);
+    }
 }
 
 function performDelete() {

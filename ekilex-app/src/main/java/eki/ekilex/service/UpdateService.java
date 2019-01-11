@@ -270,7 +270,7 @@ public class UpdateService {
 
 	@Transactional
 	public void addDefinition(Long meaningId, String valuePrese, String languageCode) {
-		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		String value = textDecorationService.convertEkiEntityMarkup(valuePrese);
 		Long definitionId = updateDbService.addDefinition(meaningId, value, valuePrese, languageCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, valuePrese);
 	}

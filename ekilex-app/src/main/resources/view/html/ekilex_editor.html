@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<div id="ekiEditorDlg" class="modal" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <form th:action="@{/modify_item}" method="post">
+        <div class="modal-body">
+          <input type="hidden" name="id">
+          <input type="hidden" name="opCode">
+          <div class="form-group row">
+            <div class="col-md-12">
+              <b>Eelvaade:</b>
+              <div class="float-right">Ctrl-m <= lisa tag; Ctrl-n <= eemalda tagid</div>
+            </div>
+            <div class="col-md-12 pb-3">
+              <span name="preview"></span>
+            </div>
+            <div class="col-md-12">
+              <textarea class="form-control" rows="2" name="value"></textarea>
+              <div class="eki-editor-menu">
+                <select class="eki-tag-select" size="4">
+                  <option value="eki-elem-1">eki-elem-1</option>
+                  <option value="eki-elem-2">eki-elem-2</option>
+                  <option value="eki-elem-3">eki-elem-3</option>
+                  <option value="eki-elem-4">eki-elem-4</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Salvesta</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>

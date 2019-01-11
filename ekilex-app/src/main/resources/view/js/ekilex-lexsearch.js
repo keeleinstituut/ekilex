@@ -1,9 +1,9 @@
 function initialise() {
     $(document).on("click", ":button[name='detailsBtn']", function() {
-        var id = $(this).data('id');
-        var isRestoreScrollPos = this.hasAttribute('data-refresh');
+        let id = $(this).data('id');
+        let isRestoreScrollPos = this.hasAttribute('data-refresh');
         $.get(applicationUrl + 'worddetails/' + id).done(function(data) {
-            var scrollPos = $('#details_div').scrollTop();
+            let scrollPos = $('#details_div').scrollTop();
             $('#details_div').replaceWith(data);
             if (isRestoreScrollPos) {
                 $('#details_div').scrollTop(scrollPos);
@@ -15,12 +15,12 @@ function initialise() {
     });
 
     $(document).on('click', '.order-up', function() {
-        var orderingData = changeItemOrdering($(this), -1);
+        let orderingData = changeItemOrdering($(this), -1);
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 
     $(document).on('click', '.order-down', function() {
-        var orderingData = changeItemOrdering($(this), 1);
+        let orderingData = changeItemOrdering($(this), 1);
         postJson(applicationUrl + 'modify_ordering', orderingData);
     });
 
@@ -31,9 +31,9 @@ function initialise() {
     });
 
 	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
-		var dlg = $(this);
-		var link = $(e.relatedTarget);
-		var url = link.attr('href');
+		let dlg = $(this);
+		let link = $(e.relatedTarget);
+		let url = link.attr('href');
 		dlg.find('.close').focus();
 		dlg.find('.modal-body').html(null);
 		$.get(url).done(function(data) {
@@ -41,17 +41,21 @@ function initialise() {
 		});
 	});
 
-    var detailButtons = $('#results').find('[name="detailsBtn"]');
+    let detailButtons = $('#results').find('[name="detailsBtn"]');
     if (detailButtons.length === 1) {
         detailButtons.trigger('click');
     }
 
-    var editDlg = $('#editDlg');
+    let editDlg = $('#editDlg');
     editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         alignAndFocus(e, editDlg)
     });
+    let ekiEditorDlg = $('#ekiEditorDlg');
+    ekiEditorDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        alignAndFocus(e, ekiEditorDlg)
+    });
 
-    var editLexemeDlg = $('#editLexemeLevelsDlg');
+    let editLexemeDlg = $('#editLexemeLevelsDlg');
     editLexemeDlg.on('shown.bs.modal', function() {
         editLexemeDlg.find('[name=level1]').focus();
     });
@@ -73,18 +77,18 @@ function initialise() {
 }
 
 function openLexemeLevelDlg(elem) {
-    var targetElement = $(elem);
-    var editDlg = $('#editLexemeLevelsDlg');
+    let targetElement = $(elem);
+    let editDlg = $('#editLexemeLevelsDlg');
     editDlg.find('[name="id"]').val(targetElement.data('id'));
 
     editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
-        var editForm = editDlg.find('form');
+        let editForm = editDlg.find('form');
         editDlg.find('[name="action"]').val($(this).data('action'));
-        var url = editForm.attr('action') + '?' + editForm.serialize();
+        let url = editForm.attr('action') + '?' + editForm.serialize();
         $.post(url).done(function(data) {
-            var id = $('#details_div').data('id');
-            var detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
+            let id = $('#details_div').data('id');
+            let detailsButton = $('[name="detailsBtn"][data-id="' + id + '"]');
             detailsButton.trigger('click');
             editDlg.find('button.close').trigger('click');
         }).fail(function(data) {
@@ -95,21 +99,21 @@ function openLexemeLevelDlg(elem) {
 }
 
 function openAddNewWordRelationDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
-    var selectElem = addDlg.find('select');
+    let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'word-id');
 }
 
 function openUsageAuthorDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
-    var selectElem = addDlg.find('select');
+    let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'source-id');
 }

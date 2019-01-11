@@ -78,6 +78,7 @@ public class UpdateDbService implements DbConstant {
 
 	public void updateDefinitionValue(Long id, String value, String valuePrese) {
 		create.update(DEFINITION)
+				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.where(DEFINITION.ID.eq(id))
