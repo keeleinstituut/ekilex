@@ -78,7 +78,6 @@ public class UpdateDbService implements DbConstant {
 
 	public void updateDefinitionValue(Long id, String value, String valuePrese) {
 		create.update(DEFINITION)
-				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.set(DEFINITION.VALUE, value)
 				.set(DEFINITION.VALUE_PRESE, valuePrese)
 				.where(DEFINITION.ID.eq(id))
@@ -717,7 +716,7 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public String getFirstDefinitionOfMeaning(Long meaningId) {
-		Optional<Record1<String>> definition = create.select(DEFINITION.VALUE).from(DEFINITION)
+		Optional<Record1<String>> definition = create.select(DEFINITION.VALUE_PRESE).from(DEFINITION)
 				.where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).limit(1)
 				.fetchOptional();
 		return definition.map(Record1::value1).orElse(null);
@@ -817,8 +816,8 @@ public class UpdateDbService implements DbConstant {
 		Result<DefinitionRecord> definitions = create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(lexemeMeaningId)).fetch();
 		definitions.forEach(d -> {
 			create
-				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.LANG)
-				.values(newMeaningId, d.getValue(), d.getLang())
+				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.VALUE, DEFINITION.VALUE_PRESE, DEFINITION.LANG)
+				.values(newMeaningId, d.getValue(), d.getValuePrese(), d.getLang())
 				.execute();
 		});
 	}

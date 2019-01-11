@@ -230,7 +230,7 @@ public class CommonDataDbService implements DbConstant {
 		return create
 				.select(
 						DEFINITION.ID.as("definition_id"),
-						DEFINITION.VALUE.as("definition_value"),
+						DEFINITION.VALUE_PRESE.as("definition_value"),
 						DEFINITION.LANG.as("definition_lang"),
 						DEFINITION.ORDER_BY.as("definition_order_by"),
 						DEFINITION_SOURCE_LINK.ID.as("source_link_id"),
@@ -270,47 +270,47 @@ public class CommonDataDbService implements DbConstant {
 	public Result<Record18<Long,String,String,String,String,Long,String,String,Long,String,String,Long,String,String,String,Long,String,String>>
 				findUsageTranslationDefinitionTuples(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
-	LexemeFreeform ulff = LEXEME_FREEFORM.as("ulff");
-	Freeform u = FREEFORM.as("u");
-	Freeform ut = FREEFORM.as("ut");
-	Freeform ud = FREEFORM.as("ud");
-	Freeform utype = FREEFORM.as("utype");
-	Freeform pname = FREEFORM.as("pname");
-	Source src = SOURCE.as("src");
-	SourceFreeform srcff = SOURCE_FREEFORM.as("srcff");
-	UsageTypeLabel utypelbl = USAGE_TYPE_LABEL.as("utypelbl");
-	FreeformSourceLink srcl = FREEFORM_SOURCE_LINK.as("uauthl");
-
-	Table<Record3<Long,String,String>> srcn = DSL
-		.select(
-				src.ID,
-				src.TYPE,
-				DSL.field("array_to_string(array_agg(distinct pname.value_text), ',', '*')").cast(String.class).as("src_name")
-				)
-		.from(src, srcff, pname)
-		.where(
-				src.TYPE.eq(SourceType.PERSON.name())
-				.and(src.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				.and(srcff.SOURCE_ID.eq(src.ID))
-				.and(srcff.FREEFORM_ID.eq(pname.ID))
-				.and(pname.TYPE.eq(FreeformType.SOURCE_NAME.name()))
-				.and(pname.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-				)
-		.groupBy(src.ID)
-		.asTable("srcn");
+		LexemeFreeform ulff = LEXEME_FREEFORM.as("ulff");
+		Freeform u = FREEFORM.as("u");
+		Freeform ut = FREEFORM.as("ut");
+		Freeform ud = FREEFORM.as("ud");
+		Freeform utype = FREEFORM.as("utype");
+		Freeform pname = FREEFORM.as("pname");
+		Source src = SOURCE.as("src");
+		SourceFreeform srcff = SOURCE_FREEFORM.as("srcff");
+		UsageTypeLabel utypelbl = USAGE_TYPE_LABEL.as("utypelbl");
+		FreeformSourceLink srcl = FREEFORM_SOURCE_LINK.as("uauthl");
+	
+		Table<Record3<Long,String,String>> srcn = DSL
+			.select(
+					src.ID,
+					src.TYPE,
+					DSL.field("array_to_string(array_agg(distinct pname.value_text), ',', '*')").cast(String.class).as("src_name")
+					)
+			.from(src, srcff, pname)
+			.where(
+					src.TYPE.eq(SourceType.PERSON.name())
+					.and(src.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+					.and(srcff.SOURCE_ID.eq(src.ID))
+					.and(srcff.FREEFORM_ID.eq(pname.ID))
+					.and(pname.TYPE.eq(FreeformType.SOURCE_NAME.name()))
+					.and(pname.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+					)
+			.groupBy(src.ID)
+			.asTable("srcn");
 
 	return create
 			.select(
 					u.ID.as("usage_id"),
-					u.VALUE_TEXT.as("usage_value"),
+					u.VALUE_PRESE.as("usage_value"),
 					u.LANG.as("usage_lang"),
 					utype.CLASSIF_CODE.as("usage_type_code"),
 					utypelbl.VALUE.as("usage_type_value"),
 					ut.ID.as("usage_translation_id"),
-					ut.VALUE_TEXT.as("usage_translation_value"),
+					ut.VALUE_PRESE.as("usage_translation_value"),
 					ut.LANG.as("usage_translation_lang"),
 					ud.ID.as("usage_definition_id"),
-					ud.VALUE_TEXT.as("usage_definition_value"),
+					ud.VALUE_PRESE.as("usage_definition_value"),
 					ud.LANG.as("usage_definition_lang"),
 					srcl.ID.as("usage_source_link_id"),
 					srcl.TYPE.as("usage_source_link_type"),

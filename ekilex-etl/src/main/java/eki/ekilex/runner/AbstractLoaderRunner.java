@@ -942,10 +942,14 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected void updateFreeformText(Long freeformId, String value) throws Exception {
 
+		String valueClean = cleanEkiEntityMarkup(value);
+		String valuePrese = convertEkiEntityMarkup(value);
+
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("id", freeformId);
 		Map<String, Object> valueParamMap = new HashMap<>();
-		valueParamMap.put("value_text", value);
+		valueParamMap.put("value_text", valueClean);
+		valueParamMap.put("value_prese", valuePrese);
 		basicDbService.update(FREEFORM, criteriaParamMap, valueParamMap);
 	}
 
