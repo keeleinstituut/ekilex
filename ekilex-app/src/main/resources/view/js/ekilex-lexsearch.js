@@ -68,7 +68,7 @@ function initialise() {
     initSelectDlg($('#lexemeProcessStateCodeDlg'));
     initMultiValueAddDlg($('#lexemeClassifiersDlg'));
     initMultiValueAddDlg($('#wordClassifiersDlg'));
-    initMultiValueAddDlg($('#addNewUsageMemberDlg'));
+    initUsageMemberDlg($('#addNewUsageMemberDlg'));
     initNewWordDlg();
 }
 

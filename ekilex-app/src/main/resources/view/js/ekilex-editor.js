@@ -1,4 +1,43 @@
-// Javascript methods for Ekilex custom editor
+// Javascript methods for Ekilex custom editor component and dialogs are using it
+
+function openUsageMemberDlg(elem) {
+    var theDlg = $($(elem).data('target'));
+    theDlg.find('[name=id]').val($(elem).data('id'));
+}
+
+function toggleGroup(dlg, groupName) {
+    dlg.find('.value-group').hide();
+    dlg.find('[data-id=' + groupName + ']').show();
+}
+
+function initUsageMemberDlg(theDlg) {
+    theDlg.find('[name=opCode]').off('change').on('change', function(e) {
+        toggleGroup(theDlg, $(e.target).val())
+    });
+    theDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        let selectedGroup =  theDlg.find('[name=opCode]').val();
+        let selectedEditFld = theDlg.find('[data-id=' + selectedGroup + ']').find('[name=editFld]');
+        theDlg.find('[name=value]').val(selectedEditFld.html());
+        submitDialog(e, theDlg, 'Andmete lisamine ebaõnnestus.')
+    });
+    theDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        theDlg.find('.form-control').each(function (indx, item) {
+            if ($(item).prop('contenteditable') === 'true') {
+                $(item).html(null);
+            } else {
+                $(item).val(null);
+            }
+        });
+        theDlg.find('select').each(function (indx, item) {
+            $(item).val($(item).find('option').first().val());
+        });
+        toggleGroup(theDlg, theDlg.find('[name=opCode]').val());
+        alignAndFocus(e, theDlg);
+    });
+    theDlg.find('.eki-editor').each(function (indx, item) {
+       initEkiEditor($(item));
+    });
+}
 
 function openEkiEditorAddDlg(elem) {
     let addDlg = $($(elem).data('target'));
@@ -12,7 +51,8 @@ function openEkiEditorAddDlg(elem) {
     addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         alignAndFocus(e, addDlg)
     });
-    initEkiEditor(addDlg);
+    let ekiEditorElem = addDlg.find('.eki-editor');
+    initEkiEditor(ekiEditorElem);
 }
 
 function openEkiEditorDlg(elem) {
@@ -30,12 +70,13 @@ function openEkiEditorDlg(elem) {
     editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         alignAndFocus(e, editDlg)
     });
-    initEkiEditor(editDlg);
+    let ekiEditorElem = editDlg.find('.eki-editor');
+    initEkiEditor(ekiEditorElem);
 }
 
-function initEkiEditor(editDlg) {
-    let editorElem = editDlg.find('[name=editFld]');
-    let menuElement = editDlg.find('.eki-editor-menu');
+function initEkiEditor(ekiEditorElem) {
+    let editorElem = ekiEditorElem.find('[name=editFld]');
+    let menuElement = ekiEditorElem.find('.eki-editor-menu');
     editorElem.off('keydown').on('keydown', function (e) {
         let isEditorCommand = e.ctrlKey === true && (e.key === 'm' || e.key === 'n');
         if (isEditorCommand) {

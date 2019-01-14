@@ -63,7 +63,7 @@ function initialise() {
 
     $('#ekiEditorDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
     $('#addNewDefinitionDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
-    $('#addNewUsageDlg').find('[name=value]').attr("rows", 4);
+    $('#addNewUsageDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
     $('#addNewGovernmentUsageDlg').find('[name=value]').attr("rows", 4);
     initNewWordDlg();
     initSelectDlg($('#meaningDomainDlg'));

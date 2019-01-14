@@ -336,11 +336,6 @@ function toggleValueGroup(dlg, groupName) {
     dlg.find('[data-id=' + groupName + ']').find('.value-select').trigger('change');
 }
 
-function openUsageMemberDlg(elem) {
-    var theDlg = $($(elem).data('target'));
-    theDlg.find('[name=id]').val($(elem).data('id'));
-}
-
 function initMultiValueAddDlg(theDlg) {
     theDlg.find('[name=opCode]').off('change').on('change', function(e) {toggleValueGroup(theDlg, $(e.target).val())});
     theDlg.find('.value-select').off('change').on('change', function(e) {

@@ -138,52 +138,6 @@
   </div>
 </div>
 
-<div id="addNewUsageMemberDlg" class="modal" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <form th:action="@{/add_item}" method="post">
-        <div class="modal-body">
-          <input type="hidden" name="id">
-          <input type="hidden" name="value">
-          <div class="form-group row">
-            <div class="col-md-4">
-              <select class="form-control" name="opCode">
-                <option value="usage_translation">Kasutusnäite tõlge</option>
-                <option value="usage_definition">Kasutusnäite seletus</option>
-              </select>
-            </div>
-          </div>
-          <div class="value-group" data-id="usage_translation">
-            <div class="form-group row">
-              <div class="col-md-4">
-                <select class="form-control" name="language">
-                  <option th:each="language : ${allLanguages}"
-                          th:value="${language.code}"
-                          th:text="${language.value}">language</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-md-12">
-                <textarea class="form-control value-select" rows="2"></textarea>
-              </div>
-            </div>
-          </div>
-          <div class="form-group row value-group" data-id="usage_definition">
-            <div class="col-md-12">
-              <textarea class="form-control value-select" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Lisa</button>
-          <button type="button" class="btn btn-default" data-dismiss="modal">Katkesta</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- select fragments for classifier dialogs -->
 <div class="form-group row value-group" data-id="lexeme_frequency_group" th:fragment="lexeme_frequency_select">
   <div class="col-md-2">
