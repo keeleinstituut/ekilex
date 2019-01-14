@@ -50,10 +50,6 @@ function initialise() {
     editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         alignAndFocus(e, editDlg)
     });
-    let ekiEditorDlg = $('#ekiEditorDlg');
-    ekiEditorDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        alignAndFocus(e, ekiEditorDlg)
-    });
 
     let editLexemeDlg = $('#editLexemeLevelsDlg');
     editLexemeDlg.on('shown.bs.modal', function() {

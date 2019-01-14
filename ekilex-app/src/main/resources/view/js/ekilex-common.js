@@ -214,9 +214,6 @@ function openEditDlg(elem) {
 	editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
 		submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
 	});
-	if ($(elem).data('target') === '#ekiEditorDlg') {
-        initEkiEditor(editDlg);
-    }
 }
 
 function performDelete() {

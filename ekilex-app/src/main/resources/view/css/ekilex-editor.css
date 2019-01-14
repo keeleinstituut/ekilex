@@ -22,6 +22,12 @@
     padding: 2px 4px;
 }
 
-.eki-editor-edit-area {
+.edit-area-sm {
     height: 4em;
+    overflow: auto;
+}
+
+.edit-area-lg {
+    height: 8em;
+    overflow: auto;
 }

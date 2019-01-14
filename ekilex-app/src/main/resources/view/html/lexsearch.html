@@ -124,7 +124,7 @@
                 <span class="lbl">Seletused</span>
                 <button type="button" class="btn badge badge-success" title="Lisa uus"
                         th:data-id="${lexeme.meaningId}"
-                        onclick="openAddDlg(this)"
+                        onclick="openEkiEditorAddDlg(this)"
                         data-toggle="modal" data-target="#addNewDefinitionDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
@@ -746,7 +746,7 @@
 
   <div th:replace="common :: #editDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
-  <div th:replace="common :: #addNewDefinitionDlg"></div>
+  <div th:replace="ekilex_editor :: #addNewDefinitionDlg"></div>
   <div th:replace="common :: #addNewUsageDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>
   <div th:replace="common :: #wordClassifiersDlg"></div>

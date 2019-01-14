@@ -61,7 +61,8 @@ function initialise() {
         alignAndFocus(e, editDlg)
     });
 
-    $('#addNewDefinitionDlg').find('[name=value]').attr("rows", 4);
+    $('#ekiEditorDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
+    $('#addNewDefinitionDlg').find('[name=editFld]').removeClass('edit-area-sm').addClass('edit-area-lg');
     $('#addNewUsageDlg').find('[name=value]').attr("rows", 4);
     $('#addNewGovernmentUsageDlg').find('[name=value]').attr("rows", 4);
     initNewWordDlg();

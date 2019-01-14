@@ -1,8 +1,23 @@
 // Javascript methods for Ekilex custom editor
 
+function openEkiEditorAddDlg(elem) {
+    let addDlg = $($(elem).data('target'));
+    addDlg.find('[name=id]').val($(elem).data('id'));
+    let modifyFld = addDlg.find('[name=editFld]');
+    modifyFld.html(null);
+    addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
+        addDlg.find('[name=value]').val(modifyFld.html());
+        submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+    });
+    addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        alignAndFocus(e, addDlg)
+    });
+    initEkiEditor(addDlg);
+}
+
 function openEkiEditorDlg(elem) {
-    let targetName = $(elem).data('target-elem');
-    let targetElement = $('[name="' + targetName + '"]');
+    let targetElementName = $(elem).data('target-elem');
+    let targetElement = $('[name="' + targetElementName + '"]');
     let editDlg = $($(elem).data('target'));
     let modifyFld = editDlg.find('[name=editFld]');
     modifyFld.html(targetElement.data('value') === undefined ? targetElement.text() : targetElement.data('value'));
@@ -11,6 +26,9 @@ function openEkiEditorDlg(elem) {
     editDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         editDlg.find('[name=value]').val(modifyFld.html());
         submitDialog(e, editDlg, 'Andmete muutmine ebaõnnestus.')
+    });
+    editDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
+        alignAndFocus(e, editDlg)
     });
     initEkiEditor(editDlg);
 }
