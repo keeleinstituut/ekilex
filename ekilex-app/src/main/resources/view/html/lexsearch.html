@@ -277,7 +277,7 @@
                     <th class="lbl">Kasutusnäited, tõlked, seletused
                       <button type="button" class="btn badge badge-success" title="Lisa uus"
                               th:data-id="${lexeme.lexemeId}"
-                              onclick="openAddDlg(this)"
+                              onclick="openEkiEditorAddDlg(this)"
                               data-toggle="modal" data-target="#addNewUsageDlg">
                         <i class="fa fa-plus" aria-hidden="true"></i>
                       </button>
@@ -348,8 +348,8 @@
                             </span>
                             <button type="button" class="btn badge badge-primary ml-2"
                                     th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                                    onclick="openEditDlg(this)"
-                                    data-toggle="modal" data-target="#editDlg">
+                                    onclick="openEkiEditorDlg(this)"
+                                    data-toggle="modal" data-target="#ekiEditorDlg">
                               <i class="fa fa-edit" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="btn badge badge-warning"
@@ -373,8 +373,8 @@
                                   th:utext="${usageTranslation.value}"></span>
                             <button type="button" class="btn badge badge-primary ml-2"
                                     th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                    onclick="openEditDlg(this)"
-                                    data-toggle="modal" data-target="#editDlg">
+                                    onclick="openEkiEditorDlg(this)"
+                                    data-toggle="modal" data-target="#ekiEditorDlg">
                               <i class="fa fa-edit" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="btn badge badge-warning"
@@ -399,8 +399,8 @@
                                   th:utext="${usageDefinition.value}"></span>
                             <button type="button" class="btn badge badge-primary ml-2"
                                     th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                    onclick="openEditDlg(this)"
-                                    data-toggle="modal" data-target="#editDlg">
+                                    onclick="openEkiEditorDlg(this)"
+                                    data-toggle="modal" data-target="#ekiEditorDlg">
                               <i class="fa fa-edit" aria-hidden="true"></i>
                             </button>
                             <button type="button" class="btn badge badge-warning"
@@ -747,7 +747,7 @@
   <div th:replace="common :: #editDlg"></div>
   <div th:replace="common :: #editLexemeLevelsDlg"></div>
   <div th:replace="ekilex_editor :: #addNewDefinitionDlg"></div>
-  <div th:replace="common :: #addNewUsageDlg"></div>
+  <div th:replace="ekilex_editor :: #addNewUsageDlg"></div>
   <div th:replace="common :: #lexemeClassifiersDlg"></div>
   <div th:replace="common :: #wordClassifiersDlg"></div>
   <div th:replace="common :: #lexemeFrequencyDlg"></div>

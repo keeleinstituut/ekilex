@@ -375,7 +375,7 @@
             <span class="lbl">Kasutusnäited</span>
             <button type="button" class="btn badge badge-success" title="Lisa uus"
                     th:data-id="${lexeme.lexemeId}"
-                    onclick="openAddDlg(this)"
+                    onclick="openEkiEditorAddDlg(this)"
                     data-toggle="modal" data-target="#addNewUsageDlg">
               <i class="fa fa-plus" aria-hidden="true"></i>
             </button>
@@ -409,8 +409,8 @@
                     </span>
                     <button type="button" class="btn badge badge-primary ml-2"
                             th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
-                            onclick="openEditDlg(this)"
-                            data-toggle="modal" data-target="#editDlg">
+                            onclick="openEkiEditorDlg(this)"
+                            data-toggle="modal" data-target="#ekiEditorDlg">
                       <i class="fa fa-edit" aria-hidden="true"></i>
                     </button>
                     <button type="button" class="btn badge badge-warning"
@@ -522,9 +522,8 @@
     </script>
   </th:block>
 
-  <div th:replace="common :: #editDlg"></div>
   <div th:replace="ekilex_editor :: #addNewDefinitionDlg"></div>
-  <div th:replace="common :: #addNewUsageDlg"></div>
+  <div th:replace="ekilex_editor :: #addNewUsageDlg"></div>
   <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
