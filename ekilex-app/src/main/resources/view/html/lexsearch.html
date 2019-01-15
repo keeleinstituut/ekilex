@@ -64,7 +64,48 @@
       <div class="row no-gutters">
         <div class="col-8 pr-2">
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}">
-            <div class="card-body">
+
+            <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}">
+              <button type="button" class="btn badge badge-secondary float-right btn-toggle"
+                      th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
+                <i class="fa fa-angle-down" aria-hidden="true"></i>
+              </button>
+              <div class="d-flex flex-row align-items-center flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                  <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
+                        th:text="${word + (wordIter.last ? '' : ', ')}"
+                        th:classappend="${wordIter.last ? 'pr-2' : ''}"></span>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <div class="btn-custom">
+                      <span th:text="${meaningWord.value}"></span>
+                      <span th:text="${meaningWord.homonymNumber}"></span>
+                      <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+                    </div>
+                    <span th:unless="${meaningWordIter.last}">|</span>
+                  </th:block>
+                  <span th:if="${lexeme.levels != null}"
+                        th:data-id="${lexeme.lexemeId}"
+                        th:data-level1="${lexeme.level1}"
+                        th:data-level2="${lexeme.level2}"
+                        th:data-level3="${lexeme.level3}"
+                        class="pl-1">
+                    <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+                  </span>
+                </div>
+                <div class="ml-auto">
+                  <b th:text="${lexeme.dataset}"></b>
+                </div>
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                <span th:utext="${lexeme.definitions.get(0).value}"></span>
+              </div>
+            </div>
+
+            <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
+              <button type="button" class="btn badge badge-secondary float-right btn-toggle"
+                      th:data-toggle-target="${'lexTitle_' + lexeme.lexemeId}">
+                <i class="fa fa-angle-up" aria-hidden="true"></i>
+              </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
                   <span class="ttl" th:each="word,wordIter : ${lexeme.words}"

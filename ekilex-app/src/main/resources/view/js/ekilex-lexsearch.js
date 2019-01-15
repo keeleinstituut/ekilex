@@ -3,11 +3,13 @@ function initialise() {
         let id = $(this).data('id');
         let isRestoreScrollPos = this.hasAttribute('data-refresh');
         $.get(applicationUrl + 'worddetails/' + id).done(function(data) {
-            let scrollPos = $('#details_div').scrollTop();
-            $('#details_div').replaceWith(data);
+            let detailsDiv = $('#details_div');
+            let scrollPos = detailsDiv.scrollTop();
+            detailsDiv.replaceWith(data);
             if (isRestoreScrollPos) {
-                $('#details_div').scrollTop(scrollPos);
+                detailsDiv.scrollTop(scrollPos);
             }
+            initLexemeToggleButtons();
         }).fail(function(data) {
             console.log(data);
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
@@ -26,8 +28,9 @@ function initialise() {
 
     $(document).on('click', '#show-all-btn', function(e) {
     	e.preventDefault();
-        $('#fetchAll').val(true);
-        $('#fetchAll').closest('form').find('button[type="submit"]').trigger('click');
+        let fetchAll = $('#fetchAll');
+        fetchAll.val(true);
+        fetchAll.closest('form').find('button[type="submit"]').trigger('click');
     });
 
 	$(document).on('show.bs.modal', '#wordLifecycleLogDlg', function(e) {
@@ -112,4 +115,20 @@ function openUsageAuthorDlg(elem) {
     let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'source-id');
+}
+
+function initLexemeToggleButtons() {
+    let toggleButtons = $('.btn-toggle');
+    toggleButtons.on('click', toggleLexeme);
+    if (toggleButtons.length === 2) {
+        $(toggleButtons[0]).trigger('click');
+    }
+}
+
+function toggleLexeme(e) {
+    let elementToClose = $(e.currentTarget).closest('[data-toggle-name]');
+    let targetName = $(e.currentTarget).data('toggle-target');
+    let elementToShow = $('[data-toggle-name=' + targetName + ']');
+    elementToClose.addClass('d-none');
+    elementToShow.removeClass('d-none');
 }
