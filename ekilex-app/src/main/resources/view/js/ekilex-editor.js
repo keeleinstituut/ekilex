@@ -1,7 +1,7 @@
 // Javascript methods for Ekilex custom editor component and dialogs are using it
 
 function openUsageMemberDlg(elem) {
-    var theDlg = $($(elem).data('target'));
+    let theDlg = $($(elem).data('target'));
     theDlg.find('[name=id]').val($(elem).data('id'));
 }
 
@@ -81,13 +81,9 @@ function initEkiEditor(ekiEditorElem) {
         let isEditorCommand = e.ctrlKey === true && (e.key === 'm' || e.key === 'n');
         if (isEditorCommand) {
             if (e.key === 'm') {
-                menuElement.addClass('show');
-                let selectElem = menuElement.find('select');
-                selectElem.val(selectElem.find('option').first().val());
-                selectElem.focus();
+                openEditorMenu(menuElement);
             } else if (e.key === 'n') {
-                let cleanedHtml = editorElem.html().replace(/<\/?eki-elem-(.*?)>/g, '');
-                editorElem.html(cleanedHtml);
+                removeTags(editorElem);
             }
             e.preventDefault();
             e.stopPropagation();
@@ -95,26 +91,47 @@ function initEkiEditor(ekiEditorElem) {
     });
     menuElement.off('keydown').on('keydown', function (e) {
         if ((e.key === 'Escape' || e.key === 'Enter') && menuElement.hasClass('show')) {
-            e.preventDefault();
-            e.stopPropagation();
             menuElement.removeClass('show');
             editorElem.focus();
             if (e.key === 'Enter') {
                 let ekiTag = menuElement.find('option:selected').val();
                 addNode(ekiTag);
             }
-        }
-    });
-    menuElement.off('dblclick').on('dblclick', function (e) {
-        if (menuElement.hasClass('show')) {
             e.preventDefault();
             e.stopPropagation();
+        }
+    });
+    menuElement.off('click').on('click', function (e) {
+        if (menuElement.hasClass('show')) {
             menuElement.removeClass('show');
             editorElem.focus();
             let ekiTag = menuElement.find('option:selected').val();
             addNode(ekiTag);
+            e.preventDefault();
+            e.stopPropagation();
         }
     });
+    let menuBtn = ekiEditorElem.find('[data-btn-menu]');
+    menuBtn.off('click').on('click', function() {
+        openEditorMenu(menuElement)
+    });
+    let removeBtn = ekiEditorElem.find('[data-btn-remove]');
+    removeBtn.off('click').on('click', function() {
+        removeTags(editorElem)
+    })
+}
+
+function removeTags(editorElem) {
+    let cleanedHtml = editorElem.html().replace(/<\/?eki-elem-(.*?)>/g, '');
+    editorElem.html(cleanedHtml);
+    editorElem.focus();
+}
+
+function openEditorMenu(menuElement) {
+    menuElement.addClass('show');
+    let selectElem = menuElement.find('select');
+    selectElem.val(selectElem.find('option').first().val());
+    selectElem.focus();
 }
 
 function addNode(ekiTag) {

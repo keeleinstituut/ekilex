@@ -64,7 +64,48 @@
       <div class="row no-gutters">
         <div class="col-8 pr-2">
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}">
-            <div class="card-body">
+
+            <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}">
+              <button type="button" class="btn badge badge-secondary float-right btn-toggle"
+                      th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
+                <i class="fa fa-angle-down" aria-hidden="true"></i>
+              </button>
+              <div class="d-flex flex-row align-items-center flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                  <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
+                        th:text="${word + (wordIter.last ? '' : ', ')}"
+                        th:classappend="${wordIter.last ? 'pr-2' : ''}"></span>
+                  <th:block th:each="meaningWord,meaningWordIter : ${lexeme.meaningWords}">
+                    <div class="btn-custom">
+                      <span th:text="${meaningWord.value}"></span>
+                      <span th:text="${meaningWord.homonymNumber}"></span>
+                      <span th:text="${'( ' + meaningWord.language + ' )'}"></span>
+                    </div>
+                    <span th:unless="${meaningWordIter.last}">|</span>
+                  </th:block>
+                  <span th:if="${lexeme.levels != null}"
+                        th:data-id="${lexeme.lexemeId}"
+                        th:data-level1="${lexeme.level1}"
+                        th:data-level2="${lexeme.level2}"
+                        th:data-level3="${lexeme.level3}"
+                        class="pl-1">
+                    <small th:text="${'[ ' + lexeme.levels + ' ]'}"></small>
+                  </span>
+                </div>
+                <div class="ml-auto">
+                  <b th:text="${lexeme.dataset}"></b>
+                </div>
+              </div>
+              <div th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                <span th:utext="${lexeme.definitions.get(0).value}"></span>
+              </div>
+            </div>
+
+            <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
+              <button type="button" class="btn badge badge-secondary float-right btn-toggle"
+                      th:data-toggle-target="${'lexTitle_' + lexeme.lexemeId}">
+                <i class="fa fa-angle-up" aria-hidden="true"></i>
+              </button>
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
                   <span class="ttl" th:each="word,wordIter : ${lexeme.words}"
@@ -470,113 +511,113 @@
                   </tr>
                 </table>
               </div>
-            </div>
-            <div class="card-body pt-0" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
-              <span class="lbl">Kollokatsioonid</span>
-              <th:block th:each="collocPosGr : ${lexeme.collocationPosGroups}">
-                <div class="border rounded p-2">
-                  <p th:text="${collocPosGr.code}"></p>
-                  <th:block th:each="collocRelGr : ${collocPosGr.relationGroups}">
-                    <div class="border rounded p-2">
-                      <p>
-                        <span th:text="${collocRelGr.name}"></span>
-                        <span th:if="${collocRelGr.frequency != null}">
-                          &nbsp;
-                          <span class="lbl">Sagedus:</span>
-                          <span th:text="${collocRelGr.frequency}"></span>
-                        </span>
-                        <span th:if="${collocRelGr.score != null}">
-                          &nbsp;
-                          <span class="lbl">Skoor:</span>
-                          <span th:text="${collocRelGr.score}"></span>
-                        </span>
-                      </p>
-                      <table>
-                        <tr th:each="colloc : ${collocRelGr.collocations}">
-                          <td style="padding: 0px 5px 0px 5px">
-                            <span th:text="${colloc.value}"></span>
-                          </td>
-                          <td style="padding: 0px 5px 0px 5px">
-                            <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
-                              <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
-                                <span th:text="${collocMember.word}"></span>
-                                <code>
-                                  [<span th:text="${collocMember.weight}"></span>]
-                                </code>
-                              </button>
-                              <br th:unless="${collocMemberIter.last}"/>
-                            </span>
-                          </td>
-                          <td style="padding: 0px 5px 0px 5px">
-                            <span th:if="${colloc.definition != null}">
-                              (<span th:text="${colloc.definition}"></span>)
-                            </span>
-                          </td>
-                          <td style="padding: 0px 5px 0px 5px">
-                            <span th:text="${colloc.frequency}"></span>
-                          </td>
-                          <td style="padding: 0px 5px 0px 5px">
-                            <span th:text="${colloc.score}"></span>
-                          </td>
-                          <td style="padding: 0px 5px 0px 5px">
-                            <div th:if="${not #lists.isEmpty(colloc.collocUsages)}">
-                              <div th:each="collocUsage : ${colloc.collocUsages}">
-                                <i>
-                                  <span th:text="${collocUsage}"></span>
-                                </i>
+              <div class="pt-2" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
+                <span class="lbl">Kollokatsioonid</span>
+                <th:block th:each="collocPosGr : ${lexeme.collocationPosGroups}">
+                  <div class="border rounded p-2">
+                    <p th:text="${collocPosGr.code}"></p>
+                    <th:block th:each="collocRelGr : ${collocPosGr.relationGroups}">
+                      <div class="border rounded p-2">
+                        <p>
+                          <span th:text="${collocRelGr.name}"></span>
+                          <span th:if="${collocRelGr.frequency != null}">
+                            &nbsp;
+                            <span class="lbl">Sagedus:</span>
+                            <span th:text="${collocRelGr.frequency}"></span>
+                          </span>
+                          <span th:if="${collocRelGr.score != null}">
+                            &nbsp;
+                            <span class="lbl">Skoor:</span>
+                            <span th:text="${collocRelGr.score}"></span>
+                          </span>
+                        </p>
+                        <table>
+                          <tr th:each="colloc : ${collocRelGr.collocations}">
+                            <td style="padding: 0px 5px 0px 5px">
+                              <span th:text="${colloc.value}"></span>
+                            </td>
+                            <td style="padding: 0px 5px 0px 5px">
+                              <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
+                                <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
+                                  <span th:text="${collocMember.word}"></span>
+                                  <code>
+                                    [<span th:text="${collocMember.weight}"></span>]
+                                  </code>
+                                </button>
+                                <br th:unless="${collocMemberIter.last}"/>
+                              </span>
+                            </td>
+                            <td style="padding: 0px 5px 0px 5px">
+                              <span th:if="${colloc.definition != null}">
+                                (<span th:text="${colloc.definition}"></span>)
+                              </span>
+                            </td>
+                            <td style="padding: 0px 5px 0px 5px">
+                              <span th:text="${colloc.frequency}"></span>
+                            </td>
+                            <td style="padding: 0px 5px 0px 5px">
+                              <span th:text="${colloc.score}"></span>
+                            </td>
+                            <td style="padding: 0px 5px 0px 5px">
+                              <div th:if="${not #lists.isEmpty(colloc.collocUsages)}">
+                                <div th:each="collocUsage : ${colloc.collocUsages}">
+                                  <i>
+                                    <span th:text="${collocUsage}"></span>
+                                  </i>
+                                </div>
                               </div>
-                            </div>
-                          </td>
-                        </tr>
-                      </table>
-                    </div>
-                    <div style="padding: 5px"></div>
-                  </th:block>
-                </div>
-                <div style="padding: 5px"></div>
-              </th:block>
-            </div>
-            <div class="card-body pt-0" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
-              <span class="lbl">Kasutatud kollokatsioonides</span>
-              <div class="border rounded p-2">
-                <table>
-                  <tr th:each="colloc : ${lexeme.secondaryCollocations}">
-                    <td style="padding: 0px 5px 0px 5px">
-                      <span th:text="${colloc.value}"></span>
-                    </td>
-                    <td style="padding: 0px 5px 0px 5px">
-                      <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
-                        <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
-                          <span th:text="${collocMember.word}"></span>
-                          <code>
-                            [<span th:text="${collocMember.weight}"></span>]
-                          </code>
-                        </button>
-                        <br th:unless="${collocMemberIter.last}"/>
-                      </span>
-                    </td>
-                    <td style="padding: 0px 5px 0px 5px">
-                      <span th:if="${colloc.definition != null}">
-                        (<span th:text="${colloc.definition}"></span>)
-                      </span>
-                    </td>
-                    <td style="padding: 0px 5px 0px 5px">
-                      <span th:text="${colloc.frequency}"></span>
-                    </td>
-                    <td style="padding: 0px 5px 0px 5px">
-                      <span th:text="${colloc.score}"></span>
-                    </td>
-                    <td style="padding: 0px 5px 0px 5px">
-                      <div th:if="${not #lists.isEmpty(colloc.collocUsages)}">
-                        <div th:each="collocUsage : ${colloc.collocUsages}">
-                          <i>
-                            <span th:text="${collocUsage}"></span>
-                          </i>
-                        </div>
+                            </td>
+                          </tr>
+                        </table>
                       </div>
-                    </td>
-                  </tr>
-                </table>
+                      <div style="padding: 5px"></div>
+                    </th:block>
+                  </div>
+                  <div style="padding: 5px"></div>
+                </th:block>
+              </div>
+              <div class="pt-2" th:if="${not #lists.isEmpty(lexeme.secondaryCollocations)}">
+                <span class="lbl">Kasutatud kollokatsioonides</span>
+                <div class="border rounded p-2">
+                  <table>
+                    <tr th:each="colloc : ${lexeme.secondaryCollocations}">
+                      <td style="padding: 0px 5px 0px 5px">
+                        <span th:text="${colloc.value}"></span>
+                      </td>
+                      <td style="padding: 0px 5px 0px 5px">
+                        <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
+                          <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
+                            <span th:text="${collocMember.word}"></span>
+                            <code>
+                              [<span th:text="${collocMember.weight}"></span>]
+                            </code>
+                          </button>
+                          <br th:unless="${collocMemberIter.last}"/>
+                        </span>
+                      </td>
+                      <td style="padding: 0px 5px 0px 5px">
+                        <span th:if="${colloc.definition != null}">
+                          (<span th:text="${colloc.definition}"></span>)
+                        </span>
+                      </td>
+                      <td style="padding: 0px 5px 0px 5px">
+                        <span th:text="${colloc.frequency}"></span>
+                      </td>
+                      <td style="padding: 0px 5px 0px 5px">
+                        <span th:text="${colloc.score}"></span>
+                      </td>
+                      <td style="padding: 0px 5px 0px 5px">
+                        <div th:if="${not #lists.isEmpty(colloc.collocUsages)}">
+                          <div th:each="collocUsage : ${colloc.collocUsages}">
+                            <i>
+                              <span th:text="${collocUsage}"></span>
+                            </i>
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

@@ -143,3 +143,11 @@ input:checked+.slider:before {
 .validation {
 	display: none;
 }
+
+.btn-toggle {
+	font-size: large;
+	border-radius: 1.5rem;
+	margin-top: -14px;
+	margin-right: -14px;
+	padding: 0px 3px;
+}

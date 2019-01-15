@@ -4,9 +4,8 @@
     padding: 6px;
     position: absolute;
     z-index: 1;
-    top: 60%;
-    left: 50%;
-    margin-left: -80px;
+    top: -25%;
+    left: 65%;
 }
 
 .eki-editor-menu.show {
