@@ -257,7 +257,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		for (Node refNode : referenceNodes) {
 			Element refElement = (Element)refNode;
 			WordData refWord = new WordData();
-			refWord.value = cleanUp(refElement.getTextTrim());
+			refWord.value = cleanUpWord(refElement.getTextTrim());
 			if (refElement.attributeValue(homonymNrAttr) != null) {
 				refWord.homonymNr = Integer.parseInt(refElement.attributeValue(homonymNrAttr));
 			}
@@ -313,7 +313,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		for (Node groupNode : groupNodes) {
 			List<String> wordValues = extractCleanValues(groupNode, phraseologyValueExp);
 			for (String wordValue : wordValues) {
-				String word = cleanUp(wordValue);
+				String word = cleanUpWord(wordValue);
 				if (isNotWordInSs1(word)) {
 					continue;
 				}
@@ -349,7 +349,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 					for(Node transalationGroupNode : translationGroupNodes) {
 						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-						WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, LANG_RUS, null);
+						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null);
 						List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 						Lexeme russianLexeme = new Lexeme();
 						russianLexeme.setWordId(russianWordData.id);
@@ -561,12 +561,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			for (Node usageGroupNode : usageGroupNodes) {
 				List<String> wordValues = extractCleanValues(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
-					if (!isUsage(cleanUp(wordValue))) {
+					if (!isUsage(cleanUpWord(wordValue))) {
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
 						if (meaningGroupNodes.isEmpty()) {
 							continue;
 						}
-						WordData wordData = findOrCreateWord(context, cleanUp(wordValue), wordValue, dataLang, null);
+						WordData wordData = findOrCreateWord(context, cleanUpWord(wordValue), wordValue, dataLang, null);
 						List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 						int meaningNodeIndex = 1;
 						for (Node meaningGroupNode: meaningGroupNodes) {
@@ -614,7 +614,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for(Node transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-								WordData russianWordData = findOrCreateWord(context, cleanUp(russianWord), russianWord, LANG_RUS, null);
+								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null);
 								List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 								boolean createNewRussianLexeme = true;
 								Long russianLexemeId = null;
@@ -654,7 +654,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		if (word.isPresent()) {
 			return word.get();
 		} else {
-			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, null, aspect);
+			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, aspect, null);
 			context.importedWords.add(newWord);
 			return newWord;
 		}
@@ -810,7 +810,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			String word = extractAsString(wordGroupNode, wordExp);
 			String aspectWord = extractAsString(wordGroupNode, aspectValueExp);
 			LexemeToWordData wordData = new LexemeToWordData();
-			wordData.word = cleanUp(word);
+			wordData.word = cleanUpWord(word);
 
 			if (isBlank(wordData.word)) continue;
 
@@ -831,7 +831,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
 				aspectData.aspect = calculateAspectType(aspectWord);
-				aspectData.word = cleanUp(aspectWord);
+				aspectData.word = cleanUpWord(aspectWord);
 				aspectData.displayForm = aspectWord;
 				aspectData.reportingId = reportingId;
 				dataList.add(aspectData);

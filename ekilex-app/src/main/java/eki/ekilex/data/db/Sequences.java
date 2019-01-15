@@ -407,4 +407,14 @@ public class Sequences {
      * The sequence <code>public.word_type_order_by_seq</code>
      */
     public static final Sequence<Long> WORD_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("word_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_word_type_id_seq</code>
+     */
+    public static final Sequence<Long> WORD_WORD_TYPE_ID_SEQ = new SequenceImpl<Long>("word_word_type_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.word_word_type_order_by_seq</code>
+     */
+    public static final Sequence<Long> WORD_WORD_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("word_word_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 }

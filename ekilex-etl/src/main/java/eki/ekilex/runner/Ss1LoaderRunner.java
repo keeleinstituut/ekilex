@@ -272,7 +272,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private boolean isSeries(List<WordData> newWords) {
 		final String wordTypeSeries = "s";
-		return newWords.stream().anyMatch(wordData -> Objects.equals(wordTypeSeries, wordData.wordType));
+		return newWords.stream().anyMatch(wordData -> wordData.wordTypeCodes.contains(wordTypeSeries));
 	}
 
 	private List<WordData> extractDerivativesData(Node headerNode) {
@@ -297,7 +297,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Element linkedWordElement = (Element) linkedWordNode;
 			if (Objects.equals(linkedWordElement.attributeValue(wordLinkTypeAttr), wordLinkType)) {
 				WordData linkedWord = new WordData();
-				linkedWord.value = cleanUp(linkedWordElement.getTextTrim());
+				linkedWord.value = cleanUpWord(linkedWordElement.getTextTrim());
 				if (linkedWordElement.attributeValue(homonymNrAttr) != null) {
 					linkedWord.homonymNr = Integer.parseInt(linkedWordElement.attributeValue(homonymNrAttr));
 				}
@@ -463,7 +463,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			for (WordData subWord: subWords) {
 				subWord.id = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.value);
 				if (subWord.id == null) {
-					WordData newWord = createDefaultWordFrom(subWord.value, subWord.displayForm, dataLang, subWord.displayMorph, subWord.wordType, null);
+					WordData newWord = createDefaultWordFrom(subWord.value, subWord.displayForm, dataLang, subWord.displayMorph, null, subWord.wordTypeCodes);
 					newWord.homonymNr = subWord.homonymNr;
 					context.importedWords.add(newWord);
 					subWord.id = newWord.id;
@@ -478,7 +478,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private Long createWordWithLexeme(Context context, WordData wordData) throws Exception {
 
-		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, wordData.wordType, null);
+		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, null, wordData.wordTypeCodes);
 		newWord.homonymNr = wordData.homonymNr;
 		context.importedWords.add(newWord);
 
@@ -977,7 +977,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				WordData derivative = new WordData();
 				derivative.id = mainWord.id;
 				derivative.reportingId = mainWord.reportingId;
-				derivative.value = cleanUp(wordNode.getTextTrim());
+				derivative.value = cleanUpWord(wordNode.getTextTrim());
 				if (((Element)wordGroupNode).attributeValue(homonymNrAttr) != null) {
 					derivative.homonymNr = Integer.parseInt(((Element)wordGroupNode).attributeValue(homonymNrAttr));
 				}
@@ -1021,7 +1021,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Element subWordElement = (Element) subWordNode;
 			WordData subWord = new WordData();
 			subWord.displayForm = subWordElement.getTextTrim();
-			subWord.value = cleanUp(subWord.displayForm);
+			subWord.value = cleanUpWord(subWord.displayForm);
 			if (subWordElement.attributeValue(homonymNrAttr) != null) {
 				subWord.homonymNr = Integer.parseInt(subWordElement.attributeValue(homonymNrAttr));
 			}
@@ -1049,7 +1049,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			Element unionWordElement = (Element) unionWordNode;
 			WordData unionWord = new WordData();
 			unionWord.id = wordId;
-			unionWord.value = cleanUp(unionWordElement.getTextTrim());
+			unionWord.value = cleanUpWord(unionWordElement.getTextTrim());
 			unionWord.reportingId = reportingId;
 			if (unionWordElement.attributeValue(homonymNrAttr) != null) {
 				unionWord.homonymNr = Integer.parseInt(unionWordElement.attributeValue(homonymNrAttr));
@@ -1068,7 +1068,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 		if (wordId == null) {
 			if (!reportingPaused) {
-				logger.debug("No matching word was found for: \"{}\", word: \"{}\", homonym: \"{}\"", reportingId, wordValue, homonymNr);
+				//logger.debug("No matching word was found for: \"{}\", word: \"{}\", homonym: \"{}\"", reportingId, wordValue, homonymNr);
 			}
 			writeToLogFile(reportingId, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
 		}

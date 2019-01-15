@@ -419,7 +419,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private LexemeData createLexemeAndRelatedObjects(LexemeToWordData wordData, Context context) throws Exception {
 
 		LexemeData createdLexemeData = new LexemeData();
-		WordData newWord = createDefaultWordFrom(wordData.word, wordData.wordType);
+		WordData newWord = createDefaultWordFrom(wordData.word, wordData.wordTypeCodes);
 		context.importedWords.add(newWord);
 		createdLexemeData.wordId = newWord.id;
 		Long meaningId = createMeaning();
@@ -436,13 +436,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		return createdLexemeData;
 	}
 
-	private WordData createDefaultWordFrom(String wordValue, String wordType) throws Exception {
+	private WordData createDefaultWordFrom(String wordValue, List<String> wordTypeCodes) throws Exception {
 
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
-		createdWord.wordType = wordType;
+		createdWord.wordTypeCodes = wordTypeCodes;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
-		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordType);
+		Word word = new Word(wordValue, dataLang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
 		createdWord.id = createOrSelectWord(word, null, null, null);
 		return createdWord;
 	}
@@ -772,7 +772,9 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		if (abbreviation.isPresent()) {
 			return abbreviation.get();
 		} else {
-			WordData abbrData =  createDefaultWordFrom(abbreviationValue, wordTypeAbbreviation);
+			List<String> wordTypeCodes = new ArrayList<>();
+			wordTypeCodes.add(wordTypeAbbreviation);
+			WordData abbrData =  createDefaultWordFrom(abbreviationValue, wordTypeCodes);
 			context.importedWords.add(abbrData);
 			return abbrData;
 		}
@@ -802,9 +804,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				}
 				if (((Element)compoundFormNode).attributeValue(wordTypeAttr) != null) {
 					String wordType = ((Element)compoundFormNode).attributeValue(wordTypeAttr);
-					lexemeData.wordType = wordTypes.get(wordType);
-					if (lexemeData.wordType == null) {
+					String mappedWordTypeCode = wordTypes.get(wordType);
+					if (mappedWordTypeCode == null) {
 						writeToLogFile(reportingId, "Tundmatu märksõnaliik", wordType);
+					} else {
+						lexemeData.wordTypeCodes.add(mappedWordTypeCode);
 					}
 				}
 				lexemesData.add(lexemeData);
@@ -1025,9 +1029,11 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			}
 			String wordTypeAttrValue = metadataElement.attributeValue(wordTypeAttr);
 			if (StringUtils.isNotBlank(wordTypeAttrValue)) {
-				lexemeMetadata.wordType = wordTypes.get(wordTypeAttrValue);
-				if (lexemeMetadata.wordType == null) {
+				String mappedWordTypeCode = wordTypes.get(wordTypeAttrValue);
+				if (mappedWordTypeCode == null) {
 					writeToLogFile(reportingId, "Tundmatu märksõnaliik", wordTypeAttrValue);
+				} else {
+					lexemeMetadata.wordTypeCodes.add(mappedWordTypeCode);
 				}
 			}
 			metadataList.add(lexemeMetadata);
@@ -1293,7 +1299,8 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
 		}
 		if (wordNode.attributeValue(wordTypeAttr) != null) {
-			wordData.wordType = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
+			String mappedWordTypeCode = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
+			wordData.wordTypeCodes.add(mappedWordTypeCode);
 		}
 		String wordValue = nodeCleanValue(wordNode);
 		String wordDisplayForm = wordValue;
@@ -1302,7 +1309,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
 		String wordMorphCode = extractWordMorphCode(wordValue, wordGroupNode);
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, guid, wordData.wordType);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, null, homonymNr, wordMorphCode, guid, wordData.wordTypeCodes);
 
 		Node wordDisplayMorphNode = wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
@@ -1421,7 +1428,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		int homonymNr = 0;
 		String reportingId;
 		String frequencyGroup;
-		String wordType;
+		List<String> wordTypeCodes = new ArrayList<>();
 		List<String> comparatives = new ArrayList<>();
 		List<String> superlatives = new ArrayList<>();
 		int level1 = 1;
@@ -1455,7 +1462,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		String definition;
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
-		String wordType;
+		List<String> wordTypeCodes = new ArrayList<>();
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -1468,7 +1475,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			newData.definition = this.definition;
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
-			newData.wordType = this.wordType;
+			newData.wordTypeCodes.addAll(this.wordTypeCodes);
 			return newData;
 		}
 	}

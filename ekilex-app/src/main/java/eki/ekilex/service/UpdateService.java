@@ -144,9 +144,9 @@ public class UpdateService {
 	}
 
 	@Transactional
-	public void updateWordType(Long wordId, String typeCode) {
-		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordId, typeCode);
-		updateDbService.updateWordType(wordId, typeCode);
+	public void updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
+		Long wordWordTypeId = updateDbService.updateWordType(wordId, currentTypeCode, newTypeCode);
+		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, currentTypeCode, newTypeCode);
 	}
 
 	@Transactional
@@ -209,6 +209,12 @@ public class UpdateService {
 	public void addWordToDataset(Long wordId, String datasetCode, Long meaningId) {
 		Long lexemeId = updateDbService.addWordToDataset(wordId, datasetCode, meaningId);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEXEME, LifecycleProperty.DATASET, lexemeId, datasetCode);
+	}
+
+	@Transactional
+	public void addWordType(Long wordId, String typeCode) {
+		Long lexemePosId = updateDbService.addWordType(wordId, typeCode);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, lexemePosId, typeCode);
 	}
 
 	@Transactional
@@ -392,6 +398,15 @@ public class UpdateService {
 	}
 
 	// --- DELETE ---
+
+	@Transactional
+	public void deleteWordType(Long wordId, String typeCode) {
+		if (StringUtils.isNotBlank(typeCode)) {
+			Long wordWordTypeId = updateDbService.findWordWordTypeId(wordId, typeCode);
+			lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.WORD_TYPE, wordWordTypeId, typeCode, null);
+			updateDbService.deleteWordWordType(wordWordTypeId);
+		}
+	}
 
 	@Transactional
 	public void deleteUsage(Long id) {

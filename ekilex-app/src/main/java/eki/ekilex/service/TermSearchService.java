@@ -145,6 +145,7 @@ public class TermSearchService implements SystemConstant {
 		for (Long lexemeId : lexemeIds) {
 
 			Lexeme lexeme = termSearchDbService.getLexeme(lexemeId).into(Lexeme.class);
+			List<Classifier> wordTypes = commonDataDbService.findWordTypes(lexeme.getWordId(), classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemePos = commonDataDbService.findLexemePos(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeDerivs = commonDataDbService.findLexemeDerivs(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 			List<Classifier> lexemeRegisters = commonDataDbService.findLexemeRegisters(lexemeId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
@@ -159,10 +160,10 @@ public class TermSearchService implements SystemConstant {
 
 			boolean classifiersExist =
 					StringUtils.isNotBlank(lexeme.getWordGenderCode())
-					|| StringUtils.isNotBlank(lexeme.getWordTypeCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeValueStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeProcessStateCode())
 					|| StringUtils.isNotBlank(lexeme.getLexemeFrequencyGroupCode())
+					|| CollectionUtils.isNotEmpty(wordTypes)
 					|| CollectionUtils.isNotEmpty(lexemePos)
 					|| CollectionUtils.isNotEmpty(lexemeDerivs)
 					|| CollectionUtils.isNotEmpty(lexemeRegisters)
@@ -174,6 +175,7 @@ public class TermSearchService implements SystemConstant {
 
 			lexeme.setLevels(levels);
 			lexeme.setDataset(dataset);
+			lexeme.setWordTypes(wordTypes);
 			lexeme.setPos(lexemePos);
 			lexeme.setDerivs(lexemeDerivs);
 			lexeme.setRegisters(lexemeRegisters);

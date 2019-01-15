@@ -1,5 +1,7 @@
 package eki.ekilex.data.transform;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 
 public class Word extends AbstractDataObject {
@@ -14,6 +16,8 @@ public class Word extends AbstractDataObject {
 
 	private String value;
 
+	private String cleanValue;
+
 	private int homonymNr;
 
 	private String wordClass;
@@ -22,7 +26,7 @@ public class Word extends AbstractDataObject {
 
 	private String genderCode;
 
-	private String wordTypeCode;
+	private List<String> wordTypeCodes;
 
 	//form properties
 
@@ -49,7 +53,7 @@ public class Word extends AbstractDataObject {
 		this.guid = guid;
 	}
 
-	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode, String guid, String wordTypeCode) {
+	public Word(String value, String lang, String formsString, String[] components, String displayForm, String vocalForm, int homonymNr, String morphCode, String guid, List<String> wordTypeCodes) {
 		this.value = value;
 		this.lang = lang;
 		this.formsString = formsString;
@@ -59,7 +63,7 @@ public class Word extends AbstractDataObject {
 		this.homonymNr = homonymNr;
 		this.morphCode = morphCode;
 		this.guid = guid;
-		this.wordTypeCode = wordTypeCode;
+		this.wordTypeCodes = wordTypeCodes;
 	}
 
 	public Long getId() {
@@ -94,6 +98,14 @@ public class Word extends AbstractDataObject {
 		this.value = value;
 	}
 
+	public String getCleanValue() {
+		return cleanValue;
+	}
+
+	public void setCleanValue(String cleanValue) {
+		this.cleanValue = cleanValue;
+	}
+
 	public int getHomonymNr() {
 		return homonymNr;
 	}
@@ -126,12 +138,12 @@ public class Word extends AbstractDataObject {
 		this.genderCode = genderCode;
 	}
 
-	public String getWordTypeCode() {
-		return wordTypeCode;
+	public List<String> getWordTypeCodes() {
+		return wordTypeCodes;
 	}
 
-	public void setWordTypeCode(String wordTypeCode) {
-		this.wordTypeCode = wordTypeCode;
+	public void setWordTypeCodes(List<String> wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
 	}
 
 	public String getMorphCode() {

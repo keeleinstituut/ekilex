@@ -60,6 +60,7 @@ drop table if exists word_guid;
 drop table if exists word_group_member;
 drop table if exists word_group;
 drop table if exists word_relation;
+drop table if exists word_word_type;
 drop table if exists word;
 drop table if exists source_freeform;
 drop table if exists source;

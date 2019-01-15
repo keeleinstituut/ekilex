@@ -36,7 +36,6 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(SsBasedLoaderRunner.class);
 
 	private final static String formStrCleanupChars = "()¤:_|[]̄̆̇\"`´–+=*";  // here is not the regular -, but the special minus symbol
-	private final static String wordComponentSeparator = "+";
 	protected final static String dataLang = "est";
 	protected final static String latinLang = "lat";
 
@@ -145,17 +144,20 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 					.filter(w -> itemData.word.equals(w.value) && lang.equals(w.language) && itemData.homonymNr == w.homonymNr)
 					.findFirst();
 			if (!existingWord.isPresent()) {
-				String wordType = defaultWordType == null ? itemData.wordType : defaultWordType;
-				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, wordType, null);
+				if (defaultWordType != null) {
+					itemData.wordTypeCodes.clear();
+					itemData.wordTypeCodes.add(defaultWordType);
+				}
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, null, itemData.wordTypeCodes);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
 				wordId = newWord.id;
 				if (!reportingPaused) {
-					logger.debug("new word created : {}", itemData.word);
+					//logger.debug("new word created : {}", itemData.word);
 				}
 				writeToLogFile(itemData.reportingId, logMessage, itemData.word);
 			} else {
-//				logger.debug("word found ; {}", existingWord.get().value);
+				//logger.debug("word found ; {}", existingWord.get().value);
 				wordId = existingWord.get().id;
 				if (hasLexemeForMeaning(wordId, itemData.meaningId)) {
 					addLexeme = false;
@@ -203,10 +205,10 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String wordType, String aspectType) throws Exception {
+	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String aspectType, List<String> wordTypeCodes) throws Exception {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
-		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordType);
+		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
 		word.setDisplayMorph(displayMorph);
 		word.setAspectTypeCode(aspectType);
 		WordData createdWord = new WordData();
@@ -233,7 +235,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			Element metadataElement = (Element) metadataNode;
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
 			lexemeMetadata.displayForm = metadataElement.getTextTrim();
-			lexemeMetadata.word = cleanUp(lexemeMetadata.displayForm);
+			lexemeMetadata.word = cleanUpWord(lexemeMetadata.displayForm);
 			lexemeMetadata.reportingId = reportingId;
 			String lexemeLevel1AttrValue = metadataElement.attributeValue(lexemeLevel1Attr);
 			if (StringUtils.isBlank(lexemeLevel1AttrValue)) {
@@ -250,10 +252,12 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			}
 			String wordTypeAttrValue = metadataElement.attributeValue(wordTypeAttr);
 			if (StringUtils.isNotBlank(wordTypeAttrValue)) {
-				lexemeMetadata.wordType = wordTypes.get(wordTypeAttrValue);
-				if (lexemeMetadata.wordType == null) {
-					logger.debug("unknown lexeme type {}", wordTypeAttrValue);
+				String mappedWordTypeCode = wordTypes.get(wordTypeAttrValue);
+				if (mappedWordTypeCode == null) {
+					logger.debug("unknown word type {}", wordTypeAttrValue);
 					writeToLogFile(reportingId, "Tundmatu märksõnaliik", wordTypeAttrValue);
+				} else {
+					lexemeMetadata.wordTypeCodes.add(mappedWordTypeCode);
 				}
 			}
 			metadataList.add(lexemeMetadata);
@@ -321,10 +325,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			wordData.homonymNr = Integer.parseInt(wordNode.attributeValue(homonymNrAttr));
 		}
 		if (wordNode.attributeValue(wordTypeAttr) != null) {
-			wordData.wordType = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
+			String mappedWordTypeCode = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
+			wordData.wordTypeCodes.add(mappedWordTypeCode);
 		}
 		String wordDisplayForm = wordNode.getTextTrim();
-		String wordValue = cleanUp(wordDisplayForm);
+		String wordValue = cleanUpWord(wordDisplayForm);
 		wordData.value = wordValue;
 		wordData.language = dataLang;
 		int homonymNr = getWordMaxHomonymNr(wordValue, dataLang) + 1;
@@ -337,7 +342,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, guid, wordData.wordType);
+		Word word = new Word(wordValue, dataLang, null, null, wordDisplayForm, wordVocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, guid, wordData.wordTypeCodes);
 
 		Element wordDisplayMorphNode = (Element) wordGroupNode.selectSingleNode(wordDisplayMorphExp);
 		if (wordDisplayMorphNode != null) {
@@ -370,7 +375,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String reportingIdExp = xpathExpressions().get("reportingId");
 
 		Element reportingIdNode = (Element) node.selectSingleNode(reportingIdExp);
-		String reportingId = reportingIdNode != null ? cleanUp(reportingIdNode.getTextTrim()) : "";
+		String reportingId = reportingIdNode != null ? cleanUpWord(reportingIdNode.getTextTrim()) : "";
 		return reportingId;
 	}
 
@@ -413,11 +418,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return asList("ab", "ap").contains(restrictedValue);
 	}
 
-	protected String cleanUp(String value) {
-		boolean isComponentWord = StringUtils.endsWith(value, wordComponentSeparator);
+	protected String cleanUpWord(String value) {
 		String cleanedWord = cleanEkiEntityMarkup(value);
+		cleanedWord = unifyAfixoids(cleanedWord);
 		cleanedWord = replaceChars(cleanedWord, formStrCleanupChars, "");
-		return cleanedWord + (isComponentWord ? "-" : "");
+		return cleanedWord;
 	}
 
 	protected void writeToLogFile(String reportingId, String message, String values) throws Exception {
@@ -470,7 +475,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String value;
 		int homonymNr = 0;
 		String reportingId;
-		String wordType;
+		List<String> wordTypeCodes = new ArrayList<>();
 		List<String> posCodes = new ArrayList<>();
 		String frequencyGroup;
 		List<String> grammars = new ArrayList<>();
@@ -503,7 +508,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		List<String> governments = new ArrayList<>();
 		List<Usage> usages = new ArrayList<>();
 		String reportingId;
-		String wordType;
+		List<String> wordTypeCodes = new ArrayList<>();
 		Long meaningId;
 		String register;
 		String aspect;
@@ -520,7 +525,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.governments.addAll(this.governments);
 			newData.reportingId = this.reportingId;
 			newData.usages.addAll(this.usages);
-			newData.wordType = this.wordType;
+			newData.wordTypeCodes.addAll(this.wordTypeCodes);
 			newData.meaningId = this.meaningId;
 			newData.register = this.register;
 			newData.aspect = this.aspect;

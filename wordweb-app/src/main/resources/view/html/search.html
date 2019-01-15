@@ -89,9 +89,13 @@
         <div class="row">
           <div class="col-12 content-title">
             <h3>
-              <span class="homonym-name" th:text="${wordData.word.word}">tee</span>
+              <span class="homonym-name">
+                <span th:if="${wordData.suffixoid}">—</span><span th:text="${wordData.word.word}">tee</span><span th:if="${wordData.prefixoid}">—</span>
+              </span>
               <span class="word-details-homonym-nr" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
-              <span class="tag" th:text="${wordData.word.type.value}" th:if="${wordData.word.type != null}">lühend</span>
+              <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
+                <span class="tag" th:text="${wordType.value}"></span>
+              </th:block>
               <span class="tag" th:text="${wordData.word.displayMorph.value}" th:if="${wordData.word.displayMorph != null}">lühend</span>
               <th:block th:each="summarisedPos : ${wordData.word.summarisedPoses}" th:if="${not #lists.isEmpty(wordData.word.summarisedPoses)}">
                 <span class="tag" th:text="${summarisedPos.value}"></span>

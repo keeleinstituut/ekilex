@@ -423,12 +423,21 @@ create table word
   word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
-  type_code varchar(100) references word_type(code) null,
   aspect_code varchar(100) references aspect_type(code) null,
   etymology_year text null,
   etymology_type_code varchar(100) references etymology_type(code) 
 );
 alter sequence word_id_seq restart with 10000;
+
+create table word_word_type
+(
+  id bigserial primary key,
+  word_id bigint references word(id) on delete cascade not null,
+  word_type_code varchar(100) references word_type(code) not null,
+  order_by bigserial,
+  unique(word_id, word_type_code)
+);
+alter sequence word_word_type_id_seq restart with 10000;
 
 create table word_guid
 (

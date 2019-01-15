@@ -435,6 +435,7 @@ insert into word_type (code, datasets) values ('g', '{}');
 insert into word_type (code, datasets) values ('lz', '{}');
 insert into word_type (code, datasets) values ('n', '{}');
 insert into word_type (code, datasets) values ('pf', '{}');
+insert into word_type (code, datasets) values ('sf', '{}');
 insert into word_type (code, datasets) values ('s', '{}');
 insert into word_type (code, datasets) values ('km', '{}');
 insert into word_type (code, datasets) values ('th', '{}');
@@ -1880,6 +1881,8 @@ insert into word_type_label (code, value, lang, type) values ('n', 'number (nt 2
 insert into word_type_label (code, value, lang, type) values ('n', 'number', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('pf', 'prefiksoid, pooleesliide vm esiosa', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('pf', 'combining form', 'eng', 'descrip');
+insert into word_type_label (code, value, lang, type) values ('sf', 'sufiksoid, pooljärelliide vm järelosa', 'est', 'descrip');
+insert into word_type_label (code, value, lang, type) values ('sf', 'combining form', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('s', 'sarja liige', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('s', 'serial member', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('km', 'kaubamärk', 'est', 'descrip');

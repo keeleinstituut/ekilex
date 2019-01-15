@@ -114,7 +114,7 @@ public class ModifyController implements WebConstant {
 				updateService.updateWordGender(itemData.getId(), itemData.getValue());
 				break;
 			case "word_type" :
-				updateService.updateWordType(itemData.getId(), itemData.getValue());
+				updateService.updateWordType(itemData.getId(), itemData.getCurrentValue(), itemData.getValue());
 				break;
 			case "lexeme_grammar" :
 				updateService.updateGrammar(itemData.getId(), itemData.getValue());
@@ -245,7 +245,7 @@ public class ModifyController implements WebConstant {
 			updateService.deleteGrammar(id);
 			break;
 		case "word_type" :
-			updateService.updateWordType(id, null);
+			updateService.deleteWordType(id, valueToRemove);
 			break;
 		case "word_aspect" :
 			updateService.updateWordAspect(id, null);
@@ -328,7 +328,7 @@ public class ModifyController implements WebConstant {
 			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
 			break;
 		case "word_type" :
-			updateService.updateWordType(itemData.getId3(), itemData.getValue());
+			updateService.addWordType(itemData.getId(), itemData.getValue());
 			break;
 		case "word_aspect" :
 			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());

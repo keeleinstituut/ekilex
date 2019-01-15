@@ -1,6 +1,7 @@
 package eki.wordweb.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,7 +12,6 @@ import java.util.stream.Collectors;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +42,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	private static final String INDECLINABLE_WORD_FORM_CODE = "ID";
 	private static final String UNKNOWN_FORM_CODE = "??";
 	private static final String[] ABBREVIATION_WORD_TYPE_CODES = new String[] {"l", "th"};
+	private static final String PREFIXOID_WORD_TYPE_CODE = "pf";
+	private static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -143,7 +145,9 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
-		boolean isAbbreviationWord = ArrayUtils.contains(ABBREVIATION_WORD_TYPE_CODES, word.getTypeCode());
+		boolean isPrefixoid = word.getWordTypeCodes().contains(PREFIXOID_WORD_TYPE_CODE);
+		boolean isSuffixoid = word.getWordTypeCodes().contains(SUFFIXOID_WORD_TYPE_CODE);
+		boolean isAbbreviationWord = CollectionUtils.containsAny(word.getWordTypeCodes(), Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
 		boolean isIndeclinableWord = false;
@@ -171,6 +175,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		wordData.setImageFiles(allImageFiles);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableSoundFile(firstAvailableSoundFile);
+		wordData.setPrefixoid(isPrefixoid);
+		wordData.setSuffixoid(isSuffixoid);
 		wordData.setAbbreviationWord(isAbbreviationWord);
 		wordData.setIndeclinableWord(isIndeclinableWord);
 		wordData.setUnknownForm(isUnknownForm);

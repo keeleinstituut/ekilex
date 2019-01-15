@@ -97,6 +97,7 @@ import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordSourceLink;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
+import eki.ekilex.data.db.tables.WordWordType;
 
 import javax.annotation.Generated;
 
@@ -578,4 +579,9 @@ public class Tables {
      * The table <code>public.word_type_label</code>.
      */
     public static final WordTypeLabel WORD_TYPE_LABEL = eki.ekilex.data.db.tables.WordTypeLabel.WORD_TYPE_LABEL;
+
+    /**
+     * The table <code>public.word_word_type</code>.
+     */
+    public static final WordWordType WORD_WORD_TYPE = eki.ekilex.data.db.tables.WordWordType.WORD_WORD_TYPE;
 }

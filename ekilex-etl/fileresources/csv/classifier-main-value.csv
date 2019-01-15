@@ -1489,6 +1489,8 @@ word_type	n	number (nt 24/7)	est	descrip
 word_type	n	number	eng	descrip
 word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
 word_type	pf	combining form	eng	descrip
+word_type	sf	sufiksoid, pooljärelliide vm järelosa	est	descrip
+word_type	sf	combining form	eng	descrip
 word_type	s	sarja liige	est	descrip
 word_type	s	serial member	eng	descrip
 word_type	km	kaubamärk	est	descrip

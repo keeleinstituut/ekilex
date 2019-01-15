@@ -26,8 +26,17 @@ public class VoiceFileUpdaterRunner extends AbstractLoaderCommons {
 					+ "join " + LEXEME + " l on l.word_id = w.id "
 					+ "join " + LEXEME_POS + " lp on lp.lexeme_id = l.id "
 					+ "where "
-					+ "lower(f.value) = :word and f.mode = '" + FormMode.WORD.name() + "' and f.sound_file is null and"
-					+ "(w.type_code = 'z' or lp.pos_code = 'prop')";
+					+ "lower(f.value) = :word "
+					+ "and f.mode = '" + FormMode.WORD.name() + "' "
+					+ "and f.sound_file is null "
+					+ "and (lp.pos_code = 'prop' "
+							+ "or exists("
+								+ "select wt.id "
+								+ "from " + WORD_WORD_TYPE + " wt "
+								+ "where "
+								+ "wt.word_id = w.id "
+								+ "and wt.word_type_code = 'z'))";
+
 	private final static String sqlUpdateSoundFileNames = "update " + FORM + " set sound_file = :soundFileName where id in (:formIds)";
 
 	@Transactional

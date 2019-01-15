@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = 1824979789;
+    private static final long serialVersionUID = 558527878;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -90,11 +90,6 @@ public class Word extends TableImpl<WordRecord> {
      * The column <code>public.word.gender_code</code>.
      */
     public final TableField<WordRecord, String> GENDER_CODE = createField("gender_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
-     * The column <code>public.word.type_code</code>.
-     */
-    public final TableField<WordRecord, String> TYPE_CODE = createField("type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.word.aspect_code</code>.
@@ -189,7 +184,7 @@ public class Word extends TableImpl<WordRecord> {
      */
     @Override
     public List<ForeignKey<WordRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_TYPE_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY, Keys.WORD__WORD_ETYMOLOGY_TYPE_CODE_FKEY);
+        return Arrays.<ForeignKey<WordRecord, ?>>asList(Keys.WORD__WORD_LANG_FKEY, Keys.WORD__WORD_MORPH_CODE_FKEY, Keys.WORD__WORD_DISPLAY_MORPH_CODE_FKEY, Keys.WORD__WORD_GENDER_CODE_FKEY, Keys.WORD__WORD_ASPECT_CODE_FKEY, Keys.WORD__WORD_ETYMOLOGY_TYPE_CODE_FKEY);
     }
 
     public Language language() {
@@ -206,10 +201,6 @@ public class Word extends TableImpl<WordRecord> {
 
     public Gender gender() {
         return new Gender(this, Keys.WORD__WORD_GENDER_CODE_FKEY);
-    }
-
-    public WordType wordType() {
-        return new WordType(this, Keys.WORD__WORD_TYPE_CODE_FKEY);
     }
 
     public AspectType aspectType() {

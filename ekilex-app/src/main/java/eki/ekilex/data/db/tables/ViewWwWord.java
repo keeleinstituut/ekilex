@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -237078792;
+    private static final long serialVersionUID = -366667726;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -86,11 +86,6 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
     public final TableField<ViewWwWordRecord, String> DISPLAY_MORPH_CODE = createField("display_morph_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.view_ww_word.type_code</code>.
-     */
-    public final TableField<ViewWwWordRecord, String> TYPE_CODE = createField("type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
-
-    /**
      * The column <code>public.view_ww_word.aspect_code</code>.
      */
     public final TableField<ViewWwWordRecord, String> ASPECT_CODE = createField("aspect_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
@@ -104,6 +99,11 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
      * The column <code>public.view_ww_word.etymology_type_code</code>.
      */
     public final TableField<ViewWwWordRecord, String> ETYMOLOGY_TYPE_CODE = createField("etymology_type_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.view_ww_word.word_type_codes</code>.
+     */
+    public final TableField<ViewWwWordRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.view_ww_word.dataset_codes</code>.

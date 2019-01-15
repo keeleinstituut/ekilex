@@ -24,6 +24,7 @@ import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_GROUP;
 import static eki.ekilex.data.db.Tables.WORD_GROUP_MEMBER;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.util.List;
 import java.util.Map;
@@ -31,14 +32,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.db.tables.records.LexRelationRecord;
-import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
-import eki.ekilex.data.db.tables.records.LexemePosRecord;
-import eki.ekilex.data.db.tables.records.LexemeRecord;
-import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
-import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
-import eki.ekilex.data.db.tables.records.WordGroupRecord;
-import eki.ekilex.data.db.tables.records.WordRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record4;
@@ -55,9 +48,18 @@ import eki.ekilex.data.ListData;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.FreeformRecord;
+import eki.ekilex.data.db.tables.records.LexRelationRecord;
+import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
+import eki.ekilex.data.db.tables.records.LexemePosRecord;
+import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.MeaningDomainRecord;
 import eki.ekilex.data.db.tables.records.MeaningFreeformRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
+import eki.ekilex.data.db.tables.records.WordGroupMemberRecord;
+import eki.ekilex.data.db.tables.records.WordGroupRecord;
+import eki.ekilex.data.db.tables.records.WordRelationRecord;
+import eki.ekilex.data.db.tables.records.WordWordTypeRecord;
 
 @Component
 public class UpdateDbService implements DbConstant {
@@ -179,16 +181,20 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateWordType(Long wordId, String typeCode) {
-		create.update(WORD)
-				.set(WORD.TYPE_CODE, typeCode)
-				.where(WORD.ID.eq(wordId))
-				.execute();
+	public Long updateWordType(Long wordId, String currentTypeCode, String newTypeCode) {
+		Long wordWordTypeId = create
+				.update(WORD_WORD_TYPE)
+				.set(WORD_WORD_TYPE.WORD_TYPE_CODE, newTypeCode)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(currentTypeCode)))
+				.returning(WORD_WORD_TYPE.ID)
+				.fetchOne()
+				.getId();
+		return wordWordTypeId;
 	}
 
-	public void updateWordAspect(Long wordId, String typeCode) {
+	public void updateWordAspect(Long wordId, String aspectCode) {
 		create.update(WORD)
-				.set(WORD.ASPECT_CODE, typeCode)
+				.set(WORD.ASPECT_CODE, aspectCode)
 				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
@@ -364,6 +370,26 @@ public class UpdateDbService implements DbConstant {
 		return lexemeId;
 	}
 
+	public Long addWordType(Long wordId, String typeCode) {
+		Record1<Long> wordWordType = create
+				.select(WORD_WORD_TYPE.ID).from(WORD_WORD_TYPE)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(wordId)
+						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)))
+				.fetchOne();
+		Long wordWordTypeId;
+		if (wordWordType == null) {
+			wordWordTypeId = create
+				.insertInto(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID, WORD_WORD_TYPE.WORD_TYPE_CODE)
+				.values(wordId, typeCode)
+				.returning(WORD_WORD_TYPE.ID)
+				.fetchOne()
+				.getId();
+		} else {
+			wordWordTypeId = wordWordType.into(Long.class);
+		}
+		return wordWordTypeId;
+	}
+
 	public Long addWordRelation(Long wordId, Long targetWordId, String wordRelationCode) {
 
 		Optional<WordRelationRecord> wordRelationRecord = create.fetchOptional(WORD_RELATION,
@@ -508,6 +534,17 @@ public class UpdateDbService implements DbConstant {
 		create.delete(DEFINITION)
 				.where(DEFINITION.ID.eq(id))
 				.execute();
+	}
+
+	public void deleteWordWordType(Long wordWordTypeId) {
+		create.delete(WORD_WORD_TYPE)
+				.where(WORD_WORD_TYPE.ID.eq(wordWordTypeId))
+				.execute();
+	}
+
+	public Long findWordWordTypeId(Long wordId, String typeCode) {
+		WordWordTypeRecord wordWordTypeRecord = create.fetchOne(WORD_WORD_TYPE, WORD_WORD_TYPE.WORD_ID.eq(wordId).and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(typeCode)));
+		return wordWordTypeRecord.getId();
 	}
 
 	public void deleteLexemePos(Long lexemePosId) {

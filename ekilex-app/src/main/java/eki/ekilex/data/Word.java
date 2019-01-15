@@ -1,9 +1,8 @@
 package eki.ekilex.data;
 
-import eki.common.data.AbstractDataObject;
-
 import javax.persistence.Column;
-import java.util.function.Consumer;
+
+import eki.common.data.AbstractDataObject;
 
 public class Word extends AbstractDataObject {
 
@@ -21,14 +20,19 @@ public class Word extends AbstractDataObject {
 	@Column(name = "lang")
 	private String language;
 
+	@Column(name = "word_class")
+	private String wordClass;
+
+	@Column(name = "gender_code")
+	private String genderCode;
+
+	@Column(name = "aspect_code")
+	private String aspectCode;
+
 	@Column(name = "dataset_codes")
 	private String[] datasetCodes;
 
 	public Word() {
-	}
-
-	public Word(Consumer<Word> builder) {
-		builder.accept(this);
 	}
 
 	public Long getWordId() {
@@ -61,6 +65,30 @@ public class Word extends AbstractDataObject {
 
 	public void setLanguage(String language) {
 		this.language = language;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
+	}
+
+	public String getGenderCode() {
+		return genderCode;
+	}
+
+	public void setGenderCode(String genderCode) {
+		this.genderCode = genderCode;
+	}
+
+	public String getAspectCode() {
+		return aspectCode;
+	}
+
+	public void setAspectCode(String aspectCode) {
+		this.aspectCode = aspectCode;
 	}
 
 	public String[] getDatasetCodes() {

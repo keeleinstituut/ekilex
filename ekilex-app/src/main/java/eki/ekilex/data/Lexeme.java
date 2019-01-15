@@ -22,9 +22,6 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "word_lang")
 	private String wordLang;
 
-	@Column(name = "word_type_code")
-	private String wordTypeCode;
-
 	@Column(name = "word_gender_code")
 	private String wordGenderCode;
 
@@ -59,6 +56,8 @@ public class Lexeme extends AbstractDataObject {
 
 	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
+
+	private List<Classifier> wordTypes;
 
 	private List<Classifier> pos;
 
@@ -108,14 +107,6 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
-	}
-
-	public String getWordTypeCode() {
-		return wordTypeCode;
-	}
-
-	public void setWordTypeCode(String wordTypeCode) {
-		this.wordTypeCode = wordTypeCode;
 	}
 
 	public String getWordGenderCode() {
@@ -212,6 +203,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
 		this.lexemeProcessStateCode = lexemeProcessStateCode;
+	}
+
+	public List<Classifier> getWordTypes() {
+		return wordTypes;
+	}
+
+	public void setWordTypes(List<Classifier> wordTypes) {
+		this.wordTypes = wordTypes;
 	}
 
 	public List<Classifier> getPos() {

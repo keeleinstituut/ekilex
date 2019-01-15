@@ -22,7 +22,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
-import org.jooq.Record15;
+import org.jooq.Record14;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record6;
@@ -534,7 +534,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Record15<Long,String,Integer,String,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String> getLexeme(Long lexemeId) {
+	public Record14<Long,String,Integer,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String> getLexeme(Long lexemeId) {
 
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
@@ -547,7 +547,6 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						DSL.field("array_to_string(array_agg(distinct f.value), ',', '*')", String.class).as("word"),
 						w.HOMONYM_NR,
 						w.LANG.as("word_lang"),
-						w.TYPE_CODE.as("word_type_code"),
 						w.GENDER_CODE.as("word_gender_code"),
 						l.ID.as("lexeme_id"),
 						l.MEANING_ID,

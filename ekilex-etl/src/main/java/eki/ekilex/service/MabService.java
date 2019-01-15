@@ -140,7 +140,7 @@ public class MabService implements SystemConstant, InitializingBean {
 				paradigmFormValues = paradigm.getFormValues();
 				long formValuesMatchCount = paradigmFormValues.stream()
 						.filter(paradigmFormValue -> suggestedFormValues.stream()
-									.anyMatch(suggestedFormValue -> StringUtils.endsWith(paradigmFormValue, suggestedFormValue)))
+								.anyMatch(suggestedFormValue -> StringUtils.endsWith(paradigmFormValue, suggestedFormValue)))
 						.count();
 				if (formValuesMatchCount > bestFormValuesMatchCount) {
 					bestFormValuesMatchCount = formValuesMatchCount;

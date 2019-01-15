@@ -19,15 +19,15 @@ public class Word extends AbstractDataObject {
 
 	private String lang;
 
+	private List<String> wordTypeCodes;
+
+	private List<Classifier> wordTypes;
+
 	private String morphCode;
 
 	private String displayMorphCode;
 
 	private Classifier displayMorph;
-
-	private String typeCode;
-
-	private Classifier type;
 
 	private String aspectCode;
 
@@ -109,6 +109,22 @@ public class Word extends AbstractDataObject {
 		this.lang = lang;
 	}
 
+	public List<String> getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	public void setWordTypeCodes(List<String> wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
+	}
+
+	public List<Classifier> getWordTypes() {
+		return wordTypes;
+	}
+
+	public void setWordTypes(List<Classifier> wordTypes) {
+		this.wordTypes = wordTypes;
+	}
+
 	public String getMorphCode() {
 		return morphCode;
 	}
@@ -131,22 +147,6 @@ public class Word extends AbstractDataObject {
 
 	public void setDisplayMorph(Classifier displayMorph) {
 		this.displayMorph = displayMorph;
-	}
-
-	public String getTypeCode() {
-		return typeCode;
-	}
-
-	public void setTypeCode(String typeCode) {
-		this.typeCode = typeCode;
-	}
-
-	public Classifier getType() {
-		return type;
-	}
-
-	public void setType(Classifier type) {
-		this.type = type;
 	}
 
 	public String getAspectCode() {

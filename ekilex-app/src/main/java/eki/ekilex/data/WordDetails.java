@@ -1,13 +1,20 @@
 package eki.ekilex.data;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import eki.common.data.AbstractDataObject;
 
 public class WordDetails extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	private List<Classifier> wordTypes;
+
+	private String wordClass;
+
+	private String wordGenderCode;
+
+	private String wordAspectCode;
 
 	private List<Paradigm> paradigms;
 
@@ -19,17 +26,39 @@ public class WordDetails extends AbstractDataObject {
 
 	private List<WordGroup> wordGroups;
 
-	private String wordGenderCode;
-
-	private String wordTypeCode;
-
-	private String wordAspectCode;
-
 	public WordDetails() {
 	}
 
-	public WordDetails(Consumer<WordDetails> builder) {
-		builder.accept(this);
+	public List<Classifier> getWordTypes() {
+		return wordTypes;
+	}
+
+	public void setWordTypes(List<Classifier> wordTypes) {
+		this.wordTypes = wordTypes;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
+	}
+
+	public String getWordGenderCode() {
+		return wordGenderCode;
+	}
+
+	public void setWordGenderCode(String wordGenderCode) {
+		this.wordGenderCode = wordGenderCode;
+	}
+
+	public String getWordAspectCode() {
+		return wordAspectCode;
+	}
+
+	public void setWordAspectCode(String wordAspectCode) {
+		this.wordAspectCode = wordAspectCode;
 	}
 
 	public List<Paradigm> getParadigms() {
@@ -70,30 +99,6 @@ public class WordDetails extends AbstractDataObject {
 
 	public void setWordGroups(List<WordGroup> wordGroups) {
 		this.wordGroups = wordGroups;
-	}
-
-	public String getWordGenderCode() {
-		return wordGenderCode;
-	}
-
-	public void setWordGenderCode(String wordGenderCode) {
-		this.wordGenderCode = wordGenderCode;
-	}
-
-	public String getWordTypeCode() {
-		return wordTypeCode;
-	}
-
-	public void setWordTypeCode(String wordTypeCode) {
-		this.wordTypeCode = wordTypeCode;
-	}
-
-	public String getWordAspectCode() {
-		return wordAspectCode;
-	}
-
-	public void setWordAspectCode(String wordAspectCode) {
-		this.wordAspectCode = wordAspectCode;
 	}
 
 }

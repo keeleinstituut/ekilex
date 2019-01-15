@@ -83,6 +83,7 @@ import eki.ekilex.data.db.tables.WordRelation;
 import eki.ekilex.data.db.tables.WordSourceLink;
 import eki.ekilex.data.db.tables.WordType;
 import eki.ekilex.data.db.tables.WordTypeLabel;
+import eki.ekilex.data.db.tables.WordWordType;
 
 import javax.annotation.Generated;
 
@@ -268,6 +269,8 @@ public class Indexes {
     public static final Index WORD_SOURCE_LINK_WORD_ID_IDX = Indexes0.WORD_SOURCE_LINK_WORD_ID_IDX;
     public static final Index WORD_TYPE_PKEY = Indexes0.WORD_TYPE_PKEY;
     public static final Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index WORD_WORD_TYPE_PKEY = Indexes0.WORD_WORD_TYPE_PKEY;
+    public static final Index WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY = Indexes0.WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY;
 
     // -------------------------------------------------------------------------
     // [#1459] distribute members to avoid static initialisers > 64kb
@@ -434,5 +437,7 @@ public class Indexes {
         public static Index WORD_SOURCE_LINK_WORD_ID_IDX = Internal.createIndex("word_source_link_word_id_idx", WordSourceLink.WORD_SOURCE_LINK, new OrderField[] { WordSourceLink.WORD_SOURCE_LINK.WORD_ID }, false);
         public static Index WORD_TYPE_PKEY = Internal.createIndex("word_type_pkey", WordType.WORD_TYPE, new OrderField[] { WordType.WORD_TYPE.CODE }, true);
         public static Index WORD_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("word_type_label_code_lang_type_key", WordTypeLabel.WORD_TYPE_LABEL, new OrderField[] { WordTypeLabel.WORD_TYPE_LABEL.CODE, WordTypeLabel.WORD_TYPE_LABEL.LANG, WordTypeLabel.WORD_TYPE_LABEL.TYPE }, true);
+        public static Index WORD_WORD_TYPE_PKEY = Internal.createIndex("word_word_type_pkey", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.ID }, true);
+        public static Index WORD_WORD_TYPE_WORD_ID_WORD_TYPE_CODE_KEY = Internal.createIndex("word_word_type_word_id_word_type_code_key", WordWordType.WORD_WORD_TYPE, new OrderField[] { WordWordType.WORD_WORD_TYPE.WORD_ID, WordWordType.WORD_WORD_TYPE.WORD_TYPE_CODE }, true);
     }
 }

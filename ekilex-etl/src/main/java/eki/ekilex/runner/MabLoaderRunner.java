@@ -33,7 +33,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private static final String REPORT_ENRICHED_WORDS = "enriched_words";
 
 	private static final String DISCLOSED_MORPH_CODE = "Rpl";
-	private static final String EMPTY_FORM_VALUE = "-";	
+	private static final String EMPTY_FORM_VALUE = "-";
 
 	private final int defaultHomonymNr = 0;
 	private final String dataLang = "est";
@@ -127,14 +127,14 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 			volumeCounter++;
 			long articleCounter = 0;
 			long progressIndicator = articleCount / Math.min(articleCount, 100);
-	
+
 			for (Node articleNode : articleNodes) {
-	
+
 				contentNode = articleNode.selectSingleNode(articleBodyExp);
 				if (contentNode == null) {
 					continue;
 				}
-	
+
 				guidNode = articleNode.selectSingleNode(guidExp);
 				guidElement = (Element) guidNode;
 				guid = guidElement.getTextTrim();
@@ -143,11 +143,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 				wordNode = wordGroupNode.selectSingleNode(wordExp);
 				wordElement = (Element) wordNode;
 				word = wordElement.getTextTrim();
-	
+
 				firstParadigmDataNode = contentNode.selectSingleNode(paradigmExp + "/" + paradigmDataExp);
 				firstParadigmDataElement = (Element) firstParadigmDataNode;
 				wordClass = firstParadigmDataElement.attributeValue(wordClassAttr);
-	
+
 				wordIds = new ArrayList<>();
 				if (StringUtils.endsWith(word, expectedWordAppendix)) {
 					word = StringUtils.substringBefore(word, expectedWordAppendix);
@@ -165,44 +165,44 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 					wordIds.add(wordId);
 				}
 				wordCount.increment(wordIds.size());
-	
+
 				paradigmNodes = contentNode.selectNodes(paradigmExp);
-	
+
 				for (Node paradigmNode : paradigmNodes) {
-	
+
 					paradigmDataNode = paradigmNode.selectSingleNode(paradigmDataExp);
 					inflectionTypeNrNode = paradigmNode.selectSingleNode(inflectionTypeNrExp);
 					inflectionTypeNrElement = (Element) inflectionTypeNrNode;
 					inflectionTypeNr = inflectionTypeNrElement.getTextTrim();
 					inflectionTypeNr = String.valueOf(Integer.valueOf(inflectionTypeNr));
-	
+
 					paradigmDataElement = (Element) paradigmDataNode;
 					inflectionType = paradigmDataElement.attributeValue(inflectionTypeAttr);
 					formGroupNodes = paradigmDataElement.selectNodes(formGroupExp);
-	
+
 					// compose forms
 					forms = new ArrayList<>();
-	
+
 					for (Node formGroupNode : formGroupNodes) {
-	
+
 						morphValueNode = formGroupNode.selectSingleNode(morphValueExp);
 						sourceMorphCode = ((Element) morphValueNode).getTextTrim();
 						destinMorphCode = morphValueCodeMap.get(sourceMorphCode);
 						if (StringUtils.equals(destinMorphCode, DISCLOSED_MORPH_CODE)) {
 							continue;
 						}
-	
+
 						formGroupElement = (Element) formGroupNode;
 						formOrderByStr = formGroupElement.attributeValue(formOrderAttr);
 						formOrderBy = Integer.valueOf(formOrderByStr);
 						morphGroup1 = formGroupElement.attributeValue(morphGroup1Attr);
 						morphGroup2 = formGroupElement.attributeValue(morphGroup2Attr);
 						morphGroup3 = formGroupElement.attributeValue(morphGroup3Attr);
-	
+
 						formNodes = formGroupNode.selectNodes(formExp);
-	
+
 						for (Node formNode : formNodes) {
-	
+
 							formElement = (Element) formNode;
 							formValue = formElement.attributeValue(formValueAttr);
 							displayLevelStr = formElement.attributeValue(displayLevelAttr);
@@ -215,7 +215,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 								displayForm = EMPTY_FORM_VALUE;
 							}
 							soundFile = extractSoundFileName(formElement);
-	
+
 							form = new Form();
 							form.setMorphGroup1(morphGroup1);
 							form.setMorphGroup2(morphGroup2);
@@ -229,17 +229,17 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							//formObj.setVocalForm(vocalForm);
 							form.setSoundFile(soundFile);
 							form.setOrderBy(formOrderBy);
-	
+
 							forms.add(form);
 						}
 					}
-	
+
 					// sort forms
 					forms.sort(Comparator.comparing(Form::getOrderBy));
-	
+
 					// which is word
 					locateWord(word, forms);
-	
+
 					// create pradigms and forms for words
 					for (Long newWordId : wordIds) {
 						paradigmId = createParadigm(newWordId, inflectionTypeNr, inflectionType, false);
@@ -250,7 +250,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 						}
 					}
 				}
-	
+
 				// progress
 				articleCounter++;
 				if (articleCounter % progressIndicator == 0) {
@@ -296,8 +296,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 		final String morphType = "ekimorfo";
 
-		String morphSqlScript =
-				"select "
+		String morphSqlScript = "select "
 				+ "ml.value \"key\","
 				+ "ml.code \"value\" "
 				+ "from " + MORPH_LABEL + " ml "
@@ -316,7 +315,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected Long createWordAndGuid(String guid, String word, int homonymNr, String lang, String wordClass) throws Exception {
-		Long wordId = createWord(word, null, homonymNr, wordClass, lang, null, null, null, null);
+		Long wordId = createWord(word, null, homonymNr, wordClass, lang, null, null, null);
 		createWordGuid(wordId, getDataset(), guid);
 		return wordId;
 	}

@@ -148,7 +148,10 @@ public abstract class AbstractLoader implements SystemConstant {
 				String sourceGuid = ssGuidMapRowCells[1].toLowerCase();
 				String targetGuid = ssGuidMapRowCells[2].toLowerCase();
 				String word = ssGuidMapRowCells[3];
-				word = RegExUtils.removePattern(word, "[&]\\w+[;]");
+				word = RegExUtils.removePattern(word, "[&]\\w+[;]");//remove eki markup 
+				word = RegExUtils.removePattern(word, "<[^>]*>");//remove html
+				word = StringUtils.removeStart(word, "-");//suffixoid
+				word = StringUtils.removeEnd(word, "-");//prefixoid
 				if (StringUtils.equals(sourceDataset, filteringDataset)) {
 					mappedGuids = ssGuidMap.get(sourceGuid);
 					if (mappedGuids == null) {

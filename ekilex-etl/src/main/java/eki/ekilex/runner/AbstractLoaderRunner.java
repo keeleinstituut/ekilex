@@ -67,6 +67,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
 	protected static final String ETYMOLOGY_OWNER_DATASET_CODE = "ety";
 	protected static final String DEFAULT_WORD_MORPH_CODE = "??";
+	protected static final String PROPRIETARY_AFIXOID_SYMBOL = "+";
+	protected static final String UNIFIED_AFIXOID_SYMBOL = "-";
+	protected static final String PREFIXOID_WORD_TYPE_CODE = "pf";
+	protected static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
 
 	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_LEX = "sql/select_word_ids_for_dataset_by_lexeme.sql";
 	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID = "sql/select_word_ids_for_dataset_by_guid.sql";
@@ -229,6 +233,19 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return lang;
 	}
 
+	protected String unifyAfixoids(String word) {
+		boolean isPrefixoid = StringUtils.endsWith(word, PROPRIETARY_AFIXOID_SYMBOL);
+		boolean isSuffixoid = StringUtils.startsWith(word, PROPRIETARY_AFIXOID_SYMBOL);
+		if (isPrefixoid) {
+			word = StringUtils.removeEnd(word, PROPRIETARY_AFIXOID_SYMBOL);
+			word = word + UNIFIED_AFIXOID_SYMBOL;
+		} else if (isSuffixoid) {
+			word = StringUtils.removeStart(word, PROPRIETARY_AFIXOID_SYMBOL);
+			word = UNIFIED_AFIXOID_SYMBOL + word;
+		}
+		return word;
+	}
+
 	protected String cleanEkiEntityMarkup(String originalText) {
 		return textDecorationService.cleanEkiEntityMarkup(originalText);
 	}
@@ -360,7 +377,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
 
-		String wordValue = word.getValue();
+		handleAffixoids(word);
+
+		String wordCleanValue = word.getCleanValue();
 		String wordLang = word.getLang();
 		String[] wordComponents = word.getComponents();
 		String wordDisplayForm = word.getDisplayForm();
@@ -370,7 +389,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String wordDisplayMorph = word.getDisplayMorph();
 		String guid = word.getGuid();
 		String genderCode = word.getGenderCode();
-		String typeCode = word.getWordTypeCode();
+		List<String> wordTypeCodes = word.getWordTypeCodes();
 		String aspectCode = word.getAspectTypeCode();
 		String wordClass = null;
 
@@ -378,12 +397,12 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		wordForm.setMode(FormMode.WORD);
 		wordForm.setMorphCode(wordMorphCode);
 		wordForm.setMorphExists(new Boolean(true));
-		wordForm.setValue(wordValue);
+		wordForm.setValue(wordCleanValue);
 		wordForm.setComponents(wordComponents);
 		wordForm.setDisplayForm(wordDisplayForm);
 		wordForm.setVocalForm(wordVocalForm);
 
-		Map<String, Object> tableRowValueMap = getWord(wordValue, homonymNr, wordLang);
+		Map<String, Object> tableRowValueMap = getWord(wordCleanValue, homonymNr, wordLang);
 		Long wordId;
 
 		//TODO temp solution until MAB loading as separate dataset is implemented
@@ -393,7 +412,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		//...
 
 		if (tableRowValueMap == null) {
-			wordId = createWord(wordValue, wordMorphCode, homonymNr, wordClass, wordLang, wordDisplayMorph, genderCode, typeCode, aspectCode);
+			wordId = createWord(wordCleanValue, wordMorphCode, homonymNr, wordClass, wordLang, wordDisplayMorph, genderCode, aspectCode);
+			if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
+				createWordTypes(wordId, wordTypeCodes);
+			}
 			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
 				createWordGuid(wordId, dataset, guid);
 			}
@@ -442,12 +464,14 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 		}
 
-		String wordValue = word.getValue();
+		handleAffixoids(word);
+
+		String wordCleanValue = word.getCleanValue();
 		String guid = word.getGuid();
 
 		List<Guid> mappedGuids = ssGuidMap.get(guid);
 		if (CollectionUtils.isEmpty(mappedGuids)) {
-			appendToReport(REPORT_GUID_MAPPING_MISSING, dataset, wordValue, guid);
+			appendToReport(REPORT_GUID_MAPPING_MISSING, dataset, wordCleanValue, guid);
 			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 		}
 
@@ -456,14 +480,14 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			String ssWordValue = ssGuidObj.getWord();
 			String ssGuid = ssGuidObj.getValue();
 
-			if (StringUtils.equalsIgnoreCase(wordValue, ssWordValue)) {
-				List<Map<String, Object>> tableRowValueMaps = getWord(wordValue, ssGuid, GUID_OWNER_DATASET_CODE);
+			if (StringUtils.equalsIgnoreCase(wordCleanValue, ssWordValue)) {
+				List<Map<String, Object>> tableRowValueMaps = getWord(wordCleanValue, ssGuid, GUID_OWNER_DATASET_CODE);
 				Map<String, Object> tableRowValueMap = null;
 				if (CollectionUtils.size(tableRowValueMaps) == 1) {
 					tableRowValueMap = tableRowValueMaps.get(0);
 				} else if (CollectionUtils.size(tableRowValueMaps) > 1) {
 					tableRowValueMap = tableRowValueMaps.get(0);
-					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", GUID_OWNER_DATASET_CODE, wordValue, ssGuid);
+					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", GUID_OWNER_DATASET_CODE, wordCleanValue, ssGuid);
 				}
 				if (tableRowValueMap == null) {
 					return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
@@ -482,10 +506,42 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			}
 		}
 		List<String> mappedWordValues = mappedGuids.stream().map(Guid::getWord).collect(Collectors.toList());
-		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordValue, mappedWordValues);
-		appendToReport(REPORT_GUID_MISMATCH, dataset, wordValue, guid, mappedWordValues, "Sõnad ei kattu");
+		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordCleanValue, mappedWordValues);
+		appendToReport(REPORT_GUID_MISMATCH, dataset, wordCleanValue, guid, mappedWordValues, "Sõnad ei kattu");
 
 		return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
+	}
+
+	private void handleAffixoids(Word word) {
+
+		if (StringUtils.isNotEmpty(word.getCleanValue())) {
+			return;
+		}
+		String wordValue = word.getValue();
+		String cleanWordValue = word.getValue();
+		
+		List<String> wordTypeCodes = word.getWordTypeCodes();
+		if (StringUtils.endsWith(wordValue, UNIFIED_AFIXOID_SYMBOL)) {
+			cleanWordValue = StringUtils.removeEnd(wordValue, UNIFIED_AFIXOID_SYMBOL);
+			if (wordTypeCodes == null) {
+				wordTypeCodes = new ArrayList<>();
+				word.setWordTypeCodes(wordTypeCodes);
+			}
+			if (!wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE)) {
+				wordTypeCodes.add(PREFIXOID_WORD_TYPE_CODE);
+			}
+		}
+		if (StringUtils.startsWith(wordValue, UNIFIED_AFIXOID_SYMBOL)) {
+			cleanWordValue = StringUtils.removeStart(wordValue, UNIFIED_AFIXOID_SYMBOL);
+			if (wordTypeCodes == null) {
+				wordTypeCodes = new ArrayList<>();
+				word.setWordTypeCodes(wordTypeCodes);
+			}
+			if (!wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE)) {
+				wordTypeCodes.add(SUFFIXOID_WORD_TYPE_CODE);
+			}
+		}
+		word.setCleanValue(cleanWordValue);
 	}
 
 	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
@@ -608,7 +664,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	}
 
 	protected Long createWord(
-			String word, final String morphCode, final int homonymNr, String wordClass, String lang, String displayMorph, String genderCode, String typeCode, String aspectCode) throws Exception {
+			String word, final String morphCode, final int homonymNr, String wordClass, String lang, String displayMorph, String genderCode, String aspectCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("lang", lang);
@@ -617,11 +673,20 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("word_class", wordClass);
 		tableRowParamMap.put("display_morph_code", displayMorph);
 		tableRowParamMap.put("gender_code", genderCode);
-		tableRowParamMap.put("type_code", typeCode);
 		tableRowParamMap.put("aspect_code", aspectCode);
 		Long wordId = basicDbService.create(WORD, tableRowParamMap);
 		createLifecycleLog(LifecycleLogOwner.WORD, wordId, LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
 		return wordId;
+	}
+
+	private void createWordTypes(Long wordId, List<String> wordTypeCodes) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word_id", wordId);
+		for (String wordTypeCode : wordTypeCodes) {
+			tableRowParamMap.put("word_type_code", wordTypeCode);
+			basicDbService.create(WORD_WORD_TYPE, tableRowParamMap);
+		}
 	}
 
 	protected void createWordGuid(Long wordId, String dataset, String guid) throws Exception {

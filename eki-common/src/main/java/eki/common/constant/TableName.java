@@ -39,6 +39,7 @@ public interface TableName {
 	String DATASET = "dataset";
 	String WORD_ETYMOLOGY = "word_etymology";
 	String WORD_GUID = "word_guid";
+	String WORD_WORD_TYPE = "word_word_type";
 	String LEXEME_RELATION = "lex_relation";
 	String FORM_RELATION = "form_relation";
 	String WORD_RELATION = "word_relation";

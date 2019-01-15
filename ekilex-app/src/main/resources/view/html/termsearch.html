@@ -328,19 +328,19 @@
                       data-toggle="modal" data-target="#termLexemeClassifiersDlg">
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
-              <div th:replace="lexeme_components :: lexeme_process_state"></div>
-              <div th:replace="lexeme_components :: lexeme_value_state"></div>
+              <div th:replace="components :: lexeme_process_state"></div>
+              <div th:replace="components :: lexeme_value_state"></div>
               <th:block th:with="wordGenderCode=${lexeme.wordGenderCode},wordIdCode=${lexeme.wordId}">
-                <div th:replace="lexeme_components :: word_gender"></div>
+                <div th:replace="components :: word_gender"></div>
               </th:block>
-              <th:block th:with="wordTypeCode=${lexeme.wordTypeCode},wordIdCode=${lexeme.wordId}">
-                <div th:replace="lexeme_components :: word_type"></div>
+              <th:block th:with="wordTypes=${lexeme.wordTypes},wordIdCode=${lexeme.wordId}">
+                <div th:replace="components :: word_type"></div>
               </th:block>
-              <div th:replace="lexeme_components :: lexeme_frequency_group"></div>
-              <div th:replace="lexeme_components :: lexeme_grammar"></div>
-              <div th:replace="lexeme_components :: lexeme_pos"></div>
-              <div th:replace="lexeme_components :: lexeme_derivative"></div>
-              <div th:replace="lexeme_components :: lexeme_register"></div>
+              <div th:replace="components :: lexeme_frequency_group"></div>
+              <div th:replace="components :: lexeme_grammar"></div>
+              <div th:replace="components :: lexeme_pos"></div>
+              <div th:replace="components :: lexeme_derivative"></div>
+              <div th:replace="components :: lexeme_register"></div>
             </div>
             <div>
               <hr />
@@ -538,8 +538,8 @@
   <div th:replace="common :: #wordGenderDlg"></div>
   <div th:replace="common :: #wordTypeDlg"></div>
   <div th:replace="common :: #termLexemeClassifiersDlg"></div>
-  <div th:replace="lexeme_components :: #addNewMeaningRelationDlg"></div>
-  <div th:replace="lexeme_components :: #addNewLexemeRelationDlg"></div>
+  <div th:replace="components :: #addNewMeaningRelationDlg"></div>
+  <div th:replace="components :: #addNewLexemeRelationDlg"></div>
   <div th:replace="ekilex_editor :: #ekiEditorDlg"></div>
 
   <script th:inline="javascript">

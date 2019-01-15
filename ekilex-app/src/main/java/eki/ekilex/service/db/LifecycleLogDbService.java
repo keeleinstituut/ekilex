@@ -9,6 +9,7 @@ import static eki.ekilex.data.db.Tables.LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_LIFECYCLE_LOG;
 import static eki.ekilex.data.db.Tables.WORD_LIFECYCLE_LOG;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -331,14 +332,17 @@ public class LifecycleLogDbService {
 			if (LifecycleProperty.VALUE.equals(property)) {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createWordLifecycleLog(entityId, lifecycleLogId);
+			} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
+				Long wordId = create
+						.select(WORD_WORD_TYPE.WORD_ID)
+						.from(WORD_WORD_TYPE)
+						.where(WORD_WORD_TYPE.ID.eq(entityId))
+						.fetchSingleInto(Long.class);
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createWordLifecycleLog(wordId, lifecycleLogId);
 			} else if (LifecycleProperty.GENDER.equals(property)) {
 				Map<String, Object> entityData = helper.getWordData(create, entityId);
 				recent = (String) entityData.get("gender_code");
-				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
-				createWordLifecycleLog(entityId, lifecycleLogId);
-			} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
-				Map<String, Object> entityData = helper.getWordData(create, entityId);
-				recent = (String) entityData.get("type_code");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createWordLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.ASPECT.equals(property)) {

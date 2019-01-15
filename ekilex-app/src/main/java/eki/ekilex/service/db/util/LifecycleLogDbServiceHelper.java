@@ -79,7 +79,6 @@ public class LifecycleLogDbServiceHelper {
 		Map<String, Object> result = create
 				.selectDistinct(
 						WORD.GENDER_CODE,
-						WORD.TYPE_CODE,
 						WORD.ASPECT_CODE,
 						FORM.VALUE,
 						FORM.VALUE_PRESE

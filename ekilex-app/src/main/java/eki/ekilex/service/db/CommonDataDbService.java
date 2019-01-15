@@ -38,6 +38,7 @@ import static eki.ekilex.data.db.Tables.VALUE_STATE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
 import static eki.ekilex.data.db.Tables.WORD_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 
 import java.sql.Timestamp;
 import java.util.Map;
@@ -47,6 +48,7 @@ import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Record9;
 import org.jooq.Result;
@@ -171,6 +173,20 @@ public class CommonDataDbService implements DbConstant {
 						.where(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN)
 								.and(MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE))))
 				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.fetch();
+	}
+
+	public Result<Record2<String, String>> findWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		return create
+				.select(WORD_TYPE_LABEL.CODE, WORD_TYPE_LABEL.VALUE)
+				.from(WORD_WORD_TYPE, WORD_TYPE_LABEL)
+				.where(
+						WORD_WORD_TYPE.WORD_ID.eq(wordId)
+						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_LABEL.CODE))
+						.and(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang))
+						.and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))
+						)
 				.fetch();
 	}
 
@@ -440,12 +456,21 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Record4<Long, String, Integer, String> getWord(Long wordId) {
-		return create.select(PARADIGM.WORD_ID, FORM.VALUE.as("word"), WORD.HOMONYM_NR, WORD.LANG).from(PARADIGM, FORM, WORD)
-				.where(PARADIGM.WORD_ID.eq(wordId)
+	public Record7<Long,String,Integer,String,String,String,String> getWord(Long wordId) {
+		return create.select(
+					WORD.ID.as("word_id"),
+					DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word"),
+					WORD.HOMONYM_NR,
+					WORD.LANG,
+					WORD.WORD_CLASS,
+					WORD.GENDER_CODE,
+					WORD.ASPECT_CODE)
+				.from(WORD, PARADIGM, FORM)
+				.where(WORD.ID.eq(wordId)
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name()))
-						.and(WORD.ID.eq(wordId)))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
+				.groupBy(WORD.ID)
 				.fetchOne();
 	}
 

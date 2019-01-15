@@ -142,7 +142,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 		List<Node> valueNodes, langGroupNodes, termGroupNodes, domainNodes;
 		Long wordId, meaningId, lexemeId;
 		List<Content> definitions, usages, sources;
-		String valueStr, concept, term, processStateCode, wordTypeCode;
+		List<String> termWordTypeCodes;
+		String valueStr, concept, term, processStateCode, conceptWordTypeCode, termWordTypeCode;
 		String lang;
 		int homonymNr;
 		Word wordObj;
@@ -180,7 +181,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			saveDomains(concept, domainNodes, meaningId, originLtb);
 
 			processStateCode = extractProcessState(conceptGroupNode, processStateConflictCount);
-			wordTypeCode = extractWordType(conceptGroupNode);
+			conceptWordTypeCode = extractWordType(conceptGroupNode);
 
 			langGroupNodes = conceptGroupNode.selectNodes(langGroupExp);
 
@@ -210,9 +211,25 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 						continue;
 					}
 
+					termWordTypeCodes = new ArrayList<>();
+					if (StringUtils.isNotBlank(conceptWordTypeCode)) {
+						termWordTypeCodes.add(conceptWordTypeCode);
+					}
+
+					valueNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
+					if (valueNode != null) {
+						valueStr = valueNode.getTextTrim();
+						if (wordTypeCodes.containsKey(valueStr)) {
+							termWordTypeCode = wordTypeCodes.get(valueStr);
+							termWordTypeCodes.add(termWordTypeCode);
+						} else {
+							//logger.warn("Incorrect word type reference: \"{}\"", valueStr);
+						}
+					}
+
 					homonymNr = getWordMaxHomonymNr(term, lang);
 					homonymNr++;
-					wordObj = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCode);
+					wordObj = new Word(term, lang, null, null, null, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, termWordTypeCodes);
 					wordId = createOrSelectWord(wordObj, null, null, null);
 
 					//lexeme
@@ -225,8 +242,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 					extractAndSaveLexemeFreeforms(lexemeId, termGroupNode);
 
 					extractAndUpdateLexemeProperties(lexemeId, termGroupNode);
-
-					extractAndUpdateWordProperties(wordId, wordTypeCode, termGroupNode, wordTypeConflictCount);
 
 					// definitions
 					valueNodes = termGroupNode.selectNodes(definitionExp);
@@ -817,35 +832,6 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 
 		if (MapUtils.isNotEmpty(valueParamMap)) {
 			basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);
-		}
-	}
-
-	private void extractAndUpdateWordProperties(Long wordId, String wordTypeCode, Node termGroupNode, Count wordTypeConflictCount) throws Exception {
-
-		Element valueNode;
-		String valueStr, mappedValueStr;
-
-		Map<String, Object> criteriaParamMap = new HashMap<>();
-		criteriaParamMap.put("id", wordId);
-
-		Map<String, Object> valueParamMap = new HashMap<>();
-
-		valueNode = (Element) termGroupNode.selectSingleNode(valueStateExp);
-		if (valueNode != null) {
-			valueStr = valueNode.getTextTrim();
-			if (wordTypeCodes.containsKey(valueStr)) {
-				if (StringUtils.isNotBlank(wordTypeCode)) {
-					logger.warn("Word type already assigned: \"{}\" ignoring: \"{}\"", wordTypeCode, valueStr);
-					wordTypeConflictCount.increment();
-				} else {
-					mappedValueStr = wordTypeCodes.get(valueStr);
-					valueParamMap.put("type_code", mappedValueStr);
-				}
-			}
-		}
-
-		if (MapUtils.isNotEmpty(valueParamMap)) {
-			basicDbService.update(WORD, criteriaParamMap, valueParamMap);
 		}
 	}
 

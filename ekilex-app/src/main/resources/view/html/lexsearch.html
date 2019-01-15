@@ -117,7 +117,7 @@
                         data-toggle="modal" data-target="#lexemeClassifiersDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                <th:block th:replace="lexeme_components :: lexeme_parameters"></th:block>
+                <th:block th:replace="components :: lexeme_parameters"></th:block>
               </div>
               <div>
                 <hr />
@@ -592,7 +592,13 @@
                 <i class="fa fa-plus" aria-hidden="true"></i>
               </button>
               </div>
-              <th:block th:replace="lexeme_components :: word_parameters"></th:block>
+              <th:block th:with="wordGenderCode=${details.wordGenderCode},wordIdCode=${wordId}">
+                <div th:replace="components :: word_gender"></div>
+              </th:block>
+              <th:block th:with="wordTypes=${details.wordTypes},wordIdCode=${wordId}">
+                <div th:replace="components :: word_type"></div>
+              </th:block>
+              <div th:replace="components :: word_aspect"></div>
               <hr />
             </div>
             <div class="card-body pt-0 pb-0">
@@ -765,10 +771,10 @@
   <div th:replace="common :: #wordTypeDlg"></div>
   <div th:replace="common :: #wordAspectDlg"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
-  <div th:replace="lexeme_components :: #addNewWordRelationDlg"></div>
-  <div th:replace="lexeme_components :: #addNewLexemeRelationDlg"></div>
-  <div th:replace="lexeme_components :: #addNewMeaningRelationDlg"></div>
-  <div th:replace="lexeme_components :: #addNewUsageAuthorDlg"></div>
+  <div th:replace="components :: #addNewWordRelationDlg"></div>
+  <div th:replace="components :: #addNewLexemeRelationDlg"></div>
+  <div th:replace="components :: #addNewMeaningRelationDlg"></div>
+  <div th:replace="components :: #addNewUsageAuthorDlg"></div>
   <div th:replace="ekilex_editor :: #ekiEditorDlg"></div>
 
   <script th:inline="javascript">

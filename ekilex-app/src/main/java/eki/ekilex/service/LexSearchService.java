@@ -171,6 +171,8 @@ public class LexSearchService implements SystemConstant {
 	public WordDetails getWordDetails(Long wordId, List<String> selectedDatasets) {
 
 		Map<String, String> datasetNameMap = commonDataDbService.getDatasetNameMap();
+		Word word = commonDataDbService.getWord(wordId).into(Word.class);
+		List<Classifier> wordTypes = commonDataDbService.findWordTypes(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(Classifier.class);
 		List<WordLexeme> lexemes = lexSearchDbService.findWordLexemes(wordId, selectedDatasets).into(WordLexeme.class);
 		List<ParadigmFormTuple> paradigmFormTuples = lexSearchDbService.findParadigmFormTuples(wordId, classifierLabelLang, classifierLabelTypeDescrip).into(ParadigmFormTuple.class);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(paradigmFormTuples);
@@ -182,18 +184,18 @@ public class LexSearchService implements SystemConstant {
 		lexemes.forEach(lexeme -> populateLexeme(selectedDatasets, datasetNameMap, lexeme));
 		combineLevels(lexemes);
 
-		return new WordDetails(d -> {
-			d.setParadigms(paradigms);
-			d.setLexemes(lexemes);
-			d.setWordRelations(wordRelations);
-			d.setWordEtymology(wordEtymology);
-			d.setWordGroups(wordGroups);
-			if (!lexemes.isEmpty()) {
-				d.setWordAspectCode(lexemes.get(0).getWordAspectCode());
-				d.setWordTypeCode(lexemes.get(0).getWordTypeCode());
-				d.setWordGenderCode(lexemes.get(0).getGenderCode());
-			}
-		});
+		WordDetails wordDetails = new WordDetails();
+		wordDetails.setWordTypes(wordTypes);
+		wordDetails.setWordClass(word.getWordClass());
+		wordDetails.setWordGenderCode(word.getGenderCode());
+		wordDetails.setWordAspectCode(word.getAspectCode());
+		wordDetails.setParadigms(paradigms);
+		wordDetails.setLexemes(lexemes);
+		wordDetails.setWordRelations(wordRelations);
+		wordDetails.setWordEtymology(wordEtymology);
+		wordDetails.setWordGroups(wordGroups);
+
+		return wordDetails;
 	}
 
 	@Transactional

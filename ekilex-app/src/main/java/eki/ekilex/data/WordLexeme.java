@@ -22,9 +22,6 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "word_display_morph_code")
 	private String wordDisplayMorphCode;
 
-	@Column(name = "word_type_code")
-	private String wordTypeCode;
-
 	@Column(name = "word_id")
 	private Long wordId;
 
@@ -67,6 +64,8 @@ public class WordLexeme extends AbstractDataObject {
 
 	@Column(name = "word_aspect_code")
 	private String wordAspectCode;
+
+	private List<Classifier> wordTypes;
 
 	private List<Classifier> pos;
 
@@ -224,6 +223,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
 	}
 
+	public String getLexemeProcessStateCode() {
+		return lexemeProcessStateCode;
+	}
+
+	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
+		this.lexemeProcessStateCode = lexemeProcessStateCode;
+	}
+
 	public String getMeaningProcessStateCode() {
 		return meaningProcessStateCode;
 	}
@@ -238,6 +245,22 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setGenderCode(String genderCode) {
 		this.genderCode = genderCode;
+	}
+
+	public String getWordAspectCode() {
+		return wordAspectCode;
+	}
+
+	public void setWordAspectCode(String wordAspectCode) {
+		this.wordAspectCode = wordAspectCode;
+	}
+
+	public List<Classifier> getWordTypes() {
+		return wordTypes;
+	}
+
+	public void setWordTypes(List<Classifier> wordTypes) {
+		this.wordTypes = wordTypes;
 	}
 
 	public List<Classifier> getPos() {
@@ -328,6 +351,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningRelations = meaningRelations;
 	}
 
+	public List<List<Relation>> getGroupedMeaningRelations() {
+		return groupedMeaningRelations;
+	}
+
+	public void setGroupedMeaningRelations(List<List<Relation>> groupedMeaningRelations) {
+		this.groupedMeaningRelations = groupedMeaningRelations;
+	}
+
 	public List<FreeForm> getLexemeFreeforms() {
 		return lexemeFreeforms;
 	}
@@ -375,36 +406,5 @@ public class WordLexeme extends AbstractDataObject {
 	public void setLexemeOrMeaningClassifiersExist(boolean lexemeOrMeaningClassifiersExist) {
 		this.lexemeOrMeaningClassifiersExist = lexemeOrMeaningClassifiersExist;
 	}
-
-	public String getWordTypeCode() {
-		return wordTypeCode;
-	}
-
-	public void setWordTypeCode(String wordTypeCode) {
-		this.wordTypeCode = wordTypeCode;
-	}
-
-	public String getWordAspectCode() {
-		return wordAspectCode;
-	}
-
-	public void setWordAspectCode(String wordAspectCode) {
-		this.wordAspectCode = wordAspectCode;
-	}
-
-	public String getLexemeProcessStateCode() {
-		return lexemeProcessStateCode;
-	}
-
-	public void setLexemeProcessStateCode(String lexemeProcessStateCode) {
-		this.lexemeProcessStateCode = lexemeProcessStateCode;
-	}
-
-	public List<List<Relation>> getGroupedMeaningRelations() {
-		return groupedMeaningRelations;
-	}
-
-	public void setGroupedMeaningRelations(List<List<Relation>> groupedMeaningRelations) {
-		this.groupedMeaningRelations = groupedMeaningRelations;
-	}
+	
 }

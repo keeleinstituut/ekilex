@@ -36,15 +36,16 @@ public class ClassifierUtil {
 	private CommonDataDbService commonDataDbService;
 
 	public void applyClassifiers(Word word, String displayLang) {
-
 		String classifierCode;
 		Classifier classifier;
+		List<Classifier> classifiers;
+		List<String> classifierCodes;
 		classifierCode = word.getDisplayMorphCode();
 		classifier = getClassifier(ClassifierName.DISPLAY_MORPH, classifierCode, displayLang);
 		word.setDisplayMorph(classifier);
-		classifierCode = word.getTypeCode();
-		classifier = getClassifier(ClassifierName.WORD_TYPE, classifierCode, displayLang);
-		word.setType(classifier);
+		classifierCodes = word.getWordTypeCodes();
+		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
+		word.setWordTypes(classifiers);
 		classifierCode = word.getAspectCode();
 		classifier = getClassifier(ClassifierName.ASPECT_TYPE, classifierCode, displayLang);
 		word.setAspect(classifier);

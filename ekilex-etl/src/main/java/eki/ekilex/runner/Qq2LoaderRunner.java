@@ -211,11 +211,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				word = wordDisplayForm = wordNode.getTextTrim();
 				word = cleanEkiEntityMarkup(word);
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
+				word = unifyAfixoids(word);
 				wordComponents = StringUtils.split(word, wordComponentSeparator);
-				if (StringUtils.endsWith(word, wordComponentSeparator)) {
-					word = StringUtils.removeEnd(word, wordComponentSeparator);
-					word = word + "-";
-				}
 				word = StringUtils.remove(word, wordComponentSeparator);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				wordFormsStr = null;

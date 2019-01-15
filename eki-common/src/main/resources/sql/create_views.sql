@@ -16,9 +16,9 @@ select w.word_id,
        w.homonym_nr,
        w.word_class,
        w.lang,
+       wt.word_type_codes,
        w.morph_code,
        w.display_morph_code,
-       w.type_code,
        w.aspect_code,
        w.etymology_year,
        w.etymology_type_code,
@@ -36,7 +36,6 @@ from (select w.id as word_id,
              w.lang,
              w.morph_code,
              w.display_morph_code,
-             w.type_code,
              w.aspect_code,
              w.etymology_year,
              w.etymology_type_code
@@ -56,6 +55,10 @@ from (select w.id as word_id,
                     group by l.word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
+  left outer join (select wt.word_id,
+                          array_agg(wt.word_type_code order by wt.order_by) word_type_codes
+                   from word_word_type wt
+                   group by wt.word_id) wt on wt.word_id = w.word_id
   left outer join (select mw.word_id,
                           array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang,mw.dataset_code)::type_word order by mw.hw_ds_order_by,mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_ds_order_by,mw.mw_lex_order_by) meaning_words
                    from (select l1.word_id,
