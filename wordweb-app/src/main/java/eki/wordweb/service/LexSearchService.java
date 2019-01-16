@@ -36,6 +36,8 @@ import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.ConversionUtil;
 
+import static java.lang.Math.max;
+
 @Component
 public class LexSearchService implements InitializingBean, SystemConstant {
 
@@ -211,10 +213,10 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 										&& StringUtils.equals(otherLexeme.getDatasetCode(), lexeme.getDatasetCode()))
 						.count();
 				if (nrOfLexemesWithSameLevel2 == 1) {
-					int level2 = lexeme.getLevel2() - 1;
+					int level2 = max(lexeme.getLevel2() - 1, 0);
 					levels = lexeme.getLevel1() + (level2 == 0 ? "" : "." + level2);
 				} else {
-					int level3 = lexeme.getLevel3() - 1;
+					int level3 = max(lexeme.getLevel3() - 1, 0);
 					levels = lexeme.getLevel1() + "." + lexeme.getLevel2() + (level3 == 0 ? "" : "." + level3);
 				}
 			}
