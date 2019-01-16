@@ -544,11 +544,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meanigGroupNodes) {
-				lexemeLevel2++;
 				List<WordData> subWords = processSubWords(meaningGroupNode, context, newWords, reportingId);
 				if (!subWords.isEmpty()) {
 					processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, reportingId);
 				} else {
+					lexemeLevel2++;
 					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, reportingId);
 				}
 			}
