@@ -83,7 +83,7 @@ function initEkiEditor(ekiEditorElem) {
             if (e.key === 'm') {
                 openEditorMenu(menuElement);
             } else if (e.key === 'n') {
-                removeTags(editorElem);
+                removeEkiTag(editorElem);
             }
             e.preventDefault();
             e.stopPropagation();
@@ -117,7 +117,7 @@ function initEkiEditor(ekiEditorElem) {
     });
     let removeBtn = ekiEditorElem.find('[data-btn-remove]');
     removeBtn.off('click').on('click', function() {
-        removeTags(editorElem)
+        removeEkiTag(editorElem)
     })
 }
 
@@ -138,7 +138,29 @@ function addNode(ekiTag) {
     let sel = window.getSelection();
     if (sel.rangeCount) {
         let selectedRange = sel.getRangeAt(0);
-        let ekiNode = document.createElement(ekiTag);
-        selectedRange.surroundContents(ekiNode);
+        if (selectedRange.collapsed === false) {
+            let ekiNode = document.createElement(ekiTag);
+            try {
+                selectedRange.surroundContents(ekiNode);
+            } catch (err) {
+                alert('Vigaselt valitud tekst');
+            }
+        }
     }
+}
+
+function removeEkiTag(editorElem) {
+    let sel = window.getSelection();
+    if (sel.rangeCount) {
+        let selectedRange = sel.getRangeAt(0);
+        if (selectedRange.collapsed === false && selectedRange.startContainer.parentNode.nodeName.startsWith('EKI-')) {
+            let ekiNode = selectedRange.startContainer.parentNode;
+            let parentNodeOfekiNode = ekiNode.parentNode;
+            while (ekiNode.firstChild) {
+                parentNodeOfekiNode.insertBefore(ekiNode.firstChild, ekiNode);
+            }
+            parentNodeOfekiNode.removeChild(ekiNode);
+        }
+    }
+    editorElem.focus();
 }

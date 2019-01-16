@@ -241,7 +241,19 @@
         -
         <span th:text="${classif.value}"></span>
       </th:block>
-      <!-- TODO lisamine/muutmine/kustutamine -->
+      <button type="button" class="btn badge badge-primary"
+              th:title="Muuda"
+              onclick="openSelectDlg(this)"
+              data-toggle="modal" data-target="#wordTypeDlg"
+              th:data-target-elem="${wordIdCode} + '_' + ${classifIter.index} + '_word_type'">
+        <i class="fa fa-caret-down" aria-hidden="true"></i>
+      </button>
+      <button type="button" class="btn badge badge-warning"
+              th:data-target-elem="${wordIdCode} + '_' + ${classifIter.index} + '_word_type'"
+              data-toggle="delete-confirmation" data-placement="right">
+        <i class="fa fa-remove" aria-hidden="true"></i>
+      </button>
+      <span th:unless="${classifIter.last}">,</span>
     </span>
   </div>
 

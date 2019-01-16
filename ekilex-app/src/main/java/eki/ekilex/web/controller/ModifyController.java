@@ -328,7 +328,7 @@ public class ModifyController implements WebConstant {
 			updateService.updateWordGender(itemData.getId3(), itemData.getValue());
 			break;
 		case "word_type" :
-			updateService.addWordType(itemData.getId(), itemData.getValue());
+			updateService.addWordType(itemData.getId3(), itemData.getValue());
 			break;
 		case "word_aspect" :
 			updateService.updateWordAspect(itemData.getId3(), itemData.getValue());

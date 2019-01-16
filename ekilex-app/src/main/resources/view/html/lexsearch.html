@@ -65,7 +65,7 @@
         <div class="col-8 pr-2">
           <div class="card shadow mb-2" th:each="lexeme : ${details.lexemes}">
 
-            <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}">
+            <div class="card-body" th:data-toggle-name="${'lexTitle_' + lexeme.lexemeId}" data-lexeme-title>
               <button type="button" class="btn badge badge-secondary float-right btn-toggle"
                       th:data-toggle-target="${'lexBody_' + lexeme.lexemeId}">
                 <i class="fa fa-angle-down" aria-hidden="true"></i>

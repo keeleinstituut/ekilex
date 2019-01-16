@@ -1,15 +1,22 @@
 function initialise() {
     $(document).on("click", ":button[name='detailsBtn']", function() {
         let id = $(this).data('id');
-        let isRestoreScrollPos = this.hasAttribute('data-refresh');
+        let isRestoreDisplayState = this.hasAttribute('data-refresh');
+        let openLexemes = [];
+        $('.d-none[data-lexeme-title]').each(function (index, item) {
+           openLexemes.push($(item).data('toggle-name'));
+        });
         $.get(applicationUrl + 'worddetails/' + id).done(function(data) {
             let detailsDiv = $('#details_div');
             let scrollPos = detailsDiv.scrollTop();
             detailsDiv.replaceWith(data);
-            if (isRestoreScrollPos) {
-                detailsDiv.scrollTop(scrollPos);
-            }
             initLexemeToggleButtons();
+            if (isRestoreDisplayState) {
+                detailsDiv.scrollTop(scrollPos);
+                openLexemes.forEach(function (lexemeName) {
+                    $('[data-toggle-name=' + lexemeName + ']').find('.btn-toggle').trigger('click');
+                })
+            }
         }).fail(function(data) {
             console.log(data);
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
