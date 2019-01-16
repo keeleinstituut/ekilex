@@ -26,8 +26,6 @@ public class WordData extends AbstractDataObject {
 
 	private boolean abbreviationWord;
 
-	private boolean indeclinableWord;
-
 	private boolean unknownForm;
 
 	public Word getWord() {
@@ -100,14 +98,6 @@ public class WordData extends AbstractDataObject {
 
 	public void setAbbreviationWord(boolean abbreviationWord) {
 		this.abbreviationWord = abbreviationWord;
-	}
-
-	public boolean isIndeclinableWord() {
-		return indeclinableWord;
-	}
-
-	public void setIndeclinableWord(boolean indeclinableWord) {
-		this.indeclinableWord = indeclinableWord;
 	}
 
 	public boolean isUnknownForm() {

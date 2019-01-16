@@ -41,7 +41,6 @@ import static java.lang.Math.max;
 @Component
 public class LexSearchService implements InitializingBean, SystemConstant {
 
-	private static final String INDECLINABLE_WORD_FORM_CODE = "ID";
 	private static final String UNKNOWN_FORM_CODE = "??";
 	private static final String[] ABBREVIATION_WORD_TYPE_CODES = new String[] {"l", "th"};
 	private static final String PREFIXOID_WORD_TYPE_CODE = "pf";
@@ -152,7 +151,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		boolean isPrefixoid = false;
 		boolean isSuffixoid = false;
 		boolean isAbbreviationWord = false;
-		boolean isIndeclinableWord = false;
 		boolean isUnknownForm = false;
 		List<String> wordTypeCodes = word.getWordTypeCodes();
 		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
@@ -170,7 +168,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 						Form firstForm = firstFormOption.get();
 						firstAvailableVocalForm = firstForm.getVocalForm();
 						firstAvailableSoundFile = firstForm.getSoundFile();
-						isIndeclinableWord = StringUtils.equals(INDECLINABLE_WORD_FORM_CODE, firstForm.getMorphCode());
 						isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstForm.getMorphCode());
 					}
 				}
@@ -187,7 +184,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		wordData.setPrefixoid(isPrefixoid);
 		wordData.setSuffixoid(isSuffixoid);
 		wordData.setAbbreviationWord(isAbbreviationWord);
-		wordData.setIndeclinableWord(isIndeclinableWord);
 		wordData.setUnknownForm(isUnknownForm);
 		combineLevels(wordData.getLexemes());
 		return wordData;
