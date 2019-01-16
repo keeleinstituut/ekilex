@@ -437,11 +437,7 @@
                 </h5>
                 <span th:text="#{label.no.data}">Andmed puuduvad</span>
               </div>
-              <div class="col-12 morphology-panel" th:if="${wordData.indeclinableWord}">
-                <h5 class="font-weight-bold" th:text="#{label.word.forms}">Sõnavormid</h5>
-                <span th:text="#{label.indeclinable.word}">See sõna ei muutu</span>
-              </div>
-              <div class="col-12 morphology-panel" th:unless="${wordData.indeclinableWord or wordData.unknownForm}">
+              <div class="col-12 morphology-panel" th:unless="${wordData.unknownForm}">
                 <h5 class="font-weight-bold">
                   <span th:text="#{label.word.forms}">Sõnavormid</span>
                   <span tabindex="0" class="alert-icn" th:aria-label="#{forms.dataset.title}" data-toggle="tooltip" data-placement="top" th:title="#{forms.dataset.title}"></span>
