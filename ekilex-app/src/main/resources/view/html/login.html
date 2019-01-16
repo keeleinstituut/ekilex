@@ -16,28 +16,32 @@
         <div class="alert alert-warning" role="alert" th:if="${loginerror}">
           <span th:text="${loginerror}"></span>
         </div>
-        <form th:action="@{/dologin}" method="post">
-          <div class="form-group row">
-            <label class="col-sm-2 col-form-label">E-posti aadress</label>
-            <div class="col-sm-3">
-              <input type="email" class="form-control" name="email" placeholder="E-posti aadress" th:value="${userEmail}">
-            </div>
-          </div>
-          <div class="form-group row">
-            <label class="col-sm-2 col-form-label">Salasõna</label>
-            <div class="col-sm-2">
-              <input type="password" class="form-control" name="password" th:autofocus="${userEmail != null}">
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-sm-10 offset-sm-2">
-              <button type="submit" class="btn btn-primary">Sisene</button>
-            </div>
-          </div>
-        </form>
-        <div class="form-group row">
-          <div class="col-sm-10 offset-sm-2">
-            <a role="button" class="btn btn-info" th:href="@{/register}">Uus kasutaja</a>
+        <div class="row">
+          <div class="col-8">
+            <form th:action="@{/dologin}" method="post">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">E-posti aadress</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="email" class="form-control" name="email" placeholder="E-posti aadress" th:value="${userEmail}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">Salasõna</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="password" class="form-control" name="password" th:autofocus="${userEmail != null}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-4 offset-sm-2">
+                  <button type="submit" class="btn btn-primary float-left">Sisene</button>
+                  <a role="button" class="btn btn-info float-right" th:href="@{/register}">Uus kasutaja</a>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>

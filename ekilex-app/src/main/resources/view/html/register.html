@@ -1,60 +1,74 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org">
 <head th:replace="common :: common_header(_,~{::links})">
-  <th:block th:fragment="links">
-    <link rel="stylesheet" th:href="@{/view/css/text-security-disc.css}"/>
-  </th:block>
+<th:block th:fragment="links">
+  <link rel="stylesheet" th:href="@{/view/css/text-security-disc.css}" />
+</th:block>
 </head>
 <body class="body-with-navbar">
-<th:block th:replace="common :: nav_bar"></th:block>
-<div class="container-fluid">
-  <div class="card mt-4 shadow">
-    <div class="card-header">
-      <h5 class="card-title">Kasutajaks registreerumine</h5>
-    </div>
-    <div class="card-body">
-      <div class="alert alert-danger" role="alert" th:if="${error_message}">
-        <span th:text="${error_message}"></span>
+  <th:block th:replace="common :: nav_bar"></th:block>
+  <div class="container-fluid">
+    <div class="card mt-4 shadow">
+      <div class="card-header">
+        <h5 class="card-title">Kasutajaks registreerumine</h5>
       </div>
-      <form th:action="@{/register}" method="post">
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Ees- ja perekonnanimi</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" name="name" th:value="${userName}" th:autofocus="${userName == null}">
+      <div class="card-body">
+        <div class="alert alert-danger" role="alert" th:if="${error_message}">
+          <span th:text="${error_message}"></span>
+        </div>
+        <div class="row">
+          <div class="col-8">
+            <form th:action="@{/register}" method="post">
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">Ees- ja perekonnanimi</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="name" th:value="${userName}" th:autofocus="${userName == null}">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">E-posti aadress</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="email" class="form-control" name="email" placeholder="e-posti aadress" th:value="${userEmail}">
+                </div>
+              </div>
+              <div class="form-group row validation">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">Kontroll kood</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control" name="ccode">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">Parool</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control pw" name="salasona" th:autofocus="${userName != null}" minlength="8" title="parooli pikkus peab olema vähemalt 8 sümbolit">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="col-sm-2 col-form-label">
+                  <span class="float-right">Parool uuesti</span>
+                </label>
+                <div class="col-sm-4">
+                  <input type="text" class="form-control pw" name="salasona2">
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-sm-10 offset-sm-2">
+                  <button type="submit" class="btn btn-primary">Registreeru</button>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label">E-posti aadress</label>
-          <div class="col-sm-3">
-            <input type="email" class="form-control" name="email" placeholder="e-posti aadress"  th:value="${userEmail}">
-          </div>
-        </div>
-        <div class="form-group row validation">
-          <label class="col-sm-2 col-form-label">Kontroll kood</label>
-          <div class="col-sm-3">
-            <input type="text" class="form-control" name="ccode">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Parool</label>
-          <div class="col-sm-2">
-            <input type="text" class="form-control pw" name="salasona" th:autofocus="${userName != null}" minlength="8" title="parooli pikkus peab olema vähemalt 8 sümbolit">
-          </div>
-        </div>
-        <div class="form-group row">
-          <label class="col-sm-2 col-form-label">Parool uuesti</label>
-          <div class="col-sm-2">
-            <input type="text" class="form-control pw" name="salasona2">
-          </div>
-        </div>
-        <div class="form-group row">
-          <div class="col-sm-10 offset-sm-2">
-            <button type="submit" class="btn btn-primary">Registreeru</button>
-          </div>
-        </div>
-      </form>
+      </div>
     </div>
   </div>
-</div>
 </body>
 </html>
