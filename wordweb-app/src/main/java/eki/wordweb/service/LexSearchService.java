@@ -145,13 +145,19 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
-		boolean isPrefixoid = word.getWordTypeCodes().contains(PREFIXOID_WORD_TYPE_CODE);
-		boolean isSuffixoid = word.getWordTypeCodes().contains(SUFFIXOID_WORD_TYPE_CODE);
-		boolean isAbbreviationWord = CollectionUtils.containsAny(word.getWordTypeCodes(), Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
+		boolean isPrefixoid = false;
+		boolean isSuffixoid = false;
+		boolean isAbbreviationWord = false;
 		boolean isIndeclinableWord = false;
 		boolean isUnknownForm = false;
+		List<String> wordTypeCodes = word.getWordTypeCodes();
+		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
+			isPrefixoid = wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE);
+			isSuffixoid = wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE);
+			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
+		}
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			List<ParadigmGroup> paradigmFirstGroup = paradigms.get(0).getGroups();
 			if (CollectionUtils.isNotEmpty(paradigmFirstGroup)) {
@@ -168,6 +174,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				}
 			}
 		}
+		
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);
