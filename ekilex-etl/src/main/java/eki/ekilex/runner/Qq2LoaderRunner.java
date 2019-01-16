@@ -208,8 +208,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 				// word, form...
 				wordNode = (Element) wordGroupNode.selectSingleNode(wordExp);
-				word = wordDisplayForm = wordNode.getTextTrim();
-				word = cleanEkiEntityMarkup(word);
+				word = wordNode.getTextTrim();
+				word = wordDisplayForm = cleanEkiEntityMarkup(word);
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
 				word = unifyAfixoids(word);
 				wordComponents = StringUtils.split(word, wordComponentSeparator);
@@ -474,12 +474,14 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 			List<Form> mabForms = lastCompParadigm.getForms();
 			List<Form> compoundForms = new ArrayList<>();
 			for (Form mabForm : mabForms) {
-				String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabForm.getValue();
-				String compoundDisplayForm = StringUtils.join(wordComponents, '+', 0, wordComponentCount - 1) + '+' + mabForm.getDisplayForm(); 
-				compoundFormValues.add(compoundFormValue);
 				Form compoundForm = copy(mabForm);
-				compoundForm.setValue(compoundFormValue);
-				compoundForm.setDisplayForm(compoundDisplayForm);
+				if (mabForm.getMorphExists()) {
+					String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabForm.getValue();
+					String compoundDisplayForm = StringUtils.join(wordComponents, wordComponentSeparator, 0, wordComponentCount - 1) + wordComponentSeparator + mabForm.getDisplayForm(); 
+					compoundFormValues.add(compoundFormValue);
+					compoundForm.setValue(compoundFormValue);
+					compoundForm.setDisplayForm(compoundDisplayForm);
+				}
 				compoundForms.add(compoundForm);
 			}
 			Paradigm compoundWordParadigm = new Paradigm();

@@ -1020,7 +1020,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		for (Node subWordNode : subWordNodes) {
 			Element subWordElement = (Element) subWordNode;
 			WordData subWord = new WordData();
-			subWord.displayForm = subWordElement.getTextTrim();
+			subWord.displayForm = cleanEkiEntityMarkup(subWordElement.getTextTrim());
 			subWord.value = cleanUpWord(subWord.displayForm);
 			if (subWordElement.attributeValue(homonymNrAttr) != null) {
 				subWord.homonymNr = Integer.parseInt(subWordElement.attributeValue(homonymNrAttr));

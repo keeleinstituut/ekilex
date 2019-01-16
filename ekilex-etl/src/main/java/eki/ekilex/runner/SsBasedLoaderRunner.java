@@ -234,7 +234,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			}
 			Element metadataElement = (Element) metadataNode;
 			LexemeToWordData lexemeMetadata = new LexemeToWordData();
-			lexemeMetadata.displayForm = metadataElement.getTextTrim();
+			lexemeMetadata.displayForm = cleanEkiEntityMarkup(metadataElement.getTextTrim());
 			lexemeMetadata.word = cleanUpWord(lexemeMetadata.displayForm);
 			lexemeMetadata.reportingId = reportingId;
 			String lexemeLevel1AttrValue = metadataElement.attributeValue(lexemeLevel1Attr);
@@ -328,7 +328,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			String mappedWordTypeCode = wordTypes.get(wordNode.attributeValue(wordTypeAttr));
 			wordData.wordTypeCodes.add(mappedWordTypeCode);
 		}
-		String wordDisplayForm = wordNode.getTextTrim();
+		String wordDisplayForm = cleanEkiEntityMarkup(wordNode.getTextTrim());
 		String wordValue = cleanUpWord(wordDisplayForm);
 		wordData.value = wordValue;
 		wordData.language = dataLang;
