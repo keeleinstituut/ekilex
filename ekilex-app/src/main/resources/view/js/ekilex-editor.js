@@ -91,7 +91,6 @@ function initEkiEditor(ekiEditorElem) {
     });
     menuElement.off('keydown').on('keydown', function (e) {
         if ((e.key === 'Escape' || e.key === 'Enter') && menuElement.hasClass('show')) {
-            menuElement.removeClass('show');
             editorElem.focus();
             if (e.key === 'Enter') {
                 let ekiTag = menuElement.find('option:selected').val();
@@ -103,13 +102,15 @@ function initEkiEditor(ekiEditorElem) {
     });
     menuElement.off('click').on('click', function (e) {
         if (menuElement.hasClass('show')) {
-            menuElement.removeClass('show');
             editorElem.focus();
             let ekiTag = menuElement.find('option:selected').val();
             addNode(ekiTag);
             e.preventDefault();
             e.stopPropagation();
         }
+    });
+    menuElement.off('focusout').on('focusout', function () {
+        menuElement.removeClass('show');
     });
     let menuBtn = ekiEditorElem.find('[data-btn-menu]');
     menuBtn.off('click').on('click', function() {
