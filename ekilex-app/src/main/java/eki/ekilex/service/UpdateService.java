@@ -200,9 +200,10 @@ public class UpdateService {
 	// --- ADD ---
 
 	@Transactional
-	public void addWord(String word, String datasetCode, String language, String morphCode, Long meaningId) {
-		Long wordId = updateDbService.addWord(word, datasetCode, language, morphCode, meaningId);
-		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, word);
+	public void addWord(String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
+		String value = textDecorationService.cleanEkiEntityMarkup(valuePrese);
+		Long wordId = updateDbService.addWord(value, valuePrese, datasetCode, language, morphCode, meaningId);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId, valuePrese);
 	}
 
 	@Transactional

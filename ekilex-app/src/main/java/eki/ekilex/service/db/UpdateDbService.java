@@ -332,9 +332,9 @@ public class UpdateDbService implements DbConstant {
 		return meaningDomainId;
 	}
 
-	public Long addWord(String word, String datasetCode, String language, String morphCode, Long meaningId) {
+	public Long addWord(String value, String valuePrese, String datasetCode, String language, String morphCode, Long meaningId) {
 		Record1<Integer> currentHomonymNumber = create.select(DSL.max(WORD.HOMONYM_NR)).from(WORD, PARADIGM, FORM)
-				.where(WORD.LANG.eq(language).and(FORM.MODE.eq(FormMode.WORD.name())).and(FORM.VALUE.eq(word)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
+				.where(WORD.LANG.eq(language).and(FORM.MODE.eq(FormMode.WORD.name())).and(FORM.VALUE.eq(value)).and(PARADIGM.ID.eq(FORM.PARADIGM_ID))
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))).fetchOne();
 		int homonymNumber = 1;
 		if (currentHomonymNumber.value1() != null) {
@@ -343,8 +343,8 @@ public class UpdateDbService implements DbConstant {
 		Long wordId = create.insertInto(WORD, WORD.HOMONYM_NR, WORD.LANG).values(homonymNumber, language).returning(WORD.ID).fetchOne().getId();
 		Long paradigmId = create.insertInto(PARADIGM, PARADIGM.WORD_ID).values(wordId).returning(PARADIGM.ID).fetchOne().getId();
 		create
-				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS)
-				.values(paradigmId, word, word, FormMode.WORD.name(), morphCode, true)
+				.insertInto(FORM, FORM.PARADIGM_ID, FORM.VALUE, FORM.DISPLAY_FORM, FORM.VALUE_PRESE, FORM.MODE, FORM.MORPH_CODE, FORM.MORPH_EXISTS)
+				.values(paradigmId, value, value, valuePrese, FormMode.WORD.name(), morphCode, true)
 				.execute();
 		if (meaningId == null) {
 			meaningId = create.insertInto(MEANING).defaultValues().returning(MEANING.ID).fetchOne().getId();
