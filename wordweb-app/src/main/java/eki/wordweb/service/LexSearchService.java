@@ -83,8 +83,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		}
 		conversionUtil.filterIrrelevantValues(allWords, destinLang, datasets);
 		conversionUtil.selectHomonym(allWords, homonymNr);
-		//TODO nope, problem is elsewhere
-		//allWords = allWords.stream().filter(word -> StringUtils.isNotEmpty(word.getDefinitionsWrapup())).collect(Collectors.toList());
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(word -> word.getWord()).distinct().collect(Collectors.toList());
@@ -133,7 +131,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		WordEtymology wordEtymology = lexSearchDbService.findWordEtymology(wordId);
 		conversionUtil.composeWordEtymology(word, wordEtymology, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
-		conversionUtil.composeWordRelations(word, wordRelationTuples, displayLang);
+		conversionUtil.composeWordRelations(word, wordRelationTuples, datasets, displayLang);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
 		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
@@ -173,7 +171,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				}
 			}
 		}
-		
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);

@@ -1,6 +1,7 @@
 package eki.wordweb.service.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -668,17 +669,21 @@ public class ConversionUtil {
 		}
 	}
 
-	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, String displayLang) {
+	public void composeWordRelations(Word word, List<WordRelationTuple> wordRelationTuples, String[] datasets, String displayLang) {
 
 		if (CollectionUtils.isEmpty(wordRelationTuples)) {
 			return;
 		}
+		List<String> datasetsList = Arrays.asList(datasets);
 		List<Classifier> wordRelTypes = classifierUtil.getClassifiers(ClassifierName.WORD_REL_TYPE, displayLang);
 		List<String> wordRelTypeCodes = wordRelTypes.stream().map(Classifier::getCode).collect(Collectors.toList());
 		word.setWordGroups(new ArrayList<>());
 		word.setRelatedWords(new ArrayList<>());
 		for (WordRelationTuple tuple : wordRelationTuples) {
 			List<TypeWordRelation> relatedWords = tuple.getRelatedWords();
+			if (CollectionUtils.isNotEmpty(relatedWords)) {
+				relatedWords = relatedWords.stream().filter(relation -> CollectionUtils.containsAny(relation.getDatasetCodes(), datasetsList)).collect(Collectors.toList());
+			}
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
@@ -717,11 +722,15 @@ public class ConversionUtil {
 			if(CollectionUtils.isNotEmpty(relatedWords)) {
 				word.getRelatedWords().addAll(relatedWords);
 			}
-			if (CollectionUtils.isNotEmpty(tuple.getWordGroupMembers())) {
+			List<TypeWordRelation> wordGroupMembers = tuple.getWordGroupMembers();
+			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
+				wordGroupMembers = wordGroupMembers.stream().filter(member -> CollectionUtils.containsAny(member.getDatasetCodes(), datasetsList)).collect(Collectors.toList());
+			}
+			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
 				WordGroup wordGroup = new WordGroup();
 				wordGroup.setWordGroupId(tuple.getWordGroupId());
 				wordGroup.setWordRelTypeCode(tuple.getWordRelTypeCode());
-				wordGroup.setWordGroupMembers(tuple.getWordGroupMembers());
+				wordGroup.setWordGroupMembers(wordGroupMembers);
 				classifierUtil.applyClassifiers(tuple, wordGroup, displayLang);
 				word.getWordGroups().add(wordGroup);
 			}

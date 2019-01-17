@@ -1,5 +1,7 @@
 package eki.wordweb.data;
 
+import java.util.List;
+
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
@@ -12,6 +14,8 @@ public class TypeWordRelation extends AbstractDataObject {
 	private String word;
 
 	private String wordLang;
+
+	private List<String> datasetCodes;
 
 	private String wordRelTypeCode;
 
@@ -39,6 +43,14 @@ public class TypeWordRelation extends AbstractDataObject {
 
 	public void setWordLang(String wordLang) {
 		this.wordLang = wordLang;
+	}
+
+	public List<String> getDatasetCodes() {
+		return datasetCodes;
+	}
+
+	public void setDatasetCodes(List<String> datasetCodes) {
+		this.datasetCodes = datasetCodes;
 	}
 
 	public String getWordRelTypeCode() {
