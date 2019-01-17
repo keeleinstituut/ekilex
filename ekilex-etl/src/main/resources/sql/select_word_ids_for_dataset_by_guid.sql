@@ -7,4 +7,5 @@ where exists (select g1.id
 and   not exists (select g2.id
                   from word_guid g2
                   where g2.word_id = w.id
-                  and   g2.dataset_code != :dataset);
+                  and   g2.dataset_code != :dataset)
+and   not exists (select l.id from lexeme l where l.word_id = w.id);
