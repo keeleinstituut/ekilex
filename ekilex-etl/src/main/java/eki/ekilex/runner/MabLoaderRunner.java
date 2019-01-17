@@ -158,7 +158,9 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 					wordIds.add(wordId);
 				} else if (StringUtils.containsAny(word, wordCleanupChars)) {
 					uncleanWordCount.increment();
-					reportComposer.append(REPORT_ENRICHED_WORDS, word);
+					if (doReports) {
+						reportComposer.append(REPORT_ENRICHED_WORDS, word);
+					}
 					continue;
 				} else {
 					wordId = createWordAndGuid(guid, word, defaultHomonymNr, dataLang, wordClass);

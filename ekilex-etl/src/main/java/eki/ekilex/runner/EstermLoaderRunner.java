@@ -222,8 +222,8 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 						if (wordTypeCodes.containsKey(valueStr)) {
 							termWordTypeCode = wordTypeCodes.get(valueStr);
 							termWordTypeCodes.add(termWordTypeCode);
-						} else {
-							//logger.warn("Incorrect word type reference: \"{}\"", valueStr);
+						} else if (lexemeValueStateCodes.containsKey(valueStr)) {
+							// ok then, handled elsewhere
 						}
 					}
 
@@ -824,7 +824,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 				mappedValueStr = lexemeValueStateCodes.get(valueStr);
 				valueParamMap.put("value_state_code", mappedValueStr);
 			} else if (wordTypeCodes.containsKey(valueStr)) {
-				// ok then
+				// ok then, handled elsewhere
 			} else {
 				logger.warn("Incorrect lexeme value state or word type reference: \"{}\"", valueStr);
 			}

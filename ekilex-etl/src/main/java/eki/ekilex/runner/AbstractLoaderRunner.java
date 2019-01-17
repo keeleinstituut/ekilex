@@ -588,7 +588,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			asWordForm.setValue(wordValue);
 			asWordForm.setMorphCode(morphCode);
 			asWordForm.setMorphExists(new Boolean(true));
-			createForm(paradigmId, wordForm);
+			createForm(paradigmId, asWordForm);
 		}
 	}
 
