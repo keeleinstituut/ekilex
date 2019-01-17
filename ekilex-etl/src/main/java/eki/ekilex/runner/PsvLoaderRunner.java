@@ -72,7 +72,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private final static String LEXEME_RELATION_JOINT_REFERENCE = "yvt";
 	private final static String LEXEME_RELATION_MEANING_REFERENCE = "tvt";
 	private final static String LEXEME_RELATION_COMPOUND_WORD = "comp";
-	private final static String LEXEME_RELATION_BASIC_WORD = "head";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 
@@ -318,21 +317,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Vormel processing done.");
 	}
 
-	private void processUnions(Context context) throws Exception {
-
-		logger.debug("Found {} unions.", context.unionWords.size());
-		setActivateReport(COMPOUND_REFERENCES_REPORT_NAME);
-		writeToLogFile("Ühendite töötlus <x:yhvt>", "", "");
-
-		for (WordData unionWord : context.unionWords) {
-			Long wordId = getWordIdFor(unionWord.value, unionWord.homonymNr, context.importedWords, unionWord.reportingId);
-			if (wordId != null) {
-				createWordRelation(unionWord.id, wordId, WORD_RELATION_UNION);
-			}
-		}
-		logger.debug("Unions processing done.");
-	}
-
 	private void processJointReferences(Context context) throws Exception {
 
 		logger.debug("Found {} joint references.", context.jointReferences.size());
@@ -482,20 +466,25 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		for (WordData basicWord : context.basicWords) {
 			Long wordId = getWordIdFor(basicWord.value, basicWord.homonymNr, context.importedWords, basicWord.reportingId);
 			if (wordId != null) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("wordId", basicWord.id);
-				params.put("dataset", getDataset());
-				List<Map<String, Object>> secondaryWordLexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
-				for (Map<String, Object> secondaryWordLexeme : secondaryWordLexemes) {
-					params.put("wordId", wordId);
-					List<Map<String, Object>> lexemes = basicDbService.queryList(sqlWordLexemesByDataset, params);
-					for (Map<String, Object> lexeme : lexemes) {
-						createLexemeRelation((Long) secondaryWordLexeme.get("id"), (Long) lexeme.get("id"), LEXEME_RELATION_BASIC_WORD);
-					}
-				}
+				createWordRelation(wordId, basicWord.id, WORD_RELATION_UNION);
 			}
 		}
 		logger.debug("Basic words processing done.");
+	}
+
+	private void processUnions(Context context) throws Exception {
+
+		logger.debug("Found {} unions.", context.unionWords.size());
+		setActivateReport(COMPOUND_REFERENCES_REPORT_NAME);
+		writeToLogFile("Ühendite töötlus <x:yhvt>", "", "");
+
+		for (WordData unionWord : context.unionWords) {
+			Long wordId = getWordIdFor(unionWord.value, unionWord.homonymNr, context.importedWords, unionWord.reportingId);
+			if (wordId != null) {
+				createWordRelation(unionWord.id, wordId, WORD_RELATION_UNION);
+			}
+		}
+		logger.debug("Unions processing done.");
 	}
 
 	private void processAntonyms(Context context) throws Exception {
