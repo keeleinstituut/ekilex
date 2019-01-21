@@ -1,7 +1,8 @@
 package eki.wordweb.service;
 
+import static java.lang.Math.max;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -36,15 +37,8 @@ import eki.wordweb.service.db.LexSearchDbService;
 import eki.wordweb.service.util.ClassifierUtil;
 import eki.wordweb.service.util.ConversionUtil;
 
-import static java.lang.Math.max;
-
 @Component
 public class LexSearchService implements InitializingBean, SystemConstant {
-
-	private static final String UNKNOWN_FORM_CODE = "??";
-	private static final String[] ABBREVIATION_WORD_TYPE_CODES = new String[] {"l", "th"};
-	private static final String PREFIXOID_WORD_TYPE_CODE = "pf";
-	private static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
 
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
@@ -81,6 +75,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				searchMode = SEARCH_MODE_DETAIL;
 			}
 		}
+		conversionUtil.setAffixoidFlags(allWords);
 		conversionUtil.filterIrrelevantValues(allWords, destinLang, datasets);
 		conversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
@@ -128,6 +123,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		Word word = lexSearchDbService.getWord(wordId);
 		classifierUtil.applyClassifiers(word, displayLang);
+		conversionUtil.setWordTypeFlags(word);
 		WordEtymology wordEtymology = lexSearchDbService.findWordEtymology(wordId);
 		conversionUtil.composeWordEtymology(word, wordEtymology, displayLang);
 		List<WordRelationTuple> wordRelationTuples = lexSearchDbService.findWordRelationTuples(wordId);
@@ -144,18 +140,10 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 				allImageFiles.addAll(lexeme.getImageFiles());
 			}
 		});
+
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
-		boolean isPrefixoid = false;
-		boolean isSuffixoid = false;
-		boolean isAbbreviationWord = false;
 		boolean isUnknownForm = false;
-		List<String> wordTypeCodes = word.getWordTypeCodes();
-		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
-			isPrefixoid = wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE);
-			isSuffixoid = wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE);
-			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
-		}
 		if (CollectionUtils.isNotEmpty(paradigms)) {
 			List<ParadigmGroup> paradigmFirstGroup = paradigms.get(0).getGroups();
 			if (CollectionUtils.isNotEmpty(paradigmFirstGroup)) {
@@ -178,9 +166,6 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		wordData.setImageFiles(allImageFiles);
 		wordData.setFirstAvailableVocalForm(firstAvailableVocalForm);
 		wordData.setFirstAvailableSoundFile(firstAvailableSoundFile);
-		wordData.setPrefixoid(isPrefixoid);
-		wordData.setSuffixoid(isSuffixoid);
-		wordData.setAbbreviationWord(isAbbreviationWord);
 		wordData.setUnknownForm(isUnknownForm);
 		combineLevels(wordData.getLexemes());
 		return wordData;

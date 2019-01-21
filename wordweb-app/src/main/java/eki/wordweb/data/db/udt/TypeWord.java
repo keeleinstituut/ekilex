@@ -27,7 +27,7 @@ import org.jooq.impl.UDTImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class TypeWord extends UDTImpl<TypeWordRecord> {
 
-    private static final long serialVersionUID = -910040214;
+    private static final long serialVersionUID = 1181941418;
 
     /**
      * The reference instance of <code>public.type_word</code>
@@ -61,6 +61,11 @@ public class TypeWord extends UDTImpl<TypeWordRecord> {
      * The attribute <code>public.type_word.lang</code>.
      */
     public static final UDTField<TypeWordRecord, String> LANG = createField("lang", org.jooq.impl.SQLDataType.CHAR(3), TYPE_WORD, "");
+
+    /**
+     * The attribute <code>public.type_word.word_type_codes</code>.
+     */
+    public static final UDTField<TypeWordRecord, String[]> WORD_TYPE_CODES = createField("word_type_codes", org.jooq.impl.SQLDataType.VARCHAR.getArrayDataType(), TYPE_WORD, "");
 
     /**
      * The attribute <code>public.type_word.dataset_code</code>.

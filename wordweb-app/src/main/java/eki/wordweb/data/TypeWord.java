@@ -1,8 +1,6 @@
 package eki.wordweb.data;
 
-import eki.common.data.AbstractDataObject;
-
-public class TypeWord extends AbstractDataObject {
+public class TypeWord extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 

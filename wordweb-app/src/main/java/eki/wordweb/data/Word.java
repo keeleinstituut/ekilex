@@ -2,10 +2,9 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class Word extends AbstractDataObject {
+public class Word extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 
@@ -18,10 +17,6 @@ public class Word extends AbstractDataObject {
 	private String wordClass;
 
 	private String lang;
-
-	private List<String> wordTypeCodes;
-
-	private List<Classifier> wordTypes;
 
 	private String morphCode;
 
@@ -107,22 +102,6 @@ public class Word extends AbstractDataObject {
 
 	public void setLang(String lang) {
 		this.lang = lang;
-	}
-
-	public List<String> getWordTypeCodes() {
-		return wordTypeCodes;
-	}
-
-	public void setWordTypeCodes(List<String> wordTypeCodes) {
-		this.wordTypeCodes = wordTypeCodes;
-	}
-
-	public List<Classifier> getWordTypes() {
-		return wordTypes;
-	}
-
-	public void setWordTypes(List<Classifier> wordTypes) {
-		this.wordTypes = wordTypes;
 	}
 
 	public String getMorphCode() {
