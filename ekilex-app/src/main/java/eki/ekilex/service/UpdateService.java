@@ -124,6 +124,14 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void updateLexemeOrdering(List<ListData> items) {
+		for (ListData item : items) {
+			lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.LEXEME, LifecycleProperty.ORDER_BY, item);
+			updateDbService.updateLexemeOrderby(item);
+		}
+	}
+
+	@Transactional
 	public void updateLexemeLevels(Long lexemeId, String action) {
 
 		if (lexemeId == null) return;

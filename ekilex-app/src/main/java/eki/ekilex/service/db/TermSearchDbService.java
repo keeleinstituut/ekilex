@@ -22,7 +22,7 @@ import org.jooq.DSLContext;
 import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
-import org.jooq.Record14;
+import org.jooq.Record15;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record6;
@@ -534,7 +534,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Record14<Long,String,Integer,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String> getLexeme(Long lexemeId) {
+	public Record15<Long,String,Integer,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,Long> getLexeme(Long lexemeId) {
 
 		Lexeme l = LEXEME.as("l");
 		Word w = WORD.as("w");
@@ -556,7 +556,8 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						l.LEVEL3,
 						l.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
-						l.PROCESS_STATE_CODE.as("lexeme_process_state_code")
+						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
+						l.ORDER_BY
 						)
 				.from(f, p, w, l)
 				.where(

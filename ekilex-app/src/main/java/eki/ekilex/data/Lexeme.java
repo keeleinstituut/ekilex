@@ -57,6 +57,9 @@ public class Lexeme extends AbstractDataObject {
 	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
 
+	@Column(name = "order_by")
+	private Long orderBy;
+
 	private List<Classifier> wordTypes;
 
 	private List<Classifier> pos;
@@ -285,4 +288,11 @@ public class Lexeme extends AbstractDataObject {
 		this.lexemeRelations = lexemeRelations;
 	}
 
+	public Long getOrderBy() {
+		return orderBy;
+	}
+
+	public void setOrderBy(Long orderBy) {
+		this.orderBy = orderBy;
+	}
 }
