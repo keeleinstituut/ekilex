@@ -100,10 +100,15 @@ public class LifecycleLogDbServiceHelper {
 						LEXEME.LEVEL2,
 						LEXEME.LEVEL3,
 						LEXEME.VALUE_STATE_CODE,
-						LEXEME.PROCESS_STATE_CODE
+						LEXEME.PROCESS_STATE_CODE,
+						LEXEME.ORDER_BY,
+						FORM.VALUE
 						)
-				.from(LEXEME)
-				.where(LEXEME.ID.eq(entityId))
+				.from(LEXEME, PARADIGM, FORM)
+				.where(LEXEME.ID.eq(entityId)
+						.and(PARADIGM.WORD_ID.eq(LEXEME.WORD_ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.eq(FormMode.WORD.name())))
 				.fetchSingleMap();
 		return result;
 	}

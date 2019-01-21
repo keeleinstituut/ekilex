@@ -126,6 +126,14 @@ public class UpdateDbService implements DbConstant {
 			.execute();
 	}
 
+	public void updateLexemeOrderby(ListData item) {
+		create
+				.update(LEXEME)
+				.set(LEXEME.ORDER_BY, item.getOrderby())
+				.where(LEXEME.ID.eq(item.getId()))
+				.execute();
+	}
+
 	public Result<Record4<Long,Integer,Integer,Integer>> findWordLexemes(Long lexemeId) {
 		Lexeme l1 = LEXEME.as("l1");
 		Lexeme l2 = LEXEME.as("l2");
