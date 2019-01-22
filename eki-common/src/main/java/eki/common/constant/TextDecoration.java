@@ -9,4 +9,6 @@ public interface TextDecoration {
 	String EKI_ELEMENT_3 = "eki-elem-3";
 
 	String EKI_ELEMENT_4 = "eki-elem-4";
+
+	String EKI_ELEMENT_5 = "eki-elem-5";
 }
