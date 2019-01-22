@@ -217,13 +217,32 @@ function openEditDlg(elem) {
 }
 
 function performDelete() {
-    var targetName = $(this)[0].getAttribute('data-target-elem');
-    var targetElement = $('[name="' + targetName + '"]');
-    var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
-    var url = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
-    $.post(url).done(function(data) {
-        var refreshButton = $('#refresh-details');
-        refreshButton.trigger('click');
+    let targetName = $(this)[0].getAttribute('data-target-elem');
+    let targetElement = $('[name="' + targetName + '"]');
+    let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
+    let removeUrl = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
+    let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
+    $.post(validateUrl).done(function(data) {
+        let response = JSON.parse(data);
+        let isValid = false;
+        if (response.status === 'ok') {
+            isValid = true;
+        } else if (response.status === 'confirm') {
+            isValid = confirm(response.question);
+        } else if (response.status === 'invalid') {
+            alert(response.message);
+        } else {
+            alert("Andmete eemaldamine ebaõnnestus.");
+        }
+        if (isValid) {
+            $.post(removeUrl).done(function(data) {
+                var refreshButton = $('#refresh-details');
+                refreshButton.trigger('click');
+            }).fail(function(data) {
+                alert("Andmete eemaldamine ebaõnnestus.");
+                console.log(data);
+            });
+        }
     }).fail(function(data) {
         alert("Andmete eemaldamine ebaõnnestus.");
         console.log(data);

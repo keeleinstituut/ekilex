@@ -223,6 +223,16 @@ public class LexSearchService implements SystemConstant {
 		return lexemes;
 	}
 
+	@Transactional
+	public boolean isTheOnlyLexemeForWord(Long lexemeId) {
+		return lexSearchDbService.isTheOnlyLexemeForWord(lexemeId);
+	}
+
+	@Transactional
+	public boolean isTheOnlyLexemeForMeaning(Long lexemeId) {
+		return lexSearchDbService.isTheOnlyLexemeForMeaning(lexemeId);
+	}
+
 	private void populateLexeme(List<String> selectedDatasets, Map<String, String> datasetNameMap, WordLexeme lexeme) {
 
 		String datasetName = datasetNameMap.get(lexeme.getDatasetCode());

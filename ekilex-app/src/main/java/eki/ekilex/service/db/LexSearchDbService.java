@@ -725,4 +725,18 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
+	public boolean isTheOnlyLexemeForWord(Long lexemeId) {
+		Lexeme lex = LEXEME.as("lex");
+		Lexeme lex2 = LEXEME.as("lex2");
+		int count = create.fetchCount(DSL.select(lex.ID).from(lex, lex2).where(lex2.ID.eq(lexemeId).and(lex.WORD_ID.eq(lex2.WORD_ID))));
+		return count == 1;
+	}
+
+	public boolean isTheOnlyLexemeForMeaning(Long lexemeId) {
+		Lexeme lex = LEXEME.as("lex");
+		Lexeme lex2 = LEXEME.as("lex2");
+		int count = create.fetchCount(DSL.select(lex.ID).from(lex, lex2).where(lex2.ID.eq(lexemeId).and(lex.MEANING_ID.eq(lex2.MEANING_ID))));
+		return count == 1;
+	}
+
 }

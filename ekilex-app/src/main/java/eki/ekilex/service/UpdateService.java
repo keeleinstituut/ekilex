@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import eki.common.constant.WordRelationGroupType;
 import eki.common.service.TextDecorationService;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
+import eki.ekilex.service.db.LexSearchDbService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -35,10 +36,14 @@ public class UpdateService {
 
 	private final LifecycleLogDbService lifecycleLogDbService;
 
-	public UpdateService(UpdateDbService updateDbService, TextDecorationService textDecorationService, LifecycleLogDbService lifecycleLogDbService) {
+	private final LexSearchDbService lexSearchDbService;
+
+	public UpdateService(UpdateDbService updateDbService, TextDecorationService textDecorationService, LifecycleLogDbService lifecycleLogDbService,
+			LexSearchDbService lexSearchDbService) {
 		this.updateDbService  = updateDbService;
 		this.textDecorationService = textDecorationService;
 		this.lifecycleLogDbService = lifecycleLogDbService;
+		this.lexSearchDbService = lexSearchDbService;
 	}
 
 	// --- UPDATE ---
@@ -549,6 +554,30 @@ public class UpdateService {
 	public void deleteMeaningRelation(Long relationId) {
 		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.MEANING_RELATION, LifecycleProperty.VALUE, relationId);
 		updateDbService.deleteMeaningRelation(relationId);
+	}
+
+	@Transactional
+	public void deleteLexeme(Long lexemeId) {
+		if (lexSearchDbService.isTheOnlyLexemeForMeaning(lexemeId)) {
+			return;
+		}
+		Long wordId = null;
+		boolean isLastLexeme = lexSearchDbService.isTheOnlyLexemeForWord(lexemeId);
+		if (isLastLexeme) {
+			wordId = lexSearchDbService.findLexeme(lexemeId).into(WordLexeme.class).getWordId();
+		}
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEXEME, LifecycleProperty.VALUE, lexemeId);
+		updateLexemeLevels(lexemeId,"delete");
+		updateDbService.deleteLexeme(lexemeId);
+		if (isLastLexeme) {
+			deleteWord(wordId);
+		}
+	}
+
+	@Transactional
+	public void deleteWord(Long wordId) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.WORD, LifecycleProperty.VALUE, wordId);
+		updateDbService.deleteWord(wordId);
 	}
 
 	void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {

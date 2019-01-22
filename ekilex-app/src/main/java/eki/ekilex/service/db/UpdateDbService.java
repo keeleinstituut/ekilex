@@ -531,11 +531,9 @@ public class UpdateDbService implements DbConstant {
 	}
 
 	public void deleteFreeform(Long id) {
-		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM).where(FREEFORM.PARENT_ID.eq(id)).fetch();
-		childFreeforms.forEach(f -> {
-			deleteFreeform(f.getId());
-		});
-		create.update(FREEFORM).set(FREEFORM.PROCESS_STATE_CODE, PROCESS_STATE_DELETED).where(FREEFORM.ID.eq(id)).execute();
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.eq(id))
+				.execute();
 	}
 
 	public void deleteDefinition(Long id) {
@@ -648,6 +646,21 @@ public class UpdateDbService implements DbConstant {
 	public void deleteMeaningRelation(Long relationId) {
 		create.delete(MEANING_RELATION)
 				.where(MEANING_RELATION.ID.eq(relationId))
+				.execute();
+	}
+
+	public void deleteLexeme(Long lexemeId) {
+		create.delete(FREEFORM)
+				.where(FREEFORM.ID.in(DSL.select(LEXEME_FREEFORM.FREEFORM_ID).from(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))))
+				.execute();
+		create.delete(LEXEME)
+				.where(LEXEME.ID.eq(lexemeId))
+				.execute();
+	}
+
+	public void deleteWord(Long wordId) {
+		create.delete(WORD)
+				.where(WORD.ID.eq(wordId))
 				.execute();
 	}
 

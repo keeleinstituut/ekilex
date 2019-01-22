@@ -300,22 +300,27 @@
           <div class="card mb-2 shadow" th:each="lexeme,lexemeIter : ${lexemeLangGroup.lexemes}" th:if="${lexemeLangGroup.selected}"
                th:data-id="${lexeme.lexemeId}"
                th:data-op-code="lexeme"
-               th:name="${lexeme.lexemeId} + '_lexeme_ordering'"
+               th:name="${lexeme.lexemeId} + '_lexeme'"
                th:data-orderby="${lexeme.orderBy}">
             <div class="card-body">
-              <div class="float-right ml-2">
-                <th:block th:replace="common :: ordering_buttons(${lexemeIter})"></th:block>
-              </div>
-              <div>
-                <span th:text="${lexeme.word}" class="ttl"></span>
-                <span th:text="${lexeme.homonymNumber}"></span>
-                (
-                <span th:text="${lexeme.wordLang}"></span>
-                )
-                <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}"></span>
-                <b>
-                  <span th:text="${lexeme.dataset}" class="float-right"></span>
-                </b>
+              <div class="d-flex flex-row align-items-center flex-wrap">
+                <div class="d-flex align-items-center flex-wrap">
+                  <span th:text="${lexeme.word}" class="ttl"></span>
+                  <span th:text="${lexeme.homonymNumber}" class="pl-1"></span>
+                  <span th:text="${'( ' + lexeme.wordLang + ' )'}" class="pl-1"></span>
+                  <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}" class="pl-1"></span>
+                </div>
+                <div class="ml-auto">
+                  <button class="btn btn-warning font-weight-bold" type="button"
+                          th:data-target-elem="${lexeme.lexemeId} + '_lexeme'"
+                          data-toggle="delete-confirmation">Eemalda</button>
+                </div>
+                <div class="ml-2">
+                  <b th:text="${lexeme.dataset}"></b>
+                </div>
+                <div class="ml-2">
+                  <th:block th:replace="common :: ordering_buttons(${lexemeIter})"></th:block>
+                </div>
               </div>
               <div>
                 <hr />
