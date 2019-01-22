@@ -59,7 +59,7 @@ public abstract class CorporaService implements SystemConstant {
 			}
 			return String.join(" ", items);
 		} else {
-			return "[lemma=\"" + sentence + "\"]";
+			return "[lempos=\"" + sentence + "-.?\"]";
 		}
 	}
 
