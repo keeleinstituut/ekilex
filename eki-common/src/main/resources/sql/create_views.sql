@@ -1,10 +1,10 @@
-create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), dataset_code varchar(10));
+create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), word_type_codes varchar(100) array, dataset_code varchar(10));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), dataset_code varchar(10));
 create type type_domain as (origin varchar(100), code varchar(100));
 create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_word_etym as (word_id bigint, etym_word_id bigint, etym_word text, etym_word_lang char(3), etym_year text, etym_meaning_words text array, etym_word_sources text array, comments text array, is_questionable boolean, is_compound boolean);
-create type type_word_relation as (word_id bigint, word text, word_lang char(3), dataset_codes varchar(10) array, word_rel_type_code varchar(100));
+create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
 create type type_lexeme_relation as (lexeme_id bigint, word_id bigint, word text, word_lang char(3), lex_rel_type_code varchar(100));
 create type type_meaning_relation as (meaning_id bigint, lexeme_id bigint, word_id bigint, word text, word_lang char(3), meaning_rel_type_code varchar(100));
 
@@ -60,7 +60,7 @@ from (select w.id as word_id,
                    from word_word_type wt
                    group by wt.word_id) wt on wt.word_id = w.word_id
   left outer join (select mw.word_id,
-                          array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang,mw.dataset_code)::type_word order by mw.hw_ds_order_by,mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_ds_order_by,mw.mw_lex_order_by) meaning_words
+                          array_agg(row (mw.hw_lex_id,mw.hw_meaning_id,mw.mw_value,mw.mw_lang,mw.mw_word_type_codes,mw.dataset_code)::type_word order by mw.hw_ds_order_by,mw.hw_lex_level1,mw.hw_lex_level2,mw.hw_lex_level3,mw.hw_lex_order_by,mw.mw_ds_order_by,mw.mw_lex_order_by) meaning_words
                    from (select l1.word_id,
                                 l1.id hw_lex_id,
                                 l1.meaning_id hw_meaning_id,
@@ -71,6 +71,10 @@ from (select w.id as word_id,
                                 l1.order_by hw_lex_order_by,
                                 f2.value mw_value,
                                 w2.lang mw_lang,
+                                (select array_agg(wt.word_type_code order by wt.order_by) 
+                                 from word_word_type wt 
+                                 where wt.word_id = w2.id 
+                                 group by w2.id) mw_word_type_codes,
                                 coalesce(l2.dataset_code, l1.dataset_code) dataset_code,
                                 ds2.order_by mw_ds_order_by,
                                 l2.order_by mw_lex_order_by
@@ -462,7 +466,7 @@ create view view_ww_word_relation
            wg.word_group_members
     from word w
       left outer join (select w1.id word_id,
-                              array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.dataset_codes,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
+                              array_agg(row (w2.related_word_id,w2.related_word,w2.related_word_lang,w2.word_type_codes,w2.dataset_codes,w2.word_rel_type_code)::type_word_relation order by w2.word_rel_order_by) related_words
                        from word w1
                          inner join (select distinct
                                             r.word1_id,
@@ -471,6 +475,10 @@ create view view_ww_word_relation
                                             r.order_by word_rel_order_by,
                                             f2.value related_word,
                                             w2.lang related_word_lang,
+                                            (select array_agg(wt.word_type_code order by wt.order_by) 
+                                             from word_word_type wt 
+                                             where wt.word_id = w2.id 
+                                             group by w2.id) word_type_codes,
                                             (select array_agg(distinct l.dataset_code)
                                              from lexeme l
                                              where l.word_id = w2.id
@@ -491,7 +499,7 @@ create view view_ww_word_relation
       left outer join (select wg.word_id,
                               wg.word_group_id,
                               wg.word_rel_type_code,
-                              array_agg(row (wg.group_member_word_id,wg.group_member_word,wg.group_member_word_lang,wg.dataset_codes,wg.word_rel_type_code)::type_word_relation order by wg.group_member_order_by) word_group_members
+                              array_agg(row (wg.group_member_word_id,wg.group_member_word,wg.group_member_word_lang,wg.word_type_codes,wg.dataset_codes,wg.word_rel_type_code)::type_word_relation order by wg.group_member_order_by) word_group_members
                        from (select distinct 
                                     w1.id word_id,
                                     wg.id word_group_id,
@@ -499,6 +507,10 @@ create view view_ww_word_relation
                                     w2.id group_member_word_id,
                                     f2.value group_member_word,
                                     w2.lang group_member_word_lang,
+                                    (select array_agg(wt.word_type_code order by wt.order_by) 
+                                     from word_word_type wt 
+                                     where wt.word_id = w2.id 
+                                     group by w2.id) word_type_codes,
                                     (select array_agg(distinct l.dataset_code)
                                      from lexeme l
                                      where l.word_id = w2.id

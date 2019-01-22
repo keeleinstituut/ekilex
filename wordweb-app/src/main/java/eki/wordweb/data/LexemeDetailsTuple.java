@@ -46,9 +46,11 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 
 	private Integer meaningWordHomonymNr;
 
-	private String meaningWordAspectCode;
-
 	private String meaningWordLang;
+
+	private List<String> meaningWordTypeCodes;
+
+	private String meaningWordAspectCode;
 
 	private List<TypeLexemeRelation> relatedLexemes;
 
@@ -204,20 +206,28 @@ public class LexemeDetailsTuple extends AbstractDataObject {
 		this.meaningWordHomonymNr = meaningWordHomonymNr;
 	}
 
-	public String getMeaningWordAspectCode() {
-		return meaningWordAspectCode;
-	}
-
-	public void setMeaningWordAspectCode(String meaningWordAspectCode) {
-		this.meaningWordAspectCode = meaningWordAspectCode;
-	}
-
 	public String getMeaningWordLang() {
 		return meaningWordLang;
 	}
 
 	public void setMeaningWordLang(String meaningWordLang) {
 		this.meaningWordLang = meaningWordLang;
+	}
+
+	public List<String> getMeaningWordTypeCodes() {
+		return meaningWordTypeCodes;
+	}
+
+	public void setMeaningWordTypeCodes(List<String> meaningWordTypeCodes) {
+		this.meaningWordTypeCodes = meaningWordTypeCodes;
+	}
+
+	public String getMeaningWordAspectCode() {
+		return meaningWordAspectCode;
+	}
+
+	public void setMeaningWordAspectCode(String meaningWordAspectCode) {
+		this.meaningWordAspectCode = meaningWordAspectCode;
 	}
 
 	public List<TypeLexemeRelation> getRelatedLexemes() {

@@ -20,12 +20,6 @@ public class WordData extends AbstractDataObject {
 
 	private String firstAvailableSoundFile;
 
-	private boolean prefixoid;
-
-	private boolean suffixoid;
-
-	private boolean abbreviationWord;
-
 	private boolean unknownForm;
 
 	public Word getWord() {
@@ -74,30 +68,6 @@ public class WordData extends AbstractDataObject {
 
 	public void setFirstAvailableSoundFile(String firstAvailableSoundFile) {
 		this.firstAvailableSoundFile = firstAvailableSoundFile;
-	}
-
-	public boolean isPrefixoid() {
-		return prefixoid;
-	}
-
-	public void setPrefixoid(boolean prefixoid) {
-		this.prefixoid = prefixoid;
-	}
-
-	public boolean isSuffixoid() {
-		return suffixoid;
-	}
-
-	public void setSuffixoid(boolean suffixoid) {
-		this.suffixoid = suffixoid;
-	}
-
-	public boolean isAbbreviationWord() {
-		return abbreviationWord;
-	}
-
-	public void setAbbreviationWord(boolean abbreviationWord) {
-		this.abbreviationWord = abbreviationWord;
 	}
 
 	public boolean isUnknownForm() {

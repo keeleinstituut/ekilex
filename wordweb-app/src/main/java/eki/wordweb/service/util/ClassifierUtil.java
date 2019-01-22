@@ -26,7 +26,6 @@ import eki.wordweb.data.TypeWordEtym;
 import eki.wordweb.data.TypeWordRelation;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordGroup;
-import eki.wordweb.data.WordRelationTuple;
 import eki.wordweb.service.db.CommonDataDbService;
 
 @Component
@@ -126,10 +125,10 @@ public class ClassifierUtil {
 		meaningRelation.setMeaningRelType(classifier);
 	}
 
-	public void applyClassifiers(WordRelationTuple tuple, WordGroup wordGroup, String displayLang) {
+	public void applyClassifiers(WordGroup wordGroup, String displayLang) {
 		String classifierCode;
 		Classifier classifier;
-		classifierCode = tuple.getWordRelTypeCode();
+		classifierCode = wordGroup.getWordRelTypeCode();
 		classifier = getClassifier(ClassifierName.WORD_REL_TYPE, classifierCode, displayLang);
 		wordGroup.setWordRelType(classifier);
 	}
