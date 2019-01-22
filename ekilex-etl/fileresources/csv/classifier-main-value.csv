@@ -49,8 +49,10 @@ deriv	dem	vähendussõna	est	wordweb
 deriv	ssv	seisundivorm	est	wordweb
 deriv	as	nimisõna	est	wordweb
 display_morph	keskv	komparatiiv, keskvõrre	est	descrip
+display_morph	keskv	keskvõrre	est	wordweb
 display_morph	keskv	comparative (degree)	eng	descrip
 display_morph	üliv	superlatiiv, ülivõrre	est	descrip
+display_morph	üliv	ülivõrre	est	wordweb
 display_morph	üliv	superlative (degree)	eng	descrip
 display_morph	ips	impersonaal, umbisikuline tegumood	est	descrip
 display_morph	ips	impersonal	eng	descrip
@@ -1467,29 +1469,41 @@ word_type	k	place name	eng	descrip
 word_type	l	lühend	est	descrip
 word_type	l	abbreviation	eng	descrip
 word_type	p	pärisnimi	est	descrip
+word_type	p	pärisnimi	est	wordweb
 word_type	p	proper name	eng	descrip
 word_type	z	tsitaatsõna	est	descrip
+word_type	z	tsitaatsõna	est	wordweb
 word_type	z	loanword (alien)	eng	descrip
 word_type	mvv	viiteartikli märksõna	est	descrip
 word_type	yv	ühendverb	est	descrip
+word_type	yv	ühendverb	est	wordweb
 word_type	vv	väljendverb	est	descrip
+word_type	vv	väljendverb	est	wordweb
 word_type	av	ahelverb	est	descrip
+word_type	av	ahelverb	est	wordweb
 word_type	tv	tugiverb	est	descrip
+word_type	tv	tugiverb	est	wordweb
 word_type	vlj	väljend	est	descrip
 word_type	ys	ühendsidesõna (nii et)	est	descrip
+word_type	ys	ühendsidesõna	est	wordweb
 word_type	rs	rühmsidesõna (ei .. ega)	est	descrip
 word_type	f	fras-väljend (väljendite plokis)	est	descrip
 word_type	f	(idiomatic) phrase (grp)	eng	descrip
 word_type	mf	märksõna-väljend (iseseisev)	est	descrip
 word_type	mf	multiword unit (in the alphabet)	eng	descrip
 word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
+word_type	g	omastavaline täiend	est	wordweb
 word_type	lz	tsitaatsõna lühend	est	descrip
+word_type	lz	tsitaatsõna lühend	est	wordweb
 word_type	lz	abbreviation for alien word	eng	descrip
 word_type	n	number (nt 24/7)	est	descrip
+word_type	n	number (nt 24/7)	est	wordweb
 word_type	n	number	eng	descrip
 word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
+word_type	pf	pooleesliide	est	wordweb
 word_type	pf	combining form	eng	descrip
 word_type	sf	sufiksoid, pooljärelliide vm järelosa	est	descrip
+word_type	sf	pooljärelliide	est	wordweb
 word_type	sf	combining form	eng	descrip
 word_type	s	sarja liige	est	descrip
 word_type	s	serial member	eng	descrip
