@@ -76,4 +76,10 @@ public interface WebConstant {
 	String VIEW_UTIL_MODEL_KEY = "viewUtil";
 
 	String NOTHING = "";
+
+	int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;
+
+	int WORD_RELATIONS_DISPLAY_LIMIT = 10;
+
+	String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
 }

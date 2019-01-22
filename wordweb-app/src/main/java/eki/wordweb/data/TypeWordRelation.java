@@ -2,10 +2,9 @@ package eki.wordweb.data;
 
 import java.util.List;
 
-import eki.common.data.AbstractDataObject;
 import eki.common.data.Classifier;
 
-public class TypeWordRelation extends AbstractDataObject {
+public class TypeWordRelation extends WordTypeData {
 
 	private static final long serialVersionUID = 1L;
 

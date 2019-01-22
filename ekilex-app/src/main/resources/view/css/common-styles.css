@@ -146,8 +146,12 @@ input:checked+.slider:before {
 
 .btn-toggle {
 	font-size: large;
-	border-radius: 1.5rem;
+	border-radius: 1rem;
 	margin-top: -14px;
 	margin-right: -14px;
-	padding: 0px 3px;
+	padding: 0px 2px;
+}
+
+.btn-toggle i {
+	width: 1rem;
 }

@@ -23,4 +23,14 @@ public interface SystemConstant {
 	String CACHE_KEY_DATASET = "dataset";
 
 	String CACHE_KEY_CORPORA = "corpora";
+
+	String UNKNOWN_FORM_CODE = "??";
+
+	String[] ABBREVIATION_WORD_TYPE_CODES = new String[] {"l", "th"};
+
+	String PREFIXOID_WORD_TYPE_CODE = "pf";
+
+	String SUFFIXOID_WORD_TYPE_CODE = "sf";
+
+	Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
 }

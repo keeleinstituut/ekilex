@@ -482,8 +482,8 @@ public class LifecycleLogDbService {
 				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
-				String recent = String.valueOf(prevOrderBy) + ") " + definitionValue;
-				String entry = String.valueOf(newOrderby) + ") " + definitionValue;
+				String recent = prevOrderBy + ") " + definitionValue;
+				String entry = newOrderby + ") " + definitionValue;
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
@@ -496,8 +496,8 @@ public class LifecycleLogDbService {
 				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
-				String recent = String.valueOf(prevOrderBy) + ") " + relTypeCode;
-				String entry = String.valueOf(newOrderby) + ") " + relTypeCode;
+				String recent = prevOrderBy + ") " + relTypeCode;
+				String entry = newOrderby + ") " + relTypeCode;
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
 			}
@@ -510,8 +510,8 @@ public class LifecycleLogDbService {
 				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
-				String recent = String.valueOf(prevOrderBy) + ") " + relTypeCode;
-				String entry = String.valueOf(newOrderby) + ") " + relTypeCode;
+				String recent = prevOrderBy + ") " + relTypeCode;
+				String entry = newOrderby + ") " + relTypeCode;
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
@@ -524,12 +524,28 @@ public class LifecycleLogDbService {
 				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
 					return;
 				}
-				String recent = String.valueOf(prevOrderBy) + ") " + relTypeCode;
-				String entry = String.valueOf(newOrderby) + ") " + relTypeCode;
+				String recent = prevOrderBy + ") " + relTypeCode;
+				String entry = newOrderby + ") " + relTypeCode;
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createWordLifecycleLog(wordId, lifecycleLogId);
 			}
+		} else if (LifecycleEntity.LEXEME.equals(entity)) {
+			if (LifecycleProperty.ORDER_BY.equals(property)) {
+				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+				Long prevOrderBy = (Long) entityData.get("order_by");
+				if (isUpdate(eventType) && newOrderby.equals(prevOrderBy)) {
+					return;
+				}
+				String recent = prevOrderBy + ") " + lexemeLogString(entityData);
+				String entry = newOrderby + ") " + lexemeLogString(entityData);
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(entityId, lifecycleLogId);
+			}
 		}
+	}
+
+	private String lexemeLogString(Map<String, Object> entityData) {
+		return entityData.get("value") + " [" + entityData.get("level1") + "." + entityData.get("level2") + "." + entityData.get("level3") + "]";
 	}
 
 	private String getUserName() {

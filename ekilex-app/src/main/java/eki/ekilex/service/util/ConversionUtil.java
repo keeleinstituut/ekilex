@@ -373,8 +373,9 @@ public class ConversionUtil {
 		List<String> selectedLangCodes = languagesOrder.stream().filter(ClassifierSelect::isSelected).map(ClassifierSelect::getCode).collect(Collectors.toList());
 		List<LexemeLangGroup> lexemeLangGroups = new ArrayList<>();
 		Map<String, LexemeLangGroup> lexemeLangGroupMap = new HashMap<>();
+		List<Lexeme> lexemesOrderBy = lexemes.stream().sorted(Comparator.comparing(Lexeme::getOrderBy)).collect(Collectors.toList());
 
-		for (Lexeme lexeme : lexemes) {
+		for (Lexeme lexeme : lexemesOrderBy) {
 			String lang = lexeme.getWordLang();
 			LexemeLangGroup lexemeLangGroup = lexemeLangGroupMap.get(lang);
 			if (lexemeLangGroup == null) {

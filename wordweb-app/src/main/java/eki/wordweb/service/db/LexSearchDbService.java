@@ -199,8 +199,9 @@ public class LexSearchDbService {
 						w2.WORD_ID.as("meaning_word_id"),
 						w2.WORD.as("meaning_word"),
 						w2.HOMONYM_NR.as("meaning_word_homonym_nr"),
-						w2.ASPECT_CODE.as("meaning_word_aspect_code"),
 						w2.LANG.as("meaning_word_lang"),
+						w2.WORD_TYPE_CODES.as("meaning_word_type_codes"),
+						w2.ASPECT_CODE.as("meaning_word_aspect_code"),
 						lr.RELATED_LEXEMES
 						)
 				.from(l1

@@ -19,6 +19,8 @@ import eki.common.constant.ClassifierName;
 import eki.common.constant.ReferenceType;
 import eki.common.data.Classifier;
 import eki.wordweb.constant.CollocMemberGroup;
+import eki.wordweb.constant.SystemConstant;
+import eki.wordweb.constant.WebConstant;
 import eki.wordweb.data.Collocation;
 import eki.wordweb.data.CollocationPosGroup;
 import eki.wordweb.data.CollocationRelGroup;
@@ -45,19 +47,12 @@ import eki.wordweb.data.WordEtymology;
 import eki.wordweb.data.WordGroup;
 import eki.wordweb.data.WordRelationGroup;
 import eki.wordweb.data.WordRelationTuple;
+import eki.wordweb.data.WordTypeData;
 
 @Component
-public class ConversionUtil {
+public class ConversionUtil implements WebConstant, SystemConstant {
 
 	private static final char RAW_VALUE_ELEMENTS_SEPARATOR = '|';
-
-	private static final String ALTERNATIVE_FORMS_SEPARATOR = " ~ ";
-
-	private static final Float COLLOC_MEMBER_CONTEXT_WEIGHT = 0.5F;
-
-	private static final int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;
-
-	private static final int WORD_RELATIONS_DISPLAY_LIMIT = 10;
 
 	@Autowired
 	private ClassifierUtil classifierUtil;
@@ -76,7 +71,15 @@ public class ConversionUtil {
 						List<String> meaningWordValues = primaryMeaningWords.stream()
 								.filter(meaningWord -> meaningWord.getLexemeId().equals(lexemeId))
 								.filter(meaningWord -> StringUtils.equals(meaningWord.getLang(), destinLang))
-								.map(meaningWord -> meaningWord.getValue())
+								.map(meaningWord -> {
+									if (meaningWord.isPrefixoid()) {
+										return meaningWord.getValue() + "-";
+									} else if (meaningWord.isSuffixoid()) {
+										return "-" + meaningWord.getValue();
+									} else {
+										return meaningWord.getValue();
+									}
+								})
 								.distinct()
 								.collect(Collectors.toList());
 						String meaningWordsWrapup = StringUtils.join(meaningWordValues, ", ");
@@ -100,6 +103,39 @@ public class ConversionUtil {
 						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
 						word.setDefinitionsWrapup(definitionsWrapup);
 					}
+				}
+			}
+		}
+	}
+
+	public void setAffixoidFlags(List<? extends WordTypeData> words) {
+
+		for (WordTypeData word : words) {
+			setWordTypeFlags(word);
+		}
+	}
+
+	public void setWordTypeFlags(WordTypeData wordTypeData) {
+
+		boolean isPrefixoid = false;
+		boolean isSuffixoid = false;
+		boolean isAbbreviationWord = false;
+		List<String> wordTypeCodes = wordTypeData.getWordTypeCodes();
+		if (CollectionUtils.isNotEmpty(wordTypeCodes)) {
+			isPrefixoid = wordTypeCodes.contains(PREFIXOID_WORD_TYPE_CODE);
+			isSuffixoid = wordTypeCodes.contains(SUFFIXOID_WORD_TYPE_CODE);
+			isAbbreviationWord = CollectionUtils.containsAny(wordTypeCodes, Arrays.asList(ABBREVIATION_WORD_TYPE_CODES));
+		}
+		wordTypeData.setPrefixoid(isPrefixoid);
+		wordTypeData.setSuffixoid(isSuffixoid);
+		wordTypeData.setAbbreviationWord(isAbbreviationWord);
+
+		if (wordTypeData instanceof Word) {
+			Word word = (Word) wordTypeData;
+			List<TypeWord> meaningWords = word.getMeaningWords();
+			if (CollectionUtils.isNotEmpty(meaningWords)) {
+				for (TypeWord meaningWord : meaningWords) {
+					setWordTypeFlags(meaningWord);
 				}
 			}
 		}
@@ -197,7 +233,7 @@ public class ConversionUtil {
 			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
 				summarisedPoses.addAll(lexeme.getPoses());
 			}
-			filterMeaningWords(allRelatedWordValues, lexeme);
+			filterMeaningWords(lexeme, allRelatedWordValues);
 			List<String> existingCollocationValues = new ArrayList<>();
 			transformCollocationPosGroupsForDisplay(wordId, lexeme, existingCollocationValues);
 			//TODO temporarily disabled
@@ -245,8 +281,10 @@ public class ConversionUtil {
 		meaningWord.setWord(tuple.getMeaningWord());
 		meaningWord.setHomonymNr(tuple.getMeaningWordHomonymNr());
 		meaningWord.setLang(tuple.getMeaningWordLang());
+		meaningWord.setWordTypeCodes(tuple.getMeaningWordTypeCodes());
 		meaningWord.setGovernments(tuple.getMeaningLexemeGovernments());
 		classifierUtil.applyClassifiers(tuple, meaningWord, displayLang);
+		setWordTypeFlags(meaningWord);
 		boolean additionalDataExists = (meaningWord.getAspect() != null)
 				|| CollectionUtils.isNotEmpty(meaningWord.getRegisters())
 				|| CollectionUtils.isNotEmpty(meaningWord.getGovernments());
@@ -374,7 +412,7 @@ public class ConversionUtil {
 		return collocation;
 	}
 
-	private void filterMeaningWords(List<String> allRelatedWordValues, Lexeme lexeme) {
+	private void filterMeaningWords(Lexeme lexeme, List<String> allRelatedWordValues) {
 	
 		List<MeaningWord> meaningWords = lexeme.getMeaningWords();
 		if (CollectionUtils.isNotEmpty(allRelatedWordValues)) {
@@ -687,6 +725,7 @@ public class ConversionUtil {
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
+					setWordTypeFlags(wordRelation);
 				}
 				word.setLimitedRelatedWordTypeGroups(new ArrayList<>());
 				word.setRelatedWordTypeGroups(new ArrayList<>());
@@ -727,11 +766,15 @@ public class ConversionUtil {
 				wordGroupMembers = wordGroupMembers.stream().filter(member -> CollectionUtils.containsAny(member.getDatasetCodes(), datasetsList)).collect(Collectors.toList());
 			}
 			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
+				for (TypeWordRelation wordGroupMember : wordGroupMembers) {
+					classifierUtil.applyClassifiers(wordGroupMember, displayLang);
+					setWordTypeFlags(wordGroupMember);
+				}
 				WordGroup wordGroup = new WordGroup();
 				wordGroup.setWordGroupId(tuple.getWordGroupId());
 				wordGroup.setWordRelTypeCode(tuple.getWordRelTypeCode());
 				wordGroup.setWordGroupMembers(wordGroupMembers);
-				classifierUtil.applyClassifiers(tuple, wordGroup, displayLang);
+				classifierUtil.applyClassifiers(wordGroup, displayLang);
 				word.getWordGroups().add(wordGroup);
 			}
 		}
