@@ -615,7 +615,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			Element conceptIdNode = (Element) meaningNumberGroupNode.selectSingleNode(conceptIdExp);
 			String conceptId = conceptIdNode == null ? null : conceptIdNode.getTextTrim();
 			Element learnerCommentNode = (Element) meaningNumberGroupNode.selectSingleNode(learnerCommentExp);
-			String learnerComment = nodeCleanValue(learnerCommentNode);
+			String learnerComment = nodeOriginalValue(learnerCommentNode);
 			Element imageNameNode = (Element) meaningNumberGroupNode.selectSingleNode(imageNameExp);
 			String imageName = imageNameNode == null ? null : imageNameNode.getTextTrim();
 

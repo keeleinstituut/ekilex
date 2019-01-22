@@ -34,6 +34,8 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 	private static final String DISCLOSED_MORPH_CODE = "Rpl";
 	private static final String EMPTY_FORM_VALUE = "-";
+	private static final String DISPLAY_FORM_CLEANUP_CHARS = "̄̆̇’'`´:_–!°¤()[]";
+	private static final String WORD_VALUE_POLLUTION_TEST_CHARS = DISPLAY_FORM_CLEANUP_CHARS + FORM_COMPONENT_SEPARATOR;
 
 	private final int defaultHomonymNr = 0;
 	private final String dataLang = "est";
@@ -61,7 +63,6 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 	private final String displayLevelAttr = "lvl";
 
 	private final String inexistentFormValue = "#";
-	private final String wordCleanupChars = ".+'`()¤:_";
 	private final String expectedWordAppendix = "[ne]";
 	private final String expectedWordSuffix = "ne";
 
@@ -99,6 +100,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		List<Form> forms;
 		List<Long> wordIds;
 		Form form;
+		String[] components;
 		String guid, word, wordAlt, wordClass, sourceMorphCode, destinMorphCode, formValue, displayForm, inflectionTypeNr, inflectionType;
 		String formOrderByStr, morphGroup1, morphGroup2, morphGroup3, displayLevelStr, soundFile;
 		Integer formOrderBy, displayLevel;
@@ -156,7 +158,11 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 					wordAlt = word + expectedWordSuffix;
 					wordId = createWordAndGuid(guid, wordAlt, defaultHomonymNr, dataLang, wordClass);
 					wordIds.add(wordId);
-				} else if (StringUtils.containsAny(word, wordCleanupChars)) {
+				} else if (StringUtils.contains(word, FORM_COMPONENT_SEPARATOR)) {
+					word = StringUtils.remove(word, FORM_COMPONENT_SEPARATOR);
+					wordId = createWordAndGuid(guid, word, defaultHomonymNr, dataLang, wordClass);
+					wordIds.add(wordId);
+				} else if (StringUtils.containsAny(word, WORD_VALUE_POLLUTION_TEST_CHARS)) {
 					uncleanWordCount.increment();
 					if (doReports) {
 						reportComposer.append(REPORT_ENRICHED_WORDS, word);
@@ -215,6 +221,10 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							if (noMorphExists) {
 								formValue = EMPTY_FORM_VALUE;
 								displayForm = EMPTY_FORM_VALUE;
+								components = null;
+							} else {
+								String cleanDisplayForm = StringUtils.replaceChars(displayForm, DISPLAY_FORM_CLEANUP_CHARS, "");
+								components = StringUtils.split(cleanDisplayForm, FORM_COMPONENT_SEPARATOR);
 							}
 							soundFile = extractSoundFileName(formElement);
 
@@ -226,7 +236,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							form.setMorphCode(destinMorphCode);
 							form.setMorphExists(new Boolean(!noMorphExists));
 							form.setValue(formValue);
-							//formObj.setComponents(components);
+							form.setComponents(components);
 							form.setDisplayForm(displayForm);
 							//formObj.setVocalForm(vocalForm);
 							form.setSoundFile(soundFile);

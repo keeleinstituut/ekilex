@@ -67,6 +67,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String COLLOC_OWNER_DATASET_CODE = "kol";
 	protected static final String ETYMOLOGY_OWNER_DATASET_CODE = "ety";
 	protected static final String DEFAULT_WORD_MORPH_CODE = "??";
+	protected static final String FORM_COMPONENT_SEPARATOR = "+";
 	protected static final String PROPRIETARY_AFIXOID_SYMBOL = "+";
 	protected static final String UNIFIED_AFIXOID_SYMBOL = "-";
 	protected static final String PREFIXOID_WORD_TYPE_CODE = "pf";
