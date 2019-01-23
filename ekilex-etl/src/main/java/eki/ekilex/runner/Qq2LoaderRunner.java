@@ -93,7 +93,6 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 
 	private final int defaultHomonymNr = 1;
 	private final String wordDisplayFormCleanupChars = "̄̆̇’'`´:_–!°()¤";
-	private final String wordComponentSeparator = "+";
 	private final String formStrCleanupChars = "̄̆̇’\"'`´,;–+=()";
 	private final String usageTranslationLangRus = "rus";
 	private final String dataLang = "est";
@@ -212,8 +211,8 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				word = wordDisplayForm = cleanEkiEntityMarkup(word);
 				word = StringUtils.replaceChars(word, wordDisplayFormCleanupChars, "");
 				word = unifyAfixoids(word);
-				wordComponents = StringUtils.split(word, wordComponentSeparator);
-				word = StringUtils.remove(word, wordComponentSeparator);
+				wordComponents = StringUtils.split(word, FORM_COMPONENT_SEPARATOR);
+				word = StringUtils.remove(word, FORM_COMPONENT_SEPARATOR);
 				pseudoHomonymNr = wordNode.attributeValue(pseudoHomonymAttr);
 				wordFormsStr = null;
 				paradigms = null;
@@ -477,7 +476,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 				Form compoundForm = copy(mabForm);
 				if (mabForm.getMorphExists()) {
 					String compoundFormValue = StringUtils.join(wordComponents, "", 0, wordComponentCount - 1) + mabForm.getValue();
-					String compoundDisplayForm = StringUtils.join(wordComponents, wordComponentSeparator, 0, wordComponentCount - 1) + wordComponentSeparator + mabForm.getDisplayForm(); 
+					String compoundDisplayForm = StringUtils.join(wordComponents, FORM_COMPONENT_SEPARATOR, 0, wordComponentCount - 1) + FORM_COMPONENT_SEPARATOR + mabForm.getDisplayForm(); 
 					compoundFormValues.add(compoundFormValue);
 					compoundForm.setValue(compoundFormValue);
 					compoundForm.setDisplayForm(compoundDisplayForm);
