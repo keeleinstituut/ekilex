@@ -12,6 +12,7 @@ import java.util.Map;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
@@ -225,6 +226,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 							} else {
 								String cleanDisplayForm = StringUtils.replaceChars(displayForm, DISPLAY_FORM_CLEANUP_CHARS, "");
 								components = StringUtils.split(cleanDisplayForm, FORM_COMPONENT_SEPARATOR);
+								components = escapeNulls(components);
 							}
 							soundFile = extractSoundFileName(formElement);
 
@@ -283,6 +285,18 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 		logger.debug("Found {} forms", formCount.getValue());
 
 		end();
+	}
+
+	private String[] escapeNulls(String[] components) {
+		if (ArrayUtils.isEmpty(components)) {
+			return components;
+		}
+		for (int componentIndex = 0; componentIndex < components.length; componentIndex++) {
+			if (StringUtils.equalsIgnoreCase("null", components[componentIndex])) {
+				components[componentIndex] = "'null'";
+			}
+		}
+		return components;
 	}
 
 	private void locateWord(String word, List<Form> forms) {
