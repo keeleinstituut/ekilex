@@ -48,6 +48,7 @@ import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record4;
+import org.jooq.Record5;
 import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Record9;
@@ -190,12 +191,13 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record4<Long, String, String, Timestamp>> findMeaningFreeforms(Long meaningId, String ... excludeTypes) {
+	public Result<Record5<Long,String,String,String,Timestamp>> findMeaningFreeforms(Long meaningId, String ... excludeTypes) {
 		return create
 				.select(
 						FREEFORM.ID,
 						FREEFORM.TYPE,
 						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE,
 						FREEFORM.VALUE_DATE)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
@@ -206,12 +208,12 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	//TODO integrate
-	public Result<Record2<Long,String>> findMeaningLearnerComments(Long meaningId) {
+	public Result<Record3<Long,String,String>> findMeaningLearnerComments(Long meaningId) {
 		return create
 				.select(
 						FREEFORM.ID,
-						FREEFORM.VALUE_TEXT)
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_PRESE)
 				.from(FREEFORM, MEANING_FREEFORM)
 				.where(
 						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
@@ -295,9 +297,9 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId, String ... excludedTypes) {
+	public Result<Record5<Long,String,String,String,Timestamp>> findLexemeFreeforms(Long lexemeId, String ... excludedTypes) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE, FREEFORM.VALUE_DATE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.notIn(excludedTypes)))
@@ -305,9 +307,9 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<Long,String>> findLexemePublicNotes(Long lexemeId) {
+	public Result<Record3<Long,String,String>> findLexemePublicNotes(Long lexemeId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
 						.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
@@ -329,9 +331,9 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<Long, String>> findGrammars(Long lexemeId) {
+	public Result<Record3<Long,String,String>> findGrammars(Long lexemeId) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT)
+				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_PRESE)
 				.from(FREEFORM, LEXEME_FREEFORM)
 				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
 						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))

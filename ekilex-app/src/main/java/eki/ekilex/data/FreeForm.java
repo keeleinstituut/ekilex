@@ -22,6 +22,9 @@ public class FreeForm extends AbstractDataObject {
 	@Column(name = "value_text")
 	private String valueText;
 
+	@Column(name = "value_prese")
+	private String valuePrese;
+
 	@Column(name = "value_date")
 	private Timestamp valueDate;
 
@@ -52,6 +55,14 @@ public class FreeForm extends AbstractDataObject {
 
 	public void setValueText(String valueText) {
 		this.valueText = valueText;
+	}
+
+	public String getValuePrese() {
+		return valuePrese;
+	}
+
+	public void setValuePrese(String valuePrese) {
+		this.valuePrese = valuePrese;
 	}
 
 	public Timestamp getValueDate() {

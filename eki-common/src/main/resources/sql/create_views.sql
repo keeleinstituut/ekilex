@@ -213,7 +213,7 @@ create view view_ww_meaning
                        and   ff.type = 'SEMANTIC_TYPE'
                        group by mf.meaning_id) m_smt on m_smt.meaning_id = m.id
       left outer join (select mf.meaning_id,
-                              array_agg(ff.value_text order by ff.order_by) learner_comments
+                              array_agg(ff.value_prese order by ff.order_by) learner_comments
                        from meaning_freeform mf,
                             freeform ff
                        where mf.freeform_id = ff.id

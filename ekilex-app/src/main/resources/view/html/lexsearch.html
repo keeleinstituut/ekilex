@@ -229,7 +229,7 @@
                 <hr />
                 <span class="lbl">Õppekommentaarid</span>
                 <div th:each="learnerComment : ${lexeme.meaningLearnerComments}">
-                  <span th:utext="${learnerComment}"></span>
+                  <span th:utext="${learnerComment.valuePrese}"></span>
                 </div>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
@@ -475,7 +475,7 @@
                 <hr />
                 <span class="lbl">Märkused</span>
                 <div th:each="publicNote : ${lexeme.lexemePublicNotes}">
-                  <span th:utext="${publicNote}"></span>
+                  <span th:utext="${publicNote.valuePrese}"></span>
                 </div>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}">
