@@ -82,6 +82,14 @@ public class TextDecorationService implements InitializingBean, TextDecoration {
 		ekiMarkupDescriptors.add(textDecorationDescriptor);
 	}
 
+	public String cleanEkiElementMarkup(String originalText) {
+		if (StringUtils.isBlank(originalText)) {
+			return originalText;
+		}
+		String cleanText = RegExUtils.removePattern(originalText, "<[^>]*>");
+		return cleanText;
+	}
+
 	public String cleanEkiEntityMarkup(String originalText) {
 		if (StringUtils.isBlank(originalText)) {
 			return originalText;
