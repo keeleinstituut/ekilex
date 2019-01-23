@@ -87,11 +87,15 @@ public class WordLexeme extends AbstractDataObject {
 
 	private List<FreeForm> meaningFreeforms;
 
+	private List<FreeForm> meaningLearnerComments;
+
 	private List<Relation> meaningRelations;
 
 	private List<List<Relation>> groupedMeaningRelations;
 
 	private List<FreeForm> lexemeFreeforms;
+
+	private List<FreeForm> lexemePublicNotes;
 
 	private List<Relation> lexemeRelations;
 
@@ -343,6 +347,14 @@ public class WordLexeme extends AbstractDataObject {
 		this.meaningFreeforms = meaningFreeforms;
 	}
 
+	public List<FreeForm> getMeaningLearnerComments() {
+		return meaningLearnerComments;
+	}
+
+	public void setMeaningLearnerComments(List<FreeForm> meaningLearnerComments) {
+		this.meaningLearnerComments = meaningLearnerComments;
+	}
+
 	public List<Relation> getMeaningRelations() {
 		return meaningRelations;
 	}
@@ -365,6 +377,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeFreeforms(List<FreeForm> lexemeFreeforms) {
 		this.lexemeFreeforms = lexemeFreeforms;
+	}
+
+	public List<FreeForm> getLexemePublicNotes() {
+		return lexemePublicNotes;
+	}
+
+	public void setLexemePublicNotes(List<FreeForm> lexemePublicNotes) {
+		this.lexemePublicNotes = lexemePublicNotes;
 	}
 
 	public List<Relation> getLexemeRelations() {

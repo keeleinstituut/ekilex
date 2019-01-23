@@ -224,6 +224,14 @@
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
+              <!-- TODO update needs to be integrated -->
+              <div th:if="${not #lists.isEmpty(lexeme.meaningLearnerComments)}">
+                <hr />
+                <span class="lbl">Õppekommentaarid</span>
+                <div th:each="learnerComment : ${lexeme.meaningLearnerComments}">
+                  <span th:utext="${learnerComment}"></span>
+                </div>
+              </div>
               <div th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
                 <hr />
                 <span class="lbl">Tähenduse atribuudid</span>
@@ -461,6 +469,14 @@
                     </td>
                   </tr>
                 </table>
+              </div>
+              <!-- TODO update needs to be integrated -->
+              <div th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
+                <hr />
+                <span class="lbl">Märkused</span>
+                <div th:each="publicNote : ${lexeme.lexemePublicNotes}">
+                  <span th:utext="${publicNote}"></span>
+                </div>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}">
                 <hr />

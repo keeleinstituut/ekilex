@@ -27,6 +27,8 @@ public class Meaning extends AbstractDataObject {
 
 	private List<FreeForm> freeforms;
 
+	private List<FreeForm> learnerComments;
+
 	private List<Relation> relations;
 
 	private List<List<Relation>> groupedRelations;
@@ -87,6 +89,14 @@ public class Meaning extends AbstractDataObject {
 
 	public void setFreeforms(List<FreeForm> freeforms) {
 		this.freeforms = freeforms;
+	}
+
+	public List<FreeForm> getLearnerComments() {
+		return learnerComments;
+	}
+
+	public void setLearnerComments(List<FreeForm> learnerComments) {
+		this.learnerComments = learnerComments;
 	}
 
 	public List<Relation> getRelations() {

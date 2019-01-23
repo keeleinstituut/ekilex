@@ -190,24 +190,127 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId) {
+	public Result<Record4<Long, String, String, Timestamp>> findMeaningFreeforms(Long meaningId, String ... excludeTypes) {
 		return create
-				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
-				.from(FREEFORM, LEXEME_FREEFORM)
-				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.notIn(FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name(), FreeformType.USAGE.name())))
+				.select(
+						FREEFORM.ID,
+						FREEFORM.TYPE,
+						FREEFORM.VALUE_TEXT,
+						FREEFORM.VALUE_DATE)
+				.from(FREEFORM, MEANING_FREEFORM)
+				.where(
+						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.notIn(excludeTypes)))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
 
-	public Result<Record2<Long, String>> findLexemeGrammars(Long lexemeId) {
+	//TODO integrate
+	public Result<Record2<Long,String>> findMeaningLearnerComments(Long meaningId) {
+		return create
+				.select(
+						FREEFORM.ID,
+						FREEFORM.VALUE_TEXT)
+				.from(FREEFORM, MEANING_FREEFORM)
+				.where(
+						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
+						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.LEARNER_COMMENT.name())))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record3<String, String, String>> findMeaningDomains(Long meaningId) {
+	
+		return create
+				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.from(
+						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
+								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
+								.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
+								)
+						)
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(MEANING_DOMAIN.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.fetch();
+	}
+
+	public Result<Record8<Long,String,String,Long,Long,String,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
+	
+		return create
+				.select(
+						DEFINITION.ID.as("definition_id"),
+						DEFINITION.VALUE_PRESE.as("definition_value"),
+						DEFINITION.LANG.as("definition_lang"),
+						DEFINITION.ORDER_BY.as("definition_order_by"),
+						DEFINITION_SOURCE_LINK.ID.as("source_link_id"),
+						DEFINITION_SOURCE_LINK.TYPE.as("source_link_type"),
+						DEFINITION_SOURCE_LINK.NAME.as("source_link_name"),
+						DEFINITION_SOURCE_LINK.VALUE.as("source_link_value")
+						)
+				.from(DEFINITION.leftOuterJoin(DEFINITION_SOURCE_LINK)
+						.on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
+						.and(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(DEFINITION.MEANING_ID.eq(meaningId).and(DEFINITION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.orderBy(DEFINITION.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
+	
+		return create
+				.select(
+						MEANING_RELATION.ID.as("id"),
+						MEANING.ID.as("meaning_id"),
+						LEXEME.ID.as("lexeme_id"),
+						WORD.ID.as("word_id"),
+						FORM.ID.as("form_id"),
+						FORM.VALUE.as("word"),
+						WORD.LANG.as("word_lang"),
+						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
+						MEANING_RELATION.ORDER_BY.as("order_by")
+				)
+				.from(
+						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(
+								MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
+								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
+								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
+						MEANING,
+						LEXEME,
+						WORD,
+						PARADIGM,
+						FORM
+				)
+				.where(
+						MEANING_RELATION.MEANING1_ID.eq(meaningId)
+								.and(MEANING_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
+								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
+								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
+								.and(LEXEME.WORD_ID.eq(WORD.ID))
+								.and(PARADIGM.WORD_ID.eq(WORD.ID))
+								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+								.and(FORM.MODE.eq(FormMode.WORD.name()))
+				)
+				.orderBy(MEANING_RELATION.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record4<Long, String, String, Timestamp>> findLexemeFreeforms(Long lexemeId, String ... excludedTypes) {
+		return create
+				.select(FREEFORM.ID, FREEFORM.TYPE, FREEFORM.VALUE_TEXT, FREEFORM.VALUE_DATE)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.notIn(excludedTypes)))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record2<Long,String>> findLexemePublicNotes(Long lexemeId) {
 		return create
 				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT)
 				.from(FREEFORM, LEXEME_FREEFORM)
-				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
-						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
-						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name()))
-						.and(FREEFORM.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId).and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.PUBLIC_NOTE.name())))
 				.orderBy(FREEFORM.ORDER_BY)
 				.fetch();
 	}
@@ -226,39 +329,15 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record4<Long, String, String, Timestamp>> findMeaningFreeforms(Long meaningId) {
+	public Result<Record2<Long, String>> findGrammars(Long lexemeId) {
 		return create
-				.select(
-						FREEFORM.ID,
-						FREEFORM.TYPE,
-						FREEFORM.VALUE_TEXT,
-						FREEFORM.VALUE_DATE)
-				.from(FREEFORM, MEANING_FREEFORM)
-				.where(
-						MEANING_FREEFORM.MEANING_ID.eq(meaningId)
-						.and(FREEFORM.ID.eq(MEANING_FREEFORM.FREEFORM_ID)))
+				.select(FREEFORM.ID, FREEFORM.VALUE_TEXT)
+				.from(FREEFORM, LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)
+						.and(FREEFORM.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(FREEFORM.TYPE.eq(FreeformType.GRAMMAR.name()))
+						.and(FREEFORM.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
 				.orderBy(FREEFORM.ORDER_BY)
-				.fetch();
-	}
-
-	public Result<Record8<Long,String,String,Long,Long,String,String,String>> findMeaningDefinitionRefTuples(Long meaningId) {
-
-		return create
-				.select(
-						DEFINITION.ID.as("definition_id"),
-						DEFINITION.VALUE_PRESE.as("definition_value"),
-						DEFINITION.LANG.as("definition_lang"),
-						DEFINITION.ORDER_BY.as("definition_order_by"),
-						DEFINITION_SOURCE_LINK.ID.as("source_link_id"),
-						DEFINITION_SOURCE_LINK.TYPE.as("source_link_type"),
-						DEFINITION_SOURCE_LINK.NAME.as("source_link_name"),
-						DEFINITION_SOURCE_LINK.VALUE.as("source_link_value")
-						)
-				.from(DEFINITION.leftOuterJoin(DEFINITION_SOURCE_LINK)
-						.on(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(DEFINITION.ID))
-						.and(DEFINITION_SOURCE_LINK.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-				.where(DEFINITION.MEANING_ID.eq(meaningId).and(DEFINITION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-				.orderBy(DEFINITION.ORDER_BY)
 				.fetch();
 	}
 
@@ -348,59 +427,6 @@ public class CommonDataDbService implements DbConstant {
 			.where(ulff.LEXEME_ID.eq(lexemeId))
 			.orderBy(u.ORDER_BY, ut.ORDER_BY, ud.ORDER_BY, srcl.ORDER_BY)
 			.fetch();
-	}
-
-	public Result<Record9<Long,Long,Long,Long,Long,String,String,String,Long>> findMeaningRelations(Long meaningId, String classifierLabelLang, String classifierLabelTypeCode) {
-
-		return create
-				.select(
-						MEANING_RELATION.ID.as("id"),
-						MEANING.ID.as("meaning_id"),
-						LEXEME.ID.as("lexeme_id"),
-						WORD.ID.as("word_id"),
-						FORM.ID.as("form_id"),
-						FORM.VALUE.as("word"),
-						WORD.LANG.as("word_lang"),
-						MEANING_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
-						MEANING_RELATION.ORDER_BY.as("order_by")
-				)
-				.from(
-						MEANING_RELATION.leftOuterJoin(MEANING_REL_TYPE_LABEL).on(
-								MEANING_RELATION.MEANING_REL_TYPE_CODE.eq(MEANING_REL_TYPE_LABEL.CODE)
-								.and(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang)
-								.and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))),
-						MEANING,
-						LEXEME,
-						WORD,
-						PARADIGM,
-						FORM
-				)
-				.where(
-						MEANING_RELATION.MEANING1_ID.eq(meaningId)
-								.and(MEANING_RELATION.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED))
-								.and(MEANING_RELATION.MEANING2_ID.eq(MEANING.ID))
-								.and(LEXEME.MEANING_ID.eq(MEANING.ID))
-								.and(LEXEME.WORD_ID.eq(WORD.ID))
-								.and(PARADIGM.WORD_ID.eq(WORD.ID))
-								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-								.and(FORM.MODE.eq(FormMode.WORD.name()))
-				)
-				.orderBy(MEANING_RELATION.ORDER_BY)
-				.fetch();
-	}
-
-	public Result<Record3<String, String, String>> findMeaningDomains(Long meaningId) {
-
-		return create
-				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
-				.from(
-						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
-								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
-								.and(MEANING_DOMAIN.DOMAIN_ORIGIN.eq(DOMAIN_LABEL.ORIGIN))
-								)
-						)
-				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId).and(MEANING_DOMAIN.PROCESS_STATE_CODE.isDistinctFrom(PROCESS_STATE_DELETED)))
-				.fetch();
 	}
 
 	public Result<Record2<String, String>> findLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {

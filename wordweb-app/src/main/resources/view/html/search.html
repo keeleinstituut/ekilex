@@ -243,7 +243,7 @@
                         <b th:text="#{label.learner.comment}">Õppekommentaar</b>
                       </div>
                       <div class="col-12">
-                        <div th:each="note : ${lexeme.learnerComments}" th:text="${note}"></div>
+                        <div th:each="note : ${lexeme.learnerComments}" th:utext="${note}"></div>
                       </div>
                     </div>
                     <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">

@@ -217,6 +217,14 @@
                   </ul>
                 </div>
               </div>
+              <!-- TODO update needs to be integrated -->
+              <div th:if="${not #lists.isEmpty(meaning.learnerComments)}">
+                <hr />
+                <span class="lbl">Õppekommentaarid</span>
+                <div th:each="learnerComment : ${meaning.learnerComments}">
+                  <span th:utext="${learnerComment}"></span>
+                </div>
+              </div>
               <div th:if="${not #lists.isEmpty(meaning.freeforms)}">
                 <span class="lbl">Tähenduse atribuudid</span>
                 <table>
@@ -483,6 +491,14 @@
                     </td>
                   </tr>
                 </table>
+              </div>
+              <!-- TODO update needs to be integrated -->
+              <div th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
+                <hr />
+                <span class="lbl">Märkused</span>
+                <div th:each="publicNote : ${lexeme.publicNotes}">
+                  <span th:utext="${publicNote}"></span>
+                </div>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.freeforms)}">
                 <hr />
