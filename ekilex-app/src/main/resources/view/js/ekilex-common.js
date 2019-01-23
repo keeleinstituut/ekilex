@@ -224,33 +224,34 @@ function performDelete() {
     let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
     $.post(validateUrl).done(function(data) {
         let response = JSON.parse(data);
-        let isValid = false;
         if (response.status === 'ok') {
-            isValid = true;
+            doPostDelete(removeUrl);
         } else if (response.status === 'confirm') {
-            isValid = confirm(response.question);
-        } else if (response.status === 'invalid') {
-            alert(response.message);
-        } else {
-            alert("Andmete eemaldamine ebaõnnestus.");
-        }
-        if (isValid) {
-            $.post(removeUrl).done(function(data) {
-                var refreshButton = $('#refresh-details');
-                refreshButton.trigger('click');
-            }).fail(function(data) {
-                alert("Andmete eemaldamine ebaõnnestus.");
-                console.log(data);
+            openConfirmDlg(response.question, function () {
+                doPostDelete(removeUrl)
             });
+        } else if (response.status === 'invalid') {
+            openAlertDlg(response.message);
+        } else {
+            openAlertDlg("Andmete eemaldamine ebaõnnestus.");
         }
     }).fail(function(data) {
-        alert("Andmete eemaldamine ebaõnnestus.");
+        openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+        console.log(data);
+    });
+}
+
+function doPostDelete(removeUrl) {
+    $.post(removeUrl).done(function() {
+        $('#refresh-details').trigger('click');
+    }).fail(function(data) {
+        openAlertDlg("Andmete eemaldamine ebaõnnestus.");
         console.log(data);
     });
 }
 
 function openAddDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
 	addDlg.find('[name=id]').val($(elem).data('id'));
 	addDlg.find('[name=value]').val(null);
     addDlg.find('select').each(function(indx, item) {
@@ -513,4 +514,23 @@ function openAddNewLexemeRelationDlg(elem) {
     var selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'lexeme-id');
+}
+
+function openAlertDlg(alertMessage) {
+    let alertDlg = $('#alertDlg');
+    alertDlg.find(('[name=alert_message]')).text(alertMessage);
+    alertDlg.modal('show');
+    alertDlg.find('.modal-footer button').focus();
+}
+
+function openConfirmDlg(confirmQuestion, callback) {
+    let alertDlg = $('#confirmDlg');
+    alertDlg.find(('[name=confirm_question]')).text(confirmQuestion);
+    alertDlg.modal('show');
+    let okBtn = alertDlg.find('.modal-footer [name=ok]');
+    okBtn.focus();
+    okBtn.off('click').on('click', function () {
+        alertDlg.modal('hide');
+        callback();
+    });
 }

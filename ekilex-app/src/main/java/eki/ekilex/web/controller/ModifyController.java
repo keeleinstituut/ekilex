@@ -204,12 +204,12 @@ public class ModifyController implements WebConstant {
 		Map<String, String> response = new HashMap<>();
 		switch (opCode) {
 		case "lexeme" :
-			if (lexSearchService.isTheOnlyLexemeForWord(id)) {
-				response.put("status", "confirm");
-				response.put("question", "Valitud ilmik on keelendi ainus ilmik. Koos ilmikuga kustutatakse ka keelend, kas jätkan ?");
-			} else if (lexSearchService.isTheOnlyLexemeForMeaning(id)) {
+			if (lexSearchService.isTheOnlyLexemeForMeaning(id)) {
 				response.put("status", "invalid");
 				response.put("message", "Valitud ilmik on mõiste ainus ilmik. Teda ei saa eemaldada.");
+			} else if (lexSearchService.isTheOnlyLexemeForWord(id)) {
+				response.put("status", "confirm");
+				response.put("question", "Valitud ilmik on keelendi ainus ilmik. Koos ilmikuga kustutatakse ka keelend, kas jätkan ?");
 			} else {
 				response.put("status", "ok");
 			}
