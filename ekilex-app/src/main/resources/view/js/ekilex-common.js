@@ -6,7 +6,7 @@ function selectDatasets(selection) {
 
 function displayDetailConditionButtons() {
     $('[name="removeDetailConditionBtn"]').each(function(i, v) {
-        var groupElement = $(this).closest('[name="detailGroup"]');
+        let groupElement = $(this).closest('[name="detailGroup"]');
         if (groupElement.find('[name="detailCondition"]').length === 1 ) {
             $(this).hide();
         } else {
@@ -38,7 +38,7 @@ function displayDetailSearch() {
 }
 
 function toggleSearch() {
-    var currentSearchMode = $('#searchMode').val();
+    let currentSearchMode = $('#searchMode').val();
     if (currentSearchMode === 'SIMPLE') {
         displayDetailSearch();
     } else {
@@ -66,14 +66,14 @@ function initialiseDeatailSearch() {
 
     $(document).on("change", "select[name$='entity']", function() {
 
-    	var searchEntityVal = $(this).val();
-        var detailGroupElement = $(this).closest('[name="detailGroup"]');
+    	let searchEntityVal = $(this).val();
+        let detailGroupElement = $(this).closest('[name="detailGroup"]');
         while (detailGroupElement.find('[name="detailCondition"]').length > 1) {
             detailGroupElement.find('[name="detailCondition"]').last().remove();
         }
-        var conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
-        var searchKeyElement = conditionElement.find('[name$="searchKey"]');
-        var keyTemplate = $('#searchKeyTemplates').find('[name="' + searchEntityVal + '"]');
+        let conditionElement = detailGroupElement.find('[name="detailCondition"]').first();
+        let searchKeyElement = conditionElement.find('[name$="searchKey"]');
+        let keyTemplate = $('#searchKeyTemplates').find('[name="' + searchEntityVal + '"]');
         searchKeyElement.find('option').remove();
         searchKeyElement.append(keyTemplate.html());
         searchKeyElement.val(searchKeyElement.find('option').first().val());
@@ -82,17 +82,17 @@ function initialiseDeatailSearch() {
 
     $(document).on("change", "select[name$='searchKey']", function() {
 
-    	var searchKeyVal = $(this).val();
-        var searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
-        var operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]');
+    	let searchKeyVal = $(this).val();
+        let searchOperandElement = $(this).closest('[name="detailCondition"]').find('[name$="searchOperand"]');
+        let operandTemplate = $('#searchOperandTemplates').find('[name="' + searchKeyVal + '"]');
         searchOperandElement.find('option').remove();
         searchOperandElement.append(operandTemplate.html());
         searchOperandElement.val(searchOperandElement.find('option').first().val());
 
         // should lookup by search key + operand
-        var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
-        var templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
-        var copyOfValueTemplate = $(templateElement.html());
+        let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
+        let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
+        let copyOfValueTemplate = $(templateElement.html());
         copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
         searchValueElement.closest('div').attr('class', templateElement.attr('class'));
         searchValueElement.replaceWith(copyOfValueTemplate);
@@ -100,17 +100,17 @@ function initialiseDeatailSearch() {
 
     $(document).on("change", "select[name$='searchOperand']", function() {
 
-    	var searchOperandVal = $(this).val();
-    	var searchKeyElement = $(this).closest('[name="detailCondition"]').find('[name$="searchKey"] option:selected');
-    	var searchKeyVal = searchKeyElement.val();
+    	let searchOperandVal = $(this).val();
+    	let searchKeyElement = $(this).closest('[name="detailCondition"]').find('[name$="searchKey"] option:selected');
+    	let searchKeyVal = searchKeyElement.val();
 
-    	var searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
+    	let searchValueElement = $(this).closest('[name="detailCondition"]').find('[name$="searchValue"]');
     	if (searchOperandVal == 'NOT_EXISTS') {
     		searchValueElement.empty();
     		searchValueElement.prop('hidden', true);
     	} else {
-    		var templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
-            var copyOfValueTemplate = $(templateElement.html());
+    		let templateElement = $('#searchValueTemplates').find('[name="' + searchKeyVal + '"]');
+            let copyOfValueTemplate = $(templateElement.html());
             copyOfValueTemplate.attr('name', searchValueElement.attr('name'));
             searchValueElement.closest('div').attr('class', templateElement.attr('class'));
             searchValueElement.replaceWith(copyOfValueTemplate);
@@ -118,25 +118,25 @@ function initialiseDeatailSearch() {
     });
 
     $(document).on("click", ":button[name='addDetailConditionBtn']", function() {
-        var detailGroupElement = $(this).closest('[name="detailGroup"]');
-        var addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
+        let detailGroupElement = $(this).closest('[name="detailGroup"]');
+        let addedConditionElement = createAndAttachCopyFromLastItem(detailGroupElement, 'detailCondition', 'searchCriteria');
         initCondition(addedConditionElement);
     });
 
     $(document).on("click", ":button[name='addDetailGroupBtn']", function() {
-        var detailSearchElement = $("#detail_search_filter");
-        var addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
+        let detailSearchElement = $("#detail_search_filter");
+        let addedGroupElement = createAndAttachCopyFromLastItem(detailSearchElement, 'detailGroup', 'criteriaGroups');
         initConditionGroup(addedGroupElement);
     });
 }
 
 function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
-    var lastElement = parentElement.find('[name="' + itemName + '"]').last();
-    var copyOfLastElement = lastElement.clone();
-    var oldIndex = copyOfLastElement.data('index');
-    var newIndex = oldIndex + 1;
-    var oldIndexVal = indexName + '[' + oldIndex + ']';
-    var newIndexVal = indexName + '[' + newIndex + ']';
+    let lastElement = parentElement.find('[name="' + itemName + '"]').last();
+    let copyOfLastElement = lastElement.clone();
+    let oldIndex = copyOfLastElement.data('index');
+    let newIndex = oldIndex + 1;
+    let oldIndexVal = indexName + '[' + oldIndex + ']';
+    let newIndexVal = indexName + '[' + newIndex + ']';
     copyOfLastElement.attr('data-index', newIndex);
     copyOfLastElement.find('[name*="' + indexName + '["]').each(function(i, v) {
         $(this).attr('name', $(this).attr('name').replace(oldIndexVal, newIndexVal))
@@ -147,28 +147,28 @@ function createAndAttachCopyFromLastItem(parentElement, itemName, indexName) {
 }
 
 function initConditionGroup(groupElement) {
-    var entitySelect = groupElement.find('select[name$="entity"]');
+    let entitySelect = groupElement.find('select[name$="entity"]');
     entitySelect.val(entitySelect.find('option').first().val());
     entitySelect.trigger('change');
     displayDetailGroupButtons();
 }
 
 function initCondition(conditionElement) {
-    var searchKeySelect = conditionElement.find('select[name$="searchKey"]');
+    let searchKeySelect = conditionElement.find('select[name$="searchKey"]');
     searchKeySelect.val(searchKeySelect.find('option').first().val());
     searchKeySelect.trigger('change');
     displayDetailConditionButtons();
 }
 
 function changeItemOrdering(target, delta) {
-    var orderBlock = target.closest('.orderable');
-    var opCode = orderBlock.attr("data-op-code");
-    var itemToMove = target.closest('[data-orderby]');
-    var items = orderBlock.find('[data-orderby]');
-    var itemToMovePos = items.index(itemToMove);
-    var orderedItems = [];
+    let orderBlock = target.closest('.orderable');
+    let opCode = orderBlock.attr("data-op-code");
+    let itemToMove = target.closest('[data-orderby]');
+    let items = orderBlock.find('[data-orderby]');
+    let itemToMovePos = items.index(itemToMove);
+    let orderedItems = [];
     if (itemToMovePos + delta >= 0 && itemToMovePos + delta < items.length) {
-        var orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
+        let orderby = $(items.get(itemToMovePos + delta)).attr('data-orderby');
         $(items.get(itemToMovePos + delta)).attr('data-orderby', $(items.get(itemToMovePos)).attr('data-orderby'));
         $(items.get(itemToMovePos)).attr('data-orderby', orderby);
         if (delta > 0) {
@@ -180,7 +180,7 @@ function changeItemOrdering(target, delta) {
         items.each(function (indx, item) {
             $(item).find('.order-up').prop('hidden', indx == 0);
             $(item).find('.order-down').prop('hidden', indx == items.length - 1);
-            var itemData = {};
+            let itemData = {};
             itemData.id = $(item).attr('data-id');
             itemData.code = $(item).attr('data-code');
             itemData.orderby = $(item).attr('data-orderby');
@@ -217,21 +217,41 @@ function openEditDlg(elem) {
 }
 
 function performDelete() {
-    var targetName = $(this)[0].getAttribute('data-target-elem');
-    var targetElement = $('[name="' + targetName + '"]');
-    var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
-    var url = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
-    $.post(url).done(function(data) {
-        var refreshButton = $('#refresh-details');
-        refreshButton.trigger('click');
+    let targetName = $(this)[0].getAttribute('data-target-elem');
+    let targetElement = $('[name="' + targetName + '"]');
+    let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
+    let removeUrl = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
+    let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
+    $.post(validateUrl).done(function(data) {
+        let response = JSON.parse(data);
+        if (response.status === 'ok') {
+            doPostDelete(removeUrl);
+        } else if (response.status === 'confirm') {
+            openConfirmDlg(response.question, function () {
+                doPostDelete(removeUrl)
+            });
+        } else if (response.status === 'invalid') {
+            openAlertDlg(response.message);
+        } else {
+            openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+        }
     }).fail(function(data) {
-        alert("Andmete eemaldamine ebaõnnestus.");
+        openAlertDlg("Andmete eemaldamine ebaõnnestus.");
+        console.log(data);
+    });
+}
+
+function doPostDelete(removeUrl) {
+    $.post(removeUrl).done(function() {
+        $('#refresh-details').trigger('click');
+    }).fail(function(data) {
+        openAlertDlg("Andmete eemaldamine ebaõnnestus.");
         console.log(data);
     });
 }
 
 function openAddDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
 	addDlg.find('[name=id]').val($(elem).data('id'));
 	addDlg.find('[name=value]').val(null);
     addDlg.find('select').each(function(indx, item) {
@@ -246,15 +266,15 @@ function openAddDlg(elem) {
 }
 
 function openSelectDlg(elem) {
-    var selectDlg = $($(elem).data('target'));
-    var targetElement = $(elem);
+    let selectDlg = $($(elem).data('target'));
+    let targetElement = $(elem);
     if ($(elem).data('target-elem')) {
         targetElement = $('[name=' + $(elem).data('target-elem') + ']');
     }
-    var currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
+    let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     selectDlg.find('[name=id]').val(targetElement.data('id'));
     selectDlg.find('[name=currentValue]').val(currentValue);
-    var selectElem = selectDlg.find('select');
+    let selectElem = selectDlg.find('select');
     if (currentValue === undefined) {
         selectElem.val(selectElem.find('option').first().val());
     } else {
@@ -263,16 +283,16 @@ function openSelectDlg(elem) {
 }
 
 function initSelectDlg(selectDlg) {
-    var selectControl = selectDlg.find('select');
-    var maxItemLength = 0;
+    let selectControl = selectDlg.find('select');
+    let maxItemLength = 0;
     selectControl.find('option').each(function(indx, item) {
-        var itemLenght = $(item).text().length;
+        let itemLenght = $(item).text().length;
         if (itemLenght > maxItemLength) {
             maxItemLength = itemLenght;
         }
     });
-    var dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
-    var numberOfOptins = selectControl.find('option').length;
+    let dlgWidth = maxItemLength > 80 ? '85ch' : maxItemLength + 5 + 'ch';
+    let numberOfOptins = selectControl.find('option').length;
     selectControl.attr('size', numberOfOptins > 20 ? 20 : numberOfOptins);
 
     selectControl.off('click').on('click', function(e) {submitDialog(e, selectDlg, 'Andmete muutmine ebaõnnestus.')});
@@ -282,13 +302,13 @@ function initSelectDlg(selectDlg) {
         }
     });
     selectDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
-        var dlgTop =  $(e.relatedTarget).offset().top;
-        var dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
-        var modalContent = selectDlg.find('.modal-content');
+        let dlgTop =  $(e.relatedTarget).offset().top;
+        let dlgLeft =  $(e.relatedTarget).offset().left - selectDlg.find('.modal-dialog').offset().left;
+        let modalContent = selectDlg.find('.modal-content');
         modalContent.css('top', dlgTop - 30);
         modalContent.css('left', dlgLeft);
         modalContent.css('width', dlgWidth);
-        var overTheEdge = (modalContent.offset().left + modalContent.width()) - window.innerWidth;
+        let overTheEdge = (modalContent.offset().left + modalContent.width()) - window.innerWidth;
         if (overTheEdge > 0) {
             modalContent.css('left', dlgLeft - modalContent.width());
         }
@@ -299,7 +319,7 @@ function initSelectDlg(selectDlg) {
 
 function submitDialog(e, dlg, failMessage) {
     e.preventDefault();
-    var theForm = dlg.find('form');
+    let theForm = dlg.find('form');
 
     submitForm(theForm, failMessage).always(function () {
         dlg.modal('hide');
@@ -323,7 +343,7 @@ function submitForm(theForm, failMessage) {
 
 function alignAndFocus(e, dlg) {
     dlg.find('.form-control').first().focus();
-    var dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
+    let dlgTop =  $(e.relatedTarget).offset().top - dlg.find('.modal-content').height() - 30;
     if (dlgTop < 0 ) {
         dlgTop = 0;
     }
@@ -355,9 +375,9 @@ function initMultiValueAddDlg(theDlg) {
 }
 
 function decorateSourceLinks() {
-	var detailsDiv = $('#details_div');
+	let detailsDiv = $('#details_div');
 	detailsDiv.find('a').each(function(indx, item) {
-		var theLink = $(item);
+		let theLink = $(item);
 		if (theLink.attr('href').includes('_source_link:')) {
 			theLink.attr('data-target', '#detailsDlg');
 			theLink.attr('data-toggle', 'modal');
@@ -369,22 +389,22 @@ function decorateSourceLinks() {
 }
 
 function initNewWordDlg() {
-    var newWordDlg = $('#newWordDlg');
+    let newWordDlg = $('#newWordDlg');
     newWordDlg.on('shown.bs.modal', function(e) {
         newWordDlg.find('.form-control').first().focus();
-        var searchValue = $("input[name='simpleSearchFilter']").val() || '';
+        let searchValue = $("input[name='simpleSearchFilter']").val() || '';
         if (!searchValue.includes('*') && !searchValue.includes('?')) {
             newWordDlg.find('[name=value]').val(searchValue);
         } else {
             newWordDlg.find('[name=value]').val(null);
         }
-        var meaningId = $(e.relatedTarget).data('meaning-id');
+        let meaningId = $(e.relatedTarget).data('meaning-id');
         $('[name=meaningId]').val(meaningId);
     });
 }
 
 function openAddSourceLinkDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('[name=opCode]').val($(elem).data('op-code'));
     addDlg.find('.form-control').val(null);
@@ -392,20 +412,20 @@ function openAddSourceLinkDlg(elem) {
 
     addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
-        var button = $(this);
-        var content = button.html();
+        let button = $(this);
+        let content = button.html();
         button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-        var theForm = $(this).closest('form');
-        var url = theForm.attr('action') + '?' + theForm.serialize();
+        let theForm = $(this).closest('form');
+        let url = theForm.attr('action') + '?' + theForm.serialize();
         $.get(url).done(function(data) {
             addDlg.find('[data-name=sourceLinkDlgContent]').replaceWith(data);
             addDlg.find('button[data-source-id]').off('click').on('click', function(e) {
                 e.preventDefault();
-                var button = $(e.target);
-                var sourceName = button.closest('.form-group').find('.form-control').val();
+                let button = $(e.target);
+                let sourceName = button.closest('.form-group').find('.form-control').val();
                 addDlg.find('[name=id2]').val(button.data('source-id'));
                 addDlg.find('[name=value]').val(sourceName);
-                var theForm = button.closest('form');
+                let theForm = button.closest('form');
                 submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
                     addDlg.modal('hide');
                 });
@@ -424,8 +444,8 @@ function openAddSourceLinkDlg(elem) {
 }
 
 function openDetailsDiv(elem) {
-    var dlg = $($(elem).data('target'));
-    var url = $(elem).attr('href');
+    let dlg = $($(elem).data('target'));
+    let url = $(elem).attr('href');
     dlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         dlg.find('.close').focus();
         dlg.find('.modal-body').html(null);
@@ -436,7 +456,7 @@ function openDetailsDiv(elem) {
 }
 
 function openClassifiersDlg(elem) {
-    var theDlg = $($(elem).data('target'));
+    let theDlg = $($(elem).data('target'));
     theDlg.find('[name=id]').val($(elem).data('lexeme-id'));
     theDlg.find('[name=id2]').val($(elem).data('meaning-id'));
     theDlg.find('[name=id3]').val($(elem).data('word-id'));
@@ -445,18 +465,18 @@ function openClassifiersDlg(elem) {
 function initRelationDialogLogic(addDlg, idElementName) {
     addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         e.preventDefault();
-        var button = $(this);
-        var content = button.html();
+        let button = $(this);
+        let content = button.html();
         button.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
-        var theForm = $(this).closest('form');
-        var url = theForm.attr('action') + '?' + theForm.serialize();
+        let theForm = $(this).closest('form');
+        let url = theForm.attr('action') + '?' + theForm.serialize();
         $.get(url).done(function(data) {
             addDlg.find('[data-name=dialogContent]').replaceWith(data);
             addDlg.find('button[data-' + idElementName + ']').off('click').on('click', function(e) {
                 e.preventDefault();
-                var button = $(e.target);
+                let button = $(e.target);
                 addDlg.find('[name=id2]').val(button.data(idElementName));
-                var theForm = button.closest('form');
+                let theForm = button.closest('form');
                 submitForm(theForm, 'Andmete muutmine ebaõnnestus.').always(function() {
                     addDlg.modal('hide');
                 });
@@ -475,23 +495,42 @@ function initRelationDialogLogic(addDlg, idElementName) {
 }
 
 function openAddNewMeaningRelationDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('[name=meaningId]').val($(elem).data('id'));
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
-    var selectElem = addDlg.find('select');
+    let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'meaning-id');
 }
 
 function openAddNewLexemeRelationDlg(elem) {
-    var addDlg = $($(elem).data('target'));
+    let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     addDlg.find('[name=lexemeId]').val($(elem).data('id'));
     addDlg.find('.form-control').val(null);
     addDlg.find('[data-name=dialogContent]').html(null);
-    var selectElem = addDlg.find('select');
+    let selectElem = addDlg.find('select');
     selectElem.val(selectElem.find('option').first().val());
     initRelationDialogLogic(addDlg, 'lexeme-id');
+}
+
+function openAlertDlg(alertMessage) {
+    let alertDlg = $('#alertDlg');
+    alertDlg.find(('[name=alert_message]')).text(alertMessage);
+    alertDlg.modal('show');
+    alertDlg.find('.modal-footer button').focus();
+}
+
+function openConfirmDlg(confirmQuestion, callback) {
+    let alertDlg = $('#confirmDlg');
+    alertDlg.find(('[name=confirm_question]')).text(confirmQuestion);
+    alertDlg.modal('show');
+    let okBtn = alertDlg.find('.modal-footer [name=ok]');
+    okBtn.focus();
+    okBtn.off('click').on('click', function () {
+        alertDlg.modal('hide');
+        callback();
+    });
 }

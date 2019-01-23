@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.common.constant.ReferenceType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -193,6 +195,34 @@ public class ModifyController implements WebConstant {
 	}
 
 	@ResponseBody
+	@PostMapping("/remove_item_validate")
+	public String validateRemoveElement(
+			@RequestParam("opCode") String opCode,
+			@RequestParam("id") Long id) throws JsonProcessingException {
+
+		logger.debug("Delete validation operation : {} : for id {}", opCode, id);
+		Map<String, String> response = new HashMap<>();
+		switch (opCode) {
+		case "lexeme" :
+			if (lexSearchService.isTheOnlyLexemeForMeaning(id)) {
+				response.put("status", "invalid");
+				response.put("message", "Valitud ilmik on mõiste ainus ilmik. Teda ei saa eemaldada.");
+			} else if (lexSearchService.isTheOnlyLexemeForWord(id)) {
+				response.put("status", "confirm");
+				response.put("question", "Valitud ilmik on keelendi ainus ilmik. Koos ilmikuga kustutatakse ka keelend, kas jätkan ?");
+			} else {
+				response.put("status", "ok");
+			}
+			break;
+		default:
+			response.put("status", "ok");
+			break;
+		}
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(response);
+	}
+
+	@ResponseBody
 	@PostMapping("/remove_item")
 	public String removeElement(
 			@RequestParam("opCode") String opCode,
@@ -270,6 +300,9 @@ public class ModifyController implements WebConstant {
 			break;
 		case "usage_author" :
 			updateService.deleteFreeformSourceLink(id);
+			break;
+		case "lexeme" :
+			updateService.deleteLexeme(id);
 			break;
 		}
 		return "OK";

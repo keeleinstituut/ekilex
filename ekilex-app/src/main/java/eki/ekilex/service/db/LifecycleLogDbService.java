@@ -14,6 +14,7 @@ import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
@@ -315,7 +316,15 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.VALUE.equals(property)) {
-				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				Long lifecycleLogId;
+				if (LifecycleEventType.DELETE == eventType) {
+					Map<String, Object> entityData = helper.getLexemeData(create, entityId);
+					Map<String, Object> usageData = helper.getLexemeUsageData(create, entityId);
+					String logString = lexemeLogString(entityData) + (Objects.equals("null", usageData.get("value_text")) ? "" : " " + usageData.get("value_text"));
+					lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, logString, null);
+				} else {
+					lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				}
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.VALUE_STATE.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
@@ -330,7 +339,14 @@ public class LifecycleLogDbService {
 			}
 		} else if (LifecycleEntity.WORD.equals(entity)) {
 			if (LifecycleProperty.VALUE.equals(property)) {
-				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				Long lifecycleLogId;
+				if (LifecycleEventType.DELETE == eventType) {
+					Map<String, Object> entityData = helper.getWordData(create, entityId);
+					String logString = entityData.get("value").toString();
+					lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, logString, null);
+				} else {
+					lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				}
 				createWordLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.WORD_TYPE.equals(property)) {
 				Long wordId = create

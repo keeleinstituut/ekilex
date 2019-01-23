@@ -1378,7 +1378,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 		List<String> posCodes = new ArrayList<>();
 		for (Node posCodeNode : node.selectNodes(posCodeExp)) {
-			if (((Element)posCodeNode).attributeValue(asTyypAttr) != null) {
+			if (((Element)posCodeNode).attributeValue(asTyypAttr) == null) {
 				posCodes.add(nodeCleanValue(posCodeNode));
 			}
 		}

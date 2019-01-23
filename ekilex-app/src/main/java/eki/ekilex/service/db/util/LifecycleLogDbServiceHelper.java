@@ -113,6 +113,20 @@ public class LifecycleLogDbServiceHelper {
 		return result;
 	}
 
+	public Map<String, Object> getLexemeUsageData(DSLContext create, Long entityId) {
+		Freeform f1 = FREEFORM.as("f1");
+		Map<String, Object> result = create
+				.select(
+						DSL.field("array_to_string(array_agg(f1.value_text), ' ', '*')").cast(String.class).as("value_text")
+				)
+				.from(LEXEME_FREEFORM, f1)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(entityId)
+						.and(f1.ID.eq(LEXEME_FREEFORM.FREEFORM_ID))
+						.and(f1.TYPE.eq(FreeformType.USAGE.name())))
+				.fetchSingleMap();
+		return result;
+	}
+
 	public Map<String, Object> getLexemeSourceLinkData(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
 				.select(
