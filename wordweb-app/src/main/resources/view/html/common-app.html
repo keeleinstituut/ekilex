@@ -217,8 +217,14 @@
             </p>
           </div>
           <div class="col-12 col-md-4 order-2 order-md-1 col-reverse">
-            <span class="last-update" th:text="#{general.lastupdate}">Viimati uuendatud: 20. november 2018</span>
-            <span class="copyright">&copy;&nbsp;<span th:text="#{general.eki}">Eesti Keele Instituut 2018</span></span>
+            <span class="last-update">
+              <span th:text="#{general.lastupdate}">Sõnaveeb 2019</span>
+              <span th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}" style="color: gray"></span>
+            </span>
+            <span class="copyright">
+              &copy;&nbsp;
+              <span th:text="#{general.eki}">Eesti Keele Instituut 2019</span>
+            </span>
           </div>
           <div class="col-12 col-sm-6 col-md-4 order-1 order-md-2 justify-content-md-end d-flex">
             <div class="social-list">
