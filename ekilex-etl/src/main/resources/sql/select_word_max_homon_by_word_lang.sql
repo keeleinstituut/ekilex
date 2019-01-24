@@ -7,3 +7,7 @@ and   f.mode = :mode
 and   f.paradigm_id = p.id
 and   p.word_id = w.id
 and   w.lang = :lang
+and   not exists (select wwt.id
+                  from word_word_type wwt
+                  where wwt.word_id = w.id
+                  and   wwt.word_type_code in (:wordTypeCodes))
