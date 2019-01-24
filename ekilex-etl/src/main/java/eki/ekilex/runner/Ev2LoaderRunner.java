@@ -319,9 +319,29 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				}
 				WordData wordData = findOrCreateWord(context, word, wordValue, dataLang, null);
 				List<Node> meaningGroupNodes = groupNode.selectNodes(meaningGroupExp);
+				List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 				int lexemeLevel1 = 1;
 				for (Node meaningGroupNode: meaningGroupNodes) {
-					Long meaningId = createMeaning(new Meaning());
+					Optional<Map<String, Object>> existingLexeme = Optional.empty();
+					if (!lexemesForWord.isEmpty()) {
+						int level1 = lexemeLevel1;
+						existingLexeme = lexemesForWord.stream().filter(lex -> Objects.equals(level1, lex.get("level1"))).findFirst();
+					}
+					Long meaningId;
+					Long lexemeId;
+					if (existingLexeme.isPresent()) {
+						meaningId = (Long) existingLexeme.get().get("meaning_id");
+						lexemeId = (Long) existingLexeme.get().get("id");
+					} else {
+						meaningId = createMeaning(new Meaning());
+						Lexeme lexeme = new Lexeme();
+						lexeme.setWordId(wordData.id);
+						lexeme.setMeaningId(meaningId);
+						lexeme.setLevel1(lexemeLevel1);
+						lexeme.setLevel2(1);
+						lexeme.setLevel3(1);
+						lexemeId = createLexeme(lexeme, getDataset());
+					}
 
 					List<String> definitions = extractCleanValues(meaningGroupNode, definitionsExp);
 					for (String definition : definitions) {
@@ -331,13 +351,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					List<String> domains = extractCleanValues(meaningGroupNode, domainsExp);
 					processDomains(null, meaningId, domains);
 
-					Lexeme lexeme = new Lexeme();
-					lexeme.setWordId(wordData.id);
-					lexeme.setMeaningId(meaningId);
-					lexeme.setLevel1(lexemeLevel1);
-					lexeme.setLevel2(1);
-					lexeme.setLevel3(1);
-					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
 						List<String> governments = extractCleanValues(meaningGroupNode, governmentsExp);
 						List<String> registers = extractCleanValues(meaningGroupNode, registersExp);
