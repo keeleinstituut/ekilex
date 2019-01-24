@@ -2,7 +2,6 @@ package eki.ekilex.runner;
 
 import static java.util.stream.Collectors.toMap;
 
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.Normalizer;
@@ -51,6 +50,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private static Logger logger = LoggerFactory.getLogger(AbstractLoaderRunner.class);
 
 	@Autowired
+	private UnifiedLoaderQueries sqls;
+
+	@Autowired
 	private TextDecorationService textDecorationService;
 
 	abstract String getDataset();
@@ -73,23 +75,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String PREFIXOID_WORD_TYPE_CODE = "pf";
 	protected static final String SUFFIXOID_WORD_TYPE_CODE = "sf";
 
-	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_LEX = "sql/select_word_ids_for_dataset_by_lexeme.sql";
-	private static final String SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID = "sql/select_word_ids_for_dataset_by_guid.sql";
-	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
-	private static final String SQL_SELECT_WORD_BY_FORM_AND_HOMONYM = "sql/select_word_by_form_and_homonym.sql";
-	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
-	private static final String SQL_SELECT_WORD_MAX_HOMONYM = "sql/select_word_max_homonym.sql";
-	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
-	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
-	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
-	private static final String SQL_SELECT_FLOATING_WORD_IDS = "sql/select_floating_word_ids.sql";
-
-	private static final String SQL_DELETE_DEFINITIONS_FOR_DATASET = "sql/delete_definitions_for_dataset.sql";
-	private static final String SQL_DELETE_DEFINITION_FF_FOR_DATASET = "sql/delete_definition_freeforms_for_dataset.sql";
-	private static final String SQL_DELETE_MEANING_FF_FOR_DATASET = "sql/delete_meaning_freeforms_for_dataset.sql";
-	private static final String SQL_DELETE_COLLOCATION_FF_FOR_DATASET = "sql/delete_collocation_freeforms_for_dataset.sql";
-	private static final String SQL_DELETE_LEXEME_FF_FOR_DATASET = "sql/delete_lexeme_freeforms_for_dataset.sql";
-
 	private static final String CLASSIFIERS_MAPPING_FILE_PATH = "./fileresources/csv/classifier-main-map.csv";
 
 	private static final char[] RESERVED_DIACRITIC_CHARS = new char[] {'õ', 'ä', 'ö', 'ü', 'š', 'ž', 'Õ', 'Ä', 'Ö', 'Ü', 'Š', 'Ž'};
@@ -110,23 +95,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String EKI_CLASSIIFER_ETYMKEELTYYP = "etymkeel_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
-	private String sqlSelectWordIdsForDatasetByLexeme;
-	private String sqlSelectWordIdsForDatasetByGuid;
-	private String sqlSelectMeaningIdsForDataset;
-	private String sqlSelectWordByFormAndHomonym;
-	private String sqlSelectWordByDatasetAndGuid;
-	private String sqlSelectWordMaxHomonym;
-	private String sqlSelectLexemeFreeform;
-	private String sqlSourceByTypeAndName;
-	private String sqlWordGroupWithMembers;
-	private String sqlSelectFloatingWordIds;
-
-	private String sqlDeleteDefinitionsForDataset;
-	private String sqlDeleteDefinitionFreeformsForDataset;
-	private String sqlDeleteMeaningFreeformsForDataset;
-	private String sqlDeleteCollocationFreeformsForDataset;
-	private String sqlDeleteLexemeFreeformsForDataset;
-
 	private long t1;
 	private long t2;
 
@@ -134,54 +102,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	public void afterPropertiesSet() throws Exception {
 
 		initialise();
-
-		ClassLoader classLoader = this.getClass().getClassLoader();
-		InputStream resourceFileInputStream;
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET_BY_LEX);
-		sqlSelectWordIdsForDatasetByLexeme = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_IDS_FOR_DATASET_BY_GUID);
-		sqlSelectWordIdsForDatasetByGuid = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_MEANING_IDS_FOR_DATASET);
-		sqlSelectMeaningIdsForDataset = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_AND_HOMONYM);
-		sqlSelectWordByFormAndHomonym = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_DATASET_AND_GUID);
-		sqlSelectWordByDatasetAndGuid = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMONYM);
-		sqlSelectWordMaxHomonym = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE);
-		sqlSelectLexemeFreeform = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_SOURCE_BY_TYPE_AND_NAME);
-		sqlSourceByTypeAndName = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_GROUP_WITH_MEMBERS);
-		sqlWordGroupWithMembers = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_FLOATING_WORD_IDS);
-		sqlSelectFloatingWordIds = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITIONS_FOR_DATASET);
-		sqlDeleteDefinitionsForDataset = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_DEFINITION_FF_FOR_DATASET);
-		sqlDeleteDefinitionFreeformsForDataset = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_MEANING_FF_FOR_DATASET);
-		sqlDeleteMeaningFreeformsForDataset = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_COLLOCATION_FF_FOR_DATASET);
-		sqlDeleteCollocationFreeformsForDataset = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_DELETE_LEXEME_FF_FOR_DATASET);
-		sqlDeleteLexemeFreeformsForDataset = getContent(resourceFileInputStream);
 	}
 
 	protected void start() throws Exception {
@@ -296,7 +216,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	private void deleteFloatingData() throws Exception {
 
 		String dataset = getDataset();
-		List<Long> wordIds = basicDbService.queryList(sqlSelectFloatingWordIds, new HashMap<>(), Long.class);
+		List<Long> wordIds = basicDbService.queryList(sqls.getSqlSelectFloatingWordIds(), new HashMap<>(), Long.class);
 		if (CollectionUtils.isNotEmpty(wordIds)) {
 			logger.debug("There are {} floating words created by \"{}\" which are now deleted", wordIds.size(), dataset);
 			Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -313,30 +233,30 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("dataset", dataset);
 
-		List<Long> wordIdsLex = basicDbService.queryList(sqlSelectWordIdsForDatasetByLexeme, tableRowParamMap, Long.class);
-		List<Long> wordIdsGuid = basicDbService.queryList(sqlSelectWordIdsForDatasetByGuid, tableRowParamMap, Long.class);
+		List<Long> wordIdsLex = basicDbService.queryList(sqls.getSqlSelectWordIdsForDatasetByLexeme(), tableRowParamMap, Long.class);
+		List<Long> wordIdsGuid = basicDbService.queryList(sqls.getSqlSelectWordIdsForDatasetByGuid(), tableRowParamMap, Long.class);
 		List<Long> wordIds = new ArrayList<>();
 		wordIds.addAll(wordIdsLex);
 		wordIds.addAll(wordIdsGuid);
 		wordIds = wordIds.stream().distinct().collect(Collectors.toList());
 		logger.debug("There are {} words in \"{}\" to be deleted - {} by lexemes, {} by guids", wordIds.size(), dataset, wordIdsLex.size(), wordIdsGuid.size());
 
-		List<Long> meaningIds = basicDbService.queryList(sqlSelectMeaningIdsForDataset, tableRowParamMap, Long.class);
+		List<Long> meaningIds = basicDbService.queryList(sqls.getSqlSelectMeaningIdsForDataset(), tableRowParamMap, Long.class);
 		logger.debug("There are {} meanings in \"{}\" to be deleted", meaningIds.size(), dataset);
 
 		String sql;
 
 		// freeforms
-		basicDbService.executeScript(sqlDeleteDefinitionFreeformsForDataset, tableRowParamMap);
-		basicDbService.executeScript(sqlDeleteMeaningFreeformsForDataset, tableRowParamMap);
-		basicDbService.executeScript(sqlDeleteLexemeFreeformsForDataset, tableRowParamMap);
+		basicDbService.executeScript(sqls.getSqlDeleteDefinitionFreeformsForDataset(), tableRowParamMap);
+		basicDbService.executeScript(sqls.getSqlDeleteMeaningFreeformsForDataset(), tableRowParamMap);
+		basicDbService.executeScript(sqls.getSqlDeleteLexemeFreeformsForDataset(), tableRowParamMap);
 
 		// delete definitions
-		basicDbService.executeScript(sqlDeleteDefinitionsForDataset, tableRowParamMap);
+		basicDbService.executeScript(sqls.getSqlDeleteDefinitionsForDataset(), tableRowParamMap);
 
 		// delete collocations + freeforms
 		if (StringUtils.equals(COLLOC_OWNER_DATASET_CODE, dataset)) {
-			basicDbService.executeScript(sqlDeleteCollocationFreeformsForDataset);
+			basicDbService.executeScript(sqls.getSqlDeleteCollocationFreeformsForDataset());
 			sql = "delete from " + COLLOCATION;
 			basicDbService.executeScript(sql);
 		}
@@ -378,9 +298,13 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected Long createOrSelectWord(Word word, List<Paradigm> paradigms, String dataset, Count reusedWordCount) throws Exception {
 
-		handleAffixoids(word);
+		String wordOrigValue = word.getValue();
+		AffixoidData affixoidData = getAffixoidData(wordOrigValue);
 
-		String wordCleanValue = word.getCleanValue();
+		handleAffixoidClassifiers(word, affixoidData);
+
+		String affixoidWordTypeCode = affixoidData.getAffixoidWordTypeCode();
+		String wordCleanValue = affixoidData.getWordCleanValue();
 		String wordLang = word.getLang();
 		String[] wordComponents = word.getComponents();
 		String wordDisplayForm = word.getDisplayForm();
@@ -403,7 +327,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		wordForm.setDisplayForm(wordDisplayForm);
 		wordForm.setVocalForm(wordVocalForm);
 
-		Map<String, Object> tableRowValueMap = getWord(wordCleanValue, homonymNr, wordLang);
+		Map<String, Object> tableRowValueMap = getWord(wordCleanValue, homonymNr, wordLang, affixoidWordTypeCode);
 		Long wordId;
 
 		//TODO temp solution until MAB loading as separate dataset is implemented
@@ -465,16 +389,17 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 		}
 
-		handleAffixoids(word);
-
-		String wordCleanValue = word.getCleanValue();
+		String wordOrigValue = word.getValue();
 		String guid = word.getGuid();
 
 		List<Guid> mappedGuids = ssGuidMap.get(guid);
 		if (CollectionUtils.isEmpty(mappedGuids)) {
-			appendToReport(REPORT_GUID_MAPPING_MISSING, dataset, wordCleanValue, guid);
+			appendToReport(REPORT_GUID_MAPPING_MISSING, dataset, wordOrigValue, guid);
 			return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 		}
+
+		AffixoidData affixoidData = getAffixoidData(wordOrigValue);
+		String wordCleanValue = affixoidData.getWordCleanValue();
 
 		for (Guid ssGuidObj : mappedGuids) {
 
@@ -488,7 +413,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 					tableRowValueMap = tableRowValueMaps.get(0);
 				} else if (CollectionUtils.size(tableRowValueMaps) > 1) {
 					tableRowValueMap = tableRowValueMaps.get(0);
-					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", GUID_OWNER_DATASET_CODE, wordCleanValue, ssGuid);
+					logger.warn("There are multiple words with same value and guid in {}: \"{}\" - \"{}\"", GUID_OWNER_DATASET_CODE, wordOrigValue, ssGuid);
 				}
 				if (tableRowValueMap == null) {
 					return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
@@ -507,23 +432,19 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			}
 		}
 		List<String> mappedWordValues = mappedGuids.stream().map(Guid::getWord).collect(Collectors.toList());
-		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordCleanValue, mappedWordValues);
-		appendToReport(REPORT_GUID_MISMATCH, dataset, wordCleanValue, guid, mappedWordValues, "Sõnad ei kattu");
+		logger.debug("Word value doesn't match guid mapping(s): \"{}\" / \"{}\"", wordOrigValue, mappedWordValues);
+		appendToReport(REPORT_GUID_MISMATCH, dataset, wordOrigValue, guid, mappedWordValues, "Sõnad ei kattu");
 
 		return createOrSelectWord(word, paradigms, dataset, reusedWordCount);
 	}
 
-	private void handleAffixoids(Word word) {
+	private void handleAffixoidClassifiers(Word word, AffixoidData affixoidData) {
 
-		if (StringUtils.isNotEmpty(word.getCleanValue())) {
+		if (!affixoidData.isPrefixoid() && !affixoidData.isSuffixoid()) {
 			return;
 		}
-		String wordValue = word.getValue();
-		String cleanWordValue = word.getValue();
-		
 		List<String> wordTypeCodes = word.getWordTypeCodes();
-		if (StringUtils.endsWith(wordValue, UNIFIED_AFIXOID_SYMBOL)) {
-			cleanWordValue = StringUtils.removeEnd(wordValue, UNIFIED_AFIXOID_SYMBOL);
+		if (affixoidData.isPrefixoid()) {
 			if (wordTypeCodes == null) {
 				wordTypeCodes = new ArrayList<>();
 				word.setWordTypeCodes(wordTypeCodes);
@@ -532,8 +453,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				wordTypeCodes.add(PREFIXOID_WORD_TYPE_CODE);
 			}
 		}
-		if (StringUtils.startsWith(wordValue, UNIFIED_AFIXOID_SYMBOL)) {
-			cleanWordValue = StringUtils.removeStart(wordValue, UNIFIED_AFIXOID_SYMBOL);
+		if (affixoidData.isSuffixoid()) {
 			if (wordTypeCodes == null) {
 				wordTypeCodes = new ArrayList<>();
 				word.setWordTypeCodes(wordTypeCodes);
@@ -542,16 +462,33 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				wordTypeCodes.add(SUFFIXOID_WORD_TYPE_CODE);
 			}
 		}
-		word.setCleanValue(cleanWordValue);
 	}
 
-	private Map<String, Object> getWord(String word, int homonymNr, String lang) throws Exception {
+	private AffixoidData getAffixoidData(String wordValue) {
+
+		if (StringUtils.endsWith(wordValue, UNIFIED_AFIXOID_SYMBOL)) {
+			String cleanWordValue = StringUtils.removeEnd(wordValue, UNIFIED_AFIXOID_SYMBOL);
+			return new AffixoidData(wordValue, cleanWordValue, PREFIXOID_WORD_TYPE_CODE, true, false);
+		}
+		if (StringUtils.startsWith(wordValue, UNIFIED_AFIXOID_SYMBOL)) {
+			String cleanWordValue = StringUtils.removeStart(wordValue, UNIFIED_AFIXOID_SYMBOL);
+			return new AffixoidData(wordValue, cleanWordValue, SUFFIXOID_WORD_TYPE_CODE, false, true);
+		}
+		return new AffixoidData(wordValue, wordValue, null, false, false);
+	}
+
+	private Map<String, Object> getWord(String word, int homonymNr, String lang, String wordTypeCode) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("homonymNr", homonymNr);
 		tableRowParamMap.put("lang", lang);
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordByFormAndHomonym, tableRowParamMap);
+		String sql = sqls.getSqlSelectWordByFormLangHomon();
+		if (StringUtils.isNotBlank(wordTypeCode)) {
+			tableRowParamMap.put("wordTypeCode", wordTypeCode);
+			sql = sqls.getSqlSelectWordByFormLangHomonType();
+		}
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sql, tableRowParamMap);
 		return tableRowValueMap;
 	}
 
@@ -563,7 +500,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("guid", guid);
 		tableRowParamMap.put("dataset", dataset);
-		List<Map<String, Object>> tableRowValueMaps = basicDbService.queryList(sqlSelectWordByDatasetAndGuid, tableRowParamMap);
+		List<Map<String, Object>> tableRowValueMaps = basicDbService.queryList(sqls.getSqlSelectWordByDatasetAndGuid(), tableRowParamMap);
 		return tableRowValueMaps;
 	}
 
@@ -703,11 +640,20 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 	protected int getWordMaxHomonymNr(String word, String lang) throws Exception {
 
+		AffixoidData affixoidData = getAffixoidData(word);
+		String wordCleanValue = affixoidData.getAffixoidWordTypeCode();
+		String affixoidWordTypeCode = affixoidData.getAffixoidWordTypeCode();
+
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("word", wordCleanValue);
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("mode", FormMode.WORD.name());
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqlSelectWordMaxHomonym, tableRowParamMap);
+		String sql = sqls.getSqlSelectWordMaxHomonByWordLang();
+		if (StringUtils.isNotEmpty(affixoidWordTypeCode)) {
+			tableRowParamMap.put("wordTypeCode", affixoidWordTypeCode);
+			sql = sqls.getSqlSelectWordMaxHomonByWordLangType();
+		}
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sql, tableRowParamMap);
 		if (MapUtils.isEmpty(tableRowValueMap)) {
 			return 0;
 		}
@@ -928,7 +874,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("lexeme_id", lexemeId);
 		tableRowParamMap.put("value", freeformValue);
 		tableRowParamMap.put("type", freeformType.name());
-		Map<String, Object> freeform = basicDbService.queryForMap(sqlSelectLexemeFreeform, tableRowParamMap);
+		Map<String, Object> freeform = basicDbService.queryForMap(sqls.getSqlSelectLexemeFreeform(), tableRowParamMap);
 		Long freeformId;
 		if (freeform == null) {
 			freeformId = createLexemeFreeform(lexemeId, freeformType, freeformValue, null);
@@ -1089,7 +1035,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		params.put("word_rel_type_code", groupType.name());
 		params.put("memberIds", memberIds);
 		params.put("nrOfMembers", memberIds.size());
-		return MapUtils.isEmpty(basicDbService.queryForMap(sqlWordGroupWithMembers, params));
+		return MapUtils.isEmpty(basicDbService.queryForMap(sqls.getSqlSelectWordGroupWithMembers(), params));
 	}
 
 	protected Long createWordRelationGroup(WordRelationGroupType groupType) throws Exception {
@@ -1208,7 +1154,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("extSourceId", extSourceId);
 		tableRowParamMap.put("sourcePropertyTypeName", FreeformType.SOURCE_NAME.name());
 		tableRowParamMap.put("sourceName", sourceName);
-		List<Map<String, Object>> sources = basicDbService.queryList(sqlSourceByTypeAndName, tableRowParamMap);
+		List<Map<String, Object>> sources = basicDbService.queryList(sqls.getSqlSelectSourceByTypeAndName(), tableRowParamMap);
 
 		if (CollectionUtils.isEmpty(sources)) {
 			return null;
@@ -1286,5 +1232,47 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
 		reportComposer.append(reportName, logRow);
+	}
+
+	class AffixoidData {
+
+		private String wordOrigValue;
+
+		private String wordCleanValue;
+
+		private String affixoidWordTypeCode;
+
+		private boolean prefixoid;
+
+		private boolean suffixoid;
+
+		public AffixoidData(String wordOrigValue, String wordCleanValue, String affixoidWordTypeCode, boolean prefixoid, boolean suffixoid) {
+			this.wordOrigValue = wordOrigValue;
+			this.wordCleanValue = wordCleanValue;
+			this.affixoidWordTypeCode = affixoidWordTypeCode;
+			this.prefixoid = prefixoid;
+			this.suffixoid = suffixoid;
+		}
+
+		public String getWordOrigValue() {
+			return wordOrigValue;
+		}
+
+		public String getWordCleanValue() {
+			return wordCleanValue;
+		}
+
+		public String getAffixoidWordTypeCode() {
+			return affixoidWordTypeCode;
+		}
+
+		public boolean isPrefixoid() {
+			return prefixoid;
+		}
+
+		public boolean isSuffixoid() {
+			return suffixoid;
+		}
+
 	}
 }

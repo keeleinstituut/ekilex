@@ -7,7 +7,6 @@ $(document).ready(function() {
 		window.location = applicationUrl;
 	}, sessionTimeoutMs);
 
-
 	$(".form-email").on('input', function() {
 		var input = $(this);
 		var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
@@ -37,11 +36,7 @@ $(document).ready(function() {
 	});
 
 	$('[data-toggle="tooltip"]').tooltip();
-
 });
-
-
-
 
 $(document).on("click", ".menu-btn", function(e) {
 	$(".header-container").toggleClass("show-header");
@@ -125,5 +120,4 @@ $(document).on('show.bs.modal', '#feedbackModal', function() {
 	$('#feedbackModal').on('shown.bs.modal', function() {
 		$('#feedbackModal .close').focus()
 	});
-
 });

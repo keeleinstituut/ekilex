@@ -75,6 +75,8 @@ public interface WebConstant {
 
 	String VIEW_UTIL_MODEL_KEY = "viewUtil";
 
+	String IE_USER_FLAG_KEY = "ieuser";
+
 	String NOTHING = "";
 
 	int TYPICAL_COLLECTIONS_DISPLAY_LIMIT = 3;

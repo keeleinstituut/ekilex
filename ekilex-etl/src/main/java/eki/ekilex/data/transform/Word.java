@@ -16,8 +16,6 @@ public class Word extends AbstractDataObject {
 
 	private String value;
 
-	private String cleanValue;
-
 	private int homonymNr;
 
 	private String wordClass;
@@ -96,14 +94,6 @@ public class Word extends AbstractDataObject {
 
 	public void setValue(String value) {
 		this.value = value;
-	}
-
-	public String getCleanValue() {
-		return cleanValue;
-	}
-
-	public void setCleanValue(String cleanValue) {
-		this.cleanValue = cleanValue;
 	}
 
 	public int getHomonymNr() {
