@@ -641,10 +641,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected int getWordMaxHomonymNr(String word, String lang) throws Exception {
 
 		AffixoidData affixoidData = getAffixoidData(word);
+		String wordCleanValue = affixoidData.getAffixoidWordTypeCode();
 		String affixoidWordTypeCode = affixoidData.getAffixoidWordTypeCode();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("word", wordCleanValue);
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("mode", FormMode.WORD.name());
 		String sql = sqls.getSqlSelectWordMaxHomonByWordLang();
