@@ -55,7 +55,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	public void afterPropertiesSet() throws Exception {
 
 		languagesDatasetMap = new HashMap<>();
-		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "psv", "kol"});
+		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "kol"});
 		languagesDatasetMap.put("est-est-simple", new String[] {"psv"});
 		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2"});
 		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2"});

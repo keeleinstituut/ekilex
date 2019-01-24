@@ -3,6 +3,7 @@ package eki.wordweb.web.interceptor;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,10 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		}
 
 		ModelMap modelMap = modelAndView.getModelMap();
+		if (!modelMap.containsKey(IE_USER_FLAG_KEY)) {
+			boolean isIeUser = isTraditionalMicrosoftUser(request, modelAndView);
+			modelMap.addAttribute(IE_USER_FLAG_KEY, isIeUser);
+		}
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData(POM_PATH);
 			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
@@ -44,5 +49,10 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (!modelMap.containsKey(VIEW_UTIL_MODEL_KEY)) {
 			modelMap.addAttribute(VIEW_UTIL_MODEL_KEY, viewUtil);
 		}
+	}
+
+	private boolean isTraditionalMicrosoftUser(HttpServletRequest request, ModelAndView modelAndView) {
+		String userAgent = request.getHeader("User-Agent");
+		return StringUtils.contains(userAgent, "Trident");
 	}
 }
