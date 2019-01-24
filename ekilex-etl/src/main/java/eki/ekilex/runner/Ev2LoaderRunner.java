@@ -868,6 +868,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				aspectData.word = cleanUpWord(aspectWord);
 				aspectData.displayForm = aspectWord;
 				aspectData.reportingId = reportingId;
+				aspectData.register = wordData.register;
+				aspectData.governments.addAll(wordData.governments);
 				dataList.add(aspectData);
 				List<LexemeToWordData> aspectGroup = new ArrayList<>();
 				aspectGroup.add(wordData);
