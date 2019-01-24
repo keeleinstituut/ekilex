@@ -7,12 +7,12 @@ insert into label_type (code, value) values ('full', 'full');
 insert into label_type (code, value) values ('wordweb', 'wordweb');
 
 -- lex
-insert into dataset (code, name, is_public) values ('ss1', 'Eesti keele sõnaraamat 2018', true);
+insert into dataset (code, name, is_public) values ('ss1', 'Eesti keele sõnaraamat 2019', true);
 insert into dataset (code, name, is_public) values ('psv', 'Eesti keele põhisõnavara sõnastik 2014', true);
-insert into dataset (code, name, is_public) values ('kol',	'Eesti keele naabersõnad 2018', true);
+insert into dataset (code, name, is_public) values ('kol',	'Eesti keele naabersõnad 2019', true);
 insert into dataset (code, name, is_public) values ('ety',	'Etümoloogia', true);
-insert into dataset (code, name, is_public) values ('qq2', 'Eesti-vene õpilase ÕS 2018', true);
-insert into dataset (code, name, is_public) values ('ev2',	'Eesti-vene sõnaraamat 2018', true);
+insert into dataset (code, name, is_public) values ('qq2', 'Eesti-vene õpilase ÕS 2019', true);
+insert into dataset (code, name, is_public) values ('ev2',	'Eesti-vene sõnaraamat 2019', true);
 insert into dataset (code, name, is_public) values ('mab', 'Eesti keele morfoloogia', false);
 
 -- term
