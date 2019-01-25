@@ -224,13 +224,40 @@
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
               </div>
-              <!-- TODO update needs to be integrated -->
-              <div th:if="${not #lists.isEmpty(lexeme.meaningLearnerComments)}">
+              <div>
                 <hr />
-                <span class="lbl">Õppekommentaarid</span>
-                <div th:each="learnerComment : ${lexeme.meaningLearnerComments}">
-                  <span th:utext="${learnerComment.valuePrese}"></span>
-                </div>
+                <table>
+                  <tr>
+                    <th class="lbl">Õppekommentaarid
+                      <button type="button" class="btn badge badge-success" title="Lisa uus"
+                              th:data-id="${lexeme.meaningId}"
+                              onclick="openEkiEditorAddDlg(this)"
+                              data-toggle="modal" data-target="#addNewLearnerCommentDlg">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </th>
+                  </tr>
+                  <tr th:each="learnerComment : ${lexeme.meaningLearnerComments}">
+                    <td class="hidden-buttons">
+                            <span th:name="${learnerComment.id} + '_learner_comment'"
+                                  th:data-id="${learnerComment.id}"
+                                  th:data-op-code="learner_comment"
+                                  th:data-value="${learnerComment.valuePrese}"
+                                  th:utext="${learnerComment.valuePrese}"></span>
+                      <button type="button" class="btn badge badge-primary ml-2"
+                              th:title="Muuda" th:data-target-elem="${learnerComment.id} + '_learner_comment'"
+                              onclick="openEkiEditorDlg(this)"
+                              data-toggle="modal" data-target="#ekiEditorDlg">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-target-elem="${learnerComment.id} + '_learner_comment'"
+                              data-toggle="delete-confirmation" data-placement="right">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </table>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.meaningFreeforms)}">
                 <hr />
@@ -470,13 +497,40 @@
                   </tr>
                 </table>
               </div>
-              <!-- TODO update needs to be integrated -->
-              <div th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
+              <div>
                 <hr />
-                <span class="lbl">Märkused</span>
-                <div th:each="publicNote : ${lexeme.lexemePublicNotes}">
-                  <span th:utext="${publicNote.valuePrese}"></span>
-                </div>
+                <table>
+                  <tr>
+                    <th class="lbl">Märkused
+                      <button type="button" class="btn badge badge-success" title="Lisa uus"
+                              th:data-id="${lexeme.lexemeId}"
+                              onclick="openEkiEditorAddDlg(this)"
+                              data-toggle="modal" data-target="#addNewPublicNoteDlg">
+                        <i class="fa fa-plus" aria-hidden="true"></i>
+                      </button>
+                    </th>
+                  </tr>
+                  <tr th:each="publicNote : ${lexeme.lexemePublicNotes}">
+                    <td class="hidden-buttons">
+                            <span th:name="${publicNote.id} + '_public_note'"
+                                  th:data-id="${publicNote.id}"
+                                  th:data-op-code="public_note"
+                                  th:data-value="${publicNote.valuePrese}"
+                                  th:utext="${publicNote.valuePrese}"></span>
+                      <button type="button" class="btn badge badge-primary ml-2"
+                              th:title="Muuda" th:data-target-elem="${publicNote.id} + '_public_note'"
+                              onclick="openEkiEditorDlg(this)"
+                              data-toggle="modal" data-target="#ekiEditorDlg">
+                        <i class="fa fa-edit" aria-hidden="true"></i>
+                      </button>
+                      <button type="button" class="btn badge badge-warning"
+                              th:data-target-elem="${publicNote.id} + '_public_note'"
+                              data-toggle="delete-confirmation" data-placement="right">
+                        <i class="fa fa-remove" aria-hidden="true"></i>
+                      </button>
+                    </td>
+                  </tr>
+                </table>
               </div>
               <div th:if="${not #lists.isEmpty(lexeme.lexemeFreeforms)}">
                 <hr />
@@ -833,6 +887,8 @@
   <div th:replace="components :: #addNewMeaningRelationDlg"></div>
   <div th:replace="components :: #addNewUsageAuthorDlg"></div>
   <div th:replace="ekilex_editor :: #ekiEditorDlg"></div>
+  <div th:replace="ekilex_editor :: #addNewLearnerCommentDlg"></div>
+  <div th:replace="ekilex_editor :: #addNewPublicNoteDlg"></div>
   <div th:replace="common :: #alertDlg"></div>
   <div th:replace="common :: #confirmDlg"></div>
 

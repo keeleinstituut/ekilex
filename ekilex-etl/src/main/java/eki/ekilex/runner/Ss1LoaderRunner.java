@@ -49,11 +49,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private final static String MEANING_RELATION_ANTONYM = "ant";
 	private final static String MEANING_RELATION_COHYPONYM = "cohyponym";
 
-	private final static String WORD_RELATION_DERIVATIVE = "deriv";
-	private final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
-	private final static String WORD_RELATION_UNION = "ühend";
-	private final static String WORD_RELATION_SUB_WORD = "sub_word";
-
 	private final static String BASIC_WORDS_REPORT_NAME = "basic_words";
 	private final static String SUBWORDS_REPORT_NAME = "subkeywords";
 	private final static String SYNONYMS_REPORT_NAME = "synonyms";

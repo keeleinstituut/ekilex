@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
 import org.jooq.Record4;
@@ -771,6 +772,38 @@ public class UpdateDbService implements DbConstant {
 		meaningRelation.setMeaningRelTypeCode(relationType);
 		meaningRelation.store();
 		return meaningRelation.getId();
+	}
+
+	public Long addLearnerComment(Long meaningId, String value, String valuePrese, String languageCode) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.LEARNER_COMMENT.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(languageCode);
+		freeform.store();
+
+		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
+		meaningFreeform.setMeaningId(meaningId);
+		meaningFreeform.setFreeformId(freeform.getId());
+		meaningFreeform.store();
+
+		return freeform.getId();
+	}
+
+	public Long addPublicNote(Long lexemeId, String value, String valuePrese, String languageCode) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.PUBLIC_NOTE.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(languageCode);
+		freeform.store();
+
+		LexemeFreeformRecord lexemeFreeform = create.newRecord(LEXEME_FREEFORM);
+		lexemeFreeform.setLexemeId(lexemeId);
+		lexemeFreeform.setFreeformId(freeform.getId());
+		lexemeFreeform.store();
+
+		return freeform.getId();
 	}
 
 	public String getFirstDefinitionOfMeaning(Long meaningId) {
