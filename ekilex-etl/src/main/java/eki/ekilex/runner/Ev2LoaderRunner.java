@@ -168,15 +168,15 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		String reportingId = extractReporingId(articleNode);
 		List<WordData> newWords = new ArrayList<>();
 		if (articleHasMeanings(articleNode)) {
-			processArticleHeader(articleNode, reportingId, newWords, context);
+			processArticleHeader(context, articleNode, reportingId, newWords);
 			try {
 				Element contentNode = (Element) articleNode.selectSingleNode(articleBodyExp);
 				if (contentNode != null) {
-					processArticleContent(reportingId, contentNode, newWords, context);
+					processArticleContent(context, contentNode, reportingId, newWords);
 				}
 				Element phraseologyNode = (Element) articleNode.selectSingleNode(articlePhraseologyExp);
 				if (phraseologyNode != null) {
-					processPhraseology(reportingId, phraseologyNode, context);
+					processPhraseology(context, phraseologyNode, reportingId, newWords);
 				}
 			} catch (Exception e) {
 				logger.debug("KEYWORD : {}", reportingId);
@@ -187,7 +187,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			boolean atLeastOneReferenceExists = referencedWords.stream()
 					.anyMatch(word -> context.importedWords.stream().anyMatch(iw -> Objects.equals(iw.value, word.value) && iw.homonymNr == word.homonymNr));
 			if (atLeastOneReferenceExists) {
-				processArticleHeader(articleNode, reportingId, newWords, context);
+				processArticleHeader(context, articleNode, reportingId, newWords);
 			}
 			for (WordData refWord : referencedWords) {
 				Optional<WordData> importedWord = context.importedWords.stream()
@@ -284,7 +284,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (refData.words.isEmpty()) {
 				for(Node articleNode : refData.articleNodes) {
 					String reportingId = extractReporingId(articleNode);
-					processArticleHeader(articleNode, reportingId, referringWords, context);
+					processArticleHeader(context, articleNode, reportingId, referringWords);
 				}
 				context.importedWords.addAll(referringWords);
 			} else {
@@ -297,7 +297,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processPhraseology(String reportingId, Element node, Context context) throws Exception {
+	private void processPhraseology(Context context, Element node, String reportingId, List<WordData> newWords) throws Exception {
 
 		final String phraseologyGroupExp = "x:fg";
 		final String phraseologyValueExp = "x:f";
@@ -314,14 +314,35 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			List<String> wordValues = extractCleanValues(groupNode, phraseologyValueExp);
 			for (String wordValue : wordValues) {
 				String word = cleanUpWord(wordValue);
-				if (isNotWordInSs1(word)) {
+				List<Map<String, Object>> wordInSs1 = findWordInSs1(word);
+				if (CollectionUtils.isEmpty(wordInSs1)) {
 					continue;
 				}
-				WordData wordData = findOrCreateWord(context, word, wordValue, dataLang, null);
-				List<Node> meaningGroupNodes = groupNode.selectNodes(meaningGroupExp);
+				WordData wordData = findOrCreateWordUsingSs1(context, wordValue, word, wordInSs1);
+				List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 				int lexemeLevel1 = 1;
+				List<Node> meaningGroupNodes = groupNode.selectNodes(meaningGroupExp);
 				for (Node meaningGroupNode: meaningGroupNodes) {
-					Long meaningId = createMeaning(new Meaning());
+					Optional<Map<String, Object>> existingLexeme = Optional.empty();
+					if (!lexemesForWord.isEmpty()) {
+						int level1 = lexemeLevel1;
+						existingLexeme = lexemesForWord.stream().filter(lex -> Objects.equals(level1, lex.get("level1"))).findFirst();
+					}
+					Long meaningId;
+					Long lexemeId;
+					if (existingLexeme.isPresent()) {
+						meaningId = (Long) existingLexeme.get().get("meaning_id");
+						lexemeId = (Long) existingLexeme.get().get("id");
+					} else {
+						meaningId = createMeaning(new Meaning());
+						Lexeme lexeme = new Lexeme();
+						lexeme.setWordId(wordData.id);
+						lexeme.setMeaningId(meaningId);
+						lexeme.setLevel1(lexemeLevel1);
+						lexeme.setLevel2(1);
+						lexeme.setLevel3(1);
+						lexemeId = createLexeme(lexeme, getDataset());
+					}
 
 					List<String> definitions = extractCleanValues(meaningGroupNode, definitionsExp);
 					for (String definition : definitions) {
@@ -331,13 +352,6 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					List<String> domains = extractCleanValues(meaningGroupNode, domainsExp);
 					processDomains(null, meaningId, domains);
 
-					Lexeme lexeme = new Lexeme();
-					lexeme.setWordId(wordData.id);
-					lexeme.setMeaningId(meaningId);
-					lexeme.setLevel1(lexemeLevel1);
-					lexeme.setLevel2(1);
-					lexeme.setLevel3(1);
-					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId != null) {
 						List<String> governments = extractCleanValues(meaningGroupNode, governmentsExp);
 						List<String> registers = extractCleanValues(meaningGroupNode, registersExp);
@@ -366,15 +380,33 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						processDomains(null, meaningId, additionalDomains);
 					}
 				}
+				for (WordData newWord : newWords) {
+					createWordRelation(newWord.id, wordData.id, WORD_RELATION_UNION);
+				}
 			}
 		}
 	}
 
+	private WordData findOrCreateWordUsingSs1(Context context, String wordValue, String word, List<Map<String, Object>> wordInSs1) throws Exception {
+		WordData wordData;
+		if (wordInSs1.size() == 1) {
+			wordData = new WordData();
+			wordData.id = (Long) wordInSs1.get(0).get("id");
+			wordData.value = word;
+			wordData.displayForm = wordValue;
+			wordData.language = dataLang;
+			context.importedWords.add(wordData);
+		} else {
+			wordData = findOrCreateWord(context, word, wordValue, dataLang, null);
+		}
+		return wordData;
+	}
+
 	private void processArticleHeader(
+			Context context,
 			Node articleNode,
 			String reportingId,
-			List<WordData> newWords,
-			Context context) throws Exception {
+			List<WordData> newWords) throws Exception {
 
 		final String articleHeaderExp = "x:P";
 		final String articleGuidExp = "x:G";
@@ -409,7 +441,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processArticleContent(String reportingId, Element contentNode, List<WordData> newWords, Context context) throws Exception {
+	private void processArticleContent(Context context, Element contentNode, String reportingId, List<WordData> newWords) throws Exception {
 
 		final String meaningNumberGroupExp = "x:tp";
 		final String meaningPosCodeExp = "x:sl";
@@ -561,12 +593,14 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			for (Node usageGroupNode : usageGroupNodes) {
 				List<String> wordValues = extractCleanValues(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
-					if (!isUsage(cleanUpWord(wordValue))) {
+					String word = cleanUpWord(wordValue);
+					if (!isUsage(word)) {
 						List<Node> meaningGroupNodes = usageGroupNode.selectNodes(meaningGroupExp);
 						if (meaningGroupNodes.isEmpty()) {
 							continue;
 						}
-						WordData wordData = findOrCreateWord(context, cleanUpWord(wordValue), wordValue, dataLang, null);
+						List<Map<String, Object>> wordInSs1 = findWordInSs1(word);
+						WordData wordData = findOrCreateWordUsingSs1(context, wordValue, word, wordInSs1);
 						List<Map<String, Object>> lexemesForWord = findExistingLexemesForWord(wordData.id);
 						int meaningNodeIndex = 1;
 						for (Node meaningGroupNode: meaningGroupNodes) {
@@ -795,7 +829,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private List<LexemeToWordData> extractRussianWords(
-			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) {
+			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) throws Exception {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -830,15 +864,22 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
-				aspectData.aspect = calculateAspectType(aspectWord);
 				aspectData.word = cleanUpWord(aspectWord);
-				aspectData.displayForm = aspectWord;
-				aspectData.reportingId = reportingId;
-				dataList.add(aspectData);
-				List<LexemeToWordData> aspectGroup = new ArrayList<>();
-				aspectGroup.add(wordData);
-				aspectGroup.add(aspectData);
-				aspectGroups.add(aspectGroup);
+				if (Objects.equals(wordData.word, aspectData.word)) {
+					logger.warn("{} : words in aspect pair have same forms : {} : {}", reportingId, wordData.word, aspectData.word);
+					writeToLogFile(reportingId, "Aspekti paari märksõnade vormid on samadsugused", wordData.word);
+				} else {
+					aspectData.aspect = calculateAspectType(aspectWord);
+					aspectData.displayForm = aspectWord;
+					aspectData.reportingId = reportingId;
+					aspectData.register = wordData.register;
+					aspectData.governments.addAll(wordData.governments);
+					dataList.add(aspectData);
+					List<LexemeToWordData> aspectGroup = new ArrayList<>();
+					aspectGroup.add(wordData);
+					aspectGroup.add(aspectData);
+					aspectGroups.add(aspectGroup);
+				}
 			}
 		}
 		return dataList;
@@ -863,12 +904,15 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private boolean isNotWordInSs1(String word) {
+		List<Map<String, Object>> words = findWordInSs1(word);
+		return CollectionUtils.isEmpty(words);
+	}
 
+	private List<Map<String, Object>> findWordInSs1(String word) {
 		Map<String, Object> paramMap = new HashMap<>();
 		paramMap.put("word", word);
 		paramMap.put("dataset", "ss1");
-		List<Map<String, Object>> words = basicDbService.queryList(sqlSelectWordByDataset, paramMap);
-		return CollectionUtils.isEmpty(words);
+		return basicDbService.queryList(sqlSelectWordByDataset, paramMap);
 	}
 
 	private List<Map<String, Object>> findExistingLexemesForWord(Long wordId) throws Exception {

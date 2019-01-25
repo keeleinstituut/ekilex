@@ -75,6 +75,24 @@ public class LifecycleLogDbServiceHelper {
 		return result;
 	}
 
+	public Map<String, Object> getMeaningFreeformData(DSLContext create, Long entityId, FreeformType freeformType) {
+		MeaningFreeform mff = MEANING_FREEFORM.as("mff");
+		Freeform ff1 = FREEFORM.as("ff1");
+		Map<String, Object> result = create
+				.select(
+						mff.MEANING_ID,
+						ff1.VALUE_TEXT,
+						ff1.VALUE_PRESE
+				)
+				.from(mff, ff1)
+				.where(
+						mff.FREEFORM_ID.eq(ff1.ID)
+								.and(ff1.ID.eq(entityId))
+								.and(ff1.TYPE.eq(freeformType.name())))
+				.fetchSingleMap();
+		return result;
+	}
+
 	public Map<String, Object> getWordData(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
 				.selectDistinct(

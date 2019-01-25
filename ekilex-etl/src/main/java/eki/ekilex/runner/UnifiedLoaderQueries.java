@@ -15,7 +15,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_SELECT_WORD_BY_FORM_LANG_HOMON_TYPE = "sql/select_word_by_form_lang_homon_type.sql";
 	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
 	private static final String SQL_SELECT_WORD_MAX_HOMON_BY_WORD_LANG = "sql/select_word_max_homon_by_word_lang.sql";
-	private static final String SQL_SELECT_WORD_MAX_HOMON_BY_WORD_LANG_TYPE = "sql/select_word_max_homon_by_word_lang_type.sql";
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
 	private static final String SQL_SELECT_SOURCE_BY_TYPE_AND_NAME = "sql/select_source_by_type_and_name.sql";
 	private static final String SQL_SELECT_WORD_GROUP_WITH_MEMBERS = "sql/select_word_group_with_members.sql";
@@ -33,7 +32,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlSelectWordByFormLangHomonType;
 	private String sqlSelectWordByDatasetAndGuid;
 	private String sqlSelectWordMaxHomonByWordLang;
-	private String sqlSelectWordMaxHomonByWordLangType;
 	private String sqlSelectLexemeFreeform;
 	private String sqlSelectSourceByTypeAndName;
 	private String sqlSelectWordGroupWithMembers;
@@ -70,9 +68,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMON_BY_WORD_LANG);
 		sqlSelectWordMaxHomonByWordLang = getContent(resourceFileInputStream);
-
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_MAX_HOMON_BY_WORD_LANG_TYPE);
-		sqlSelectWordMaxHomonByWordLangType = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE);
 		sqlSelectLexemeFreeform = getContent(resourceFileInputStream);
@@ -128,10 +123,6 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlSelectWordMaxHomonByWordLang() {
 		return sqlSelectWordMaxHomonByWordLang;
-	}
-
-	public String getSqlSelectWordMaxHomonByWordLangType() {
-		return sqlSelectWordMaxHomonByWordLangType;
 	}
 
 	public String getSqlSelectLexemeFreeform() {

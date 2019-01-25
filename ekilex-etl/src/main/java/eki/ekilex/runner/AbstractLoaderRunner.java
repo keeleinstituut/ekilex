@@ -651,21 +651,13 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 
 		AffixoidData affixoidData = getAffixoidData(word);
 		String wordCleanValue = affixoidData.getAffixoidWordTypeCode();
-		String affixoidWordTypeCode = affixoidData.getAffixoidWordTypeCode();
+		wordCleanValue = StringUtils.lowerCase(wordCleanValue);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word", wordCleanValue);
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("mode", FormMode.WORD.name());
-		String sql;
-		if (StringUtils.isEmpty(affixoidWordTypeCode)) {
-			tableRowParamMap.put("wordTypeCodes", afixoidWordTypeCodes);
-			sql = sqls.getSqlSelectWordMaxHomonByWordLang();
-		} else {
-			tableRowParamMap.put("wordTypeCode", affixoidWordTypeCode);
-			sql = sqls.getSqlSelectWordMaxHomonByWordLangType();
-		}
-		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sql, tableRowParamMap);
+		Map<String, Object> tableRowValueMap = basicDbService.queryForMap(sqls.getSqlSelectWordMaxHomonByWordLang(), tableRowParamMap);
 		if (MapUtils.isEmpty(tableRowValueMap)) {
 			return 0;
 		}
