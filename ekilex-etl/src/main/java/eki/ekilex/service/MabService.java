@@ -39,6 +39,8 @@ public class MabService implements SystemConstant, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(MabService.class);
 
+	private static final String UNIFIED_AFIXOID_SYMBOL = "-";
+
 	private static final String DATASET_CODE_MAB = "mab";
 
 	private static final String SQL_SELECT_WORDS_FOR_DATASET_BY_GUID = "sql/select_words_for_dataset_by_guid.sql";
@@ -93,22 +95,31 @@ public class MabService implements SystemConstant, InitializingBean {
 		if (MapUtils.isEmpty(mabWordStats)) {
 			throw new DataLoadingException("MAB not loaded!");
 		}
-		return mabWordStats.containsKey(word);
+		if (StringUtils.endsWith(word, UNIFIED_AFIXOID_SYMBOL)) {
+			return false;
+		}
+		String cleanWord = cleanAfixoid(word);
+		return mabWordStats.containsKey(cleanWord);
 	}
 
 	public boolean isSingleHomonym(String word) throws Exception {
 		if (!homonymsExist(word)) {
 			return true;
 		}
-		List<MabWordStat> mabWordHomonyms = mabWordStats.get(word);
+		String cleanWord = cleanAfixoid(word);
+		List<MabWordStat> mabWordHomonyms = mabWordStats.get(cleanWord);
 		boolean isSingleHomonym = mabWordHomonyms.size() == 1;
 		return isSingleHomonym;
 	}
 
 	public List<Paradigm> getMatchingWordParadigms(String word, List<String> suggestedFormValues, List<String> suggestedMorphCodes) throws Exception {
 
-		List<WordParadigms> wordParadigmsList = getWordParadigms(word);
-		if (isSingleHomonym(word)) {
+		if (StringUtils.endsWith(word, UNIFIED_AFIXOID_SYMBOL)) {
+			return Collections.emptyList();
+		}
+		String cleanWord = cleanAfixoid(word);
+		List<WordParadigms> wordParadigmsList = getWordParadigms(cleanWord);
+		if (isSingleHomonym(cleanWord)) {
 			WordParadigms singleHomonymParadigms = wordParadigmsList.get(0);
 			return singleHomonymParadigms.getParadigms();
 		}
@@ -254,6 +265,12 @@ public class MabService implements SystemConstant, InitializingBean {
 		tuple.setSoundFile(soundFile);
 		tuple.setOrderBy(orderBy);
 		return tuple;
+	}
+
+	private String cleanAfixoid(String word) {
+		String cleanWord = StringUtils.removeEnd(word, UNIFIED_AFIXOID_SYMBOL);
+		cleanWord = StringUtils.removeStart(cleanWord, UNIFIED_AFIXOID_SYMBOL);
+		return cleanWord;
 	}
 
 	class MabWordStat extends AbstractDataObject {
