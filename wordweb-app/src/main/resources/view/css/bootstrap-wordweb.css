@@ -8589,6 +8589,27 @@ body:not(.home-page) footer {
   cursor: none;
 }
 
+.alert-danger-ie {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #fff3cd;
+  display: flex;
+  z-index: 9999;
+  padding: 8px 16px;
+  color: #856404;
+  border: 1px solid #ffeeba;
+  border-left: 0px;
+  border-right: 0px;
+  border-top: 0px;
+  justify-content: center;
+}
+
+.alert-danger-ie-container {
+  max-width: 1400px;
+}
+
 @media (max-width: 767px) { 
 
   .main-content-wrapper.align-self-center {

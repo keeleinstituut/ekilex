@@ -11,6 +11,9 @@
   <!-- WCAG helpers -->
   <th:block th:replace="common-app :: wcag-search"></th:block>
   <!-- WCAG helpers -->
+      <!-- IE message -->
+  <th:block th:replace="common-app :: ie-user"></th:block>
+    <!-- IE message --> 
   <div class="header-container">
     <button class="btn menu-btn" th:aria-label="#{aria.menu.collapsed}" data-toggle="collapse" data-target="#headerLinks">
       <span class="d-none d-md-block" th:text="#{button.label.menu}">Menüü</span>
