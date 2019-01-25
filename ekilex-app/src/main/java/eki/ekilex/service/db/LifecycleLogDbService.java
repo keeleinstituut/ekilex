@@ -492,6 +492,20 @@ public class LifecycleLogDbService {
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createMeaningLifecycleLog(meaningId, lifecycleLogId);
 			}
+		} else if (LifecycleEntity.PUBLIC_NOTE.equals(entity)) {
+			if (LifecycleProperty.VALUE.equals(property)) {
+				Map<String, Object> entityData = helper.getFirstDepthFreeformData(create, entityId, FreeformType.PUBLIC_NOTE);
+				recent = (String) entityData.get("value_prese");
+				if (StringUtils.equals(recent, entry)) {
+					if (isUpdate(eventType)) {
+						return;
+					}
+					recent = null;
+				}
+				Long lexemeId = (Long) entityData.get("lexeme_id");
+				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
+				createLexemeLifecycleLog(lexemeId, lifecycleLogId);
+			}
 		}
 	}
 

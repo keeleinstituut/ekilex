@@ -217,6 +217,13 @@ public class UpdateService {
 		updateDbService.updateFreeformTextValue(id, value, valuePrese);
 	}
 
+	@Transactional
+	public void updatePublicNote(Long id, String valuePrese) {
+		lifecycleLogDbService.addLog(LifecycleEventType.UPDATE, LifecycleEntity.PUBLIC_NOTE, LifecycleProperty.VALUE, id, valuePrese);
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		updateDbService.updateFreeformTextValue(id, value, valuePrese);
+	}
+
 	// --- ADD ---
 
 	@Transactional
@@ -380,6 +387,13 @@ public class UpdateService {
 		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
 		Long usageDefinitionId = updateDbService.addLearnerComment(meaningId, value, valuePrese, languageCode);
 		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
+	}
+
+	@Transactional
+	public void addPublicNote(Long lexemeId, String valuePrese, String languageCode) {
+		String value = textDecorationService.cleanEkiElementMarkup(valuePrese);
+		Long usageDefinitionId = updateDbService.addPublicNote(lexemeId, value, valuePrese, languageCode);
+		lifecycleLogDbService.addLog(LifecycleEventType.CREATE, LifecycleEntity.PUBLIC_NOTE, LifecycleProperty.VALUE, usageDefinitionId, valuePrese);
 	}
 
 	@Transactional
@@ -597,6 +611,12 @@ public class UpdateService {
 	@Transactional
 	public void deleteLearnerComment(Long id) {
 		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.LEARNER_COMMENT, LifecycleProperty.VALUE, id);
+		updateDbService.deleteFreeform(id);
+	}
+
+	@Transactional
+	public void deletePublicNote(Long id) {
+		lifecycleLogDbService.addLog(LifecycleEventType.DELETE, LifecycleEntity.PUBLIC_NOTE, LifecycleProperty.VALUE, id);
 		updateDbService.deleteFreeform(id);
 	}
 

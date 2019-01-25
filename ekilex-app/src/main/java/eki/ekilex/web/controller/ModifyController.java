@@ -133,6 +133,9 @@ public class ModifyController implements WebConstant {
 			case "learner_comment" :
 				updateService.updateLearnerComment(itemData.getId(), itemData.getValue());
 				break;
+			case "public_note" :
+				updateService.updatePublicNote(itemData.getId(), itemData.getValue());
+				break;
 		}
 
 		return "{}";
@@ -310,6 +313,9 @@ public class ModifyController implements WebConstant {
 		case "learner_comment" :
 			updateService.deleteLearnerComment(id);
 			break;
+		case "public_note" :
+			updateService.deletePublicNote(id);
+			break;
 		}
 		return "OK";
 	}
@@ -400,6 +406,9 @@ public class ModifyController implements WebConstant {
 			break;
 		case "learner_comment" :
 			updateService.addLearnerComment(itemData.getId(), itemData.getValue(), itemData.getLanguage());
+			break;
+		case "public_note" :
+			updateService.addPublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
 		}
 		return "{}";
