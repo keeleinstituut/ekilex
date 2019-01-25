@@ -130,6 +130,9 @@ public class ModifyController implements WebConstant {
 			case "lexeme_process_state" :
 				updateService.updateLexemeProcessState(itemData.getId(), itemData.getValue());
 				break;
+			case "learner_comment" :
+				updateService.updateLearnerComment(itemData.getId(), itemData.getValue());
+				break;
 		}
 
 		return "{}";
@@ -304,6 +307,9 @@ public class ModifyController implements WebConstant {
 		case "lexeme" :
 			updateService.deleteLexeme(id);
 			break;
+		case "learner_comment" :
+			updateService.deleteLearnerComment(id);
+			break;
 		}
 		return "OK";
 	}
@@ -391,6 +397,9 @@ public class ModifyController implements WebConstant {
 			String sourceValue = findSourceName(itemData.getId2());
 			ReferenceType refType = ReferenceType.valueOf(itemData.getItemType());
 			updateService.addFreeformSourceLink(itemData.getId(), itemData.getId2(), refType, sourceValue, null);
+			break;
+		case "learner_comment" :
+			updateService.addLearnerComment(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
 		}
 		return "{}";

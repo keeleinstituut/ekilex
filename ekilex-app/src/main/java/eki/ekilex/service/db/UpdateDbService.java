@@ -773,6 +773,22 @@ public class UpdateDbService implements DbConstant {
 		return meaningRelation.getId();
 	}
 
+	public Long addLearnerComment(Long meaningId, String value, String valuePrese, String languageCode) {
+		FreeformRecord freeform = create.newRecord(FREEFORM);
+		freeform.setType(FreeformType.LEARNER_COMMENT.name());
+		freeform.setValueText(value);
+		freeform.setValuePrese(valuePrese);
+		freeform.setLang(languageCode);
+		freeform.store();
+
+		MeaningFreeformRecord meaningFreeform = create.newRecord(MEANING_FREEFORM);
+		meaningFreeform.setMeaningId(meaningId);
+		meaningFreeform.setFreeformId(freeform.getId());
+		meaningFreeform.store();
+
+		return freeform.getId();
+	}
+
 	public String getFirstDefinitionOfMeaning(Long meaningId) {
 		Optional<Record1<String>> definition = create.select(DEFINITION.VALUE_PRESE).from(DEFINITION)
 				.where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).limit(1)
