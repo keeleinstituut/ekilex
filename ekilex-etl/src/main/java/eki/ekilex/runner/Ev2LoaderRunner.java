@@ -829,7 +829,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private List<LexemeToWordData> extractRussianWords(
-			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) {
+			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) throws Exception {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -864,17 +864,22 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
-				aspectData.aspect = calculateAspectType(aspectWord);
 				aspectData.word = cleanUpWord(aspectWord);
-				aspectData.displayForm = aspectWord;
-				aspectData.reportingId = reportingId;
-				aspectData.register = wordData.register;
-				aspectData.governments.addAll(wordData.governments);
-				dataList.add(aspectData);
-				List<LexemeToWordData> aspectGroup = new ArrayList<>();
-				aspectGroup.add(wordData);
-				aspectGroup.add(aspectData);
-				aspectGroups.add(aspectGroup);
+				if (Objects.equals(wordData.word, aspectData.word)) {
+					logger.warn("{} : words in aspect pair have same forms : {} : {}", reportingId, wordData.word, aspectData.word);
+					writeToLogFile(reportingId, "Aspekti paari märksõnade vormid on samadsugused", wordData.word);
+				} else {
+					aspectData.aspect = calculateAspectType(aspectWord);
+					aspectData.displayForm = aspectWord;
+					aspectData.reportingId = reportingId;
+					aspectData.register = wordData.register;
+					aspectData.governments.addAll(wordData.governments);
+					dataList.add(aspectData);
+					List<LexemeToWordData> aspectGroup = new ArrayList<>();
+					aspectGroup.add(wordData);
+					aspectGroup.add(aspectData);
+					aspectGroups.add(aspectGroup);
+				}
 			}
 		}
 		return dataList;
