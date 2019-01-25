@@ -146,14 +146,14 @@
       </tr>
     </table>
   </div>
-    <!-- IE user message -->
+  <!-- IE user message -->
   <th:block th:fragment="ie-user">
     <div class="alert-danger-ie" th:if="${ieuser}">
       <div class="alert-danger-ie-container">
         <span th:text="#{warning.ieuser}">Bad bad browser, no Cookies for you!!!</span>
       </div>
     </div>
- </th:block>
+  </th:block>
   <!-- Feedback dialog -->
   <th:block th:fragment="feedback-form">
     <div class="modal fade" id="feedbackModal" tabindex="-1" aria-model="true" role="dialog" aria-labelledby="feedbackModal" aria-hidden="false" aria-describedby="feebackMaterial">

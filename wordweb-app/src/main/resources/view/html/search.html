@@ -9,15 +9,11 @@
 </th:block>
 </head>
 <body>
-  <!-- WCAG helpers -->
   <div>
     <th:block th:replace="common-app :: wcag-search"></th:block>
     <th:block th:replace="common-app :: wcag-main"></th:block>
   </div>
-  <!-- WCAG helpers -->
-    <!-- IE message -->
   <th:block th:replace="common-app :: ie-user"></th:block>
-    <!-- IE message --> 
   <div th:replace="common-app :: menu"></div>
   <div class="container-fluid search-wrap">
     <div class="search-panel">
@@ -167,9 +163,9 @@
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
                           <span class="type-three">
-                            <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}"></span>
-                            <span data-toggle="tooltip" data-placement="top" data-html="true" th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}">
-                        </span>
+                            <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
+                                  th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"></span>
+                          </span>
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
                           </span>
