@@ -98,7 +98,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		if (StringUtils.endsWith(word, UNIFIED_AFIXOID_SYMBOL)) {
 			return false;
 		}
-		String cleanWord = cleanAfixoid(word);
+		String cleanWord = cleanAffixoid(word);
 		return mabWordStats.containsKey(cleanWord);
 	}
 
@@ -106,7 +106,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		if (!homonymsExist(word)) {
 			return true;
 		}
-		String cleanWord = cleanAfixoid(word);
+		String cleanWord = cleanAffixoid(word);
 		List<MabWordStat> mabWordHomonyms = mabWordStats.get(cleanWord);
 		boolean isSingleHomonym = mabWordHomonyms.size() == 1;
 		return isSingleHomonym;
@@ -117,7 +117,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		if (StringUtils.endsWith(word, UNIFIED_AFIXOID_SYMBOL)) {
 			return Collections.emptyList();
 		}
-		String cleanWord = cleanAfixoid(word);
+		String cleanWord = cleanAffixoid(word);
 		List<WordParadigms> wordParadigmsList = getWordParadigms(cleanWord);
 		if (isSingleHomonym(cleanWord)) {
 			WordParadigms singleHomonymParadigms = wordParadigmsList.get(0);
@@ -267,7 +267,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		return tuple;
 	}
 
-	private String cleanAfixoid(String word) {
+	private String cleanAffixoid(String word) {
 		String cleanWord = StringUtils.removeEnd(word, UNIFIED_AFIXOID_SYMBOL);
 		cleanWord = StringUtils.removeStart(cleanWord, UNIFIED_AFIXOID_SYMBOL);
 		return cleanWord;
