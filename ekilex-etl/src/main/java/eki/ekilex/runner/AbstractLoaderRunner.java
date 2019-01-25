@@ -95,6 +95,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected static final String EKI_CLASSIIFER_ETYMKEELTYYP = "etymkeel_tyyp";
 	protected static final String EKI_CLASSIFIER_ENTRY_CLASS = "entry class";
 
+	private List<String> afixoidWordTypeCodes;
+
 	private long t1;
 	private long t2;
 
@@ -102,6 +104,10 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	public void afterPropertiesSet() throws Exception {
 
 		initialise();
+
+		afixoidWordTypeCodes = new ArrayList<>();
+		afixoidWordTypeCodes.add(PREFIXOID_WORD_TYPE_CODE);
+		afixoidWordTypeCodes.add(SUFFIXOID_WORD_TYPE_CODE);
 	}
 
 	protected void start() throws Exception {
@@ -483,8 +489,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("word", word);
 		tableRowParamMap.put("homonymNr", homonymNr);
 		tableRowParamMap.put("lang", lang);
-		String sql = sqls.getSqlSelectWordByFormLangHomon();
-		if (StringUtils.isNotBlank(wordTypeCode)) {
+		String sql;
+		if (StringUtils.isBlank(wordTypeCode)) {
+			tableRowParamMap.put("wordTypeCodes", afixoidWordTypeCodes);
+			sql = sqls.getSqlSelectWordByFormLangHomon();
+		} else {
 			tableRowParamMap.put("wordTypeCode", wordTypeCode);
 			sql = sqls.getSqlSelectWordByFormLangHomonType();
 		}
@@ -648,8 +657,11 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		tableRowParamMap.put("word", wordCleanValue);
 		tableRowParamMap.put("lang", lang);
 		tableRowParamMap.put("mode", FormMode.WORD.name());
-		String sql = sqls.getSqlSelectWordMaxHomonByWordLang();
-		if (StringUtils.isNotEmpty(affixoidWordTypeCode)) {
+		String sql;
+		if (StringUtils.isEmpty(affixoidWordTypeCode)) {
+			tableRowParamMap.put("wordTypeCodes", afixoidWordTypeCodes);
+			sql = sqls.getSqlSelectWordMaxHomonByWordLang();
+		} else {
 			tableRowParamMap.put("wordTypeCode", affixoidWordTypeCode);
 			sql = sqls.getSqlSelectWordMaxHomonByWordLangType();
 		}
