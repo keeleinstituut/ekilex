@@ -173,7 +173,7 @@
               </div>
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="feedbackCommentRadio" name="feedbackRadio" class="custom-control-input">
-                <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Komentaar</label>
+                <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Kommentaar</label>
               </div>
             </div>
             <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
@@ -250,7 +250,7 @@
       <div class="form-row">
         <div class="form-group col-12">
           <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
-          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
           <input type="hidden" name="feedbackType" value="new_word">
           <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
         </div>
