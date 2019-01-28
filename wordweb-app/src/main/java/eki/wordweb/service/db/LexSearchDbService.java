@@ -132,7 +132,8 @@ public class LexSearchDbService {
 						MVIEW_WW_WORD.DATASET_CODES,
 						MVIEW_WW_WORD.MEANING_COUNT,
 						MVIEW_WW_WORD.MEANING_WORDS,
-						MVIEW_WW_WORD.DEFINITIONS
+						MVIEW_WW_WORD.DEFINITIONS,
+						MVIEW_WW_WORD.WORD_SOURCES
 						)
 				.from(MVIEW_WW_WORD)
 				.where(MVIEW_WW_WORD.WORD_ID.eq(wordId))
@@ -145,7 +146,6 @@ public class LexSearchDbService {
 		return create
 				.select(
 						MVIEW_WW_WORD_ETYMOLOGY.WORD_ID,
-						MVIEW_WW_WORD_ETYMOLOGY.WORD_SOURCES,
 						MVIEW_WW_WORD_ETYMOLOGY.ETYM_LINEUP
 						)
 				.from(MVIEW_WW_WORD_ETYMOLOGY)

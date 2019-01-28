@@ -28,7 +28,8 @@ select w.word_id,
         group by w.word_id) as dataset_codes,
        mc.meaning_count,
        mw.meaning_words,
-       wd.definitions
+       wd.definitions,
+       wsl.word_sources
 from (select w.id as word_id,
              array_to_string(array_agg(distinct f.value),',','*') as word,
              w.homonym_nr,
@@ -106,7 +107,11 @@ from (select w.id as word_id,
                               inner join dataset ds on ds.code = l.dataset_code
                               left outer join definition d on d.meaning_id = l.meaning_id
                          where l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')) wd
-                   group by wd.word_id) wd on wd.word_id = w.word_id;
+                   group by wd.word_id) wd on wd.word_id = w.word_id
+  left outer join (select wsl.word_id,
+                          array_agg(wsl.value order by wsl.order_by) word_sources
+                   from word_source_link wsl
+                   group by wsl.word_id) wsl on wsl.word_id = w.word_id;
 
 create view view_ww_as_word 
   as
@@ -420,7 +425,6 @@ create view view_ww_word_etymology
        order by we.order_by)
     )
     select wer.word_id,
-           wsl.word_sources,
            array_agg(row (wer.word1_id,wer.word2_id,ef2.value,ew2.lang,ew2.etymology_year,mw2.meaning_words,wsl2.word_sources,wer.comments,wer.is_questionable,wer.is_compound)::type_word_etym order by wer.order_by) etym_lineup
     from word_etym_recursion wer
       inner join word ew2 on ew2.id = wer.word2_id
@@ -448,13 +452,8 @@ create view view_ww_word_etymology
       left outer join (select wsl.word_id,
                               array_agg(wsl.value order by wsl.order_by) word_sources
                        from word_source_link wsl
-                       group by wsl.word_id) wsl on wsl.word_id = wer.word_id
-      left outer join (select wsl.word_id,
-                              array_agg(wsl.value order by wsl.order_by) word_sources
-                       from word_source_link wsl
                        group by wsl.word_id) wsl2 on wsl2.word_id = wer.word2_id
-    group by wer.word_id,
-             wsl.word_sources
+    group by wer.word_id
     order by wer.word_id;
 
 -- word relations

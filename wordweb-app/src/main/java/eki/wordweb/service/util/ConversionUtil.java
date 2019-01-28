@@ -605,7 +605,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			wordEtymBuf.append(word.getEtymologyType().getValue());
 			wordEtymBuf.append("</font>");
 		}
-		List<String> wordSources = wordEtymology.getWordSources();
+		List<String> wordSources = word.getWordSources();
 		if (CollectionUtils.isNotEmpty(wordSources)) {
 			if (wordEtymBuf.length() > 0) {
 				wordEtymBuf.append(", ");

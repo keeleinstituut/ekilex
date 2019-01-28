@@ -53,7 +53,8 @@ dblink(
 	dataset_codes varchar(100) array,
 	meaning_count integer,
 	meaning_words type_word array,
-	definitions type_definition array
+	definitions type_definition array,
+	word_sources text array
 );
 
 create materialized view mview_ww_as_word as
@@ -163,7 +164,6 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_etymology') as word_etymology(
 	word_id bigint,
-	word_sources text array,
 	etym_lineup type_word_etym array
 );
 

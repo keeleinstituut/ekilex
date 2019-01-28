@@ -50,6 +50,8 @@ public class Word extends WordTypeData {
 
 	private String definitionsWrapup;
 
+	private List<String> wordSources;
+
 	private List<TypeWordRelation> relatedWords;
 
 	private List<WordRelationGroup> limitedRelatedWordTypeGroups;
@@ -230,6 +232,14 @@ public class Word extends WordTypeData {
 
 	public void setDefinitionsWrapup(String definitionsWrapup) {
 		this.definitionsWrapup = definitionsWrapup;
+	}
+
+	public List<String> getWordSources() {
+		return wordSources;
+	}
+
+	public void setWordSources(List<String> wordSources) {
+		this.wordSources = wordSources;
 	}
 
 	public List<TypeWordRelation> getRelatedWords() {
