@@ -1501,10 +1501,10 @@ word_type	n	number (nt 24/7)	est	descrip
 word_type	n	number (nt 24/7)	est	wordweb
 word_type	n	number	eng	descrip
 word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
-word_type	pf	pooleesliide	est	wordweb
+word_type	pf	liitsõna esiosana	est	wordweb
 word_type	pf	combining form	eng	descrip
 word_type	sf	sufiksoid, pooljärelliide vm järelosa	est	descrip
-word_type	sf	pooljärelliide	est	wordweb
+word_type	sf	liitsõna järelosana	est	wordweb
 word_type	sf	combining form	eng	descrip
 word_type	s	sarja liige	est	descrip
 word_type	s	serial member	eng	descrip
@@ -1520,7 +1520,6 @@ word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip
 word_type	l	lühend	est	wordweb
 word_type	km	kaubamärk	est	wordweb
 word_type	k	kohanimi	est	wordweb
-word_type	lz	lühend	est	wordweb
 word_type	th	tähis	est	wordweb
 word_type	ametinimetus	ametinimetus	est	wordweb
 word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb

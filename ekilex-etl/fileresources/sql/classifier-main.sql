@@ -1893,10 +1893,10 @@ insert into word_type_label (code, value, lang, type) values ('n', 'number (nt 2
 insert into word_type_label (code, value, lang, type) values ('n', 'number (nt 24/7)', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('n', 'number', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('pf', 'prefiksoid, pooleesliide vm esiosa', 'est', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('pf', 'pooleesliide', 'est', 'wordweb');
+insert into word_type_label (code, value, lang, type) values ('pf', 'liitsõna esiosana', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('pf', 'combining form', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('sf', 'sufiksoid, pooljärelliide vm järelosa', 'est', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('sf', 'pooljärelliide', 'est', 'wordweb');
+insert into word_type_label (code, value, lang, type) values ('sf', 'liitsõna järelosana', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('sf', 'combining form', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('s', 'sarja liige', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('s', 'serial member', 'eng', 'descrip');
@@ -1912,7 +1912,6 @@ insert into word_type_label (code, value, lang, type) values ('dokumendi pealkir
 insert into word_type_label (code, value, lang, type) values ('l', 'lühend', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('km', 'kaubamärk', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('k', 'kohanimi', 'est', 'wordweb');
-insert into word_type_label (code, value, lang, type) values ('lz', 'lühend', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('th', 'tähis', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('ametinimetus', 'ametinimetus', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('dokumendi pealkiri', 'dokumendi pealkiri', 'est', 'wordweb');
