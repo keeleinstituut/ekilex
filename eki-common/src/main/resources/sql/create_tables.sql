@@ -654,6 +654,7 @@ create table lexeme
   modified_on timestamp null,
   modified_by varchar(100) null,
   frequency_group varchar(100) references lexeme_frequency(code) null,
+  corpus_frequency numeric,
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,

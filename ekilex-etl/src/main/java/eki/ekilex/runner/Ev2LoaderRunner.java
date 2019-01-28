@@ -552,6 +552,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setLevel1(russianWord.level1);
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
+			lexeme.setCorpusFrequency(russianWordData.corpFrequency);
 			Long lexemeId = createLexeme(lexeme, getDataset());
 			russianWord.level1++;
 			if (lexemeId != null) {
@@ -848,6 +849,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String aspectValueExp = "x:aspg/x:aspvst";
 		final String vocalFormExp = "x:xhld";
 		final String sourceExp = "x:vsall";
+		final String corpFrequencyExp = "x:xfreq";
 
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
@@ -866,6 +868,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.register = extractAsString(wordGroupNode, registerExp);
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
 			wordData.sources.addAll(extractOriginalValues(wordGroupNode,sourceExp));
+			wordData.corpFrequency = extractAsFloat(wordGroupNode, corpFrequencyExp);
 			String domainCode = extractAsString(wordGroupNode, domainExp);
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
@@ -897,6 +900,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return dataList;
+	}
+
+	private Float extractAsFloat(Node node, String xpathExp) {
+		String numberAsString = extractAsString(node, xpathExp);
+		if (numberAsString == null) {
+			return null;
+		} else {
+			String cleanNumberString = numberAsString.replace(",", "");
+			return Float.parseFloat(cleanNumberString);
+		}
 	}
 
 	private boolean wordContainsAspectType(String word) {

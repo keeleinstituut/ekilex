@@ -521,6 +521,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String aspect;
 		Long wordId;
 		List<String> sources = new ArrayList<>();
+		Float corpFrequency;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -540,6 +541,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.aspect = this.aspect;
 			newData.wordId = this.wordId;
 			newData.sources.addAll(sources);
+			newData.corpFrequency = this.corpFrequency;
 			return newData;
 		}
 	}
