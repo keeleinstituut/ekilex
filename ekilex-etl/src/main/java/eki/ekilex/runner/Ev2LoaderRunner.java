@@ -363,7 +363,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 					for(Node transalationGroupNode : translationGroupNodes) {
 						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null);
+						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 						List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 						Lexeme russianLexeme = new Lexeme();
 						russianLexeme.setWordId(russianWordData.id);
@@ -397,7 +397,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.language = dataLang;
 			context.importedWords.add(wordData);
 		} else {
-			wordData = findOrCreateWord(context, word, wordValue, dataLang, null);
+			wordData = findOrCreateWord(context, word, wordValue, dataLang, null, null);
 		}
 		return wordData;
 	}
@@ -541,7 +541,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<LexemeToWordData>> aspectGroups, Long meaningId) throws Exception {
 		for (LexemeToWordData russianWordData : meaningRussianWords) {
-			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect);
+			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect, russianWordData.vocalForm);
 			russianWordData.wordId = russianWord.id;
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(russianWord.id);
@@ -648,7 +648,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for(Node transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null);
+								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 								List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 								boolean createNewRussianLexeme = true;
 								Long russianLexemeId = null;
@@ -681,14 +681,14 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect) throws Exception {
+	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect, String vocalForm) throws Exception {
 		Optional<WordData> word = context.importedWords.stream()
 				.filter(w -> Objects.equals(w.value, wordValue) &&
 						(Objects.equals(w.displayForm, wordDisplayForm) || Objects.equals(wordValue, wordDisplayForm))).findFirst();
 		if (word.isPresent()) {
 			return word.get();
 		} else {
-			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, aspect, null);
+			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, aspect, null, vocalForm);
 			context.importedWords.add(newWord);
 			return newWord;
 		}
@@ -837,11 +837,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String governmentExp = "x:vrek";
 		final String domainExp = "x:v";
 		final String aspectValueExp = "x:aspg/x:aspvst";
+		final String vocalFormExp = "x:xhld";
 
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
 		for (Node wordGroupNode : wordGroupNodes) {
 			String word = extractAsString(wordGroupNode, wordExp);
+			String vocalForm = extractAsString(wordGroupNode, vocalFormExp);
 			String aspectWord = extractAsString(wordGroupNode, aspectValueExp);
 			LexemeToWordData wordData = new LexemeToWordData();
 			wordData.word = cleanUpWord(word);
@@ -850,6 +852,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 			wordData.displayForm = word;
 			wordData.reportingId = reportingId;
+			wordData.vocalForm = vocalForm;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
 			String domainCode = extractAsString(wordGroupNode, domainExp);
