@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
 
-    private static final long serialVersionUID = 1526227843;
+    private static final long serialVersionUID = -993205251;
 
     /**
      * The reference instance of <code>public.mview_ww_collocation</code>
@@ -143,6 +143,11 @@ public class MviewWwCollocation extends TableImpl<MviewWwCollocationRecord> {
      * The column <code>public.mview_ww_collocation.colloc_members</code>.
      */
     public final TableField<MviewWwCollocationRecord, TypeCollocMemberRecord[]> COLLOC_MEMBERS = createField("colloc_members", eki.wordweb.data.db.udt.TypeCollocMember.TYPE_COLLOC_MEMBER.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.mview_ww_collocation.target_context</code>.
+     */
+    public final TableField<MviewWwCollocationRecord, String> TARGET_CONTEXT = createField("target_context", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * Create a <code>public.mview_ww_collocation</code> table reference

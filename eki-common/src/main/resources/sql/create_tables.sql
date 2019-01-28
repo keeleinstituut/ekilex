@@ -628,7 +628,8 @@ create table collocation
   definition text,
   frequency numeric(14, 4),
   score numeric(14, 4),
-  usages text array
+  usages text array,
+  target_context varchar(100) not null
 );
 alter sequence collocation_id_seq restart with 10000;
 

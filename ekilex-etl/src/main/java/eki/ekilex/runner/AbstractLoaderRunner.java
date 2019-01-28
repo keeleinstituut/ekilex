@@ -669,6 +669,13 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return homonymNr;
 	}
 
+	protected List<Map<String, Object>> getWords(String word, String dataset) {
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("dataset", dataset);
+		return basicDbService.queryList(sqls.getSqlSelectWordByDataset(), tableRowParamMap);
+	}
+
 	protected Long createMeaning(Meaning meaning) throws Exception {
 
 		Map<String, Object> tableRowParamMap;

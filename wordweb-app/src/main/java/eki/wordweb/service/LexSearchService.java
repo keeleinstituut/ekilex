@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
+import eki.common.constant.TargetContext;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
@@ -40,6 +41,10 @@ import eki.wordweb.service.util.ConversionUtil;
 @Component
 public class LexSearchService implements InitializingBean, SystemConstant {
 
+	private static final Integer DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL = 3;
+
+	private static final Integer SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL = 2;
+
 	@Autowired
 	private LexSearchDbService lexSearchDbService;
 
@@ -56,7 +61,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 
 		languagesDatasetMap = new HashMap<>();
 		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "kol"});
-		languagesDatasetMap.put("est-est-simple", new String[] {"psv"});
+		languagesDatasetMap.put("est-est-simple", new String[] {"psv", "kol"});
 		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2"});
 		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2"});
 		languagesDatasetMap.put("rus-est-detail", new String[] {"ev2"});
@@ -120,7 +125,18 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	@Transactional
 	public WordData getWordData(Long wordId, String sourceLang, String destinLang, String displayLang, String searchMode) {
 
+		// query params
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
+		TargetContext targetContext = null;
+		if (StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode)) {
+			targetContext = TargetContext.SIMPLE;
+		}
+		Integer maxDisplayLevel = DEFAULT_MORPHOLOGY_MAX_DISPLAY_LEVEL;
+		if (TargetContext.SIMPLE.equals(targetContext)) {
+			maxDisplayLevel = SIMPLE_MORPHOLOGY_MAX_DISPLAY_LEVEL;
+		}
+
+		// queries and transformations
 		Word word = lexSearchDbService.getWord(wordId);
 		classifierUtil.applyClassifiers(word, displayLang);
 		conversionUtil.setWordTypeFlags(word);
@@ -130,9 +146,9 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		conversionUtil.composeWordRelations(word, wordRelationTuples, datasets, displayLang);
 		List<LexemeDetailsTuple> lexemeDetailsTuples = lexSearchDbService.findLexemeDetailsTuples(wordId, datasets);
 		List<LexemeMeaningTuple> lexemeMeaningTuples = lexSearchDbService.findLexemeMeaningTuples(wordId, datasets);
-		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets);
+		List<CollocationTuple> collocTuples = lexSearchDbService.findCollocations(wordId, datasets, targetContext);
 		List<Lexeme> lexemes = conversionUtil.composeLexemes(word, lexemeDetailsTuples, lexemeMeaningTuples, collocTuples, sourceLang, destinLang, displayLang);
-		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId);
+		Map<Long, List<Form>> paradigmFormsMap = lexSearchDbService.findWordForms(wordId, maxDisplayLevel);
 		List<Paradigm> paradigms = conversionUtil.composeParadigms(word, paradigmFormsMap, displayLang);
 		List<String> allImageFiles = new ArrayList<>();
 		lexemes.forEach(lexeme -> {
@@ -141,6 +157,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 			}
 		});
 
+		// resulting flags
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
 		boolean isUnknownForm = false;

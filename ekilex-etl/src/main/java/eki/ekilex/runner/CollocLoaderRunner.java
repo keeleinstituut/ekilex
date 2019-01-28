@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
+import eki.common.constant.TargetContext;
 import eki.common.data.AbstractDataObject;
 import eki.common.data.Count;
 import eki.common.exception.DataLoadingException;
@@ -90,6 +91,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	private final char compundWordCompDelim = '+';
 
 	private final String domainOriginBolan = "bolan";
+	private final String datasetCodePsv = "psv";
 
 	private final String prevWordCollocMemberName = "mse";
 	private final String nextWordCollocMemberName = "msj";
@@ -234,6 +236,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Map<String, Map<Integer, Word>> wordMap = new HashMap<>();
 		Map<Long, Map<Integer, LexemeMeaning>> meaningMap = new HashMap<>();
 		Map<String, UnknownWord> dummyWordMap = new HashMap<>();
+		Map<String, Boolean> psvAvailabilityResolvedWordMap = new HashMap<>();
 		extractAndSaveWordsLexemesMeanings(articleNodes, wordMap, meaningMap, ssGuidMap, countersMap);
 
 		Map<String, Map<String, CollocRecord>> collocMap = new HashMap<>();
@@ -339,6 +342,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							collocGroupOrder++;
 							collocUsages = extractCollocUsages(collocGroupNode);
 							collocMembers = extractCollocMembers(collocGroupNode, ignoredCollocGroupCount);
+							resolvePsvAvailability(collocMembers, psvAvailabilityResolvedWordMap);
 							collocGroup = new CollocGroup(word, wordPosCode, lexemeId, collocPosGroupCode, collocPosGroupId, collocRelGroupName, collocRelGroupId, collocGroupOrder);
 							saveCollocations(
 									collocGroupNode, collocGroup, collocUsages, collocMembers,
@@ -544,17 +548,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 						continue;
 					} else {
 						lemmaDataCollocMembers = composeCollocMembers(collocMemberName, form, conjunct, lemmaDataStr);
-						/*
-						 * FIXME not yet sure about this logic
-						 * 
-						for (CollocMember lemmaDataCollocMember : lemmaDataCollocMembers) {
-							//col
-							if (StringUtils.equals(colWordCollocMemberName, collocMemberName) && (lemmaDataCollocMember.getRefNum() == null)) {
-								ignoredCollocGroupCount.increment();
-								return Collections.emptyList();
-							}							
-						}
-						*/
 						collocMembers.addAll(lemmaDataCollocMembers);
 					}
 
@@ -618,6 +611,24 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			collocUsages.add(collocUsage);
 		}
 		return collocUsages;
+	}
+
+	private void resolvePsvAvailability(List<CollocMember> collocMembers, Map<String, Boolean> psvAvailabilityResolvedWordMap) {
+
+		for (CollocMember collocMember : collocMembers) {
+			String name = collocMember.getName();
+			String word = collocMember.getWord();
+			if (!ArrayUtils.contains(primaryCollocMemberNames, name)) {
+				continue;
+			}
+			Boolean psvAvailability = psvAvailabilityResolvedWordMap.get(word);
+			if (psvAvailability == null) {
+				List<Map<String, Object>> words = getWords(word, datasetCodePsv);
+				psvAvailability = CollectionUtils.isNotEmpty(words);
+				psvAvailabilityResolvedWordMap.put(word, psvAvailability);
+			}
+			collocMember.setAvailability(psvAvailability.booleanValue());
+		}
 	}
 
 	private void saveCollocations(
@@ -841,6 +852,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			}
 
 			boolean collocExists = collocMap.containsKey(collocation);
+			String targetContext = calculateTargetContext(collocMembersPermutation);
 
 			if (collocExists) {
 				String collocLexemesKey = composeCollocLexemesKey(currentCollocMemberRecords);
@@ -848,7 +860,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				existingCollocRecord = collocLexemesMap.get(collocLexemesKey);
 				if (existingCollocRecord == null) {
 					duplicateCollocationCount.increment();
-					Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, currentCollocMemberRecords);
+					Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, targetContext, currentCollocMemberRecords);
 					existingCollocRecord = new CollocRecord(collocId, collocDefinition, collocUsages, currentCollocMemberRecords);
 					collocLexemesMap.put(collocLexemesKey, existingCollocRecord);
 				} else {
@@ -859,7 +871,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			} else {
 				collocationCount.increment();
 				collocateCount.increment(currentCollocMemberRecords.size());
-				Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, currentCollocMemberRecords);
+				Long collocId = createCollocation(collocation, collocDefinition, frequency, score, collocUsages, targetContext, currentCollocMemberRecords);
 				existingCollocRecord = new CollocRecord(collocId, collocDefinition, collocUsages, currentCollocMemberRecords);
 				String collocLexemesKey = composeCollocLexemesKey(existingCollocRecord.getMembers());
 				collocLexemesMap = new HashMap<>();
@@ -867,6 +879,20 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 				collocMap.put(collocation, collocLexemesMap);
 			}
 		}
+	}
+
+	private String calculateTargetContext(List<CollocMember> collocMembersPermutation) {
+		boolean totalPsvAvailability = collocMembersPermutation.stream()
+				.filter(collocMember -> ArrayUtils.contains(primaryCollocMemberNames, collocMember.getName()))
+				.allMatch(CollocMember::isAvailability);
+		String targetContext;
+		if (totalPsvAvailability) {
+			targetContext = TargetContext.SIMPLE.name();
+		} else {
+			//well, don't know really...
+			targetContext = TargetContext.DETAIL.name();
+		}
+		return targetContext;
 	}
 
 	private String composeCollocLexemesKey(List<CollocMemberRecord> collocMembers) {
@@ -981,9 +1007,9 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	private Long createCollocation(
-			String collocation, String definition, Float frequency, Float score, List<String> collocUsages, List<CollocMemberRecord> collocMemberRecords) throws Exception {
+			String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String targetContext, List<CollocMemberRecord> collocMemberRecords) throws Exception {
 
-		Long collocationId = createCollocation(collocation, definition, frequency, score, collocUsages);
+		Long collocationId = createCollocation(collocation, definition, frequency, score, collocUsages, targetContext);
 		Integer memberOrder = 0;
 		for (CollocMemberRecord collocMemberRecord : collocMemberRecords) {
 			memberOrder++;
@@ -1150,7 +1176,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		return collocRelGroupId;
 	}
 
-	private Long createCollocation(String collocation, String definition, Float frequency, Float score, List<String> collocUsages) throws Exception {
+	private Long createCollocation(String collocation, String definition, Float frequency, Float score, List<String> collocUsages, String targetContext) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("value", collocation);
@@ -1167,6 +1193,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 			String[] collocUsagesArr = collocUsages.toArray(new String[0]);
 			tableRowParamMap.put("usages", collocUsagesArr);
 		}
+		tableRowParamMap.put("target_context", targetContext);
 		Long collocationId = basicDbService.create(COLLOCATION, tableRowParamMap);
 		return collocationId;
 	}
@@ -1288,6 +1315,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		private RefNum refNum;
 
+		private boolean availability;
+
 		public CollocMember(String name, String word, String form, String morphCode, String posCode, String conjunct, RefNum refNum) {
 			this.name = name;
 			this.word = word;
@@ -1328,6 +1357,14 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		public RefNum getRefNum() {
 			return refNum;
+		}
+
+		public boolean isAvailability() {
+			return availability;
+		}
+
+		public void setAvailability(boolean availability) {
+			this.availability = availability;
 		}
 	}
 

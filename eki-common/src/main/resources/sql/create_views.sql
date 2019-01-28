@@ -44,14 +44,14 @@ from (select w.id as word_id,
         join form as f on f.paradigm_id = p.id and f.mode = 'WORD'
       where exists (select ld.id
                     from lexeme as ld
-                    where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
+                    where (ld.word_id = w.id and ld.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')))
       group by w.id) as w
   inner join (select mc.word_id,
                      count(mc.meaning_id) meaning_count
               from (select l.word_id,
                            l.meaning_id
                     from lexeme l
-                    where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
+                    where l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')
                     group by l.word_id,
                              l.meaning_id) mc
               group by mc.word_id) mc on mc.word_id = w.word_id
@@ -85,7 +85,7 @@ from (select w.id as word_id,
                               left outer join word w2 on w2.id = l2.word_id
                               left outer join paradigm p2 on p2.word_id = w2.id
                               left outer join form f2 on f2.paradigm_id = p2.id and f2.mode = 'WORD'
-                         where l1.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) mw
+                         where l1.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')) mw
                    group by mw.word_id) mw on mw.word_id = w.word_id
   left outer join (select wd.word_id,
                           array_agg(row (wd.lexeme_id,wd.meaning_id,wd.value,wd.value_prese,wd.lang,wd.dataset_code)::type_definition order by wd.ds_order_by,wd.level1,wd.level2,wd.level3,wd.lex_order_by,wd.d_order_by) definitions
@@ -105,7 +105,7 @@ from (select w.id as word_id,
                          from lexeme l
                               inner join dataset ds on ds.code = l.dataset_code
                               left outer join definition d on d.meaning_id = l.meaning_id
-                         where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) wd
+                         where l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')) wd
                    group by wd.word_id) wd on wd.word_id = w.word_id;
 
 create view view_ww_as_word 
@@ -124,7 +124,7 @@ create view view_ww_as_word
     and   f2.mode = 'AS_WORD'
     and   exists (select ld.id
                   from lexeme as ld
-                  where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')));
+                  where (ld.word_id = w.id and ld.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')));
 
 -- word forms
 create view view_ww_form
@@ -169,7 +169,7 @@ create view view_ww_form
           and ff.display_level > 0
           and exists (select ld.id
                         from lexeme as ld
-                        where (ld.word_id = w.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
+                        where (ld.word_id = w.id and ld.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')))
     order by p.id, ff.order_by, ff.id;
 
 -- lexeme meanings
@@ -221,7 +221,7 @@ create view view_ww_meaning
                        group by mf.meaning_id) m_lcm on m_lcm.meaning_id = m.id
     where exists (select ld.id
                         from lexeme as ld
-                        where (ld.meaning_id = m.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
+                        where (ld.meaning_id = m.id and ld.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')))
     order by m.id;
 
 -- lexeme details
@@ -324,7 +324,7 @@ create view view_ww_lexeme
                                                               group by s.id) uas on uas.id = uasl.source_id
                                                 group by uasl.freeform_id) ua on ua.usage_id = u.id) u
                        group by u.lexeme_id) usg on usg.lexeme_id = l.id
-    where l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
+    where l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')
     order by l.id;
 
 -- collocations
@@ -348,7 +348,8 @@ create view view_ww_collocation
       c.value as colloc_value,
       c.definition as colloc_definition,
       c.usages as colloc_usages,
-      array_agg(row(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lw2.homonym_nr, lw2.word_exists, lc2.conjunct, lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members
+      array_agg(row(lw2.lexeme_id, lw2.word_id, lw2.word, lc2.member_form, lw2.homonym_nr, lw2.word_exists, lc2.conjunct, lc2.weight)::type_colloc_member order by lc2.member_order) as colloc_members,
+      c.target_context
     from
       collocation as c
       inner join lex_colloc as lc1 on lc1.collocation_id = c.id
@@ -494,7 +495,7 @@ create view view_ww_word_relation
                                      and   exists (select l2.id
                                                    from lexeme l2
                                                    where l2.word_id = w2.id
-                                                   and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))) w2 on w2.word1_id = w1.id
+                                                   and   l2.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2'))) w2 on w2.word1_id = w1.id
                        group by w1.id) wr on wr.word_id = w.id
       left outer join (select wg.word_id,
                               wg.word_group_id,
@@ -534,7 +535,7 @@ create view view_ww_word_relation
                              and   exists (select l2.id
                                            from lexeme l2
                                            where l2.word_id = w2.id
-                                           and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'))) wg
+                                           and   l2.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2'))) wg
                        group by wg.word_id,
                                 wg.word_group_id,
                                 wg.word_rel_type_code) wg on wg.word_id = w.id
@@ -542,7 +543,7 @@ create view view_ww_word_relation
     and   exists (select l.id
                   from lexeme l
                   where l.word_id = w.id
-                  and   l.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2'));
+                  and   l.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2'));
 
 
 -- lexeme relations
@@ -585,12 +586,12 @@ create view view_ww_meaning_relation
           and   f2.paradigm_id = p2.id
           and   p2.word_id = w2.id
           and   l2.word_id = w2.id
-          and   l2.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')) m2
+          and   l2.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')) m2
     where r.meaning1_id = m1.id
     and   r.meaning2_id = m2.meaning_id
     and   exists (select ld.id
                         from lexeme as ld
-                        where (ld.meaning_id = m1.id and ld.dataset_code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')))
+                        where (ld.meaning_id = m1.id and ld.dataset_code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')))
     group by m1.id;
 
 -- lexical decision game data
@@ -717,7 +718,7 @@ create view view_ww_dataset
        'est' as lang,
        order_by
      from dataset
-     where code in ('psv', 'ss1', 'kol', 'qq2', 'ev2')
+     where code in ('ss1', 'psv', 'kol', 'qq2', 'ev2')
      order by order_by
     );
 

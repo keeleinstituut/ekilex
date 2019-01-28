@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FormMode;
+import eki.common.constant.TargetContext;
 import eki.wordweb.data.CollocationTuple;
 import eki.wordweb.data.Form;
 import eki.wordweb.data.LexemeDetailsTuple;
@@ -252,7 +253,12 @@ public class LexSearchDbService {
 				.into(LexemeMeaningTuple.class);
 	}
 
-	public List<CollocationTuple> findCollocations(Long wordId, String[] datasets) {
+	public List<CollocationTuple> findCollocations(Long wordId, String[] datasets, TargetContext targetContext) {
+
+		Condition where = MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId).and(MVIEW_WW_COLLOCATION.DATASET_CODE.in(datasets));
+		if (targetContext != null) {
+			where = where.and(MVIEW_WW_COLLOCATION.TARGET_CONTEXT.eq(targetContext.name()));
+		}
 
 		return create
 				.select(
@@ -268,9 +274,7 @@ public class LexSearchDbService {
 						MVIEW_WW_COLLOCATION.COLLOC_USAGES,
 						MVIEW_WW_COLLOCATION.COLLOC_MEMBERS)
 				.from(MVIEW_WW_COLLOCATION)
-				.where(
-						MVIEW_WW_COLLOCATION.WORD_ID.eq(wordId)
-						.and(MVIEW_WW_COLLOCATION.DATASET_CODE.in(datasets)))
+				.where(where)
 				.orderBy(
 						MVIEW_WW_COLLOCATION.LEVEL1,
 						MVIEW_WW_COLLOCATION.LEVEL2,
@@ -284,7 +288,12 @@ public class LexSearchDbService {
 				.into(CollocationTuple.class);
 	}
 
-	public Map<Long, List<Form>> findWordForms(Long wordId) {
+	public Map<Long, List<Form>> findWordForms(Long wordId, Integer maxDisplayLevel) {
+
+		Condition where = MVIEW_WW_FORM.WORD_ID.eq(wordId).and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name()));
+		if (maxDisplayLevel != null) {
+			where = where.and(MVIEW_WW_FORM.DISPLAY_LEVEL.le(maxDisplayLevel));
+		}
 
 		return create
 				.select(
@@ -307,8 +316,7 @@ public class LexSearchDbService {
 						)
 				.from(MVIEW_WW_FORM)
 				.where(
-						MVIEW_WW_FORM.WORD_ID.eq(wordId)
-						.and(MVIEW_WW_FORM.MODE.in(FormMode.WORD.name(), FormMode.FORM.name())))
+						where)
 				.orderBy(MVIEW_WW_FORM.PARADIGM_ID, MVIEW_WW_FORM.ORDER_BY, MVIEW_WW_FORM.FORM_ID)
 				.fetchGroups(MVIEW_WW_FORM.PARADIGM_ID, Form.class);
 	}

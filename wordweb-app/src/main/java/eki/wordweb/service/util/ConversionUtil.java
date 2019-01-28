@@ -722,6 +722,9 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				relatedWords = relatedWords.stream().filter(relation -> CollectionUtils.containsAny(relation.getDatasetCodes(), datasetsList)).collect(Collectors.toList());
 			}
+			if(CollectionUtils.isNotEmpty(relatedWords)) {
+				word.getRelatedWords().addAll(relatedWords);
+			}
 			if (CollectionUtils.isNotEmpty(relatedWords)) {
 				for (TypeWordRelation wordRelation : relatedWords) {
 					classifierUtil.applyClassifiers(wordRelation, displayLang);
@@ -757,9 +760,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 						limitedRelatedWordCounter += limitedRelatedWordsOfType.size();
 					}
 				}
-			}
-			if(CollectionUtils.isNotEmpty(relatedWords)) {
-				word.getRelatedWords().addAll(relatedWords);
 			}
 			List<TypeWordRelation> wordGroupMembers = tuple.getWordGroupMembers();
 			if (CollectionUtils.isNotEmpty(wordGroupMembers)) {
