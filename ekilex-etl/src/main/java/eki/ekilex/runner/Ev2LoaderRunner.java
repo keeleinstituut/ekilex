@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -28,6 +29,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import eki.common.constant.FreeformType;
+import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.common.constant.WordRelationGroupType;
 import eki.ekilex.data.transform.Guid;
 import eki.ekilex.data.transform.Lexeme;
@@ -353,7 +356,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 					for(Node transalationGroupNode : translationGroupNodes) {
 						String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null);
+						WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 						List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 						Lexeme russianLexeme = new Lexeme();
 						russianLexeme.setWordId(russianWordData.id);
@@ -387,7 +390,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.language = dataLang;
 			context.importedWords.add(wordData);
 		} else {
-			wordData = findOrCreateWord(context, word, wordValue, dataLang, null);
+			wordData = findOrCreateWord(context, word, wordValue, dataLang, null, null);
 		}
 		return wordData;
 	}
@@ -531,7 +534,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<LexemeToWordData>> aspectGroups, Long meaningId) throws Exception {
 		for (LexemeToWordData russianWordData : meaningRussianWords) {
-			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect);
+			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect, russianWordData.vocalForm);
 			russianWordData.wordId = russianWord.id;
 			Lexeme lexeme = new Lexeme();
 			lexeme.setWordId(russianWord.id);
@@ -539,16 +542,23 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setLevel1(russianWord.level1);
 			lexeme.setLevel2(1);
 			lexeme.setLevel3(1);
+			lexeme.setCorpusFrequency(russianWordData.corpFrequency);
 			Long lexemeId = createLexeme(lexeme, getDataset());
 			russianWord.level1++;
 			if (lexemeId != null) {
-				if (!russianWordData.governments.isEmpty()) {
-					for (String government : russianWordData.governments) {
-						createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
-					}
+				for (String government : russianWordData.governments) {
+					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
 				}
 				if (isNotBlank(russianWordData.register)) {
 					saveRegisters(lexemeId, Collections.singletonList(russianWordData.register), russianWordData.word);
+				}
+				for (String source : russianWordData.sources) {
+					SourceType sourceType = StringUtils.startsWith(source, "http") ? SourceType.DOCUMENT : SourceType.UNKNOWN;
+					Long sourceId = getSource(sourceType, EXT_SOURCE_ID_NA, source);
+					if (sourceId == null) {
+						sourceId = createSource(sourceType, EXT_SOURCE_ID_NA, source);
+					}
+					createLexemeSourceLink(lexemeId, ReferenceType.ANY, sourceId, null, source);
 				}
 			}
 		}
@@ -638,7 +648,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 							List<Node> translationGroupNodes = meaningGroupNode.selectNodes(translationGroupExp);
 							for(Node transalationGroupNode : translationGroupNodes) {
 								String russianWord = extractAsString(transalationGroupNode, translationValueExp);
-								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null);
+								WordData russianWordData = findOrCreateWord(context, cleanUpWord(russianWord), russianWord, LANG_RUS, null, null);
 								List<String> russianRegisters = extractCleanValues(transalationGroupNode, registersExp);
 								boolean createNewRussianLexeme = true;
 								Long russianLexemeId = null;
@@ -671,14 +681,14 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect) throws Exception {
+	private WordData findOrCreateWord(Context context, String wordValue, String wordDisplayForm, String wordLanguage, String aspect, String vocalForm) throws Exception {
 		Optional<WordData> word = context.importedWords.stream()
 				.filter(w -> Objects.equals(w.value, wordValue) &&
 						(Objects.equals(w.displayForm, wordDisplayForm) || Objects.equals(wordValue, wordDisplayForm))).findFirst();
 		if (word.isPresent()) {
 			return word.get();
 		} else {
-			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, aspect, null);
+			WordData newWord = createDefaultWordFrom(wordValue, wordDisplayForm, wordLanguage, null, aspect, null, vocalForm);
 			context.importedWords.add(newWord);
 			return newWord;
 		}
@@ -827,11 +837,15 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String governmentExp = "x:vrek";
 		final String domainExp = "x:v";
 		final String aspectValueExp = "x:aspg/x:aspvst";
+		final String vocalFormExp = "x:xhld";
+		final String sourceExp = "x:vsall";
+		final String corpFrequencyExp = "x:xfreq";
 
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
 		for (Node wordGroupNode : wordGroupNodes) {
 			String word = extractAsString(wordGroupNode, wordExp);
+			String vocalForm = extractAsString(wordGroupNode, vocalFormExp);
 			String aspectWord = extractAsString(wordGroupNode, aspectValueExp);
 			LexemeToWordData wordData = new LexemeToWordData();
 			wordData.word = cleanUpWord(word);
@@ -840,8 +854,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 			wordData.displayForm = word;
 			wordData.reportingId = reportingId;
+			wordData.vocalForm = vocalForm;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
+			wordData.sources.addAll(extractOriginalValues(wordGroupNode,sourceExp));
+			wordData.corpFrequency = extractAsFloat(wordGroupNode, corpFrequencyExp);
 			String domainCode = extractAsString(wordGroupNode, domainExp);
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
@@ -873,6 +890,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		return dataList;
+	}
+
+	private Float extractAsFloat(Node node, String xpathExp) {
+		String numberAsString = extractAsString(node, xpathExp);
+		if (numberAsString == null) {
+			return null;
+		} else {
+			String cleanNumberString = numberAsString.replace(",", "");
+			return Float.parseFloat(cleanNumberString);
+		}
 	}
 
 	private boolean wordContainsAspectType(String word) {

@@ -458,7 +458,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			for (WordData subWord: subWords) {
 				subWord.id = getWordIdFor(subWord.value, subWord.homonymNr, context.importedWords, subWord.value);
 				if (subWord.id == null) {
-					WordData newWord = createDefaultWordFrom(subWord.value, subWord.displayForm, dataLang, subWord.displayMorph, null, subWord.wordTypeCodes);
+					WordData newWord = createDefaultWordFrom(subWord.value, subWord.displayForm, dataLang, subWord.displayMorph, null, subWord.wordTypeCodes, null);
 					newWord.homonymNr = subWord.homonymNr;
 					context.importedWords.add(newWord);
 					subWord.id = newWord.id;
@@ -473,7 +473,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private Long createWordWithLexeme(Context context, WordData wordData) throws Exception {
 
-		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, null, wordData.wordTypeCodes);
+		WordData newWord = createDefaultWordFrom(wordData.value, wordData.value, dataLang, wordData.displayMorph, null, wordData.wordTypeCodes, null);
 		newWord.homonymNr = wordData.homonymNr;
 		context.importedWords.add(newWord);
 
