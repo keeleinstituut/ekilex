@@ -520,6 +520,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String register;
 		String aspect;
 		Long wordId;
+		List<String> sources = new ArrayList<>();
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
@@ -538,6 +539,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.register = this.register;
 			newData.aspect = this.aspect;
 			newData.wordId = this.wordId;
+			newData.sources.addAll(sources);
 			return newData;
 		}
 	}

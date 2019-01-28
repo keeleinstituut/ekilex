@@ -20,8 +20,11 @@ import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
+import eki.common.constant.ReferenceType;
+import eki.common.constant.SourceType;
 import eki.common.constant.WordRelationGroupType;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
@@ -552,13 +555,19 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			Long lexemeId = createLexeme(lexeme, getDataset());
 			russianWord.level1++;
 			if (lexemeId != null) {
-				if (!russianWordData.governments.isEmpty()) {
-					for (String government : russianWordData.governments) {
-						createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
-					}
+				for (String government : russianWordData.governments) {
+					createOrSelectLexemeFreeform(lexemeId, FreeformType.GOVERNMENT, government);
 				}
 				if (isNotBlank(russianWordData.register)) {
 					saveRegisters(lexemeId, Collections.singletonList(russianWordData.register), russianWordData.word);
+				}
+				for (String source : russianWordData.sources) {
+					SourceType sourceType = StringUtils.startsWith(source, "http") ? SourceType.DOCUMENT : SourceType.UNKNOWN;
+					Long sourceId = getSource(sourceType, EXT_SOURCE_ID_NA, source);
+					if (sourceId == null) {
+						sourceId = createSource(sourceType, EXT_SOURCE_ID_NA, source);
+					}
+					createLexemeSourceLink(lexemeId, ReferenceType.ANY, sourceId, null, source);
 				}
 			}
 		}
@@ -838,6 +847,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String domainExp = "x:v";
 		final String aspectValueExp = "x:aspg/x:aspvst";
 		final String vocalFormExp = "x:xhld";
+		final String sourceExp = "x:vsall";
 
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
@@ -855,6 +865,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			wordData.vocalForm = vocalForm;
 			wordData.register = extractAsString(wordGroupNode, registerExp);
 			wordData.governments.addAll(extractCleanValues(wordGroupNode, governmentExp));
+			wordData.sources.addAll(extractOriginalValues(wordGroupNode,sourceExp));
 			String domainCode = extractAsString(wordGroupNode, domainExp);
 			if (domainCode != null) {
 				additionalDomains.add(domainCode);
