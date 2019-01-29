@@ -898,7 +898,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			return null;
 		} else {
 			String cleanNumberString = numberAsString.replace(",", "");
-			return Float.parseFloat(cleanNumberString);
+			try {
+				return Float.parseFloat(cleanNumberString);
+			} catch (NumberFormatException ignored) {
+				return null;
+			}
 		}
 	}
 
