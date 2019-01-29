@@ -8591,7 +8591,7 @@ body:not(.home-page) footer {
 
 .alert-danger-ie {
   position: fixed;
-  top: 0;
+  bottom: 0;
   left: 0;
   right: 0;
   background: #fff3cd;
@@ -8602,7 +8602,7 @@ body:not(.home-page) footer {
   border: 1px solid #ffeeba;
   border-left: 0px;
   border-right: 0px;
-  border-top: 0px;
+  border-bottom: 00px;
   justify-content: center;
 }
 
