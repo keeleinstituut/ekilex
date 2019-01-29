@@ -420,8 +420,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected boolean isRestricted(Node node) {
 
 		final String restrictedAttr = "as";
+		final String restrictedAttr2 = "l";
+
 		String restrictedValue = ((Element)node).attributeValue(restrictedAttr);
-		return asList("ab", "ap").contains(restrictedValue);
+		String restrictedValue2 = ((Element)node).attributeValue(restrictedAttr2);
+		return asList("ab", "ap").contains(restrictedValue) || asList("ka").contains(restrictedValue2);
 	}
 
 	protected String cleanUpWord(String value) {

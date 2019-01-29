@@ -921,7 +921,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private String extractAsString(Node node, String xpathExp) {
 		Element wordNode = (Element) node.selectSingleNode(xpathExp);
-		return wordNode == null ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
+		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
 	}
 
 	private boolean isNotWordInSs1(String word) {
