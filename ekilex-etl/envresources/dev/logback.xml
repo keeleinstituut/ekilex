@@ -3,6 +3,7 @@
 
 	<appender class="ch.qos.logback.core.ConsoleAppender" name="RootConsoleAppender">
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<charset>UTF-8</charset>
 			<pattern>%date{yyyy.MM.dd HH:mm:ss:SSS} %-5level %class{0}.%method - %msg %n</pattern>
 		</encoder>
 	</appender>
