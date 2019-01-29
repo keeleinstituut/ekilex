@@ -46,9 +46,16 @@ public class LexSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public List<Word> findWords(String searchFilter, String lang, String[] datasets) {
+	public List<Word> findWords(String searchFilter, String lang, String[] datasets, boolean isFullDatasetMatch) {
 
 		String searchFilterLower = StringUtils.lowerCase(searchFilter);
+		Condition datasetCondition;
+		if (isFullDatasetMatch) {
+			datasetCondition = DSL.condition("{0} @> {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
+		} else {
+			datasetCondition = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
+		}
+
 		return create
 				.select(
 						MVIEW_WW_WORD.WORD_ID,
@@ -66,7 +73,7 @@ public class LexSearchDbService {
 				.from(MVIEW_WW_WORD)
 				.where(
 						MVIEW_WW_WORD.LANG.eq(lang)
-						.and(DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets)))
+						.and(datasetCondition)
 						.and(DSL.exists(DSL.select(MVIEW_WW_FORM.WORD_ID)
 												.from(MVIEW_WW_FORM)
 												.where(MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)

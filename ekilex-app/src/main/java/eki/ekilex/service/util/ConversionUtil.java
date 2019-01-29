@@ -1,5 +1,7 @@
 package eki.ekilex.service.util;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -8,8 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import eki.ekilex.data.WordGroup;
-import eki.ekilex.data.Relation;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -35,6 +35,7 @@ import eki.ekilex.data.Lexeme;
 import eki.ekilex.data.LexemeLangGroup;
 import eki.ekilex.data.Paradigm;
 import eki.ekilex.data.ParadigmFormTuple;
+import eki.ekilex.data.Relation;
 import eki.ekilex.data.SourceLink;
 import eki.ekilex.data.TermMeaning;
 import eki.ekilex.data.TermMeaningWord;
@@ -43,8 +44,7 @@ import eki.ekilex.data.Usage;
 import eki.ekilex.data.UsageDefinition;
 import eki.ekilex.data.UsageTranslation;
 import eki.ekilex.data.UsageTranslationDefinitionTuple;
-
-import static java.util.stream.Collectors.groupingBy;
+import eki.ekilex.data.WordGroup;
 
 @Component
 public class ConversionUtil {

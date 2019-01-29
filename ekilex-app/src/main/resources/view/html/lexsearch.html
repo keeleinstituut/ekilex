@@ -32,7 +32,7 @@
               <tr th:each="word : ${wordsFoundBySearch}">
                 <td class="p-0">
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="detailsBtn">
-                    <span th:text="${word.value}" class="ttl">vorm 1</span>
+                    <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>
                     <span th:text="${word.homonymNumber}" th:if="${word.homonymNumber > 0}"></span>
                     (
                     <span th:text="${word.language}"></span>

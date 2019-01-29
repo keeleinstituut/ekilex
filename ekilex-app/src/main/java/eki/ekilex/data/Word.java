@@ -29,8 +29,17 @@ public class Word extends AbstractDataObject {
 	@Column(name = "aspect_code")
 	private String aspectCode;
 
+	@Column(name = "word_type_codes")
+	private String[] wordTypeCodes;
+
 	@Column(name = "dataset_codes")
 	private String[] datasetCodes;
+
+	@Column(name = "is_prefixoid")
+	private boolean prefixoid;
+
+	@Column(name = "is_suffixoid")
+	private boolean suffixoid;
 
 	public Word() {
 	}
@@ -91,12 +100,36 @@ public class Word extends AbstractDataObject {
 		this.aspectCode = aspectCode;
 	}
 
+	public String[] getWordTypeCodes() {
+		return wordTypeCodes;
+	}
+
+	public void setWordTypeCodes(String[] wordTypeCodes) {
+		this.wordTypeCodes = wordTypeCodes;
+	}
+
 	public String[] getDatasetCodes() {
 		return datasetCodes;
 	}
 
 	public void setDatasetCodes(String[] datasetCodes) {
 		this.datasetCodes = datasetCodes;
+	}
+
+	public boolean isPrefixoid() {
+		return prefixoid;
+	}
+
+	public void setPrefixoid(boolean prefixoid) {
+		this.prefixoid = prefixoid;
+	}
+
+	public boolean isSuffixoid() {
+		return suffixoid;
+	}
+
+	public void setSuffixoid(boolean suffixoid) {
+		this.suffixoid = suffixoid;
 	}
 
 }

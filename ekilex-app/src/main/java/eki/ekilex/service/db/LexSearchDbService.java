@@ -19,6 +19,7 @@ import static eki.ekilex.data.db.Tables.WORD;
 import static eki.ekilex.data.db.Tables.WORD_ETYMOLOGY;
 import static eki.ekilex.data.db.Tables.WORD_RELATION;
 import static eki.ekilex.data.db.Tables.WORD_REL_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static eki.ekilex.data.db.tables.WordGroup.WORD_GROUP;
 import static eki.ekilex.data.db.tables.WordGroupMember.WORD_GROUP_MEMBER;
 import static java.util.stream.Collectors.toList;
@@ -345,13 +346,14 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.where((ld.WORD_ID.eq(w1.ID))
 						.and(ld.DATASET_CODE.in(datasets))));
 		}
-
+		
 		Table<Record4<Long,String,Integer,String>> w = DSL
 				.select(
 					w1.ID.as("word_id"),
 					wf.as("word"),
 					w1.HOMONYM_NR,
-					w1.LANG)
+					w1.LANG
+					)
 				.from(from)
 				.where(where)
 				.groupBy(w1.ID)
@@ -363,14 +365,37 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.where(LEXEME.WORD_ID.eq(w.field("word_id").cast(Long.class)))
 				.groupBy(w.field("word_id")));
 
+		Field<String[]> wtf = DSL.field(DSL
+				.select(DSL.arrayAgg(WORD_WORD_TYPE.WORD_TYPE_CODE))
+				.from(WORD_WORD_TYPE)
+				.where(WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class)))
+				.groupBy(w.field("word_id")));
+
+		Field<Boolean> wtpf = DSL.field(DSL.exists(DSL
+				.select(WORD_WORD_TYPE.ID)
+				.from(WORD_WORD_TYPE)
+				.where(
+						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
+						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_PREFIXOID)))));
+
+		Field<Boolean> wtsf = DSL.field(DSL.exists(DSL
+				.select(WORD_WORD_TYPE.ID)
+				.from(WORD_WORD_TYPE)
+				.where(
+						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
+						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
+
 		Table<?> ww = DSL
 				.select(
 					w.field("word_id"),
 					w.field("word"),
 					w.field("homonym_nr"),
 					w.field("lang"),
-					dscf.as("dataset_codes")
-						)
+					dscf.as("dataset_codes"),
+					wtf.as("word_type_codes"),
+					wtpf.as("is_prefixoid"),
+					wtsf.as("is_suffixoid")
+					)
 				.from(w)
 				.orderBy(
 					w.field("word"),
