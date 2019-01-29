@@ -41,9 +41,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(Ss1LoaderRunner.class);
 
-	private final static String sqlWordLexemesByDataset = "select l.* from " + LEXEME + " l where l.word_id = :wordId and l.dataset_code = :dataset";
-
-	private final static String LEXEME_RELATION_ABBREVIATION = "lyh";
 	private final static String POS_TYPE_DERIVATIVE = "adjga";
 
 	private final static String MEANING_RELATION_ANTONYM = "ant";
@@ -401,31 +398,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					} catch (Exception e) {
 						logger.error("{} | {} | {}", e.getMessage(), item.word, wordId);
 					}
-				}
-			}
-		}
-	}
-
-	private void createLexemeRelations(Context context, List<LexemeToWordData> items, String lexemeRelationType, String logMessage) throws Exception {
-
-		for (LexemeToWordData itemData : items) {
-			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, context.importedWords, itemData.reportingId);
-			if (wordId != null) {
-				Map<String, Object> params = new HashMap<>();
-				params.put("wordId", wordId);
-				params.put("dataset", getDataset());
-				try {
-					List<Map<String, Object>> lexemeObjects = basicDbService.queryList(sqlWordLexemesByDataset, params);
-					Optional<Map<String, Object>> lexemeObject =
-							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == itemData.lexemeLevel1).findFirst();
-					if (lexemeObject.isPresent()) {
-						createLexemeRelation(itemData.lexemeId, (Long) lexemeObject.get().get("id"), lexemeRelationType);
-					} else {
-						logger.debug("Lexeme not found for word : {}, lexeme level1 : {}.", itemData.word, itemData.lexemeLevel1);
-						writeToLogFile(itemData.reportingId, logMessage, itemData.word + ", level1 " + itemData.lexemeLevel1);
-					}
-				} catch (Exception e) {
-					logger.error("{} | {} | {}", e.getMessage(), itemData.word, wordId);
 				}
 			}
 		}
@@ -1052,22 +1024,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			unionWords.add(unionWord);
 		}
 		return unionWords;
-	}
-
-	private Long getWordIdFor(String wordValue, int homonymNr, List<WordData> words, String reportingId) throws Exception {
-
-		Long wordId = null;
-		Optional<WordData> matchingWord = words.stream().filter(w -> w.value.equals(wordValue) && w.homonymNr == homonymNr).findFirst();
-		if (matchingWord.isPresent()) {
-			wordId = matchingWord.get().id;
-		}
-		if (wordId == null) {
-			if (!reportingPaused) {
-				//logger.debug("No matching word was found for: \"{}\", word: \"{}\", homonym: \"{}\"", reportingId, wordValue, homonymNr);
-			}
-			writeToLogFile(reportingId, "Ei leitud sihtsõna", wordValue + " : " + homonymNr);
-		}
-		return wordId;
 	}
 
 }

@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
+import eki.common.data.Count;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -119,6 +120,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		logger.debug("total {} articles iterated", articleCounter);
 		processLatinTerms(context);
+		processAbbreviations(context);
 		unusedMeaningReferencesReport(context);
 
 		logger.debug("Found {} reused words", context.reusedWordCount.getValue());
@@ -149,6 +151,20 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			writeToLogFile(logString, "Ei leitud viidatavat mõistet", "");
 		}
 	}
+
+	private void processAbbreviations(Context context) throws Exception {
+
+		logger.debug("Found {} abbreviations <x:lhx>.", context.abbreviationFullWords.size());
+		logger.debug("Processing started.");
+		writeToLogFile("Lühendite töötlus <x:lhx>", "", "");
+
+		Count newAbbreviationFullWordCount = processLexemeToWord(context, context.abbreviationFullWords, null, "Ei leitud märksõna, loome uue", dataLang);
+		createLexemeRelations(context, context.abbreviationFullWords, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale");
+
+		logger.debug("Words created {}", newAbbreviationFullWordCount.getValue());
+		logger.debug("Abbreviations import done.");
+	}
+
 
 	@Transactional
 	void processArticle(
@@ -468,12 +484,14 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> definitionsToCache = new ArrayList<>();
 				List<String> definitions = extractCleanValues(meaningGroupNode, meaningDefinitionExp);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
+				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
 				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
-								meaningLatinTerms.stream()
+								meaningLatinTerms.stream(),
+								meaningAbbreviationFullWords.stream()
 						).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
 				if (meaningData == null) {
@@ -495,7 +513,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
-				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms);
+				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms, meaningAbbreviationFullWords);
 
 				processDomains(meaningGroupNode, meaningId, additionalDomains);
 
@@ -518,6 +536,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						savePosAndDeriv(newWordData, meaningPosCodes, lexemePosCodes, lexemeId, reportingId);
 						saveGrammars(newWordData, meaningGrammars, lexemeGrammars, lexemeId);
 						saveRegisters(lexemeId, registers, reportingId);
+						// connect abbreviation word data and created lexeme id for latter use in abbreviation processing
+						for (LexemeToWordData meaningAbbreviationFullWord : meaningAbbreviationFullWords) {
+							meaningAbbreviationFullWord.lexemeId = lexemeId;
+						}
 					}
 					if (lexemeLevel1 == 1 && lexemeLevel2 == 1) {
 						processMeaningReferences(context, newWordData, meaningId);
@@ -700,10 +722,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void cacheMeaningRelatedData(
 			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
-			List<LexemeToWordData> latinTerms
+			List<LexemeToWordData> latinTerms,
+			List<LexemeToWordData> abbreviationFullWords
 	) {
 		latinTerms.forEach(data -> data.meaningId = meaningId);
 		context.latinTermins.addAll(latinTerms);
+		abbreviationFullWords.forEach(data -> data.meaningId = meaningId);
+		context.abbreviationFullWords.addAll(abbreviationFullWords);
 
 		context.meanings.stream()
 				.filter(m -> Objects.equals(m.meaningId, meaningId))
@@ -712,6 +737,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		words.add(keyword);
 		words.forEach(word -> {
 			context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
+			context.meanings.addAll(convertToMeaningData(abbreviationFullWords, word, level1, definitions));
 		});
 	}
 
@@ -821,6 +847,11 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private List<LexemeToWordData> extractLatinTerms(Node node, String latinTermExp, String reportingId) throws Exception {
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
+	}
+
+	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String reportingId) throws Exception {
+		final String abbreviationFullWordExp = "x:dg/x:lhx";
+		return extractLexemeMetadata(node, abbreviationFullWordExp, null, reportingId);
 	}
 
 	private List<String> extractGovernments(Node node) {
