@@ -77,6 +77,7 @@ etymology_type	pooltõlkelaen	-	-	-
 etymology_type	tehissõna	-	-	-
 etymology_type	tootenimi	-	-	-
 etymology_type	tõlkelaen	-	-	-
+etymology_type	nimi	-	-	-
 gender	f	feminine	eng	descrip
 gender	f	naissugu	est	descrip
 gender	n	neuter	eng	descrip
@@ -889,7 +890,7 @@ lex_rel_type	pyh	ühend	est	wordweb
 lex_rel_type	yvr	üksikvorm	est	wordweb
 lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
 lex_rel_type	yhvt	vaata ka	est	wordweb
-lex_rel_type	vor	suhtlus, vestlus	est	wordweb
+lex_rel_type	vor	suhtlusväljend	est	wordweb
 lex_rel_type	tvt:vrd	võrdle	est	wordweb
 lexeme_frequency	1	1 - kuni 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
@@ -1500,10 +1501,10 @@ word_type	n	number (nt 24/7)	est	descrip
 word_type	n	number (nt 24/7)	est	wordweb
 word_type	n	number	eng	descrip
 word_type	pf	prefiksoid, pooleesliide vm esiosa	est	descrip
-word_type	pf	pooleesliide	est	wordweb
+word_type	pf	liitsõna esiosana	est	wordweb
 word_type	pf	combining form	eng	descrip
 word_type	sf	sufiksoid, pooljärelliide vm järelosa	est	descrip
-word_type	sf	pooljärelliide	est	wordweb
+word_type	sf	liitsõna järelosana	est	wordweb
 word_type	sf	combining form	eng	descrip
 word_type	s	sarja liige	est	descrip
 word_type	s	serial member	eng	descrip
@@ -1519,7 +1520,6 @@ word_type	dokumendi pealkiri	dokumendi pealkiri	est	descrip
 word_type	l	lühend	est	wordweb
 word_type	km	kaubamärk	est	wordweb
 word_type	k	kohanimi	est	wordweb
-word_type	lz	lühend	est	wordweb
 word_type	th	tähis	est	wordweb
 word_type	ametinimetus	ametinimetus	est	wordweb
 word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb

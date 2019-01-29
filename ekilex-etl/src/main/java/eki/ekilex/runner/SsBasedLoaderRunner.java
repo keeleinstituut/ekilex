@@ -153,7 +153,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 					itemData.wordTypeCodes.clear();
 					itemData.wordTypeCodes.add(defaultWordType);
 				}
-				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, null, itemData.wordTypeCodes);
+				WordData newWord = createDefaultWordFrom(itemData.word, itemData.displayForm, lang, null, null, itemData.wordTypeCodes, itemData.vocalForm);
 				context.importedWords.add(newWord);
 				newWordCount.increment();
 				wordId = newWord.id;
@@ -210,10 +210,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	protected WordData createDefaultWordFrom(String wordValue, String displayForm, String lang, String displayMorph, String aspectType, List<String> wordTypeCodes) throws Exception {
+	protected WordData createDefaultWordFrom(
+			String wordValue, String displayForm, String lang, String displayMorph, String aspectType, List<String> wordTypeCodes, String vocalForm) throws Exception {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
-		Word word = new Word(wordValue, lang, null, null, displayForm, null, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
+		Word word = new Word(wordValue, lang, null, null, displayForm, vocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
 		word.setDisplayMorph(displayMorph);
 		word.setAspectTypeCode(aspectType);
 		WordData createdWord = new WordData();
@@ -507,6 +508,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		Long lexemeId;
 		String word;
 		String displayForm;
+		String vocalForm;
 		int lexemeLevel1 = 1;
 		int homonymNr = 0;
 		String relationType;
@@ -518,12 +520,15 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		String register;
 		String aspect;
 		Long wordId;
+		List<String> sources = new ArrayList<>();
+		Float corpFrequency;
 
 		LexemeToWordData copy() {
 			LexemeToWordData newData = new LexemeToWordData();
 			newData.lexemeId = this.lexemeId;
 			newData.word = this.word;
 			newData.displayForm = this.displayForm;
+			newData.vocalForm = this.vocalForm;
 			newData.lexemeLevel1 = this.lexemeLevel1;
 			newData.homonymNr = this.homonymNr;
 			newData.relationType = this.relationType;
@@ -535,6 +540,8 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 			newData.register = this.register;
 			newData.aspect = this.aspect;
 			newData.wordId = this.wordId;
+			newData.sources.addAll(sources);
+			newData.corpFrequency = this.corpFrequency;
 			return newData;
 		}
 	}

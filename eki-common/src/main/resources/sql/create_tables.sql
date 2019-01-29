@@ -628,7 +628,8 @@ create table collocation
   definition text,
   frequency numeric(14, 4),
   score numeric(14, 4),
-  usages text array
+  usages text array,
+  target_context varchar(100) not null
 );
 alter sequence collocation_id_seq restart with 10000;
 
@@ -654,6 +655,7 @@ create table lexeme
   modified_on timestamp null,
   modified_by varchar(100) null,
   frequency_group varchar(100) references lexeme_frequency(code) null,
+  corpus_frequency numeric,
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,

@@ -13,6 +13,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private static final String SQL_SELECT_MEANING_IDS_FOR_DATASET = "sql/select_meaning_ids_for_dataset.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_LANG_HOMON = "sql/select_word_by_form_lang_homon.sql";
 	private static final String SQL_SELECT_WORD_BY_FORM_LANG_HOMON_TYPE = "sql/select_word_by_form_lang_homon_type.sql";
+	private static final String SQL_SELECT_WORD_BY_DATASET = "sql/select_word_by_dataset.sql";
 	private static final String SQL_SELECT_WORD_BY_DATASET_AND_GUID = "sql/select_word_by_dataset_and_guid.sql";
 	private static final String SQL_SELECT_WORD_MAX_HOMON_BY_WORD_LANG = "sql/select_word_max_homon_by_word_lang.sql";
 	private static final String SQL_SELECT_LEXEME_FREEFORM_BY_TYPE_AND_VALUE = "sql/select_lexeme_freeform_by_type_and_value.sql";
@@ -30,6 +31,7 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 	private String sqlSelectMeaningIdsForDataset;
 	private String sqlSelectWordByFormLangHomon;
 	private String sqlSelectWordByFormLangHomonType;
+	private String sqlSelectWordByDataset;
 	private String sqlSelectWordByDatasetAndGuid;
 	private String sqlSelectWordMaxHomonByWordLang;
 	private String sqlSelectLexemeFreeform;
@@ -62,6 +64,9 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_FORM_LANG_HOMON_TYPE);
 		sqlSelectWordByFormLangHomonType = getContent(resourceFileInputStream);
+
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_DATASET);
+		sqlSelectWordByDataset = getContent(resourceFileInputStream);
 
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_SELECT_WORD_BY_DATASET_AND_GUID);
 		sqlSelectWordByDatasetAndGuid = getContent(resourceFileInputStream);
@@ -115,6 +120,10 @@ public class UnifiedLoaderQueries extends AbstractLoaderCommons implements Initi
 
 	public String getSqlSelectWordByFormLangHomonType() {
 		return sqlSelectWordByFormLangHomonType;
+	}
+
+	public String getSqlSelectWordByDataset() {
+		return sqlSelectWordByDataset;
 	}
 
 	public String getSqlSelectWordByDatasetAndGuid() {

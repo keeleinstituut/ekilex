@@ -53,7 +53,8 @@ dblink(
 	dataset_codes varchar(100) array,
 	meaning_count integer,
 	meaning_words type_word array,
-	definitions type_definition array
+	definitions type_definition array,
+	word_sources text array
 );
 
 create materialized view mview_ww_as_word as
@@ -153,7 +154,8 @@ dblink(
 	colloc_value text,
 	colloc_definition text,
 	colloc_usages text array,
-	colloc_members type_colloc_member array
+	colloc_members type_colloc_member array,
+	target_context varchar(100)
 );
 
 create materialized view mview_ww_word_etymology as
@@ -162,7 +164,6 @@ dblink(
 	'host=localhost user=ekilex password=3kil3x dbname=ekilex',
 	'select * from view_ww_word_etymology') as word_etymology(
 	word_id bigint,
-	word_sources text array,
 	etym_lineup type_word_etym array
 );
 
@@ -239,6 +240,7 @@ create index mview_ww_form_value_idx on mview_ww_form (form);
 create index mview_ww_form_value_lower_idx on mview_ww_form (lower(form));
 create index mview_ww_form_mode_idx on mview_ww_form (mode);
 create index mview_ww_form_lang_idx on mview_ww_form (lang);
+create index mview_ww_form_display_level_idx on mview_ww_form (display_level);
 create index mview_ww_meaning_meaning_id_idx on mview_ww_meaning (meaning_id);
 create index mview_ww_lexeme_lexeme_id_idx on mview_ww_lexeme (lexeme_id);
 create index mview_ww_lexeme_word_id_idx on mview_ww_lexeme (word_id);
@@ -246,6 +248,7 @@ create index mview_ww_lexeme_meaning_id_idx on mview_ww_lexeme (meaning_id);
 create index mview_ww_collocation_lexeme_id_idx on mview_ww_collocation (lexeme_id);
 create index mview_ww_collocation_word_id_idx on mview_ww_collocation (word_id);
 create index mview_ww_collocation_dataset_code_idx on mview_ww_collocation (dataset_code);
+create index mview_ww_collocation_target_context_idx on mview_ww_collocation (target_context);
 create index mview_ww_word_etymology_word_id_idx on mview_ww_word_etymology (word_id);
 create index mview_ww_word_relation_word_id_idx on mview_ww_word_relation (word_id);
 create index mview_ww_lexeme_relation_lexeme_id_idx on mview_ww_lexeme_relation (lexeme_id);

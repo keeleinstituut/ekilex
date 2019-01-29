@@ -367,6 +367,8 @@ etympl_tyyp	etympl_tyyp	tootenimi	tootenimi, kaubamärk	et	etymology_type	tooten
 etympl_tyyp	etympl_tyyp	tootenimi	trade name, trade mark, brand	en	etymology_type	tootenimi
 etympl_tyyp	etympl_tyyp	tõlkelaen	tõlkelaen	et	etymology_type	tõlkelaen
 etympl_tyyp	etympl_tyyp	tõlkelaen	loan translation	en	etymology_type	tõlkelaen
+etympl_tyyp	etympl_tyyp	tõlkelaen	nimi	et	etymology_type	nimi
+etympl_tyyp	etympl_tyyp	tõlkelaen	name	en	etymology_type	nimi
 fak_tyyp	fakultatiivne	fak	fakultatiivne laiend	et	-	-
 fak_tyyp	fakultatiivne	fak	nothing	en	-	-
 gkn_tyyp	gkn_tyyp	sg	ainsus	et	-	-

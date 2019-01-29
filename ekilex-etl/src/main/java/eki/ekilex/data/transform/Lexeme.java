@@ -34,6 +34,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private String processStateCode;
 
+	private Float corpusFrequency;
+
 	public Long getLexemeId() {
 		return lexemeId;
 	}
@@ -138,4 +140,11 @@ public class Lexeme extends AbstractDataObject {
 		this.processStateCode = processStateCode;
 	}
 
+	public Float getCorpusFrequency() {
+		return corpusFrequency;
+	}
+
+	public void setCorpusFrequency(Float corpusFrequency) {
+		this.corpusFrequency = corpusFrequency;
+	}
 }

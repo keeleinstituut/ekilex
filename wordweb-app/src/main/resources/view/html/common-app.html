@@ -7,8 +7,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="shortcut icon" type="image/png" th:href="@{/favicon.png}" />
-<link rel="shortcut icon" th:href="@{/favicon.ico}">
+<link rel="icon" type="image/png" th:href="@{/favicon.png}" />
+<link rel="icon" type="image/x-icon" th:href="@{/favicon.ico}">
 <link rel="apple-touch-icon" sizes="180x180" th:href="@{/apple-touch-icon.png}">
 <th:block th:replace=" :: css"></th:block>
 <th:block th:replace=" :: js"></th:block>
@@ -146,14 +146,14 @@
       </tr>
     </table>
   </div>
-    <!-- IE user message -->
+  <!-- IE user message -->
   <th:block th:fragment="ie-user">
     <div class="alert-danger-ie" th:if="${ieuser}">
       <div class="alert-danger-ie-container">
         <span th:text="#{warning.ieuser}">Bad bad browser, no Cookies for you!!!</span>
       </div>
     </div>
- </th:block>
+  </th:block>
   <!-- Feedback dialog -->
   <th:block th:fragment="feedback-form">
     <div class="modal fade" id="feedbackModal" tabindex="-1" aria-model="true" role="dialog" aria-labelledby="feedbackModal" aria-hidden="false" aria-describedby="feebackMaterial">
@@ -173,7 +173,7 @@
               </div>
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="feedbackCommentRadio" name="feedbackRadio" class="custom-control-input">
-                <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Komentaar</label>
+                <label class="custom-control-label" for="feedbackCommentRadio" th:text="#{label.fb.comment}">Kommentaar</label>
               </div>
             </div>
             <div class="has-error mt-2" th:text="#{label.fb.technical.error}">Tagasiside saatmine ebaõnnestus, proovige hiljem uuesti.</div>
@@ -250,7 +250,7 @@
       <div class="form-row">
         <div class="form-group col-12">
           <label class="positive-feedback" hidden name="ok_message" th:text="#{label.fb.new.word.success}">Aitäh, tagasiside läks teele. Vastame paari päeva jooksul.</label>
-          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andemd on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
+          <label class="negative-feedback" hidden name="error_message" th:text="#{label.fb.error}">Saadetud andmed on vigased. Kontrollige palun andmeid ning proovige uuesti.</label>
           <input type="hidden" name="feedbackType" value="new_word">
           <input type="hidden" name="lastSearch" th:value="${sessionBean == null ? '' : sessionBean.lastSearchWord}">
         </div>

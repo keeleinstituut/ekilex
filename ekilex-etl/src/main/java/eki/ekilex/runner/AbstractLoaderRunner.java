@@ -650,7 +650,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 	protected int getWordMaxHomonymNr(String word, String lang) throws Exception {
 
 		AffixoidData affixoidData = getAffixoidData(word);
-		String wordCleanValue = affixoidData.getAffixoidWordTypeCode();
+		String wordCleanValue = affixoidData.getWordCleanValue();
 		wordCleanValue = StringUtils.lowerCase(wordCleanValue);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -667,6 +667,13 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		int homonymNr = (int) result;
 		return homonymNr;
+	}
+
+	protected List<Map<String, Object>> getWords(String word, String dataset) {
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("word", word);
+		tableRowParamMap.put("dataset", dataset);
+		return basicDbService.queryList(sqls.getSqlSelectWordByDataset(), tableRowParamMap);
 	}
 
 	protected Long createMeaning(Meaning meaning) throws Exception {
@@ -755,6 +762,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String frequencyGroup = lexeme.getFrequencyGroup();
 		String valueStateCode = lexeme.getValueStateCode();
 		String processStateCode = lexeme.getProcessStateCode();
+		Float corpusFrequency = lexeme.getCorpusFrequency();
 
 		Map<String, Object> criteriaParamMap = new HashMap<>();
 		criteriaParamMap.put("word_id", wordId);
@@ -795,6 +803,9 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			}
 			if (StringUtils.isNotBlank(processStateCode)) {
 				valueParamMap.put("process_state_code", processStateCode);
+			}
+			if (corpusFrequency != null) {
+				valueParamMap.put("corpus_frequency", corpusFrequency);
 			}
 			if (MapUtils.isNotEmpty(valueParamMap)) {
 				basicDbService.update(LEXEME, criteriaParamMap, valueParamMap);

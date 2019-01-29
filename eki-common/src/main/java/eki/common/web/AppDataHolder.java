@@ -1,14 +1,7 @@
 package eki.common.web;
 
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.time.Duration;
-import java.util.Properties;
 
-import javax.servlet.ServletContext;
-
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
@@ -19,15 +12,14 @@ import eki.common.data.AppData;
 @Component
 public class AppDataHolder {
 
-	@Value("${server.servlet.session.timeout:30m}")
-	private Duration sessionTimeout;
-
-	@Autowired
-	private ServletContext servletContext;
-
+	@Value("${info.app.name}")
 	private String appName;
 
+	@Value("${info.app.version}")
 	private String appVersion;
+
+	@Value("${server.servlet.session.timeout:30m}")
+	private Duration sessionTimeout;
 
 	private AppData appData = null;
 
@@ -37,39 +29,7 @@ public class AppDataHolder {
 			return appData;
 		}
 
-		InputStream pomStream = null;
-		String fullPomPath = "/META-INF/maven/" + pomPath + "/pom.properties";
-		try {
-			pomStream = servletContext.getResourceAsStream(fullPomPath);
-		} catch (Exception e) {
-		}
-		if (pomStream == null) {
-			try {
-				pomStream = this.getClass().getResourceAsStream(fullPomPath);
-			} catch (Exception e) {
-			}
-		}
-		if (pomStream == null) {
-			try {
-				pomStream = new FileInputStream("target/maven-archiver/pom.properties");
-			} catch (Exception e) {
-			}
-		}
-		if (pomStream != null) {
-			try {
-				Properties pomProperties = new Properties();
-				pomProperties.load(pomStream);
-				appName = pomProperties.getProperty("artifactId");
-				appVersion = pomProperties.getProperty("version");
-				pomStream.close();
-			} catch (Exception e) {
-			}
-		}
 		long sessionTimeoutSec = sessionTimeout.getSeconds();
-		if (StringUtils.isAllBlank(appName, appVersion)) {
-			appName = "n/a";
-			appVersion = "n/a";
-		}
 
 		appData = new AppData();
 		appData.setAppName(appName);

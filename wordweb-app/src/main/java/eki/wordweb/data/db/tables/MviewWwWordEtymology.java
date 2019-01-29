@@ -39,7 +39,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> {
 
-    private static final long serialVersionUID = 1505575429;
+    private static final long serialVersionUID = -808498055;
 
     /**
      * The reference instance of <code>public.mview_ww_word_etymology</code>
@@ -58,11 +58,6 @@ public class MviewWwWordEtymology extends TableImpl<MviewWwWordEtymologyRecord> 
      * The column <code>public.mview_ww_word_etymology.word_id</code>.
      */
     public final TableField<MviewWwWordEtymologyRecord, Long> WORD_ID = createField("word_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
-
-    /**
-     * The column <code>public.mview_ww_word_etymology.word_sources</code>.
-     */
-    public final TableField<MviewWwWordEtymologyRecord, String[]> WORD_SOURCES = createField("word_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * The column <code>public.mview_ww_word_etymology.etym_lineup</code>.
