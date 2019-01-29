@@ -46,16 +46,9 @@ public class LexSearchDbService {
 	@Autowired
 	private DSLContext create;
 
-	public List<Word> findWords(String searchFilter, String lang, String[] datasets, boolean isFullDatasetMatch) {
+	public List<Word> findWords(String searchFilter, String lang, String dataset) {
 
 		String searchFilterLower = StringUtils.lowerCase(searchFilter);
-		Condition datasetCondition;
-		if (isFullDatasetMatch) {
-			datasetCondition = DSL.condition("{0} @> {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
-		} else {
-			datasetCondition = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
-		}
-
 		return create
 				.select(
 						MVIEW_WW_WORD.WORD_ID,
@@ -73,7 +66,7 @@ public class LexSearchDbService {
 				.from(MVIEW_WW_WORD)
 				.where(
 						MVIEW_WW_WORD.LANG.eq(lang)
-						.and(datasetCondition)
+						.and(DSL.condition("{0} = any({1})", DSL.val(dataset), MVIEW_WW_WORD.DATASET_CODES))
 						.and(DSL.exists(DSL.select(MVIEW_WW_FORM.WORD_ID)
 												.from(MVIEW_WW_FORM)
 												.where(MVIEW_WW_FORM.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)
@@ -84,13 +77,13 @@ public class LexSearchDbService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public Map<String, List<WordOrForm>> findWordsByPrefix(String wordPrefix, String lang, String[] datasets, int maxWordCount) {
+	public Map<String, List<WordOrForm>> findWordsByPrefix(String wordPrefix, String lang, String dataset, int maxWordCount) {
 
 		String wordPrefixLower = StringUtils.lowerCase(wordPrefix);
 		Field<String> iswtf = DSL.field(DSL.value("prefWords")).as("group");
 		Field<String> iswff = DSL.field(DSL.value("formWords")).as("group");
-		Condition wdc = DSL.condition("{0} && {1}", MVIEW_WW_WORD.DATASET_CODES, DSL.val(datasets));
-		Condition fdc = DSL.condition("{0} && {1}", MVIEW_WW_FORM.DATASET_CODES, DSL.val(datasets));
+		Condition wdc = DSL.condition("{0} = any({1})", DSL.val(dataset), MVIEW_WW_WORD.DATASET_CODES);
+		Condition fdc = DSL.condition("{0} = any({1})", DSL.val(dataset), MVIEW_WW_FORM.DATASET_CODES);
 		Condition wlc = MVIEW_WW_WORD.WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang));
 		Condition awlc = MVIEW_WW_AS_WORD.AS_WORD.lower().like(wordPrefixLower + '%').and(MVIEW_WW_WORD.LANG.eq(lang).and(MVIEW_WW_AS_WORD.WORD_ID.eq(MVIEW_WW_WORD.WORD_ID)));
 		Condition flc = MVIEW_WW_FORM.FORM.lower().eq(wordPrefixLower).and(MVIEW_WW_FORM.MODE.eq(FormMode.FORM.name())).and(MVIEW_WW_FORM.LANG.eq(lang));
