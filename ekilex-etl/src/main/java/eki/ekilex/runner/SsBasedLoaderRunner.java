@@ -477,7 +477,12 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 		return meanings;
 	}
 
-	protected void createLexemeRelations(Context context, List<LexemeToWordData> items, String lexemeRelationType, String logMessage) throws Exception {
+	protected void createLexemeRelations(
+			Context context,
+			List<LexemeToWordData> items,
+			String lexemeRelationType,
+			String logMessage,
+			boolean directionFromLexemeToWord) throws Exception {
 
 		for (LexemeToWordData itemData : items) {
 			Long wordId = getWordIdFor(itemData.word, itemData.homonymNr, context.importedWords, itemData.reportingId);
@@ -490,7 +495,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 					Optional<Map<String, Object>> lexemeObject =
 							lexemeObjects.stream().filter(l -> (Integer)l.get("level1") == itemData.lexemeLevel1).findFirst();
 					if (lexemeObject.isPresent()) {
-						createLexemeRelation(itemData.lexemeId, (Long) lexemeObject.get().get("id"), lexemeRelationType);
+						if (directionFromLexemeToWord) {
+							createLexemeRelation(itemData.lexemeId, (Long) lexemeObject.get().get("id"), lexemeRelationType);
+						} else {
+							createLexemeRelation((Long) lexemeObject.get().get("id"), itemData.lexemeId, lexemeRelationType);
+						}
 					} else {
 						logger.debug("Lexeme not found for word : {}, lexeme level1 : {}.", itemData.word, itemData.lexemeLevel1);
 						writeToLogFile(itemData.reportingId, logMessage, itemData.word + ", level1 " + itemData.lexemeLevel1);

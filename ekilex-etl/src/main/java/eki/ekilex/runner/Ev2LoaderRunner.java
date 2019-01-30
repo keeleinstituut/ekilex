@@ -159,7 +159,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		writeToLogFile("Lühendite töötlus <x:lhx>", "", "");
 
 		Count newAbbreviationFullWordCount = processLexemeToWord(context, context.abbreviationFullWords, null, "Ei leitud märksõna, loome uue", dataLang);
-		createLexemeRelations(context, context.abbreviationFullWords, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale");
+		createLexemeRelations(context, context.abbreviationFullWords, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale", false);
 
 		logger.debug("Words created {}", newAbbreviationFullWordCount.getValue());
 		logger.debug("Abbreviations import done.");
