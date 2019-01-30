@@ -92,6 +92,13 @@
                 <span th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
               </span>
               <span class="word-details-homonym-nr" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
+              <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
+                      th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                <span class="icon icon-speaker"></span>
+              </button>
+              <span id="spellingLine" style="font-size: large"
+                    th:if="${wordData.firstAvailableVocalForm != null}"
+                    th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
               <th:block th:each="wordType : ${wordData.word.wordTypes}" th:if="${not #lists.isEmpty(wordData.word.wordTypes)}">
                 <span class="tag" th:text="${wordType.value}"></span>
               </th:block>
@@ -103,13 +110,6 @@
                 <button name="feedback-btn" value="feedback" class="btn btn-secondary ml-2" role="button" type="button" data-toggle="modal" data-target="#feedbackModal" data-item-name="feedback">Tagasiside</button>
               </span>
             </h3>
-            <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
-              th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
-              <span class="icon icon-speaker"></span>
-            </button>
-            <span id="spellingLine" th:if="${wordData.firstAvailableVocalForm != null}">
-              <span th:text="${'['+wordData.firstAvailableVocalForm+']'}"></span>
-            </span>
           </div>
         </div>
         <div class="row">
