@@ -37,6 +37,7 @@ import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
 import org.jooq.Record15;
+import org.jooq.Record16;
 import org.jooq.Record4;
 import org.jooq.Record6;
 import org.jooq.Record8;
@@ -667,7 +668,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record15<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,String,BigDecimal,BigDecimal,String[],Long,String,BigDecimal>> findPrimaryCollocationTuples(Long lexemeId) {
+	public Result<Record16<Long,String,Long,String,BigDecimal,BigDecimal,Long,String,String,BigDecimal,BigDecimal,String[],Long,String,String,BigDecimal>> findPrimaryCollocationTuples(Long lexemeId) {
 
 		LexCollocPosGroup pgr1 = LEX_COLLOC_POS_GROUP.as("pgr1");
 		LexCollocRelGroup rgr1 = LEX_COLLOC_REL_GROUP.as("rgr1");
@@ -694,6 +695,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						c.USAGES.as("colloc_usages"),
 						l2.WORD_ID.as("colloc_member_word_id"),
 						f2.VALUE.as("colloc_member_word"),
+						f2.MODE.as("colloc_member_mode"),
 						lc2.WEIGHT.as("colloc_member_weight")
 						)
 				.from(pgr1, rgr1, lc1, lc2, c, l2, p2, f2)
@@ -713,7 +715,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	public Result<Record9<Long,String,String,BigDecimal,BigDecimal,String[],Long,String,BigDecimal>> findSecondaryCollocationTuples(Long lexemeId) {
+	public Result<Record10<Long,String,String,BigDecimal,BigDecimal,String[],Long,String,String,BigDecimal>> findSecondaryCollocationTuples(Long lexemeId) {
 
 		LexColloc lc1 = LEX_COLLOC.as("lc1");
 		LexColloc lc2 = LEX_COLLOC.as("lc2");
@@ -732,6 +734,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						c.USAGES.as("colloc_usages"),
 						l2.WORD_ID.as("colloc_member_word_id"),
 						f2.VALUE.as("colloc_member_word"),
+						f2.MODE.as("colloc_member_mode"),
 						lc2.WEIGHT.as("colloc_member_weight")
 						)
 				.from(lc1, lc2, c, l2, p2, f2)

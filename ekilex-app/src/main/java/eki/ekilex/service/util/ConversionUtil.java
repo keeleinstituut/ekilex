@@ -560,10 +560,13 @@ public class ConversionUtil {
 
 	private void addCollocMember(CollocationTuple collocTuple, Collocation collocation) {
 
+		boolean isWordModeWord = StringUtils.equals(FormMode.WORD.name(), collocTuple.getCollocMemberMode());
 		CollocMember collocMember = new CollocMember();
 		collocMember.setWordId(collocTuple.getCollocMemberWordId());
 		collocMember.setWord(collocTuple.getCollocMemberWord());
 		collocMember.setWeight(collocTuple.getCollocMemberWeight());
+		collocMember.setWordModeWord(isWordModeWord);
+		
 		collocation.getCollocMembers().add(collocMember);
 	}
 

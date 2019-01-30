@@ -609,7 +609,7 @@
                             <td style="padding: 0px 5px 0px 5px">
                               <span th:each="collocMember,collocMemberIter : ${colloc.collocMembers}">
                                 <button type="button" class="btn btn-link" th:data-id="${collocMember.wordId}" name="detailsBtn">
-                                  <span th:text="${collocMember.word}"></span>
+                                  <span th:text="${(collocMember.wordModeWord ? '' : '(') + collocMember.word + (collocMember.wordModeWord ? '' : ')')}"></span>
                                   <code>
                                     [<span th:text="${collocMember.weight}"></span>]
                                   </code>

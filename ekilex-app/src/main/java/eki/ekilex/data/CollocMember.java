@@ -12,6 +12,8 @@ public class CollocMember extends AbstractDataObject {
 
 	private Float weight;
 
+	private boolean wordModeWord;
+
 	public Long getWordId() {
 		return wordId;
 	}
@@ -34,6 +36,14 @@ public class CollocMember extends AbstractDataObject {
 
 	public void setWeight(Float weight) {
 		this.weight = weight;
+	}
+
+	public boolean isWordModeWord() {
+		return wordModeWord;
+	}
+
+	public void setWordModeWord(boolean wordModeWord) {
+		this.wordModeWord = wordModeWord;
 	}
 
 }

@@ -497,7 +497,7 @@ public class CommonDataDbService implements DbConstant {
 				.where(WORD.ID.eq(wordId)
 						.and(PARADIGM.WORD_ID.eq(WORD.ID))
 						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.eq(FormMode.WORD.name())))
+						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
 				.groupBy(WORD.ID)
 				.fetchOne();
 	}
