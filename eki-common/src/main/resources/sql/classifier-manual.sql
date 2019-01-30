@@ -8,7 +8,7 @@ insert into label_type (code, value) values ('wordweb', 'wordweb');
 
 -- lex
 insert into dataset (code, name, is_public) values ('ss1', 'Eesti keele sõnaraamat 2019', true);
-insert into dataset (code, name, is_public) values ('psv', 'Eesti keele põhisõnavara sõnastik 2014', true);
+insert into dataset (code, name, is_public) values ('psv', 'Eesti keele põhisõnavara sõnastik 2019', true);
 insert into dataset (code, name, is_public) values ('ety',	'Etümoloogia', true);
 insert into dataset (code, name, is_public) values ('qq2', 'Eesti-vene õpilase ÕS 2019', true);
 insert into dataset (code, name, is_public) values ('ev2',	'Eesti-vene sõnaraamat 2019', true);
