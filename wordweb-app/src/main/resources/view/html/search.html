@@ -126,7 +126,7 @@
                       th:text="${wordData.word.relatedWords.get(0).word}"> </a>
                   </div>
                   <div>
-                    <span th:if="${not #lists.isEmpty(lexeme.poses)}">
+                    <span th:if="${not #lists.isEmpty(lexeme.poses) && !wordData.word.singlePos}">
                       <span class="tag" th:each="pos : ${lexeme.poses}" th:text="${pos.value}"></span>
                     </span>
                     <span class="lexeme" th:if="${not #lists.isEmpty(lexeme.grammars)}">
@@ -142,7 +142,7 @@
                     <span th:each="definition,definitionIter : ${lexeme.definitions}" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.otherLangMatchWords}" th:text="${meaningWord.word + (meaningWordIter.last ? '' : '; ')}"
-                        th:style="${meaningWord.lang == 'lat' ? 'font-style:italic' : ''}"> </span>
+                        th:style="${meaningWord.emphasiseMatch ? 'font-style:italic' : ''}"> </span>
                     </div>
                   </div>
                   <div class="col-lg meaning-meta pl-0">
@@ -178,8 +178,7 @@
                         <span th:unless="${meaningWordIter.last}" style="margin-left: -4px; padding-right: 4px">,</span>
                       </span>
                     </div>
-                    <span th:if="${#lists.isEmpty(lexeme.destinLangMatchWords) and (sessionBean.sourceLang != sessionBean.destinLang)}"
-                          th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
+                    <span th:if="${lexeme.missingMatchWords}" th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>
                   </div>
                 </div>
                 <div class="col-12 dependencies">
@@ -285,9 +284,10 @@
                                       <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                         <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                           <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                             <span th:text="${collocMem.form}" class="text-muted"></span>
                                           </a>
+                                          <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
                                           <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="text-muted" th:text="${collocMem.conjunct}"></span>
                                         </span>
                                       </span>
@@ -364,27 +364,30 @@
                                           <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).PRIMARY}">
                                             <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
                                               <span th:if="${collocMem.conjunct != null && collocMem.preConjunct}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                              <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                              <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                                 <span th:text="${collocMem.form}" class="text-muted"></span>
                                               </a>
+                                              <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
                                               <span th:if="${collocMem.conjunct != null && collocMem.postConjunct}" class="text-muted" th:text="${collocMem.conjunct}"></span>
                                             </span>
                                           </span>
                                           <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
                                             <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                               <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                              <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                              <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                                 <i><span th:text="${collocMem.form}" class="text-muted"></span> <span th:unless="${collocMemIter.last}">,</span></i>
                                               </a>
+                                              <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
                                             </span>
                                           </span>
                                         </span>
                                       </span>
                                       <span th:if="${!displayCollocIter.first}" data-toggle="tooltip" data-placement="top" data-html="true" th:title="${viewUtil.getTooltipHtml(displayColloc)}">
                                         <span th:each="collocMem,collocMemIter : ${displayColloc.primaryMembers}">
-                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                             <span th:text="${collocMem.form}" class="text-muted"></span>
                                           </a>
+                                          <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
                                           <span th:unless="${collocMemIter.last}">&nbsp;</span>
                                         </span>
                                       </span>

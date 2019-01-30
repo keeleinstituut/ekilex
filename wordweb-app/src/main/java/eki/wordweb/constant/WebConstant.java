@@ -9,6 +9,10 @@ public interface WebConstant {
 
 	String DEFAULT_DESTIN_LANG = "est";
 
+	String EMPHASISE_DESTIN_LANG = "lat";
+
+	String IGNORE_MISSING_DATA_DATASET_CODE = "kol";
+
 	String[] SUPPORTED_LANGUAGES = new String[] {"est", "rus"};
 
 	String HOME_PAGE = "index";

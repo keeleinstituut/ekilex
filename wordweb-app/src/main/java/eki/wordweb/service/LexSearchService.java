@@ -7,12 +7,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,6 @@ import eki.wordweb.data.Lexeme;
 import eki.wordweb.data.LexemeDetailsTuple;
 import eki.wordweb.data.LexemeMeaningTuple;
 import eki.wordweb.data.Paradigm;
-import eki.wordweb.data.ParadigmGroup;
 import eki.wordweb.data.Word;
 import eki.wordweb.data.WordData;
 import eki.wordweb.data.WordEtymology;
@@ -164,21 +163,18 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		String firstAvailableVocalForm = null;
 		String firstAvailableSoundFile = null;
 		boolean isUnknownForm = false;
-		if (CollectionUtils.isNotEmpty(paradigms)) {
-			List<ParadigmGroup> paradigmFirstGroup = paradigms.get(0).getGroups();
-			if (CollectionUtils.isNotEmpty(paradigmFirstGroup)) {
-				List<Form> firstForms = paradigmFirstGroup.get(0).getForms1();
-				if (CollectionUtils.isNotEmpty(firstForms)) {
-					Optional<Form> firstFormOption = firstForms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst();
-					if (firstFormOption.isPresent()) {
-						Form firstForm = firstFormOption.get();
-						firstAvailableVocalForm = firstForm.getVocalForm();
-						firstAvailableSoundFile = firstForm.getSoundFile();
-						isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstForm.getMorphCode());
-					}
-				}
+		if (MapUtils.isNotEmpty(paradigmFormsMap)) {
+			Form firstAvailableWordForm = paradigmFormsMap.values().stream()
+					.filter(forms -> forms.stream().anyMatch(form -> form.getMode().equals(FormMode.WORD)))
+					.map(forms -> forms.stream().filter(form -> form.getMode().equals(FormMode.WORD)).findFirst().orElse(null))
+					.findFirst().orElse(null);
+			if (firstAvailableWordForm != null) {
+				firstAvailableVocalForm = firstAvailableWordForm.getVocalForm();
+				firstAvailableSoundFile = firstAvailableWordForm.getSoundFile();
+				isUnknownForm = StringUtils.equals(UNKNOWN_FORM_CODE, firstAvailableWordForm.getMorphCode());
 			}
 		}
+
 		WordData wordData = new WordData();
 		wordData.setWord(word);
 		wordData.setLexemes(lexemes);

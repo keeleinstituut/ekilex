@@ -233,6 +233,11 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			if (CollectionUtils.isNotEmpty(lexeme.getPoses())) {
 				summarisedPoses.addAll(lexeme.getPoses());
 			}
+			boolean isMissingMatchWords =
+					CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
+					&& !StringUtils.equals(sourceLang, destinLang)
+					&& !StringUtils.equals(IGNORE_MISSING_DATA_DATASET_CODE, lexeme.getDatasetCode());
+			lexeme.setMissingMatchWords(isMissingMatchWords);
 			filterMeaningWords(lexeme, allRelatedWordValues);
 			List<String> existingCollocationValues = new ArrayList<>();
 			transformCollocationPosGroupsForDisplay(wordId, lexeme, existingCollocationValues);
@@ -240,7 +245,9 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			//transformSecondaryCollocationsForDisplay(wordId, lexeme, existingCollocationValues);
 		}
 		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
+		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
 		word.setSummarisedPoses(summarisedPoses);
+		word.setSinglePos(isSinglePos);
 
 		return lexemes;
 	}
@@ -276,6 +283,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		if (CollectionUtils.isNotEmpty(meaningWordIds) && meaningWordIds.contains(meaningWordId)) {
 			return;
 		}
+		boolean isEmphasiseMatch = StringUtils.equals(EMPHASISE_DESTIN_LANG, tuple.getMeaningWordLang());
 		MeaningWord meaningWord = new MeaningWord();
 		meaningWord.setWordId(meaningWordId);
 		meaningWord.setWord(tuple.getMeaningWord());
@@ -283,6 +291,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		meaningWord.setLang(tuple.getMeaningWordLang());
 		meaningWord.setWordTypeCodes(tuple.getMeaningWordTypeCodes());
 		meaningWord.setGovernments(tuple.getMeaningLexemeGovernments());
+		meaningWord.setEmphasiseMatch(isEmphasiseMatch);
 		classifierUtil.applyClassifiers(tuple, meaningWord, displayLang);
 		setWordTypeFlags(meaningWord);
 		boolean additionalDataExists = (meaningWord.getAspect() != null)

@@ -80,6 +80,8 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<DisplayColloc> limitedSecondaryDisplayCollocs;
 
+	private boolean missingMatchWords;
+
 	private boolean moreSecondaryCollocs;
 
 	private boolean emptyLexeme;
@@ -362,6 +364,14 @@ public class Lexeme extends AbstractDataObject {
 
 	public void setLimitedSecondaryDisplayCollocs(List<DisplayColloc> limitedSecondaryDisplayCollocs) {
 		this.limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs;
+	}
+
+	public boolean isMissingMatchWords() {
+		return missingMatchWords;
+	}
+
+	public void setMissingMatchWords(boolean missingMatchWords) {
+		this.missingMatchWords = missingMatchWords;
 	}
 
 	public boolean isMoreSecondaryCollocs() {

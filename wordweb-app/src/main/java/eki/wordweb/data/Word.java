@@ -60,6 +60,8 @@ public class Word extends WordTypeData {
 
 	private List<WordGroup> wordGroups;
 
+	private boolean singlePos;
+
 	private boolean wordRelationsExist;
 
 	private boolean moreWordRelations;
@@ -272,6 +274,14 @@ public class Word extends WordTypeData {
 
 	public void setWordGroups(List<WordGroup> wordGroups) {
 		this.wordGroups = wordGroups;
+	}
+
+	public boolean isSinglePos() {
+		return singlePos;
+	}
+
+	public void setSinglePos(boolean singlePos) {
+		this.singlePos = singlePos;
 	}
 
 	public boolean isWordRelationsExist() {

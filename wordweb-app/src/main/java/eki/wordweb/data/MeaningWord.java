@@ -22,6 +22,8 @@ public class MeaningWord extends WordTypeData {
 
 	private List<String> governments;
 
+	private boolean emphasiseMatch;
+
 	private boolean additionalDataExists;
 
 	public Long getWordId() {
@@ -78,6 +80,14 @@ public class MeaningWord extends WordTypeData {
 
 	public void setGovernments(List<String> governments) {
 		this.governments = governments;
+	}
+
+	public boolean isEmphasiseMatch() {
+		return emphasiseMatch;
+	}
+
+	public void setEmphasiseMatch(boolean emphasiseMatch) {
+		this.emphasiseMatch = emphasiseMatch;
 	}
 
 	public boolean isAdditionalDataExists() {
