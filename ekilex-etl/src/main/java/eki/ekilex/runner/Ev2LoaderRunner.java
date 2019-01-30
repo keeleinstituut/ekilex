@@ -154,14 +154,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void processAbbreviations(Context context) throws Exception {
 
-		logger.debug("Found {} abbreviations <x:lhx>.", context.abbreviationFullWords.size());
+		logger.debug("Found abbreviations {} <x:lhx> : {} <x:xlhx>.", context.abbreviationFullWords.size(), context.abbreviationFullWordsRus);
 		logger.debug("Processing started.");
-		writeToLogFile("Lühendite töötlus <x:lhx>", "", "");
+		writeToLogFile("Lühendite töötlus <x:lhx> ja <x:xlhx>", "", "");
 
 		Count newAbbreviationFullWordCount = processLexemeToWord(context, context.abbreviationFullWords, null, "Ei leitud märksõna, loome uue", dataLang);
+		Count newAbbreviationFullWordRusCount = processLexemeToWord(context, context.abbreviationFullWordsRus, null, "Ei leitud märksõna, loome uue", LANG_RUS);
 		createLexemeRelations(context, context.abbreviationFullWords, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale", false);
+		createLexemeRelations(context, context.abbreviationFullWordsRus, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale", false);
 
-		logger.debug("Words created {}", newAbbreviationFullWordCount.getValue());
+		logger.debug("Words created {} {} : {} {}", newAbbreviationFullWordCount.getValue(), dataLang, newAbbreviationFullWordRusCount.getValue(), LANG_RUS);
 		logger.debug("Abbreviations import done.");
 	}
 
@@ -459,6 +461,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String meaningDefinitionExp = "x:dg/x:d";
 		final String registerExp = "x:dg/x:s";
 		final String latinTermExp = "x:dg/x:ld";
+		final String abbreviationFullWordExp = "x:dg/x:lhx";
 
 		boolean isVerb = newWords.get(0).posCodes.contains(POS_CODE_VERB);
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
@@ -484,10 +487,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> definitionsToCache = new ArrayList<>();
 				List<String> definitions = extractCleanValues(meaningGroupNode, meaningDefinitionExp);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
-				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, reportingId);
+				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, abbreviationFullWordExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
-				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb);
+				Map<String, List<LexemeToWordData>> russianAbbreviationWords = new HashMap<>();
+				List<LexemeToWordData> meaningRussianWords = extractRussianWords(
+						meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb, russianAbbreviationWords);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
 								meaningLatinTerms.stream(),
@@ -545,7 +550,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						processMeaningReferences(context, newWordData, meaningId);
 					}
 				}
-				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId);
+				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId, russianAbbreviationWords);
 			}
 			for (WordData w : newWords) {
 				w.level1 = lexemeLevel1 + 1;
@@ -554,7 +559,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<LexemeToWordData>> aspectGroups, Long meaningId) throws Exception {
+	private void processRussianWords(
+			Context context,
+			List<LexemeToWordData> meaningRussianWords,
+			List<List<LexemeToWordData>> aspectGroups,
+			Long meaningId,
+			Map<String, List<LexemeToWordData>> russianAbbreviationWords) throws Exception {
 		for (LexemeToWordData russianWordData : meaningRussianWords) {
 			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect, russianWordData.vocalForm);
 			russianWordData.wordId = russianWord.id;
@@ -581,6 +591,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						sourceId = createSource(sourceType, EXT_SOURCE_ID_NA, source);
 					}
 					createLexemeSourceLink(lexemeId, ReferenceType.ANY, sourceId, null, source);
+				}
+				if (russianAbbreviationWords.containsKey(russianWord.value)) {
+					for (LexemeToWordData abbreviationWord : russianAbbreviationWords.get(russianWord.value)) {
+						abbreviationWord.lexemeId = lexemeId;
+						abbreviationWord.meaningId = meaningId;
+					}
+					context.abbreviationFullWordsRus.addAll(russianAbbreviationWords.get(russianWord.value));
 				}
 			}
 		}
@@ -849,8 +866,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
 	}
 
-	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String reportingId) throws Exception {
-		final String abbreviationFullWordExp = "x:dg/x:lhx";
+	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String abbreviationFullWordExp, String reportingId) throws Exception {
 		return extractLexemeMetadata(node, abbreviationFullWordExp, null, reportingId);
 	}
 
@@ -860,7 +876,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	}
 
 	private List<LexemeToWordData> extractRussianWords(
-			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) throws Exception {
+			Node node,
+			List<String> additionalDomains,
+			List<List<LexemeToWordData>> aspectGroups,
+			String reportingId,
+			boolean isVerb,
+			Map<String, List<LexemeToWordData>> abbreviationWords) throws Exception {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -871,6 +892,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String vocalFormExp = "x:xhld";
 		final String sourceExp = "x:vsall";
 		final String corpFrequencyExp = "x:xfreq";
+		final String abbreviationFullWordExp = "x:xlhx";
 
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
@@ -899,6 +921,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				wordData.aspect = calculateAspectType(word);
 			}
 			dataList.add(wordData);
+			List<LexemeToWordData> abbreviationFullWords = extractAbbreviationFullWords(wordGroupNode, abbreviationFullWordExp, reportingId);
+			if (!abbreviationFullWordExp.isEmpty()) {
+				abbreviationWords.put(wordData.word, abbreviationFullWords);
+			}
 
 			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
@@ -985,6 +1011,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	protected class Context extends SsBasedLoaderRunner.Context {
 		Map<String, MeaningReferenceData> referencesToMeanings = new HashMap<>();
 		Map<String, List<Guid>> ssGuidMap;
+		List<LexemeToWordData> abbreviationFullWordsRus = new ArrayList<>();
 	}
 
 	protected class MeaningReferenceData {
