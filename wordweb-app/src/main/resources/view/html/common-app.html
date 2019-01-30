@@ -224,7 +224,7 @@
           <div class="col-12 col-md-4 order-2 order-md-1 col-reverse">
             <span class="last-update">
               <span th:text="#{general.lastupdate}">Sõnaveeb 2019</span>
-              <span th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}" style="color: gray"></span>
+              <span th:if="${appData != null}" th:text="${'(' + appData.appName + '-' + appData.appVersion + ')'}" style="color: gray"></span>
             </span>
             <span class="copyright">
               &copy;&nbsp;

@@ -62,8 +62,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		languagesDatasetMap = new HashMap<>();
 		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "kol"});
 		languagesDatasetMap.put("est-est-simple", new String[] {"psv", "kol"});
-		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2"});
-		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2"});
+		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2", "kol"});
+		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2", "kol"});
 		languagesDatasetMap.put("rus-est-detail", new String[] {"ev2"});
 		languagesDatasetMap.put("rus-est-simple", new String[] {"qq2"});
 	}
@@ -72,12 +72,12 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	public WordsData findWords(String searchWord, String sourceLang, String destinLang, Integer homonymNr, String searchMode) {
 
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
-		boolean isFullDatasetMatch = StringUtils.equals(SEARCH_MODE_SIMPLE, searchMode);
-		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, datasets, isFullDatasetMatch);
+		String primaryDataset = datasets[0];
+		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, primaryDataset);
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
 			datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
-			isFullDatasetMatch = false;
-			allWords = lexSearchDbService.findWords(searchWord, sourceLang, datasets, isFullDatasetMatch);
+			primaryDataset = datasets[0];
+			allWords = lexSearchDbService.findWords(searchWord, sourceLang, primaryDataset);
 			if (CollectionUtils.isNotEmpty(allWords)) {
 				searchMode = SEARCH_MODE_DETAIL;
 			}
@@ -97,7 +97,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	public Map<String, List<String>> findWordsByPrefix(String wordPrefix, String sourceLang, String destinLang, int limit) {
 
 		String[] datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
-		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, datasets, limit);
+		String primaryDataset = datasets[0];
+		Map<String, List<WordOrForm>> results = lexSearchDbService.findWordsByPrefix(wordPrefix, sourceLang, primaryDataset, limit);
 		List<WordOrForm> prefWordsResult = results.get("prefWords");
 		List<WordOrForm> formWordsResult = results.get("formWords");
 		List<String> prefWords, formWords;

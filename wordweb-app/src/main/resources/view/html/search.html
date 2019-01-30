@@ -165,15 +165,9 @@
                         </a>
                         <span th:if="${meaningWord.additionalDataExists}" class="rections">
                           <span class="type-three">
-<<<<<<< HEAD
-                            <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}"></span>
-                            <span data-toggle="tooltip" data-placement="top" data-html="true" th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"></span>
-                        </span>
-=======
                             <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
                                   th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"></span>
                           </span>
->>>>>>> eeab5b8a8982c5e43db73c4d46627a48eed191ef
                           <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
                           </span>
