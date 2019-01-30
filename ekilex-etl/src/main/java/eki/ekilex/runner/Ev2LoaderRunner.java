@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import javax.transaction.Transactional;
 
+import eki.common.data.Count;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -119,6 +120,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 		logger.debug("total {} articles iterated", articleCounter);
 		processLatinTerms(context);
+		processAbbreviations(context);
 		unusedMeaningReferencesReport(context);
 
 		logger.debug("Found {} reused words", context.reusedWordCount.getValue());
@@ -149,6 +151,22 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			writeToLogFile(logString, "Ei leitud viidatavat mõistet", "");
 		}
 	}
+
+	private void processAbbreviations(Context context) throws Exception {
+
+		logger.debug("Found abbreviations {} <x:lhx> : {} <x:xlhx>.", context.abbreviationFullWords.size(), context.abbreviationFullWordsRus);
+		logger.debug("Processing started.");
+		writeToLogFile("Lühendite töötlus <x:lhx> ja <x:xlhx>", "", "");
+
+		Count newAbbreviationFullWordCount = processLexemeToWord(context, context.abbreviationFullWords, null, "Ei leitud märksõna, loome uue", dataLang);
+		Count newAbbreviationFullWordRusCount = processLexemeToWord(context, context.abbreviationFullWordsRus, null, "Ei leitud märksõna, loome uue", LANG_RUS);
+		createLexemeRelations(context, context.abbreviationFullWords, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale", false);
+		createLexemeRelations(context, context.abbreviationFullWordsRus, LEXEME_RELATION_ABBREVIATION, "Ei leitud ilmikut lühendi täis märksõnale", false);
+
+		logger.debug("Words created {} {} : {} {}", newAbbreviationFullWordCount.getValue(), dataLang, newAbbreviationFullWordRusCount.getValue(), LANG_RUS);
+		logger.debug("Abbreviations import done.");
+	}
+
 
 	@Transactional
 	void processArticle(
@@ -443,6 +461,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String meaningDefinitionExp = "x:dg/x:d";
 		final String registerExp = "x:dg/x:s";
 		final String latinTermExp = "x:dg/x:ld";
+		final String abbreviationFullWordExp = "x:dg/x:lhx";
 
 		boolean isVerb = newWords.get(0).posCodes.contains(POS_CODE_VERB);
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
@@ -468,12 +487,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				List<String> definitionsToCache = new ArrayList<>();
 				List<String> definitions = extractCleanValues(meaningGroupNode, meaningDefinitionExp);
 				List<LexemeToWordData> meaningLatinTerms = extractLatinTerms(meaningGroupNode, latinTermExp, reportingId);
+				List<LexemeToWordData> meaningAbbreviationFullWords = extractAbbreviationFullWords(meaningGroupNode, abbreviationFullWordExp, reportingId);
 				List<String> additionalDomains = new ArrayList<>();
 				List<List<LexemeToWordData>> aspectGroups = new ArrayList<>();
-				List<LexemeToWordData> meaningRussianWords = extractRussianWords(meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb);
+				Map<String, List<LexemeToWordData>> russianAbbreviationWords = new HashMap<>();
+				List<LexemeToWordData> meaningRussianWords = extractRussianWords(
+						meaningGroupNode, additionalDomains, aspectGroups, reportingId, isVerb, russianAbbreviationWords);
 				List<LexemeToWordData> connectedWords =
 						Stream.of(
-								meaningLatinTerms.stream()
+								meaningLatinTerms.stream(),
+								meaningAbbreviationFullWords.stream()
 						).flatMap(i -> i).collect(toList());
 				WordToMeaningData meaningData = findExistingMeaning(context, newWords.get(0), lexemeLevel1, connectedWords, definitions);
 				if (meaningData == null) {
@@ -495,7 +518,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
 					}
 				}
-				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms);
+				cacheMeaningRelatedData(context, meaningId, definitionsToCache, newWords.get(0), lexemeLevel1, meaningLatinTerms, meaningAbbreviationFullWords);
 
 				processDomains(meaningGroupNode, meaningId, additionalDomains);
 
@@ -518,12 +541,16 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						savePosAndDeriv(newWordData, meaningPosCodes, lexemePosCodes, lexemeId, reportingId);
 						saveGrammars(newWordData, meaningGrammars, lexemeGrammars, lexemeId);
 						saveRegisters(lexemeId, registers, reportingId);
+						// connect abbreviation word data and created lexeme id for latter use in abbreviation processing
+						for (LexemeToWordData meaningAbbreviationFullWord : meaningAbbreviationFullWords) {
+							meaningAbbreviationFullWord.lexemeId = lexemeId;
+						}
 					}
 					if (lexemeLevel1 == 1 && lexemeLevel2 == 1) {
 						processMeaningReferences(context, newWordData, meaningId);
 					}
 				}
-				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId);
+				processRussianWords(context, meaningRussianWords, aspectGroups, meaningId, russianAbbreviationWords);
 			}
 			for (WordData w : newWords) {
 				w.level1 = lexemeLevel1 + 1;
@@ -532,7 +559,12 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processRussianWords(Context context, List<LexemeToWordData> meaningRussianWords, List<List<LexemeToWordData>> aspectGroups, Long meaningId) throws Exception {
+	private void processRussianWords(
+			Context context,
+			List<LexemeToWordData> meaningRussianWords,
+			List<List<LexemeToWordData>> aspectGroups,
+			Long meaningId,
+			Map<String, List<LexemeToWordData>> russianAbbreviationWords) throws Exception {
 		for (LexemeToWordData russianWordData : meaningRussianWords) {
 			WordData russianWord = findOrCreateWord(context, russianWordData.word, russianWordData.displayForm, LANG_RUS, russianWordData.aspect, russianWordData.vocalForm);
 			russianWordData.wordId = russianWord.id;
@@ -559,6 +591,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 						sourceId = createSource(sourceType, EXT_SOURCE_ID_NA, source);
 					}
 					createLexemeSourceLink(lexemeId, ReferenceType.ANY, sourceId, null, source);
+				}
+				if (russianAbbreviationWords.containsKey(russianWord.value)) {
+					for (LexemeToWordData abbreviationWord : russianAbbreviationWords.get(russianWord.value)) {
+						abbreviationWord.lexemeId = lexemeId;
+						abbreviationWord.meaningId = meaningId;
+					}
+					context.abbreviationFullWordsRus.addAll(russianAbbreviationWords.get(russianWord.value));
 				}
 			}
 		}
@@ -700,10 +739,13 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private void cacheMeaningRelatedData(
 			Context context, Long meaningId, List<String> definitions, WordData keyword, int level1,
-			List<LexemeToWordData> latinTerms
+			List<LexemeToWordData> latinTerms,
+			List<LexemeToWordData> abbreviationFullWords
 	) {
 		latinTerms.forEach(data -> data.meaningId = meaningId);
 		context.latinTermins.addAll(latinTerms);
+		abbreviationFullWords.forEach(data -> data.meaningId = meaningId);
+		context.abbreviationFullWords.addAll(abbreviationFullWords);
 
 		context.meanings.stream()
 				.filter(m -> Objects.equals(m.meaningId, meaningId))
@@ -712,6 +754,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		words.add(keyword);
 		words.forEach(word -> {
 			context.meanings.addAll(convertToMeaningData(latinTerms, word, level1, definitions));
+			context.meanings.addAll(convertToMeaningData(abbreviationFullWords, word, level1, definitions));
 		});
 	}
 
@@ -823,13 +866,22 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		return extractLexemeMetadata(node, latinTermExp, null, reportingId);
 	}
 
+	private List<LexemeToWordData> extractAbbreviationFullWords(Node node, String abbreviationFullWordExp, String reportingId) throws Exception {
+		return extractLexemeMetadata(node, abbreviationFullWordExp, null, reportingId);
+	}
+
 	private List<String> extractGovernments(Node node) {
 		final String wordGovernmentExp = "x:grk/x:r";
 		return extractCleanValues(node, wordGovernmentExp);
 	}
 
 	private List<LexemeToWordData> extractRussianWords(
-			Node node, List<String> additionalDomains, List<List<LexemeToWordData>> aspectGroups, String reportingId, boolean isVerb) throws Exception {
+			Node node,
+			List<String> additionalDomains,
+			List<List<LexemeToWordData>> aspectGroups,
+			String reportingId,
+			boolean isVerb,
+			Map<String, List<LexemeToWordData>> abbreviationWords) throws Exception {
 
 		final String wordGroupExp = "x:xp/x:xg";
 		final String wordExp = "x:x";
@@ -840,6 +892,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		final String vocalFormExp = "x:xhld";
 		final String sourceExp = "x:vsall";
 		final String corpFrequencyExp = "x:xfreq";
+		final String abbreviationFullWordExp = "x:xlhx";
 
 		List<LexemeToWordData> dataList = new ArrayList<>();
 		List<Node> wordGroupNodes = node.selectNodes(wordGroupExp);
@@ -868,6 +921,10 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				wordData.aspect = calculateAspectType(word);
 			}
 			dataList.add(wordData);
+			List<LexemeToWordData> abbreviationFullWords = extractAbbreviationFullWords(wordGroupNode, abbreviationFullWordExp, reportingId);
+			if (!abbreviationFullWordExp.isEmpty()) {
+				abbreviationWords.put(wordData.word, abbreviationFullWords);
+			}
 
 			if (wordHasAspectPair) {
 				LexemeToWordData aspectData = new LexemeToWordData();
@@ -921,7 +978,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 	private String extractAsString(Node node, String xpathExp) {
 		Element wordNode = (Element) node.selectSingleNode(xpathExp);
-		return wordNode == null ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
+		return wordNode == null || isRestricted(wordNode) ? null : cleanEkiEntityMarkup(wordNode.getTextTrim());
 	}
 
 	private boolean isNotWordInSs1(String word) {
@@ -954,6 +1011,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	protected class Context extends SsBasedLoaderRunner.Context {
 		Map<String, MeaningReferenceData> referencesToMeanings = new HashMap<>();
 		Map<String, List<Guid>> ssGuidMap;
+		List<LexemeToWordData> abbreviationFullWordsRus = new ArrayList<>();
 	}
 
 	protected class MeaningReferenceData {
