@@ -893,7 +893,7 @@ lex_rel_type	tvt:vt ka	vaata ka	est	wordweb
 lex_rel_type	yhvt	vaata ka	est	wordweb
 lex_rel_type	vor	suhtlusväljend	est	wordweb
 lex_rel_type	tvt:vrd	võrdle	est	wordweb
-lex_rel_type	sub_word	allmärksõna	est	wordweb
+lex_rel_type	sub_word	vaata ka	est	wordweb
 lexeme_frequency	1	1 - kuni 3000	est	descrip
 lexeme_frequency	2	2 - 3000-6000	est	descrip
 lexeme_frequency	3	3 - 6000-10000	est	descrip
