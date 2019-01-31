@@ -534,13 +534,12 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record9<Long,Long,Long,Long,String,String,String,Long,Long>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record8<Long,Long,Long,String,String,String,Long,Long>> findLexemeRelations(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
 						LEX_RELATION.ID.as("id"),
 						LEXEME.ID.as("lexeme_id"),
 						WORD.ID.as("word_id"),
-						FORM.ID.as("form_id"),
 						FORM.VALUE.as("word"),
 						WORD.LANG.as("word_lang"),
 						LEX_REL_TYPE_LABEL.VALUE.as("rel_type_label"),
@@ -566,6 +565,7 @@ public class CommonDataDbService implements DbConstant {
 								.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
 								.and(FORM.MODE.eq(FormMode.WORD.name()))
 				)
+				.groupBy(LEX_RELATION.ID, LEXEME.ID, WORD.ID, FORM.VALUE, LEX_REL_TYPE_LABEL.VALUE)
 				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
 	}

@@ -23,9 +23,6 @@ public class Relation extends AbstractDataObject {
 	@Column(name = "word_id")
 	private Long wordId;
 
-	@Column(name = "form_id")
-	private Long formId;
-
 	@Column(name = "word")
 	private String word;
 
@@ -76,14 +73,6 @@ public class Relation extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
-	}
-
-	public Long getFormId() {
-		return formId;
-	}
-
-	public void setFormId(Long formId) {
-		this.formId = formId;
 	}
 
 	public String getWord() {

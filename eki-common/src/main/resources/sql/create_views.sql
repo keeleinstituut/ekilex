@@ -562,7 +562,8 @@ create view view_ww_lexeme_relation
                   where f2.mode = 'WORD'
                   and   f2.paradigm_id = p2.id
                   and   p2.word_id = w2.id
-                  and   l2.word_id = w2.id) l2 on l2.related_lexeme_id = r.lexeme2_id
+                  and   l2.word_id = w2.id
+                  group by l2.id, w2.id, f2.value) l2 on l2.related_lexeme_id = r.lexeme2_id
     group by r.lexeme1_id;
 
 -- meaning relations
