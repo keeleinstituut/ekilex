@@ -20,7 +20,7 @@
 	var feedbackServiceUrl = /*[[${feedbackServiceUrl}]]*/'http://localhost/blah';
 	var messages = {
 		'this_is_form' : /*[[#{label.word.is.form.of}]]*/'see on ka vorm sõnadest',
-		'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
+		'sound_generation_failure' : /*[[#{label.sound.generation.failure}]]*/'Heli genereerimise teenus hetkel ei toimi, proovige palun hiljem uuesti.',
 		'search_failure' : /*[[#{label.detail.search.failure}]]*/'Detailide päring ebaõnnestus, proovige hiljem uuesti.',
 		'fb_service_error' : /*[[#{label.fb.missing.sevice}]]*/'Tagasiside teenus ei ole seadistatud.'
 	}
@@ -300,7 +300,7 @@
             <input type="checkbox" class="custom-control-input modal-check" id="modalCheck1">
             <label class="custom-control-label" for="modalCheck1">
               <span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span>
-              <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">Kasutus- ja privaatsustingimused</a>
+              <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">kasutus- ja privaatsustingimustega</a>
             </label>
           </div>
         </div>
@@ -363,7 +363,7 @@
             <input type="checkbox" class="custom-control-input modal-check" id="modalCheck2">
             <label class="custom-control-label" for="modalCheck2">
               <span th:text="#{label.fb.acknowledge}">Postitades uue sõna või kommentaari nõustud</span>
-              <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">Kasutus- ja privaatsustingimused</a>
+              <a role="link" th:href="@{/regulations}" data-item-name="regulations" th:text="#{label.fb.privacy}">kasutus- ja privaatsustingimustega</a>
             </label>
           </div>
         </div>
