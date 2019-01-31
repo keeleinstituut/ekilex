@@ -14,6 +14,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.MapUtils;
 
 import eki.common.constant.ClassifierName;
 import eki.common.constant.ReferenceType;
@@ -57,7 +58,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 	@Autowired
 	private ClassifierUtil classifierUtil;
 
-	public void filterIrrelevantValues(List<Word> words, String destinLang, String[] datasets) {
+	public void composeHomonymWrapups(List<Word> words, String destinLang, String[] datasets) {
 		for (Word word : words) {
 			List<TypeWord> meaningWords = word.getMeaningWords();
 			if (CollectionUtils.isNotEmpty(meaningWords)) {
@@ -200,10 +201,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			CollocationRelGroup collocRelGroup = populateCollocRelGroup(collocPosGroup, tuple, collocRelGroupMap);
 			Collocation collocation = populateCollocation(tuple);
 
-			if (collocPosGroup == null) {
-				//TODO temporarily disabled
-				//lexeme.getSecondaryCollocations().add(collocation);
-			} else {
+			if (collocPosGroup != null) {
 				collocRelGroup.getCollocations().add(collocation);
 			}
 		}
@@ -240,9 +238,8 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			lexeme.setMissingMatchWords(isMissingMatchWords);
 			filterMeaningWords(lexeme, allRelatedWordValues);
 			List<String> existingCollocationValues = new ArrayList<>();
+			divideCollocationRelGroupsByCollocMemberForms(wordId, lexeme);
 			transformCollocationPosGroupsForDisplay(wordId, lexeme, existingCollocationValues);
-			//TODO temporarily disabled
-			//transformSecondaryCollocationsForDisplay(wordId, lexeme, existingCollocationValues);
 		}
 		summarisedPoses = summarisedPoses.stream().distinct().collect(Collectors.toList());
 		boolean isSinglePos = CollectionUtils.size(summarisedPoses) == 1;
@@ -266,7 +263,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		lexeme.setGovernments(new ArrayList<>());
 		lexeme.setUsages(new ArrayList<>());
 		lexeme.setCollocationPosGroups(new ArrayList<>());
-		lexeme.setSecondaryCollocations(new ArrayList<>());
 		lexeme.setAdviceNotes(tuple.getAdviceNotes());
 		lexeme.setPublicNotes(tuple.getPublicNotes());
 		lexeme.setGrammars(tuple.getGrammars());
@@ -421,6 +417,34 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		return collocation;
 	}
 
+	private void divideCollocationRelGroupsByCollocMemberForms(Long wordId, Lexeme lexeme) {
+
+		List<CollocationPosGroup> collocationPosGroups = lexeme.getCollocationPosGroups();
+		for (CollocationPosGroup collocPosGroup : collocationPosGroups) {
+			List<CollocationRelGroup> collocRelGroups = collocPosGroup.getRelationGroups();
+			List<CollocationRelGroup> dividedCollocRelGroups = new ArrayList<>();
+			for (CollocationRelGroup collocRelGroup : collocRelGroups) {
+				List<Collocation> collocs = collocRelGroup.getCollocations();
+				Map<String, List<Collocation>> collocRelGroupDivisionMap = collocs.stream()
+						.collect(Collectors.groupingBy(col -> col.getCollocMembers().stream()
+								.filter(colm -> colm.getWordId().equals(wordId))
+								.map(colm -> colm.getForm()).findFirst().orElse("-")));
+				if (MapUtils.size(collocRelGroupDivisionMap) == 1) {
+					dividedCollocRelGroups.add(collocRelGroup);
+				} else {
+					for (List<Collocation> dividedCollocs : collocRelGroupDivisionMap.values()) {
+						CollocationRelGroup dividedCollocRelGroup = new CollocationRelGroup();
+						dividedCollocRelGroup.setRelGroupId(collocRelGroup.getRelGroupId());
+						dividedCollocRelGroup.setName(collocRelGroup.getName());
+						dividedCollocRelGroup.setCollocations(dividedCollocs);
+						dividedCollocRelGroups.add(dividedCollocRelGroup);
+					}
+				}
+			}
+			collocPosGroup.setRelationGroups(dividedCollocRelGroups);
+		}
+	}
+
 	private void filterMeaningWords(Lexeme lexeme, List<String> allRelatedWordValues) {
 	
 		List<MeaningWord> meaningWords = lexeme.getMeaningWords();
@@ -462,24 +486,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		lexeme.setLimitedPrimaryDisplayCollocs(limitedPrimaryDisplayCollocs);
 	}
 
-	//TODO temporarily disabled
-	private void transformSecondaryCollocationsForDisplay(Long wordId, Lexeme lexeme, List<String> existingCollocationValues) {
-
-		List<Collocation> collocations = lexeme.getSecondaryCollocations();
-		List<DisplayColloc> secondaryDisplayCollocs = new ArrayList<>();
-		lexeme.setSecondaryDisplayCollocs(secondaryDisplayCollocs);
-		transformCollocationsForDisplay(wordId, collocations, secondaryDisplayCollocs, null, existingCollocationValues);
-		if (CollectionUtils.isNotEmpty(secondaryDisplayCollocs)) {
-			boolean isMoreSecondaryCollocs = CollectionUtils.size(secondaryDisplayCollocs) > TYPICAL_COLLECTIONS_DISPLAY_LIMIT;
-			lexeme.setMoreSecondaryCollocs(isMoreSecondaryCollocs);
-			List<DisplayColloc> limitedSecondaryDisplayCollocs = new ArrayList<>(secondaryDisplayCollocs);
-			if (isMoreSecondaryCollocs) {
-				limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs.subList(0, TYPICAL_COLLECTIONS_DISPLAY_LIMIT);
-			}
-			lexeme.setLimitedSecondaryDisplayCollocs(limitedSecondaryDisplayCollocs);
-		}
-	}
-
 	private void transformCollocationsForDisplay(
 			Long wordId, List<Collocation> collocations, List<DisplayColloc> displayCollocs, List<String> allUsages, List<String> existingCollocationValues) {
 
@@ -488,7 +494,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		List<String> collocMemberForms;
 		DisplayColloc displayColloc;
 		Map<String, DisplayColloc> collocMemberGroupMap = new HashMap<>();
-	
+
 		for (Collocation colloc : collocations) {
 			String collocValue = colloc.getValue();
 			if (existingCollocationValues.contains(collocValue)) {
@@ -983,7 +989,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
 		return CollectionUtils.isEmpty(lexeme.getDefinitions()) &&
-				//CollectionUtils.isEmpty(lexeme.getSecondaryCollocations()) && //TODO temporarily disabled
 				CollectionUtils.isEmpty(lexeme.getCollocationPosGroups()) &&
 				CollectionUtils.isEmpty(lexeme.getDomains()) &&
 				CollectionUtils.isEmpty(lexeme.getGovernments()) &&

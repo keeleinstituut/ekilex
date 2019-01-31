@@ -72,13 +72,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private List<CollocationPosGroup> collocationPosGroups;
 
-	private List<Collocation> secondaryCollocations;
-
-	private List<DisplayColloc> secondaryDisplayCollocs;
-
 	private List<DisplayColloc> limitedPrimaryDisplayCollocs;
-
-	private List<DisplayColloc> limitedSecondaryDisplayCollocs;
 
 	private boolean missingMatchWords;
 
@@ -334,36 +328,12 @@ public class Lexeme extends AbstractDataObject {
 		this.collocationPosGroups = collocationPosGroups;
 	}
 
-	public List<Collocation> getSecondaryCollocations() {
-		return secondaryCollocations;
-	}
-
-	public void setSecondaryCollocations(List<Collocation> secondaryCollocations) {
-		this.secondaryCollocations = secondaryCollocations;
-	}
-
-	public List<DisplayColloc> getSecondaryDisplayCollocs() {
-		return secondaryDisplayCollocs;
-	}
-
-	public void setSecondaryDisplayCollocs(List<DisplayColloc> secondaryDisplayCollocs) {
-		this.secondaryDisplayCollocs = secondaryDisplayCollocs;
-	}
-
 	public List<DisplayColloc> getLimitedPrimaryDisplayCollocs() {
 		return limitedPrimaryDisplayCollocs;
 	}
 
 	public void setLimitedPrimaryDisplayCollocs(List<DisplayColloc> limitedPrimaryDisplayCollocs) {
 		this.limitedPrimaryDisplayCollocs = limitedPrimaryDisplayCollocs;
-	}
-
-	public List<DisplayColloc> getLimitedSecondaryDisplayCollocs() {
-		return limitedSecondaryDisplayCollocs;
-	}
-
-	public void setLimitedSecondaryDisplayCollocs(List<DisplayColloc> limitedSecondaryDisplayCollocs) {
-		this.limitedSecondaryDisplayCollocs = limitedSecondaryDisplayCollocs;
 	}
 
 	public boolean isMissingMatchWords() {
