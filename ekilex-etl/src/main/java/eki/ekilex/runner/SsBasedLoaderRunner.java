@@ -46,11 +46,11 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	protected final static String MEANINGS_REPORT_NAME = "keywords_meanings";
 
 	protected final static String LEXEME_RELATION_ABBREVIATION = "lyh";
+	protected final static String LEXEME_RELATION_SUB_WORD = "sub_word";
 
 	protected final static String WORD_RELATION_DERIVATIVE = "deriv";
 	protected final static String WORD_RELATION_DERIVATIVE_BASE = "deriv_base";
 	protected final static String WORD_RELATION_UNION = "ühend";
-	protected final static String WORD_RELATION_SUB_WORD = "sub_word";
 
 	protected ReportComposer reportComposer;
 	protected boolean reportingPaused;

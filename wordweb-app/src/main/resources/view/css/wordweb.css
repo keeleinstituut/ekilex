@@ -199,3 +199,9 @@
 		margin-top: 9.5em;
 	}
 }
+
+.content-title .btn-speaker {
+	float: none;
+	display: initial;
+	padding: 0.5em 0 0 0;
+}

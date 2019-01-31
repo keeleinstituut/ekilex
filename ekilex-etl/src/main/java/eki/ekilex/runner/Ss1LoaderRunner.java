@@ -424,7 +424,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		logger.debug("Derivatives processing done.");
 	}
 
-	private List<WordData> processSubWords(Node node, Context context, List<WordData> mainWords, String reportingId) throws Exception {
+	private List<WordData> processSubWords(Node node, Context context, String reportingId) throws Exception {
 		List<WordData> subWords = extractSubWords(node, reportingId);
 		if (!subWords.isEmpty()) {
 			for (WordData subWord: subWords) {
@@ -434,9 +434,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					newWord.homonymNr = subWord.homonymNr;
 					context.importedWords.add(newWord);
 					subWord.id = newWord.id;
-				}
-				for (WordData mainWord: mainWords) {
-					createWordRelation(mainWord.id, subWord.id, WORD_RELATION_SUB_WORD);
 				}
 			}
 		}
@@ -450,12 +447,17 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		context.importedWords.add(newWord);
 
 		Long meaningId = wordData.meaningId == null ? createMeaning() : wordData.meaningId;
+		createLexemeForWordAndMeaning(newWord, meaningId, 1, 1);
 
+		return newWord.id;
+	}
+
+	private Long createLexemeForWordAndMeaning(WordData wordData, Long meaningId, int level1, int level2) throws Exception {
 		Lexeme lexeme = new Lexeme();
-		lexeme.setWordId(newWord.id);
+		lexeme.setWordId(wordData.id);
 		lexeme.setMeaningId(meaningId);
-		lexeme.setLevel1(1);
-		lexeme.setLevel2(1);
+		lexeme.setLevel1(level1);
+		lexeme.setLevel2(level2);
 		lexeme.setLevel3(1);
 		lexeme.setFrequencyGroup(wordData.frequencyGroup);
 		Long lexemeId = createLexeme(lexeme, getDataset());
@@ -465,9 +467,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			}
 		}
 		if (!wordData.posCodes.isEmpty()) {
-			savePosCodes(lexemeId, wordData, Collections.emptyList(), newWord.value);
+			savePosCodes(lexemeId, wordData, Collections.emptyList(), wordData.value);
 		}
-		return newWord.id;
+		return lexemeId;
 	}
 
 	void processUnionWords(Context context) throws Exception {
@@ -511,9 +513,19 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 			int lexemeLevel2 = 0;
 			for (Node meaningGroupNode : meanigGroupNodes) {
-				List<WordData> subWords = processSubWords(meaningGroupNode, context, newWords, reportingId);
+				List<WordData> subWords = processSubWords(meaningGroupNode, context, reportingId);
 				if (!subWords.isEmpty()) {
-					processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, reportingId);
+					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, reportingId);
+					if (!createdLexemIds.isEmpty()) {
+						lexemeLevel2++;
+						for (WordData newWord : newWords) {
+							Long meaningId = createMeaning();
+							Long mainWordLexemeId = createLexemeForWordAndMeaning(newWord, meaningId, lexemeLevel1, lexemeLevel2);
+							for (Long subWordLexemeId : createdLexemIds) {
+								createLexemeRelation(mainWordLexemeId, subWordLexemeId, LEXEME_RELATION_SUB_WORD);
+							}
+						}
+					}
 				} else {
 					lexemeLevel2++;
 					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, reportingId);
@@ -522,7 +534,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private void processMeaning(
+	private List<Long> processMeaning(
 			Node meaningGroupNode,
 			Context context,
 			List<WordData> newWords,
@@ -533,6 +545,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			String reportingId) throws Exception {
 
 		final String meaningPosCodeExp = "s:grg/s:sl";
+		List<Long> createdLexemeIds = new ArrayList<>();
 
  		List<Usage> usages = extractUsages(meaningGroupNode);
 		List<String> definitions = extractDefinitions(meaningGroupNode);
@@ -602,6 +615,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			lexeme.setFrequencyGroup(newWordData.frequencyGroup);
 			Long lexemeId = createLexeme(lexeme, getDataset());
 			if (lexemeId != null) {
+				createdLexemeIds.add(lexemeId);
 				lexeme.setLexemeId(lexemeId);
 				createUsages(lexemeId, usages, dataLang);
 				saveGovernments(meaningGroupNode, lexemeId, newWordData);
@@ -621,6 +635,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 				writeToLogFile(MEANINGS_REPORT_NAME, newWordData.value, "Mõiste ja märksõna jaoks on juba ilmik olemas", definitions.get(0));
 			}
 		}
+		return createdLexemeIds;
 	}
 
 	private void saveComments(Long lexemeId, List<CommentData> comments) throws Exception {
