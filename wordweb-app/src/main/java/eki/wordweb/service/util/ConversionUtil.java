@@ -988,14 +988,15 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 	}
 
 	private boolean isEmptyLexeme(Lexeme lexeme) {
-		return CollectionUtils.isEmpty(lexeme.getDefinitions()) &&
-				CollectionUtils.isEmpty(lexeme.getCollocationPosGroups()) &&
-				CollectionUtils.isEmpty(lexeme.getDomains()) &&
-				CollectionUtils.isEmpty(lexeme.getGovernments()) &&
-				CollectionUtils.isEmpty(lexeme.getUsages()) &&
-				CollectionUtils.isEmpty(lexeme.getOtherLangMatchWords()) &&
-				CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords()) &&
-				CollectionUtils.isEmpty(lexeme.getRegisters());
+		return CollectionUtils.isEmpty(lexeme.getDefinitions())
+				&& CollectionUtils.isEmpty(lexeme.getRelatedLexemes())
+				&& CollectionUtils.isEmpty(lexeme.getDomains())
+				&& CollectionUtils.isEmpty(lexeme.getRegisters())
+				&& CollectionUtils.isEmpty(lexeme.getGovernments())
+				&& CollectionUtils.isEmpty(lexeme.getUsages())
+				&& CollectionUtils.isEmpty(lexeme.getOtherLangMatchWords())
+				&& CollectionUtils.isEmpty(lexeme.getDestinLangMatchWords())
+				&& CollectionUtils.isEmpty(lexeme.getCollocationPosGroups());
 	}
 
 }
