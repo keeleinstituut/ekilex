@@ -627,9 +627,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 		List<Node> usageBlockNodes = node.selectNodes(usageBlockExp);
 		for (Node usageBlockNode : usageBlockNodes) {
-			if (isRestricted(usageBlockNode)) continue;
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
+				if (isRestricted(usageGroupNode)) continue;
 				List<String> wordValues = extractCleanValues(usageGroupNode, usageExp);
 				for (String wordValue : wordValues) {
 					String word = cleanUpWord(wordValue);
