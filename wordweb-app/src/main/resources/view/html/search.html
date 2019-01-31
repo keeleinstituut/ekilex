@@ -137,7 +137,7 @@
                     </span>
                   </div>
                   <div class="definition">
-                    <span th:class="vald" th:each="register : ${lexeme.registers}" th:text="${register.value + (not #lists.isEmpty(lexeme.domains) ? ', ' : '')}"></span>
+                    <span th:class="vald" th:each="register,registerIter : ${lexeme.registers}" th:text="${register.value + (registerIter.last ? '' : ', ')}"></span>
                     <span th:class="vald" th:each="domain,domainIter : ${lexeme.domains}" th:text="${domain.value + (domainIter.last ? '' : ', ')}"></span>
                     <span th:each="definition,definitionIter : ${lexeme.definitions}" th:utext="${definition.valuePrese + (definitionIter.last ? '' : '; ')}"> </span>
                     <div th:if="${not #lists.isEmpty(lexeme.otherLangMatchWords)}">
