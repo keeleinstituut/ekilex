@@ -1332,7 +1332,7 @@ insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vt ka', 'v
 insert into lex_rel_type_label (code, value, lang, type) values ('yhvt', 'vaata ka', 'est', 'wordweb');
 insert into lex_rel_type_label (code, value, lang, type) values ('vor', 'suhtlusväljend', 'est', 'wordweb');
 insert into lex_rel_type_label (code, value, lang, type) values ('tvt:vrd', 'võrdle', 'est', 'wordweb');
-insert into lex_rel_type_label (code, value, lang, type) values ('sub_word', 'allmärksõna', 'est', 'wordweb');
+insert into lex_rel_type_label (code, value, lang, type) values ('sub_word', 'vaata ka', 'est', 'wordweb');
 insert into meaning_rel_type_label (code, value, lang, type) values ('ant', 'antonüüm', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'kaashüponüüm', 'est', 'descrip');
 insert into meaning_rel_type_label (code, value, lang, type) values ('cohyponym', 'võrdle', 'est', 'wordweb');
@@ -1856,7 +1856,7 @@ insert into word_rel_type_label (code, value, lang, type) values ('superl', 'võ
 insert into word_rel_type_label (code, value, lang, type) values ('SERIES', 'samas sarjas', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('VARIANTS', 'variandid', 'est', 'wordweb');
 insert into word_rel_type_label (code, value, lang, type) values ('ASPECTS', 'aspektid', 'est', 'wordweb');
-insert into word_rel_type_label (code, value, lang, type) values ('ühend', 'ühend', 'est', 'wordweb');
+insert into word_rel_type_label (code, value, lang, type) values ('ühend', 'ühendid', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('k', 'kohanimi', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('k', 'place name', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('l', 'lühend', 'est', 'descrip');
