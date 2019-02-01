@@ -201,3 +201,8 @@
 	display: initial;
 	padding: 0.5em 0 0 0;
 }
+
+.matching-word {
+	color: #00874F;
+	margin-right: -0.2rem;
+}
