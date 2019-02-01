@@ -156,7 +156,7 @@ bolan	keel	-	keeleteadus	et
 bolan	keel	-	linguistics	en
 bolan	keem	-	keemia	et
 bolan	keem	-	chemistry	en
-bolan	kirikl	-	kiriklik (luteri usuga seotud)	et
+bolan	kirikl	-	kiriklik	et
 bolan	kirikl	-	ecclesiastical	en
 bolan	kirj	-	kirjandusteadus	et
 bolan	kirj	-	literature	en
@@ -166,7 +166,7 @@ bolan	kunst	-	kunst	et
 bolan	kunst	-	art	en
 bolan	loog	-	loogika	et
 bolan	loog	-	logic	en
-bolan	maj	-	majandus, majandusteadus	et
+bolan	maj	-	majandus	et
 bolan	maj	-	economics	en
 bolan	mat	-	matemaatika	et
 bolan	mat	-	mathematics	en
@@ -174,7 +174,7 @@ bolan	med	-	meditsiin	et
 bolan	med	-	medicine	en
 bolan	mer	-	merendus	et
 bolan	mer	-	nautical	en
-bolan	meteor	-	meteoroloogia, klimatoloogia	et
+bolan	meteor	-	meteoroloogia	et
 bolan	meteor	-	meteorology	en
 bolan	mets	-	metsandus	et
 bolan	mets	-	forestry	en
@@ -184,7 +184,7 @@ bolan	mäend	-	mäendus	et
 bolan	mäend	-	mining engineering	en
 bolan	müt	-	mütoloogia	et
 bolan	müt	-	mythology	en
-bolan	nõuk	-	nõukogulik	et
+bolan	nõuk	-	Nõukogude ajaga seotud	et
 bolan	nõuk	-	Soviet	en
 bolan	paleont	-	paleontoloogia	et
 bolan	paleont	-	paleontology	en
@@ -196,7 +196,7 @@ bolan	psühh	-	psühholooogia	et
 bolan	psühh	-	psychology	en
 bolan	põll	-	põllumajandus	et
 bolan	põll	-	agriculture	en
-bolan	relig	-	religioon (uskumise, usundiga seotud)	et
+bolan	relig	-	religioon	et
 bolan	relig	-	religion	en
 bolan	sport	-	sport	et
 bolan	sport	-	sports	en
@@ -204,7 +204,7 @@ bolan	sõj	-	sõjandus, riigikaitse	et
 bolan	sõj	-	military science, national defence	en
 bolan	zool	-	zooloogia	et
 bolan	zool	-	zoology	en
-bolan	teater	-	teater, teatriasjandus	et
+bolan	teater	-	teater	et
 bolan	teater	-	theater	en
 bolan	tehn	-	tehnika	et
 bolan	tehn	-	technology	en
@@ -222,7 +222,7 @@ bolan	film	-	filmikunst	et
 bolan	film	-	filmography	en
 bolan	geod	-	geodeesia	et
 bolan	geod	-	geodesy	en
-bolan	hüdr	-	hüdraulika ja hüdrotehnika	et
+bolan	hüdr	-	hüdrotehnika	et
 bolan	hüdr	-	water engineering	en
 bolan	jah	-	jahindus	et
 bolan	jah	-	hunting	en
@@ -232,19 +232,19 @@ bolan	kul	-	kulinaaria	et
 bolan	kul	-	cookery	en
 bolan	lenn	-	lennundus	et
 bolan	lenn	-	aviation	en
-bolan	lgv	-	lingvistika	et
+bolan	lgv	-	keeleteadus	et
 bolan	lgv	-	linguistics	en
 bolan	meh	-	mehaanika	et
 bolan	meh	-	mechanics	en
 bolan	mes	-	mesindus	et
 bolan	mes	-	apiculture	en
-bolan	min	-	mineraloogia ja kristallograafia	et
+bolan	min	-	mineraloogia	et
 bolan	min	-	mineralogy	en
 bolan	mull	-	mullandus	et
 bolan	mull	-	soil science	en
 bolan	nahat	-	nahatööstus	et
 bolan	nahat	-	leather industry	en
-bolan	paberit	-	tselluloosi- ja paberitööstus	et
+bolan	paberit	-	paberitööstus	et
 bolan	paberit	-	paper industry	en
 bolan	pat	-	patendindus	et
 bolan	pat	-	patent	en
@@ -254,13 +254,13 @@ bolan	raad	-	raadiotehnika	et
 bolan	raad	-	radio	en
 bolan	raudt	-	raudtee	et
 bolan	raudt	-	railway engineering	en
-bolan	side	-	sidendus	et
+bolan	side	-	sideala	et
 bolan	side	-	communication	en
 bolan	sotsiol	-	sotsioloogia	et
 bolan	sotsiol	-	sociology	en
 bolan	stat	-	statistika	et
 bolan	stat	-	statistics	en
-bolan	teed	-	teedeehitus ja teemajandus	et
+bolan	teed	-	teedeehitus	et
 bolan	teed	-	road engineering	en
 ent	kiletiivalised	-	kiletiivalised	et
 ent	puiduvaablased	kiletiivalised	puiduvaablased	et
