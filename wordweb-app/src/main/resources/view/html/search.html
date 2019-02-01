@@ -155,21 +155,21 @@
                   <div class="matches">
                     <div th:if="${not #lists.isEmpty(lexeme.destinLangMatchWords)}">
                       <span th:each="meaningWord,meaningWordIter : ${lexeme.destinLangMatchWords}" style="display: inline-block; white-space: nowrap;">
-                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" style="color: #001124;">
+                        <a th:href="@{${viewUtil.getSearchUriForDestinationLanguage(sessionBean, meaningWord.word)}}" style="color: #001124; margin-right: -0.2rem;">
                           <span th:text="${(meaningWord.suffixoid ? '-' : '') + meaningWord.word + (meaningWord.prefixoid ? '-' : '')}">tee</span>
                         </a>
-                        <span th:if="${meaningWord.additionalDataExists}" class="rections" style="margin-right: -5px;">
+                        <span th:if="${meaningWord.additionalDataExists}" class="rections">
                           <span th:if="${meaningWord.aspect != null}" th:text="${meaningWord.aspect.value}" data-toggle="tooltip" data-placement="top" data-html="true"
                                 th:title="#{'label.aspect.' + ${meaningWord.aspect.code}}"
                                 class="type-three"></span>
-                          <span class="type-one-list" th:if="${not #lists.isEmpty(meaningWord.governments)}">
+                          <th:block th:if="${not #lists.isEmpty(meaningWord.governments)}">
                             <span class="type-one" th:each="government,govIter : ${meaningWord.governments}" th:text="${government + (govIter.last ? '' : ', ')}"></span>
-                          </span>
+                          </th:block>
                           <th:block th:if="${not #lists.isEmpty(meaningWord.registers)}">
                             <span class="type-two" th:each="register,regIter : ${meaningWord.registers}" th:text="${register.value + (regIter.last ? '' : ', ')}"></span>
                           </th:block>
                         </span>
-                        <span th:unless="${meaningWordIter.last}" style="margin-left: -2px; padding-right: 4px">,</span>
+                        <span th:unless="${meaningWordIter.last}" class="pr-1">,</span>
                       </span>
                     </div>
                     <span th:if="${lexeme.missingMatchWords}" th:text="#{label.no.translation}">Täpset tõlkevastet pole</span>

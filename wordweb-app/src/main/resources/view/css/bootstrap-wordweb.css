@@ -8472,15 +8472,21 @@ body:not(.home-page) footer {
   transform: rotate(90deg);
 }
 
-.rections .type-one, .rections .type-one-list {
+.rections {
+  margin-left: 0.2rem;
+  margin-right: -0.2rem;
+}
+
+.rections .type-one {
   font-style: italic;
   color: #658ad4;
+  margin-right: 0px;
 }
 
 
 .rections .type-two {
   color: #003F87!important;
-  padding: 0.125rem 0.3125rem 0.0625rem 0.3125rem;
+  padding: 0.125rem 0rem 0.0625rem 0rem;
   border-radius: 0.3125rem;
   font-weight: 400;
   text-transform: uppercase;
