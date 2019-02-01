@@ -260,6 +260,11 @@
                         <span class="icon icon-chevron-left"></span>
                       </button>
                       <div class="w-100 colloc-samples">
+                        <div class="colloc-heading row">
+                            <span class="col">
+                              <b th:text="#{label.collocations}" class="pr-2">Naaberõnad</b>
+                            </span>
+                        </div>
                         <div class="colloc-section w-100" th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                           <div class="colloc-inner-section" style="padding: 0px 10px;">
                             <div class="colloc-row row" style="padding: 5px;">
@@ -312,7 +317,7 @@
                         <th:block th:if="${not #lists.isEmpty(lexeme.collocationPosGroups)}">
                           <div class="colloc-heading row">
                             <span class="col">
-                              <b th:text="#{label.collocations}">Kollokatsioonid</b> &nbsp;
+                              <b th:text="#{label.collocations}" class="pr-2">Naaberõnad</b>
                               <button name="colloc-usages-btn" type="button" class="btn btn-secondary btn-sm" th:text="#{button.label.usages}">Kasutusnäited</button>
                             </span>
                           </div>
