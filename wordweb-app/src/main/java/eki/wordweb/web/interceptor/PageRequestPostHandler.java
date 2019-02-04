@@ -4,6 +4,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Component;
@@ -21,11 +23,22 @@ import eki.wordweb.web.util.ViewUtil;
 @Component
 public class PageRequestPostHandler extends HandlerInterceptorAdapter implements WebConstant, SystemConstant {
 
+	private static final Logger logger = LoggerFactory.getLogger(PageRequestPostHandler.class);
+
 	@Autowired
 	private AppDataHolder appDataHolder;
 
 	@Autowired
 	private ViewUtil viewUtil;
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+		long startTime = System.currentTimeMillis();
+		request.setAttribute(REQUEST_START_TIME_KEY, new Long(startTime));
+
+		return true;
+	}
 
 	@Override
 	public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
@@ -40,7 +53,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(IE_USER_FLAG_KEY)) {
 			boolean isIeUser = isTraditionalMicrosoftUser(request, modelAndView);
-			modelMap.addAttribute(IE_USER_FLAG_KEY, isIeUser);
+			modelMap.addAttribute(IE_USER_FLAG_KEY, new Boolean(isIeUser));
 		}
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData(POM_PATH);
@@ -49,10 +62,23 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		if (!modelMap.containsKey(VIEW_UTIL_MODEL_KEY)) {
 			modelMap.addAttribute(VIEW_UTIL_MODEL_KEY, viewUtil);
 		}
+
+		logRequestProcessTime(request);
 	}
 
 	private boolean isTraditionalMicrosoftUser(HttpServletRequest request, ModelAndView modelAndView) {
 		String userAgent = request.getHeader("User-Agent");
 		return StringUtils.contains(userAgent, "Trident");
+	}
+
+	private void logRequestProcessTime(HttpServletRequest request) {
+
+		String servletPath = request.getServletPath();
+		Object requestStartTimeObj = request.getAttribute(REQUEST_START_TIME_KEY);
+		long startTime = Long.valueOf(requestStartTimeObj.toString());
+		long endTime = System.currentTimeMillis();
+		long requestTime = endTime - startTime;
+
+		logger.info("Request process time for \"{}\" - {} ms", servletPath, requestTime);
 	}
 }

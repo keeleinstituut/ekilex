@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 
 import eki.common.util.QueryLoggerListener;
-import eki.common.util.QueryStopWatchListener;
 
 @Configuration
 public class JooqConfig {
@@ -23,7 +22,7 @@ public class JooqConfig {
 		settings.setRenderFormatted(true);
 		settings.setRenderNameStyle(RenderNameStyle.AS_IS);
 
-		configuration.set(new QueryLoggerListener(), new QueryStopWatchListener());
+		configuration.set(new QueryLoggerListener());
 	}
 
 }

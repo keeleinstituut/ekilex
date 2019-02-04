@@ -61,8 +61,8 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		languagesDatasetMap = new HashMap<>();
 		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "kol"});
 		languagesDatasetMap.put("est-est-simple", new String[] {"psv", "kol"});
-		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2", "kol"});
-		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2", "kol"});
+		languagesDatasetMap.put("est-rus-detail", new String[] {"ev2"});
+		languagesDatasetMap.put("est-rus-simple", new String[] {"qq2"});
 		languagesDatasetMap.put("rus-est-detail", new String[] {"ev2"});
 		languagesDatasetMap.put("rus-est-simple", new String[] {"qq2"});
 	}

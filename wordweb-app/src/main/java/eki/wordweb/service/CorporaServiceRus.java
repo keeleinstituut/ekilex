@@ -55,7 +55,7 @@ public class CorporaServiceRus extends CorporaService {
 		List<CorporaSentence> sentences = new ArrayList<>();
 		if (response.isEmpty() || response.containsKey("error")) {
 			if (response.containsKey("error")) {
-				logger.debug("Response returned error : {}", response.get("error"));
+				logger.warn("Response returned error : {}", response.get("error"));
 			}
 			return sentences;
 		}
