@@ -41,7 +41,9 @@
           <span class="lang-est" th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
           <a class="lang-est" th:href="${'https://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|" 
               th:text="#{label.find.from.kn.eki}" target="_blank">e-keelenõust</a>
-          <span class="lang-rus" th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
+          <span class="lang-rus" th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
+          <a class="lang-rus" th:href="${'https:/www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
+             th:text="#{label.find.from.eki.rus}" target="_blank">vene-eesti sõnaraamatus</a>
         </span>
       </div>
     </div>
@@ -572,7 +574,12 @@
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
                     <span th:text="#{sentence.same.as}" ></span>
-                    <a th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|" th:href="${'http://kn.eki.ee/?Q=' + wordData.word.word}"target="_blank">e-keelenõus</a>
+                    <a th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
+                       class="lang-est-lookup"
+                       th:href="${'https://kn.eki.ee/?Q=' + wordData.word.word}" target="_blank">e-keelenõus</a>
+                    <a th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
+                       class="lang-rus-lookup"
+                       th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">vene-eesti sõnaraamatus</a>
                   </h5>
                 </div>
               </div>
