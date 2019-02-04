@@ -69,9 +69,9 @@
                 <span class="homonym-item-wrap">
                   <span class="homonym-header">
                     <span class="homonym-name-container">
-                      <span class="homonym-name" th:text="${(word.suffixoid ? '-' : '') + word.word + (word.prefixoid ? '-' : '')}">tee</span>
+                      <span class="homonym-name pr-2" th:text="${(word.suffixoid ? '-' : '') + word.word + (word.prefixoid ? '-' : '')}">tee</span>
                     </span>
-                    <span class="homonym-nr" th:text="${word.homonymNr}">1</span>
+                    <span class="homonym-nr d-none" th:text="${word.homonymNr}">1</span>
                   </span>
                   <span class="homonym-matches" th:text="${word.meaningWordsWrapup}"></span>
                   <span class="homonym-intro" th:text="${word.definitionsWrapup}"></span>
@@ -89,7 +89,7 @@
           <div class="col-12 content-title">
             <h3>
               <span class="homonym-name" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
-              <span class="word-details-homonym-nr" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
+              <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
               <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
                       th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
                 <span class="icon icon-speaker"></span>
