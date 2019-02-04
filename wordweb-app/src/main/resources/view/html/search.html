@@ -42,14 +42,21 @@
   <div class="container-fluid homonym-page bottom-gutter">
     <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="col offset-1 lg-max-noneset">
-        <span>
-          <span class="lang-est" th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
-          <a class="lang-est" th:href="${'https://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|" 
-              th:text="#{label.find.from.kn.eki}" target="_blank">e-keelenõust</a>
-          <span class="lang-rus" th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
-          <a class="lang-rus" th:href="${'https:/www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
+        <th:block th:if="${sessionBean.sourceLang == 'est'}">
+          <th:block th:if="${sessionBean.destinLang == 'rus'}">
+            <span th:text="#{label.word.rus.not.found}">Ei leidnud midagi. Otsi eesti sõna tähendust eesti-eesti osast</span>
+          </th:block>
+          <th:block th:if="${sessionBean.destinLang == 'est'}">
+            <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
+            <a th:href="${'https://kn.eki.ee/?Q=' + searchWord}" th:aria-label="|#{label.find.from.kn.eki}, #{aria.new.window}|"
+                th:text="#{label.find.from.kn.eki}" target="_blank">e-keelenõust</a>
+          </th:block>
+        </th:block>
+        <th:block th:if="${sessionBean.sourceLang == 'rus'}">
+          <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
+          <a th:href="${'https:/www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
              th:text="#{label.find.from.eki.rus}" target="_blank">vene-eesti sõnaraamatus</a>
-        </span>
+        </th:block>
       </div>
     </div>
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
@@ -579,11 +586,11 @@
                 <div class="mb-0">
                   <h5 class="font-weight-bold mb-0">
                     <span th:text="#{sentence.same.as}" ></span>
-                    <a th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
-                       class="lang-est-lookup"
+                    <a th:if="${sessionBean.sourceLang == 'est'}"
+                       th:aria-label="|#{aria.search.from.keelenou} ${wordData.word.word}, #{aria.new.window}|"
                        th:href="${'https://kn.eki.ee/?Q=' + wordData.word.word}" target="_blank">e-keelenõus</a>
-                    <a th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
-                       class="lang-rus-lookup"
+                    <a th:if="${sessionBean.sourceLang == 'rus'}"
+                       th:aria-label="|#{aria.search.from.eki.rus.est} ${wordData.word.word}, #{aria.new.window}|"
                        th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + wordData.word.word}" target="_blank">vene-eesti sõnaraamatus</a>
                   </h5>
                 </div>

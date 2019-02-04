@@ -172,20 +172,9 @@
 	margin-bottom: 0.25rem;
 }
 
-.lang-est {
-	display: inline-block;
-}
-
-.lang-rus {
-	display: none;
-}
-
 .hide-simple {
 	display: none;
 }
-
-.show-message { display: inline-block; }
-.hide-message { display: none; }
 
 @media ( min-width : 768px) {
 	.meaning {
