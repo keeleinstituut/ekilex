@@ -332,9 +332,9 @@
                           <div class="w-100">
                             <div class="colloc-section w-100" th:each="collocPosGr,collocPosGrIter : ${lexeme.collocationPosGroups}">
                               <div class="colloc-name row">
-                                <i class="col">
+                                <div class="col text-green" style="font-variant: small-caps">
                                   <span th:text="${collocPosGr.posGroup.value}"></span>
-                                </i>
+                                </div>
                               </div>
                               <div class="colloc-inner-section" style="padding: 0px 10px;" th:each="collocRelGr,collocRelGrIter : ${collocPosGr.relationGroups}">
                                 <div class="colloc-row row" style="padding: 5px;">
