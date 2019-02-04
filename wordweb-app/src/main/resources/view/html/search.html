@@ -300,7 +300,7 @@
                                         <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                           <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
                                           <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
-                                            <i><span th:text="${collocMem.form}" class="text-muted"></span> <span th:unless="${collocMemIter.last}">,</span></i>
+                                            <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                           </a>
                                         </span>
                                       </span>
@@ -363,7 +363,7 @@
                                             <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                               <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
                                               <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
-                                                <i><span th:text="${collocMem.form}" class="text-muted"></span> <span th:unless="${collocMemIter.last}">,</span></i>
+                                                <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                               </a>
                                               <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
                                             </span>
