@@ -57,6 +57,27 @@
           <a class="eki-logo-wrapper" th:aria-label="|portaal.eki.ee #{aria.new.window}|" href="http://portaal.eki.ee/" target="_blank">
             <span class="eki-logo mini-logo"></span>
           </a>
+          <button role="button" aria-expanded="false" data-toggle="collapse" data-target="#headerLinks" class="btn menu-btn">
+            <span class="icon icon-menu"></span>
+          </button>
+          <div th:replace=":: menu-links"></div>
+        </div>
+      </div>
+    </div>
+    <th:block th:replace=":: feedback-form"></th:block>
+  </th:block>
+
+  <th:block th:fragment="menu_with_backBtn">
+    <div class="container-fluid header-container">
+      <div class="row header-wrap">
+        <div class="col-12">
+          <a th:href="@{/}" th:aria-label="#{aria.menu.logo}" role="link" class="logo">
+            <span class="icon icon-logo-s d-md-none"></span>
+            <span class="icon icon-logo d-none d-md-block"></span>
+          </a>
+          <a class="eki-logo-wrapper" th:aria-label="|portaal.eki.ee #{aria.new.window}|" href="http://portaal.eki.ee/" target="_blank">
+            <span class="eki-logo mini-logo"></span>
+          </a>
           <div class="back mt-2">
             <span class="icon icon-back"></span>
           </div>
@@ -69,6 +90,7 @@
     </div>
     <th:block th:replace=":: feedback-form"></th:block>
   </th:block>
+
   <th:block th:fragment="menu-links">
     <div id="headerLinks">
       <div class="header-links" role="navbar">
