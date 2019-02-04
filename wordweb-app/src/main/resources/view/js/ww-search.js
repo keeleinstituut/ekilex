@@ -25,7 +25,6 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		calculateAndSetStyles();
-		toggleLanguageSpecificElements();
 	}).fail(function(data) {
 		console.log(data);
 		alert(messages.search_failure);
