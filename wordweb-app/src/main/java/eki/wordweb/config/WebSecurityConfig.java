@@ -5,14 +5,17 @@ import org.springframework.boot.actuate.context.ShutdownEndpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
+import eki.wordweb.web.interceptor.MutingHttpFirewall;
 
 @ConditionalOnWebApplication
 @Configuration
-public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
+	public void configure(HttpSecurity http) throws Exception {
 		http.authorizeRequests()
 			.antMatchers("/actuator", "/actuator/**")
 			.authenticated()
@@ -22,6 +25,12 @@ public class ActuatorSecurityConfig extends WebSecurityConfigurerAdapter {
 			.httpBasic()
 			.and()
 			.csrf().disable();
+	}
+
+	@Override
+	public void configure(WebSecurity web) throws Exception {
+		super.configure(web);
+		web.httpFirewall(new MutingHttpFirewall());
 	}
 
 }

@@ -37,6 +37,8 @@ public interface WebConstant {
 
 	String GAME_SIMILJUDGE_PAGE = "game-similjudge";
 
+	String ERROR_PAGE = "error";
+
 	String HOME_URI = "/";
 
 	String SEARCH_URI = "/search";
@@ -71,8 +73,6 @@ public interface WebConstant {
 
 	String GAMES_SIMILJUDGE_NAME = "similjudge";
 
-	String ERROR_PAGE = "error";
-
 	String SESSION_BEAN = "sessionBean";
 
 	String APP_DATA_MODEL_KEY = "appData";
@@ -80,6 +80,8 @@ public interface WebConstant {
 	String VIEW_UTIL_MODEL_KEY = "viewUtil";
 
 	String IE_USER_FLAG_KEY = "ieuser";
+
+	String REQUEST_START_TIME_KEY = "request_start_time";
 
 	String NOTHING = "";
 

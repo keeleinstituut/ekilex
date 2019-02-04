@@ -1885,7 +1885,7 @@ insert into word_type_label (code, value, lang, type) values ('f', '(idiomatic) 
 insert into word_type_label (code, value, lang, type) values ('mf', 'märksõna-väljend (iseseisev)', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('mf', 'multiword unit (in the alphabet)', 'eng', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('g', 'omastavaline täiend, genitiivne täiend', 'est', 'descrip');
-insert into word_type_label (code, value, lang, type) values ('g', 'omastavaline täiend', 'est', 'wordweb');
+insert into word_type_label (code, value, lang, type) values ('g', 'täiendsõna', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('lz', 'tsitaatsõna lühend', 'est', 'descrip');
 insert into word_type_label (code, value, lang, type) values ('lz', 'tsitaatsõna lühend', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('lz', 'abbreviation for alien word', 'eng', 'descrip');
@@ -1913,6 +1913,8 @@ insert into word_type_label (code, value, lang, type) values ('l', 'lühend', 'e
 insert into word_type_label (code, value, lang, type) values ('km', 'kaubamärk', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('k', 'kohanimi', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('th', 'tähis', 'est', 'wordweb');
+insert into word_type_label (code, value, lang, type) values ('mf', 'väljend', 'est', 'wordweb');
+insert into word_type_label (code, value, lang, type) values ('f', 'väljend', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('ametinimetus', 'ametinimetus', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('dokumendi pealkiri', 'dokumendi pealkiri', 'est', 'wordweb');
 insert into word_type_label (code, value, lang, type) values ('õigusakti pealkiri', 'õigusakti pealkiri', 'est', 'wordweb');

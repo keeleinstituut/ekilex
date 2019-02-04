@@ -2,7 +2,6 @@ package eki.common.util;
 
 import org.jooq.Configuration;
 import org.jooq.ExecuteContext;
-import org.jooq.ExecuteType;
 import org.jooq.impl.DSL;
 import org.jooq.impl.DefaultExecuteListener;
 import org.jooq.tools.StringUtils;
@@ -13,42 +12,141 @@ public class QueryLoggerListener extends DefaultExecuteListener {
 
 	private static final Logger logger = LoggerFactory.getLogger(QueryLoggerListener.class);
 
+	private static final long PROLONGED_QUERY_TRESHOLD_MS = 1000;
+
 	private static final long serialVersionUID = 1L;
 
+	private long start;
+
 	@Override
-	public void renderEnd(ExecuteContext context) {
+	public void start(ExecuteContext ctx) {
+		start = System.currentTimeMillis();
+	}
+
+	@Override
+	public void renderStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void renderEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void prepareStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void prepareEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void bindStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void bindEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void executeStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void executeEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void outStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void outEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void fetchStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void resultStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void recordStart(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void recordEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void resultEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void fetchEnd(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void end(ExecuteContext ctx) {
+		long end = System.currentTimeMillis();
+		long exec = end - start;
 
 		if (logger.isDebugEnabled()) {
 
-			Configuration configuration = context.configuration();
+			String queryStr = getLogContent(ctx);
 
-			String[] batchSQL = context.batchSQL();
-			if (context.query() != null) {
+			logger.debug("Query \n{}", queryStr);
+			logger.debug("Executed in {} ms", exec);
 
-				String inlined = DSL.using(configuration).renderInlined(context.query());
-				logger.debug("Executing query \n{}", inlined);
+		} else if (logger.isInfoEnabled()) {
 
-			} else if (context.routine() != null) {
+			if (exec > PROLONGED_QUERY_TRESHOLD_MS) {
 
-				String inlined = DSL.using(configuration).renderInlined(context.routine());
-				logger.debug("Calling routine \n{}", inlined);
+				String queryStr = getLogContent(ctx);
 
-			} else if (!StringUtils.isBlank(context.sql())) {
+				logger.info("Prolonging query \n{}", queryStr);
+				logger.info("Executed in {} ms", exec);
 
-				if (context.type() == ExecuteType.BATCH) {
-					logger.debug("Executing batch query \n{}", context.sql());
-				} else {
-					logger.debug("Executing query \n{}", context.sql());
-				}
-
-			} else if (batchSQL.length > 0) {
-
-				if (batchSQL[batchSQL.length - 1] != null) {
-					for (String sql : batchSQL) {
-						logger.debug("Executing batch query \n{}", sql);
-					}
-				}
 			}
 		}
+	}
+
+	@Override
+	public void exception(ExecuteContext ctx) {
+	}
+
+	@Override
+	public void warning(ExecuteContext ctx) {
+	}
+
+	private String getLogContent(ExecuteContext ctx) {
+
+		Configuration configuration = ctx.configuration();
+
+		String[] batchSQL = ctx.batchSQL();
+		if (ctx.query() != null) {
+
+			String query = DSL.using(configuration).renderInlined(ctx.query());
+			return query;
+
+		} else if (ctx.routine() != null) {
+
+			String routine = DSL.using(configuration).renderInlined(ctx.routine());
+			return routine;
+
+		} else if (!StringUtils.isBlank(ctx.sql())) {
+
+			String sql = ctx.sql();
+			return sql;
+
+		} else if (batchSQL.length > 0) {
+
+			if (batchSQL[batchSQL.length - 1] != null) {
+				String sqls = org.apache.commons.lang3.StringUtils.join(batchSQL, ";\n");
+				return sqls;
+			}
+		}
+		return null;
 	}
 }
