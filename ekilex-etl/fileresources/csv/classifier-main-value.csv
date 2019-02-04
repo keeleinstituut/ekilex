@@ -1493,7 +1493,7 @@ word_type	f	(idiomatic) phrase (grp)	eng	descrip
 word_type	mf	märksõna-väljend (iseseisev)	est	descrip
 word_type	mf	multiword unit (in the alphabet)	eng	descrip
 word_type	g	omastavaline täiend, genitiivne täiend	est	descrip
-word_type	g	omastavaline täiend	est	wordweb
+word_type	g	täiendsõna	est	wordweb
 word_type	lz	tsitaatsõna lühend	est	descrip
 word_type	lz	tsitaatsõna lühend	est	wordweb
 word_type	lz	abbreviation for alien word	eng	descrip
@@ -1521,6 +1521,8 @@ word_type	l	lühend	est	wordweb
 word_type	km	kaubamärk	est	wordweb
 word_type	k	kohanimi	est	wordweb
 word_type	th	tähis	est	wordweb
+word_type	mf	väljend	est	wordweb
+word_type	f	väljend	est	wordweb
 word_type	ametinimetus	ametinimetus	est	wordweb
 word_type	dokumendi pealkiri	dokumendi pealkiri	est	wordweb
 word_type	õigusakti pealkiri	õigusakti pealkiri	est	wordweb

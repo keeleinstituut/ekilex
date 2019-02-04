@@ -109,21 +109,25 @@ $(document).ready(function () {
 		$(".header-container .back").addClass("show-btn");
 	});
 
-
+	toggleLanguageSpecificElements();
 });
+
+function toggleLanguageSpecificElements() {
+	if (document.location.href.indexOf('est-rus' ) > -1  || document.location.href.indexOf('rus-est' ) > -1) {
+		$('.lang-est').addClass('hide-message');
+		$('.lang-rus').addClass('show-message');
+	}
+	if (document.location.href.indexOf('rus-est' ) > -1) {
+		$('.lang-est-lookup').addClass('hide-message');
+		$('.lang-rus-lookup').addClass('show-message');
+	} else {
+		$('.lang-est-lookup').addClass('show-message');
+		$('.lang-rus-lookup').addClass('hide-message');
+	}
+}
 
 $(window).resize(function () {
 	calculateAndSetStyles();
-});
-
-$(function() {
-    if ( document.location.href.indexOf('est-rus' ) > -1 ) {
-        $('.lang-est').addClass('hide-message');
-        $('.lang-rus').addClass('show-message');
-    } else if ( document.location.href.indexOf('rus-est' ) > -1 ) {
-                $('.lang-est').addClass('hide-message');
-        $('.lang-rus').addClass('show-message');
-    }
 });
 
 function initLanguageFilter() {
@@ -435,7 +439,6 @@ $(document).on("click", "#toggle-simple", function (e) {
 	}
 });
 
-
 $(document).on("click", "#toggle-detail", function (e) {
 	var searchMode = $("input[name='searchMode']").val();
 	if (searchMode === "simple") {
@@ -447,7 +450,6 @@ $(document).on("click", "#toggle-detail", function (e) {
 			$("#search-btn").click();
 		}
 	}
-
 });
 
 

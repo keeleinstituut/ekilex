@@ -25,6 +25,7 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		setHomonymNrVisibility();
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		calculateAndSetStyles();
+		toggleLanguageSpecificElements();
 	}).fail(function(data) {
 		console.log(data);
 		alert(messages.search_failure);
@@ -53,17 +54,6 @@ $(function() {
 		container : 'body'
 	});
 });
-
-// $(document).on("click", "a", function() {
-// 	if ($("a").attr("aria-expanded",'false')) {
-// 		$(this).removeAttr("aria-expanded",'false');
-// 		$(this).attr("aria-expanded",'true');
-// 	} else {
-// 		$(this).removeAttr("aria-expanded",'true');
-// 		$(this).attr("aria-expanded",'false');
-// 	}
-// });
-
 
 $(document).on("click", ".menu-btn", function() {
       if($(this).attr('aria-expanded')==='false'){

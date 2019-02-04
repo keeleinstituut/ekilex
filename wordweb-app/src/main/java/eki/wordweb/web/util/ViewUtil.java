@@ -28,7 +28,7 @@ public class ViewUtil implements WebConstant {
 					htmlBuf.append(conjunct);
 					htmlBuf.append("&nbsp;");
 				}
-				htmlBuf.append("<span class='text-info'>");
+				htmlBuf.append("<span class='text-green'>");
 				htmlBuf.append(collocMember.getForm());
 				htmlBuf.append("</span>");
 				if (StringUtils.isNotBlank(conjunct) && collocMember.isPostConjunct()) {
