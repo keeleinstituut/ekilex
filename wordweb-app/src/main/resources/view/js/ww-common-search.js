@@ -167,14 +167,13 @@ function calculateAndSetStyles() {
 		}
 		if ($('#form-words').length == 0) {
 			$('.homonym-panel').css("margin-top", '');
-			$('.word-details').css("margin-top", '');
 		} else {
 			if ($(".search-panel").hasClass("d-none")) {
 				$('#form-words').css("margin-top", '1em');
+				$('.word-details').css("margin-top", '-1em');
 			} else {
-				$('#form-words').css("margin-top", '11em');
+				$('#form-words').css("margin-top", '6em');
 			}
-			$('.word-details').css("margin-top", '-1em');
 			$('.homonym-panel').css("margin-top", '-1em');
 		}
 	}
@@ -335,12 +334,6 @@ $(document).on("keyup", "input[name='searchWord']", function (e) {
 		$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
 	}
 });
-
-/*
-$(document).on("blur", "input[name='searchWord']", function (e) {
- 	$("#clear-search-btn").hide(1000); //hack to avoid disabling the button
-});
-*/
 
 $(document).on("click", "button[name='source-lang-btn']", function (e) {
 	var prevSourceLang = $("button[name='source-lang-btn'].active").val();

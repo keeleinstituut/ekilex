@@ -67,6 +67,9 @@
 	.more-btn {
 		margin-right: 0em;
 	}
+    #main {
+        margin-top: -10em;
+    }
 }
 
 @media ( min-width : 768px) {
