@@ -293,8 +293,6 @@ function sendToWebSocket(audioBlob) {
 			if (res.status == 0) {
 				if (res.result) {
 					if (res.result.final) {
-						console.log(res.result.hypotheses);
-						console.log(res.result.hypotheses[0].transcript);
 						$('.search-phrase').val(res.result.hypotheses[0].transcript);
 						$('.search-btn').trigger('click');
 					}

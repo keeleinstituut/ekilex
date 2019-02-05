@@ -79,7 +79,6 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 		data : feedbackForm.serialize(),
 		method : 'POST'
 	}).done(function(data) {
-		console.log(data);
 		var answer = JSON.parse(data);
 		if (answer.status === 'ok') {
 			okMessageElement.attr('hidden', false);
