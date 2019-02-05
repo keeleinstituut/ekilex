@@ -1,1 +1,1 @@
-eki.ekilex:eki-root:pom:1.0-SNAPSHOT
+eki.ekilex:eki-root:pom:1.3.0
