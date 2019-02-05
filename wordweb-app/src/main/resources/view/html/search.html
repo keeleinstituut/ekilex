@@ -14,7 +14,7 @@
     <th:block th:replace="common-app :: wcag-main"></th:block>
   </div>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div class="alert-danger-ie" th:if="${sessionBean.sourceLang == 'rus' && not #lists.isEmpty(wordsData.fullMatchWords)}">
+  <div class="alert-danger-rus" th:if="${sessionBean.sourceLang == 'rus' && not #lists.isEmpty(wordsData.fullMatchWords)}">
     <div class="alert-danger-ie-container">
       <span th:text="#{warning.eki.rus}">Vene-eesti sõnastik on veel toimetamisel.</span>
     </div>

@@ -198,3 +198,17 @@
 	color: #00874F;
 	margin-right: -0.2rem;
 }
+
+.alert-danger-rus {
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	padding: 0.4rem;
+	background: red;
+	display: flex;
+	z-index: 9999;
+	color: white;
+	border: 0px solid #730000;
+	border-top: 1px;
+	justify-content: center;
+}
