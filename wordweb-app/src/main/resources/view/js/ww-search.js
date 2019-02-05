@@ -26,7 +26,6 @@ function fetchDetails(wordId, word, wordSelectUrl) {
 		$('.word-details [data-toggle="tooltip"]').tooltip();
 		calculateAndSetStyles();
 	}).fail(function(data) {
-		console.log(data);
 		alert(messages.search_failure);
 	})
 }
@@ -44,7 +43,6 @@ function fetchCorpSentences(lang, sentence) {
 	$.get(corpSentencesUrl).done(function(data) {
 		corpDiv.replaceWith(data);
 	}).fail(function(data) {
-		console.log(data);
 	})
 }
 
