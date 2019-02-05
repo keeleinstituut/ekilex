@@ -212,3 +212,7 @@
 	border-top: 1px;
 	justify-content: center;
 }
+
+.ui-menu {
+	z-index: 999;
+}
