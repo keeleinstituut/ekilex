@@ -2,6 +2,7 @@ package eki.wordweb.web.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.HttpSessionRequiredException;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eki.common.util.CodeGenerator;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.service.StatDataCollector;
 
 @ConditionalOnWebApplication
 @ControllerAdvice
@@ -19,8 +21,13 @@ public class ExceptionHandlerController implements WebConstant {
 
 	private static Logger logger = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
+	@Autowired
+	private StatDataCollector statDataCollector;
+
 	@ExceptionHandler(Exception.class)
 	public ModelAndView exception(Exception exception) throws Exception {
+
+		statDataCollector.addExceptionStat(exception);
 
 		ModelAndView modelAndView = new ModelAndView();
 		if (exception instanceof HttpSessionRequiredException) {

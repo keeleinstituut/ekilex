@@ -4,7 +4,7 @@ public class Count extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	private int value;
+	private long value;
 
 	public Count(int value) {
 		this.value = value;
@@ -22,7 +22,7 @@ public class Count extends AbstractDataObject {
 		this.value += byMuch;
 	}
 
-	public int getValue() {
+	public long getValue() {
 		return value;
 	}
 }

@@ -8,7 +8,7 @@ import org.springframework.security.web.firewall.FirewalledRequest;
 import org.springframework.security.web.firewall.RequestRejectedException;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
-import eki.wordweb.web.bean.MutingRequestRejectedException;
+import eki.wordweb.exception.MutingRequestRejectedException;
 
 public class MutingHttpFirewall extends StrictHttpFirewall {
 

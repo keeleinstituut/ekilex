@@ -518,6 +518,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
+	//TODO also collect contexts wthout lemma data
 	private List<CollocMember> extractCollocMembers(Node collocGroupNode, Count ignoredCollocGroupCount) {
 
 		final String[] skippedNodeNames = new String[] {"colloc", "cfr", "csc", "cng", "cd", "s", "v", "rek"};
@@ -545,12 +546,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 							ignoredCollocGroupCount.increment();
 							return Collections.emptyList();
 						}
-						continue;
 					} else {
 						lemmaDataCollocMembers = composeCollocMembers(collocMemberName, form, conjunct, lemmaDataStr);
 						collocMembers.addAll(lemmaDataCollocMembers);
 					}
-
 				} else if (ArrayUtils.contains(skippedNodeNames, collocMemberName)) {
 					//do nothing
 				} else {
@@ -708,6 +707,10 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		for (List<CollocMember> collocMembersPermutation : collocMembersPermutations) {
 
 			String collocation = composeCollocValue(collocMembersPermutation);
+
+			if (StringUtils.equals("laine", word)) {
+				System.out.println(collocation + " >>>>>> " + collocMembersPermutation);
+			}
 
 			currentCollocMemberRecords = new ArrayList<>();
 			currentCollocMemberIds = new ArrayList<>();

@@ -30,6 +30,7 @@ import eki.wordweb.data.WordsData;
 import eki.wordweb.service.CorporaServiceEst;
 import eki.wordweb.service.CorporaServiceRus;
 import eki.wordweb.service.LexSearchService;
+import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
@@ -45,6 +46,9 @@ public class SearchController extends AbstractController {
 
 	@Autowired
 	private CorporaServiceRus corporaServiceRus;
+
+	@Autowired
+	private StatDataCollector statDataCollector;
 
 	@GetMapping(SEARCH_URI)
 	public String home(Model model) {
@@ -107,6 +111,7 @@ public class SearchController extends AbstractController {
 		sessionBean.setDestinLang(destinLang);
 		sessionBean.setSearchMode(searchMode);
 
+		statDataCollector.addSearchStat(langPair);
 		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr, searchMode);
 		sessionBean.setSearchMode(wordsData.getSearchMode());
 		boolean switchedToDetailMode = !StringUtils.equals(wordsData.getSearchMode(), searchMode);
