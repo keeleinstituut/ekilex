@@ -708,10 +708,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 			String collocation = composeCollocValue(collocMembersPermutation);
 
-			if (StringUtils.equals("laine", word)) {
-				System.out.println(collocation + " >>>>>> " + collocMembersPermutation);
-			}
-
 			currentCollocMemberRecords = new ArrayList<>();
 			currentCollocMemberIds = new ArrayList<>();
 
