@@ -62,7 +62,7 @@
     <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
       <div class="homonym-container container-fluid">
         <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
-          <div th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
+          <div class="pt-1" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
             <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
             <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
           </div>

@@ -7684,9 +7684,6 @@ input[type="checkbox"] {
     margin-right: 0.125rem;
     font-weight: 700;
   }
-  .word-details {
-    margin-top: 4.375rem;
-  }
   .level-3-panel {
     padding-top: 1.875rem;
     padding-bottom: 1.875rem;
@@ -7932,10 +7929,6 @@ h3 span + span {
   100% {
     transform: matrix3d(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1);
   }
-}
-.homonym-wrap {
-  margin-top: 10rem;
-  top: 150px;
 }
 
 .content-panel {
@@ -8639,13 +8632,8 @@ body:not(.home-page) footer {
     display: block;
     margin: 0 auto 0.5rem auto;
   }
-  .homonym-page { 
-    margin-top: 4.375rem; 
-  }
-  .homonym-wrap {
-    margin-top: 10rem;
-  }
-  .bottom-gutter { 
+
+  .bottom-gutter {
     padding-bottom: 0rem;
   }
 

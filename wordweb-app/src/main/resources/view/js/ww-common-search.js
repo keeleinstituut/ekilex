@@ -138,43 +138,31 @@ function empowerLanguageSelection() {
 }
 
 function calculateAndSetStyles() {
+	var homonymItem = $(".homonym-item");
+	var homonymPanel = $(".homonym-panel");
 	var isWideWindow = $(window).width() >= windowWidthTreshold;
-	var isSingleHomonym = $(".homonym-item").length == 1;
-	var isMultiHomonym = $(".homonym-item").length > 1;
+	var isSingleHomonym = homonymItem.length === 1;
+	var isMultiHomonym = homonymItem.length > 1;
 	if (isWideWindow) {
 		$(".search-panel").removeClass("d-none");
 		$(".content-panel").removeClass("d-none");
 		if (isSingleHomonym) {
-			$(".homonym-panel").addClass("d-none");
+			homonymPanel.addClass("d-none");
 		} else {
-			$(".homonym-panel").removeClass("d-none");
-			if (!$(".homonym-item").hasClass("last-selected")) {
+			homonymPanel.removeClass("d-none");
+			if (!homonymItem.hasClass("last-selected")) {
 				$(".homonym-item:first").addClass("last-selected");
 			}
 			$(".last-selected").addClass("selected");
 		}
-		$('#form-words').css("margin-top", '');
-		$(".homonym-panel").css("margin-top", '');
-		$('.word-details').css("margin-top", '');
 	} else {
 		if (isMultiHomonym) {
-			if (!$(".homonym-panel").hasClass("d-none")) {
+			if (!homonymPanel.hasClass("d-none")) {
 				$(".content-panel").addClass("d-none");
 			}
 		}
-		if (isSingleHomonym && $(".homonym-panel").hasClass("d-none")) {
+		if (isSingleHomonym && homonymPanel.hasClass("d-none")) {
 			$(".search-panel").addClass("d-none");
-		}
-		if ($('#form-words').length == 0) {
-			$('.homonym-panel').css("margin-top", '');
-		} else {
-			if ($(".search-panel").hasClass("d-none")) {
-				$('#form-words').css("margin-top", '1em');
-				$('.word-details').css("margin-top", '-1em');
-			} else {
-				$('#form-words').css("margin-top", '6em');
-			}
-			$('.homonym-panel').css("margin-top", '-1em');
 		}
 	}
 }
@@ -426,6 +414,3 @@ $(document).on("click", "#toggle-detail", function (e) {
 		}
 	}
 });
-
-
-
