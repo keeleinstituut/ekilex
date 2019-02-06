@@ -41,6 +41,14 @@ function initialise() {
         });
 	});
 
+	$(document).on('click', '#meaningCopyBtn', function() {
+		let meaningData = {'meaningId' : $(this).data('meaning-id')};
+		postJson(applicationUrl + 'meaning_copy', meaningData, 'Mõiste dubleerimine ebaõnnestus').done(function (data) {
+			let response = JSON.parse(data);
+			openAlertDlg(response.message);
+		});
+	});
+
 	$(document).on('change', '#meaning-other-words-visible-check', function() {
 		if (this.checked) {
 			$(".other-words").fadeIn();
