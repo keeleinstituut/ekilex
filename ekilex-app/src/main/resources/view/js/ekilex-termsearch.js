@@ -42,10 +42,13 @@ function initialise() {
 	});
 
 	$(document).on('click', '#meaningCopyBtn', function() {
-		let meaningData = {'meaningId' : $(this).data('meaning-id')};
-		postJson(applicationUrl + 'meaning_copy', meaningData, 'Mõiste dubleerimine ebaõnnestus').done(function (data) {
+		let url = applicationUrl + 'meaningcopy/' +  $(this).data('meaning-id');
+		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
-			openAlertDlg(response.message);
+			openMessageDlg(response.message);
+		}).fail(function(data) {
+			openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+			console.log(data);
 		});
 	});
 
