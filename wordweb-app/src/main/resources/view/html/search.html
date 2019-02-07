@@ -54,7 +54,7 @@
         </th:block>
         <th:block th:if="${sessionBean.sourceLang == 'rus'}">
           <span th:text="#{label.word.not.found}">Ei leidnud midagi. Proovi otsida</span>
-          <a th:href="${'https:/www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
+          <a th:href="${'https://www.eki.ee/dict/ves/index.cgi?Q=' + searchWord}" th:aria-label="|#{label.find.from.eki.rus}, #{aria.new.window}|"
              th:text="#{label.find.from.eki.rus}" target="_blank">vene-eesti sõnaraamatus</a>
         </th:block>
       </div>
