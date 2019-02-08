@@ -50,7 +50,7 @@ public class MeaningDbService implements DbConstant {
 		Result<MeaningRelationRecord> meaningRelations = create.selectFrom(MEANING_RELATION)
 				.where(MEANING_RELATION.MEANING1_ID.eq(meaningId).or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
 				.fetch();
-		meaningRelations.stream().map(UpdatableRecordImpl::copy).forEach(clonedRelation -> {
+		meaningRelations.stream().map(MeaningRelationRecord::copy).forEach(clonedRelation -> {
 			if (clonedRelation.getMeaning1Id().equals(meaningId)) {
 				clonedRelation.setMeaning1Id(clonedMeaningId);
 			} else {

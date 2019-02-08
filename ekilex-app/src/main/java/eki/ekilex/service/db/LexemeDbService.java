@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.ekilex.constant.DbConstant;
+import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import eki.ekilex.data.db.tables.records.LexemePosRecord;
@@ -19,6 +20,7 @@ import static eki.ekilex.data.db.tables.LexemeFreeform.LEXEME_FREEFORM;
 import static eki.ekilex.data.db.tables.LexemePos.LEXEME_POS;
 import static eki.ekilex.data.db.tables.LexemeRegister.LEXEME_REGISTER;
 import static eki.ekilex.data.db.tables.LexemeSourceLink.LEXEME_SOURCE_LINK;
+import static eki.ekilex.data.db.tables.LexRelation.LEX_RELATION;
 
 @Service
 public class LexemeDbService implements DbConstant {
@@ -42,7 +44,9 @@ public class LexemeDbService implements DbConstant {
 		LexemeRecord clonedLexeme = lexeme.copy();
 		clonedLexeme.setMeaningId(meaningId);
 		clonedLexeme.changed(LEXEME.ORDER_BY, false);
-		clonedLexeme.setLevel2(99);
+		clonedLexeme.setLevel1(lexeme.getLevel1());
+		clonedLexeme.setLevel2(calculateLevel2(lexeme));
+		clonedLexeme.setLevel3(1);
 		clonedLexeme.store();
 		return clonedLexeme.getId();
 	}
@@ -62,10 +66,10 @@ public class LexemeDbService implements DbConstant {
 				create.selectFrom(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)).fetch();
 		lexemeFreeforms.forEach(lexemeFreeform -> {
 			Long clonedFreeformId = updateDbService.cloneFreeform(lexemeFreeform.getFreeformId(), null);
-			LexemeFreeformRecord clonedDefinitionFreeform = create.newRecord(LEXEME_FREEFORM);
-			clonedDefinitionFreeform.setLexemeId(clonedLexemeId);
-			clonedDefinitionFreeform.setFreeformId(clonedFreeformId);
-			clonedDefinitionFreeform.store();
+			LexemeFreeformRecord clonedLexemeFreeform = create.newRecord(LEXEME_FREEFORM);
+			clonedLexemeFreeform.setLexemeId(clonedLexemeId);
+			clonedLexemeFreeform.setFreeformId(clonedFreeformId);
+			clonedLexemeFreeform.store();
 		});
 	}
 
@@ -100,6 +104,27 @@ public class LexemeDbService implements DbConstant {
 			clonedLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
 			clonedLexemeSourceLink.store();
 		});
+	}
+
+	public void cloneLexemeRelations(Long lexemeId, Long clonedLexemeId) {
+
+		Result<LexRelationRecord> lexemeRelations = create.selectFrom(LEX_RELATION)
+				.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId).or(LEX_RELATION.LEXEME2_ID.eq(lexemeId)))
+				.fetch();
+		lexemeRelations.stream().map(LexRelationRecord::copy).forEach(clonedRelation -> {
+			if (clonedRelation.getLexeme1Id().equals(lexemeId)) {
+				clonedRelation.setLexeme1Id(clonedLexemeId);
+			} else {
+				clonedRelation.setLexeme2Id(clonedLexemeId);
+			}
+			clonedRelation.changed(LEX_RELATION.ORDER_BY, false);
+			clonedRelation.store();
+		});
+	}
+
+	private int calculateLevel2(LexemeRecord lexeme) {
+		Result<LexemeRecord> lexemes = create.selectFrom(LEXEME).where(LEXEME.WORD_ID.eq(lexeme.getWordId()).and(LEXEME.LEVEL1.eq(lexeme.getLevel1()))).fetch();
+		return lexemes.stream().mapToInt(LexemeRecord::getLevel2).max().orElse(0) + 1;
 	}
 
 }

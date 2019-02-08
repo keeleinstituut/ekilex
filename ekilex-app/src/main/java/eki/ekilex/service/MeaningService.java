@@ -64,6 +64,7 @@ public class MeaningService {
 			lexemeDbService.cloneLexemePoses(meaningLexeme.getId(), duplicateLexemeId);
 			lexemeDbService.cloneLexemeRegisters(meaningLexeme.getId(), duplicateLexemeId);
 			lexemeDbService.cloneLexemeSoureLinks(meaningLexeme.getId(), duplicateLexemeId);
+			lexemeDbService.cloneLexemeRelations(meaningLexeme.getId(), duplicateLexemeId);
 		});
 	}
 
