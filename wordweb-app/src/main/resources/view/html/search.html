@@ -376,7 +376,7 @@
                                                 <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                               </a>
                                               <i th:if="${!collocMem.wordExists}">
-                                                <span th:text="${collocMem.form}" class="text-muted"></span>
+                                                <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span>
                                               </i>
                                             </span>
                                           </span>
