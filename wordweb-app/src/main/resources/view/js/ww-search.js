@@ -111,7 +111,6 @@ $(document).on("click", ".back", function() {
 		$(".content-panel").addClass("d-none d-md-block");
 		$(".homonym-panel").removeClass("d-none d-md-block");
 		$(".search-panel").removeClass("d-none d-md-block");
-		$('#form-words').css("margin-top", '0');
 		calculateAndSetStyles();
 	}
 });
@@ -134,7 +133,6 @@ $(document).on("click", ".homonym-item", function() {
 	} else {
 		$(".homonym-panel").addClass("d-none");
 		$(".search-panel").addClass("d-none");
-		$('#form-words').css("margin-top", '5em');
 	}
 });
 

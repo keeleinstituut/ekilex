@@ -824,6 +824,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 			if (isRestricted(usageBlockNode)) continue;
 			List<Node> usageGroupNodes = usageBlockNode.selectNodes(usageGroupExp);
 			for (Node usageGroupNode : usageGroupNodes) {
+				if (isRestricted(usageGroupNode)) continue;
 				List<String> usageOriginalValues = extractOriginalValues(usageGroupNode, usageExp);
 				List<String> usageDefinitionValues = extractOriginalValues(usageGroupNode, usageDefinitionExp);
 				List<UsageTranslation> usageTranslations = extractUsageTranslations(usageGroupNode);

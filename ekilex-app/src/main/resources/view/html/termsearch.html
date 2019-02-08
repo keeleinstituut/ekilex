@@ -111,6 +111,7 @@
               <div class="float-right">
                 <a class="btn btn-primary" th:href="@{'/meaningjoin/' + ${meaningId}}">Ühenda</a>
                 <button class="btn btn-primary" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${meaningId}">Lisa uus keelend</button>
+                <button id="meaningCopyBtn" class="btn btn-primary" th:data-meaning-id="${meaningId}">Duplikaat</button>
               </div>
               <div th:if="${meaning.processStateCode != null}">
                 <span class="lbl">Protsessi olek</span>

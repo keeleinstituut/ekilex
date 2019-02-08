@@ -1,11 +1,15 @@
 package eki.ekilex.web.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,15 +18,20 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @ConditionalOnWebApplication
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class TermModifyController implements WebConstant {
+
+	private static final Logger logger = LoggerFactory.getLogger(TermModifyController.class);
 
 	private final TermSearchService termSearchService;
 
@@ -77,6 +86,19 @@ public class TermModifyController implements WebConstant {
 		attributes.addFlashAttribute(SEARCH_WORD_KEY, word);
 
 		return "redirect:" + TERM_SEARCH_URI;
+	}
+
+	@ResponseBody
+	@PostMapping("/meaningcopy/{meaningId}")
+	public String meaningCopy(@PathVariable("meaningId") Long meaningId) throws JsonProcessingException {
+
+		logger.debug("meaningId : {}", meaningId);
+
+		Map<String, String> response = new HashMap<>();
+		response.put("message", "Teenus on veel ehitamisel...");
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(response);
 	}
 
 }

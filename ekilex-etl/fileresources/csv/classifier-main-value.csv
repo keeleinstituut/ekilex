@@ -1202,6 +1202,7 @@ morph	SgIn	ainsuse seesütlev	est	wordweb
 morph	SgIll	ainsuse sisseütlev	est	wordweb
 morph	Inf	da-tegevusnimi	est	wordweb
 morph	Neg	eitus (ei)	est	wordweb
+morph	Ger	des-vorm	est	wordweb
 morph	ImpPrSg2	käskiva kõneviisi oleviku ainsuse 2.p.	est	wordweb
 morph	ImpPrSg2N	käskiva kõneviisi oleviku ainsuse 2.p. eitus (ära)	est	wordweb
 morph	ImpPrPs	käskiva kõneviisi oleviku isikuline tegumood	est	wordweb

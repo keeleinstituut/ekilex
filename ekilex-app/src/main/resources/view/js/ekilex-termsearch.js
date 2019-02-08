@@ -41,6 +41,17 @@ function initialise() {
         });
 	});
 
+	$(document).on('click', '#meaningCopyBtn', function() {
+		let url = applicationUrl + 'meaningcopy/' +  $(this).data('meaning-id');
+		$.post(url).done(function(data) {
+			let response = JSON.parse(data);
+			openMessageDlg(response.message);
+		}).fail(function(data) {
+			openAlertDlg("Mõiste dubleerimine ebaõnnestus");
+			console.log(data);
+		});
+	});
+
 	$(document).on('change', '#meaning-other-words-visible-check', function() {
 		if (this.checked) {
 			$(".other-words").fadeIn();

@@ -190,7 +190,7 @@ function changeItemOrdering(target, delta) {
     return {opCode: opCode, items: orderedItems};
 }
 
-function postJson(url, dataObject) {
+function postJson(url, dataObject, failMessage = 'Salvestamine ebaõnnestus.') {
     return $.ajax({
         url: url,
         data: JSON.stringify(dataObject),
@@ -199,7 +199,7 @@ function postJson(url, dataObject) {
         contentType: 'application/json'
     }).fail(function (data) {
         console.log(data);
-        alert('Salvestamine ebaõnnestus.');
+        openAlertDlg(failMessage);
     });
 }
 
@@ -516,9 +516,15 @@ function openAddNewLexemeRelationDlg(elem) {
     initRelationDialogLogic(addDlg, 'lexeme-id');
 }
 
-function openAlertDlg(alertMessage) {
+function openMessageDlg(message) {
+    openAlertDlg(message, false);
+}
+
+function openAlertDlg(alertMessage, showAsAlert = true) {
     let alertDlg = $('#alertDlg');
     alertDlg.find(('[name=alert_message]')).text(alertMessage);
+    alertDlg.find('.alert-warning').prop('hidden', !showAsAlert);
+    alertDlg.find('.alert-success').prop('hidden', showAsAlert);
     alertDlg.modal('show');
     alertDlg.find('.modal-footer button').focus();
 }
