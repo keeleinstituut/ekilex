@@ -847,6 +847,7 @@ alter sequence feedback_log_id_seq restart with 10000;
 
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
+create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);
 create index form_mode_idx on form(mode);
 create index form_value_mode_idx on form(value, mode);
 create index form_paradigm_id_idx on form(paradigm_id);

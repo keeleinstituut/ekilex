@@ -3,12 +3,9 @@ package eki.ekilex.web.controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import eki.common.constant.SourceType;
-import eki.ekilex.data.Source;
-import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.SourceService;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -24,13 +21,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
+import eki.common.constant.SourceType;
 import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchFilter;
+import eki.ekilex.data.SearchUriData;
+import eki.ekilex.data.Source;
 import eki.ekilex.data.WordDetails;
+import eki.ekilex.data.WordLexeme;
 import eki.ekilex.data.WordsResult;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.SourceService;
 import eki.ekilex.web.bean.SessionBean;
 
 @ConditionalOnWebApplication
@@ -52,40 +52,67 @@ public class LexSearchController extends AbstractSearchController {
 		if (model.containsAttribute(SEARCH_WORD_KEY)) {
 			String searchWord = model.asMap().get(SEARCH_WORD_KEY).toString();
 			SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-			return search(sessionBean.getSelectedDatasets(), null, searchWord, false, null, sessionBean, model);
+			return lexSearch(null, sessionBean.getSelectedDatasets(), searchWord, null, false, sessionBean, model);
 		}
 
 		initSearchForms(model);
+
+		WordsResult wordsResult = new WordsResult();
+		model.addAttribute("wordsResult", wordsResult);
 
 		return LEX_SEARCH_PAGE;
 	}
 
 	@PostMapping(value = LEX_SEARCH_URI)
-	public String search(
-			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
+	public String lexSearch(
 			@RequestParam(name = "searchMode", required = false) String searchMode,
+			@RequestParam(name = "selectedDatasets", required = false) List<String> selectedDatasets,
 			@RequestParam(name = "simpleSearchFilter", required = false) String simpleSearchFilter,
-			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			@ModelAttribute(name = "detailSearchFilter") SearchFilter detailSearchFilter,
+			@RequestParam(name = "fetchAll", required = false) boolean fetchAll,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) throws Exception {
 
-		logger.debug("Searching by \"{}\" in {}", simpleSearchFilter, selectedDatasets);
-
-		cleanup(selectedDatasets, null, simpleSearchFilter, detailSearchFilter, sessionBean, model);
+		formDataCleanup(selectedDatasets, simpleSearchFilter, detailSearchFilter, null, sessionBean, model);
 
 		if (StringUtils.isBlank(searchMode)) {
 			searchMode = SEARCH_MODE_SIMPLE;
 		}
-		WordsResult result;
+		selectedDatasets = sessionBean.getSelectedDatasets();
+
+		String searchUri = searchHelper.composeSearchUri(searchMode, selectedDatasets, simpleSearchFilter, detailSearchFilter, fetchAll);
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
+	}
+
+	@GetMapping(value = LEX_SEARCH_URI + "/**")
+	public String lexSearch(@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model, HttpServletRequest request) {
+
+		String searchUri = StringUtils.removeStart(request.getRequestURI(), LEX_SEARCH_URI);
+		logger.debug(searchUri);
+
+		SearchUriData searchUriData = searchHelper.parseSearchUri(searchUri);
+
+		if (!searchUriData.isValid()) {
+			initSearchForms(model);
+			return LEX_SEARCH_PAGE;
+		}
+
+		String searchMode = searchUriData.getSearchMode();
+		List<String> selectedDatasets = searchUriData.getSelectedDatasets();
+		String simpleSearchFilter = searchUriData.getSimpleSearchFilter();
+		SearchFilter detailSearchFilter = searchUriData.getDetailSearchFilter();
+		boolean fetchAll = searchUriData.isFetchAll();
+
+		WordsResult wordsResult;
 		if (StringUtils.equals(SEARCH_MODE_DETAIL, searchMode)) {
-			result = lexSearchService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = lexSearchService.findWords(detailSearchFilter, selectedDatasets, fetchAll);
 		} else {
-			result = lexSearchService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
+			wordsResult = lexSearchService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
 		}
 		model.addAttribute("searchMode", searchMode);
-		model.addAttribute("wordsFoundBySearch", result.getWords());
-		model.addAttribute("totalCount", result.getTotalCount());
+		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
+		model.addAttribute("detailSearchFilter", detailSearchFilter);
+		model.addAttribute("wordsResult", wordsResult);
 
 		return LEX_SEARCH_PAGE;
 	}
@@ -160,8 +187,7 @@ public class LexSearchController extends AbstractSearchController {
 
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
-			List<Dataset> allDatasets = commonDataService.getDatasets();
-			selectedDatasets = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
+			selectedDatasets = commonDataService.getDatasetCodes();
 		}
 		WordDetails details = lexSearchService.getWordDetails(wordId, selectedDatasets);
 		model.addAttribute("wordId", wordId);

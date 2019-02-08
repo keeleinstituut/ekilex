@@ -19,17 +19,17 @@
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsFoundBySearch) && (simpleSearchFilter != null)}">
+    <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsResult.words) && (simpleSearchFilter != null)}">
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>
 
     <div class="row no-gutters mt-2">
       <div class="col-3 pr-2" style="height: calc(100vh - 12rem); overflow-y: auto;">
-        <div class="card shadow" th:if="${not #lists.isEmpty(wordsFoundBySearch)}">
+        <div class="card shadow" th:if="${not #lists.isEmpty(wordsResult.words)}">
           <div class="card-body p-2">
-            <a href="/" id="show-all-btn"><span th:text="${'Kokku leiti : ' + totalCount}"></span></a>
+            <a href="/" id="show-all-btn"><span th:text="${'Kokku leiti : ' + wordsResult.totalCount}"></span></a>
             <table id="results" class="table table-striped mb-0">
-              <tr th:each="word : ${wordsFoundBySearch}">
+              <tr th:each="word : ${wordsResult.words}">
                 <td class="p-0">
                   <button type="button" class="btn btn-link pt-0" th:data-id="${word.wordId}" name="detailsBtn">
                     <span th:text="${(word.suffixoid ? '-' : '') + word.value + (word.prefixoid ? '-' : '')}" class="ttl">vorm 1</span>

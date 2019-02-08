@@ -2,6 +2,7 @@ package eki.ekilex.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -28,6 +29,12 @@ public class CommonDataService {
 	@Transactional
 	public List<Dataset> getDatasets() {
 		return commonDataDbService.getDatasets().into(Dataset.class);
+	}
+
+	@Transactional
+	public List<String> getDatasetCodes() {
+		List<String> datasetCodes = getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+		return datasetCodes;
 	}
 
 	@Transactional
