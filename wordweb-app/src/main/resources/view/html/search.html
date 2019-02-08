@@ -306,9 +306,12 @@
                                       <span th:if="${collocMemGr == T(eki.wordweb.constant.CollocMemberGroup).CONTEXT}">
                                         <span th:each="collocMem,collocMemIter : ${displayColloc.contextMembers}">
                                           <span th:if="${collocMem.conjunct != null}" class="text-muted" th:text="${collocMem.conjunct}"></span>
-                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
+                                          <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                             <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                           </a>
+                                          <i th:if="${!collocMem.wordExists}">
+                                            <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span>
+                                          </i>
                                         </span>
                                       </span>
                                     </span>
@@ -372,7 +375,9 @@
                                               <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                                 <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                               </a>
-                                              <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
+                                              <i th:if="${!collocMem.wordExists}">
+                                                <span th:text="${collocMem.form}" class="text-muted"></span>
+                                              </i>
                                             </span>
                                           </span>
                                         </span>
