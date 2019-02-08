@@ -32,6 +32,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import org.jooq.DSLContext;
 import org.jooq.Record1;
@@ -913,20 +914,19 @@ public class UpdateDbService implements DbConstant {
 		});
 	}
 
-	private Long cloneFreeform(Long freeformId, Long parentFreeformId) {
+	public Long cloneFreeform(Long freeformId, Long parentFreeformId) {
 		FreeformRecord freeform = create.selectFrom(FREEFORM).where(FREEFORM.ID.eq(freeformId)).fetchOne();
-		FreeformRecord clonedFreeform = create.insertInto(FREEFORM)
-				.set(FREEFORM.TYPE, freeform.getType())
-				.set(FREEFORM.PARENT_ID, parentFreeformId)
-				.set(FREEFORM.VALUE_TEXT, freeform.getValueText())
-				.set(FREEFORM.VALUE_PRESE, freeform.getValuePrese())
-				.set(FREEFORM.LANG, freeform.getLang())
-				.set(FREEFORM.VALUE_DATE, freeform.getValueDate())
-				.set(FREEFORM.CLASSIF_CODE, freeform.getClassifCode())
-				.set(FREEFORM.CLASSIF_NAME, freeform.getClassifName())
-				.set(FREEFORM.VALUE_ARRAY, freeform.getValueArray())
-				.set(FREEFORM.VALUE_NUMBER, freeform.getValueNumber())
-				.returning(FREEFORM.ID).fetchOne();
+		FreeformRecord clonedFreeform = freeform.copy();
+		clonedFreeform.setParentId(parentFreeformId);
+		clonedFreeform.changed(FREEFORM.ORDER_BY, false);
+		clonedFreeform.store();
+		Result<FreeformSourceLinkRecord> freeformSourceLinks = create.selectFrom(FREEFORM_SOURCE_LINK).where(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(freeformId)).fetch();
+		freeformSourceLinks.forEach(sl -> {
+			FreeformSourceLinkRecord clonedSourceLink = sl.copy();
+			clonedSourceLink.setFreeformId(clonedFreeform.getId());
+			clonedSourceLink.changed(FREEFORM_SOURCE_LINK.ORDER_BY, false);
+			clonedSourceLink.store();
+		});
 		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM).where(FREEFORM.PARENT_ID.eq(freeformId)).fetch();
 		childFreeforms.forEach(f -> {
 			cloneFreeform(f.getId(), clonedFreeform.getId());

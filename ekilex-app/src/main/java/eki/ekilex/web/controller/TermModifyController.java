@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.WordLexeme;
 import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.MeaningService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.web.bean.SessionBean;
@@ -25,6 +26,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @ConditionalOnWebApplication
 @Controller
@@ -39,10 +41,17 @@ public class TermModifyController implements WebConstant {
 
 	private final UpdateService updateService;
 
-	public TermModifyController(TermSearchService termSearchService, LexSearchService lexSearchService, UpdateService updateService) {
+	private final MeaningService meaningService;
+
+	public TermModifyController(
+			TermSearchService termSearchService,
+			LexSearchService lexSearchService,
+			UpdateService updateService,
+			MeaningService meaningService) {
 		this.termSearchService = termSearchService;
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
+		this.meaningService = meaningService;
 	}
 
 	@GetMapping("/meaningjoin/{meaningId}")
@@ -95,7 +104,14 @@ public class TermModifyController implements WebConstant {
 		logger.debug("meaningId : {}", meaningId);
 
 		Map<String, String> response = new HashMap<>();
-		response.put("message", "Teenus on veel ehitamisel...");
+		Optional<Long> duplicateMeaning = meaningService.duplicateMeaning(meaningId);
+		if (duplicateMeaning.isPresent()) {
+			response.put("message", "Mõiste duplikaat lisatud");
+			response.put("status", "ok");
+		} else {
+			response.put("message", "Duplikaadi lisamine ebaõnnestus");
+			response.put("status", "error");
+		}
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);

@@ -45,7 +45,11 @@ function initialise() {
 		let url = applicationUrl + 'meaningcopy/' +  $(this).data('meaning-id');
 		$.post(url).done(function(data) {
 			let response = JSON.parse(data);
-			openMessageDlg(response.message);
+			if (response.status === 'ok') {
+				openMessageDlg(response.message);
+			} else {
+				openAlertDlg(response.message);
+			}
 		}).fail(function(data) {
 			openAlertDlg("Mõiste dubleerimine ebaõnnestus");
 			console.log(data);
