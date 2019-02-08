@@ -7,9 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eki.common.constant.ReferenceType;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
@@ -29,12 +26,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import eki.common.constant.ContentKey;
+import eki.common.constant.ReferenceType;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.AddItemRequest;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.Dataset;
 import eki.ekilex.data.ListData;
 import eki.ekilex.data.ModifyItemRequest;
 import eki.ekilex.data.ModifyListRequest;
@@ -439,7 +439,7 @@ public class ModifyController implements WebConstant {
 			sessionBean.setNewWordSelectedDataset(dataset);
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
-			List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+			List<String> allDatasets = commonDataService.getDatasetCodes();
 			WordsResult words = lexSearchService.findWords(value, allDatasets, true);
 			if (words.getTotalCount() == 0) {
 				updateService.addWord(value, dataset, language, morphCode, meaningId);
@@ -491,7 +491,7 @@ public class ModifyController implements WebConstant {
 			@ModelAttribute(name = "meaningId") Long meaningId,
 			Model model) {
 
-		List<String> allDatasets = commonDataService.getDatasets().stream().map(Dataset::getCode).collect(Collectors.toList());
+		List<String> allDatasets = commonDataService.getDatasetCodes();
 		WordsResult words = lexSearchService.findWords(wordValue, allDatasets, true);
 		List<Word> wordsInDifferentDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).collect(Collectors.toList());
 		model.addAttribute("words", wordsInDifferentDatasets);

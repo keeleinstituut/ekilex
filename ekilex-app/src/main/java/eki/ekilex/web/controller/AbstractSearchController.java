@@ -1,32 +1,32 @@
 package eki.ekilex.web.controller;
 
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eki.ekilex.constant.SearchEntity;
-import eki.ekilex.data.Classifier;
-import eki.ekilex.data.ClassifierSelect;
-import eki.ekilex.data.SearchCriterionGroup;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
+import eki.ekilex.data.ClassifierSelect;
 import eki.ekilex.data.Dataset;
 import eki.ekilex.data.SearchCriterion;
+import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
 import eki.ekilex.service.CommonDataService;
 import eki.ekilex.web.bean.SessionBean;
-import org.springframework.web.bind.annotation.ModelAttribute;
-
-import static java.util.Arrays.asList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import eki.ekilex.web.util.SearchHelper;
 
 public abstract class AbstractSearchController implements WebConstant {
 
@@ -34,6 +34,9 @@ public abstract class AbstractSearchController implements WebConstant {
 
 	@Autowired
 	protected CommonDataService commonDataService;
+
+	@Autowired
+	protected SearchHelper searchHelper;
 
 	@ModelAttribute("allDatasets")
 	public List<Dataset> getAllDatasets() {
@@ -127,8 +130,7 @@ public abstract class AbstractSearchController implements WebConstant {
 			sessionBean = new SessionBean();
 			model.addAttribute(SESSION_BEAN, sessionBean);
 		}
-		List<Dataset> allDatasets = getAllDatasets();
-		List<String> allDatasetCodes = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
+		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
 		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			sessionBean.setSelectedDatasets(allDatasetCodes);
@@ -138,8 +140,7 @@ public abstract class AbstractSearchController implements WebConstant {
 			List<ClassifierSelect> languagesOrder = convert(allLanguages);
 			sessionBean.setLanguagesOrder(languagesOrder);
 		}
-		Map<String,List<Classifier>> domains = commonDataService.getDomainsInUseByOrigin();
-		SearchFilter detailSearchFilter = initSearchFilter();
+		SearchFilter detailSearchFilter = searchHelper.initSearchFilter();
 
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("searchMode", SEARCH_MODE_SIMPLE);
@@ -156,15 +157,14 @@ public abstract class AbstractSearchController implements WebConstant {
 		return languagesOrder;
 	}
 
-	protected void cleanup(
+	protected void formDataCleanup(
 			List<String> selectedDatasets,
-			String resultLang,
 			String simpleSearchFilter,
 			SearchFilter detailSearchFilter,
+			String resultLang,
 			SessionBean sessionBean, Model model) throws Exception {
 
-		List<Dataset> allDatasets = getAllDatasets();
-		List<String> allDatasetCodes = allDatasets.stream().map(dataset -> dataset.getCode()).collect(Collectors.toList());
+		List<String> allDatasetCodes = commonDataService.getDatasetCodes();
 		if (CollectionUtils.isEmpty(selectedDatasets)) {
 			selectedDatasets = sessionBean.getSelectedDatasets();
 			if (CollectionUtils.isEmpty(selectedDatasets)) {
@@ -174,7 +174,7 @@ public abstract class AbstractSearchController implements WebConstant {
 		sessionBean.setResultLang(resultLang);
 
 		if (detailSearchFilter == null) {
-			detailSearchFilter = initSearchFilter();
+			detailSearchFilter = searchHelper.initSearchFilter();
 		} else {
 			if (CollectionUtils.isEmpty(detailSearchFilter.getCriteriaGroups())) {
 				detailSearchFilter.setCriteriaGroups(Collections.emptyList());
@@ -188,44 +188,29 @@ public abstract class AbstractSearchController implements WebConstant {
 				if (CollectionUtils.isEmpty(group.getSearchCriteria())) {
 					group.setSearchCriteria(Collections.emptyList());
 				} else {
-					List<SearchCriterion> searchCriteria = group.getSearchCriteria().stream().filter(criterion -> criterion.getSearchKey() != null)
+					List<SearchCriterion> searchCriteria = group.getSearchCriteria().stream()
+							.filter(criterion -> criterion.getSearchKey() != null)
 							.collect(Collectors.toList());
-					for (SearchCriterion c : searchCriteria) {
-						if (c.getSearchKey().equals(SearchKey.DOMAIN)) {
-							covertValueToClassifier(c);
+					for (SearchCriterion crit : searchCriteria) {
+						if (crit.getSearchKey().equals(SearchKey.DOMAIN)) {
+							convertJsonToClassifier(crit);
 						}
 					}
 					group.setSearchCriteria(searchCriteria);
 				}
 			}
 		}
-
-		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
-		model.addAttribute("detailSearchFilter", detailSearchFilter);
 	}
 
-	private void covertValueToClassifier(SearchCriterion crit) throws Exception {
+	private void convertJsonToClassifier(SearchCriterion crit) throws Exception {
 		if (crit.getSearchValue() != null) {
 			if (isNotBlank(crit.getSearchValue().toString())) {
 				ObjectMapper mapper = new ObjectMapper();
-				Classifier domain = mapper.readValue(crit.getSearchValue().toString(), Classifier.class);
-				crit.setSearchValue(domain);
+				Classifier classifier = mapper.readValue(crit.getSearchValue().toString(), Classifier.class);
+				crit.setSearchValue(classifier);
 			} else {
 				crit.setSearchValue(null);
 			}
 		}
-	}
-
-	protected SearchFilter initSearchFilter() {
-
-		SearchFilter detailSearch = new SearchFilter();
-		SearchCriterion defaultCriterion = new SearchCriterion();
-		defaultCriterion.setSearchKey(SearchKey.VALUE);
-		defaultCriterion.setSearchOperand(SearchKey.VALUE.getOperands()[0]);
-		SearchCriterionGroup searchGroup = new SearchCriterionGroup();
-		searchGroup.setEntity(SearchEntity.HEADWORD);
-		searchGroup.setSearchCriteria(asList(defaultCriterion));
-		detailSearch.setCriteriaGroups(asList(searchGroup));
-		return detailSearch;
 	}
 }

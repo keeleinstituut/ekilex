@@ -48,24 +48,24 @@
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${(!searchResult.resultExist) && (simpleSearchFilter != null)}">
+    <div class="mt-4 float-left" th:if="${(!meaningsResult.resultExist) && (simpleSearchFilter != null)}">
       <span th:text="#{term.not.found}">Not found.</span>
     </div>
 
     <div class="row no-gutters mt-2">
       <div class="col-3 pr-2 pb-2" style="height: calc(100vh - 14rem); overflow-y: auto;">
-        <div class="card shadow" th:if="${searchResult.resultExist}">
+        <div class="card shadow" th:if="${meaningsResult.resultExist}">
           <div class="card-body p-2">
             <div>
               <a href="javascript:void(0);" id="show-all-btn">
-                <span th:text="${'Mõisteid : ' + searchResult.meaningCount}"></span>
+                <span th:text="${'Mõisteid : ' + meaningsResult.meaningCount}"></span>
                 &nbsp;|&nbsp;
-                <span th:text="${'Termineid : ' + searchResult.wordCount}"></span>
+                <span th:text="${'Termineid : ' + meaningsResult.wordCount}"></span>
               </a>
             </div>
             <hr />
             <div id="results" class="w-100">
-              <div th:each="termMeaning,termMeaningIter : ${searchResult.termMeanings}" th:class="${termMeaningIter.last} ? '' : 'border-bottom'">
+              <div th:each="termMeaning,termMeaningIter : ${meaningsResult.termMeanings}" th:class="${termMeaningIter.last} ? '' : 'border-bottom'">
                 <div>
                   <button type="button" class="btn btn-link pt-0" th:data-id="${termMeaning.meaningId}" name="detailsBtn">
                     <th:block th:if="${termMeaning.mainWord != null}">
