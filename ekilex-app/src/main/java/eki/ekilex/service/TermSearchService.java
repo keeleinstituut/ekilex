@@ -114,7 +114,7 @@ public class TermSearchService implements SystemConstant {
 	}
 
 	@Transactional
-	public String getMeaningFirstWord(Long meaningId, List<String> selectedDatasets) {
+	public String getMeaningFirstWordValue(Long meaningId, List<String> selectedDatasets) {
 		return termSearchDbService.getMeaningFirstWord(meaningId, selectedDatasets).into(String.class);
 	}
 

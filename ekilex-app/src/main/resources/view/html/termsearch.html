@@ -75,6 +75,10 @@
                     </th:block>
                     <span th:if="${termMeaning.mainWord == null}" th:text="${termMeaning.conceptId}" class="ttl">23648236</span>
                   </button>
+                  <span class="float-right" style="padding: 15px">
+                    <span th:id="${'meaning_select_point_' + termMeaning.meaningId}" class="fa fa-play" style="display: none"></span>
+                    <span th:id="${'meaning_select_wait_' + termMeaning.meaningId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+                  </span>
                   <div style="position:relative; top: -10px; padding-left: 10px" th:if="${termMeaning.mainWord != null}">
                     <small>
                       <span th:text="${termMeaning.mainWord.datasetCodesWrapup}"></span>
@@ -601,7 +605,7 @@
 
   <div th:replace="ekilex_editor :: #addNewDefinitionDlg"></div>
   <div th:replace="ekilex_editor :: #addNewUsageDlg"></div>
-  <div th:replace="common :: newWordDlg('TERM_SEARCH')"></div>
+  <div th:replace="common :: newWordDlg('term_search')"></div>
   <div th:replace="common :: #addNewSourceLinkDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>

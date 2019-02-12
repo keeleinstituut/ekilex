@@ -7,6 +7,8 @@ import eki.ekilex.service.CommonDataService;
 import eki.ekilex.service.LexSearchService;
 import eki.ekilex.service.TermSearchService;
 import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.SearchHelper;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,10 +28,13 @@ public class BackController implements WebConstant {
 
 	private final LexSearchService lexSearchService;
 
-	public BackController(CommonDataService commonDataService, TermSearchService termSearchService, LexSearchService lexSearchService) {
+	private final SearchHelper searchHelper;
+
+	public BackController(CommonDataService commonDataService, TermSearchService termSearchService, LexSearchService lexSearchService, SearchHelper searchHelper) {
 		this.commonDataService = commonDataService;
 		this.termSearchService = termSearchService;
 		this.lexSearchService = lexSearchService;
+		this.searchHelper = searchHelper;
 	}
 
 	@GetMapping("/wordback/{wordId}")
@@ -39,21 +44,10 @@ public class BackController implements WebConstant {
 			RedirectAttributes attributes) {
 
 		Word word = commonDataService.getWord(wordId);
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, word.getValue());
+		String wordValue = word.getValue();
+		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), wordValue);
 
-		return "redirect:" + LEX_SEARCH_URI;
-	}
-
-	@GetMapping("/meaningback/{meanigId}")
-	public String meaningBack(
-			@PathVariable("meanigId") Long meaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
-
-		String word = termSearchService.getMeaningFirstWord(meaningId, sessionBean.getSelectedDatasets());
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, word);
-
-		return "redirect:" + TERM_SEARCH_URI;
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping("/lexback/{lexemeId}")
@@ -63,9 +57,22 @@ public class BackController implements WebConstant {
 			RedirectAttributes attributes) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
+		String firstWordValue = lexeme.getWords()[0];
+		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), firstWordValue);
 
-		return "redirect:" + LEX_SEARCH_URI;
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
+	}
+
+	@GetMapping("/meaningback/{meanigId}")
+	public String meaningBack(
+			@PathVariable("meanigId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
+			RedirectAttributes attributes) {
+
+		String firstWordValue = termSearchService.getMeaningFirstWordValue(meaningId, sessionBean.getSelectedDatasets());
+		String searchUri = searchHelper.composeSearchUri(sessionBean.getSelectedDatasets(), firstWordValue);
+
+		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
 }

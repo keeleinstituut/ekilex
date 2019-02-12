@@ -32,6 +32,10 @@ public interface WebConstant {
 
 	String MEANING_DETAILS_URI = "/meaningdetails";
 
+	String WORD_SELECT_URI = "/wordselect";
+
+	String WORD_SELECT_PAGE = "wordselect";
+
 	String AUTH_ERROR_URI = "/autherror";
 
 	String SEND_FEEDBACK_URI = "/send_feedback";
@@ -42,11 +46,31 @@ public interface WebConstant {
 
 	String LEX_JOIN_PAGE = "lexjoin";
 
+	String MEANING_JOIN_URI = "/meaningjoin";
+
+	String MEANING_JOIN_PAGE = "meaningjoin";
+
+	String REGISTER_PAGE_URI = "/register";
+
+	String REGISTER_PAGE = "register";
+
+	String ACTIVATION_PAGE_URI = "/register/activate";
+
+	String COMPONENTS_PAGE = "components";
+
 	String ERROR_PAGE = "error";
+
+	// mode flags
 
 	String SEARCH_MODE_SIMPLE = "SIMPLE";
 
 	String SEARCH_MODE_DETAIL = "DETAIL";
+
+	String RETURN_PAGE_LEX_SEARCH = "lex_search";
+
+	String RETURN_PAGE_TERM_SEARCH = "term_search";
+
+	// model keys
 
 	String SESSION_BEAN = "sessionBean";
 
@@ -57,13 +81,4 @@ public interface WebConstant {
 	String USER_KEY = "user";
 
 	String SEARCH_WORD_KEY = "searchWord";
-
-	String REGISTER_PAGE_URI = "/register";
-
-	String REGISTER_PAGE = "register";
-
-	String ACTIVATION_PAGE_URI = "/register/activate";
-
-	String MEANING_JOIN_PAGE = "meaningjoin";
-
 }

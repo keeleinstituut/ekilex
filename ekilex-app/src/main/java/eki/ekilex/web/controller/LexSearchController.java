@@ -49,12 +49,6 @@ public class LexSearchController extends AbstractSearchController {
 	@GetMapping(value = LEX_SEARCH_URI)
 	public String initSearch(Model model) throws Exception {
 
-		if (model.containsAttribute(SEARCH_WORD_KEY)) {
-			String searchWord = model.asMap().get(SEARCH_WORD_KEY).toString();
-			SessionBean sessionBean = (SessionBean) model.asMap().get(SESSION_BEAN);
-			return lexSearch(null, sessionBean.getSelectedDatasets(), searchWord, null, false, sessionBean, model);
-		}
-
 		initSearchForms(model);
 
 		WordsResult wordsResult = new WordsResult();
@@ -128,7 +122,7 @@ public class LexSearchController extends AbstractSearchController {
 		model.addAttribute("wordsFoundBySearch", result.getWords());
 		model.addAttribute("totalCount", result.getTotalCount());
 
-		return 	"components :: word_search_result";
+		return COMPONENTS_PAGE + " :: word_search_result";
 	}
 
 	@GetMapping("/lexemesearchajax")
@@ -143,7 +137,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<WordLexeme> lexemes = lexSearchService.findWordLexemesWithDefinitionsData(searchFilter, datasets);
 		model.addAttribute("lexemesFoundBySearch", lexemes);
 
-		return 	"components :: lexeme_search_result";
+		return COMPONENTS_PAGE + " :: lexeme_search_result";
 	}
 
 	@GetMapping("/meaningsearchajax")
@@ -164,7 +158,7 @@ public class LexSearchController extends AbstractSearchController {
 		}
 		model.addAttribute("lexemesFoundBySearch", lexemesFileterdByMeaning);
 
-		return 	"components :: meaning_search_result";
+		return COMPONENTS_PAGE + " :: meaning_search_result";
 	}
 
 	@GetMapping("/personsearchajax")
@@ -177,7 +171,7 @@ public class LexSearchController extends AbstractSearchController {
 		List<Source> sources = sourceService.findSourcesByNameAndType(searchFilter, SourceType.PERSON);
 		model.addAttribute("sourcesFoundBySearch", sources);
 
-		return 	"components :: source_search_result";
+		return COMPONENTS_PAGE + " :: source_search_result";
 	}
 
 	@GetMapping(WORD_DETAILS_URI + "/{wordId}")

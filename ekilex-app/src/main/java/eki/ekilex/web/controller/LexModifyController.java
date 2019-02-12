@@ -1,10 +1,8 @@
 package eki.ekilex.web.controller;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.LexSearchService;
-import eki.ekilex.service.UpdateService;
-import eki.ekilex.web.bean.SessionBean;
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -15,10 +13,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collections;
-import java.util.List;
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.UpdateService;
+import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -29,9 +30,12 @@ public class LexModifyController implements WebConstant {
 
 	private final UpdateService updateService;
 
-	public LexModifyController(LexSearchService lexSearchService, UpdateService updateService) {
+	private final SearchHelper searchHelper;
+
+	public LexModifyController(LexSearchService lexSearchService, UpdateService updateService, SearchHelper searchHelper) {
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
+		this.searchHelper = searchHelper;
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}")
@@ -68,7 +72,6 @@ public class LexModifyController implements WebConstant {
 			@PathVariable("lexemeId") Long lexemeId,
 			@PathVariable("lexemeId2") Long lexemeId2,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes,
 			Model model) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
@@ -79,22 +82,27 @@ public class LexModifyController implements WebConstant {
 			return LEX_JOIN_PAGE;
 		}
 		updateService.joinLexemes(lexemeId, lexemeId2);
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
 
-		return "redirect:" + LEX_SEARCH_URI;
+		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		String firstWordValue = lexeme.getWords()[0];
+		String searchUri = searchHelper.composeSearchUri(selectedDatasets, firstWordValue);
+
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
 	@GetMapping("/lexseparate/{lexemeId}")
 	public String separate(
 			@PathVariable("lexemeId") Long lexemeId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		WordLexeme lexeme = lexSearchService.getWordLexeme(lexemeId);
 		updateService.separateLexemeMeanings(lexemeId);
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, lexeme.getWords()[0]);
 
-		return "redirect:" + LEX_SEARCH_URI;
+		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		String firstWordValue = lexeme.getWords()[0];
+		String searchUri = searchHelper.composeSearchUri(selectedDatasets, firstWordValue);
+
+		return "redirect:" + LEX_SEARCH_URI + searchUri;
 	}
 
 }

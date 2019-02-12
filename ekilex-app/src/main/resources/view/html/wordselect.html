@@ -12,7 +12,8 @@
   <div class="container-fluid">
     <div class="d-flex flex-row mt-2">
       <p class="card-text">
-        <a class="btn btn-sm btn-secondary text-light" th:href="@{${returnPage} == 'LEX_SEARCH' ? '/lexsearch' : '/termsearch'}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary text-light" th:if="${returnPage == 'lex_search'}" th:href="@{/lexsearch}">Tagasi</a>
+        <a class="btn btn-sm btn-secondary text-light" th:if="${returnPage == 'term_search'}" th:href="@{/termsearch}">Tagasi</a>
       </p>
     </div>
 
@@ -23,12 +24,12 @@
 
       <div class="card-body">
         <form th:action="@{/add_homonym}" method="post">
-          <input hidden name="returnPage" th:value="${returnPage}">
           <input hidden name="dataset" th:value="${dataset}">
           <input hidden name="language" th:value="${language}">
           <input hidden name="morphCode" th:value="${morphCode}">
-          <input hidden name="value" th:value="${wordValue}">
+          <input hidden name="wordValue" th:value="${wordValue}">
           <input hidden name="meaningId" th:value="${meaningId}">
+          <input hidden name="returnPage" th:value="${returnPage}">
 
           <div style="width: 95%" class="border rounded p-2 mb-2">
             <span th:text="${wordValue}" class="ttl"></span>
@@ -42,7 +43,7 @@
           <div>
             <span th:text="${word.value}" class="ttl"></span>
             <span th:text="${word.homonymNumber}" class="ttl"></span>
-            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${word.wordId} + '/' + ${dataset} + '/' + ${returnPage} + '/' + ${meaningId}}">Vali</a>
+            <a class="btn btn-primary" th:href="@{'/wordselect/' + ${dataset} + '/' + ${word.wordId} + '/' + ${meaningId} + '/' + ${returnPage}}">Vali</a>
             <span class="float-right">
               <th:block th:each="code, codeIter : ${word.datasetCodes}">
                 <b th:text="${code}"></b>

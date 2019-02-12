@@ -3,12 +3,17 @@ function initialise() {
 	$(document).on("click", ":button[name='detailsBtn']", function() {
 		var id = $(this).data('id');
 		var isRestoreScrollPos = this.hasAttribute('data-refresh');
+		$("[id^='meaning_select_point_']").hide();
+        $("[id^='meaning_select_wait_']").hide();
+        $("#meaning_select_wait_" + id).show();
 		$.get(applicationUrl + 'meaningdetails/' + id).done(function(data) {
 			var scrollPos = $('#details_div').scrollTop();
 			$('#details_div').replaceWith(data);
 			if (isRestoreScrollPos) {
 				$('#details_div').scrollTop(scrollPos);
 			}
+			$("#meaning_select_wait_" + id).hide();
+            $("#meaning_select_point_" + id).show();
 		}).fail(function(data) {
 			console.log(data);
 			alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');
