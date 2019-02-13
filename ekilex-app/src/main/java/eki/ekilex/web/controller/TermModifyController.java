@@ -3,7 +3,9 @@ package eki.ekilex.web.controller;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import eki.ekilex.service.MeaningService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -43,11 +45,19 @@ public class TermModifyController implements WebConstant {
 
 	private final SearchHelper searchHelper;
 
-	public TermModifyController(TermSearchService termSearchService, LexSearchService lexSearchService, UpdateService updateService, SearchHelper searchHelper) {
+	private final MeaningService meaningService;
+
+
+	public TermModifyController(TermSearchService termSearchService,
+			LexSearchService lexSearchService,
+			UpdateService updateService,
+			SearchHelper searchHelper,
+			MeaningService meaningService) {
 		this.termSearchService = termSearchService;
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
 		this.searchHelper = searchHelper;
+		this.meaningService = meaningService;
 	}
 
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
@@ -100,7 +110,14 @@ public class TermModifyController implements WebConstant {
 		logger.debug("meaningId : {}", meaningId);
 
 		Map<String, String> response = new HashMap<>();
-		response.put("message", "Teenus on veel ehitamisel...");
+		Optional<Long> duplicateMeaning = meaningService.duplicateMeaning(meaningId);
+		if (duplicateMeaning.isPresent()) {
+			response.put("message", "Mõiste duplikaat lisatud");
+			response.put("status", "ok");
+		} else {
+			response.put("message", "Duplikaadi lisamine ebaõnnestus");
+			response.put("status", "error");
+		}
 
 		ObjectMapper jsonMapper = new ObjectMapper();
 		return jsonMapper.writeValueAsString(response);
