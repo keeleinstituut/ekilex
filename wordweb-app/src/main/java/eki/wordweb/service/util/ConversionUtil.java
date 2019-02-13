@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -99,7 +100,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 						Long lexemeId = firstDefinition.getLexemeId();
 						List<String> definitionValues = primaryDefinitions.stream()
 								.filter(definition -> definition.getLexemeId().equals(lexemeId))
-								.map(definition -> definition.getValue())
+								.map(TypeDefinition::getValue)
 								.collect(Collectors.toList());
 						String definitionsWrapup = StringUtils.join(definitionValues, ", ");
 						word.setDefinitionsWrapup(definitionsWrapup);
@@ -428,7 +429,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 				Map<String, List<Collocation>> collocRelGroupDivisionMap = collocs.stream()
 						.collect(Collectors.groupingBy(col -> col.getCollocMembers().stream()
 								.filter(colm -> colm.getWordId().equals(wordId))
-								.map(colm -> colm.getForm()).findFirst().orElse("-")));
+								.map(TypeCollocMember::getForm).findFirst().orElse("-")));
 				if (MapUtils.size(collocRelGroupDivisionMap) == 1) {
 					dividedCollocRelGroups.add(collocRelGroup);
 				} else {
@@ -517,7 +518,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 				collocMemberGroupMap.put(collocMemberGroupKey, displayColloc);
 				displayCollocs.add(displayColloc);
 			}
-			CollocMemberGroup recentCollocMemberGroup = null;
+			CollocMemberGroup recentCollocMemberGroup;
 			CollocMemberGroup currentCollocMemberGroup;
 			boolean headwordOrPrimaryMemberOccurred = false;
 			List<CollocMemberGroup> currentMemberGroupOrder = new ArrayList<>();
@@ -551,7 +552,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 				} else {
 					recentCollocMemberGroup = currentMemberGroupOrder.get(currentMemberGroupOrder.size() - 1);
 				}
-				if (!recentCollocMemberGroup.equals(currentCollocMemberGroup)) {
+				if (!Objects.equals(recentCollocMemberGroup, currentCollocMemberGroup)) {
 					if (!currentMemberGroupOrder.contains(currentCollocMemberGroup)) {
 						currentMemberGroupOrder.add(currentCollocMemberGroup);
 					}
@@ -614,7 +615,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 		word.setWordEtymology(wordEtymology);
 		wordEtymology.setWordEtymologyLineupWrapup(new ArrayList<>());
 
-		StringBuffer wordEtymBuf = new StringBuffer();
+		StringBuilder wordEtymBuf = new StringBuilder();
 		if (word.getEtymologyType() != null) {
 			wordEtymBuf.append("<font style='font-variant: small-caps'>");
 			wordEtymBuf.append(word.getEtymologyType().getValue());
@@ -659,7 +660,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 					etymLevelMember -> StringUtils.equals(etymLevelMember.getEtymWordLang(), etymLevelGroup.get(0).getEtymWordLang()));
 			boolean membersHaveSameComment = etymLevelGroup.stream().allMatch(
 					etymLevelMember -> StringUtils.equals(StringUtils.join(etymLevelMember.getComments()), StringUtils.join(etymLevelGroup.get(0).getComments())));
-			StringBuffer etymLevelBuf = new StringBuffer();
+			StringBuilder etymLevelBuf = new StringBuilder();
 			int etymLevelGroupSize = etymLevelGroup.size();
 			for (int etymLevelMemberIndex = 0; etymLevelMemberIndex < etymLevelGroupSize; etymLevelMemberIndex++) {
 				TypeWordEtym etymLevelMember = etymLevelGroup.get(etymLevelMemberIndex);
@@ -763,7 +764,6 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 					if (limitedRelatedWordCounter >= WORD_RELATIONS_DISPLAY_LIMIT) {
 						break;
 					}
-					wordRelationGroup.getRelatedWords();
 					List<TypeWordRelation> relatedWordsOfType = wordRelationGroup.getRelatedWords();
 					int maxLimit = Math.min(relatedWordsOfType.size(), WORD_RELATIONS_DISPLAY_LIMIT - limitedRelatedWordCounter);
 					List<TypeWordRelation> limitedRelatedWordsOfType = relatedWordsOfType.subList(0, maxLimit);
@@ -849,9 +849,7 @@ public class ConversionUtil implements WebConstant, SystemConstant {
 			paradigms.add(paradigm);
 
 			Map<String, List<Form>> formGroupsMap = forms.stream()
-					.collect(Collectors.groupingBy(form -> {
-						return form.getMorphGroup1() + keyValSep + form.getMorphGroup2() + keyValSep + form.getMorphGroup3();
-					}));
+					.collect(Collectors.groupingBy(form -> form.getMorphGroup1() + keyValSep + form.getMorphGroup2() + keyValSep + form.getMorphGroup3()));
 
 			List<String> morphGroup1Names = forms.stream().filter(form -> StringUtils.isNotBlank(form.getMorphGroup1()))
 					.map(Form::getMorphGroup1).distinct().collect(Collectors.toList());

@@ -18,7 +18,7 @@ public class ErrorPageController implements WebConstant {
 	protected MessageSource messageSource;
 
 	@RequestMapping(value = "error/{error}")
-	public String showError(@PathVariable("error") String error, Model model) throws Exception {
+	public String showError(@PathVariable("error") String error, Model model) {
 		String errorDescription = messageSource.getMessage("error." + error, new Object[0], LocaleContextHolder.getLocale());
 		model.addAttribute("errorName", error);
 		model.addAttribute("errorDescription", errorDescription);

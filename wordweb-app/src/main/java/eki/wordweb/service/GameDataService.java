@@ -40,7 +40,7 @@ public class GameDataService implements InitializingBean, SystemConstant {
 	private Map<String, String> languagesDatasetMap;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 		languagesDatasetMap = new HashMap<>();
 		languagesDatasetMap.put("est-est-easy", "psv");
 		languagesDatasetMap.put("est-rus-easy", "qq2");
