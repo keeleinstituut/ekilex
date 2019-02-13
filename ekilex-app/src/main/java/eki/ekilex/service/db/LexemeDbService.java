@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.ekilex.constant.DbConstant;
+import eki.ekilex.data.Government;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.tables.Lexeme.LEXEME;
 import static eki.ekilex.data.db.tables.LexemeDeriv.LEXEME_DERIV;
@@ -33,10 +35,17 @@ public class LexemeDbService implements DbConstant {
 
 	final private LifecycleLogDbServiceHelper logHelper;
 
-	public LexemeDbService(DSLContext create, UpdateDbService updateDbService, LifecycleLogDbServiceHelper logHelper) {
+	final private CommonDataDbService commonDataDbService;
+
+	public LexemeDbService(
+			DSLContext create,
+			UpdateDbService updateDbService,
+			LifecycleLogDbServiceHelper logHelper,
+			CommonDataDbService commonDataDbService) {
 		this.create = create;
 		this.updateDbService = updateDbService;
 		this.logHelper = logHelper;
+		this.commonDataDbService = commonDataDbService;
 	}
 
 	public LexemeRecord findLexeme(Long lexemeId) {
@@ -131,10 +140,18 @@ public class LexemeDbService implements DbConstant {
 		});
 	}
 
-	public String getLogStringForLexeme(Long lexemeId) {
+	public String getLogStringForLexemeShort(Long lexemeId) {
 		Map<String, Object> lexemeData = logHelper.getLexemeData(create, lexemeId);
 		String levels = String.join(".", lexemeData.get("level1").toString(), lexemeData.get("level2").toString(), lexemeData.get("level3").toString());
 		return lexemeData.get("value") + " [" + levels + "]";
+	}
+
+	public String getLogStringForLexemeLong(Long lexemeId) {
+		String logString = getLogStringForLexemeShort(lexemeId);
+		Map<String, Object> lexemeUsageData = logHelper.getLexemeUsageData(create, lexemeId);
+		String governments = commonDataDbService.findGovernments(lexemeId).into(Government.class).stream().map(Government::getValue).collect(Collectors.joining(", "));
+		logString = String.join(" ", logString, governments, lexemeUsageData.get("value_text").toString());
+		return logString;
 	}
 
 	private int calculateLevel2(LexemeRecord lexeme) {

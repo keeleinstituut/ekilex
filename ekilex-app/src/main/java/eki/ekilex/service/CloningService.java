@@ -107,8 +107,8 @@ public class CloningService {
 				LifecycleEntity.LEXEME,
 				LifecycleProperty.VALUE,
 				duplicateLexemeId,
-				lexemeDbService.getLogStringForLexeme(lexemeId),
-				lexemeDbService.getLogStringForLexeme(duplicateLexemeId));
+				lexemeDbService.getLogStringForLexemeShort(lexemeId),
+				lexemeDbService.getLogStringForLexemeLong(duplicateLexemeId));
 		return duplicateLexemeId;
 	}
 
