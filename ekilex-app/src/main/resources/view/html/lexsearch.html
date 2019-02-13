@@ -139,6 +139,7 @@
                      data-toggle="confirmation" data-placement="right" data-title="Kas olete kindel, et soovite viia sõna eraldi tähendusse ?"
                     >Lahuta</a>
                   <button class="btn btn-primary" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${lexeme.meaningId}">Lisa uus keelend</button>
+                  <button id="lexemeCopyBtn" class="btn btn-primary" th:data-lexeme-id="${lexeme.lexemeId}">Duplikaat</button>
                 </div>
                 <div class="ml-auto">
                   <b th:text="${lexeme.dataset}"></b>
