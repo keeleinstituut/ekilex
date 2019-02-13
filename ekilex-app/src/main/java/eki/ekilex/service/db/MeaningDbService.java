@@ -7,7 +7,6 @@ import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.jooq.impl.UpdatableRecordImpl;
 import org.springframework.stereotype.Service;
 
 import static eki.ekilex.data.db.tables.Meaning.MEANING;

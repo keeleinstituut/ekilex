@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eki.ekilex.service.LexemeService;
+import eki.ekilex.service.CloningService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -39,17 +39,17 @@ public class LexModifyController implements WebConstant {
 
 	private final SearchHelper searchHelper;
 
-	private final LexemeService lexemeService;
+	private final CloningService cloningService;
 
 	public LexModifyController(
 			LexSearchService lexSearchService,
 			UpdateService updateService,
 			SearchHelper searchHelper,
-			LexemeService lexemeService) {
+			CloningService cloningService) {
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
 		this.searchHelper = searchHelper;
-		this.lexemeService = lexemeService;
+		this.cloningService = cloningService;
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}")
@@ -124,8 +124,8 @@ public class LexModifyController implements WebConstant {
 	public String meaningCopy(@PathVariable("lexemeId") Long lexemeId) throws JsonProcessingException {
 
 		Map<String, String> response = new HashMap<>();
-		Optional<Long> duplicateLexeme = lexemeService.duplicateLexeme(lexemeId);
-		if (duplicateLexeme.isPresent()) {
+		Optional<Long> clonedLexeme = cloningService.cloneLexeme(lexemeId);
+		if (clonedLexeme.isPresent()) {
 			response.put("message", "Lekseemi duplikaat lisatud");
 			response.put("status", "ok");
 		} else {

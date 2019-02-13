@@ -34,11 +34,15 @@ public class LexemeDbService implements DbConstant {
 		this.updateDbService = updateDbService;
 	}
 
+	public LexemeRecord findLexeme(Long lexemeId) {
+		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
+	}
+
 	public List<LexemeRecord> findMeaningLexemes(Long meaningId) {
 		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId)).fetch();
 	}
 
-	public Long cloneMeaningLexeme(Long lexemeId, Long meaningId) {
+	public Long cloneLexeme(Long lexemeId, Long meaningId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 		LexemeRecord clonedLexeme = lexeme.copy();
