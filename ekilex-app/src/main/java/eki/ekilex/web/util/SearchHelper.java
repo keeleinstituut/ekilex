@@ -75,6 +75,7 @@ public class SearchHelper {
 
 		// search crit
 		if (StringUtils.equals(WebConstant.SEARCH_MODE_SIMPLE, searchMode) && StringUtils.isNotBlank(simpleSearchFilter)) {
+			simpleSearchFilter = encode(simpleSearchFilter);
 			uriBuf.append(PATH_SEPARATOR);
 			uriBuf.append(SIMPLE_SEARCH_FILTER);
 			uriBuf.append(PATH_SEPARATOR);
