@@ -19,7 +19,7 @@
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${#lists.isEmpty(wordsResult.words) && (simpleSearchFilter != null)}">
+    <div class="mt-4 float-left" th:if="${noResults}">
       <div th:text="#{lex.not.found}">Not found.</div>
     </div>
 

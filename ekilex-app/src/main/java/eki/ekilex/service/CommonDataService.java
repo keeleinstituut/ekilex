@@ -71,7 +71,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getWordMorphCodes() {
-		return commonDataDbService.getWordMorphCodes(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getMorphs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
@@ -121,7 +121,7 @@ public class CommonDataService {
 
 	@Transactional
 	public List<Classifier> getLexemeValueStates() {
-		return commonDataDbService.getLexemeValueStates(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+		return commonDataDbService.getValueStates(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional

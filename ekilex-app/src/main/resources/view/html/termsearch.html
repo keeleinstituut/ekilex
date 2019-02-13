@@ -48,8 +48,8 @@
       </div>
     </div>
 
-    <div class="mt-4 float-left" th:if="${(!meaningsResult.resultExist) && (simpleSearchFilter != null)}">
-      <span th:text="#{term.not.found}">Not found.</span>
+    <div class="mt-4 float-left" th:if="${noResults}">
+      <div th:text="#{term.not.found}">Not found.</div>
     </div>
 
     <div class="row no-gutters mt-2">

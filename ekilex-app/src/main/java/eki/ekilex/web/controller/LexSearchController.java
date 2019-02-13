@@ -103,10 +103,12 @@ public class LexSearchController extends AbstractSearchController {
 		} else {
 			wordsResult = lexSearchService.findWords(simpleSearchFilter, selectedDatasets, fetchAll);
 		}
+		boolean noResults = wordsResult.getTotalCount() == 0;
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("wordsResult", wordsResult);
+		model.addAttribute("noResults", noResults);
 
 		return LEX_SEARCH_PAGE;
 	}

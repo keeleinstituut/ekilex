@@ -99,10 +99,12 @@ public class TermSearchController extends AbstractSearchController {
 		} else {
 			meaningsResult = termSearchService.findMeanings(simpleSearchFilter, selectedDatasets, resultLang, fetchAll);
 		}
+		boolean noResults = meaningsResult.getMeaningCount() == 0;
 		model.addAttribute("searchMode", searchMode);
 		model.addAttribute("simpleSearchFilter", simpleSearchFilter);
 		model.addAttribute("detailSearchFilter", detailSearchFilter);
 		model.addAttribute("meaningsResult", meaningsResult);
+		model.addAttribute("noResults", noResults);
 
 		return TERM_SEARCH_PAGE;
 	}
