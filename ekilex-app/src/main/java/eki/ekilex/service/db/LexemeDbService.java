@@ -8,11 +8,13 @@ import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.LexemeSourceLinkRecord;
+import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static eki.ekilex.data.db.tables.Lexeme.LEXEME;
 import static eki.ekilex.data.db.tables.LexemeDeriv.LEXEME_DERIV;
@@ -29,9 +31,12 @@ public class LexemeDbService implements DbConstant {
 
 	final private UpdateDbService updateDbService;
 
-	public LexemeDbService(DSLContext create, UpdateDbService updateDbService) {
+	final private LifecycleLogDbServiceHelper logHelper;
+
+	public LexemeDbService(DSLContext create, UpdateDbService updateDbService, LifecycleLogDbServiceHelper logHelper) {
 		this.create = create;
 		this.updateDbService = updateDbService;
+		this.logHelper = logHelper;
 	}
 
 	public LexemeRecord findLexeme(Long lexemeId) {
@@ -124,6 +129,12 @@ public class LexemeDbService implements DbConstant {
 			clonedRelation.changed(LEX_RELATION.ORDER_BY, false);
 			clonedRelation.store();
 		});
+	}
+
+	public String getLogStringForLexeme(Long lexemeId) {
+		Map<String, Object> lexemeData = logHelper.getLexemeData(create, lexemeId);
+		String levels = String.join(".", lexemeData.get("level1").toString(), lexemeData.get("level2").toString(), lexemeData.get("level3").toString());
+		return lexemeData.get("value") + " [" + levels + "]";
 	}
 
 	private int calculateLevel2(LexemeRecord lexeme) {

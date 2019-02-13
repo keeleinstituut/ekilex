@@ -10,6 +10,7 @@ import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.tables.Definition.DEFINITION;
 import static eki.ekilex.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
@@ -76,6 +77,11 @@ public class DefinitionDbService implements DbConstant {
 			clonedDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);
 			clonedDefinitionSourceLink.store();
 		});
+	}
+
+	public String getCombinedMeaningDefinitions(Long meaningId) {
+		List<DefinitionRecord> meaningDefinitions = findMeaningDefinitions(meaningId);
+		return meaningDefinitions.stream().map(DefinitionRecord::getValue).collect(Collectors.joining(" | "));
 	}
 
 }

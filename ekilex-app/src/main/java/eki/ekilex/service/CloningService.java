@@ -1,5 +1,8 @@
 package eki.ekilex.service;
 
+import eki.common.constant.LifecycleEntity;
+import eki.common.constant.LifecycleEventType;
+import eki.common.constant.LifecycleProperty;
 import eki.ekilex.data.db.tables.records.DefinitionRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.service.db.DefinitionDbService;
@@ -73,6 +76,12 @@ public class CloningService {
 		meaningDbService.cloneMeaningRelations(meaningId, duplicateMeaningId);
 		meaningDbService.cloneMeaningFreeforms(meaningId, duplicateMeaningId);
 		duplicateMeaningDefinitions(meaningId, duplicateMeaningId);
+		lifecycleLogDbService.addLog(
+				LifecycleEventType.CLONE,
+				LifecycleEntity.MEANING,
+				LifecycleProperty.VALUE,
+				duplicateMeaningId,
+				definitionDbService.getCombinedMeaningDefinitions(duplicateMeaningId));
 		return duplicateMeaningId;
 	}
 
@@ -93,6 +102,13 @@ public class CloningService {
 		lexemeDbService.cloneLexemeRegisters(lexemeId, duplicateLexemeId);
 		lexemeDbService.cloneLexemeSoureLinks(lexemeId, duplicateLexemeId);
 		lexemeDbService.cloneLexemeRelations(lexemeId, duplicateLexemeId);
+		lifecycleLogDbService.addLog(
+				LifecycleEventType.CLONE,
+				LifecycleEntity.LEXEME,
+				LifecycleProperty.VALUE,
+				duplicateLexemeId,
+				lexemeDbService.getLogStringForLexeme(lexemeId),
+				lexemeDbService.getLogStringForLexeme(duplicateLexemeId));
 		return duplicateLexemeId;
 	}
 
