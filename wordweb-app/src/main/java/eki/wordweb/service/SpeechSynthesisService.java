@@ -51,7 +51,7 @@ public class SpeechSynthesisService implements WebConstant {
 	@Value("${speech.synthesizer.service.url:}")
 	private String synthesizerUrl;
 
-	public String urlToSoundSource(String words) throws Exception {
+	public String urlToSoundSource(String words) {
 		if (!isEnabled()) {
 			return null;
 		}
@@ -98,7 +98,7 @@ public class SpeechSynthesisService implements WebConstant {
 		return fileId == null ? null : contextPath + FILES_URI + "/" + fileId;
 	}
 
-	private String urlFromEkiPublicService(String words) throws Exception {
+	private String urlFromEkiPublicService(String words) {
 
 		URI url = UriComponentsBuilder.fromUriString(synthesizerUrl)
 				.queryParam("haal", 15) // 14 <- female voice
@@ -120,8 +120,17 @@ public class SpeechSynthesisService implements WebConstant {
 		HttpEntity<String> entity = new HttpEntity<>(null, headers);
 		RestTemplate restTemplate = new RestTemplate();
 
-		ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-		return response == null ? null : response.getBody();
+		try {
+			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
+			if (response == null) {
+				return null;
+			}
+			return response.getBody();
+		} catch (Exception e) {
+			logger.error("Error with requesting {}", url);
+			logger.error(e.getMessage());
+			return null;
+		}
 	}
 
 	private boolean execute(String command) throws IOException, InterruptedException {

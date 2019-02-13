@@ -48,6 +48,7 @@ import eki.ekilex.service.SourceService;
 import eki.ekilex.service.UpdateService;
 import eki.ekilex.service.util.ConversionUtil;
 import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -70,6 +71,9 @@ public class ModifyController implements WebConstant {
 
 	@Autowired
 	private SourceService sourceService;
+
+	@Autowired
+	private SearchHelper searchHelper;
 
 	@ResponseBody
 	@PostMapping("/modify_item")
@@ -427,106 +431,129 @@ public class ModifyController implements WebConstant {
 	@PostMapping("/add_word")
 	public String addNewWord(
 			@RequestParam("dataset") String dataset,
-			@RequestParam("value") String value,
+			@RequestParam("value") String wordValue,
 			@RequestParam("language") String language,
 			@RequestParam("morphCode") String morphCode,
-			@RequestParam("returnPage") String returnPage,
 			@RequestParam("meaningId") Long meaningId,
+			@RequestParam("returnPage") String returnPage,
 			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			RedirectAttributes attributes) {
 
-		if (StringUtils.isNotBlank(value)) {
+		String searchUri = "";
+		if (StringUtils.isNotBlank(wordValue)) {
 			sessionBean.setNewWordSelectedDataset(dataset);
 			sessionBean.setNewWordSelectedLanguage(language);
 			sessionBean.setNewWordSelectedMorphCode(morphCode);
 			List<String> allDatasets = commonDataService.getDatasetCodes();
-			WordsResult words = lexSearchService.findWords(value, allDatasets, true);
+			WordsResult words = lexSearchService.findWords(wordValue, allDatasets, true);
 			if (words.getTotalCount() == 0) {
-				updateService.addWord(value, dataset, language, morphCode, meaningId);
+				updateService.addWord(wordValue, dataset, language, morphCode, meaningId);
 			} else {
 				attributes.addFlashAttribute("dataset", dataset);
-				attributes.addFlashAttribute("wordValue", value);
+				attributes.addFlashAttribute("wordValue", wordValue);
 				attributes.addFlashAttribute("language", language);
 				attributes.addFlashAttribute("morphCode", morphCode);
 				attributes.addFlashAttribute("returnPage", returnPage);
 				attributes.addFlashAttribute("meaningId", meaningId);
-				return "redirect:/wordselect";
+				return "redirect:" + WORD_SELECT_URI;
 			}
-			attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
-			if (!sessionBean.getSelectedDatasets().contains(dataset)) {
-				sessionBean.getSelectedDatasets().add(dataset);
+			List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+			if (!selectedDatasets.contains(dataset)) {
+				selectedDatasets.add(dataset);
 			}
+			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
-		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
+			return "redirect:" + LEX_SEARCH_URI + searchUri;
+		}
+		if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
+			return "redirect:" + TERM_SEARCH_URI + searchUri;
+		}
+		return null;
 	}
 
 	@PostMapping("/add_homonym")
 	public String addNewHomonym(
 			@RequestParam("dataset") String dataset,
-			@RequestParam("value") String value,
+			@RequestParam("wordValue") String wordValue,
 			@RequestParam("language") String language,
 			@RequestParam("morphCode") String morphCode,
 			@RequestParam("returnPage") String returnPage,
 			@RequestParam("meaningId") Long meaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
-		if (StringUtils.isNotBlank(value)) {
-			updateService.addWord(value, dataset, language, morphCode, meaningId);
-			attributes.addFlashAttribute(SEARCH_WORD_KEY, value);
-			if (!sessionBean.getSelectedDatasets().contains(dataset)) {
-				sessionBean.getSelectedDatasets().add(dataset);
+		String searchUri = "";
+		if (StringUtils.isNotBlank(wordValue)) {
+			updateService.addWord(wordValue, dataset, language, morphCode, meaningId);
+			List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+			if (!selectedDatasets.contains(dataset)) {
+				selectedDatasets.add(dataset);
 			}
+			searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 		}
-		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
+			return "redirect:" + LEX_SEARCH_URI + searchUri;
+		}
+		if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
+			return "redirect:" + TERM_SEARCH_URI + searchUri;
+		}
+		return null;
 	}
 
-	@GetMapping("/wordselect")
+	@GetMapping(WORD_SELECT_URI)
 	public String listSelectableWords(
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			@ModelAttribute(name = "dataset") String dataset,
 			@ModelAttribute(name = "wordValue") String wordValue,
 			@ModelAttribute(name = "language") String language,
 			@ModelAttribute(name = "morphCode") String morphCode,
 			@ModelAttribute(name = "meaningId") Long meaningId,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
 			Model model) {
 
 		List<String> allDatasets = commonDataService.getDatasetCodes();
 		WordsResult words = lexSearchService.findWords(wordValue, allDatasets, true);
 		List<Word> wordsInDifferentDatasets = words.getWords().stream().filter(w -> !asList(w.getDatasetCodes()).contains(dataset)).collect(Collectors.toList());
+		boolean hasWordInSameDataset = words.getWords().size() != wordsInDifferentDatasets.size();
 		model.addAttribute("words", wordsInDifferentDatasets);
-		model.addAttribute("hasWordInSameDataset", words.getWords().size() != wordsInDifferentDatasets.size());
-		Map<Long, WordDetails> details = new HashMap<>();
+		model.addAttribute("hasWordInSameDataset", hasWordInSameDataset);
+		Map<Long, WordDetails> wordDetailsMap = new HashMap<>();
 		Map<Long, Boolean> wordHasDefinitions = new HashMap<>();
 		for (Word word : words.getWords() ) {
 			WordDetails wordDetails = lexSearchService.getWordDetails(word.getWordId(), allDatasets);
-			details.put(word.getWordId(), wordDetails);
+			wordDetailsMap.put(word.getWordId(), wordDetails);
 			boolean hasDefinitions = wordDetails.getLexemes().stream().anyMatch(d -> !d.getDefinitions().isEmpty());
 			wordHasDefinitions.put(word.getWordId(), hasDefinitions);
 		}
-		model.addAttribute("details", details);
+		model.addAttribute("details", wordDetailsMap);
 		model.addAttribute("hasDefinitions", wordHasDefinitions);
 
-		return "wordselect";
+		return WORD_SELECT_PAGE;
 	}
 
-	@GetMapping("/wordselect/{wordId}/{dataset}/{returnPage}/{meaningId}")
+	@GetMapping(WORD_SELECT_URI + "/{dataset}/{wordId}/{meaningId}/{returnPage}")
 	public String selectWord(
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			@PathVariable(name = "wordId") Long wordId,
 			@PathVariable(name = "dataset") String dataset,
-			@PathVariable(name = "returnPage") String returnPage,
+			@PathVariable(name = "wordId") Long wordId,
 			@PathVariable(name = "meaningId") String meaningIdCode,
-			RedirectAttributes attributes) {
+			@PathVariable(name = "returnPage") String returnPage,
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		Long meaningId = NumberUtils.isDigits(meaningIdCode) ? NumberUtils.toLong(meaningIdCode) : null;
 		updateService.addWordToDataset(wordId, dataset, meaningId);
 		Word word = commonDataService.getWord(wordId);
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, word.getValue());
-		if (!sessionBean.getSelectedDatasets().contains(dataset)) {
-			sessionBean.getSelectedDatasets().add(dataset);
+		String wordValue = word.getValue();
+		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		if (!selectedDatasets.contains(dataset)) {
+			selectedDatasets.add(dataset);
 		}
-		return "redirect:" + ("LEX_SEARCH".equals(returnPage) ? LEX_SEARCH_URI : TERM_SEARCH_URI);
+		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
+		if (StringUtils.equals(returnPage, RETURN_PAGE_LEX_SEARCH)) {
+			return "redirect:" + LEX_SEARCH_URI + searchUri;
+		}
+		if (StringUtils.equals(returnPage, RETURN_PAGE_TERM_SEARCH)) {
+			return "redirect:" + TERM_SEARCH_URI + searchUri;
+		}
+		return null;
 	}
 
 }

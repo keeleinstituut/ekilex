@@ -38,6 +38,10 @@
                     <span th:text="${word.language}"></span>
                     )
                   </button>
+                  <span class="float-right" style="padding: 15px">
+                    <span th:id="${'word_select_point_' + word.wordId}" class="fa fa-play" style="display: none"></span>
+                    <span th:id="${'word_select_wait_' + word.wordId}" class="fa fa-refresh fa-spin" style="display: none"></span>
+                  </span>
                   <div style="position:relative; top: -10px; padding-left: 10px">
                     <small>
                       <span th:each="wordDatasetCode,wordDatasetIter : ${word.datasetCodes}">
@@ -871,7 +875,7 @@
   <div th:replace="common :: #lexemePosDlg"></div>
   <div th:replace="common :: #meaningDomainDlg"></div>
   <div th:replace="common :: #addNewGovernmentDlg"></div>
-  <div th:replace="common :: newWordDlg('LEX_SEARCH')"></div>
+  <div th:replace="common :: newWordDlg('lex_search')"></div>
   <div th:replace="ekilex_editor :: #addNewUsageMemberDlg"></div>
   <div th:replace="common :: #detailsDlg"></div>
   <div th:replace="common :: #lexemeDerivDlg"></div>

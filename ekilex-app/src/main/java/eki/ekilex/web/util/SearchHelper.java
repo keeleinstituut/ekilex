@@ -43,6 +43,10 @@ public class SearchHelper {
 	@Autowired
 	protected CommonDataService commonDataService;
 
+	public String composeSearchUri(List<String> datasets, String simpleSearchFilter) {
+		return composeSearchUri(WebConstant.SEARCH_MODE_SIMPLE, datasets, simpleSearchFilter, null, false);
+	}
+
 	public String composeSearchUri(String searchMode, List<String> datasets, String simpleSearchFilter, SearchFilter detailSearchFilter, boolean fetchAll) {
 
 		StringBuffer uriBuf = new StringBuffer();
@@ -54,14 +58,16 @@ public class SearchHelper {
 		uriBuf.append(searchMode);
 
 		// datasets
-		List<String> allDatasets = commonDataService.getDatasetCodes();
-		Collection<String> datasetComparison = CollectionUtils.disjunction(datasets, allDatasets);
-		if (CollectionUtils.isNotEmpty(datasetComparison)) {
-			String dictonaries = StringUtils.join(datasets, DICTONARIES_SEPARATOR);
-			uriBuf.append(PATH_SEPARATOR);
-			uriBuf.append(DICTIONARIES);
-			uriBuf.append(PATH_SEPARATOR);
-			uriBuf.append(dictonaries);
+		if (CollectionUtils.isNotEmpty(datasets)) {
+			List<String> allDatasets = commonDataService.getDatasetCodes();
+			Collection<String> datasetComparison = CollectionUtils.disjunction(datasets, allDatasets);
+			if (CollectionUtils.isNotEmpty(datasetComparison)) {
+				String dictonaries = StringUtils.join(datasets, DICTONARIES_SEPARATOR);
+				uriBuf.append(PATH_SEPARATOR);
+				uriBuf.append(DICTIONARIES);
+				uriBuf.append(PATH_SEPARATOR);
+				uriBuf.append(dictonaries);
+			}
 		}
 
 		// search crit

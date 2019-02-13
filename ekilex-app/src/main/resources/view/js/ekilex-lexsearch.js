@@ -6,6 +6,9 @@ function initialise() {
         $('.d-none[data-lexeme-title]').each(function (index, item) {
            openLexemes.push($(item).data('toggle-name'));
         });
+        $("[id^='word_select_point_']").hide();
+        $("[id^='word_select_wait_']").hide();
+        $("#word_select_wait_" + id).show();
         $.get(applicationUrl + 'worddetails/' + id).done(function(data) {
             let detailsDiv = $('#details_div');
             let scrollPos = detailsDiv.scrollTop();
@@ -17,6 +20,8 @@ function initialise() {
                     $('[data-toggle-name=' + lexemeName + ']').find('.btn-toggle').trigger('click');
                 })
             }
+            $("#word_select_wait_" + id).hide();
+            $("#word_select_point_" + id).show();
         }).fail(function(data) {
             console.log(data);
             alert('Detailide päring ebaõnnestus, proovige hiljem uuesti.');

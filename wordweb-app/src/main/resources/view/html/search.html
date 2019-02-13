@@ -309,6 +309,9 @@
                                           <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}">
                                             <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                           </a>
+                                          <i th:if="${!collocMem.wordExists}">
+                                            <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span>
+                                          </i>
                                         </span>
                                       </span>
                                     </span>
@@ -372,7 +375,9 @@
                                               <a th:href="@{${viewUtil.getSearchUri(sessionBean, collocMem.word, collocMem.homonymNr)}}" th:if="${collocMem.wordExists}">
                                                 <i><span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span></i>
                                               </a>
-                                              <span th:text="${collocMem.form}" class="text-muted" th:if="${!collocMem.wordExists}"></span>
+                                              <i th:if="${!collocMem.wordExists}">
+                                                <span th:text="${collocMem.form + (collocMemIter.last ? '' : ',')}" class="text-muted"></span>
+                                              </i>
                                             </span>
                                           </span>
                                         </span>

@@ -1,14 +1,10 @@
 package eki.ekilex.web.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.WordLexeme;
-import eki.ekilex.service.LexSearchService;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import eki.ekilex.service.MeaningService;
-import eki.ekilex.service.TermSearchService;
-import eki.ekilex.service.UpdateService;
-import eki.ekilex.web.bean.SessionBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -21,12 +17,17 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.WordLexeme;
+import eki.ekilex.service.LexSearchService;
+import eki.ekilex.service.TermSearchService;
+import eki.ekilex.service.UpdateService;
+import eki.ekilex.web.bean.SessionBean;
+import eki.ekilex.web.util.SearchHelper;
 
 @ConditionalOnWebApplication
 @Controller
@@ -41,20 +42,24 @@ public class TermModifyController implements WebConstant {
 
 	private final UpdateService updateService;
 
+	private final SearchHelper searchHelper;
+
 	private final MeaningService meaningService;
 
-	public TermModifyController(
-			TermSearchService termSearchService,
+
+	public TermModifyController(TermSearchService termSearchService,
 			LexSearchService lexSearchService,
 			UpdateService updateService,
+			SearchHelper searchHelper,
 			MeaningService meaningService) {
 		this.termSearchService = termSearchService;
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
+		this.searchHelper = searchHelper;
 		this.meaningService = meaningService;
 	}
 
-	@GetMapping("/meaningjoin/{meaningId}")
+	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
 	public String show(@PathVariable("meaningId") Long meaningId, @ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean, Model model) {
 
 		Long meaningFirstLexemeId = termSearchService.getMeaningFirstLexemeId(meaningId, sessionBean.getSelectedDatasets());
@@ -65,7 +70,7 @@ public class TermModifyController implements WebConstant {
 		return MEANING_JOIN_PAGE;
 	}
 
-	@PostMapping("/meaningjoin/{meaningId}")
+	@PostMapping(MEANING_JOIN_URI + "/{meaningId}")
 	public String search(
 			@PathVariable("meaningId") Long meaningId,
 			@RequestParam(name = "searchFilter", required = false) String searchFilter,
@@ -82,19 +87,19 @@ public class TermModifyController implements WebConstant {
 		return MEANING_JOIN_PAGE;
 	}
 
-	@GetMapping("/meaningjoin/{meaningId}/{meaningId2}")
+	@GetMapping(MEANING_JOIN_URI + "/{meaningId}/{meaningId2}")
 	public String join(
 			@PathVariable("meaningId") Long meaningId,
 			@PathVariable("meaningId2") Long sourceMeaningId,
-			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean,
-			RedirectAttributes attributes) {
+			@ModelAttribute(name = SESSION_BEAN) SessionBean sessionBean) {
 
 		updateService.joinMeanings(meaningId, sourceMeaningId);
 
-		String word = termSearchService.getMeaningFirstWord(meaningId, sessionBean.getSelectedDatasets());
-		attributes.addFlashAttribute(SEARCH_WORD_KEY, word);
+		List<String> selectedDatasets = sessionBean.getSelectedDatasets();
+		String wordValue = termSearchService.getMeaningFirstWordValue(meaningId, selectedDatasets);
+		String searchUri = searchHelper.composeSearchUri(selectedDatasets, wordValue);
 
-		return "redirect:" + TERM_SEARCH_URI;
+		return "redirect:" + TERM_SEARCH_URI + searchUri;
 	}
 
 	@ResponseBody
