@@ -44,6 +44,7 @@ import java.sql.Timestamp;
 import java.util.Map;
 
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jooq.Record18;
 import org.jooq.Record2;
 import org.jooq.Record3;
@@ -58,6 +59,7 @@ import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.common.constant.SourceType;
@@ -83,9 +85,12 @@ public class CommonDataDbService implements DbConstant {
 		return create.select(DATASET.CODE, DATASET.NAME).from(DATASET).where(DATASET.IS_PUBLIC.isTrue()).orderBy(DATASET.ORDER_BY).fetch();
 	}
 
-	public Result<Record2<String, String>> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getLanguages(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(LANGUAGE_LABEL.CODE, LANGUAGE_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.LANGUAGE),
+						LANGUAGE_LABEL.CODE,
+						LANGUAGE_LABEL.VALUE)
 				.from(LANGUAGE, LANGUAGE_LABEL)
 				.where(
 						LANGUAGE.CODE.eq(LANGUAGE_LABEL.CODE)
@@ -96,77 +101,111 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getLexemeFrequencyGroups() {
-		return create.select(LEXEME_FREQUENCY.CODE, LEXEME_FREQUENCY.CODE.as("value")).from(LEXEME_FREQUENCY).fetch();
+	public Result<Record3<String,String,String>> getLexemeFrequencyGroups() {
+		return create
+				.select(
+					getClassifierNameField(ClassifierName.LEXEME_FREQUENCY),
+					LEXEME_FREQUENCY.CODE,
+					LEXEME_FREQUENCY.CODE.as("value"))
+				.from(LEXEME_FREQUENCY).fetch();
 	}
 
-	public Result<Record2<String, String>> getAllLexemePos(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getAllLexemePos(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(POS_LABEL.CODE, POS_LABEL.VALUE)
+				.select(
+						DSL.field(DSL.value(ClassifierName.POS.name())).as("name"),
+						POS_LABEL.CODE,
+						POS_LABEL.VALUE)
 				.from(POS_LABEL)
 				.where(POS_LABEL.LANG.eq(classifierLabelLang).and(POS_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getLexemeRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getLexemeRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.REGISTER),
+						REGISTER_LABEL.CODE,
+						REGISTER_LABEL.VALUE)
 				.from(REGISTER_LABEL)
 				.where(REGISTER_LABEL.LANG.eq(classifierLabelLang).and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getLexemeDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getLexemeDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(DERIV_LABEL.CODE, DERIV_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.DERIV),
+						DERIV_LABEL.CODE,
+						DERIV_LABEL.VALUE)
 				.from(DERIV_LABEL)
 				.where(DERIV_LABEL.LANG.eq(classifierLabelLang).and(DERIV_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getWordGenders(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getWordGenders(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(GENDER_LABEL.CODE, GENDER_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.GENDER),
+						GENDER_LABEL.CODE,
+						GENDER_LABEL.VALUE)
 				.from(GENDER_LABEL)
 				.where(GENDER_LABEL.LANG.eq(classifierLabelLang).and(GENDER_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getWordTypes(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getWordTypes(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(WORD_TYPE_LABEL.CODE, WORD_TYPE_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.WORD_TYPE),
+						WORD_TYPE_LABEL.CODE,
+						WORD_TYPE_LABEL.VALUE)
 				.from(WORD_TYPE_LABEL)
 				.where(WORD_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getWordAspects(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getWordAspects(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(ASPECT_TYPE_LABEL.CODE, ASPECT_TYPE_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.ASPECT_TYPE),
+						ASPECT_TYPE_LABEL.CODE,
+						ASPECT_TYPE_LABEL.VALUE)
 				.from(ASPECT_TYPE_LABEL)
 				.where(ASPECT_TYPE_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> getWordRelationTypes(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getWordRelationTypes(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
-				.select(WORD_REL_TYPE_LABEL.CODE, WORD_REL_TYPE_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.WORD_REL_TYPE),
+						WORD_REL_TYPE_LABEL.CODE,
+						WORD_REL_TYPE_LABEL.VALUE)
 				.from(WORD_REL_TYPE_LABEL)
 				.where(WORD_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(WORD_REL_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 
-	public Result<Record3<String, String, String>> getDomains() {
+	public Result<Record4<String,String,String,String>> getDomains() {
 		return create
-				.select(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.DOMAIN),
+						DOMAIN_LABEL.ORIGIN,
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
 				.orderBy(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
 				.fetch();
 	}
 
-	public Result<Record3<String, String, String>> getDomainsInUse() {
+	public Result<Record4<String,String,String,String>> getDomainsInUse() {
 		return create
-				.select(DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.CODE, DOMAIN_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.DOMAIN),
+						DOMAIN_LABEL.ORIGIN,
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.VALUE)
 				.from(DOMAIN_LABEL)
 				.whereExists(DSL
 						.select(MEANING_DOMAIN.DOMAIN_ORIGIN, MEANING_DOMAIN.DOMAIN_CODE)
@@ -177,10 +216,68 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> findWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getLexemeRelationTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.LEX_REL_TYPE),
+						LEX_REL_TYPE_LABEL.CODE,
+						LEX_REL_TYPE_LABEL.VALUE)
+				.from(LEX_REL_TYPE_LABEL)
+				.where(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
+	}
+
+	public Result<Record3<String,String,String>> getMeaningRelationTypes(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.MEANING_REL_TYPE),
+						MEANING_REL_TYPE_LABEL.CODE,
+						MEANING_REL_TYPE_LABEL.VALUE)
+				.from(MEANING_REL_TYPE_LABEL)
+				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
+	}
+
+	public Result<Record3<String,String,String>> getMorphs(String classifierLabelLang, String classifierLabelTypeCode) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.MORPH),
+						MORPH_LABEL.CODE,
+						MORPH_LABEL.VALUE)
+				.from(MORPH_LABEL)
+				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
+				.fetch();
+	}
+
+	public Result<Record3<String,String,String>> getValueStates(String classifierLabelLang, String classifierLabelType) {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.VALUE_STATE),
+						VALUE_STATE_LABEL.CODE,
+						VALUE_STATE_LABEL.VALUE)
+				.from(VALUE_STATE_LABEL)
+				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)))
+				.fetch();
+	}
+
+	public Result<Record3<String,String,String>> getProcessStates() {
+		return create
+				.select(
+						getClassifierNameField(ClassifierName.PROCESS_STATE),
+						PROCESS_STATE.CODE,
+						PROCESS_STATE.CODE.as("value"))
+				.from(PROCESS_STATE)
+				.orderBy(PROCESS_STATE.ORDER_BY)
+				.fetch();
+	}
+
+	public Result<Record3<String,String,String>> findWordTypes(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(WORD_TYPE_LABEL.CODE, WORD_TYPE_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.WORD_TYPE),
+						WORD_TYPE_LABEL.CODE,
+						WORD_TYPE_LABEL.VALUE)
 				.from(WORD_WORD_TYPE, WORD_TYPE_LABEL)
 				.where(
 						WORD_WORD_TYPE.WORD_ID.eq(wordId)
@@ -189,6 +286,24 @@ public class CommonDataDbService implements DbConstant {
 						.and(WORD_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode))
 						)
 				.fetch();
+	}
+
+	public Record7<Long,String,Integer,String,String,String,String> getWord(Long wordId) {
+		return create.select(
+					WORD.ID.as("word_id"),
+					DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word"),
+					WORD.HOMONYM_NR,
+					WORD.LANG,
+					WORD.WORD_CLASS,
+					WORD.GENDER_CODE,
+					WORD.ASPECT_CODE)
+				.from(WORD, PARADIGM, FORM)
+				.where(WORD.ID.eq(wordId)
+						.and(PARADIGM.WORD_ID.eq(WORD.ID))
+						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
+						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
+				.groupBy(WORD.ID)
+				.fetchOne();
 	}
 
 	public Result<Record5<Long,String,String,String,Timestamp>> findMeaningFreeforms(Long meaningId, String ... excludeTypes) {
@@ -223,10 +338,14 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String, String, String>> findMeaningDomains(Long meaningId) {
+	public Result<Record4<String,String,String,String>> findMeaningDomains(Long meaningId) {
 	
 		return create
-				.select(DOMAIN_LABEL.CODE, DOMAIN_LABEL.ORIGIN, DOMAIN_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.DOMAIN),
+						DOMAIN_LABEL.CODE,
+						DOMAIN_LABEL.ORIGIN,
+						DOMAIN_LABEL.VALUE)
 				.from(
 						MEANING_DOMAIN.leftOuterJoin(DOMAIN_LABEL).on(
 								MEANING_DOMAIN.DOMAIN_CODE.eq(DOMAIN_LABEL.CODE)
@@ -431,10 +550,13 @@ public class CommonDataDbService implements DbConstant {
 			.fetch();
 	}
 
-	public Result<Record2<String, String>> findLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> findLexemePos(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(POS_LABEL.CODE, POS_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.POS),
+						POS_LABEL.CODE,
+						POS_LABEL.VALUE)
 				.from(LEXEME_POS, POS_LABEL)
 				.where(
 						LEXEME_POS.LEXEME_ID.eq(lexemeId)
@@ -446,10 +568,13 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> findLexemeDerivs(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> findLexemeDerivs(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(DERIV_LABEL.CODE, DERIV_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.DERIV),
+						DERIV_LABEL.CODE,
+						DERIV_LABEL.VALUE)
 				.from(LEXEME_DERIV, DERIV_LABEL)
 				.where(
 						LEXEME_DERIV.LEXEME_ID.eq(lexemeId)
@@ -461,10 +586,13 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record2<String, String>> findLexemeRegisters(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> findLexemeRegisters(Long lexemeId, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		return create
-				.select(REGISTER_LABEL.CODE, REGISTER_LABEL.VALUE)
+				.select(
+						getClassifierNameField(ClassifierName.REGISTER),
+						REGISTER_LABEL.CODE,
+						REGISTER_LABEL.VALUE)
 				.from(LEXEME_REGISTER, REGISTER_LABEL)
 				.where(
 						LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)
@@ -473,64 +601,6 @@ public class CommonDataDbService implements DbConstant {
 						.and(REGISTER_LABEL.LANG.eq(classifierLabelLang))
 						.and(REGISTER_LABEL.TYPE.eq(classifierLabelTypeCode))
 						)
-				.fetch();
-	}
-
-	public Result<Record2<String, String>> getWordMorphCodes(String classifierLabelLang, String classifierLabelTypeCode) {
-		return create
-				.select(MORPH_LABEL.CODE, MORPH_LABEL.VALUE)
-				.from(MORPH_LABEL)
-				.where(MORPH_LABEL.LANG.eq(classifierLabelLang).and(MORPH_LABEL.TYPE.eq(classifierLabelTypeCode)))
-				.fetch();
-	}
-
-	public Record7<Long,String,Integer,String,String,String,String> getWord(Long wordId) {
-		return create.select(
-					WORD.ID.as("word_id"),
-					DSL.field("array_to_string(array_agg(distinct form.value), ',', '*')").cast(String.class).as("word"),
-					WORD.HOMONYM_NR,
-					WORD.LANG,
-					WORD.WORD_CLASS,
-					WORD.GENDER_CODE,
-					WORD.ASPECT_CODE)
-				.from(WORD, PARADIGM, FORM)
-				.where(WORD.ID.eq(wordId)
-						.and(PARADIGM.WORD_ID.eq(WORD.ID))
-						.and(FORM.PARADIGM_ID.eq(PARADIGM.ID))
-						.and(FORM.MODE.in(FormMode.WORD.name(), FormMode.UNKNOWN.name())))
-				.groupBy(WORD.ID)
-				.fetchOne();
-	}
-
-	public Result<Record2<String, String>> getLexemeRelationTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
-				.select(LEX_REL_TYPE_LABEL.CODE, LEX_REL_TYPE_LABEL.VALUE)
-				.from(LEX_REL_TYPE_LABEL)
-				.where(LEX_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(LEX_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
-				.fetch();
-	}
-
-	public Result<Record2<String, String>> getMeaningRelationTypes(String classifierLabelLang, String classifierLabelType) {
-		return create
-				.select(MEANING_REL_TYPE_LABEL.CODE, MEANING_REL_TYPE_LABEL.VALUE)
-				.from(MEANING_REL_TYPE_LABEL)
-				.where(MEANING_REL_TYPE_LABEL.LANG.eq(classifierLabelLang).and(MEANING_REL_TYPE_LABEL.TYPE.eq(classifierLabelType)))
-				.fetch();
-	}
-
-	public Result<Record2<String, String>> getLexemeValueStates(String classifierLabelLang, String classifierLabelType) {
-		return create
-				.select(VALUE_STATE_LABEL.CODE, VALUE_STATE_LABEL.VALUE)
-				.from(VALUE_STATE_LABEL)
-				.where(VALUE_STATE_LABEL.LANG.eq(classifierLabelLang).and(VALUE_STATE_LABEL.TYPE.eq(classifierLabelType)))
-				.fetch();
-	}
-
-	public Result<Record2<String, String>> getProcessStates() {
-		return create
-				.select(PROCESS_STATE.CODE, PROCESS_STATE.CODE.as("value"))
-				.from(PROCESS_STATE)
-				.orderBy(PROCESS_STATE.ORDER_BY)
 				.fetch();
 	}
 
@@ -570,4 +640,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
+	private Field<String> getClassifierNameField(ClassifierName classifierName) {
+		return DSL.field(DSL.value(classifierName.name())).as("name");
+	}
 }

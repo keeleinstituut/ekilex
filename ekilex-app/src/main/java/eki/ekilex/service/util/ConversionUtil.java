@@ -130,6 +130,7 @@ public class ConversionUtil {
 		JsonParser jsonParser = JsonParserFactory.getJsonParser();
 		Map<String, Object>  memberMap = jsonParser.parseMap(idString);
 		Classifier classifier = new Classifier();
+		classifier.setName((String) memberMap.get("name"));
 		classifier.setCode((String) memberMap.get("code"));
 		classifier.setOrigin((String) memberMap.get("origin"));
 		return classifier;

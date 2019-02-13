@@ -1,31 +1,29 @@
 package eki.ekilex.data;
 
-import javax.persistence.Column;
-
-import eki.common.data.AbstractDataObject;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+
+import eki.common.data.AbstractDataObject;
 
 public class Classifier extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "code")
-	private String code;
+	private String name;
 
-	@Column(name = "origin")
 	private String origin;
 
-	@Column(name = "value")
+	private String code;
+
 	private String value;
 
-	public String getCode() {
-		return code;
+	public String getName() {
+		return name;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getOrigin() {
@@ -34,6 +32,14 @@ public class Classifier extends AbstractDataObject {
 
 	public void setOrigin(String origin) {
 		this.origin = origin;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	public String getValue() {

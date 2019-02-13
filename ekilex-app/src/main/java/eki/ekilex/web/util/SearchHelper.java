@@ -20,6 +20,7 @@ import eki.ekilex.constant.SearchKey;
 import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
 import eki.ekilex.data.SearchFilter;
@@ -38,6 +39,8 @@ public class SearchHelper {
 	private static final String DETAIL_SEARCH_FILTER = "dfilt";
 	private static final String CRITERIA_GROUP = "critgr";
 	private static final String CRITERION = "crit";
+	private static final String CRITERION_VALUE = "val";
+	private static final String CRITERION_CLASSIFIER = "cla";
 	private static final String FETCH_ALL = "fetchall";
 
 	@Autowired
@@ -93,15 +96,38 @@ public class SearchHelper {
 						uriBuf.append(searchCriterion.getSearchKey().name());
 						uriBuf.append(PATH_SEPARATOR);
 						uriBuf.append(searchCriterion.getSearchOperand().name());
-						uriBuf.append(PATH_SEPARATOR);
-						if (searchCriterion.getSearchValue() == null) {
+						Object critObj = searchCriterion.getSearchValue();
+						if (critObj == null) {
+							uriBuf.append(PATH_SEPARATOR);
+							uriBuf.append(CRITERION_VALUE);
+							uriBuf.append(PATH_SEPARATOR);
 							uriBuf.append(EMPTY_VALUE);
 						} else {
-							String critValue = searchCriterion.getSearchValue().toString();
+							String critValue = critObj.toString();
 							if (StringUtils.isEmpty(critValue)) {
+								uriBuf.append(PATH_SEPARATOR);
+								uriBuf.append(CRITERION_VALUE);
+								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(EMPTY_VALUE);
+							} else if (critObj instanceof Classifier) {
+								Classifier classif = (Classifier) critObj;
+								String origin = classif.getOrigin();
+								if (StringUtils.isEmpty(origin)) {
+									origin = EMPTY_VALUE;
+								}
+								uriBuf.append(PATH_SEPARATOR);
+								uriBuf.append(CRITERION_CLASSIFIER);
+								uriBuf.append(PATH_SEPARATOR);
+								uriBuf.append(classif.getName());
+								uriBuf.append(PATH_SEPARATOR);
+								uriBuf.append(origin);
+								uriBuf.append(PATH_SEPARATOR);
+								uriBuf.append(classif.getCode());
 							} else {
 								critValue = encode(critValue);
+								uriBuf.append(PATH_SEPARATOR);
+								uriBuf.append(CRITERION_VALUE);
+								uriBuf.append(PATH_SEPARATOR);
 								uriBuf.append(critValue);
 							}
 						}
@@ -146,6 +172,7 @@ public class SearchHelper {
 				selectedDatasets = Arrays.asList(StringUtils.split(selectedDatasetsStr, DICTONARIES_SEPARATOR));
 			} else if (StringUtils.equals(SIMPLE_SEARCH_FILTER, uriPart)) {
 				simpleSearchFilter = uriParts[uriPartIndex + 1];
+				simpleSearchFilter = decode(simpleSearchFilter);
 			} else if (StringUtils.equals(DETAIL_SEARCH_FILTER, uriPart)) {
 				detailSearchFilter = new SearchFilter();
 				detailSearchFilter.setCriteriaGroups(new ArrayList<>());
@@ -163,7 +190,7 @@ public class SearchHelper {
 				List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
 				criteriaGroups.add(criterionGroup);
 			} else if (StringUtils.equals(CRITERION, uriPart)) {
-				if (uriPartIndex > uriParts.length - 4) {
+				if (uriPartIndex > uriParts.length - 5) {
 					break;
 				}
 				// crit key
@@ -183,15 +210,36 @@ public class SearchHelper {
 					break;
 				}
 				// crit value
-				String searchValue = uriParts[uriPartIndex + 3];
-				searchValue = decode(searchValue);
-				if (StringUtils.equals(EMPTY_VALUE, searchValue)) {
-					searchValue = null;
+				Object searchValueObj = null;
+				String searchValueType = uriParts[uriPartIndex + 3];
+				if (StringUtils.equals(CRITERION_VALUE, searchValueType)) {
+					String searchValueStr = uriParts[uriPartIndex + 4];
+					searchValueStr = decode(searchValueStr);
+					if (StringUtils.equals(EMPTY_VALUE, searchValueStr)) {
+						searchValueObj = null;
+					} else {
+						searchValueObj = searchValueStr;
+					}
+				} else if (StringUtils.equals(CRITERION_CLASSIFIER, searchValueType)) {
+					if (uriPartIndex > uriParts.length - 7) {
+						break;
+					}
+					String classifName = uriParts[uriPartIndex + 4];
+					String classifOrigin = uriParts[uriPartIndex + 5];
+					String classifCode = uriParts[uriPartIndex + 6];
+					if (StringUtils.equals(EMPTY_VALUE, classifOrigin)) {
+						classifOrigin = null;
+					}
+					Classifier classif = new Classifier();
+					classif.setName(classifName);
+					classif.setOrigin(classifOrigin);
+					classif.setCode(classifCode);
+					searchValueObj = classif;
 				}
 				SearchCriterion criterion = new SearchCriterion();
 				criterion.setSearchKey(searchKey);
 				criterion.setSearchOperand(searchOperand);
-				criterion.setSearchValue(searchValue);
+				criterion.setSearchValue(searchValueObj);
 				List<SearchCriterionGroup> criteriaGroups = detailSearchFilter.getCriteriaGroups();
 				SearchCriterionGroup criterionGroup = criteriaGroups.get(criteriaGroups.size() - 1);
 				criterionGroup.getSearchCriteria().add(criterion);
