@@ -67,11 +67,31 @@
 	.more-btn {
 		margin-right: 0em;
 	}
+	.nav-placeholder {
+		display: none;
+	}
+	#sidebar {
+		position: relative !important;
+	}
+}
+
+.nav-placeholder {
+	display: initial;
+}
+
+#sidebar {
+	position: fixed;
 }
 
 @media ( min-width : 768px) {
 	.header-container .show-btn.back {
 		display: none !important;
+	}
+	.meaning {
+		margin-bottom: 0.625rem;
+	}
+	.message-wrap {
+		margin-top: 9.5em;
 	}
 }
 
@@ -178,15 +198,6 @@
 
 .hide-simple {
 	display: none;
-}
-
-@media ( min-width : 768px) {
-	.meaning {
-		margin-bottom: 0.625rem;
-	}
-	.message-wrap {
-		margin-top: 9.5em;
-	}
 }
 
 .content-title .btn-speaker {

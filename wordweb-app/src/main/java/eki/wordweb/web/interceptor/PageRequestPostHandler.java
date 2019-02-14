@@ -32,10 +32,10 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 	private ViewUtil viewUtil;
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
 		long startTime = System.currentTimeMillis();
-		request.setAttribute(REQUEST_START_TIME_KEY, new Long(startTime));
+		request.setAttribute(REQUEST_START_TIME_KEY, startTime);
 
 		return true;
 	}
@@ -53,7 +53,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(IE_USER_FLAG_KEY)) {
 			boolean isIeUser = isTraditionalMicrosoftUser(request, modelAndView);
-			modelMap.addAttribute(IE_USER_FLAG_KEY, new Boolean(isIeUser));
+			modelMap.addAttribute(IE_USER_FLAG_KEY, isIeUser);
 		}
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
 			AppData appData = appDataHolder.getAppData(POM_PATH);

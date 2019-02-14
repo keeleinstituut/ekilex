@@ -56,7 +56,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 	private Map<String, String[]> languagesDatasetMap;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
+	public void afterPropertiesSet() {
 
 		languagesDatasetMap = new HashMap<>();
 		languagesDatasetMap.put("est-est-detail", new String[] {"ss1", "kol"});
@@ -86,7 +86,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		conversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
-			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(word -> word.getWord()).distinct().collect(Collectors.toList());
+			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(Word::getWord).distinct().collect(Collectors.toList());
 			return new WordsData(fullMatchWords, formMatchWords, searchMode);
 		}
 		return new WordsData(allWords, Collections.emptyList(), searchMode);
@@ -112,7 +112,7 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 			formWords = formWordsResult.stream().map(WordOrForm::getValue).collect(Collectors.toList());
 		}
 		if (CollectionUtils.isNotEmpty(prefWords)) {
-			prefWords.forEach(prefWord -> formWords.remove(prefWord));
+			prefWords.forEach(formWords::remove);
 			int prefWordsCount = prefWords.size();
 			int formWordsCount = formWords.size();
 			int requiredPrefWordsCount = Math.min(prefWordsCount, limit - formWordsCount);

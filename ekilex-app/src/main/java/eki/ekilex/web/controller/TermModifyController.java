@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import eki.ekilex.service.MeaningService;
+import eki.ekilex.service.CloningService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -45,19 +45,19 @@ public class TermModifyController implements WebConstant {
 
 	private final SearchHelper searchHelper;
 
-	private final MeaningService meaningService;
+	private final CloningService cloningService;
 
 
 	public TermModifyController(TermSearchService termSearchService,
 			LexSearchService lexSearchService,
 			UpdateService updateService,
 			SearchHelper searchHelper,
-			MeaningService meaningService) {
+			CloningService cloningService) {
 		this.termSearchService = termSearchService;
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
 		this.searchHelper = searchHelper;
-		this.meaningService = meaningService;
+		this.cloningService = cloningService;
 	}
 
 	@GetMapping(MEANING_JOIN_URI + "/{meaningId}")
@@ -110,8 +110,8 @@ public class TermModifyController implements WebConstant {
 		logger.debug("meaningId : {}", meaningId);
 
 		Map<String, String> response = new HashMap<>();
-		Optional<Long> duplicateMeaning = meaningService.duplicateMeaning(meaningId);
-		if (duplicateMeaning.isPresent()) {
+		Optional<Long> clonedMeaning = cloningService.cloneMeaning(meaningId);
+		if (clonedMeaning.isPresent()) {
 			response.put("message", "Mõiste duplikaat lisatud");
 			response.put("status", "ok");
 		} else {

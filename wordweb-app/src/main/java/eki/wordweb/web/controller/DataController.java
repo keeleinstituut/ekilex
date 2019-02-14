@@ -49,7 +49,7 @@ public class DataController implements WebConstant, SystemConstant {
 	}
 
 	@PostMapping("/generate_voice")
-	public String generateSoundFileUrl(@RequestParam String words) throws Exception {
+	public String generateSoundFileUrl(@RequestParam String words) {
 		return speechSynthesisService.urlToSoundSource(words);
 	}
 

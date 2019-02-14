@@ -920,14 +920,20 @@ public class UpdateDbService implements DbConstant {
 		clonedFreeform.setParentId(parentFreeformId);
 		clonedFreeform.changed(FREEFORM.ORDER_BY, false);
 		clonedFreeform.store();
-		Result<FreeformSourceLinkRecord> freeformSourceLinks = create.selectFrom(FREEFORM_SOURCE_LINK).where(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(freeformId)).fetch();
+		Result<FreeformSourceLinkRecord> freeformSourceLinks = create.selectFrom(FREEFORM_SOURCE_LINK)
+				.where(FREEFORM_SOURCE_LINK.FREEFORM_ID.eq(freeformId))
+				.orderBy(FREEFORM_SOURCE_LINK.ORDER_BY)
+				.fetch();
 		freeformSourceLinks.forEach(sl -> {
 			FreeformSourceLinkRecord clonedSourceLink = sl.copy();
 			clonedSourceLink.setFreeformId(clonedFreeform.getId());
 			clonedSourceLink.changed(FREEFORM_SOURCE_LINK.ORDER_BY, false);
 			clonedSourceLink.store();
 		});
-		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM).where(FREEFORM.PARENT_ID.eq(freeformId)).fetch();
+		List<FreeformRecord> childFreeforms = create.selectFrom(FREEFORM)
+				.where(FREEFORM.PARENT_ID.eq(freeformId))
+				.orderBy(FREEFORM.ORDER_BY)
+				.fetch();
 		childFreeforms.forEach(f -> {
 			cloneFreeform(f.getId(), clonedFreeform.getId());
 		});

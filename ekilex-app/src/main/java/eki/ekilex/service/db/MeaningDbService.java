@@ -7,7 +7,6 @@ import eki.ekilex.data.db.tables.records.MeaningRecord;
 import eki.ekilex.data.db.tables.records.MeaningRelationRecord;
 import org.jooq.DSLContext;
 import org.jooq.Result;
-import org.jooq.impl.UpdatableRecordImpl;
 import org.springframework.stereotype.Service;
 
 import static eki.ekilex.data.db.tables.Meaning.MEANING;
@@ -37,7 +36,10 @@ public class MeaningDbService implements DbConstant {
 
 	public void cloneMeaningDomains(Long meaningId, Long clonedMeaningId) {
 
-		Result<MeaningDomainRecord> meaningDomains = create.selectFrom(MEANING_DOMAIN).where(MEANING_DOMAIN.MEANING_ID.eq(meaningId)).fetch();
+		Result<MeaningDomainRecord> meaningDomains = create.selectFrom(MEANING_DOMAIN)
+				.where(MEANING_DOMAIN.MEANING_ID.eq(meaningId))
+				.orderBy(MEANING_DOMAIN.ORDER_BY)
+				.fetch();
 		meaningDomains.stream().map(MeaningDomainRecord::copy).forEach(clonedDomain -> {
 			clonedDomain.setMeaningId(clonedMeaningId);
 			clonedDomain.changed(MEANING_DOMAIN.ORDER_BY, false);
@@ -49,6 +51,7 @@ public class MeaningDbService implements DbConstant {
 
 		Result<MeaningRelationRecord> meaningRelations = create.selectFrom(MEANING_RELATION)
 				.where(MEANING_RELATION.MEANING1_ID.eq(meaningId).or(MEANING_RELATION.MEANING2_ID.eq(meaningId)))
+				.orderBy(MEANING_RELATION.ORDER_BY)
 				.fetch();
 		meaningRelations.stream().map(MeaningRelationRecord::copy).forEach(clonedRelation -> {
 			if (clonedRelation.getMeaning1Id().equals(meaningId)) {
@@ -63,7 +66,10 @@ public class MeaningDbService implements DbConstant {
 
 	public void cloneMeaningFreeforms(Long meaningId, Long clonedMeaningId) {
 
-		Result<MeaningFreeformRecord> meaningFreeforms = create.selectFrom(MEANING_FREEFORM).where(MEANING_FREEFORM.MEANING_ID.eq(meaningId)).fetch();
+		Result<MeaningFreeformRecord> meaningFreeforms = create.selectFrom(MEANING_FREEFORM)
+				.where(MEANING_FREEFORM.MEANING_ID.eq(meaningId))
+				.orderBy(MEANING_FREEFORM.ID)
+				.fetch();
 		for (MeaningFreeformRecord meaningFreeform : meaningFreeforms) {
 			Long clonedFreeformId = updateDbService.cloneFreeform(meaningFreeform.getFreeformId(), null);
 			MeaningFreeformRecord clonedMeaningFreeform = create.newRecord(MEANING_FREEFORM);

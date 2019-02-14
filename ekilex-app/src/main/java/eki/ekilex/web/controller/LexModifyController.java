@@ -1,8 +1,14 @@
 package eki.ekilex.web.controller;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import eki.ekilex.service.CloningService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
@@ -12,6 +18,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import eki.ekilex.constant.WebConstant;
@@ -32,10 +39,17 @@ public class LexModifyController implements WebConstant {
 
 	private final SearchHelper searchHelper;
 
-	public LexModifyController(LexSearchService lexSearchService, UpdateService updateService, SearchHelper searchHelper) {
+	private final CloningService cloningService;
+
+	public LexModifyController(
+			LexSearchService lexSearchService,
+			UpdateService updateService,
+			SearchHelper searchHelper,
+			CloningService cloningService) {
 		this.lexSearchService = lexSearchService;
 		this.updateService = updateService;
 		this.searchHelper = searchHelper;
+		this.cloningService = cloningService;
 	}
 
 	@GetMapping("/lexjoin/{lexemeId}")
@@ -103,6 +117,24 @@ public class LexModifyController implements WebConstant {
 		String searchUri = searchHelper.composeSearchUri(selectedDatasets, firstWordValue);
 
 		return "redirect:" + LEX_SEARCH_URI + searchUri;
+	}
+
+	@ResponseBody
+	@PostMapping("/lexemecopy/{lexemeId}")
+	public String meaningCopy(@PathVariable("lexemeId") Long lexemeId) throws JsonProcessingException {
+
+		Map<String, String> response = new HashMap<>();
+		Optional<Long> clonedLexeme = cloningService.cloneLexeme(lexemeId);
+		if (clonedLexeme.isPresent()) {
+			response.put("message", "Lekseemi duplikaat lisatud");
+			response.put("status", "ok");
+		} else {
+			response.put("message", "Duplikaadi lisamine ebaõnnestus");
+			response.put("status", "error");
+		}
+
+		ObjectMapper jsonMapper = new ObjectMapper();
+		return jsonMapper.writeValueAsString(response);
 	}
 
 }

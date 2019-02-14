@@ -1,6 +1,7 @@
 package eki.ekilex.service.db;
 
 import eki.ekilex.constant.DbConstant;
+import eki.ekilex.data.Government;
 import eki.ekilex.data.db.tables.records.LexRelationRecord;
 import eki.ekilex.data.db.tables.records.LexemeDerivRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
@@ -8,11 +9,14 @@ import eki.ekilex.data.db.tables.records.LexemePosRecord;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 import eki.ekilex.data.db.tables.records.LexemeRegisterRecord;
 import eki.ekilex.data.db.tables.records.LexemeSourceLinkRecord;
+import eki.ekilex.service.db.util.LifecycleLogDbServiceHelper;
 import org.jooq.DSLContext;
 import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.tables.Lexeme.LEXEME;
 import static eki.ekilex.data.db.tables.LexemeDeriv.LEXEME_DERIV;
@@ -29,16 +33,30 @@ public class LexemeDbService implements DbConstant {
 
 	final private UpdateDbService updateDbService;
 
-	public LexemeDbService(DSLContext create, UpdateDbService updateDbService) {
+	final private LifecycleLogDbServiceHelper logHelper;
+
+	final private CommonDataDbService commonDataDbService;
+
+	public LexemeDbService(
+			DSLContext create,
+			UpdateDbService updateDbService,
+			LifecycleLogDbServiceHelper logHelper,
+			CommonDataDbService commonDataDbService) {
 		this.create = create;
 		this.updateDbService = updateDbService;
+		this.logHelper = logHelper;
+		this.commonDataDbService = commonDataDbService;
+	}
+
+	public LexemeRecord findLexeme(Long lexemeId) {
+		return create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 	}
 
 	public List<LexemeRecord> findMeaningLexemes(Long meaningId) {
 		return create.selectFrom(LEXEME).where(LEXEME.MEANING_ID.eq(meaningId)).fetch();
 	}
 
-	public Long cloneMeaningLexeme(Long lexemeId, Long meaningId) {
+	public Long cloneLexeme(Long lexemeId, Long meaningId) {
 
 		LexemeRecord lexeme = create.selectFrom(LEXEME).where(LEXEME.ID.eq(lexemeId)).fetchOne();
 		LexemeRecord clonedLexeme = lexeme.copy();
@@ -53,7 +71,10 @@ public class LexemeDbService implements DbConstant {
 
 	public void cloneLexemeDerivatives(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeDerivRecord> lexemeDerivatives = create.selectFrom(LEXEME_DERIV).where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId)).fetch();
+		Result<LexemeDerivRecord> lexemeDerivatives = create.selectFrom(LEXEME_DERIV)
+				.where(LEXEME_DERIV.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_DERIV.ID)
+				.fetch();
 		lexemeDerivatives.stream().map(LexemeDerivRecord::copy).forEach(clonedLexemeDeriv -> {
 			clonedLexemeDeriv.setLexemeId(clonedLexemeId);
 			clonedLexemeDeriv.store();
@@ -62,8 +83,10 @@ public class LexemeDbService implements DbConstant {
 
 	public void cloneLexemeFreeforms(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeFreeformRecord> lexemeFreeforms =
-				create.selectFrom(LEXEME_FREEFORM).where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId)).fetch();
+		Result<LexemeFreeformRecord> lexemeFreeforms = create.selectFrom(LEXEME_FREEFORM)
+				.where(LEXEME_FREEFORM.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_FREEFORM.ID)
+				.fetch();
 		lexemeFreeforms.forEach(lexemeFreeform -> {
 			Long clonedFreeformId = updateDbService.cloneFreeform(lexemeFreeform.getFreeformId(), null);
 			LexemeFreeformRecord clonedLexemeFreeform = create.newRecord(LEXEME_FREEFORM);
@@ -75,8 +98,10 @@ public class LexemeDbService implements DbConstant {
 
 	public void cloneLexemePoses(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemePosRecord> lexemePoses =
-				create.selectFrom(LEXEME_POS).where(LEXEME_POS.LEXEME_ID.eq(lexemeId)).fetch();
+		Result<LexemePosRecord> lexemePoses = create.selectFrom(LEXEME_POS)
+				.where(LEXEME_POS.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_POS.ORDER_BY)
+				.fetch();
 		lexemePoses.stream().map(LexemePosRecord::copy).forEach(clonedLexemePos -> {
 			clonedLexemePos.setLexemeId(clonedLexemeId);
 			clonedLexemePos.changed(LEXEME_POS.ORDER_BY, false);
@@ -86,8 +111,10 @@ public class LexemeDbService implements DbConstant {
 
 	public void cloneLexemeRegisters(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeRegisterRecord> lexemeRegisters =
-				create.selectFrom(LEXEME_REGISTER).where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId)).fetch();
+		Result<LexemeRegisterRecord> lexemeRegisters = create.selectFrom(LEXEME_REGISTER)
+				.where(LEXEME_REGISTER.LEXEME_ID.eq(lexemeId))
+				.orderBy(LEXEME_REGISTER.ORDER_BY)
+				.fetch();
 		lexemeRegisters.stream().map(LexemeRegisterRecord::copy).forEach(clonedLexemeRegister -> {
 			clonedLexemeRegister.setLexemeId(clonedLexemeId);
 			clonedLexemeRegister.changed(LEXEME_REGISTER.ORDER_BY, false);
@@ -97,8 +124,10 @@ public class LexemeDbService implements DbConstant {
 
 	public void cloneLexemeSoureLinks(Long lexemeId, Long clonedLexemeId) {
 
-		Result<LexemeSourceLinkRecord> lexemeSourceLinks =
-				create.selectFrom(LEXEME_SOURCE_LINK).where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId)).fetch();
+		Result<LexemeSourceLinkRecord> lexemeSourceLinks = create.selectFrom(LEXEME_SOURCE_LINK)
+						.where(LEXEME_SOURCE_LINK.LEXEME_ID.eq(lexemeId))
+						.orderBy(LEXEME_SOURCE_LINK.ORDER_BY)
+						.fetch();
 		lexemeSourceLinks.stream().map(LexemeSourceLinkRecord::copy).forEach(clonedLexemeSourceLink -> {
 			clonedLexemeSourceLink.setLexemeId(clonedLexemeId);
 			clonedLexemeSourceLink.changed(LEXEME_SOURCE_LINK.ORDER_BY, false);
@@ -110,6 +139,7 @@ public class LexemeDbService implements DbConstant {
 
 		Result<LexRelationRecord> lexemeRelations = create.selectFrom(LEX_RELATION)
 				.where(LEX_RELATION.LEXEME1_ID.eq(lexemeId).or(LEX_RELATION.LEXEME2_ID.eq(lexemeId)))
+				.orderBy(LEX_RELATION.ORDER_BY)
 				.fetch();
 		lexemeRelations.stream().map(LexRelationRecord::copy).forEach(clonedRelation -> {
 			if (clonedRelation.getLexeme1Id().equals(lexemeId)) {
@@ -122,8 +152,28 @@ public class LexemeDbService implements DbConstant {
 		});
 	}
 
+	public String getLogStringForLexemeShort(Long lexemeId) {
+
+		Map<String, Object> lexemeData = logHelper.getLexemeData(create, lexemeId);
+		String levels = String.join(".", lexemeData.get("level1").toString(), lexemeData.get("level2").toString(), lexemeData.get("level3").toString());
+		return lexemeData.get("value") + " [" + levels + "]";
+	}
+
+	public String getLogStringForLexemeLong(Long lexemeId) {
+
+		String logString = getLogStringForLexemeShort(lexemeId);
+		Map<String, Object> lexemeUsageData = logHelper.getLexemeUsageData(create, lexemeId);
+		String governments = commonDataDbService.findGovernments(lexemeId).into(Government.class)
+				.stream().map(Government::getValue).collect(Collectors.joining(", "));
+		logString = String.join(" ", logString, governments, lexemeUsageData.get("value_text").toString());
+		return logString;
+	}
+
 	private int calculateLevel2(LexemeRecord lexeme) {
-		Result<LexemeRecord> lexemes = create.selectFrom(LEXEME).where(LEXEME.WORD_ID.eq(lexeme.getWordId()).and(LEXEME.LEVEL1.eq(lexeme.getLevel1()))).fetch();
+
+		Result<LexemeRecord> lexemes = create.selectFrom(LEXEME)
+				.where(LEXEME.WORD_ID.eq(lexeme.getWordId()).and(LEXEME.LEVEL1.eq(lexeme.getLevel1())))
+				.fetch();
 		return lexemes.stream().mapToInt(LexemeRecord::getLevel2).max().orElse(0) + 1;
 	}
 

@@ -56,6 +56,21 @@ function initialise() {
 		});
 	});
 
+    $(document).on('click', '#lexemeCopyBtn', function() {
+        let url = applicationUrl + 'lexemecopy/' +  $(this).data('lexeme-id');
+        $.post(url).done(function(data) {
+            let response = JSON.parse(data);
+            if (response.status === 'ok') {
+                openMessageDlg(response.message);
+            } else {
+                openAlertDlg(response.message);
+            }
+        }).fail(function(data) {
+            openAlertDlg("Lekseemi dubleerimine ebaõnnestus");
+            console.log(data);
+        });
+    });
+
     let detailButtons = $('#results').find('[name="detailsBtn"]');
     if (detailButtons.length === 1) {
         detailButtons.trigger('click');

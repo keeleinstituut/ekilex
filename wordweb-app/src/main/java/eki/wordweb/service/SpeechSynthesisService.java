@@ -61,7 +61,7 @@ public class SpeechSynthesisService implements WebConstant {
 		return urlFromEkiPublicService(words);
 	}
 
-	public String urlToSoundSource(Word word) throws Exception {
+	public String urlToSoundSource(Word word) {
 		if (StringUtils.equals(LANG_EST, word.getLang())) {
 			return urlToSoundSource(word.getWord());
 		}
@@ -122,9 +122,6 @@ public class SpeechSynthesisService implements WebConstant {
 
 		try {
 			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
-			if (response == null) {
-				return null;
-			}
 			return response.getBody();
 		} catch (Exception e) {
 			logger.error("Error with requesting {}", url);

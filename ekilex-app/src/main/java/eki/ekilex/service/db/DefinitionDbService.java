@@ -10,6 +10,7 @@ import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static eki.ekilex.data.db.tables.Definition.DEFINITION;
 import static eki.ekilex.data.db.tables.DefinitionDataset.DEFINITION_DATASET;
@@ -40,8 +41,10 @@ public class DefinitionDbService implements DbConstant {
 
 	public void cloneDefinitionFreeforms(Long definitionId, Long clonedDefinitionId) {
 
-		Result<DefinitionFreeformRecord> definitionFreeforms =
-				create.selectFrom(DEFINITION_FREEFORM).where(DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId)).fetch();
+		Result<DefinitionFreeformRecord> definitionFreeforms = create.selectFrom(DEFINITION_FREEFORM)
+				.where(DEFINITION_FREEFORM.DEFINITION_ID.eq(definitionId))
+				.orderBy(DEFINITION_FREEFORM.ID)
+				.fetch();
 		for (DefinitionFreeformRecord definitionFreeform : definitionFreeforms) {
 			Long clonedFreeformId = updateDbService.cloneFreeform(definitionFreeform.getFreeformId(), null);
 			DefinitionFreeformRecord clonedDefinitionFreeform = create.newRecord(DEFINITION_FREEFORM);
@@ -52,7 +55,7 @@ public class DefinitionDbService implements DbConstant {
 	}
 
 	public List<DefinitionRecord> findMeaningDefinitions(Long meaningId) {
-		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).fetch();
+		return create.selectFrom(DEFINITION).where(DEFINITION.MEANING_ID.eq(meaningId)).orderBy(DEFINITION.ORDER_BY).fetch();
 	}
 
 	public void cloneDefinitionDatasets(Long definitionId, Long clonedDefinintionId) {
@@ -69,13 +72,20 @@ public class DefinitionDbService implements DbConstant {
 
 	public void cloneDefinitionSourceLinks(Long definitionId, Long clonedDefinintionId) {
 
-		Result<DefinitionSourceLinkRecord> definitionSourceLinks =
-				create.selectFrom(DEFINITION_SOURCE_LINK).where(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(definitionId)).fetch();
+		Result<DefinitionSourceLinkRecord> definitionSourceLinks = create.selectFrom(DEFINITION_SOURCE_LINK)
+				.where(DEFINITION_SOURCE_LINK.DEFINITION_ID.eq(definitionId))
+				.orderBy(DEFINITION_SOURCE_LINK.ORDER_BY)
+				.fetch();
 		definitionSourceLinks.stream().map(DefinitionSourceLinkRecord::copy).forEach(clonedDefinitionSourceLink -> {
 			clonedDefinitionSourceLink.setDefinitionId(clonedDefinintionId);
 			clonedDefinitionSourceLink.changed(DEFINITION_SOURCE_LINK.ORDER_BY, false);
 			clonedDefinitionSourceLink.store();
 		});
+	}
+
+	public String getCombinedMeaningDefinitions(Long meaningId) {
+		List<DefinitionRecord> meaningDefinitions = findMeaningDefinitions(meaningId);
+		return meaningDefinitions.stream().map(DefinitionRecord::getValue).collect(Collectors.joining(" | "));
 	}
 
 }

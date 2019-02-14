@@ -18,7 +18,7 @@ public class ViewUtil implements WebConstant {
 
 		List<CollocMemberGroup> memberGroupOrder = colloc.getMemberGroupOrder();
 		List<TypeCollocMember> collocMembers;
-		StringBuffer htmlBuf = new StringBuffer();
+		StringBuilder htmlBuf = new StringBuilder();
 		htmlBuf.append("<span style='white-space:nowrap;'>");
 		for (CollocMemberGroup collocMemGr : memberGroupOrder) {
 			if (CollocMemberGroup.HEADWORD.equals(collocMemGr)) {
