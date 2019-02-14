@@ -1,7 +1,7 @@
 create type type_word as (lexeme_id bigint, meaning_id bigint, value text, lang char(3), word_type_codes varchar(100) array, dataset_code varchar(10));
 create type type_definition as (lexeme_id bigint, meaning_id bigint, value text, value_prese text, lang char(3), dataset_code varchar(10));
 create type type_domain as (origin varchar(100), code varchar(100));
-create type type_usage as (usage text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
+create type type_usage as (usage text, usage_prese text, usage_lang char(3), usage_type_code varchar(100), usage_translations text array, usage_definitions text array, usage_authors text array);
 create type type_colloc_member as (lexeme_id bigint, word_id bigint, word text, form text, homonym_nr integer, word_exists boolean, conjunct varchar(100), weight numeric(14,4));
 create type type_word_etym as (word_id bigint, etym_word_id bigint, etym_word text, etym_word_lang char(3), etym_year text, etym_meaning_words text array, etym_word_sources text array, comments text array, is_questionable boolean, is_compound boolean);
 create type type_word_relation as (word_id bigint, word text, word_lang char(3), word_type_codes varchar(100) array, dataset_codes varchar(10) array, word_rel_type_code varchar(100));
@@ -292,9 +292,10 @@ create view view_ww_lexeme
                        and   ff.type = 'GOVERNMENT'
                        group by lf.lexeme_id) gov on gov.lexeme_id = l.id
       left outer join (select u.lexeme_id,
-                              array_agg(row (u.usage,u.usage_lang,u.usage_type_code,u.usage_translations,u.usage_definitions,u.usage_authors)::type_usage order by u.order_by) usages
+                              array_agg(row (u.usage,u.usage_prese,u.usage_lang,u.usage_type_code,u.usage_translations,u.usage_definitions,u.usage_authors)::type_usage order by u.order_by) usages
                        from (select lf.lexeme_id,
-                                    u.value_prese usage,
+                                    u.value_text usage,
+                                    u.value_prese usage_prese,
                                     u.lang usage_lang,
                                     u.order_by,
                                     utp.classif_code usage_type_code,
