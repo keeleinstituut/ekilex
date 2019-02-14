@@ -206,6 +206,10 @@
 	padding: 0.5em 0 0 0;
 }
 
+.btn-speaker, .alert-icn, .lang-btn {
+	outline: none !important;
+}
+
 .matching-word {
 	color: #00874F;
 	margin-right: -0.2rem;
