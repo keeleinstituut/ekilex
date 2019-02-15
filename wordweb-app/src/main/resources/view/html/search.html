@@ -199,7 +199,7 @@
                     </button>
                     <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
                       <div class="dependence-unit">
-                        <span class="example-text" th:utext="${usage.usage}"></span>
+                        <span class="example-text" th:utext="${usage.usagePrese}"></span>
                         <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
                           <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">
                             <span th:if="${usageAuthor.translator}" th:text="#{reference.type.translator}">tõlkinud</span>

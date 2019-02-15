@@ -14,6 +14,9 @@ public class TypeUsage extends AbstractDataObject {
 	@Column(name = "usage")
 	private String usage;
 
+	@Column(name = "usage_prese")
+	private String usagePrese;
+
 	@Column(name = "usage_lang")
 	private String usageLang;
 
@@ -39,6 +42,14 @@ public class TypeUsage extends AbstractDataObject {
 
 	public void setUsage(String usage) {
 		this.usage = usage;
+	}
+
+	public String getUsagePrese() {
+		return usagePrese;
+	}
+
+	public void setUsagePrese(String usagePrese) {
+		this.usagePrese = usagePrese;
 	}
 
 	public String getUsageLang() {

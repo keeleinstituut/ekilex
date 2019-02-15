@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
 
-    private static final long serialVersionUID = -889723920;
+    private static final long serialVersionUID = 1072420857;
 
     /**
      * The reference instance of <code>public.view_ww_word</code>
@@ -124,6 +124,11 @@ public class ViewWwWord extends TableImpl<ViewWwWordRecord> {
      * The column <code>public.view_ww_word.definitions</code>.
      */
     public final TableField<ViewWwWordRecord, TypeDefinitionRecord[]> DEFINITIONS = createField("definitions", eki.ekilex.data.db.udt.TypeDefinition.TYPE_DEFINITION.getDataType().getArrayDataType(), this, "");
+
+    /**
+     * The column <code>public.view_ww_word.word_sources</code>.
+     */
+    public final TableField<ViewWwWordRecord, String[]> WORD_SOURCES = createField("word_sources", org.jooq.impl.SQLDataType.CLOB.getArrayDataType(), this, "");
 
     /**
      * Create a <code>public.view_ww_word</code> table reference

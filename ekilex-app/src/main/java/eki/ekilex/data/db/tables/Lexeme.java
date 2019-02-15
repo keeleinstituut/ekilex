@@ -9,6 +9,7 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeRecord;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 1636901445;
+    private static final long serialVersionUID = 2085981006;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -101,6 +102,11 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      * The column <code>public.lexeme.frequency_group</code>.
      */
     public final TableField<LexemeRecord, String> FREQUENCY_GROUP = createField("frequency_group", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+
+    /**
+     * The column <code>public.lexeme.corpus_frequency</code>.
+     */
+    public final TableField<LexemeRecord, BigDecimal> CORPUS_FREQUENCY = createField("corpus_frequency", org.jooq.impl.SQLDataType.NUMERIC, this, "");
 
     /**
      * The column <code>public.lexeme.level1</code>.
