@@ -21,6 +21,7 @@ import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.DatasetId;
 import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Mnr;
 
 public abstract class AbstractLoader implements SystemConstant {
 
@@ -117,8 +118,8 @@ public abstract class AbstractLoader implements SystemConstant {
 
 	public Map<String, List<Guid>> getSsGuidMapFor(String filteringDataset) throws Exception {
 
-		String ssGuidMapFilePath1 = loaderConf.getProperty("ss1.map.file.1");
-		String ssGuidMapFilePath2 = loaderConf.getProperty("ss1.map.file.2");
+		String ssGuidMapFilePath1 = loaderConf.getProperty("ss1.guid.map.file.1");
+		String ssGuidMapFilePath2 = loaderConf.getProperty("ss1.guid.map.file.2");
 		if (StringUtils.isBlank(ssGuidMapFilePath1)) {
 			return null;
 		}
@@ -168,6 +169,46 @@ public abstract class AbstractLoader implements SystemConstant {
 			}
 		}
 		return ssGuidMap;
+	}
+
+	public Map<String, List<Mnr>> getSsMnrMap() throws Exception {
+
+		String ssMnrMapFilePath = loaderConf.getProperty("ss1.mnr.map.file");
+		if (StringUtils.isBlank(ssMnrMapFilePath)) {
+			return null;
+		}
+
+		InputStream resourceInputStream = new FileInputStream(ssMnrMapFilePath);
+		List<String> resourceFileLines = IOUtils.readLines(resourceInputStream, UTF_8);
+		resourceInputStream.close();
+		Map<String, List<Mnr>> ssMnrMap = new HashMap<>();
+		List<Mnr> mappedMnrs;
+		Mnr mnr;
+		for (String resourceFileLine : resourceFileLines) {
+			if (StringUtils.isBlank(resourceFileLine)) {
+				continue;
+			}
+			String[] ssMnrMapRowCells = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
+			if (ssMnrMapRowCells.length != 4) {
+				throw new DataLoadingException("Invalid mnr map line \"" + resourceFileLine + "\"");
+			}
+			String[] meaningMapParts = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
+			String sourceMnr = meaningMapParts[0];
+			String targetMnr = meaningMapParts[1];
+			String word = meaningMapParts[2];
+			mappedMnrs = ssMnrMap.get(sourceMnr);
+			if (mappedMnrs == null) {
+				mappedMnrs = new ArrayList<>();
+				ssMnrMap.put(sourceMnr, mappedMnrs);
+			}
+			mnr = new Mnr();
+			mnr.setValue(targetMnr);
+			mnr.setWord(word);
+			if (!mappedMnrs.contains(mnr)) {
+				mappedMnrs.add(mnr);
+			}
+		}
+		return ssMnrMap;
 	}
 
 	private String correctDatasetCode(String datasetCode) {

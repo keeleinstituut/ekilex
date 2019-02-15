@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 
 import eki.ekilex.data.transform.DatasetId;
 import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.runner.CollocLoaderRunner;
 import eki.ekilex.runner.DbReInitialiserRunner;
 import eki.ekilex.runner.EstermLoaderRunner;
@@ -69,6 +70,7 @@ public class UltimaLoader extends AbstractLoader {
 
 			String dataFilePath, dataFilePath2, dataset;
 			Map<String, List<Guid>> ssGuidMap;
+			Map<String, List<Mnr>> ssMnrMap;
 
 			boolean doReports = doReports();
 			boolean isFullReload = isFullReload();
@@ -103,6 +105,9 @@ public class UltimaLoader extends AbstractLoader {
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}
+
+			// ss meaning map for all
+			ssMnrMap = getSsMnrMap();
 
 			// psv
 			dataset = psvRunner.getDataset();
