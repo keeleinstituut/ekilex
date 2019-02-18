@@ -109,16 +109,6 @@
 	position: absolute;
 }
 
-.robo-icon {
-	width: 26px;
-	height: 26px;
-	opacity: 0.5;
-}
-
-.example-item:hover .robo-icon {
-	opacity: 1;
-}
-
 .collocations-section {
 	clear: both;
 	display: block;
@@ -231,4 +221,9 @@
 
 .ui-menu {
 	z-index: 999;
+}
+
+.dependence .fa-spinner {
+	margin-right: 0.5rem;
+	font-size: 1rem;
 }

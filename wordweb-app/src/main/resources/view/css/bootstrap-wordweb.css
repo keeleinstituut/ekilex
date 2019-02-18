@@ -7021,16 +7021,12 @@ text-decoration: none;
     opacity: 1;
   }
 
-
-
-
   .dependence .dependence-unit {
     overflow: inherit;
     margin-bottom: -0.4375rem;
     padding-bottom: 0.1875rem;
     position: relative;
   }
-
 
   .question {
     color: lightgray;
@@ -7043,21 +7039,18 @@ text-decoration: none;
     clear: both;
   }
 
-  .example-item:hover {
-    cursor: pointer;
-  }
-
-  .dependence-group { 
+  .dependence-group {
     display: flex;
     flex-direction: column;
   }
 
   .dependencies .example-item .dependence-unit:hover {
     background-color: #e9ecef!important;
+    cursor: pointer;
   }
 
-  .example-item:hover .btn-speaker {
-    color: #0077FF;
+  .dependence-unit:hover .btn-speaker {
+    opacity: 1;
   }
 
   .example-item .btn-speaker {
