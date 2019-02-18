@@ -41,28 +41,17 @@ public class CloningService {
 		this.lexemeDbService = lexemeDbService;
 	}
 
+	@Transactional
 	public Optional<Long> cloneMeaning(Long meaningId) {
-
-		try {
-			return Optional.of(duplicateMeaningWithLexemes(meaningId));
-		} catch (Exception e) {
-			logger.error("clone meaning", e);
-			return Optional.empty();
-		}
-	}
-
-	public Optional<Long> cloneLexeme(Long lexemeId) {
-
-		try {
-			return Optional.of(duplicateLexemeAndMeaning(lexemeId));
-		} catch (Exception e) {
-			logger.error("clone lexeme", e);
-		}
-		return Optional.empty();
+		return Optional.of(duplicateMeaningWithLexemes(meaningId));
 	}
 
 	@Transactional
-	Long duplicateMeaningWithLexemes(Long meaningId) {
+	public Optional<Long> cloneLexeme(Long lexemeId) {
+		return Optional.of(duplicateLexemeAndMeaning(lexemeId));
+	}
+
+	private Long duplicateMeaningWithLexemes(Long meaningId) {
 
 		Long duplicateMeaningId = duplicateMeaning(meaningId);
 		duplicateMeaningLexemes(meaningId, duplicateMeaningId);
@@ -85,8 +74,7 @@ public class CloningService {
 		return duplicateMeaningId;
 	}
 
-	@Transactional
-	Long duplicateLexemeAndMeaning(Long lexemeId) {
+	private Long duplicateLexemeAndMeaning(Long lexemeId) {
 
 		LexemeRecord lexeme = lexemeDbService.findLexeme(lexemeId);
 		Long meaningId = duplicateMeaning(lexeme.getMeaningId());
