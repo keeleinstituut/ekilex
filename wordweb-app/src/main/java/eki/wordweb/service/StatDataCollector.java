@@ -29,14 +29,18 @@ public class StatDataCollector {
 		this.exceptionCountMap = new HashMap<>();
 	}
 
-	public synchronized void addSearchStat(String langPair) {
+	public synchronized void addSearchStat(String langPair, String searchMode, boolean isForcedSearchMode, boolean resultsExist, boolean isIeUser) {
 		if (StringUtils.isBlank(langPair)) {
 			return;
 		}
-		Count langSearchCount = searchCountMap.get(langPair);
+		if (StringUtils.isBlank(searchMode)) {
+			return;
+		}
+		String searchCountKey = composeSearchCountKey(langPair, searchMode, isForcedSearchMode, resultsExist, isIeUser);
+		Count langSearchCount = searchCountMap.get(searchCountKey);
 		if (langSearchCount == null) {
 			langSearchCount = new Count();
-			searchCountMap.put(langPair, langSearchCount);
+			searchCountMap.put(searchCountKey, langSearchCount);
 		}
 		langSearchCount.increment();
 		Count totalSearchCount = searchCountMap.get(TOTAL_SEARCH_COUNT_KEY);
@@ -45,6 +49,27 @@ public class StatDataCollector {
 			searchCountMap.put(TOTAL_SEARCH_COUNT_KEY, totalSearchCount);
 		}
 		totalSearchCount.increment();
+	}
+
+	private String composeSearchCountKey(String langPair, String searchMode, boolean isForcedSearchMode, boolean resultsExist, boolean isIeUser) {
+		StringBuffer keyBuf = new StringBuffer();
+		keyBuf.append(langPair);
+		keyBuf.append(' ');
+		keyBuf.append(searchMode.toLowerCase());
+		if (isForcedSearchMode) {
+			keyBuf.append("! ");
+		}
+		keyBuf.append(' ');
+		if (resultsExist) {
+			keyBuf.append("pos");
+		} else {
+			keyBuf.append("neg");
+		}
+		if (isIeUser) {
+			keyBuf.append(' ');
+			keyBuf.append("ie");
+		}
+		return keyBuf.toString();
 	}
 
 	public synchronized void addExceptionStat(Throwable exception) {

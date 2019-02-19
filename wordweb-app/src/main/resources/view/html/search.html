@@ -15,7 +15,7 @@
     <th:block th:replace="common-app :: wcag-main"></th:block>
   </div>
   <th:block th:replace="common-app :: ie-user"></th:block>
-  <div class="alert-danger-rus" th:if="${sessionBean.sourceLang == 'rus' && not #lists.isEmpty(wordsData.fullMatchWords)}">
+  <div class="alert-danger-rus" th:if="${sessionBean.sourceLang == 'rus' && wordsData.resultsExist}">
     <div class="alert-danger-ie-container">
       <span th:text="#{warning.eki.rus}">Vene-eesti sõnastik on veel toimetamisel.</span>
     </div>
@@ -41,7 +41,7 @@
     </div>
   </div>
   <div class="container-fluid homonym-page bottom-gutter">
-    <div class="row message-wrap" th:if="${#lists.isEmpty(wordsData.fullMatchWords)}">
+    <div class="row message-wrap" th:if="${!wordsData.resultsExist}">
       <div class="col offset-1 lg-max-noneset">
         <th:block th:if="${sessionBean.sourceLang == 'est'}">
           <th:block th:if="${sessionBean.destinLang == 'rus'}">
@@ -60,19 +60,19 @@
         </th:block>
       </div>
     </div>
-    <div class="row homonym-wrap" th:if="${not #lists.isEmpty(wordsData.fullMatchWords)}">
+    <div class="row homonym-wrap" th:if="${wordsData.resultsExist}">
       <div class="homonym-container container-fluid">
-        <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (switchedToDetailMode != null)}">
+        <div class="col-12 homonym-innerwrap" id="form-words" th:if="${not #lists.isEmpty(wordsData.formMatchWords) or (wordsData.forcedSearchMode)}">
           <div class="pt-1" th:if="${not #lists.isEmpty(wordsData.formMatchWords)}">
             <span th:text="#{label.word.form}">see on ka vorm sõnast</span>
             <button class="btn btn-sm ml-1" name="word-form-btn" th:each="word : ${wordsData.formMatchWords}" th:text="${word}" th:data-word="${word}"></button>
           </div>
-          <div th:if="${switchedToDetailMode}">
+          <div th:if="${wordsData.forcedSearchMode}">
             <span th:text="#{label.switched.to.detail.mode}">Valitud piiranguga ei leidnud ühtegi vastet, otsin ilma piiranguta</span>
           </div>
         </div>
       </div>
-      <div class="col-12 homonym-panel" th:classappend="${#lists.size(wordsData.fullMatchWords) == 1 ? 'd-none' : ''}">
+      <div class="col-12 homonym-panel" th:classappend="${wordsData.singleResult ? 'd-none' : ''}">
         <ul class="homonym-list">
           <li th:each="word : ${wordsData.fullMatchWords}">
             <form>

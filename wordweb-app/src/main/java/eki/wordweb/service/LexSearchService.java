@@ -73,23 +73,28 @@ public class LexSearchService implements InitializingBean, SystemConstant {
 		String[] datasets = getDatasets(sourceLang, destinLang, searchMode);
 		String primaryDataset = datasets[0];
 		List<Word> allWords = lexSearchDbService.findWords(searchWord, sourceLang, primaryDataset);
+		boolean isForcedSearchMode = false;
 		if (CollectionUtils.isEmpty(allWords) && StringUtils.equals(searchMode, SEARCH_MODE_SIMPLE)) {
 			datasets = getDatasets(sourceLang, destinLang, SEARCH_MODE_DETAIL);
 			primaryDataset = datasets[0];
 			allWords = lexSearchDbService.findWords(searchWord, sourceLang, primaryDataset);
 			if (CollectionUtils.isNotEmpty(allWords)) {
 				searchMode = SEARCH_MODE_DETAIL;
+				isForcedSearchMode = true;
 			}
 		}
+		boolean resultsExist = CollectionUtils.isNotEmpty(allWords);
 		conversionUtil.setAffixoidFlags(allWords);
 		conversionUtil.composeHomonymWrapups(allWords, destinLang, datasets);
 		conversionUtil.selectHomonym(allWords, homonymNr);
 		List<Word> fullMatchWords = allWords.stream().filter(word -> StringUtils.equalsIgnoreCase(word.getWord(), searchWord)).collect(Collectors.toList());
 		if (CollectionUtils.isNotEmpty(fullMatchWords)) {
 			List<String> formMatchWords = CollectionUtils.subtract(allWords, fullMatchWords).stream().map(Word::getWord).distinct().collect(Collectors.toList());
-			return new WordsData(fullMatchWords, formMatchWords, searchMode);
+			boolean isSingleResult = CollectionUtils.size(fullMatchWords) == 1;
+			return new WordsData(fullMatchWords, formMatchWords, searchMode, isForcedSearchMode, resultsExist, isSingleResult);
 		}
-		return new WordsData(allWords, Collections.emptyList(), searchMode);
+		boolean isSingleResult = CollectionUtils.size(allWords) == 1;
+		return new WordsData(allWords, Collections.emptyList(), searchMode, isForcedSearchMode, resultsExist, isSingleResult);
 	}
 
 	@Transactional

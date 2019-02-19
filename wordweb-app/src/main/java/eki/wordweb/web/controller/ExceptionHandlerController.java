@@ -27,14 +27,14 @@ public class ExceptionHandlerController implements WebConstant {
 	@ExceptionHandler(Exception.class)
 	public ModelAndView exception(Exception exception) throws Exception {
 
-		statDataCollector.addExceptionStat(exception);
-
 		ModelAndView modelAndView;
 		if (exception instanceof HttpSessionRequiredException) {
 			modelAndView = new ModelAndView();
 			modelAndView.setViewName("redirect:/");
 			return modelAndView;
 		}
+
+		statDataCollector.addExceptionStat(exception);
 
 		if (AnnotationUtils.findAnnotation(exception.getClass(), ResponseStatus.class) != null) {
 			throw exception;

@@ -1,10 +1,10 @@
 package eki.wordweb.web.controller;
 
-import static java.util.Collections.emptyList;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +32,7 @@ import eki.wordweb.service.CorporaServiceRus;
 import eki.wordweb.service.LexSearchService;
 import eki.wordweb.service.StatDataCollector;
 import eki.wordweb.web.bean.SessionBean;
+import eki.wordweb.web.util.UserAgentUtil;
 
 @ConditionalOnWebApplication
 @Controller
@@ -50,10 +51,13 @@ public class SearchController extends AbstractController {
 	@Autowired
 	private StatDataCollector statDataCollector;
 
+	@Autowired
+	private UserAgentUtil userAgentUtil;
+
 	@GetMapping(SEARCH_URI)
 	public String home(Model model) {
 
-		populateSearchModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
+		populateSearchModel("", new WordsData(SEARCH_MODE_DETAIL), model);
 
 		return SEARCH_PAGE;
 	}
@@ -82,6 +86,7 @@ public class SearchController extends AbstractController {
 			@PathVariable(name = "searchMode") String searchMode,
 			@PathVariable(name = "searchWord") String searchWord,
 			@PathVariable(name = "homonymNr", required = false) String homonymNrStr,
+			HttpServletRequest request,
 			Model model) {
 
 		boolean sessionBeanNotPresent = sessionBeanNotPresent(model);
@@ -111,12 +116,12 @@ public class SearchController extends AbstractController {
 		sessionBean.setDestinLang(destinLang);
 		sessionBean.setSearchMode(searchMode);
 
-		statDataCollector.addSearchStat(langPair);
 		WordsData wordsData = lexSearchService.findWords(searchWord, sourceLang, destinLang, homonymNr, searchMode);
 		sessionBean.setSearchMode(wordsData.getSearchMode());
-		boolean switchedToDetailMode = !StringUtils.equals(wordsData.getSearchMode(), searchMode);
-		model.addAttribute("switchedToDetailMode", switchedToDetailMode);
 		populateSearchModel(searchWord, wordsData, model);
+
+		boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
+		statDataCollector.addSearchStat(langPair, wordsData.getSearchMode(), wordsData.isForcedSearchMode(), wordsData.isResultsExist(), isIeUser);
 
 		return SEARCH_PAGE;
 	}

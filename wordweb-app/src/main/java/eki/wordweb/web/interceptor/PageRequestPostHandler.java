@@ -17,6 +17,7 @@ import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.wordweb.constant.SystemConstant;
 import eki.wordweb.constant.WebConstant;
+import eki.wordweb.web.util.UserAgentUtil;
 import eki.wordweb.web.util.ViewUtil;
 
 @ConditionalOnWebApplication
@@ -30,6 +31,9 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 	@Autowired
 	private ViewUtil viewUtil;
+
+	@Autowired
+	private UserAgentUtil userAgentUtil;
 
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
@@ -52,7 +56,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 
 		ModelMap modelMap = modelAndView.getModelMap();
 		if (!modelMap.containsKey(IE_USER_FLAG_KEY)) {
-			boolean isIeUser = isTraditionalMicrosoftUser(request, modelAndView);
+			boolean isIeUser = userAgentUtil.isTraditionalMicrosoftUser(request);
 			modelMap.addAttribute(IE_USER_FLAG_KEY, isIeUser);
 		}
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
@@ -66,14 +70,12 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 		logRequestProcessTime(request);
 	}
 
-	private boolean isTraditionalMicrosoftUser(HttpServletRequest request, ModelAndView modelAndView) {
-		String userAgent = request.getHeader("User-Agent");
-		return StringUtils.contains(userAgent, "Trident");
-	}
-
 	private void logRequestProcessTime(HttpServletRequest request) {
 
 		String servletPath = request.getServletPath();
+		if (StringUtils.equals(servletPath, "/")) {
+			return;
+		}
 		Object requestStartTimeObj = request.getAttribute(REQUEST_START_TIME_KEY);
 		long startTime = Long.valueOf(requestStartTimeObj.toString());
 		long endTime = System.currentTimeMillis();

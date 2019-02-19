@@ -1,7 +1,5 @@
 package eki.wordweb.web.controller;
 
-import static java.util.Collections.emptyList;
-
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,7 +16,7 @@ public class HomeController extends AbstractController {
 
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
-		populateSearchModel("", new WordsData(emptyList(), emptyList(), SEARCH_MODE_DETAIL), model);
+		populateSearchModel("", new WordsData(SEARCH_MODE_DETAIL), model);
 		return HOME_PAGE;
 	}
 
