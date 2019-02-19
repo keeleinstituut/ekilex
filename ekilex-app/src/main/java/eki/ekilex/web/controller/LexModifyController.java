@@ -10,6 +10,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import eki.ekilex.service.CloningService;
 import org.apache.commons.collections4.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -32,6 +34,8 @@ import eki.ekilex.web.util.SearchHelper;
 @Controller
 @SessionAttributes(WebConstant.SESSION_BEAN)
 public class LexModifyController implements WebConstant {
+
+	private static final Logger logger = LoggerFactory.getLogger(LexModifyController.class);
 
 	private final LexSearchService lexSearchService;
 
@@ -124,7 +128,12 @@ public class LexModifyController implements WebConstant {
 	public String meaningCopy(@PathVariable("lexemeId") Long lexemeId) throws JsonProcessingException {
 
 		Map<String, String> response = new HashMap<>();
-		Optional<Long> clonedLexeme = cloningService.cloneLexeme(lexemeId);
+		Optional<Long> clonedLexeme = Optional.empty();
+		try {
+			clonedLexeme = cloningService.cloneLexeme(lexemeId);
+		} catch (Exception ignore) {
+			logger.error("", ignore);
+		}
 		if (clonedLexeme.isPresent()) {
 			response.put("message", "Lekseemi duplikaat lisatud");
 			response.put("status", "ok");

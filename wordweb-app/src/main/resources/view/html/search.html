@@ -6,6 +6,7 @@
   <script type="text/javascript" th:src="@{/view/js/recorder.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-common-search.js}"></script>
   <script type="text/javascript" th:src="@{/view/js/ww-search.js}"></script>
+  <link rel="stylesheet" th:href="@{/view/css/all.min.css}"/>
 </th:block>
 </head>
 <body>
@@ -197,8 +198,8 @@
                     <button class="more-btn" name="colloc-usages-btn" th:if="${lexeme.moreUsages}" aria-expanded="false">
                       <span class="icon icon-chevron-left"></span>
                     </button>
-                    <div class="dependence example-item" th:each="usage : ${lexeme.usages}" th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
-                      <div class="dependence-unit">
+                    <div class="dependence example-item" th:each="usage : ${lexeme.usages}">
+                      <div class="dependence-unit"  th:data-words="${usage.usage}" onclick="generateVoiceAndPlay(this)">
                         <span class="example-text" th:utext="${usage.usagePrese}"></span>
                         <th:block th:if="${not #lists.isEmpty(usage.usageAuthors)}">
                           <div class="example-text" th:each="usageAuthor : ${usage.usageAuthors}">

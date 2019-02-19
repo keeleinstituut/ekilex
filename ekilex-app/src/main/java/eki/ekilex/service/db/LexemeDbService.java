@@ -163,9 +163,10 @@ public class LexemeDbService implements DbConstant {
 
 		String logString = getLogStringForLexemeShort(lexemeId);
 		Map<String, Object> lexemeUsageData = logHelper.getLexemeUsageData(create, lexemeId);
+		String usages = lexemeUsageData.get("value_text") == null ? "" : lexemeUsageData.get("value_text").toString();
 		String governments = commonDataDbService.findGovernments(lexemeId).into(Government.class)
 				.stream().map(Government::getValue).collect(Collectors.joining(", "));
-		logString = String.join(" ", logString, governments, lexemeUsageData.get("value_text").toString());
+		logString = String.join(" ", logString, governments, usages);
 		return logString;
 	}
 

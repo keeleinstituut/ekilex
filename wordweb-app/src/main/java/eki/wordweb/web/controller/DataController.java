@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,11 +60,11 @@ public class DataController implements WebConstant, SystemConstant {
 
 		String fileName = "";
 		Resource resource = null;
-		try {
-			Optional<Path> fileToServe = Files.find(
-					Paths.get(System.getProperty("java.io.tmpdir")),
-					1,
-					(p,a) -> p.getFileName().toString().startsWith(fileId)).findFirst();
+		try (Stream<Path> dirStream = Files.find(Paths.get(
+				System.getProperty("java.io.tmpdir")),
+				1,
+				(p, a) -> p.getFileName().toString().startsWith(fileId))) {
+			Optional<Path> fileToServe = dirStream.findFirst();
 			if (fileToServe.isPresent()) {
 				resource = new FileSystemResource(fileToServe.get());
 				fileName = fileToServe.get().getFileName().toString();

@@ -110,7 +110,12 @@ public class TermModifyController implements WebConstant {
 		logger.debug("meaningId : {}", meaningId);
 
 		Map<String, String> response = new HashMap<>();
-		Optional<Long> clonedMeaning = cloningService.cloneMeaning(meaningId);
+		Optional<Long> clonedMeaning = Optional.empty();
+		try {
+			clonedMeaning = cloningService.cloneMeaning(meaningId);
+		} catch (Exception ignore) {
+			logger.error("", ignore);
+		}
 		if (clonedMeaning.isPresent()) {
 			response.put("message", "Mõiste duplikaat lisatud");
 			response.put("status", "ok");

@@ -174,22 +174,30 @@ function playSound(soundSource) {
 
 function generateVoiceAndPlay(e) {
 	var elem = $(e);
-	if (elem.data('url-to-sound') != undefined) {
+	if (elem.data('url-to-sound') !== undefined) {
 		playSound(elem.data('urlToSound'));
 		return;
 	}
-	var content = elem.html();
-	elem.html(content + ' <i class="fa fa-spinner fa-spin"></i>');
+	var content;
+	var buttonSpeaker = elem.find('.btn-speaker');
+	if (buttonSpeaker.length !== 0) {
+		content = buttonSpeaker.html();
+		buttonSpeaker.html('<i class="fa fa-spinner fa-spin"></i>');
+	}
 	var words = elem.data('words');
 	var data = {
 		'words': words
 	};
 	$.post(applicationUrl + 'generate_voice', data).done(function (urlToSound) {
 		elem.data('url-to-sound', urlToSound);
-		elem.html(content);
 		playSound(urlToSound);
+		if (buttonSpeaker.length !== 0) {
+			buttonSpeaker.html(content);
+		}
 	}).fail(function () {
-		elem.html(content);
+		if (buttonSpeaker.length !== 0) {
+			buttonSpeaker.html(content);
+		}
 		alert(messages.sound_generation_failure);
 	})
 }

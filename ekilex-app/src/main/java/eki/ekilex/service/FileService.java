@@ -5,6 +5,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,11 +31,11 @@ public class FileService {
 	private Path findFilePath(String fileName) {
 
 		Path filePath = null;
-		try {
-			Optional<Path> fileToServe = Files.find(
-					Paths.get(fileRepositoryPath),
-					4,
-					(p, a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
+		try (Stream<Path> dirStream = Files.find(
+				Paths.get(fileRepositoryPath),
+				4,
+				(p, a) -> p.getFileName().toString().startsWith(fileName))) {
+			Optional<Path> fileToServe = dirStream.findFirst();
 			if (fileToServe.isPresent()) {
 				filePath = fileToServe.get();
 			}

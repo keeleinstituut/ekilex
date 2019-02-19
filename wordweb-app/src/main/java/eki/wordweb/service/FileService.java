@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 @Service
 public class FileService {
@@ -46,11 +47,11 @@ public class FileService {
 	private Path findFilePath(String fileName) {
 
 		Path filePath = null;
-		try {
-			Optional<Path> fileToServe = Files.find(
-					Paths.get(fileRepositoryPath),
-					4,
-					(p, a) -> p.getFileName().toString().startsWith(fileName)).findFirst();
+		try (Stream<Path> dirStream = Files.find(
+				Paths.get(fileRepositoryPath),
+				4,
+				(p, a) -> p.getFileName().toString().startsWith(fileName))) {
+			Optional<Path> fileToServe = dirStream.findFirst();
 			if (fileToServe.isPresent()) {
 				filePath = fileToServe.get();
 			}

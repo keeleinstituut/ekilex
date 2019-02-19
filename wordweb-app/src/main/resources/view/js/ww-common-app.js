@@ -74,6 +74,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 	}
 	var okMessageElement = feedbackForm.find('[name=ok_message]');
 	var errorMessageElement = feedbackForm.find('[name=error_message]');
+	var acceptPrivacyStatement = feedbackForm.find('.modal-check');
 	$.ajax({
 		url : feedbackServiceUrl,
 		data : feedbackForm.serialize(),
@@ -82,6 +83,7 @@ $(document).on("click", "button[name='feedbackSendBtn']", function() {
 		var answer = JSON.parse(data);
 		if (answer.status === 'ok') {
 			okMessageElement.attr('hidden', false);
+			acceptPrivacyStatement.trigger('click');
 		} else {
 			errorMessageElement.attr('hidden', false);
 		}
