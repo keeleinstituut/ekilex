@@ -105,7 +105,7 @@
               <span class="homonym-name" th:text="${(wordData.word.suffixoid ? '-' : '') + wordData.word.word + (wordData.word.prefixoid ? '-' : '')}">tee</span>
               <span class="word-details-homonym-nr d-none" th:aria-label="|#{aria.homonym} ${wordData.word.homonymNr}|" th:text="${wordData.word.homonymNr}">1</span>
               <button th:aria-label="|#{aria.listen} - ${wordData.word.word}|" class="btn btn-speaker" th:if="${wordData.firstAvailableSoundFile != null}"
-                      th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                      th:data-url-to-sound="@{'/files/sounds/' + ${wordData.firstAvailableSoundFile}}" onclick="generateVoiceAndPlay(this)">
                 <span class="icon icon-speaker"></span>
               </button>
               <span id="spellingLine" style="font-size: large"
@@ -439,7 +439,7 @@
                           <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                             th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
                           <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.soundFile != null}"
-                            th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                            th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" onclick="generateVoiceAndPlay(this)">
                             <span class="icon icon-speaker"></span>
                           </button>
                         </div>
@@ -449,7 +449,7 @@
                           <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip" data-placement="top"
                             th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
                           <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.soundFile != null}"
-                            th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                            th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" onclick="generateVoiceAndPlay(this)">
                             <span class="icon icon-speaker"></span>
                           </button>
                         </div>
@@ -462,7 +462,7 @@
                               <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
                                 data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
                               <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.soundFile != null}"
-                                th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" onclick="generateVoiceAndPlay(this)">
                                 <span class="icon icon-speaker"></span>
                               </button>
                             </div>
@@ -472,7 +472,7 @@
                               <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
                                 data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
                               <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.soundFile != null}"
-                                th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" onclick="generateVoiceAndPlay(this)">
                                 <span class="icon icon-speaker"></span>
                               </button>
                             </div>
@@ -485,7 +485,7 @@
                                   <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
                                     data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekk</div>
                                   <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.soundFile != null}"
-                                    th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                    th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" onclick="generateVoiceAndPlay(this)">
                                     <span class="icon icon-speaker"></span>
                                   </button>
                                 </div>
@@ -495,7 +495,7 @@
                                   <div class="float-left morph-word" th:classappend="${form.displayLevel > 1 ? 'secondary-morph' : ''}" th:text="${form.formsWrapup}" data-toggle="tooltip"
                                     data-placement="top" th:title="${form.morph.value + ' - ' + form.displayFormsWrapup}">tekid</div>
                                   <button th:aria-label="|#{aria.listen} - ${form.formsWrapup}|" class="btn btn-speaker" th:if="${form.soundFile != null}"
-                                    th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" th:onclick="'generateVoiceAndPlay(this)'">
+                                    th:data-url-to-sound="@{'/files/sounds/' + ${form.soundFile}}" onclick="generateVoiceAndPlay(this)">
                                     <span class="icon icon-speaker"></span>
                                   </button>
                                 </div>
