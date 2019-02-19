@@ -8362,10 +8362,6 @@ body:not(.home-page) footer {
   color: #880000;
 }
 
-.definition {
-  line-height: 1.2
-}
-
 .top-button {
   position: fixed;
   bottom: 2rem;
@@ -8497,12 +8493,23 @@ body:not(.home-page) footer {
     border-radius: 0.3125rem;
 }
 
-.definition .vald {
+.definition-row {
+	line-height: 1.5;
+}
+
+.definition-area {
+	padding-bottom: 12px;
+}
+
+.definition-area .domain {
     color: #003F87;
     font-weight: 400;
     text-transform: uppercase;
     font-size: 14px;
+}
 
+.definition-value {
+	font-size: 1.2em;
 }
 
 .homonym-container {
@@ -8715,10 +8722,6 @@ body:not(.home-page) footer {
   min-width: 700px;
   margin-right: auto;
   margin-left: auto;
-}
-
-.definition {
-  line-height: 1.8
 }
 
 .eki-logo { 
