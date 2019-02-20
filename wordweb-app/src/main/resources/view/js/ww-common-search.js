@@ -167,37 +167,45 @@ function calculateAndSetStyles() {
 	}
 }
 
-function playSound(soundSource) {
+function playSound(soundSource, onEndedCallback) {
 	var music = new Audio(soundSource);
+	music.onended = onEndedCallback;
 	music.play();
 }
 
 function generateVoiceAndPlay(e) {
 	var elem = $(e);
-	if (elem.data('url-to-sound') !== undefined) {
-		playSound(elem.data('urlToSound'));
+	if (elem.data('is-playing') !== undefined) {
 		return;
 	}
+	elem.data('is-playing', '');
+
 	var content;
 	var buttonSpeaker = elem.find('.btn-speaker');
 	if (buttonSpeaker.length !== 0) {
 		content = buttonSpeaker.html();
 		buttonSpeaker.html('<i class="fa fa-spinner fa-spin"></i>');
 	}
-	var words = elem.data('words');
+	var onEndCallback = function () {
+		elem.removeData('is-playing');
+		if (buttonSpeaker.length !== 0) {
+			buttonSpeaker.html(content);
+		}
+	};
+
+	if (elem.data('url-to-sound') !== undefined) {
+		playSound(elem.data('urlToSound'), onEndCallback);
+		return;
+	}
+
 	var data = {
-		'words': words
+		'words': elem.data('words')
 	};
 	$.post(applicationUrl + 'generate_voice', data).done(function (urlToSound) {
 		elem.data('url-to-sound', urlToSound);
-		playSound(urlToSound);
-		if (buttonSpeaker.length !== 0) {
-			buttonSpeaker.html(content);
-		}
+		playSound(urlToSound, onEndCallback);
 	}).fail(function () {
-		if (buttonSpeaker.length !== 0) {
-			buttonSpeaker.html(content);
-		}
+		onEndCallback();
 		alert(messages.sound_generation_failure);
 	})
 }
