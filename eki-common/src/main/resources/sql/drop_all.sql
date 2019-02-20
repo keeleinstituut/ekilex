@@ -44,14 +44,12 @@ drop table if exists collocation;
 drop table if exists definition_freeform;
 drop table if exists definition_dataset;
 drop table if exists definition;
+drop table if exists meaning_mnr;
 drop table if exists meaning_lifecycle_log;
 drop table if exists meaning_relation;
 drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning;
--- FIXME: delete after import has been run in prod environment
-drop table if exists form_relation;
---
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
@@ -72,10 +70,6 @@ drop table if exists meaning_rel_type_label;
 drop table if exists meaning_rel_type;
 drop table if exists word_rel_type_label;
 drop table if exists word_rel_type;
--- FIXME: delete after import has been run in prod environment
-drop table if exists form_rel_type_label;
-drop table if exists form_rel_type;
---
 drop table if exists lex_rel_type_label;
 drop table if exists lex_rel_type;
 drop table if exists process_state;
@@ -105,10 +99,6 @@ drop table if exists government_type_label;
 drop table if exists government_type;
 drop table if exists value_state_label;
 drop table if exists value_state;
--- FIXME: remove after sript has been run on all environments
-drop table if exists lang_label;
-drop table if exists lang;
---
 drop table if exists language_label;
 drop table if exists language;
 drop table if exists label_type;

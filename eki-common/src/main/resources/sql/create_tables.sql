@@ -843,6 +843,16 @@ create table feedback_log
 );
 alter sequence feedback_log_id_seq restart with 10000;
 
+create table meaning_mnr
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  mnr varchar(100) not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  unique(meaning_id, mnr, dataset_code)
+);
+alter sequence meaning_mnr_id_seq restart with 10000;
+
 --- indexes
 
 create index form_value_idx on form(value);
@@ -909,6 +919,9 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
+create index meaning_mnr_meaning_id_idx on meaning_mnr(meaning_id);
+create index meaning_mnr_dataset_code_idx on meaning_mnr(dataset_code);
+create index meaning_mnr_mnr_idx on meaning_mnr(mnr);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));
