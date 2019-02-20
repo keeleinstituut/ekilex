@@ -727,6 +727,15 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
 	}
 
+	protected void createMeaningMnr(Long meaningId, String mnr, String dataset) throws Exception {
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("mnr", mnr.toLowerCase());
+		tableRowParamMap.put("dataset_code", dataset);
+		basicDbService.create(MEANING_MNR, tableRowParamMap);
+	}
+
 	protected Long createDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
 
 		String valueClean = cleanEkiEntityMarkup(value);

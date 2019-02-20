@@ -499,12 +499,14 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "s:tg";
 		final String conceptIdExp = "s:tpid";
+		final String meaningMnrAttr = "tahendusnr";
 
 		List<WordData> derivativeWords = extractDerivativeWords(contentNode, newWords);
 		context.derivativeWords.addAll(derivativeWords);
 
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
+			String meaningMnrForGroup = ((Element)meaningNumberGroupNode).attributeValue(meaningMnrAttr);
 			String lexemeLevel1Str = ((Element)meaningNumberGroupNode).attributeValue(lexemeLevel1Attr);
 			int lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Node> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
@@ -515,7 +517,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			for (Node meaningGroupNode : meanigGroupNodes) {
 				List<WordData> subWords = processSubWords(meaningGroupNode, context, reportingId);
 				if (!subWords.isEmpty()) {
-					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, reportingId);
+					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, meaningMnrForGroup, reportingId);
 					if (!createdLexemIds.isEmpty()) {
 						lexemeLevel2++;
 						for (WordData newWord : newWords) {
@@ -528,7 +530,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					}
 				} else {
 					lexemeLevel2++;
-					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, reportingId);
+					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, meaningMnrForGroup, reportingId);
 				}
 			}
 		}
@@ -542,9 +544,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			int lexemeLevel2,
 			List<CommentData> comments,
 			String conceptId,
+			String meaningMnrForGroup,
 			String reportingId) throws Exception {
 
 		final String meaningPosCodeExp = "s:grg/s:sl";
+		final String meaningMnrAttr = "tahendusnr";
 		List<Long> createdLexemeIds = new ArrayList<>();
 
  		List<Usage> usages = extractUsages(meaningGroupNode);
@@ -552,6 +556,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<String> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 		List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
 		List<String> publicNotes = extractPublicNotes(meaningGroupNode);
+		String meaningMnr = ((Element)meaningGroupNode).attributeValue(meaningMnrAttr);
 
 		Long meaningId;
 		List<String> definitionsToAdd = new ArrayList<>();
@@ -600,6 +605,12 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 		if (isNotBlank(conceptId)) {
 			createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
+		}
+		if (isNotBlank(meaningMnrForGroup)) {
+			createMeaningMnr(meaningId, meaningMnrForGroup, getDataset());
+		}
+		if (isNotBlank(meaningMnr)) {
+			createMeaningMnr(meaningId, meaningMnr, getDataset());
 		}
 		List<String> registers = extractRegisters(meaningGroupNode);
 		processSemanticData(meaningGroupNode, meaningId);

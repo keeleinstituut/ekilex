@@ -14,14 +14,12 @@ public interface TableName {
 	String DERIV = "deriv";
 	String MORPH = "morph";
 	String MORPH_LABEL = "morph_label";
-	String MEANING_TYPE = "meaning_type";
 	String LABEL_TYPE = "label_type";
 	String GENDER = "gender";
 
 	// dynamic
 	String SOURCE = "source";
 	String WORD = "word";
-	String DECLINATION = "declination";
 	String LEXEME = "lexeme";
 	String MEANING = "meaning";
 	String DEFINITION = "definition";
@@ -41,7 +39,6 @@ public interface TableName {
 	String WORD_GUID = "word_guid";
 	String WORD_WORD_TYPE = "word_word_type";
 	String LEXEME_RELATION = "lex_relation";
-	String FORM_RELATION = "form_relation";
 	String WORD_RELATION = "word_relation";
 	String MEANING_RELATION = "meaning_relation";
 	String LEX_COLLOC = "lex_colloc";
@@ -56,6 +53,7 @@ public interface TableName {
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
 	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
 	String GAME_NONWORD = "game_nonword";
+	String MEANING_MNR = "meaning_mnr";
 
 	// classifier binds
 	String MEANING_DOMAIN = "meaning_domain";
