@@ -27,6 +27,7 @@ import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record6;
 import org.jooq.Result;
+import org.jooq.SelectHavingStep;
 import org.jooq.Table;
 import org.jooq.impl.DSL;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -322,6 +323,89 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				where1 = applyValueFilters(SearchKey.ID, searchCriteria, c1.VALUE_TEXT, where1);
 
 				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(c1.ID).from(m1ff, c1).where(where1)));
+
+			} else if (SearchEntity.CLUELESS.equals(searchEntity)) {
+
+				Definition d1 = DEFINITION.as("d1");
+				Lexeme l1 = LEXEME.as("l1");
+				Lexeme lds = LEXEME.as("lds");
+				Form f1 = FORM.as("f1");
+				Paradigm p1 = PARADIGM.as("p1");
+				Word w1 = WORD.as("w1");
+				MeaningFreeform mff1 = MEANING_FREEFORM.as("mff1");
+				DefinitionFreeform dff1 = DEFINITION_FREEFORM.as("dff1");
+				LexemeFreeform lff1 = LEXEME_FREEFORM.as("lff1");
+				Freeform ff1 = FREEFORM.as("ff1");
+				Condition where1, where2;
+
+				// word select
+				where2 = f1.MODE.in(FormMode.WORD.name(), FormMode.AS_WORD.name())
+						.and(f1.PARADIGM_ID.eq(p1.ID))
+						.and(p1.WORD_ID.eq(w1.ID))
+						.and(l1.WORD_ID.eq(w1.ID));
+				where2 = applyValueFilters(SearchKey.VALUE, searchCriteria, f1.VALUE, where2);
+
+				where1 = DSL.exists(DSL.select(w1.ID).from(f1, p1, w1).where(where2)); 
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				SelectHavingStep<Record1<Long>> selectWord = DSL.select(l1.MEANING_ID).from(l1).where(where1).groupBy(l1.MEANING_ID);
+
+				// definition select
+				where1 = DSL.trueCondition();
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, d1.VALUE, where1);
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(lds.DATASET_CODE.in(datasets))));
+				}
+				SelectHavingStep<Record1<Long>> selectDefinition = DSL.select(d1.MEANING_ID).from(d1).where(where1).groupBy(d1.MEANING_ID);
+
+				// meaning ff select
+				String[] meaningFreeformTypes = new String[] {
+						FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name(), FreeformType.CONCEPT_ID.name(), FreeformType.LEARNER_COMMENT.name()};
+				where1 = ff1.TYPE.in(meaningFreeformTypes).and(mff1.FREEFORM_ID.eq(ff1.ID));
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(mff1.MEANING_ID).and(lds.DATASET_CODE.in(datasets))));
+				}
+				SelectHavingStep<Record1<Long>> selectMeaningFreeforms = DSL.select(mff1.MEANING_ID).from(mff1, ff1).where(where1).groupBy(mff1.MEANING_ID);
+
+				// definition ff select
+				where1 = ff1.TYPE.eq(FreeformType.PUBLIC_NOTE.name()).and(dff1.FREEFORM_ID.eq(ff1.ID)).and(dff1.DEFINITION_ID.eq(d1.ID));
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.andExists(DSL.select(lds.ID).from(lds).where(lds.MEANING_ID.eq(d1.MEANING_ID).and(lds.DATASET_CODE.in(datasets))));
+				}
+				SelectHavingStep<Record1<Long>> selectDefinitionFreeforms = DSL.select(d1.MEANING_ID).from(d1, dff1, ff1).where(where1).groupBy(d1.MEANING_ID);
+
+				// lexeme ff select
+				String[] lexemeFreeformTypes = new String[] {
+						FreeformType.PUBLIC_NOTE.name(), FreeformType.PRIVATE_NOTE.name(), FreeformType.USAGE.name(), FreeformType.GOVERNMENT.name(), FreeformType.GRAMMAR.name()};
+				where1 = ff1.TYPE.in(lexemeFreeformTypes).and(lff1.FREEFORM_ID.eq(ff1.ID)).and(lff1.LEXEME_ID.eq(l1.ID));
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				SelectHavingStep<Record1<Long>> selectLexemeFreeforms = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
+
+				// lexeme usage translation, definition select
+				String[] lexemeFreeformSubTypes = new String[] {FreeformType.USAGE_TRANSLATION.name(), FreeformType.USAGE_DEFINITION.name()};
+				where1 = ff1.TYPE.in(lexemeFreeformSubTypes).and(lff1.FREEFORM_ID.eq(ff1.PARENT_ID)).and(lff1.LEXEME_ID.eq(l1.ID));
+				where1 = applyValueFilters(SearchKey.VALUE, searchCriteria, ff1.VALUE_TEXT, where1);
+				if (CollectionUtils.isNotEmpty(datasets)) {
+					where1 = where1.and(l1.DATASET_CODE.in(datasets));
+				}
+				SelectHavingStep<Record1<Long>> selectLexemeFreeformSubTypes = DSL.select(l1.MEANING_ID).from(l1, lff1, ff1).where(where1).groupBy(l1.MEANING_ID);
+
+				// union all
+				Table<Record1<Long>> a1 = selectWord
+						.unionAll(selectDefinition)
+						.unionAll(selectMeaningFreeforms)
+						.unionAll(selectDefinitionFreeforms)
+						.unionAll(selectLexemeFreeforms)
+						.unionAll(selectLexemeFreeformSubTypes)
+						.asTable("a1");
+
+				meaningCondition = meaningCondition.and(DSL.exists(DSL.select(a1.field("meaning_id")).from(a1).where(a1.field("meaning_id", Long.class).eq(m1.ID))));
 			}
 		}
 		return meaningCondition;

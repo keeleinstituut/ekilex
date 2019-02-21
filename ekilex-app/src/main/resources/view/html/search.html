@@ -138,28 +138,28 @@
 
       <div id="searchKeyTemplates" hidden>
         <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getLexEntities()}" th:if="${searchPageName == 'lex_search'}">
-          <div th:name="${entity}">
+          <select th:name="${entity}">
             <option th:each="key : ${entity.getKeys()}"
                     th:value="${key}"
                     th:text="#{|search.key.${key.name()}|}">searchKey</option>
-          </div>
+          </select>
         </div>
         <div th:each="entity : ${T(eki.ekilex.constant.SearchEntity).getTermEntities()}" th:if="${searchPageName == 'term_search'}">
-          <div th:name="${entity}">
+          <select th:name="${entity}">
             <option th:each="key : ${entity.getKeys()}"
                     th:value="${key}"
                     th:text="#{|search.key.${key.name()}|}">searchKey</option>
-          </div>
+          </select>
         </div>
       </div>
 
       <div id="searchOperandTemplates" hidden>
         <div th:each="key : ${T(eki.ekilex.constant.SearchKey).values()}">
-          <div th:name="${key}">
+          <select th:name="${key}">
             <option th:each="operand : ${key.getOperands()}"
                     th:value="${operand}"
                     th:text="#{|search.operand.${operand.name()}|}">searchOperand</option>
-          </div>
+          </select>
         </div>
       </div>
 
