@@ -189,13 +189,12 @@ public abstract class AbstractLoader implements SystemConstant {
 				continue;
 			}
 			String[] ssMnrMapRowCells = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
-			if (ssMnrMapRowCells.length != 4) {
+			if (ssMnrMapRowCells.length != 3) {
 				throw new DataLoadingException("Invalid mnr map line \"" + resourceFileLine + "\"");
 			}
-			String[] meaningMapParts = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
-			String sourceMnr = meaningMapParts[0];
-			String targetMnr = meaningMapParts[1];
-			String word = meaningMapParts[2];
+			String sourceMnr = ssMnrMapRowCells[0];
+			String targetMnr = ssMnrMapRowCells[1];
+			String word = ssMnrMapRowCells[2];
 			mappedMnrs = ssMnrMap.get(sourceMnr);
 			if (mappedMnrs == null) {
 				mappedMnrs = new ArrayList<>();
