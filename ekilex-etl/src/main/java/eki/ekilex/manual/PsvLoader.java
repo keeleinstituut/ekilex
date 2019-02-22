@@ -3,6 +3,7 @@ package eki.ekilex.manual;
 import java.util.List;
 import java.util.Map;
 
+import eki.ekilex.service.MeaningMnrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,9 @@ public class PsvLoader extends AbstractLoader {
 
 			// mab
 			mabService.initialise(); //MAB must be loaded first!
+
+			MeaningMnrService meaningMnrService = getComponent(MeaningMnrService.class);
+			meaningMnrService.init(getLoaderConf());
 
 			// ps
 			String psFilePath = getMandatoryConfProperty("psv.data.file");
