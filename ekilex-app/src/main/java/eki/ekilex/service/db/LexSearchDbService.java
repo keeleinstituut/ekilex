@@ -23,7 +23,6 @@ import static eki.ekilex.data.db.Tables.WORD_WORD_TYPE;
 import static eki.ekilex.data.db.tables.WordGroup.WORD_GROUP;
 import static eki.ekilex.data.db.tables.WordGroupMember.WORD_GROUP_MEMBER;
 import static java.util.stream.Collectors.toList;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -50,6 +49,7 @@ import eki.common.constant.FormMode;
 import eki.common.constant.FreeformType;
 import eki.ekilex.constant.SearchEntity;
 import eki.ekilex.constant.SearchKey;
+import eki.ekilex.constant.SearchOperand;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.SearchCriterion;
 import eki.ekilex.data.SearchCriterionGroup;
@@ -85,27 +85,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
-
-		if (hasNoSerachCriteria(searchCriteriaGroups)) {
-			return create.newResult();
-		}
-
 		Word w1 = WORD.as("w1");
 		Paradigm p = PARADIGM.as("p");
 		Condition wordCondition = createCondition(w1, searchCriteriaGroups, datasets);
 
 		return execute(w1, p, wordCondition, datasets, fetchAll);
-	}
-
-	private boolean hasNoSerachCriteria(List<SearchCriterionGroup> searchCriteriaGroups) {
-		for (SearchCriterionGroup group : searchCriteriaGroups) {
-			boolean containsValidCriterion = group.getSearchCriteria().stream()
-					.anyMatch(s -> s.getSearchValue() != null && isNotBlank(s.getSearchValue().toString()));
-			if (containsValidCriterion) {
-				return false;
-			}
-		}
-		return true;
 	}
 
 	public int countWords(SearchFilter searchFilter, List<String> datasets) {
@@ -199,27 +183,40 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 			} else if (SearchEntity.MEANING.equals(searchEntity)) {
 
-				List<SearchCriterion> domainCriterions = searchCriteria.stream()
-						.filter(crit -> crit.getSearchKey().equals(SearchKey.DOMAIN) && crit.getSearchValue() != null)
+				List<SearchCriterion> domainCriteriaWithExists = searchCriteria.stream()
+						.filter(crit -> 
+								crit.getSearchKey().equals(SearchKey.DOMAIN)
+								&& crit.getSearchOperand().equals(SearchOperand.EQUALS)
+								&& (crit.getSearchValue() != null))
 						.collect(toList());
+
+				boolean isNotExistsFilter = searchCriteria.stream()
+						.anyMatch(crit ->
+								crit.getSearchKey().equals(SearchKey.DOMAIN)
+								&& SearchOperand.NOT_EXISTS.equals(crit.getSearchOperand()));
 
 				Lexeme l1 = LEXEME.as("l1");
 				Meaning m1 = MEANING.as("m1");
 				MeaningDomain m1d = MEANING_DOMAIN.as("m1d");
-				Condition where1 =
-						l1.WORD_ID.eq(w1.ID)
-						.and(l1.MEANING_ID.eq(m1.ID))
-						.and(m1d.MEANING_ID.eq(m1.ID));
+				Condition where1 = l1.WORD_ID.eq(w1.ID).and(l1.MEANING_ID.eq(m1.ID));
 
 				if (CollectionUtils.isNotEmpty(datasets)) {
 					where1 = where1.and(l1.DATASET_CODE.in(datasets));
 				}
 
-				for (SearchCriterion criterion : domainCriterions) {
-					Classifier domain = (Classifier) criterion.getSearchValue();
-					where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+				if (CollectionUtils.isNotEmpty(domainCriteriaWithExists)) {
+					where1 = where1.and(m1d.MEANING_ID.eq(m1.ID));
+					for (SearchCriterion criterion : domainCriteriaWithExists) {
+						Classifier domain = (Classifier) criterion.getSearchValue();
+						where1 = where1.and(m1d.DOMAIN_CODE.eq(domain.getCode())).and(m1d.DOMAIN_ORIGIN.eq(domain.getOrigin()));
+					}
+					wordCondition = wordCondition.and(DSL.exists(DSL.select(m1.ID).from(l1, m1, m1d).where(where1)));
 				}
-				wordCondition = wordCondition.and(DSL.exists(DSL.select(m1.ID).from(l1, m1, m1d).where(where1)));
+
+				if (isNotExistsFilter) {
+					where1 = where1.andNotExists(DSL.select(m1d.ID).from(m1d).where(m1d.MEANING_ID.eq(m1.ID)));
+					wordCondition = wordCondition.and(DSL.exists(DSL.select(m1.ID).from(l1, m1).where(where1)));
+				}
 
 			} else if (SearchEntity.DEFINITION.equals(searchEntity)) {
 

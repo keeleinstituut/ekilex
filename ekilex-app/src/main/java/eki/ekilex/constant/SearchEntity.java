@@ -13,7 +13,8 @@ public enum SearchEntity {
 	USAGE(new SearchKey[] {SearchKey.VALUE, SearchKey.LANGUAGE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
 	MEANING(new SearchKey[] {SearchKey.DOMAIN}),
 	NOTE(new SearchKey[] {SearchKey.VALUE, SearchKey.SOURCE_REF, SearchKey.SOURCE_NAME}),
-	CONCEPT_ID(new SearchKey[] {SearchKey.ID})
+	CONCEPT_ID(new SearchKey[] {SearchKey.ID}),
+	CLUELESS(new SearchKey[] {SearchKey.VALUE})
 	;
 
 	private SearchKey[] keys;
@@ -31,6 +32,6 @@ public enum SearchEntity {
 	}
 
 	public static List<SearchEntity> getTermEntities() {
-		return asList(HEADWORD, MEANING, DEFINITION, USAGE, NOTE, CONCEPT_ID);
+		return asList(HEADWORD, MEANING, DEFINITION, USAGE, NOTE, CONCEPT_ID, CLUELESS);
 	}
 }

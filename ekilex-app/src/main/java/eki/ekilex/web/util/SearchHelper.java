@@ -65,7 +65,8 @@ public class SearchHelper {
 			List<String> allDatasets = commonDataService.getDatasetCodes();
 			Collection<String> datasetComparison = CollectionUtils.disjunction(datasets, allDatasets);
 			if (CollectionUtils.isNotEmpty(datasetComparison)) {
-				String dictonaries = StringUtils.join(datasets, DICTONARIES_SEPARATOR);
+				String[] datasetArr = encodeDatasets(datasets);
+				String dictonaries = StringUtils.join(datasetArr, DICTONARIES_SEPARATOR);
 				uriBuf.append(PATH_SEPARATOR);
 				uriBuf.append(DICTIONARIES);
 				uriBuf.append(PATH_SEPARATOR);
@@ -146,6 +147,14 @@ public class SearchHelper {
 		return uriBuf.toString();
 	}
 
+	private String[] encodeDatasets(List<String> datasets) {
+		String[] datasetArr = datasets.toArray(new String[datasets.size()]);
+		for (int datasetIndex = 0; datasetIndex < datasetArr.length; datasetIndex++) {
+			datasetArr[datasetIndex] = encode(datasetArr[datasetIndex]);
+		}
+		return datasetArr;
+	}
+
 	public SearchUriData parseSearchUri(String searchUri) {
 
 		boolean isValid;
@@ -169,6 +178,7 @@ public class SearchHelper {
 				searchMode = uriParts[uriPartIndex + 1];
 			} else if (StringUtils.equals(DICTIONARIES, uriPart)) {
 				String selectedDatasetsStr = uriParts[uriPartIndex + 1];
+				selectedDatasetsStr = decode(selectedDatasetsStr);
 				selectedDatasetsStr = StringUtils.remove(selectedDatasetsStr, ' ');
 				selectedDatasets = Arrays.asList(StringUtils.split(selectedDatasetsStr, DICTONARIES_SEPARATOR));
 			} else if (StringUtils.equals(SIMPLE_SEARCH_FILTER, uriPart)) {

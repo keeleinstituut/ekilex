@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -18,7 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import eki.common.data.Count;
-import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Mnr;
 import eki.ekilex.service.XmlReader;
 
 //TODO temporary for testing, remove later
@@ -51,9 +52,11 @@ public class MeaningMappingAnalyser extends AbstractLoader {
 			List<String> ssMeaningMapLines = IOUtils.readLines(ssMeaningMapStream, UTF_8);
 			ssMeaningMapStream.close();
 
-			Map<String, List<Guid>> ssMnrMap = new HashMap<>();
+			Map<String, List<Mnr>> ssMnrMap = new HashMap<>();
+			Set<String> ssMnrs = new HashSet<>();
 			Set<String> tpMnrs = new HashSet<>();
 			Set<String> tgMnrs = new HashSet<>();
+			Count multiMeaningMappingCount = new Count();
 
 			for (String meaningMapLine : ssMeaningMapLines) {
 				if (StringUtils.isBlank(meaningMapLine)) {
@@ -63,17 +66,18 @@ public class MeaningMappingAnalyser extends AbstractLoader {
 				String sourceMnr = meaningMapParts[0];
 				String targetMnr = meaningMapParts[1];
 				String word = meaningMapParts[2];
-				List<Guid> mappedMnrs = ssMnrMap.get(sourceMnr);
+				List<Mnr> mappedMnrs = ssMnrMap.get(sourceMnr);
 				if (mappedMnrs == null) {
 					mappedMnrs = new ArrayList<>();
 					ssMnrMap.put(sourceMnr, mappedMnrs);
 				}
-				Guid mnr = new Guid();
+				Mnr mnr = new Mnr();
 				mnr.setValue(targetMnr);
 				mnr.setWord(word);
 				if (!mappedMnrs.contains(mnr)) {
 					mappedMnrs.add(mnr);
 				}
+				ssMnrs.add(targetMnr);
 			}
 
 			XmlReader xmlReader = new XmlReader();
@@ -108,6 +112,11 @@ public class MeaningMappingAnalyser extends AbstractLoader {
 					if (meaningNrCount > 0) {
 						List<String> meaningNumbers = meaningNrNodes.stream().map(node -> node.getText().trim()).collect(Collectors.toList());
 						tgMnrs.addAll(meaningNumbers);
+						if (ssMnrs.contains(meaningGrMeaningNr)) {
+							if (CollectionUtils.containsAny(ssMnrs, meaningNumbers)) {
+								multiMeaningMappingCount.increment();
+							}
+						}
 					}
 				}
 
@@ -122,6 +131,7 @@ public class MeaningMappingAnalyser extends AbstractLoader {
 			logger.info("ssMnrMap size: {}", ssMnrMap.size());
 			logger.info("ss tpMnrs size: {}", tpMnrs.size());
 			logger.info("ss tgMnrs size: {}", tgMnrs.size());
+			logger.info("ss multi meaning mapping count: {}", multiMeaningMappingCount.getValue());
 
 			handling("qq", qqDataPath, ssMnrMap, tpMnrs, tgMnrs);
 
@@ -135,7 +145,7 @@ public class MeaningMappingAnalyser extends AbstractLoader {
 		}
 	}
 
-	private void handling(String dataset, String qqDataPath, Map<String, List<Guid>> ssMnrMap, Set<String> tpMnrs, Set<String> tgMnrs) throws Exception {
+	private void handling(String dataset, String qqDataPath, Map<String, List<Mnr>> ssMnrMap, Set<String> tpMnrs, Set<String> tgMnrs) throws Exception {
 
 		XmlReader xmlReader = new XmlReader();
 
@@ -167,8 +177,8 @@ public class MeaningMappingAnalyser extends AbstractLoader {
 				String meaningGrMeaningNr = meaningGroupElem.attributeValue("tahendusnr");
 				if (ssMnrMap.containsKey(meaningGrMeaningNr)) {
 					meaningMappingExistsCount.increment();
-					List<Guid> ssMnrObjs = ssMnrMap.get(meaningGrMeaningNr);
-					List<String> mappedMnrs = ssMnrObjs.stream().map(Guid::getValue).collect(Collectors.toList());
+					List<Mnr> ssMnrObjs = ssMnrMap.get(meaningGrMeaningNr);
+					List<String> mappedMnrs = ssMnrObjs.stream().map(Mnr::getValue).collect(Collectors.toList());
 					if (mappedMnrs.size() == 1) {
 						meaningMappingOneToOneCount.increment();
 					} else {
