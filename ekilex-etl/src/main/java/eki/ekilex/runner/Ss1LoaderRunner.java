@@ -17,12 +17,14 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import eki.ekilex.service.MeaningMnrService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -58,6 +60,9 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 	private String wordTypeToken;
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
+	@Autowired
+	private MeaningMnrService mnrService;
 
 	@Override
 	protected Map<String, String> xpathExpressions() {
@@ -607,10 +612,10 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
 		}
 		if (isNotBlank(meaningMnrForGroup)) {
-			createMeaningMnr(meaningId, meaningMnrForGroup, getDataset());
+			mnrService.storeMeaningMnr(meaningId, meaningMnrForGroup, getDataset());
 		}
 		if (isNotBlank(meaningMnr)) {
-			createMeaningMnr(meaningId, meaningMnr, getDataset());
+			mnrService.storeMeaningMnr(meaningId, meaningMnr, getDataset());
 		}
 		List<String> registers = extractRegisters(meaningGroupNode);
 		processSemanticData(meaningGroupNode, meaningId);

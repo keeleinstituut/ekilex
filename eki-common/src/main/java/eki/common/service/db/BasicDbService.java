@@ -68,14 +68,7 @@ public class BasicDbService extends AbstractDbService {
 	public Map<String, Object> select(String tableName, Map<String, Object> paramMap) throws Exception {
 
 		String sqlQueryStr = parseSelectSql(tableName, paramMap);
-
-		Map<String, Object> result;
-		try {
-			result = jdbcTemplate.queryForMap(sqlQueryStr, paramMap);
-		} catch (EmptyResultDataAccessException e) {
-			result = null;
-		}
-		return result;
+		return queryForMap(sqlQueryStr, paramMap);
 	}
 
 	public List<Map<String, Object>> selectAll(String tableName, Map<String, Object> paramMap) throws Exception {

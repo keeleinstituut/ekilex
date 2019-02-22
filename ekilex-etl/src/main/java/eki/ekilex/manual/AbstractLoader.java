@@ -21,7 +21,6 @@ import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.DatasetId;
 import eki.ekilex.data.transform.Guid;
-import eki.ekilex.data.transform.Mnr;
 
 public abstract class AbstractLoader implements SystemConstant {
 
@@ -50,6 +49,10 @@ public abstract class AbstractLoader implements SystemConstant {
 		loaderConf = new Properties();
 		loaderConf.load(confStream);
 		confStream.close();
+	}
+
+	public Properties getLoaderConf() {
+		return loaderConf;
 	}
 
 	protected <T> T getComponent(Class<T> componentType) {
@@ -169,41 +172,6 @@ public abstract class AbstractLoader implements SystemConstant {
 			}
 		}
 		return ssGuidMap;
-	}
-
-	public Map<String, List<Mnr>> getSsMnrMap() throws Exception {
-
-		String ssMnrMapFilePath = loaderConf.getProperty("ss1.mnr.map.file");
-		if (StringUtils.isBlank(ssMnrMapFilePath)) {
-			return null;
-		}
-
-		InputStream resourceInputStream = new FileInputStream(ssMnrMapFilePath);
-		List<String> resourceFileLines = IOUtils.readLines(resourceInputStream, UTF_8);
-		resourceInputStream.close();
-		Map<String, List<Mnr>> ssMnrMap = new HashMap<>();
-		List<Mnr> mappedMnrs;
-		Mnr mnr;
-		for (String resourceFileLine : resourceFileLines) {
-			if (StringUtils.isBlank(resourceFileLine)) {
-				continue;
-			}
-			String[] meaningMapParts = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
-			if (meaningMapParts.length != 3) {
-				throw new DataLoadingException("Invalid mnr map line \"" + resourceFileLine + "\"");
-			}
-			String sourceMnr = meaningMapParts[0];
-			String targetMnr = meaningMapParts[1];
-			String word = meaningMapParts[2];
-			mappedMnrs = ssMnrMap.computeIfAbsent(sourceMnr, k -> new ArrayList<>());
-			mnr = new Mnr();
-			mnr.setValue(targetMnr);
-			mnr.setWord(word);
-			if (!mappedMnrs.contains(mnr)) {
-				mappedMnrs.add(mnr);
-			}
-		}
-		return ssMnrMap;
 	}
 
 	private String correctDatasetCode(String datasetCode) {
