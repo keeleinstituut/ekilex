@@ -25,7 +25,7 @@ import static eki.common.constant.TableName.MEANING_MNR;
 @Service
 public class MeaningMnrService implements SystemConstant {
 
-	private final String MAIN_DATASET = "ss1";
+	private final static String MAIN_DATASET = "ss1";
 
 	private static Logger logger = LoggerFactory.getLogger(MeaningMnrService.class);
 
@@ -35,7 +35,9 @@ public class MeaningMnrService implements SystemConstant {
 	private Map<String, List<Mnr>> ssMnrMap = Collections.emptyMap();
 
 	public void init(Properties loaderConf) throws Exception {
+		logger.debug("Meaning MNR service starting up...");
 		ssMnrMap = loadSsMnrMap(loaderConf);
+		logger.debug("Meaning MNR service ready!");
 	}
 
 	public Long getMappedMeaning(String meaningMnr) {
@@ -68,7 +70,7 @@ public class MeaningMnrService implements SystemConstant {
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("mnr", mnr.toLowerCase());
 		tableRowParamMap.put("dataset_code", dataset);
-		basicDbService.create(MEANING_MNR, tableRowParamMap);
+		basicDbService.createIfNotExists(MEANING_MNR, tableRowParamMap);
 	}
 
 	private List<Map<String, Object>> getMeaningMnrs(String meaningMnr, String dataset) throws Exception {
