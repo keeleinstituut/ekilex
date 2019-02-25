@@ -554,7 +554,7 @@ create table meaning_nr
   dataset_code varchar(10) references dataset(code) not null,
   unique(meaning_id, mnr, dataset_code)
 );
-alter sequence meaning_mnr_id_seq restart with 10000;
+alter sequence meaning_nr_id_seq restart with 10000;
 
 -- tähenduse seos
 create table meaning_relation
@@ -874,7 +874,7 @@ create index word_group_member_group_id_idx on word_group_member(word_group_id);
 create index word_group_member_word_id_idx on word_group_member(word_id);
 create index meaning_nr_meaning_id_idx on meaning_nr(meaning_id);
 create index meaning_nr_dataset_code_idx on meaning_nr(dataset_code);
-create index meaning_nr_mnr_idx on meaning_mnr(mnr);
+create index meaning_nr_mnr_idx on meaning_nr(mnr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);
