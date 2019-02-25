@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Properties;
 
 import static eki.common.constant.TableName.MEANING_MNR;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 public class MeaningMnrService implements SystemConstant {
@@ -42,6 +43,9 @@ public class MeaningMnrService implements SystemConstant {
 
 	public Long getMappedMeaning(String meaningMnr) {
 		Long meaningId = null;
+		if (isBlank(meaningMnr)) {
+			return meaningId;
+		}
 		if (ssMnrMap.containsKey(meaningMnr)) {
 			List<Mnr> mnrs = ssMnrMap.get(meaningMnr);
 			String wordValue = mnrs.get(0).getWord();
@@ -84,7 +88,7 @@ public class MeaningMnrService implements SystemConstant {
 	private Map<String, List<Mnr>> loadSsMnrMap(Properties loaderConf) throws Exception {
 
 		String ssMnrMapFilePath = loaderConf.getProperty("ss1.mnr.map.file");
-		if (StringUtils.isBlank(ssMnrMapFilePath)) {
+		if (isBlank(ssMnrMapFilePath)) {
 			return null;
 		}
 
@@ -95,7 +99,7 @@ public class MeaningMnrService implements SystemConstant {
 		List<Mnr> mappedMnrs;
 		Mnr mnr;
 		for (String resourceFileLine : resourceFileLines) {
-			if (StringUtils.isBlank(resourceFileLine)) {
+			if (isBlank(resourceFileLine)) {
 				continue;
 			}
 			String[] meaningMapParts = StringUtils.split(resourceFileLine, CSV_SEPARATOR);

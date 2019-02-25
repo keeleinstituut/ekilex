@@ -61,9 +61,6 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 
 	private DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-	@Autowired
-	private MeaningMnrService mnrService;
-
 	@Override
 	protected Map<String, String> xpathExpressions() {
 		Map<String, String> experssions = new HashMap<>();
