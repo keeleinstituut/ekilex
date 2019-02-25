@@ -196,6 +196,13 @@
 	padding: 0.5em 0 0 0;
 }
 
+[id^=colloc-usages-area] .btn-speaker {
+	display: initial;
+	float: none;
+	margin-top: -0.8rem;
+	margin-bottom: -1rem;
+}
+
 .btn-speaker, .alert-icn, .lang-btn {
 	outline: none !important;
 }
