@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.ekilex.service.MeaningMnrService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -89,9 +88,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 
 	@Autowired
 	private MabService mabService;
-
-	@Autowired
-	private MeaningMnrService mnrService;
 
 	@Override
 	public String getDataset() {
@@ -594,7 +590,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		final String learnerCommentExp = "x:qkom";
 		final String imageNameExp = "x:plp/x:plg/x:plf";
 		final String asTyypAttr = "as";
-		final String meaningMnrAttr = "tahendusnr";
 
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		List<LexemeToWordData> jointReferences = extractJointReferences(contentNode, reportingId);
@@ -607,7 +602,6 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 			saveSymbol(meaningNumberGroupNode, context, reportingId);
 			WordData abbreviation = extractAbbreviation(meaningNumberGroupNode, context);
 			String lexemeLevel1Str = ((Element)meaningNumberGroupNode).attributeValue(lexemeLevel1Attr);
-			String meaningMnr = ((Element)meaningNumberGroupNode).attributeValue(meaningMnrAttr);
 			String processStateCode =  processStateCodes.get(((Element)meaningNumberGroupNode).attributeValue(asTyypAttr));
 			Integer lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Node> meaningGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
@@ -630,16 +624,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 				List<Usage> usages = extractUsages(usageGroupNodes);
 				List<String> definitions = extractDefinitions(meaningGroupNode);
 
-				Long meaningId = findExistingMeaningId(context, meaningMnr, newWords.get(0), definitions);
+				Long meaningId = findExistingMeaningId(context, newWords.get(0), definitions);
 				if (meaningId == null) {
 					Meaning meaning = new Meaning();
 					meaning.setProcessStateCode(processStateCode);
 					meaningId = createMeaning(meaning);
 				} else {
 					logger.debug("synonym meaning found : {}", newWords.get(0).value);
-				}
-				if (isNotBlank(meaningMnr)) {
-					mnrService.storeMeaningMnr(meaningId, meaningMnr, getDataset());
 				}
 				for (String definition : definitions) {
 					createDefinition(meaningId, definition, dataLang, getDataset());
@@ -733,16 +724,13 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		}
 	}
 
-	private Long findExistingMeaningId(Context context, String meaningMnr, WordData newWord, List<String> definitions) {
+	private Long findExistingMeaningId(Context context, WordData newWord, List<String> definitions) {
 
-		Long meaningId = mnrService.getMappedMeaning(meaningMnr);
-		if (meaningId == null) {
-			String definition = definitions.isEmpty() ? null : definitions.get(0);
-			Optional<SynonymData> existingSynonym = context.synonyms.stream()
-					.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
-					.findFirst();
-			meaningId = existingSynonym.orElse(new SynonymData()).meaningId;
-		}
+		String definition = definitions.isEmpty() ? null : definitions.get(0);
+		Optional<SynonymData> existingSynonym = context.synonyms.stream()
+				.filter(s -> newWord.value.equals(s.word) && newWord.homonymNr == s.homonymNr && Objects.equals(definition, s.definition))
+				.findFirst();
+		Long meaningId = existingSynonym.orElse(new SynonymData()).meaningId;
 		return meaningId;
 	}
 
