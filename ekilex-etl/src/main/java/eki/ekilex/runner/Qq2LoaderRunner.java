@@ -513,7 +513,7 @@ public class Qq2LoaderRunner extends AbstractLoaderRunner {
 		}
 		for (Node definitionValueNode : definitionValueNodes) {
 			String definition = ((Element)definitionValueNode).getTextTrim();
-			createDefinition(meaningId, definition, dataLang, dataset);
+			createOrSelectDefinition(meaningId, definition, dataLang, dataset);
 		}
 	}
 

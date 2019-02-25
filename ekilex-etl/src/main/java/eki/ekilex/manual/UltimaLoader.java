@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import eki.ekilex.service.MeaningMnrService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -68,10 +67,10 @@ public class UltimaLoader extends AbstractLoader {
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
 			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
 			GameDataLoaderRunner gameDataLoaderRunner = getComponent(GameDataLoaderRunner.class);
-			MeaningMnrService meaningMnrService = getComponent(MeaningMnrService.class);
 
 			String dataFilePath, dataFilePath2, dataset;
 			Map<String, List<Guid>> ssGuidMap;
+			Map<String, List<Mnr>> ssMnrMap;
 
 			boolean doReports = doReports();
 			boolean isFullReload = isFullReload();
@@ -97,9 +96,6 @@ public class UltimaLoader extends AbstractLoader {
 			}
 			mabService.initialise();
 
-			// ss meaning map for all
-			meaningMnrService.init(getLoaderConf());
-
 			// ss1 - only when full reload
 			dataset = ss1Runner.getDataset();
 			if (isFullReload) {
@@ -109,6 +105,8 @@ public class UltimaLoader extends AbstractLoader {
 					successfullyLoadedDatasets.add(dataset);
 				}
 			}
+
+			ssMnrMap = getSsMnrMap();
 
 			// psv
 			dataset = psvRunner.getDataset();

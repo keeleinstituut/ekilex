@@ -17,14 +17,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
-import eki.ekilex.service.MeaningMnrService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -501,14 +499,14 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		final String lexemeLevel1Attr = "tnr";
 		final String meaningGroupExp = "s:tg";
 		final String conceptIdExp = "s:tpid";
-		final String meaningMnrAttr = "tahendusnr";
+		final String meaningNrAttr = "tahendusnr";
 
 		List<WordData> derivativeWords = extractDerivativeWords(contentNode, newWords);
 		context.derivativeWords.addAll(derivativeWords);
 
 		List<Node> meaningNumberGroupNodes = contentNode.selectNodes(meaningNumberGroupExp);
 		for (Node meaningNumberGroupNode : meaningNumberGroupNodes) {
-			String meaningMnrForGroup = ((Element)meaningNumberGroupNode).attributeValue(meaningMnrAttr);
+			String meaningNrForGroup = ((Element)meaningNumberGroupNode).attributeValue(meaningNrAttr);
 			String lexemeLevel1Str = ((Element)meaningNumberGroupNode).attributeValue(lexemeLevel1Attr);
 			int lexemeLevel1 = Integer.valueOf(lexemeLevel1Str);
 			List<Node> meanigGroupNodes = meaningNumberGroupNode.selectNodes(meaningGroupExp);
@@ -519,7 +517,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			for (Node meaningGroupNode : meanigGroupNodes) {
 				List<WordData> subWords = processSubWords(meaningGroupNode, context, reportingId);
 				if (!subWords.isEmpty()) {
-					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, meaningMnrForGroup, reportingId);
+					List<Long> createdLexemIds = processMeaning(meaningGroupNode, context, subWords, 1, 1, comments, null, meaningNrForGroup, reportingId);
 					if (!createdLexemIds.isEmpty()) {
 						lexemeLevel2++;
 						for (WordData newWord : newWords) {
@@ -532,7 +530,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 					}
 				} else {
 					lexemeLevel2++;
-					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, meaningMnrForGroup, reportingId);
+					processMeaning(meaningGroupNode, context, newWords, lexemeLevel1, lexemeLevel2, comments, conceptId, meaningNrForGroup, reportingId);
 				}
 			}
 		}
@@ -546,11 +544,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 			int lexemeLevel2,
 			List<CommentData> comments,
 			String conceptId,
-			String meaningMnrForGroup,
+			String meaningNrForGroup,
 			String reportingId) throws Exception {
 
 		final String meaningPosCodeExp = "s:grg/s:sl";
-		final String meaningMnrAttr = "tahendusnr";
+		final String meaningNrAttr = "tahendusnr";
 		List<Long> createdLexemeIds = new ArrayList<>();
 
  		List<Usage> usages = extractUsages(meaningGroupNode);
@@ -558,7 +556,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		List<String> meaningPosCodes = extractPosCodes(meaningGroupNode, meaningPosCodeExp);
 		List<String> adviceNotes = extractAdviceNotes(meaningGroupNode);
 		List<String> publicNotes = extractPublicNotes(meaningGroupNode);
-		String meaningMnr = ((Element)meaningGroupNode).attributeValue(meaningMnrAttr);
+		String meaningNr = ((Element)meaningGroupNode).attributeValue(meaningNrAttr);
 
 		Long meaningId;
 		List<String> definitionsToAdd = new ArrayList<>();
@@ -592,7 +590,7 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		}
 		if (!definitionsToAdd.isEmpty()) {
 			for (String definition : definitionsToAdd) {
-				createDefinition(meaningId, definition, dataLang, getDataset());
+				createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 			}
 			if (definitionsToAdd.size() > 1) {
 				writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
@@ -608,11 +606,11 @@ public class Ss1LoaderRunner extends SsBasedLoaderRunner {
 		if (isNotBlank(conceptId)) {
 			createMeaningFreeform(meaningId, FreeformType.CONCEPT_ID, conceptId);
 		}
-		if (isNotBlank(meaningMnrForGroup)) {
-			mnrService.storeMeaningMnr(meaningId, meaningMnrForGroup, getDataset());
+		if (isNotBlank(meaningNrForGroup)) {
+			createMeaningNr(meaningId, meaningNrForGroup, getDataset());
 		}
-		if (isNotBlank(meaningMnr)) {
-			mnrService.storeMeaningMnr(meaningId, meaningMnr, getDataset());
+		if (isNotBlank(meaningNr)) {
+			createMeaningNr(meaningId, meaningNr, getDataset());
 		}
 		List<String> registers = extractRegisters(meaningGroupNode);
 		processSemanticData(meaningGroupNode, meaningId);

@@ -348,7 +348,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 				createWordTypes(wordId, wordTypeCodes);
 			}
 			if (StringUtils.isNotBlank(dataset) && StringUtils.isNotBlank(guid)) {
-				createWordGuid(wordId, dataset, guid);
+				createWordGuid(wordId, guid, dataset);
 			}
 			if (CollectionUtils.isEmpty(paradigms)) {
 				Long paradigmId = createParadigm(wordId, null, null, false);
@@ -431,7 +431,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 					PgArray guidDatasetCodesArr = (PgArray) tableRowValueMap.get("guid_dataset_codes");
 					String[] guidDatasetCodes = (String[]) guidDatasetCodesArr.getArray();
 					if (!ArrayUtils.contains(guidDatasetCodes, dataset)) {
-						createWordGuid(wordId, dataset, guid);
+						createWordGuid(wordId, guid, dataset);
 					}
 				}
 				return wordId;
@@ -636,14 +636,14 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 	}
 
-	protected void createWordGuid(Long wordId, String dataset, String guid) throws Exception {
+	protected void createWordGuid(Long wordId, String guid, String dataset) throws Exception {
 
 		guid = guid.toLowerCase();
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("word_id", wordId);
-		tableRowParamMap.put("dataset_code", dataset);
 		tableRowParamMap.put("guid", guid);
+		tableRowParamMap.put("dataset_code", dataset);
 		basicDbService.create(WORD_GUID, tableRowParamMap);
 	}
 
@@ -717,6 +717,17 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		return meaningId;
 	}
 
+	protected void createMeaningNr(Long meaningId, String mnr, String dataset) throws Exception {
+
+		mnr = mnr.toLowerCase();
+
+		Map<String, Object> tableRowParamMap = new HashMap<>();
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("mnr", mnr);
+		tableRowParamMap.put("dataset_code", dataset);
+		basicDbService.createIfNotExists(MEANING_NR, tableRowParamMap);
+	}
+
 	protected void createMeaningDomain(Long meaningId, String domainCode, String domainOrigin) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
@@ -727,29 +738,33 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.MEANING, LifecycleProperty.DOMAIN, meaningDomainId, domainCode);
 	}
 
-	protected Long createDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
+	protected Long createOrSelectDefinition(Long meaningId, String value, String lang, String dataset) throws Exception {
 
 		String valueClean = cleanEkiEntityMarkup(value);
-		String valuePrese = convertEkiEntityMarkup(value);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		Long definitionId = findDefinitionId(meaningId, valueClean);
-		if (definitionId == null) {
+		tableRowParamMap.put("meaning_id", meaningId);
+		tableRowParamMap.put("value", valueClean);
+		Map<String, Object> definition = basicDbService.select(DEFINITION, tableRowParamMap);
+		Long definitionId = null;
+		if (MapUtils.isEmpty(definition)) {
+			String valuePrese = convertEkiEntityMarkup(value);
+			tableRowParamMap.clear();
 			tableRowParamMap.put("meaning_id", meaningId);
 			tableRowParamMap.put("value", valueClean);
 			tableRowParamMap.put("value_prese", valuePrese);
 			tableRowParamMap.put("lang", lang);
 			definitionId = basicDbService.create(DEFINITION, tableRowParamMap);
 			createLifecycleLog(LifecycleLogOwner.MEANING, meaningId, LifecycleEventType.CREATE, LifecycleEntity.DEFINITION, LifecycleProperty.VALUE, definitionId, value);
+		} else {
+			definitionId = (Long) definition.get("id");
 		}
-		if (definitionId != null) {
-			tableRowParamMap.clear();
-			tableRowParamMap.put("definition_id", definitionId);
-			tableRowParamMap.put("dataset_code", dataset);
-			Map<String, Object> result = basicDbService.select(DEFINITION_DATASET, tableRowParamMap);
-			if (MapUtils.isEmpty(result)) {
-				basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
-			}
+		tableRowParamMap.clear();
+		tableRowParamMap.put("definition_id", definitionId);
+		tableRowParamMap.put("dataset_code", dataset);
+		Map<String, Object> definitionDataset = basicDbService.select(DEFINITION_DATASET, tableRowParamMap);
+		if (MapUtils.isEmpty(definitionDataset)) {
+			basicDbService.createWithoutId(DEFINITION_DATASET, tableRowParamMap);
 		}
 		return definitionId;
 	}
@@ -1253,14 +1268,6 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		}
 		String logRow = StringUtils.join(reportCells, CSV_SEPARATOR);
 		reportComposer.append(reportName, logRow);
-	}
-
-	private Long findDefinitionId(Long meaningId, String definition) throws Exception {
-		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("meaning_id", meaningId);
-		tableRowParamMap.put("value", definition);
-		Map<String, Object> result = basicDbService.select(DEFINITION, tableRowParamMap);
-		return MapUtils.isEmpty(result) ? null : (Long) result.get("id");
 	}
 
 	class AffixoidData {

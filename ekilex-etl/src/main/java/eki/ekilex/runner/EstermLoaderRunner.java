@@ -696,7 +696,7 @@ public class EstermLoaderRunner extends AbstractLoaderRunner implements EstermLo
 			String definition = definitionObj.getValue();
 			String lang = definitionObj.getLang();
 			List<Ref> refs = definitionObj.getRefs();
-			Long definitionId = createDefinition(meaningId, definition, lang, getDataset());
+			Long definitionId = createOrSelectDefinition(meaningId, definition, lang, getDataset());
 			definitionObj.setId(definitionId);
 			for (Ref ref : refs) {
 				createSourceLink(SourceOwner.DEFINITION, definitionId, ref, concept, term);

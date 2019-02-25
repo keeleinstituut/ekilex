@@ -21,6 +21,7 @@ import eki.common.exception.DataLoadingException;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.data.transform.DatasetId;
 import eki.ekilex.data.transform.Guid;
+import eki.ekilex.data.transform.Mnr;
 
 public abstract class AbstractLoader implements SystemConstant {
 
@@ -49,10 +50,6 @@ public abstract class AbstractLoader implements SystemConstant {
 		loaderConf = new Properties();
 		loaderConf.load(confStream);
 		confStream.close();
-	}
-
-	public Properties getLoaderConf() {
-		return loaderConf;
 	}
 
 	protected <T> T getComponent(Class<T> componentType) {
@@ -172,6 +169,45 @@ public abstract class AbstractLoader implements SystemConstant {
 			}
 		}
 		return ssGuidMap;
+	}
+
+	public Map<String, List<Mnr>> getSsMnrMap() throws Exception {
+
+		String ssMnrMapFilePath = loaderConf.getProperty("ss1.mnr.map.file");
+		if (StringUtils.isBlank(ssMnrMapFilePath)) {
+			return null;
+		}
+
+		InputStream resourceInputStream = new FileInputStream(ssMnrMapFilePath);
+		List<String> resourceFileLines = IOUtils.readLines(resourceInputStream, UTF_8);
+		resourceInputStream.close();
+		Map<String, List<Mnr>> ssMnrMap = new HashMap<>();
+		List<Mnr> mappedMnrs;
+		Mnr mnr;
+		for (String resourceFileLine : resourceFileLines) {
+			if (StringUtils.isBlank(resourceFileLine)) {
+				continue;
+			}
+			String[] ssMnrMapRowCells = StringUtils.split(resourceFileLine, CSV_SEPARATOR);
+			if (ssMnrMapRowCells.length != 3) {
+				throw new DataLoadingException("Invalid mnr map line \"" + resourceFileLine + "\"");
+			}
+			String sourceMnr = ssMnrMapRowCells[0];
+			String targetMnr = ssMnrMapRowCells[1];
+			String word = ssMnrMapRowCells[2];
+			mappedMnrs = ssMnrMap.get(sourceMnr);
+			if (mappedMnrs == null) {
+				mappedMnrs = new ArrayList<>();
+				ssMnrMap.put(sourceMnr, mappedMnrs);
+			}
+			mnr = new Mnr();
+			mnr.setValue(targetMnr);
+			mnr.setWord(word);
+			if (!mappedMnrs.contains(mnr)) {
+				mappedMnrs.add(mnr);
+			}
+		}
+		return ssMnrMap;
 	}
 
 	private String correctDatasetCode(String datasetCode) {

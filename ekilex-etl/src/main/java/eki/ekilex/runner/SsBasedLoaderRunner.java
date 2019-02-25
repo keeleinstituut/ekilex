@@ -14,7 +14,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import eki.ekilex.service.MeaningMnrService;
+import eki.ekilex.service.MeaningNrService;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
@@ -69,7 +69,7 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	private MabService mabService;
 
 	@Autowired
-	protected MeaningMnrService mnrService;
+	protected MeaningNrService mnrService;
 
 	@Override
 	void initialise() throws Exception {

@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static eki.common.constant.TableName.MEANING_MNR;
+import static eki.common.constant.TableName.MEANING_NR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
-public class MeaningMnrService implements SystemConstant {
+public class MeaningNrService implements SystemConstant {
 
 	private final static String MAIN_DATASET = "ss1";
 
-	private static Logger logger = LoggerFactory.getLogger(MeaningMnrService.class);
+	private static Logger logger = LoggerFactory.getLogger(MeaningNrService.class);
 
 	@Autowired
 	protected BasicDbService basicDbService;
@@ -41,23 +41,23 @@ public class MeaningMnrService implements SystemConstant {
 		logger.debug("Meaning MNR service ready!");
 	}
 
-	public Long getMappedMeaning(String meaningMnr) {
+	public Long getMappedMeaning(String meaningNr) {
 		Long meaningId = null;
-		if (isBlank(meaningMnr)) {
+		if (isBlank(meaningNr)) {
 			return meaningId;
 		}
-		if (ssMnrMap.containsKey(meaningMnr)) {
-			List<Mnr> mnrs = ssMnrMap.get(meaningMnr);
+		if (ssMnrMap.containsKey(meaningNr)) {
+			List<Mnr> mnrs = ssMnrMap.get(meaningNr);
 			String wordValue = mnrs.get(0).getWord();
 			if (mnrs.size() > 1) {
 				logger.debug("More than one meaning mapped from SS1 : {}", wordValue);
 			}
 			try {
 				String mnr = mnrs.get(0).getValue();
-				List<Map<String, Object>> meaningMnrs = getMeaningMnrs(mnr, MAIN_DATASET);
-				if (!meaningMnrs.isEmpty()) {
-					meaningId =  (Long) meaningMnrs.get(0).get("meaning_id");
-					if (meaningMnrs.size() > 1) {
+				List<Map<String, Object>> meaningNrs = getMeaningNrs(mnr, MAIN_DATASET);
+				if (!meaningNrs.isEmpty()) {
+					meaningId =  (Long) meaningNrs.get(0).get("meaning_id");
+					if (meaningNrs.size() > 1) {
 						logger.debug("More than one meaning found in Ekilex : {} : mnr {}", wordValue, mnr);
 					}
 				}
@@ -68,21 +68,21 @@ public class MeaningMnrService implements SystemConstant {
 		return meaningId;
 	}
 
-	public void storeMeaningMnr(Long meaningId, String mnr, String dataset) throws Exception {
+	public void storeMeaningNr(Long meaningId, String mnr, String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
 		tableRowParamMap.put("meaning_id", meaningId);
 		tableRowParamMap.put("mnr", mnr.toLowerCase());
 		tableRowParamMap.put("dataset_code", dataset);
-		basicDbService.createIfNotExists(MEANING_MNR, tableRowParamMap);
+		basicDbService.createIfNotExists(MEANING_NR, tableRowParamMap);
 	}
 
-	private List<Map<String, Object>> getMeaningMnrs(String meaningMnr, String dataset) throws Exception {
+	private List<Map<String, Object>> getMeaningNrs(String meaningNr, String dataset) throws Exception {
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
-		tableRowParamMap.put("mnr", meaningMnr.toLowerCase());
+		tableRowParamMap.put("mnr", meaningNr.toLowerCase());
 		tableRowParamMap.put("dataset_code", dataset);
-		return basicDbService.selectAll(MEANING_MNR, tableRowParamMap);
+		return basicDbService.selectAll(MEANING_NR, tableRowParamMap);
 	}
 
 	private Map<String, List<Mnr>> loadSsMnrMap(Properties loaderConf) throws Exception {

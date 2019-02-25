@@ -357,7 +357,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 					List<String> definitions = extractCleanValues(meaningGroupNode, definitionsExp);
 					for (String definition : definitions) {
-						createDefinition(meaningId, definition, dataLang, getDataset());
+						createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 					}
 
 					List<String> domains = extractCleanValues(meaningGroupNode, domainsExp);
@@ -512,7 +512,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				}
 				if (!definitionsToAdd.isEmpty()) {
 					for (String definition : definitionsToAdd) {
-						createDefinition(meaningId, definition, dataLang, getDataset());
+						createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 					}
 					if (definitionsToAdd.size() > 1) {
 						writeToLogFile(DESCRIPTIONS_REPORT_NAME, reportingId, "Leitud rohkem kui üks seletus <s:d>", newWords.get(0).value);
@@ -658,7 +658,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 
 								List<String> definitions = extractCleanValues(meaningGroupNode, definitionExp);
 								for (String definition : definitions) {
-									createDefinition(meaningId, definition, dataLang, getDataset());
+									createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 								}
 								Lexeme lexeme = new Lexeme();
 								lexeme.setWordId(wordData.id);

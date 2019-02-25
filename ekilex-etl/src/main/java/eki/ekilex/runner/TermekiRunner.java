@@ -326,7 +326,7 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			if (conceptMeanings.containsKey(conceptId)) {
 				Long meaningId = conceptMeanings.get(conceptId);
 				String definitionValue = (String) definition.get("definition");
-				Long definitionId = createDefinition(meaningId, definitionValue, language, dataset);
+				Long definitionId = createOrSelectDefinition(meaningId, definitionValue, language, dataset);
 				definitionsCount++;
 				String publicNote = (String) definition.get("description");
 				if (isNotBlank(publicNote)) {

@@ -505,7 +505,7 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		List<Node> meaningDefinitionNodes = meaningDefinitionGroupNode.selectNodes(meaningDefinitionExp);
 		for (Node meaningDefinitionNode : meaningDefinitionNodes) {
 			String definition = ((Element)meaningDefinitionNode).getTextTrim();
-			createDefinition(meaningId, definition, dataLang, getDataset());
+			createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 		}
 	}
 

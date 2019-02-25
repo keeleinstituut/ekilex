@@ -546,6 +546,16 @@ create table meaning
 );
 alter sequence meaning_id_seq restart with 10000;
 
+create table meaning_nr
+(
+  id bigserial primary key,
+  meaning_id bigint references meaning(id) on delete cascade not null,
+  mnr varchar(100) not null,
+  dataset_code varchar(10) references dataset(code) not null,
+  unique(meaning_id, mnr, dataset_code)
+);
+alter sequence meaning_mnr_id_seq restart with 10000;
+
 -- tähenduse seos
 create table meaning_relation
 (
@@ -843,16 +853,6 @@ create table feedback_log
 );
 alter sequence feedback_log_id_seq restart with 10000;
 
-create table meaning_mnr
-(
-  id bigserial primary key,
-  meaning_id bigint references meaning(id) on delete cascade not null,
-  mnr varchar(100) not null,
-  dataset_code varchar(10) references dataset(code) not null,
-  unique(meaning_id, mnr, dataset_code)
-);
-alter sequence meaning_mnr_id_seq restart with 10000;
-
 --- indexes
 
 create index form_value_idx on form(value);
@@ -872,6 +872,9 @@ create index word_guid_dataset_code_idx on word_guid(dataset_code);
 create index word_guid_guid_idx on word_guid(guid);
 create index word_group_member_group_id_idx on word_group_member(word_group_id);
 create index word_group_member_word_id_idx on word_group_member(word_id);
+create index meaning_nr_meaning_id_idx on meaning_nr(meaning_id);
+create index meaning_nr_dataset_code_idx on meaning_nr(dataset_code);
+create index meaning_nr_mnr_idx on meaning_mnr(mnr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
 create index definition_meaning_id_idx on definition(meaning_id);
@@ -919,9 +922,6 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
-create index meaning_mnr_meaning_id_idx on meaning_mnr(meaning_id);
-create index meaning_mnr_dataset_code_idx on meaning_mnr(dataset_code);
-create index meaning_mnr_mnr_idx on meaning_mnr(mnr);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));

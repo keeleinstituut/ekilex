@@ -1,6 +1,5 @@
 package eki.ekilex.manual;
 
-import eki.ekilex.service.MeaningMnrService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,9 +30,6 @@ public class Ss1Loader extends AbstractLoader {
 
 			// mab
 			mabService.initialise(); //MAB must be loaded first!
-
-			MeaningMnrService meaningMnrService = getComponent(MeaningMnrService.class);
-			meaningMnrService.init(getLoaderConf());
 
 			// ss
 			String ssFilePath = getMandatoryConfProperty("ss1.data.file");

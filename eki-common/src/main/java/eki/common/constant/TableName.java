@@ -22,6 +22,7 @@ public interface TableName {
 	String WORD = "word";
 	String LEXEME = "lexeme";
 	String MEANING = "meaning";
+	String MEANING_NR = "meaning_nr";
 	String DEFINITION = "definition";
 	String PARADIGM = "paradigm";
 	String FORM = "form";
@@ -53,7 +54,6 @@ public interface TableName {
 	String LEXEME_LIFECYCLE_LOG = "lexeme_lifecycle_log";
 	String MEANING_LIFECYCLE_LOG = "meaning_lifecycle_log";
 	String GAME_NONWORD = "game_nonword";
-	String MEANING_MNR = "meaning_mnr";
 
 	// classifier binds
 	String MEANING_DOMAIN = "meaning_domain";

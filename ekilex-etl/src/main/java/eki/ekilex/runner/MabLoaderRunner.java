@@ -342,7 +342,7 @@ public class MabLoaderRunner extends AbstractLoaderRunner {
 
 	protected Long createWordAndGuid(String guid, String word, int homonymNr, String lang, String wordClass) throws Exception {
 		Long wordId = createWord(word, null, homonymNr, wordClass, lang, null, null, null);
-		createWordGuid(wordId, getDataset(), guid);
+		createWordGuid(wordId, guid, getDataset());
 		return wordId;
 	}
 }

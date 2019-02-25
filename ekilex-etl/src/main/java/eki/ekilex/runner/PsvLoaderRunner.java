@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.ekilex.service.MeaningMnrService;
+import eki.ekilex.service.MeaningNrService;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
@@ -91,7 +91,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 	private MabService mabService;
 
 	@Autowired
-	private MeaningMnrService mnrService;
+	private MeaningNrService mnrService;
 
 	@Override
 	public String getDataset() {
@@ -418,7 +418,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 		lexeme.setLevel2(1);
 		lexeme.setLevel3(1);
 		if (isNotBlank(wordData.definition)) {
-			createDefinition(meaningId, wordData.definition, dataLang, getDataset());
+			createOrSelectDefinition(meaningId, wordData.definition, dataLang, getDataset());
 		}
 		createdLexemeData.lexemeId = createLexeme(lexeme, getDataset());
 		return createdLexemeData;
@@ -639,10 +639,10 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					logger.debug("synonym meaning found : {}", newWords.get(0).value);
 				}
 				if (isNotBlank(meaningMnr)) {
-					mnrService.storeMeaningMnr(meaningId, meaningMnr, getDataset());
+					mnrService.storeMeaningNr(meaningId, meaningMnr, getDataset());
 				}
 				for (String definition : definitions) {
-					createDefinition(meaningId, definition, dataLang, getDataset());
+					createOrSelectDefinition(meaningId, definition, dataLang, getDataset());
 				}
 
 				if (isNotBlank(learnerComment)) {
