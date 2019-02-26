@@ -588,7 +588,7 @@ s_tyyp	s_tyyp	van	archaic	en	register	van
 s_tyyp	s_tyyp	vulg	vulgaarne	et	register	vulg
 s_tyyp	s_tyyp	vulg	vulgar	en	register	vulg
 sa_tyyp	sa_tyyp	s	sarja liige	et	-	-
-sag_tyyp	sagedusrühm	1	jaan.00	et	frequency_group	1
+sag_tyyp	sagedusrühm	1	1 - kuni 3000	et	frequency_group	1
 sag_tyyp	sagedusrühm	2	2 - 3000-6000	et	frequency_group	2
 sag_tyyp	sagedusrühm	3	3 - 6000-10000	et	frequency_group	3
 sag_tyyp	sagedusrühm	4	4 - pole sag_S-s	et	frequency_group	4

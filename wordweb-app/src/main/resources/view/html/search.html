@@ -395,12 +395,15 @@
                                     </span>
                                   </span>
                                 </div>
-                                <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}" class="row"
-                                  style="display: none">
-                                  <div style="padding: 0px 20px; width: 100%" th:each="collocUsage : ${collocRelGr.allUsages}">
+                                <div th:id="${'colloc-usages-area-' + collocPosGr.posGroupId + '-' + collocRelGr.relGroupId}" th:if="${not #lists.isEmpty(collocRelGr.allUsages)}"
+                                     class="row pb-3" style="display: none">
+                                  <div class="col-12" th:each="collocUsage : ${collocRelGr.allUsages}">
                                     <span class="font-weight-light" th:text="${collocUsage}"></span>
+                                    <button th:aria-label="|#{aria.listen} - ${collocUsage}|" class="btn btn-speaker"
+                                            th:data-words="${collocUsage}" onclick="generateVoiceAndPlay(this)">
+                                      <span class="icon icon-speaker"></span>
+                                    </button>
                                   </div>
-                                  <div>&nbsp;</div>
                                 </div>
                               </div>
                             </div>

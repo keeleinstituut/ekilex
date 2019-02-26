@@ -181,7 +181,7 @@ function generateVoiceAndPlay(e) {
 	elem.data('is-playing', '');
 
 	var content;
-	var buttonSpeaker = elem.find('.btn-speaker');
+	var buttonSpeaker = elem.find('.btn-speaker').addBack('.btn-speaker');
 	if (buttonSpeaker.length !== 0) {
 		content = buttonSpeaker.html();
 		buttonSpeaker.html('<i class="fa fa-spinner fa-spin"></i>');
