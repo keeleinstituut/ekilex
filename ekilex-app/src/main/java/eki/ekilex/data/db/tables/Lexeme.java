@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Lexeme extends TableImpl<LexemeRecord> {
 
-    private static final long serialVersionUID = 2085981006;
+    private static final long serialVersionUID = -327949275;
 
     /**
      * The reference instance of <code>public.lexeme</code>
@@ -99,9 +99,9 @@ public class Lexeme extends TableImpl<LexemeRecord> {
     public final TableField<LexemeRecord, String> MODIFIED_BY = createField("modified_by", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
-     * The column <code>public.lexeme.frequency_group</code>.
+     * The column <code>public.lexeme.frequency_group_code</code>.
      */
-    public final TableField<LexemeRecord, String> FREQUENCY_GROUP = createField("frequency_group", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
+    public final TableField<LexemeRecord, String> FREQUENCY_GROUP_CODE = createField("frequency_group_code", org.jooq.impl.SQLDataType.VARCHAR(100), this, "");
 
     /**
      * The column <code>public.lexeme.corpus_frequency</code>.
@@ -216,7 +216,7 @@ public class Lexeme extends TableImpl<LexemeRecord> {
      */
     @Override
     public List<ForeignKey<LexemeRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY, Keys.LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY);
+        return Arrays.<ForeignKey<LexemeRecord, ?>>asList(Keys.LEXEME__LEXEME_WORD_ID_FKEY, Keys.LEXEME__LEXEME_MEANING_ID_FKEY, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY, Keys.LEXEME__LEXEME_VALUE_STATE_CODE_FKEY, Keys.LEXEME__LEXEME_PROCESS_STATE_CODE_FKEY);
     }
 
     public Word word() {
@@ -231,8 +231,8 @@ public class Lexeme extends TableImpl<LexemeRecord> {
         return new Dataset(this, Keys.LEXEME__LEXEME_DATASET_CODE_FKEY);
     }
 
-    public LexemeFrequency lexemeFrequency() {
-        return new LexemeFrequency(this, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_FKEY);
+    public FrequencyGroup frequencyGroup() {
+        return new FrequencyGroup(this, Keys.LEXEME__LEXEME_FREQUENCY_GROUP_CODE_FKEY);
     }
 
     public ValueState valueState() {

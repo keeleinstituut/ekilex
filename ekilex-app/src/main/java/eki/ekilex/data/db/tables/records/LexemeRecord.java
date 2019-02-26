@@ -31,7 +31,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements Record16<Long, Long, Long, String, Timestamp, String, Timestamp, String, String, BigDecimal, Integer, Integer, Integer, String, String, Long> {
 
-    private static final long serialVersionUID = -569249941;
+    private static final long serialVersionUID = -157346302;
 
     /**
      * Setter for <code>public.lexeme.id</code>.
@@ -146,16 +146,16 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     }
 
     /**
-     * Setter for <code>public.lexeme.frequency_group</code>.
+     * Setter for <code>public.lexeme.frequency_group_code</code>.
      */
-    public void setFrequencyGroup(String value) {
+    public void setFrequencyGroupCode(String value) {
         set(8, value);
     }
 
     /**
-     * Getter for <code>public.lexeme.frequency_group</code>.
+     * Getter for <code>public.lexeme.frequency_group_code</code>.
      */
-    public String getFrequencyGroup() {
+    public String getFrequencyGroupCode() {
         return (String) get(8);
     }
 
@@ -358,7 +358,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public Field<String> field9() {
-        return Lexeme.LEXEME.FREQUENCY_GROUP;
+        return Lexeme.LEXEME.FREQUENCY_GROUP_CODE;
     }
 
     /**
@@ -486,7 +486,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public String component9() {
-        return getFrequencyGroup();
+        return getFrequencyGroupCode();
     }
 
     /**
@@ -614,7 +614,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public String value9() {
-        return getFrequencyGroup();
+        return getFrequencyGroupCode();
     }
 
     /**
@@ -750,7 +750,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
      */
     @Override
     public LexemeRecord value9(String value) {
-        setFrequencyGroup(value);
+        setFrequencyGroupCode(value);
         return this;
     }
 
@@ -855,7 +855,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
     /**
      * Create a detached, initialised LexemeRecord
      */
-    public LexemeRecord(Long id, Long wordId, Long meaningId, String datasetCode, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String frequencyGroup, BigDecimal corpusFrequency, Integer level1, Integer level2, Integer level3, String valueStateCode, String processStateCode, Long orderBy) {
+    public LexemeRecord(Long id, Long wordId, Long meaningId, String datasetCode, Timestamp createdOn, String createdBy, Timestamp modifiedOn, String modifiedBy, String frequencyGroupCode, BigDecimal corpusFrequency, Integer level1, Integer level2, Integer level3, String valueStateCode, String processStateCode, Long orderBy) {
         super(Lexeme.LEXEME);
 
         set(0, id);
@@ -866,7 +866,7 @@ public class LexemeRecord extends UpdatableRecordImpl<LexemeRecord> implements R
         set(5, createdBy);
         set(6, modifiedOn);
         set(7, modifiedBy);
-        set(8, frequencyGroup);
+        set(8, frequencyGroupCode);
         set(9, corpusFrequency);
         set(10, level1);
         set(11, level2);

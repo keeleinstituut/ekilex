@@ -13,15 +13,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class BasicDbService extends AbstractDbService {
 
-	public void executeScript(String sqlScript) {
+	public int executeScript(String sqlScript) {
 
 		Map<String, ?> paramMap = new HashMap<>();
-		jdbcTemplate.update(sqlScript, paramMap);
+		return jdbcTemplate.update(sqlScript, paramMap);
 	}
 
-	public void executeScript(String sqlScript, Map<String, Object> paramMap) {
+	public int executeScript(String sqlScript, Map<String, Object> paramMap) {
 
-		jdbcTemplate.update(sqlScript, paramMap);
+		return jdbcTemplate.update(sqlScript, paramMap);
 	}
 
 	public <T> List<T> queryList(String sqlScript, Map<String, ?> paramMap, Class<T> fieldType) {

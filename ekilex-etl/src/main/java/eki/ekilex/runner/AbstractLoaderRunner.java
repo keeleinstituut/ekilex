@@ -780,7 +780,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		Integer lexemeLevel1 = lexeme.getLevel1();
 		Integer lexemeLevel2 = lexeme.getLevel2();
 		Integer lexemeLevel3 = lexeme.getLevel3();
-		String frequencyGroup = lexeme.getFrequencyGroup();
+		String frequencyGroupCode = lexeme.getFrequencyGroupCode();
 		String valueStateCode = lexeme.getValueStateCode();
 		String processStateCode = lexeme.getProcessStateCode();
 		Float corpusFrequency = lexeme.getCorpusFrequency();
@@ -816,8 +816,8 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 			if (lexemeLevel3 != null) {
 				valueParamMap.put("level3", lexemeLevel3);
 			}
-			if (StringUtils.isNotBlank(frequencyGroup)) {
-				valueParamMap.put("frequency_group", frequencyGroup);
+			if (StringUtils.isNotBlank(frequencyGroupCode)) {
+				valueParamMap.put("frequency_group_code", frequencyGroupCode);
 			}
 			if (StringUtils.isNotBlank(valueStateCode)) {
 				valueParamMap.put("value_state_code", valueStateCode);

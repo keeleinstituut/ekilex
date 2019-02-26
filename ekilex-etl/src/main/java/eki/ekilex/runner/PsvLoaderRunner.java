@@ -663,7 +663,7 @@ public class PsvLoaderRunner extends AbstractLoaderRunner {
 					lexeme.setLevel1(lexemeLevel1);
 					lexeme.setLevel2(lexemeLevel2);
 					lexeme.setLevel3(1);
-					lexeme.setFrequencyGroup(newWordData.frequencyGroup);
+					lexeme.setFrequencyGroupCode(newWordData.frequencyGroup);
 					Long lexemeId = createLexeme(lexeme, getDataset());
 					if (lexemeId == null) {
 						context.lexemeDuplicateCount.increment();

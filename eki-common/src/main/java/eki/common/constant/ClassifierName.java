@@ -7,7 +7,7 @@ public enum ClassifierName {
 	DOMAIN(true),
 	GOVERNMENT_TYPE(true),
 	REGISTER(true),
-	LEXEME_FREQUENCY(false),
+	FREQUENCY_GROUP(false),
 	GENDER(true),
 	POS(true),
 	MORPH(true),

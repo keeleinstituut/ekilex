@@ -418,7 +418,7 @@ public class UpdateService {
 		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
 		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);
 		if (lexeme.getDatasetCode().equals(lexeme2.getDatasetCode()) && lexeme.getWordId().equals(lexeme2.getWordId())) {
-			if (!Objects.equals(lexeme.getFrequencyGroup(), lexeme2.getFrequencyGroup())) {
+			if (!Objects.equals(lexeme.getFrequencyGroupCode(), lexeme2.getFrequencyGroupCode())) {
 				validationMessages.add("Ilmikute sagedusrühmad on erinevad.");
 			}
 		}

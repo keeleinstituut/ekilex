@@ -249,7 +249,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				lexeme.setLevel1(wordData.level1);
 				lexeme.setLevel2(1);
 				lexeme.setLevel3(1);
-				lexeme.setFrequencyGroup(wordData.frequencyGroup);
+				lexeme.setFrequencyGroupCode(wordData.frequencyGroup);
 				wordData.level1++;
 				Long lexemeId = createLexeme(lexeme, getDataset());
 				if (lexemeId != null) {

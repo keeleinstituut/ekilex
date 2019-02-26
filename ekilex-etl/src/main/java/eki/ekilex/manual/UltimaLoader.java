@@ -19,6 +19,7 @@ import eki.ekilex.runner.EstermLoaderRunner;
 import eki.ekilex.runner.EstermSourceLoaderRunner;
 import eki.ekilex.runner.EtymologyLoaderRunner;
 import eki.ekilex.runner.Ev2LoaderRunner;
+import eki.ekilex.runner.FrequencyUpdateRunner;
 import eki.ekilex.runner.GameDataLoaderRunner;
 import eki.ekilex.runner.MabLoaderRunner;
 import eki.ekilex.runner.PsvLoaderRunner;
@@ -65,6 +66,7 @@ public class UltimaLoader extends AbstractLoader {
 			EstermSourceLoaderRunner estSrcRunner = getComponent(EstermSourceLoaderRunner.class);
 			EstermLoaderRunner estRunner = getComponent(EstermLoaderRunner.class);
 			TermekiRunner termekiRunner = getComponent(TermekiRunner.class);
+			FrequencyUpdateRunner freqUpdateRunner = getComponent(FrequencyUpdateRunner.class);
 			VoiceFileUpdaterRunner voiceFileUpdaterRunner = getComponent(VoiceFileUpdaterRunner.class);
 			GameDataLoaderRunner gameDataLoaderRunner = getComponent(GameDataLoaderRunner.class);
 
@@ -206,6 +208,17 @@ public class UltimaLoader extends AbstractLoader {
 						successfullyLoadedDatasets.add(dataset);
 					}
 				}
+			}
+
+			// form + lexeme corp frequencies
+			dataFilePath = getConfProperty("freq.lex.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				freqUpdateRunner.executeLexemeFrequencyUpdate(dataFilePath);
+			}
+
+			dataFilePath = getConfProperty("freq.form.file");
+			if (StringUtils.isNotBlank(dataFilePath)) {
+				freqUpdateRunner.executeFormFrequencyUpdate(dataFilePath);
 			}
 
 			// sound file names updater

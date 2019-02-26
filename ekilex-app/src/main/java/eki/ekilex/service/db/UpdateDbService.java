@@ -163,9 +163,9 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
-	public void updateLexemeFrequencyGroup(Long lexemeId, String groupCode) {
+	public void updateLexemeFrequencyGroup(Long lexemeId, String frequencyGroupCode) {
 		create.update(LEXEME)
-				.set(LEXEME.FREQUENCY_GROUP, groupCode)
+				.set(LEXEME.FREQUENCY_GROUP_CODE, frequencyGroupCode)
 				.where(LEXEME.ID.eq(lexemeId))
 				.execute();
 	}

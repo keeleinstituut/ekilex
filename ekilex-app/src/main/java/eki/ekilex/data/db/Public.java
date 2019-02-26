@@ -23,8 +23,10 @@ import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
@@ -52,6 +54,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
+import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -134,7 +137,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1364684522;
+    private static final long serialVersionUID = 1435965725;
 
     /**
      * The reference instance of <code>public</code>
@@ -237,6 +240,11 @@ public class Public extends SchemaImpl {
     public final Form FORM = eki.ekilex.data.db.tables.Form.FORM;
 
     /**
+     * The table <code>public.form_frequency</code>.
+     */
+    public final FormFrequency FORM_FREQUENCY = eki.ekilex.data.db.tables.FormFrequency.FORM_FREQUENCY;
+
+    /**
      * The table <code>public.freeform</code>.
      */
     public final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
@@ -245,6 +253,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.freeform_source_link</code>.
      */
     public final FreeformSourceLink FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.FreeformSourceLink.FREEFORM_SOURCE_LINK;
+
+    /**
+     * The table <code>public.frequency_group</code>.
+     */
+    public final FrequencyGroup FREQUENCY_GROUP = eki.ekilex.data.db.tables.FrequencyGroup.FREQUENCY_GROUP;
 
     /**
      * The table <code>public.game_nonword</code>.
@@ -380,6 +393,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.meaning_lifecycle_log</code>.
      */
     public final MeaningLifecycleLog MEANING_LIFECYCLE_LOG = eki.ekilex.data.db.tables.MeaningLifecycleLog.MEANING_LIFECYCLE_LOG;
+
+    /**
+     * The table <code>public.meaning_nr</code>.
+     */
+    public final MeaningNr MEANING_NR = eki.ekilex.data.db.tables.MeaningNr.MEANING_NR;
 
     /**
      * The table <code>public.meaning_rel_type</code>.
@@ -651,11 +669,13 @@ public class Public extends SchemaImpl {
             Sequences.EKI_USER_ID_SEQ,
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
+            Sequences.FORM_FREQUENCY_ID_SEQ,
             Sequences.FORM_ID_SEQ,
             Sequences.FREEFORM_ID_SEQ,
             Sequences.FREEFORM_ORDER_BY_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ID_SEQ,
             Sequences.FREEFORM_SOURCE_LINK_ORDER_BY_SEQ,
+            Sequences.FREQUENCY_GROUP_ORDER_BY_SEQ,
             Sequences.GAME_NONWORD_ID_SEQ,
             Sequences.GENDER_ORDER_BY_SEQ,
             Sequences.GOVERNMENT_TYPE_ORDER_BY_SEQ,
@@ -670,7 +690,7 @@ public class Public extends SchemaImpl {
             Sequences.LEX_RELATION_ORDER_BY_SEQ,
             Sequences.LEXEME_DERIV_ID_SEQ,
             Sequences.LEXEME_FREEFORM_ID_SEQ,
-            Sequences.LEXEME_FREQUENCY_ORDER_BY_SEQ,
+            Sequences.LEXEME_FREQUENCY_ID_SEQ,
             Sequences.LEXEME_ID_SEQ,
             Sequences.LEXEME_LIFECYCLE_LOG_ID_SEQ,
             Sequences.LEXEME_ORDER_BY_SEQ,
@@ -686,6 +706,7 @@ public class Public extends SchemaImpl {
             Sequences.MEANING_FREEFORM_ID_SEQ,
             Sequences.MEANING_ID_SEQ,
             Sequences.MEANING_LIFECYCLE_LOG_ID_SEQ,
+            Sequences.MEANING_NR_ID_SEQ,
             Sequences.MEANING_REL_TYPE_ORDER_BY_SEQ,
             Sequences.MEANING_RELATION_ID_SEQ,
             Sequences.MEANING_RELATION_ORDER_BY_SEQ,
@@ -745,8 +766,10 @@ public class Public extends SchemaImpl {
             EtymologyType.ETYMOLOGY_TYPE,
             FeedbackLog.FEEDBACK_LOG,
             Form.FORM,
+            FormFrequency.FORM_FREQUENCY,
             Freeform.FREEFORM,
             FreeformSourceLink.FREEFORM_SOURCE_LINK,
+            FrequencyGroup.FREQUENCY_GROUP,
             GameNonword.GAME_NONWORD,
             Gender.GENDER,
             GenderLabel.GENDER_LABEL,
@@ -774,6 +797,7 @@ public class Public extends SchemaImpl {
             MeaningDomain.MEANING_DOMAIN,
             MeaningFreeform.MEANING_FREEFORM,
             MeaningLifecycleLog.MEANING_LIFECYCLE_LOG,
+            MeaningNr.MEANING_NR,
             MeaningRelType.MEANING_REL_TYPE,
             MeaningRelTypeLabel.MEANING_REL_TYPE_LABEL,
             MeaningRelation.MEANING_RELATION,

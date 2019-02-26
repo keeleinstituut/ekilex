@@ -275,7 +275,7 @@ public class LifecycleLogDbService {
 		} else if (LifecycleEntity.LEXEME.equals(entity)) {
 			if (LifecycleProperty.FREQUENCY_GROUP.equals(property)) {
 				Map<String, Object> entityData = helper.getLexemeData(create, entityId);
-				recent = (String) entityData.get("frequency_group");
+				recent = (String) entityData.get("frequency_group_code");
 				Long lifecycleLogId = createLifecycleLog(userName, eventType, entity, property, entityId, recent, entry);
 				createLexemeLifecycleLog(entityId, lifecycleLogId);
 			} else if (LifecycleProperty.POS.equals(property)) {

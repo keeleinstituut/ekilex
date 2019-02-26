@@ -23,8 +23,10 @@ import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
 import eki.ekilex.data.db.tables.Form;
+import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.FreeformSourceLink;
+import eki.ekilex.data.db.tables.FrequencyGroup;
 import eki.ekilex.data.db.tables.GameNonword;
 import eki.ekilex.data.db.tables.Gender;
 import eki.ekilex.data.db.tables.GenderLabel;
@@ -52,6 +54,7 @@ import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
 import eki.ekilex.data.db.tables.MeaningLifecycleLog;
+import eki.ekilex.data.db.tables.MeaningNr;
 import eki.ekilex.data.db.tables.MeaningRelType;
 import eki.ekilex.data.db.tables.MeaningRelTypeLabel;
 import eki.ekilex.data.db.tables.MeaningRelation;
@@ -211,6 +214,11 @@ public class Tables {
     public static final Form FORM = eki.ekilex.data.db.tables.Form.FORM;
 
     /**
+     * The table <code>public.form_frequency</code>.
+     */
+    public static final FormFrequency FORM_FREQUENCY = eki.ekilex.data.db.tables.FormFrequency.FORM_FREQUENCY;
+
+    /**
      * The table <code>public.freeform</code>.
      */
     public static final Freeform FREEFORM = eki.ekilex.data.db.tables.Freeform.FREEFORM;
@@ -219,6 +227,11 @@ public class Tables {
      * The table <code>public.freeform_source_link</code>.
      */
     public static final FreeformSourceLink FREEFORM_SOURCE_LINK = eki.ekilex.data.db.tables.FreeformSourceLink.FREEFORM_SOURCE_LINK;
+
+    /**
+     * The table <code>public.frequency_group</code>.
+     */
+    public static final FrequencyGroup FREQUENCY_GROUP = eki.ekilex.data.db.tables.FrequencyGroup.FREQUENCY_GROUP;
 
     /**
      * The table <code>public.game_nonword</code>.
@@ -354,6 +367,11 @@ public class Tables {
      * The table <code>public.meaning_lifecycle_log</code>.
      */
     public static final MeaningLifecycleLog MEANING_LIFECYCLE_LOG = eki.ekilex.data.db.tables.MeaningLifecycleLog.MEANING_LIFECYCLE_LOG;
+
+    /**
+     * The table <code>public.meaning_nr</code>.
+     */
+    public static final MeaningNr MEANING_NR = eki.ekilex.data.db.tables.MeaningNr.MEANING_NR;
 
     /**
      * The table <code>public.meaning_rel_type</code>.

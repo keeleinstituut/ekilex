@@ -9,13 +9,13 @@ import static eki.ekilex.data.db.Tables.DOMAIN_LABEL;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FREQUENCY_GROUP;
 import static eki.ekilex.data.db.Tables.GENDER_LABEL;
 import static eki.ekilex.data.db.Tables.LANGUAGE;
 import static eki.ekilex.data.db.Tables.LANGUAGE_LABEL;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_DERIV;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
-import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEXEME_POS;
 import static eki.ekilex.data.db.Tables.LEXEME_REGISTER;
 import static eki.ekilex.data.db.Tables.LEXEME_SOURCE_LINK;
@@ -104,10 +104,10 @@ public class CommonDataDbService implements DbConstant {
 	public Result<Record3<String,String,String>> getLexemeFrequencyGroups() {
 		return create
 				.select(
-					getClassifierNameField(ClassifierName.LEXEME_FREQUENCY),
-					LEXEME_FREQUENCY.CODE,
-					LEXEME_FREQUENCY.CODE.as("value"))
-				.from(LEXEME_FREQUENCY).fetch();
+					getClassifierNameField(ClassifierName.FREQUENCY_GROUP),
+					FREQUENCY_GROUP.CODE,
+					FREQUENCY_GROUP.CODE.as("value"))
+				.from(FREQUENCY_GROUP).fetch();
 	}
 
 	public Result<Record3<String,String,String>> getAllLexemePos(String classifierLabelLang, String classifierLabelTypeCode) {

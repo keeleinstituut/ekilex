@@ -113,7 +113,7 @@ public class LifecycleLogDbServiceHelper {
 	public Map<String, Object> getLexemeData(DSLContext create, Long entityId) {
 		Map<String, Object> result = create
 				.select(
-						LEXEME.FREQUENCY_GROUP,
+						LEXEME.FREQUENCY_GROUP_CODE,
 						LEXEME.LEVEL1,
 						LEXEME.LEVEL2,
 						LEXEME.LEVEL3,

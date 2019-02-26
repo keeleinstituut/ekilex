@@ -99,6 +99,11 @@ public class Sequences {
     public static final Sequence<Long> FEEDBACK_LOG_ID_SEQ = new SequenceImpl<Long>("feedback_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.form_frequency_id_seq</code>
+     */
+    public static final Sequence<Long> FORM_FREQUENCY_ID_SEQ = new SequenceImpl<Long>("form_frequency_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.form_id_seq</code>
      */
     public static final Sequence<Long> FORM_ID_SEQ = new SequenceImpl<Long>("form_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
@@ -122,6 +127,11 @@ public class Sequences {
      * The sequence <code>public.freeform_source_link_order_by_seq</code>
      */
     public static final Sequence<Long> FREEFORM_SOURCE_LINK_ORDER_BY_SEQ = new SequenceImpl<Long>("freeform_source_link_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.frequency_group_order_by_seq</code>
+     */
+    public static final Sequence<Long> FREQUENCY_GROUP_ORDER_BY_SEQ = new SequenceImpl<Long>("frequency_group_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.game_nonword_id_seq</code>
@@ -194,9 +204,9 @@ public class Sequences {
     public static final Sequence<Long> LEXEME_FREEFORM_ID_SEQ = new SequenceImpl<Long>("lexeme_freeform_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
-     * The sequence <code>public.lexeme_frequency_order_by_seq</code>
+     * The sequence <code>public.lexeme_frequency_id_seq</code>
      */
-    public static final Sequence<Long> LEXEME_FREQUENCY_ORDER_BY_SEQ = new SequenceImpl<Long>("lexeme_frequency_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+    public static final Sequence<Long> LEXEME_FREQUENCY_ID_SEQ = new SequenceImpl<Long>("lexeme_frequency_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.lexeme_id_seq</code>
@@ -272,6 +282,11 @@ public class Sequences {
      * The sequence <code>public.meaning_lifecycle_log_id_seq</code>
      */
     public static final Sequence<Long> MEANING_LIFECYCLE_LOG_ID_SEQ = new SequenceImpl<Long>("meaning_lifecycle_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
+     * The sequence <code>public.meaning_nr_id_seq</code>
+     */
+    public static final Sequence<Long> MEANING_NR_ID_SEQ = new SequenceImpl<Long>("meaning_nr_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.meaning_rel_type_order_by_seq</code>

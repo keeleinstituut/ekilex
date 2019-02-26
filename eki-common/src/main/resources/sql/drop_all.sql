@@ -33,6 +33,7 @@ drop table if exists lex_colloc;
 drop table if exists lex_colloc_rel_group;
 drop table if exists lex_colloc_pos_group;
 drop table if exists lex_relation;
+drop table if exists lexeme_frequency cascade;--for now until name takeover is complete everywhere
 drop table if exists lexeme_lifecycle_log;
 drop table if exists lexeme_freeform;
 drop table if exists lexeme_register;
@@ -50,6 +51,7 @@ drop table if exists meaning_freeform;
 drop table if exists meaning_domain;
 drop table if exists meaning_nr;
 drop table if exists meaning;
+drop table if exists form_frequency;
 drop table if exists form;
 drop table if exists paradigm;
 drop table if exists word_lifecycle_log;
@@ -91,8 +93,7 @@ drop table if exists gender_label;
 drop table if exists gender;
 drop table if exists register_label;
 drop table if exists register;
-drop table if exists lexeme_frequency_label; -- removed for now
-drop table if exists lexeme_frequency;
+drop table if exists frequency_group;
 drop table if exists domain_label;
 drop table if exists domain;
 drop table if exists government_type_label;

@@ -148,8 +148,8 @@ create table aspect_type_label
   unique(code, lang, type)
 );
 
--- ilmiku sagedusrühm
-create table lexeme_frequency
+-- sagedusrühm
+create table frequency_group
 (
   code varchar(100) primary key,
   datasets varchar(10) array not null,
@@ -534,6 +534,18 @@ create table form
 );
 alter sequence form_id_seq restart with 10000;
 
+create table form_frequency
+(
+  id bigserial primary key,
+  form_id bigint references form(id) on delete cascade not null,
+  source_name text not null,
+  created_on timestamp not null default statement_timestamp(),
+  rank bigint not null,
+  value numeric(12, 7) not null,
+  unique (form_id, source_name)
+);
+alter sequence form_frequency_id_seq restart with 10000;
+
 -- tähendus
 create table meaning
 (
@@ -664,8 +676,8 @@ create table lexeme
   created_by varchar(100) null,
   modified_on timestamp null,
   modified_by varchar(100) null,
-  frequency_group varchar(100) references lexeme_frequency(code) null,
-  corpus_frequency numeric,
+  frequency_group_code varchar(100) references frequency_group(code) null,
+  corpus_frequency numeric,--TODO will be moved to lexeme_frequency table later
   level1 integer default 0,
   level2 integer default 0,
   level3 integer default 0,
@@ -675,6 +687,18 @@ create table lexeme
   unique(word_id, meaning_id, dataset_code)
 );
 alter sequence lexeme_id_seq restart with 10000;
+
+create table lexeme_frequency
+(
+  id bigserial primary key,
+  lexeme_id bigint references lexeme(id) on delete cascade not null,
+  source_name text not null,
+  created_on timestamp not null default statement_timestamp(),
+  rank bigint not null,
+  value numeric(12, 7) not null,
+  unique (lexeme_id, source_name)
+);
+alter sequence lexeme_frequency_id_seq restart with 10000;
 
 create table lexeme_register
 (
@@ -861,6 +885,7 @@ create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops)
 create index form_mode_idx on form(mode);
 create index form_value_mode_idx on form(value, mode);
 create index form_paradigm_id_idx on form(paradigm_id);
+create index form_frequency_form_id_idx on form_frequency(form_id);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
@@ -912,6 +937,7 @@ create index lex_colloc_rel_group_pos_group_id_idx on lex_colloc_rel_group(pos_g
 create index lex_colloc_lexeme_id_idx on lex_colloc(lexeme_id);
 create index lex_colloc_rel_group_id_idx on lex_colloc(rel_group_id);
 create index lex_colloc_collocation_id_idx on lex_colloc(collocation_id);
+create index lexeme_frequency_lexeme_id_idx on lexeme_frequency(lexeme_id);
 create index lexeme_register_lexeme_id_idx on lexeme_register(lexeme_id);
 create index lexeme_pos_lexeme_id_idx on lexeme_pos(lexeme_id);
 create index lexeme_deriv_lexeme_id_idx on lexeme_deriv(lexeme_id);

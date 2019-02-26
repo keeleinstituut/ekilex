@@ -177,7 +177,8 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 		Document dataDoc = xmlReader.readDocument(dataXmlFilePath);
 
 		Element rootElement = dataDoc.getRootElement();
-		long articleCount = rootElement.content().stream().filter(node -> node instanceof Element).count();
+		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(Collectors.toList());
+		long articleCount = articleNodes.size();
 		logger.debug("Extracted {} articles", articleCount);
 
 		Element headerNode, contentNode, wordNode, wordGroupNode, wordPosNode, meaningDefinitionGroupNode, collocRelGroupNameNode, collocRelGroupFreqNode, collocRelGroupScoreNode;
@@ -230,8 +231,6 @@ public class CollocLoaderRunner extends AbstractLoaderRunner {
 
 		long articleCounter = 0;
 		long progressIndicator = articleCount / Math.min(articleCount, 100);
-
-		List<Node> articleNodes = rootElement.content().stream().filter(node -> node instanceof Element).collect(Collectors.toList());
 
 		Map<String, Map<Integer, Word>> wordMap = new HashMap<>();
 		Map<Long, Map<Integer, LexemeMeaning>> meaningMap = new HashMap<>();

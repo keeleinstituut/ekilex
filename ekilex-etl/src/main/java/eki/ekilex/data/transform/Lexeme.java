@@ -28,7 +28,7 @@ public class Lexeme extends AbstractDataObject {
 
 	private Integer level3;
 
-	private String frequencyGroup;
+	private String frequencyGroupCode;
 
 	private String valueStateCode;
 
@@ -116,12 +116,12 @@ public class Lexeme extends AbstractDataObject {
 		this.level3 = level3;
 	}
 
-	public String getFrequencyGroup() {
-		return frequencyGroup;
+	public String getFrequencyGroupCode() {
+		return frequencyGroupCode;
 	}
 
-	public void setFrequencyGroup(String frequencyGroup) {
-		this.frequencyGroup = frequencyGroup;
+	public void setFrequencyGroupCode(String frequencyGroupCode) {
+		this.frequencyGroupCode = frequencyGroupCode;
 	}
 
 	public String getValueStateCode() {

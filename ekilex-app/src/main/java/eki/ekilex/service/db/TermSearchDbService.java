@@ -638,7 +638,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						l.LEVEL1,
 						l.LEVEL2,
 						l.LEVEL3,
-						l.FREQUENCY_GROUP.as("lexeme_frequency_group_code"),
+						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
 						l.ORDER_BY

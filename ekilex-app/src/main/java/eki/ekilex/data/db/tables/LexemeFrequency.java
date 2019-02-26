@@ -9,6 +9,8 @@ import eki.ekilex.data.db.Keys;
 import eki.ekilex.data.db.Public;
 import eki.ekilex.data.db.tables.records.LexemeFrequencyRecord;
 
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
 
-    private static final long serialVersionUID = 1788203153;
+    private static final long serialVersionUID = -906558805;
 
     /**
      * The reference instance of <code>public.lexeme_frequency</code>
@@ -57,19 +59,34 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
     }
 
     /**
-     * The column <code>public.lexeme_frequency.code</code>.
+     * The column <code>public.lexeme_frequency.id</code>.
      */
-    public final TableField<LexemeFrequencyRecord, String> CODE = createField("code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+    public final TableField<LexemeFrequencyRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_frequency_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.lexeme_frequency.datasets</code>.
+     * The column <code>public.lexeme_frequency.lexeme_id</code>.
      */
-    public final TableField<LexemeFrequencyRecord, String[]> DATASETS = createField("datasets", org.jooq.impl.SQLDataType.VARCHAR(10).getArrayDataType(), this, "");
+    public final TableField<LexemeFrequencyRecord, Long> LEXEME_ID = createField("lexeme_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>public.lexeme_frequency.order_by</code>.
+     * The column <code>public.lexeme_frequency.source_name</code>.
      */
-    public final TableField<LexemeFrequencyRecord, Long> ORDER_BY = createField("order_by", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('lexeme_frequency_order_by_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<LexemeFrequencyRecord, String> SOURCE_NAME = createField("source_name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_frequency.created_on</code>.
+     */
+    public final TableField<LexemeFrequencyRecord, Timestamp> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.lexeme_frequency.rank</code>.
+     */
+    public final TableField<LexemeFrequencyRecord, Long> RANK = createField("rank", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.lexeme_frequency.value</code>.
+     */
+    public final TableField<LexemeFrequencyRecord, BigDecimal> VALUE = createField("value", org.jooq.impl.SQLDataType.NUMERIC(12, 7).nullable(false), this, "");
 
     /**
      * Create a <code>public.lexeme_frequency</code> table reference
@@ -117,7 +134,7 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_FREQUENCY_PKEY);
+        return Arrays.<Index>asList(Indexes.LEXEME_FREQUENCY_LEXEME_ID_IDX, Indexes.LEXEME_FREQUENCY_PKEY);
     }
 
     /**
@@ -142,6 +159,18 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
     @Override
     public List<UniqueKey<LexemeFrequencyRecord>> getKeys() {
         return Arrays.<UniqueKey<LexemeFrequencyRecord>>asList(Keys.LEXEME_FREQUENCY_PKEY);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<ForeignKey<LexemeFrequencyRecord, ?>> getReferences() {
+        return Arrays.<ForeignKey<LexemeFrequencyRecord, ?>>asList(Keys.LEXEME_FREQUENCY__LEXEME_FREQUENCY_LEXEME_ID_FKEY);
+    }
+
+    public Lexeme lexeme() {
+        return new Lexeme(this, Keys.LEXEME_FREQUENCY__LEXEME_FREQUENCY_LEXEME_ID_FKEY);
     }
 
     /**
