@@ -24,18 +24,12 @@ public class VoiceFileUpdaterRunner extends AbstractLoaderCommons {
 					+ "join " + PARADIGM + " p on p.id = f.paradigm_id "
 					+ "join " + WORD + " w on w.id = p.word_id "
 					+ "join " + LEXEME + " l on l.word_id = w.id "
-					+ "join " + LEXEME_POS + " lp on lp.lexeme_id = l.id "
 					+ "where "
 					+ "lower(f.value) = :word "
 					+ "and f.mode = '" + FormMode.WORD.name() + "' "
 					+ "and f.sound_file is null "
-					+ "and (lp.pos_code = 'prop' "
-							+ "or exists("
-								+ "select wt.id "
-								+ "from " + WORD_WORD_TYPE + " wt "
-								+ "where "
-								+ "wt.word_id = w.id "
-								+ "and wt.word_type_code = 'z'))";
+					+ "and (exists(select lp.id from " + LEXEME_POS + " lp where lp.lexeme_id = l.id and lp.pos_code = 'prop') "
+							+ "or exists(select wt.id from " + WORD_WORD_TYPE + " wt where wt.word_id = w.id and wt.word_type_code = 'z'))";
 
 	private final static String sqlUpdateSoundFileNames = "update " + FORM + " set sound_file = :soundFileName where id in (:formIds)";
 
@@ -52,8 +46,6 @@ public class VoiceFileUpdaterRunner extends AbstractLoaderCommons {
 			String[] cells = line.split("\t");
 			if (cells.length > 1) {
 				String word = cells[0];
-//				String language =  cells[1];
-//				String vocalForm =  cells[2];
 				String soundFileName =  cells[3];
 				List<Long> matchingWordIds = findMatchingWords(word);
 				if (!matchingWordIds.isEmpty()) {
