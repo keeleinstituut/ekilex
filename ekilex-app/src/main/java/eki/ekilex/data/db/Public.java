@@ -22,6 +22,7 @@ import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
+import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
@@ -137,7 +138,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 1435965725;
+    private static final long serialVersionUID = -1001907791;
 
     /**
      * The reference instance of <code>public</code>
@@ -233,6 +234,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.feedback_log</code>.
      */
     public final FeedbackLog FEEDBACK_LOG = eki.ekilex.data.db.tables.FeedbackLog.FEEDBACK_LOG;
+
+    /**
+     * The table <code>public.feedback_log_comment</code>.
+     */
+    public final FeedbackLogComment FEEDBACK_LOG_COMMENT = eki.ekilex.data.db.tables.FeedbackLogComment.FEEDBACK_LOG_COMMENT;
 
     /**
      * The table <code>public.form</code>.
@@ -668,6 +674,7 @@ public class Public extends SchemaImpl {
             Sequences.DOMAIN_ORDER_BY_SEQ,
             Sequences.EKI_USER_ID_SEQ,
             Sequences.ETYMOLOGY_TYPE_ORDER_BY_SEQ,
+            Sequences.FEEDBACK_LOG_COMMENT_ID_SEQ,
             Sequences.FEEDBACK_LOG_ID_SEQ,
             Sequences.FORM_FREQUENCY_ID_SEQ,
             Sequences.FORM_ID_SEQ,
@@ -765,6 +772,7 @@ public class Public extends SchemaImpl {
             EkiUser.EKI_USER,
             EtymologyType.ETYMOLOGY_TYPE,
             FeedbackLog.FEEDBACK_LOG,
+            FeedbackLogComment.FEEDBACK_LOG_COMMENT,
             Form.FORM,
             FormFrequency.FORM_FREQUENCY,
             Freeform.FREEFORM,

@@ -94,6 +94,11 @@ public class Sequences {
     public static final Sequence<Long> ETYMOLOGY_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("etymology_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
+     * The sequence <code>public.feedback_log_comment_id_seq</code>
+     */
+    public static final Sequence<Long> FEEDBACK_LOG_COMMENT_ID_SEQ = new SequenceImpl<Long>("feedback_log_comment_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+
+    /**
      * The sequence <code>public.feedback_log_id_seq</code>
      */
     public static final Sequence<Long> FEEDBACK_LOG_ID_SEQ = new SequenceImpl<Long>("feedback_log_id_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));

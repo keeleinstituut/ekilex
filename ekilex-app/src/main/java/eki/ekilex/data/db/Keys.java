@@ -22,6 +22,7 @@ import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
+import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
@@ -104,6 +105,7 @@ import eki.ekilex.data.db.tables.records.DomainLabelRecord;
 import eki.ekilex.data.db.tables.records.DomainRecord;
 import eki.ekilex.data.db.tables.records.EkiUserRecord;
 import eki.ekilex.data.db.tables.records.EtymologyTypeRecord;
+import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
 import eki.ekilex.data.db.tables.records.FeedbackLogRecord;
 import eki.ekilex.data.db.tables.records.FormFrequencyRecord;
 import eki.ekilex.data.db.tables.records.FormRecord;
@@ -210,6 +212,7 @@ public class Keys {
     public static final Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Identities0.IDENTITY_EKI_USER;
     public static final Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Identities0.IDENTITY_ETYMOLOGY_TYPE;
     public static final Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Identities0.IDENTITY_FEEDBACK_LOG;
+    public static final Identity<FeedbackLogCommentRecord, Long> IDENTITY_FEEDBACK_LOG_COMMENT = Identities0.IDENTITY_FEEDBACK_LOG_COMMENT;
     public static final Identity<FormRecord, Long> IDENTITY_FORM = Identities0.IDENTITY_FORM;
     public static final Identity<FormFrequencyRecord, Long> IDENTITY_FORM_FREQUENCY = Identities0.IDENTITY_FORM_FREQUENCY;
     public static final Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Identities0.IDENTITY_FREEFORM;
@@ -287,8 +290,10 @@ public class Keys {
     public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = UniqueKeys0.EKI_USER_EMAIL_KEY;
     public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = UniqueKeys0.ETYMOLOGY_TYPE_PKEY;
     public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = UniqueKeys0.FEEDBACK_LOG_PKEY;
+    public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = UniqueKeys0.FEEDBACK_LOG_COMMENT_PKEY;
     public static final UniqueKey<FormRecord> FORM_PKEY = UniqueKeys0.FORM_PKEY;
     public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_PKEY = UniqueKeys0.FORM_FREQUENCY_PKEY;
+    public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY = UniqueKeys0.FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY;
     public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = UniqueKeys0.FREEFORM_PKEY;
     public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = UniqueKeys0.FREEFORM_SOURCE_LINK_PKEY;
     public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = UniqueKeys0.FREQUENCY_GROUP_PKEY;
@@ -316,6 +321,7 @@ public class Keys {
     public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = UniqueKeys0.LEXEME_FREEFORM_PKEY;
     public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY = UniqueKeys0.LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_PKEY = UniqueKeys0.LEXEME_FREQUENCY_PKEY;
+    public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY = UniqueKeys0.LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY;
     public static final UniqueKey<LexemeLifecycleLogRecord> LEXEME_LIFECYCLE_LOG_PKEY = UniqueKeys0.LEXEME_LIFECYCLE_LOG_PKEY;
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_PKEY = UniqueKeys0.LEXEME_POS_PKEY;
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = UniqueKeys0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
@@ -400,6 +406,7 @@ public class Keys {
     public static final ForeignKey<DomainLabelRecord, DomainRecord> DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY;
     public static final ForeignKey<DomainLabelRecord, LanguageRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY;
     public static final ForeignKey<DomainLabelRecord, LabelTypeRecord> DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY = ForeignKeys0.DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY;
+    public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = ForeignKeys0.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY;
     public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = ForeignKeys0.FORM__FORM_PARADIGM_ID_FKEY;
     public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = ForeignKeys0.FORM__FORM_MORPH_CODE_FKEY;
     public static final ForeignKey<FormFrequencyRecord, FormRecord> FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY = ForeignKeys0.FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY;
@@ -542,6 +549,7 @@ public class Keys {
         public static Identity<EkiUserRecord, Long> IDENTITY_EKI_USER = Internal.createIdentity(EkiUser.EKI_USER, EkiUser.EKI_USER.ID);
         public static Identity<EtymologyTypeRecord, Long> IDENTITY_ETYMOLOGY_TYPE = Internal.createIdentity(EtymologyType.ETYMOLOGY_TYPE, EtymologyType.ETYMOLOGY_TYPE.ORDER_BY);
         public static Identity<FeedbackLogRecord, Long> IDENTITY_FEEDBACK_LOG = Internal.createIdentity(FeedbackLog.FEEDBACK_LOG, FeedbackLog.FEEDBACK_LOG.ID);
+        public static Identity<FeedbackLogCommentRecord, Long> IDENTITY_FEEDBACK_LOG_COMMENT = Internal.createIdentity(FeedbackLogComment.FEEDBACK_LOG_COMMENT, FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
         public static Identity<FormRecord, Long> IDENTITY_FORM = Internal.createIdentity(Form.FORM, Form.FORM.ID);
         public static Identity<FormFrequencyRecord, Long> IDENTITY_FORM_FREQUENCY = Internal.createIdentity(FormFrequency.FORM_FREQUENCY, FormFrequency.FORM_FREQUENCY.ID);
         public static Identity<FreeformRecord, Long> IDENTITY_FREEFORM = Internal.createIdentity(Freeform.FREEFORM, Freeform.FREEFORM.ID);
@@ -617,8 +625,10 @@ public class Keys {
         public static final UniqueKey<EkiUserRecord> EKI_USER_EMAIL_KEY = Internal.createUniqueKey(EkiUser.EKI_USER, "eki_user_email_key", EkiUser.EKI_USER.EMAIL);
         public static final UniqueKey<EtymologyTypeRecord> ETYMOLOGY_TYPE_PKEY = Internal.createUniqueKey(EtymologyType.ETYMOLOGY_TYPE, "etymology_type_pkey", EtymologyType.ETYMOLOGY_TYPE.CODE);
         public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = Internal.createUniqueKey(FeedbackLog.FEEDBACK_LOG, "feedback_log_pkey", FeedbackLog.FEEDBACK_LOG.ID);
+        public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = Internal.createUniqueKey(FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment_pkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
         public static final UniqueKey<FormRecord> FORM_PKEY = Internal.createUniqueKey(Form.FORM, "form_pkey", Form.FORM.ID);
         public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_PKEY = Internal.createUniqueKey(FormFrequency.FORM_FREQUENCY, "form_frequency_pkey", FormFrequency.FORM_FREQUENCY.ID);
+        public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY = Internal.createUniqueKey(FormFrequency.FORM_FREQUENCY, "form_frequency_form_id_source_name_key", FormFrequency.FORM_FREQUENCY.FORM_ID, FormFrequency.FORM_FREQUENCY.SOURCE_NAME);
         public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = Internal.createUniqueKey(Freeform.FREEFORM, "freeform_pkey", Freeform.FREEFORM.ID);
         public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = Internal.createUniqueKey(FreeformSourceLink.FREEFORM_SOURCE_LINK, "freeform_source_link_pkey", FreeformSourceLink.FREEFORM_SOURCE_LINK.ID);
         public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = Internal.createUniqueKey(FrequencyGroup.FREQUENCY_GROUP, "frequency_group_pkey", FrequencyGroup.FREQUENCY_GROUP.CODE);
@@ -646,6 +656,7 @@ public class Keys {
         public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = Internal.createUniqueKey(LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_pkey", LexemeFreeform.LEXEME_FREEFORM.ID);
         public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_lexeme_id_freeform_id_key", LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID, LexemeFreeform.LEXEME_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_PKEY = Internal.createUniqueKey(LexemeFrequency.LEXEME_FREQUENCY, "lexeme_frequency_pkey", LexemeFrequency.LEXEME_FREQUENCY.ID);
+        public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY = Internal.createUniqueKey(LexemeFrequency.LEXEME_FREQUENCY, "lexeme_frequency_lexeme_id_source_name_key", LexemeFrequency.LEXEME_FREQUENCY.LEXEME_ID, LexemeFrequency.LEXEME_FREQUENCY.SOURCE_NAME);
         public static final UniqueKey<LexemeLifecycleLogRecord> LEXEME_LIFECYCLE_LOG_PKEY = Internal.createUniqueKey(LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG, "lexeme_lifecycle_log_pkey", LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG.ID);
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_PKEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_pkey", LexemePos.LEXEME_POS.ID);
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE);
@@ -728,6 +739,7 @@ public class Keys {
         public static final ForeignKey<DomainLabelRecord, DomainRecord> DOMAIN_LABEL__DOMAIN_LABEL_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.DOMAIN_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_code_fkey", DomainLabel.DOMAIN_LABEL.CODE, DomainLabel.DOMAIN_LABEL.ORIGIN);
         public static final ForeignKey<DomainLabelRecord, LanguageRecord> DOMAIN_LABEL__DOMAIN_LABEL_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_lang_fkey", DomainLabel.DOMAIN_LABEL.LANG);
         public static final ForeignKey<DomainLabelRecord, LabelTypeRecord> DOMAIN_LABEL__DOMAIN_LABEL_TYPE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LABEL_TYPE_PKEY, DomainLabel.DOMAIN_LABEL, "domain_label__domain_label_type_fkey", DomainLabel.DOMAIN_LABEL.TYPE);
+        public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FEEDBACK_LOG_PKEY, FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment__feedback_log_comment_feedback_log_id_fkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID);
         public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PARADIGM_PKEY, Form.FORM, "form__form_paradigm_id_fkey", Form.FORM.PARADIGM_ID);
         public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Form.FORM, "form__form_morph_code_fkey", Form.FORM.MORPH_CODE);
         public static final ForeignKey<FormFrequencyRecord, FormRecord> FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FORM_PKEY, FormFrequency.FORM_FREQUENCY, "form_frequency__form_frequency_form_id_fkey", FormFrequency.FORM_FREQUENCY.FORM_ID);
