@@ -3,9 +3,11 @@ package eki.ekilex.service;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import eki.ekilex.data.FeedbackComment;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.exception.DataAccessException;
 import org.slf4j.Logger;
@@ -30,8 +32,16 @@ public class FeedbackService {
 	}
 
 	@Transactional
-	public List<Feedback> findFeedback() {
-		return feedbackDbService.findFeedback().into(Feedback.class);
+	public List<Feedback> findFeedbackLog() {
+		List<Feedback> feedbacks = feedbackDbService.findFeedback().into(Feedback.class);
+		List<FeedbackComment> feedbackComments = feedbackDbService.findFeedbackComments().into(FeedbackComment.class);
+		feedbacks.forEach(fb ->
+				fb.setFeedbackComments(feedbackComments.stream()
+						.filter(fc -> fc.getFeedbackId().equals(fb.getId()))
+						.collect(Collectors.toList())
+				)
+		);
+		return feedbacks;
 	}
 
 	public boolean isValidFeedback(Feedback newFeedback) {

@@ -155,3 +155,8 @@ input:checked+.slider:before {
 .btn-toggle i {
 	width: 1rem;
 }
+
+.table-condensed th,
+.table-condensed td {
+	padding: 0.25rem;
+}

@@ -8,6 +8,7 @@ import org.jooq.Result;
 import org.springframework.stereotype.Service;
 
 import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
+import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
 
 @Service
 public class FeedbackDbService {
@@ -23,6 +24,13 @@ public class FeedbackDbService {
 				.select(FEEDBACK_LOG.fields())
 				.from(FEEDBACK_LOG)
 				.orderBy(FEEDBACK_LOG.CREATED_ON.desc())
+				.fetch();
+	}
+
+	public Result<Record> findFeedbackComments() {
+		return create
+				.select(FEEDBACK_LOG_COMMENT.fields())
+				.from(FEEDBACK_LOG_COMMENT)
 				.fetch();
 	}
 

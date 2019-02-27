@@ -3,6 +3,7 @@
 <head th:replace="common :: common_header(~{::title},~{::links})">
 <title th:text="#{feedback.title}">Sõnaveeb-i tagasiside</title>
 <th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-editor.js}"></script>
 </th:block>
 </head>
 <body class="body-with-navbar">
@@ -13,7 +14,7 @@
         <h5 class="card-title">Sõnaveeb-i tagasiside</h5>
       </div>
       <div class="card-body">
-        <table class="table table-striped">
+        <table class="table table-striped table-condensed">
           <thead class="thead-light">
             <tr>
               <th>Saadetud</th>
@@ -23,35 +24,51 @@
               <th>Sõna</th>
               <th>Teade</th>
               <th>Viimane otsing</th>
+              <th>EKI kommentaarid</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
             <tr th:each="fbItem : ${feedbackLog}">
-              <td th:text="${#dates.format(fbItem.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+              <td class="text-nowrap" th:text="${#dates.format(fbItem.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
               <td th:text="${fbItem.feedbackType}"></td>
               <td th:text="${fbItem.sender}"></td>
               <td th:text="${fbItem.email}"></td>
               <td th:text="${fbItem.word}"></td>
               <td>
-                <div class="row" th:if="${fbItem.definition != null}">
+                <div class="row ml-1" th:if="${fbItem.definition != null}">
                     <span class="lbl pr-2">Tähendus</span>
                     <span th:text="${fbItem.definition}"></span>
                 </div>
-                <div class="row" th:if="${fbItem.usages != null}">
+                <div class="row ml-1" th:if="${fbItem.usages != null}">
                   <span class="lbl pr-2">Kasutusnäited</span>
                   <span th:text="${fbItem.usages}"></span>
                 </div>
-                <div class="row" th:if="${fbItem.comments != null}">
+                <div class="row ml-1" th:if="${fbItem.comments != null}">
                   <span class="lbl pr-2">Komentaar</span>
                   <span th:text="${fbItem.comments}"></span>
                 </div>
-                <div class="row" th:if="${fbItem.otherInfo != null}">
+                <div class="row ml-1" th:if="${fbItem.otherInfo != null}">
                   <span class="lbl pr-2">Muu info</span>
                   <span th:text="${fbItem.otherInfo}"></span>
                 </div>
               </td>
               <td th:text="${fbItem.lastSearch}"></td>
+              <td style="max-width: 40vw;">
+                <button type="button" class="btn badge badge-success" title="Lisa uus"
+                        th:data-id="${fbItem.id}"
+                        onclick="openEkiEditorAddDlg(this)"
+                        data-toggle="modal" data-target="#addFeedbackCommentDlg">
+                  <i class="fa fa-plus" aria-hidden="true"></i>
+                </button>
+                <table>
+                  <tr th:each="ekiComment : ${fbItem.feedbackComments}">
+                    <td th:text="${#dates.format(ekiComment.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
+                    <td th:text="${ekiComment.userName}"></td>
+                    <td th:text="${ekiComment.comment}"></td>
+                  </tr>
+                </table>
+              </td>
               <td>
                 <button type="button" class="btn badge badge-warning"
                         th:data-id="${fbItem.id}"
@@ -69,6 +86,7 @@
   </div>
 
   <div th:replace="common :: #alertDlg"></div>
+  <div th:replace="ekilex_editor :: #addFeedbackCommentDlg"></div>
 
   <script th:inline="javascript">
       $('[data-toggle=delete-confirmation]').confirmation(

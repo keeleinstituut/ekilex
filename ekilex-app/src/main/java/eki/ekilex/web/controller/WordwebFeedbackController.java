@@ -32,8 +32,8 @@ public class WordwebFeedbackController implements WebConstant {
 
 	@GetMapping(WW_FEEDBACK_URI)
 	public String openPage(Model model) {
-		List<Feedback> feedback = feedbackService.findFeedback();
-		model.addAttribute("feedbackLog", feedback);
+		List<Feedback> feedbackLog = feedbackService.findFeedbackLog();
+		model.addAttribute("feedbackLog", feedbackLog);
 		return WW_FEEDBACK_PAGE;
 	}
 

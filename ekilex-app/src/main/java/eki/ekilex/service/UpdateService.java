@@ -397,6 +397,11 @@ public class UpdateService {
 	}
 
 	@Transactional
+	public void addFeedbackComment(Long feedbackId, String comment) {
+		updateDbService.addFeedbackComment(feedbackId, comment, lifecycleLogDbService.getUserName());
+	}
+
+	@Transactional
 	public void joinLexemes(Long lexemeId, Long lexemeId2) {
 		LexemeRecord lexeme = updateDbService.getLexeme(lexemeId);
 		LexemeRecord lexeme2 = updateDbService.getLexeme(lexemeId2);

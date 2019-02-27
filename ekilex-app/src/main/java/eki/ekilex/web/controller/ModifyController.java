@@ -417,6 +417,9 @@ public class ModifyController implements WebConstant {
 		case "public_note" :
 			updateService.addPublicNote(itemData.getId(), itemData.getValue(), itemData.getLanguage());
 			break;
+		case "feedback_comment" :
+			updateService.addFeedbackComment(itemData.getId(), itemData.getValue());
+			break;
 		}
 		return "{}";
 	}

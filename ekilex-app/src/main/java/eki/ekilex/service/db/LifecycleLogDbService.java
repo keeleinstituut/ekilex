@@ -592,7 +592,7 @@ public class LifecycleLogDbService {
 		return entityData.get("value") + " [" + entityData.get("level1") + "." + entityData.get("level2") + "." + entityData.get("level3") + "]";
 	}
 
-	private String getUserName() {
+	public String getUserName() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		String userName;
 		if (authentication != null) {
