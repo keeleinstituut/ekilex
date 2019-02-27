@@ -2,6 +2,7 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
@@ -663,6 +664,12 @@ public class UpdateDbService implements DbConstant {
 	public void deleteWord(Long wordId) {
 		create.delete(WORD)
 				.where(WORD.ID.eq(wordId))
+				.execute();
+	}
+
+	public void deleteFeedback(Long id) {
+		create.delete(FEEDBACK_LOG)
+				.where(FEEDBACK_LOG.ID.eq(id))
 				.execute();
 	}
 

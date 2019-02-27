@@ -23,6 +23,7 @@
               <th>Sõna</th>
               <th>Teade</th>
               <th>Viimane otsing</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -51,11 +52,33 @@
                 </div>
               </td>
               <td th:text="${fbItem.lastSearch}"></td>
+              <td>
+                <button type="button" class="btn badge badge-warning"
+                        th:data-id="${fbItem.id}"
+                        th:data-op-code="feedback"
+                        data-callback="removeClosestRow"
+                        data-toggle="delete-confirmation" data-placement="left">
+                  <i class="fa fa-remove" aria-hidden="true"></i>
+                </button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
+
+  <div th:replace="common :: #alertDlg"></div>
+
+  <script th:inline="javascript">
+      $('[data-toggle=delete-confirmation]').confirmation(
+          {
+              btnOkLabel: 'Jah',
+              btnCancelLabel: 'Ei',
+              title: 'Kas olete kindel, et soovite eemaldada ?',
+              onConfirm: performDelete
+          }
+      );
+  </script>
 </body>
 </html>

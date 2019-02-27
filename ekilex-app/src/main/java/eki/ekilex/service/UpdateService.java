@@ -620,6 +620,11 @@ public class UpdateService {
 		updateDbService.deleteFreeform(id);
 	}
 
+	@Transactional
+	public void deleteFeedback(Long id) {
+		updateDbService.deleteFeedback(id);
+	}
+
 	void recalculateLevels(Long lexemeId, List<WordLexeme> lexemes, String action) {
 		WordLexeme lexemeToMove = lexemes.stream().filter(l -> l.getLexemeId().equals(lexemeId)).findFirst().get();
 		int lexemePos = lexemes.indexOf(lexemeToMove);

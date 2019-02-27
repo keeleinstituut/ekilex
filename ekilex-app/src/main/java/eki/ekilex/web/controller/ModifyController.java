@@ -320,6 +320,9 @@ public class ModifyController implements WebConstant {
 		case "public_note" :
 			updateService.deletePublicNote(id);
 			break;
+		case "feedback" :
+			updateService.deleteFeedback(id);
+			break;
 		}
 		return "OK";
 	}

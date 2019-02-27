@@ -9,6 +9,9 @@ public class Feedback extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
+	@Column(name = "id")
+	private Long id;
+
 	@Column(name = "feedback_type")
 	private String feedbackType;
 
@@ -38,6 +41,14 @@ public class Feedback extends AbstractDataObject {
 
 	@Column(name = "last_search")
 	private String lastSearch;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getFeedbackType() {
 		return feedbackType;
