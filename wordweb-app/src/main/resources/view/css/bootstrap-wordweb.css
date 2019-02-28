@@ -7684,9 +7684,6 @@ input[type="checkbox"] {
   .examples-wrap {
     float: right;
   }
-  .btn-speaker {
-    color: #0077FF;
-  }
 }
 
 @media (min-width: 768px) {

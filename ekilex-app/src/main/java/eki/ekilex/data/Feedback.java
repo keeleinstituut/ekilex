@@ -4,10 +4,14 @@ import eki.common.data.AbstractDataObject;
 
 import javax.persistence.Column;
 import java.sql.Timestamp;
+import java.util.List;
 
 public class Feedback extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
+
+	@Column(name = "id")
+	private Long id;
 
 	@Column(name = "feedback_type")
 	private String feedbackType;
@@ -38,6 +42,16 @@ public class Feedback extends AbstractDataObject {
 
 	@Column(name = "last_search")
 	private String lastSearch;
+
+	private List<FeedbackComment> feedbackComments;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getFeedbackType() {
 		return feedbackType;
@@ -117,6 +131,14 @@ public class Feedback extends AbstractDataObject {
 
 	public void setLastSearch(String lastSearch) {
 		this.lastSearch = lastSearch;
+	}
+
+	public List<FeedbackComment> getFeedbackComments() {
+		return feedbackComments;
+	}
+
+	public void setFeedbackComments(List<FeedbackComment> feedbackComments) {
+		this.feedbackComments = feedbackComments;
 	}
 
 }

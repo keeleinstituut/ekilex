@@ -218,17 +218,22 @@ function openEditDlg(elem) {
 
 function performDelete() {
     let targetName = $(this)[0].getAttribute('data-target-elem');
-    let targetElement = $('[name="' + targetName + '"]');
+    let targetElement = targetName === null ? $(this) : $('[name="' + targetName + '"]');
     let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     let removeUrl = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
     let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
+    let callbackFunc = $.noop();
+    let callbackName = targetElement.data('callback');
+    if (callbackName !== undefined) {
+        callbackFunc = () => eval(callbackName)($(this))
+    }
     $.post(validateUrl).done(function(data) {
         let response = JSON.parse(data);
         if (response.status === 'ok') {
-            doPostDelete(removeUrl);
+            doPostDelete(removeUrl, callbackFunc);
         } else if (response.status === 'confirm') {
             openConfirmDlg(response.question, function () {
-                doPostDelete(removeUrl)
+                doPostDelete(removeUrl, callbackFunc)
             });
         } else if (response.status === 'invalid') {
             openAlertDlg(response.message);
@@ -241,13 +246,18 @@ function performDelete() {
     });
 }
 
-function doPostDelete(removeUrl) {
+function doPostDelete(removeUrl, callbackFunc) {
     $.post(removeUrl).done(function() {
         $('#refresh-details').trigger('click');
+        callbackFunc();
     }).fail(function(data) {
         openAlertDlg("Andmete eemaldamine ebaõnnestus.");
         console.log(data);
     });
+}
+
+function removeClosestRow(elem) {
+    elem.closest('tr').remove();
 }
 
 function openAddDlg(elem) {

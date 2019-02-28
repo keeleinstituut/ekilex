@@ -877,6 +877,16 @@ create table feedback_log
 );
 alter sequence feedback_log_id_seq restart with 10000;
 
+create table feedback_log_comment
+(
+  id bigserial primary key,
+  feedback_log_id bigint references feedback_log(id) on delete cascade not null,
+  comment text,
+  user_name text not null,
+  created_on timestamp not null default statement_timestamp()
+);
+alter sequence feedback_log_comment_id_seq restart with 10000;
+
 --- indexes
 
 create index form_value_idx on form(value);
@@ -951,6 +961,7 @@ create index meaning_lifecycle_log_meaning_id_idx on meaning_lifecycle_log(meani
 create index meaning_lifecycle_log_log_id_idx on meaning_lifecycle_log(lifecycle_log_id);
 create index lexeme_lifecycle_log_lexeme_id_idx on lexeme_lifecycle_log(lexeme_id);
 create index lexeme_lifecycle_log_log_id_idx on lexeme_lifecycle_log(lifecycle_log_id);
+create index feedback_log_comment_log_id_idx on feedback_log_comment(feedback_log_id);
 
 create index definition_fts_idx on definition using gin(to_tsvector('simple',value));
 create index freeform_fts_idx on freeform using gin(to_tsvector('simple',value_text));

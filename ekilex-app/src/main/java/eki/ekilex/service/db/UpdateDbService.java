@@ -2,6 +2,8 @@ package eki.ekilex.service.db;
 
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
+import static eki.ekilex.data.db.Tables.FEEDBACK_LOG;
+import static eki.ekilex.data.db.Tables.FEEDBACK_LOG_COMMENT;
 import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.FREEFORM_SOURCE_LINK;
@@ -32,6 +34,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import eki.ekilex.data.db.tables.records.FeedbackLogCommentRecord;
 import eki.ekilex.data.db.tables.records.FreeformSourceLinkRecord;
 import eki.ekilex.data.db.tables.records.LexemeFreeformRecord;
 import org.jooq.DSLContext;
@@ -666,6 +669,12 @@ public class UpdateDbService implements DbConstant {
 				.execute();
 	}
 
+	public void deleteFeedback(Long id) {
+		create.delete(FEEDBACK_LOG)
+				.where(FEEDBACK_LOG.ID.eq(id))
+				.execute();
+	}
+
 	public Long addDefinition(Long meaningId, String value, String valuePrese, String languageCode) {
 		return create
 				.insertInto(DEFINITION, DEFINITION.MEANING_ID, DEFINITION.LANG, DEFINITION.VALUE, DEFINITION.VALUE_PRESE)
@@ -805,6 +814,15 @@ public class UpdateDbService implements DbConstant {
 		lexemeFreeform.store();
 
 		return freeform.getId();
+	}
+
+	public Long addFeedbackComment(Long feedbackId, String comment, String userName) {
+		FeedbackLogCommentRecord feedbackComment = create.newRecord(FEEDBACK_LOG_COMMENT);
+		feedbackComment.setFeedbackLogId(feedbackId);
+		feedbackComment.setComment(comment);
+		feedbackComment.setUserName(userName);
+		feedbackComment.store();
+		return feedbackComment.getId();
 	}
 
 	public String getFirstDefinitionOfMeaning(Long meaningId) {

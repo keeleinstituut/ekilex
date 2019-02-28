@@ -22,6 +22,7 @@ import eki.ekilex.data.db.tables.DomainLabel;
 import eki.ekilex.data.db.tables.EkiUser;
 import eki.ekilex.data.db.tables.EtymologyType;
 import eki.ekilex.data.db.tables.FeedbackLog;
+import eki.ekilex.data.db.tables.FeedbackLogComment;
 import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.FormFrequency;
 import eki.ekilex.data.db.tables.Freeform;
@@ -207,6 +208,11 @@ public class Tables {
      * The table <code>public.feedback_log</code>.
      */
     public static final FeedbackLog FEEDBACK_LOG = eki.ekilex.data.db.tables.FeedbackLog.FEEDBACK_LOG;
+
+    /**
+     * The table <code>public.feedback_log_comment</code>.
+     */
+    public static final FeedbackLogComment FEEDBACK_LOG_COMMENT = eki.ekilex.data.db.tables.FeedbackLogComment.FEEDBACK_LOG_COMMENT;
 
     /**
      * The table <code>public.form</code>.
