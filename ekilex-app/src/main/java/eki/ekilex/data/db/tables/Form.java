@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Form extends TableImpl<FormRecord> {
 
-    private static final long serialVersionUID = 1173507333;
+    private static final long serialVersionUID = -742597978;
 
     /**
      * The reference instance of <code>public.form</code>
@@ -182,7 +182,7 @@ public class Form extends TableImpl<FormRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_MODE_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_PKEY, Indexes.FORM_VALUE_IDX, Indexes.FORM_VALUE_MODE_IDX);
+        return Arrays.<Index>asList(Indexes.FORM_MODE_IDX, Indexes.FORM_MORPH_CODE_IDX, Indexes.FORM_PARADIGM_ID_IDX, Indexes.FORM_PKEY, Indexes.FORM_VALUE_IDX, Indexes.FORM_VALUE_MODE_IDX);
     }
 
     /**

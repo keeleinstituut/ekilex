@@ -69,25 +69,28 @@
       </span>
     </div>
 
-    <div class="hidden-buttons" th:if="${lexeme.lexemeFrequencyGroupCode != null}" th:fragment="lexeme_frequency_group">
+    <div class="hidden-buttons" th:fragment="lexeme_frequency_group">
       <span class="lbl">Sagedusrühm</span>
-      <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
-            th:data-id="${lexeme.lexemeId}"
-            th:data-op-code="lexeme_frequency_group"
-            th:data-value="${lexeme.lexemeFrequencyGroupCode}"
-            th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
-      <button type="button" class="btn badge badge-primary"
-              th:title="Muuda"
-              onclick="openSelectDlg(this)"
-              data-toggle="modal" data-target="#lexemeFrequencyDlg"
-              th:data-target-elem="${lexeme.lexemeId} + '_lexeme_frequency_group'">
-        <i class="fa fa-caret-down" aria-hidden="true"></i>
-      </button>
-      <button type="button" class="btn badge badge-warning"
-              th:data-target-elem="${lexeme.lexemeId} + '_lexeme_frequency_group'"
-              data-toggle="delete-confirmation" data-placement="right">
-        <i class="fa fa-remove" aria-hidden="true"></i>
-      </button>
+      <span th:text="${lexeme.lexemeFrequencies}"></span>
+      <span th:if="${lexeme.lexemeFrequencyGroupCode != null}">
+        <span th:name="${lexeme.lexemeId} + '_lexeme_frequency_group'"
+              th:data-id="${lexeme.lexemeId}"
+              th:data-op-code="lexeme_frequency_group"
+              th:data-value="${lexeme.lexemeFrequencyGroupCode}"
+              th:text="${lexeme.lexemeFrequencyGroupCode}"></span>
+        <button type="button" class="btn badge badge-primary"
+                th:title="Muuda"
+                onclick="openSelectDlg(this)"
+                data-toggle="modal" data-target="#lexemeFrequencyDlg"
+                th:data-target-elem="${lexeme.lexemeId} + '_lexeme_frequency_group'">
+          <i class="fa fa-caret-down" aria-hidden="true"></i>
+        </button>
+        <button type="button" class="btn badge badge-warning"
+                th:data-target-elem="${lexeme.lexemeId} + '_lexeme_frequency_group'"
+                data-toggle="delete-confirmation" data-placement="right">
+          <i class="fa fa-remove" aria-hidden="true"></i>
+        </button>
+      </span>
     </div>
 
     <div th:if="${not #lists.isEmpty(lexeme.pos)}" th:fragment="lexeme_pos">

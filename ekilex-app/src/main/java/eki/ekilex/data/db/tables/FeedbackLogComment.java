@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
 
-    private static final long serialVersionUID = 1175731705;
+    private static final long serialVersionUID = -451656554;
 
     /**
      * The reference instance of <code>public.feedback_log_comment</code>
@@ -128,7 +128,7 @@ public class FeedbackLogComment extends TableImpl<FeedbackLogCommentRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FEEDBACK_LOG_COMMENT_PKEY);
+        return Arrays.<Index>asList(Indexes.FEEDBACK_LOG_COMMENT_LOG_ID_IDX, Indexes.FEEDBACK_LOG_COMMENT_PKEY);
     }
 
     /**

@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class FormFrequency extends TableImpl<FormFrequencyRecord> {
 
-    private static final long serialVersionUID = 849211564;
+    private static final long serialVersionUID = -938667545;
 
     /**
      * The reference instance of <code>public.form_frequency</code>
@@ -64,11 +64,6 @@ public class FormFrequency extends TableImpl<FormFrequencyRecord> {
     public final TableField<FormFrequencyRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('form_frequency_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
-     * The column <code>public.form_frequency.form_id</code>.
-     */
-    public final TableField<FormFrequencyRecord, Long> FORM_ID = createField("form_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
-
-    /**
      * The column <code>public.form_frequency.source_name</code>.
      */
     public final TableField<FormFrequencyRecord, String> SOURCE_NAME = createField("source_name", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
@@ -77,6 +72,21 @@ public class FormFrequency extends TableImpl<FormFrequencyRecord> {
      * The column <code>public.form_frequency.created_on</code>.
      */
     public final TableField<FormFrequencyRecord, Timestamp> CREATED_ON = createField("created_on", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("statement_timestamp()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+
+    /**
+     * The column <code>public.form_frequency.word_value</code>.
+     */
+    public final TableField<FormFrequencyRecord, String> WORD_VALUE = createField("word_value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+    /**
+     * The column <code>public.form_frequency.morph_code</code>.
+     */
+    public final TableField<FormFrequencyRecord, String> MORPH_CODE = createField("morph_code", org.jooq.impl.SQLDataType.VARCHAR(100).nullable(false), this, "");
+
+    /**
+     * The column <code>public.form_frequency.form_value</code>.
+     */
+    public final TableField<FormFrequencyRecord, String> FORM_VALUE = createField("form_value", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
 
     /**
      * The column <code>public.form_frequency.rank</code>.
@@ -134,7 +144,7 @@ public class FormFrequency extends TableImpl<FormFrequencyRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.FORM_FREQUENCY_FORM_ID_IDX, Indexes.FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY, Indexes.FORM_FREQUENCY_PKEY, Indexes.FORM_FREQUENCY_SOURCE_NAME_IDX);
+        return Arrays.<Index>asList(Indexes.FORM_FREQUENCY_FORM_VALUE_IDX, Indexes.FORM_FREQUENCY_MORPH_CODE_IDX, Indexes.FORM_FREQUENCY_PKEY, Indexes.FORM_FREQUENCY_SOURCE_NAME_IDX, Indexes.FORM_FREQUENCY_WORD_VALUE_IDX);
     }
 
     /**
@@ -158,7 +168,7 @@ public class FormFrequency extends TableImpl<FormFrequencyRecord> {
      */
     @Override
     public List<UniqueKey<FormFrequencyRecord>> getKeys() {
-        return Arrays.<UniqueKey<FormFrequencyRecord>>asList(Keys.FORM_FREQUENCY_PKEY, Keys.FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY);
+        return Arrays.<UniqueKey<FormFrequencyRecord>>asList(Keys.FORM_FREQUENCY_PKEY);
     }
 
     /**
@@ -166,11 +176,11 @@ public class FormFrequency extends TableImpl<FormFrequencyRecord> {
      */
     @Override
     public List<ForeignKey<FormFrequencyRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<FormFrequencyRecord, ?>>asList(Keys.FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY);
+        return Arrays.<ForeignKey<FormFrequencyRecord, ?>>asList(Keys.FORM_FREQUENCY__FORM_FREQUENCY_MORPH_CODE_FKEY);
     }
 
-    public Form form() {
-        return new Form(this, Keys.FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY);
+    public Morph morph() {
+        return new Morph(this, Keys.FORM_FREQUENCY__FORM_FREQUENCY_MORPH_CODE_FKEY);
     }
 
     /**

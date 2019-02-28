@@ -293,7 +293,6 @@ public class Keys {
     public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = UniqueKeys0.FEEDBACK_LOG_COMMENT_PKEY;
     public static final UniqueKey<FormRecord> FORM_PKEY = UniqueKeys0.FORM_PKEY;
     public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_PKEY = UniqueKeys0.FORM_FREQUENCY_PKEY;
-    public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY = UniqueKeys0.FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY;
     public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = UniqueKeys0.FREEFORM_PKEY;
     public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = UniqueKeys0.FREEFORM_SOURCE_LINK_PKEY;
     public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = UniqueKeys0.FREQUENCY_GROUP_PKEY;
@@ -409,7 +408,7 @@ public class Keys {
     public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = ForeignKeys0.FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY;
     public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = ForeignKeys0.FORM__FORM_PARADIGM_ID_FKEY;
     public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = ForeignKeys0.FORM__FORM_MORPH_CODE_FKEY;
-    public static final ForeignKey<FormFrequencyRecord, FormRecord> FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY = ForeignKeys0.FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY;
+    public static final ForeignKey<FormFrequencyRecord, MorphRecord> FORM_FREQUENCY__FORM_FREQUENCY_MORPH_CODE_FKEY = ForeignKeys0.FORM_FREQUENCY__FORM_FREQUENCY_MORPH_CODE_FKEY;
     public static final ForeignKey<FreeformRecord, FreeformRecord> FREEFORM__FREEFORM_PARENT_ID_FKEY = ForeignKeys0.FREEFORM__FREEFORM_PARENT_ID_FKEY;
     public static final ForeignKey<FreeformRecord, LanguageRecord> FREEFORM__FREEFORM_LANG_FKEY = ForeignKeys0.FREEFORM__FREEFORM_LANG_FKEY;
     public static final ForeignKey<FreeformRecord, ProcessStateRecord> FREEFORM__FREEFORM_PROCESS_STATE_CODE_FKEY = ForeignKeys0.FREEFORM__FREEFORM_PROCESS_STATE_CODE_FKEY;
@@ -628,7 +627,6 @@ public class Keys {
         public static final UniqueKey<FeedbackLogCommentRecord> FEEDBACK_LOG_COMMENT_PKEY = Internal.createUniqueKey(FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment_pkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.ID);
         public static final UniqueKey<FormRecord> FORM_PKEY = Internal.createUniqueKey(Form.FORM, "form_pkey", Form.FORM.ID);
         public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_PKEY = Internal.createUniqueKey(FormFrequency.FORM_FREQUENCY, "form_frequency_pkey", FormFrequency.FORM_FREQUENCY.ID);
-        public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY = Internal.createUniqueKey(FormFrequency.FORM_FREQUENCY, "form_frequency_form_id_source_name_key", FormFrequency.FORM_FREQUENCY.FORM_ID, FormFrequency.FORM_FREQUENCY.SOURCE_NAME);
         public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = Internal.createUniqueKey(Freeform.FREEFORM, "freeform_pkey", Freeform.FREEFORM.ID);
         public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = Internal.createUniqueKey(FreeformSourceLink.FREEFORM_SOURCE_LINK, "freeform_source_link_pkey", FreeformSourceLink.FREEFORM_SOURCE_LINK.ID);
         public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = Internal.createUniqueKey(FrequencyGroup.FREQUENCY_GROUP, "frequency_group_pkey", FrequencyGroup.FREQUENCY_GROUP.CODE);
@@ -742,7 +740,7 @@ public class Keys {
         public static final ForeignKey<FeedbackLogCommentRecord, FeedbackLogRecord> FEEDBACK_LOG_COMMENT__FEEDBACK_LOG_COMMENT_FEEDBACK_LOG_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FEEDBACK_LOG_PKEY, FeedbackLogComment.FEEDBACK_LOG_COMMENT, "feedback_log_comment__feedback_log_comment_feedback_log_id_fkey", FeedbackLogComment.FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID);
         public static final ForeignKey<FormRecord, ParadigmRecord> FORM__FORM_PARADIGM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PARADIGM_PKEY, Form.FORM, "form__form_paradigm_id_fkey", Form.FORM.PARADIGM_ID);
         public static final ForeignKey<FormRecord, MorphRecord> FORM__FORM_MORPH_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, Form.FORM, "form__form_morph_code_fkey", Form.FORM.MORPH_CODE);
-        public static final ForeignKey<FormFrequencyRecord, FormRecord> FORM_FREQUENCY__FORM_FREQUENCY_FORM_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FORM_PKEY, FormFrequency.FORM_FREQUENCY, "form_frequency__form_frequency_form_id_fkey", FormFrequency.FORM_FREQUENCY.FORM_ID);
+        public static final ForeignKey<FormFrequencyRecord, MorphRecord> FORM_FREQUENCY__FORM_FREQUENCY_MORPH_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.MORPH_PKEY, FormFrequency.FORM_FREQUENCY, "form_frequency__form_frequency_morph_code_fkey", FormFrequency.FORM_FREQUENCY.MORPH_CODE);
         public static final ForeignKey<FreeformRecord, FreeformRecord> FREEFORM__FREEFORM_PARENT_ID_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.FREEFORM_PKEY, Freeform.FREEFORM, "freeform__freeform_parent_id_fkey", Freeform.FREEFORM.PARENT_ID);
         public static final ForeignKey<FreeformRecord, LanguageRecord> FREEFORM__FREEFORM_LANG_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.LANGUAGE_PKEY, Freeform.FREEFORM, "freeform__freeform_lang_fkey", Freeform.FREEFORM.LANG);
         public static final ForeignKey<FreeformRecord, ProcessStateRecord> FREEFORM__FREEFORM_PROCESS_STATE_CODE_FKEY = Internal.createForeignKey(eki.ekilex.data.db.Keys.PROCESS_STATE_PKEY, Freeform.FREEFORM, "freeform__freeform_process_state_code_fkey", Freeform.FREEFORM.PROCESS_STATE_CODE);

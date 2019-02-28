@@ -53,6 +53,9 @@ public class WordLexeme extends AbstractDataObject {
 	@Column(name = "lexeme_frequency_group_code")
 	private String lexemeFrequencyGroupCode;
 
+	@Column(name = "lexeme_frequencies")
+	private List<String> lexemeFrequencies;
+
 	@Column(name = "lexeme_process_state_code")
 	private String lexemeProcessStateCode;
 
@@ -225,6 +228,14 @@ public class WordLexeme extends AbstractDataObject {
 
 	public void setLexemeFrequencyGroupCode(String lexemeFrequencyGroupCode) {
 		this.lexemeFrequencyGroupCode = lexemeFrequencyGroupCode;
+	}
+
+	public List<String> getLexemeFrequencies() {
+		return lexemeFrequencies;
+	}
+
+	public void setLexemeFrequencies(List<String> lexemeFrequencies) {
+		this.lexemeFrequencies = lexemeFrequencies;
 	}
 
 	public String getLexemeProcessStateCode() {

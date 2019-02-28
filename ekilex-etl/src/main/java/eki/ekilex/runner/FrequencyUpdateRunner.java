@@ -6,6 +6,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -25,7 +26,7 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 
 	private static final String SQL_INSERT_LEXEME_FREQUENCY_NO_POS_WHERE_NOT_EXISTS_PATH = "sql/insert_lexeme_freq_no_pos_where_not_exists.sql";
 
-	private static final String SQL_INSERT_FORM_FREQUENCY_WHERE_NOT_EXISTS_PATH = "sql/insert_form_freq_where_not_exists.sql";
+	private static final String SQL_INSERT_FORM_FREQUENCY_WHERE_EXISTS_WORD_PATH = "sql/insert_form_freq_where_exists_word.sql";
 
 	private static final int FREQ_DECIMAL_PLACES = 7;
 
@@ -37,7 +38,7 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 
 	private String sqlInsertLexemeFrequencyNoPosWhereNotExists;
 
-	private String sqlInsertFormFrequencyWhereNotExists;
+	private String sqlInsertFormFrequencyWhereExistsWord;
 
 	private String module;
 
@@ -63,8 +64,8 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 		resourceFileInputStream = classLoader.getResourceAsStream(SQL_INSERT_LEXEME_FREQUENCY_NO_POS_WHERE_NOT_EXISTS_PATH);
 		sqlInsertLexemeFrequencyNoPosWhereNotExists = getContent(resourceFileInputStream);
 
-		resourceFileInputStream = classLoader.getResourceAsStream(SQL_INSERT_FORM_FREQUENCY_WHERE_NOT_EXISTS_PATH);
-		sqlInsertFormFrequencyWhereNotExists = getContent(resourceFileInputStream);
+		resourceFileInputStream = classLoader.getResourceAsStream(SQL_INSERT_FORM_FREQUENCY_WHERE_EXISTS_WORD_PATH);
+		sqlInsertFormFrequencyWhereExistsWord = getContent(resourceFileInputStream);
 	}
 
 	@Transactional
@@ -183,16 +184,22 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 		logger.debug("There are {} form frequency rows in source \"{}\"", dataRowCount, sourceName);
 
 		Map<String, Object> tableRowParamMap = new HashMap<>();
+
+		List<Map<String, Object>> morphRows = basicDbService.selectAll(MORPH, tableRowParamMap);
+		List<String> supportedMorphCodes = morphRows.stream().map(row -> row.get("code").toString()).collect(Collectors.toList());
+
+		logger.debug("There are {} supported morph codes", supportedMorphCodes.size());
+
 		tableRowParamMap.put("sourceName", sourceName);
 		int formFrequencyDeleteCount = basicDbService.executeScript(sqlDeleteFormFrequencyForSource, tableRowParamMap);
+
 		logger.debug("Deleted {} form frequency records of source \"{}\"", formFrequencyDeleteCount, sourceName);
 
 		long dataRowCounter = 0;
 		long progressIndicator = dataRowCount / Math.min(dataRowCount, 100);
 
 		Count totalInsertCount = new Count();
-		Count existingFormCount = new Count();
-		Count missingFormCount = new Count();
+		Count unsupportedMorphCount = new Count();
 
 		for (String formFreqLine : formFreqLines) {
 
@@ -204,24 +211,29 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 			int rank = Integer.parseInt(formFreqParts[0]);
 			String formValue = formFreqParts[1];
 			String wordValue = formFreqParts[2];
-			String morphCode = formFreqParts[4];
+			String morphCodesStr = formFreqParts[4];
+			String[] morphCodes = StringUtils.split(morphCodesStr, ',');
 			BigDecimal frequency = new BigDecimal(formFreqParts[5]);
 			frequency = frequency.setScale(FREQ_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
 
-			tableRowParamMap.clear();
-			tableRowParamMap.put("sourceName", sourceName);
-			tableRowParamMap.put("rank", rank);
-			tableRowParamMap.put("frequency", frequency);
-			tableRowParamMap.put("formValue", formValue);
-			tableRowParamMap.put("morphCode", morphCode);
-			tableRowParamMap.put("wordValue", wordValue);
+			for (String morphCode : morphCodes) {
+				if (!supportedMorphCodes.contains(morphCode)) {
+					unsupportedMorphCount.increment();
+					continue;
+				}
 
-			int insertCount = basicDbService.executeScript(sqlInsertFormFrequencyWhereNotExists, tableRowParamMap);
-			if (insertCount == 0) {
-				missingFormCount.increment();
-			} else {
-				existingFormCount.increment();
-				totalInsertCount.increment(insertCount);
+				tableRowParamMap.clear();
+				tableRowParamMap.put("sourceName", sourceName);
+				tableRowParamMap.put("wordValue", wordValue);
+				tableRowParamMap.put("morphCode", morphCode);
+				tableRowParamMap.put("formValue", formValue);
+				tableRowParamMap.put("rank", rank);
+				tableRowParamMap.put("frequency", frequency);
+	
+				int insertCount = basicDbService.executeScript(sqlInsertFormFrequencyWhereExistsWord, tableRowParamMap);
+				if (insertCount > 0) {
+					totalInsertCount.increment();
+				}
 			}
 
 			// progress
@@ -232,9 +244,8 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 			}
 		}
 
-		logger.debug("Missing form count: {}", missingFormCount.getValue());
-		logger.debug("Existing form count: {}", existingFormCount.getValue());
 		logger.debug("Total form frequency insert count: {}", totalInsertCount.getValue());
+		logger.debug("Unsupported morph code row count: {}", unsupportedMorphCount.getValue());
 
 		end();
 	}

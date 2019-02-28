@@ -8,6 +8,7 @@ import static eki.ekilex.data.db.Tables.FORM_FREQUENCY;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_POS_GROUP;
 import static eki.ekilex.data.db.Tables.LEX_COLLOC_REL_GROUP;
@@ -444,7 +445,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return create.fetchCount(ww);
 	}
 
-	public Result<Record11<Long,String,Long,String,String,String[],String,String,String,String,String[]>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record11<Long,String,Long,String,String,String[],String,String,String,String,String[]>> findParadigmFormTuples(
+			Long wordId, String wordValue, String classifierLabelLang, String classifierLabelTypeCode) {
 
 		Field<String[]> ffreq = DSL
 			.select(DSL.arrayAgg(DSL.concat(
@@ -452,8 +454,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 					FORM_FREQUENCY.RANK, DSL.val(" - "),
 					FORM_FREQUENCY.VALUE)))
 			.from(FORM_FREQUENCY)
-			.where(FORM_FREQUENCY.FORM_ID.eq(FORM.ID))
-			.groupBy(FORM_FREQUENCY.FORM_ID)
+			.where(
+					FORM_FREQUENCY.WORD_VALUE.eq(wordValue)
+					.and(FORM_FREQUENCY.FORM_VALUE.eq(FORM.VALUE))
+					.and(FORM_FREQUENCY.MORPH_CODE.eq(FORM.MORPH_CODE))
+					)
 			.asField();
 
 		return create
@@ -482,7 +487,19 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.fetch();
 	}
 
-	private SelectField<?>[] wordLexemeSelectFields =  {
+	private SelectField<?>[] getWordLexemeSelectFields() {
+
+		Field<String[]> lfreq = DSL
+				.select(DSL.arrayAgg(DSL.concat(
+						LEXEME_FREQUENCY.SOURCE_NAME, DSL.val(" - "),
+						LEXEME_FREQUENCY.RANK, DSL.val(" - "),
+						LEXEME_FREQUENCY.VALUE)))
+				.from(LEXEME_FREQUENCY)
+				.where(LEXEME_FREQUENCY.LEXEME_ID.eq(LEXEME.ID))
+				.groupBy(LEXEME_FREQUENCY.LEXEME_ID)
+				.asField();
+
+		return new Field<?>[] {
 			DSL.arrayAggDistinct(FORM.VALUE).as("words"),
 			DSL.arrayAggDistinct(FORM.VOCAL_FORM).as("vocal_forms"),
 			WORD.LANG.as("word_lang"),
@@ -498,9 +515,11 @@ public class LexSearchDbService extends AbstractSearchDbService {
 			LEXEME.LEVEL3,
 			LEXEME.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 			LEXEME.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+			lfreq.as("lexeme_frequencies"),
 			LEXEME.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
 			MEANING.PROCESS_STATE_CODE.as("meaning_process_state_code")
 		};
+	}
 
 	public Result<Record> findWordLexemes(Long wordId, List<String> datasets) {
 
@@ -509,7 +528,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 			datasetCondition = datasetCondition.and(LEXEME.DATASET_CODE.in(datasets));
 		}
 
-		return create.select(wordLexemeSelectFields)
+		return create.select(getWordLexemeSelectFields())
 			.from(FORM, PARADIGM, WORD, LEXEME, MEANING, DATASET)
 			.where(
 					WORD.ID.eq(wordId)
@@ -527,7 +546,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 
 	public Record findLexeme(Long lexemeId) {
 
-		return create.select(wordLexemeSelectFields)
+		return create.select(getWordLexemeSelectFields())
 			.from(FORM, PARADIGM, WORD, LEXEME, MEANING)
 			.where(
 					LEXEME.ID.eq(lexemeId)

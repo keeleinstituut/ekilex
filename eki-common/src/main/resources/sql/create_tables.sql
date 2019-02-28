@@ -537,12 +537,13 @@ alter sequence form_id_seq restart with 10000;
 create table form_frequency
 (
   id bigserial primary key,
-  form_id bigint references form(id) on delete cascade not null,
   source_name text not null,
   created_on timestamp not null default statement_timestamp(),
+  word_value text not null,
+  morph_code varchar(100) references morph(code) not null,
+  form_value text not null,
   rank bigint not null,
-  value numeric(12, 7) not null,
-  unique (form_id, source_name)
+  value numeric(12, 7) not null
 );
 alter sequence form_frequency_id_seq restart with 10000;
 
@@ -892,11 +893,14 @@ alter sequence feedback_log_comment_id_seq restart with 10000;
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
 create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);
+create index form_morph_code_idx on form(morph_code);
 create index form_mode_idx on form(mode);
 create index form_value_mode_idx on form(value, mode);
 create index form_paradigm_id_idx on form(paradigm_id);
-create index form_frequency_form_id_idx on form_frequency(form_id);
 create index form_frequency_source_name_idx on form_frequency(source_name);
+create index form_frequency_word_value_idx on form_frequency(word_value);
+create index form_frequency_morph_code_idx on form_frequency(morph_code);
+create index form_frequency_form_value_idx on form_frequency(form_value);
 create index paradigm_word_id_idx on paradigm(word_id);
 create index word_homonym_nr_idx on word(homonym_nr);
 create index word_lang_idx on word(lang);
