@@ -168,6 +168,7 @@ public class ConversionUtil {
 			form.setVocalForm(tuple.getVocalForm());
 			form.setMorphCode(tuple.getMorphCode());
 			form.setMorphValue(tuple.getMorphValue());
+			form.setFormFrequencies(tuple.getFormFrequencies());
 			forms.add(form);
 		}
 		composeParadigmTitles(paradigms);

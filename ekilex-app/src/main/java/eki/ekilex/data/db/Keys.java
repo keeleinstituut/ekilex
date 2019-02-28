@@ -289,6 +289,7 @@ public class Keys {
     public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = UniqueKeys0.FEEDBACK_LOG_PKEY;
     public static final UniqueKey<FormRecord> FORM_PKEY = UniqueKeys0.FORM_PKEY;
     public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_PKEY = UniqueKeys0.FORM_FREQUENCY_PKEY;
+    public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY = UniqueKeys0.FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY;
     public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = UniqueKeys0.FREEFORM_PKEY;
     public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = UniqueKeys0.FREEFORM_SOURCE_LINK_PKEY;
     public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = UniqueKeys0.FREQUENCY_GROUP_PKEY;
@@ -316,6 +317,7 @@ public class Keys {
     public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = UniqueKeys0.LEXEME_FREEFORM_PKEY;
     public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY = UniqueKeys0.LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY;
     public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_PKEY = UniqueKeys0.LEXEME_FREQUENCY_PKEY;
+    public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY = UniqueKeys0.LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY;
     public static final UniqueKey<LexemeLifecycleLogRecord> LEXEME_LIFECYCLE_LOG_PKEY = UniqueKeys0.LEXEME_LIFECYCLE_LOG_PKEY;
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_PKEY = UniqueKeys0.LEXEME_POS_PKEY;
     public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = UniqueKeys0.LEXEME_POS_LEXEME_ID_POS_CODE_KEY;
@@ -619,6 +621,7 @@ public class Keys {
         public static final UniqueKey<FeedbackLogRecord> FEEDBACK_LOG_PKEY = Internal.createUniqueKey(FeedbackLog.FEEDBACK_LOG, "feedback_log_pkey", FeedbackLog.FEEDBACK_LOG.ID);
         public static final UniqueKey<FormRecord> FORM_PKEY = Internal.createUniqueKey(Form.FORM, "form_pkey", Form.FORM.ID);
         public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_PKEY = Internal.createUniqueKey(FormFrequency.FORM_FREQUENCY, "form_frequency_pkey", FormFrequency.FORM_FREQUENCY.ID);
+        public static final UniqueKey<FormFrequencyRecord> FORM_FREQUENCY_FORM_ID_SOURCE_NAME_KEY = Internal.createUniqueKey(FormFrequency.FORM_FREQUENCY, "form_frequency_form_id_source_name_key", FormFrequency.FORM_FREQUENCY.FORM_ID, FormFrequency.FORM_FREQUENCY.SOURCE_NAME);
         public static final UniqueKey<FreeformRecord> FREEFORM_PKEY = Internal.createUniqueKey(Freeform.FREEFORM, "freeform_pkey", Freeform.FREEFORM.ID);
         public static final UniqueKey<FreeformSourceLinkRecord> FREEFORM_SOURCE_LINK_PKEY = Internal.createUniqueKey(FreeformSourceLink.FREEFORM_SOURCE_LINK, "freeform_source_link_pkey", FreeformSourceLink.FREEFORM_SOURCE_LINK.ID);
         public static final UniqueKey<FrequencyGroupRecord> FREQUENCY_GROUP_PKEY = Internal.createUniqueKey(FrequencyGroup.FREQUENCY_GROUP, "frequency_group_pkey", FrequencyGroup.FREQUENCY_GROUP.CODE);
@@ -646,6 +649,7 @@ public class Keys {
         public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_PKEY = Internal.createUniqueKey(LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_pkey", LexemeFreeform.LEXEME_FREEFORM.ID);
         public static final UniqueKey<LexemeFreeformRecord> LEXEME_FREEFORM_LEXEME_ID_FREEFORM_ID_KEY = Internal.createUniqueKey(LexemeFreeform.LEXEME_FREEFORM, "lexeme_freeform_lexeme_id_freeform_id_key", LexemeFreeform.LEXEME_FREEFORM.LEXEME_ID, LexemeFreeform.LEXEME_FREEFORM.FREEFORM_ID);
         public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_PKEY = Internal.createUniqueKey(LexemeFrequency.LEXEME_FREQUENCY, "lexeme_frequency_pkey", LexemeFrequency.LEXEME_FREQUENCY.ID);
+        public static final UniqueKey<LexemeFrequencyRecord> LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY = Internal.createUniqueKey(LexemeFrequency.LEXEME_FREQUENCY, "lexeme_frequency_lexeme_id_source_name_key", LexemeFrequency.LEXEME_FREQUENCY.LEXEME_ID, LexemeFrequency.LEXEME_FREQUENCY.SOURCE_NAME);
         public static final UniqueKey<LexemeLifecycleLogRecord> LEXEME_LIFECYCLE_LOG_PKEY = Internal.createUniqueKey(LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG, "lexeme_lifecycle_log_pkey", LexemeLifecycleLog.LEXEME_LIFECYCLE_LOG.ID);
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_PKEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_pkey", LexemePos.LEXEME_POS.ID);
         public static final UniqueKey<LexemePosRecord> LEXEME_POS_LEXEME_ID_POS_CODE_KEY = Internal.createUniqueKey(LexemePos.LEXEME_POS, "lexeme_pos_lexeme_id_pos_code_key", LexemePos.LEXEME_POS.LEXEME_ID, LexemePos.LEXEME_POS.POS_CODE);

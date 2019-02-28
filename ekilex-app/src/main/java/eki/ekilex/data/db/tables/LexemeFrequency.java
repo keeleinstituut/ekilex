@@ -43,7 +43,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
 
-    private static final long serialVersionUID = -906558805;
+    private static final long serialVersionUID = 812210562;
 
     /**
      * The reference instance of <code>public.lexeme_frequency</code>
@@ -134,7 +134,7 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
      */
     @Override
     public List<Index> getIndexes() {
-        return Arrays.<Index>asList(Indexes.LEXEME_FREQUENCY_LEXEME_ID_IDX, Indexes.LEXEME_FREQUENCY_PKEY);
+        return Arrays.<Index>asList(Indexes.LEXEME_FREQUENCY_LEXEME_ID_IDX, Indexes.LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY, Indexes.LEXEME_FREQUENCY_PKEY, Indexes.LEXEME_FREQUENCY_SOURCE_NAME_IDX);
     }
 
     /**
@@ -158,7 +158,7 @@ public class LexemeFrequency extends TableImpl<LexemeFrequencyRecord> {
      */
     @Override
     public List<UniqueKey<LexemeFrequencyRecord>> getKeys() {
-        return Arrays.<UniqueKey<LexemeFrequencyRecord>>asList(Keys.LEXEME_FREQUENCY_PKEY);
+        return Arrays.<UniqueKey<LexemeFrequencyRecord>>asList(Keys.LEXEME_FREQUENCY_PKEY, Keys.LEXEME_FREQUENCY_LEXEME_ID_SOURCE_NAME_KEY);
     }
 
     /**

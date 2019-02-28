@@ -4,6 +4,7 @@ import static eki.ekilex.data.db.Tables.COLLOCATION;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.FORM;
+import static eki.ekilex.data.db.Tables.FORM_FREQUENCY;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
@@ -35,6 +36,7 @@ import org.jooq.Field;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Record10;
+import org.jooq.Record11;
 import org.jooq.Record16;
 import org.jooq.Record4;
 import org.jooq.Record6;
@@ -442,7 +444,17 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return create.fetchCount(ww);
 	}
 
-	public Result<Record10<Long,String,Long,String,String,String[],String,String,String,String>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record11<Long,String,Long,String,String,String[],String,String,String,String,String[]>> findParadigmFormTuples(Long wordId, String classifierLabelLang, String classifierLabelTypeCode) {
+
+		Field<String[]> ffreq = DSL
+			.select(DSL.arrayAgg(DSL.concat(
+					FORM_FREQUENCY.SOURCE_NAME, DSL.val(" - "),
+					FORM_FREQUENCY.RANK, DSL.val(" - "),
+					FORM_FREQUENCY.VALUE)))
+			.from(FORM_FREQUENCY)
+			.where(FORM_FREQUENCY.FORM_ID.eq(FORM.ID))
+			.groupBy(FORM_FREQUENCY.FORM_ID)
+			.asField();
 
 		return create
 				.select(
@@ -455,7 +467,8 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						FORM.DISPLAY_FORM,
 						FORM.VOCAL_FORM,
 						FORM.MORPH_CODE,
-						MORPH_LABEL.VALUE.as("morph_value")
+						MORPH_LABEL.VALUE.as("morph_value"),
+						ffreq.as("form_frequencies")
 						)
 				.from(PARADIGM, FORM, MORPH_LABEL)
 				.where(

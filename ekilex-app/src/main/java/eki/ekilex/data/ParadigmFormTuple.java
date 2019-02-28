@@ -1,5 +1,7 @@
 package eki.ekilex.data;
 
+import java.util.List;
+
 import javax.persistence.Column;
 
 import eki.common.constant.FormMode;
@@ -38,6 +40,9 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	@Column(name = "morph_value")
 	private String morphValue;
+
+	@Column(name = "form_frequencies")
+	private List<String> formFrequencies;
 
 	public Long getParadigmId() {
 		return paradigmId;
@@ -117,6 +122,14 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	public void setMorphValue(String morphValue) {
 		this.morphValue = morphValue;
+	}
+
+	public List<String> getFormFrequencies() {
+		return formFrequencies;
+	}
+
+	public void setFormFrequencies(List<String> formFrequencies) {
+		this.formFrequencies = formFrequencies;
 	}
 
 }

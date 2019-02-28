@@ -1,8 +1,6 @@
 package eki.ekilex.data;
 
-import java.util.function.Consumer;
-
-import javax.persistence.Column;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -14,37 +12,27 @@ public class Form extends AbstractDataObject {
 
 	private static final long serialVersionUID = 1L;
 
-	@Column(name = "form_id")
 	private Long id;
 
-	@Column(name = "word")
 	private String value;
 
-	@Column(name = "mode")
 	private FormMode mode;
 
-	@Column(name = "components")
 	private String[] components;
 
-	@Column(name = "display_form")
 	private String displayForm;
 
-	@Column(name = "vocal_form")
 	private String vocalForm;
 
-	@Column(name = "morph_code")
 	private String morphCode;
 
-	@Column(name = "morph_value")
 	private String morphValue;
+
+	private List<String> formFrequencies;
 
 	private boolean isDisplayMorphCode;
 
 	public Form() {
-	}
-
-	public Form(Consumer<Form> builder) {
-		builder.accept(this);
 	}
 
 	public Long getId() {
@@ -109,6 +97,14 @@ public class Form extends AbstractDataObject {
 
 	public void setMorphValue(String morphValue) {
 		this.morphValue = morphValue;
+	}
+
+	public List<String> getFormFrequencies() {
+		return formFrequencies;
+	}
+
+	public void setFormFrequencies(List<String> formFrequencies) {
+		this.formFrequencies = formFrequencies;
 	}
 
 	public boolean isDisplayMorphCode() {
