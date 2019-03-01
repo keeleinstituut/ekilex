@@ -39,14 +39,14 @@ function initUsageMemberDlg(theDlg) {
     });
 }
 
-function openEkiEditorAddDlg(elem) {
+function openEkiEditorAddDlg(elem, callback = $.noop) {
     let addDlg = $($(elem).data('target'));
     addDlg.find('[name=id]').val($(elem).data('id'));
     let modifyFld = addDlg.find('[name=editFld]');
     modifyFld.html(null);
     addDlg.find('button[type="submit"]').off('click').on('click', function(e) {
         addDlg.find('[name=value]').val(modifyFld.html());
-        submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.')
+        submitDialog(e, addDlg, 'Andmete lisamine ebaõnnestus.', callback)
     });
     addDlg.off('shown.bs.modal').on('shown.bs.modal', function(e) {
         alignAndFocus(e, addDlg)

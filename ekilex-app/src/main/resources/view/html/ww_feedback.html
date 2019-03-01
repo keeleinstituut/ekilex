@@ -56,12 +56,13 @@
               <td th:text="${fbItem.lastSearch}"></td>
               <td style="max-width: 40vw;">
                 <button type="button" class="btn badge badge-success" title="Lisa uus"
+                        onclick="openEkiEditorAddDlg(this, () => loadEkiComments(this))"
                         th:data-id="${fbItem.id}"
-                        onclick="openEkiEditorAddDlg(this)"
-                        data-toggle="modal" data-target="#addFeedbackCommentDlg">
+                        data-toggle="modal"
+                        data-target="#addFeedbackCommentDlg">
                   <i class="fa fa-plus" aria-hidden="true"></i>
                 </button>
-                <table>
+                <table th:fragment="eki_comments">
                   <tr th:each="ekiComment : ${fbItem.feedbackComments}">
                     <td th:text="${#dates.format(ekiComment.createdOn, 'dd.MM.yyyy HH:mm')}"></td>
                     <td th:text="${ekiComment.userName}"></td>
@@ -74,7 +75,8 @@
                         th:data-id="${fbItem.id}"
                         th:data-op-code="feedback"
                         data-callback="removeClosestRow"
-                        data-toggle="delete-confirmation" data-placement="left">
+                        data-toggle="delete-confirmation"
+                        data-placement="left">
                   <i class="fa fa-remove" aria-hidden="true"></i>
                 </button>
               </td>
@@ -97,6 +99,15 @@
               onConfirm: performDelete
           }
       );
+
+      function loadEkiComments(elem) {
+          let feedbackId = $(elem).data('id');
+          let tableElement = $(elem).closest('td').find('table');
+          let url = applicationUrl + 'ww_feedback/comments/' + feedbackId;
+          $.get(url).done(function(data) {
+              tableElement.replaceWith(data);
+          });
+      }
   </script>
 </body>
 </html>
