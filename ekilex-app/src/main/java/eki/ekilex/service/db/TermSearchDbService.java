@@ -6,6 +6,7 @@ import static eki.ekilex.data.db.Tables.FORM;
 import static eki.ekilex.data.db.Tables.FREEFORM;
 import static eki.ekilex.data.db.Tables.LEXEME;
 import static eki.ekilex.data.db.Tables.LEXEME_FREEFORM;
+import static eki.ekilex.data.db.Tables.LEXEME_FREQUENCY;
 import static eki.ekilex.data.db.Tables.MEANING;
 import static eki.ekilex.data.db.Tables.MEANING_DOMAIN;
 import static eki.ekilex.data.db.Tables.MEANING_FREEFORM;
@@ -23,6 +24,7 @@ import org.jooq.Field;
 import org.jooq.Record1;
 import org.jooq.Record13;
 import org.jooq.Record15;
+import org.jooq.Record16;
 import org.jooq.Record2;
 import org.jooq.Record3;
 import org.jooq.Record6;
@@ -49,6 +51,7 @@ import eki.ekilex.data.db.tables.Form;
 import eki.ekilex.data.db.tables.Freeform;
 import eki.ekilex.data.db.tables.Lexeme;
 import eki.ekilex.data.db.tables.LexemeFreeform;
+import eki.ekilex.data.db.tables.LexemeFrequency;
 import eki.ekilex.data.db.tables.Meaning;
 import eki.ekilex.data.db.tables.MeaningDomain;
 import eki.ekilex.data.db.tables.MeaningFreeform;
@@ -618,12 +621,23 @@ public class TermSearchDbService extends AbstractSearchDbService {
 				.fetchSingle();
 	}
 
-	public Record15<Long,String,Integer,String,String,Long,Long,String,Integer,Integer,Integer,String,String,String,Long> getLexeme(Long lexemeId) {
+	public Record16<Long, String, Integer, String, String, Long, Long, String, Integer, Integer, Integer, String, String[], String, String, Long> getLexeme(Long lexemeId) {
 
 		Lexeme l = LEXEME.as("l");
+		LexemeFrequency lf = LEXEME_FREQUENCY.as("lf");
 		Word w = WORD.as("w");
 		Paradigm p = PARADIGM.as("p");
 		Form f = FORM.as("f");
+
+		Field<String[]> lfreq = DSL
+				.select(DSL.arrayAgg(DSL.concat(
+						lf.SOURCE_NAME, DSL.val(" - "),
+						lf.RANK, DSL.val(" - "),
+						lf.VALUE)))
+				.from(lf)
+				.where(lf.LEXEME_ID.eq(l.ID))
+				.groupBy(lf.LEXEME_ID)
+				.asField();
 
 		return create
 				.select(
@@ -639,6 +653,7 @@ public class TermSearchDbService extends AbstractSearchDbService {
 						l.LEVEL2,
 						l.LEVEL3,
 						l.FREQUENCY_GROUP_CODE.as("lexeme_frequency_group_code"),
+						lfreq.as("lexeme_frequencies"),
 						l.VALUE_STATE_CODE.as("lexeme_value_state_code"),
 						l.PROCESS_STATE_CODE.as("lexeme_process_state_code"),
 						l.ORDER_BY

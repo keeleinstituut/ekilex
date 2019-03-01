@@ -222,7 +222,7 @@ function performDelete() {
     let currentValue = typeof targetElement.data('value') === 'object' ? JSON.stringify(targetElement.data('value')) : targetElement.data('value');
     let removeUrl = applicationUrl + 'remove_item?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id') + '&value=' + encodeURIComponent(currentValue);
     let validateUrl = applicationUrl + 'remove_item_validate?opCode=' + targetElement.data('op-code') + '&id=' + targetElement.data('id');
-    let callbackFunc = $.noop();
+    let callbackFunc = $.noop;
     let callbackName = targetElement.data('callback');
     if (callbackName !== undefined) {
         callbackFunc = () => eval(callbackName)($(this))
@@ -327,16 +327,16 @@ function initSelectDlg(selectDlg) {
     });
 }
 
-function submitDialog(e, dlg, failMessage) {
+function submitDialog(e, dlg, failMessage, callback = $.noop) {
     e.preventDefault();
     let theForm = dlg.find('form');
 
-    submitForm(theForm, failMessage).always(function () {
+    submitForm(theForm, failMessage, callback).always(function () {
         dlg.modal('hide');
     });
 }
 
-function submitForm(theForm, failMessage) {
+function submitForm(theForm, failMessage, callback = $.noop) {
     return $.ajax({
         url: theForm.attr('action'),
         data: JSON.stringify(theForm.serializeJSON()),
@@ -345,6 +345,7 @@ function submitForm(theForm, failMessage) {
         contentType: 'application/json'
     }).done(function(data) {
         $('#refresh-details').trigger('click');
+        callback();
     }).fail(function (data) {
         console.log(data);
         alert(failMessage);

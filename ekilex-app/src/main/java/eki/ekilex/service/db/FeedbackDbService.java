@@ -40,4 +40,12 @@ public class FeedbackDbService {
 		feedbackLogRecord.insert();
 	}
 
+	public Result<Record> getFeedbackComments(Long feedbackId) {
+		return create
+				.select(FEEDBACK_LOG_COMMENT.fields())
+				.from(FEEDBACK_LOG_COMMENT)
+				.where(FEEDBACK_LOG_COMMENT.FEEDBACK_LOG_ID.eq(feedbackId))
+				.fetch();
+	}
+
 }

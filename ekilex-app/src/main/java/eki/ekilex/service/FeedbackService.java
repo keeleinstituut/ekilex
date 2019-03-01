@@ -44,6 +44,11 @@ public class FeedbackService {
 		return feedbacks;
 	}
 
+	@Transactional
+	public List<FeedbackComment> getFeedbackComments(Long feedbackId) {
+		return feedbackDbService.getFeedbackComments(feedbackId).into(FeedbackComment.class);
+	}
+
 	public boolean isValidFeedback(Feedback newFeedback) {
 		return newFeedback != null &&
 				isValidFeedbackType(newFeedback.getFeedbackType()) &&

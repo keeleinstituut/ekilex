@@ -2,6 +2,7 @@ package eki.ekilex.web.controller;
 
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Feedback;
+import eki.ekilex.data.FeedbackComment;
 import eki.ekilex.service.FeedbackService;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
@@ -51,6 +53,15 @@ public class WordwebFeedbackController implements WebConstant {
 			statusMessage = "error";
 		}
 		return "{\"status\": \"" + statusMessage + "\"}";
+	}
+
+	@GetMapping(WW_FEEDBACK_URI + "/comments/{beedbackId}")
+	public String getFeedbackComments(@PathVariable("beedbackId") Long feedbackId, Model model) {
+		List<FeedbackComment> comments = feedbackService.getFeedbackComments(feedbackId);
+		Feedback feedback = new Feedback();
+		feedback.setFeedbackComments(comments);
+		model.addAttribute("fbItem", feedback);
+		return WW_FEEDBACK_PAGE + " :: eki_comments";
 	}
 
 }
