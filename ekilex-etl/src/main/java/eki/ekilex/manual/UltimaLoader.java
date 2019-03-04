@@ -211,14 +211,20 @@ public class UltimaLoader extends AbstractLoader {
 			}
 
 			// form + lexeme corp frequencies
-			dataFilePath = getConfProperty("freq.lex.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				freqUpdateRunner.executeLexemeFrequencyUpdate(dataFilePath);
+			dataset = freqUpdateRunner.getLexemeFrequencyModule();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("freq.lex.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					freqUpdateRunner.executeLexemeFrequencyUpdate(dataFilePath);
+				}
 			}
 
-			dataFilePath = getConfProperty("freq.form.file");
-			if (StringUtils.isNotBlank(dataFilePath)) {
-				freqUpdateRunner.executeFormFrequencyUpdate(dataFilePath);
+			dataset = freqUpdateRunner.getFormFrequencyModule();
+			if (doLoad(dataset, acquiredDatasets)) {
+				dataFilePath = getConfProperty("freq.form.file");
+				if (StringUtils.isNotBlank(dataFilePath)) {
+					freqUpdateRunner.executeFormFrequencyUpdate(dataFilePath);
+				}
 			}
 
 			// sound file names updater

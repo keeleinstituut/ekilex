@@ -22,6 +22,10 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 
 	private static Logger logger = LoggerFactory.getLogger(FrequencyUpdateRunner.class);
 
+	private static final String LEXEME_FREQUENCY_MODULE = "lexfreq";
+
+	private static final String FORM_FREQUENCY_MODULE = "formfreq";
+
 	private static final String SQL_INSERT_LEXEME_FREQUENCY_BY_POS_WHERE_NOT_EXISTS_PATH = "sql/insert_lexeme_freq_by_pos_where_not_exists.sql";
 
 	private static final String SQL_INSERT_LEXEME_FREQUENCY_NO_POS_WHERE_NOT_EXISTS_PATH = "sql/insert_lexeme_freq_no_pos_where_not_exists.sql";
@@ -47,6 +51,14 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 		return module;
 	}
 
+	public String getLexemeFrequencyModule() {
+		return LEXEME_FREQUENCY_MODULE;
+	}
+
+	public String getFormFrequencyModule() {
+		return FORM_FREQUENCY_MODULE;
+	}
+
 	@Override
 	public void deleteDatasetData() throws Exception {
 
@@ -70,7 +82,7 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 
 	@Transactional
 	public void executeLexemeFrequencyUpdate(String lexemeFrequencyFilePath) throws Exception {
-		this.module = "lexeme freq module";
+		this.module = LEXEME_FREQUENCY_MODULE;
 
 		start();
 
@@ -166,7 +178,7 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 
 	@Transactional
 	public void executeFormFrequencyUpdate(String formFrequencyFilePath) throws Exception {
-		this.module = "form freq module";
+		this.module = FORM_FREQUENCY_MODULE;
 
 		start();
 
@@ -211,9 +223,9 @@ public class FrequencyUpdateRunner extends AbstractLoaderRunner {
 			int rank = Integer.parseInt(formFreqParts[0]);
 			String formValue = formFreqParts[1];
 			String wordValue = formFreqParts[2];
-			String morphCodesStr = formFreqParts[4];
+			String morphCodesStr = formFreqParts[3];
 			String[] morphCodes = StringUtils.split(morphCodesStr, ',');
-			BigDecimal frequency = new BigDecimal(formFreqParts[5]);
+			BigDecimal frequency = new BigDecimal(formFreqParts[4]);
 			frequency = frequency.setScale(FREQ_DECIMAL_PLACES, BigDecimal.ROUND_HALF_UP);
 
 			for (String morphCode : morphCodes) {

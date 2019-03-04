@@ -1,4 +1,5 @@
-select p.word_id,
+select w.id word_id,
+       w.word_class,
        f.paradigm_id,
        p.inflection_type_nr,
        p.inflection_type,
@@ -15,11 +16,13 @@ select p.word_id,
        f.vocal_form,
        f.sound_file,
        f.order_by
-from paradigm p,
+from word w,
+     paradigm p,
      form f
-where f.paradigm_id = p.id
-and   p.word_id in (:wordIds)
-order by p.word_id,
+where w.id in (:wordIds)
+and   p.word_id = w.id
+and   f.paradigm_id = p.id
+order by w.id,
          p.id,
          f.order_by,
          f.id;

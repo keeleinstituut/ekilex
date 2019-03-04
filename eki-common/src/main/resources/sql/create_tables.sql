@@ -917,6 +917,7 @@ create index meaning_nr_dataset_code_idx on meaning_nr(dataset_code);
 create index meaning_nr_mnr_idx on meaning_nr(mnr);
 create index lexeme_word_id_idx on lexeme(word_id);
 create index lexeme_meaning_id_idx on lexeme(meaning_id);
+create index lexeme_dataset_code_idx on lexeme(dataset_code);
 create index definition_meaning_id_idx on definition(meaning_id);
 create index meaning_relation_meaning1_id_idx on meaning_relation(meaning1_id);
 create index meaning_relation_meaning2_id_idx on meaning_relation(meaning2_id);

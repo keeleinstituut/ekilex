@@ -9,6 +9,8 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	private Long wordId;
 
+	private String wordClass;
+
 	private Long paradigmId;
 
 	private String inflectionTypeNr;
@@ -49,6 +51,14 @@ public class ParadigmFormTuple extends AbstractDataObject {
 
 	public void setWordId(Long wordId) {
 		this.wordId = wordId;
+	}
+
+	public String getWordClass() {
+		return wordClass;
+	}
+
+	public void setWordClass(String wordClass) {
+		this.wordClass = wordClass;
 	}
 
 	public Long getParadigmId() {

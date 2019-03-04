@@ -188,6 +188,7 @@ public class MabService implements SystemConstant, InitializingBean {
 				Paradigm paradigm = paradigmMap.get(paradigmId);
 				if (paradigm == null) {
 					paradigm = new Paradigm();
+					paradigm.setWordClass(tuple.getWordClass());
 					paradigm.setInflectionTypeNr(tuple.getInflectionTypeNr());
 					paradigm.setInflectionType(tuple.getInflectionType());
 					paradigm.setForms(new ArrayList<>());
@@ -221,6 +222,7 @@ public class MabService implements SystemConstant, InitializingBean {
 
 	private ParadigmFormTuple convert(Map<String, Object> row) {
 		Long wordId = (Long) row.get("word_id");
+		String wordClass = (String) row.get("word_class");
 		Long paradigmId = (Long) row.get("paradigm_id");
 		String inflectionTypeNr = (String) row.get("inflection_type_nr");
 		String inflectionType = (String) row.get("inflection_type");
@@ -248,6 +250,7 @@ public class MabService implements SystemConstant, InitializingBean {
 		Integer orderBy = (Integer) row.get("order_by");
 		ParadigmFormTuple tuple = new ParadigmFormTuple();
 		tuple.setWordId(wordId);
+		tuple.setWordClass(wordClass);
 		tuple.setParadigmId(paradigmId);
 		tuple.setInflectionTypeNr(inflectionTypeNr);
 		tuple.setInflectionType(inflectionType);
