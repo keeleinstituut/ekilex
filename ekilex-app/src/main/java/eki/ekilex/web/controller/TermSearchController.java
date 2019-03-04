@@ -83,6 +83,8 @@ public class TermSearchController extends AbstractSearchController {
 
 		if (!searchUriData.isValid()) {
 			initSearchForms(model);
+			model.addAttribute("meaningsResult", new MeaningsResult());
+			model.addAttribute("noResults", true);
 			return TERM_SEARCH_PAGE;
 		}
 
