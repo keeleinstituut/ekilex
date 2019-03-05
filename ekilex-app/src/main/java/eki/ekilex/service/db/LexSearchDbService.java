@@ -41,6 +41,7 @@ import org.jooq.Record11;
 import org.jooq.Record16;
 import org.jooq.Record4;
 import org.jooq.Record6;
+import org.jooq.Record7;
 import org.jooq.Record8;
 import org.jooq.Result;
 import org.jooq.SelectField;
@@ -85,7 +86,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		create = context;
 	}
 
-	public Result<Record> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
+	public Result<Record11<Long,String,Integer,String,String,String,String,String[],String[],Boolean,Boolean>> findWords(SearchFilter searchFilter, List<String> datasets, boolean fetchAll) {
 
 		List<SearchCriterionGroup> searchCriteriaGroups = searchFilter.getCriteriaGroups();
 		Word w1 = WORD.as("w1");
@@ -293,7 +294,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return wordCondition;
 	}
 
-	public Result<Record> findWords(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
+	public Result<Record11<Long,String,Integer,String,String,String,String,String[],String[],Boolean,Boolean>> findWords(String wordWithMetaCharacters, List<String> datasets, boolean fetchAll) {
 
 		Word word = WORD.as("w");
 		Paradigm paradigm = PARADIGM.as("p");
@@ -327,7 +328,7 @@ public class LexSearchDbService extends AbstractSearchDbService {
 		return where;
 	}
 
-	private Result<Record> execute(Word w1, Paradigm p1, Condition where, List<String> datasets, boolean fetchAll) {
+	private Result<Record11<Long,String,Integer,String,String,String,String,String[],String[],Boolean,Boolean>> execute(Word w1, Paradigm p1, Condition where, List<String> datasets, boolean fetchAll) {
 
 		Form f1 = FORM.as("f1");
 		Table<Record> from = w1.join(p1).on(p1.WORD_ID.eq(w1.ID)).join(f1).on(f1.PARADIGM_ID.eq(p1.ID).and(f1.MODE.eq(FormMode.WORD.name())));
@@ -346,12 +347,15 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						.and(ld.DATASET_CODE.in(datasets))));
 		}
 		
-		Table<Record4<Long,String,Integer,String>> w = DSL
+		Table<Record7<Long,String,Integer,String,String,String,String>> w = DSL
 				.select(
 					w1.ID.as("word_id"),
 					wf.as("word"),
 					w1.HOMONYM_NR,
-					w1.LANG
+					w1.LANG,
+					w1.WORD_CLASS,
+					w1.GENDER_CODE,
+					w1.ASPECT_CODE
 					)
 				.from(from)
 				.where(where)
@@ -384,12 +388,15 @@ public class LexSearchDbService extends AbstractSearchDbService {
 						WORD_WORD_TYPE.WORD_ID.eq(w.field("word_id").cast(Long.class))
 						.and(WORD_WORD_TYPE.WORD_TYPE_CODE.eq(WORD_TYPE_CODE_SUFFIXOID)))));
 
-		Table<?> ww = DSL
+		Table<Record11<Long, String, Integer, String, String, String, String, String[], String[], Boolean, Boolean>> ww = DSL
 				.select(
-					w.field("word_id"),
-					w.field("word"),
-					w.field("homonym_nr"),
-					w.field("lang"),
+					w.field("word_id", Long.class),
+					w.field("word", String.class),
+					w.field("homonym_nr", Integer.class),
+					w.field("lang", String.class),
+					w.field("word_class", String.class),
+					w.field("gender_code", String.class),
+					w.field("aspect_code", String.class),
 					dscf.as("dataset_codes"),
 					wtf.as("word_type_codes"),
 					wtpf.as("is_prefixoid"),
@@ -402,9 +409,9 @@ public class LexSearchDbService extends AbstractSearchDbService {
 				.asTable("ww");
 
 		if (fetchAll) {
-			return create.select(ww.fields()).from(ww).fetch();
+			return create.selectFrom(ww).fetch();
 		} else {
-			return create.select(ww.fields()).from(ww).limit(MAX_RESULTS_LIMIT).fetch();
+			return create.selectFrom(ww).limit(MAX_RESULTS_LIMIT).fetch();
 		}
 	}
 
