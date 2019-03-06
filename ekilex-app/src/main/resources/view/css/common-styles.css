@@ -48,6 +48,14 @@ td {
 	display: inline-block;
 }
 
+.invisible-buttons .badge {
+	visibility: hidden;
+}
+
+.invisible-buttons:hover .badge {
+	visibility: visible;
+}
+
 .hidden-buttons .show-on-mouseover {
 	display: none;
 }
@@ -149,7 +157,7 @@ input:checked+.slider:before {
 	border-radius: 1rem;
 	margin-top: -14px;
 	margin-right: -14px;
-	padding: 0px 2px;
+	padding: 0 2px;
 }
 
 .btn-toggle i {
@@ -199,4 +207,29 @@ input:checked+.slider:before {
 	padding: 0;
 	border: 0;
 	vertical-align: initial;
+}
+
+.action-buttons-anchor {
+	position: relative;
+	display: inline-block;
+}
+
+.action-buttons-2 {
+	position: absolute;
+	top: -1px;
+	right: -3.5rem;
+	background: white;
+	border-radius: 3px;
+	padding: 0 2px;
+	z-index: 9;
+}
+
+.action-buttons-3 {
+	position: absolute;
+	top: 0;
+	right: -5.2rem;
+	background: white;
+	border-radius: 3px;
+	padding: 0 2px;
+	z-index: 9;
 }

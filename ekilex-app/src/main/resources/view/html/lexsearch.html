@@ -183,22 +183,26 @@
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                       </td>
                       <td class="hidden-buttons">
-                        <span th:name="${definition.id} + '_definition'"
-                              th:data-id="${definition.id}"
-                              th:data-op-code="definition"
-                              th:data-value="${definition.value}"
-                              th:utext="${definition.value}"></span>
-                        <button type="button" class="btn badge badge-primary ml-2"
-                                th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
-                                onclick="openEkiEditorDlg(this)"
-                                data-toggle="modal" data-target="#ekiEditorDlg">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${definition.id} + '_definition'"
-                                data-toggle="delete-confirmation" data-placement="right">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
+                        <div class="action-buttons-anchor">
+                          <span th:name="${definition.id} + '_definition'"
+                                th:data-id="${definition.id}"
+                                th:data-op-code="definition"
+                                th:data-value="${definition.value}"
+                                th:utext="${definition.value}"></span>
+                          <div class="action-buttons-2">
+                            <button type="button" class="btn badge badge-primary"
+                                    th:title="Muuda" th:data-target-elem="${definition.id} + '_definition'"
+                                    onclick="openEkiEditorDlg(this)"
+                                    data-toggle="modal" data-target="#ekiEditorDlg">
+                              <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-target-elem="${definition.id} + '_definition'"
+                                    data-toggle="delete-confirmation" data-placement="right">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -252,22 +256,26 @@
                   <table>
                     <tr th:each="learnerComment : ${lexeme.meaningLearnerComments}">
                       <td class="hidden-buttons">
-                              <span th:name="${learnerComment.id} + '_learner_comment'"
-                                    th:data-id="${learnerComment.id}"
-                                    th:data-op-code="learner_comment"
-                                    th:data-value="${learnerComment.valuePrese}"
-                                    th:utext="${learnerComment.valuePrese}"></span>
-                        <button type="button" class="btn badge badge-primary ml-2"
-                                th:title="Muuda" th:data-target-elem="${learnerComment.id} + '_learner_comment'"
-                                onclick="openEkiEditorDlg(this)"
-                                data-toggle="modal" data-target="#ekiEditorDlg">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${learnerComment.id} + '_learner_comment'"
-                                data-toggle="delete-confirmation" data-placement="right">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
+                        <div class="action-buttons-anchor">
+                          <span th:name="${learnerComment.id} + '_learner_comment'"
+                                th:data-id="${learnerComment.id}"
+                                th:data-op-code="learner_comment"
+                                th:data-value="${learnerComment.valuePrese}"
+                                th:utext="${learnerComment.valuePrese}"></span>
+                          <div class="action-buttons-2">
+                            <button type="button" class="btn badge badge-primary"
+                                    th:title="Muuda" th:data-target-elem="${learnerComment.id} + '_learner_comment'"
+                                    onclick="openEkiEditorDlg(this)"
+                                    data-toggle="modal" data-target="#ekiEditorDlg">
+                              <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-target-elem="${learnerComment.id} + '_learner_comment'"
+                                    data-toggle="delete-confirmation" data-placement="right">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -387,7 +395,7 @@
                       <td>
                         <table th:each="usage,usageIter : ${lexeme.usages}" class="border">
                           <tr>
-                            <td class="hidden-buttons">
+                            <td class="invisible-buttons">
                               <span th:name="${usage.id} + '_usage'"
                                     th:data-id="${usage.id}"
                                     th:data-op-code="usage"
@@ -446,7 +454,7 @@
                                 </span>
                                 ]
                               </span>
-                              <button type="button" class="btn badge badge-primary ml-2"
+                              <button type="button" class="btn badge badge-primary"
                                       th:title="Muuda" th:data-target-elem="${usage.id} + '_usage'"
                                       onclick="openEkiEditorDlg(this)"
                                       data-toggle="modal" data-target="#ekiEditorDlg">
@@ -467,53 +475,61 @@
                           </tr>
                           <tr th:each="usageTranslation : ${usage.translations}">
                             <td class="hidden-buttons">
-                              <span th:name="${usageTranslation.id} + '_usage_translation'"
-                                    th:data-id="${usageTranslation.id}"
-                                    th:data-op-code="usage_translation"
-                                    th:utext="${usageTranslation.value}"></span>
-                              <button type="button" class="btn badge badge-primary ml-2"
-                                      th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                      onclick="openEkiEditorDlg(this)"
-                                      data-toggle="modal" data-target="#ekiEditorDlg">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-warning"
-                                      th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
-                                      data-toggle="delete-confirmation" data-placement="right">
-                                <i class="fa fa-remove" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                      th:data-id="${usage.id}"
-                                      onclick="openUsageMemberDlg(this)"
-                                      data-toggle="modal" data-target="#addNewUsageMemberDlg">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                              </button>
+                              <div class="action-buttons-anchor">
+                                <span th:name="${usageTranslation.id} + '_usage_translation'"
+                                      th:data-id="${usageTranslation.id}"
+                                      th:data-op-code="usage_translation"
+                                      th:utext="${usageTranslation.value}"></span>
+                                <div class="action-buttons-3">
+                                  <button type="button" class="btn badge badge-primary"
+                                          th:title="Muuda" th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                          onclick="openEkiEditorDlg(this)"
+                                          data-toggle="modal" data-target="#ekiEditorDlg">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-warning"
+                                          th:data-target-elem="${usageTranslation.id} + '_usage_translation'"
+                                          data-toggle="delete-confirmation" data-placement="right">
+                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                          th:data-id="${usage.id}"
+                                          onclick="openUsageMemberDlg(this)"
+                                          data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+                              </div>
                             </td>
                           </tr>
                           <tr th:each="usageDefinition : ${usage.definitions}">
                             <td class="hidden-buttons">
-                              <span th:name="${usageDefinition.id} + '_usage_definition'"
-                                    th:data-id="${usageDefinition.id}"
-                                    th:data-op-code="usage_definition"
-                                    th:data-value="${usageDefinition.value}"
-                                    th:utext="${usageDefinition.value}"></span>
-                              <button type="button" class="btn badge badge-primary ml-2"
-                                      th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                      onclick="openEkiEditorDlg(this)"
-                                      data-toggle="modal" data-target="#ekiEditorDlg">
-                                <i class="fa fa-edit" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-warning"
-                                      th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
-                                      data-toggle="delete-confirmation" data-placement="right">
-                                <i class="fa fa-remove" aria-hidden="true"></i>
-                              </button>
-                              <button type="button" class="btn badge badge-success" title="Lisa uus"
-                                      th:data-id="${usage.id}"
-                                      onclick="openUsageMemberDlg(this)"
-                                      data-toggle="modal" data-target="#addNewUsageMemberDlg">
-                                <i class="fa fa-plus" aria-hidden="true"></i>
-                              </button>
+                              <div class="action-buttons-anchor">
+                                <span th:name="${usageDefinition.id} + '_usage_definition'"
+                                      th:data-id="${usageDefinition.id}"
+                                      th:data-op-code="usage_definition"
+                                      th:data-value="${usageDefinition.value}"
+                                      th:utext="${usageDefinition.value}"></span>
+                                <div class="action-buttons-3">
+                                  <button type="button" class="btn badge badge-primary"
+                                          th:title="Muuda" th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                          onclick="openEkiEditorDlg(this)"
+                                          data-toggle="modal" data-target="#ekiEditorDlg">
+                                    <i class="fa fa-edit" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-warning"
+                                          th:data-target-elem="${usageDefinition.id} + '_usage_definition'"
+                                          data-toggle="delete-confirmation" data-placement="right">
+                                    <i class="fa fa-remove" aria-hidden="true"></i>
+                                  </button>
+                                  <button type="button" class="btn badge badge-success" title="Lisa uus"
+                                          th:data-id="${usage.id}"
+                                          onclick="openUsageMemberDlg(this)"
+                                          data-toggle="modal" data-target="#addNewUsageMemberDlg">
+                                    <i class="fa fa-plus" aria-hidden="true"></i>
+                                  </button>
+                                </div>
+                              </div>
                             </td>
                           </tr>
                         </table>
@@ -538,22 +554,26 @@
                   <table>
                     <tr th:each="publicNote : ${lexeme.lexemePublicNotes}">
                       <td class="hidden-buttons">
-                              <span th:name="${publicNote.id} + '_public_note'"
-                                    th:data-id="${publicNote.id}"
-                                    th:data-op-code="public_note"
-                                    th:data-value="${publicNote.valuePrese}"
-                                    th:utext="${publicNote.valuePrese}"></span>
-                        <button type="button" class="btn badge badge-primary ml-2"
-                                th:title="Muuda" th:data-target-elem="${publicNote.id} + '_public_note'"
-                                onclick="openEkiEditorDlg(this)"
-                                data-toggle="modal" data-target="#ekiEditorDlg">
-                          <i class="fa fa-edit" aria-hidden="true"></i>
-                        </button>
-                        <button type="button" class="btn badge badge-warning"
-                                th:data-target-elem="${publicNote.id} + '_public_note'"
-                                data-toggle="delete-confirmation" data-placement="right">
-                          <i class="fa fa-remove" aria-hidden="true"></i>
-                        </button>
+                        <div class="action-buttons-anchor">
+                          <span th:name="${publicNote.id} + '_public_note'"
+                                th:data-id="${publicNote.id}"
+                                th:data-op-code="public_note"
+                                th:data-value="${publicNote.valuePrese}"
+                                th:utext="${publicNote.valuePrese}"></span>
+                          <div class="action-buttons-2">
+                            <button type="button" class="btn badge badge-primary"
+                                    th:title="Muuda" th:data-target-elem="${publicNote.id} + '_public_note'"
+                                    onclick="openEkiEditorDlg(this)"
+                                    data-toggle="modal" data-target="#ekiEditorDlg">
+                              <i class="fa fa-edit" aria-hidden="true"></i>
+                            </button>
+                            <button type="button" class="btn badge badge-warning"
+                                    th:data-target-elem="${publicNote.id} + '_public_note'"
+                                    data-toggle="delete-confirmation" data-placement="right">
+                              <i class="fa fa-remove" aria-hidden="true"></i>
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   </table>
@@ -599,7 +619,7 @@
                       <td class="pr-1">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                       </td>
-                      <td class="hidden-buttons align-text-top pr-3">
+                      <td class="invisible-buttons align-text-top pr-1">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
                           <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                         </button>
@@ -764,7 +784,7 @@
                   <td class="pr-1">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
-                  <td class="align-text-top pr-3 pt-0 pb-0 hidden-buttons">
+                  <td class="align-text-top pr-1 pt-0 pb-0 invisible-buttons">
                     <button type="button" class="btn btn-link btn-text-wrap btn-xs" th:data-id="${relation.wordId}" name="detailsBtn">
                       <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                     </button>
@@ -781,7 +801,7 @@
               </table>
               <table th:if="${not #lists.isEmpty(details.wordGroups)}">
                 <tr th:each="wordGroup : ${details.wordGroups}">
-                  <td class="align-text-top pr-3 pt-0 pb-0 hidden-buttons">
+                  <td class="align-text-top pr-1 pt-0 pb-0 invisible-buttons">
                     <span th:each="relation, itemStat : ${wordGroup.members}"
                          th:data-id="${relation.id}"
                          th:data-op-code="word_relation"
