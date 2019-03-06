@@ -14,7 +14,7 @@ td {
 .lbl {
 	font-variant: small-caps;
 	font-weight: bold;
-	color: #666;
+	color: rgba(102, 102, 102, 0.6);
 }
 
 .ttl {
@@ -159,4 +159,44 @@ input:checked+.slider:before {
 .table-condensed th,
 .table-condensed td {
 	padding: 0.25rem;
+}
+
+.compacted .card-body {
+	padding: 0.5rem;
+}
+
+.compacted .btn-toggle {
+	margin-top: -6px;
+	margin-right: -6px;
+}
+
+.compacted th, .compacted td {
+	padding: initial;
+}
+
+.compacted hr {
+	margin-bottom: 0.2rem;
+	margin-top: 0.2rem;
+}
+
+.col-w13rem {
+	flex: 0 0 13rem;
+	max-width: 13rem;
+}
+
+.col-w7rem {
+	flex: 0 0 7rem;
+	max-width: 7rem;
+}
+
+.row > hr {
+	margin-left: 15px;
+	margin-right: 15px;
+	width: 100%;
+}
+
+.btn-xs {
+	padding: 0;
+	border: 0;
+	vertical-align: initial;
 }
