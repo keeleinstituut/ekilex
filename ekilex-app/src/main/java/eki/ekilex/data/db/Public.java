@@ -4,11 +4,12 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.tables.AspectType;
-import eki.ekilex.data.db.tables.AspectTypeLabel;
+import eki.ekilex.data.db.tables.Aspect;
+import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
+import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -138,7 +139,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = -1001907791;
+    private static final long serialVersionUID = 526071270;
 
     /**
      * The reference instance of <code>public</code>
@@ -146,14 +147,14 @@ public class Public extends SchemaImpl {
     public static final Public PUBLIC = new Public();
 
     /**
-     * The table <code>public.aspect_type</code>.
+     * The table <code>public.aspect</code>.
      */
-    public final AspectType ASPECT_TYPE = eki.ekilex.data.db.tables.AspectType.ASPECT_TYPE;
+    public final Aspect ASPECT = eki.ekilex.data.db.tables.Aspect.ASPECT;
 
     /**
-     * The table <code>public.aspect_type_label</code>.
+     * The table <code>public.aspect_label</code>.
      */
-    public final AspectTypeLabel ASPECT_TYPE_LABEL = eki.ekilex.data.db.tables.AspectTypeLabel.ASPECT_TYPE_LABEL;
+    public final AspectLabel ASPECT_LABEL = eki.ekilex.data.db.tables.AspectLabel.ASPECT_LABEL;
 
     /**
      * The table <code>public.collocation</code>.
@@ -169,6 +170,11 @@ public class Public extends SchemaImpl {
      * The table <code>public.dataset</code>.
      */
     public final Dataset DATASET = eki.ekilex.data.db.tables.Dataset.DATASET;
+
+    /**
+     * The table <code>public.dataset_permission</code>.
+     */
+    public final DatasetPermission DATASET_PERMISSION = eki.ekilex.data.db.tables.DatasetPermission.DATASET_PERMISSION;
 
     /**
      * The table <code>public.definition</code>.
@@ -660,7 +666,7 @@ public class Public extends SchemaImpl {
 
     private final List<Sequence<?>> getSequences0() {
         return Arrays.<Sequence<?>>asList(
-            Sequences.ASPECT_TYPE_ORDER_BY_SEQ,
+            Sequences.ASPECT_ORDER_BY_SEQ,
             Sequences.COLLOCATION_FREEFORM_ID_SEQ,
             Sequences.COLLOCATION_ID_SEQ,
             Sequences.DATASET_ORDER_BY_SEQ,
@@ -754,11 +760,12 @@ public class Public extends SchemaImpl {
 
     private final List<Table<?>> getTables0() {
         return Arrays.<Table<?>>asList(
-            AspectType.ASPECT_TYPE,
-            AspectTypeLabel.ASPECT_TYPE_LABEL,
+            Aspect.ASPECT,
+            AspectLabel.ASPECT_LABEL,
             Collocation.COLLOCATION,
             CollocationFreeform.COLLOCATION_FREEFORM,
             Dataset.DATASET,
+            DatasetPermission.DATASET_PERMISSION,
             Definition.DEFINITION,
             DefinitionDataset.DEFINITION_DATASET,
             DefinitionFreeform.DEFINITION_FREEFORM,

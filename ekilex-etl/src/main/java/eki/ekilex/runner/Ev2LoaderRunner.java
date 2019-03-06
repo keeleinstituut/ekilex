@@ -48,9 +48,9 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 	private static Logger logger = LoggerFactory.getLogger(Ev2LoaderRunner.class);
 
 	private final static String LANG_RUS = "rus";
-	private final static String ASPECT_TYPE_SOV = "сов.";
-	private final static String ASPECT_TYPE_NESOV = "несов.";
-	private final static String ASPECT_TYPE_SOV_NESOV = "сов. и несов.";
+	private final static String ASPECT_SOV = "сов.";
+	private final static String ASPECT_NESOV = "несов.";
+	private final static String ASPECT_SOV_NESOV = "сов. и несов.";
 	private final static String POS_CODE_VERB = "v";
 	private final static String meaningRefNodeExp = "x:S/x:tp/x:tvt";
 
@@ -918,8 +918,8 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 				additionalDomains.add(domainCode);
 			}
 			boolean wordHasAspectPair = isNotBlank(aspectWord);
-			if (wordHasAspectPair || wordContainsAspectType(word) || isVerb) {
-				wordData.aspect = calculateAspectType(word);
+			if (wordHasAspectPair || wordContainsAspect(word) || isVerb) {
+				wordData.aspect = calculateAspect(word);
 			}
 			dataList.add(wordData);
 			List<LexemeToWordData> abbreviationFullWords = extractAbbreviationFullWords(wordGroupNode, abbreviationFullWordExp, reportingId);
@@ -934,7 +934,7 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 					logger.warn("{} : words in aspect pair have same forms : {} : {}", reportingId, wordData.word, aspectData.word);
 					writeToLogFile(reportingId, "Aspekti paari märksõnade vormid on samadsugused", wordData.word);
 				} else {
-					aspectData.aspect = calculateAspectType(aspectWord);
+					aspectData.aspect = calculateAspect(aspectWord);
 					aspectData.displayForm = aspectWord;
 					aspectData.reportingId = reportingId;
 					aspectData.register = wordData.register;
@@ -964,17 +964,17 @@ public class Ev2LoaderRunner extends SsBasedLoaderRunner {
 		}
 	}
 
-	private boolean wordContainsAspectType(String word) {
+	private boolean wordContainsAspect(String word) {
 		return word.endsWith("[*]") || word.endsWith("*");
 	}
 
-	private String calculateAspectType(String word) {
+	private String calculateAspect(String word) {
 		if (word.endsWith("[*]")) {
-			return ASPECT_TYPE_SOV_NESOV;
+			return ASPECT_SOV_NESOV;
 		} else if (word.endsWith("*")) {
-			return ASPECT_TYPE_SOV;
+			return ASPECT_SOV;
 		}
-		return ASPECT_TYPE_NESOV;
+		return ASPECT_NESOV;
 	}
 
 	private String extractAsString(Node node, String xpathExp) {

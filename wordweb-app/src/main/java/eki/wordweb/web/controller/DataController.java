@@ -46,7 +46,7 @@ public class DataController implements WebConstant, SystemConstant {
 
 	@GetMapping(value="/data/app", produces = "application/json;charset=UTF-8")
 	public AppData getAppData() {
-		return appDataHolder.getAppData(POM_PATH);
+		return appDataHolder.getAppData();
 	}
 
 	@PostMapping("/generate_voice")

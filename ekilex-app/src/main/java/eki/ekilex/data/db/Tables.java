@@ -4,11 +4,12 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.tables.AspectType;
-import eki.ekilex.data.db.tables.AspectTypeLabel;
+import eki.ekilex.data.db.tables.Aspect;
+import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
+import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -120,14 +121,14 @@ import javax.annotation.Generated;
 public class Tables {
 
     /**
-     * The table <code>public.aspect_type</code>.
+     * The table <code>public.aspect</code>.
      */
-    public static final AspectType ASPECT_TYPE = eki.ekilex.data.db.tables.AspectType.ASPECT_TYPE;
+    public static final Aspect ASPECT = eki.ekilex.data.db.tables.Aspect.ASPECT;
 
     /**
-     * The table <code>public.aspect_type_label</code>.
+     * The table <code>public.aspect_label</code>.
      */
-    public static final AspectTypeLabel ASPECT_TYPE_LABEL = eki.ekilex.data.db.tables.AspectTypeLabel.ASPECT_TYPE_LABEL;
+    public static final AspectLabel ASPECT_LABEL = eki.ekilex.data.db.tables.AspectLabel.ASPECT_LABEL;
 
     /**
      * The table <code>public.collocation</code>.
@@ -143,6 +144,11 @@ public class Tables {
      * The table <code>public.dataset</code>.
      */
     public static final Dataset DATASET = eki.ekilex.data.db.tables.Dataset.DATASET;
+
+    /**
+     * The table <code>public.dataset_permission</code>.
+     */
+    public static final DatasetPermission DATASET_PERMISSION = eki.ekilex.data.db.tables.DatasetPermission.DATASET_PERMISSION;
 
     /**
      * The table <code>public.definition</code>.

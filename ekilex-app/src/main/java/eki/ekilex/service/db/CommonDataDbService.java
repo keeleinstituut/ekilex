@@ -1,6 +1,6 @@
 package eki.ekilex.service.db;
 
-import static eki.ekilex.data.db.Tables.ASPECT_TYPE_LABEL;
+import static eki.ekilex.data.db.Tables.ASPECT_LABEL;
 import static eki.ekilex.data.db.Tables.DATASET;
 import static eki.ekilex.data.db.Tables.DEFINITION;
 import static eki.ekilex.data.db.Tables.DEFINITION_SOURCE_LINK;
@@ -101,7 +101,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> getLexemeFrequencyGroups() {
+	public Result<Record3<String,String,String>> getFrequencyGroups() {
 		return create
 				.select(
 					getClassifierNameField(ClassifierName.FREQUENCY_GROUP),
@@ -110,7 +110,7 @@ public class CommonDataDbService implements DbConstant {
 				.from(FREQUENCY_GROUP).fetch();
 	}
 
-	public Result<Record3<String,String,String>> getAllLexemePos(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getPoses(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
 						DSL.field(DSL.value(ClassifierName.POS.name())).as("name"),
@@ -121,7 +121,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> getLexemeRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getRegisters(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
 						getClassifierNameField(ClassifierName.REGISTER),
@@ -132,7 +132,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> getLexemeDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getDerivs(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
 						getClassifierNameField(ClassifierName.DERIV),
@@ -143,7 +143,7 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> getWordGenders(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getGenders(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
 						getClassifierNameField(ClassifierName.GENDER),
@@ -165,14 +165,14 @@ public class CommonDataDbService implements DbConstant {
 				.fetch();
 	}
 
-	public Result<Record3<String,String,String>> getWordAspects(String classifierLabelLang, String classifierLabelTypeCode) {
+	public Result<Record3<String,String,String>> getAspects(String classifierLabelLang, String classifierLabelTypeCode) {
 		return create
 				.select(
-						getClassifierNameField(ClassifierName.ASPECT_TYPE),
-						ASPECT_TYPE_LABEL.CODE,
-						ASPECT_TYPE_LABEL.VALUE)
-				.from(ASPECT_TYPE_LABEL)
-				.where(ASPECT_TYPE_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_TYPE_LABEL.TYPE.eq(classifierLabelTypeCode)))
+						getClassifierNameField(ClassifierName.ASPECT),
+						ASPECT_LABEL.CODE,
+						ASPECT_LABEL.VALUE)
+				.from(ASPECT_LABEL)
+				.where(ASPECT_LABEL.LANG.eq(classifierLabelLang).and(ASPECT_LABEL.TYPE.eq(classifierLabelTypeCode)))
 				.fetch();
 	}
 

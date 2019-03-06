@@ -46,7 +46,7 @@ public class ClassifierUtil {
 		classifiers = getClassifiers(ClassifierName.WORD_TYPE, classifierCodes, displayLang);
 		word.setWordTypes(classifiers);
 		classifierCode = word.getAspectCode();
-		classifier = getClassifier(ClassifierName.ASPECT_TYPE, classifierCode, displayLang);
+		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		word.setAspect(classifier);
 		classifierCode = word.getEtymologyTypeCode();
 		//TODO no labels yet for etym type code
@@ -87,7 +87,7 @@ public class ClassifierUtil {
 		Classifier classifier;
 		List<Classifier> classifiers;
 		classifierCode = tuple.getMeaningWordAspectCode();
-		classifier = getClassifier(ClassifierName.ASPECT_TYPE, classifierCode, displayLang);
+		classifier = getClassifier(ClassifierName.ASPECT, classifierCode, displayLang);
 		meaningWord.setAspect(classifier);
 		classifierCodes = tuple.getMeaningLexemeRegisterCodes();
 		classifiers = getClassifiers(ClassifierName.REGISTER, classifierCodes, displayLang);

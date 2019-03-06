@@ -66,6 +66,8 @@ drop table if exists word;
 drop table if exists source_freeform;
 drop table if exists source;
 drop table if exists freeform;
+drop table if exists dataset_permission;
+drop table if exists dataset;
 drop table if exists etymology_type;
 drop table if exists usage_type_label;
 drop table if exists usage_type;
@@ -78,8 +80,10 @@ drop table if exists lex_rel_type;
 drop table if exists process_state;
 drop table if exists word_type_label;
 drop table if exists word_type;
-drop table if exists aspect_type_label;
-drop table if exists aspect_type;
+drop table if exists aspect_type_label;--remove later
+drop table if exists aspect_type;--remove later
+drop table if exists aspect_label;
+drop table if exists aspect;
 drop table if exists deriv_label;
 drop table if exists deriv;
 drop table if exists display_morph_label;
@@ -104,6 +108,8 @@ drop table if exists value_state;
 drop table if exists language_label;
 drop table if exists language;
 drop table if exists label_type;
-drop table if exists dataset;
 drop table if exists lifecycle_log;
 drop table if exists eki_user;
+
+drop type if exists type_authority;
+

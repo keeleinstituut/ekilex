@@ -1,24 +1,22 @@
 package eki.ekilex.service;
 
-import eki.common.util.CodeGenerator;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.service.db.UserDbService;
+import javax.transaction.Transactional;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.transaction.Transactional;
-
-import java.util.Objects;
-
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import eki.common.util.CodeGenerator;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.service.db.UserDbService;
 
 @Component
 public class UserService {
 
 	private static Logger logger = LoggerFactory.getLogger(UserService.class);
 
-	private static final String DEFAULT_USER_ROLE = "basic_user";
+	private static final int MIN_PASSWORD_LENGTH = 8;
 
 	private UserDbService userDbService;
 
@@ -33,17 +31,17 @@ public class UserService {
 	}
 
 	@Transactional
-	public boolean isValidNewUser(String email) {
-		if (isBlank(email)) {
+	public boolean isValidUser(String email) {
+		if (StringUtils.isBlank(email)) {
 			return false;
 		}
-		EkiUser userByEmail = userDbService.getUserByEmail(email);
-		return userByEmail == null;
+		EkiUser user = userDbService.getUserByEmail(email);
+		return user == null;
 	}
 
 	@Transactional
-	public void addNewUser(String email, String name, String password, String activationKey) {
-		userDbService.addUser(email, name, password, new String[] {DEFAULT_USER_ROLE}, activationKey);
+	public void createUser(String email, String name, String password, String activationKey) {
+		userDbService.createUser(email, name, password, activationKey);
 		EkiUser user = userDbService.getUserByEmail(email);
 		logger.debug("Created new user : {}", user.getDescription());
 	}
@@ -59,11 +57,11 @@ public class UserService {
 	}
 
 	public boolean isActiveUser(EkiUser user) {
-		return user != null && isBlank(user.getActivationKey());
+		return user != null && StringUtils.isBlank(user.getActivationKey());
 	}
 
 	public boolean isValidPassword(String password, String password2) {
-		return password != null && password.length() > 7 && Objects.equals(password, password2);
+		return StringUtils.length(password) >= MIN_PASSWORD_LENGTH && StringUtils.equals(password, password2);
 	}
 
 }

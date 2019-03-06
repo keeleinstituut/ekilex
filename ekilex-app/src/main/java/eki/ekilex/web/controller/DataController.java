@@ -16,12 +16,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import eki.common.constant.ClassifierName;
 import eki.common.data.AppData;
 import eki.common.web.AppDataHolder;
 import eki.ekilex.constant.SystemConstant;
 import eki.ekilex.constant.WebConstant;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.ClassifierSelect;
+import eki.ekilex.data.Dataset;
 import eki.ekilex.data.Meaning;
 import eki.ekilex.data.MeaningsResult;
 import eki.ekilex.data.WordDetails;
@@ -52,7 +54,7 @@ public class DataController implements SystemConstant, WebConstant {
 
 	@GetMapping(REST_SERVICES_URI + "/app")
 	public AppData getAppData() {
-		return appDataHolder.getAppData(POM_PATH);
+		return appDataHolder.getAppData();
 	}
 
 	@GetMapping("/files/images/{fileName:.+}")
@@ -66,7 +68,7 @@ public class DataController implements SystemConstant, WebConstant {
 				.body(resource);
 	}
 
-	//TODO temp for testing. remove later
+	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + LEX_SEARCH_URI + "/{word}",
 			REST_SERVICES_URI + LEX_SEARCH_URI + "/{word}/{datasets}"
@@ -80,7 +82,7 @@ public class DataController implements SystemConstant, WebConstant {
 		return results;
 	}
 
-	//TODO temp for testing. remove later
+	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}",
 			REST_SERVICES_URI + WORD_DETAILS_URI + "/{wordId}/{datasets}"
@@ -97,7 +99,7 @@ public class DataController implements SystemConstant, WebConstant {
 		return result;
 	}
 
-	//TODO temp for testing. remove later
+	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + TERM_SEARCH_URI + "/{word}",
 			REST_SERVICES_URI + TERM_SEARCH_URI + "/{word}/{datasets}"
@@ -112,7 +114,7 @@ public class DataController implements SystemConstant, WebConstant {
 		return results;
 	}
 
-	//TODO temp for testing. remove later
+	//TODO temp API service
 	@GetMapping({
 			REST_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}",
 			REST_SERVICES_URI + MEANING_DETAILS_URI + "/{meaningId}/{datasets}"
@@ -129,6 +131,25 @@ public class DataController implements SystemConstant, WebConstant {
 		List<ClassifierSelect> languagesOrder = convert(allLanguages);
 		Meaning meaning = termSearchService.getMeaning(meaningId, datasets, languagesOrder);
 		return meaning;
+	}
+
+	//TODO temp API service
+	@GetMapping(REST_SERVICES_URI + CLASSIFIERS_URI + "/{classifierName}")
+	public List<Classifier> getClassifiers(@PathVariable("classifierName") String classifierNameStr) {
+
+		ClassifierName classifierName = null;
+		try {
+			classifierNameStr = classifierNameStr.toUpperCase();
+			classifierName = ClassifierName.valueOf(classifierNameStr);
+		} catch (Exception e) {
+			return null;
+		}
+		return commonDataService.getClassifiers(classifierName);
+	}
+
+	@GetMapping(REST_SERVICES_URI + DATASETS_URI)
+	public List<Dataset> getDatasets() {
+		return commonDataService.getDatasets();
 	}
 
 	private List<ClassifierSelect> convert(List<Classifier> allLanguages) {

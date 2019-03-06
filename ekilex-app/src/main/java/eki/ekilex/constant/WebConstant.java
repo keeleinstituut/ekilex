@@ -32,6 +32,10 @@ public interface WebConstant {
 
 	String MEANING_DETAILS_URI = "/meaningdetails";
 
+	String CLASSIFIERS_URI = "/classifiers";
+
+	String DATASETS_URI = "/datasets";
+
 	String WORD_SELECT_URI = "/wordselect";
 
 	String WORD_SELECT_PAGE = "wordselect";

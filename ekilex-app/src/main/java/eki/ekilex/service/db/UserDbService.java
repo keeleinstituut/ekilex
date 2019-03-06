@@ -1,15 +1,17 @@
 package eki.ekilex.service.db;
 
-import eki.common.service.db.AbstractDbService;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.data.db.tables.records.EkiUserRecord;
-import org.jooq.DSLContext;
-import org.jooq.Record6;
-import org.springframework.stereotype.Component;
+import static eki.ekilex.data.db.Tables.EKI_USER;
+import static eki.ekilex.data.db.Tables.DATASET_PERMISSION;
 
 import java.util.Optional;
 
-import static eki.ekilex.data.db.Tables.EKI_USER;
+import org.jooq.DSLContext;
+import org.jooq.Record5;
+import org.springframework.stereotype.Component;
+
+import eki.common.service.db.AbstractDbService;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.data.db.tables.records.EkiUserRecord;
 
 @Component
 public class UserDbService extends AbstractDbService {
@@ -22,14 +24,13 @@ public class UserDbService extends AbstractDbService {
 
 	public EkiUser getUserByEmail(String email) {
 
-		Optional<Record6<Long, String, String, String, String[], String>> optionalResult = create
+		Optional<Record5<Long,String,String,String,String>> optionalResult = create
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
 						EKI_USER.EMAIL,
 						EKI_USER.PASSWORD,
-						EKI_USER.ROLES,
-						EKI_USER.ACTIVATION_KEY.as("activationKey"))
+						EKI_USER.ACTIVATION_KEY)
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
 				.fetchOptional();
@@ -39,12 +40,11 @@ public class UserDbService extends AbstractDbService {
 		return null;
 	}
 
-	public Long addUser(String email, String name, String password, String[] roles, String activationKey) {
+	public Long createUser(String email, String name, String password, String activationKey) {
 		EkiUserRecord ekiUser = create.newRecord(EKI_USER);
 		ekiUser.setEmail(email);
 		ekiUser.setName(name);
 		ekiUser.setPassword(password);
-		ekiUser.setRoles(roles);
 		ekiUser.setActivationKey(activationKey);
 		ekiUser.store();
 		return ekiUser.getId();

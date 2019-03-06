@@ -321,7 +321,7 @@ public abstract class AbstractLoaderRunner extends AbstractLoaderCommons impleme
 		String guid = word.getGuid();
 		String genderCode = word.getGenderCode();
 		List<String> wordTypeCodes = word.getWordTypeCodes();
-		String aspectCode = word.getAspectTypeCode();
+		String aspectCode = word.getAspectCode();
 		String wordClass = null;
 
 		Form wordForm = new Form();

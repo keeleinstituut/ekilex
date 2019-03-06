@@ -24,9 +24,9 @@ import org.jooq.impl.SequenceImpl;
 public class Sequences {
 
     /**
-     * The sequence <code>public.aspect_type_order_by_seq</code>
+     * The sequence <code>public.aspect_order_by_seq</code>
      */
-    public static final Sequence<Long> ASPECT_TYPE_ORDER_BY_SEQ = new SequenceImpl<Long>("aspect_type_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
+    public static final Sequence<Long> ASPECT_ORDER_BY_SEQ = new SequenceImpl<Long>("aspect_order_by_seq", Public.PUBLIC, org.jooq.impl.SQLDataType.BIGINT.nullable(false));
 
     /**
      * The sequence <code>public.collocation_freeform_id_seq</code>

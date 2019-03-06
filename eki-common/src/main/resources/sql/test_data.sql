@@ -1,4 +1,4 @@
-insert into eki_user (name, email, password, roles) values ('Test Test', 'test@test.com', '$2a$10$d5ZhfCgg2S2Fp4FUTGPpCOGarlPIE4Nt/pqxXmPuN0rBN5MonHxlm', '{super_user}');
+insert into eki_user (name, email, password) values ('Test Test', 'test@test.com', '$2a$10$d5ZhfCgg2S2Fp4FUTGPpCOGarlPIE4Nt/pqxXmPuN0rBN5MonHxlm');
 
 insert into dataset (code, name) values ('eos', 'Õigekeelsussõnaraamat ÕS 2013');
 insert into dataset (code, name) values ('ss_', 'Eesti keele seletav sõnaraamat');

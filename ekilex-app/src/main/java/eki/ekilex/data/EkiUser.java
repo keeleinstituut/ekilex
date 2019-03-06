@@ -22,8 +22,6 @@ public class EkiUser implements Principal, Serializable {
 
 	private String password;
 
-	private String[] roles;
-
 	private String activationKey;
 
 	public Long getId() {
@@ -56,14 +54,6 @@ public class EkiUser implements Principal, Serializable {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	public String[] getRoles() {
-		return roles;
-	}
-
-	public void setRoles(String[] roles) {
-		this.roles = roles;
 	}
 
 	public String getActivationKey() {

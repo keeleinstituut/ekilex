@@ -38,7 +38,7 @@ public class Word extends AbstractDataObject {
 
 	private String vocalForm;
 
-	private String aspectTypeCode;
+	private String aspectCode;
 
 	public Word() {
 	}
@@ -176,12 +176,12 @@ public class Word extends AbstractDataObject {
 		this.vocalForm = vocalForm;
 	}
 
-	public String getAspectTypeCode() {
-		return aspectTypeCode;
+	public String getAspectCode() {
+		return aspectCode;
 	}
 
-	public void setAspectTypeCode(String aspectTypeCode) {
-		this.aspectTypeCode = aspectTypeCode;
+	public void setAspectCode(String aspectCode) {
+		this.aspectCode = aspectCode;
 	}
 
 }

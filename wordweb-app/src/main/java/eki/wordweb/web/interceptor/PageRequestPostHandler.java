@@ -60,7 +60,7 @@ public class PageRequestPostHandler extends HandlerInterceptorAdapter implements
 			modelMap.addAttribute(IE_USER_FLAG_KEY, isIeUser);
 		}
 		if (!modelMap.containsKey(APP_DATA_MODEL_KEY)) {
-			AppData appData = appDataHolder.getAppData(POM_PATH);
+			AppData appData = appDataHolder.getAppData();
 			modelMap.addAttribute(APP_DATA_MODEL_KEY, appData);
 		}
 		if (!modelMap.containsKey(VIEW_UTIL_MODEL_KEY)) {

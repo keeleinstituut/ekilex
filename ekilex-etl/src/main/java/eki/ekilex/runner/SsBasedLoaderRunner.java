@@ -219,12 +219,12 @@ public abstract class SsBasedLoaderRunner extends AbstractLoaderRunner {
 	}
 
 	protected WordData createDefaultWordFrom(
-			String wordValue, String displayForm, String lang, String displayMorph, String aspectType, List<String> wordTypeCodes, String vocalForm) throws Exception {
+			String wordValue, String displayForm, String lang, String displayMorph, String aspectCode, List<String> wordTypeCodes, String vocalForm) throws Exception {
 
 		int homonymNr = getWordMaxHomonymNr(wordValue, lang) + 1;
 		Word word = new Word(wordValue, lang, null, null, displayForm, vocalForm, homonymNr, DEFAULT_WORD_MORPH_CODE, null, wordTypeCodes);
 		word.setDisplayMorph(displayMorph);
-		word.setAspectTypeCode(aspectType);
+		word.setAspectCode(aspectCode);
 		WordData createdWord = new WordData();
 		createdWord.value = wordValue;
 		createdWord.displayForm = displayForm;

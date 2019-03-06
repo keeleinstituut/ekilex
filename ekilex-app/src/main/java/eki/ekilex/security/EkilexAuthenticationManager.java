@@ -2,6 +2,7 @@ package eki.ekilex.security;
 
 import java.util.Collection;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,8 @@ public class EkilexAuthenticationManager implements AuthenticationManager {
 		boolean isPasswordMatch = passwordEncoder.matches(providedPassword, existingPassword);
 		if (isPasswordMatch) {
 			logger.info("Successful authentication for user \"{}\"", providedEmail);
-			Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(user.getRoles());
+			//Collection<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(user.getRoles());
+			Collection<GrantedAuthority> authorities = CollectionUtils.emptyCollection();
 			UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(user, existingPassword, authorities);
 			return authenticationToken;
 		}

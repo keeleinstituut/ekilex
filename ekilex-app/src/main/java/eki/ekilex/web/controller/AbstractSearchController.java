@@ -60,17 +60,17 @@ public abstract class AbstractSearchController implements WebConstant {
 
 	@ModelAttribute("lexemeFrequencyGroups")
 	public List<Classifier> getLexemeFrequencyGroups() {
-		return commonDataService.getLexemeFrequencyGroups();
+		return commonDataService.getFrequencyGroups();
 	}
 
 	@ModelAttribute("wordMorphCodes")
 	public List<Classifier> getWordMorphCodes() {
-		return commonDataService.getWordMorphCodes();
+		return commonDataService.getMorphs();
 	}
 
 	@ModelAttribute("wordGenders")
 	public List<Classifier> getWordGenders() {
-		return commonDataService.getWordGenders();
+		return commonDataService.getGenders();
 	}
 
 	@ModelAttribute("wordTypes")
@@ -80,7 +80,7 @@ public abstract class AbstractSearchController implements WebConstant {
 
 	@ModelAttribute("wordAspects")
 	public List<Classifier> getWordAspect() {
-		return commonDataService.getWordAspects();
+		return commonDataService.getAspects();
 	}
 
 	@ModelAttribute("wordRelationTypes")
@@ -100,22 +100,22 @@ public abstract class AbstractSearchController implements WebConstant {
 
 	@ModelAttribute("allLexemePos")
 	public List<Classifier> getLexemePos() {
-		return commonDataService.getAllLexemePos();
+		return commonDataService.getPoses();
 	}
 
 	@ModelAttribute("allLexemeRegisters")
 	public List<Classifier> getLexemeRegisters() {
-		return commonDataService.getLexemeRegisters();
+		return commonDataService.getRegisters();
 	}
 
 	@ModelAttribute("allLexemeDerivs")
 	public List<Classifier> getLexemeDerivs() {
-		return commonDataService.getLexemeDerivs();
+		return commonDataService.getDerivs();
 	}
 
 	@ModelAttribute("lexemeValueStates")
 	public List<Classifier> getLexemeValueStates() {
-		return commonDataService.getLexemeValueStates();
+		return commonDataService.getValueStates();
 	}
 
 	@ModelAttribute("processStates")

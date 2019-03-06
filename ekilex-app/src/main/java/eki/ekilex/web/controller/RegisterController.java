@@ -1,10 +1,11 @@
 package eki.ekilex.web.controller;
 
-import eki.ekilex.constant.WebConstant;
-import eki.ekilex.data.EkiUser;
-import eki.ekilex.security.EkilexPasswordEncoder;
-import eki.ekilex.service.EmailService;
-import eki.ekilex.service.UserService;
+import static java.lang.Thread.sleep;
+
+import java.util.Collections;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
-import java.util.Objects;
-
-import static java.lang.Thread.sleep;
+import eki.ekilex.constant.WebConstant;
+import eki.ekilex.data.EkiUser;
+import eki.ekilex.security.EkilexPasswordEncoder;
+import eki.ekilex.service.EmailService;
+import eki.ekilex.service.UserService;
 
 @ConditionalOnWebApplication
 @Controller
@@ -75,11 +76,11 @@ public class RegisterController implements WebConstant {
 			model.addAttribute("error_message", "Parool ei sobi, kas liiga lühike või väljade väärtused on erinevad.");
 			return REGISTER_PAGE;
 		}
-		if (userService.isValidNewUser(email)) {
+		if (userService.isValidUser(email)) {
 			String encodedPassword = passwordEncoder.encode(password);
 			String activationKey = userService.generateActivationKey();
 			String activationLink = ekilexAppUrl + ACTIVATION_PAGE_URI + "/" + activationKey;
-			userService.addNewUser(email, name, encodedPassword, activationKey);
+			userService.createUser(email, name, encodedPassword, activationKey);
 			// FIXME : remove after email service is properly configured
 			if (emailService.isEnabled()) {
 				attributes.addFlashAttribute("success_message", "Kasutaja registreeritud, aktiveerimise link on saadetud e-postile : " + email);

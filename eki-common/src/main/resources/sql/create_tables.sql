@@ -1,11 +1,9 @@
-
 create table eki_user
 (
   id bigserial primary key,
   name text not null,
   email text not null,
   password text not null,
-  roles text array not null,
   created timestamp not null default statement_timestamp(),
   activation_key varchar(60),
   unique(email)
@@ -132,16 +130,16 @@ create table word_type_label
 );
 
 -- aspekt
-create table aspect_type
+create table aspect
 (
   code varchar(100) primary key,
   datasets varchar(10) array not null,
   order_by bigserial
 );
 
-create table aspect_type_label
+create table aspect_label
 (
-  code varchar(100) references aspect_type(code) on delete cascade not null,
+  code varchar(100) references aspect(code) on delete cascade not null,
   value text not null,
   lang char(3) references language(code) not null,
   type varchar(10) references label_type(code) not null,
@@ -370,6 +368,16 @@ create table dataset
   order_by bigserial
 );
 
+create table dataset_permission
+(
+  dataset_code varchar(10) references dataset(code) on delete cascade not null,
+  user_id bigint references eki_user(id) on delete cascade null,
+  auth_operation varchar(100) not null,
+  auth_item varchar(100) not null,
+  auth_lang char(3) references language(code) null,
+  unique(dataset_code, user_id, auth_operation, auth_item)
+);
+
 -- vabavorm
 create table freeform
 (
@@ -423,7 +431,7 @@ create table word
   word_class varchar(100) null,
   display_morph_code varchar(100) references display_morph(code) null,
   gender_code varchar(100) references gender(code) null,
-  aspect_code varchar(100) references aspect_type(code) null,
+  aspect_code varchar(100) references aspect(code) null,
   etymology_year text null,
   etymology_type_code varchar(100) references etymology_type(code) 
 );
@@ -889,7 +897,8 @@ create table feedback_log_comment
 alter sequence feedback_log_comment_id_seq restart with 10000;
 
 --- indexes
-
+create index dataset_perm_dataset_code_idx on dataset_permission(dataset_code);
+create index dataset_perm_user_id_idx on dataset_permission(user_id);
 create index form_value_idx on form(value);
 create index form_value_lower_idx on form(lower(value));
 create index form_value_lower_prefix_idx on form (lower(value) text_pattern_ops);

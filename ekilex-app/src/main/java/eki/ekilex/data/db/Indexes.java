@@ -4,11 +4,12 @@
 package eki.ekilex.data.db;
 
 
-import eki.ekilex.data.db.tables.AspectType;
-import eki.ekilex.data.db.tables.AspectTypeLabel;
+import eki.ekilex.data.db.tables.Aspect;
+import eki.ekilex.data.db.tables.AspectLabel;
 import eki.ekilex.data.db.tables.Collocation;
 import eki.ekilex.data.db.tables.CollocationFreeform;
 import eki.ekilex.data.db.tables.Dataset;
+import eki.ekilex.data.db.tables.DatasetPermission;
 import eki.ekilex.data.db.tables.Definition;
 import eki.ekilex.data.db.tables.DefinitionDataset;
 import eki.ekilex.data.db.tables.DefinitionFreeform;
@@ -113,14 +114,17 @@ public class Indexes {
     // INDEX definitions
     // -------------------------------------------------------------------------
 
-    public static final Index ASPECT_TYPE_PKEY = Indexes0.ASPECT_TYPE_PKEY;
-    public static final Index ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY = Indexes0.ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY;
+    public static final Index ASPECT_PKEY = Indexes0.ASPECT_PKEY;
+    public static final Index ASPECT_LABEL_CODE_LANG_TYPE_KEY = Indexes0.ASPECT_LABEL_CODE_LANG_TYPE_KEY;
     public static final Index COLLOCATION_PKEY = Indexes0.COLLOCATION_PKEY;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY;
     public static final Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Indexes0.COLLOCATION_FREEFORM_COLLOCATION_ID_IDX;
     public static final Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Indexes0.COLLOCATION_FREEFORM_FREEFORM_ID_IDX;
     public static final Index COLLOCATION_FREEFORM_PKEY = Indexes0.COLLOCATION_FREEFORM_PKEY;
     public static final Index DATASET_PKEY = Indexes0.DATASET_PKEY;
+    public static final Index DATASET_PERM_DATASET_CODE_IDX = Indexes0.DATASET_PERM_DATASET_CODE_IDX;
+    public static final Index DATASET_PERM_USER_ID_IDX = Indexes0.DATASET_PERM_USER_ID_IDX;
+    public static final Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Indexes0.DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY;
     public static final Index DEFINITION_MEANING_ID_IDX = Indexes0.DEFINITION_MEANING_ID_IDX;
     public static final Index DEFINITION_PKEY = Indexes0.DEFINITION_PKEY;
     public static final Index DEFINITION_DATASET_PKEY = Indexes0.DEFINITION_DATASET_PKEY;
@@ -186,6 +190,7 @@ public class Indexes {
     public static final Index LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = Indexes0.LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY;
     public static final Index LEX_RELATION_LEXEME2_ID_IDX = Indexes0.LEX_RELATION_LEXEME2_ID_IDX;
     public static final Index LEX_RELATION_PKEY = Indexes0.LEX_RELATION_PKEY;
+    public static final Index LEXEME_DATASET_CODE_IDX = Indexes0.LEXEME_DATASET_CODE_IDX;
     public static final Index LEXEME_MEANING_ID_IDX = Indexes0.LEXEME_MEANING_ID_IDX;
     public static final Index LEXEME_PKEY = Indexes0.LEXEME_PKEY;
     public static final Index LEXEME_WORD_ID_IDX = Indexes0.LEXEME_WORD_ID_IDX;
@@ -299,14 +304,17 @@ public class Indexes {
     // -------------------------------------------------------------------------
 
     private static class Indexes0 {
-        public static Index ASPECT_TYPE_PKEY = Internal.createIndex("aspect_type_pkey", AspectType.ASPECT_TYPE, new OrderField[] { AspectType.ASPECT_TYPE.CODE }, true);
-        public static Index ASPECT_TYPE_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("aspect_type_label_code_lang_type_key", AspectTypeLabel.ASPECT_TYPE_LABEL, new OrderField[] { AspectTypeLabel.ASPECT_TYPE_LABEL.CODE, AspectTypeLabel.ASPECT_TYPE_LABEL.LANG, AspectTypeLabel.ASPECT_TYPE_LABEL.TYPE }, true);
+        public static Index ASPECT_PKEY = Internal.createIndex("aspect_pkey", Aspect.ASPECT, new OrderField[] { Aspect.ASPECT.CODE }, true);
+        public static Index ASPECT_LABEL_CODE_LANG_TYPE_KEY = Internal.createIndex("aspect_label_code_lang_type_key", AspectLabel.ASPECT_LABEL, new OrderField[] { AspectLabel.ASPECT_LABEL.CODE, AspectLabel.ASPECT_LABEL.LANG, AspectLabel.ASPECT_LABEL.TYPE }, true);
         public static Index COLLOCATION_PKEY = Internal.createIndex("collocation_pkey", Collocation.COLLOCATION, new OrderField[] { Collocation.COLLOCATION.ID }, true);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_FREEFORM_ID_KEY = Internal.createIndex("collocation_freeform_collocation_id_freeform_id_key", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID, CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, true);
         public static Index COLLOCATION_FREEFORM_COLLOCATION_ID_IDX = Internal.createIndex("collocation_freeform_collocation_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.COLLOCATION_ID }, false);
         public static Index COLLOCATION_FREEFORM_FREEFORM_ID_IDX = Internal.createIndex("collocation_freeform_freeform_id_idx", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.FREEFORM_ID }, false);
         public static Index COLLOCATION_FREEFORM_PKEY = Internal.createIndex("collocation_freeform_pkey", CollocationFreeform.COLLOCATION_FREEFORM, new OrderField[] { CollocationFreeform.COLLOCATION_FREEFORM.ID }, true);
         public static Index DATASET_PKEY = Internal.createIndex("dataset_pkey", Dataset.DATASET, new OrderField[] { Dataset.DATASET.CODE }, true);
+        public static Index DATASET_PERM_DATASET_CODE_IDX = Internal.createIndex("dataset_perm_dataset_code_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE }, false);
+        public static Index DATASET_PERM_USER_ID_IDX = Internal.createIndex("dataset_perm_user_id_idx", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.USER_ID }, false);
+        public static Index DATASET_PERMISSION_DATASET_CODE_USER_ID_AUTH_OPERATION_AUTH_KEY = Internal.createIndex("dataset_permission_dataset_code_user_id_auth_operation_auth_key", DatasetPermission.DATASET_PERMISSION, new OrderField[] { DatasetPermission.DATASET_PERMISSION.DATASET_CODE, DatasetPermission.DATASET_PERMISSION.USER_ID, DatasetPermission.DATASET_PERMISSION.AUTH_OPERATION, DatasetPermission.DATASET_PERMISSION.AUTH_ITEM }, true);
         public static Index DEFINITION_MEANING_ID_IDX = Internal.createIndex("definition_meaning_id_idx", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.MEANING_ID }, false);
         public static Index DEFINITION_PKEY = Internal.createIndex("definition_pkey", Definition.DEFINITION, new OrderField[] { Definition.DEFINITION.ID }, true);
         public static Index DEFINITION_DATASET_PKEY = Internal.createIndex("definition_dataset_pkey", DefinitionDataset.DEFINITION_DATASET, new OrderField[] { DefinitionDataset.DEFINITION_DATASET.DEFINITION_ID, DefinitionDataset.DEFINITION_DATASET.DATASET_CODE }, true);
@@ -372,6 +380,7 @@ public class Indexes {
         public static Index LEX_RELATION_LEXEME1_ID_LEXEME2_ID_LEX_REL_TYPE_CODE_KEY = Internal.createIndex("lex_relation_lexeme1_id_lexeme2_id_lex_rel_type_code_key", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.LEXEME1_ID, LexRelation.LEX_RELATION.LEXEME2_ID, LexRelation.LEX_RELATION.LEX_REL_TYPE_CODE }, true);
         public static Index LEX_RELATION_LEXEME2_ID_IDX = Internal.createIndex("lex_relation_lexeme2_id_idx", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.LEXEME2_ID }, false);
         public static Index LEX_RELATION_PKEY = Internal.createIndex("lex_relation_pkey", LexRelation.LEX_RELATION, new OrderField[] { LexRelation.LEX_RELATION.ID }, true);
+        public static Index LEXEME_DATASET_CODE_IDX = Internal.createIndex("lexeme_dataset_code_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.DATASET_CODE }, false);
         public static Index LEXEME_MEANING_ID_IDX = Internal.createIndex("lexeme_meaning_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.MEANING_ID }, false);
         public static Index LEXEME_PKEY = Internal.createIndex("lexeme_pkey", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.ID }, true);
         public static Index LEXEME_WORD_ID_IDX = Internal.createIndex("lexeme_word_id_idx", Lexeme.LEXEME, new OrderField[] { Lexeme.LEXEME.WORD_ID }, false);

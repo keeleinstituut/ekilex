@@ -1,7 +1,7 @@
 LEX nimi	LEX kood	LEX väärtus	LEX keel	LEX väärtuse liik
-aspect_type	сов.	совершенный	est	descrip
-aspect_type	несов.	несовершенный	est	descrip
-aspect_type	сов. и несов.	совершенный и несовершенный	est	descrip
+aspect	сов.	совершенный	est	descrip
+aspect	несов.	несовершенный	est	descrip
+aspect	сов. и несов.	совершенный и несовершенный	est	descrip
 deriv	adv	adverb (-lt)	est	descrip
 deriv	dem	KE/KENE	est	ekimorfo
 deriv	dem	diminutive	eng	descrip

@@ -786,15 +786,15 @@ create view view_ww_classifier
 	order by c.order_by)
 	union all
 	(select
-		'ASPECT_TYPE' as name,
+		'ASPECT' as name,
 		null as origin,
 		c.code,
 		cl.value,
 		cl.lang,
 		c.order_by
 	from 
-		aspect_type c,
-		aspect_type_label cl
+		aspect c,
+		aspect_label cl
 	where 
 		c.code = cl.code
 		and cl.type = 'wordweb'

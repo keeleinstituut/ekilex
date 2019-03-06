@@ -24,7 +24,7 @@ public enum ClassifierName {
 	USAGE_TYPE(true),
 	VALUE_STATE(true),
 	POS_GROUP(true),
-	ASPECT_TYPE(true)
+	ASPECT(true)
 	;
 
 	private boolean hasLabel;

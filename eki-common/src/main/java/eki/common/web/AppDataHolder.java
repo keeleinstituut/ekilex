@@ -23,7 +23,7 @@ public class AppDataHolder {
 
 	private AppData appData = null;
 
-	public AppData getAppData(String pomPath) {
+	public AppData getAppData() {
 
 		if (appData != null) {
 			return appData;

@@ -262,9 +262,13 @@ public class TermekiRunner extends AbstractLoaderRunner {
 		Count wordDuplicateCount = new Count();
 		Map<Integer, Long> conceptMeanings = new HashMap<>();
 		List<String> existingGenders = getGenders();
-		long count = 0;
+
+		long termCount = context.terms.size();
+		long termCounter = 0;
+		long progressIndicator = termCount / Math.min(termCount, 100);
 
 		for (Map<String, Object> term : context.terms) {
+
 			String language = unifyLang((String) term.get("lang"));
 			String wordValue = (String) term.get("term");
 			int homonymNr = getWordMaxHomonymNr(wordValue, language) + 1;
@@ -310,13 +314,16 @@ public class TermekiRunner extends AbstractLoaderRunner {
 			Integer termId = (Integer) term.get("term_id");
 			createAbbreviationIfNeeded(context, termId, meaningId, lexemeId, language, dataset, wordDuplicateCount);
 			saveUsages(lexemeId, context, termId);
-			if (++count % 100 == 0) {
-				System.out.print(".");
+
+			// progress
+			termCounter++;
+			if (termCounter % progressIndicator == 0) {
+				long progressPercent = termCounter / progressIndicator;
+				logger.debug("{}% - {} terms iterated", progressPercent, termCounter);
 			}
 		}
-		System.out.println();
-		logger.info("{} words imported", context.terms.size());
-		logger.info("{} duplicate words found", wordDuplicateCount.getValue());
+		logger.info("{} terms imported", context.terms.size());
+		logger.info("{} duplicate terms found", wordDuplicateCount.getValue());
 		logger.info("{} meanings created", conceptMeanings.size());
 
 		int definitionsCount = 0;

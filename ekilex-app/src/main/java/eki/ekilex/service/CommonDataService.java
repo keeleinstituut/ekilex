@@ -1,20 +1,21 @@
 package eki.ekilex.service;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import eki.ekilex.data.Word;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import eki.common.constant.ClassifierName;
 import eki.ekilex.data.Classifier;
 import eki.ekilex.data.Dataset;
+import eki.ekilex.data.Word;
 import eki.ekilex.service.db.CommonDataDbService;
-
-import static java.util.stream.Collectors.groupingBy;
 
 @Component
 public class CommonDataService {
@@ -60,23 +61,18 @@ public class CommonDataService {
 	}
 
 	@Transactional
-	public List<Classifier> getLexemeFrequencyGroups() {
-		return commonDataDbService.getLexemeFrequencyGroups().into(Classifier.class);
+	public List<Classifier> getFrequencyGroups() {
+		return commonDataDbService.getFrequencyGroups().into(Classifier.class);
 	}
 
 	@Transactional
-	public Word getWord(Long wordId) {
-		return commonDataDbService.getWord(wordId).into(Word.class);
-	}
-
-	@Transactional
-	public List<Classifier> getWordMorphCodes() {
+	public List<Classifier> getMorphs() {
 		return commonDataDbService.getMorphs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
-	public List<Classifier> getWordGenders() {
-		return commonDataDbService.getWordGenders(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+	public List<Classifier> getGenders() {
+		return commonDataDbService.getGenders(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
@@ -85,8 +81,8 @@ public class CommonDataService {
 	}
 
 	@Transactional
-	public List<Classifier> getWordAspects() {
-		return commonDataDbService.getWordAspects(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+	public List<Classifier> getAspects() {
+		return commonDataDbService.getAspects(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
@@ -105,22 +101,22 @@ public class CommonDataService {
 	}
 
 	@Transactional
-	public List<Classifier> getAllLexemePos() {
-		return commonDataDbService.getAllLexemePos(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+	public List<Classifier> getPoses() {
+		return commonDataDbService.getPoses(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
-	public List<Classifier> getLexemeRegisters() {
-		return commonDataDbService.getLexemeRegisters(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+	public List<Classifier> getRegisters() {
+		return commonDataDbService.getRegisters(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
-	public List<Classifier> getLexemeDerivs() {
-		return commonDataDbService.getLexemeDerivs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
+	public List<Classifier> getDerivs() {
+		return commonDataDbService.getDerivs(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
 	@Transactional
-	public List<Classifier> getLexemeValueStates() {
+	public List<Classifier> getValueStates() {
 		return commonDataDbService.getValueStates(classifierLabelLangEst, classifierLabelTypeDescrip).into(Classifier.class);
 	}
 
@@ -129,4 +125,57 @@ public class CommonDataService {
 		return commonDataDbService.getProcessStates().into(Classifier.class);
 	}
 
+	public List<Classifier> getClassifiers(ClassifierName classifierName) {
+		if (classifierName == null) {
+			return null;
+		}
+		if (ClassifierName.LANGUAGE.equals(classifierName)) {
+			return getLanguages();
+		}
+		if (ClassifierName.FREQUENCY_GROUP.equals(classifierName)) {
+			return getFrequencyGroups();
+		}
+		if (ClassifierName.MORPH.equals(classifierName)) {
+			return getMorphs();
+		}
+		if (ClassifierName.GENDER.equals(classifierName)) {
+			return getGenders();
+		}
+		if (ClassifierName.WORD_TYPE.equals(classifierName)) {
+			return getWordTypes();
+		}
+		if (ClassifierName.ASPECT.equals(classifierName)) {
+			return getAspects();
+		}
+		if (ClassifierName.WORD_REL_TYPE.equals(classifierName)) {
+			return getWordRelationTypes();
+		}
+		if (ClassifierName.LEX_REL_TYPE.equals(classifierName)) {
+			return getLexemeRelationTypes();
+		}
+		if (ClassifierName.MEANING_REL_TYPE.equals(classifierName)) {
+			return getMeaningRelationTypes();
+		}
+		if (ClassifierName.POS.equals(classifierName)) {
+			return getPoses();
+		}
+		if (ClassifierName.REGISTER.equals(classifierName)) {
+			return getRegisters();
+		}
+		if (ClassifierName.DERIV.equals(classifierName)) {
+			return getDerivs();
+		}
+		if (ClassifierName.VALUE_STATE.equals(classifierName)) {
+			return getValueStates();
+		}
+		if (ClassifierName.PROCESS_STATE.equals(classifierName)) {
+			return getProcessStates();
+		}
+		return null;
+	}
+
+	@Transactional
+	public Word getWord(Long wordId) {
+		return commonDataDbService.getWord(wordId).into(Word.class);
+	}
 }

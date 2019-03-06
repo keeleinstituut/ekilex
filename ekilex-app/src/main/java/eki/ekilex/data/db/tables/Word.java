@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Word extends TableImpl<WordRecord> {
 
-    private static final long serialVersionUID = -853873912;
+    private static final long serialVersionUID = 132722414;
 
     /**
      * The reference instance of <code>public.word</code>
@@ -203,8 +203,8 @@ public class Word extends TableImpl<WordRecord> {
         return new Gender(this, Keys.WORD__WORD_GENDER_CODE_FKEY);
     }
 
-    public AspectType aspectType() {
-        return new AspectType(this, Keys.WORD__WORD_ASPECT_CODE_FKEY);
+    public Aspect aspect() {
+        return new Aspect(this, Keys.WORD__WORD_ASPECT_CODE_FKEY);
     }
 
     public EtymologyType etymologyType() {
