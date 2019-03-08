@@ -242,8 +242,8 @@
     </div>
   </th:block>
 
-  <div class="hidden-buttons row mr-0" th:if="${wordGenderCode != null}" th:fragment="word_gender">
-    <div class="col pr-0 col-w7rem">
+  <div class="hidden-buttons row mr-0" th:if="${wordGenderCode != null}" th:fragment="word_gender(column_style)">
+    <div class="col pr-0" th:classappend="${column_style}">
       <span class="lbl">Sugu</span>
     </div>
     <div class="col pl-0">
@@ -267,8 +267,8 @@
     </div>
   </div>
 
-  <div class="row mr-0" th:fragment="word_type" th:if="${not #lists.isEmpty(wordTypes)}">
-    <div class="col pr-0 col-w7rem">
+  <div class="row mr-0" th:fragment="word_type(column_style)" th:if="${not #lists.isEmpty(wordTypes)}">
+    <div class="col pr-0" th:classappend="${column_style}">
       <span class="lbl">Sõna tüüp</span>
     </div>
     <div class="col pl-0">
@@ -300,8 +300,8 @@
     </div>
   </div>
 
-  <div class="hidden-buttons row mr-0" th:if="${details.wordAspectCode != null}" th:fragment="word_aspect">
-    <div class="col pr-0 col-w7rem">
+  <div class="hidden-buttons row mr-0" th:if="${details.wordAspectCode != null}" th:fragment="word_aspect(column_style)">
+    <div class="col pr-0" th:classappend="${column_style}">
       <span class="lbl">Aspekt</span>
     </div>
     <div class="col pl-0">

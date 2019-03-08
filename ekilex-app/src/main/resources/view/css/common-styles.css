@@ -220,7 +220,7 @@ input:checked+.slider:before {
 	right: -3.5rem;
 	background: white;
 	border-radius: 3px;
-	padding: 0 2px;
+	padding: 0 3px;
 	z-index: 9;
 }
 

@@ -758,12 +758,12 @@
               </button>
               </div>
               <th:block th:with="wordGenderCode=${details.wordGenderCode},wordIdCode=${wordId}">
-                <div th:replace="components :: word_gender"></div>
+                <div th:replace="components :: word_gender('col-w7rem')"></div>
               </th:block>
               <th:block th:with="wordTypes=${details.wordTypes},wordIdCode=${wordId}">
-                <div th:replace="components :: word_type"></div>
+                <div th:replace="components :: word_type('col-w7rem')"></div>
               </th:block>
-              <div th:replace="components :: word_aspect"></div>
+              <div th:replace="components :: word_aspect('col-w7rem')"></div>
               <hr />
             </div>
             <div class="card-body pt-0 pb-0">
