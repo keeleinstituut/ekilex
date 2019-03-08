@@ -45,7 +45,7 @@ public abstract class AbstractLoader implements SystemConstant {
 
 	private void initMain() throws IOException {
 		applicationContext.registerShutdownHook();
-		Resource loaderConfResource = applicationContext.getResource("ultima-loader.properties");
+		Resource loaderConfResource = applicationContext.getResource("ultima-loader-local.properties");
 		InputStream confStream = loaderConfResource.getInputStream();
 		loaderConf = new Properties();
 		loaderConf.load(confStream);
