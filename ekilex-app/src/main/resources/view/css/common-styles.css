@@ -40,11 +40,15 @@ td {
 	overflow-y: auto;
 }
 
-.hidden-buttons .badge {
+.hidden-buttons .badge,
+.invisible-buttons .show-on-mouseover,
+.invisible-buttons .badge.hidden {
 	display: none;
 }
 
-.hidden-buttons:hover .badge {
+.hidden-buttons:hover .badge,
+.invisible-buttons:hover .show-on-mouseover,
+.invisible-buttons:hover .badge.hidden {
 	display: inline-block;
 }
 
@@ -54,14 +58,6 @@ td {
 
 .invisible-buttons:hover .badge {
 	visibility: visible;
-}
-
-.hidden-buttons .show-on-mouseover {
-	display: none;
-}
-
-.hidden-buttons:hover .show-on-mouseover {
-	display: inline-block;
 }
 
 .switch {
@@ -180,6 +176,10 @@ input:checked+.slider:before {
 
 .compacted th, .compacted td {
 	padding: initial;
+}
+
+.with-horizontal-padding tr th, .with-horizontal-padding tr td {
+	padding: 0 3px;
 }
 
 .compacted hr {
