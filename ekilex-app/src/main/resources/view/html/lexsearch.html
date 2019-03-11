@@ -165,7 +165,12 @@
                 </button>
                 <th:block th:replace="components :: lexeme_parameters"></th:block>
               </div>
-              <div class="row">
+              <button th:if="${#lists.isEmpty(lexeme.definitions)}" type="button" hidden
+                      th:data-id="${lexeme.meaningId}"
+                      onclick="openEkiEditorAddDlg(this)"
+                      data-toggle="modal" data-target="#addNewDefinitionDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.definitions)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Seletused</span>
@@ -177,7 +182,7 @@
                   </button>
                 </div>
                 <div class="col pl-0">
-                  <table class="orderable" th:data-op-code="definition" th:if="${not #lists.isEmpty(lexeme.definitions)}">
+                  <table class="orderable" th:data-op-code="definition">
                     <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
                       <td class="pr-1 d-flex">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
@@ -208,7 +213,13 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.sourceLinks)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      th:data-op-code="lex_source_link"
+                      onclick="openAddSourceLinkDlg(this)"
+                      data-toggle="modal" data-target="#addNewSourceLinkDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Allikaviide</span>
@@ -241,7 +252,12 @@
                   </span>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.meaningLearnerComments)}"
+                      th:data-id="${lexeme.meaningId}"
+                      onclick="openEkiEditorAddDlg(this)"
+                      data-toggle="modal" data-target="#addNewLearnerCommentDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningLearnerComments)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Õppekommentaarid</span>
@@ -303,7 +319,12 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.groupedMeaningRelations)}"
+                      th:data-id="${lexeme.meaningId}"
+                      onclick="openAddNewMeaningRelationDlg(this)"
+                      data-toggle="modal" data-target="#addNewMeaningRelationDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.groupedMeaningRelations)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Tähenduse seosed</span>
@@ -315,7 +336,7 @@
                   </button>
                 </div>
                 <div class="col pl-0">
-                  <table th:if="${not #lists.isEmpty(lexeme.groupedMeaningRelations)}">
+                  <table>
                     <tr th:each="relations : ${lexeme.groupedMeaningRelations}"
                         th:data-id="${relations.get(0).id}"
                         th:data-op-code="meaning_relation"
@@ -341,7 +362,7 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.governments)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Rektsioon
@@ -378,7 +399,12 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.usages)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openEkiEditorAddDlg(this)"
+                      data-toggle="modal" data-target="#addNewUsageDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Kasutusnäited</span>
@@ -539,7 +565,12 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.lexemePublicNotes)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openEkiEditorAddDlg(this)"
+                      data-toggle="modal" data-target="#addNewPublicNoteDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
@@ -599,7 +630,12 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.lexemeRelations)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openAddNewLexemeRelationDlg(this)"
+                      data-toggle="modal" data-target="#addNewLexemeRelationDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Ilmiku seosed</span>

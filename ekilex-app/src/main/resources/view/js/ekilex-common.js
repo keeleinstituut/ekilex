@@ -362,9 +362,17 @@ function alignAndFocus(e, dlg) {
 }
 
 function toggleValueGroup(dlg, groupName) {
-    dlg.find('.value-group').hide();
-    dlg.find('[data-id=' + groupName + ']').show();
-    dlg.find('[data-id=' + groupName + ']').find('.value-select').trigger('change');
+    if (groupName.startsWith('#')) {
+        const lexemeId = dlg.find('[name=id]').val();
+        let lexemeDetailDiv = $('[data-toggle-name=lexBody_' + lexemeId + ']');
+        let addNewElementBtn = lexemeDetailDiv.find('[data-target="' + groupName + '"]');
+        addNewElementBtn.trigger('click');
+        dlg.modal('hide');
+    } else {
+        dlg.find('.value-group').hide();
+        dlg.find('[data-id=' + groupName + ']').show();
+        dlg.find('[data-id=' + groupName + ']').find('.value-select').trigger('change');
+    }
 }
 
 function initMultiValueAddDlg(theDlg) {
