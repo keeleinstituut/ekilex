@@ -179,7 +179,7 @@
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="definition" th:if="${not #lists.isEmpty(lexeme.definitions)}">
                     <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
-                      <td class="pr-1">
+                      <td class="pr-1 d-flex">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                       </td>
                       <td class="hidden-buttons">
@@ -780,7 +780,7 @@
                     th:data-orderby="${relation.orderBy}"
                     th:data-op-code="word_relation"
                     th:name="${relation.id} + '_word_relation'">
-                  <td class="pr-1">
+                  <td class="pr-1 d-flex">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td class="align-text-top pr-1 pt-0 pb-0 invisible-buttons">
