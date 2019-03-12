@@ -365,7 +365,7 @@ function toggleValueGroup(dlg, groupName) {
     if (groupName.startsWith('#')) {
         const lexemeId = dlg.find('[name=id]').val();
         let lexemeDetailDiv = $('[data-toggle-name=lexBody_' + lexemeId + ']');
-        let addNewElementBtn = lexemeDetailDiv.find('[data-target="' + groupName + '"]');
+        let addNewElementBtn = lexemeDetailDiv.find('[data-btn-id="' + groupName + '"]');
         addNewElementBtn.trigger('click');
         dlg.modal('hide');
     } else {

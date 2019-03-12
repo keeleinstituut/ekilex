@@ -168,6 +168,7 @@
               <button th:if="${#lists.isEmpty(lexeme.definitions)}" type="button" hidden
                       th:data-id="${lexeme.meaningId}"
                       onclick="openEkiEditorAddDlg(this)"
+                      data-btn-id="#addNewDefinition"
                       data-toggle="modal" data-target="#addNewDefinitionDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.definitions)}">
@@ -177,6 +178,7 @@
                   <button type="button" class="btn badge badge-success" title="Lisa uus"
                           th:data-id="${lexeme.meaningId}"
                           onclick="openEkiEditorAddDlg(this)"
+                          data-btn-id="#addNewDefinition"
                           data-toggle="modal" data-target="#addNewDefinitionDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -215,8 +217,9 @@
               </div>
               <button type="button" hidden th:if="${#lists.isEmpty(lexeme.sourceLinks)}"
                       th:data-id="${lexeme.lexemeId}"
-                      th:data-op-code="lex_source_link"
+                      data-op-code="lex_source_link"
                       onclick="openAddSourceLinkDlg(this)"
+                      data-btn-id="#addNewSourceLink"
                       data-toggle="modal" data-target="#addNewSourceLinkDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
@@ -225,8 +228,9 @@
                   <span class="lbl">Allikaviide</span>
                   <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                           th:data-id="${lexeme.lexemeId}"
-                          th:data-op-code="lex_source_link"
+                          data-op-code="lex_source_link"
                           onclick="openAddSourceLinkDlg(this)"
+                          data-btn-id="#addNewSourceLink"
                           data-toggle="modal" data-target="#addNewSourceLinkDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -255,6 +259,7 @@
               <button type="button" hidden th:if="${#lists.isEmpty(lexeme.meaningLearnerComments)}"
                       th:data-id="${lexeme.meaningId}"
                       onclick="openEkiEditorAddDlg(this)"
+                      data-btn-id="#addNewLearnerComment"
                       data-toggle="modal" data-target="#addNewLearnerCommentDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.meaningLearnerComments)}">
@@ -264,6 +269,7 @@
                   <button type="button" class="btn badge badge-success" title="Lisa uus"
                           th:data-id="${lexeme.meaningId}"
                           onclick="openEkiEditorAddDlg(this)"
+                          data-btn-id="#addNewLearnerComment"
                           data-toggle="modal" data-target="#addNewLearnerCommentDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -322,6 +328,7 @@
               <button type="button" hidden th:if="${#lists.isEmpty(lexeme.groupedMeaningRelations)}"
                       th:data-id="${lexeme.meaningId}"
                       onclick="openAddNewMeaningRelationDlg(this)"
+                      data-btn-id="#addNewMeaningRelation"
                       data-toggle="modal" data-target="#addNewMeaningRelationDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.groupedMeaningRelations)}">
@@ -331,6 +338,7 @@
                   <button type="button" class="btn badge badge-success" title="Lisa seos"
                           th:data-id="${lexeme.meaningId}"
                           onclick="openAddNewMeaningRelationDlg(this)"
+                          data-btn-id="#addNewMeaningRelation"
                           data-toggle="modal" data-target="#addNewMeaningRelationDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -402,6 +410,7 @@
               <button type="button" hidden th:if="${#lists.isEmpty(lexeme.usages)}"
                       th:data-id="${lexeme.lexemeId}"
                       onclick="openEkiEditorAddDlg(this)"
+                      data-btn-id="#addNewUsage"
                       data-toggle="modal" data-target="#addNewUsageDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
@@ -411,6 +420,7 @@
                   <button type="button" class="btn badge badge-success" title="Lisa uus"
                           th:data-id="${lexeme.lexemeId}"
                           onclick="openEkiEditorAddDlg(this)"
+                          data-btn-id="#addNewUsage"
                           data-toggle="modal" data-target="#addNewUsageDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -568,6 +578,7 @@
               <button type="button" hidden th:if="${#lists.isEmpty(lexeme.lexemePublicNotes)}"
                       th:data-id="${lexeme.lexemeId}"
                       onclick="openEkiEditorAddDlg(this)"
+                      data-btn-id="#addNewPublicNote"
                       data-toggle="modal" data-target="#addNewPublicNoteDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemePublicNotes)}">
@@ -577,6 +588,7 @@
                     <button type="button" class="btn badge badge-success" title="Lisa uus"
                             th:data-id="${lexeme.lexemeId}"
                             onclick="openEkiEditorAddDlg(this)"
+                            data-btn-id="#addNewPublicNote"
                             data-toggle="modal" data-target="#addNewPublicNoteDlg">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
@@ -633,6 +645,7 @@
               <button type="button" hidden th:if="${#lists.isEmpty(lexeme.lexemeRelations)}"
                       th:data-id="${lexeme.lexemeId}"
                       onclick="openAddNewLexemeRelationDlg(this)"
+                      data-btn-id="#addNewLexemeRelation"
                       data-toggle="modal" data-target="#addNewLexemeRelationDlg">
               </button>
               <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
@@ -642,6 +655,7 @@
                   <button type="button" class="btn badge badge-success" title="Lisa seos"
                           th:data-id="${lexeme.lexemeId}"
                           onclick="openAddNewLexemeRelationDlg(this)"
+                          data-btn-id="#addNewLexemeRelation"
                           data-toggle="modal" data-target="#addNewLexemeRelationDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>

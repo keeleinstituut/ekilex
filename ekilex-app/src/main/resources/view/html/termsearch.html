@@ -124,6 +124,12 @@
               <div class="row">
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Valdkonnad</span>
+                  <button type="button" class="btn badge badge-success" title="Lisa uus"
+                          th:data-meaning-id="${meaningId}"
+                          onclick="openClassifiersDlg(this)"
+                          data-toggle="modal" data-target="#termMeaningClassifiersDlg">
+                    <i class="fa fa-plus" aria-hidden="true"></i>
+                  </button>
                 </div>
                 <div class="col pl-0">
                   <span th:each="classif,classifIter : ${meaning.domains}" class="hidden-buttons" th:if="${not #lists.isEmpty(meaning.domains)}">
@@ -151,12 +157,6 @@
                     </button>
                     <span th:unless="${classifIter.last}">,</span>
                   </span>
-                  <button type="button" class="btn badge badge-success" title="Lisa uus"
-                          th:data-meaning-id="${meaningId}"
-                          onclick="openClassifiersDlg(this)"
-                          data-toggle="modal" data-target="#termMeaningClassifiersDlg">
-                    <i class="fa fa-plus" aria-hidden="true"></i>
-                  </button>
                 </div>
               </div>
               <div class="row">
@@ -365,7 +365,7 @@
                th:data-op-code="lexeme"
                th:name="${lexeme.lexemeId} + '_lexeme'"
                th:data-orderby="${lexeme.orderBy}">
-            <div class="card-body">
+            <div class="card-body" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
               <div class="d-flex flex-row align-items-center flex-wrap">
                 <div class="d-flex align-items-center flex-wrap">
                   <span th:text="${lexeme.word}" class="ttl"></span>
@@ -410,14 +410,22 @@
                 <div th:replace="components :: lexeme_derivative"></div>
                 <div th:replace="components :: lexeme_register"></div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.sourceLinks)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      data-op-code="lex_source_link"
+                      onclick="openAddSourceLinkDlg(this)"
+                      data-btn-id="#addNewSourceLink"
+                      data-toggle="modal" data-target="#addNewSourceLinkDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.sourceLinks)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Allikaviide</span>
                   <button type="button" class="btn badge badge-success" title="Lisa allikaviide"
                           th:data-id="${lexeme.lexemeId}"
-                          th:data-op-code="lex_source_link"
+                          ata-op-code="lex_source_link"
                           onclick="openAddSourceLinkDlg(this)"
+                          data-btn-id="#addNewSourceLink"
                           data-toggle="modal" data-target="#addNewSourceLinkDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -443,13 +451,21 @@
                   </span>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.usages)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openEkiEditorAddDlg(this)"
+                      data-btn-id="#addNewUsage"
+                      data-toggle="modal" data-target="#addNewUsageDlg">
+                <i class="fa fa-plus" aria-hidden="true"></i>
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.usages)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Kasutusnäited</span>
                   <button type="button" class="btn badge badge-success" title="Lisa uus"
                           th:data-id="${lexeme.lexemeId}"
                           onclick="openEkiEditorAddDlg(this)"
+                          data-btn-id="#addNewUsage"
                           data-toggle="modal" data-target="#addNewUsageDlg">
                     <i class="fa fa-plus" aria-hidden="true"></i>
                   </button>
@@ -529,7 +545,12 @@
                     </th:block>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.lexemeRelations)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openAddNewLexemeRelationDlg(this)"
+                      data-toggle="modal" data-target="#addNewLexemeRelationDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.lexemeRelations)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Ilmiku seosed</span>
@@ -567,13 +588,20 @@
                   </table>
                 </div>
               </div>
-              <div class="row">
+              <button type="button" hidden th:if="${#lists.isEmpty(lexeme.publicNotes)}"
+                      th:data-id="${lexeme.lexemeId}"
+                      onclick="openEkiEditorAddDlg(this)"
+                      data-btn-id="#addNewPublicNote"
+                      data-toggle="modal" data-target="#addNewPublicNoteDlg">
+              </button>
+              <div class="row" th:if="${not #lists.isEmpty(lexeme.publicNotes)}">
                 <hr />
                 <div class="col pr-0 col-w13rem">
                   <span class="lbl">Märkused
                     <button type="button" class="btn badge badge-success" title="Lisa uus"
                             th:data-id="${lexeme.lexemeId}"
                             onclick="openEkiEditorAddDlg(this)"
+                            data-btn-id="#addNewPublicNote"
                             data-toggle="modal" data-target="#addNewPublicNoteDlg">
                       <i class="fa fa-plus" aria-hidden="true"></i>
                     </button>
