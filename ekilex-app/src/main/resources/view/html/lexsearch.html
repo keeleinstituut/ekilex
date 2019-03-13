@@ -103,7 +103,10 @@
               </div>
             </div>
 
-            <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}">
+            <div class="card-body d-none" th:data-toggle-name="${'lexBody_' + lexeme.lexemeId}"
+                 th:data-id="${lexeme.lexemeId}"
+                 th:data-op-code="lexeme"
+                 th:name="${lexeme.lexemeId} + '_lexeme'">
               <button type="button" class="btn badge badge-secondary float-right btn-toggle"
                       th:data-toggle-target="${'lexTitle_' + lexeme.lexemeId}">
                 <i class="fa fa-angle-up" aria-hidden="true"></i>
@@ -138,6 +141,9 @@
                     >Lahuta</a>
                   <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#newWordDlg" th:data-meaning-id="${lexeme.meaningId}">Lisa uus keelend</button>
                   <button id="lexemeCopyBtn" class="btn btn-sm btn-primary" th:data-lexeme-id="${lexeme.lexemeId}">Duplikaat</button>
+                  <button class="btn btn-warning font-weight-bold btn-sm" type="button"
+                          th:data-target-elem="${lexeme.lexemeId} + '_lexeme'"
+                          data-toggle="delete-confirmation">Eemalda</button>
                 </div>
                 <div class="ml-auto">
                   <b th:text="${lexeme.dataset}"></b>
@@ -186,7 +192,7 @@
                 <div class="col pl-0">
                   <table class="orderable" th:data-op-code="definition">
                     <tr th:each="definition, itemStat : ${lexeme.definitions}" th:data-id="${definition.id}" th:data-orderby="${definition.orderBy}">
-                      <td class="pr-1 d-flex">
+                      <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                       </td>
                       <td class="hidden-buttons">
@@ -667,7 +673,7 @@
                         th:data-op-code="lexeme_relation"
                         th:name="${relation.id} + '_lexeme_relation'"
                         th:data-orderby="${relation.orderBy}">
-                      <td class="pr-1">
+                      <td class="action-column">
                         <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                       </td>
                       <td class="invisible-buttons align-text-top pr-1">
@@ -830,7 +836,7 @@
                     th:data-orderby="${relation.orderBy}"
                     th:data-op-code="word_relation"
                     th:name="${relation.id} + '_word_relation'">
-                  <td class="pr-1 d-flex">
+                  <td class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td class="align-text-top pr-1 pt-0 pb-0 invisible-buttons">
@@ -877,7 +883,7 @@
               <span class="lbl">Keelendi etümoloogia</span>
               <table class="orderable" th:data-op-code="word_etymology">
                 <tr th:each="wordEtym, itemStat : ${details.wordEtymology}" th:data-id="${wordEtym.wordEtymologyId}" th:data-orderby="${wordEtym.orderBy}">
-                  <td style="display: flex">
+                  <td class="action-column">
                     <th:block th:replace="common :: ordering_buttons(${itemStat})"></th:block>
                   </td>
                   <td class="align-text-top pr-3 pt-0 pb-0">
