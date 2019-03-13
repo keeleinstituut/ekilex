@@ -16,34 +16,32 @@
       <div class="card-body p-2">
         <form th:action="@{/termsearch}" method="post">
           <th:block th:replace="search :: search_form('term_search')"></th:block>
-          <th:block>
-            <div class="form-row pt-2 align-items-center">
-              <div class="col-auto">
-                <div class="row align-items-center">
-                  <label class="col-auto col-form-label">Tulemused:</label>
-                  <div class="col-auto">
-                    <select name="resultLang" class="form-control">
-                      <option value="">Kõik keeled</option>
-                      <option 
-                          th:each="lang : ${allLanguages}"
-                          th:value="${lang.code}"
-                          th:selected="${lang.code == sessionBean.resultLang}"
-                          th:text="${lang.value}"></option>
-                    </select>
-                  </div>
-                  <div class="col-auto">
-                    <label class="switch mb-0">
-                      <input id="meaning-other-words-visible-check" type="checkbox" checked="checked"/>
-                      <span class="slider round"></span>
-                    </label>
-                  </div>
+          <div class="form-row pt-2 align-items-center">
+            <div class="col-auto">
+              <div class="row align-items-center">
+                <label class="col-auto col-form-label">Tulemused:</label>
+                <div class="col-auto">
+                  <select id="resultLang" name="resultLang" class="form-control">
+                    <option value="">Kõik keeled</option>
+                    <option
+                        th:each="lang : ${allLanguages}"
+                        th:value="${lang.code}"
+                        th:selected="${lang.code == sessionBean.resultLang}"
+                        th:text="${lang.value}"></option>
+                  </select>
+                </div>
+                <div class="col-auto">
+                  <label class="switch mb-0">
+                    <input id="meaning-other-words-visible-check" type="checkbox" checked="checked"/>
+                    <span class="slider round"></span>
+                  </label>
                 </div>
               </div>
-              <div class="col-1">
-                &nbsp;
-              </div>
             </div>
-          </th:block>
+            <div class="col-1">
+              &nbsp;
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -315,7 +313,7 @@
                       <td class="pr-3">
                         <th:block th:each="relation, iter : ${relations}">
                           <button type="button" class="btn btn-link p-0" th:data-id="${relation.meaningId}" name="detailsBtn">
-                            <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
+                            <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                           </button>
                           <span th:unless="${iter.last}">,</span>
                         </th:block>
@@ -370,7 +368,7 @@
                 <div class="d-flex align-items-center flex-wrap">
                   <span th:text="${lexeme.word}" class="ttl"></span>
                   <span th:text="${lexeme.homonymNumber}" class="pl-1"></span>
-                  <span th:text="${'( ' + lexeme.wordLang + ' )'}" class="pl-1"></span>
+                  <span th:text="${'(' + lexeme.wordLang + ')'}" class="pl-1"></span>
                   <span th:if="${lexeme.wordDisplayMorphCode != null}" th:text="${lexeme.wordDisplayMorphCode}" class="pl-1"></span>
                 </div>
                 <div class="ml-auto">
@@ -573,7 +571,7 @@
                       </td>
                       <td class="invisible-buttons pr-3 pl-1">
                         <button type="button" class="btn btn-link btn-xs" th:data-id="${relation.meaningId}" name="detailsBtn">
-                          <span th:text="${relation.word + ' ( ' + relation.wordLang + ' )'}"></span>
+                          <span th:text="${relation.word + ' (' + relation.wordLang + ')'}"></span>
                         </button>
                         <button type="button" class="btn badge badge-warning"
                                 th:data-target-elem="${relation.id} + '_lexeme_relation'"
