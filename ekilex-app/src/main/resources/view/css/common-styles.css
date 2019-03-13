@@ -251,4 +251,5 @@ table.orderable:hover .action-column {
 	position: absolute;
 	right: 100%;
 	margin-top: 0.15rem;
+	margin-right: 0.25rem;
 }
