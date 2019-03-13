@@ -43,7 +43,7 @@ public class HomeController implements WebConstant {
 	@GetMapping(HOME_URI)
 	public String home(Model model) {
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getApproved())) {
+		if (Boolean.TRUE.equals(user.getEnabled())) {
 			return HOME_PAGE;			
 		}
 		populateUserApplicationData(user, model);
@@ -58,7 +58,7 @@ public class HomeController implements WebConstant {
 	@GetMapping(APPLY_URI)
 	public String apply(Model model) {
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getApproved())) {
+		if (Boolean.TRUE.equals(user.getEnabled())) {
 			return "redirect:" + HOME_URI;			
 		}
 		populateUserApplicationData(user, model);
@@ -72,7 +72,7 @@ public class HomeController implements WebConstant {
 			Model model) {
 
 		EkiUser user = userContext.getUser();
-		if (Boolean.TRUE.equals(user.getApproved())) {
+		if (Boolean.TRUE.equals(user.getEnabled())) {
 			return HOME_PAGE;			
 		}
 		userService.submitUserApplication(selectedDatasets, applicationComment);
@@ -84,9 +84,9 @@ public class HomeController implements WebConstant {
 
 		List<Dataset> datasets = commonDataService.getDatasets();
 		List<EkiUserApplication> userApplications = userService.getUserApplications();
-		boolean applicationNotSubmitted = (user.getApproved() == null) && CollectionUtils.isEmpty(userApplications);
-		boolean applicationReviewPending = (user.getApproved() == null) && CollectionUtils.isNotEmpty(userApplications);
-		boolean applicationDenied = Boolean.FALSE.equals(user.getApproved());
+		boolean applicationNotSubmitted = (user.getEnabled() == null) && CollectionUtils.isEmpty(userApplications);
+		boolean applicationReviewPending = (user.getEnabled() == null) && CollectionUtils.isNotEmpty(userApplications);
+		boolean applicationDenied = Boolean.FALSE.equals(user.getEnabled());
 
 		userApplications = userApplications.stream().filter(application -> CollectionUtils.isNotEmpty(application.getDatasetCodes())).collect(Collectors.toList());
 

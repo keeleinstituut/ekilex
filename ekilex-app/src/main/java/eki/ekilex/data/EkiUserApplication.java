@@ -17,8 +17,6 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	private String comment;
 
-	private Boolean approved;
-
 	private Timestamp created;
 
 	private boolean basicApplication;
@@ -53,14 +51,6 @@ public class EkiUserApplication extends AbstractDataObject {
 
 	public void setComment(String comment) {
 		this.comment = comment;
-	}
-
-	public Boolean getApproved() {
-		return approved;
-	}
-
-	public void setApproved(Boolean approved) {
-		this.approved = approved;
 	}
 
 	public Timestamp getCreated() {

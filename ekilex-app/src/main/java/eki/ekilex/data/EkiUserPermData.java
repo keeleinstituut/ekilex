@@ -14,13 +14,11 @@ public class EkiUserPermData extends AbstractDataObject {
 
 	private String email;
 
-	private boolean enabled;
-
 	private boolean admin;
 
-	private Boolean approved;
+	private Boolean enabled;
 
-	private boolean approvingPending;
+	private boolean enablePending;
 
 	private List<EkiUserApplication> applications;
 
@@ -50,14 +48,6 @@ public class EkiUserPermData extends AbstractDataObject {
 		this.email = email;
 	}
 
-	public boolean isEnabled() {
-		return enabled;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
 	public boolean isAdmin() {
 		return admin;
 	}
@@ -66,20 +56,20 @@ public class EkiUserPermData extends AbstractDataObject {
 		this.admin = admin;
 	}
 
-	public Boolean getApproved() {
-		return approved;
+	public Boolean getEnabled() {
+		return enabled;
 	}
 
-	public void setApproved(Boolean approved) {
-		this.approved = approved;
+	public void setEnabled(Boolean enabled) {
+		this.enabled = enabled;
 	}
 
-	public boolean isApprovingPending() {
-		return approvingPending;
+	public boolean isEnablePending() {
+		return enablePending;
 	}
 
-	public void setApprovingPending(boolean approvingPending) {
-		this.approvingPending = approvingPending;
+	public void setEnablePending(boolean enablePending) {
+		this.enablePending = enablePending;
 	}
 
 	public List<EkiUserApplication> getApplications() {

@@ -14,13 +14,13 @@
       </div>
       <div class="card-body">
         <div class="alert alert-info" role="alert" th:if="${applicationNotSubmitted}">
-          <div>See on EKI sõnastikesüsteem Ekilex. Siin saad esiteda taotluse Ekilex kasutamiseks. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust</div>
+          <div>See on EKI sõnastikesüsteem Ekilex. Siin saad esiteda taotluse Ekilexi kasutamiseks. Kui vaja, vali vastavad sõnakogud, millele soovid muutmisõigust</div>
         </div>
         <div class="alert alert-info" role="alert" th:if="${applicationReviewPending}">
-          <div>Sinu Ekilex kasutamise taotlus on vastu võetud ning ootab rahuldamist</div>
+          <div>Sinu Ekilexi kasutamise taotlus on vastu võetud ning ootab rahuldamist</div>
         </div>
         <div class="alert alert-warning" role="alert" th:if="${applicationDenied}">
-          <div>Sinu Ekilex kasutamise taotlus lükati tagasi</div>
+          <div>Sinu Ekilexi kasutamise taotlus lükati tagasi</div>
         </div>
         <div class="container float-left w-50" th:if="${applicationNotSubmitted}">
           <form th:action="@{/apply}" method="post">
@@ -74,13 +74,6 @@
                     <span th:text="${dataset.name}" class="col-10"></span>
                   </div>
                 </th:block>
-              </div>
-              <div class="col-3">
-                <span th:if="${userApplication.approved == null}" class="alert alert-info">Ootel</span>
-                <span th:if="${userApplication.approved != null}">
-                  <span th:if="${userApplication.approved == false}" class="alert alert-warning">Tagasi lükatud</span>
-                  <span th:if="${userApplication.approved == true}" class="alert alert-info">Vastuvõetud</span>
-                </span>
               </div>
             </div>
             <hr class="mt-3" th:unless="${userApplicationIter.last}" />

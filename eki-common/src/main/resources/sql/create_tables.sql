@@ -5,9 +5,8 @@ create table eki_user
   email text not null,
   password text not null,
   activation_key varchar(60),
-  is_enabled boolean default false,
   is_admin boolean default false,
-  is_approved boolean,
+  is_enabled boolean,
   created timestamp not null default statement_timestamp(),
   unique(email)
 );
@@ -19,7 +18,6 @@ create table eki_user_application
   user_id bigint references eki_user(id) on delete cascade not null,
   datasets varchar(10) array null,
   comment text null,
-  is_approved boolean,
   created timestamp not null default statement_timestamp()
 );
 alter sequence eki_user_application_id_seq restart with 10000;

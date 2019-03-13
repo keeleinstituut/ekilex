@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
 
-    private static final long serialVersionUID = 1498066112;
+    private static final long serialVersionUID = 483317347;
 
     /**
      * The reference instance of <code>public.eki_user_application</code>
@@ -76,11 +76,6 @@ public class EkiUserApplication extends TableImpl<EkiUserApplicationRecord> {
      * The column <code>public.eki_user_application.comment</code>.
      */
     public final TableField<EkiUserApplicationRecord, String> COMMENT = createField("comment", org.jooq.impl.SQLDataType.CLOB, this, "");
-
-    /**
-     * The column <code>public.eki_user_application.is_approved</code>.
-     */
-    public final TableField<EkiUserApplicationRecord, Boolean> IS_APPROVED = createField("is_approved", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.eki_user_application.created</code>.

@@ -41,7 +41,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
 
-    private static final long serialVersionUID = 1446955327;
+    private static final long serialVersionUID = 1782553795;
 
     /**
      * The reference instance of <code>public.dataset_permission</code>
@@ -164,11 +164,15 @@ public class DatasetPermission extends TableImpl<DatasetPermissionRecord> {
      */
     @Override
     public List<ForeignKey<DatasetPermissionRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<DatasetPermissionRecord, ?>>asList(Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
+        return Arrays.<ForeignKey<DatasetPermissionRecord, ?>>asList(Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY, Keys.DATASET_PERMISSION__DATASET_PERMISSION_AUTH_LANG_FKEY);
     }
 
     public Dataset dataset() {
         return new Dataset(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_DATASET_CODE_FKEY);
+    }
+
+    public EkiUser ekiUser() {
+        return new EkiUser(this, Keys.DATASET_PERMISSION__DATASET_PERMISSION_USER_ID_FKEY);
     }
 
     public Language language() {

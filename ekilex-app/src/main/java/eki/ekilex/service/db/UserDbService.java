@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import org.jooq.DSLContext;
 import org.jooq.Field;
-import org.jooq.Record8;
+import org.jooq.Record7;
 import org.jooq.impl.DSL;
 import org.springframework.stereotype.Component;
 
@@ -28,16 +28,15 @@ public class UserDbService extends AbstractDbService {
 
 	public EkiUser getUserByEmail(String email) {
 
-		Optional<Record8<Long, String, String, String, String, Boolean, Boolean, Boolean>> optionalResult = create
+		Optional<Record7<Long,String,String,String,String,Boolean,Boolean>> optionalResult = create
 				.select(
 						EKI_USER.ID,
 						EKI_USER.NAME,
 						EKI_USER.EMAIL,
 						EKI_USER.PASSWORD,
 						EKI_USER.ACTIVATION_KEY,
-						EKI_USER.IS_ENABLED.as("enabled"),
 						EKI_USER.IS_ADMIN.as("admin"),
-						EKI_USER.IS_APPROVED.as("approved")
+						EKI_USER.IS_ENABLED.as("enabled")
 						)
 				.from(EKI_USER)
 				.where(EKI_USER.EMAIL.eq(email))
@@ -69,6 +68,10 @@ public class UserDbService extends AbstractDbService {
 		}
 	}
 
+	public void enableUser(Long userId, boolean enable) {
+		create.update(EKI_USER).set(EKI_USER.IS_ENABLED, enable).where(EKI_USER.ID.eq(userId)).execute();
+	}
+
 	public void createUserApplication(Long userId, String[] datasets, String comment) {
 
 		create
@@ -88,7 +91,6 @@ public class UserDbService extends AbstractDbService {
 						EKI_USER_APPLICATION.USER_ID,
 						EKI_USER_APPLICATION.DATASETS.as("dataset_codes"),
 						EKI_USER_APPLICATION.COMMENT,
-						EKI_USER_APPLICATION.IS_APPROVED.as("approved"),
 						EKI_USER_APPLICATION.CREATED,
 						basicApplicationField.as("basic_application")
 						)

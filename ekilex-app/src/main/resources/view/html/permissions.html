@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="et" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head th:replace="common :: common_header(_,_)">
+<head th:replace="common :: common_header(~{::title},~{::links})">
+<title>EKILEX kasutajaõigused</title>
+<th:block th:fragment="links">
+  <script type="text/javascript" th:src="@{/view/js/ekilex-permissions.js}"></script>
+</th:block>
 </head>
 <body class="body-with-navbar">
   <th:block th:replace="common :: nav_bar"></th:block>
@@ -11,59 +15,59 @@
       </div>
       <div class="card-body">
         <div class="float-left mt-3 w-100">
-          <table class="w-100">
-            <tr>
-              <th>Nimi</th>
-              <th>E-post</th>
-              <th>Admin</th>
-              <th>Lubatud</th>
-              <th>Avaldused</th>
-              <th>Load</th>
-            </tr>
-            <tr>
-              <td colspan="6">
-                <hr />
-              </td>
-            </tr>
-            <th:block th:each="userPerm : ${ekiUserPermissions}">
-              <tr>
-                <td>
-                  <span th:text="${userPerm.name}"></span>
-                </td>
-                <td>
-                  <span th:text="${userPerm.email}"></span>
-                </td>
-                <td>
-                  <input type="checkbox" th:checked="${userPerm.admin}"/>
-                </td>
-                <td>
-                  <input type="checkbox" th:checked="${userPerm.approved}"/>
-                </td>
-                <td>
-                  <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
-                  <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
-                    <div class="row">
-                      <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}" class="col-3"></span>
-                      <span th:if="${userApplication.datasetCodes != null}" th:text="${userApplication.datasetCodes}" class="col"></span>
-                    </div>
-                    <div class="row" th:if="${userApplication.comment != null}">
-                      <span th:text="${userApplication.comment}" class="col"></span>                      
-                    </div>
-                  </th:block>
-                </td>
-                <td>
-                  <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
-                    <span th:text="${datasetPerm.datasetCode}"></span>
-                    <span th:text="${datasetPerm.authItem}"></span>
-                    <span th:if="${datasetPerm.authLang != null}">
-                      <span th:text="${datasetPerm.authLang}"></span>
-                    </span>
-                    <span th:unless="${datasetPermIter.last}"> | </span>
-                  </th:block>
-                </td>
-              </tr>
-            </th:block>
-          </table>
+          <th:block th:fragment="permissions">
+            <div id="permissionsArea">
+              <table class="table table-striped m-0 p-0">
+                <tr>
+                  <th class="m-1 p-1"></th>
+                  <th class="m-1 p-1">Nimi</th>
+                  <th class="m-1 p-1">E-post</th>
+                  <th class="m-1 p-1 text-center">Admin</th>
+                  <th class="m-1 p-1 text-center">Lubatud</th>
+                  <th class="m-1 p-1">Avaldused</th>
+                  <th class="m-1 p-1">Load</th>
+                </tr>
+                <th:block th:each="userPerm : ${ekiUserPermissions}">
+                  <tr>
+                    <td class="m-1 p-1 text-center">
+                      <span th:if="${userPerm.enablePending}" class="fa fa-circle"></span>
+                    </td>
+                    <td class="m-1 p-1">
+                      <span th:text="${userPerm.name}"></span>
+                    </td>
+                    <td class="m-1 p-1">
+                      <span th:text="${userPerm.email}"></span>
+                    </td>
+                    <td class="m-1 p-1 text-center">
+                      <input type="checkbox" th:checked="${userPerm.admin}" />
+                    </td>
+                    <td class="m-1 p-1 text-center">
+                      <input type="checkbox" th:data-id="${userPerm.id}" name="userEnableCheck" th:checked="${userPerm.enabled}" />
+                    </td>
+                    <td class="m-1 p-1">
+                      <span th:if="${#lists.isEmpty(userPerm.applications)}">-</span>
+                      <th:block th:each="userApplication,userApplicationIter : ${userPerm.applications}">
+                        <span th:text="${#dates.format(userApplication.created, 'dd.MM.yyyy HH:mm')}"></span>
+                        <span th:if="${userApplication.datasetCodes != null}" th:text="${userApplication.datasetCodes}"></span>
+                        <span th:if="${!#strings.isEmpty(userApplication.comment)}" th:text="${userApplication.comment}"></span>
+                      </th:block>
+                    </td>
+                    <td class="m-1 p-1">
+                      <th:block th:each="datasetPerm,datasetPermIter : ${userPerm.datasetPermissions}">
+                        <span th:text="${datasetPerm.datasetCode}"></span>
+                        <span th:text="${datasetPerm.authOperation}"></span>
+                        <span th:text="${datasetPerm.authItem}"></span>
+                        <span th:if="${datasetPerm.authLang != null}">
+                          <span th:text="${datasetPerm.authLang}"></span>
+                        </span>
+                        <span th:unless="${datasetPermIter.last}">,</span>
+                      </th:block>
+                    </td>
+                  </tr>
+                </th:block>
+              </table>
+            </div>
+          </th:block>
         </div>
       </div>
     </div>

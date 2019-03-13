@@ -33,8 +33,8 @@ public class PermissionDbService {
 
 	public List<EkiUserPermData> getUsers() {
 
-		Field<Boolean> approvingPendingField = DSL.field(
-				EKI_USER.IS_APPROVED.isNull()
+		Field<Boolean> enablePendingField = DSL.field(
+				EKI_USER.IS_ENABLED.isNull()
 				.andExists(DSL
 						.select(EKI_USER_APPLICATION.ID)
 						.from(EKI_USER_APPLICATION)
@@ -45,10 +45,9 @@ public class PermissionDbService {
 						EKI_USER.ID,
 						EKI_USER.NAME,
 						EKI_USER.EMAIL,
-						EKI_USER.IS_ENABLED.as("enabled"),
 						EKI_USER.IS_ADMIN.as("admin"),
-						EKI_USER.IS_APPROVED.as("approved"),
-						approvingPendingField.as("approving_pending")
+						EKI_USER.IS_ENABLED.as("enabled"),
+						enablePendingField.as("enable_pending")
 						)
 				.from(EKI_USER)
 				.orderBy(EKI_USER.ID)

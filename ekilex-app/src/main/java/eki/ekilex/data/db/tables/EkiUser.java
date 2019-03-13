@@ -42,7 +42,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class EkiUser extends TableImpl<EkiUserRecord> {
 
-    private static final long serialVersionUID = 736052232;
+    private static final long serialVersionUID = -1827728004;
 
     /**
      * The reference instance of <code>public.eki_user</code>
@@ -83,19 +83,14 @@ public class EkiUser extends TableImpl<EkiUserRecord> {
     public final TableField<EkiUserRecord, String> ACTIVATION_KEY = createField("activation_key", org.jooq.impl.SQLDataType.VARCHAR(60), this, "");
 
     /**
-     * The column <code>public.eki_user.is_enabled</code>.
-     */
-    public final TableField<EkiUserRecord, Boolean> IS_ENABLED = createField("is_enabled", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
-
-    /**
      * The column <code>public.eki_user.is_admin</code>.
      */
     public final TableField<EkiUserRecord, Boolean> IS_ADMIN = createField("is_admin", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("false", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
-     * The column <code>public.eki_user.is_approved</code>.
+     * The column <code>public.eki_user.is_enabled</code>.
      */
-    public final TableField<EkiUserRecord, Boolean> IS_APPROVED = createField("is_approved", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
+    public final TableField<EkiUserRecord, Boolean> IS_ENABLED = createField("is_enabled", org.jooq.impl.SQLDataType.BOOLEAN, this, "");
 
     /**
      * The column <code>public.eki_user.created</code>.

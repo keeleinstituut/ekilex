@@ -66,6 +66,11 @@ public class UserService {
 		return user;
 	}
 
+	@Transactional
+	public void enableUser(Long userId, boolean enable) {
+		userDbService.enableUser(userId, enable);
+	}
+
 	public String generateActivationKey() {
 		return CodeGenerator.generateUniqueId();
 	}
